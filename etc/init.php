@@ -65,13 +65,13 @@ define('SMART_FRAMEWORK_SSL_DISABLE_COMPRESS',	true);										// SSL/TLS Contex
 define('SMART_FRAMEWORK_CHMOD_DIRS', 		0770);											// Folder Permissions: 0770 | 0700
 define('SMART_FRAMEWORK_CHMOD_FILES', 		0660);											// File Permissions: 0660 | 0600
 //--------------------------------------- UPLOADS / DOWNLOADS / QUOTA
-//define('SMART_FRAMEWORK_STORAGE_DISK_QUOTA',		0);										// App Disk Quota in MB (0 for unlimited) ; This may be used by the uploads feature but it needs extra development to calculate total sizes of all uploads and compare with this value
-define('SMART_FRAMEWORK_DOWNLOAD_FOLDERS', 			'<wpub>');								// Allow downloads ONLY from these folders: <folder1>,<folder2> (relative to the app root)
-define('SMART_FRAMEWORK_DOWNLOAD_EXPIRE',			1);										// Download expiration time in hours (between 1 and 24 hours)
-//define('SMART_FRAMEWORK_DOWNLOAD_SKIP_LOG',			true);								// If defined will disable logging for Downloads
-define('SMART_FRAMEWORK_UPLOAD_PICTS', 				'<svg>,<png>,<gif>,<jpg>,<jpeg>,<jpe>');// Uploads images type ALLOWED extensions list
-define('SMART_FRAMEWORK_UPLOAD_MOVIES', 			'<webm>,<ogv>,<mp4>,<mov>');			// Uploads video type ALLOWED extensions list
-define('SMART_FRAMEWORK_UPLOAD_DOCS', 				'<txt>,<md>,<pdf>,<odt>,<ods>,<odp>,<csv>,<doc>,<rtf>,<xls>,<ppt>'); // Uploads document type ALLOWED extensions list
+//define('SMART_FRAMEWORK_STORAGE_DISK_QUOTA',	0);											// App Disk Quota in MB (0 for unlimited) ; This may be used by the uploads feature but it needs extra development to calculate total sizes of all uploads and compare with this value
+define('SMART_FRAMEWORK_DOWNLOAD_FOLDERS', 		'<wpub>');									// Allow downloads ONLY from these folders: <folder1>,<folder2> (relative to the app root)
+define('SMART_FRAMEWORK_DOWNLOAD_EXPIRE',		1);											// Download expiration time in hours (between 1 and 24 hours)
+//define('SMART_FRAMEWORK_DOWNLOAD_SKIP_LOG',	true);										// If defined will disable logging for Downloads
+define('SMART_FRAMEWORK_UPLOAD_PICTS', 			'<svg>,<png>,<gif>,<jpg>,<jpeg>,<webp>'); 	// Uploads images type ALLOWED extensions list
+define('SMART_FRAMEWORK_UPLOAD_MOVIES', 		'<webm>,<ogv>,<mp4>,<mov>'); 				// Uploads video type ALLOWED extensions list
+define('SMART_FRAMEWORK_UPLOAD_DOCS', 			'<txt>,<md>,<pdf>,<odt>,<ods>,<odp>,<csv>,<doc>,<rtf>,<xls>,<ppt>'); // Uploads document type ALLOWED extensions list
 define('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS',	SMART_FRAMEWORK_UPLOAD_PICTS.','.SMART_FRAMEWORK_UPLOAD_MOVIES.','.SMART_FRAMEWORK_UPLOAD_DOCS.',<json>,<yaml>,<xml>,<eml>,<ics>,<vcf>,<7z>,<zip>,<rar>,<tar>,<tgz>,<tbz>,<gz>,<bz2>,<xz>,<ps>,<eps>,<tif>,<tiff>,<wmf>,<bmp>,<swf>,<webp>'); // *OPTIONAL* The List of Allowed file extensions for Uploads ; if set and empty, will dissalow any upload by default ; if set and non-empty will only allow files with these extensions to be uploaded (if this is set the SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS will not count at all)
 define('SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS', 	'<htm>,<html>,<js>,<sass>,<scss>,<css>,<shtml>,<phtml>,<php>,<sql>,<inc>,<tpl>,<mtpl>,<twig>,<latte>,<t3fluid>,<pl>,<py>,<pyc>,<pyo>,<rb>,<go>,<asp>,<jsp>,<sh>,<bash>,<bat>,<cmd>,<cgi>,<fcgi>,<fastcgi>,<scgi>,<wsgi>,<exe>,<msi>,<dll>,<dylib>,<bin>,<so>'); // The List of DENIED file extensions for Uploads ; files with these extensions will not be allowed to be uploaded by default
 define('SMART_FRAMEWORK_RESERVED_CONTROLLER_NAMES', '<php>,<html>,<shtml>,<phtml>,<stml>,<css>,<js>,<json>,<xml>,<rss>,<txt>,<md>,<csv>,<sql>,<png>,<gif>,<jpg>,<webp>,<svg>,<webm>,<pdf>,<zip>,<tar>,<bz2>,<gz>,<tgz>,<xz>,<7z>,<netarch>'); // OPTIONAL: The list with reserved controller names to avoid confusion between controller names and URL page reserved extensions that can lead to wrong browser behaviour if serving a page with such extension without an explicit mime type ; a controller name must avoid having any name from this list

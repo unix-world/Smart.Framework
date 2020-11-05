@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ View Record / Media :: v.20200817 -->
+<!-- Pagebuilder / Manage @ View Record / Media :: v.20201028 -->
 <script>
 var pageBuilderMediaImgDataURL = '';
 var pageBuilderMediaType = '';
@@ -106,7 +106,7 @@ function pageBuilder_MediaInfoAlert(imgFile, imgPath, imgType, imgSize, isUsed) 
 	<tr valign="top">
 		<td width="1%">
 			[%%%IF:PRIV-EDIT:==yes;%%%]
-			<img src="[###MODULE-PATH|html###]libs/views/manager/img/op-add.svg" style="cursor:pointer;" title="Preload Image: SVG / PNG / JPG / GIF" alt="Preload Image: SVG / PNG / JPG / GIF" onClick="jQuery('#img_uploader_id').trigger('click'); return false;">
+			<img src="[###MODULE-PATH|html###]libs/views/manager/img/op-add.svg" style="cursor:pointer;" title="Preload Image: SVG / PNG / GIF / JPG / *WEBP" alt="Preload Image: SVG / PNG / GIF / JPG / *WEBP" onClick="jQuery('#img_uploader_id').trigger('click'); return false;">
 			[%%%ELSE:PRIV-EDIT%%%]
 			&nbsp;
 			[%%%/IF:PRIV-EDIT%%%]

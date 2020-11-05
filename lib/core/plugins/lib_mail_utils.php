@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20200715
+ * @version 	v.20201028
  * @package 	Plugins:Mailer
  *
  */
@@ -583,7 +583,7 @@ final class SmartMailerUtils {
 					} //end if
 					$tmp_getimg_arr = null;
 					//-- {{{SYNC-MAIL-CID-IMGS}}} @ Send
-					if(((string)$tmp_fcontent != '') AND ((string)$tmp_fake_fname != '') AND (((string)$tmp_img_ext == '.svg') OR ((string)$tmp_img_ext == '.png') OR ((string)$tmp_img_ext == '.gif') OR ((string)$tmp_img_ext == '.jpg'))) {
+					if(((string)$tmp_fcontent != '') AND ((string)$tmp_fake_fname != '') AND (((string)$tmp_img_ext == '.svg') OR ((string)$tmp_img_ext == '.png') OR ((string)$tmp_img_ext == '.gif') OR ((string)$tmp_img_ext == '.jpg') OR ((string)$tmp_img_ext == '.webp'))) {
 						//--
 						$tmp_arr_fmime = array();
 						$tmp_arr_fmime = (array) SmartFileSysUtils::mime_eval($tmp_fake_fname);

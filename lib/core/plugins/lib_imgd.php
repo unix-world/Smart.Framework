@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 /**
  * Class: Smart Image GD Process - provide a class for GD image processing for:
- * Safe Filter, Convert Format, Resize (Resample), Apply Watermark for a GIF / PNG / JPG image.
+ * Safe Filter, Convert Format, Resize (Resample), Apply Watermark for a GIF / PNG / JPG / WEBP image.
  *
  * For Safe Filter / Convert Format just construct this class and then ->getImageData().
  * For Resize (Resample) an image use ->resizeImage().
@@ -71,7 +71,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring
- * @version 	v.20200121
+ * @version 	v.20201105
  * @package 	Plugins:Image
  *
  */
@@ -95,7 +95,7 @@ final class SmartImageGdProcess {
 	/**
 	 * Class constructor
 	 *
-	 * @param STRING $imgstr 			:: the image data string of an image: GIF / PNG / JPG
+	 * @param STRING $imgstr 			:: the image data string of an image: GIF / PNG / JPG / WEBP
 	 * @param STRING $imginfo 			:: *Optional* an identifier of the image (used for error log or debug messages)
 	 *
 	 */
@@ -263,10 +263,10 @@ final class SmartImageGdProcess {
 	 * On error will return empty string ''
 	 * Possible errors when detecting an image type:
 	 * - corrupted or invalid image data
-	 * - invalid type: only GIF / PNG and JPG types are supported
+	 * - invalid type: only GIF / PNG / JPG / WEBP types are supported
 	 * - image size is very high: images over 8 Megapixels may fail !
 	 *
-	 * @return ENUM 						:: '' | 'gif' | 'png' | 'jpg'
+	 * @return ENUM 						:: '' | 'gif' | 'png' | 'jpg' | 'webp'
 	 */
 	public function getImageType() {
 
@@ -287,14 +287,14 @@ final class SmartImageGdProcess {
 
 	//================================================================
 	/**
-	 * Get GD image data as: GIF / PNG / JPG
+	 * Get GD image data as: GIF / PNG / JPG / WEBP
 	 *
-	 * @param ENUM 		$type 				:: *Optional* '' | 'gif' | 'png' | 'jpg' ; if '' will return the exact type as the input image
-	 * @param INTEGER+ 	$quality 			:: *Optional* 1..100 ; Default is 100 ; The quality of the image ; currently applies just for JPG
+	 * @param ENUM 		$type 				:: *Optional* '' | 'gif' | 'png' | 'jpg' | 'webp' ; if '' will return the exact type as the input image
+	 * @param INTEGER+ 	$quality 			:: *Optional* 1..100 ; Default is 100 ; The quality of the image ; currently applies just for JPG and WEBP
 	 * @param INTEGER+ 	$compression 		:: *Optonal* 0..9 ; Default is 6 ; The image compression level (zlib) ; currently applies just for PNG
 	 * @param MIXED 	$filters 			:: *Optional* ; Default is '' = no filters ; false = PNG_NO_FILTER ; true = PNG_ALL_FILTERS ; array(PNG_FILTER_SUB, PNG_FILTER_UP, PNG_FILTER_AVG, PNG_FILTER_PAETH, PNG_FILTER_NONE) = array with filters ; currently applies just for PNG (using array of filters depends on what filters are available in LibPNG)
 	 *
-	 * @return STRING 						:: '' on error or image data in the specified format: GIF / PNG / JPG
+	 * @return STRING 						:: '' on error or image data in the specified format: GIF / PNG / JPG / WEBP
 	 */
 	public function getImageData($type='', $quality=100, $compression=6, $filters='') {
 
@@ -359,6 +359,13 @@ final class SmartImageGdProcess {
 			case 'jpg':
 				@imagejpeg($this->img, null, $quality);
 				break;
+			case 'webp':
+				if(function_exists('imagewebp')) {
+					@imagewebp($this->img, null, $quality);
+				} else {
+					$this->_errMsg((string)__METHOD__.' :: '.'PHP is missing the WEBP support');
+				} //end if else
+				break;
 			default:
 				$this->_errMsg((string)__METHOD__.' :: '.'Invalid Image Type'); // this should not happen, it is catched above
 		} //end switch
@@ -378,7 +385,7 @@ final class SmartImageGdProcess {
 
 	//================================================================
 	/**
-	 * Resize (Resample) +/- Crop an image: GIF / PNG / JPG
+	 * Resize (Resample) +/- Crop an image: GIF / PNG / JPG / WEBP
 	 *
 	 * @param INTEGER+ 	$resize_width 		:: The width of the resized image: 16..1920 ; can be zero only when $resize_height > 0 ; if zero, will become relative and calculated by aspect ratio based on resize height
 	 * @param INTEGER+ 	$resize_height 		:: The height of the resized image: 16..1920 ; can be zero only when $resize_width > 0 ; if zero, will become relative and calculated by aspect ratio based on resize width
@@ -564,9 +571,9 @@ final class SmartImageGdProcess {
 
 	//================================================================
 	/**
-	 * Apply an image Watermark (GIF / PNG / JPG) on an image: GIF / PNG / JPG
+	 * Apply an image Watermark (GIF / PNG / JPG / WEBP) on an image: GIF / PNG / JPG / WEBP
 	 *
-	 * @param STRING 	$wtistr 			:: the image data string of the watermark image: GIF / PNG / JPG
+	 * @param STRING 	$wtistr 			:: the image data string of the watermark image: GIF / PNG / JPG / WEBP
 	 * @param ENUM 		$gravity 			:: the placement of the watermark on image: c/center, n/north, s/south, w/west, e/east, nw/northwest, ne/northeast, sw/southwest, se/southeast
 	 * @param INTEGER 	$offsx 				:: correction offset X for watermark placement
 	 * @param INTEGER 	$offsy 				:: correction offset Y for watermark placement
@@ -755,7 +762,7 @@ final class SmartImageGdProcess {
 
 	//================================================================
 	/**
-	 * Apply text on an image: GIF / PNG / JPG
+	 * Apply text on an image: GIF / PNG / JPG / WEBP
 	 *
 	 * @param STRING 	$text 				:: the text to be applied
 	 * @param INTEGER 	$offsx 				:: correction offset X for text placement ; Default is 0
@@ -865,7 +872,7 @@ final class SmartImageGdProcess {
 			$write = @imagestring($this->img, (int)$font, (int)$offsx, (int)$offsy, (string)$text, $color);
 		} else { // TTF font
 			$offsy += $size; // correction
-			$write = @imagettftext($this->img, (int)$size, (int)$angle, (int)$offsx, (int)$offsy, $color, (string)$font, (string)$text);
+			$write = @imagettftext($this->img, (int)$size, (int)$angle, (int)$offsx, (int)$offsy, $color, (string)Smart::real_path((string)$font), (string)$text); // fix: on windows, PHP 7+ GD needs real path for TTF Fonts
 		} //end if else
 		//--
 
@@ -994,10 +1001,11 @@ final class SmartImageGdProcess {
 			case 'gif':
 			case 'png':
 			case 'jpg':
+			case 'webp':
 				// OK
 				break;
 			default:
-				$this->_debugMsg((string)__METHOD__.' :: '.'Unknown or Invalid Image ['.$area.'] Type (not PNG/GIF/JPG): '.$type);
+				$this->_debugMsg((string)__METHOD__.' :: '.'Unknown or Invalid Image ['.$area.'] Type (not PNG/GIF/JPG/WEBP): '.$type);
 				return false;
 		} //end switch
 		//--
@@ -1066,6 +1074,9 @@ final class SmartImageGdProcess {
 				case '.jpg':
 				case '.jpeg':
 					$arr['t'] = 'jpg';
+					break;
+				case '.webp':
+					$arr['t'] = 'webp';
 					break;
 				default:
 					$arr['t'] = ''; // other type, but unusable

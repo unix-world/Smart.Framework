@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.7.2.1 / smart.framework.v.7.2 -- */
 
-/* v.20200812 */
+/* v.20201030 */
 
 /* ----------------------------- */
 
@@ -30,6 +30,11 @@
 .markdown a:hover {
 	color: #0077AA;
 	text-decoration: underline;
+}
+
+/* Unordered Lists */
+.markdown ul li {
+	list-style-type: square;
 }
 
 /* Table */

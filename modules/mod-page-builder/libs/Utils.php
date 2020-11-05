@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200817
+ * @version 	v.20201028
  * @package 	PageBuilder
  *
  */
@@ -126,17 +126,17 @@ final class Utils {
 				$files_n_dirs = (array) (new \SmartGetFileSystem(true))->get_storage($y_media_dir, false, false);
 				if(\Smart::array_size($files_n_dirs['list-files']) > 0) {
 					for($i=0; $i<\Smart::array_size($files_n_dirs['list-files']); $i++) {
-						$tmp_ext = (string) \substr((string)$files_n_dirs['list-files'][$i], -4, 4);
+						$tmp_ext = (string) \SmartFileSysUtils::get_file_extension_from_path((string)$files_n_dirs['list-files'][$i]);
 						switch((string)$tmp_ext) {
-							case '.svg':
-							case '.gif':
-							case '.png':
-							case '.jpg':
-							// TODO: add support for webp
+							case 'svg':
+							case 'gif':
+							case 'png':
+							case 'jpg':
+							case 'webp':
 								$arr_imgs[] = [
 									'img' 	=> (string) $y_media_dir.$files_n_dirs['list-files'][$i],
 									'file' 	=> (string) $files_n_dirs['list-files'][$i],
-									'type' 	=> (string) \substr((string)$tmp_ext, 1),
+									'type' 	=> (string) $tmp_ext,
 									'size' 	=> (string) \SmartUtils::pretty_print_bytes(\SmartFileSystem::get_file_size($y_media_dir.$files_n_dirs['list-files'][$i]), 1, '')
 								];
 								break;

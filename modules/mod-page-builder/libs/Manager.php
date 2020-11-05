@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20200821
+ * @version 	v.20201102
  * @package 	PageBuilder
  *
  */
@@ -59,7 +59,7 @@ final class Manager {
 
 	private static $MaxStrCodeSize = 16777216; // 16 MB
 	private static $MaxSizeMediaImgMB = 1.25; // 1.25 MB
-	private static $MaxQualityMediaImgJpg = 0.9; // 90%
+	private static $MaxQualityMediaImgJpegOrWebp = 0.9; // 90%
 	private static $MaxWidthMediaImg = 1920;
 	private static $MaxHeightMediaImg = 1080;
 
@@ -1004,7 +1004,7 @@ final class Manager {
 				'PRIV-DELETE' 			=> (string) $priv_delete,
 				'RECORD-ID'				=> (string) \Smart::escape_html($query['id']),
 				'RECORD-NAME' 			=> (string) \Smart::escape_html($query['name']),
-				'JPEG-QUALITY' 			=> (string) \Smart::format_number_dec(self::$MaxQualityMediaImgJpg, 2),
+				'JPEG-QUALITY' 			=> (string) \Smart::format_number_dec(self::$MaxQualityMediaImgJpegOrWebp, 2),
 				'MAX-SIZE-B64-MEDIA' 	=> (string) \Smart::format_number_dec(self::$MaxSizeMediaImgMB * 3, 2),
 				'MAX-WIDTH-MEDIA' 		=> (string) \Smart::format_number_int(self::$MaxWidthMediaImg, '+'),
 				'MAX-HEIGHT-MEDIA' 		=> (string) \Smart::format_number_int(self::$MaxHeightMediaImg, '+'),
@@ -1073,6 +1073,7 @@ final class Manager {
 				case 'image/gif':
 				case 'image/png':
 				case 'image/jpeg':
+				case 'image/webp':
 					$imgd = new \SmartImageGdProcess((string)$y_content);
 					$img_ext = (string) $imgd->getImageType();
 					$resize = $imgd->resizeImage(1600, 1280, false, 2, [255, 255, 255]); // create resample with: preserve if lower + relative dimensions
@@ -1083,7 +1084,7 @@ final class Manager {
 						if($imgd->getStatusOk() === true) {
 							// NOTICE: the images (except GIF comes already resized from browser via canvas ; in the case of PNG browser does a better job !!!) ; we obly validate here if there is a real image to avoid injection of other content
 							if(((string)$img_ext != 'gif') AND ((string)$img_ext != 'png')) { // do not use for GIF (keep animation if any ; do not use for PNG to preserve transparency and files are smaller)
-								$y_content = (string) $imgd->getImageData('', (self::$MaxQualityMediaImgJpg * 100), 9);
+								$y_content = (string) $imgd->getImageData('', (self::$MaxQualityMediaImgJpegOrWebp * 100), 9);
 							} //end if
 						} else {
 							$y_content = '';
@@ -1124,7 +1125,7 @@ final class Manager {
 			if((string)$y_name != '') {
 				$y_name = (string) \Smart::safe_filename((string)$y_name);
 				$y_name = (string) \SmartFileSysUtils::get_noext_file_name_from_path((string)$y_name);
-				$y_name = (string) \trim((string)\substr((string)\Smart::safe_filename((string)$y_name), 0, 70), '.'); // try to cut the filename at a given length as 70 ; the extension can be no more than 5 characters as of: .svg .gif .png .jpg (.webp to do in the future ...)
+				$y_name = (string) \trim((string)\substr((string)\Smart::safe_filename((string)$y_name), 0, 70), '.'); // try to cut the filename at a given length as 70 ; the extension can be no more than 5 characters as of: .svg .gif .png .jpg .webp
 				$y_name = (string) \Smart::safe_filename((string)$y_name.'.'.$img_ext);
 			} //end if
 			if(((string)$y_name != '') AND (\strlen((string)$y_name) <= 75)) {
@@ -1180,6 +1181,8 @@ final class Manager {
 			$y_filename = (string) \trim((string)$y_filename);
 			if((string)$y_filename == '') {
 				$err = 'Empty File Name';
+			} elseif((string)\substr((string)$y_filename, -5, 5) == '.webp') {
+				// ok
 			} else {
 				switch((string)\substr((string)$y_filename, -4, 4)) {
 					case '.svg':
@@ -1950,6 +1953,17 @@ final class Manager {
 			$src = '';
 		} //end if
 		//--
+		$lst_src = (string) $src;
+		$lst_srcby = (string) $srcby;
+		//--
+		if((string)\trim((string)$srcby) == 'ctrl') {
+			$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers(1000, $src);
+			$src = '';
+			$srcby = '';
+		} else {
+			$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers(1000);
+		} //end if else
+		//--
 		$collapse = 'collapsed';
 		$fcollapse = '';
 		$filter = array();
@@ -1969,7 +1983,6 @@ final class Manager {
 		$css_cls_a = 'simpletree-item-active';
 		$css_cls_i = 'simpletree-item-inactive';
 		//--
-		$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers();
 		$arr_pages_data = array();
 		for($i=0; $i<\Smart::array_size($arr_controllers); $i++) {
 			$tmp_arr_lvl1 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByCtrl((string)$arr_controllers[$i]);
@@ -2032,7 +2045,7 @@ final class Manager {
 		// \print_r($arr_pages_data); die();
 		//--
 		$the_link_list = (string) self::composeUrl('op=records-tree&tpl='.\Smart::escape_url($y_tpl));
-		$the_alt_link_list = (string) self::composeUrl('tpl='.\Smart::escape_url($y_tpl).'#!'.'&srcby='.\Smart::escape_url($srcby).'&src='.\Smart::escape_url($src));
+		$the_alt_link_list = (string) self::composeUrl('tpl='.\Smart::escape_url($y_tpl).'#!'.'&srcby='.\Smart::escape_url($lst_srcby).'&src='.\Smart::escape_url($lst_src));
 		//-- {{{SYNC-PAGEBUILDER-MANAGER-DEF-LINKS}}}
 		$the_link_add = (string) self::composeUrl('op=record-add-form');
 		$the_link_view = (string) self::composeUrl('op=record-view&id=');
@@ -2067,8 +2080,8 @@ final class Manager {
 					[ 'name' => 'op',   'value' => 'records-tree' ],
 					[ 'name' => 'tpl',  'value' => (string) $y_tpl ]
 				],
-				'LIST-VAL-SRC' 		=> (string) $src,
-				'LIST-VAL-SRCBY' 	=> (string) $srcby,
+				'LIST-VAL-SRC' 		=> (string) $lst_src,
+				'LIST-VAL-SRCBY' 	=> (string) $lst_srcby,
 				'LIST-BTN-RESET' 	=> (string) $the_link_list,
 				'LIST-NEW-URL' 		=> (string) $the_link_add,
 				'LIST-RECORD-URL' 	=> (string) $the_link_view,

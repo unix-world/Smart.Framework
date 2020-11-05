@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200708
+ * @version 	v.20201028
  * @package 	Plugins:Mailer
  *
  */
@@ -647,7 +647,7 @@ final class SmartMailerSend {
 				if((string)$ctype == '') {
 					$ctype = 'application/octet-stream';
 				} //end if
-				if(((string)$ctype == 'image') OR ((string)$ctype == 'image/svg+xml') OR ((string)$ctype == 'image/jpeg') OR ((string)$ctype == 'image/jpg') OR ((string)$ctype == 'image/png') OR ((string)$ctype == 'image/gif')) {
+				if(((string)$ctype == 'image') OR ((string)$ctype == 'image/svg+xml') OR ((string)$ctype == 'image/webp') OR ((string)$ctype == 'image/jpeg') OR ((string)$ctype == 'image/jpg') OR ((string)$ctype == 'image/png') OR ((string)$ctype == 'image/gif')) {
 					if((string)$disp != 'inline') {
 						$disp = 'attachment'; // default
 					} //end if

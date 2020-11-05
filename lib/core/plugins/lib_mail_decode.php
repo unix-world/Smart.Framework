@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200715
+ * @version 	v.20201028
  * @package 	Plugins:Mailer
  *
  */
@@ -633,7 +633,7 @@ final class SmartMailerMimeDecode {
 												$tmp_att_mod = 'normal';
 											} //end if else
 											break;
-										case 'webp': // TODO: fix webp detection in guess_image_extension_by_img_content() without using GD
+										case 'webp':
 												$tmp_part_id = 'cid_'.$this->last_cid; // we have an ID from cid ...
 												$tmp_att_mod = 'cid';
 											break;

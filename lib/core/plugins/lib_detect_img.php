@@ -27,12 +27,12 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 /**
- * Class: SmartDetectImages - Easy Detect Images (SVG / PNG / GIF / JPG)
+ * Class: SmartDetectImages - Easy Detect Images (SVG / PNG / GIF / JPG / WEBP)
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200121
+ * @version 	v.20201028
  * @package 	Plugins:Image
  *
  */
@@ -42,7 +42,7 @@ final class SmartDetectImages {
 
 
 	//================================================================
-	// require the first 16 bytes (first 16 characters - string) of an image to detect or full size for GD detect: SVG / PNG / GIF / JPG
+	// require the first 16 bytes (first 16 characters - string) of an image to detect or full size for GD detect: SVG / PNG / GIF / JPG / WEBP
 	public static function guess_image_extension_by_img_content($pict, $use_gd=false) {
 		//--
 		if((stripos((string)$pict, '</svg>') !== false) OR (stripos((string)$pict, '<svg') !== false)) { // use OR as it may be partial content
@@ -84,6 +84,9 @@ final class SmartDetectImages {
 			case '.jpeg':
 				$type = '.jpg';
 				break;
+			case '.webp':
+				$type = '.webp';
+				break;
 			default:
 				$type = '';
 		} //end switch
@@ -95,7 +98,7 @@ final class SmartDetectImages {
 
 
 	//================================================================
-	// guess extension from Data-URL OR HTTP-Headers: SVG / PNG / GIF / JPG
+	// guess extension from Data-URL OR HTTP-Headers: SVG / PNG / GIF / JPG / WEBP
 	public static function guess_image_extension_by_url_head($y_headers) {
 		//--
 		$y_headers = (string) $y_headers;
@@ -115,7 +118,7 @@ final class SmartDetectImages {
 				if((string)$eimg[0] == 'jpeg') {
 					$eimg[0] = 'jpg'; // correction
 				} //end if
-				if(((string)$eimg[0] == 'svg') OR ((string)$eimg[0] == 'png') OR ((string)$eimg[0] == 'gif') OR ((string)$eimg[0] == 'jpg')) {
+				if(((string)$eimg[0] == 'svg') OR ((string)$eimg[0] == 'png') OR ((string)$eimg[0] == 'gif') OR ((string)$eimg[0] == 'jpg') OR ((string)$eimg[0] == 'webp')) {
 					$temp_image_extension = '.'.$eimg[0]; // add the point
 					$temp_where_was_detected = ' * Data-URL as # data:image/ + ;base64, = '.$eimg[0];
 				} //end if
@@ -137,7 +140,7 @@ final class SmartDetectImages {
 				if((string)$temp_guess_extension == 'jpeg') {
 					$temp_guess_extension = 'jpg'; // correction
 				} //end if
-				if(((string)$temp_guess_extension == 'svg') OR ((string)$temp_guess_extension == 'png') OR ((string)$temp_guess_extension == 'gif') OR ((string)$temp_guess_extension == 'jpg')) {
+				if(((string)$temp_guess_extension == 'svg') OR ((string)$temp_guess_extension == 'png') OR ((string)$temp_guess_extension == 'gif') OR ((string)$temp_guess_extension == 'jpg') OR ((string)$temp_guess_extension == 'webp')) {
 					// OK, we guess it
 					$temp_where_was_detected = '[content-disposition]: \''.$temp_guess_extension.'\'';
 					$temp_image_extension = Smart::safe_validname($temp_guess_extension); // make it safe
@@ -172,6 +175,10 @@ final class SmartDetectImages {
 							$temp_image_extension = '.jpg';
 							$temp_where_was_detected = '[content-type]: \''.$temp_image_extension.'\'';
 							break;
+						case 'webp':
+							$temp_image_extension = '.webp';
+							$temp_where_was_detected = '[content-type]: \''.$temp_image_extension.'\'';
+							break;
 						case 'html':
 							$temp_image_extension = '.htm'; // we want to avoid a wrong answer from server to be get as image
 							$temp_where_was_detected = '[content-type]: \''.$temp_image_extension.'\'';
@@ -197,13 +204,13 @@ final class SmartDetectImages {
 
 
 	//================================================================
-	// require the first 16 bytes (first 16 characters - string) of an image to detect: PNG / GIF / JPG
+	// require the first 16 bytes (first 16 characters - string) of an image to detect: PNG / GIF / JPG / WEBP
 	private static function guess_quick_image_extension($pict) {
 		//--
 		// .jpg:  FF D8 FF
 		// .png:  89 50 4E 47 0D 0A 1A 0A
 		// .gif:  GIF89a | GIF87a
-		// .tiff: 49 49 2A 00 | 4D 4D 00 2A
+		// .webp: RIFF____WEBP
 		//--
 		$pict = (string) $pict;
 		if(strlen($pict) < 16) {
@@ -220,6 +227,8 @@ final class SmartDetectImages {
 			$type = '.png';
 		} elseif(((string)strtolower((string)bin2hex((string)substr($pict, 0, 1))) == 'ff') AND ((string)strtolower((string)bin2hex((string)substr($pict, 1, 1))) == 'd8')) {
 			$type = '.jpg';
+		} elseif(((string)substr($pict, 0, 4) == 'RIFF') AND ((string)substr($pict, 8, 4) == 'WEBP')) {
+			$type = '.webp';
 		} //end if else
 		//--
 		return (string) $type;
