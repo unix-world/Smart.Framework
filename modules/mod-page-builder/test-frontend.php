@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AREA', 'INDEX');
  */
 final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\AbstractFrontendController {
 
-	// r.20200817
+	// r.20201106
 
 	public function Run() {
 
@@ -51,14 +51,17 @@ final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\Abstract
 		);
 		$this->PageViewSetVar('title', 'Sample PageBuilder Frontend Page', false); // fallback title
 
-		$test_segments = (array) $this->getListOfSegmentsByArea('%', 'name', 'DESC', 2, 2); // just for test ...
-		$this->PageViewAppendVar('main', 'List of segments By Area %: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
+		$test_segments = (array) $this->getSegmentById('#my-segment-1'); // just for test ...
+		$this->PageViewAppendVar('main', 'A segment By ID %: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
+
+		$test_segments = (array) $this->getListOfSegmentsByArea('%', 'name', 'DESC', 0, 10); // just for test ...
+		$this->PageViewAppendVar('main', 'List of segments ['.(int)$this->countListOfSegmentsByArea('%').'] By Area %: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
 
 		$test_segments = (array) $this->getListOfSegmentsByTag('abc', 'name', 'DESC', 0, 2); // just for test ...
-		$this->PageViewAppendVar('main', 'List of segments By Tag `abc`: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
+		$this->PageViewAppendVar('main', 'List of segments ['.(int)$this->countListOfSegmentsByTag('abc').'] By Tag `abc`: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
 
 		$test_segments = (array) $this->getListOfPagesByTag('abc', 'name', 'DESC', 0, 2); // just for test ...
-		$this->PageViewAppendVar('main', 'List of pages By Tag `abc`: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
+		$this->PageViewAppendVar('main', 'List of pages ['.(int)$this->countListOfPagesByTag('abc').'] By Tag `abc`: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
 
 		//-- this code can be uncommented to dissalow Raw Pages from PageBuilder
 		/*

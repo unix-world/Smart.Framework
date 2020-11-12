@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20200817
+ * @version 	v.20201111
  * @package 	development:modules:PageBuilder
  *
  */
@@ -109,6 +109,16 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 		//--
 	} //END FUNCTION
 	//=====
+	final public function countListOfPagesByTag(string $y_tag) {
+		//--
+		if((string)$this->ControllerGetParam('module-area') != 'index') {
+			return 0;
+		} //end if
+		//--
+		return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('pages', 'tags', (string)$y_tag);
+		//--
+	} //END FUNCTION
+	//=====
 
 
 	//=====
@@ -122,6 +132,16 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 		//--
 	} //END FUNCTION
 	//=====
+	final public function countListOfSegmentsByTag(string $y_tag) {
+		//--
+		if((string)$this->ControllerGetParam('module-area') != 'index') {
+			return 0;
+		} //end if
+		//--
+		return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'tags', (string)$y_tag);
+		//--
+	} //END FUNCTION
+	//=====
 
 
 	//=====
@@ -132,6 +152,39 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 		} //end if
 		//--
 		return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'area', (string)$y_area, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		//--
+	} //END FUNCTION
+	//=====
+	final public function countListOfSegmentsByArea(string $y_area) {
+		//--
+		if((string)$this->ControllerGetParam('module-area') != 'index') {
+			return 0;
+		} //end if
+		//--
+		return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'area', (string)$y_area);
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	final public function getListOfSegmentsByAreaTag(string $y_tag, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) {
+		//--
+		if((string)$this->ControllerGetParam('module-area') != 'index') {
+			return array();
+		} //end if
+		//--
+		return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'area:tags', (string)$y_tag, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		//--
+	} //END FUNCTION
+	//=====
+	final public function countListOfSegmentsByAreaTag(string $y_tag) {
+		//--
+		if((string)$this->ControllerGetParam('module-area') != 'index') {
+			return 0;
+		} //end if
+		//--
+		return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'area:tags', (string)$y_tag);
 		//--
 	} //END FUNCTION
 	//=====

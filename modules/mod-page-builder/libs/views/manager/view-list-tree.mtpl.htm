@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ TreeList / Records :: v.20200821 -->
+<!-- Pagebuilder / Manage @ TreeList / Records :: v.20201112 -->
 <script src="lib/js/jquery/tree/simpletree.js"></script>
 <style>
 .simpletree-toggle, .simpletree-notoggle {
@@ -55,24 +55,25 @@ function pageBuilderFormBtnResetFilter() {
 	jQuery('#filter-srcby').val('[###LIST-VAL-SRCBY|js###]');
 </script>
 <ul class="pagebuilder-tree">
+	[%%%IF:HAVE-DATASETS:==yes;%%%]<input type="checkbox" id="display-datasets" value="[###VALUE-DATASETS|html###]">&nbsp;&nbsp;<h5 style="display:inline-block;">Hide {Data-Set-Controllers}</h5>[%%%/IF:HAVE-DATASETS%%%]
 	[%%%LOOP:DATA%%%]
 	<!-- start CTRL: [###DATA._-KEY-_|html###] -->
-	<li data-simpletree="[###FILTER-COLLAPSE|html###]">
+	<li data-simpletree="[%%%IF:DATA._-KEY-_:^~{;%%%][###SPECIAL-COLLAPSE|html###][%%%ELSE:DATA._-KEY-_%%%][###FILTER-COLLAPSE|html###][%%%/IF:DATA._-KEY-_%%%]">
 		<span class="simpletree-ctrl">[%%%IF:DATA._-KEY-_:!=;%%%][###DATA._-KEY-_|html###][%%%ELSE:DATA._-KEY-_%%%]<i class="sfi sfi-question" title="*** (UNASSIGNED) ***"></i> <span style="color:#778899;">UNASSIGNED</span>[%%%/IF:DATA._-KEY-_%%%]</span>
 		[%%%LOOP:DATA._-VAL-_%%%]
 		<ul>
 			<li title="[###DATA._-VAL-_.ID|html###]" class="simpletree-item" id="item-[###DATA._-VAL-_.HASH-ID|htmid###]" data-simpletree="[###COLLAPSE|html###]">
-				<a href="[###LIST-RECORD-URL|html###][###DATA._-VAL-_.ID|url|html###]" data-smart="open.modal"><img src="[###DATA._-VAL-_.ICON-TYPE|html###]">&nbsp;[%%%IF:DATA._-VAL-_.IMG-TYPE-HTML:!=;%%%][###DATA._-VAL-_.IMG-TYPE-HTML###][%%%/IF:DATA._-VAL-_.IMG-TYPE-HTML%%%]</a> &nbsp; <span class="[###DATA._-VAL-_.STYLE-CLASS|html###]">[###DATA._-VAL-_.NAME|html###]</span> <span class="simple-tree-light-text">:: [###DATA._-VAL-_.SPECIAL|int###] ::</span> <span class="simpletree-ids" id="id-[###DATA._-VAL-_.HASH-ID|htmid###]">[%%%IF:DATA._-VAL-_.IS-SEGMENT:==1;%%%]<i>[%%%/IF:DATA._-VAL-_.IS-SEGMENT%%%][###DATA._-VAL-_.ID|html###][%%%IF:DATA._-VAL-_.IS-SEGMENT:==1;%%%]</i>[%%%/IF:DATA._-VAL-_.IS-SEGMENT%%%]</span> &nbsp; <span class="simple-tree-light-text">([###DATA._-VAL-_.COUNTER|html###])</span>
+				<a href="[###LIST-RECORD-URL|html###][###DATA._-VAL-_.ID|url|html###]" data-smart="open.modal"><img src="[###DATA._-VAL-_.ICON-TYPE|html###]">&nbsp;[%%%IF:DATA._-VAL-_.IMG-TYPE-HTML:!=;%%%][###DATA._-VAL-_.IMG-TYPE-HTML###][%%%/IF:DATA._-VAL-_.IMG-TYPE-HTML%%%]</a> &nbsp; <span class="[###DATA._-VAL-_.STYLE-CLASS|html###]">[###DATA._-VAL-_.NAME|html###]</span> <span class="simple-tree-light-text">:: [###DATA._-VAL-_.SPECIAL|int###] ::</span> <span class="simpletree-ids" id="id-[###DATA._-VAL-_.HASH-ID|htmid###]">[%%%IF:DATA._-VAL-_.IS-SEGMENT:==1;%%%]<i>[%%%/IF:DATA._-VAL-_.IS-SEGMENT%%%][###DATA._-VAL-_.ID|html###][%%%IF:DATA._-VAL-_.IS-SEGMENT:==1;%%%]</i>[%%%/IF:DATA._-VAL-_.IS-SEGMENT%%%]</span> &nbsp; <span class="simple-tree-light-text">(<i class="sfi sfi-feed"></i>&nbsp;[###DATA._-VAL-_.COUNTER|html###])</span>
 				[%%%IF:DATA._-VAL-_.REF-CHILDS:@>0;%%%]
 					[%%%LOOP:DATA._-VAL-_.REF-CHILDS%%%]
 					<ul>
 						<li title="[###DATA._-VAL-_.REF-CHILDS.ID|html###]" class="simpletree-item" id="item-[###DATA._-VAL-_.REF-CHILDS.HASH-ID|htmid###]" data-simpletree="[###COLLAPSE|html###]">
-							<a href="[###LIST-RECORD-URL|html###][###DATA._-VAL-_.REF-CHILDS.ID|url|html###]" data-smart="open.modal"><img src="[###DATA._-VAL-_.REF-CHILDS.ICON-TYPE|html###]">&nbsp;[%%%IF:DATA._-VAL-_.REF-CHILDS.IMG-TYPE-HTML:!=;%%%][###DATA._-VAL-_.REF-CHILDS.IMG-TYPE-HTML###][%%%/IF:DATA._-VAL-_.REF-CHILDS.IMG-TYPE-HTML%%%]</a> &nbsp; <span class="[###DATA._-VAL-_.REF-CHILDS.STYLE-CLASS|html###]">[###DATA._-VAL-_.REF-CHILDS.NAME|html###]</span> <span class="simple-tree-light-text">:: [###DATA._-VAL-_.REF-CHILDS.SPECIAL|int###] ::</span> <span class="simpletree-ids" id="id-[###DATA._-VAL-_.REF-CHILDS.HASH-ID|htmid###]">[%%%IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT:==1;%%%]<i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT%%%][###DATA._-VAL-_.REF-CHILDS.ID|html###][%%%IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT:==1;%%%]</i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT%%%]</span> &nbsp; <span class="simple-tree-light-text">([###DATA._-VAL-_.REF-CHILDS.COUNTER|html###])</span>
+							<a href="[###LIST-RECORD-URL|html###][###DATA._-VAL-_.REF-CHILDS.ID|url|html###]" data-smart="open.modal"><img src="[###DATA._-VAL-_.REF-CHILDS.ICON-TYPE|html###]">&nbsp;[%%%IF:DATA._-VAL-_.REF-CHILDS.IMG-TYPE-HTML:!=;%%%][###DATA._-VAL-_.REF-CHILDS.IMG-TYPE-HTML###][%%%/IF:DATA._-VAL-_.REF-CHILDS.IMG-TYPE-HTML%%%]</a> &nbsp; <span class="[###DATA._-VAL-_.REF-CHILDS.STYLE-CLASS|html###]">[###DATA._-VAL-_.REF-CHILDS.NAME|html###]</span> <span class="simple-tree-light-text">:: [###DATA._-VAL-_.REF-CHILDS.SPECIAL|int###] ::</span> <span class="simpletree-ids" id="id-[###DATA._-VAL-_.REF-CHILDS.HASH-ID|htmid###]">[%%%IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT:==1;%%%]<i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT%%%][###DATA._-VAL-_.REF-CHILDS.ID|html###][%%%IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT:==1;%%%]</i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.IS-SEGMENT%%%]</span> &nbsp; <span class="simple-tree-light-text">(<i class="sfi sfi-feed"></i>&nbsp;[###DATA._-VAL-_.REF-CHILDS.COUNTER|html###])</span>
 							[%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS:@>0;%%%]
 								[%%%LOOP:DATA._-VAL-_.REF-CHILDS.REF-CHILDS%%%]
 								<ul>
 									<li title="[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ID|html###]" class="simpletree-item" id="item-[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.HASH-ID|htmid###]" data-simpletree="">
-										<a href="[###LIST-RECORD-URL|html###][###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ID|url|html###]" data-smart="open.modal"><img src="[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ICON-TYPE|html###]">&nbsp;[%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IMG-TYPE-HTML:!=;%%%][###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IMG-TYPE-HTML###][%%%/IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IMG-TYPE-HTML%%%]</a> &nbsp; <span class="[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.STYLE-CLASS|html###]">[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.NAME|html###]</span> <span class="simple-tree-light-text">:: [###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.SPECIAL|int###] ::</span> <span class="simpletree-ids" id="id-[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.HASH-ID|htmid###]">[%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT:==1;%%%]<i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT%%%][###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ID|html###][%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT:==1;%%%]</i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT%%%]</span> &nbsp; <span class="simple-tree-light-text">([###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.COUNTER|html###])</span>
+										<a href="[###LIST-RECORD-URL|html###][###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ID|url|html###]" data-smart="open.modal"><img src="[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ICON-TYPE|html###]">&nbsp;[%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IMG-TYPE-HTML:!=;%%%][###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IMG-TYPE-HTML###][%%%/IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IMG-TYPE-HTML%%%]</a> &nbsp; <span class="[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.STYLE-CLASS|html###]">[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.NAME|html###]</span> <span class="simple-tree-light-text">:: [###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.SPECIAL|int###] ::</span> <span class="simpletree-ids" id="id-[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.HASH-ID|htmid###]">[%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT:==1;%%%]<i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT%%%][###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.ID|html###][%%%IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT:==1;%%%]</i>[%%%/IF:DATA._-VAL-_.REF-CHILDS.REF-CHILDS.IS-SEGMENT%%%]</span> &nbsp; <span class="simple-tree-light-text">(<i class="sfi sfi-feed"></i>&nbsp;[###DATA._-VAL-_.REF-CHILDS.REF-CHILDS.COUNTER|html###])</span>
 									</li>
 								</ul>
 								[%%%/LOOP:DATA._-VAL-_.REF-CHILDS.REF-CHILDS%%%]
@@ -111,7 +112,26 @@ function pageBuilderFormBtnResetFilter() {
 		// no highlights
 	[%%%/IF:FILTER%%%]
 </script>
-<script>
+[%%%IF:HAVE-DATASETS:==yes;%%%]
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		var isDataSetCheckboxChecked = false;
+		if(SmartJS_BrowserUtils.getCookie('[###COOKIE-DATASETS|js###]') === '[###VALUE-DATASETS|js###]') {
+			isDataSetCheckboxChecked = true;
+		} //end if
+		jQuery('#display-datasets').prop("checked", isDataSetCheckboxChecked);
+	});
+	jQuery('#display-datasets').change(function() {
+		var displayDataSets = '';
+		if(jQuery(this).is(':checked')) {
+			displayDataSets = jQuery(this).val() || '';
+		} //end if else
+		SmartJS_BrowserUtils.setCookie('[###COOKIE-DATASETS|js###]', displayDataSets);
+		pageBuilderFormBtnFilter();
+	});
+</script>
+[%%%/IF:HAVE-DATASETS%%%]
+<script type="text/javascript">
 	jQuery('ul.pagebuilder-tree').simpletree({
 		useAnimation: false,
 		signCollapsed: '<i class="sfi sfi-folder-plus sfi-lg" style="color:#555555;"></i>',

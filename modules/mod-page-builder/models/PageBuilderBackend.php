@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20201102
+	// v.20201112
 
 
 	private static $db = null;
@@ -950,11 +950,11 @@ final class PageBuilderBackend {
 		//--
 		if((string)self::dbType() == 'pgsql') {
 			return (array) \SmartPgsqlDb::read_adata(
-				'SELECT a."id", a."name", a."mode", a."ref", a."ctrl", a."active", a."auth", a."special", a."modified", a."counter", a."translations", (char_length(a."data") + char_length(a."code")) AS "total_size" FROM "web"."page_builder" a '.$where.' '.$sort.' LIMIT '.(int)$y_limit.' OFFSET '.(int)$y_ofs
+				'SELECT a."id", a."name", a."mode", a."ref", a."ctrl", a."tags", a."layout", a."active", a."auth", a."special", a."modified", a."counter", a."translations", (char_length(a."data") + char_length(a."code")) AS "total_size" FROM "web"."page_builder" a '.$where.' '.$sort.' LIMIT '.(int)$y_limit.' OFFSET '.(int)$y_ofs
 			);
 		} elseif((string)self::dbType() == 'sqlite') {
 			return (array) self::$db->read_adata(
-				'SELECT a.`id`, a.`name`, a.`mode`, a.`ref`, a.`ctrl`, a.`active`, a.`auth`, a.`special`, a.`modified`, a.`counter`, a.`translations`, (smart_charlen(a.`data`) + smart_charlen(a.`code`)) AS `total_size` FROM `page_builder` a '.$where.' '.$sort.' LIMIT '.(int)$y_limit.' OFFSET '.(int)$y_ofs
+				'SELECT a.`id`, a.`name`, a.`mode`, a.`ref`, a.`ctrl`, a.`tags`, a.`layout`, a.`active`, a.`auth`, a.`special`, a.`modified`, a.`counter`, a.`translations`, (smart_charlen(a.`data`) + smart_charlen(a.`code`)) AS `total_size` FROM `page_builder` a '.$where.' '.$sort.' LIMIT '.(int)$y_limit.' OFFSET '.(int)$y_ofs
 			);
 		} else {
 			return array();

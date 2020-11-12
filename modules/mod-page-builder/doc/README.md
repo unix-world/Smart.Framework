@@ -1,5 +1,5 @@
 
-# Using the Smart PageBuilder Module for Smart.Framework, rev.20200817
+# Using the Smart PageBuilder Module for Smart.Framework, rev.20201111
 
 ## required settings in etc/config.php
 ```php
@@ -123,6 +123,62 @@ RENDER:
 				ro: Aceasta este pagina <titlu>
 			config:
 				syntax: text
+```
+
+## Sample YAML Data for a @SELF@ Page or Segment ( {{:TTL1:}}, {{:TTL2:}} ):
+```yaml
+RENDER:
+	TTL1:
+		content:
+			type: value
+			id: My
+			config:
+				syntax: html
+	@:
+		content:
+			type: segment
+			id: article-template
+			render:
+				TITLE:
+					content:
+						type: value
+						id: Apache Test
+						config:
+							syntax: text
+				DATE:
+					content:
+						type: field
+						id: @date-created
+						config:
+							syntax: text
+				MDATE:
+					content:
+						type: field
+						id: @date-modified
+						config:
+							syntax: text
+				ICON:
+					content:
+						type: value
+						id: lib/framework/img/apache-logo.svg
+						config:
+							syntax: text
+				HEADING:
+					content:
+						type: value
+						id: 'This is a test'
+						config:
+							syntax: html
+				CONTENTS:
+					content:
+						type: field
+						id: @self-code
+	TTL2:
+		content:
+			type: value
+			id: Articles
+			config:
+				syntax: html
 ```
 
 ## Sample YAML Data for Raw Page:

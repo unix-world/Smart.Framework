@@ -3,11 +3,11 @@
 // jQuery TagEdit v.1.0
 // (c) 2020 unix-world.org
 // inspired from: jsfiddle.net / Javascript TagEdit (License MIT)
-// r.20200701.1159
+// r.20201112
 */
 
 .tagEdit {
-	margin-top: 10px;
+	margin-top: 1px;
 	padding: 1px;
 }
 
@@ -20,7 +20,7 @@
 	padding-top: 1px;
 	padding-bottom: 1px;
 	margin-right: 7px;
-	margin-bottom: 27px;
+	margin-bottom: 7px;
 	white-space: nowrap;
 	font-weight: bold;
 	color: #FFFFFF;

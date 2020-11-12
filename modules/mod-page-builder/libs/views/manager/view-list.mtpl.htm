@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List / Records :: v.20200817 -->
+<!-- Pagebuilder / Manage @ List / Records :: v.20201112 -->
 <style>
 	.smartGrid_AlignCenter {
 		text-align: center;
@@ -86,7 +86,7 @@ jQuery(function() {
 
 	var displayCtrl = function(row, cell, value, columnDef, dataContext) {
 		value = String(value);
-		return '<span style="color:#778899;">' + SmartJS_CoreUtils.escape_html(value) + '</span>';
+		return '<span style="color:#778899;" title="' + SmartJS_CoreUtils.escape_html(dataContext['layout']) + '">&nbsp;' + SmartJS_CoreUtils.escape_html(value) + '</span>';
 	}
 
 	var displaySpecial = function(row, cell, value, columnDef, dataContext) {
@@ -166,7 +166,7 @@ jQuery(function() {
 
 	var displayName = function(row, cell, value, columnDef, dataContext) {
 		value = String(value);
-		return '<span style="color:#555555;">' + SmartJS_CoreUtils.escape_html(value) + '</span>';
+		return '<span style="color:#555555;" title="' + SmartJS_CoreUtils.escape_html(dataContext['tags']) + '">&nbsp;' + SmartJS_CoreUtils.escape_html(value) + '</span>';
 	}
 
 	var diffColSize = function(colName) {

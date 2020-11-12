@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20200817
+ * @version 	v.20201112
  * @package 	development:modules:PageBuilder
  *
  */
@@ -38,7 +38,7 @@ abstract class AbstractFrontendPlugin extends \SmartModExtLib\PageBuilder\Abstra
 	private $plugin_caller_module_path 	= 'modules/app/';
 	private $plugin_caller_data 		= [];
 	private $plugin_data 				= [];
-
+	private $plugin_export_vars 		= [];
 
 	//=====
 	/**
@@ -81,6 +81,8 @@ abstract class AbstractFrontendPlugin extends \SmartModExtLib\PageBuilder\Abstra
 			'DATE-CREATED' 	=> (string) $plugin_caller_data['publisher-date-created'],
 			'DATE-MODIFIED' => (string) $plugin_caller_data['publisher-date-modified'],
 			'AUTHOR-ID' 	=> (string) $plugin_caller_data['publisher-id'],
+			'SELF-SYNTAX' 	=> (string) $plugin_caller_data['self-syntax'],
+			'SELF-CODE' 	=> (string) $plugin_caller_data['self-code'],
 		];
 		//--
 		$this->plugin_data = [ // {{{SYNC-PAGEBUILDER-OBJ-EXPORT-LEVEL0-FIELDS}}} ; these are the fields from level zero object
@@ -94,11 +96,45 @@ abstract class AbstractFrontendPlugin extends \SmartModExtLib\PageBuilder\Abstra
 			'DATE-CREATED' 	=> (string) $plugin_data['publisher-date-created'],
 			'DATE-MODIFIED' => (string) $plugin_data['publisher-date-modified'],
 			'AUTHOR-ID' 	=> (string) $plugin_data['publisher-id'],
+			'SELF-SYNTAX' 	=> (string) $plugin_data['self-syntax'],
+			'SELF-CODE' 	=> (string) $plugin_data['self-code'],
 		];
 		//--
 		$this->plugin_initialized = true;
 		//--
 		return true;
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	/**
+	 * Get Plugin Export Vars (internal use only)
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	final public function getPluginExportVars() {
+		//--
+		return (array) $this->plugin_export_vars;
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	/**
+	 * Set Plugin Export Vars
+	 */
+	final public function setPluginExportVars(array $vars) {
+		//--
+		if(\Smart::array_type_test($vars) != 2) {
+			$vars = array();
+		} //end if
+		//--
+		$this->plugin_export_vars = (array) $vars;
 		//--
 	} //END FUNCTION
 	//=====

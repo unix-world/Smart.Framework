@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20201102
+ * @version 	v.20201106
  * @package 	PageBuilder
  *
  */
@@ -1953,19 +1953,26 @@ final class Manager {
 			$src = '';
 		} //end if
 		//--
+		$cookie_display_datasets = 'pageBuilder_Display_DataSets';
+		$cookie_value_datasets = 'hide:datasets';
+		$display_datasets = (string) \SmartUtils::get_cookie((string)$cookie_display_datasets);
+		//--
 		$lst_src = (string) $src;
 		$lst_srcby = (string) $srcby;
 		//--
+		$collapse = 'collapsed';
+		$fcollapse = '';
+		//--
 		if((string)\trim((string)$srcby) == 'ctrl') {
+			$scollapse = '';
 			$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers(1000, $src);
 			$src = '';
 			$srcby = '';
 		} else {
+			$scollapse = (string) $collapse;
 			$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers(1000);
 		} //end if else
 		//--
-		$collapse = 'collapsed';
-		$fcollapse = '';
 		$filter = array();
 		if(((string)\trim((string)$src) != '') AND ((string)\trim((string)$srcby) != '')) {
 			$tmp_filter = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::listGetRecords($srcby, $src, (int)$flimit, 0, 'DESC', 'id');
@@ -1984,63 +1991,73 @@ final class Manager {
 		$css_cls_i = 'simpletree-item-inactive';
 		//--
 		$arr_pages_data = array();
+		$have_datasets = 0;
 		for($i=0; $i<\Smart::array_size($arr_controllers); $i++) {
-			$tmp_arr_lvl1 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByCtrl((string)$arr_controllers[$i]);
-			for($j=0; $j<\Smart::array_size($tmp_arr_lvl1); $j++) {
-				if(\Smart::array_size($tmp_arr_lvl1[$j]) > 0) {
-					$tmp_arr_lvl2 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef((string)$tmp_arr_lvl1[$j]['id']);
-					$tmp_arr_lvl1[$j]['hash-id'] = (string) \sha1((string)$tmp_arr_lvl1[$j]['id']);
-					$tmp_arr_lvl1[$j]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl1[$j]['id']);
-					if(((string)$tmp_arr_lvl1[$j]['active'] == 1) OR ($tmp_arr_lvl1[$j]['is-segment'] == 1)) {
-						$tmp_arr_lvl1[$j]['style-class'] = (string) $css_cls_a;
-					} else {
-						$tmp_arr_lvl1[$j]['style-class'] = (string) $css_cls_i;
-					} //end if else
-					$tmp_arr_lvl1[$j]['icon-type'] = (string) self::getImgForPageType((string)$tmp_arr_lvl1[$j]['id']);
-					$tmp_arr_lvl1[$j]['img-type-html'] = (string) self::getImgForCodeType((string)$tmp_arr_lvl1[$j]['id'], (string)$tmp_arr_lvl1[$j]['mode']);
-					$tmp_arr_lvl1[$j]['ref-childs'] = array();
-					if(\Smart::array_size($tmp_arr_lvl2) > 0) {
-						for($k=0; $k<\Smart::array_size($tmp_arr_lvl2); $k++) {
-							if(\Smart::array_size($tmp_arr_lvl2[$k]) > 0) {
-								$tmp_arr_lvl3 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef((string)$tmp_arr_lvl2[$k]['id']);
-								$tmp_arr_lvl2[$k]['hash-id'] = (string) \sha1((string)$tmp_arr_lvl2[$k]['id']);
-								$tmp_arr_lvl2[$k]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl2[$k]['id']);
-								if(((string)$tmp_arr_lvl2[$k]['active'] == 1) OR ($tmp_arr_lvl2[$k]['is-segment'] == 1)) {
-									$tmp_arr_lvl2[$k]['style-class'] = (string) $css_cls_a;
-								} else {
-									$tmp_arr_lvl2[$k]['style-class'] = (string) $css_cls_i;
-								} //end if else
-								$tmp_arr_lvl2[$k]['icon-type'] = (string) self::getImgForPageType((string)$tmp_arr_lvl2[$k]['id']);
-								$tmp_arr_lvl2[$k]['img-type-html'] = (string) self::getImgForCodeType((string)$tmp_arr_lvl2[$k]['id'], (string)$tmp_arr_lvl2[$k]['mode']);
-								$tmp_arr_lvl2[$k]['ref-childs'] = array();
-								if(\Smart::array_size($tmp_arr_lvl3) > 0) {
-									for($z=0; $z<\Smart::array_size($tmp_arr_lvl3); $z++) {
-										$tmp_arr_lvl3[$z]['hash-id'] = (string) \sha1((string)$tmp_arr_lvl3[$z]['id']);
-										$tmp_arr_lvl3[$z]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl3[$z]['id']);
-										if(((string)$tmp_arr_lvl3[$z]['active'] == 1) OR ($tmp_arr_lvl3[$z]['is-segment'] == 1)) {
-											$tmp_arr_lvl3[$z]['style-class'] = (string) $css_cls_a;
-										} else {
-											$tmp_arr_lvl3[$z]['style-class'] = (string) $css_cls_i;
-										} //end if else
-										$tmp_arr_lvl3[$z]['icon-type'] = (string) self::getImgForPageType((string)$tmp_arr_lvl3[$z]['id']);
-										$tmp_arr_lvl3[$z]['img-type-html'] = (string) self::getImgForCodeType((string)$tmp_arr_lvl3[$z]['id'], (string)$tmp_arr_lvl3[$z]['mode']);
-									} //end for
-									$tmp_arr_lvl2[$k]['ref-childs'] = (array) $tmp_arr_lvl3;
-									$total[(string)$tmp_arr_lvl3[$z]['id']] += 1;
+			if(strpos($arr_controllers[$i], '{') === 0) {
+				$have_datasets++;
+			} //end if
+			if(((strpos($arr_controllers[$i], '{') === 0) AND ((string)$display_datasets != (string)$cookie_value_datasets)) OR ((strpos($arr_controllers[$i], '{') !== 0) OR (strpos($arr_controllers[$i], '{') === false))) {
+				$tmp_arr_lvl1 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByCtrl((string)$arr_controllers[$i]);
+				for($j=0; $j<\Smart::array_size($tmp_arr_lvl1); $j++) {
+					if(\Smart::array_size($tmp_arr_lvl1[$j]) > 0) {
+						$tmp_arr_lvl2 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef((string)$tmp_arr_lvl1[$j]['id']);
+						$tmp_arr_lvl1[$j]['hash-id'] = (string) \sha1((string)$tmp_arr_lvl1[$j]['id']);
+						$tmp_arr_lvl1[$j]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl1[$j]['id']);
+						if(((string)$tmp_arr_lvl1[$j]['active'] == 1) OR ($tmp_arr_lvl1[$j]['is-segment'] == 1)) {
+							$tmp_arr_lvl1[$j]['style-class'] = (string) $css_cls_a;
+						} else {
+							$tmp_arr_lvl1[$j]['style-class'] = (string) $css_cls_i;
+						} //end if else
+						$tmp_arr_lvl1[$j]['icon-type'] = (string) self::getImgForPageType((string)$tmp_arr_lvl1[$j]['id']);
+						$tmp_arr_lvl1[$j]['img-type-html'] = (string) self::getImgForCodeType((string)$tmp_arr_lvl1[$j]['id'], (string)$tmp_arr_lvl1[$j]['mode']);
+						$tmp_arr_lvl1[$j]['ref-childs'] = array();
+						if(\Smart::array_size($tmp_arr_lvl2) > 0) {
+							for($k=0; $k<\Smart::array_size($tmp_arr_lvl2); $k++) {
+								if(\Smart::array_size($tmp_arr_lvl2[$k]) > 0) {
+									$tmp_arr_lvl3 = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef((string)$tmp_arr_lvl2[$k]['id']);
+									$tmp_arr_lvl2[$k]['hash-id'] = (string) \sha1((string)$tmp_arr_lvl2[$k]['id']);
+									$tmp_arr_lvl2[$k]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl2[$k]['id']);
+									if(((string)$tmp_arr_lvl2[$k]['active'] == 1) OR ($tmp_arr_lvl2[$k]['is-segment'] == 1)) {
+										$tmp_arr_lvl2[$k]['style-class'] = (string) $css_cls_a;
+									} else {
+										$tmp_arr_lvl2[$k]['style-class'] = (string) $css_cls_i;
+									} //end if else
+									$tmp_arr_lvl2[$k]['icon-type'] = (string) self::getImgForPageType((string)$tmp_arr_lvl2[$k]['id']);
+									$tmp_arr_lvl2[$k]['img-type-html'] = (string) self::getImgForCodeType((string)$tmp_arr_lvl2[$k]['id'], (string)$tmp_arr_lvl2[$k]['mode']);
+									$tmp_arr_lvl2[$k]['ref-childs'] = array();
+									if(\Smart::array_size($tmp_arr_lvl3) > 0) {
+										for($z=0; $z<\Smart::array_size($tmp_arr_lvl3); $z++) {
+											$tmp_arr_lvl3[$z]['hash-id'] = (string) \sha1((string)$tmp_arr_lvl3[$z]['id']);
+											$tmp_arr_lvl3[$z]['is-segment'] = (int) self::testIsSegmentPage((string)$tmp_arr_lvl3[$z]['id']);
+											if(((string)$tmp_arr_lvl3[$z]['active'] == 1) OR ($tmp_arr_lvl3[$z]['is-segment'] == 1)) {
+												$tmp_arr_lvl3[$z]['style-class'] = (string) $css_cls_a;
+											} else {
+												$tmp_arr_lvl3[$z]['style-class'] = (string) $css_cls_i;
+											} //end if else
+											$tmp_arr_lvl3[$z]['icon-type'] = (string) self::getImgForPageType((string)$tmp_arr_lvl3[$z]['id']);
+											$tmp_arr_lvl3[$z]['img-type-html'] = (string) self::getImgForCodeType((string)$tmp_arr_lvl3[$z]['id'], (string)$tmp_arr_lvl3[$z]['mode']);
+										} //end for
+										$tmp_arr_lvl2[$k]['ref-childs'] = (array) $tmp_arr_lvl3;
+										$total[(string)$tmp_arr_lvl3[$z]['id']] += 1;
+									} //end if
+									$tmp_arr_lvl3 = array();
+									$total[(string)$tmp_arr_lvl2[$k]['id']] += 1;
 								} //end if
-								$tmp_arr_lvl3 = array();
-								$total[(string)$tmp_arr_lvl2[$k]['id']] += 1;
-							} //end if
-						} //end for
-						$tmp_arr_lvl1[$j]['ref-childs'] = (array) $tmp_arr_lvl2;
+							} //end for
+							$tmp_arr_lvl1[$j]['ref-childs'] = (array) $tmp_arr_lvl2;
+						} //end if
+						$tmp_arr_lvl2 = array();
+						$arr_pages_data[(string)$arr_controllers[$i]][] = (array) $tmp_arr_lvl1[$j];
+						$total[(string)$tmp_arr_lvl1[$j]['id']] += 1;
 					} //end if
-					$tmp_arr_lvl2 = array();
-					$arr_pages_data[(string)$arr_controllers[$i]][] = (array) $tmp_arr_lvl1[$j];
-					$total[(string)$tmp_arr_lvl1[$j]['id']] += 1;
-				} //end if
-			} //end for
+				} //end for
+			} //end if
 			$tmp_arr_lvl1 = array();
 		} //end if
+		if(((string)$display_datasets == (string)$cookie_value_datasets)) {
+			$fcollapse = (string) $collapse;
+		} //end if
+		//--
 		// \print_r($total); die();
 		// \print_r($arr_pages_data); die();
 		//--
@@ -2070,6 +2087,10 @@ final class Manager {
 			self::$ModulePath.'libs/views/manager/view-list-tree.mtpl.htm',
 			[
 				'IS-DEV-MODE' 		=> (string) ((\SmartFrameworkRuntime::ifProdEnv() !== true) ? 'yes' : 'no'),
+				'COOKIE-DATASETS' 	=> (string) $cookie_display_datasets,
+				'VALUE-DATASETS' 	=> (string) $cookie_value_datasets,
+				'DISPLAY-DATASETS' 	=> (string) $display_datasets,
+				'HAVE-DATASETS' 	=> (string) $have_datasets ? 'yes' : 'no',
 				'SHOW-FILTER-TYPE' 	=> 'no',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'ALLOW-PAGES' 		=> (string) $allow_pages,
@@ -2094,6 +2115,7 @@ final class Manager {
 				'LIST-WEBDAV-LINK' 	=> (string) self::composeWebdavUrl(),
 				'TXT-RESET-COUNTER' => (string) self::text('ttl_reset_hits', false),
 				'COLLAPSE' 			=> (string) $collapse,
+				'SPECIAL-COLLAPSE' 	=> (string) $scollapse,
 				'FILTER-COLLAPSE' 	=> (string) $fcollapse,
 				'FILTER' 			=> (array)  $filter,
 				'DATA' 				=> (array)  $arr_pages_data,

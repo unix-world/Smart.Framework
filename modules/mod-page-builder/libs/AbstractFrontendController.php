@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20200817
+ * @version 	v.20201112
  * @package 	development:modules:PageBuilder
  *
  */
@@ -37,14 +37,15 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 
 	private $crr_lang 			= '';						// current language
 
-	private $page_markers 		= [];						// extra markers to allow be direct set in template except MAIN (and others as: TITLE, META-DESCRIPTION, META-KEYWORDS)
 	private $regex_tpl_marker 	= '/^[A-Z0-9_\-\.@]+$/'; 	// regex for tpl markers
 	private $regex_marker 		= '/^[A-Z0-9_\-\.]+$/'; 	// regex for internal markers
 
 	private $auth_required 		= 0; 						// 0: no auth ; if > 0, will req. auth
 	private $recursion_control 	= 0; 						// initialize
 	private $current_page 		= []; 						// array of page load
-	private $page_params 		= [];						// array of level zero export page params to pass from controller to plugins and @fields
+	private $page_markers 		= []; 						// extra markers to allow be direct set in template except MAIN (and others as: TITLE, META-DESCRIPTION, META-KEYWORDS)
+	private $page_params 		= []; 						// array of level zero export page params to pass from controller to plugins and @fields
+	private $plugin_markers 	= []; 						// array of level zero export plugin markers
 
 	private $page_is_cached 	= false; 					// true if found in pcache
 	private $segments_cached 	= []; 						// registers cached segments
@@ -201,11 +202,11 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//--
 
 		//-- process extra markers if supplied
-		if(\Smart::array_size($arr_markers) > 0) {
+		if((\Smart::array_size($this->plugin_markers) > 0) OR (\Smart::array_size($arr_markers) > 0)) {
 			if(\Smart::array_size($arr) > 0) {
 				foreach($arr as $kk => $vv) {
 					if(!\is_array($vv)) {
-						$arr[(string)$kk] = (string) $this->renderSegmentMarkers((string)$vv, (array)$arr_markers);
+						$arr[(string)$kk] = (string) $this->renderSegmentMarkers((string)$vv, (array)\array_merge((array)$this->plugin_markers, (array)$arr_markers));
 					} //end if
 				} //end foreach
 			} //end if
@@ -333,8 +334,8 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//--
 
 		//-- process extra markers if supplied
-		if(\Smart::array_size($arr_markers) > 0) {
-			$arr['code'] = (string) $this->renderSegmentMarkers((string)$arr['code'], (array)$arr_markers);
+		if((\Smart::array_size($this->plugin_markers) > 0) OR (\Smart::array_size($arr_markers) > 0)) {
+			$arr['code'] = (string) $this->renderSegmentMarkers((string)$arr['code'], (array)\array_merge((array)$this->plugin_markers, (array)$arr_markers));
 		} //end if
 		//--
 
@@ -718,12 +719,13 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		$uid = (string) 'val.'.\Smart::uuid_32().':'.\sha1((string)\print_r($arr,1)).':'.$escape; // uid must be generated here as raw can change the empty escape tu url escape if no escape provided !
 		//--
 		$out_arr = [
-			'id' 	=> (string) $uid.'.'.$id,
-			'type' 	=> 'value', // preserve type
-			'auth' 	=> 0, // n/a
-			'mode' 	=> (string) $arr['mode'].($escape ? ':'.$escape : ''),
-			'name' 	=> (string) $id.' :: '.\strtoupper((string)$syntax).' :: '.$uid,
-			'code' 	=> (string) $arr['id']
+			'id' 		=> (string) $uid.'.'.$id,
+			'type' 		=> 'value', // preserve type
+			'auth' 		=> 0, // n/a
+			'mode' 		=> (string) $arr['mode'].($escape ? ':'.$escape : ''),
+			'name' 		=> (string) $id.' :: '.\strtoupper((string)$syntax).' :: '.$uid,
+			'code' 		=> (string) $arr['id'],
+			'syntax'	=> (string) $syntax
 		];
 		//--
 
@@ -828,6 +830,13 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		$data_arr['publisher-id'] 				= (string) $arr['admin'];
 		//--
 
+		//--
+		if($is_settings_segment === true) {
+			$data_arr['self-code']  = '';
+		} else {
+			$data_arr['self-code']  = (string) $arr['code'];
+		} //end if else
+		$data_arr['self-syntax'] = (string) $arr['mode'];
 		//--
 		$data_arr['mode']  = (string) $arr['mode'];
 		$data_arr['name'] = (string) $arr['name'];
@@ -1100,8 +1109,20 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 											case '@date-modified':
 												$arr_tmp_item['id'] = (string) $this->page_params['publisher-date-modified'];
 												break;
-											case '@author-id': // aaa
+											case '@author-id':
 												$arr_tmp_item['id'] = (string) $this->friendlyAuthorNameById((string)$this->page_params['publisher-id']);
+												break;
+											case '@self-syntax':
+												$arr_tmp_item['id'] = (string) $this->page_params['self-syntax'];
+												break;
+											case '@self-code':
+												$arr_tmp_item['id'] = (string) \base64_decode((string)$this->page_params['self-code']);
+												if(\Smart::array_size($v['config']) <= 0) {
+													$v['config'] = [];
+												} //end if
+												if(!\array_key_exists('syntax', $v['config'])) {
+													$v['config']['syntax'] = (string) $this->page_params['self-syntax']; // by default use the page syntax as config if missing
+												} //end if
 												break;
 											default:
 												// nothing, leave as is
@@ -1388,7 +1409,13 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 					$plugin_exec 			= null; // reset each cycle
 					$plugin_status 			= null; // reset each cycle
 					//--
+					$is_self_content = false;
+					//--
 					if(((string)$key != '') AND (\preg_match((string)$this->regex_tpl_marker, (string)$key))) {
+						//--
+						if((string)$key == '@') {
+							$is_self_content = true;
+						} //end if
 						//--
 						if((string)$val[$i]['type'] == 'plugin') { // INFO: each template must provide it's content (already cached or not) and the pcache key suffixes
 							//--
@@ -1535,6 +1562,16 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												$data_arr['@meta-keywords'] = (string) $plugin_exec['meta-keywords'];
 											} //end if
 											//--
+											$plugin_exp_vars = (array) $plugin_obj->getPluginExportVars();
+											if((\Smart::array_size($plugin_exp_vars) > 0) AND (\Smart::array_type_test($plugin_exp_vars) == 2)) {
+												foreach($plugin_exp_vars as $export_key => $export_var) {
+													if(\preg_match((string)$this->regex_marker, (string)$export_key)) {
+														$this->plugin_markers[(string)$export_key] = (string) $export_var; // later values will rewrite previous ones if any
+													} //end if
+												} //end foreach
+											} //end if
+											$plugin_exp_vars = null;
+											//--
 											if(($level === 0) AND (\strpos((string)$key, 'TEMPLATE@') === 0) AND (\in_array((string)$key, (array)$this->page_markers))) { // ((string)$key != 'TEMPLATE@MAIN')) { // allow TEMPLATE@*(!MAIN) just on main page (level=0)
 												//-- don't replace these markers, they are template markers
 												$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) $plugin_exec['content']; // append is mandatory here else will not render correctly more than one sub-segment/plugin
@@ -1614,6 +1651,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 										//--
 									} //end if
 									//--
+								} elseif($is_self_content === true) {
+									//--
+									$arr_replacements['@'] .= (string) $val[$i]['code']; // OK: always append
+									//--
 								} else {
 									//--
 									$this->PageViewSetErrorStatus(500, 'PageBuilder: Render Template ERROR: Invalid Render Marker (2)');
@@ -1644,6 +1685,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		} //end foreach
 		//--
 		if(\Smart::array_size($arr_replacements) > 0) {
+			if(\array_key_exists('@', $arr_replacements)) {
+				$data_arr['code'] = (string) $arr_replacements['@'];
+				unset($arr_replacements['@']);
+			} //end if
 			$data_arr['code'] = (string) \strtr((string)$data_arr['code'], (array)$arr_replacements); // since strtr treats strings as a sequence of bytes, and since UTF-8 and other multibyte encodings use - by definition - more than one byte for at least some characters, the unicode strings is likely to have problems. Fix: use the associative array as 2nd param to specify the mapping instead of using it with 3 params ; using strtr() for str replace with no recursion instead of str_replace() which goes with recursion over already replaced parts and is not safe in this context
 		} //end if
 		//--

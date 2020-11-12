@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20200817
+	// v.20201109
 
 
 	private static $db = null;
@@ -289,6 +289,32 @@ final class PageBuilderFrontend {
 
 	public static function getListOfObjectsBy($y_obj_type, $y_fld, $y_value, $y_orderby='id', $y_orderdir='ASC', $y_limit=0, $y_ofs=0) {
 		//--
+		return (array) self::getOrCountListOfObjectsBy('get', $y_obj_type, $y_fld, $y_value, $y_orderby, $y_orderdir, $y_limit, $y_ofs);
+		//--
+	} //END FUNCTION
+
+
+	public static function countListOfObjectsBy($y_obj_type, $y_fld, $y_value) {
+		//--
+		return (int) self::getOrCountListOfObjectsBy('count', $y_obj_type, $y_fld, $y_value);
+		//--
+	} //END FUNCTION
+
+
+	//##### PRIVATES
+
+
+	private static function getOrCountListOfObjectsBy($y_mode, $y_obj_type, $y_fld, $y_value, $y_orderby='id', $y_orderdir='ASC', $y_limit=0, $y_ofs=0) {
+		//--
+		if((string)$y_mode == 'count') {
+			$default_return = 0;
+		} elseif((string)$y_mode == 'get') {
+			$default_return = array();
+		} else {
+			Smart::log_warning(__METHOD__.' # Invalid Mode: '.$y_mode);
+			return null;
+		} //end if else
+		//--
 		$sign_expr = '!==!'; // must be something invalid to force SQL stop
 		$extra_condition = ' AND (1 = 0)'; // must be something invalid to force SQL return none
 		switch((string)$y_obj_type) {
@@ -306,13 +332,15 @@ final class PageBuilderFrontend {
 				break;
 			default:
 				Smart::log_warning(__METHOD__.' # Invalid Object Type: '.$y_obj_type);
-				return array();
+				return $default_return;
 		} //end switch
 		//--
 		switch((string)$y_fld) {
 			case 'area':
 				break;
 			case 'tags':
+				break;
+			case 'area:tags':
 				break;
 			case 'id':
 				$y_orderby = 'id';
@@ -322,7 +350,7 @@ final class PageBuilderFrontend {
 				break;
 			default:
 				Smart::log_warning(__METHOD__.' # Invalid Field: '.$y_fld);
-				return array();
+				return $default_return;
 		} //end switch
 		//--
 		$orderby = 'id'; // default
@@ -364,7 +392,7 @@ final class PageBuilderFrontend {
 				$orderby = '`'.$orderby.'`';
 			} //end if else
 		} else {
-			return array();
+			return $default_return;
 		} //end if else
 		//--
 		switch((string)$y_orderdir) {
@@ -383,67 +411,108 @@ final class PageBuilderFrontend {
 			$qry_limit = ' LIMIT '.(int)$y_limit.' OFFSET '.(int)$y_ofs;
 		} //end if
 		//--
+		if((string)$y_mode == 'count') {
+			$select_what = 'COUNT(1)';
+			$fx_exec = 'count_data';
+			$qr_suffix = '';
+		} elseif((string)$y_mode == 'get') {
+			if((string)self::dbType() == 'pgsql') {
+				$select_what = '"id", "name", "mode", "auth", "ctrl", "modified", "published", "admin"';
+			} elseif((string)self::dbType() == 'sqlite') {
+				$select_what = '`id`, `name`, `mode`, `auth`, `ctrl`, `modified`, `published`, `admin`';
+			} else {
+				return $default_return;
+			} //end if else
+			if((string)$y_fld == 'id') {
+				$fx_exec = 'read_asdata';
+				$qr_suffix = 'LIMIT 1 OFFSET 0';
+			} else {
+				$fx_exec = 'read_adata';
+				$qr_suffix = 'ORDER BY '.$orderby.' '.$y_orderdir.$extorderby.$qry_limit;
+			} //end if else
+		} else {
+			return $default_return;
+		} //end if else
+		//--
 		if((string)self::dbType() == 'pgsql') {
 			if((string)$y_fld == 'id') {
-				$arr = (array) self::$db->read_asdata(
-					'SELECT "id", "name", "mode", "auth", "ctrl", "modified", "published", "admin" FROM "web"."page_builder" WHERE (("id" = $1) AND (SUBSTR("id",1,1) '.$sign_expr.' $2)'.$extra_condition.') LIMIT 1 OFFSET 0',
+				$qresult = \SmartPgsqlDb::{$fx_exec}(
+					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("id" = $1) AND (SUBSTR("id",1,1) '.$sign_expr.' $2)'.$extra_condition.') '.$qr_suffix,
 					[
 						(string) $y_value,
 						(string) '#'
 					]
 				);
 			} elseif((string)$y_fld == 'area') {
-				$arr = (array) \SmartPgsqlDb::read_adata(
-					'SELECT "id", "name", "mode", "auth", "ctrl", "modified", "published", "admin" FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND (SUBSTR("id",1,1) '.$sign_expr.' $2)'.$extra_condition.') ORDER BY '.$orderby.' '.$y_orderdir.$extorderby.$qry_limit,
+				$qresult = \SmartPgsqlDb::{$fx_exec}(
+					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND (SUBSTR("id",1,1) '.$sign_expr.' $2)'.$extra_condition.') '.$qr_suffix,
 					[
 						(string) $y_value,
 						(string) '#'
 					]
 				);
 			} elseif((string)$y_fld == 'tags') {
-				$arr = (array) \SmartPgsqlDb::read_adata(
-					'SELECT "id", "name", "mode", "auth", "ctrl", "modified", "published", "admin" FROM "web"."page_builder" WHERE (("tags" ? $1) AND (SUBSTR("id",1,1) '.$sign_expr.' $2)'.$extra_condition.') ORDER BY '.$orderby.' '.$y_orderdir.$extorderby.$qry_limit,
+				$qresult = \SmartPgsqlDb::{$fx_exec}(
+					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("tags" ? $1) AND (SUBSTR("id",1,1) '.$sign_expr.' $2)'.$extra_condition.') '.$qr_suffix,
 					[
 						(string) $y_value,
 						(string) '#'
 					]
 				);
+			} elseif((string)$y_fld == 'area:tags') {
+				$qresult = \SmartPgsqlDb::{$fx_exec}(
+					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND ("tags" ? $2) AND (SUBSTR("id",1,1) '.$sign_expr.' $3)'.$extra_condition.') '.$qr_suffix,
+					[
+						(string) \explode(':', (string)$y_value)[0], // area
+						(string) \explode(':', (string)$y_value)[1], // tags
+						(string) '#'
+					]
+				);
 			} else {
-				$arr = array();
+				$qresult = $default_return;
 			} //end if else
 		} elseif((string)self::dbType() == 'sqlite') {
 			if((string)$y_fld == 'id') {
-				$arr = (array) self::$db->read_asdata(
-					'SELECT `id`, `name`, `mode`, `auth`, `ctrl`, `modified`, `published`, `admin` FROM `page_builder` WHERE ((`id` = ?) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') LIMIT 1 OFFSET 0',
+				$qresult = self::$db->{$fx_exec}(
+					'SELECT '.$select_what.' FROM `page_builder` WHERE ((`id` = ?) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
 					[
 						(string) $y_value,
 						(string) '#'
 					]
 				);
 			} elseif((string)$y_fld == 'area') {
-				$arr = (array) self::$db->read_adata(
-					'SELECT `id`, `name`, `mode`, `auth`, `ctrl`, `modified`, `published`, `admin` FROM `page_builder` WHERE ((`layout` LIKE ?) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') ORDER BY '.$orderby.' '.$y_orderdir.$extorderby.$qry_limit,
+				$qresult = self::$db->{$fx_exec}(
+					'SELECT '.$select_what.' FROM `page_builder` WHERE ((`layout` LIKE ?) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
 					[
 						(string) $y_value,
 						(string) '#'
 					]
 				);
 			} elseif((string)$y_fld == 'tags') {
-				$arr = (array) self::$db->read_adata(
-					'SELECT `id`, `name`, `mode`, `auth`, `ctrl`, `modified`, `published`, `admin` FROM `page_builder` WHERE ((smart_json_arr_contains(`tags`, ?) = 1) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') ORDER BY '.$orderby.' '.$y_orderdir.$extorderby.$qry_limit,
+				$qresult = self::$db->{$fx_exec}(
+					'SELECT '.$select_what.' FROM `page_builder` WHERE ((smart_json_arr_contains(`tags`, ?) = 1) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
 					[
 						(string) $y_value,
 						(string) '#'
 					]
 				);
+			} elseif((string)$y_fld == 'area:tags') {
+				$qresult = self::$db->{$fx_exec}(
+					'SELECT '.$select_what.' FROM `page_builder` WHERE ((`layout` LIKE ?) AND (smart_json_arr_contains(`tags`, ?) = 1) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
+					[
+						(string) \explode(':', (string)$y_value)[0], // area
+						(string) \explode(':', (string)$y_value)[1], // tags
+						(string) '#'
+					]
+				);
 			} else {
-				$arr = array();
+				$qresult = $default_return;
 			} //end if else
 		} else {
-			$arr = array();
+			$qresult = $default_return;
 		} //end if else
 		//--
-		return (array) $arr;
+		return $qresult; // mixed: array or int
 		//--
 	} //END FUNCTION
 
