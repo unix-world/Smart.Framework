@@ -71,7 +71,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring
- * @version 	v.20201105
+ * @version 	v.20201113
  * @package 	Plugins:Image
  *
  */
@@ -95,11 +95,11 @@ final class SmartImageGdProcess {
 	/**
 	 * Class constructor
 	 *
-	 * @param STRING $imgstr 			:: the image data string of an image: GIF / PNG / JPG / WEBP
-	 * @param STRING $imginfo 			:: *Optional* an identifier of the image (used for error log or debug messages)
+	 * @param MIXED $imgstr 			:: the image data STRING of an image: GIF / PNG / JPG / WEBP ; or the ARRAY definition for a new image [ 'width' => 200, 'height' => 100, 'bgcolor' => [0..255, 0..255, 0..255] ]
+	 * @param STRING $imginfo 			:: *Optional* an identifier of the image (Ex: the image name, used for error log or debug messages)
 	 *
 	 */
-	public function __construct($imgstr, $imginfo='') {
+	public function __construct($imgdata, $imginfo='') {
 
 		//--
 		if(!function_exists('imagecreatetruecolor')) {
@@ -119,21 +119,58 @@ final class SmartImageGdProcess {
 		//--
 
 		//--
-		$ardet = (array) $this->_getImgSizeAndTypeFromImgStr((string)$imgstr); // get image w,h,type
-		$this->type   = (string) $ardet['t'];
-		$this->width  = (int)    $ardet['w'];
-		$this->height = (int)    $ardet['h'];
-		unset($ardet);
+		$this->_debugMsg((string)__METHOD__.' :: '.'Image Info: '.$imginfo);
 		//--
-		if($this->_testImageSizeAndType('initialize', $this->type, $this->width, $this->height)) { // test image w,h,type
+		if(is_array($imgdata)) {
 			//--
-			$this->img = @imagecreatefromstring((string)$imgstr); // create a gd img res. from string
+			$this->type   = (string) 'png';
+			$this->width  = (int)    $imgdata['width'];
+			$this->height = (int)    $imgdata['height'];
 			//--
-			$this->status = true; // status flag OK
+			if($this->width < 1) {
+				$this->width = 1;
+			} elseif($this->width > 8192) {
+				$this->width = 8192;
+			} //end if
+			if($this->height < 1) {
+				$this->height = 1;
+			} elseif($this->height > 8192) {
+				$this->height = 8192;
+			} //end if
 			//--
-		} //end if
+			$bg_color_rgb = (array) $this->_fixColorArray($imgdata['bgcolor']);
+			//--
+			if($this->_testImageSizeAndType('initialize', $this->type, $this->width, $this->height)) { // test image w,h,type
+				//--
+				$this->img = @imagecreatetruecolor($this->width, $this->height); // create a new gd img res. from width and height
+				//--
+				$imgbgcolor = @imagecolorallocate($this->img, $bg_color_rgb[0], $bg_color_rgb[1], $bg_color_rgb[2]);
+				@imagefill($this->img, 0, 0, $imgbgcolor);
+				$imgbgcolor = null; // free mem
+				//--
+				$this->status = true; // status flag OK
+				//--
+			} //end if
+			//--
+		} else {
+			//--
+			$ardet = (array) $this->_getImgSizeAndTypeFromImgStr((string)$imgdata); // get image w,h,type
+			$this->type   = (string) $ardet['t'];
+			$this->width  = (int)    $ardet['w'];
+			$this->height = (int)    $ardet['h'];
+			$ardet = null; // free mem
+			//--
+			if($this->_testImageSizeAndType('initialize', $this->type, $this->width, $this->height)) { // test image w,h,type
+				//--
+				$this->img = @imagecreatefromstring((string)$imgdata); // create a gd img res. from string
+				//--
+				$this->status = true; // status flag OK
+				//--
+			} //end if
+			//--
+		} //end if else
 		//--
-		$imgstr = ''; // free mem
+		$imgdata = null; // free mem
 		//--
 
 	} //END FUNCTION
@@ -707,15 +744,15 @@ final class SmartImageGdProcess {
 	 * Calculate TTF text bounding box for an image
 	 *
 	 * @param STRING 	$text 				:: the text to be applied
-	 * @param INTEGER 	$angle 				:: *Optional* TTF angle rotation (0..180) degrees ; Default is 0 | null (for built-in or GDF fonts)
-	 * @param INTEGER 	$size 				:: *Optional* TTF font size ; Default is 10 | null (for built-in or GDF fonts)
+	 * @param INTEGER 	$angle 				:: TTF angle rotation (0..180) degrees
+	 * @param INTEGER 	$size 				:: TTF font size
 	 * @param ENUM 		$font 				:: *Optional* The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf
 	 *
 	 * @hints 								:: this works just with TTF fonts
 	 *
 	 * @return ARRAY 						:: return an empty array on error / on success returns an array with 8 coordinates as [ 0: lower left corner, X position ; 1: lower left corner, Y position ; 2: lower right corner, X position ; 3: lower right corner, Y position ; 4: upper right corner, X position ; 5: upper right corner, Y position ; 6: upper left corner, X position ; 7: upper left corner, Y position ]
 	 */
-	public function calculateTextBBox($text, $angle, $size, $font) {
+	public function calculateTextBBox($text, $angle, $size, $font='lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf') {
 
 		//--
 		$text = (string) Smart::normalize_spaces((string)$text); // only single line text is allowed
@@ -762,21 +799,156 @@ final class SmartImageGdProcess {
 
 	//================================================================
 	/**
+	 * Apply wrap text on an image: GIF / PNG / JPG / WEBP
+	 *
+	 * @param STRING 	$text 				:: the text to be applied
+	 * @param ENUM 		$align 				:: *Optional* the align mode: left | center | right ; default is left
+	 * @param INTEGER 	$margin 			:: *Optional* left margin for text placement ; Default is 0
+	 * @param INTEGER 	$top 				:: *Optional* top margin for text placement ; Default is 0
+	 * @param INTEGER 	$vlinespace 		:: *Optional* vertical line spacing (space between vertical text lines)
+	 * @param INTEGER 	$angle 				:: *Optional* TTF angle rotation (0..180) degrees ; Default is 0 ; Applies just for Align=left ; for Align=center / Align=right ... to be done in the future ...
+	 * @param INTEGER 	$size 				:: *Optional* TTF font size ; Default is 10 | null (for built-in or GDF fonts)
+	 * @param ENUM 		$font 				:: *Optional* The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf
+	 * @param ARRAY 	$color_rgb 			:: *Optional* The RGB color with optional alpha channel as Array [0..255, 0..255, 0..255, 0..127] ; Default is: [0, 0, 0, 0]
+	 *
+	 * @hints 								:: this works just with TTF fonts ; the text transparency is made by the $color_rgb alpha channel
+	 *
+	 * @return BOOLEAN 						:: TRUE on success ; FALSE on error / fail
+	 */
+	public function applyWrapText($text, $align='left', $margin=0, $top=0, $vlinespace=5, $angle=0, $size=10, $font='lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf', $color_rgb=[0, 0, 0, 0]) {
+
+		//--
+		if($this->status !== true) {
+			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Status');
+			$this->status = false;
+			return false;
+		} //end if
+		//--
+		if(!is_resource($this->img)) {
+			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Resource');
+			$this->status = false;
+			return false;
+		} //end if
+		//--
+
+		//--
+		$text = (string) Smart::normalize_spaces((string)$text); // only single line text is allowed
+		$text = (string) trim((string)$text);
+		if((string)$text == '') {
+			$this->_debugMsg((string)__METHOD__.' :: '.'Empty Text to Apply on Image');
+			$this->status = false;
+			return false;
+		} //end if
+		//--
+
+		//--
+		$align = (string) strtolower((string)trim((string)$align));
+		switch((string)$align) {
+			case 'left':
+				break;
+			case 'center':
+			case 'right':
+				$angle = 0; // TODO: calculate line Y by angle
+				break;
+			default:
+				$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Align Mode ('.$align.') to Apply Text on Image');
+				$this->status = false;
+				return false;
+		} //end switch
+		//--
+
+		//--
+		$margin = (int) $margin;
+		if($margin < 0) {
+			$margin = 0;
+		} elseif($margin > floor($this->width / 2)) {
+			$margin = (int) floor($this->width / 2);
+		} //end if else
+		//--
+		$vlinespace = (int) $vlinespace;
+		if($vlinespace < 0) {
+			$vlinespace = 0;
+		} elseif($vlinespace > floor($this->height / 3)) {
+			$vlinespace = (int) floor($this->height / 3);
+		} //end if else
+		//--
+		$angle = (int) $angle; // angle in degrees (apply just for ttf fonts)
+		if($angle < 0) {
+			$angle = 0;
+		} elseif($angle > 360) {
+			$angle = 360;
+		} //end if else
+		//--
+		$size = (int) $size;
+		if($size < 8) {
+			$size = 8;
+		} elseif($size > 256) {
+			$size = 256;
+		} //end if else
+		//--
+		$font = (string) $font;
+		//--
+		$color_rgb = (array) $this->_fixColorArray($color_rgb);
+		//--
+
+		//--
+		$isttf = false;
+		if(((string)$font != '') AND (SmartFileSysUtils::check_if_safe_path($font)) AND (SmartFileSystem::is_type_file($font))) {
+			if(function_exists('imagettfbbox') AND (substr($font, -4, 4) == '.ttf')) {
+				$isttf = true;
+			} //end if
+		} //end if else
+		//--
+
+		//--
+		if(!$isttf) {
+			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Font');
+			$this->status = false;
+			return false;
+		} //end if
+		//--
+
+		//--
+		$lines = (array) $this->_prepareTextLines((string)$text, (int)$angle, (int)$size, (int)$this->width, (int)$margin, (string)$font);
+		//--
+		for($i=0; $i<Smart::array_size($lines); $i++) {
+			if((string)$lines[$i]) {
+				$liney = (int) floor($top + ((int)$i * ((int)$vlinespace + (int)$size)));
+				$this->_applyTextLine((string)$lines[$i], (int)$this->width, (int)$margin, (int)$angle, (int)$size, (int)$liney, (string)$align, (string)$font);
+				if($this->status !== true) {
+					$this->_debugMsg((string)__METHOD__.' :: '.'Failed to apply Wrap Text on Image with Font: '.$font.' / Size: '.$size.' / Angle: '.$angle.' / Align: '.$align.' / VLineSpace: '.$vlinespace.' / Margin: '.$margin);
+					return false;
+					break;
+				} //end if
+			} //end if
+		} //end for
+		//--
+
+		//--
+		return true;
+		//--
+
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Apply text on an image: GIF / PNG / JPG / WEBP
 	 *
 	 * @param STRING 	$text 				:: the text to be applied
-	 * @param INTEGER 	$offsx 				:: correction offset X for text placement ; Default is 0
-	 * @param INTEGER 	$offsy 				:: correction offset Y for text placement ; Default is 0
+	 * @param INTEGER 	$offsx 				:: *Optional* correction offset X for text placement ; Default is 0
+	 * @param INTEGER 	$offsy 				:: *Optional* correction offset Y for text placement ; Default is 0
 	 * @param INTEGER 	$angle 				:: *Optional* TTF angle rotation (0..180) degrees ; Default is 0 | null (for built-in or GDF fonts)
 	 * @param INTEGER 	$size 				:: *Optional* TTF font size ; Default is 10 | null (for built-in or GDF fonts)
 	 * @param ENUM 		$font 				:: *Optional* The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf
-	 * @param ARRAY 	$color_rgb 			:: *Optional* The RGB color with optional alpha channel as Array [0..255, 0..255, 0..255, 0..127] ; Default is: [255, 255, 255, 100]
+	 * @param ARRAY 	$color_rgb 			:: *Optional* The RGB color with optional alpha channel as Array [0..255, 0..255, 0..255, 0..127] ; Default is: [0, 0, 0, 0]
 	 *
 	 * @hints 								:: the text transparency is made by the $color_rgb alpha channel
 	 *
 	 * @return BOOLEAN 						:: TRUE on success ; FALSE on error / fail
 	 */
-	public function applyText($text, $offsx=0, $offsy=0, $angle=0, $size=10, $font='lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf', $color_rgb=[255, 255, 255, 100]) {
+	public function applyText($text, $offsx=0, $offsy=0, $angle=0, $size=10, $font='lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf', $color_rgb=[0, 0, 0, 0]) {
 
 		//--
 		if($this->status !== true) {
@@ -830,6 +1002,8 @@ final class SmartImageGdProcess {
 		} elseif($size > 256) {
 			$size = 256;
 		} //end if else
+		//--
+		$font = (string) $font;
 		//--
 		$color_rgb = (array) $this->_fixColorArray($color_rgb);
 		//--
@@ -918,6 +1092,12 @@ final class SmartImageGdProcess {
 	private function _debugMsg($msg, $warn=true) {
 
 		//--
+		if(!$this->debug) {
+			return;
+		} //end if
+		//--
+
+		//--
 		if($warn === false) {
 			$this->message = 'NOTICE: ';
 		} else {
@@ -925,9 +1105,7 @@ final class SmartImageGdProcess {
 		} //end if else
 		$this->message .= (string) $msg.' # Type='.$this->type.'; Width='.$this->width.'; Height='.$this->height.'; Info='.$this->info;
 		//--
-		if($this->debug) {
-			Smart::log_notice((string)$this->message);
-		} //end if
+		Smart::log_notice((string)$this->message);
 		//--
 
 	} //END FUNCTION
@@ -1093,6 +1271,78 @@ final class SmartImageGdProcess {
 		return (array) $arr;
 		//--
 
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private function _prepareTextLines($text, $angle, $size, $width, $margin, $font) {
+		//--
+		$text = (string) Smart::normalize_spaces((string)$text);
+		$text = (string) trim((string)$text);
+		if((string)$text == '') {
+			return array();
+		} //end if
+		//--
+		$angle = (int) $angle;
+		$size = (int) $size;
+		$width = (int) $width;
+		$margin = (int) $margin;
+		//--
+		$text_a = (array) explode(' ', (string)$text);
+		$text_new = '';
+		$text_line = '';
+		foreach($text_a as $kk => $word){
+			//-- try to add the word and calculate the bbox of the text
+			$box = $this->calculateTextBBox((string)$text_line.' '.$word, (int)$angle, (int)$size, (string)$font);
+			//-- if the line fits to the specified width, then add the word with a space otherwise with new line
+			if($box[2] > ($width - ($margin*2))){
+				$text_new .= "\n".$word;
+				$text_line = $word;
+			} else {
+				$text_new .= " ".$word;
+				$text_line .= " ".$word;
+			} //end if else
+		} //end if else
+		//--
+		return (array) explode("\n", (string)trim((string)$text_new));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private function _applyTextLine($line, $width, $margin, $angle, $size, $offsy, $align, $font) {
+		//--
+		$width = (int) floor((int)$width - ((int)$margin * 2));
+		//--
+		$bbox = $this->calculateTextBBox((string)$line, (int)$angle, (int)$size, (string)$font);
+		//--
+		$pos_x_center = (int) ceil((((int)$width - (float)$bbox[0]) / 2) - ((float)$bbox[2] / 2));
+		$pos_x_right  = (int) floor((int)$width - (float)$bbox[2]);
+		$pos_x_left   = 1;
+		//--
+		$pos_y_center = (int) $offsy; // TODO: calculate line Y by angle: - (($width - ($bbox[0] + $bbox[2] - $margin)) * ($angle / 100));
+		$pos_y_right  = (int) $offsy;
+		$pos_y_left   = (int) $offsy;
+		//--
+		switch((string)$align) {
+			case 'center':
+				$pos_x = (int) $pos_x_center + $margin;
+				$pos_y = (int) $pos_y_center;
+				break;
+			case 'right':
+				$pos_x = (int) $pos_x_right + $margin;
+				$pos_y = (int) $pos_y_right;
+				break;
+			case 'left':
+			default:
+				$pos_x = (int) $pos_x_left + $margin;
+				$pos_y = (int) $pos_y_left;
+		} //end switch
+		//--
+		$this->applyText((string)$line, (int)$pos_x, (int)$pos_y, (int)$angle, (int)$size, (string)$font);
+		//--
 	} //END FUNCTION
 	//================================================================
 
