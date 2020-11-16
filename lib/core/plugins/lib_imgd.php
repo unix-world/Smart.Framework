@@ -71,7 +71,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring
- * @version 	v.20201113
+ * @version 	v.20201116
  * @package 	Plugins:Image
  *
  */
@@ -789,7 +789,7 @@ final class SmartImageGdProcess {
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Font');
 			return array();
 		} else { // TTF Fonts
-			return (array) @imagettfbbox((int)$size, (int)$angle, (string)$font, (string)$text);
+			return (array) @imagettfbbox((int)$size, (int)$angle, (string)Smart::real_path((string)$font), (string)$text);
 		} //end if else
 		//--
 
@@ -902,7 +902,7 @@ final class SmartImageGdProcess {
 
 		//--
 		if(!$isttf) {
-			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Font');
+			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Font or TTF support is missing');
 			$this->status = false;
 			return false;
 		} //end if
@@ -914,7 +914,7 @@ final class SmartImageGdProcess {
 		for($i=0; $i<Smart::array_size($lines); $i++) {
 			if((string)$lines[$i]) {
 				$liney = (int) floor($top + ((int)$i * ((int)$vlinespace + (int)$size)));
-				$this->_applyTextLine((string)$lines[$i], (int)$this->width, (int)$margin, (int)$angle, (int)$size, (int)$liney, (string)$align, (string)$font);
+				$this->_applyTextLine((string)$lines[$i], (int)$this->width, (int)$margin, (int)$angle, (int)$size, (int)$liney, (string)$align, (string)$font, (array)$color_rgb);
 				if($this->status !== true) {
 					$this->_debugMsg((string)__METHOD__.' :: '.'Failed to apply Wrap Text on Image with Font: '.$font.' / Size: '.$size.' / Angle: '.$angle.' / Align: '.$align.' / VLineSpace: '.$vlinespace.' / Margin: '.$margin);
 					return false;
@@ -1312,7 +1312,7 @@ final class SmartImageGdProcess {
 
 
 	//================================================================
-	private function _applyTextLine($line, $width, $margin, $angle, $size, $offsy, $align, $font) {
+	private function _applyTextLine($line, $width, $margin, $angle, $size, $offsy, $align, $font, $color_rgb) {
 		//--
 		$width = (int) floor((int)$width - ((int)$margin * 2));
 		//--
@@ -1341,7 +1341,7 @@ final class SmartImageGdProcess {
 				$pos_y = (int) $pos_y_left;
 		} //end switch
 		//--
-		$this->applyText((string)$line, (int)$pos_x, (int)$pos_y, (int)$angle, (int)$size, (string)$font);
+		$this->applyText((string)$line, (int)$pos_x, (int)$pos_y, (int)$angle, (int)$size, (string)$font, (array)$color_rgb);
 		//--
 	} //END FUNCTION
 	//================================================================
