@@ -74,7 +74,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode
- * @version     v.20200719
+ * @version     v.20201118
  * @package     @Core
  *
  */
@@ -1450,17 +1450,25 @@ final class Smart {
 	 *
 	 * @param STRING 		$y_str			:: The string to be processed
 	 * @param BOOLEAN 		$y_lowercase 	:: *OPTIONAL* If TRUE will return the slug with enforced lowercase characters ; DEFAULT is FALSE
+	 * @param INTEGER+ 		$y_maxlen 		:: *OPTIONAL* If a positive value greater than zero is supplied here the slug max length will be constrained to this value
 	 *
 	 * @return STRING 						:: The slug which will contain only: a-z 0-9 _ - (A-Z will be converted to a-z if lowercase is enforced)
 	 */
-	public static function create_slug(string $y_str, bool $y_lowercase=false) {
+	public static function create_slug(string $y_str, bool $y_lowercase=false, $y_maxlen=0) {
 		//--
 		$y_str = (string) SmartUnicode::deaccent_str((string)trim((string)$y_str));
 		$y_str = (string) preg_replace('/[^a-zA-Z0-9_\-]/', '-', (string)$y_str);
-		$y_str = (string) trim((string)preg_replace('/[\-]+/', '-', (string)$y_str)); // suppress multiple -
+		$y_str = (string) trim((string)preg_replace('/[\-]+/', '-', (string)$y_str), '-'); // suppress multiple -
 		//--
 		if($y_lowercase === true) {
 			$y_str = (string) strtolower((string)$y_str);
+		} //end if
+		//--
+		if((int)$y_maxlen > 0) {
+			if((int)strlen((string)$y_str) > (int)$y_maxlen) {
+				$y_str = (string) substr((string)$y_str, 0, (int)$y_maxlen);
+				$y_str = (string) rtrim((string)$y_str, '-');
+			} //end if
 		} //end if
 		//--
 		return (string) $y_str;

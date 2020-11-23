@@ -71,7 +71,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring
- * @version 	v.20201116
+ * @version 	v.20201123
  * @package 	Plugins:Image
  *
  */
@@ -799,7 +799,7 @@ final class SmartImageGdProcess {
 
 	//================================================================
 	/**
-	 * Apply wrap text on an image: GIF / PNG / JPG / WEBP
+	 * Apply multi-line text (text will be wrapped on multiple lines) on an image: GIF / PNG / JPG / WEBP
 	 *
 	 * @param STRING 	$text 				:: the text to be applied
 	 * @param ENUM 		$align 				:: *Optional* the align mode: left | center | right ; default is left
@@ -845,10 +845,8 @@ final class SmartImageGdProcess {
 		$align = (string) strtolower((string)trim((string)$align));
 		switch((string)$align) {
 			case 'left':
-				break;
 			case 'center':
 			case 'right':
-				$angle = 0; // TODO: calculate line Y by angle
 				break;
 			default:
 				$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Align Mode ('.$align.') to Apply Text on Image');
@@ -875,9 +873,13 @@ final class SmartImageGdProcess {
 		$angle = (int) $angle; // angle in degrees (apply just for ttf fonts)
 		if($angle < 0) {
 			$angle = 0;
-		} elseif($angle > 360) {
-			$angle = 360;
+		} elseif($angle >= 360) {
+			$angle = 0;
 		} //end if else
+		//--
+		if($angle > 0) {
+			$align = 'left'; // TODO: calculate starting position with angles is very complicated ... by now it enforces align LEFT with any angle other than zero
+		} //end if
 		//--
 		$size = (int) $size;
 		if($size < 8) {
@@ -1322,16 +1324,16 @@ final class SmartImageGdProcess {
 		$pos_x_right  = (int) floor((int)$width - (float)$bbox[2]);
 		$pos_x_left   = 1;
 		//--
-		$pos_y_center = (int) $offsy; // TODO: calculate line Y by angle: - (($width - ($bbox[0] + $bbox[2] - $margin)) * ($angle / 100));
+		$pos_y_center = (int) $offsy;
 		$pos_y_right  = (int) $offsy;
 		$pos_y_left   = (int) $offsy;
 		//--
 		switch((string)$align) {
-			case 'center':
+			case 'center': // TODO: calculate X and Y by angle, by now it enforces align LEFT with any angle other than zero
 				$pos_x = (int) $pos_x_center + $margin;
 				$pos_y = (int) $pos_y_center;
 				break;
-			case 'right':
+			case 'right': // TODO: calculate X and Y by angle, by now it enforces align LEFT with any angle other than zero
 				$pos_x = (int) $pos_x_right + $margin;
 				$pos_y = (int) $pos_y_right;
 				break;
