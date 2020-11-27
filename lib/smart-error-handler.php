@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20200121 # this should be loaded from app web root only
+// # r.20201127 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -98,7 +98,8 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 	switch($errno) { // friendly err names
 		case E_NOTICE:
 			$ferr = 'NOTICE';
-			if(0 == error_reporting()) { // fix: don't log E_NOTICE from @functions
+		//	if(0 == error_reporting()) { // fix: don't log E_NOTICE from @functions
+			if(!(error_reporting() & $errno)) { // fix: don't log E_NOTICE from @functions, fix for PHP 8
 				$is_supressed = true;
 			} //end if
 			break;
@@ -110,7 +111,8 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 			break;
 		case E_WARNING:
 			$ferr = 'WARNING';
-			if(0 == error_reporting()) { // fix: don't log E_WARNING from @functions
+		//	if(0 == error_reporting()) { // fix: don't log E_WARNING from @functions
+			if(!(error_reporting() & $errno)) { // fix: don't log E_WARNING from @functions, fix for PHP 8
 				$is_supressed = true;
 			} //end if
 			break;
