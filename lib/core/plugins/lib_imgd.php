@@ -71,7 +71,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring
- * @version 	v.20201123
+ * @version 	v.20201127
  * @package 	Plugins:Image
  *
  */
@@ -799,6 +799,56 @@ final class SmartImageGdProcess {
 
 	//================================================================
 	/**
+	 * Prepare multi-line text by width and margin (text will be wrapped on multiple lines) on an image
+	 *
+	 * @param STRING 	$text 				:: the text to be applied
+	 * @param INTEGER 	$angle 				:: TTF angle rotation (0..180) degrees
+	 * @param INTEGER 	$size 				:: TTF font size
+	 * @param INTEGER 	$width 				:: width of text area (includding margins)
+	 * @param INTEGER 	$margin 			:: left margin for text placement ; Default is 0
+	 * @param ENUM 		$font 				:: The font to be used: character's font (1..5 for built-in gd font ; path/to/font.gdf ; path/to/font.ttf) ; Default is: lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf
+	 *
+	 * @hints 								:: this works just with TTF fonts ; the text transparency is made by the $color_rgb alpha channel
+	 *
+	 * @return ARRAY 						:: Array of Text split into lines [0..n]
+	 */
+	public function prepareTextLines($text, $angle, $size, $width, $margin, $font) {
+		//--
+		$text = (string) Smart::normalize_spaces((string)$text);
+		$text = (string) trim((string)$text);
+		if((string)$text == '') {
+			return array();
+		} //end if
+		//--
+		$angle = (int) $angle;
+		$size = (int) $size;
+		$width = (int) $width;
+		$margin = (int) $margin;
+		//--
+		$text_a = (array) explode(' ', (string)$text);
+		$text_new = '';
+		$text_line = '';
+		foreach($text_a as $kk => $word){
+			//-- try to add the word and calculate the bbox of the text
+			$box = $this->calculateTextBBox((string)$text_line.' '.$word, (int)$angle, (int)$size, (string)$font);
+			//-- if the line fits to the specified width, then add the word with a space otherwise with new line
+			if($box[2] > ($width - ($margin*2))){
+				$text_new .= "\n".$word;
+				$text_line = $word;
+			} else {
+				$text_new .= " ".$word;
+				$text_line .= " ".$word;
+			} //end if else
+		} //end if else
+		//--
+		return (array) explode("\n", (string)trim((string)$text_new));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Apply multi-line text (text will be wrapped on multiple lines) on an image: GIF / PNG / JPG / WEBP
 	 *
 	 * @param STRING 	$text 				:: the text to be applied
@@ -819,13 +869,13 @@ final class SmartImageGdProcess {
 
 		//--
 		if($this->status !== true) {
-			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Status');
+			$this->_errMsg((string)__METHOD__.' :: '.'Invalid Image Status');
 			$this->status = false;
 			return false;
 		} //end if
 		//--
 		if(!is_resource($this->img)) {
-			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Resource');
+			$this->_errMsg((string)__METHOD__.' :: '.'Invalid Image Resource');
 			$this->status = false;
 			return false;
 		} //end if
@@ -835,7 +885,7 @@ final class SmartImageGdProcess {
 		$text = (string) Smart::normalize_spaces((string)$text); // only single line text is allowed
 		$text = (string) trim((string)$text);
 		if((string)$text == '') {
-			$this->_debugMsg((string)__METHOD__.' :: '.'Empty Text to Apply on Image');
+			$this->_errMsg((string)__METHOD__.' :: '.'Empty Text to Apply on Image');
 			$this->status = false;
 			return false;
 		} //end if
@@ -849,7 +899,7 @@ final class SmartImageGdProcess {
 			case 'right':
 				break;
 			default:
-				$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Align Mode ('.$align.') to Apply Text on Image');
+				$this->_errMsg((string)__METHOD__.' :: '.'Invalid Align Mode ('.$align.') to Apply Text on Image');
 				$this->status = false;
 				return false;
 		} //end switch
@@ -904,14 +954,14 @@ final class SmartImageGdProcess {
 
 		//--
 		if(!$isttf) {
-			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Font or TTF support is missing');
+			$this->_errMsg((string)__METHOD__.' :: '.'Invalid Font or TTF support is missing');
 			$this->status = false;
 			return false;
 		} //end if
 		//--
 
 		//--
-		$lines = (array) $this->_prepareTextLines((string)$text, (int)$angle, (int)$size, (int)$this->width, (int)$margin, (string)$font);
+		$lines = (array) $this->prepareTextLines((string)$text, (int)$angle, (int)$size, (int)$this->width, (int)$margin, (string)$font);
 		//--
 		for($i=0; $i<Smart::array_size($lines); $i++) {
 			if((string)$lines[$i]) {
@@ -954,13 +1004,13 @@ final class SmartImageGdProcess {
 
 		//--
 		if($this->status !== true) {
-			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Status');
+			$this->_errMsg((string)__METHOD__.' :: '.'Invalid Image Status');
 			$this->status = false;
 			return false;
 		} //end if
 		//--
 		if(!is_resource($this->img)) {
-			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Resource');
+			$this->_errMsg((string)__METHOD__.' :: '.'Invalid Image Resource');
 			$this->status = false;
 			return false;
 		} //end if
@@ -970,7 +1020,7 @@ final class SmartImageGdProcess {
 		$text = (string) Smart::normalize_spaces((string)$text); // only single line text is allowed
 		$text = (string) trim((string)$text);
 		if((string)$text == '') {
-			$this->_debugMsg((string)__METHOD__.' :: '.'Empty Text to Apply on Image');
+			$this->_errMsg((string)__METHOD__.' :: '.'Empty Text to Apply on Image');
 			$this->status = false;
 			return false;
 		} //end if
@@ -1054,7 +1104,7 @@ final class SmartImageGdProcess {
 
 		//--
 		if($write === false) {
-			$this->_debugMsg((string)__METHOD__.' :: '.'Failed to apply Text on Image with Font: '.$font.' / Size: '.$size.' / Angle: '.$angle.' / Coordinates: '.$offsx.'x'.$offsy);
+			$this->_errMsg((string)__METHOD__.' :: '.'Failed to apply Text on Image with Font: '.$font.' / Size: '.$size.' / Angle: '.$angle.' / Coordinates: '.$offsx.'x'.$offsy);
 			$this->status = false;
 			return false;
 		} //end if
@@ -1273,42 +1323,6 @@ final class SmartImageGdProcess {
 		return (array) $arr;
 		//--
 
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	private function _prepareTextLines($text, $angle, $size, $width, $margin, $font) {
-		//--
-		$text = (string) Smart::normalize_spaces((string)$text);
-		$text = (string) trim((string)$text);
-		if((string)$text == '') {
-			return array();
-		} //end if
-		//--
-		$angle = (int) $angle;
-		$size = (int) $size;
-		$width = (int) $width;
-		$margin = (int) $margin;
-		//--
-		$text_a = (array) explode(' ', (string)$text);
-		$text_new = '';
-		$text_line = '';
-		foreach($text_a as $kk => $word){
-			//-- try to add the word and calculate the bbox of the text
-			$box = $this->calculateTextBBox((string)$text_line.' '.$word, (int)$angle, (int)$size, (string)$font);
-			//-- if the line fits to the specified width, then add the word with a space otherwise with new line
-			if($box[2] > ($width - ($margin*2))){
-				$text_new .= "\n".$word;
-				$text_line = $word;
-			} else {
-				$text_new .= " ".$word;
-				$text_line .= " ".$word;
-			} //end if else
-		} //end if else
-		//--
-		return (array) explode("\n", (string)trim((string)$text_new));
-		//--
 	} //END FUNCTION
 	//================================================================
 
