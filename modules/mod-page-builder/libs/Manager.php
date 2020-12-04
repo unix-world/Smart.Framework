@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20201106
+ * @version 	v.20201204
  * @package 	PageBuilder
  *
  */
@@ -1063,7 +1063,7 @@ final class Manager {
 		if(!$err) {
 			switch((string)$y_type) {
 				case 'image/svg+xml':
-					$y_content = (new \SmartXmlParser())->format((string)$y_content); // avoid injection of other content than XML
+					$y_content = (new \SmartXmlParser())->format((string)$y_content, false, false, false, true); // avoid injection of other content than XML, remove the XML header
 					if((string)$y_content == '') {
 						$err = 'Invalid SVG Content';
 					} else {

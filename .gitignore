@@ -18,6 +18,9 @@ modules/mod-js-components
 modules/mod-lang-detect
 modules/mod-maps-cache
 modules/mod-media-gallery
+modules/mod-nlp-lemmatizer
+modules/mod-nlp-rake
+modules/mod-nlp-stemmer
 modules/mod-oauth2
 modules/mod-pdf-generate
 modules/mod-sm-facebook

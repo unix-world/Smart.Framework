@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     extensions: PHP XML ; classes: Smart
- * @version     v.20200519
+ * @version     v.20201204
  * @package     Plugins:ConvertersAndParsers
  *
  */
@@ -81,7 +81,7 @@ final class SmartXmlParser {
 
 
 	//=============================== Safe Validate and Format XML ; DomXML if used will also apply prettyPrint
-	public function format($xml_str, $preserve_whitespace=false, $log_parse_err_warns=false, $use_strict_validation=false) {
+	public function format($xml_str, $preserve_whitespace=false, $log_parse_err_warns=false, $use_strict_validation=false, $remove_xml_header=false) {
 
 		//--
 		$xml_str = (string) trim((string)$xml_str);
@@ -193,6 +193,12 @@ final class SmartXmlParser {
 		//--
 		@libxml_clear_errors();
 		@libxml_use_internal_errors(false);
+		//--
+
+		//--
+		if($remove_xml_header === true) {
+			$xml_str = (string) $this->RemoveXmlHeader($xml_str);
+		} //end if
 		//--
 
 		//--
