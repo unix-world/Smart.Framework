@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<!-- Template: Smart.Framework@Documentor v.20200121 -->
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="author" content="unix-world.org">
+	<meta name="description" content="\SmartFileSysUtils        final class \ SmartFileSysUtils    {   } ::    Class: SmartFileSysUtils - provides the File System Util functions. This class">
+	<meta name="keywords" content="smartfilesysutils, final, class, provides, the, file, system, util, functions, this, enforces, use, of, relative, paths, to, force, using, correct, path, access, in, a, web, environment, application, must, be, folder, as, some-folder, or, some-folder my-file.txt, absolute, are, denied, by, internal, checks, they, not, safe, from, security, point, view, also, backward, like, some-file-or-folder, is, above, exposed, reasons, files, and, folders, contain, only, characters, a-z, can, slashes, separators, no, spaces, allowed, notice, manner, never, add, manually, at, end, variable, because, if, it, empty, will, result, accessing, root, handle, an, easy, function, smartfilesysutils::add dir last slash  my dir, so, trailing, slash, misses, but, my dir, avoid, language, php">
+	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartFileSysUtils">
+	<title>PHP Documentation for: \SmartFileSysUtils</title>
+	<!-- CSS and Fonts -->
+		<!-- skip fonts -->
+	
+	<style type="text/css">
+	* {
+		font-family: sans-serif;
+		font-smooth: always;
+	}
+	/* ----- #start ----- */
+	html, body{
+		width: 96% auto;
+		/*height: 96% auto;*/
+		margin: 0px;
+		padding: 10px;
+		padding-top: 5px;
+	}
+	body {
+		background: #FFFFFF;
+		font-size: 16px;
+		line-height: 1.5;
+	}
+	div, p, ol, ul, form, fieldset, blockquote, address, dl {
+		font-size: 1rem; /* 16px */
+		line-height: 1.5;
+	}
+	li {
+		list-style-position: inside; /* bugfix for chrome */
+	}
+	table, pre, code, code * {
+		font-size: 0.9375rem; /* 15px */
+		line-height: 1.25;
+	}
+	/* ----- headings ----- */
+	h1 {
+		font-size: 2.25rem; /* 36px */
+		margin-top: 0.625rem; /* 10px */
+		margin-bottom: 0.625rem; /* 10px */
+	}
+	h2 {
+		font-size: 2rem; /* 32px */
+		margin-top: 0.5rem; /* 8px */
+		margin-bottom: 0.5rem; /* 8px */
+	}
+	h3 {
+		font-size: 1.75rem; /* 28px */
+		margin-top: 0.375rem; /* 6px */
+		margin-bottom: 0.375rem; /* 6px */
+	}
+	h4 {
+		font-size: 1.5rem; /* 24px */
+		margin-top: 0.3125rem; /* 5px */
+		margin-bottom: 0.3125rem; /* 5px */
+	}
+	h5 {
+		font-size: 1.25rem; /* 20px */
+		margin-top: 0.25rem; /* 4px */
+		margin-bottom: 0.25rem; /* 4px */
+	}
+	h6 {
+		font-size: 1.125rem; /* 18px */
+		margin-top: 0.1875rem; /* 3px */
+		margin-bottom: 0.1875rem; /* 3px */
+	}
+	/* ----- misc ----- */
+	img {
+		border: 0;
+	}
+	hr {
+		border: none 0;
+		border-top: 1px solid #BBCCDD;
+		height: 1px;
+	}
+	/* ----- tables ----- */
+	table {
+		font-weight: normal;
+		text-align:left;
+	}
+	th {
+		font-weight: bold;
+	}
+	td {
+		font-weight: normal;
+	}
+	/* ----- links ----- */
+	a, a:link, a:visited, a:hover {
+		color: #000000;
+		text-decoration: none;
+		border-bottom: 1px dotted #BBBBBB;
+	}
+	a:hover {
+		border-bottom: 1px dotted #555555;
+	}
+	/* ----- forms ----- */
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	input[type="url"],
+	input[type="date"],
+	input[type="month"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="week"],
+	input[type="number"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="color"],
+	textarea,
+	select {
+		background-color: #FFFFFF;
+		color: #222222;
+		font-weight: normal;
+		font-size: 1rem;
+		padding: 3px;
+		padding: 0.5rem 0.6rem;
+		display: inline-block;
+		border: 1px solid #ccc;
+		margin-bottom: 5px;
+		margin-right: 5px;
+		border-radius: 3px;
+		vertical-align: middle;
+		box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+	}
+	input[type="text"][disabled],
+	input[type="password"][disabled],
+	input[type="email"][disabled],
+	input[type="url"][disabled],
+	input[type="date"][disabled],
+	input[type="month"][disabled],
+	input[type="time"][disabled],
+	input[type="datetime"][disabled],
+	input[type="datetime-local"][disabled],
+	input[type="week"][disabled],
+	input[type="number"][disabled],
+	input[type="search"][disabled],
+	input[type="tel"][disabled],
+	input[type="color"][disabled],
+	textarea[disabled],
+	select[disabled] {
+		cursor: not-allowed;
+		background-color: #ECECEC;
+		color: #999999;
+	}
+	input:not([type])[disabled] {
+		cursor: not-allowed;
+		background-color: #ECECEC;
+		color: #999999;
+	}
+	input[readonly],
+	select[readonly],
+	textarea[readonly] {
+		cursor: pointer;
+		background-color: #FAFAFA; /* menu hover bg color */
+		color: #777; /* menu text color */
+		border-color: #ccc;
+	}
+
+	input:focus:invalid,
+	textarea:focus:invalid,
+	select:focus:invalid {
+		color: #b94a48;
+		border-color: #e9322d;
+	}
+	input[type="file"]:focus:invalid:focus,
+	input[type="radio"]:focus:invalid:focus,
+	input[type="checkbox"]:focus:invalid:focus {
+		outline-color: #e9322d;
+	}
+	select {
+		border: 1px solid #ccc;
+		background-color: white;
+	}
+	select[multiple] {
+		height: auto;
+	}
+	label {
+		margin: 0.5rem 0 0.2rem;
+	}
+	fieldset {
+		margin: 0;
+		padding: 0.35rem 0 0.75rem;
+		border: 0;
+	}
+	legend {
+		display: block;
+		width: 100%;
+		padding: 0.3rem 0;
+		margin-bottom: 0.3rem;
+		color: #333;
+		border-bottom: 1px solid #e5e5e5;
+	}
+	.hidden,
+	[hidden] {
+		display: none !important;
+	}
+	button, a.ux-button {
+		/* Structure */
+		display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+		padding: 7px 15px 7px 15px !important;
+		line-height: normal !important;
+		white-space: nowrap !important;
+		vertical-align: middle !important;
+		text-align: center !important;
+		font-family: inherit !important;
+		font-size: 0.9375rem !important; /* 15px */
+		font-weight: bold !important;
+		text-decoration: none !important;
+		border-radius: 3px !important;
+		border: 1px solid #DDDDDD !important;
+		background-color: #FCFCFC !important;
+		color: #317AB9 !important;
+		cursor: pointer !important;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		margin-bottom: 5px;
+		margin-right: 5px;
+		box-sizing: border-box !important;
+		-moz-box-sizing: border-box !important;
+		-webkit-box-sizing: border-box !important;
+		appearance: none !important;
+		-moz-appearance: none !important;
+		-webkit-appearance: none !important;
+		user-select: none !important;
+		zoom: 1 !important;
+	}
+	button *, a.ux-button * {
+		font-weight: bold !important;
+	}
+	button:hover, a.ux-button:hover,
+	button:focus, a.ux-button:focus {
+		border: 1px solid #CCCCCC !important;
+		background-color: #F3F3F3 !important;
+		color: #2069A9 !important;
+	}
+	button:focus, a.ux-button:focus {
+		outline: 0 !important;
+	}
+	button[disabled],
+	button-disabled,
+	button-disabled:hover,
+	button-disabled:focus,
+	button-disabled:active {
+		background-image: none !important;
+		opacity: 0.40 !important;
+		cursor: not-allowed !important;
+		box-shadow: none !important;
+	}
+	/* ----- navbar ----- */
+	nav.ux-navbar label.toggle,
+	nav.ux-navbar input[id^=drop] {
+		display: none;
+	}
+	nav.ux-navbar {
+		margin: 0;
+		padding: 0;
+		background-color: #3c4663;
+	}
+	nav.ux-navbar div#logo {
+		display: block;
+		padding: 0 25px;
+		float: left;
+		font-size: 20px;
+		line-height: 50px;
+		color: #FFFFFF;
+	}
+	nav::after {
+		content: "";
+		display: table;
+		clear: both;
+	}
+	nav.ux-navbar ul {
+		float: right;
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		position: relative;
+	}
+	nav.ux-navbar ul li {
+		margin: 0px;
+		display: inline-block;
+		float: left;
+		background-color: #3c4663;
+	}
+	nav.ux-navbar a {
+		display: block;
+		padding: 0 20px;
+		color: #FFFFFF;
+		font-size: 20px;
+		line-height: 50px;
+		text-decoration: none;
+	}
+	nav.ux-navbar ul li ul li:hover {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar a:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar ul ul {
+		display: none;
+		position: absolute;
+		top: 50px;
+		z-index: 5555;
+	}
+	nav.ux-navbar ul li:hover > ul {
+		display: inherit;
+	}
+	nav.ux-navbar ul ul li {
+		width: 170px;
+		float: none;
+		display: list-item;
+		position: relative;
+	}
+	nav.ux-navbar ul ul ul li {
+		position: relative;
+		top: -50px;
+		left: 170px;
+	}
+	nav.ux-navbar li > a::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar li > a:only-child::after {
+		content: '';
+	}
+	/* ----- navbar responsive ----- */
+	@media all and (max-width:767px) {
+		nav.ux-navbar div#logo {
+			display: block;
+			padding: 0;
+			width: 100%;
+			text-align: center;
+			float: none;
+		}
+		nav.ux-navbar {
+			margin: 0;
+		}
+		nav.ux-navbar label.toggle + a,
+		nav.ux-navbar ul.menu {
+			display: none;
+		}
+		nav.ux-navbar label.toggle {
+			display: block;
+			background-color: #3c4663;
+			padding: 0 20px;
+			color: #FFFFFF;
+			font-size: 20px;
+			line-height: 50px;
+			text-decoration: none;
+			border: none;
+		}
+		nav.ux-navbar label.toggle::after {
+			content: ' ▾';
+		}
+		nav.ux-navbar label.toggle:hover {
+			color: #FFFFFF;
+			background-color: #1a2946;
+		}
+		nav.ux-navbar input[id^=drop]:checked + ul {
+			display: block;
+		}
+		nav.ux-navbar ul {
+			width: 100%;
+		}
+		nav.ux-navbar ul li {
+			display: block;
+			width: 100%;
+		}
+		nav.ux-navbar ul ul .toggle,
+		nav.ux-navbar ul ul a {
+			padding: 0 40px;
+		}
+		nav.ux-navbar ul ul ul a {
+			padding: 0 80px;
+		}
+		nav.ux-navbar a:hover {
+			color: #FFFFFF;
+			background-color: #1a2946;
+		}
+		nav.ux-navbar ul ul ul a {
+			color: #FFFFFF;
+			background-color: #2b3a57;
+		}
+		nav.ux-navbar ul li ul li .toggle,
+		nav.ux-navbar ul ul a {
+			background-color: #2b3a57;
+		}
+		nav.ux-navbar ul ul {
+			float: none;
+			position: static;
+			color: #ffffff;
+		}
+		nav.ux-navbar ul ul li:hover > ul,
+		nav.ux-navbar ul li:hover > ul {
+			display: none;
+		}
+		nav.ux-navbar ul ul li {
+			display: block;
+			width: 100%;
+		}
+		nav.ux-navbar ul ul ul li {
+			position: static;
+		}
+	}
+	/* ----- #end navbar ----- */
+	</style>
+	<style type="text/css">
+		
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+
+/* ----------------------------- */
+
+/* TPL Highlight r.20200121 */
+
+.sf__tpl__highlight__marker {
+	background: #DDEEFF !important;
+	color: #333333 !important;
+}
+.sf__tpl__highlight__syntax {
+	background: #B3FF80 !important;
+	color: #222222 !important;
+}
+.sf__tpl__highlight__subtpl {
+	background: #FDE223 !important;
+	color: #111111 !important;
+}
+
+.sf__tpl__highlight__marker, .sf__tpl__highlight__syntax, .sf__tpl__highlight__subtpl {
+	cursor: context-menu !important;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */
+
+	</style>
+</head>
+<body>
+<nav class="ux-navbar">
+	<div id="logo" style="display:flex; align-items:center;">
+		<span style="line-height:50px;">
+						&#9776;
+			
+		</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
+	</div>
+	<label for="drop-0" class="toggle">&#9776;</label>
+	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--CoreFileSystem-" title="return to Index">return to Index</a></li>
+	</ul>
+	
+</nav>
+<!-- skip logo -->
+<!-- class r.20200121 -->
+<!-- Styles -->
+<!-- styles r.20200121 -->
+<style type="text/css">
+.doc-package {
+	color: #3F51B5;
+}
+.doc-located {
+	color: #999999;
+}
+.doc-modifiers {
+	color: #FF5500;
+}
+.doc-keyword {
+	color: #333333;
+}
+.doc-name,
+.doc-param-name {
+	color: #666699;
+}
+.doc-method-name {
+	color: #111111;
+}
+.doc-method-sub-name {
+	color: #555555;
+}
+.doc-method-special-name {
+	color: #003399;
+}
+.doc-method-abstract-name {
+	color: #777777;
+}
+.doc-ns,
+.doc-param-optional {
+	color: #778899;
+}
+.doc-param-value {
+	color: #3F51B5;
+}
+.doc-implements {
+	color: #72C100;
+}
+.doc-language {
+	color: #92981b;
+}
+.doc-extends,
+.doc-type-class {
+	color: #20639E;
+}
+.doc-inherited,
+.doc-type-interface {
+	color: #AAAAAA;
+}
+.doc-use,
+.doc-type-trait {
+	color: #888888;
+}
+.doc-reimplemented,
+.doc-reuses {
+	color: #99AABB;
+}
+.doc-throws {
+	color: #FF0000;
+}
+.doc-header {
+	color: #3F51B5;
+}
+div.doc-container {
+	border: 1px solid #ECECEC;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+ul.doc-list,
+ul.doc-list ul {
+	padding: 10px;
+	margin: 0;
+	list-style-type: none;
+}
+ul.doc-list ul {
+	padding: 0px;
+	padding-left: 20px;
+	margin: 0;
+}
+.doc-comments {
+	background: #343C61;
+	color: #FCFCFC;
+	padding: 10px;
+	line-height: 1.75;
+}
+.doc-method-ret-params {
+	background: #FAFAFA;
+	color: #3F51B5;
+	padding: 2px;
+	font-size: 95%;
+	margin-top: 10px;
+}
+.doc-method-comments {
+	background: #ECECEC;
+	color: #333333;
+	padding: 2px;
+	font-size: 85%;
+	margin-top: 10px;
+}
+.doc-code {
+	background: #232B50;
+	color: #FFFFFF;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.doc-code pre {
+	padding: 5px;
+	overflow-x: auto;
+}
+div.doc-summary {
+	position: fixed;
+	bottom: 25px;
+	right: 25px;
+	padding: 10px;
+	background: #343C61;
+	color: #FFFFFF;
+	border: 1px solid #CCCCCC;
+	width: 45vw;
+	min-width: 320px !important;
+}
+select#select-summary {
+	width: 99% !important;
+}
+</style>
+<style type="text/css">
+/*
+// css/atelier-sulphurpool-dark.css
+// HighlightJs: v.9.13.1
+*/
+
+/* modified by unixman - changed color for comment */
+/* Base16 Atelier Sulphurpool Dark - Theme */
+/* by Bram de Haan (http://atelierbram.github.io/syntax-highlighting/atelier-schemes/sulphurpool) */
+/* Original Base16 color scheme by Chris Kempson (https://github.com/chriskempson/base16) */
+
+/* Atelier-Sulphurpool Comment */
+.hljs-comment {
+	color: #777777;
+}
+.hljs-quote {
+	color: #898ea4;
+}
+
+/* Atelier-Sulphurpool Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-name,
+.hljs-regexp,
+.hljs-link,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+	color: #c94922;
+}
+
+/* Atelier-Sulphurpool Orange */
+.hljs-number,
+.hljs-meta,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params {
+	color: #c76b29;
+}
+
+/* Atelier-Sulphurpool Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet {
+	color: #ac9739;
+}
+
+/* Atelier-Sulphurpool Blue */
+.hljs-title,
+.hljs-section {
+	color: #3d8fd1;
+}
+
+/* Atelier-Sulphurpool Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #6679cc;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	background: #202746;
+	color: #979db4;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+
+/* END */
+
+</style>
+<!-- Headings -->
+<h1 title="PHP class: `\SmartFileSysUtils` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartFileSysUtils</span><br>
+	
+	
+	{
+	
+	}&nbsp;::
+</h1>
+<!-- Description -->
+<div class="doc-comments">Class: SmartFileSysUtils - provides the File System Util functions.<br>
+This class enforces the use of RELATIVE PATHS to force using correct path access in a web environment application.<br>
+Relative paths must be relative to the web application folder as folder: `some-folder/` or file: `some-folder/my-file.txt`.<br>
+Absolute paths are denied by internal checks as they are NOT SAFE in a Web Application from the security point of view ...<br>
+Also the backward path access like `../some-file-or-folder` is denied from the above exposed reasons.<br>
+Files and Folders must contain ONLY safe characters as: `[a-z] [A-Z] [0-9] _ - . @ #` ; folders can also contain slashes `/` (as path separators); no spaces are allowed in paths !!<br>
+NOTICE: To use paths in a safe manner, never add manually a / at the end of a path variable, because if it is empty will result in accessing the root of the file system (/).<br>
+To handle this in an easy and safe manner, use the function SmartFileSysUtils::add_dir_last_slash($my_dir) so it will add the trailing slash ONLY if misses but NOT if the $my_dir is empty to avoid root access !</div><br>
+<!-- Metainfo -->
+<div class="doc-container">
+	<ul class="doc-list">
+		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/lib_filesys.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> @Core:FileSystem</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartFileSysUtils</span></li>
+		
+		<li><b>Version:</b> v.20200511</li>
+		<li><b>Depends:</b> classes:  Smart</li>
+		
+		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
+		
+		
+	</ul>
+</div>
+<!-- Methods -->
+<br>
+<div class="doc-container" id="Methods--Summary-">
+	<h2 class="doc-header">class Methods</h2>
+</div>
+<!-- methods r.20200121 -->
+<div class="doc-container" id="Method--max_upload_size">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>max_upload_size</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	
+	
+			<div class="doc-method-ret-params">@return: {INTEGER} the Max Upload Size in Bytes</div>
+	
+			<div class="doc-method-comments">Return the MAXIMUM allowed Upload Size</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--check_if_safe_file_or_dir_name">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>check_if_safe_file_or_dir_name</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_fname` Parameter is REQUIRED">$y_fname</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;0/1
+	
+	
+			<div class="doc-method-ret-params">@return: {0/1} returns 1 if VALID ; 0 if INVALID<br>
+@param: {STRING} $y_fname: The dirname or filename, (not path containing /) to validate</div>
+	
+			<div class="doc-method-comments">Check a Name of a File or Directory (not a path containing /) if contain valid characters (to avoid filesystem path security injections)<br>
+Security: provides check if unsafe filenames or dirnames are accessed.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--check_if_safe_path">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>check_if_safe_path</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_path` Parameter is REQUIRED">$y_path</span></b></span>, 
+			<i>YES/NO</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_deny_absolute_path` Parameter is OPTIONAL, with the Default Value: &quot;yes&quot;">$y_deny_absolute_path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;yes&quot;</b></span>, 
+			<i>YES/NO</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_protected_relative_paths` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_allow_protected_relative_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;0/1
+	
+	
+			<div class="doc-method-ret-params">@return: {0/1} returns 1 if VALID ; 0 if INVALID<br>
+@param: {STRING} $y_path: The path (dir or file) to validate<br>
+@param: {YES/NO} $y_deny_absolute_path: *Optional* If YES will dissalow absolute paths<br>
+@param: {YES/NO} $y_allow_protected_relative_paths: *Optional* ! This is for very special case usage only so don't set it to YES except if you know what you are really doing ! If set to YES will allow access to special protected paths of this framework which may have impact on security ... ; this parameter is intended just for relative paths only (not absolute paths) as: #dir/.../file.ext ; #file.ext</div>
+	
+			<div class="doc-method-comments">Check a Path (to a Directory or to a File) if contain valid characters (to avoid filesystem path security injections)<br>
+Security: provides check if unsafe paths are accessed.</div>
+	
+	
+	
+</div><!-- Skip Internal-Priv Method: `raise_error_if_unsafe_path()` --><div class="doc-container" id="Method--add_dir_last_slash">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>add_dir_last_slash</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_path` Parameter is REQUIRED">$y_path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The fixed path with a trailing<br>
+@param: {STRING} $y_path: The path to add the trailing slash to</div>
+	
+			<div class="doc-method-comments">Safe add a trailing slash to a path if not already have it, with safe detection and avoid root access.<br>
+Adding a trailing slash to a path is not a simple task as if path is empty, adding the trailing slash will result in accessing the root file system as will be: /.<br>
+Otherwise it have to detect if the trailing slash exists already to avoid double slash.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--version_stdmtime">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>version_stdmtime</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The version as string to be used with version add</div>
+	
+			<div class="doc-method-comments">Generates a Standard File Version based on Microtime Float to use with version add<br>
+Ex: 1517576620.6128</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--version_remove">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>version_remove</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file` Parameter is REQUIRED">$file</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The fixed file name without the version<br>
+@param: {STRING} $file: The file name (with version or not) to be processed</div>
+	
+			<div class="doc-method-comments">Remove the version from a file name<br>
+Ex: myfile.@1505240360@.ext will become: myfile.ext</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--version_add">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>version_add</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file` Parameter is REQUIRED">$file</span></b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$version` Parameter is REQUIRED">$version</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The fixed file name with a version<br>
+@param: {STRING} $file: The file name (with version or not) to be processed ; if version detected will be preserved<br>
+@param: {STRING} $version: The version to be added</div>
+	
+			<div class="doc-method-comments">Add the version to a file name.<br>
+Ex: myfile.ext will become: myfile.@1505240360@.ext</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--version_get">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>version_get</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file` Parameter is REQUIRED">$file</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The version from filename or ''<br>
+@param: {STRING} $file: The file name to be processed</div>
+	
+			<div class="doc-method-comments">Get the version from a file name.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--version_check">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>version_check</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file` Parameter is REQUIRED">$file</span></b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$version` Parameter is REQUIRED">$version</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;0/1
+	
+	
+			<div class="doc-method-ret-params">@return: {0/1} returns 1 if the version is detected ; otherwise returns 0 if version not detected<br>
+@param: {STRING} $file: The file name to be checked<br>
+@param: {STRING} $version: The version to be checked</div>
+	
+			<div class="doc-method-comments">Check the version from a file name.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--get_dir_from_path">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_dir_from_path</b></span>&nbsp;(
+				<span class="doc-param-name"><b><span title="`$y_path` Parameter is REQUIRED">$y_path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} a directory path [FOLDER NAME]<br>
+@param: {STRING} $ypath: the path (dir or file)</div>
+	
+			<div class="doc-method-comments">Return the folder name from a path (except last trailing slash: /)</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--get_file_name_from_path">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_file_name_from_path</b></span>&nbsp;(
+				<span class="doc-param-name"><b><span title="`$y_path` Parameter is REQUIRED">$y_path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} [FILE NAME]<br>
+@param: {STRING} $ypath: path or file</div>
+	
+			<div class="doc-method-comments">Return the file name (includding extension) from path<br>
+WARNING: path_info('c:\\file.php') will not work correct on unix, but on windows will work correct both: path_info('c:\\file.php') and path_info('path/file.php'</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--get_noext_file_name_from_path">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_noext_file_name_from_path</b></span>&nbsp;(
+				<span class="doc-param-name"><b><span title="`$y_path` Parameter is REQUIRED">$y_path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} [FILE NAME]<br>
+@param: {STRING} $ypath: path or file</div>
+	
+			<div class="doc-method-comments">Return the file name (WITHOUT extension) from path</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--get_file_extension_from_path">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_file_extension_from_path</b></span>&nbsp;(
+				<span class="doc-param-name"><b><span title="`$y_path` Parameter is REQUIRED">$y_path</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} [FILE EXTENSION]<br>
+@param: {STRING} $ypath: path or file</div>
+	
+			<div class="doc-method-comments">Return the file extension (without .) from path</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--prefixed_uuid10_dir">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>prefixed_uuid10_dir</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} Prefixed Path<br>
+@param: {STRING} $y_id: 10 chars id (uuid10)</div>
+	
+			<div class="doc-method-comments">Generate a prefixed dir from a base36 UUID, 10 chars length : [0-9A-Z].<br>
+It does include also the UUID as final folder segment.<br>
+Example: for ID ABCDEFGHIJ09 will return: 9T/5B/0B/9M/9T5B0B9M8M/ as the generated prefixed path.<br>
+This have to be used for large folder storage structure to avoid limitations on some filesystems (ext3 / ntfs) where max sub-dirs per dir is 32k.<br>
+The prefixed path will be grouped by each 2 characters (max sub-folders per folder: 36 x 36 = 1296).<br>
+If a lower length than 10 chars is provided will pad with 0 on the left.<br>
+If a higher length or an invalid ID is provided will reset the ID to 000000..00 (10 chars) for the given length, but also drop a warning.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--prefixed_sha1_path">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>prefixed_sha1_path</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} Prefixed Path<br>
+@param: {STRING} $y_id: 40 chars id (sha1)</div>
+	
+			<div class="doc-method-comments">Generate a prefixed dir from a base16 UUID (sha1), 40 chars length : [0-9a-f].<br>
+It does NOT include the ID final folder.<br>
+Example: for ID df3a808b2bf20aaab4419c43d9f3a6143bd6b4bb will return: d/f3a/808/b2b/f20/aaa/b44/19c/43d/9f3/a61/43b/d6b/ as the generated prefixed path.<br>
+This have to be used for large folder storage structure to avoid limitations on some filesystems (ext3 / ntfs) where max sub-dirs per dir is 32k.<br>
+The prefixed folder will be grouped by each 3 characters (max sub-folders per folder: 16 x 16 x 16 = 4096).<br>
+If a lower length than 40 chars is provided will pad with 0 on the left.<br>
+If a higher length than 40 chars or an invalid ID is provided will reset the ID to 000000..00 (40 chars) for the given length, but also drop a warning.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--mime_eval">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>mime_eval</b></span>&nbsp;(
+				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$yfile` Parameter is REQUIRED">$yfile</span></b></span>, 
+			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ydisposition` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$ydisposition</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
+	
+	
+			<div class="doc-method-ret-params">@return: {MIXED} ARRAY [ 0 =&gt; mime type ; 1 =&gt; inline/attachment; filename=&quot;file.ext&quot; ; 2 =&gt; inline/attachment ] ; IF $ydisposition == FALSE will return STRING: mime type<br>
+@param: {STRING} $yfile: the file name (includding file extension) ; Ex: file.ext<br>
+@param: {ENUM} $ydisposition: STRING: '' to leave as is ; attachment | inline to force a type ; BOOLEAN: FALSE to get just Mime Type</div>
+	
+			<div class="doc-method-comments">Evaluate and return the File MimeType (and *Optional* the Disposition by File Extension).</div>
+	
+	
+	
+</div>
+<!-- Properties -->
+<br>
+<div class="doc-container" id="Properties--Summary-">
+	<h2 class="doc-header">class Properties</h2>
+</div>
+<!-- properties r.20200121 -->
+
+<!-- Constants -->
+<br>
+<div class="doc-container" id="Constants--Summary-">
+	<h2 class="doc-header">class Constants</h2>
+</div>
+<!-- constants r.20200121 -->
+
+<!-- Sample Code -->
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample code: PHP</h2>
+</div>
+<div class="doc-code">
+	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">SmartFileSysUtils</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br>&nbsp;&nbsp;</span><span style="color: #999999">//-----------------------------------------------------------------------------------------------------<br>&nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>&nbsp;&nbsp;//&nbsp;SAFE&nbsp;REPLACEMENTS:<br>&nbsp;&nbsp;//&nbsp;In&nbsp;order&nbsp;to&nbsp;supply&nbsp;a&nbsp;common&nbsp;framework&nbsp;for&nbsp;Unix&nbsp;/&nbsp;Linux&nbsp;but&nbsp;also&nbsp;on&nbsp;Windows,<br>&nbsp;&nbsp;//&nbsp;because&nbsp;on&nbsp;Windows&nbsp;dir&nbsp;separator&nbsp;is&nbsp;\&nbsp;instead&nbsp;of&nbsp;/&nbsp;the&nbsp;following&nbsp;functions&nbsp;must&nbsp;be&nbsp;used&nbsp;as&nbsp;replacements:<br>&nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>&nbsp;&nbsp;//&nbsp;Smart::real_path()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instead&nbsp;of:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;realpath()<br>&nbsp;&nbsp;//&nbsp;Smart::dir_name()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instead&nbsp;of:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dirname()<br>&nbsp;&nbsp;//&nbsp;Smart::path_info()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instead&nbsp;of:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pathinfo()<br>&nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>&nbsp;&nbsp;//&nbsp;Also,&nbsp;when&nbsp;folders&nbsp;are&nbsp;get&nbsp;from&nbsp;external&nbsp;environments&nbsp;and&nbsp;are&nbsp;not&nbsp;certified&nbsp;if&nbsp;they&nbsp;have<br>&nbsp;&nbsp;//&nbsp;been&nbsp;converted&nbsp;from&nbsp;\&nbsp;to&nbsp;/&nbsp;on&nbsp;Windows,&nbsp;those&nbsp;paths&nbsp;have&nbsp;to&nbsp;be&nbsp;fixed&nbsp;using:&nbsp;Smart::fix_path_separator()<br>&nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br><br></span><span style="color: #FFFFFF">?&gt;</span>
+</span>
+</code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
+</div>
+<!-- Summary List -->
+<br>
+<!-- summary r.20200121 -->
+<script type="text/javascript">
+// summary r.20200121
+function smartHandleDocSelector(obj) {
+	if(!obj) {
+		return;
+	}
+	var selection = '';
+	try {
+		selection = obj.options[obj.selectedIndex].value;
+	} catch(err){}
+	if(selection) {
+		self.location.hash = String(selection);
+		obj.selectedIndex = 0; // reset selection to index zero
+	} else {
+		selection = '';
+		//self.location.href = self.location.href.split('#')[0]; // because reset selection to index zero avoid refresh !
+	}
+}
+</script>
+<div class="doc-summary">
+	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
+		<option value="" selected>* PHP Class \SmartFileSysUtils # Documentation Index *</option>
+		<optgroup label="Class \SmartFileSysUtils">
+			<option value="Class--Summary-">Class definition</option>
+		</optgroup>
+		<optgroup label="Class Methods">
+			<option value="Methods--Summary-">Methods list</option>
+									<option value="Method--max_upload_size"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;max_upload_size()</option>
+			
+			
+									<option value="Method--check_if_safe_file_or_dir_name"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;check_if_safe_file_or_dir_name()</option>
+			
+			
+									<option value="Method--check_if_safe_path"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;check_if_safe_path()</option>
+			
+			
+						
+			
+									<option value="Method--add_dir_last_slash"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;add_dir_last_slash()</option>
+			
+			
+									<option value="Method--version_stdmtime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;version_stdmtime()</option>
+			
+			
+									<option value="Method--version_remove"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;version_remove()</option>
+			
+			
+									<option value="Method--version_add"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;version_add()</option>
+			
+			
+									<option value="Method--version_get"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;version_get()</option>
+			
+			
+									<option value="Method--version_check"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;version_check()</option>
+			
+			
+									<option value="Method--get_dir_from_path"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_dir_from_path()</option>
+			
+			
+									<option value="Method--get_file_name_from_path"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_file_name_from_path()</option>
+			
+			
+									<option value="Method--get_noext_file_name_from_path"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_noext_file_name_from_path()</option>
+			
+			
+									<option value="Method--get_file_extension_from_path"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_file_extension_from_path()</option>
+			
+			
+									<option value="Method--prefixed_uuid10_dir"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prefixed_uuid10_dir()</option>
+			
+			
+									<option value="Method--prefixed_sha1_path"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prefixed_sha1_path()</option>
+			
+			
+									<option value="Method--mime_eval"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;mime_eval()</option>
+			
+			
+			
+		</optgroup>
+		<optgroup label="Class Properties">
+			<option value="Properties--Summary-">Properties list</option>
+			
+		</optgroup>
+		<optgroup label="Class Constants">
+			<option value="Constants--Summary-">Constants list</option>
+			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
+		</optgroup>
+		
+	</select>
+</div>
+<!-- summary-selectjs r.20200121 -->
+
+
+<hr>
+<small style="color:#BBBBBB;">documentation generated on: 2020-12-07 13:36:01 +0000</small>
+<hr>
+<br>
+<!-- # -->
+<div align="center">
+	<br>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2020 unix-world.org</small>
+</div>
+</body>
+</html>

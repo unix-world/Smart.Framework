@@ -228,7 +228,7 @@ interface SmartInterfaceAppInfo {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20200805
+ * @version 	v.20201207
  * @package 	development:Application
  *
  */
@@ -1371,6 +1371,12 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 * @return 	MIXED					:: the content of the specific PageView variable currently set
 	 */
 	final public function PageViewGetVar($param) {
+		//--
+		if((is_array($param)) OR (is_object($param)) OR ((string)$param == '') OR (is_array($value)) OR (is_object($value))) {
+			return null;
+		} //end if
+		//--
+		$param = (string) strtolower((string)$param);
 		//--
 		return $this->pageview[(string)$param]; // mixed
 		//--
