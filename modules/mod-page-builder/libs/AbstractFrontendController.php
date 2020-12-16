@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20201112
+ * @version 	v.20201216
  * @package 	development:modules:PageBuilder
  *
  */
@@ -38,7 +38,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 	private $crr_lang 			= '';						// current language
 
 	private $regex_tpl_marker 	= '/^[A-Z0-9_\-\.@]+$/'; 	// regex for tpl markers
-	private $regex_marker 		= '/^[A-Z0-9_\-\.]+$/'; 	// regex for internal markers
+	private $regex_marker 		= '/^[A-Z0-9_\-\.]+$/'; 	// regex for internal markers {{{SYNC-PAGEBUILDER-REGEX-MARKERS-INT}}}
 
 	private $auth_required 		= 0; 						// 0: no auth ; if > 0, will req. auth
 	private $recursion_control 	= 0; 						// initialize

@@ -49,13 +49,15 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20201204
+ * @version 	v.20201216
  * @package 	PageBuilder
  *
  */
 final class Manager {
 
 	// ::
+
+	const REGEX_MARKER = '/^[A-Z0-9_\-\.]+$/'; // {{{SYNC-PAGEBUILDER-REGEX-MARKERS-INT}}}
 
 	private static $MaxStrCodeSize = 16777216; // 16 MB
 	private static $MaxSizeMediaImgMB = 1.25; // 1.25 MB
@@ -611,7 +613,8 @@ final class Manager {
 			$tselect = ''; // not translatable page
 		} //end if
 		//--
-		$query['code'] = (string) \base64_decode($query['code']);
+		$query['code'] = (string) \base64_decode((string)$query['code']);
+		$query['data'] = (string) \base64_decode((string)$query['data']);
 		//--
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
 		//--
@@ -691,6 +694,61 @@ final class Manager {
 					$out .= '<div align="center" title="'.\Smart::escape_html($query['code']).'"><img src="'.self::$ModulePath.'libs/views/manager/img/syntax-settings.svg" width="256" height="256" alt="Data / Settings Segment" title="Data / Settings Segment" style="opacity:0.7"></div>';
 					//--
 				} else {
+					//-- {{{SYNC-PAGEBUILDER-COMPARE-CODE-WITH-DATA-PLACEHOLDERS}}}
+					$arr_extr_placeholders = array();
+					if((string)\trim((string)$query['code']) != '') {
+						$arr_extr_placeholders = (array) \SmartModExtLib\PageBuilder\Utils::extractPlaceholders((string)$query['code'], true);
+					} //end if
+					$arr_data_code_yaml = (array) (new \SmartYamlConverter(false))->parse((string)$query['data']); // do not log YAML errors
+					$arr_placehold_orphans = [];
+					if(\Smart::array_size($arr_data_code_yaml['RENDER']) <= 0) {
+						$arr_data_code_yaml['RENDER'] = array();
+					} //end if
+					foreach($arr_extr_placeholders as $placehold_key => $placehold_val) {
+						$placehold_val = (string) \trim((string)$placehold_val);
+						$placehold_val = (string) \substr((string)$placehold_val, 3, -3);
+						if(\preg_match((string)self::REGEX_MARKER, (string)$placehold_val)) {
+							if(!\array_key_exists((string)$placehold_val, (array)$arr_data_code_yaml['RENDER'])) {
+								$arr_placehold_orphans[(string)$placehold_val] = 1;
+							} //end if
+						} elseif(\stripos((string)$placehold_val, 'TEMPLATE@') === 0) { // exclude special keys: `@` and `TEMPLATE@*`
+							$arr_placehold_orphans[(string)$placehold_val] = 2;
+						} elseif((string)$placehold_val == '@') { // exclude special keys: `@` and `TEMPLATE@*`
+							$arr_placehold_orphans[(string)$placehold_val] = 3;
+						} else {
+							$arr_placehold_orphans[(string)$placehold_val] = 0;
+						} //end if else
+					} //end foreach
+					$placehold_key = null; // free mem
+					$placehold_val = null; // free mem
+					$arr_data_code_yaml = null; // free mem
+					$arr_extr_placeholders = null; // free mem
+					$warn_placeholders = '';
+					if(\Smart::array_size($arr_placehold_orphans) > 0) {
+						$warn_placeholders .= '<ul>';
+						foreach($arr_placehold_orphans as $orphans_key => $orphans_val) {
+							$warn_placeholders .= '<li>{{:'.\Smart::escape_html((string)$orphans_key).':}}';
+							switch((int)$orphans_val) {
+								case 1:
+									$warn_placeholders .= ' - UNDEFINED Placeholder (Missing in Data context)';
+									break;
+								case 2:
+								case 3:
+									$warn_placeholders .= ' - INVALID Placeholder (Reserved Syntax)';
+									break;
+								case 0:
+								default:
+									$warn_placeholders .= ' - INVALID Placeholder (WRONG Syntax)';
+							} //end switch
+							$warn_placeholders .= '</li>';
+						} //end foreach
+						$orphans_key = null;
+						$orphans_val = null;
+						$warn_placeholders .= '</ul>';
+						$out .= (string) \SmartComponents::operation_warn('WARNING: Undefined or Invalid Placeholders detected:<br>'.$warn_placeholders, '92%');
+					} //end if
+					$warn_placeholders = null; // free mem
+					$arr_placehold_orphans = null; // free mem
 					//--
 					$out .= '<div id="code-viewer" align="left" style="min-height:35px;">';
 					if((string)$query['mode'] == 'raw') {
@@ -808,6 +866,7 @@ final class Manager {
 		//--
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
 		//--
+		$query['code'] = (string) \base64_decode((string)$query['code']);
 		$query['data'] = (string) \base64_decode((string)$query['data']);
 		//--
 		if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true))) {
@@ -840,15 +899,77 @@ final class Manager {
 				//--
 				$out = '';
 				if($yerr) {
+					//--
 					$out .= (string) \SmartComponents::operation_error('YAML Parse ERROR: '.\Smart::escape_html($yerr), '815px');
+					//--
 				} else {
+					//--
 					if((string)$query['mode'] == 'settings') {
+						//--
 						if(\Smart::array_size($yaml) <= 0) {
 							$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Empty definition for settings', '815px');
 						} elseif(\Smart::array_size($yaml['SETTINGS']) <= 0) {
 							$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Invalid `SETTINGS` definition', '815px');
 						} //end if else
+						//--
 					} else {
+						//-- {{{SYNC-PAGEBUILDER-COMPARE-CODE-WITH-DATA-PLACEHOLDERS}}}
+						$arr_extr_placeholders = array();
+						if((string)\trim((string)$query['code']) != '') {
+							$arr_extr_placeholders = (array) \SmartModExtLib\PageBuilder\Utils::extractPlaceholders((string)$query['code']);
+						} //end if
+						$arr_data_code_yaml = (array) (new \SmartYamlConverter(false))->parse((string)$query['data']); // do not log YAML errors
+						$arr_placehold_orphans = [];
+						if(\Smart::array_size($arr_data_code_yaml['RENDER']) > 0) {
+							foreach($arr_data_code_yaml['RENDER'] as $datactx_key => $datactx_val) {
+								$datactx_key = (string) \trim((string)$datactx_key);
+								if((string)$datactx_key != '') {
+									if(\preg_match((string)self::REGEX_MARKER, (string)$datactx_key)) {
+										if(!\in_array((string)'{{:'.$datactx_key.':}}', (array)$arr_extr_placeholders)) {
+											$arr_placehold_orphans[(string)$datactx_key] = 1;
+										} //end if
+									} elseif(\stripos((string)$datactx_key, 'TEMPLATE@') === 0) { // exclude special keys: `@` and `TEMPLATE@*`
+										if((string)\substr((string)$query['id'], 0, 1) == '#') {
+											$arr_placehold_orphans[(string)$datactx_key] = 2;
+										} //end if
+									} elseif((string)$datactx_key == '@') { // exclude special keys: `@` and `TEMPLATE@*`
+										// OK
+									} else {
+										$arr_placehold_orphans[(string)$datactx_key] = 0;
+									} //end if else
+								} //end if
+							} //end foreach
+						} //end if
+						$datactx_key = null; // free mem
+						$datactx_val = null; // free mem
+						$arr_data_code_yaml = null; // free mem
+						$arr_extr_placeholders = null; // free mem
+						$warn_placeholders = '';
+						if(\Smart::array_size($arr_placehold_orphans) > 0) {
+							$warn_placeholders .= '<ul>';
+							foreach($arr_placehold_orphans as $orphans_key => $orphans_val) {
+								$warn_placeholders .= '<li>`'.\Smart::escape_html((string)$orphans_key).'`';
+								switch((int)$orphans_val) {
+									case 1:
+										$warn_placeholders .= ' - UNUSED Key (Missing in Code context)';
+										break;
+									case 2:
+										$warn_placeholders .= ' - INVALID Key (Reserved just for Pages)';
+										break;
+									case 0:
+									default:
+										$warn_placeholders .= ' - INVALID Key (WRONG Syntax)';
+								} //end switch
+								$warn_placeholders .= '</li>';
+							} //end foreach
+							$orphans_key = null;
+							$orphans_val = null;
+							$warn_placeholders .= '</ul>';
+							$out .= (string) \SmartComponents::operation_warn('WARNING: Undefined or Invalid Keys detected:<br>'.$warn_placeholders, '92%');
+						} //end if
+						$warn_placeholders = null; // free mem
+						$arr_placehold_orphans = null; // free mem
+						//--
 						if(\Smart::array_size($yaml) > 0) {
 							if((string)$query['mode'] == 'raw') {
 								if(\Smart::array_size($yaml['PROPS']) <= 0) {
@@ -860,8 +981,11 @@ final class Manager {
 								} //end if
 							} //end if else
 						} //end if
+						//--
 					} //end if else
+					//--
 				} //end if
+				//--
 				$out .= '<div align="left" id="yaml-viewer"><font size="4"><b>&lt;yaml&gt;</b></font>';
 				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-edit.svg'.'" alt="'.self::text('ttl_edtac').'" title="'.self::text('ttl_edtac').'" style="cursor:pointer;" onClick="'."SmartJS_BrowserUtils.Load_Div_Content_By_Ajax(jQuery('#yaml-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-edit-tab-data&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');".'">';

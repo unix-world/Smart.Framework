@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20201028
+ * @version 	v.20201216
  * @package 	PageBuilder
  *
  */
@@ -34,7 +34,8 @@ final class Utils {
 
 	// ::
 
-	const REGEX_PLACEHOLDERS 	= '/\{\{\:[A-Z0-9_\-\.]+\:\}\}/';
+	const REGEX_XPLACEHOLDERS 	= '/\{\{\:[^\:]*\:\}\}/';
+	const REGEX_PLACEHOLDERS 	= '/\{\{\:[A-Z0-9_\-\.]+\:\}\}/'; // {{{SYNC-PAGEBUILDER-REGEX-MARKERS-INT}}}
 	const REGEX_MARKERS 		= '/\{\{\=\#[A-Z0-9_\-\.]+(\|[a-z0-9]+)*\#\=\}\}/';
 
 
@@ -229,12 +230,17 @@ final class Utils {
 	} //END FUNCTION
 
 
-	//===== PRIVATES
-
-
-	private static function extractPlaceholders($str) {
+	public static function extractPlaceholders($str, $invalids=false) {
 		//--
-		$re = (string) self::REGEX_PLACEHOLDERS;
+		if((string)\trim((string)$str) == '') {
+			return array();
+		} //end if
+		//--
+		if($invalids === true) {
+			$re = (string) self::REGEX_XPLACEHOLDERS;
+		} else {
+			$re = (string) self::REGEX_PLACEHOLDERS;
+		} //end if else
 		//--
 		\preg_match_all((string)$re, (string)$str, $matches);
 		$arr = (array) \Smart::array_sort((array)$matches[0], 'natcasesort');
@@ -244,7 +250,11 @@ final class Utils {
 	} //END FUNCTION
 
 
-	private static function extractMarkers($str) {
+	public static function extractMarkers($str) {
+		//--
+		if((string)\trim((string)$str) == '') {
+			return array();
+		} //end if
 		//--
 		$re = (string) self::REGEX_MARKERS;
 		//--

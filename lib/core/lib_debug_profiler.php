@@ -39,7 +39,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @access 		private
  * @internal
  *
- * @version 	v.20200619
+ * @version 	v.20201211
  * @package 	Application:Development
  *
  */
@@ -939,7 +939,7 @@ private static function print_log_environment($req_filtered, $cookies_arr, $get_
 	//--
 	$filter_strings = 'Non-Filtered';
 	if(defined('SMART_FRAMEWORK_SECURITY_FILTER_INPUT')) {
-		$filter_strings = 'Filtered: `'.Smart::escape_html(addslashes((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT)).'`';
+		$filter_strings = 'Filtered: `'.Smart::escape_html((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT).'`';
 	} //end if
 	//--
 	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>REQUEST SemanticURL/GET/POST Vars :: '.$filter_strings.'</b></font></div>';

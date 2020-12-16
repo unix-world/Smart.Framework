@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20201112
+	// v.20201216
 
 
 	private static $db = null;
@@ -338,14 +338,14 @@ final class PageBuilderBackend {
 		//--
 		if((string)self::dbType() == 'pgsql') {
 			return (array) \SmartPgsqlDb::read_asdata(
-				'SELECT "id", "ref", "special", "mode", "code", "translations" FROM "web"."page_builder" WHERE ("id" = $1) LIMIT 1 OFFSET 0',
+				'SELECT "id", "ref", "special", "mode", "data", "code", "translations" FROM "web"."page_builder" WHERE ("id" = $1) LIMIT 1 OFFSET 0',
 				[
 					(string) $y_id
 				]
 			);
 		} elseif((string)self::dbType() == 'sqlite') {
 			return (array) self::$db->read_asdata(
-				'SELECT `id`, `ref`, `special`, `mode`, `code`, `translations` FROM `page_builder` WHERE (`id` = ?) LIMIT 1 OFFSET 0',
+				'SELECT `id`, `ref`, `special`, `mode`, `data`, `code`, `translations` FROM `page_builder` WHERE (`id` = ?) LIMIT 1 OFFSET 0',
 				[
 					(string) $y_id
 				]
@@ -445,14 +445,14 @@ final class PageBuilderBackend {
 		//--
 		if((string)self::dbType() == 'pgsql') {
 			return (array) \SmartPgsqlDb::read_asdata(
-				'SELECT "id", "ref", "special", "mode", "data" FROM "web"."page_builder" WHERE ("id" = $1) LIMIT 1 OFFSET 0',
+				'SELECT "id", "ref", "special", "mode", "data", "code" FROM "web"."page_builder" WHERE ("id" = $1) LIMIT 1 OFFSET 0',
 				[
 					(string) $y_id
 				]
 			);
 		} elseif((string)self::dbType() == 'sqlite') {
 			return (array) self::$db->read_asdata(
-				'SELECT `id`, `ref`, `special`, `mode`, `data` FROM `page_builder` WHERE (`id` = ?) LIMIT 1 OFFSET 0',
+				'SELECT `id`, `ref`, `special`, `mode`, `data`, `code` FROM `page_builder` WHERE (`id` = ?) LIMIT 1 OFFSET 0',
 				[
 					(string) $y_id
 				]
