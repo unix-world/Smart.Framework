@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20201109
+	// v.20201217
 
 
 	private static $db = null;
@@ -311,7 +311,7 @@ final class PageBuilderFrontend {
 		} elseif((string)$y_mode == 'get') {
 			$default_return = array();
 		} else {
-			Smart::log_warning(__METHOD__.' # Invalid Mode: '.$y_mode);
+			\Smart::log_warning(__METHOD__.' # Invalid Mode: '.$y_mode);
 			return null;
 		} //end if else
 		//--
@@ -331,16 +331,20 @@ final class PageBuilderFrontend {
 				$extra_condition = '';
 				break;
 			default:
-				Smart::log_warning(__METHOD__.' # Invalid Object Type: '.$y_obj_type);
+				\Smart::log_warning(__METHOD__.' # Invalid Object Type: '.$y_obj_type);
 				return $default_return;
 		} //end switch
 		//--
 		switch((string)$y_fld) {
-			case 'area':
-				break;
+			case 'ctrl':
 			case 'tags':
 				break;
 			case 'area:tags':
+			case 'area':
+				if((string)$y_obj_type == 'pages') {
+					\Smart::log_warning(__METHOD__.' # Object Type Pages cannot be accessed by: '.$y_fld);
+					return $default_return;
+				} //end if
 				break;
 			case 'id':
 				$y_orderby = 'id';
@@ -349,7 +353,7 @@ final class PageBuilderFrontend {
 				$y_ofs = 0;
 				break;
 			default:
-				Smart::log_warning(__METHOD__.' # Invalid Field: '.$y_fld);
+				\Smart::log_warning(__METHOD__.' # Invalid Field: '.$y_fld);
 				return $default_return;
 		} //end switch
 		//--
@@ -443,6 +447,14 @@ final class PageBuilderFrontend {
 						(string) '#'
 					]
 				);
+			} elseif((string)$y_fld == 'ctrl') {
+				$qresult = \SmartPgsqlDb::{$fx_exec}(
+					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("ctrl" LIKE $1) AND (SUBSTR("id",1,1) '.$sign_expr.' $2)'.$extra_condition.') '.$qr_suffix,
+					[
+						(string) $y_value,
+						(string) '#'
+					]
+				);
 			} elseif((string)$y_fld == 'area') {
 				$qresult = \SmartPgsqlDb::{$fx_exec}(
 					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND (SUBSTR("id",1,1) '.$sign_expr.' $2)'.$extra_condition.') '.$qr_suffix,
@@ -475,6 +487,14 @@ final class PageBuilderFrontend {
 			if((string)$y_fld == 'id') {
 				$qresult = self::$db->{$fx_exec}(
 					'SELECT '.$select_what.' FROM `page_builder` WHERE ((`id` = ?) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
+					[
+						(string) $y_value,
+						(string) '#'
+					]
+				);
+			} elseif((string)$y_fld == 'ctrl') {
+				$qresult = self::$db->{$fx_exec}(
+					'SELECT '.$select_what.' FROM `page_builder` WHERE ((`ctrl` LIKE ?) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
 					[
 						(string) $y_value,
 						(string) '#'

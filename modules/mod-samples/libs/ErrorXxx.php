@@ -32,7 +32,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200630
+ * @version 	v.20201217
  *
  */
 abstract class ErrorXxx extends \SmartAbstractAppController {
@@ -40,9 +40,14 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 	protected $errcode = 501;
 	protected $errtext = '???';
 
+	private $errmsg = '';
 	private $tpldir = 'modules/mod-samples/libs/views/';
 
 	final public function Run() {
+
+		//--
+		$the_errmsg = (string) \Smart::normalize_spaces((string)\trim((string)$this->errmsg));
+		//--
 
 		//-- detect page extension
 		$uri = (string) \SmartUtils::get_server_current_request_uri();
@@ -111,7 +116,7 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 					(string)\Smart::json_encode([
 						'status' => 'ERROR',
 						'message' => (string) ((int)$this->errcode.' '.$this->errtext),
-						'details' => (string) 'Error: Json / Page '.$this->errtext
+						'details' => (string) 'Json / Page Error: '.$the_errmsg
 					])
 				);
 				return;
@@ -122,7 +127,7 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 				$this->PageViewSetCfg('rawpage', true);
 				$this->PageViewSetCfg('rawmime', 'application/xml');
 				$this->PageViewSetCfg('rawdisp', 'inline');
-				$this->PageViewSetVar('main', '<error'.(int)$this->errcode.'>XML '.\Smart::escape_html($this->errtext).'</error'.(int)$this->errcode.'>');
+				$this->PageViewSetVar('main', '<error'.(int)$this->errcode.'>XML '.\Smart::escape_html($this->errtext.': '.$the_errmsg).'</error'.(int)$this->errcode.'>');
 				return;
 				break;
 			case 'txt':
@@ -143,7 +148,7 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 				$this->PageViewSetCfg('rawpage', true);
 				$this->PageViewSetCfg('rawmime', 'text/plain');
 				$this->PageViewSetCfg('rawdisp', 'inline');
-				$this->PageViewSetVar('main', '-- # ERROR '.(int)$this->errcode.': '.strtoupper((string)$lext).' '.$this->errtext.' # --');
+				$this->PageViewSetVar('main', '-- # ERROR '.(int)$this->errcode.': '.strtoupper((string)$lext).' '.$this->errtext.' # '.$the_errmsg.' --');
 				return;
 				break;
 			case 'js':
@@ -151,7 +156,8 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 				$this->PageViewSetCfg('rawpage', true);
 				$this->PageViewSetCfg('rawmime', 'application/javascript');
 				$this->PageViewSetCfg('rawdisp', 'inline');
-				$this->PageViewSetVar('main', '/* # ERROR '.(int)$this->errcode.': JS '.$this->errtext.' # */');
+				$the_errmsg = (string) str_replace(['/*', '*/'], ' ', (string)$the_errmsg);
+				$this->PageViewSetVar('main', '/* # ERROR '.(int)$this->errcode.': JS '.$this->errtext.' # '.$the_errmsg.' */');
 				return;
 				break;
 			case 'css':
@@ -159,7 +165,8 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 				$this->PageViewSetCfg('rawpage', true);
 				$this->PageViewSetCfg('rawmime', 'text/css');
 				$this->PageViewSetCfg('rawdisp', 'inline');
-				$this->PageViewSetVar('main', '/* # ERROR '.(int)$this->errcode.': CSS '.$this->errtext.' # */');
+				$the_errmsg = (string) str_replace(['/*', '*/'], ' ', (string)$the_errmsg);
+				$this->PageViewSetVar('main', '/* # ERROR '.(int)$this->errcode.': CSS '.$this->errtext.' # '.$the_errmsg.' */');
 				return;
 				break;
 			default:
@@ -185,6 +192,8 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 
 
 	final public function outputErrorPage($y_message, $y_html_message) {
+		//--
+		$this->errmsg = (string) $y_message; // must be before initialize
 		//--
 		$this->Initialize();
 		$this->Run();
