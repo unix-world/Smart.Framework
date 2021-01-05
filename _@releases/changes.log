@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+January 05, 2021 :: Version 7.2.1 rev.20210105
+	* New Feature for ux-navbar (span.detail-s, span.detail-l) for CSS Toolkit
+
 December 07, 2020 :: Version 7.2.1 rev.20201207
 	* Fixes and Optimizations
 	* Lib ImGd New Features

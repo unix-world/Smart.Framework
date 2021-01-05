@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20200807), (c) 2015-2020 unix-world.org
+	extended by unixman, (stable.20210105), (c) 2015-2021 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 */
 
@@ -1371,6 +1371,12 @@ nav.ux-navbar {
 	margin: 0;
 	padding: 0;
 	background-color: #3f51b5;
+}
+nav.ux-navbar span.detail-s {
+	display: none;
+}
+nav.ux-navbar span.detail-l {
+	display: inline;
 }
 nav.ux-navbar div#logo {
 	display: block;

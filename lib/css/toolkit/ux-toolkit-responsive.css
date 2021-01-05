@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman (stable.20200807), (c) 2015-2020 unix-world.org
+	extended by unixman (stable.20210105), (c) 2015-2021 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 */
 
@@ -209,6 +209,12 @@ License: BSD
 
 	/* Responsive NavBar Menu (by Unixman) */
 
+	nav.ux-navbar span.detail-s {
+		display: inline;
+	}
+	nav.ux-navbar span.detail-l {
+		display: none;
+	}
 	nav.ux-navbar div#logo span:not(.display) {
 		display: none;
 	}

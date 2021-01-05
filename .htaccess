@@ -1,8 +1,8 @@
 
 #####
 ### Smart.Framework .htaccess sample for Apache 2.2 / 2.4
-### r.7.2.1 / smart.framework.v.7.2 @ 20200605
-### (c) 2015-2020 unix-world.org
+### r.7.2.1 / smart.framework.v.7.2 @ 20210105
+### (c) 2015-2021 unix-world.org
 #####
 
 ### Restrict by IP

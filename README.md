@@ -2,7 +2,7 @@
 ## Dual-licensed: under BSD license or GPLv3 license (at your choice)
 ### This software project is open source.
 #### You must choose which license to use depending on your use case: BSD license or GPLv3 license
-<b>(c) 2009 - 2020 unix-world.org</b> / <i>support&#64;unix-world.org</i>
+<b>(c) 2009 - 2021 unix-world.org</b> / <i>support&#64;unix-world.org</i>
 
  &nbsp; | &nbsp;
 ------------- | -------------
@@ -42,7 +42,7 @@ The original software architecture of this web framework allows it to deliver a 
 
 
 #### This software framework is compatible, stable and actively tested with PHP 7.2 / 7.3 / 7.4 versions.
-**Prefered PHP versions** are: **7.2 / 7.3** which are currently LTS.
+**Prefered PHP versions** are: **7.3 / 7.4** which are currently LTS.
 
 <br>
 ### Benchmark Scenario:
@@ -56,11 +56,11 @@ The benchmark was running using *Apache Benchmark* suite with the following comm
 * **HDD 2 x 1TB** SSD/NVME
 
 **Software**:
-* OS: **Debian 10 Linux 64-bit**, up-to-date 2020-06-03
-* Apps: **Apache 2.4.43**, **PHP 7.3.18 with Opcache enabled**
+* OS: **Debian 10 Linux 64-bit**, up-to-date 2021-01-05
+* Apps: **Apache 2.4.43**, **PHP 7.3.25 with Opcache enabled**
 
 #### Benchmark Results of tested PHP Frameworks:
-* **Smart.Framework v.7.2.1 head@2020.06.05** with MarkersTPL Templating: ~ **_8.97K_** (8977) *requests per second*
+* **Smart.Framework v.7.2.1 head@2021.01.05** with MarkersTPL Templating: ~ **_8.97K_** (8977) *requests per second*
 * **CodeIgniter v.4.0** with PHP Templating: ~ **_5.38K_** (5378) *requests per second* ( **1.3x slower than Smart.Framework** )
 * **Symfony 4.4.2** with Twig Templating: ~ **_1.54K_** (1532) *requests per second* ( **5x slower than Smart.Framework** )
 * **Laravel 6** with Blade Templating ~ **_1.33K_** (1323) *requests per second* ( **6x slower than Smart.Framework** )

@@ -1,6 +1,6 @@
 <?php
 // [Smart.Framework / App - Custom Bootstrap]
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -31,11 +31,11 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //======================================================
 
 //-- defines the modules version (required for AppReleaseHash and modules identification)
-define('SMART_APP_MODULES_RELEASE', 'm.sf.2020-12-17'); // this can be used for tracking changes to custom app modules
+define('SMART_APP_MODULES_RELEASE', 'm.sf.2021-01-05'); // this can be used for tracking changes to custom app modules
 //--
 
 //-- checks the minimum version of the Smart.Framework to run on
-define('SMART_APP_MODULES_MIN_FRAMEWORK_VER', 'v.7.2.1.r.2020.12.17'); // this must be used to validate the required minimum framework version
+define('SMART_APP_MODULES_MIN_FRAMEWORK_VER', 'v.7.2.1.r.2021.01.05'); // this must be used to validate the required minimum framework version
 if(version_compare((string)SMART_FRAMEWORK_RELEASE_TAGVERSION.(string)SMART_FRAMEWORK_RELEASE_VERSION, (string)SMART_APP_MODULES_MIN_FRAMEWORK_VER) < 0) {
 	@http_response_code(500);
 	die('The Custom App Modules require the Smart.Framework '.SMART_APP_MODULES_MIN_FRAMEWORK_VER.' or later !');
