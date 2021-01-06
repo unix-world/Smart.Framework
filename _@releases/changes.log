@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+January 06, 2021 :: Version 7.2.1 rev.20210106
+	* SmartCodeMirror show trailing spaces and option to display wrap lines off/on
+	* PageBuilder Optimizations
+
 January 05, 2021 :: Version 7.2.1 rev.20210105
 	* New Feature for ux-navbar (span.detail-s, span.detail-l) for CSS Toolkit
 

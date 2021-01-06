@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# PAK: Combine all required CodeMirror Addons Javascript JS Source scripts from lib/js/jseditcode/codemirror/addon/%/*.js into one package JS file: lib/js/jseditcode/codemirror/addons.pak.js # r.20200310
-# PAK: Combine all required CodeMirror Addons StyleSheet CSS Source scripts from lib/js/jseditcode/codemirror/addon/%/*.css into one package JS file: lib/js/jseditcode/codemirror/addons.pak.css # r.20200310
+# PAK: Combine all required CodeMirror Addons Javascript JS Source scripts from lib/js/jseditcode/codemirror/addon/%/*.js into one package JS file: lib/js/jseditcode/codemirror/addons.pak.js # r.20210106
+# PAK: Combine all required CodeMirror Addons StyleSheet CSS Source scripts from lib/js/jseditcode/codemirror/addon/%/*.css into one package JS file: lib/js/jseditcode/codemirror/addons.pak.css # r.20210106
 
 THE_JS_FILE=../lib/js/jseditcode/codemirror/addons.pak.js
 THE_CSS_FILE=../lib/js/jseditcode/codemirror/addons.pak.css
@@ -63,6 +63,10 @@ echo "" >> ${THE_JS_FILE}
 
 echo "// ===== edit/matchbrackets.js" >> ${THE_JS_FILE}
 cat ../lib/js/jseditcode/codemirror/addon/edit/matchbrackets.js >> ${THE_JS_FILE}
+echo "" >> ${THE_JS_FILE}
+
+echo "// ===== edit/trailingspace.js" >> ${THE_JS_FILE}
+cat ../lib/js/jseditcode/codemirror/addon/edit/trailingspace.js >> ${THE_JS_FILE}
 echo "" >> ${THE_JS_FILE}
 
 echo "// ===== dialog/dialog.js" >> ${THE_JS_FILE}

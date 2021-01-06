@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20201216
+	// v.20210106
 
 
 	private static $db = null;
@@ -1347,6 +1347,7 @@ final class PageBuilderBackend {
 
 	public static function updateTranslationByText($text_deflang, $lang, $text_lang, $admin) {
 		//--
+		$text_lang = (string) \SmartModExtLib\PageBuilder\Utils::prepareCodeData((string)$text_lang, true);
 		if((string)\trim((string)$text_lang) == '') {
 			return -1;
 		} //end if

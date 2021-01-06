@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20201216
+ * @version 	v.20210106
  * @package 	PageBuilder
  *
  */
@@ -262,6 +262,26 @@ final class Utils {
 		$arr = (array) \Smart::array_sort((array)$matches[0], 'natcasesort');
 		//--
 		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	public static function prepareCodeData($str, $remove_trailing_spaces) {
+		//--
+		$str = (string) \trim((string)$str);
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		$remove_trailing_spaces = (bool) $remove_trailing_spaces;
+		//--
+		$str = (string) \str_replace(["\r\n", "\r"], "\n", (string)$str); 		// normalize line endings
+		$str = (string) \str_replace(["\x0B", "\0", "\f"], ' ', (string)$str); 	// fix weird characters
+		if($remove_trailing_spaces !== false) {
+			$str = (string) \preg_replace('/[ ]+[\\n]/', "\n", (string)$str); 	// remove trailing line spaces (not for YAML code)
+		} //end if
+		//--
+		return (string) \trim((string)$str);
 		//--
 	} //END FUNCTION
 

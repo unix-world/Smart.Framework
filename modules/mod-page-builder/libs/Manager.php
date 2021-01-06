@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20201216
+ * @version 	v.20210106
  * @package 	PageBuilder
  *
  */
@@ -1695,13 +1695,8 @@ final class Manager {
 							//--
 							$data = array();
 							//--
-							if((string)\trim((string)$y_frm['code']) == '') {
-								//--
-								$data['code'] = ''; // avoid save empty with only spaces
-								//--
-							} else {
-								//--
-								$data['code'] = (string) $y_frm['code'];
+							$data['code'] = (string) \trim((string)$y_frm['code']);
+							if((string)$data['code'] != '') {
 								//--
 								/*
 								if(((string)$query['mode'] == 'markdown') OR ((string)$query['mode'] == 'html')) {
@@ -1711,9 +1706,7 @@ final class Manager {
 								} //end if
 								*/
 								//--
-								$data['code'] = (string) \str_replace(["\r\n", "\r"], "\n", (string)$data['code']); 		// normalize line endings
-								$data['code'] = (string) \str_replace(["\x0B", "\0", "\f"], ' ', (string)$data['code']); 	// fix weird characters
-								$data['code'] = (string) \preg_replace('/[ ]+[\\n]/', "\n", (string)$data['code']); 		// remove empty line spaces
+								$data['code'] = (string) \SmartModExtLib\PageBuilder\Utils::prepareCodeData((string)$data['code'], true);
 								//--
 								$data['code'] = (string) \base64_encode((string)$data['code']);
 								//--
@@ -1747,12 +1740,13 @@ final class Manager {
 								//--
 								$data = array();
 								//--
-								if((string)\trim((string)$y_frm['data']) == '') {
-									$data['data'] = ''; // avoid save empty with only spaces
-								} else {
-									$data['data'] = (string) \str_replace(["\r\n", "\r"], "\n", (string)$y_frm['data']); // normalize line endings
-									$data['data'] = (string) \str_replace(["\x0B", "\0", "\f"], ' ', (string)$data['data']); // fix weird characters
+								$data['data'] = (string) \trim((string)$y_frm['data']);
+								if((string)$data['data'] != '') {
+									//--
+									$data['data'] = (string) \SmartModExtLib\PageBuilder\Utils::prepareCodeData((string)$data['data'], false);
+									//--
 									$data['data'] = (string) \base64_encode((string)$data['data']); // encode data b64 (encode must be here because will be transmitted later as B64 encode and must cover all error situations)
+									//--
 								} //end if
 								$y_frm['data'] = '';
 								//--
