@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List # Filter :: v.20200817 -->
+<!-- Pagebuilder / Manage @ List # Filter :: v.20210107 -->
 <style>
 #pgbld-btn-reset-cnt:hover i.sfi,
 #pgbld-btn-alt-list:hover i.sfi {
@@ -12,10 +12,12 @@
 	<td style="width:1px;">
 		<select name="srcby" id="filter-srcby" class="ux-input-def ux-input-1-4">
 			<option value="" title="[###HINT-0|html###]">* [###TXT-SEARCH-BY|html###] *:</option>
+			[%%%IF:SHOW-FILTER-CTRL:==yes;%%%]
+			<option value="ctrl" title="[###HINT-5|html###]">[ [###TXT-COL-CTRL|html###] ]</option>
+			[%%%/IF:SHOW-FILTER-CTRL%%%]
 			<option value="id" title="[###HINT-5|html###]">[###TXT-COL-ID|html###]</option>
 			<option value="id-ref" title="[###HINT-1|html###]">[###TXT-COL-REFID|html###]</option>
 			<option value="name" title="[###HINT-5|html###]">[###TXT-COL-NAME|html###]</option>
-			<option value="ctrl" title="[###HINT-5|html###]">[###TXT-COL-CTRL|html###]</option>
 			[%%%IF:ALLOW-PAGES:==yes;%%%]
 			<option value="template" title="[###HINT-5|html###]">[###TXT-COL-TEMPLATE|html###]</option>
 			[%%%/IF:ALLOW-PAGES%%%]
@@ -77,6 +79,18 @@
 		[%%%/IF:DB-TYPE%%%]
 	</td>
 	</tr></table>
+	[%%%IF:SHOW-FILTER-CTRL:!=yes;%%%]
+	<h5 style="display:inline-block;">[&nbsp;Controller&nbsp;]:</h5>&nbsp;&nbsp;<select name="ctrl" id="filter-ctrl" class="ux-field" style="min-width: 275px; max-width: 750px;">
+		<option value="" title="No Controller Selected"></option>
+	[%%%LOOP:CTRLS%%%]
+		[%%%IF:CTRLS.CTRL:==;%%%]
+		<option value=" ">[###TXT-CTRL-NONE|html###] &nbsp;::&nbsp; ( [###CTRLS.OBJECTS|int###] )</option>
+		[%%%ELSE:CTRLS.CTRL%%%]
+		<option value="[###CTRLS.CTRL|html###]">[ [###CTRLS.CTRL|html###] ] &nbsp;::&nbsp; ( [###CTRLS.OBJECTS|int###] )</option>
+		[%%%/IF:CTRLS.CTRL%%%]
+	[%%%/LOOP:CTRLS%%%]
+	</select>
+	[%%%/IF:SHOW-FILTER-CTRL%%%]
 </form><!-- #END -->
 <script type="text/javascript">
 jQuery(function() {

@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20201216
+ * @version 	v.20210107
  * @package 	development:modules:PageBuilder
  *
  */
@@ -52,6 +52,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 
 	private $render_done 		= false; 					// internal flag to avoid re-render
 	private $rendered_segments 	= []; 						// register rendered segments
+	private $rendered_pages 	= []; 						// register rendered pages
 
 	private $translators 		= []; 						// registers the text translators
 
@@ -98,6 +99,8 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		} //end if
 		//--
 		$this->render_done = true; // flag: dissalow multiple page renders per controller
+		//--
+		$this->rendered_pages[(string)$page_id]++; // register rendered pages
 		//--
 
 		//--
@@ -411,6 +414,24 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		return (string) $segment_code;
 		//--
 
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	public function getListOfRenderedPages() {
+		//--
+		return (array) $this->rendered_pages;
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	public function getListOfRenderedSegments() {
+		//--
+		return (array) $this->rendered_segments;
+		//--
 	} //END FUNCTION
 	//=====
 

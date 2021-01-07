@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// r.20200817
+	// r.20210107
 
 	public function Run() {
 
@@ -74,13 +74,14 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			case 'records-tree': // HTML: tree view
 				$srcby = $this->RequestVarGet('srcby', '', 'string');
 				$src = $this->RequestVarGet('src', '', 'string');
+				$ctrl = $this->RequestVarGet('ctrl', '', 'string');
 				$tpl = $this->RequestVarGet('tpl', '', 'string');
 				if((string)$tpl != 'custom') {
 					$this->PageViewSetCfg('template-path', 'default');
 					$this->PageViewSetCfg('template-file', 'template.htm');
 				} //end if
 				$this->PageViewSetVars([
-					'main' => (string) \SmartModExtLib\PageBuilder\Manager::ViewDisplayTree($tpl, $srcby, $src)
+					'main' => (string) \SmartModExtLib\PageBuilder\Manager::ViewDisplayTree($tpl, $srcby, $src, $ctrl)
 				]);
 				break;
 			case 'record-add-form':

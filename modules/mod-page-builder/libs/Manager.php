@@ -49,7 +49,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210106
+ * @version 	v.20210107
  * @package 	PageBuilder
  *
  */
@@ -123,6 +123,7 @@ final class Manager {
 		$text['vep']				= 'View/Edit Object';
 		$text['dp']					= 'Delete Object';
 		//-- fields
+		$text['ctrl_unassigned'] 	= '*** (UNASSIGNED CONTROLLER) ***';
 		$text['search_by']			= 'Filter by';
 		$text['keyword']			= 'Keyword';
 		$text['op_compl']			= 'Operation completed';
@@ -2060,9 +2061,15 @@ final class Manager {
 
 
 	//==================================================================
-	public static function ViewDisplayTree($y_tpl, $srcby, $src) {
+	public static function ViewDisplayTree($y_tpl, $srcby, $src, $y_ctrl) {
 		//--
-		$flimit = 2500; // filter limit
+		$flimit = 100000; // filter limit
+		//--
+		$unassigned_ctrl = false;
+		if((string)$y_ctrl == ' ') {
+			$unassigned_ctrl = true;
+		} //end if
+		$y_ctrl = (string) \trim((string)$y_ctrl);
 		//--
 		$src = (string) \trim((string)$src);
 		if((string)\trim((string)$src) == '') {
@@ -2073,7 +2080,8 @@ final class Manager {
 		//--
 		$cookie_display_datasets = 'pageBuilder_Display_DataSets';
 		$cookie_value_datasets = 'hide:datasets';
-		$display_datasets = (string) \SmartUtils::get_cookie((string)$cookie_display_datasets);
+	//	$display_datasets = (string) \SmartUtils::get_cookie((string)$cookie_display_datasets); // VALUE-DATASETS
+		$display_datasets = ''; // feature disabled
 		//--
 		$lst_src = (string) $src;
 		$lst_srcby = (string) $srcby;
@@ -2081,15 +2089,28 @@ final class Manager {
 		$collapse = 'collapsed';
 		$fcollapse = '';
 		//--
-		if((string)\trim((string)$srcby) == 'ctrl') {
-			$scollapse = '';
-			$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers(1000, $src);
-			$src = '';
+		if((string)$srcby == 'ctrl') {
+		//	if((string)$y_ctrl == '') {
+		//		$y_ctrl = (string) $src;
+		//	} //end if
 			$srcby = '';
+			$src = '';
+			$lst_srcby = '';
+			$lst_src = '';
+		} //end if
+		//--
+		if($unassigned_ctrl === true) {
+			$scollapse = '';
+			$arr_controllers = [ '', ' ' ];
+		} elseif((string)\trim((string)$y_ctrl) != '') {
+			$scollapse = '';
+			$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers((string)$y_ctrl);
 		} else {
 			$scollapse = (string) $collapse;
-			$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers(1000);
+			$arr_controllers = array();
 		} //end if else
+		//--
+		$arr_all_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers();
 		//--
 		$filter = array();
 		if(((string)\trim((string)$src) != '') AND ((string)\trim((string)$srcby) != '')) {
@@ -2209,7 +2230,7 @@ final class Manager {
 				'VALUE-DATASETS' 	=> (string) $cookie_value_datasets,
 				'DISPLAY-DATASETS' 	=> (string) $display_datasets,
 				'HAVE-DATASETS' 	=> (string) $have_datasets ? 'yes' : 'no',
-				'SHOW-FILTER-TYPE' 	=> 'no',
+				'SHOW-FILTER-CTRL' 	=> 'no',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'ALLOW-PAGES' 		=> (string) $allow_pages,
 				'LIST-FORM-URL' 	=> (string) self::$ModuleScript,
@@ -2232,10 +2253,13 @@ final class Manager {
 				'TXT-WEBDAV-LINK' 	=> (string) self::text('ttl_webdav', false),
 				'LIST-WEBDAV-LINK' 	=> (string) self::composeWebdavUrl(),
 				'TXT-RESET-COUNTER' => (string) self::text('ttl_reset_hits', false),
+				'TXT-CTRL-NONE' 	=> (string) self::text('ctrl_unassigned', false),
 				'COLLAPSE' 			=> (string) $collapse,
 				'SPECIAL-COLLAPSE' 	=> (string) $scollapse,
 				'FILTER-COLLAPSE' 	=> (string) $fcollapse,
 				'FILTER' 			=> (array)  $filter,
+				'CTRLS' 			=> (array)  $arr_all_controllers,
+				'CTRL-SEL' 			=> (string) ($unassigned_ctrl === true) ? ' ' : (string)$y_ctrl,
 				'DATA' 				=> (array)  $arr_pages_data,
 				'PATH-MODULE' 		=> (string) self::$ModulePath,
 				'LIST-TTL' 			=> (string) self::text('ttl_list', false),
@@ -2305,7 +2329,7 @@ final class Manager {
 			(string) self::$ModulePath.'libs/views/manager/view-list.mtpl.htm',
 			[
 				'IS-DEV-MODE' 		=> (string) ((\SmartFrameworkRuntime::ifProdEnv() !== true) ? 'yes' : 'no'),
-				'SHOW-FILTER-TYPE' 	=> 'yes',
+				'SHOW-FILTER-CTRL' 	=> 'yes',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'ALLOW-PAGES' 		=> (string) $allow_pages,
 				'LIST-FORM-URL' 	=> '#',
@@ -2322,6 +2346,9 @@ final class Manager {
 				'TXT-WEBDAV-LINK' 	=> (string) self::text('ttl_webdav', false),
 				'LIST-WEBDAV-LINK' 	=> (string) self::composeWebdavUrl(),
 				'TXT-RESET-COUNTER' => (string) self::text('ttl_reset_hits', false),
+				'TXT-CTRL-NONE' 	=> (string) self::text('ctrl_unassigned', false),
+				'CTRLS' 			=> (array)  [],
+				'CTRL-SEL' 			=> (string) '',
 				'PATH-MODULE' 		=> (string) self::$ModulePath,
 				'LIST-TTL' 			=> (string) self::text('ttl_list', false),
 				'LIST-RECORDS' 		=> (string) self::text('ttl_records', false),

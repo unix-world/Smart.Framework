@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20210106
+	// v.20210107
 
 
 	private static $db = null;
@@ -165,30 +165,25 @@ final class PageBuilderBackend {
 	} //END FUNCTION
 
 
-	public static function getRecordsUniqueControllers($limit=1000, $filter='') {
-		//--
-		$limit = (int) $limit;
-		if($limit < 1) {
-			$limit = 1;
-		} //end if
+	public static function getRecordsUniqueControllers($filter='') {
 		//--
 		$filter = (string) \trim((string)$filter);
 		//--
 		if((string)$filter != '') {
 			if((string)self::dbType() == 'pgsql') {
 				return (array) \SmartPgsqlDb::read_data(
-					'SELECT "ctrl" FROM "web"."page_builder" WHERE (("ref" = $1) AND ("ctrl" ILIKE $2)) GROUP BY "ctrl" ORDER BY "ctrl" ASC LIMIT '.(int)$limit.' OFFSET 0',
+					'SELECT "ctrl" FROM "web"."page_builder" WHERE (("ref" = $1) AND ("ctrl" = $2)) GROUP BY "ctrl" ORDER BY "ctrl" ASC LIMIT 1 OFFSET 0',
 					[
 						(string) '[]',
-						(string) '%'.$filter.'%'
+						(string) $filter
 					]
 				);
 			} elseif((string)self::dbType() == 'sqlite') {
 				return (array) self::$db->read_data(
-					'SELECT `ctrl` FROM `page_builder` WHERE ((`ref` = ?) AND (`ctrl` LIKE ?)) GROUP BY `ctrl` ORDER BY `ctrl` ASC LIMIT '.(int)$limit.' OFFSET 0',
+					'SELECT `ctrl` FROM `page_builder` WHERE ((`ref` = ?) AND (`ctrl` = ?)) GROUP BY `ctrl` ORDER BY `ctrl` ASC LIMIT 1 OFFSET 0',
 					[
 						(string) '[]',
-						(string) '%'.$filter.'%'
+						(string) $filter
 					]
 				);
 			} else {
@@ -196,15 +191,15 @@ final class PageBuilderBackend {
 			} //end if else
 		} else {
 			if((string)self::dbType() == 'pgsql') {
-				return (array) \SmartPgsqlDb::read_data(
-					'SELECT "ctrl" FROM "web"."page_builder" WHERE ("ref" = $1) GROUP BY "ctrl" ORDER BY "ctrl" ASC LIMIT '.(int)$limit.' OFFSET 0',
+				return (array) \SmartPgsqlDb::read_adata(
+					'SELECT "ctrl", COUNT(1) AS "objects" FROM "web"."page_builder" WHERE ("ref" = $1) GROUP BY "ctrl" ORDER BY "ctrl" ASC',
 					[
 						(string) '[]'
 					]
 				);
 			} elseif((string)self::dbType() == 'sqlite') {
-				return (array) self::$db->read_data(
-					'SELECT `ctrl` FROM `page_builder` WHERE (`ref` = ?) GROUP BY `ctrl` ORDER BY `ctrl` ASC LIMIT '.(int)$limit.' OFFSET 0',
+				return (array) self::$db->read_adata(
+					'SELECT `ctrl`, COUNT(1) AS `objects` FROM `page_builder` WHERE (`ref` = ?) GROUP BY `ctrl` ORDER BY `ctrl` ASC',
 					[
 						(string) '[]'
 					]
