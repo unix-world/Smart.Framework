@@ -35,6 +35,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
 //define('SMART_PAGEBUILDER_DB_TYPE', 'sqlite'); // this must be set in etc/config.php to activate the PageBuilder module ; possible values for the DB Type: 'sqlite' to use with SQLite DB or 'pgsql' to use with PostgreSQL DB
 //define('SMART_PAGEBUILDER_DISABLE_PAGES', true); // this can be set in etc/config.php to disable the use of pages and allow only segments
 //define('SMART_PAGEBUILDER_DISABLE_DELETE', true); // this can be set in etc/config-admin.php to disable page deletions in PageBuilder Manager (optional)
+//define('SMART_PAGEBUILDER_ALLOW_FULLTREE', true); // allow display full tree (this should be enabled just for small projects)
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -49,7 +50,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210107
+ * @version 	v.20210121
  * @package 	PageBuilder
  *
  */
@@ -2078,10 +2079,15 @@ final class Manager {
 			$src = '';
 		} //end if
 		//--
+		$cookie_display_fulltree = 'pageBuilder_Display_FullTree';
+		$cookie_value_fulltree = 'display:full-tree';
+		$display_fulltree = (string) \SmartUtils::get_cookie((string)$cookie_display_fulltree); // VALUE-FULLTREE
+		//--
 		$cookie_display_datasets = 'pageBuilder_Display_DataSets';
 		$cookie_value_datasets = 'hide:datasets';
 	//	$display_datasets = (string) \SmartUtils::get_cookie((string)$cookie_display_datasets); // VALUE-DATASETS
 		$display_datasets = ''; // feature disabled
+		$have_fulltree = false;
 		//--
 		$lst_src = (string) $src;
 		$lst_srcby = (string) $srcby;
@@ -2104,13 +2110,22 @@ final class Manager {
 			$arr_controllers = [ '', ' ' ];
 		} elseif((string)\trim((string)$y_ctrl) != '') {
 			$scollapse = '';
-			$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers((string)$y_ctrl);
+			$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers('filter', (string)$y_ctrl);
 		} else {
+			if(\defined('\\SMART_PAGEBUILDER_ALLOW_FULLTREE')) {
+				if(\SMART_PAGEBUILDER_ALLOW_FULLTREE === true) {
+					$have_fulltree = true;
+				} //end if
+			} //end if
 			$scollapse = (string) $collapse;
-			$arr_controllers = array();
+			if(($have_fulltree === true) AND ((string)$display_fulltree == (string)$cookie_value_fulltree)) {
+				$arr_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers('filter');
+			} else {
+				$arr_controllers = array();
+			} //end if else
 		} //end if else
 		//--
-		$arr_all_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers();
+		$arr_all_controllers = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsUniqueControllers('list-all');
 		//--
 		$filter = array();
 		if(((string)\trim((string)$src) != '') AND ((string)\trim((string)$srcby) != '')) {
@@ -2230,6 +2245,10 @@ final class Manager {
 				'VALUE-DATASETS' 	=> (string) $cookie_value_datasets,
 				'DISPLAY-DATASETS' 	=> (string) $display_datasets,
 				'HAVE-DATASETS' 	=> (string) $have_datasets ? 'yes' : 'no',
+				'COOKIE-FULLTREE' 	=> (string) $cookie_display_fulltree,
+				'VALUE-FULLTREE' 	=> (string) $cookie_value_fulltree,
+				'DISPLAY-FULLTREE' 	=> (string) $display_fulltree,
+				'HAVE-FULLTREE' 	=> (string) $have_fulltree ? 'yes' : 'no',
 				'SHOW-FILTER-CTRL' 	=> 'no',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'ALLOW-PAGES' 		=> (string) $allow_pages,

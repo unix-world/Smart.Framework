@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20210107
+	// v.20210121
 
 
 	private static $db = null;
@@ -165,31 +165,18 @@ final class PageBuilderBackend {
 	} //END FUNCTION
 
 
-	public static function getRecordsUniqueControllers($filter='') {
+	public static function getRecordsUniqueControllers($mode, $filter='') {
 		//--
-		$filter = (string) \trim((string)$filter);
-		//--
-		if((string)$filter != '') {
-			if((string)self::dbType() == 'pgsql') {
-				return (array) \SmartPgsqlDb::read_data(
-					'SELECT "ctrl" FROM "web"."page_builder" WHERE (("ref" = $1) AND ("ctrl" = $2)) GROUP BY "ctrl" ORDER BY "ctrl" ASC LIMIT 1 OFFSET 0',
-					[
-						(string) '[]',
-						(string) $filter
-					]
-				);
-			} elseif((string)self::dbType() == 'sqlite') {
-				return (array) self::$db->read_data(
-					'SELECT `ctrl` FROM `page_builder` WHERE ((`ref` = ?) AND (`ctrl` = ?)) GROUP BY `ctrl` ORDER BY `ctrl` ASC LIMIT 1 OFFSET 0',
-					[
-						(string) '[]',
-						(string) $filter
-					]
-				);
-			} else {
+		switch((string)$mode) {
+			case 'list-all': // list all
+			case 'filter': // filter (show all or filtered by ctrl)
+				break;
+			default:
 				return array();
-			} //end if else
-		} else {
+		} //end switch
+		//--
+		if((string)$mode == 'list-all') {
+			//--
 			if((string)self::dbType() == 'pgsql') {
 				return (array) \SmartPgsqlDb::read_adata(
 					'SELECT "ctrl", COUNT(1) AS "objects" FROM "web"."page_builder" WHERE ("ref" = $1) GROUP BY "ctrl" ORDER BY "ctrl" ASC',
@@ -207,6 +194,51 @@ final class PageBuilderBackend {
 			} else {
 				return array();
 			} //end if else
+			//--
+		} else { // filter
+			//--
+			$filter = (string) \trim((string)$filter);
+			//--
+			if((string)$filter != '') {
+				if((string)self::dbType() == 'pgsql') {
+					return (array) \SmartPgsqlDb::read_data(
+						'SELECT "ctrl" FROM "web"."page_builder" WHERE (("ref" = $1) AND ("ctrl" = $2)) GROUP BY "ctrl" ORDER BY "ctrl" ASC LIMIT 1 OFFSET 0',
+						[
+							(string) '[]',
+							(string) $filter
+						]
+					);
+				} elseif((string)self::dbType() == 'sqlite') {
+					return (array) self::$db->read_data(
+						'SELECT `ctrl` FROM `page_builder` WHERE ((`ref` = ?) AND (`ctrl` = ?)) GROUP BY `ctrl` ORDER BY `ctrl` ASC LIMIT 1 OFFSET 0',
+						[
+							(string) '[]',
+							(string) $filter
+						]
+					);
+				} else {
+					return array();
+				} //end if else
+			} else {
+				if((string)self::dbType() == 'pgsql') {
+					return (array) \SmartPgsqlDb::read_data(
+						'SELECT "ctrl" FROM "web"."page_builder" WHERE ("ref" = $1) GROUP BY "ctrl" ORDER BY "ctrl" ASC',
+						[
+							(string) '[]'
+						]
+					);
+				} elseif((string)self::dbType() == 'sqlite') {
+					return (array) self::$db->read_data(
+						'SELECT `ctrl` FROM `page_builder` WHERE (`ref` = ?) GROUP BY `ctrl` ORDER BY `ctrl` ASC',
+						[
+							(string) '[]'
+						]
+					);
+				} else {
+					return array();
+				} //end if else
+			} //end if else
+			//--
 		} //end if else
 		//--
 	} //END FUNCTION

@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ TreeList / Records :: v.20210107 -->
+<!-- Pagebuilder / Manage @ TreeList / Records :: v.20210121 -->
 <script src="lib/js/jquery/tree/simpletree.js"></script>
 <style>
 .simpletree-toggle, .simpletree-notoggle {
@@ -70,14 +70,15 @@ function pageBuilderFormBtnResetFilter() {
 }
 </script>
 [@@@SUB-TEMPLATE:view-list-filter-form.mtpl.inc.htm@@@]
-[%%%COMMENT%%%]<!-- [%%%IF:HAVE-DATASETS:==yes;%%%]<div style="padding-left: 40px;"><input type="checkbox" id="display-datasets" value="[###VALUE-DATASETS|html###]">&nbsp;&nbsp;<h5 style="display:inline-block;">Hide {Data-Set-Controllers}</h5></div><br>[%%%/IF:HAVE-DATASETS%%%] -->[%%%/COMMENT%%%]
+[%%%IF:HAVE-FULLTREE:==yes;%%%]<div style="padding-left:0;"><h5 style="display:inline-block;">Display Full-Tree</h5>&nbsp;&nbsp;<input type="checkbox" id="display-fulltree" value="[###VALUE-FULLTREE|html###]"></div><br>[%%%/IF:HAVE-FULLTREE%%%]
+[%%%COMMENT%%%]<!-- [%%%IF:HAVE-DATASETS:==yes;%%%]<div style="padding-left:0;"><h5 style="display:inline-block;">Hide {Data-Set-Controllers}</h5>&nbsp;&nbsp;<input type="checkbox" id="display-datasets" value="[###VALUE-DATASETS|html###]"></div><br>[%%%/IF:HAVE-DATASETS%%%] -->[%%%/COMMENT%%%]
 <script>
 	var theFilterListSrcBy = '[###LIST-VAL-SRCBY|js###]';
 	if(theFilterListSrcBy != 'ctrl') {
 		jQuery('#filter-src').val('[###LIST-VAL-SRC|js###]');
 		jQuery('#filter-srcby').val(String(theFilterListSrcBy));
 	}
-		jQuery('#filter-ctrl').val('[###CTRL-SEL|js###]');
+	jQuery('#filter-ctrl').val('[###CTRL-SEL|js###]');
 </script>
 <ul class="pagebuilder-tree">
 	[%%%LOOP:DATA%%%]
@@ -143,6 +144,26 @@ function pageBuilderFormBtnResetFilter() {
 		signExpanded: '<i class="sfi sfi-folder-open sfi-lg" style="color:#555555;"></i>'
 	});
 </script>
+[%%%IF:HAVE-FULLTREE:==yes;%%%]
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		var isFullTreeCheckboxChecked = false;
+		if(SmartJS_BrowserUtils.getCookie('[###COOKIE-FULLTREE|js###]') === '[###VALUE-FULLTREE|js###]') {
+			isFullTreeCheckboxChecked = true;
+		} //end if
+		jQuery('#display-fulltree').prop("checked", isFullTreeCheckboxChecked);
+	});
+	jQuery('#display-fulltree').change(function() {
+		var displayFullTree = '';
+		if(jQuery(this).is(':checked')) {
+			jQuery('#filter-ctrl').val(' ');
+			displayFullTree = jQuery(this).val() || '';
+		} //end if else
+		SmartJS_BrowserUtils.setCookie('[###COOKIE-FULLTREE|js###]', displayFullTree);
+		pageBuilderFormBtnFilter();
+	});
+</script>
+[%%%/IF:HAVE-FULLTREE%%%]
 [%%%COMMENT%%%]
 [%%%IF:HAVE-DATASETS:==yes;%%%]
 <script type="text/javascript">
