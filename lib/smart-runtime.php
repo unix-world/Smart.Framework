@@ -27,7 +27,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //====================
 
 //-- PHP 8 or later is under testing !
-if(version_compare((string)phpversion(), '7.2') < 0) { // check for PHP 7.2 or later
+if(version_compare((string)phpversion(), '7.2.5') < 0) { // check for PHP 7.2 or later
 	@http_response_code(500);
 	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 7.2 / 7.3 / 7.4 / 8.0 or later');
 } //end if
@@ -62,7 +62,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //--
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.7.2.1'); 	// tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.01.21'); 	// tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.02.04'); 	// tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 //--
 if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM')) {
