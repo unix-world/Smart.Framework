@@ -15,6 +15,14 @@ define('SMART_APP_MODULE_AREA', 'ADMIN');
 define('SMART_APP_MODULE_AUTH', true);
 define('SMART_APP_MODULE_DIRECT_OUTPUT', true); // do direct output
 
+//--
+if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
+	http_response_code(500);
+	echo SmartComponents::http_message_500_internalerror('ERROR: PageBuilder.Files WebDAV requires the WebDAV Module ...');
+	die('');
+} //end if
+//--
+
 /**
  * PageBuilder Manage Files
  *
@@ -23,14 +31,14 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true); // do direct output
  */
 class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs {
 
-	// v.20200817
+	// v.20210216
 
 	public function Run() {
 
 		//--
-		if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
-			http_response_code(500);
-			echo SmartComponents::http_message_500_internalerror('ERROR: PageBuilder.Files WebDAV requires the WebDAV Module ...');
+		if(SmartAuth::check_login() !== true) {
+			http_response_code(403);
+			echo SmartComponents::http_message_403_forbidden('ERROR: PageBuilder.Files requires Authentication ...');
 			return;
 		} //end if
 		//--

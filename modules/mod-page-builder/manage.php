@@ -23,13 +23,13 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// r.20210107
+	// r.20210216
 
 	public function Run() {
 
 		//--
 		if(SmartAuth::check_login() !== true) {
-			$this->PageViewSetCfg('error', 'PageBuilder Manage Requires Authentication ! ...');
+			$this->PageViewSetCfg('error', 'PageBuilder Manage requires Authentication ! ...');
 			return 403;
 		} //end if
 		//--

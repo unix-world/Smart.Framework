@@ -16,13 +16,21 @@ define('SMART_APP_MODULE_AREA', 'ADMIN'); // admin area only
 define('SMART_APP_MODULE_AUTH', true); // requires auth always
 define('SMART_APP_MODULE_DIRECT_OUTPUT', true); // do direct output
 
+//--
+if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
+	http_response_code(500);
+	echo SmartComponents::http_message_500_internalerror('ERROR: WebDAV requires the WebDAV Module ...');
+	die('');
+} //end if
+//--
+
 /**
  * Admin Controller (direct output)
  * @ignore
  */
 class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs {
 
-	// v.20200720
+	// v.20210216
 
 	public function Run() {
 
@@ -30,6 +38,14 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 		if(!defined('SMART_FRAMEWORK_TEST_MODE') OR (SMART_FRAMEWORK_TEST_MODE !== true)) {
 			http_response_code(503);
 			echo SmartComponents::http_message_503_serviceunavailable('ERROR: Test mode is disabled ...');
+			return;
+		} //end if
+		//--
+
+		//--
+		if(SmartAuth::check_login() !== true) {
+			http_response_code(403);
+			echo SmartComponents::http_message_403_forbidden('ERROR: WebDAV Invalid Auth ...');
 			return;
 		} //end if
 		//--

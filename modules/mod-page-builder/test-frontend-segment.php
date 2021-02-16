@@ -14,6 +14,14 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 define('SMART_APP_MODULE_AREA', 'INDEX');
 
+//--
+if(!SmartAppInfo::TestIfModuleExists('mod-page-builder')) {
+	http_response_code(500);
+	echo SmartComponents::http_message_500_internalerror('ERROR: PageBuilder Module is missing ...');
+	die('');
+} //end if
+//--
+
 /**
  * Index Sample Controller
  *
