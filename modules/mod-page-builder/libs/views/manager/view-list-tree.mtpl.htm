@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ TreeList / Records :: v.20210121 -->
+<!-- Pagebuilder / Manage @ TreeList / Records :: v.20210217 -->
 <script src="lib/js/jquery/tree/simpletree.js"></script>
 <style>
 .simpletree-toggle, .simpletree-notoggle {
@@ -156,7 +156,7 @@ function pageBuilderFormBtnResetFilter() {
 	jQuery('#display-fulltree').change(function() {
 		var displayFullTree = '';
 		if(jQuery(this).is(':checked')) {
-			jQuery('#filter-ctrl').val(' ');
+			jQuery('#filter-ctrl').val('');
 			displayFullTree = jQuery(this).val() || '';
 		} //end if else
 		SmartJS_BrowserUtils.setCookie('[###COOKIE-FULLTREE|js###]', displayFullTree);

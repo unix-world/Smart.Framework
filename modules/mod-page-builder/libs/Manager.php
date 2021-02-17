@@ -50,7 +50,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210121
+ * @version 	v.20210217
  * @package 	PageBuilder
  *
  */
@@ -182,11 +182,11 @@ final class Manager {
 		$text['pw_media'] 			= 'Media Preview';
 		//--
 		$text['hint_0'] 			= 'Select a filtering criteria from below';
-		$text['hint_1'] 			= 'Hints: `[]` for Empty ; `![]` for Non-Empty ; `expr` for containing expression';
+		$text['hint_1'] 			= 'Hints: `[]` for Empty ; `![]` for Non-Empty ; `%expr%` for containing expression';
 		$text['hint_2'] 			= 'Hints: `ro` for records having this language code Translation ; `!ro` for records NOT having this language code Translation ; `!` for NON-Translatable records ; `"` for Translatable records';
 		$text['hint_3'] 			= 'Fill the filtering expression';
-		$text['hint_4'] 			= 'Hints: `[]` for Empty ; `![]` for Non-Empty ; `expr` for containing expression ; `</> expr` for strip-tags containing expression';
-		$text['hint_5'] 			= 'Hints: `expr` for containing expression';
+		$text['hint_4'] 			= 'Hints: `[]` for Empty ; `![]` for Non-Empty ; `%expr%` for containing expression ; `</> expr` for strip-tags containing expression';
+		$text['hint_5'] 			= 'Hints: `%expr%` for containing expression';
 		//--
 
 		//--
