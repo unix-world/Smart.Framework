@@ -1,6 +1,6 @@
 <?php
 // AppCodePack - Release Manager: a PHP, JS and CSS Optimizer + NetArchive Packer
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //===== CODE OPTIMIZATIONS INFO:
@@ -203,7 +203,7 @@ function app__err__handler__catch_fatal_errs() {
 define('APPCODEPACK_UNPACK_TESTONLY', true); 												// default is TRUE ; set to FALSE for archive full test + uncompress + replace ; required just for AppCodePack (not for AppCodeUnpack)
 define('APPCODE_REGEX_STRIP_MULTILINE_CSS_COMMENTS', "`\/\*(.+?)\*\/`ism"); 				// regex for remove multi-line comments (by now used just for CSS ...) ; required just for AppCodePack (not for AppCodeUnpack)
 //==
-define('APPCODEPACK_VERSION', 'v.20200605.1157'); 											// current version of this script
+define('APPCODEPACK_VERSION', 'v.20210222.1157'); 											// current version of this script
 define('APPCODEUNPACK_VERSION', (string)APPCODEPACK_VERSION); 								// current version of unpack script (req. for unpack class)
 //==
 header('Cache-Control: no-cache'); 															// HTTP 1.1
@@ -696,15 +696,19 @@ function RunApp() {
 		echo '<hr>';
 		//--
 		if(($_GET['run']) AND (AppPackUtils::is_type_file('appcodepack-extra-run.php')) AND (AppPackUtils::is_type_file('appcodepack-extra-run.inc.htm'))) {
+			//--
 			echo '<div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'Extra TASK / '.AppPackUtils::escape_html((string)$_GET['run']).' &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').' # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'</div><hr>';
 			echo (string) $code_loading_start;
 			AppPackUtils::InstantFlush();
 			sleep(1);
 			echo (string) AppPackUtils::pack_run_extra_script((string)$_GET['run'], 'appcodepack-extra-run.php');
 			echo (string) $code_loading_stop;
-		} //end if
-		//--
-		if(!defined('APPCODEPACK_PROCESS_EXTRA_RUN')) {
+			//--
+		} else {
+			//--
+			if(AppPackUtils::path_exists('---AppCodePack-RunExtra---.log')) {
+				AppPackUtils::delete('---AppCodePack-RunExtra---.log');
+			} //end if
 			//--
 			if((string)APPCODEPACK_APP_ID != '-----UNDEF-----') {
 				echo '<div style="margin-bottom:10px; padding:7px; line-height:1.125em; font-weight:bold; color: #FFFFFF; background:#009ACE; border:1px solid #0089BD; border-radius:6px; box-shadow: 2px 2px 3px #D2D2D2;"><table>';
@@ -3054,7 +3058,16 @@ Options -Indexes
 	// provide complete isolation of the extra run script (to avoid rewrite variables inside other functions)
 	public static function pack_run_extra_script($task, $path_to_extra_script) {
 		//--
-		define('APPCODEPACK_PROCESS_EXTRA_RUN', (string)$task);
+		if(AppPackUtils::path_exists('---AppCodePack-RunExtra---.log')) {
+			return "\n".'<div title="Status / Warning" style="background:#FFCC00; color:#000000; font-weight:bold; padding:5px; border-radius:5px;">'.'TASK: '.self::escape_html((string)strtoupper((string)$task)).' / STATUS: WARNING !'.'<br>'.'<br>'.'This task has already run ...'.'</div>'."\n";
+		} //end if
+		//--
+		define('APPCODEPACK_PROCESS_EXTRA_RUN', (string)$task); // required by appcodepack-extra-run.php
+		//--
+		AppPackUtils::write(
+			'---AppCodePack-RunExtra---.log',
+			'START Processing ['.date('Y-m-d H:i:s O').'] ...'."\n".'TASK: `'.$task.'`'."\n"
+		);
 		//--
 		$task = (string) strtoupper((string)$task);
 		//--
@@ -3069,10 +3082,25 @@ Options -Indexes
 		$the_run_output = ob_get_contents();
 		ob_end_clean();
 		//--
-		if($the_run_err) {
-			return "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'TASK:'.self::escape_html((string)strtoupper((string)$task)).' / STATUS: ERROR !'.'<br><pre>'.self::escape_html($the_run_err).'</pre></div>'.($the_run_output ? '<pre style="font-size:13px!important;">'.self::escape_html($the_run_output).'</pre>' : '')."\n";
+		AppPackUtils::write(
+			'---AppCodePack-RunExtra---.log',
+			'END Processing ['.date('Y-m-d H:i:s O').'] ...'."\n".'ERRORS: `'.$the_run_err.'`',
+			'a'
+		);
+		//--
+		if(defined('APPCODEPACK_PROCESS_EXTRA_RUN_EXTERNAL')) {
+			//--
+			echo "\n".'<div title="Status / External" style="background:#778899; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'TASK: '.self::escape_html((string)strtoupper((string)$task)).' / STATUS: EXTERNAL ...'.'</div><br>'."\n";
+			return '<div align="center"><iframe name="PackRunExternalResponseSandBox" id="PackRunExternalResponseSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:90vw; min-width:920px; min-height:70vh; height:max-content; border:1px solid #CCCCCC;" src="'.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_EXTRA_RUN_EXTERNAL).'"></iframe></div><br>';
+			//--
 		} else {
-			return "\n".'<div title="Status / OK" style="background:#98C726; color:#000000; font-weight:bold; padding:5px; border-radius:5px;"><h3>[ &nbsp; '.'TASK:'.self::escape_html((string)strtoupper((string)$task)).' / STATUS: OK'.' &nbsp; &radic; &nbsp; ]</h3></div>'.($the_run_output ? '<pre style="font-size:13px!important;">'.self::escape_html($the_run_output).'</pre>' : '')."\n".'<!-- {APPCODEPACK:[@SUCCESS(Task:'.self::escape_html((string)strtoupper((string)$task)).')@]} -->';
+			//--
+			if($the_run_err) {
+				return "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'TASK: '.self::escape_html((string)strtoupper((string)$task)).' / STATUS: ERROR !'.'<br><pre>'.self::escape_html($the_run_err).'</pre></div>'.($the_run_output ? '<pre style="font-size:13px!important; font-weight:bold;">'.self::escape_html($the_run_output).'</pre>' : '')."\n";
+			} else {
+				return "\n".'<div title="Status / OK" style="background:#98C726; color:#000000; font-weight:bold; padding:5px; border-radius:5px;"><h3>[ &nbsp; '.'TASK: '.self::escape_html((string)strtoupper((string)$task)).' / STATUS: OK'.' &nbsp; &radic; &nbsp; ]</h3></div>'.($the_run_output ? '<pre style="font-size:13px!important; font-weight:bold;">'.self::escape_html($the_run_output).'</pre>' : '')."\n".'<!-- {APPCODEPACK:[@SUCCESS(Task:'.self::escape_html((string)strtoupper((string)$task)).')@]} -->';
+			} //end if else
+			//--
 		} //end if else
 		//--
 	} //END FUNCTION

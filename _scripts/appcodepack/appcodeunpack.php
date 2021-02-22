@@ -1,6 +1,6 @@
 <?php
 // AppCodeUnPack - Deploy Manager: NetArchive UnPacker
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //##############################################################################
@@ -194,7 +194,7 @@ function app__err__handler__catch_fatal_errs() {
 //##### #END: SHARED INIT
 
 //==
-define('APPCODEUNPACK_VERSION', 'v.20200605.1157'); // current version of this script
+define('APPCODEUNPACK_VERSION', 'v.20210222.1157'); // current version of this script
 //==
 header('Cache-Control: no-cache'); 															// HTTP 1.1
 header('Pragma: no-cache'); 																// HTTP 1.0

@@ -1,6 +1,6 @@
 <?php
 // Strip Code (PHP, JS, CSS)
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -29,7 +29,7 @@ if(is_file('modules/vendor/MatthiasMullie/autoload.php')) {
 final class StripCode {
 
 	// ::
-	// v.20200507.0957
+	// v.20210222.1157
 
 	public static function strip_css_code($y_file) {
 		//--

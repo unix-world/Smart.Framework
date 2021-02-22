@@ -1,6 +1,6 @@
 <?php
 // AppCodePack - a PHP, JS and CSS Optimizer / NetArchive Pack Upgrade Script
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -10,7 +10,7 @@ if(!defined('APPCODEPACK_APP_ID')) { // this must be defined in the first line o
 //-----------------------------------------------------
 
 //#####
-// Sample AppCodePack Upgrade Script, v.20200507.0957
+// Sample AppCodePack Upgrade Script, v.20210222.1157
 // CUSTOMIZE IT AS NEEDED and rename it to: appcode-upgrade.php
 //#####
 
