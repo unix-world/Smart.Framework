@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version:          r.20200501 -->
+<!-- Version:          r.20210222 -->
 <!-- Template:         [###TEMPLATE-PATH|html###][###TEMPLATE-FILE|html###] -->
 <!-- Charset:          [###CHARSET|html###] -->
 <!-- Srv Script:       [###SRV-SCRIPT|html###] -->
@@ -60,7 +60,7 @@ QUnit.config.reorder = false; // if TRUE, QUnit will run tests first that failed
 QUnit.config.testTimeout = [###TIMEOUT-NETSOCKET|int###] * 1000; // max time per test ; specify a global timeout in milliseconds after which all tests will fail with an appropriate message
 QUnit.done(function(details){ // done handler (more done handlers can be set later)
 	jQuery('#smart-qunit-results').empty().text('[[###APP-REALM|js###]] QUnit DONE. Disabled: ' + parseInt(smartQUnitDisabledTests) + '\n' + 'Total: ' + details.total + ' ; Failed: ' + details.failed + ' ; Passed: ' + details.passed + ' ; RunTime: ' + Math.ceil(details.runtime / 1000) + 's');
-	jQuery('<hr><h1 id="qunit-footer">#&nbsp;END&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[###SEMAPHORE|html###]</h1>').appendTo('body');
+	jQuery('#smart-qunit-done').empty().html('<hr><h1 id="qunit-footer">#&nbsp;END&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[###SEMAPHORE|html###]</h1>');
 });
 </script>
 <script>
@@ -73,5 +73,6 @@ jQuery(function(){
 	}, Math.ceil(smartQUnitStartDelay));
 });
 </script>
+<div id="smart-qunit-done"></div>
 </body>
 </html>
