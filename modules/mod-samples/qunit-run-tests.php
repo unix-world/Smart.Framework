@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/QunitRunTests
 // Route: ?page=samples.qunit-run-tests
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY

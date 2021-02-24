@@ -3,9 +3,9 @@
 
 /*
  * SmartQUnit 1.2.1
- * @version 20200121
+ * @version 20210224
  *
- * (c) 2018-2020 unix-world.org
+ * (c) 2018-2021 unix-world.org
  * Released under the BSD license
  */
 

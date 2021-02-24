@@ -1,15 +1,28 @@
 /*!
- * QUnit 2.9.2 (modified by unixman r.20200501)
+ * QUnit 2.14.0 (modified by unixman r.20210224)
  * https://qunitjs.com/
  *
- * Copyright jQuery Foundation and other contributors
+ * Copyright OpenJS Foundation and other contributors
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2019-02-21T22:49Z
+ * Date: 2021-01-12
  */
 
 /** Font Family and Sizes */
+
+/* Style our buttons in a simple way, uninfluenced by the styles
+   the tested app might load. Don't affect buttons in #qunit-fixture!
+   https://github.com/qunitjs/qunit/pull/1395
+   https://github.com/qunitjs/qunit/issues/1437 */
+/* fix by unixman
+#qunit-testrunner-toolbar button,
+#qunit-testresult button {
+	font-size: initial;
+	border: initial;
+	background-color: buttonface;
+}
+*/
 
 /* fix by unixman (comment out, needs to integrate with framework fonts)
 #qunit-tests, #qunit-header, #qunit-banner, #qunit-testrunner-toolbar, #qunit-filteredTest, #qunit-userAgent, #qunit-testresult {
@@ -39,15 +52,47 @@
 	border-radius: 0 0 5px 5px;
 }
 
+/** Fixed headers with scrollable tests */
+
+/* fix by unixman
+@supports (display: flex) or (display: -webkit-box) {
+	@media (min-height: 500px) {
+		#qunit {
+			position: fixed;
+			left: 0px;
+			right: 0px;
+			top: 0px;
+			bottom: 0px;
+			padding: 8px;
+			display: -webkit-box;
+			display: flex;
+			flex-direction: column;
+		}
+
+		#qunit-tests {
+			overflow: scroll;
+		}
+
+		#qunit-banner {
+			flex: 5px 0 0;
+		}
+	}
+}
+*/
+
+
 /** Header (excluding toolbar) */
 
 #qunit-header {
 	padding: 0.5em 0 0.5em 1em;
+
 	color: #8699A4;
 	background-color: #0D3349;
+
 	font-size: 1.5em;
 	line-height: 1em;
 	font-weight: 400;
+
 	border-radius: 5px 5px 0 0;
 }
 
@@ -75,7 +120,7 @@
 	padding: 0.5em 1em 0.5em 1em;
 	color: #FFF;
 	background-color: #2B81AF;
-/*	text-shadow: rgba(0, 0, 0, 0.5) 2px 2px 1px; fix by unixman */
+/*	text-shadow: rgba(0, 0, 0, 0.5) 2px 2px 1px; */ /* fix by unixman */
 }
 
 
@@ -107,6 +152,10 @@
 	height: 1.6em;
 }
 
+#qunit-toolbar-filters {
+	float: right;
+}
+
 .qunit-url-config,
 .qunit-filter,
 #qunit-modulefilter {
@@ -116,7 +165,6 @@
 
 .qunit-filter,
 #qunit-modulefilter {
-	float: right;
 	position: relative;
 	margin-left: 1em;
 }
@@ -127,7 +175,7 @@
 
 #qunit-modulefilter-search {
 	box-sizing: border-box;
-	width: 400px;
+	min-width: 400px;
 }
 
 #qunit-modulefilter-search-container:after {
@@ -140,7 +188,7 @@
 #qunit-modulefilter-dropdown {
 	/* align with #qunit-modulefilter-search */
 	box-sizing: border-box;
-	width: 400px;
+	min-width: 400px;
 	position: absolute;
 	right: 0;
 	top: 50%;
@@ -213,6 +261,7 @@
 #qunit-modulefilter-dropdown-list .clickable {
 	display: block;
 	padding-left: 0.15em;
+	padding-right: 0.5em;
 }
 
 
@@ -431,7 +480,7 @@
 }
 #qunit-testresult-controls {
 	padding: 0.5em 1em 0.5em 1em;
-	width: 10%;
+  width: 10%;
 	float:left;
 }
 

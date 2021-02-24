@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version:          r.20210222 -->
+<!-- Version:          r.20210224 -->
 <!-- Template:         [###TEMPLATE-PATH|html###][###TEMPLATE-FILE|html###] -->
 <!-- Charset:          [###CHARSET|html###] -->
 <!-- Srv Script:       [###SRV-SCRIPT|html###] -->
@@ -51,6 +51,7 @@
 <script>
 var smartQUnitStartDelay = 500; // qunit start delay (if many tests are loader async by ajax calls this time should be increased, ex: 2500)
 var smartQUnitDisabledTests = 0; // init (use it later to register the number of disabled tests)
+var smartQUnitDoneCounter = 0;
 QUnit.config.uxmAllowRerun = true; // this is the default behaviour
 QUnit.config.uxmUniqueModules = true; // force unique module (names) ; using nested modules with this set to TRUE may produce unexpected behaviour
 QUnit.config.urlConfig = [{ id: 'hidepassed', label: 'Display only Errors', tooltip: 'Show only Errors, Hide Passed' }];
@@ -59,7 +60,8 @@ QUnit.config.autostart = false; // do not start testing (yet)
 QUnit.config.reorder = false; // if TRUE, QUnit will run tests first that failed on a previous run
 QUnit.config.testTimeout = [###TIMEOUT-NETSOCKET|int###] * 1000; // max time per test ; specify a global timeout in milliseconds after which all tests will fail with an appropriate message
 QUnit.done(function(details){ // done handler (more done handlers can be set later)
-	jQuery('#smart-qunit-results').empty().text('[[###APP-REALM|js###]] QUnit DONE. Disabled: ' + parseInt(smartQUnitDisabledTests) + '\n' + 'Total: ' + details.total + ' ; Failed: ' + details.failed + ' ; Passed: ' + details.passed + ' ; RunTime: ' + Math.ceil(details.runtime / 1000) + 's');
+	smartQUnitDoneCounter++;
+	jQuery('#smart-qunit-results').empty().text('[[###APP-REALM|js###]] QUnit DONE (#' + smartQUnitDoneCounter + '). Disabled: ' + parseInt(smartQUnitDisabledTests) + '\n' + 'Total: ' + details.total + ' ; Failed: ' + details.failed + ' ; Passed: ' + details.passed + ' ; RunTime: ' + Math.ceil(details.runtime / 1000) + 's');
 	jQuery('#smart-qunit-done').empty().html('<hr><h1 id="qunit-footer">#&nbsp;END&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[###SEMAPHORE|html###]</h1>');
 });
 </script>

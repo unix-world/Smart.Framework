@@ -1,9 +1,12 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%/COMMENT%%%]
-//===== QUnit Tests: START :: r.20200610
+//===== QUnit Tests: START :: r.20210224
 
 (function() {
+
+	// Global Settings
+	QUnit.config.uxmAllowRerun = false; // hide re-run
 
 	// Settings
 
