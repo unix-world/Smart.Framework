@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200121
+ * @version 	v.20210301
  * @package 	Plugins:ExportAndImport
  *
  */
@@ -38,7 +38,7 @@ final class SmartSpreadSheetExport {
 
 	//->
 
-	private $version = 'excel.2003.xml.spreadsheet:20200121';
+	private $version = 'excel.2003.xml.spreadsheet:20210301';
 	private $cellWidth = 150;
 	private $cellHeight = 15;
 
@@ -80,7 +80,7 @@ final class SmartSpreadSheetExport {
 	// creates a Spreadsheet from Array
 	public function getFileContents($y_sheet_name, array $y_arr_fields, array $y_arr_data) {
 		//--
-		$y_sheet_name = (string) trim((string)$y_sheet_name);
+		$y_sheet_name = (string) Smart::text_cut_by_limit((string)trim((string)$y_sheet_name), 31, false, '...');
 		if((string)$y_sheet_name == '') {
 			$y_sheet_name = 'Spreadsheet';
 		} //end if
@@ -168,7 +168,7 @@ final class SmartSpreadSheetExport {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200121
+ * @version 	v.20210301
  * @package 	Plugins:ExportAndImport
  *
  */
@@ -255,7 +255,6 @@ final class SmartSpreadSheetImport {
 				} //end if
 			} //end if
 		} //end if
-		//echo '<pre>'.Smart::escape_html(print_r($data_arr,1)).'</pre>'; die();
 		//--
 		return array(
 			'header' 	=> (array) $hdr_arr, // 1st line
