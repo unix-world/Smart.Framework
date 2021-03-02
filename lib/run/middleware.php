@@ -39,7 +39,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20200622
+ * @version		20210302
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -232,7 +232,7 @@ abstract class SmartAbstractAppMiddleware {
 			self::$LANGUAGE_DETECTED = false;
 			return (bool) self::$LANGUAGE_DETECTED;
 		} //end if
-		if(!SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE)) {
+		if(!SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE)) { // {{{SYNC-APP-URL-LANG-PARAM}}} ; if not empty may contain only characters: [a-z]
 			self::$LANGUAGE_DETECTED = false;
 			return (bool) self::$LANGUAGE_DETECTED;
 		} //end if

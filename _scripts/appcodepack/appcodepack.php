@@ -203,7 +203,7 @@ function app__err__handler__catch_fatal_errs() {
 define('APPCODEPACK_UNPACK_TESTONLY', true); 												// default is TRUE ; set to FALSE for archive full test + uncompress + replace ; required just for AppCodePack (not for AppCodeUnpack)
 define('APPCODE_REGEX_STRIP_MULTILINE_CSS_COMMENTS', "`\/\*(.+?)\*\/`ism"); 				// regex for remove multi-line comments (by now used just for CSS ...) ; required just for AppCodePack (not for AppCodeUnpack)
 //==
-define('APPCODEPACK_VERSION', 'v.20210224.1648'); 											// current version of this script
+define('APPCODEPACK_VERSION', 'v.20210302.1258'); 											// current version of this script
 define('APPCODEUNPACK_VERSION', (string)APPCODEPACK_VERSION); 								// current version of unpack script (req. for unpack class)
 //==
 header('Cache-Control: no-cache'); 															// HTTP 1.1
@@ -211,7 +211,7 @@ header('Pragma: no-cache'); 																// HTTP 1.0
 header('Expires: '.gmdate('D, d M Y', @strtotime('-1 year')).' '.date('H:i:s').' GMT'); 	// HTTP 1.0
 header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 //==
-RunApp(); // outputs directly
+AppCodePack::Run(); // outputs directly
 //==
 
 //###############
@@ -219,584 +219,640 @@ RunApp(); // outputs directly
 //###############
 
 
-function RunApp() {
+final class AppCodePack {
 
-	//--	1. *Optional* create the 'appcodepack.ini' in the same folder as this script ; if 'appcodepack.ini' does not exists this script will use the INTERNAL methods (no minify but only strip comments in PHP / JS / CSS ...)
-	//--	2. Create a src Folder under your RELEASE folder, copy this script there and put all your source-code under a sub-folder named src/ : all your project files like PHP, JS, CSS and the other files
-	//--	3. Run this script as: http(s)://127.0.0.1/RELEASE/appcodepack.php
-				// * all the files optimizations for PHP / JS / CSS or just copy (for the rest of files) are checked against errors
-				// * thus you will see a RED / HIGHLIGTED error message printed in your browser if some errors occur when doing the optimisations ...
-				// * depending upon your choosen optimization strategy you will find a new sub-Folder into RELEASE as: src.APPCODEPACK.{{STRATEGY-DETAILS}}, where all the PHP, JS and CSS will be optimized for online distribution and the rest of files will be just copied
 
-	//===== SETTINGS
-	$appcode_ini_file_options = [
-		'APPCODEPACK_APP_ID' => false,
-		'APPCODEPACK_APP_SECRET' => false,
-		'APPCODEPACK_APP_UNPACK_URL' => false,
-		'APPCODEPACK_APP_UNPACK_USER' => false,
-		'APPCODEPACK_APP_UNPACK_PASSWORD' => false,
-		'APPCODEPACK_COMPRESS_UTILITY_TYPE' => false,
-		'APPCODEPACK_COMPRESS_UTILITY_BIN' => false,
-		'APPCODEPACK_COMPRESS_UTILITY_MODULE_JS' => false,
-		'APPCODEPACK_COMPRESS_UTILITY_OPTIONS_JS' => false,
-		'APPCODEPACK_COMPRESS_UTILITY_MODULE_CSS' => false,
-		'APPCODEPACK_COMPRESS_UTILITY_OPTIONS_CSS' => false,
-		'APPCODEPACK_LINT_PHP_UTILITY_BIN' => false,
-		'APPCODEPACK_LINT_NODEJS_UTILITY_BIN' => false
-	];
-	$appcode_ini_file_parse = array();
-	if((AppPackUtils::is_type_file('appcodepack.ini')) AND (AppPackUtils::have_access_read('appcodepack.ini'))) {
-		//--
-		$appcode_ini_file_parse = (array) @parse_ini_file('appcodepack.ini', false, INI_SCANNER_RAW);
-		//--
-		foreach($appcode_ini_file_parse as $appcode_ini_file_pkey => $appcode_ini_file_pval) {
-			if(array_key_exists((string)$appcode_ini_file_pkey, (array)$appcode_ini_file_options)) {
-				if((string)$appcode_ini_file_pkey === 'APPCODEPACK_COMPRESS_UTILITY_TYPE') {
-					define('APPCODEPACK_STRATEGY', strtoupper((string)$appcode_ini_file_pval));
-					switch((string)APPCODEPACK_STRATEGY) {
-						case 'INTERNAL': // made by this app
-							$appcode_ini_file_pval = 'N';
-							break;
-						case 'NODEJS+UGLIFY': // nodejs+uglify(js|css)
-							$appcode_ini_file_pval = 'U';
-							break;
-						case 'JAVA+GC': // java+google.closure.compiler+spreadsheet
-							$appcode_ini_file_pval = 'G';
-							break;
-						case 'JAVA+YUI': // java+yahoo.yui.compressor
-							$appcode_ini_file_pval = 'Y';
-							break;
-						case 'JAVA+GCYUI': // java+google.closure.compiler(js)+yahoo.yui.compressor(css)
-							$appcode_ini_file_pval = 'X';
-							break;
-						default:
-							AppPackUtils::raise_error('A required INI Key contains an invalid value from appcodepack.ini : APPCODEPACK_COMPRESS_UTILITY_TYPE: '.$appcode_ini_file_pval);
+	public static function Run() {
+
+		//--	1. *Optional* create the 'appcodepack.ini' in the same folder as this script ; if 'appcodepack.ini' does not exists this script will use the INTERNAL methods (no minify but only strip comments in PHP / JS / CSS ...)
+		//--	2. Create a src Folder under your RELEASE folder, copy this script there and put all your source-code under a sub-folder named src/ : all your project files like PHP, JS, CSS and the other files
+		//--	3. Run this script as: http(s)://127.0.0.1/RELEASE/appcodepack.php
+					// * all the files optimizations for PHP / JS / CSS or just copy (for the rest of files) are checked against errors
+					// * thus you will see a RED / HIGHLIGTED error message printed in your browser if some errors occur when doing the optimisations ...
+					// * depending upon your choosen optimization strategy you will find a new sub-Folder into RELEASE as: src.APPCODEPACK.{{STRATEGY-DETAILS}}, where all the PHP, JS and CSS will be optimized for online distribution and the rest of files will be just copied
+
+		//===== SETTINGS
+		$appcode_ini_file_options = [
+			'APPCODEPACK_APP_ID' => false,
+			'APPCODEPACK_APP_SECRET' => false,
+			'APPCODEPACK_APP_UNPACK_URL' => false,
+			'APPCODEPACK_APP_UNPACK_USER' => false,
+			'APPCODEPACK_APP_UNPACK_PASSWORD' => false,
+			'APPCODEPACK_COMPRESS_UTILITY_TYPE' => false,
+			'APPCODEPACK_COMPRESS_UTILITY_BIN' => false,
+			'APPCODEPACK_COMPRESS_UTILITY_MODULE_JS' => false,
+			'APPCODEPACK_COMPRESS_UTILITY_OPTIONS_JS' => false,
+			'APPCODEPACK_COMPRESS_UTILITY_MODULE_CSS' => false,
+			'APPCODEPACK_COMPRESS_UTILITY_OPTIONS_CSS' => false,
+			'APPCODEPACK_LINT_PHP_UTILITY_BIN' => false,
+			'APPCODEPACK_LINT_NODEJS_UTILITY_BIN' => false
+		];
+		$appcode_ini_file_parse = array();
+		if((AppPackUtils::is_type_file('appcodepack.ini')) AND (AppPackUtils::have_access_read('appcodepack.ini'))) {
+			//--
+			$appcode_ini_file_parse = (array) @parse_ini_file('appcodepack.ini', false, INI_SCANNER_RAW);
+			//--
+			foreach($appcode_ini_file_parse as $appcode_ini_file_pkey => $appcode_ini_file_pval) {
+				if(array_key_exists((string)$appcode_ini_file_pkey, (array)$appcode_ini_file_options)) {
+					if((string)$appcode_ini_file_pkey === 'APPCODEPACK_COMPRESS_UTILITY_TYPE') {
+						define('APPCODEPACK_STRATEGY', strtoupper((string)$appcode_ini_file_pval));
+						switch((string)APPCODEPACK_STRATEGY) {
+							case 'INTERNAL': // made by this app
+								$appcode_ini_file_pval = 'N';
+								break;
+							case 'NODEJS+UGLIFY': // nodejs+uglify(js|css)
+								$appcode_ini_file_pval = 'U';
+								break;
+							case 'JAVA+GC': // java+google.closure.compiler+spreadsheet
+								$appcode_ini_file_pval = 'G';
+								break;
+							case 'JAVA+YUI': // java+yahoo.yui.compressor
+								$appcode_ini_file_pval = 'Y';
+								break;
+							case 'JAVA+GCYUI': // java+google.closure.compiler(js)+yahoo.yui.compressor(css)
+								$appcode_ini_file_pval = 'X';
+								break;
+							default:
+								AppPackUtils::raise_error('A required INI Key contains an invalid value from appcodepack.ini : APPCODEPACK_COMPRESS_UTILITY_TYPE: '.$appcode_ini_file_pval);
+								return;
+						} //end switch
+					} //end if
+					if(!defined((string)$appcode_ini_file_pkey)) {
+						define((string)$appcode_ini_file_pkey, (string)$appcode_ini_file_pval);
+						if(defined((string)$appcode_ini_file_pkey)) {
+							$appcode_ini_file_options[(string)$appcode_ini_file_pkey] = true;
+						} else {
+							AppPackUtils::raise_error('Failed to define an INI Key from appcodepack.ini : '.(string)$appcode_ini_file_pkey);
 							return;
-					} //end switch
-				} //end if
-				if(!defined((string)$appcode_ini_file_pkey)) {
-					define((string)$appcode_ini_file_pkey, (string)$appcode_ini_file_pval);
-					if(defined((string)$appcode_ini_file_pkey)) {
-						$appcode_ini_file_options[(string)$appcode_ini_file_pkey] = true;
+						} //end if
 					} else {
-						AppPackUtils::raise_error('Failed to define an INI Key from appcodepack.ini : '.(string)$appcode_ini_file_pkey);
+						AppPackUtils::raise_error('INI Key already defined from appcodepack.ini : '.(string)$appcode_ini_file_pkey);
 						return;
-					} //end if
-				} else {
-					AppPackUtils::raise_error('INI Key already defined from appcodepack.ini : '.(string)$appcode_ini_file_pkey);
-					return;
-				} //end if else
-			} else {
-				AppPackUtils::raise_error('Invalid INI Key detected in appcodepack.ini : '.(string)$appcode_ini_file_pkey);
-				return;
-			} //end if else
-		} //end foreach
-		//--
-		switch((string)APPCODEPACK_COMPRESS_UTILITY_TYPE) {
-			case 'N':
-				foreach(['APPCODEPACK_COMPRESS_UTILITY_TYPE', 'APPCODEPACK_APP_ID', 'APPCODEPACK_APP_SECRET', 'APPCODEPACK_LINT_PHP_UTILITY_BIN', 'APPCODEPACK_LINT_NODEJS_UTILITY_BIN'] as $appcode_ini_file_pkey => $appcode_ini_file_pval) { // {{{SYNC-PACK-INTERNAL-DEFS}}}
-					if($appcode_ini_file_options[(string)$appcode_ini_file_pval] !== true) {
-						AppPackUtils::raise_error('A required INI Key was not defined from appcodepack.ini : '.(string)$appcode_ini_file_pval);
-						return;
-					} //end if
-				} //end foreach
-				break;
-			case 'U':
-			case 'G':
-			case 'Y':
-			case 'X':
-				foreach($appcode_ini_file_options as $appcode_ini_file_pkey => $appcode_ini_file_pval) {
-					if($appcode_ini_file_pval !== true) {
-						AppPackUtils::raise_error('A required INI Key was not defined from appcodepack.ini : '.(string)$appcode_ini_file_pkey);
-						return;
-					} //end if
-				} //end foreach
-				if((string)APPCODEPACK_COMPRESS_UTILITY_BIN == '') {
-					AppPackUtils::raise_error('A required INI Key is empty from appcodepack.ini : APPCODEPACK_COMPRESS_UTILITY_BIN');
-					return;
-				} //end if
-				if((string)APPCODEPACK_COMPRESS_UTILITY_MODULE_JS == '') {
-					AppPackUtils::raise_error('A required INI Key is empty from appcodepack.ini : APPCODEPACK_COMPRESS_UTILITY_MODULE_JS');
-					return;
-				} //end if
-				if((string)APPCODEPACK_COMPRESS_UTILITY_MODULE_CSS == '') {
-					AppPackUtils::raise_error('A required INI Key is empty from appcodepack.ini : APPCODEPACK_COMPRESS_UTILITY_MODULE_CSS');
-					return;
-				} //end if
-				break;
-			default:
-				AppPackUtils::raise_error('A required INI Key was parsed to an invalid value from appcodepack.ini : APPCODEPACK_COMPRESS_UTILITY_TYPE: '.APPCODEPACK_COMPRESS_UTILITY_TYPE);
-				return;
-		} //end switch
-		//--
-		//echo 'Utility-Type: '.APPCODEPACK_COMPRESS_UTILITY_TYPE.'<hr>'; echo 'Minify-Strategy: '.APPCODEPACK_STRATEGY.'<hr>'; echo '<pre>'; print_r($appcode_ini_file_parse); print_r($appcode_ini_file_options); echo '</pre>'; die();
-		//--
-		unset($appcode_ini_file_parse);
-		unset($appcode_ini_file_pkey);
-		unset($appcode_ini_file_pval);
-		//--
-	} else { // {{{SYNC-PACK-INTERNAL-DEFS}}}
-		//--
-		define('APPCODEPACK_STRATEGY', 'INTERNAL');
-		//--
-		define('APPCODEPACK_COMPRESS_UTILITY_TYPE', 'N');
-		define('APPCODEPACK_APP_ID', '-----UNDEF-----');
-		define('APPCODEPACK_APP_SECRET', '');
-		// APPCODEPACK_LINT_PHP_UTILITY_BIN 		:: must be undefined
-		// APPCODEPACK_LINT_NODEJS_UTILITY_BIN 		:: must be undefined
-		//--
-	} //end if
-	//--
-	unset($appcode_ini_file_options);
-	//--
-	if(!defined('APPCODEPACK_APP_ID')) {
-		AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_ID must be defined and was not !');
-		return;
-	} //end if
-	if((string)trim((string)APPCODEPACK_APP_ID) == '') { // {{{SYNC-VALID-APPCODEPACK-APPID}}}
-		AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_ID is Empty !');
-		return;
-	} //end if
-	if(strlen((string)APPCODEPACK_APP_ID) < 5) { // {{{SYNC-VALID-APPCODEPACK-APPID}}}
-		AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_ID is Too Short (<5) characters: '.APPCODEPACK_APP_ID);
-		return;
-	} //end if
-	if(strlen((string)APPCODEPACK_APP_ID) > 63) { // {{{SYNC-VALID-APPCODEPACK-APPID}}}
-		AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_ID is Too Long (>63) characters: '.APPCODEPACK_APP_ID);
-		return;
-	} //end if
-	if(!preg_match('/^[_a-zA-Z0-9\-\.@]+$/', (string)APPCODEPACK_APP_ID)) { // {{{SYNC-VALID-APPCODEPACK-APPID}}} allow safe path characters except: # / which are reserved
-		AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_ID Contains Invalid Characters: '.APPCODEPACK_APP_ID);
-		return;
-	} //end if
-	//--
-	if(!defined('APPCODEPACK_APP_SECRET')) {
-		AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_SECRET must be defined and was not !');
-		return;
-	} //end if
-	// no check if APPCODEPACK_APP_SECRET is empty (only unpack enforces this check) ; but anyway, if non-empty do check on lengths
-	if((string)trim((string)APPCODEPACK_APP_SECRET) != '') { // {{{SYNC-VALID-APPCODEPACK-APPSECRET}}}
-		if(strlen((string)APPCODEPACK_APP_SECRET) < 5) { // {{{SYNC-VALID-APPCODEPACK-APPSECRET}}}
-			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_SECRET is Too Short (<40) characters: '.APPCODEPACK_APP_SECRET);
-			return;
-		} //end if
-		if(strlen((string)APPCODEPACK_APP_SECRET) > 128) { // {{{SYNC-VALID-APPCODEPACK-APPSECRET}}}
-			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_SECRET is Too Long (>128) characters: '.APPCODEPACK_APP_SECRET);
-			return;
-		} //end if
-	} //end if
-	//--
-	if(defined('APPCODEPACK_APP_HASH_ID')) {
-		AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_HASH_ID was defined and must not !');
-		return;
-	} //end if
-	if((string)trim((string)APPCODEPACK_APP_SECRET) != '') { // {{{SYNC-VALID-APPCODEPACK-APPSECRET}}}
-		define('APPCODEPACK_APP_HASH_ID', sha1((string)APPCODEPACK_APP_ID.'*AppCode(Un)Pack*'.(string)APPCODEPACK_APP_SECRET)); // {{{SYNC-VALID-APPCODEPACK-APPHASH}}}
-	} else {
-		define('APPCODEPACK_APP_HASH_ID', '');
-	} //end if else
-	//--
-	if(!defined('APPCODEPACK_STRATEGY')) {
-		AppPackUtils::raise_error('App Internal Error : APPCODEPACK_STRATEGY must be defined and was not !');
-		return;
-	} //end if
-	//--
-	if(!defined('APPCODEPACK_COMPRESS_UTILITY_TYPE')) {
-		AppPackUtils::raise_error('App Internal Error : APPCODEPACK_COMPRESS_UTILITY_TYPE must be defined and was not !');
-		return;
-	} //end if
-	//--
-	//=====
-
-	//--
-	define('APPCODEPACK_PROCESS_SOURCE_DIR', 'src');
-	//--
-	if((string)APPCODEPACK_STRATEGY !== 'INTERNAL') {
-		define('APPCODEPACK_PROCESS_OPTIMIZATIONS_MODE', 'minify');
-		define('APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR', (string)APPCODEPACK_PROCESS_SOURCE_DIR.'.APPCODEPACK.'.'MINIFIED-'.APPCODEPACK_COMPRESS_UTILITY_TYPE);
-	} else {
-		define('APPCODEPACK_PROCESS_OPTIMIZATIONS_MODE', 'comments');
-		define('APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR', (string)APPCODEPACK_PROCESS_SOURCE_DIR.'.APPCODEPACK.'.'STRIP-NOCOMMENTS');
-	} //end if else
-	//--
-	define('APPCODEPACK_MARKER_OPTIMIZATIONS', '(PHP'.(defined('APPCODEPACK_LINT_PHP_UTILITY_BIN') ? '+Lint' : '').' / JS'.(defined('APPCODEPACK_LINT_NODEJS_UTILITY_BIN') ? '+Lint' : '').' / CSS)');
-	//--
-
-	//===== Main code execution
-	//--
-	$img_logo_app = 'data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgaWQ9ImFwcGNvZGVwYWNrLWxvZ28iPgogIDxkZWZzIGlkPSJkZWZzMTQiIC8+CiAgPGcgdHJhbnNmb3JtPSJtYXRyaXgoMCwxLC0xLDAsMTI4LC0zLjg4ODVlLTYpIiBpZD0iZzM3NTUiPgogICAgPGcgdHJhbnNmb3JtPSJtYXRyaXgoMC4xMjkwMTgzOSwwLDAsMC4xMTYzMjQxNiwtMTMuMzAxMzY4LDExOC45MDUpIiBpZD0iZzI5OTMiPgogICAgICA8cGF0aCBkPSJNIDEwMzUuNiwtMTkyLjcgNjE3LjUsNDMuOCB2IC0xODQuMiBsIDI2MC41LC0xNDMuMyAxNTcuNiw5MSB6IG0gMjguNiwtMjUuOSB2IC00OTQuNiBsIC0xNTMsODguMyBWIC0zMDcgbCAxNTMsODguNCB6IG0gLTkwMS41LDI1LjkgNDE4LjEsMjM2LjUgdiAtMTg0LjIgbCAtMjYwLjUsLTE0My4zIC0xNTcuNiw5MSB6IG0gLTI4LjYsLTI1LjkgdiAtNDk0LjYgbCAxNTMsODguMyBWIC0zMDcgbCAtMTUzLDg4LjQgeiBNIDE1MiwtNzQ1LjIgNTgwLjgsLTk4Ny44IHYgMTc4LjEgbCAtMjc0LjcsMTUxLjEgLTIuMSwxLjIgLTE1MiwtODcuOCB6IG0gODk0LjMsMCAtNDI4LjgsLTI0Mi42IHYgMTc4LjEgbCAyNzQuNywxNTEuMSAyLjEsMS4yIDE1MiwtODcuOCB6IiBpZD0icGF0aDgiIHN0eWxlPSJmaWxsOiNkY2RjZGM7ZmlsbC1vcGFjaXR5OjEiIC8+CiAgICAgIDxwYXRoIGQ9Im0gNTgwLjgsLTE4Mi4zIC0yNTcsLTE0MS4zIDAsLTI4MCAyNTcsMTQ4LjQgeiBtIDM2LjcsMCAyNTcsLTE0MS4zIDAsLTI4MCAtMjU3LDE0OC40IHogTSAzNDEuMiwtNjM2IDU5OS4yLC03NzcuOSA4NTcuMiwtNjM2IDY2MS4yNzQ4NCwtNTIyLjg0OTQzIDU5OS4yLC00ODcgeiIgaWQ9InBhdGgxMCIgc3R5bGU9ImZpbGw6Izc3ODg5OTtmaWxsLW9wYWNpdHk6MSIgLz4KICAgIDwvZz4KICAgIDxwYXRoIGQ9Im0gMzIuMjc1LDI5Ljk2NjQ3NCBxIDAsLTEuMjA1NzA3IDEuNTA2ODQsLTIuMTI3NzE4IGwgMy4wNTQzOSwtMS43NzMwOTggcSAxLjU0NzU2LC0wLjg5ODM2OSAzLjcwNiwtMC44OTgzNjkgMi4xOTkxNjksMCAzLjY2NTI4LDAuODk4MzY5IGwgMTEuOTczMjM1LDYuOTI2OTAzIDAsLTE2LjY0MzQ3OCBxIDAsLTEuMjI5MzQ5IDEuNTI3MTk4LC0xLjk5NzY5MSAxLjUyNzE5OCwtMC43NjgzNDIgMy42ODU2MzksLTAuNzY4MzQyIGwgNS4yMTI4MzYsMCBxIDIuMTU4NDQxLDAgMy42ODU2MzksMC43NjgzNDIgMS41MjcxOTgsMC43NjgzNDIgMS41MjcxOTgsMS45OTc2OTEgbCAwLDE2LjY0MzQ3OCAxMS45NzMyMzUsLTYuOTI2OTAzIHEgMS40NjYxMTEsLTAuODk4MzY5IDMuNjY1Mjc2LC0wLjg5ODM2OSAyLjE5OTE2NiwwIDMuNjY1Mjc2LDAuODk4MzY5IGwgMy4wNTQzOTcsMS43NzMwOTggcSAxLjU0NzU2MSwwLjg5ODM3IDEuNTQ3NTYxLDIuMTI3NzE4IDAsMS4yNTI5ODkgLTEuNTQ3NTYxLDIuMTUxMzU5IEwgNjcuNjY1Mjc2LDQ3LjUwODMyMiBRIDY2LjIzOTg5MSw0OC4zODMwNSA2NCw0OC4zODMwNSBxIC0yLjE5OTE2NiwwIC0zLjcwNjAwMSwtMC44NzQ3MjggTCAzMy43ODE4NCwzMi4xMTc4MzMgUSAzMi4yNzUsMzEuMTk1ODIyIDMyLjI3NSwyOS45NjY0NzQgeiIgaWQ9InBhdGgzMDI5IiBzdHlsZT0iZmlsbDojZmY5OTAwO2ZpbGwtb3BhY2l0eToxIiAvPgogIDwvZz4KPC9zdmc+';
-	//--
-	$img_logo_php = 'data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyMi44OCAxMjIuODgiIGlkPSJwaHAtbG9nby1zdmciPgogIDxkZWZzIGlkPSJkZWZzMTIiIC8+CiAgPGcgdHJhbnNmb3JtPSJtYXRyaXgoMC40NTMzMzMzMywwLDAsMC41OTAxNzQ1OCwzLjk5MzYsMTkuNTU4NCkiIGlkPSJnNCIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkIj4KICAgIDxlbGxpcHNlIGN4PSIxMjgiIGN5PSI2Ni42Mjk5OTciIHJ4PSIxMjgiIHJ5PSI2Ni42Mjk5OTciIGlkPSJlbGxpcHNlNiIgc3R5bGU9ImZpbGw6IzczNzQ5NSIgLz4KICAgIDxwYXRoIGQ9Ik0gMzUuOTQ1LDEwNi4wODIgNDkuOTczLDM1LjA2OCBIIDgyLjQxIGMgMTQuMDI3LDAuODc3IDIxLjA0MSw3Ljg5IDIxLjA0MSwyMC4xNjUgMCwyMS4wNDEgLTE2LjY1NywzMy4zMTUgLTMxLjU2MiwzMi40MzggSCA1Ni4xMSBsIC0zLjUwNywxOC40MTEgSCAzNS45NDUgeiBNIDU5LjYxNiw3NC41MjEgNjQsNDguMjE5IGggMTEuMzk3IGMgNi4xMzcsMCAxMC41MiwyLjYzIDEwLjUyLDcuODkgLTAuODc2LDE0LjkwNSAtNy44OSwxNy41MzUgLTE1Ljc4LDE4LjQxMiBoIC0xMC41MiB6IG0gNDAuNTc2LDEzLjE1IDE0LjAyNywtNzEuMDEzIGggMTYuNjU4IGwgLTMuNTA3LDE4LjQxIGggMTUuNzggYyAxNC4wMjgsMC44NzcgMTkuMjg4LDcuODkgMTcuNTM1LDE2LjY1OCBsIC02LjEzNywzNS45NDUgaCAtMTcuNTM0IGwgNi4xMzcsLTMyLjQzOCBjIDAuODc2LC00LjM4NCAwLjg3NiwtNy4wMTQgLTUuMjYsLTcuMDE0IEggMTI0Ljc0IGwgLTcuODksMzkuNDUyIGggLTE2LjY1OCB6IG0gNTMuMjMzLDE4LjQxMSAxNC4wMjcsLTcxLjAxNCBoIDMyLjQzOCBjIDE0LjAyOCwwLjg3NyAyMS4wNDIsNy44OSAyMS4wNDIsMjAuMTY1IDAsMjEuMDQxIC0xNi42NTgsMzMuMzE1IC0zMS41NjIsMzIuNDM4IGggLTE1Ljc4MSBsIC0zLjUwNywxOC40MTEgaCAtMTYuNjU3IHogbSAyMy42NywtMzEuNTYxIDQuMzg0LC0yNi4zMDIgaCAxMS4zOTggYyA2LjEzNywwIDEwLjUyLDIuNjMgMTAuNTIsNy44OSAtMC44NzYsMTQuOTA1IC03Ljg5LDE3LjUzNSAtMTUuNzgsMTguNDEyIGggLTEwLjUyMSB6IiBpZD0icGF0aDgiIHN0eWxlPSJmaWxsOiNGRkZGRkYiIC8+CiAgPC9nPgo8L3N2Zz4=';
-	$img_logo_js  = 'data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDYwIDYwIiBpZD0iamF2YXNjcmlwdC1sb2dvLXN2ZyI+CiAgPGRlZnMgaWQ9ImRlZnMxMCIgLz4KICA8ZyBpZD0idGV4dDM3NTciIHN0eWxlPSJmaWxsOiMwMDAwMDA7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOm5vbmUiPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwLjM4MTM1NTcpIiBpZD0iZzM3NjciPgogICAgICA8cGF0aCBkPSJNIDQ5LjA4ODEsNDQuMzAzODczIEMgNTQuMzMyNCw0MC4yMzQxMDUgNTcsMzUuMzUwOCA1NywyOS42MTg2NDQgNTcsMjMuODg2NDg5IDU0LjMzMjQsMTkuMDAzMTgzIDQ5LjA4ODEsMTQuOTMzNDE1IDQzLjc5ODgsMTAuODk5NjUxIDM3LjQ1MTEsOC44NDc0NTc2IDMwLDguODQ3NDU3NiBjIC03LjQ1MTEsMCAtMTMuNzk4OCwyLjA1MjE5MzQgLTE5LjA4OSw2LjA4NTk1NzQgQyA1LjY2NzYsMTkuMDAzMTgzIDMsMjMuODg2NDg5IDMsMjkuNjE4NjQ0IGMgMCw1LjczMjE1NiAyLjY2NzYsMTAuNjE1NDYxIDcuOTExLDE0LjY4NTIyOSA1LjI5MDIsNC4wNjkwNzYgMTEuNjM3OSw2LjA4NTk1OCAxOS4wODksNi4wODU5NTggNy40NTExLDAgMTMuNzk4OCwtMi4wMTY4ODIgMTkuMDg4MSwtNi4wODU5NTggeiIgaWQ9InBhdGg0IiBzdHlsZT0iZmlsbDojZmZjYzAwO2ZpbGwtb3BhY2l0eToxIiAvPgogICAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMC40Njg3NSwwKSIgaWQ9ImcyOTg4Ij4KICAgICAgICA8cGF0aCBkPSJtIDIyLjQzMTY0MSwxNS4zMjE5MjYgMy45NDUzMTIsMCAwLDIwLjg3MDM1NCBjIC04ZS02LDIuNzA0NTggLTAuNjcwNTgsNC42Njc5MDQgLTIuMDExNzE5LDUuODg5OTc4IC0xLjMyODEyOSwxLjIyMjA2NCAtMy40NzAwNTQsMS44MzMwOTkgLTYuNDI1NzgxLDEuODMzMTA1IGwgLTEuNTAzOTA2LDAgMCwtMi41NTQzMjcgMS4yMzA0NjksMCBjIDEuNzQ0NzksLTRlLTYgMi45NzUyNTgsLTAuMzc1NjQgMy42OTE0MDYsLTEuMTI2OTA5IDAuNzE2MTQyLC0wLjc1MTI3NSAxLjA3NDIxNSwtMi4wOTg1NTUgMS4wNzQyMTksLTQuMDQxODQ3IGwgMCwtMjAuODcwMzU0IiBpZD0icGF0aDM3NjIiIC8+CiAgICAgICAgPHBhdGggZD0ibSA0NS4yMDUwNzgsMjEuNjg1MjA2IDAsMi42MTQ0MjkgYyAtMS4wMTU2NDIsLTAuNDAwNjY1IC0yLjA3MDMyOCwtMC43MDExNzQgLTMuMTY0MDYyLC0wLjkwMTUyNyAtMS4wOTM3NjQsLTAuMjAwMzI1IC0yLjIyNjU3NSwtMC4zMDA0OTUgLTMuMzk4NDM4LC0wLjMwMDUwOSAtMS43ODM4NjMsMS40ZS01IC0zLjEyNTAwOCwwLjIxMDM3IC00LjAyMzQzNywwLjYzMTA2OCAtMC44ODU0MjMsMC40MjA3MjcgLTEuMzI4MTMxLDEuMDUxNzk1IC0xLjMyODEyNSwxLjg5MzIwOCAtNmUtNiwwLjY0MTA5NyAwLjMxOTAwNCwxLjE0Njk1NCAwLjk1NzAzMSwxLjUxNzU3IDAuNjM4MDEzLDAuMzYwNjIyIDEuOTIwNTY0LDAuNzA2MjA3IDMuODQ3NjU2LDEuMDM2NzU2IGwgMS4yMzA0NjksMC4yMTAzNTcgYyAyLjU1MjA2OSwwLjQyMDcyMiA0LjM2MTk2MywxLjAxNjczIDUuNDI5Njg3LDEuNzg4MDI4IDEuMDgwNzExLDAuNzYxMjk4IDEuNjIxMDc1LDEuODI4MTAzIDEuNjIxMDk0LDMuMjAwNDIzIC0xLjllLTUsMS41NjI2NSAtMC44MDczMSwyLjc5OTc0NCAtMi40MjE4NzUsMy43MTEyODYgLTEuNjAxNTc3LDAuOTExNTQ0IC0zLjgwODYwNiwxLjM2NzMxNiAtNi42MjEwOTQsMS4zNjczMTYgLTEuMTcxODgzLDAgLTIuMzk1ODQsLTAuMDkwMTUgLTMuNjcxODc1LC0wLjI3MDQ1NyAtMS4yNjMwMjUsLTAuMTcwMjkgLTIuNTk3NjU5LC0wLjQzMDczIC00LjAwMzkwNiwtMC43ODEzMjQgbCAwLC0yLjg1NDgzNiBjIDEuMzI4MTIyLDAuNTMwOTAyIDIuNjM2NzE0LDAuOTMxNTggMy45MjU3ODEsMS4yMDIwMzYgMS4yODkwNTUsMC4yNjA0NDMgMi41NjUwOTYsMC4zOTA2NjQgMy44MjgxMjUsMC4zOTA2NjIgMS42OTI2OTcsMmUtNiAyLjk5NDc3OSwtMC4yMjAzNzIgMy45MDYyNSwtMC42NjExMiAwLjkxMTQ0NCwtMC40NTA3NjEgMS4zNjcxNzMsLTEuMDgxODMgMS4zNjcxODgsLTEuODkzMjA3IC0xLjVlLTUsLTAuNzUxMjY4IC0wLjMzMjA0NiwtMS4zMjcyNDMgLTAuOTk2MDk0LC0xLjcyNzkyOCAtMC42NTEwNTUsLTAuNDAwNjcxIC0yLjA4OTg1NiwtMC43ODYzMjUgLTQuMzE2NDA2LC0xLjE1Njk1OSBsIC0xLjI1LC0wLjIyNTM4MiBjIC0yLjIyNjU2OSwtMC4zNjA2MDMgLTMuODM0NjQsLTAuOTExNTM2IC00LjgyNDIxOSwtMS42NTI4IC0wLjk4OTU4NiwtMC43NTEyNjMgLTEuNDg0Mzc3LC0xLjc3ODAwMSAtMS40ODQzNzUsLTMuMDgwMjE4IC0yZS02LC0xLjU4MjY2NyAwLjcyOTE2NCwtMi44MDQ3MzYgMi4xODc1LC0zLjY2NjIxIDEuNDU4MzI3LC0wLjg2MTQ0MyAzLjUyODYzOCwtMS4yOTIxNzIgNi4yMTA5MzgsLTEuMjkyMTkgMS4zMjgxMTMsMS44ZS01IDIuNTc4MTExLDAuMDc1MTUgMy43NSwwLjIyNTM4MiAxLjE3MTg1OSwwLjE1MDI3MiAyLjI1MjU4NywwLjM3NTY1NCAzLjI0MjE4NywwLjY3NjE0NiIgaWQ9InBhdGgzNzY0IiAvPgogICAgICA8L2c+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=';
-	$img_logo_css = 'data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDYwIDYwIiBpZD0iY3NzLWxvZ28tc3ZnIj4KICA8ZGVmcyBpZD0iZGVmczEwIiAvPgogIDxnIGlkPSJ0ZXh0Mzc1NyIgc3R5bGU9ImZpbGw6IzAwMDAwMDtmaWxsLW9wYWNpdHk6MTtzdHJva2U6bm9uZSI+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLDAuMzgxMzU1NykiIGlkPSJnMzc2NyI+CiAgICAgIDxwYXRoIGQ9Ik0gNDkuMDg4MSw0NC4zMDM4NzMgQyA1NC4zMzI0LDQwLjIzNDEwNSA1NywzNS4zNTA4IDU3LDI5LjYxODY0NCA1NywyMy44ODY0ODkgNTQuMzMyNCwxOS4wMDMxODMgNDkuMDg4MSwxNC45MzM0MTUgNDMuNzk4OCwxMC44OTk2NTEgMzcuNDUxMSw4Ljg0NzQ1NzYgMzAsOC44NDc0NTc2IGMgLTcuNDUxMSwwIC0xMy43OTg4LDIuMDUyMTkzNCAtMTkuMDg5LDYuMDg1OTU3NCBDIDUuNjY3NiwxOS4wMDMxODMgMywyMy44ODY0ODkgMywyOS42MTg2NDQgYyAwLDUuNzMyMTU2IDIuNjY3NiwxMC42MTU0NjEgNy45MTEsMTQuNjg1MjI5IDUuMjkwMiw0LjA2OTA3NiAxMS42Mzc5LDYuMDg1OTU4IDE5LjA4OSw2LjA4NTk1OCA3LjQ1MTEsMCAxMy43OTg4LC0yLjAxNjg4MiAxOS4wODgxLC02LjA4NTk1OCB6IiBpZD0icGF0aDQiIHN0eWxlPSJmaWxsOiNCMjhFNzA7ZmlsbC1vcGFjaXR5OjEiIC8+CiAgICA8L2c+CiAgPC9nPgogIDxnIGlkPSJ0ZXh0Mzc3NSI+CiAgICA8ZyBpZD0iZzI5OTMiPgogICAgICA8cGF0aCBkPSJtIDI0LjM4MjMyNCwyMS41MzQ1NzYgMCwyLjUzNTA5NiBjIC0wLjgwOTM0MSwtMC43NTM3NyAtMS42NzQyMDgsLTEuMzE3MTI0IC0yLjU5NDYwNCwtMS42OTAwNjQgLTAuOTEyNDg4LC0wLjM3MjkwOSAtMS44ODQ0NzIsLTAuNTU5MzcxIC0yLjkxNTk1NSwtMC41NTkzODcgLTIuMDMxMjU4LDEuNmUtNSAtMy41ODY0MzIsMC42MjI4NzkgLTQuNjY1NTI3LDEuODY4NTkxIC0xLjA3OTEwNiwxLjIzNzgwNiAtMS42MTg2NTYsMy4wMzEwMTcgLTEuNjE4NjUzLDUuMzc5NjM5IC0zZS02LDIuMzQwNzA1IDAuNTM5NTQ3LDQuMTMzOTE2IDEuNjE4NjUzLDUuMzc5NjM5IDEuMDc5MDk1LDEuMjM3Nzk1IDIuNjM0MjY5LDEuODU2NjkxIDQuNjY1NTI3LDEuODU2Njg5IDEuMDMxNDgzLDJlLTYgMi4wMDM0NjcsLTAuMTg2NDYxIDIuOTE1OTU1LC0wLjU1OTM4NyAwLjkyMDM5NiwtMC4zNzI5MjIgMS43ODUyNjMsLTAuOTM2Mjc2IDIuNTk0NjA0LC0xLjY5MDA2NCBsIDAsMi41MTEyOTIgYyAtMC44NDEwNzksMC41NzEyOSAtMS43MzM3MTcsMC45OTk3NTYgLTIuNjc3OTE3LDEuMjg1NCAtMC45MzYyOTIsMC4yODU2NDUgLTEuOTI4MTEyLDAuNDI4NDY3IC0yLjk3NTQ2NCwwLjQyODQ2NyAtMi42ODk4MjcsMCAtNC44MDgzNTUsLTAuODIxMjI3IC02LjM1NTU5MSwtMi40NjM2ODQgLTEuNTQ3MjQzLC0xLjY1MDM4NyAtMi4zMjA4NjMsLTMuODk5ODM1IC0yLjMyMDg2MiwtNi43NDgzNTIgLTFlLTYsLTIuODU2NDM0IDAuNzczNjE5LC01LjEwNTg4MiAyLjMyMDg2MiwtNi43NDgzNTIgMS41NDcyMzYsLTEuNjUwMzczIDMuNjY1NzY0LC0yLjQ3NTU2OCA2LjM1NTU5MSwtMi40NzU1ODYgMS4wNjMyMjEsMS44ZS01IDIuMDYyOTc2LDAuMTQyODQgMi45OTkyNjcsMC40Mjg0NjcgMC45NDQyLDAuMjc3NzI3IDEuODI4OTA0LDAuNjk4MjU5IDIuNjU0MTE0LDEuMjYxNTk2IiBpZD0icGF0aDI5ODciIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgICAgIDxwYXRoIGQ9Im0gMzYuNTIyMjE3LDI0Ljk5ODAxNiAwLDIuMDcwOTIzIGMgLTAuNjE4OTA3LC0wLjMxNzM3MSAtMS4yNjE2MDYsLTAuNTU1NDA4IC0xLjkyODEwMSwtMC43MTQxMTEgLTAuNjY2NTEyLC0wLjE1ODY4IC0xLjM1NjgxOSwtMC4yMzgwMjUgLTIuMDcwOTIzLC0wLjIzODAzNyAtMS4wODcwNDEsMS4yZS01IC0xLjkwNDMwMSwwLjE2NjYzNyAtMi40NTE3ODIsMC40OTk4NzggLTAuNTM5NTU0LDAuMzMzMjYzIC0wLjgwOTMzLDAuODMzMTQgLTAuODA5MzI2LDEuNDk5NjMzIC00ZS02LDAuNTA3ODIyIDAuMTk0MzkzLDAuOTA4NTE4IDAuNTgzMTkxLDEuMjAyMDg4IDAuMzg4Nzg5LDAuMjg1NjUzIDEuMTcwMzQ0LDAuNTU5Mzk1IDIuMzQ0NjY1LDAuODIxMjI4IGwgMC43NDk4MTcsMC4xNjY2MjYgYyAxLjU1NTE2NywwLjMzMzI1OSAyLjY1ODA3MSwwLjgwNTM2NiAzLjMwODcxNiwxLjQxNjMyMSAwLjY1ODU1OCwwLjYwMzAzMyAwLjk4Nzg0MywxLjQ0ODA2NCAwLjk4Nzg1NCwyLjUzNTA5NSAtMS4xZS01LDEuMjM3Nzk1IC0wLjQ5MTk1NCwyLjIxNzcxNCAtMS40NzU4MywyLjkzOTc1OCAtMC45NzU5NjEsMC43MjIwNDYgLTIuMzIwODY5LDEuMDgzMDY5IC00LjAzNDcyOSwxLjA4MzA2OSAtMC43MTQxMTcsMCAtMS40NTk5NjUsLTAuMDcxNDEgLTIuMjM3NTQ5LC0wLjIxNDIzMyAtMC43Njk2NTYsLTAuMTM0ODg4IC0xLjU4Mjk0OSwtMC4zNDExODcgLTIuNDM5ODgsLTAuNjE4ODk3IGwgMCwtMi4yNjEzNTIgYyAwLjgwOTMyNCwwLjQyMDUzNCAxLjYwNjc0NywwLjczNzkxNyAyLjM5MjI3MywwLjk1MjE0OCAwLjc4NTUxOCwwLjIwNjMgMS41NjMxMDUsMC4zMDk0NSAyLjMzMjc2MywwLjMwOTQ0OCAxLjAzMTQ4OCwyZS02IDEuODI0OTQ0LC0wLjE3NDU1OSAyLjM4MDM3MiwtMC41MjM2ODEgMC41NTU0MSwtMC4zNTcwNTQgMC44MzMxMiwtMC44NTY5MzEgMC44MzMxMjksLTEuNDk5NjM0IC05ZS02LC0wLjU5NTA4OSAtMC4yMDIzNCwtMS4wNTEzMjYgLTAuNjA2OTk0LC0xLjM2ODcxMyAtMC4zOTY3MzcsLTAuMzE3Mzc4IC0xLjI3MzUwNiwtMC42MjI4NTkgLTIuNjMwMzEsLTAuOTE2NDQzIGwgLTAuNzYxNzE5LC0wLjE3ODUyOCBjIC0xLjM1NjgxNSwtMC4yODU2MzggLTIuMzM2NzM0LC0wLjcyMjAzOSAtMi45Mzk3NTgsLTEuMzA5MjA0IC0wLjYwMzAyOSwtMC41OTUwODUgLTAuOTA0NTQzLC0xLjQwODM3OCAtMC45MDQ1NDEsLTIuNDM5ODgxIC0yZS02LC0xLjI1MzY1MSAwLjQ0NDMzNCwtMi4yMjE2NjcgMS4zMzMwMDcsLTIuOTA0MDUyIDAuODg4NjY5LC0wLjY4MjM2IDIuMTUwMjY0LC0xLjAyMzU0NiAzLjc4NDc5MSwtMS4wMjM1NiAwLjgwOTMxOCwxLjRlLTUgMS41NzEwMzYsMC4wNTk1MiAyLjI4NTE1NiwwLjE3ODUyOCAwLjcxNDEwMiwwLjExOTAzMiAxLjM3MjY3LDAuMjk3NTU5IDEuOTc1NzA4LDAuNTM1NTgzIiBpZD0icGF0aDI5ODkiIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgICAgIDxwYXRoIGQ9Im0gNDkuMjMzMzk4LDI0Ljk5ODAxNiAwLDIuMDcwOTIzIGMgLTAuNjE4OTA2LC0wLjMxNzM3MSAtMS4yNjE2MDYsLTAuNTU1NDA4IC0xLjkyODEsLTAuNzE0MTExIC0wLjY2NjUxMiwtMC4xNTg2OCAtMS4zNTY4MTksLTAuMjM4MDI1IC0yLjA3MDkyMywtMC4yMzgwMzcgLTEuMDg3MDQyLDEuMmUtNSAtMS45MDQzMDIsMC4xNjY2MzcgLTIuNDUxNzgyLDAuNDk5ODc4IC0wLjUzOTU1NSwwLjMzMzI2MyAtMC44MDkzMywwLjgzMzE0IC0wLjgwOTMyNiwxLjQ5OTYzMyAtNGUtNiwwLjUwNzgyMiAwLjE5NDM5MywwLjkwODUxOCAwLjU4MzE5MSwxLjIwMjA4OCAwLjM4ODc4OSwwLjI4NTY1MyAxLjE3MDM0MywwLjU1OTM5NSAyLjM0NDY2NSwwLjgyMTIyOCBsIDAuNzQ5ODE3LDAuMTY2NjI2IGMgMS41NTUxNjcsMC4zMzMyNTkgMi42NTgwNzEsMC44MDUzNjYgMy4zMDg3MTYsMS40MTYzMjEgMC42NTg1NTgsMC42MDMwMzMgMC45ODc4NDIsMS40NDgwNjQgMC45ODc4NTQsMi41MzUwOTUgLTEuMmUtNSwxLjIzNzc5NSAtMC40OTE5NTUsMi4yMTc3MTQgLTEuNDc1ODMsMi45Mzk3NTggLTAuOTc1OTYyLDAuNzIyMDQ2IC0yLjMyMDg3LDEuMDgzMDY5IC00LjAzNDcyOSwxLjA4MzA2OSAtMC43MTQxMTcsMCAtMS40NTk5NjYsLTAuMDcxNDEgLTIuMjM3NTQ5LC0wLjIxNDIzMyAtMC43Njk2NTYsLTAuMTM0ODg4IC0xLjU4Mjk0OSwtMC4zNDExODcgLTIuNDM5ODgxLC0wLjYxODg5NyBsIDAsLTIuMjYxMzUyIGMgMC44MDkzMjUsMC40MjA1MzQgMS42MDY3NDgsMC43Mzc5MTcgMi4zOTIyNzMsMC45NTIxNDggMC43ODU1MTgsMC4yMDYzIDEuNTYzMTA2LDAuMzA5NDUgMi4zMzI3NjQsMC4zMDk0NDggMS4wMzE0ODcsMmUtNiAxLjgyNDk0MywtMC4xNzQ1NTkgMi4zODAzNzEsLTAuNTIzNjgxIDAuNTU1NDExLC0wLjM1NzA1NCAwLjgzMzEyMSwtMC44NTY5MzEgMC44MzMxMywtMS40OTk2MzQgLTllLTYsLTAuNTk1MDg5IC0wLjIwMjM0MSwtMS4wNTEzMjYgLTAuNjA2OTk1LC0xLjM2ODcxMyAtMC4zOTY3MzYsLTAuMzE3Mzc4IC0xLjI3MzUwNSwtMC42MjI4NTkgLTIuNjMwMzEsLTAuOTE2NDQzIGwgLTAuNzYxNzE4LC0wLjE3ODUyOCBjIC0xLjM1NjgxNiwtMC4yODU2MzggLTIuMzM2NzM0LC0wLjcyMjAzOSAtMi45Mzk3NTksLTEuMzA5MjA0IC0wLjYwMzAyOSwtMC41OTUwODUgLTAuOTA0NTQyLC0xLjQwODM3OCAtMC45MDQ1NDEsLTIuNDM5ODgxIC0xZS02LC0xLjI1MzY1MSAwLjQ0NDMzNCwtMi4yMjE2NjcgMS4zMzMwMDgsLTIuOTA0MDUyIDAuODg4NjY4LC0wLjY4MjM2IDIuMTUwMjY0LC0xLjAyMzU0NiAzLjc4NDc5LC0xLjAyMzU2IDAuODA5MzE5LDEuNGUtNSAxLjU3MTAzNywwLjA1OTUyIDIuMjg1MTU2LDAuMTc4NTI4IDAuNzE0MTAyLDAuMTE5MDMyIDEuMzcyNjcxLDAuMjk3NTU5IDEuOTc1NzA4LDAuNTM1NTgzIiBpZD0icGF0aDI5OTEiIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=';
-	//--
-	$img_loading  = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSJncmV5IiBpZD0ibG9hZGluZy1jeWNsb24tc3ZnIj4KICA8cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDApIiBkPSJNMCAxMiBWMjAgSDQgVjEyeiI+CiAgICA8YW5pbWF0ZVRyYW5zZm9ybSBhdHRyaWJ1dGVOYW1lPSJ0cmFuc2Zvcm0iIHR5cGU9InRyYW5zbGF0ZSIgdmFsdWVzPSIwIDA7IDI4IDA7IDAgMDsgMCAwIiBkdXI9IjEuNXMiIGJlZ2luPSIwIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIga2V5dGltZXM9IjA7MC4zOzAuNjsxIiBrZXlTcGxpbmVzPSIwLjIgMC4yIDAuNCAwLjg7MC4yIDAuMiAwLjQgMC44OzAuMiAwLjIgMC40IDAuOCIgY2FsY01vZGU9InNwbGluZSIgLz4KICA8L3BhdGg+CiAgPHBhdGggb3BhY2l0eT0iMC41IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDApIiBkPSJNMCAxMiBWMjAgSDQgVjEyeiI+CiAgICA8YW5pbWF0ZVRyYW5zZm9ybSBhdHRyaWJ1dGVOYW1lPSJ0cmFuc2Zvcm0iIHR5cGU9InRyYW5zbGF0ZSIgdmFsdWVzPSIwIDA7IDI4IDA7IDAgMDsgMCAwIiBkdXI9IjEuNXMiIGJlZ2luPSIwLjFzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIga2V5dGltZXM9IjA7MC4zOzAuNjsxIiBrZXlTcGxpbmVzPSIwLjIgMC4yIDAuNCAwLjg7MC4yIDAuMiAwLjQgMC44OzAuMiAwLjIgMC40IDAuOCIgY2FsY01vZGU9InNwbGluZSIgLz4KICA8L3BhdGg+CiAgPHBhdGggb3BhY2l0eT0iMC4yNSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCAwKSIgZD0iTTAgMTIgVjIwIEg0IFYxMnoiPgogICAgPGFuaW1hdGVUcmFuc2Zvcm0gYXR0cmlidXRlTmFtZT0idHJhbnNmb3JtIiB0eXBlPSJ0cmFuc2xhdGUiIHZhbHVlcz0iMCAwOyAyOCAwOyAwIDA7IDAgMCIgZHVyPSIxLjVzIiBiZWdpbj0iMC4ycyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIGtleXRpbWVzPSIwOzAuMzswLjY7MSIga2V5U3BsaW5lcz0iMC4yIDAuMiAwLjQgMC44OzAuMiAwLjIgMC40IDAuODswLjIgMC4yIDAuNCAwLjgiIGNhbGNNb2RlPSJzcGxpbmUiIC8+CiAgPC9wYXRoPgo8L3N2Zz4KPCEtLSBodHRwczovL2dpdGh1Yi5jb20vanhuYmxrL2xvYWRpbmcvbG9hZGluZy1jeWNsb24uc3ZnIDsgTGljZW5zZTogTUlUIC0tPg==';
-	$code_loading_start = '<div id="img-loader" style="position:fixed; top:30px; right:10px;"><img width="48" height="48" alt="Loading ..." title="Loading ..." src="'.AppPackUtils::escape_html($img_loading).'"></div>';
-	$code_loading_stop  = '<script>try{ document.getElementById(\'img-loader\').innerHTML = \'\'; }catch(err){ console.error(err); }</script>';
-	//--
-	$img_result_ok  = '<div id="img-result" style="position:fixed; top:5px; right:225px; cursor:help;"><img width="64" height="64" alt="Result Status: OK" title="Result Status: OK" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkIiB4bWw6c3BhY2U9InByZXNlcnZlIiBpZD0ic2lnbi1vay1zdmciIHZpZXdCb3g9IjAgMCA3Mi4yNDg4OTMgNzIuMjQ4ODkzIiBoZWlnaHQ9IjMyIiB3aWR0aD0iMzIiIHZlcnNpb249IjEuMSI+PGRlZnMgaWQ9ImRlZnM0Ij4gIDxzdHlsZSBpZD0ic3R5bGU2IiB0eXBlPSJ0ZXh0L2NzcyIgLz48L2RlZnM+PGcgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MTtzdHJva2U6bm9uZTsiIGlkPSJ0ZXh0Mzc4MSI+ICA8ZyBpZD0iZzMwMDkiPiAgICA8ZyBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lOyIgaWQ9InRleHQzNzU2Ij4gICAgICA8ZyBpZD0iZzM4MDIiPiAgICAgICAgPGcgaWQ9ImczMzY4Ij4gICAgICAgICAgPGcgaWQ9InRleHQzMzY0IiBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDoxcHg7c3Ryb2tlLWxpbmVjYXA6YnV0dDtzdHJva2UtbGluZWpvaW46bWl0ZXI7c3Ryb2tlLW9wYWNpdHk6MSI+ICAgICAgICAgICAgPGcgaWQ9ImczNDU1Ij4gICAgICAgICAgICAgIDxwYXRoIHN0eWxlPSJmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOiM5OGM3MjY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOiM5OGM3MjY7c3Ryb2tlLXdpZHRoOjE0LjEyMTA4NTE3O3N0cm9rZS1vcGFjaXR5OjEiIGlkPSJwYXRoMzAxMSIgZD0ibSA2Mi45MzA1NzQsMzYuMTI0NDQ3IGEgMjYuODA2MTI4LDI2LjgwNjEyOCAwIDEgMSAtNTMuNjEyMjUzOCwwIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgNTMuNjEyMjUzOCwwIHoiIC8+ICAgICAgICAgICAgICA8cGF0aCBkPSJtIDIyLjc2Mjk4OCwzNC4xNzMxNDUgcSAxLjI4OTg0NCwwIDEuOTUxMzAyLDIuMTE2NjY3IDEuMzIyOTE3LDMuOTY4NzUgMS44ODUxNTcsMy45Njg3NSAwLjQyOTk0NywwIDAuODkyOTY4LC0wLjY2MTQ1OCA5LjI5MzQ5LC0xMy42NTkxMTYgMTcuMTk3OTE4LC0xOS40NDY4NzYgMy4zNDAzNjUsLTIuNDQ3Mzk2IDYuNTE1MzY1LC0yLjQ0NzM5NiA0LjIwMDI2MSwwIDUuMDYwMTU3LDAuMjY0NTgzIDAuMzYzODAyLDAuMDk5MjIgMC4zNjM4MDIsMC44MjY4MjMgMCwwLjU5NTMxMyAtMC43NjA2NzcsMS40ODgyODEgLTIxLjI2NTg4NywyNC40MDc4MTQgLTI1LjMzMzg1NiwzMS43NTAwMDIgLTEuMzg5MDYzLDIuNTEzNTQyIC02LjQxNjE0NiwyLjUxMzU0MiAtMS42NTM2NDYsMCAtMy40NzI2NTcsLTAuODU5ODk2IC0wLjc2MDY3NywtMC4zOTY4NzUgLTIuNjQ1ODMzLC01LjA2MDE1NiAtMi4zODEyNSwtNS44ODY5OCAtMi4zODEyNSwtMTAuMzE4NzUxIDAsLTEuNjIwNTczIDIuMzE1MTA0LC0yLjY3ODkwNiAzLjE3NSwtMS40NTUyMDkgNC43NjI1LC0xLjQ1NTIwOSBsIDAuMDY2MTUsMCB6IiBzdHlsZT0iZmlsbDojZmZmZmZmIiBpZD0icGF0aDM0NTIiIC8+ICAgICAgICAgICAgPC9nPiAgICAgICAgICA8L2c+ICAgICAgICA8L2c+ICAgICAgPC9nPiAgICA8L2c+ICA8L2c+PC9nPjwvc3ZnPg=="></div>';
-	$img_result_err = '<div id="img-result" style="position:fixed; top:5px; right:225px; cursor:help;"><img width="64" height="64" alt="Result Status: ERROR" title="Result Status: ERROR" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCA3Mi4yNDg4OTMgNzIuMjQ4ODkzIiBpZD0ic2lnbi1jcml0LWVycm9yLXN2ZyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkIj4gIDxkZWZzIGlkPSJkZWZzNCI+ICAgIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyIgaWQ9InN0eWxlNiIgLz4gIDwvZGVmcz4gIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTUyNy43NTExMSkiIGlkPSJMYXllcl94MDAyMF8xIj4gICAgPGcgaWQ9Il8xNjMwODkzNzYiPiAgICAgIDxnIGlkPSJnMzg3OCI+ICAgICAgICA8cG9seWdvbiBwb2ludHM9IjcsMTc4LjYzNSA5Mi44MTc4LDkyLjgxOCAxNzguNjM1LDcuMDAwMiAzMDAsNy4wMDAzIDQyMS4zNjUsNyA1MDcuMTgyLDkyLjgxNzkgNTkzLDE3OC42MzYgNTkzLDMwMCA1OTMsNDIxLjM2NSA1MDcuMTgyLDUwNy4xODIgNDIxLjM2NCw1OTMgMzAwLDU5MyAxNzguNjM1LDU5MyA5Mi44MTc2LDUwNy4xODIgNyw0MjEuMzY1IDcuMDAwMSwzMDAgIiB0cmFuc2Zvcm09Im1hdHJpeCgwLjEyMDQwMTk4LDAsMCwwLjEyMDQwMTk4LDAuMjA0NzU5NjMsNTI3Ljc5MzcxKSIgaWQ9Il8xNjMwODg0MTYiIHN0eWxlPSJmaWxsOiNlNzM0MTE7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQiIC8+ICAgICAgICA8cmVjdCB3aWR0aD0iMTIuMDU2ODI3IiBoZWlnaHQ9IjMyLjg0NDQ1NiIgeD0iMzAuMjk2OTQiIHk9IjU0MC42NjcyNCIgaWQ9InJlY3QzODU4IiBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIiAvPiAgICAgICAgPHJlY3Qgd2lkdGg9IjEyLjA1NjgyNyIgaGVpZ2h0PSIxMS44NDg5NDgiIHg9IjMwLjI5Njk0IiB5PSI1NzcuNzU3MiIgaWQ9InJlY3QzODU4LTMiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQiIC8+ICAgICAgPC9nPiAgICA8L2c+ICA8L2c+PC9zdmc+"></div>';
-	//--
-	AppPackUtils::InstantFlush();
-	//--
-	echo '<!DOCTYPE html>'."\n".'<html>'."\n".'<head><meta charset="'.AppPackUtils::escape_html((string)SMART_FRAMEWORK_CHARSET).'"><title>Smart'.'::'.'AppCode.PACK</title><style type="text/css">*{font-family:arial,sans-serif;font-smooth:always;} hr{border:none 0; border-top:1px solid #CCCCCC; height:1px;} a{color:#000000 !important;}</style></head>'."\n".'<body>'."\n";
-	echo '<table><tr>';
-	echo '<td width="64" style="cursor:help;"><img width="48" height="48" alt="AppCodePack '.AppPackUtils::escape_html((string)APPCODEPACK_VERSION).'" title="AppCodePack '.AppPackUtils::escape_html((string)APPCODEPACK_VERSION).'" src="'.AppPackUtils::escape_html($img_logo_app).'"></td>';
-	echo '<td><h1 style="display:inline; cursor:pointer;" onclick="self.location=\'?\';"><span style="color:#778899;">Smart</span><span style="color:#DCDCDC;">::</span><span style="color:#555555;">AppCode</span><span style="color:#999999;">.</span><span style="color:#3C5A98;">Pack</span></h1></td>';
-	echo '<td> &nbsp; &nbsp; &nbsp; </td>';
-	echo '<td>';
-	echo '<img width="32" height="32" alt="PHP-Logo" title="PHP-Logo" src="'.AppPackUtils::escape_html($img_logo_php).'">&nbsp; ';
-	echo '<img width="32" height="32" alt="JS-Logo" title="JS-Logo" src="'.AppPackUtils::escape_html($img_logo_js).'">&nbsp; ';
-	echo '<img width="32" height="32" alt="CSS-Logo" title="CSS-Logo" src="'.AppPackUtils::escape_html($img_logo_css).'">&nbsp; ';
-	echo '</td>';
-	echo '</tr></table>';
-	AppPackUtils::InstantFlush();
-	//--
-	if((string)$_GET['run'] == 'optimize') {
-		//--
-		AppPackUtils::delete('---AppCodePack-Optimizations-Done---.log');
-		//--
-		AppPackUtils::delete('---AppCodePack-Package---.log');
-		AppPackUtils::write(
-			'---AppCodePack-Result---.log',
-			'START Processing ['.date('Y-m-d H:i:s O').'] ...'."\n"
-		);
-		//--
-		echo (string) $code_loading_start;
-		//--
-		echo '<hr><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / optimize: '.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_MODE).' <span style="cursor:help;" title="'.AppPackUtils::escape_html((string)APPCODEPACK_STRATEGY).' :: '.AppPackUtils::escape_html((string)APPCODEPACK_MARKER_OPTIMIZATIONS).'">['.AppPackUtils::escape_html((string)APPCODEPACK_COMPRESS_UTILITY_TYPE).'] - '.AppPackUtils::escape_html((string)APPCODEPACK_MARKER_OPTIMIZATIONS).'</span>'.' &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').' # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'</div><hr>';
-		AppPackUtils::InstantFlush();
-		$appcodeoptimizer = new AppCodeOptimizer();
-		$appcodeoptimizer->optimize_code((string)APPCODEPACK_PROCESS_SOURCE_DIR);
-		echo '<span title="AppCodePack :: Processing DONE !" style="color:#000000;text-weight:bold;cursor:default;"> &laquo;<b>&bull;</b>&raquo; </span>'."\n";
-		if($appcodeoptimizer->have_errors()) {
-			echo $img_result_err;
-			echo "\n".'<br><br><div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.@nl2br(AppPackUtils::escape_html($appcodeoptimizer->get_errors()), false).'</div>'."\n";
-			AppPackUtils::write(
-				'---AppCodePack-Result---.log',
-				'Processing ERRORS !!! ['.date('Y-m-d H:i:s O').'] ...'."\n\n".$appcodeoptimizer->get_errors()
-			);
-		} else {
-			echo $img_result_ok;
-			echo "\n".'<br><br><div title="Status / OK" style="background:#98C726; color:#000000; font-weight:bold; padding:5px; border-radius:5px;"><h3>[ &nbsp; STATUS: OK &nbsp; &radic; &nbsp; ]</h3></div>'."\n";
-			echo "\n".'<div title="Status / Log" style="background:#EFEFEF; color:#000000; padding:5px; border-radius:5px;"><b>[ Log ]</b><hr><pre>'.AppPackUtils::escape_html($appcodeoptimizer->get_log()).'</pre></div>'."\n";
-			echo '<!-- {APPCODEPACK:[@SUCCESS(Task:Optimize)@]} -->';
-			AppPackUtils::write(
-				'---AppCodePack-Result---.log',
-				'##### Processing DONE / '.APPCODEPACK_STRATEGY.' - '.APPCODEPACK_MARKER_OPTIMIZATIONS.' : ['.date('Y-m-d H:i:s O').']'."\n\n".'##### LOG: '."\n".trim($appcodeoptimizer->get_log())."\n".'##### END'
-			);
-			AppPackUtils::write(
-				'---AppCodePack-Optimizations-Done---.log',
-				(string) date('Y-m-d H:i:s O')
-			);
-		} //end if
-		unset($appcodeoptimizer);
-		echo '<br><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / optimize :'.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_MODE.' ['.(string)APPCODEPACK_COMPRESS_UTILITY_TYPE.'] - '.APPCODEPACK_MARKER_OPTIMIZATIONS).' &nbsp;&nbsp;::&nbsp;&nbsp; '.'#END: '.date('Y-m-d H:i:s O').'</div>';
-		//--
-		echo (string) $code_loading_stop;
-		//--
-	} elseif((string)$_GET['run'] == 'deploy') {
-		//--
-		echo (string) $code_loading_start;
-		//--
-		echo '<hr><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / deploy &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').'<i><br> # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'<br> # AppID-Hash: '.APPCODEPACK_APP_HASH_ID.'<br> # Release Server Deploy URL(s): '.AppPackUtils::escape_html((string)APPCODEPACK_APP_UNPACK_URL.' ['.(string)APPCODEPACK_APP_UNPACK_USER.']').'</i></div><hr>';
-		AppPackUtils::InstantFlush();
-		//--
-		if(((string)APPCODEPACK_APP_UNPACK_URL != '') AND ((string)APPCODEPACK_APP_UNPACK_USER != '') AND ((string)APPCODEPACK_APP_UNPACK_PASSWORD != '')) {
-			//--
-			if(
-				((string)trim((string)$_POST['netarch_package']) != '') AND
-				(((string)trim((string)$_POST['netarch_deploy_url']) != '') AND (strpos((string)APPCODEPACK_APP_UNPACK_URL, (string)$_POST['netarch_deploy_url']) !== false)) AND
-				((string)substr((string)$_POST['netarch_package'], -10, 10) == '.z-netarch') AND
-				(((string)substr((string)$_POST['netarch_deploy_url'], 0, 7) == 'http://') OR ((string)substr((string)$_POST['netarch_deploy_url'], 0, 8) == 'https://')) AND
-				(AppPackUtils::check_if_safe_path((string)$_POST['netarch_package'])) AND
-				(AppPackUtils::is_type_file((string)$_POST['netarch_package']))
-			) {
-				$browser = AppPackUtils::browse_url(
-					(string) $_POST['netarch_deploy_url'], // url
-					'POST', // method
-					(string) APPCODEPACK_APP_UNPACK_USER, // user
-					(string) base64_decode((string)APPCODEPACK_APP_UNPACK_PASSWORD), // pass
-					[ // cookies
-						'AppCodeRemoteVersion' => (string) APPCODEPACK_VERSION
-					],
-					[ // post vars
-						'remote' 		=> 'appcodepack', // hide buttons
-						'run' 			=> 'deploy',
-						'appid' 		=> (string) APPCODEPACK_APP_ID,
-						'apphashid' 	=> (string) APPCODEPACK_APP_HASH_ID,
-						'remoteinfo' 	=> [
-							'url' => (string) $_POST['netarch_deploy_url'],
-							'user' => (string) APPCODEPACK_APP_UNPACK_USER
-						]
-					],
-					[ // post files
-						'znetarch' 		=> [
-							'filename' 	=> (string) AppPackUtils::base_name((string)$_POST['netarch_package']),
-							'content' 	=> (string) AppPackUtils::read((string)$_POST['netarch_package'])
-						]
-					],
-					[ // raw headers
-						'Z-Application-Name: Smart.Framework:AppCodePack'
-					]
-				);
-				if(!is_array($browser)) {
-					echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'Package Deploy Failed with Code: '.(int)$browser.'.'.'</div>'."\n";
-				} else {
-					if(($browser['status'] != 1) OR ($browser['errno']) OR ($browser['ermsg']) OR ($browser['http-status'] != 200)) {
-						echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'Package Deploy Failed with ERRORS: '.AppPackUtils::escape_html($browser['errno']).' # '.AppPackUtils::escape_html($browser['ermsg']).' / HTTP Status Code '.(int)$browser['http-status'].'</div>'."\n";
-					} else {
-						echo "\n".'<div style="padding:7px; line-height:1.125em; font-weight:bold; color: #FFFFFF; background:#009ACE; border:1px solid #0089BD; border-radius:6px; box-shadow: 2px 2px 3px #D2D2D2;">'.'Deploy Result'.' # HTTP Status Code: '.(int)$browser['http-status'].'</div>';
 					} //end if else
+				} else {
+					AppPackUtils::raise_error('Invalid INI Key detected in appcodepack.ini : '.(string)$appcode_ini_file_pkey);
+					return;
 				} //end if else
-				echo '<div style="margin-top:5px; padding:7px; line-height:1.125em; font-size:1.25rem; font-weight:bold; text-align:center; background:#778899; color:#FFFFFF; border-radius:5px;">Selected Release Server URL: `'.AppPackUtils::escape_html((string)$_POST['netarch_deploy_url']).'`</div><br><div align="center"><iframe name="UnpackDeployOnServerResponseSandBox" id="UnpackDeployOnServerResponseSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:80vw; min-width:920px; min-height:50vh; height:max-content; border:1px solid #CCCCCC;" srcdoc="'.AppPackUtils::escape_html($browser['http-body']).'" sandbox></iframe></div>';
-				unset($browser);
-			} else {
-				echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'Invalid/Empty Release Package Selected or Invalid/Empty Release Server URL Selected.'.'</div>'."\n";
-			} //end if else
+			} //end foreach
+			//--
+			switch((string)APPCODEPACK_COMPRESS_UTILITY_TYPE) {
+				case 'N':
+					foreach(['APPCODEPACK_COMPRESS_UTILITY_TYPE', 'APPCODEPACK_APP_ID', 'APPCODEPACK_APP_SECRET', 'APPCODEPACK_LINT_PHP_UTILITY_BIN', 'APPCODEPACK_LINT_NODEJS_UTILITY_BIN'] as $appcode_ini_file_pkey => $appcode_ini_file_pval) { // {{{SYNC-PACK-INTERNAL-DEFS}}}
+						if($appcode_ini_file_options[(string)$appcode_ini_file_pval] !== true) {
+							AppPackUtils::raise_error('A required INI Key was not defined from appcodepack.ini : '.(string)$appcode_ini_file_pval);
+							return;
+						} //end if
+					} //end foreach
+					break;
+				case 'U':
+				case 'G':
+				case 'Y':
+				case 'X':
+					foreach($appcode_ini_file_options as $appcode_ini_file_pkey => $appcode_ini_file_pval) {
+						if($appcode_ini_file_pval !== true) {
+							AppPackUtils::raise_error('A required INI Key was not defined from appcodepack.ini : '.(string)$appcode_ini_file_pkey);
+							return;
+						} //end if
+					} //end foreach
+					if((string)APPCODEPACK_COMPRESS_UTILITY_BIN == '') {
+						AppPackUtils::raise_error('A required INI Key is empty from appcodepack.ini : APPCODEPACK_COMPRESS_UTILITY_BIN');
+						return;
+					} //end if
+					if((string)APPCODEPACK_COMPRESS_UTILITY_MODULE_JS == '') {
+						AppPackUtils::raise_error('A required INI Key is empty from appcodepack.ini : APPCODEPACK_COMPRESS_UTILITY_MODULE_JS');
+						return;
+					} //end if
+					if((string)APPCODEPACK_COMPRESS_UTILITY_MODULE_CSS == '') {
+						AppPackUtils::raise_error('A required INI Key is empty from appcodepack.ini : APPCODEPACK_COMPRESS_UTILITY_MODULE_CSS');
+						return;
+					} //end if
+					break;
+				default:
+					AppPackUtils::raise_error('A required INI Key was parsed to an invalid value from appcodepack.ini : APPCODEPACK_COMPRESS_UTILITY_TYPE: '.APPCODEPACK_COMPRESS_UTILITY_TYPE);
+					return;
+			} //end switch
+			//--
+			//echo 'Utility-Type: '.APPCODEPACK_COMPRESS_UTILITY_TYPE.'<hr>'; echo 'Minify-Strategy: '.APPCODEPACK_STRATEGY.'<hr>'; echo '<pre>'; print_r($appcode_ini_file_parse); print_r($appcode_ini_file_options); echo '</pre>'; die();
+			//--
+			unset($appcode_ini_file_parse);
+			unset($appcode_ini_file_pkey);
+			unset($appcode_ini_file_pval);
+			//--
+		} else { // {{{SYNC-PACK-INTERNAL-DEFS}}}
+			//--
+			define('APPCODEPACK_STRATEGY', 'INTERNAL');
+			//--
+			define('APPCODEPACK_COMPRESS_UTILITY_TYPE', 'N');
+			define('APPCODEPACK_APP_ID', '-----UNDEF-----');
+			define('APPCODEPACK_APP_SECRET', '');
+			// APPCODEPACK_LINT_PHP_UTILITY_BIN 		:: must be undefined
+			// APPCODEPACK_LINT_NODEJS_UTILITY_BIN 		:: must be undefined
+			//--
+		} //end if
+		//--
+		unset($appcode_ini_file_options);
+		//--
+		if(!defined('APPCODEPACK_APP_ID')) {
+			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_ID must be defined and was not !');
+			return;
+		} //end if
+		if((string)trim((string)APPCODEPACK_APP_ID) == '') { // {{{SYNC-VALID-APPCODEPACK-APPID}}}
+			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_ID is Empty !');
+			return;
+		} //end if
+		if(strlen((string)APPCODEPACK_APP_ID) < 5) { // {{{SYNC-VALID-APPCODEPACK-APPID}}}
+			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_ID is Too Short (<5) characters: '.APPCODEPACK_APP_ID);
+			return;
+		} //end if
+		if(strlen((string)APPCODEPACK_APP_ID) > 63) { // {{{SYNC-VALID-APPCODEPACK-APPID}}}
+			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_ID is Too Long (>63) characters: '.APPCODEPACK_APP_ID);
+			return;
+		} //end if
+		if(!preg_match('/^[_a-zA-Z0-9\-\.@]+$/', (string)APPCODEPACK_APP_ID)) { // {{{SYNC-VALID-APPCODEPACK-APPID}}} allow safe path characters except: # / which are reserved
+			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_ID Contains Invalid Characters: '.APPCODEPACK_APP_ID);
+			return;
+		} //end if
+		//--
+		if(!defined('APPCODEPACK_APP_SECRET')) {
+			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_SECRET must be defined and was not !');
+			return;
+		} //end if
+		// no check if APPCODEPACK_APP_SECRET is empty (only unpack enforces this check) ; but anyway, if non-empty do check on lengths
+		if((string)trim((string)APPCODEPACK_APP_SECRET) != '') { // {{{SYNC-VALID-APPCODEPACK-APPSECRET}}}
+			if(strlen((string)APPCODEPACK_APP_SECRET) < 5) { // {{{SYNC-VALID-APPCODEPACK-APPSECRET}}}
+				AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_SECRET is Too Short (<40) characters: '.APPCODEPACK_APP_SECRET);
+				return;
+			} //end if
+			if(strlen((string)APPCODEPACK_APP_SECRET) > 128) { // {{{SYNC-VALID-APPCODEPACK-APPSECRET}}}
+				AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_SECRET is Too Long (>128) characters: '.APPCODEPACK_APP_SECRET);
+				return;
+			} //end if
+		} //end if
+		//--
+		if(defined('APPCODEPACK_APP_HASH_ID')) {
+			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_APP_HASH_ID was defined and must not !');
+			return;
+		} //end if
+		if((string)trim((string)APPCODEPACK_APP_SECRET) != '') { // {{{SYNC-VALID-APPCODEPACK-APPSECRET}}}
+			define('APPCODEPACK_APP_HASH_ID', sha1((string)APPCODEPACK_APP_ID.'*AppCode(Un)Pack*'.(string)APPCODEPACK_APP_SECRET)); // {{{SYNC-VALID-APPCODEPACK-APPHASH}}}
 		} else {
-			echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'The Release Server Deploy URL and Authentication Credentials must be non-empty (APPCODEPACK_APP_UNPACK_URL / APPCODEPACK_APP_UNPACK_USER / APPCODEPACK_APP_UNPACK_PASSWORD).'.'</div>'."\n";
+			define('APPCODEPACK_APP_HASH_ID', '');
 		} //end if else
 		//--
-		echo '<br><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / deploy &nbsp;&nbsp;::&nbsp;&nbsp; # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).' &nbsp;&nbsp;::&nbsp;&nbsp; '.'#END: '.date('Y-m-d H:i:s O').'</div>';
-		//--
-		echo (string) $code_loading_stop;
-		//--
-	} elseif((string)$_GET['run'] == 'pack') {
-		//--
-		echo (string) $code_loading_start;
-		//--
-		echo '<hr><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / pack &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').' # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'</div><hr>';
-		AppPackUtils::InstantFlush();
-		$date_iso_arch = (string) date('Y-m-d H:i:s');
-		$date_arch = (string) date('Ymd-His', strtotime($date_iso_arch));
-		$name_arch = AppPackUtils::safe_filename('appcode-package_'.$date_arch.'.z-netarch');
-		if((string)APPCODEPACK_APP_ID != '-----UNDEF-----') {
-			$name_arch = (string) AppPackUtils::safe_filename((string)APPCODEPACK_APP_ID.'__'.$name_arch);
+		if(!defined('APPCODEPACK_STRATEGY')) {
+			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_STRATEGY must be defined and was not !');
+			return;
 		} //end if
-		$the_archdir = AppPackUtils::safe_pathname('#---APPCODE-PACKAGES---#');
-		$the_archname = '';
-		$the_archpath = '';
 		//--
-		if((AppPackUtils::is_type_file('---AppCodePack-Optimizations-Done---.log')) AND (!AppPackUtils::is_type_file('---AppCodePack-Package---.log')) AND (AppPackUtils::is_type_dir((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR))) {
-			AppPackUtils::write('---AppCodePack-Package---.log', ''); // must be initialized
-			$arch = new AppNetPackager();
-			$arch->start((string)$the_archdir, (string)$name_arch, (string)$date_iso_arch, (string)$_GET['comment']);
-			$the_archname = (string) $arch->get_archive_file_name();
-			$the_archpath = (string) $arch->get_archive_file_path();
-			echo '<br><div><h3 style="display:inline;">Creating the Package Arch. File: '.AppPackUtils::escape_html($the_archname).'&nbsp;&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;./'.AppPackUtils::escape_html($the_archdir).'</h3></div>';
+		if(!defined('APPCODEPACK_COMPRESS_UTILITY_TYPE')) {
+			AppPackUtils::raise_error('App Internal Error : APPCODEPACK_COMPRESS_UTILITY_TYPE must be defined and was not !');
+			return;
+		} //end if
+		//--
+		//=====
+
+		//--
+		define('APPCODEPACK_PROCESS_SOURCE_DIR', 'src');
+		//--
+		if((string)APPCODEPACK_STRATEGY !== 'INTERNAL') {
+			define('APPCODEPACK_PROCESS_OPTIMIZATIONS_MODE', 'minify');
+			define('APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR', (string)APPCODEPACK_PROCESS_SOURCE_DIR.'.APPCODEPACK.'.'MINIFIED-'.APPCODEPACK_COMPRESS_UTILITY_TYPE);
+		} else {
+			define('APPCODEPACK_PROCESS_OPTIMIZATIONS_MODE', 'comments');
+			define('APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR', (string)APPCODEPACK_PROCESS_SOURCE_DIR.'.APPCODEPACK.'.'STRIP-NOCOMMENTS');
+		} //end if else
+		//--
+		define('APPCODEPACK_MARKER_OPTIMIZATIONS', '(PHP'.(defined('APPCODEPACK_LINT_PHP_UTILITY_BIN') ? '+Lint' : '').' / JS'.(defined('APPCODEPACK_LINT_NODEJS_UTILITY_BIN') ? '+Lint' : '').' / CSS)');
+		//--
+
+		//===== Main code execution
+		//--
+		$img_logo_app = 'data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMTI4IDEyOCIgaWQ9ImFwcGNvZGVwYWNrLWxvZ28iPgogIDxkZWZzIGlkPSJkZWZzMTQiIC8+CiAgPGcgdHJhbnNmb3JtPSJtYXRyaXgoMCwxLC0xLDAsMTI4LC0zLjg4ODVlLTYpIiBpZD0iZzM3NTUiPgogICAgPGcgdHJhbnNmb3JtPSJtYXRyaXgoMC4xMjkwMTgzOSwwLDAsMC4xMTYzMjQxNiwtMTMuMzAxMzY4LDExOC45MDUpIiBpZD0iZzI5OTMiPgogICAgICA8cGF0aCBkPSJNIDEwMzUuNiwtMTkyLjcgNjE3LjUsNDMuOCB2IC0xODQuMiBsIDI2MC41LC0xNDMuMyAxNTcuNiw5MSB6IG0gMjguNiwtMjUuOSB2IC00OTQuNiBsIC0xNTMsODguMyBWIC0zMDcgbCAxNTMsODguNCB6IG0gLTkwMS41LDI1LjkgNDE4LjEsMjM2LjUgdiAtMTg0LjIgbCAtMjYwLjUsLTE0My4zIC0xNTcuNiw5MSB6IG0gLTI4LjYsLTI1LjkgdiAtNDk0LjYgbCAxNTMsODguMyBWIC0zMDcgbCAtMTUzLDg4LjQgeiBNIDE1MiwtNzQ1LjIgNTgwLjgsLTk4Ny44IHYgMTc4LjEgbCAtMjc0LjcsMTUxLjEgLTIuMSwxLjIgLTE1MiwtODcuOCB6IG0gODk0LjMsMCAtNDI4LjgsLTI0Mi42IHYgMTc4LjEgbCAyNzQuNywxNTEuMSAyLjEsMS4yIDE1MiwtODcuOCB6IiBpZD0icGF0aDgiIHN0eWxlPSJmaWxsOiNkY2RjZGM7ZmlsbC1vcGFjaXR5OjEiIC8+CiAgICAgIDxwYXRoIGQ9Im0gNTgwLjgsLTE4Mi4zIC0yNTcsLTE0MS4zIDAsLTI4MCAyNTcsMTQ4LjQgeiBtIDM2LjcsMCAyNTcsLTE0MS4zIDAsLTI4MCAtMjU3LDE0OC40IHogTSAzNDEuMiwtNjM2IDU5OS4yLC03NzcuOSA4NTcuMiwtNjM2IDY2MS4yNzQ4NCwtNTIyLjg0OTQzIDU5OS4yLC00ODcgeiIgaWQ9InBhdGgxMCIgc3R5bGU9ImZpbGw6Izc3ODg5OTtmaWxsLW9wYWNpdHk6MSIgLz4KICAgIDwvZz4KICAgIDxwYXRoIGQ9Im0gMzIuMjc1LDI5Ljk2NjQ3NCBxIDAsLTEuMjA1NzA3IDEuNTA2ODQsLTIuMTI3NzE4IGwgMy4wNTQzOSwtMS43NzMwOTggcSAxLjU0NzU2LC0wLjg5ODM2OSAzLjcwNiwtMC44OTgzNjkgMi4xOTkxNjksMCAzLjY2NTI4LDAuODk4MzY5IGwgMTEuOTczMjM1LDYuOTI2OTAzIDAsLTE2LjY0MzQ3OCBxIDAsLTEuMjI5MzQ5IDEuNTI3MTk4LC0xLjk5NzY5MSAxLjUyNzE5OCwtMC43NjgzNDIgMy42ODU2MzksLTAuNzY4MzQyIGwgNS4yMTI4MzYsMCBxIDIuMTU4NDQxLDAgMy42ODU2MzksMC43NjgzNDIgMS41MjcxOTgsMC43NjgzNDIgMS41MjcxOTgsMS45OTc2OTEgbCAwLDE2LjY0MzQ3OCAxMS45NzMyMzUsLTYuOTI2OTAzIHEgMS40NjYxMTEsLTAuODk4MzY5IDMuNjY1Mjc2LC0wLjg5ODM2OSAyLjE5OTE2NiwwIDMuNjY1Mjc2LDAuODk4MzY5IGwgMy4wNTQzOTcsMS43NzMwOTggcSAxLjU0NzU2MSwwLjg5ODM3IDEuNTQ3NTYxLDIuMTI3NzE4IDAsMS4yNTI5ODkgLTEuNTQ3NTYxLDIuMTUxMzU5IEwgNjcuNjY1Mjc2LDQ3LjUwODMyMiBRIDY2LjIzOTg5MSw0OC4zODMwNSA2NCw0OC4zODMwNSBxIC0yLjE5OTE2NiwwIC0zLjcwNjAwMSwtMC44NzQ3MjggTCAzMy43ODE4NCwzMi4xMTc4MzMgUSAzMi4yNzUsMzEuMTk1ODIyIDMyLjI3NSwyOS45NjY0NzQgeiIgaWQ9InBhdGgzMDI5IiBzdHlsZT0iZmlsbDojZmY5OTAwO2ZpbGwtb3BhY2l0eToxIiAvPgogIDwvZz4KPC9zdmc+';
+		//--
+		$img_logo_php = 'data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyMi44OCAxMjIuODgiIGlkPSJwaHAtbG9nby1zdmciPgogIDxkZWZzIGlkPSJkZWZzMTIiIC8+CiAgPGcgdHJhbnNmb3JtPSJtYXRyaXgoMC40NTMzMzMzMywwLDAsMC41OTAxNzQ1OCwzLjk5MzYsMTkuNTU4NCkiIGlkPSJnNCIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkIj4KICAgIDxlbGxpcHNlIGN4PSIxMjgiIGN5PSI2Ni42Mjk5OTciIHJ4PSIxMjgiIHJ5PSI2Ni42Mjk5OTciIGlkPSJlbGxpcHNlNiIgc3R5bGU9ImZpbGw6IzczNzQ5NSIgLz4KICAgIDxwYXRoIGQ9Ik0gMzUuOTQ1LDEwNi4wODIgNDkuOTczLDM1LjA2OCBIIDgyLjQxIGMgMTQuMDI3LDAuODc3IDIxLjA0MSw3Ljg5IDIxLjA0MSwyMC4xNjUgMCwyMS4wNDEgLTE2LjY1NywzMy4zMTUgLTMxLjU2MiwzMi40MzggSCA1Ni4xMSBsIC0zLjUwNywxOC40MTEgSCAzNS45NDUgeiBNIDU5LjYxNiw3NC41MjEgNjQsNDguMjE5IGggMTEuMzk3IGMgNi4xMzcsMCAxMC41MiwyLjYzIDEwLjUyLDcuODkgLTAuODc2LDE0LjkwNSAtNy44OSwxNy41MzUgLTE1Ljc4LDE4LjQxMiBoIC0xMC41MiB6IG0gNDAuNTc2LDEzLjE1IDE0LjAyNywtNzEuMDEzIGggMTYuNjU4IGwgLTMuNTA3LDE4LjQxIGggMTUuNzggYyAxNC4wMjgsMC44NzcgMTkuMjg4LDcuODkgMTcuNTM1LDE2LjY1OCBsIC02LjEzNywzNS45NDUgaCAtMTcuNTM0IGwgNi4xMzcsLTMyLjQzOCBjIDAuODc2LC00LjM4NCAwLjg3NiwtNy4wMTQgLTUuMjYsLTcuMDE0IEggMTI0Ljc0IGwgLTcuODksMzkuNDUyIGggLTE2LjY1OCB6IG0gNTMuMjMzLDE4LjQxMSAxNC4wMjcsLTcxLjAxNCBoIDMyLjQzOCBjIDE0LjAyOCwwLjg3NyAyMS4wNDIsNy44OSAyMS4wNDIsMjAuMTY1IDAsMjEuMDQxIC0xNi42NTgsMzMuMzE1IC0zMS41NjIsMzIuNDM4IGggLTE1Ljc4MSBsIC0zLjUwNywxOC40MTEgaCAtMTYuNjU3IHogbSAyMy42NywtMzEuNTYxIDQuMzg0LC0yNi4zMDIgaCAxMS4zOTggYyA2LjEzNywwIDEwLjUyLDIuNjMgMTAuNTIsNy44OSAtMC44NzYsMTQuOTA1IC03Ljg5LDE3LjUzNSAtMTUuNzgsMTguNDEyIGggLTEwLjUyMSB6IiBpZD0icGF0aDgiIHN0eWxlPSJmaWxsOiNGRkZGRkYiIC8+CiAgPC9nPgo8L3N2Zz4=';
+		$img_logo_js  = 'data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDYwIDYwIiBpZD0iamF2YXNjcmlwdC1sb2dvLXN2ZyI+CiAgPGRlZnMgaWQ9ImRlZnMxMCIgLz4KICA8ZyBpZD0idGV4dDM3NTciIHN0eWxlPSJmaWxsOiMwMDAwMDA7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOm5vbmUiPgogICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCwwLjM4MTM1NTcpIiBpZD0iZzM3NjciPgogICAgICA8cGF0aCBkPSJNIDQ5LjA4ODEsNDQuMzAzODczIEMgNTQuMzMyNCw0MC4yMzQxMDUgNTcsMzUuMzUwOCA1NywyOS42MTg2NDQgNTcsMjMuODg2NDg5IDU0LjMzMjQsMTkuMDAzMTgzIDQ5LjA4ODEsMTQuOTMzNDE1IDQzLjc5ODgsMTAuODk5NjUxIDM3LjQ1MTEsOC44NDc0NTc2IDMwLDguODQ3NDU3NiBjIC03LjQ1MTEsMCAtMTMuNzk4OCwyLjA1MjE5MzQgLTE5LjA4OSw2LjA4NTk1NzQgQyA1LjY2NzYsMTkuMDAzMTgzIDMsMjMuODg2NDg5IDMsMjkuNjE4NjQ0IGMgMCw1LjczMjE1NiAyLjY2NzYsMTAuNjE1NDYxIDcuOTExLDE0LjY4NTIyOSA1LjI5MDIsNC4wNjkwNzYgMTEuNjM3OSw2LjA4NTk1OCAxOS4wODksNi4wODU5NTggNy40NTExLDAgMTMuNzk4OCwtMi4wMTY4ODIgMTkuMDg4MSwtNi4wODU5NTggeiIgaWQ9InBhdGg0IiBzdHlsZT0iZmlsbDojZmZjYzAwO2ZpbGwtb3BhY2l0eToxIiAvPgogICAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMC40Njg3NSwwKSIgaWQ9ImcyOTg4Ij4KICAgICAgICA8cGF0aCBkPSJtIDIyLjQzMTY0MSwxNS4zMjE5MjYgMy45NDUzMTIsMCAwLDIwLjg3MDM1NCBjIC04ZS02LDIuNzA0NTggLTAuNjcwNTgsNC42Njc5MDQgLTIuMDExNzE5LDUuODg5OTc4IC0xLjMyODEyOSwxLjIyMjA2NCAtMy40NzAwNTQsMS44MzMwOTkgLTYuNDI1NzgxLDEuODMzMTA1IGwgLTEuNTAzOTA2LDAgMCwtMi41NTQzMjcgMS4yMzA0NjksMCBjIDEuNzQ0NzksLTRlLTYgMi45NzUyNTgsLTAuMzc1NjQgMy42OTE0MDYsLTEuMTI2OTA5IDAuNzE2MTQyLC0wLjc1MTI3NSAxLjA3NDIxNSwtMi4wOTg1NTUgMS4wNzQyMTksLTQuMDQxODQ3IGwgMCwtMjAuODcwMzU0IiBpZD0icGF0aDM3NjIiIC8+CiAgICAgICAgPHBhdGggZD0ibSA0NS4yMDUwNzgsMjEuNjg1MjA2IDAsMi42MTQ0MjkgYyAtMS4wMTU2NDIsLTAuNDAwNjY1IC0yLjA3MDMyOCwtMC43MDExNzQgLTMuMTY0MDYyLC0wLjkwMTUyNyAtMS4wOTM3NjQsLTAuMjAwMzI1IC0yLjIyNjU3NSwtMC4zMDA0OTUgLTMuMzk4NDM4LC0wLjMwMDUwOSAtMS43ODM4NjMsMS40ZS01IC0zLjEyNTAwOCwwLjIxMDM3IC00LjAyMzQzNywwLjYzMTA2OCAtMC44ODU0MjMsMC40MjA3MjcgLTEuMzI4MTMxLDEuMDUxNzk1IC0xLjMyODEyNSwxLjg5MzIwOCAtNmUtNiwwLjY0MTA5NyAwLjMxOTAwNCwxLjE0Njk1NCAwLjk1NzAzMSwxLjUxNzU3IDAuNjM4MDEzLDAuMzYwNjIyIDEuOTIwNTY0LDAuNzA2MjA3IDMuODQ3NjU2LDEuMDM2NzU2IGwgMS4yMzA0NjksMC4yMTAzNTcgYyAyLjU1MjA2OSwwLjQyMDcyMiA0LjM2MTk2MywxLjAxNjczIDUuNDI5Njg3LDEuNzg4MDI4IDEuMDgwNzExLDAuNzYxMjk4IDEuNjIxMDc1LDEuODI4MTAzIDEuNjIxMDk0LDMuMjAwNDIzIC0xLjllLTUsMS41NjI2NSAtMC44MDczMSwyLjc5OTc0NCAtMi40MjE4NzUsMy43MTEyODYgLTEuNjAxNTc3LDAuOTExNTQ0IC0zLjgwODYwNiwxLjM2NzMxNiAtNi42MjEwOTQsMS4zNjczMTYgLTEuMTcxODgzLDAgLTIuMzk1ODQsLTAuMDkwMTUgLTMuNjcxODc1LC0wLjI3MDQ1NyAtMS4yNjMwMjUsLTAuMTcwMjkgLTIuNTk3NjU5LC0wLjQzMDczIC00LjAwMzkwNiwtMC43ODEzMjQgbCAwLC0yLjg1NDgzNiBjIDEuMzI4MTIyLDAuNTMwOTAyIDIuNjM2NzE0LDAuOTMxNTggMy45MjU3ODEsMS4yMDIwMzYgMS4yODkwNTUsMC4yNjA0NDMgMi41NjUwOTYsMC4zOTA2NjQgMy44MjgxMjUsMC4zOTA2NjIgMS42OTI2OTcsMmUtNiAyLjk5NDc3OSwtMC4yMjAzNzIgMy45MDYyNSwtMC42NjExMiAwLjkxMTQ0NCwtMC40NTA3NjEgMS4zNjcxNzMsLTEuMDgxODMgMS4zNjcxODgsLTEuODkzMjA3IC0xLjVlLTUsLTAuNzUxMjY4IC0wLjMzMjA0NiwtMS4zMjcyNDMgLTAuOTk2MDk0LC0xLjcyNzkyOCAtMC42NTEwNTUsLTAuNDAwNjcxIC0yLjA4OTg1NiwtMC43ODYzMjUgLTQuMzE2NDA2LC0xLjE1Njk1OSBsIC0xLjI1LC0wLjIyNTM4MiBjIC0yLjIyNjU2OSwtMC4zNjA2MDMgLTMuODM0NjQsLTAuOTExNTM2IC00LjgyNDIxOSwtMS42NTI4IC0wLjk4OTU4NiwtMC43NTEyNjMgLTEuNDg0Mzc3LC0xLjc3ODAwMSAtMS40ODQzNzUsLTMuMDgwMjE4IC0yZS02LC0xLjU4MjY2NyAwLjcyOTE2NCwtMi44MDQ3MzYgMi4xODc1LC0zLjY2NjIxIDEuNDU4MzI3LC0wLjg2MTQ0MyAzLjUyODYzOCwtMS4yOTIxNzIgNi4yMTA5MzgsLTEuMjkyMTkgMS4zMjgxMTMsMS44ZS01IDIuNTc4MTExLDAuMDc1MTUgMy43NSwwLjIyNTM4MiAxLjE3MTg1OSwwLjE1MDI3MiAyLjI1MjU4NywwLjM3NTY1NCAzLjI0MjE4NywwLjY3NjE0NiIgaWQ9InBhdGgzNzY0IiAvPgogICAgICA8L2c+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=';
+		$img_logo_css = 'data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDYwIDYwIiBpZD0iY3NzLWxvZ28tc3ZnIj4KICA8ZGVmcyBpZD0iZGVmczEwIiAvPgogIDxnIGlkPSJ0ZXh0Mzc1NyIgc3R5bGU9ImZpbGw6IzAwMDAwMDtmaWxsLW9wYWNpdHk6MTtzdHJva2U6bm9uZSI+CiAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLDAuMzgxMzU1NykiIGlkPSJnMzc2NyI+CiAgICAgIDxwYXRoIGQ9Ik0gNDkuMDg4MSw0NC4zMDM4NzMgQyA1NC4zMzI0LDQwLjIzNDEwNSA1NywzNS4zNTA4IDU3LDI5LjYxODY0NCA1NywyMy44ODY0ODkgNTQuMzMyNCwxOS4wMDMxODMgNDkuMDg4MSwxNC45MzM0MTUgNDMuNzk4OCwxMC44OTk2NTEgMzcuNDUxMSw4Ljg0NzQ1NzYgMzAsOC44NDc0NTc2IGMgLTcuNDUxMSwwIC0xMy43OTg4LDIuMDUyMTkzNCAtMTkuMDg5LDYuMDg1OTU3NCBDIDUuNjY3NiwxOS4wMDMxODMgMywyMy44ODY0ODkgMywyOS42MTg2NDQgYyAwLDUuNzMyMTU2IDIuNjY3NiwxMC42MTU0NjEgNy45MTEsMTQuNjg1MjI5IDUuMjkwMiw0LjA2OTA3NiAxMS42Mzc5LDYuMDg1OTU4IDE5LjA4OSw2LjA4NTk1OCA3LjQ1MTEsMCAxMy43OTg4LC0yLjAxNjg4MiAxOS4wODgxLC02LjA4NTk1OCB6IiBpZD0icGF0aDQiIHN0eWxlPSJmaWxsOiNCMjhFNzA7ZmlsbC1vcGFjaXR5OjEiIC8+CiAgICA8L2c+CiAgPC9nPgogIDxnIGlkPSJ0ZXh0Mzc3NSI+CiAgICA8ZyBpZD0iZzI5OTMiPgogICAgICA8cGF0aCBkPSJtIDI0LjM4MjMyNCwyMS41MzQ1NzYgMCwyLjUzNTA5NiBjIC0wLjgwOTM0MSwtMC43NTM3NyAtMS42NzQyMDgsLTEuMzE3MTI0IC0yLjU5NDYwNCwtMS42OTAwNjQgLTAuOTEyNDg4LC0wLjM3MjkwOSAtMS44ODQ0NzIsLTAuNTU5MzcxIC0yLjkxNTk1NSwtMC41NTkzODcgLTIuMDMxMjU4LDEuNmUtNSAtMy41ODY0MzIsMC42MjI4NzkgLTQuNjY1NTI3LDEuODY4NTkxIC0xLjA3OTEwNiwxLjIzNzgwNiAtMS42MTg2NTYsMy4wMzEwMTcgLTEuNjE4NjUzLDUuMzc5NjM5IC0zZS02LDIuMzQwNzA1IDAuNTM5NTQ3LDQuMTMzOTE2IDEuNjE4NjUzLDUuMzc5NjM5IDEuMDc5MDk1LDEuMjM3Nzk1IDIuNjM0MjY5LDEuODU2NjkxIDQuNjY1NTI3LDEuODU2Njg5IDEuMDMxNDgzLDJlLTYgMi4wMDM0NjcsLTAuMTg2NDYxIDIuOTE1OTU1LC0wLjU1OTM4NyAwLjkyMDM5NiwtMC4zNzI5MjIgMS43ODUyNjMsLTAuOTM2Mjc2IDIuNTk0NjA0LC0xLjY5MDA2NCBsIDAsMi41MTEyOTIgYyAtMC44NDEwNzksMC41NzEyOSAtMS43MzM3MTcsMC45OTk3NTYgLTIuNjc3OTE3LDEuMjg1NCAtMC45MzYyOTIsMC4yODU2NDUgLTEuOTI4MTEyLDAuNDI4NDY3IC0yLjk3NTQ2NCwwLjQyODQ2NyAtMi42ODk4MjcsMCAtNC44MDgzNTUsLTAuODIxMjI3IC02LjM1NTU5MSwtMi40NjM2ODQgLTEuNTQ3MjQzLC0xLjY1MDM4NyAtMi4zMjA4NjMsLTMuODk5ODM1IC0yLjMyMDg2MiwtNi43NDgzNTIgLTFlLTYsLTIuODU2NDM0IDAuNzczNjE5LC01LjEwNTg4MiAyLjMyMDg2MiwtNi43NDgzNTIgMS41NDcyMzYsLTEuNjUwMzczIDMuNjY1NzY0LC0yLjQ3NTU2OCA2LjM1NTU5MSwtMi40NzU1ODYgMS4wNjMyMjEsMS44ZS01IDIuMDYyOTc2LDAuMTQyODQgMi45OTkyNjcsMC40Mjg0NjcgMC45NDQyLDAuMjc3NzI3IDEuODI4OTA0LDAuNjk4MjU5IDIuNjU0MTE0LDEuMjYxNTk2IiBpZD0icGF0aDI5ODciIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgICAgIDxwYXRoIGQ9Im0gMzYuNTIyMjE3LDI0Ljk5ODAxNiAwLDIuMDcwOTIzIGMgLTAuNjE4OTA3LC0wLjMxNzM3MSAtMS4yNjE2MDYsLTAuNTU1NDA4IC0xLjkyODEwMSwtMC43MTQxMTEgLTAuNjY2NTEyLC0wLjE1ODY4IC0xLjM1NjgxOSwtMC4yMzgwMjUgLTIuMDcwOTIzLC0wLjIzODAzNyAtMS4wODcwNDEsMS4yZS01IC0xLjkwNDMwMSwwLjE2NjYzNyAtMi40NTE3ODIsMC40OTk4NzggLTAuNTM5NTU0LDAuMzMzMjYzIC0wLjgwOTMzLDAuODMzMTQgLTAuODA5MzI2LDEuNDk5NjMzIC00ZS02LDAuNTA3ODIyIDAuMTk0MzkzLDAuOTA4NTE4IDAuNTgzMTkxLDEuMjAyMDg4IDAuMzg4Nzg5LDAuMjg1NjUzIDEuMTcwMzQ0LDAuNTU5Mzk1IDIuMzQ0NjY1LDAuODIxMjI4IGwgMC43NDk4MTcsMC4xNjY2MjYgYyAxLjU1NTE2NywwLjMzMzI1OSAyLjY1ODA3MSwwLjgwNTM2NiAzLjMwODcxNiwxLjQxNjMyMSAwLjY1ODU1OCwwLjYwMzAzMyAwLjk4Nzg0MywxLjQ0ODA2NCAwLjk4Nzg1NCwyLjUzNTA5NSAtMS4xZS01LDEuMjM3Nzk1IC0wLjQ5MTk1NCwyLjIxNzcxNCAtMS40NzU4MywyLjkzOTc1OCAtMC45NzU5NjEsMC43MjIwNDYgLTIuMzIwODY5LDEuMDgzMDY5IC00LjAzNDcyOSwxLjA4MzA2OSAtMC43MTQxMTcsMCAtMS40NTk5NjUsLTAuMDcxNDEgLTIuMjM3NTQ5LC0wLjIxNDIzMyAtMC43Njk2NTYsLTAuMTM0ODg4IC0xLjU4Mjk0OSwtMC4zNDExODcgLTIuNDM5ODgsLTAuNjE4ODk3IGwgMCwtMi4yNjEzNTIgYyAwLjgwOTMyNCwwLjQyMDUzNCAxLjYwNjc0NywwLjczNzkxNyAyLjM5MjI3MywwLjk1MjE0OCAwLjc4NTUxOCwwLjIwNjMgMS41NjMxMDUsMC4zMDk0NSAyLjMzMjc2MywwLjMwOTQ0OCAxLjAzMTQ4OCwyZS02IDEuODI0OTQ0LC0wLjE3NDU1OSAyLjM4MDM3MiwtMC41MjM2ODEgMC41NTU0MSwtMC4zNTcwNTQgMC44MzMxMiwtMC44NTY5MzEgMC44MzMxMjksLTEuNDk5NjM0IC05ZS02LC0wLjU5NTA4OSAtMC4yMDIzNCwtMS4wNTEzMjYgLTAuNjA2OTk0LC0xLjM2ODcxMyAtMC4zOTY3MzcsLTAuMzE3Mzc4IC0xLjI3MzUwNiwtMC42MjI4NTkgLTIuNjMwMzEsLTAuOTE2NDQzIGwgLTAuNzYxNzE5LC0wLjE3ODUyOCBjIC0xLjM1NjgxNSwtMC4yODU2MzggLTIuMzM2NzM0LC0wLjcyMjAzOSAtMi45Mzk3NTgsLTEuMzA5MjA0IC0wLjYwMzAyOSwtMC41OTUwODUgLTAuOTA0NTQzLC0xLjQwODM3OCAtMC45MDQ1NDEsLTIuNDM5ODgxIC0yZS02LC0xLjI1MzY1MSAwLjQ0NDMzNCwtMi4yMjE2NjcgMS4zMzMwMDcsLTIuOTA0MDUyIDAuODg4NjY5LC0wLjY4MjM2IDIuMTUwMjY0LC0xLjAyMzU0NiAzLjc4NDc5MSwtMS4wMjM1NiAwLjgwOTMxOCwxLjRlLTUgMS41NzEwMzYsMC4wNTk1MiAyLjI4NTE1NiwwLjE3ODUyOCAwLjcxNDEwMiwwLjExOTAzMiAxLjM3MjY3LDAuMjk3NTU5IDEuOTc1NzA4LDAuNTM1NTgzIiBpZD0icGF0aDI5ODkiIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgICAgIDxwYXRoIGQ9Im0gNDkuMjMzMzk4LDI0Ljk5ODAxNiAwLDIuMDcwOTIzIGMgLTAuNjE4OTA2LC0wLjMxNzM3MSAtMS4yNjE2MDYsLTAuNTU1NDA4IC0xLjkyODEsLTAuNzE0MTExIC0wLjY2NjUxMiwtMC4xNTg2OCAtMS4zNTY4MTksLTAuMjM4MDI1IC0yLjA3MDkyMywtMC4yMzgwMzcgLTEuMDg3MDQyLDEuMmUtNSAtMS45MDQzMDIsMC4xNjY2MzcgLTIuNDUxNzgyLDAuNDk5ODc4IC0wLjUzOTU1NSwwLjMzMzI2MyAtMC44MDkzMywwLjgzMzE0IC0wLjgwOTMyNiwxLjQ5OTYzMyAtNGUtNiwwLjUwNzgyMiAwLjE5NDM5MywwLjkwODUxOCAwLjU4MzE5MSwxLjIwMjA4OCAwLjM4ODc4OSwwLjI4NTY1MyAxLjE3MDM0MywwLjU1OTM5NSAyLjM0NDY2NSwwLjgyMTIyOCBsIDAuNzQ5ODE3LDAuMTY2NjI2IGMgMS41NTUxNjcsMC4zMzMyNTkgMi42NTgwNzEsMC44MDUzNjYgMy4zMDg3MTYsMS40MTYzMjEgMC42NTg1NTgsMC42MDMwMzMgMC45ODc4NDIsMS40NDgwNjQgMC45ODc4NTQsMi41MzUwOTUgLTEuMmUtNSwxLjIzNzc5NSAtMC40OTE5NTUsMi4yMTc3MTQgLTEuNDc1ODMsMi45Mzk3NTggLTAuOTc1OTYyLDAuNzIyMDQ2IC0yLjMyMDg3LDEuMDgzMDY5IC00LjAzNDcyOSwxLjA4MzA2OSAtMC43MTQxMTcsMCAtMS40NTk5NjYsLTAuMDcxNDEgLTIuMjM3NTQ5LC0wLjIxNDIzMyAtMC43Njk2NTYsLTAuMTM0ODg4IC0xLjU4Mjk0OSwtMC4zNDExODcgLTIuNDM5ODgxLC0wLjYxODg5NyBsIDAsLTIuMjYxMzUyIGMgMC44MDkzMjUsMC40MjA1MzQgMS42MDY3NDgsMC43Mzc5MTcgMi4zOTIyNzMsMC45NTIxNDggMC43ODU1MTgsMC4yMDYzIDEuNTYzMTA2LDAuMzA5NDUgMi4zMzI3NjQsMC4zMDk0NDggMS4wMzE0ODcsMmUtNiAxLjgyNDk0MywtMC4xNzQ1NTkgMi4zODAzNzEsLTAuNTIzNjgxIDAuNTU1NDExLC0wLjM1NzA1NCAwLjgzMzEyMSwtMC44NTY5MzEgMC44MzMxMywtMS40OTk2MzQgLTllLTYsLTAuNTk1MDg5IC0wLjIwMjM0MSwtMS4wNTEzMjYgLTAuNjA2OTk1LC0xLjM2ODcxMyAtMC4zOTY3MzYsLTAuMzE3Mzc4IC0xLjI3MzUwNSwtMC42MjI4NTkgLTIuNjMwMzEsLTAuOTE2NDQzIGwgLTAuNzYxNzE4LC0wLjE3ODUyOCBjIC0xLjM1NjgxNiwtMC4yODU2MzggLTIuMzM2NzM0LC0wLjcyMjAzOSAtMi45Mzk3NTksLTEuMzA5MjA0IC0wLjYwMzAyOSwtMC41OTUwODUgLTAuOTA0NTQyLC0xLjQwODM3OCAtMC45MDQ1NDEsLTIuNDM5ODgxIC0xZS02LC0xLjI1MzY1MSAwLjQ0NDMzNCwtMi4yMjE2NjcgMS4zMzMwMDgsLTIuOTA0MDUyIDAuODg4NjY4LC0wLjY4MjM2IDIuMTUwMjY0LC0xLjAyMzU0NiAzLjc4NDc5LC0xLjAyMzU2IDAuODA5MzE5LDEuNGUtNSAxLjU3MTAzNywwLjA1OTUyIDIuMjg1MTU2LDAuMTc4NTI4IDAuNzE0MTAyLDAuMTE5MDMyIDEuMzcyNjcxLDAuMjk3NTU5IDEuOTc1NzA4LDAuNTM1NTgzIiBpZD0icGF0aDI5OTEiIHN0eWxlPSJmaWxsOiNmZmZmZmYiIC8+CiAgICA8L2c+CiAgPC9nPgo8L3N2Zz4=';
+		//--
+		$img_loading  = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSJncmV5IiBpZD0ibG9hZGluZy1jeWNsb24tc3ZnIj4KICA8cGF0aCB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDApIiBkPSJNMCAxMiBWMjAgSDQgVjEyeiI+CiAgICA8YW5pbWF0ZVRyYW5zZm9ybSBhdHRyaWJ1dGVOYW1lPSJ0cmFuc2Zvcm0iIHR5cGU9InRyYW5zbGF0ZSIgdmFsdWVzPSIwIDA7IDI4IDA7IDAgMDsgMCAwIiBkdXI9IjEuNXMiIGJlZ2luPSIwIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIga2V5dGltZXM9IjA7MC4zOzAuNjsxIiBrZXlTcGxpbmVzPSIwLjIgMC4yIDAuNCAwLjg7MC4yIDAuMiAwLjQgMC44OzAuMiAwLjIgMC40IDAuOCIgY2FsY01vZGU9InNwbGluZSIgLz4KICA8L3BhdGg+CiAgPHBhdGggb3BhY2l0eT0iMC41IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwIDApIiBkPSJNMCAxMiBWMjAgSDQgVjEyeiI+CiAgICA8YW5pbWF0ZVRyYW5zZm9ybSBhdHRyaWJ1dGVOYW1lPSJ0cmFuc2Zvcm0iIHR5cGU9InRyYW5zbGF0ZSIgdmFsdWVzPSIwIDA7IDI4IDA7IDAgMDsgMCAwIiBkdXI9IjEuNXMiIGJlZ2luPSIwLjFzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIga2V5dGltZXM9IjA7MC4zOzAuNjsxIiBrZXlTcGxpbmVzPSIwLjIgMC4yIDAuNCAwLjg7MC4yIDAuMiAwLjQgMC44OzAuMiAwLjIgMC40IDAuOCIgY2FsY01vZGU9InNwbGluZSIgLz4KICA8L3BhdGg+CiAgPHBhdGggb3BhY2l0eT0iMC4yNSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMCAwKSIgZD0iTTAgMTIgVjIwIEg0IFYxMnoiPgogICAgPGFuaW1hdGVUcmFuc2Zvcm0gYXR0cmlidXRlTmFtZT0idHJhbnNmb3JtIiB0eXBlPSJ0cmFuc2xhdGUiIHZhbHVlcz0iMCAwOyAyOCAwOyAwIDA7IDAgMCIgZHVyPSIxLjVzIiBiZWdpbj0iMC4ycyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiIGtleXRpbWVzPSIwOzAuMzswLjY7MSIga2V5U3BsaW5lcz0iMC4yIDAuMiAwLjQgMC44OzAuMiAwLjIgMC40IDAuODswLjIgMC4yIDAuNCAwLjgiIGNhbGNNb2RlPSJzcGxpbmUiIC8+CiAgPC9wYXRoPgo8L3N2Zz4KPCEtLSBodHRwczovL2dpdGh1Yi5jb20vanhuYmxrL2xvYWRpbmcvbG9hZGluZy1jeWNsb24uc3ZnIDsgTGljZW5zZTogTUlUIC0tPg==';
+		$code_loading_start = '<div id="img-loader" style="position:fixed; top:30px; right:10px;"><img width="48" height="48" alt="Loading ..." title="Loading ..." src="'.AppPackUtils::escape_html($img_loading).'"></div>';
+		$code_loading_stop  = '<script>try{ document.getElementById(\'img-loader\').innerHTML = \'\'; }catch(err){ console.error(err); }</script>';
+		//--
+		$img_result_ok  = '<div id="img-result" style="position:fixed; top:5px; right:225px; cursor:help;"><img width="64" height="64" alt="Result Status: OK" title="Result Status: OK" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkIiB4bWw6c3BhY2U9InByZXNlcnZlIiBpZD0ic2lnbi1vay1zdmciIHZpZXdCb3g9IjAgMCA3Mi4yNDg4OTMgNzIuMjQ4ODkzIiBoZWlnaHQ9IjMyIiB3aWR0aD0iMzIiIHZlcnNpb249IjEuMSI+PGRlZnMgaWQ9ImRlZnM0Ij4gIDxzdHlsZSBpZD0ic3R5bGU2IiB0eXBlPSJ0ZXh0L2NzcyIgLz48L2RlZnM+PGcgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MTtzdHJva2U6bm9uZTsiIGlkPSJ0ZXh0Mzc4MSI+ICA8ZyBpZD0iZzMwMDkiPiAgICA8ZyBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lOyIgaWQ9InRleHQzNzU2Ij4gICAgICA8ZyBpZD0iZzM4MDIiPiAgICAgICAgPGcgaWQ9ImczMzY4Ij4gICAgICAgICAgPGcgaWQ9InRleHQzMzY0IiBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDoxcHg7c3Ryb2tlLWxpbmVjYXA6YnV0dDtzdHJva2UtbGluZWpvaW46bWl0ZXI7c3Ryb2tlLW9wYWNpdHk6MSI+ICAgICAgICAgICAgPGcgaWQ9ImczNDU1Ij4gICAgICAgICAgICAgIDxwYXRoIHN0eWxlPSJmaWxsLXJ1bGU6ZXZlbm9kZDtmaWxsOiM5OGM3MjY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOiM5OGM3MjY7c3Ryb2tlLXdpZHRoOjE0LjEyMTA4NTE3O3N0cm9rZS1vcGFjaXR5OjEiIGlkPSJwYXRoMzAxMSIgZD0ibSA2Mi45MzA1NzQsMzYuMTI0NDQ3IGEgMjYuODA2MTI4LDI2LjgwNjEyOCAwIDEgMSAtNTMuNjEyMjUzOCwwIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgNTMuNjEyMjUzOCwwIHoiIC8+ICAgICAgICAgICAgICA8cGF0aCBkPSJtIDIyLjc2Mjk4OCwzNC4xNzMxNDUgcSAxLjI4OTg0NCwwIDEuOTUxMzAyLDIuMTE2NjY3IDEuMzIyOTE3LDMuOTY4NzUgMS44ODUxNTcsMy45Njg3NSAwLjQyOTk0NywwIDAuODkyOTY4LC0wLjY2MTQ1OCA5LjI5MzQ5LC0xMy42NTkxMTYgMTcuMTk3OTE4LC0xOS40NDY4NzYgMy4zNDAzNjUsLTIuNDQ3Mzk2IDYuNTE1MzY1LC0yLjQ0NzM5NiA0LjIwMDI2MSwwIDUuMDYwMTU3LDAuMjY0NTgzIDAuMzYzODAyLDAuMDk5MjIgMC4zNjM4MDIsMC44MjY4MjMgMCwwLjU5NTMxMyAtMC43NjA2NzcsMS40ODgyODEgLTIxLjI2NTg4NywyNC40MDc4MTQgLTI1LjMzMzg1NiwzMS43NTAwMDIgLTEuMzg5MDYzLDIuNTEzNTQyIC02LjQxNjE0NiwyLjUxMzU0MiAtMS42NTM2NDYsMCAtMy40NzI2NTcsLTAuODU5ODk2IC0wLjc2MDY3NywtMC4zOTY4NzUgLTIuNjQ1ODMzLC01LjA2MDE1NiAtMi4zODEyNSwtNS44ODY5OCAtMi4zODEyNSwtMTAuMzE4NzUxIDAsLTEuNjIwNTczIDIuMzE1MTA0LC0yLjY3ODkwNiAzLjE3NSwtMS40NTUyMDkgNC43NjI1LC0xLjQ1NTIwOSBsIDAuMDY2MTUsMCB6IiBzdHlsZT0iZmlsbDojZmZmZmZmIiBpZD0icGF0aDM0NTIiIC8+ICAgICAgICAgICAgPC9nPiAgICAgICAgICA8L2c+ICAgICAgICA8L2c+ICAgICAgPC9nPiAgICA8L2c+ICA8L2c+PC9nPjwvc3ZnPg=="></div>';
+		$img_result_err = '<div id="img-result" style="position:fixed; top:5px; right:225px; cursor:help;"><img width="64" height="64" alt="Result Status: ERROR" title="Result Status: ERROR" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCA3Mi4yNDg4OTMgNzIuMjQ4ODkzIiBpZD0ic2lnbi1jcml0LWVycm9yLXN2ZyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkIj4gIDxkZWZzIGlkPSJkZWZzNCI+ICAgIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyIgaWQ9InN0eWxlNiIgLz4gIDwvZGVmcz4gIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTUyNy43NTExMSkiIGlkPSJMYXllcl94MDAyMF8xIj4gICAgPGcgaWQ9Il8xNjMwODkzNzYiPiAgICAgIDxnIGlkPSJnMzg3OCI+ICAgICAgICA8cG9seWdvbiBwb2ludHM9IjcsMTc4LjYzNSA5Mi44MTc4LDkyLjgxOCAxNzguNjM1LDcuMDAwMiAzMDAsNy4wMDAzIDQyMS4zNjUsNyA1MDcuMTgyLDkyLjgxNzkgNTkzLDE3OC42MzYgNTkzLDMwMCA1OTMsNDIxLjM2NSA1MDcuMTgyLDUwNy4xODIgNDIxLjM2NCw1OTMgMzAwLDU5MyAxNzguNjM1LDU5MyA5Mi44MTc2LDUwNy4xODIgNyw0MjEuMzY1IDcuMDAwMSwzMDAgIiB0cmFuc2Zvcm09Im1hdHJpeCgwLjEyMDQwMTk4LDAsMCwwLjEyMDQwMTk4LDAuMjA0NzU5NjMsNTI3Ljc5MzcxKSIgaWQ9Il8xNjMwODg0MTYiIHN0eWxlPSJmaWxsOiNlNzM0MTE7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQiIC8+ICAgICAgICA8cmVjdCB3aWR0aD0iMTIuMDU2ODI3IiBoZWlnaHQ9IjMyLjg0NDQ1NiIgeD0iMzAuMjk2OTQiIHk9IjU0MC42NjcyNCIgaWQ9InJlY3QzODU4IiBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIiAvPiAgICAgICAgPHJlY3Qgd2lkdGg9IjEyLjA1NjgyNyIgaGVpZ2h0PSIxMS44NDg5NDgiIHg9IjMwLjI5Njk0IiB5PSI1NzcuNzU3MiIgaWQ9InJlY3QzODU4LTMiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQiIC8+ICAgICAgPC9nPiAgICA8L2c+ICA8L2c+PC9zdmc+"></div>';
+		//--
+		AppPackUtils::InstantFlush();
+		//--
+		echo '<!DOCTYPE html>'."\n".'<html>'."\n".'<head><meta charset="'.AppPackUtils::escape_html((string)SMART_FRAMEWORK_CHARSET).'"><title>Smart'.'::'.'AppCode.PACK</title><style type="text/css">*{font-family:arial,sans-serif;font-smooth:always;} hr{border:none 0; border-top:1px solid #CCCCCC; height:1px;} a{color:#000000 !important;}</style></head>'."\n".'<body>'."\n";
+		echo '<table><tr>';
+		echo '<td width="64" style="cursor:help;"><img width="48" height="48" alt="AppCodePack '.AppPackUtils::escape_html((string)APPCODEPACK_VERSION).'" title="AppCodePack '.AppPackUtils::escape_html((string)APPCODEPACK_VERSION).'" src="'.AppPackUtils::escape_html($img_logo_app).'"></td>';
+		echo '<td><h1 style="display:inline; cursor:pointer;" onclick="self.location=\'?\';"><span style="color:#778899;">Smart</span><span style="color:#DCDCDC;">::</span><span style="color:#555555;">AppCode</span><span style="color:#999999;">.</span><span style="color:#3C5A98;">Pack</span></h1></td>';
+		echo '<td> &nbsp; &nbsp; &nbsp; </td>';
+		echo '<td>';
+		echo '<img width="32" height="32" alt="PHP-Logo" title="PHP-Logo" src="'.AppPackUtils::escape_html($img_logo_php).'">&nbsp; ';
+		echo '<img width="32" height="32" alt="JS-Logo" title="JS-Logo" src="'.AppPackUtils::escape_html($img_logo_js).'">&nbsp; ';
+		echo '<img width="32" height="32" alt="CSS-Logo" title="CSS-Logo" src="'.AppPackUtils::escape_html($img_logo_css).'">&nbsp; ';
+		echo '</td>';
+		echo '</tr></table>';
+		AppPackUtils::InstantFlush();
+		//--
+		if((string)$_GET['run'] == 'optimize') {
+			//--
+			AppPackUtils::delete('---AppCodePack-Optimizations-Done---.log');
+			//--
+			AppPackUtils::delete('---AppCodePack-Package---.log');
+			AppPackUtils::write(
+				'---AppCodePack-Result---.log',
+				'START Processing ['.date('Y-m-d H:i:s O').'] ...'."\n"
+			);
+			//--
+			echo (string) $code_loading_start;
+			//--
+			echo '<hr><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / optimize: '.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_MODE).' <span style="cursor:help;" title="'.AppPackUtils::escape_html((string)APPCODEPACK_STRATEGY).' :: '.AppPackUtils::escape_html((string)APPCODEPACK_MARKER_OPTIMIZATIONS).'">['.AppPackUtils::escape_html((string)APPCODEPACK_COMPRESS_UTILITY_TYPE).'] - '.AppPackUtils::escape_html((string)APPCODEPACK_MARKER_OPTIMIZATIONS).'</span>'.' &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').' # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'</div><hr>';
 			AppPackUtils::InstantFlush();
-			$arch->pack_dir((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR);
-			$err_arch = (string) $arch->save();
-			if(!$err_arch) {
-				echo '<div><h3 style="display:inline; color:#666699!important;">Checking the Package Integrity: '.AppPackUtils::escape_html($the_archname).'&nbsp;&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;'.'@MEMORY'.'</h3></div>';
-				if((bool)APPCODEPACK_UNPACK_TESTONLY !== true) {
-					echo '<div><h3 style="display:inline; color:#FF9900!important;">Testing the Package Unpacking: '.AppPackUtils::escape_html($the_archname).'&nbsp;&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;./'.AppPackUtils::escape_html(APPCODEPACK_APP_ID).'</h3></div>';
-				} //end if
-				AppPackUtils::InstantFlush();
-				$err_arch = (string) AppPackUtils::unpack_netarchive(
-					(string) AppPackUtils::read((string)$the_archpath),
-					(bool) APPCODEPACK_UNPACK_TESTONLY
+			$appcodeoptimizer = new AppCodeOptimizer();
+			$appcodeoptimizer->optimize_code((string)APPCODEPACK_PROCESS_SOURCE_DIR);
+			echo '<span title="AppCodePack :: Processing DONE !" style="color:#000000;text-weight:bold;cursor:default;"> &laquo;<b>&bull;</b>&raquo; </span>'."\n";
+			if($appcodeoptimizer->have_errors()) {
+				echo $img_result_err;
+				echo "\n".'<br><br><div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.@nl2br(AppPackUtils::escape_html($appcodeoptimizer->get_errors()), false).'</div>'."\n";
+				AppPackUtils::write(
+					'---AppCodePack-Result---.log',
+					'Processing ERRORS !!! ['.date('Y-m-d H:i:s O').'] ...'."\n\n".$appcodeoptimizer->get_errors()
+				);
+			} else {
+				echo $img_result_ok;
+				echo "\n".'<br><br><div title="Status / OK" style="background:#98C726; color:#000000; font-weight:bold; padding:5px; border-radius:5px;"><h3>[ &nbsp; STATUS: OK &nbsp; &radic; &nbsp; ]</h3></div>'."\n";
+				echo "\n".'<div title="Status / Log" style="background:#EFEFEF; color:#000000; padding:5px; border-radius:5px;"><b>[ Log ]</b><hr><pre>'.AppPackUtils::escape_html($appcodeoptimizer->get_log()).'</pre></div>'."\n";
+				echo '<!-- {APPCODEPACK:[@SUCCESS(Task:Optimize)@]} -->';
+				AppPackUtils::write(
+					'---AppCodePack-Result---.log',
+					'##### Processing DONE / '.APPCODEPACK_STRATEGY.' - '.APPCODEPACK_MARKER_OPTIMIZATIONS.' : ['.date('Y-m-d H:i:s O').']'."\n\n".'##### LOG: '."\n".trim($appcodeoptimizer->get_log())."\n".'##### END'
+				);
+				AppPackUtils::write(
+					'---AppCodePack-Optimizations-Done---.log',
+					(string) date('Y-m-d H:i:s O')
 				);
 			} //end if
-			unset($arch);
-		} else {
-			$err_arch = 'Either the Package has already been created or the Optimizations Folder ['.(string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR.'] does not exists. Clear and run the Optimizations first ...';
-		} //end if else
-		echo '<br>';
-		AppPackUtils::InstantFlush();
-		sleep(1);
-		if((string)$err_arch != '') {
-			echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.@nl2br(AppPackUtils::escape_html($err_arch), false).'</div><br>'."\n";
-		} else {
-			AppPackUtils::write('---AppCodePack-Package---.log', (string)$the_archname);
-			echo "\n".'<div title="Status / OK" style="background:#98C726; color:#000000; font-weight:bold; padding:10px; border-radius:5px; line-height:25px;"><h3>[ &nbsp; STATUS: OK &nbsp; &radic; ]</h3>';
-			if((string)APPCODEPACK_APP_ID != '-----UNDEF-----') {
-				echo 'AppID: '.AppPackUtils::escape_html(APPCODEPACK_APP_ID).'<br>'."\n";
-				if((string)APPCODEPACK_APP_HASH_ID != '') {
-					echo 'AppID-Hash: '.AppPackUtils::escape_html(APPCODEPACK_APP_HASH_ID).'<br>'."\n";
-				} //end if
-				$the_archsize = 0;
-				if(AppPackUtils::is_type_file($the_archpath)) {
-					$the_archsize = AppPackUtils::get_file_size($the_archpath);
-				} //end if
-				echo 'Package: <a download="'.AppPackUtils::escape_html($the_archname).'" href="'.AppPackUtils::escape_html(rawurlencode($the_archdir).'/'.rawurlencode($the_archname)).'">'.AppPackUtils::escape_html($the_archname).'</a>'.'&nbsp;&nbsp;&nbsp;['.AppPackUtils::pretty_print_bytes($the_archsize, 2, '&nbsp;').']'.'<br>'."\n";
-				echo 'Comment: '.AppPackUtils::escape_html((string)$_GET['comment']).'<br>'."\n";
-				echo '<br>'."\n";
-			} //end if
-			echo '</div>'."\n";
-			echo "\n".'<div title="Status / Log" style="background:#EFEFEF; color:#000000; padding:5px; border-radius:5px;"><b>[ Log ]</b><hr>Release Package File ['.number_format((int)$the_archsize, 0, '.', ',').' bytes]'.': '.AppPackUtils::escape_html($the_archpath).'</div>'."\n";
-			echo '<!-- {APPCODEPACK:[@SUCCESS(Task:Pack)@]} -->';
-		} //end if
-		echo '<br><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / pack &nbsp;&nbsp;::&nbsp;&nbsp; '.'#END: '.date('Y-m-d H:i:s O').'</div>';
-		//--
-		echo (string) $code_loading_stop;
-		//--
-	} elseif((string)$_GET['run'] == 'cleanup') {
-		//--
-		echo (string) $code_loading_start;
-		//--
-		echo '<hr><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / cleanup &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').' # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'</div><hr>';
-		AppPackUtils::InstantFlush();
-		//--
-		$appcode_err_cleanup = '';
-		//--
-		$the_archdir = AppPackUtils::safe_pathname('#---APPCODE-PACKAGES---#');
-		if(AppPackUtils::is_type_dir((string)$the_archdir)) {
-			$appcode_cleanup = AppPackUtils::dir_delete((string)$the_archdir, true);
-			if((string)$appcode_cleanup != '1') {
-				$appcode_err_cleanup = 'ERROR: Failed to remove the Packages Folder: '.(string)$the_archdir;
-			} elseif(AppPackUtils::is_type_dir((string)$the_archdir)) {
-				$appcode_err_cleanup = 'ERROR: The Packages Folder was not deleted: '.(string)$the_archdir;
-			} //end if
-		} //end if
-		//--
-		if(AppPackUtils::is_type_dir((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR)) {
-			$appcode_cleanup = AppPackUtils::dir_delete((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR, true);
-			if((string)$appcode_cleanup != '1') {
-				$appcode_err_cleanup = 'ERROR: Failed to remove the Optimizations Folder: '.(string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR;
-			} elseif(AppPackUtils::is_type_dir((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR)) {
-				$appcode_err_cleanup = 'ERROR: The Optimizations Folder was not deleted: '.(string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR;
-			} //end if
-		} //end if
-		//--
-		if(AppPackUtils::is_type_file('---AppCodePack-Package---.log')) {
-			AppPackUtils::delete('---AppCodePack-Package---.log');
-			if(AppPackUtils::path_exists('---AppCodePack-Package---.log')) {
-				$appcode_err_cleanup = 'ERROR: The Optimizations Package Log File could not be removed ...';
-			} //end if
-		} //end if
-		if(AppPackUtils::is_type_file('---AppCodePack-Optimizations-Done---.log')) {
-			AppPackUtils::delete('---AppCodePack-Optimizations-Done---.log');
-			if(AppPackUtils::path_exists('---AppCodePack-Optimizations-Done---.log')) {
-				$appcode_err_cleanup = 'ERROR: The Optimizations Done Log File could not be removed ...';
-			} //end if
-		} //end if
-		if(AppPackUtils::is_type_file('---AppCodePack-Result---.log')) {
-			AppPackUtils::delete('---AppCodePack-Result---.log');
-			if(AppPackUtils::path_exists('---AppCodePack-Result---.log')) {
-				$appcode_err_cleanup = 'ERROR: The Optimizations Results Log File could not be removed ...';
-			} //end if
-		} //end if
-		//--
-		sleep(3);
-		//--
-		if($appcode_err_cleanup) {
-			echo "\n".'<br><br><div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.@nl2br(AppPackUtils::escape_html($appcode_err_cleanup), false).'</div>'."\n";
-		} else {
-			echo "\n".'<div title="Status / OK" style="background:#98C726; color:#000000; font-weight:bold; padding:5px; border-radius:5px;"><h3>[ &nbsp; STATUS: OK &nbsp; &radic; &nbsp; ]</h3></div>'."\n";
-			echo '<!-- {APPCODEPACK:[@SUCCESS(Task:CleanUp)@]} -->';
-		} //end if else
-		echo '<br><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / cleanup &nbsp;&nbsp;::&nbsp;&nbsp; '.'#END: '.date('Y-m-d H:i:s O').'</div>';
-		//--
-		echo (string) $code_loading_stop;
-		//--
-	} else {
-		//--
-		echo '<hr>';
-		//--
-		if(($_GET['run']) AND (AppPackUtils::is_type_file('appcodepack-extra-run.php')) AND (AppPackUtils::is_type_file('appcodepack-extra-run.inc.htm'))) {
+			unset($appcodeoptimizer);
+			echo '<br><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / optimize :'.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_MODE.' ['.(string)APPCODEPACK_COMPRESS_UTILITY_TYPE.'] - '.APPCODEPACK_MARKER_OPTIMIZATIONS).' &nbsp;&nbsp;::&nbsp;&nbsp; '.'#END: '.date('Y-m-d H:i:s O').'</div>';
 			//--
-			echo '<div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'Extra TASK / '.AppPackUtils::escape_html((string)$_GET['run']).' &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').' # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'</div><hr>';
+			echo (string) $code_loading_stop;
+			//--
+		} elseif((string)$_GET['run'] == 'deploy') {
+			//--
 			echo (string) $code_loading_start;
+			//--
+			echo '<hr><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / deploy &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').'<i><br> # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'<br> # AppID-Hash: '.APPCODEPACK_APP_HASH_ID.'<br> # Release Server Deploy URL(s): '.AppPackUtils::escape_html((string)APPCODEPACK_APP_UNPACK_URL.' ['.(string)APPCODEPACK_APP_UNPACK_USER.']').'</i></div><hr>';
+			AppPackUtils::InstantFlush();
+			//--
+			if(((string)APPCODEPACK_APP_UNPACK_URL != '') AND ((string)APPCODEPACK_APP_UNPACK_USER != '') AND ((string)APPCODEPACK_APP_UNPACK_PASSWORD != '')) {
+				//--
+				if(
+					((string)trim((string)$_POST['netarch_package']) != '') AND
+					(((string)trim((string)$_POST['netarch_deploy_url']) != '') AND (strpos((string)APPCODEPACK_APP_UNPACK_URL, (string)$_POST['netarch_deploy_url']) !== false)) AND
+					((string)substr((string)$_POST['netarch_package'], -10, 10) == '.z-netarch') AND
+					(((string)substr((string)$_POST['netarch_deploy_url'], 0, 7) == 'http://') OR ((string)substr((string)$_POST['netarch_deploy_url'], 0, 8) == 'https://')) AND
+					(AppPackUtils::check_if_safe_path((string)$_POST['netarch_package'])) AND
+					(AppPackUtils::is_type_file((string)$_POST['netarch_package']))
+				) {
+					$browser = AppPackUtils::browse_url(
+						(string) $_POST['netarch_deploy_url'], // url
+						'POST', // method
+						(string) APPCODEPACK_APP_UNPACK_USER, // user
+						(string) base64_decode((string)APPCODEPACK_APP_UNPACK_PASSWORD), // pass
+						[ // cookies
+							'AppCodeRemoteVersion' => (string) APPCODEPACK_VERSION
+						],
+						[ // post vars
+							'remote' 		=> 'appcodepack', // hide buttons
+							'run' 			=> 'deploy',
+							'appid' 		=> (string) APPCODEPACK_APP_ID,
+							'apphashid' 	=> (string) APPCODEPACK_APP_HASH_ID,
+							'remoteinfo' 	=> [
+								'url' => (string) $_POST['netarch_deploy_url'],
+								'user' => (string) APPCODEPACK_APP_UNPACK_USER
+							]
+						],
+						[ // post files
+							'znetarch' 		=> [
+								'filename' 	=> (string) AppPackUtils::base_name((string)$_POST['netarch_package']),
+								'content' 	=> (string) AppPackUtils::read((string)$_POST['netarch_package'])
+							]
+						],
+						[ // raw headers
+							'Z-Application-Name: Smart.Framework:AppCodePack'
+						]
+					);
+					if(!is_array($browser)) {
+						echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'Package Deploy Failed with Code: '.(int)$browser.'.'.'</div>'."\n";
+					} else {
+						if(($browser['status'] != 1) OR ($browser['errno']) OR ($browser['ermsg']) OR ($browser['http-status'] != 200)) {
+							echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'Package Deploy Failed with ERRORS: '.AppPackUtils::escape_html($browser['errno']).' # '.AppPackUtils::escape_html($browser['ermsg']).' / HTTP Status Code '.(int)$browser['http-status'].'</div>'."\n";
+						} else {
+							echo "\n".'<div style="padding:7px; line-height:1.125em; font-weight:bold; color: #FFFFFF; background:#009ACE; border:1px solid #0089BD; border-radius:6px; box-shadow: 2px 2px 3px #D2D2D2;">'.'Deploy Result'.' # HTTP Status Code: '.(int)$browser['http-status'].'</div>';
+						} //end if else
+					} //end if else
+					echo '<div style="margin-top:5px; padding:7px; line-height:1.125em; font-size:1.25rem; font-weight:bold; text-align:center; background:#778899; color:#FFFFFF; border-radius:5px;">Selected Release Server URL: `'.AppPackUtils::escape_html((string)$_POST['netarch_deploy_url']).'`</div><br><div align="center"><iframe name="UnpackDeployOnServerResponseSandBox" id="UnpackDeployOnServerResponseSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:80vw; min-width:920px; min-height:50vh; height:max-content; border:1px solid #CCCCCC;" srcdoc="'.AppPackUtils::escape_html($browser['http-body']).'" sandbox></iframe></div>';
+					unset($browser);
+				} else {
+					echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'Invalid/Empty Release Package Selected or Invalid/Empty Release Server URL Selected.'.'</div>'."\n";
+				} //end if else
+			} else {
+				echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'The Release Server Deploy URL and Authentication Credentials must be non-empty (APPCODEPACK_APP_UNPACK_URL / APPCODEPACK_APP_UNPACK_USER / APPCODEPACK_APP_UNPACK_PASSWORD).'.'</div>'."\n";
+			} //end if else
+			//--
+			echo '<br><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / deploy &nbsp;&nbsp;::&nbsp;&nbsp; # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).' &nbsp;&nbsp;::&nbsp;&nbsp; '.'#END: '.date('Y-m-d H:i:s O').'</div>';
+			//--
+			echo (string) $code_loading_stop;
+			//--
+		} elseif((string)$_GET['run'] == 'pack') {
+			//--
+			echo (string) $code_loading_start;
+			//--
+			echo '<hr><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / pack &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').' # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'</div><hr>';
+			AppPackUtils::InstantFlush();
+			$date_iso_arch = (string) date('Y-m-d H:i:s');
+			$date_arch = (string) date('Ymd-His', strtotime($date_iso_arch));
+			$name_arch = AppPackUtils::safe_filename('appcode-package_'.$date_arch.'.z-netarch');
+			if((string)APPCODEPACK_APP_ID != '-----UNDEF-----') {
+				$name_arch = (string) AppPackUtils::safe_filename((string)APPCODEPACK_APP_ID.'__'.$name_arch);
+			} //end if
+			$the_archdir = AppPackUtils::safe_pathname('#---APPCODE-PACKAGES---#');
+			$the_archname = '';
+			$the_archpath = '';
+			//--
+			if((AppPackUtils::is_type_file('---AppCodePack-Optimizations-Done---.log')) AND (!AppPackUtils::is_type_file('---AppCodePack-Package---.log')) AND (AppPackUtils::is_type_dir((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR))) {
+				AppPackUtils::write('---AppCodePack-Package---.log', ''); // must be initialized
+				$arch = new AppNetPackager();
+				$arch->start((string)$the_archdir, (string)$name_arch, (string)$date_iso_arch, (string)$_GET['comment']);
+				$the_archname = (string) $arch->get_archive_file_name();
+				$the_archpath = (string) $arch->get_archive_file_path();
+				echo '<br><div><h3 style="display:inline;">Creating the Package Arch. File: '.AppPackUtils::escape_html($the_archname).'&nbsp;&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;./'.AppPackUtils::escape_html($the_archdir).'</h3></div>';
+				AppPackUtils::InstantFlush();
+				$arch->pack_dir((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR);
+				$err_arch = (string) $arch->save();
+				if(!$err_arch) {
+					echo '<div><h3 style="display:inline; color:#666699!important;">Checking the Package Integrity: '.AppPackUtils::escape_html($the_archname).'&nbsp;&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;'.'@MEMORY'.'</h3></div>';
+					if((bool)APPCODEPACK_UNPACK_TESTONLY !== true) {
+						echo '<div><h3 style="display:inline; color:#FF9900!important;">Testing the Package Unpacking: '.AppPackUtils::escape_html($the_archname).'&nbsp;&nbsp;&nbsp;&raquo;&nbsp;&nbsp;&nbsp;./'.AppPackUtils::escape_html(APPCODEPACK_APP_ID).'</h3></div>';
+					} //end if
+					AppPackUtils::InstantFlush();
+					$err_arch = (string) AppPackUtils::unpack_netarchive(
+						(string) AppPackUtils::read((string)$the_archpath),
+						(bool) APPCODEPACK_UNPACK_TESTONLY
+					);
+				} //end if
+				unset($arch);
+			} else {
+				$err_arch = 'Either the Package has already been created or the Optimizations Folder ['.(string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR.'] does not exists. Clear and run the Optimizations first ...';
+			} //end if else
+			echo '<br>';
 			AppPackUtils::InstantFlush();
 			sleep(1);
-			echo (string) AppPackUtils::pack_run_extra_script((string)$_GET['run'], 'appcodepack-extra-run.php');
+			if((string)$err_arch != '') {
+				echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.@nl2br(AppPackUtils::escape_html($err_arch), false).'</div><br>'."\n";
+			} else {
+				AppPackUtils::write('---AppCodePack-Package---.log', (string)$the_archname);
+				echo "\n".'<div title="Status / OK" style="background:#98C726; color:#000000; font-weight:bold; padding:10px; border-radius:5px; line-height:25px;"><h3>[ &nbsp; STATUS: OK &nbsp; &radic; ]</h3>';
+				if((string)APPCODEPACK_APP_ID != '-----UNDEF-----') {
+					echo 'AppID: '.AppPackUtils::escape_html(APPCODEPACK_APP_ID).'<br>'."\n";
+					if((string)APPCODEPACK_APP_HASH_ID != '') {
+						echo 'AppID-Hash: '.AppPackUtils::escape_html(APPCODEPACK_APP_HASH_ID).'<br>'."\n";
+					} //end if
+					$the_archsize = 0;
+					if(AppPackUtils::is_type_file($the_archpath)) {
+						$the_archsize = AppPackUtils::get_file_size($the_archpath);
+					} //end if
+					echo 'Package: <a download="'.AppPackUtils::escape_html($the_archname).'" href="'.AppPackUtils::escape_html(rawurlencode($the_archdir).'/'.rawurlencode($the_archname)).'">'.AppPackUtils::escape_html($the_archname).'</a>'.'&nbsp;&nbsp;&nbsp;['.AppPackUtils::pretty_print_bytes($the_archsize, 2, '&nbsp;').']'.'<br>'."\n";
+					echo 'Comment: '.AppPackUtils::escape_html((string)$_GET['comment']).'<br>'."\n";
+					echo '<br>'."\n";
+				} //end if
+				echo '</div>'."\n";
+				echo "\n".'<div title="Status / Log" style="background:#EFEFEF; color:#000000; padding:5px; border-radius:5px;"><b>[ Log ]</b><hr>Release Package File ['.number_format((int)$the_archsize, 0, '.', ',').' bytes]'.': '.AppPackUtils::escape_html($the_archpath).'</div>'."\n";
+				echo '<!-- {APPCODEPACK:[@SUCCESS(Task:Pack)@]} -->';
+			} //end if
+			echo '<br><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / pack &nbsp;&nbsp;::&nbsp;&nbsp; '.'#END: '.date('Y-m-d H:i:s O').'</div>';
+			//--
+			echo (string) $code_loading_stop;
+			//--
+		} elseif((string)$_GET['run'] == 'cleanup') {
+			//--
+			echo (string) $code_loading_start;
+			//--
+			echo '<hr><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / cleanup &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').' # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'</div><hr>';
+			AppPackUtils::InstantFlush();
+			//--
+			$appcode_err_cleanup = '';
+			//--
+			$the_archdir = AppPackUtils::safe_pathname('#---APPCODE-PACKAGES---#');
+			if(AppPackUtils::is_type_dir((string)$the_archdir)) {
+				$appcode_cleanup = AppPackUtils::dir_delete((string)$the_archdir, true);
+				if((string)$appcode_cleanup != '1') {
+					$appcode_err_cleanup = 'ERROR: Failed to remove the Packages Folder: '.(string)$the_archdir;
+				} elseif(AppPackUtils::is_type_dir((string)$the_archdir)) {
+					$appcode_err_cleanup = 'ERROR: The Packages Folder was not deleted: '.(string)$the_archdir;
+				} //end if
+			} //end if
+			//--
+			if(AppPackUtils::is_type_dir((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR)) {
+				$appcode_cleanup = AppPackUtils::dir_delete((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR, true);
+				if((string)$appcode_cleanup != '1') {
+					$appcode_err_cleanup = 'ERROR: Failed to remove the Optimizations Folder: '.(string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR;
+				} elseif(AppPackUtils::is_type_dir((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR)) {
+					$appcode_err_cleanup = 'ERROR: The Optimizations Folder was not deleted: '.(string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR;
+				} //end if
+			} //end if
+			//--
+			if(AppPackUtils::is_type_file('---AppCodePack-Package---.log')) {
+				AppPackUtils::delete('---AppCodePack-Package---.log');
+				if(AppPackUtils::path_exists('---AppCodePack-Package---.log')) {
+					$appcode_err_cleanup = 'ERROR: The Optimizations Package Log File could not be removed ...';
+				} //end if
+			} //end if
+			if(AppPackUtils::is_type_file('---AppCodePack-Optimizations-Done---.log')) {
+				AppPackUtils::delete('---AppCodePack-Optimizations-Done---.log');
+				if(AppPackUtils::path_exists('---AppCodePack-Optimizations-Done---.log')) {
+					$appcode_err_cleanup = 'ERROR: The Optimizations Done Log File could not be removed ...';
+				} //end if
+			} //end if
+			if(AppPackUtils::is_type_file('---AppCodePack-Result---.log')) {
+				AppPackUtils::delete('---AppCodePack-Result---.log');
+				if(AppPackUtils::path_exists('---AppCodePack-Result---.log')) {
+					$appcode_err_cleanup = 'ERROR: The Optimizations Results Log File could not be removed ...';
+				} //end if
+			} //end if
+			//--
+			sleep(3);
+			//--
+			if($appcode_err_cleanup) {
+				echo "\n".'<br><br><div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.@nl2br(AppPackUtils::escape_html($appcode_err_cleanup), false).'</div>'."\n";
+			} else {
+				echo "\n".'<div title="Status / OK" style="background:#98C726; color:#000000; font-weight:bold; padding:5px; border-radius:5px;"><h3>[ &nbsp; STATUS: OK &nbsp; &radic; &nbsp; ]</h3></div>'."\n";
+				echo '<!-- {APPCODEPACK:[@SUCCESS(Task:CleanUp)@]} -->';
+			} //end if else
+			echo '<br><div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'TASK / cleanup &nbsp;&nbsp;::&nbsp;&nbsp; '.'#END: '.date('Y-m-d H:i:s O').'</div>';
+			//--
 			echo (string) $code_loading_stop;
 			//--
 		} else {
 			//--
-			if(AppPackUtils::path_exists('---AppCodePack-RunExtra---.log')) {
-				AppPackUtils::delete('---AppCodePack-RunExtra---.log');
-			} //end if
+			echo '<hr>';
 			//--
-			if((string)APPCODEPACK_APP_ID != '-----UNDEF-----') {
-				echo '<div style="margin-bottom:10px; padding:7px; line-height:1.125em; font-weight:bold; color: #FFFFFF; background:#009ACE; border:1px solid #0089BD; border-radius:6px; box-shadow: 2px 2px 3px #D2D2D2;"><table>';
-				echo '<tr valign="top"><td>Managed AppID: </td><td> &nbsp; &nbsp; </td><td>'.AppPackUtils::escape_html(APPCODEPACK_APP_ID).'</td></tr>';
-				if((string)APPCODEPACK_APP_HASH_ID != '') {
-					echo '<tr valign="top"><td>Secret AppID-Hash: </td><td> &nbsp; &nbsp; </td><td>'.AppPackUtils::escape_html(APPCODEPACK_APP_HASH_ID).'</td></tr>';
-				} //end if
-				if(((string)APPCODEPACK_APP_UNPACK_URL != '') AND ((string)APPCODEPACK_APP_UNPACK_USER != '') AND ((string)APPCODEPACK_APP_UNPACK_PASSWORD != '')) {
-					echo '<tr valign="top"><td>Release Server Deploy URL(s): </td><td> &nbsp; &nbsp; </td><td>'.'['.AppPackUtils::escape_html(APPCODEPACK_APP_UNPACK_USER).':*****'.'] @ '.AppPackUtils::escape_html(APPCODEPACK_APP_UNPACK_URL).'</td></tr>';
-				} //end if
-				echo '</table></div>';
-			} //end if
-			echo '<div style="padding:4px; background:#D3E397; font-weight:bold;">'.'<h2>Select a TASK to RUN from the list below</h2></div><hr>';
-			AppPackUtils::InstantFlush();
-			echo '<div style="font-size:1.25em!important;">'."\n";
-			echo '<select id="task-run-sel" style="font-size:1em!important; max-width:750px;">'."\n";
-			echo '<option value="">--- NO TASK Selected ---</option>'."\n";
-			echo '<optgroup label="AppCode.Pack TASKS: RELEASE">'."\n";
-			if(!AppPackUtils::path_exists((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR)) {
-				echo '<option value="optimize" title="'.AppPackUtils::escape_html((string)APPCODEPACK_STRATEGY).'">RELEASE: ['.AppPackUtils::escape_html((string)APPCODEPACK_COMPRESS_UTILITY_TYPE).'] OPTIMIZE Source Code '.APPCODEPACK_MARKER_OPTIMIZATIONS.' @ Folders: ['.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_SOURCE_DIR).' -&gt; '.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR).']'.'</option>'."\n";
+			if(($_GET['run']) AND (AppPackUtils::is_type_file('appcodepack-extra-run.php')) AND (AppPackUtils::is_type_file('appcodepack-extra-run.inc.htm'))) {
+				//--
+				echo '<div style="padding:4px; background:#DDEEFF; font-weight:bold;">'.'Extra TASK / '.AppPackUtils::escape_html((string)$_GET['run']).' &nbsp;&nbsp;::&nbsp;&nbsp; '.'#START: '.date('Y-m-d H:i:s O').' # App-ID: '.AppPackUtils::escape_html((string)APPCODEPACK_APP_ID).'</div><hr>';
+				echo (string) $code_loading_start;
+				AppPackUtils::InstantFlush();
+				sleep(1);
+				echo (string) self::pack_run_extra_script((string)$_GET['run'], 'appcodepack-extra-run.php');
+				echo (string) $code_loading_stop;
+				//--
 			} else {
-				if(((string)APPCODEPACK_APP_ID != '-----UNDEF-----') AND (!AppPackUtils::path_exists('---AppCodePack-Package---.log')) AND (strpos((string)AppPackUtils::read('---AppCodePack-Result---.log'), '##### Processing DONE / '.APPCODEPACK_STRATEGY.' - '.APPCODEPACK_MARKER_OPTIMIZATIONS.' :') === 0)) {
-					echo '<option value="pack">RELEASE: PACKAGE :: Optimizations Folder: ['.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR).']</option>'."\n";
+				//--
+				if(AppPackUtils::path_exists('---AppCodePack-RunExtra---.log')) {
+					AppPackUtils::delete('---AppCodePack-RunExtra---.log');
 				} //end if
-				echo '<option value="cleanup">RELEASE: CLEANUP :: Optimizations Folder: ['.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR).']</option>'."\n";
-			} //end if
-			echo '</optgroup>'."\n";
-			if((AppPackUtils::is_type_file('appcodepack-extra-run.php')) AND (AppPackUtils::is_type_file('appcodepack-extra-run.inc.htm'))) {
-				echo AppPackUtils::read('appcodepack-extra-run.inc.htm');
-			} //end if
-			echo '</select> &nbsp; ';
-			echo '<button style="padding: 3px 12px 3px 12px !important; font-size:1em !important; font-weight:bold !important; color:#FFFFFF !important; background-color:#4B73A4 !important; border:1px solid #3C5A98 !important; border-radius:3px !important; cursor: pointer !important;" onClick="var selTask = \'\'; try { selTask = document.getElementById(\'task-run-sel\').value; } catch(err){} if(selTask){ if(selTask == \'pack\') { var comment = prompt(\'Enter a Package Release Info\', \'\'); self.location = \'?run=\' + selTask + \'&comment=\' + encodeURIComponent(comment ? String(comment) : \'\'); } else { self.location = \'?run=\' + selTask; } } else { alert(\'No Task Selected ...\'); }" title="Click this button to run the selected task from the near list">Run the Selected TASK</button>'."\n";
-			echo '</div>';
-			//--
-			if(AppPackUtils::path_exists('---AppCodePack-Package---.log')) {
-				$the_archdir = AppPackUtils::safe_pathname('#---APPCODE-PACKAGES---#');
-				if(AppPackUtils::is_type_dir($the_archdir)) {
-					clearstatcache(true, (string)$the_archdir);
-					$arr_dir_packs = scandir((string)$the_archdir); // don't make it array, can be false
-					if(($arr_dir_packs !== false) AND (AppPackUtils::array_size($arr_dir_packs) > 0)) {
-						echo '<form method="post" action="?run=deploy">'."\n";
-						echo '<br><hr><div style="background:#ECECEC; color:#333333; border-radius:5px; padding:8px; margin-bottom:5px; font-weight:bold;"><h2>List of available Release Packages:</h2>';
-						$pkcnt = 0;
-						for($i=0; $i<AppPackUtils::array_size($arr_dir_packs); $i++) {
-							if(((string)trim((string)$arr_dir_packs[$i]) != '') AND ((string)$arr_dir_packs[$i] != '.') AND ((string)$arr_dir_packs[$i] != '..')) { // fix ok
-								if(AppPackUtils::check_if_safe_file_or_dir_name((string)$arr_dir_packs[$i])) {
-									if(AppPackUtils::check_if_safe_path((string)$the_archdir.'/'.$arr_dir_packs[$i])) {
-										if(AppPackUtils::is_type_file($the_archdir.'/'.$arr_dir_packs[$i])) {
-											$pkcnt++;
-											echo '<input type="radio" name="netarch_package" value="'.AppPackUtils::escape_html($the_archdir.'/'.$arr_dir_packs[$i]).'">&nbsp;Package #'.(int)$pkcnt.': <a download="'.AppPackUtils::escape_html($arr_dir_packs[$i]).'" href="'.AppPackUtils::escape_html(rawurlencode($the_archdir).'/'.rawurlencode((string)$arr_dir_packs[$i])).'">'.AppPackUtils::escape_html($arr_dir_packs[$i]).'</a>'.'&nbsp;&nbsp;&nbsp;['.AppPackUtils::pretty_print_bytes(AppPackUtils::get_file_size($the_archdir.'/'.$arr_dir_packs[$i]), 2, '&nbsp;').'] @ '.AppPackUtils::escape_html(date('Y-m-d H:i:s O', (int)AppPackUtils::get_file_mtime($the_archdir.'/'.$arr_dir_packs[$i]))).'<br>'."\n";
+				//--
+				if((string)APPCODEPACK_APP_ID != '-----UNDEF-----') {
+					echo '<div style="margin-bottom:10px; padding:7px; line-height:1.125em; font-weight:bold; color: #FFFFFF; background:#009ACE; border:1px solid #0089BD; border-radius:6px; box-shadow: 2px 2px 3px #D2D2D2;"><table>';
+					echo '<tr valign="top"><td>Managed AppID: </td><td> &nbsp; &nbsp; </td><td>'.AppPackUtils::escape_html(APPCODEPACK_APP_ID).'</td></tr>';
+					if((string)APPCODEPACK_APP_HASH_ID != '') {
+						echo '<tr valign="top"><td>Secret AppID-Hash: </td><td> &nbsp; &nbsp; </td><td>'.AppPackUtils::escape_html(APPCODEPACK_APP_HASH_ID).'</td></tr>';
+					} //end if
+					if(((string)APPCODEPACK_APP_UNPACK_URL != '') AND ((string)APPCODEPACK_APP_UNPACK_USER != '') AND ((string)APPCODEPACK_APP_UNPACK_PASSWORD != '')) {
+						echo '<tr valign="top"><td>Release Server Deploy URL(s): </td><td> &nbsp; &nbsp; </td><td>'.'['.AppPackUtils::escape_html(APPCODEPACK_APP_UNPACK_USER).':*****'.'] @ '.AppPackUtils::escape_html(APPCODEPACK_APP_UNPACK_URL).'</td></tr>';
+					} //end if
+					echo '</table></div>';
+				} //end if
+				echo '<div style="padding:4px; background:#D3E397; font-weight:bold;">'.'<h2>Select a TASK to RUN from the list below</h2></div><hr>';
+				AppPackUtils::InstantFlush();
+				echo '<div style="font-size:1.25em!important;">'."\n";
+				echo '<select id="task-run-sel" style="font-size:1em!important; max-width:750px;">'."\n";
+				echo '<option value="">--- NO TASK Selected ---</option>'."\n";
+				echo '<optgroup label="AppCode.Pack TASKS: RELEASE">'."\n";
+				if(!AppPackUtils::path_exists((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR)) {
+					echo '<option value="optimize" title="'.AppPackUtils::escape_html((string)APPCODEPACK_STRATEGY).'">RELEASE: ['.AppPackUtils::escape_html((string)APPCODEPACK_COMPRESS_UTILITY_TYPE).'] OPTIMIZE Source Code '.APPCODEPACK_MARKER_OPTIMIZATIONS.' @ Folders: ['.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_SOURCE_DIR).' -&gt; '.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR).']'.'</option>'."\n";
+				} else {
+					if(((string)APPCODEPACK_APP_ID != '-----UNDEF-----') AND (!AppPackUtils::path_exists('---AppCodePack-Package---.log')) AND (strpos((string)AppPackUtils::read('---AppCodePack-Result---.log'), '##### Processing DONE / '.APPCODEPACK_STRATEGY.' - '.APPCODEPACK_MARKER_OPTIMIZATIONS.' :') === 0)) {
+						echo '<option value="pack">RELEASE: PACKAGE :: Optimizations Folder: ['.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR).']</option>'."\n";
+					} //end if
+					echo '<option value="cleanup">RELEASE: CLEANUP :: Optimizations Folder: ['.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_OPTIMIZATIONS_DIR).']</option>'."\n";
+				} //end if
+				echo '</optgroup>'."\n";
+				if((AppPackUtils::is_type_file('appcodepack-extra-run.php')) AND (AppPackUtils::is_type_file('appcodepack-extra-run.inc.htm'))) {
+					echo AppPackUtils::read('appcodepack-extra-run.inc.htm');
+				} //end if
+				echo '</select> &nbsp; ';
+				echo '<button style="padding: 3px 12px 3px 12px !important; font-size:1em !important; font-weight:bold !important; color:#FFFFFF !important; background-color:#4B73A4 !important; border:1px solid #3C5A98 !important; border-radius:3px !important; cursor: pointer !important;" onClick="var selTask = \'\'; try { selTask = document.getElementById(\'task-run-sel\').value; } catch(err){} if(selTask){ if(selTask == \'pack\') { var comment = prompt(\'Enter a Package Release Info\', \'\'); self.location = \'?run=\' + selTask + \'&comment=\' + encodeURIComponent(comment ? String(comment) : \'\'); } else { self.location = \'?run=\' + selTask; } } else { alert(\'No Task Selected ...\'); }" title="Click this button to run the selected task from the near list">Run the Selected TASK</button>'."\n";
+				echo '</div>';
+				//--
+				if(AppPackUtils::path_exists('---AppCodePack-Package---.log')) {
+					$the_archdir = AppPackUtils::safe_pathname('#---APPCODE-PACKAGES---#');
+					if(AppPackUtils::is_type_dir($the_archdir)) {
+						clearstatcache(true, (string)$the_archdir);
+						$arr_dir_packs = scandir((string)$the_archdir); // don't make it array, can be false
+						if(($arr_dir_packs !== false) AND (AppPackUtils::array_size($arr_dir_packs) > 0)) {
+							echo '<form method="post" action="?run=deploy">'."\n";
+							echo '<br><hr><div style="background:#ECECEC; color:#333333; border-radius:5px; padding:8px; margin-bottom:5px; font-weight:bold;"><h2>List of available Release Packages:</h2>';
+							$pkcnt = 0;
+							for($i=0; $i<AppPackUtils::array_size($arr_dir_packs); $i++) {
+								if(((string)trim((string)$arr_dir_packs[$i]) != '') AND ((string)$arr_dir_packs[$i] != '.') AND ((string)$arr_dir_packs[$i] != '..')) { // fix ok
+									if(AppPackUtils::check_if_safe_file_or_dir_name((string)$arr_dir_packs[$i])) {
+										if(AppPackUtils::check_if_safe_path((string)$the_archdir.'/'.$arr_dir_packs[$i])) {
+											if(AppPackUtils::is_type_file($the_archdir.'/'.$arr_dir_packs[$i])) {
+												$pkcnt++;
+												echo '<input type="radio" name="netarch_package" value="'.AppPackUtils::escape_html($the_archdir.'/'.$arr_dir_packs[$i]).'">&nbsp;Package #'.(int)$pkcnt.': <a download="'.AppPackUtils::escape_html($arr_dir_packs[$i]).'" href="'.AppPackUtils::escape_html(rawurlencode($the_archdir).'/'.rawurlencode((string)$arr_dir_packs[$i])).'">'.AppPackUtils::escape_html($arr_dir_packs[$i]).'</a>'.'&nbsp;&nbsp;&nbsp;['.AppPackUtils::pretty_print_bytes(AppPackUtils::get_file_size($the_archdir.'/'.$arr_dir_packs[$i]), 2, '&nbsp;').'] @ '.AppPackUtils::escape_html(date('Y-m-d H:i:s O', (int)AppPackUtils::get_file_mtime($the_archdir.'/'.$arr_dir_packs[$i]))).'<br>'."\n";
+											} //end if
 										} //end if
 									} //end if
 								} //end if
-							} //end if
-						} //end for
-						$arr_pack_urls = (string) trim((string)APPCODEPACK_APP_UNPACK_URL);
-						if(((string)$arr_pack_urls != '') AND ((string)APPCODEPACK_APP_UNPACK_USER != '') AND ((string)APPCODEPACK_APP_UNPACK_PASSWORD != '')) {
-							$arr_pack_urls = (array) explode('|', (string)$arr_pack_urls);
-							echo '<br><div><select name="netarch_deploy_url" style="min-width:300px;"><option value="">----- Select a Release Server URL for this Package (from this list) -----</option>'."\n";
-							for($z=0; $z<count($arr_pack_urls); $z++) {
-								$arr_pack_urls[$z] = (string) trim((string)$arr_pack_urls[$z]);
-								if((string)$arr_pack_urls[$z] != '') {
-									echo ' <option value="'.AppPackUtils::escape_html((string)$arr_pack_urls[$z]).'">'.'Release Server @'.($z+1).'. '.AppPackUtils::escape_html((string)$arr_pack_urls[$z]).'</option>'."\n";
-								} //end if
 							} //end for
-							echo '</select></div>'."\n";
-							echo '<br><button type="submit" style="padding: 3px 12px 3px 12px !important; font-size:1em !important; font-weight:bold !important; color:#FFFFFF !important; background-color:#FF9900 !important; border:1px solid #FFAA00 !important; border-radius:3px !important; cursor: pointer !important;" title="Click this button to proceed">Deploy the selected Package and Unpack the Code on the selected Release Server</button><br><br>';
+							$arr_pack_urls = (string) trim((string)APPCODEPACK_APP_UNPACK_URL);
+							if(((string)$arr_pack_urls != '') AND ((string)APPCODEPACK_APP_UNPACK_USER != '') AND ((string)APPCODEPACK_APP_UNPACK_PASSWORD != '')) {
+								$arr_pack_urls = (array) explode('|', (string)$arr_pack_urls);
+								echo '<br><div><select name="netarch_deploy_url" style="min-width:300px;"><option value="">----- Select a Release Server URL for this Package (from this list) -----</option>'."\n";
+								for($z=0; $z<count($arr_pack_urls); $z++) {
+									$arr_pack_urls[$z] = (string) trim((string)$arr_pack_urls[$z]);
+									if((string)$arr_pack_urls[$z] != '') {
+										echo ' <option value="'.AppPackUtils::escape_html((string)$arr_pack_urls[$z]).'">'.'Release Server @'.($z+1).'. '.AppPackUtils::escape_html((string)$arr_pack_urls[$z]).'</option>'."\n";
+									} //end if
+								} //end for
+								echo '</select></div>'."\n";
+								echo '<br><button type="submit" style="padding: 3px 12px 3px 12px !important; font-size:1em !important; font-weight:bold !important; color:#FFFFFF !important; background-color:#FF9900 !important; border:1px solid #FFAA00 !important; border-radius:3px !important; cursor: pointer !important;" title="Click this button to proceed">Deploy the selected Package and Unpack the Code on the selected Release Server</button><br><br>';
+							} //end if
+							echo '<br></div><br>'."\n";
+							echo '</form>'."\n";
 						} //end if
-						echo '<br></div><br>'."\n";
-						echo '</form>'."\n";
 					} //end if
 				} //end if
+				//--
 			} //end if
 			//--
+		} //end if else
+		//--
+		echo '<hr><div align="right"><small style="color:#CCCCCC;">&copy; 2013-'.date('Y').' unix-world.org</small></div><br>'."\n";
+		if($_GET['run']) {
+			echo '<button style="position:fixed; top:10px; right:10px; padding: 3px 12px 3px 12px !important; font-size:1em !important; font-weight:bold !important; color:#FFFFFF !important; background-color:#4B73A4 !important; border:1px solid #3C5A98 !important; border-radius:3px !important; cursor: pointer !important;" onclick="self.location=\'?\';" title="Click this button to return to the application main index">Return to Index</button>';
+		} //end if
+		echo '</body>'."\n".'</html>';
+		AppPackUtils::InstantFlush();
+		//--
+		//=====
+
+	} //END FUNCTION
+
+
+	private static function pack_run_extra_script($task, $path_to_extra_script) {
+		//--
+		if(AppPackUtils::path_exists('---AppCodePack-RunExtra---.log')) {
+			return "\n".'<div title="Status / Warning" style="background:#FFCC00; color:#000000; font-weight:bold; padding:5px; border-radius:5px;">'.'TASK: '.AppPackUtils::escape_html((string)strtoupper((string)$task)).' / STATUS: WARNING !'.'<br>'.'<br>'.'This task has already run ...'.'</div>'."\n";
 		} //end if
 		//--
-	} //end if else
-	//--
-	echo '<hr><div align="right"><small style="color:#CCCCCC;">&copy; 2013-'.date('Y').' unix-world.org</small></div><br>'."\n";
-	if($_GET['run']) {
-		echo '<button style="position:fixed; top:10px; right:10px; padding: 3px 12px 3px 12px !important; font-size:1em !important; font-weight:bold !important; color:#FFFFFF !important; background-color:#4B73A4 !important; border:1px solid #3C5A98 !important; border-radius:3px !important; cursor: pointer !important;" onclick="self.location=\'?\';" title="Click this button to return to the application main index">Return to Index</button>';
-	} //end if
-	echo '</body>'."\n".'</html>';
-	AppPackUtils::InstantFlush();
-	//--
-	//=====
+		define('APPCODEPACK_PROCESS_EXTRA_RUN', (string)$task); // required by appcodepack-extra-run.php
+		//--
+		AppPackUtils::write(
+			'---AppCodePack-RunExtra---.log',
+			'START Processing ['.date('Y-m-d H:i:s O').'] ...'."\n".'TASK: `'.$task.'`'."\n"
+		);
+		//--
+		$task = (string) strtoupper((string)$task);
+		//--
+		$the_run_err = '';
+		$the_run_output = '';
+		ob_start();
+		try {
+			include_once((string)$path_to_extra_script); // don't suppress output errors !!
+		} catch (Exception $e) {
+			$the_run_err = (string) $e->getMessage();
+		} //end try catch
+		$the_run_output = ob_get_contents();
+		ob_end_clean();
+		//--
+		AppPackUtils::write(
+			'---AppCodePack-RunExtra---.log',
+			'END Processing ['.date('Y-m-d H:i:s O').'] ...'."\n".'ERRORS: `'.$the_run_err.'`',
+			'a'
+		);
+		//--
+		if(defined('APPCODEPACK_PROCESS_EXTRA_RUN_EXTERNAL')) {
+			//--
+			echo "\n".'<div title="Status / External" style="background:#778899; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'TASK: '.AppPackUtils::escape_html((string)strtoupper((string)$task)).' / STATUS: EXTERNAL ...'.'</div><br>'."\n";
+			return '<div align="center"><iframe name="PackRunExternalResponseSandBox" id="PackRunExternalResponseSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:96vw; min-width:920px; min-height:70vh; height:max-content; border:1px solid #CCCCCC;" src="'.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_EXTRA_RUN_EXTERNAL).'"></iframe></div><br>';
+			//--
+		} else {
+			//--
+			if($the_run_err) {
+				return "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'TASK: '.AppPackUtils::escape_html((string)strtoupper((string)$task)).' / STATUS: ERROR !'.'<br><pre>'.AppPackUtils::escape_html($the_run_err).'</pre></div>'.($the_run_output ? '<pre style="font-size:13px!important; font-weight:bold;">'.AppPackUtils::escape_html($the_run_output).'</pre>' : '')."\n";
+			} else {
+				return "\n".'<div title="Status / OK" style="background:#98C726; color:#000000; font-weight:bold; padding:5px; border-radius:5px;"><h3>[ &nbsp; '.'TASK: '.AppPackUtils::escape_html((string)strtoupper((string)$task)).' / STATUS: OK'.' &nbsp; &radic; &nbsp; ]</h3></div>'.($the_run_output ? '<pre style="font-size:13px!important; font-weight:bold;">'.AppPackUtils::escape_html($the_run_output).'</pre>' : '')."\n".'<!-- {APPCODEPACK:[@SUCCESS(Task:'.AppPackUtils::escape_html((string)strtoupper((string)$task)).')@]} -->';
+			} //end if else
+			//--
+		} //end if else
+		//--
+	} //END FUNCTION
 
-} //END FUNCTION
+
+} //END CLASS
 
 
 //=====================================================================================
@@ -2288,7 +2344,7 @@ private function conform_column($y_text) {
 final class AppPackUtils {
 
 	// ::
-	// v.20200605 {{{SYNC-CLASS-APP-PACK-UTILS}}}
+	// v.20210302 {{{SYNC-CLASS-APP-PACK-UTILS}}}
 
 	private static $cache = [];
 
@@ -3055,59 +3111,6 @@ Options -Indexes
 
 
 	//================================================================
-	// provide complete isolation of the extra run script (to avoid rewrite variables inside other functions)
-	public static function pack_run_extra_script($task, $path_to_extra_script) {
-		//--
-		if(AppPackUtils::path_exists('---AppCodePack-RunExtra---.log')) {
-			return "\n".'<div title="Status / Warning" style="background:#FFCC00; color:#000000; font-weight:bold; padding:5px; border-radius:5px;">'.'TASK: '.self::escape_html((string)strtoupper((string)$task)).' / STATUS: WARNING !'.'<br>'.'<br>'.'This task has already run ...'.'</div>'."\n";
-		} //end if
-		//--
-		define('APPCODEPACK_PROCESS_EXTRA_RUN', (string)$task); // required by appcodepack-extra-run.php
-		//--
-		AppPackUtils::write(
-			'---AppCodePack-RunExtra---.log',
-			'START Processing ['.date('Y-m-d H:i:s O').'] ...'."\n".'TASK: `'.$task.'`'."\n"
-		);
-		//--
-		$task = (string) strtoupper((string)$task);
-		//--
-		$the_run_err = '';
-		$the_run_output = '';
-		ob_start();
-		try {
-			include_once((string)$path_to_extra_script); // don't suppress output errors !!
-		} catch (Exception $e) {
-			$the_run_err = (string) $e->getMessage();
-		} //end try catch
-		$the_run_output = ob_get_contents();
-		ob_end_clean();
-		//--
-		AppPackUtils::write(
-			'---AppCodePack-RunExtra---.log',
-			'END Processing ['.date('Y-m-d H:i:s O').'] ...'."\n".'ERRORS: `'.$the_run_err.'`',
-			'a'
-		);
-		//--
-		if(defined('APPCODEPACK_PROCESS_EXTRA_RUN_EXTERNAL')) {
-			//--
-			echo "\n".'<div title="Status / External" style="background:#778899; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'TASK: '.self::escape_html((string)strtoupper((string)$task)).' / STATUS: EXTERNAL ...'.'</div><br>'."\n";
-			return '<div align="center"><iframe name="PackRunExternalResponseSandBox" id="PackRunExternalResponseSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:96vw; min-width:920px; min-height:70vh; height:max-content; border:1px solid #CCCCCC;" src="'.AppPackUtils::escape_html((string)APPCODEPACK_PROCESS_EXTRA_RUN_EXTERNAL).'"></iframe></div><br>';
-			//--
-		} else {
-			//--
-			if($the_run_err) {
-				return "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'TASK: '.self::escape_html((string)strtoupper((string)$task)).' / STATUS: ERROR !'.'<br><pre>'.self::escape_html($the_run_err).'</pre></div>'.($the_run_output ? '<pre style="font-size:13px!important; font-weight:bold;">'.self::escape_html($the_run_output).'</pre>' : '')."\n";
-			} else {
-				return "\n".'<div title="Status / OK" style="background:#98C726; color:#000000; font-weight:bold; padding:5px; border-radius:5px;"><h3>[ &nbsp; '.'TASK: '.self::escape_html((string)strtoupper((string)$task)).' / STATUS: OK'.' &nbsp; &radic; &nbsp; ]</h3></div>'.($the_run_output ? '<pre style="font-size:13px!important; font-weight:bold;">'.self::escape_html($the_run_output).'</pre>' : '')."\n".'<!-- {APPCODEPACK:[@SUCCESS(Task:'.self::escape_html((string)strtoupper((string)$task)).')@]} -->';
-			} //end if else
-			//--
-		} //end if else
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
 	public static function deaccent_fix_str_to_iso($str) {
 		//--
 		$str = (string) $str;
@@ -3404,7 +3407,7 @@ Options -Indexes
 	//================================================================
 
 
-	//##### Smart v.20200605
+	//##### Smart v.20210302
 
 
 	//================================================================
@@ -3845,25 +3848,30 @@ Options -Indexes
 	 * Creates a Safe Valid Variable Name
 	 * NOTICE: this have a special usage and must allow also 0..9 as prefix because is can be used for other purposes not just for real safe variable names, thus if real safe valid variable name must be tested later (real safe variable names cannot start with numbers ...)
 	 * NOTICE: It may return an empty string if all characters in the given variable name are invalid or invalid path sequences detected, so if empty variable name must be tested later
-	 * ALLOWED CHARS: [a-z0-9] _
+	 * ALLOWED CHARS: [a-zA-Z0-9] _
 	 *
-	 * @param STRING 		$y_name			:: Variable Name to be processed
+	 * @param STRING 		$y_name				:: Variable Name to be processed
+	 * @param BOOL 			$y_allow_upper 		:: Allow UpperCase ; *Optional* ; Default is TRUE
 	 *
-	 * @return STRING 						:: The safe variable name ; if invalid should return empty value
+	 * @return STRING 							:: The safe variable name ; if invalid should return empty value
 	 */
-	public static function safe_varname($y_name) {
-		//-- v.170920
+	public static function safe_varname($y_name, $y_allow_upper=true) {
+		//-- v.20210302
 		$y_name = (string) trim((string)$y_name); // force string and trim
 		if((string)$y_name == '') {
 			return '';
 		} //end if
 		//--
-		if(preg_match('/^[_a-z0-9]+$/', (string)$y_name)) {
+		if($y_allow_upper === false) {
+			$y_name = (string) strtolower((string)$y_name);
+		} //end if
+		//--
+		if(preg_match('/^[_a-zA-Z0-9]+$/', (string)$y_name)) {
 			return (string) self::safe_fix_invalid_filesys_names($y_name);
 		} //end if
 		//--
-		$y_name = (string) self::safe_validname($y_name, '-');
-		$y_name = (string) str_replace(array('.', '@', '-'), array('', '', ''), $y_name); // replace also . @ -
+		$y_name = (string) self::safe_filename($y_name, '-');
+		$y_name = (string) str_replace(array('-', '.', '@', '#'), '', $y_name); // replace the invalid - . @ #
 		$y_name = (string) trim($y_name);
 		//--
 		return (string) self::safe_fix_invalid_filesys_names($y_name);

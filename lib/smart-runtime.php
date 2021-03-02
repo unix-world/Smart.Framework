@@ -62,7 +62,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //--
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.7.2.1'); 	// tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.01'); 	// tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.02'); 	// tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 //--
 if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM')) {
@@ -104,7 +104,7 @@ if(!defined('SMART_FRAMEWORK_DEBUG_MODE')) {
 if(!defined('SMART_FRAMEWORK_URL_PARAM_LANGUAGE')) {
 	define('SMART_FRAMEWORK_URL_PARAM_LANGUAGE', '');
 } //end if
-if(SMART_FRAMEWORK_URL_PARAM_LANGUAGE AND (!preg_match('/^[a-z]+$/', (string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE))) {
+if(SMART_FRAMEWORK_URL_PARAM_LANGUAGE AND (!preg_match('/^[a-z]+$/', (string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE))) { // {{{SYNC-APP-URL-LANG-PARAM}}}
 	@http_response_code(500);
 	die('A required INIT constant contains invalid characters: SMART_FRAMEWORK_URL_PARAM_LANGUAGE');
 } //end if
@@ -454,7 +454,7 @@ final class SmartFrameworkSecurity {
 
 	//======================================================================
 	// Validate variable names (by default allow to register ONLY lowercase variables to avoid interfere with PHP reserved variables !! security fix !! ; allow camel case or upper is optional)
-	public static function ValidateVariableName($y_varname, $y_allow_upper_camelcase=false) {
+	public static function ValidateVariableName($y_varname, $y_allow_upper_letters=false) {
 
 		// VALIDATE INPUT VARIABLE NAMES v.20200121
 
@@ -465,7 +465,7 @@ final class SmartFrameworkSecurity {
 		//--
 		$regex_only_number = '/^[0-9_]+$/'; 		// not allowed as first character, especially the _ because $_ have a very special purpose in PHP
 		//--
-		if($y_allow_upper_camelcase === true) {
+		if($y_allow_upper_letters === true) {
 			$regex_var_name = '/^[a-zA-Z0-9_]+$/'; 	// allowed characters in a variable name (only small letters, upper letters, numbers and _ ; in PHP upper letters for variables are reserved)
 		} else {
 			$regex_var_name = '/^[a-z0-9_]+$/'; 	// allowed characters in a variable name (only small letters, numbers and _ ; in PHP upper letters for variables are reserved)
@@ -1459,35 +1459,31 @@ final class SmartFrameworkRuntime {
 				//--
 				$filter_____key = (string) $filter_____key; // force string
 				//--
-				if(substr($filter_____key, 0, 11) != 'filter_____') { // avoid collisions with the variables in this function
+				if(((string)trim((string)$filter_____key) != '') AND (SmartFrameworkSecurity::ValidateVariableName($filter_____key, true))) { // {{{SYNC-REQVARS-CAMELCASE-KEYS}}}
 					//--
-					if(((string)trim((string)$filter_____key) != '') AND (SmartFrameworkSecurity::ValidateVariableName($filter_____key, true))) { // {{{SYNC-REQVARS-CAMELCASE-KEYS}}}
+					if(is_array($filter_____val)) { // array
 						//--
-						if(is_array($filter_____val)) { // array
-							//--
-							if(self::ifDebug()) {
-								self::DebugRequestLog('#EXTRACT-FILTER-REQUEST-VAR-ARRAY:'."\n".$filter_____key.'='.print_r($filter_____val,1)."\n");
-							} //end if
-							//--
-							SmartFrameworkRegistry::setRequestVar(
-								(string) $filter_____key,
-								(array) SmartFrameworkSecurity::FilterGetPostCookieVars($filter_____val)
-							) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register an array request variable: '.$filter_____key.' @ '.$filter_____info, E_USER_WARNING);
-							//--
-						} else { // string
-							//--
-							if(self::ifDebug()) {
-								self::DebugRequestLog('#EXTRACT-FILTER-REQUEST-VAR-STRING:'."\n".$filter_____key.'='.$filter_____val."\n");
-							} //end if
-							//--
-							SmartFrameworkRegistry::setRequestVar(
-								(string) $filter_____key,
-								(string) SmartFrameworkSecurity::FilterGetPostCookieVars($filter_____val)
-							) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register a string request variable: '.$filter_____key.' @ '.$filter_____info, E_USER_WARNING);
-							//--
-						} //end if else
+						if(self::ifDebug()) {
+							self::DebugRequestLog('#EXTRACT-FILTER-REQUEST-VAR-ARRAY:'."\n".$filter_____key.'='.print_r($filter_____val,1)."\n");
+						} //end if
 						//--
-					} //end if
+						SmartFrameworkRegistry::setRequestVar(
+							(string) $filter_____key,
+							(array) SmartFrameworkSecurity::FilterGetPostCookieVars($filter_____val)
+						) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register an array request variable: '.$filter_____key.' @ '.$filter_____info, E_USER_WARNING);
+						//--
+					} else { // string
+						//--
+						if(self::ifDebug()) {
+							self::DebugRequestLog('#EXTRACT-FILTER-REQUEST-VAR-STRING:'."\n".$filter_____key.'='.$filter_____val."\n");
+						} //end if
+						//--
+						SmartFrameworkRegistry::setRequestVar(
+							(string) $filter_____key,
+							(string) SmartFrameworkSecurity::FilterGetPostCookieVars($filter_____val)
+						) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register a string request variable: '.$filter_____key.' @ '.$filter_____info, E_USER_WARNING);
+						//--
+					} //end if else
 					//--
 				} //end if
 				//--

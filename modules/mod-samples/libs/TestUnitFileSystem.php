@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200519
+ * @version 	v.20210302
  *
  */
 final class TestUnitFileSystem {
@@ -137,7 +137,8 @@ final class TestUnitFileSystem {
 				((string)\Smart::safe_filename('_a-zA-Z0-9-.@#/') !== '_a-zA-Z0-9-.@#-') OR // slash is replaced by -
 				((string)\Smart::safe_validname('_a-zA-Z0-9-.@#/') !== '_a-za-z0-9-.@-') OR // slash is replaced by - (from above)
 				((string)\Smart::safe_username('_a-zA-Z0-9-.@#/') !== 'azaz09.') OR
-				((string)\Smart::safe_varname('_a-zA-Z0-9-.@#/') !== '_azAZ09')
+				((string)\Smart::safe_varname('_a-zA-Z0-9-.@#/') !== '_azAZ09') OR
+				((string)\Smart::safe_varname('_a-zA-Z0-9-.@#/', false) !== '_azaz09')
 			) {
 				$err = 'ERROR: SAFE PATH NAME TEST ... FAILED !!!';
 			} //end if

@@ -74,7 +74,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode
- * @version     v.20201118
+ * @version     v.20210302
  * @package     @Core
  *
  */
@@ -1346,15 +1346,19 @@ final class Smart {
 	 * ALLOWED CHARS: [a-zA-Z0-9] _
 	 *
 	 * @param STRING 		$y_name				:: Variable Name to be processed
-	 * @param BOOL 			$y_allow_upper 		:: Allow UpperCase ; *Optional* ; Default is FALSE
+	 * @param BOOL 			$y_allow_upper 		:: Allow UpperCase ; *Optional* ; Default is TRUE
 	 *
 	 * @return STRING 							:: The safe variable name ; if invalid should return empty value
 	 */
-	public static function safe_varname(string $y_name, bool $y_allow_upper=false) {
-		//-- v.20200121
+	public static function safe_varname(string $y_name, bool $y_allow_upper=true) {
+		//-- v.20210302
 		$y_name = (string) trim((string)$y_name); // force string and trim
 		if((string)$y_name == '') {
 			return '';
+		} //end if
+		//--
+		if($y_allow_upper === false) {
+			$y_name = (string) strtolower((string)$y_name);
 		} //end if
 		//--
 		if(preg_match('/^[_a-zA-Z0-9]+$/', (string)$y_name)) {
