@@ -28,7 +28,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* notifications.css
 //======================================================
 
-// [REGEX-SAFE-OK]
+// [REGEX-SAFE-OK] ; [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -48,7 +48,7 @@ define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)SmartFileSystem::read('lib/
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations
- * @version 	v.20200515
+ * @version 	v.20210303
  * @package 	Application:ViewComponents
  *
  */
@@ -437,11 +437,17 @@ final class SmartComponents {
 		$matches = array();
 		preg_match('/^([0-9]+)(%|[a-z]{1,2})?$/', (string)$css_w_or_h, $matches);
 		$css_unit = 'px';
+		if(!array_key_exists(1, $matches)) {
+			$matches[1] = null;
+		} //end if
 		$css_num = (int) $matches[1];
 		if($css_num <= 0) {
 			$css_num = 1;
 		} //end if
 		$css_w_or_h = '';
+		if(!array_key_exists(2, $matches)) {
+			$matches[2] = null;
+		} //end if
 		switch((string)$matches[2]) {
 			case '%':
 			case 'vw':
@@ -533,7 +539,7 @@ final class SmartComponents {
 			'url' 	=> (string) 'http://www.php.net'
 		];
 		//-- sqlite
-		if(is_array($configs['sqlite'])) {
+		if(array_key_exists('sqlite', $configs) AND (is_array($configs['sqlite']))) {
 			$arr_powered_sside[] = [
 				'name' 	=> (string) 'SQLite Embedded Database',
 				'logo' 	=> (string) $base_url.'lib/core/img/db/sqlite-logo.svg',
@@ -541,7 +547,7 @@ final class SmartComponents {
 			];
 		} //end if
 		//-- dba
-		if(is_array($configs['dba'])) {
+		if(array_key_exists('dba', $configs) AND (is_array($configs['dba']))) {
 			$arr_powered_sside[] = [
 				'name' 	=> (string) 'DBA/GDBM Embedded DataStore ('.$configs['dba']['handler'].')',
 				'logo' 	=> (string) $base_url.'lib/core/img/db/dba-logo.svg',
@@ -549,7 +555,7 @@ final class SmartComponents {
 			];
 		} //end if
 		//-- redis
-		if(is_array($configs['redis'])) {
+		if(array_key_exists('redis', $configs) AND (is_array($configs['redis']))) {
 			$arr_powered_sside[] = [
 				'name' 	=> (string) 'Redis In-Memory Distributed Key-Value Store (Caching Data Store)',
 				'logo' 	=> (string) $base_url.'lib/core/img/db/redis-logo.svg',
@@ -557,7 +563,7 @@ final class SmartComponents {
 			];
 		} //end if
 		//-- mongodb
-		if(is_array($configs['mongodb'])) {
+		if(array_key_exists('mongodb', $configs) AND (is_array($configs['mongodb']))) {
 			$arr_powered_sside[] = [
 				'name' 	=> (string) 'MongoDB BigData Server',
 				'logo' 	=> (string) $base_url.'lib/core/img/db/mongodb-logo.svg',
@@ -565,7 +571,7 @@ final class SmartComponents {
 			];
 		} //end if
 		//-- pgsql
-		if(is_array($configs['pgsql'])) {
+		if(array_key_exists('pgsql', $configs) AND (is_array($configs['pgsql']))) {
 			$arr_powered_sside[] = [
 				'name' 	=> (string) 'PostgreSQL Database Server',
 				'logo' 	=> (string) $base_url.'lib/core/img/db/postgresql-logo.svg',
@@ -573,7 +579,7 @@ final class SmartComponents {
 			];
 		} //end if
 		//-- mysqli
-		if(is_array($configs['mysqli'])) {
+		if(array_key_exists('mysqli', $configs) AND (is_array($configs['mysqli']))) {
 			$tmp_name = (string) trim((string)$configs['mysqli']['type']);
 			$arr_powered_sside[] = [
 				'name' 	=> (string) ucfirst((string)$tmp_name).' Database Server',
@@ -612,7 +618,7 @@ final class SmartComponents {
 			for($i=0; $i<Smart::array_size($y_plugins); $i++) {
 				$tmp_arr = [];
 				if(is_array($y_plugins[$i])) {
-					if(((string)$y_plugins[$i]['name'] != '') AND ((string)$y_plugins[$i]['logo'] != '')) {
+					if(array_key_exists('name', $y_plugins[$i]) AND ((string)$y_plugins[$i]['name'] != '') AND array_key_exists('logo', $y_plugins[$i]) AND ((string)$y_plugins[$i]['logo'] != '')) {
 						$tmp_arr = [
 							'name' 	=> (string) $y_plugins[$i]['name'],
 							'logo' 	=> (string) $y_plugins[$i]['logo'],
@@ -708,6 +714,13 @@ final class SmartComponents {
 		$arr_data['auth-login-fullname'] 		= (string) SmartAuth::get_login_fullname(); 								// Auth Login FullName
 		$arr_data['auth-login-privileges'] 		= (string) SmartAuth::get_login_privileges(); 								// Auth Login Privileges
 		$arr_data['debug-mode'] 				= (string) (SmartFrameworkRuntime::ifDebug() ? 'yes' : 'no'); 				// yes | no
+		//-- PHP8 fixes (initialize all missing array keys)
+		$arr_def_keys = [ 'semaphore', 'title', 'head-meta', 'head-css', 'head-js', 'header', 'main', 'aside', 'footer' ]; 	// {{{SYNC-INIT-MTPL-DEFVARS}}}
+		for($i=0; $i<count($arr_def_keys); $i++) {
+			if(!array_key_exists((string)$arr_def_keys[$i], $arr_data)) {
+				$arr_data[(string)$arr_def_keys[$i]] = '';
+			} //end if
+		} //end for
 		//--
 		return (array) $arr_data;
 		//--
@@ -755,7 +768,7 @@ final class SmartComponents {
 		//-- special TPL vars
 		$arr_data['template-path'] 				= (string) $template_path; // current template path (ex: etc/templates/default/)
 		$arr_data['template-file'] 				= (string) $template_file; // current template file (ex: template.htm | template-modal.htm | ...)
-		//-- external TPL vars
+		//-- external TPL vars ; {{{SYNC-INIT-MTPL-DEFVARS}}}
 		$arr_data['semaphore'] 					= (string) $arr_data['semaphore']; // a general purpose conditional var
 		$arr_data['title'] 						= (string) $arr_data['title'];
 		$arr_data['head-meta'] 					= (string) $arr_data['head-meta'];

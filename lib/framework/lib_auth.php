@@ -18,6 +18,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* SmartCipherCrypto::
 //======================================================
 
+// [PHP8]
+
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -53,7 +55,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20200605
+ * @version 	v.20210303
  * @package 	@Core:Authentication
  *
  */
@@ -179,8 +181,10 @@ final class SmartAuth {
 		//--
 		$logged_in = false;
 		//--
-		if((string)self::$AuthData['USER_ID'] != '') {
-			$logged_in = true;
+		if(array_key_exists('USER_ID', self::$AuthData)) {
+			if((string)self::$AuthData['USER_ID'] != '') {
+				$logged_in = true;
+			} //end if
 		} //end if
 		//--
 		return (bool) $logged_in;
@@ -197,7 +201,11 @@ final class SmartAuth {
 	 */
 	public static function get_login_method() {
 		//--
-		return (string) self::$AuthData['USER_LOGIN_METHOD'];
+		if(array_key_exists('USER_LOGIN_METHOD', self::$AuthData)) {
+			return (string) self::$AuthData['USER_LOGIN_METHOD'];
+		} else {
+			return '';
+		} //end if else
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -211,7 +219,9 @@ final class SmartAuth {
 	 */
 	public static function get_login_password() {
 		//--
-		if((string)self::$AuthData['USER_LOGIN_PASS'] == '') {
+		if(!array_key_exists('USER_LOGIN_PASS', self::$AuthData)) {
+			return ''; // null pass
+		} elseif((string)self::$AuthData['USER_LOGIN_PASS'] == '') {
 			return ''; // empty pass
 		} else {
 			return (string) SmartCipherCrypto::decrypt('hash/sha1', (string)self::$AuthData['KEY'], (string)self::$AuthData['USER_LOGIN_PASS']);
@@ -229,7 +239,9 @@ final class SmartAuth {
 	 */
 	public static function get_login_privkey() {
 		//--
-		if((string)trim((string)self::$AuthData['USER_PRIV_KEYS']) == '') {
+		if(!array_key_exists('USER_PRIV_KEYS', self::$AuthData)) {
+			return ''; // null priv-key
+		} elseif((string)trim((string)self::$AuthData['USER_PRIV_KEYS']) == '') {
 			return ''; // empty priv-key
 		} else {
 			return (string) SmartCipherCrypto::decrypt('hash/sha1', (string)self::$AuthData['KEY'], (string)self::$AuthData['USER_PRIV_KEYS']);
@@ -274,6 +286,10 @@ final class SmartAuth {
 	 */
 	public static function get_login_id() {
 		//--
+		if(!array_key_exists('USER_ID', self::$AuthData)) {
+			return '';
+		} //end if
+		//--
 		return (string) self::$AuthData['USER_ID'];
 		//--
 	} //END FUNCTION
@@ -287,6 +303,10 @@ final class SmartAuth {
 	 * @return 	STRING		:: returns the user login email or an empty string if not set
 	 */
 	public static function get_login_email() {
+		//--
+		if(!array_key_exists('USER_EMAIL', self::$AuthData)) {
+			return '';
+		} //end if
 		//--
 		return (string) self::$AuthData['USER_EMAIL'];
 		//--
@@ -302,6 +322,10 @@ final class SmartAuth {
 	 */
 	public static function get_login_alias() {
 		//--
+		if(!array_key_exists('USER_ALIAS', self::$AuthData)) {
+			return '';
+		} //end if
+		//--
 		return (string) self::$AuthData['USER_ALIAS'];
 		//--
 	} //END FUNCTION
@@ -315,6 +339,10 @@ final class SmartAuth {
 	 * @return 	STRING		:: returns the user login full name or an empty string if not set
 	 */
 	public static function get_login_fullname() {
+		//--
+		if(!array_key_exists('USER_FULLNAME', self::$AuthData)) {
+			return '';
+		} //end if
 		//--
 		return (string) self::$AuthData['USER_FULLNAME'];
 		//--
@@ -330,6 +358,10 @@ final class SmartAuth {
 	 */
 	public static function get_login_privileges() {
 		//--
+		if(!array_key_exists('USER_PRIVILEGES', self::$AuthData)) {
+			return '';
+		} //end if
+		//--
 		return (string) self::$AuthData['USER_PRIVILEGES'];
 		//--
 	} //END FUNCTION
@@ -343,6 +375,10 @@ final class SmartAuth {
 	 * @return 	ARRAY		:: returns user login privileges as an array[privilege_one, privilege_two, ...] or an empty array if not set
 	 */
 	public static function get_login_arr_privileges() {
+		//--
+		if(!array_key_exists('USER_PRIVILEGES', self::$AuthData)) {
+			return array();
+		} //end if
 		//--
 		return (array) Smart::list_to_array((string)self::$AuthData['USER_PRIVILEGES']);
 		//--
@@ -362,9 +398,11 @@ final class SmartAuth {
 		//--
 		$have_this_privilege = false;
 		//--
-		if((string)self::$AuthData['USER_PRIVILEGES'] != '') {
-			if(stripos(self::$AuthData['USER_PRIVILEGES'], '<'.$y_privilege_to_test.'>') !== false) {
-				$have_this_privilege = true;
+		if(array_key_exists('USER_PRIVILEGES', self::$AuthData)) {
+			if((string)self::$AuthData['USER_PRIVILEGES'] != '') {
+				if(stripos(self::$AuthData['USER_PRIVILEGES'], '<'.$y_privilege_to_test.'>') !== false) {
+					$have_this_privilege = true;
+				} //end if
 			} //end if
 		} //end if
 		//--
@@ -384,8 +422,10 @@ final class SmartAuth {
 		//--
 		$login_quota = -1;
 		//--
-		if((int)self::$AuthData['USER_QUOTA'] >= 0) {
-			$login_quota = (int) self::$AuthData['USER_QUOTA'];
+		if(array_key_exists('USER_QUOTA', self::$AuthData)) {
+			if((int)self::$AuthData['USER_QUOTA'] >= 0) {
+				$login_quota = (int) self::$AuthData['USER_QUOTA'];
+			} //end if
 		} //end if
 		//--
 		return (int) $login_quota;
@@ -401,6 +441,10 @@ final class SmartAuth {
 	 * @return 	ARRAY		:: returns an array with all current user metadata
 	 */
 	public static function get_login_metadata() {
+		//--
+		if(!array_key_exists('USER_METADATA', self::$AuthData)) {
+			return array();
+		} //end if
 		//--
 		return (array) self::$AuthData['USER_METADATA'];
 		//--
@@ -418,8 +462,10 @@ final class SmartAuth {
 		//--
 		$login_realm = 'DEFAULT';
 		//--
-		if((string)self::$AuthData['USER_LOGIN_REALM'] != '') {
-			$login_realm = (string) strtoupper((string)self::$AuthData['USER_LOGIN_REALM']);
+		if(array_key_exists('USER_LOGIN_REALM', self::$AuthData)) {
+			if((string)self::$AuthData['USER_LOGIN_REALM'] != '') {
+				$login_realm = (string) strtoupper((string)self::$AuthData['USER_LOGIN_REALM']);
+			} //end if
 		} //end if
 		//--
 		return (string) $login_realm;

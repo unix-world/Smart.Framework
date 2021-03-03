@@ -23,7 +23,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // 	* SmartFrameworkRegistry::
 //======================================================
 
-// [REGEX-SAFE-OK]
+// [REGEX-SAFE-OK] ; [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils
- * @version 	v.20200719
+ * @version 	v.20210303
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -321,7 +321,7 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 		} //end if
 		//--
 		$arr_sub_templates = array();
-		if(is_array($y_arr_vars['@SUB-TEMPLATES@'])) { // if supplied then use it (preffered), never mix supplied with detection else results would be unpredictable ...
+		if(array_key_exists('@SUB-TEMPLATES@', $y_arr_vars) AND (is_array($y_arr_vars['@SUB-TEMPLATES@']))) { // if supplied then use it (preffered), never mix supplied with detection else results would be unpredictable ...
 			$arr_sub_templates = (array) $y_arr_vars['@SUB-TEMPLATES@'];
 		} else { // if not supplied, try to detect
 			$arr_sub_templates = (array) self::detect_subtemplates($mtemplate);
@@ -441,6 +441,9 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 		//--
 		$cached_key = 'read_template_file:'.$y_file_path; // {{{SYNC-TPL-DEBUG-CACHED-KEY}}}
 		if(SmartFrameworkRuntime::ifDebug()) {
+			if(!array_key_exists((string)$cached_key, self::$MkTplFCount)) {
+				self::$MkTplFCount[(string)$cached_key] = 0;
+			} //end if
 			self::$MkTplFCount[(string)$cached_key]++; // register to counter anytime is read from FileSystem
 		} //end if
 		//--
@@ -1325,7 +1328,10 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 			//	$part_uniqix 	= (string) $matches[$i][5]; // not used
 				$part_if 		= (string) $matches[$i][6];
 			//	$part_tag_else 	= (string) $matches[$i][7]; // not used
-				$part_else 		= (string) $matches[$i][8];
+				$part_else 		= '';
+				if(array_key_exists(8, $matches[$i])) {
+					$part_else 	= (string) $matches[$i][8];
+				} //end if
 				//--
 				$matches[$i] = null; // free mem
 				//--
@@ -1601,7 +1607,7 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 				//--
 				$bind_var_key 	= (string) strtoupper((string)$part_var);
 				//--
-				if(((string)$bind_var_key != '') AND (is_array($y_arr_vars[(string)$bind_var_key]))) { // if the LOOP is binded to an existing Array Variable and a non-empty KEY
+				if(((string)$bind_var_key != '') AND (array_key_exists((string)$bind_var_key, $y_arr_vars)) AND (is_array($y_arr_vars[(string)$bind_var_key]))) { // if the LOOP is binded to an existing Array Variable and a non-empty KEY
 					//--
 					if(SmartFrameworkRuntime::ifDebug()) {
 						self::$MkTplVars['%LOOP:'.$bind_var_key][] = 'Processing LOOP Syntax: '.Smart::array_size($y_arr_vars[(string)$bind_var_key]);
@@ -1696,12 +1702,12 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 									$mks_line = (string) self::replace_marker(
 										(string) $mks_line,
 										(string) $bind_var_key.'.'.'_-VAL-_'.'.'.strtoupper((string)$key),
-										(string) $val
+										(string) (is_array($val) ? '' : $val)
 									);
 									$mks_line = (string) self::replace_marker(
 										(string) $mks_line,
 										(string) $bind_var_key.'.'.strtoupper((string)$key), // a shortcut for _-VAL-_.KEY
-										(string) $val
+										(string) (is_array($val) ? '' : $val)
 									);
 								} //end foreach
 							} else {
@@ -2239,6 +2245,9 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 		} //end if
 		//--
 		if(SmartFrameworkRuntime::ifDebug()) {
+			if(!array_key_exists((string)$cached_key, self::$MkTplFCount)) {
+				self::$MkTplFCount[(string)$cached_key] = 0;
+			} //end if
 			self::$MkTplFCount[(string)$cached_key]++; // register to counter anytime is read from FileSystem
 		} //end if
 		//--

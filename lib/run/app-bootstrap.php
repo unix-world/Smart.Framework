@@ -23,6 +23,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // DO NOT MODIFY ! IT IS CUSTOMIZED FOR: Smart.Framework
 //======================================================
 
+// [PHP8]
+
 // [REGEX-SAFE-OK]
 
 //##### WARNING: #####
@@ -133,6 +135,7 @@ if(defined('SMART_FRAMEWORK_SESSION_HANDLER') AND ((string)SMART_FRAMEWORK_SESSI
  *
  * @access 		private
  * @internal
+ * @version		v.20210303
  *
  */
 function autoload__SmartFrameworkModClasses($classname) {
@@ -148,6 +151,9 @@ function autoload__SmartFrameworkModClasses($classname) {
 	} //end if
 	//--
 	$parts = (array) explode('\\', $classname);
+	if(count($parts) != 3) { // need for [0], [1] and [2]
+		return;
+	} //end if
 	//--
 	$max = (int) count($parts) - 1; // the last is the class
 	//--
@@ -186,7 +192,7 @@ function autoload__SmartFrameworkModClasses($classname) {
 	$dir = (string) $dir;
 	$file = (string) $parts[(int)$max];
 	$path = (string) $dir.$file;
-	$path = (string) trim(str_replace(array('\\', "\0"), array('', ''), $path)); // filter out null byte and backslash
+	$path = (string) trim((string)str_replace(array('\\', "\0"), array('', ''), $path)); // filter out null byte and backslash
 	//--
 	if(((string)$path == '') OR ((string)$path == '/') OR (!preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path))) {
 		return; // invalid path characters in file
@@ -218,7 +224,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // software version fo
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.170811
+ * @version 	v.20210303
  *
  */
 final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
@@ -233,7 +239,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 	// REQUIRED
 	public static function Run() {
 		//--
-		global $configs;
+		global $configs; // expose to app-custom-bootstrap.inc.php
 		//--
 		if(self::$isRunning !== false) {
 			http_response_code(500);
@@ -251,7 +257,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 	//======================================================================
 	public static function Authenticate($area) {
 		//--
-		global $configs;
+		global $configs; // expose to app-auth-*.inc.php
 		//--
 		if(self::$authCompleted !== false) {
 			http_response_code(500);
@@ -306,7 +312,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.170920
+ * @version 	v.20210303
  * @package 	Application
  *
  */
@@ -332,7 +338,10 @@ final class SmartAppInfo implements SmartInterfaceAppInfo {
 			return false;
 		} //end if
 		//--
-		$test_cache = (string) self::$cache['TestIfTemplateExists:'.$y_template_name];
+		$test_cache = '';
+		if(array_key_exists((string)'TestIfTemplateExists:'.$y_template_name, self::$cache)) {
+			$test_cache = (string) self::$cache['TestIfTemplateExists:'.$y_template_name];
+		} //end if
 		//--
 		if((string)$test_cache != '') { // get cached test
 			//--
@@ -375,7 +384,10 @@ final class SmartAppInfo implements SmartInterfaceAppInfo {
 			return false;
 		} //end if
 		//--
-		$test_cache = (string) self::$cache['TestIfModuleExists:'.$y_module_name];
+		$test_cache = '';
+		if(array_key_exists((string)'TestIfModuleExists:'.$y_module_name, self::$cache)) {
+			$test_cache = (string) self::$cache['TestIfModuleExists:'.$y_module_name];
+		} //end if
 		//--
 		if((string)$test_cache != '') { // get cached test
 			//--

@@ -17,6 +17,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // DEPENDS-EXT: PHP MongoDB / PECL (v.1.1.0 or later)
 //======================================================
 
+// [PHP8]
+
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -50,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart
- * @version 	v.20200720
+ * @version 	v.20210303
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		\Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -1260,7 +1262,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		//--
 
 		//--
-		if(is_object(SmartFrameworkRegistry::$Connections['mongodb'][(string)$this->connex_key])) {
+		if(is_array(SmartFrameworkRegistry::$Connections) AND array_key_exists('mongodb', SmartFrameworkRegistry::$Connections) AND is_array(SmartFrameworkRegistry::$Connections['mongodb']) AND is_object(SmartFrameworkRegistry::$Connections['mongodb'][(string)$this->connex_key])) {
 			//--
 			$this->mongodbclient = &SmartFrameworkRegistry::$Connections['mongodb'][(string)$this->connex_key];
 			$this->connected = true;

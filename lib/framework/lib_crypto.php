@@ -23,6 +23,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* Returned string is Upper Bin2Hex
 //======================================================
 
+// [PHP8]
+
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -46,7 +48,7 @@ if(!function_exists('hash_algos')) {
  *
  * @access      PUBLIC
  * @depends     PHP hash_algos() / hash()
- * @version     v.20200424
+ * @version     v.20210303
  * @package     @Core:Crypto
  *
  */
@@ -230,7 +232,7 @@ final class SmartHashCrypto {
 	//==============================================================
 	private static function algos() {
 		//--
-		if(!is_array(self::$cache['algos'])) {
+		if((!array_key_exists('algos', self::$cache)) OR (!is_array(self::$cache['algos']))) {
 			self::$cache['algos'] = (array) hash_algos();
 		} //end if else
 		//--
@@ -756,12 +758,22 @@ final class SmartCryptoCipherBlowfishCBC {
 		$len = (int) strlen((string)$plainText);
 		$plainText .= str_repeat(chr(0), (8 - ($len % 8)) % 8);
 		//list(, $Xl, $Xr) = unpack('N2', substr($plainText, 0, 8) ^ $this->_iv);
-		list($kk, $Xl, $Xr) = unpack('N2', substr($plainText, 0, 8) ^ $this->_iv); // FIX to be compatible with the upcoming PHP 7
+		$arx = unpack('N2', substr($plainText, 0, 8) ^ $this->_iv);
+		if(!array_key_exists(0, $arx)) {
+			$arx[0] = null; // fix for PHP8
+		} //end if
+		list($kk, $Xl, $Xr) = $arx; // FIX to be compatible with the upcoming PHP 7
+		$arx = null;
 		$this->_encipher($Xl, $Xr);
 		$cipherText .= pack('N2', $Xl, $Xr);
 		for($i = 8; $i < $len; $i += 8) {
 			//list(, $Xl, $Xr) = unpack('N2', substr($plainText, $i, 8) ^ substr($cipherText, $i - 8, 8));
-			list($kk, $Xl, $Xr) = unpack('N2', substr($plainText, $i, 8) ^ substr($cipherText, $i - 8, 8)); // FIX to be compatible with the upcoming PHP 7
+			$arx = unpack('N2', substr($plainText, $i, 8) ^ substr($cipherText, $i - 8, 8));
+			if(!array_key_exists(0, $arx)) {
+				$arx[0] = null; // fix for PHP8
+			} //end if
+			list($kk, $Xl, $Xr) = $arx; // FIX to be compatible with the upcoming PHP 7
+			$arx = null;
 			$this->_encipher($Xl, $Xr);
 			$cipherText .= pack('N2', $Xl, $Xr);
 		} //end for
@@ -797,12 +809,22 @@ final class SmartCryptoCipherBlowfishCBC {
 		$len = (int) strlen((string)$cipherText);
 		$cipherText .= str_repeat(chr(0), (8 - ($len % 8)) % 8);
 		//list(, $Xl, $Xr) = unpack('N2', substr($cipherText, 0, 8));
-		list($kk, $Xl, $Xr) = unpack('N2', substr($cipherText, 0, 8)); // FIX to be compatible with the upcoming PHP 7
+		$arx = unpack('N2', substr($cipherText, 0, 8));
+		if(!array_key_exists(0, $arx)) {
+			$arx[0] = null; // fix for PHP8
+		} //end if
+		list($kk, $Xl, $Xr) = $arx; // FIX to be compatible with the upcoming PHP 7
+		$arx = null;
 		$this->_decipher($Xl, $Xr);
 		$plainText .= (pack('N2', $Xl, $Xr) ^ $this->_iv);
 		for($i = 8; $i < $len; $i += 8) {
 			//list(, $Xl, $Xr) = unpack('N2', substr($cipherText, $i, 8));
-			list($kk, $Xl, $Xr) = unpack('N2', substr($cipherText, $i, 8)); // FIX to be compatible with the upcoming PHP 7
+			$arx = unpack('N2', substr($cipherText, $i, 8));
+			if(!array_key_exists(0, $arx)) {
+				$arx[0] = null; // fix for PHP8
+			} //end if
+			list($kk, $Xl, $Xr) = $arx; // FIX to be compatible with the upcoming PHP 7
+			$arx = null;
 			$this->_decipher($Xl, $Xr);
 			$plainText .= (pack('N2', $Xl, $Xr) ^ substr($cipherText, $i - 8, 8));
 		} //end for
@@ -1261,7 +1283,7 @@ echo "plain text: $plaintext";
  * @internal
  *
  * @depends     classes: Smart
- * @version     v.20200424
+ * @version     v.20210303
  *
  */
 final class SmartCryptoCipherHash {
@@ -1299,7 +1321,10 @@ final class SmartCryptoCipherHash {
 				$cfgcrypto = (string) SMART_FRAMEWORK_SECURITY_CRYPTO;
 			} //end if
 			$arr = (array) explode('/', (string)$cfgcrypto);
-			$mode = (string) trim((string)$arr[1]);
+			$mode = '';
+			if(array_key_exists(1, $arr)) {
+				$mode = (string) trim((string)$arr[1]);
+			} //end if
 		} //end if
 
 		// mode

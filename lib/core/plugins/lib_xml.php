@@ -18,6 +18,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // DEPENDS-EXT: PHP 7+ (option: LIBXML_BIGLINES) ; PHP XML Extension
 //======================================================
 
+// [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -40,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     extensions: PHP XML ; classes: Smart
- * @version     v.20201204
+ * @version     v.20210303
  * @package     Plugins:ConvertersAndParsers
  *
  */
@@ -329,7 +330,11 @@ final class SmartXmlParser {
 			if($this->mode === 'extended') {
 				//--
 				$tmp_atts = (array) $r->attributes();
-				$arr[$t.'|@attributes'][] = (array) $tmp_atts['@attributes'];
+				if(array_key_exists('@attributes', $tmp_atts)) {
+					$arr[$t.'|@attributes'][] = (array) $tmp_atts['@attributes'];
+				} else {
+					$arr[$t.'|@attributes'][] = array();
+				} //end if else
 				$tmp_atts = null;
 				if($r->count() <= 0) {
 					$arr[$t][] = (string) $r; // array ; force add as toString
@@ -349,6 +354,9 @@ final class SmartXmlParser {
 					//--
 				} else { // have childs
 					//--
+					if(!array_key_exists($t, $arr)) {
+						$arr[$t] = null;
+					} //end if
 					$arr[$t] = (array) $this->AddArrElemToArr((array)$arr[$t], (array)$this->SimpleXMLNode2Array($r)); // array ; force add as array
 					//--
 				} //end if else
@@ -681,7 +689,7 @@ final class SmartXmlParser {
  *
  * @access      PUBLIC
  * @depends     classes: Smart
- * @version     v.20200605
+ * @version     v.20210303
  * @package     Plugins:ConvertersAndParsers
  *
  */

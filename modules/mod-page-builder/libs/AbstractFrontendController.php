@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210107
+ * @version 	v.20210303
  * @package 	development:modules:PageBuilder
  *
  */
@@ -100,6 +100,9 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//--
 		$this->render_done = true; // flag: dissalow multiple page renders per controller
 		//--
+		if(!array_key_exists((string)$page_id, $this->rendered_pages)) {
+			$this->rendered_pages[(string)$page_id] = 0;
+		} //end if
 		$this->rendered_pages[(string)$page_id]++; // register rendered pages
 		//--
 
@@ -267,6 +270,9 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			return;
 		} //end if
 		//--
+		if(!array_key_exists((string)$segment_id, $this->rendered_segments)) {
+			$this->rendered_segments[(string)$segment_id] = 0;
+		} //end if
 		$this->rendered_segments[(string)$segment_id]++; // flag: dissalow renders the same segment multiple times per controller
 		//--
 
@@ -286,6 +292,9 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 				if((\is_array($pcache_arr['vars'])) && (\is_array($pcache_arr['params']))) { // if valid cache (test ... there must be the 3 sub-arrays as exported previous in pcache)
 					$arr = (array) $pcache_arr['vars'];
 					$this->page_params = (array) $pcache_arr['params'];
+					if(!array_key_exists((string)$segment_id, $this->segments_cached)) {
+						$this->segments_cached[(string)$segment_id] = 0;
+					} //end if
 					$this->segments_cached[(string)$segment_id]++;
 				} //end if
 			} //end if
@@ -312,6 +321,9 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			); // save arr vars structure to pcache
 			//--
 			if($result_pcached === true) {
+				if(!array_key_exists((string)$segment_id, $this->segments_cached)) {
+					$this->segments_cached[(string)$segment_id] = 0;
+				} //end if
 				$this->segments_cached[(string)$segment_id]++;
 			} //end if
 			//--

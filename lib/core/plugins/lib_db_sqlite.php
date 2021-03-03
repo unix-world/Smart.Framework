@@ -21,7 +21,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // DEPENDS-EXT: PHP SQLite3 Extension
 //======================================================
 
-// [REGEX-SAFE-OK]
+// [REGEX-SAFE-OK] ; [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -62,7 +62,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem
- * @version 	v.20200605
+ * @version 	v.20210303
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -476,7 +476,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem
- * @version 	v.20200605
+ * @version 	v.20210303
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -1611,7 +1611,10 @@ final class SmartSQliteUtilDb {
 			//--
 			$result_arr = self::read_data($db, 'SELECT `'.$y_id_field.'` FROM `'.$y_table_name.'` WHERE (`'.$y_id_field.'` = \''.self::escape_str($db, (string)$new_id).'\') LIMIT 1 OFFSET 0');
 			//--
-			$tmp_result = (string) trim((string)$result_arr[0]);
+			$tmp_result = '';
+			if(array_key_exists(0, $result_arr)) {
+				$tmp_result = (string) trim((string)$result_arr[0]);
+			} //end if
 			$result_arr = array();
 			//--
 		} //end while
@@ -1811,7 +1814,7 @@ final class SmartSQliteUtilDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20200605
+ * @version 	v.20210303
  * @package 	Plugins:Database:SQLite
  *
  */

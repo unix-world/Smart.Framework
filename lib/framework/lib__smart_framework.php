@@ -19,7 +19,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 // this library should be loaded from app web root only
 //======================================================
 
-// [REGEX-SAFE-OK]
+// [REGEX-SAFE-OK] ; [PHP8]
 
 //--------------------------------------------------
 define('SMART_FRAMEWORK_VERSION', 'smart.framework.v.7.2'); // required for framework to function
@@ -228,7 +228,7 @@ interface SmartInterfaceAppInfo {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20201207
+ * @version 	v.20210303
  * @package 	development:Application
  *
  */
@@ -419,6 +419,10 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		$this->pagesettings 	= array();
 		$this->pageview 		= array();
 		$this->availsettings 	= (array) $this->availsettings;
+		//--
+		for($i=0; $i<count($this->availsettings); $i++) {
+			$this->pagesettings[(string)$this->availsettings[$i]] = null; // fix for PHP8
+		} //end for
 		//--
 	} //END FUNCTION
 	//=====

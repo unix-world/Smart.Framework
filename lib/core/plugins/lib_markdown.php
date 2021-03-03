@@ -28,7 +28,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 // This class is based on Parsedown by Emanuil Rusev, License: MIT
-// [REGEX-SAFE-OK]
+
+// [REGEX-SAFE-OK] ; [PHP8]
 
 /**
  * Class: SmartMarkdownToHTML - Exports Markdown Code to HTML Code.
@@ -36,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20201127
+ * @version 	v.20210303
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -1745,7 +1746,7 @@ final class SmartMarkdownToHTML {
 		$markup = '<'.$Element['name'];
 		//--
 	//	if(isset($Element['attributes'])) {
-		if(is_array($Element['attributes'])) {
+		if((array_key_exists('attributes', $Element)) AND (is_array($Element['attributes']))) {
 			//--
 			foreach($Element['attributes'] as $name => $value) {
 				//--

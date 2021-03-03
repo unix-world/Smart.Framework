@@ -35,7 +35,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
 } //end if
 //--
 
-// [REGEX-SAFE-OK]
+// [REGEX-SAFE-OK] ; [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -48,7 +48,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20201207
+ * @version 	v.20210303
  * @package 	@Core:Extra
  *
  */
@@ -63,6 +63,9 @@ final class SmartUtils {
 	// return the size of all current used cookies for the current domain
 	public static function cookies_current_size_used_on_domain() {
 		//--
+		if(!array_key_exists('HTTP_COOKIE', $_SERVER)) {
+			return 0; // fix for PHP8
+		} //end if
 		return (int) strlen((string)$_SERVER['HTTP_COOKIE']);
 		//--
 	} //END FUNCTION
@@ -711,6 +714,9 @@ final class SmartUtils {
 			$tmp_word = (string) trim((string)$tmp_word);
 			//--
 			if((string)$tmp_word != '') {
+				if(!array_key_exists((string)$tmp_word, $kw)) {
+					$kw[(string)$tmp_word] = 0;
+				} //end if
 				$kw[(string)$tmp_word]++;
 			} //end if
 			//--
@@ -995,10 +1001,16 @@ final class SmartUtils {
 		if((string)$detected_page != '') {
 			//--
 			if(strpos((string)$detected_page, '.') !== false) {
-				$arr_pg = explode('.', (string)$detected_page);
-				$the_pg_mod = trim((string)$arr_pg[0]); 	// no controller, use the default one
-				$the_pg_ctrl = trim((string)$arr_pg[1]); 	// page controller
-				$the_pg_ext = trim((string)$arr_pg[2]); 	// page extension **OPTIONAL**
+				$arr_pg = (array) explode('.', (string)$detected_page);
+				$the_pg_mod = (string) trim((string)$arr_pg[0]); 		// no controller, use the default one
+				$the_pg_ctrl = '';
+				if(array_key_exists(1, $arr_pg)) {
+					$the_pg_ctrl = (string) trim((string)$arr_pg[1]); 	// page controller
+				} //end if
+				$the_pg_ext = '';
+				if(array_key_exists(2, $arr_pg)) {
+					$the_pg_ext = (string) trim((string)$arr_pg[2]); 	// page extension **OPTIONAL**
+				} //end if
 				$arr_pg = array();
 			} else {
 				$the_pg_mod = ''; 						// no controller, use the default one
@@ -1578,7 +1590,12 @@ final class SmartUtils {
 	//================================================================
 	public static function get_visitor_signature() {
 		//--
-		return (string) 'Visitor // '.trim((string)self::get_ip_client()).' ; '.trim((string)self::get_ip_proxyclient()).' :: '.trim((string)$_SERVER['HTTP_USER_AGENT']);
+		$ua = '';
+		if(array_key_exists('HTTP_USER_AGENT', $_SERVER)) {
+			$ua = (string) $_SERVER['HTTP_USER_AGENT']; // fix for PHP8
+		} //end if
+		//--
+		return (string) 'Visitor // '.trim((string)self::get_ip_client()).' ; '.trim((string)self::get_ip_proxyclient()).' :: '.trim((string)$ua);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1607,6 +1624,10 @@ final class SmartUtils {
 	//================================================================
 	public static function get_server_current_request_method() {
 		//--
+		if(!array_key_exists('REQUEST_METHOD', $_SERVER)) {
+			return ''; // fix for PHP8
+		} //end if
+		//--
 		return (string) strtoupper((string)trim((string)$_SERVER['REQUEST_METHOD'])); // string
 		//--
 	} //END FUNCTION
@@ -1632,6 +1653,10 @@ final class SmartUtils {
 	// Ex: 443
 	public static function get_server_current_port() {
 		//--
+		if(!array_key_exists('SERVER_PORT', $_SERVER)) {
+			return ''; // fix for PHP8
+		} //end if
+		//--
 		return (string) trim((string)$_SERVER['SERVER_PORT']);
 		//--
 	} //END FUNCTION
@@ -1641,6 +1666,10 @@ final class SmartUtils {
 	//================================================================
 	// Ex: 127.0.0.1
 	public static function get_server_current_ip() {
+		//--
+		if(!array_key_exists('SERVER_ADDR', $_SERVER)) {
+			return ''; // fix for PHP8
+		} //end if
 		//--
 		return (string) trim((string)$_SERVER['SERVER_ADDR']);
 		//--
@@ -1652,6 +1681,10 @@ final class SmartUtils {
 	// get the current domain or IP (Ex: localhost or mydom.ext or IP address)
 	public static function get_server_current_domain_name() {
 		//--
+		if(!array_key_exists('SERVER_NAME', $_SERVER)) {
+			return ''; // fix for PHP8
+		} //end if
+		//--
 		return (string) trim((string)$_SERVER['SERVER_NAME']);
 		//--
 	} //END FUNCTION
@@ -1662,6 +1695,9 @@ final class SmartUtils {
 	// get base domain without sub-domain (Ex: mydom.ext or IP address)
 	public static function get_server_current_basedomain_name() {
 		//--
+		if(!array_key_exists('get_server_current_basedomain_name', self::$cache)) {
+			self::$cache['get_server_current_basedomain_name'] = null; // fix for PHP8
+		} //end if
 		$xout = (string) self::$cache['get_server_current_basedomain_name'];
 		//--
 		if((string)$xout == '') {
@@ -1694,6 +1730,9 @@ final class SmartUtils {
 	// get sub-domain without base domain (Ex: www) ; works with subdom.domain.ext or sub.dom.domain.ext ; If IP address or no-extension domain, will return empty string
 	public static function get_server_current_subdomain_name() {
 		//--
+		if(!array_key_exists('get_server_current_subdomain_name', self::$cache)) {
+			self::$cache['get_server_current_subdomain_name'] = null; // fix for PHP8
+		} //end if
 		$xout = self::$cache['get_server_current_subdomain_name']; // return mixed: null or empty string or the subdomain
 		//--
 		if($xout === null) {
@@ -1722,6 +1761,10 @@ final class SmartUtils {
 	// Ex: /sites/test/script.php/page.html|path/to/something-else ; the path is decoded
 	public static function get_server_current_request_path() {
 		//--
+		if(!array_key_exists('PATH_INFO', $_SERVER)) {
+			return ''; // fix for PHP8
+		} //end if
+		//--
 		return (string) trim((string)$_SERVER['PATH_INFO']);
 		//--
 	} //END FUNCTION
@@ -1731,6 +1774,10 @@ final class SmartUtils {
 	//================================================================
 	// Ex: /sites/test/script.php?param= | /page.html (rewrited to some-script.php?var=val&ofs=...) ; it includes the current path. but RAW (not decoded)
 	public static function get_server_current_request_uri() {
+		//--
+		if(!array_key_exists('REQUEST_URI', $_SERVER)) {
+			return ''; // fix for PHP8
+		} //end if
 		//--
 		return (string) trim((string)$_SERVER['REQUEST_URI']);
 		//--
@@ -1742,6 +1789,10 @@ final class SmartUtils {
 	// Ex: /sites/test/script.php
 	public static function get_server_current_full_script() {
 		//--
+		if(!array_key_exists('SCRIPT_NAME', $_SERVER)) {
+			return ''; // fix for PHP8
+		} //end if
+		//--
 		return (string) Smart::fix_path_separator((string)trim((string)$_SERVER['SCRIPT_NAME'])); // Fix: on Windows it can contain \ instead of /
 		//--
 	} //END FUNCTION
@@ -1752,6 +1803,9 @@ final class SmartUtils {
 	// Ex: /sites/test/
 	public static function get_server_current_path() {
 		//--
+		if(!array_key_exists('get_server_current_path', self::$cache)) {
+			self::$cache['get_server_current_path'] = null; // fix for PHP8
+		} //end if
 		$xout = (string) self::$cache['get_server_current_path'];
 		//--
 		if((string)$xout == '') {
@@ -1790,6 +1844,9 @@ final class SmartUtils {
 	// Ex: http(s)://domain(:port)/sites/test/
 	public static function get_server_current_url() {
 		//--
+		if(!array_key_exists('get_server_current_url', self::$cache)) {
+			self::$cache['get_server_current_url'] = null; // fix for PHP8
+		} //end if
 		$xout = (string) self::$cache['get_server_current_url'];
 		//--
 		if((string)$xout == '') {
@@ -1834,6 +1891,9 @@ final class SmartUtils {
 	// Ex: script.php
 	public static function get_server_current_script() {
 		//--
+		if(!array_key_exists('get_server_current_script', self::$cache)) {
+			self::$cache['get_server_current_script'] = null; // fix for PHP8
+		} //end if
 		$xout = (string) self::$cache['get_server_current_script'];
 		//--
 		if((string)$xout == '') {
@@ -1863,7 +1923,11 @@ final class SmartUtils {
 	// Ex: ?param1=one&param2=two
 	public static function get_server_current_queryurl() {
 		//--
-		$url_query = (string) trim((string)$_SERVER['QUERY_STRING']); // will get without the prefix '?' as: page=one&subpage=two
+		if(!array_key_exists('QUERY_STRING', $_SERVER)) {
+			$url_query = ''; // fix for PHP8
+		} else {
+			$url_query = (string) trim((string)$_SERVER['QUERY_STRING']); // will get without the prefix '?' as: page=one&subpage=two
+		} //end if
 		//--
 		if((string)$url_query == '') {
 			$url_query = '?'; // at least '?' is expected even if the url query is empty
@@ -1880,11 +1944,19 @@ final class SmartUtils {
 	//================================================================
 	public static function get_webserver_version() {
 		//--
+		if(!array_key_exists('get_webserver_version', self::$cache)) {
+			self::$cache['get_webserver_version'] = null; // fix for PHP8
+		} //end if
 		$xout = (array) self::$cache['get_webserver_version'];
 		//--
 		if(Smart::array_size($xout) <= 0) {
 			//--
-			$tmp_version_arr = (array) explode('/', (string)$_SERVER['SERVER_SOFTWARE']);
+			if(!array_key_exists('SERVER_SOFTWARE', $_SERVER)) {
+				$tmp_srv_software = ''; // fix for PHP8
+			} else {
+				$tmp_srv_software = (string) $_SERVER['SERVER_SOFTWARE'];
+			} //end if else
+			$tmp_version_arr = (array) explode('/', (string)$tmp_srv_software);
 			$tmp_name_str = trim($tmp_version_arr[0]);
 			$tmp_out = trim($tmp_version_arr[1]);
 			$tmp_version_arr = (array) explode(' ', (string)$tmp_out);
@@ -1908,11 +1980,20 @@ final class SmartUtils {
 	//================================================================
 	public static function get_server_os() {
 		//--
+		if(!array_key_exists('get_server_os', self::$cache)) {
+			self::$cache['get_server_os'] = null; // fix for PHP8
+		} //end if
 		$out = (string) self::$cache['get_server_os'];
 		//--
 		if((string)$out == '') {
 			//--
-			$the_lower_os = (string) strtolower((string)$_SERVER['SERVER_SOFTWARE']);
+			if(!array_key_exists('SERVER_SOFTWARE', $_SERVER)) {
+				$tmp_srv_software = ''; // fix for PHP8
+			} else {
+				$tmp_srv_software = (string) $_SERVER['SERVER_SOFTWARE'];
+			} //end if else
+			//--
+			$the_lower_os = (string) strtolower((string)$tmp_srv_software);
 			//--
 			switch(strtolower((string)PHP_OS)) { // {{{SYNC-SRV-OS-ID}}}
 				case 'mac':
@@ -1996,6 +2077,9 @@ final class SmartUtils {
 	 */
 	public static function get_ip_client() {
 		//--
+		if(!array_key_exists('get_ip_client', self::$cache)) {
+			self::$cache['get_ip_client'] = null; // fix for PHP8
+		} //end if
 		$xout = (string) self::$cache['get_ip_client'];
 		//--
 		if((string)$xout == '') {
@@ -2025,8 +2109,11 @@ final class SmartUtils {
 			self::$cache['get_ip_client:validated-header'] = (string) $the_hdr;
 			//--
 			$ip = '';
-			//--
-			$ip = SmartValidator::validate_filter_ip_address((string)$_SERVER[(string)$the_hdr]); // if a forward client IP header have to be considered here it must always come from a trusted source only !!
+			$tmp_hdr = '';
+			if(array_key_exists((string)$the_hdr, $_SERVER)) {
+				$tmp_hdr = (string) $_SERVER[(string)$the_hdr]; // fix for PHP8
+			} //end if
+			$ip = SmartValidator::validate_filter_ip_address((string)$tmp_hdr); // if a forward client IP header have to be considered here it must always come from a trusted source only !!
 			//--
 			if(SmartFrameworkRuntime::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
@@ -2065,6 +2152,9 @@ final class SmartUtils {
 	 */
 	public static function get_ip_proxyclient() {
 		//--
+		if(!array_key_exists('get_ip_proxyclient', self::$cache)) {
+			self::$cache['get_ip_proxyclient'] = null; // fix for PHP8
+		} //end if
 		$xout = (string) self::$cache['get_ip_proxyclient'];
 		//--
 		if((string)$xout == '') {
@@ -2114,7 +2204,7 @@ final class SmartUtils {
 			//--
 			for($i=0; $i<Smart::array_size($arr_hdrs); $i++) {
 				if((string)$proxy == '') {
-					if((string)$_SERVER[(string)$arr_hdrs[$i]] != '') {
+					if(isset($_SERVER[(string)$arr_hdrs[$i]]) AND ((string)$_SERVER[(string)$arr_hdrs[$i]] != '')) {
 						$proxy = (string) self::_iplist_get_last_address((string)$_SERVER[(string)$arr_hdrs[$i]]);
 						if(SmartFrameworkRuntime::ifDebug()) {
 							SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
@@ -2149,6 +2239,9 @@ final class SmartUtils {
 	// This will be used only once
 	public static function get_os_browser_ip($y_mode='') {
 		//--
+		if(!array_key_exists('get_os_browser_ip', self::$cache)) {
+			self::$cache['get_os_browser_ip'] = []; // fix for PHP8
+		} //end if
 		$xout = (array) self::$cache['get_os_browser_ip'];
 		//--
 		if(Smart::array_size($xout) <= 0) {
@@ -2160,7 +2253,11 @@ final class SmartUtils {
 			$wp_px = '[?]';
 			$wp_mb = 'no'; // by default is not mobile
 			//--
-			$the_lower_signature = (string) strtolower((string)$_SERVER['HTTP_USER_AGENT']);
+			$the_srv_signature = '';
+			if(array_key_exists('HTTP_USER_AGENT', $_SERVER)) { // fix for PHP8
+				$the_srv_signature = (string) $_SERVER['HTTP_USER_AGENT'];
+			} //end if
+			$the_lower_signature = (string) strtolower((string)$the_srv_signature);
 			//--
 			// {{{SYNC-CLI-BW-ID}}}
 			//-- identify browser ; real supported browser classes: gk, ie, wk ; other classes as: xy are not trusted ... ;  tx / rb are text/robots browsers
@@ -2253,7 +2350,7 @@ final class SmartUtils {
 			$wp_px = self::get_ip_proxyclient();
 			//-- out data arr
 			$xout = array(
-				'signature'	=> (string) $_SERVER['HTTP_USER_AGENT'],
+				'signature'	=> (string) $the_srv_signature,
 				'mobile' 	=> (string) $wp_mb,
 				'os' 		=> (string) $wp_os,
 				'bw' 		=> (string) $wp_browser,

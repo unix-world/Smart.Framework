@@ -19,7 +19,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // DEPENDS-EXT: PHP XML, PHP JSON
 //======================================================
 
-// [REGEX-SAFE-OK]
+// [REGEX-SAFE-OK] ; [PHP8]
 
 //================================================================
 if((!function_exists('json_encode')) OR (!function_exists('json_decode')) OR (!defined('JSON_INVALID_UTF8_SUBSTITUTE'))) {
@@ -74,7 +74,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode
- * @version     v.20210302
+ * @version     v.20210303
  * @package     @Core
  *
  */
@@ -2033,7 +2033,10 @@ final class Smart {
 		} //end if
 		//print_r($parts); die();
 		//--
-		$scheme = (string) trim((string)$parts['scheme']);
+		$scheme = '';
+		if(array_key_exists('scheme', $parts)) {
+			$scheme = (string) trim((string)$parts['scheme']);
+		} //end if
 		//--
 		$protocol = (string) $scheme;
 		if((string)$protocol != '') {
@@ -2041,9 +2044,15 @@ final class Smart {
 		} //end if
 		$protocol .= '//';
 		//--
-		$server = (string) trim((string)$parts['host']);
+		$server = '';
+		if(array_key_exists('host', $parts)) {
+			$server = (string) trim((string)$parts['host']);
+		} //end if
 		//--
-		$port = (string) trim((string)$parts['port']);
+		$port = '';
+		if(array_key_exists('port', $parts)) {
+			$port = (string) trim((string)$parts['port']);
+		} //end if
 		if((string)$port == '') {
 			if((string)$scheme == 'https') {
 				$port = '443';
@@ -2052,9 +2061,20 @@ final class Smart {
 			} //end if else
 		} //end if
 		//--
-		$path = (string) trim((string)$parts['path']);
-		$query = (string) trim((string)$parts['query']);
-		$fragment = (string) trim((string)$parts['fragment']);
+		$path = '';
+		if(array_key_exists('path', $parts)) {
+			$path = (string) trim((string)$parts['path']);
+		} //end if
+		//--
+		$query = '';
+		if(array_key_exists('query', $parts)) {
+			$query = (string) trim((string)$parts['query']);
+		} //end if
+		//--
+		$fragment = '';
+		if(array_key_exists('fragment', $parts)) {
+			$fragment = (string) trim((string)$parts['fragment']);
+		} //end if
 		//--
 		$suffix = (string) $path;
 		if((string)$query != '') {

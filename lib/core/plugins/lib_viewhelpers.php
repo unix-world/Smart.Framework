@@ -28,6 +28,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* js/jseditcode [codemirror]
 //======================================================
 
+// [PHP8]
+
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -40,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200619
+ * @version 	v.20210303
  * @package 	Plugins:ViewComponents
  *
  */
@@ -408,13 +410,13 @@ final class SmartViewHtmlHelpers {
 			$y_extra_options = array();
 		} //end if
 		//--
-		if((string)$y_extra_options['format'] == '') {
+		if((!array_key_exists('format', $y_extra_options)) OR ((string)$y_extra_options['format'] == '')) {
 			$the_altdate_format = (string) SmartTextTranslations::getDateFormatForJs((string)Smart::get_from_config('regional.calendar-date-format-client'));
 		} else {
 			$the_altdate_format = (string) SmartTextTranslations::getDateFormatForJs((string)$y_extra_options['format']);
 		} //end if else
 		//--
-		if((string)$y_extra_options['width'] == '') {
+		if((!array_key_exists('width', $y_extra_options)) OR ((string)$y_extra_options['width'] == '')) {
 			$the_option_size = '85';
 		} else {
 			$the_option_size = (string) $y_extra_options['width'];
@@ -494,7 +496,7 @@ final class SmartViewHtmlHelpers {
 		if(!is_array($y_extra_options)) {
 			$y_extra_options = array();
 		} //end if
-		if((string)$y_extra_options['width'] == '') {
+		if((!array_key_exists('width', $y_extra_options)) OR ((string)$y_extra_options['width'] == '')) {
 			$the_option_size = '50';
 		} else {
 			$the_option_size = (string) $y_extra_options['width'];
@@ -568,7 +570,10 @@ final class SmartViewHtmlHelpers {
 		$tmp_dimens = (array) explode('/', (string)trim((string)$y_dimensions));
 		//--
 		$the_width = (int) $tmp_dimens[0];
-		$the_height = (int) $tmp_dimens[1];
+		$the_height = 0;
+		if(array_key_exists(1, $tmp_dimens)) {
+			$the_height = (int) $tmp_dimens[1];
+		} //end if
 		//--
 		if($the_width <= 0) {
 			$the_width = 150;
@@ -783,8 +788,12 @@ final class SmartViewHtmlHelpers {
 
 		//--
 		$tmp_dimens = (array) explode('/', (string)trim((string)$y_dimensions));
+		//--
 		$the_width = (int) $tmp_dimens[0];
-		$the_height = (int) $tmp_dimens[1];
+		$the_height = 0;
+		if(array_key_exists(1, $tmp_dimens)) {
+			$the_height = (int) $tmp_dimens[1];
+		} //end if
 		//--
 		if($the_width <= 0) {
 			$the_width = 150;

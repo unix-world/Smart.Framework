@@ -19,6 +19,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // DEPENDS-EXT: PHP Sockets
 //======================================================
 
+// [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -51,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Sockets ; classes: Smart
- * @version 	v.20200504
+ * @version 	v.20210303
  * @package 	Plugins:Database:Redis
  *
  */
@@ -560,7 +561,7 @@ final class SmartRedisDb {
 		//--
 		if(!is_resource($this->socket)) { // try to connect or re-use the connection
 			//--
-			if(array_key_exists((string)$this->server.'@'.$this->db, (array)SmartFrameworkRegistry::$Connections['redis']) AND is_resource(SmartFrameworkRegistry::$Connections['redis'][(string)$this->server.'@'.$this->db])) {
+			if(array_key_exists('redis', SmartFrameworkRegistry::$Connections) AND array_key_exists((string)$this->server.'@'.$this->db, (array)SmartFrameworkRegistry::$Connections['redis']) AND is_resource(SmartFrameworkRegistry::$Connections['redis'][(string)$this->server.'@'.$this->db])) {
 				//--
 				$this->socket = SmartFrameworkRegistry::$Connections['redis'][(string)$this->server.'@'.$this->db]; // re-use conection (import)
 				//--

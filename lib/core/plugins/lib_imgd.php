@@ -22,6 +22,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* PHP GD (with TrueColor + CreateFromString + GetImgSizeFromString)
 //======================================================
 
+// [PHP8]
+
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -71,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring
- * @version 	v.20201127
+ * @version 	v.20210303
  * @package 	Plugins:Image
  *
  */
@@ -185,7 +187,7 @@ final class SmartImageGdProcess {
 	public function __destruct() {
 
 		//--
-		if(is_resource($this->img)) {
+		if($this->testIfValidImg($this->img)) {
 			@imagedestroy($this->img);
 		} //end if
 		//--
@@ -341,7 +343,7 @@ final class SmartImageGdProcess {
 			return (string) '';
 		} //end if
 		//--
-		if(!is_resource($this->img)) {
+		if(!$this->testIfValidImg($this->img)) {
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Resource');
 			return (string) '';
 		} //end if
@@ -443,7 +445,7 @@ final class SmartImageGdProcess {
 			return false;
 		} //end if
 		//--
-		if(!is_resource($this->img)) {
+		if(!$this->testIfValidImg($this->img)) {
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Resource');
 			$this->status = false;
 			return false;
@@ -535,7 +537,7 @@ final class SmartImageGdProcess {
 
 		//-- create the new img
 		$imgnew = @imagecreatetruecolor($newImgW, $newImgH);
-		if(!is_resource($imgnew)) {
+		if(!$this->testIfValidImg($imgnew)) {
 			$imgnew = null;
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Resample Resource');
 			$this->status = false;
@@ -545,7 +547,7 @@ final class SmartImageGdProcess {
 		@imagefill($imgnew, 0, 0, @imagecolorallocate($imgnew, (int)$bg_color_rgb[0], (int)$bg_color_rgb[1], (int)$bg_color_rgb[2])); // fill with bg
 		@imagecopyresampled($imgnew, $this->img, 0, 0, 0, 0, $newImgW, $newImgH, $this->width, $this->height); // copy image in the new created image
 		//--
-		if(!is_resource($imgnew)) {
+		if(!$this->testIfValidImg($imgnew)) {
 			$imgnew = null;
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Resampled Image');
 			$this->status = false;
@@ -571,7 +573,7 @@ final class SmartImageGdProcess {
 
 		//-- finalize
 		@imagedestroy($this->img);
-		if(is_resource($this->img)) {
+		if($this->testIfValidImg($this->img)) {
 			@imagedestroy($imgnew);
 			$this->img = null; // force reset back ; it should be destroyed already
 			$this->_debugMsg((string)__METHOD__.' :: '.'Failed to Destroy Original Image Resource for Resampling ...');
@@ -579,7 +581,7 @@ final class SmartImageGdProcess {
 			return false;
 		} //end if
 		$this->img = @imagecreatetruecolor($resize_width, $resize_height);
-		if(!is_resource($this->img)) {
+		if(!$this->testIfValidImg($this->img)) {
 			@imagedestroy($imgnew);
 			$this->img = null; // reset back !
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Export Resource');
@@ -589,7 +591,7 @@ final class SmartImageGdProcess {
 		@imagefill($this->img, 0, 0, @imagecolorallocate($this->img, (int)$bg_color_rgb[0], (int)$bg_color_rgb[1], (int)$bg_color_rgb[2])); // fill with bg again (needed after resampling)
 		@imagecopy($this->img, $imgnew, $center_w, $center_h, 0, 0, $newImgW, $newImgH); // save back must clone, as it is resource ; not work direct as: $this->img = $imgnew;
 		@imagedestroy($imgnew);
-		if(!is_resource($this->img)) {
+		if(!$this->testIfValidImg($this->img)) {
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Export Data');
 			$this->status = false;
 			return false;
@@ -628,7 +630,7 @@ final class SmartImageGdProcess {
 			return false;
 		} //end if
 		//--
-		if(!is_resource($this->img)) {
+		if(!$this->testIfValidImg($this->img)) {
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image Resource');
 			$this->status = false;
 			return false;
@@ -652,7 +654,7 @@ final class SmartImageGdProcess {
 		//--
 		$wtm_img = @imagecreatefromstring((string)$wtistr); // create a gd img res. from string
 		$wtistr = ''; // free mem
-		if(!is_resource($wtm_img)) {
+		if(!$this->testIfValidImg($wtm_img)) {
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Watermark Resource'.$nfo);
 			$this->status = false;
 			return false;
@@ -723,7 +725,7 @@ final class SmartImageGdProcess {
 		//--
 		@imagecopy($this->img, $wtm_img, $gvtyX, $gvtyY, 0, 0, $wtm_width, $wtm_height);
 		@imagedestroy($wtm_img);
-		if(!is_resource($this->img)) {
+		if(!$this->testIfValidImg($this->img)) {
 			$this->img = null; // reset back !
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image+Watermark Export Data');
 			$this->status = false;
@@ -874,7 +876,7 @@ final class SmartImageGdProcess {
 			return false;
 		} //end if
 		//--
-		if(!is_resource($this->img)) {
+		if(!$this->testIfValidImg($this->img)) {
 			$this->_errMsg((string)__METHOD__.' :: '.'Invalid Image Resource');
 			$this->status = false;
 			return false;
@@ -1009,7 +1011,7 @@ final class SmartImageGdProcess {
 			return false;
 		} //end if
 		//--
-		if(!is_resource($this->img)) {
+		if(!$this->testIfValidImg($this->img)) {
 			$this->_errMsg((string)__METHOD__.' :: '.'Invalid Image Resource');
 			$this->status = false;
 			return false;
@@ -1108,7 +1110,7 @@ final class SmartImageGdProcess {
 			$this->status = false;
 			return false;
 		} //end if
-		if(!is_resource($this->img)) {
+		if(!$this->testIfValidImg($this->img)) {
 			$this->img = null; // reset back !
 			$this->_debugMsg((string)__METHOD__.' :: '.'Invalid Image+Text Export Data');
 			$this->status = false;
@@ -1358,6 +1360,19 @@ final class SmartImageGdProcess {
 		} //end switch
 		//--
 		$this->applyText((string)$line, (int)$pos_x, (int)$pos_y, (int)$angle, (int)$size, (string)$font, (array)$color_rgb);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private function testIfValidImg($img) {
+		//--
+		if((\is_resource($img)) OR (\is_a($img, '\\GdImage'))) { // fix to be PHP8 compatible # https://php.watch/versions/8.0/gdimage
+			return true;
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//================================================================

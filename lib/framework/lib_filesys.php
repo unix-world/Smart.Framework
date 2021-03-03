@@ -17,7 +17,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* Smart::
 //======================================================
 
-// [REGEX-SAFE-OK]
+// [REGEX-SAFE-OK] ; [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -60,7 +60,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200511
+ * @version 	v.20210303
  * @package 	@Core:FileSystem
  *
  */
@@ -1298,7 +1298,7 @@ final class SmartFileSysUtils {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
  * @depends 	classes: Smart
- * @version 	v.20200410
+ * @version 	v.20210303
  * @package 	@Core:FileSystem
  *
  */
@@ -3122,6 +3122,15 @@ final class SmartFileSystem {
 		//-- because size dirs is includded in (total) size unset this also (will remain to compare just 'size-files') !!
 		unset($arr_dir1['size']);
 		unset($arr_dir2['size']);
+		//--
+		unset($arr_dir1['list-dirs']);
+		unset($arr_dir2['list-dirs']);
+		//--
+		unset($arr_dir1['list-files']);
+		unset($arr_dir2['list-files']);
+		//--
+		unset($arr_dir1['errors']);
+		unset($arr_dir2['errors']);
 		//-- compute array diffs (must be on both directions)
 		$arr_diff1 = array_diff_assoc($arr_dir1, $arr_dir2);
 		$arr_diff2 = array_diff_assoc($arr_dir2, $arr_dir1);
@@ -3208,7 +3217,7 @@ final class SmartFileSystem {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be safe
  *
  * @depends 	classes: Smart
- * @version 	v.20200519
+ * @version 	v.20210303
  * @package 	@Core:FileSystem
  *
  */
@@ -3428,7 +3437,7 @@ final class SmartGetFileSystem {
 		//--
 		if((SmartFileSystem::path_exists($dir_name)) AND (!SmartFileSystem::is_type_file($dir_name))) { // can be dir or link
 			//-- circular reference check for linked dirs that can trap execution into an infinite loop ; catch here ... otherwise will be catched by the max path lenth allowance
-			if(((int)$this->scanned_folders[(string)$this->get_std_real_dir_path($dir_name)] > 1)) {
+			if((array_key_exists((string)$this->get_std_real_dir_path($dir_name), $this->scanned_folders) AND ((int)$this->scanned_folders[(string)$this->get_std_real_dir_path($dir_name)] > 1))) {
 			//	Smart::log_notice(__METHOD__.'() // ReadsFolderRecurring // Cycle Trap Linked Dir Detected for: '.$dir_name);
 				$this->errors_arr[] = (string) $dir_name;
 				return; // this function does not return anything, but just stop here in this case
@@ -3535,6 +3544,9 @@ final class SmartGetFileSystem {
 										//--
 									} //end if
 									//--
+									if(!array_key_exists((string)$this->get_std_real_dir_path($dir_name.$file), $this->scanned_folders)) {
+										$this->scanned_folders[(string)$this->get_std_real_dir_path($dir_name.$file)] = 0;
+									} //end if
 									$this->scanned_folders[(string)$this->get_std_real_dir_path($dir_name.$file)]++;
 									//--
 									if($recurring) {
@@ -3601,7 +3613,13 @@ final class SmartGetFileSystem {
 													} //end if else
 													//--
 													if((string)$this->get_std_real_dir_path($link_origin) != (string)$this->get_std_real_dir_path($dir_name.$file)) { // avoid register if this is the same as the linked folder (this happen in rare situations ; ex: with the 1st sub-level linked folders)
+														if(!array_key_exists((string)$this->get_std_real_dir_path($link_origin), $this->scanned_folders)) {
+															$this->scanned_folders[(string)$this->get_std_real_dir_path($link_origin)] = 0;
+														} //end if
 														$this->scanned_folders[(string)$this->get_std_real_dir_path($link_origin)]++; // if link origin real path is different, register it too
+													} //end if
+													if(!array_key_exists((string)$this->get_std_real_dir_path($dir_name.$file), $this->scanned_folders)) {
+														$this->scanned_folders[(string)$this->get_std_real_dir_path($dir_name.$file)] = 0;
 													} //end if
 													$this->scanned_folders[(string)$this->get_std_real_dir_path($dir_name.$file)]++;
 													//--

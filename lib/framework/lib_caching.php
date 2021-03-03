@@ -18,6 +18,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* SmartParser::
 //======================================================
 
+// [PHP8]
+
 
 //--
 // gzencode / gzdecode (rfc1952) is the gzip compatible algorithm which uses CRC32 minimal checksums (a bit safer and faster than ADLER32)
@@ -46,7 +48,7 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20200121
+ * @version 	v.20210303
  * @package 	@Core
  *
  */
@@ -114,7 +116,13 @@ final class SmartCache {
 	 */
 	public static function setKey($y_realm, $y_key, $y_value) {
 		//--
-		self::$CachedData[(string)$y_realm] = (array) self::$CachedData[(string)$y_realm];
+		if(!is_array(self::$CachedData)) {
+			self::$CachedData = [];
+		} //end if
+		if((!array_key_exists((string)$y_realm, self::$CachedData)) OR (!is_array(self::$CachedData[(string)$y_realm]))) {
+			self::$CachedData[(string)$y_realm] = [];
+		} //end if
+		//--
 		self::$CachedData[(string)$y_realm][(string)$y_key] = $y_value; // mixed
 		//--
 		if(SmartFrameworkRuntime::ifDebug()) {
@@ -139,8 +147,16 @@ final class SmartCache {
 	 */
 	public static function unsetKey($y_realm, $y_key) {
 		//--
-		self::$CachedData[(string)$y_realm] = (array) self::$CachedData[(string)$y_realm];
-		unset(self::$CachedData[(string)$y_realm][(string)$y_key]);
+		if(!is_array(self::$CachedData)) {
+			self::$CachedData = [];
+		} //end if
+		if((!array_key_exists((string)$y_realm, self::$CachedData)) OR (!is_array(self::$CachedData[(string)$y_realm]))) {
+			self::$CachedData[(string)$y_realm] = [];
+		} //end if
+		//--
+		if(array_key_exists((string)$y_key, self::$CachedData[(string)$y_realm])) {
+			unset(self::$CachedData[(string)$y_realm][(string)$y_key]);
+		} //end if
 		//--
 		if(SmartFrameworkRuntime::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-CACHE', [

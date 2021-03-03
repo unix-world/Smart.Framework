@@ -27,6 +27,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //ini_get('session.gc_probability');
 //======================================================
 
+// [PHP8]
+
 
 //--
 if(!function_exists('session_start')) {
@@ -65,7 +67,7 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20200121
+ * @version 	v.20210303
  * @package 	Application:Session
  *
  */
@@ -113,8 +115,10 @@ final class SmartSession {
 		//--
 		if(($yvariable === null) OR ((string)trim((string)$yvariable) == '')) {
 			return (array) $_SESSION; // array, all the session variables at once
-		} else {
+		} elseif(array_key_exists((string)$yvariable, $_SESSION)) {
 			return $_SESSION[(string)$yvariable]; // mixed
+		} else {
+			return null;
 		} //end if else
 		//--
 	} //END FUNCTION
@@ -139,7 +143,9 @@ final class SmartSession {
 		} //end if
 		//--
 		if($yvalue === null) {
-			unset($_SESSION[(string)$yvariable]);
+			if(array_key_exists((string)$yvariable, $_SESSION)) {
+				unset($_SESSION[(string)$yvariable]);
+			} //end if
 		} else {
 			$_SESSION[(string)$yvariable] = $yvalue;
 		} //end if else
@@ -472,7 +478,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20200121
+ * @version 	v.20210303
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {

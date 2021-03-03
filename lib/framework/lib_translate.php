@@ -19,7 +19,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* SmartAdapterTextTranslations:: *APP-BOOTSTRAP*
 //======================================================
 
-// [REGEX-SAFE-OK]
+// [REGEX-SAFE-OK] ; [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -39,7 +39,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations
- * @version 	v.20200515
+ * @version 	v.20210303
  * @package 	@Core:Translations
  *
  */
@@ -153,7 +153,7 @@ final class SmartTextTranslations {
 		//--
 		global $configs;
 		//--
-		if(strlen((string)self::$cache['#LANGUAGE#']) == 2) {
+		if((array_key_exists('#LANGUAGE#', self::$cache)) AND (strlen((string)self::$cache['#LANGUAGE#']) == 2)) {
 			if(SmartFrameworkRuntime::ifInternalDebug()) {
 				if(SmartFrameworkRuntime::ifDebug()) {
 					SmartFrameworkRegistry::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
@@ -169,7 +169,10 @@ final class SmartTextTranslations {
 		//--
 		if(is_array($configs)) {
 			if(is_array($configs['regional'])) {
-				$tmp_lang = (string) strtolower((string)$configs['regional']['language-id']);
+				$tmp_lang = '';
+				if(array_key_exists('', $configs['regional'])) {
+					$tmp_lang = (string) strtolower((string)$configs['regional']['language-id']);
+				} //end if
 				if(self::validateLanguage($tmp_lang)) {
 					$the_lang = (string) $tmp_lang;
 					if(SmartFrameworkRuntime::ifInternalDebug()) {
@@ -308,7 +311,7 @@ final class SmartTextTranslations {
 		//--
 		$translator_key = (string) $the_lang.'.'.$y_area.'.'.$y_subarea; // must use . as separator as it is the only character that is not allowed in lang / area / sub-area but is allowed in persistent cache
 		//--
-		if(!is_object(self::$translators[(string)$translator_key])) {
+		if((!array_key_exists((string)$translator_key, self::$translators)) OR (!is_object(self::$translators[(string)$translator_key]))) {
 			self::$translators[(string)$translator_key] = new SmartTextTranslator((string)$the_lang, (string)$y_area, (string)$y_subarea);
 			if(SmartFrameworkRuntime::ifInternalDebug()) {
 				if(SmartFrameworkRuntime::ifDebug()) {
@@ -756,6 +759,9 @@ final class SmartTextTranslations {
 	// It will be used to invalidate the Persistent Cache every time when the translations version is changed.
 	private static function getLatestVersion() {
 		//--
+		if(!array_key_exists('translations:persistent-cache-version', self::$cache)) {
+			self::$cache['translations:persistent-cache-version'] = null;
+		} //end if
 		if((string)self::$cache['translations:persistent-cache-version'] != '') {
 			return (string) self::$cache['translations:persistent-cache-version'];
 		} //end if
@@ -789,7 +795,10 @@ final class SmartTextTranslations {
 		//-- built the cache key
 		$the_cache_key = (string) $y_language.'.'.$y_area.'.'.$y_subarea; // must use . as separator as it is the only character that is not allowed in lang / area / sub-area but is allowed in persistent cache
 		//-- try to get from internal (in-memory) cache
-		$translations = (array) self::$cache['translations@'.$the_cache_key];
+		$translations = array();
+		if(array_key_exists('translations@'.$the_cache_key, self::$cache)) {
+			$translations = (array) self::$cache['translations@'.$the_cache_key];
+		} //end if
 		if(Smart::array_size($translations) > 0) {
 			if(SmartFrameworkRuntime::ifInternalDebug()) {
 				if(SmartFrameworkRuntime::ifDebug()) {
@@ -864,7 +873,7 @@ final class SmartTextTranslations {
 			} //end if
 			//-- check if persistent cache texts are outdated
 			$check_version = true;
-			if((string)self::$cache['#VERSION#'] != '') {
+			if(array_key_exists('#VERSION#', self::$cache) AND ((string)self::$cache['#VERSION#'] != '')) {
 				$check_version = false;
 			} elseif((string)$version_translations === (string)SmartPersistentCache::getKey('smart-regional-texts', 'version')) {
 				$check_version = false;
@@ -939,7 +948,7 @@ final class SmartTextTranslations {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartTextTranslations
- * @version 	v.20200515
+ * @version 	v.20210303
  * @package 	@Core:Translations
  *
  */
@@ -1051,7 +1060,7 @@ final class SmartTextTranslator {
  * @access 		private
  * @internal
  *
- * @version 	v.20200515
+ * @version 	v.20210303
  * @package 	development:@Core
  *
  */

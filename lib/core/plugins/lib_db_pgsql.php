@@ -26,7 +26,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
 // DEPENDS-EXT: PHP PgSQL Extension
 //======================================================
 
-// [REGEX-SAFE-OK]
+// [REGEX-SAFE-OK] ; [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -68,7 +68,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20200605
+ * @version 	v.20210303
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -563,7 +563,7 @@ final class SmartPgsqlDb {
 		//--
 		$arr_data = self::read_data('SELECT "tablename", "schemaname" FROM "pg_tables" WHERE (("schemaname" = \''.self::escape_str($y_schema, '', $y_connection).'\') AND ("tablename" = \''.self::escape_str($y_table, '', $y_connection).'\'))', 'Check if Table Exists', $y_connection);
 		//--
-		if((string)$arr_data[0] == (string)$y_table) {
+		if(array_key_exists(0, $arr_data) AND ((string)$arr_data[0] == (string)$y_table)) {
 			$out = 1;
 		} else {
 			$out = 0;
@@ -1733,7 +1733,10 @@ final class SmartPgsqlDb {
 				//--
 				$out_query .= (string) $expr_arr[$i][1];
 				//--
-				$crr_key = (int) substr((string)trim((string)$expr_arr[$i][2]), 1);
+				$crr_key = 0;
+				if(array_key_exists(2, $expr_arr[$i])) {
+					$crr_key = (int) substr((string)trim((string)$expr_arr[$i][2]), 1);
+				} //end if
 				$crr_key -= 1; // fix: $1 is for $arr[0]
 				//--
 				if((int)$crr_key >= 0) {
@@ -1883,7 +1886,10 @@ final class SmartPgsqlDb {
 			$result_arr = array();
 			$chk_uniqueness = 'SELECT '.self::escape_identifier($y_id_field, $y_connection).' FROM '.self::escape_identifier($y_schema, $y_connection).'.'.self::escape_identifier($y_table_name, $y_connection).' WHERE ('.self::escape_identifier($y_id_field, $y_connection).' = '.self::escape_literal($new_id, '', $y_connection).') LIMIT 1 OFFSET 0';
 			$result_arr = self::read_data($chk_uniqueness, 'Safe Check if NEW ID Exists into Table', $y_connection);
-			$tmp_result = (string) trim((string)$result_arr[0]);
+			$tmp_result = '';
+			if(array_key_exists(0, $result_arr)) {
+				$tmp_result = (string) trim((string)$result_arr[0]);
+			} //end if
 			$result_arr = array();
 			//--
 			if((string)$tmp_result == '') {
@@ -2114,7 +2120,7 @@ final class SmartPgsqlDb {
 				} //end if
 				//-- {{{SYNC-CONNECTIONS-IDS}}}
 				$the_conn_key = (string) $configs['pgsql']['server-host'].':'.$configs['pgsql']['server-port'].'@'.$configs['pgsql']['dbname'].'#'.$configs['pgsql']['username'];
-				if(array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['pgsql'])) { // if the connection was made before using the SmartPgsqlExtDb
+				if((array_key_exists('pgsql', (array)SmartFrameworkRegistry::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['pgsql']))) { // if the connection was made before using the SmartPgsqlExtDb
 					//--
 					$y_connection = SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key];
 					//--
@@ -2351,7 +2357,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20200605
+ * @version 	v.20210303
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -2380,7 +2386,7 @@ final class SmartPgsqlExtDb {
 		$y_configs_arr = (array) $y_configs_arr;
 		//-- {{{SYNC-CONNECTIONS-IDS}}}
 		$the_conn_key = (string) $y_configs_arr['server-host'].':'.$y_configs_arr['server-port'].'@'.$y_configs_arr['dbname'].'#'.$y_configs_arr['username'];
-		if(array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['pgsql'])) {
+		if((array_key_exists('pgsql', (array)SmartFrameworkRegistry::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['pgsql']))) {
 			//-- try to reuse the connection :: only check if array key exists, not if it is a valid resource ; this should be as so to avoid mismatching connection mixings (if by example will re-use the connection of another server, and connection is broken in the middle of a transaction, it will fail ugly ;) and out of any control !
 			$this->connection = SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key];
 			//--

@@ -36,6 +36,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // COMMENT: when using ::write_data() it will expect having affected_rows() which is not available on Read or viceversa
 //======================================================
 
+// [PHP8]
+
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -70,7 +72,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20200605
+ * @version 	v.20210303
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -382,8 +384,7 @@ final class SmartMysqliDb {
 		//--
 		$arr_data = self::read_data("SHOW TABLES LIKE '".self::escape_str($y_table, '', $y_connection)."'", 'Check if Table Exists', $y_connection);
 		//--
-
-		if((string)$arr_data[0] == (string)$y_table) {
+		if(array_key_exists(0, $arr_data) AND ((string)$arr_data[0] == (string)$y_table)) {
 			$out = 1;
 		} else {
 			$out = 0;
@@ -1419,7 +1420,10 @@ final class SmartMysqliDb {
 			//--
 			$result_arr = array();
 			$result_arr = self::read_data('SELECT `'.$y_id_field.'` FROM `'.$y_table_name.'` WHERE (`'.$y_id_field.'` = \''.self::escape_str($new_id, '', $y_connection).'\') LIMIT 1 OFFSET 0', 'Checking if NEW ID Exists ...', $y_connection);
-			$tmp_result = (string) trim((string)$result_arr[0]);
+			$tmp_result = '';
+			if(array_key_exists(0, $result_arr)) {
+				$tmp_result = (string) trim((string)$result_arr[0]);
+			} //end if
 			$result_arr = array();
 			//--
 		} //end while
@@ -1589,7 +1593,7 @@ final class SmartMysqliDb {
 				} //end if
 				//-- {{{SYNC-CONNECTIONS-IDS}}}
 				$the_conn_key = (string) $configs['mysqli']['server-host'].':'.$configs['mysqli']['server-port'].'@'.$configs['mysqli']['dbname'].'#'.$configs['mysqli']['username'];
-				if(array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['mysqli'])) { // if the connection was made before using the SmartMysqliExtDb
+				if((array_key_exists('mysqli', (array)SmartFrameworkRegistry::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['mysqli']))) { // if the connection was made before using the SmartMysqliExtDb
 					//--
 					$y_connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)$the_conn_key];
 					//--
@@ -1800,7 +1804,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20200605
+ * @version 	v.20210303
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -1825,7 +1829,7 @@ final class SmartMysqliExtDb {
 		$y_configs_arr = (array) $y_configs_arr;
 		//-- {{{SYNC-CONNECTIONS-IDS}}}
 		$the_conn_key = (string) $y_configs_arr['server-host'].':'.$y_configs_arr['server-port'].'@'.$y_configs_arr['dbname'].'#'.$y_configs_arr['username'];
-		if(array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['mysqli'])) {
+		if((array_key_exists('mysqli', (array)SmartFrameworkRegistry::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['mysqli']))) {
 			//-- try to reuse the connection :: only check if array key exists, not if it is a valid resource ; this should be as so to avoid mismatching connection mixings (if by example will re-use the connection of another server, and connection is broken in the middle of a transaction, it will fail ugly ;) and out of any control !
 			$this->connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)$the_conn_key];
 			//--
