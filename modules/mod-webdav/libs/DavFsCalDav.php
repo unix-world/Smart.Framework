@@ -19,6 +19,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
+// [PHP8]
+
 /**
  * Dav FileSystem CalDAV
  * @ignore
@@ -26,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFsCalDav {
 
 	// ::
-	// v.20200511
+	// v.20210303
 
 	private static $caldav_ns = 'xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/"';
 	private static $caldav_urn = 'urn:ietf:params:xml:ns:caldav';
@@ -143,6 +145,22 @@ final class DavFsCalDav {
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
 		$heads = (array) \SmartModExtLib\Webdav\DavServer::getRequestHeaders();
+		//--
+		if(!\array_key_exists('range', $heads)) {
+			$heads['range'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('content-range', $heads)) {
+			$heads['content-range'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('content-length', $heads)) {
+			$heads['content-length'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('transfer-encoding', $heads)) {
+			$heads['transfer-encoding'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('x-expected-entity-length', $heads)) {
+			$heads['x-expected-entity-length'] = null; // PHP8 fix
+		} //end if
 		//--
 		if(((string)\trim((string)$heads['range']) != '') OR ((string)\trim((string)$heads['content-range']) != '')) { // (SabreDAV)
 			// Content-Range is dangerous for PUT requests:  PUT per definition
@@ -339,6 +357,13 @@ final class DavFsCalDav {
 	public static function methodGet($dav_method, $dav_author, $dav_url, $dav_request_path, $dav_vfs_path, $dav_is_root_path, $dav_vfs_root, $dav_request_back_path, $nfo_title, $nfo_signature, $nfo_prefix_crrpath, $nfo_lnk_welcome, $nfo_txt_welcome, $nfo_svg_logo) { // 200 | 404 | 405 | 415 | 423
 		//--
 		$heads = (array) \SmartModExtLib\Webdav\DavServer::getRequestHeaders();
+		//--
+		if(!\array_key_exists('range', $heads)) {
+			$heads['range'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('content-range', $heads)) {
+			$heads['content-range'] = null; // PHP8 fix
+		} //end if
 		//--
 		if(((string)\trim((string)$heads['range']) != '') OR ((string)\trim((string)$heads['content-range']) != '')) {
 			\header('Accept-Ranges: none'); // !!! IMPORTANT BUG FIX: without this, if the client ask a partial range content will result in corrupted file content: MacOS Finder with GET files > 8.5 MB) !!!

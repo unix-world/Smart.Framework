@@ -699,9 +699,9 @@ final class SmartUtils {
 		} //end if
 		//--
 		$kw = [];
-		for($i=0; $i<Smart::array_size($arr); $i++) { // allow: '&', '-', '.'
+		foreach($arr as $kk => $vv) { // array_unique will drop some keys so cannot go with for{} here
 			//--
-			$tmp_word = (string) trim((string)str_replace(['`', '~', '!', '@', '#', '$', '%', '^', '*', '(', ')', '_', '+', '=', '[', ']', '{', '}', '|', '\\', '/', '?', '<', '>', ',', ';', '"', "'"], ' ', (string)$arr[$i]));
+			$tmp_word = (string) trim((string)str_replace(['`', '~', '!', '@', '#', '$', '%', '^', '*', '(', ')', '_', '+', '=', '[', ']', '{', '}', '|', '\\', '/', '?', '<', '>', ',', ';', '"', "'"], ' ', (string)$vv));
 			$tmp_word = (string) trim((string)$tmp_word, ':'); // fix: this must not be replaced, just trimmed if on margins
 			$tmp_word = (string) preg_replace("/(\.)\\1+/", '.', $tmp_word); // suppress multiple . dots and replace with single dot
 			$tmp_word = (string) preg_replace("/(\-)\\1+/", '-', $tmp_word); // suppress multiple - minus signs and replace with single minus sign
@@ -1588,14 +1588,22 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function get_visitor_signature() {
+	public static function get_visitor_useragent() {
 		//--
-		$ua = '';
-		if(array_key_exists('HTTP_USER_AGENT', $_SERVER)) {
-			$ua = (string) $_SERVER['HTTP_USER_AGENT']; // fix for PHP8
+		if(!array_key_exists('HTTP_USER_AGENT', $_SERVER)) {
+			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) 'Visitor // '.trim((string)self::get_ip_client()).' ; '.trim((string)self::get_ip_proxyclient()).' :: '.trim((string)$ua);
+		return (string) trim((string)$_SERVER['HTTP_USER_AGENT']);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	public static function get_visitor_signature() {
+		//--
+		return (string) 'Visitor // '.trim((string)self::get_ip_client()).' ; '.trim((string)self::get_ip_proxyclient()).' :: '.self::get_visitor_useragent();
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1765,7 +1773,7 @@ final class SmartUtils {
 			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) trim((string)$_SERVER['PATH_INFO']);
+		return (string) $_SERVER['PATH_INFO'];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1779,7 +1787,7 @@ final class SmartUtils {
 			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) trim((string)$_SERVER['REQUEST_URI']);
+		return (string) $_SERVER['REQUEST_URI'];
 		//--
 	} //END FUNCTION
 	//================================================================

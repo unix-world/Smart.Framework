@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\AuthAdmins\SimpleAuthAdminsHandler
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 namespace SmartModExtLib\AuthAdmins;
@@ -17,6 +17,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //	* SmartUtils
 //	* SmartComponents
 //	* SmartFrameworkSecurity
+
+// [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -37,7 +39,7 @@ if(\headers_sent()) {
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD and *optional* the APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY ; they must be set in set in config-admin.php
  * Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)
  *
- * @version 	v.20200420
+ * @version 	v.20210303
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -77,7 +79,7 @@ final class SimpleAuthAdminsHandler {
 			//--
 		} //end if
 		//--
-		if(((string)$_SERVER['PHP_AUTH_USER'] === (string)\APP_AUTH_ADMIN_USERNAME) AND ((string)$_SERVER['PHP_AUTH_PW'] === (string)\APP_AUTH_ADMIN_PASSWORD)) {
+		if(isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']) AND ((string)$_SERVER['PHP_AUTH_USER'] === (string)\APP_AUTH_ADMIN_USERNAME) AND ((string)$_SERVER['PHP_AUTH_PW'] === (string)\APP_AUTH_ADMIN_PASSWORD)) {
 			//-- OK, loggen in
 			$privileges = '<superadmin>,<admin>';
 			if(\defined('\\APP_AUTH_PRIVILEGES')) {
@@ -114,10 +116,10 @@ final class SimpleAuthAdminsHandler {
 			//--
 		} else {
 			//-- log unsuccessful login
-			if((string)$_SERVER['PHP_AUTH_USER'] != '') {
+			if(isset($_SERVER['PHP_AUTH_USER']) AND ((string)$_SERVER['PHP_AUTH_USER'] != '')) {
 				@\file_put_contents(
 					'tmp/logs/adm/'.'simple-auth-fail-'.\date('Y-m-d@H').'.log',
-					'[ERR]'."\t".\Smart::normalize_spaces((string)\date('Y-m-d H:i:s O'))."\t".\Smart::normalize_spaces((string)$_SERVER['PHP_AUTH_USER'])."\t".\Smart::normalize_spaces((string)\SmartUtils::get_ip_client())."\t".\Smart::normalize_spaces((string)$_SERVER['HTTP_USER_AGENT'])."\n",
+					'[ERR]'."\t".\Smart::normalize_spaces((string)\date('Y-m-d H:i:s O'))."\t".\Smart::normalize_spaces((string)$_SERVER['PHP_AUTH_USER'])."\t".\Smart::normalize_spaces((string)\SmartUtils::get_ip_client())."\t".\Smart::normalize_spaces((string)\SmartUtils::get_visitor_useragent())."\n",
 					\FILE_APPEND | \LOCK_EX
 				);
 			} //end if

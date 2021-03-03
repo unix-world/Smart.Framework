@@ -461,9 +461,11 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		$is_ok = false;
 		//--
 		if(is_array($result)) {
-			if(is_array($result[0])) {
-				if((int)$result[0]['ok'] == 1) {
-					$is_ok = true;
+			if(array_key_exists(0, $result)) {
+				if(is_array($result[0])) {
+					if((int)$result[0]['ok'] == 1) {
+						$is_ok = true;
+					} //end if
 				} //end if
 			} //end if
 		} //end if
@@ -749,7 +751,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				//--
 				$qry = (array) $args[1]; // arrQuery
 				//--
-				if(is_array($args[3])) {
+				if(array_key_exists(3, $args) AND (is_array($args[3]))) {
 					$opts = (array) $args[3]; // arrOptions
 				} //end if
 				//-- fix: find one must have limit 1, offset 0
@@ -759,7 +761,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				} //end if
 				//-- fix: select just particular fields
 				$opts['projection'] = array(); // arrProjFields
-				if(Smart::array_size($args[2]) > 0) {
+				if(array_key_exists(2, $args) AND (Smart::array_size($args[2]) > 0)) {
 					if(\Smart::array_type_test($args[2]) === 2) { // associative
 						foreach((array)$args[2] as $key => $val) {
 							$key = (string) trim((string)$key);

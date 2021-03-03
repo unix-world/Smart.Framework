@@ -19,6 +19,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
+// [PHP8]
+
 /**
  * Dav FileSystem (WebDAV)
  * @ignore
@@ -26,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFileSystem {
 
 	// ::
-	// v.20200511
+	// v.20210303
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
 	public static function methodOptions() { // 200
@@ -196,6 +198,10 @@ final class DavFileSystem {
 		//Smart::log_notice(\print_r($heads,1));
 		$body = (string) \SmartModExtLib\Webdav\DavServer::getRequestBody();
 		//--
+		if(!\array_key_exists('content-type', $heads)) {
+			$heads['content-type'] = null; // PHP8 fix
+		} //end if
+		//--
 		if((string)\trim((string)$body != '')) {
 			if(\strpos((string)$heads['content-type'], '/xml') !== false) {
 				\http_response_code(415); // unsupported media type (we must throw 415 for unsupport mkcol bodies which are non-standard)
@@ -240,6 +246,10 @@ final class DavFileSystem {
 		//--
 		$heads = (array) \SmartModExtLib\Webdav\DavServer::getRequestHeaders();
 		//$body = (string) \SmartModExtLib\Webdav\DavServer::getRequestBody(); // not used ; if ever used this may contain extra XML info about making this request more particular
+		//--
+		if(!\array_key_exists('z-cloud-webdav-response-include', $heads)) {
+			$heads['z-cloud-webdav-response-include'] = null; // PHP8 fix
+		} //end if
 		//--
 		$etags = false;
 		if(\stripos((string)$heads['z-cloud-webdav-response-include'], 'etags') !== false) { // If this head is includded in client request [ Z-Cloud-Webdav-Response-Include: etags ] will force include etags for that request, for this method (propfind)
@@ -324,6 +334,22 @@ final class DavFileSystem {
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
 		$heads = (array) \SmartModExtLib\Webdav\DavServer::getRequestHeaders();
+		//--
+		if(!\array_key_exists('range', $heads)) {
+			$heads['range'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('content-range', $heads)) {
+			$heads['content-range'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('content-length', $heads)) {
+			$heads['content-length'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('transfer-encoding', $heads)) {
+			$heads['transfer-encoding'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('x-expected-entity-length', $heads)) {
+			$heads['x-expected-entity-length'] = null; // PHP8 fix
+		} //end if
 		//--
 		if(((string)\trim((string)$heads['range']) != '') OR ((string)\trim((string)$heads['content-range']) != '')) { // (SabreDAV)
 			// Content-Range is dangerous for PUT requests:  PUT per definition
@@ -548,6 +574,13 @@ final class DavFileSystem {
 		//--
 		$heads = (array) \SmartModExtLib\Webdav\DavServer::getRequestHeaders();
 		//--
+		if(!\array_key_exists('range', $heads)) {
+			$heads['range'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('content-range', $heads)) {
+			$heads['content-range'] = null; // PHP8 fix
+		} //end if
+		//--
 		if(((string)\trim((string)$heads['range']) != '') OR ((string)\trim((string)$heads['content-range']) != '')) {
 			\header('Accept-Ranges: none'); // !!! IMPORTANT BUG FIX: without this, if the client ask a partial range content will result in corrupted file content: MacOS Finder with GET files > 8.5 MB) !!!
 			\http_response_code(400); // unsupported: ranges
@@ -719,6 +752,13 @@ final class DavFileSystem {
 		//--
 		$heads = (array) \SmartModExtLib\Webdav\DavServer::getRequestHeaders();
 		//$body = (string) \SmartModExtLib\Webdav\DavServer::getRequestBody(); // not used
+		//--
+		if(!\array_key_exists('destination', $heads)) {
+			$heads['destination'] = null; // PHP8 fix
+		} //end if
+		if(!\array_key_exists('overwrite', $heads)) {
+			$heads['overwrite'] = null; // PHP8 fix
+		} //end if
 		//--
 		if((string)\trim((string)$heads['destination']) == '') {
 			\http_response_code(400); // bad request ; destination must be non-empty

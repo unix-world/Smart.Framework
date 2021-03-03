@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\AuthAdmins\AuthAdminsHandler
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 namespace SmartModExtLib\AuthAdmins;
@@ -22,6 +22,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //	* SmartComponents
 //	* SmartFrameworkSecurity
 //	* \SmartModDataModel\AuthAdmins\SqAuthAdmins
+
+// [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -54,7 +56,7 @@ if(!\defined('\\APP_AUTH_DB_SQLITE')) {
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20200420
+ * @version 	v.20210303
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -131,7 +133,7 @@ final class AuthAdminsHandler {
 		//--
 
 		//-- do auth except of login page
-		if(!empty($_SERVER['PATH_INFO'])) {
+		if(isset($_SERVER['PATH_INFO']) AND (!empty($_SERVER['PATH_INFO']))) {
 			$try_auth = 'yes';
 		} elseif(!empty($_GET)) {
 			$try_auth = 'yes';
@@ -145,14 +147,14 @@ final class AuthAdminsHandler {
 		//--
 
 		//-- validate username
-		$auth_user_name = (string) \SmartUnicode::str_tolower(\trim(\SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['PHP_AUTH_USER'])));
+		$auth_user_name = (string) \SmartUnicode::str_tolower(\trim(\SmartFrameworkSecurity::FilterUnsafeString((string)(isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : ''))));
 		if((\strlen((string)$auth_user_name) < 3) OR (\strlen((string)$auth_user_name) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$auth_user_name))) {
 			$auth_user_name = ''; // unset invalid user names
 		} //end if
 		//-- validate password
 		$auth_user_pass = '';
 		if((string)$auth_user_name != '') {
-			$auth_user_pass = (string) \SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['PHP_AUTH_PW']);
+			$auth_user_pass = (string) \SmartFrameworkSecurity::FilterUnsafeString((string)(isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : ''));
 			if((\strlen($auth_user_pass) < 7) OR (\strlen($auth_user_pass) > 30)) { // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
 				$auth_user_pass = '';
 			} //end if
@@ -167,7 +169,7 @@ final class AuthAdminsHandler {
 		$logged_in = 'no'; // user is not logged in (unsuccessful username or password)
 		$login_or_logout_form = (string) \SmartComponents::http_message_401_unauthorized('Authorization Required', \SmartComponents::operation_notice('Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.<script type="text/javascript">setTimeout(function(){ self.location = \''.\Smart::escape_js(\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3500);</script>', '100%').'<img src="'.\SmartUtils::get_server_current_url().self::$img_loader.'">');
 		//--
-		if((string)$_REQUEST['logout'] != '') { // do logout
+		if(isset($_REQUEST['logout']) AND ((string)$_REQUEST['logout'] != '')) { // do logout
 			//--
 			$login_or_logout_form = (string) \SmartComponents::render_app_template(
 				(string) self::$template_path,
@@ -219,7 +221,7 @@ final class AuthAdminsHandler {
 					(string) $admin_login['id'], // login user id
 					(string) $admin_login['id'], // alias (for admins this is the same as login ID)
 					(string) $admin_login['email'], // email
-					(string) \trim($admin_login['name_f'].' '.$admin_login['name_l']), // login full user name
+					(string) \trim((string)$admin_login['name_f'].' '.$admin_login['name_l']), // login full user name
 					(string) $admin_login['priv'], // login privileges
 					(int)    \Smart::format_number_int($admin_login['quota'],'+'), // quota in MB
 					[ // metadata (array)
@@ -237,8 +239,8 @@ final class AuthAdminsHandler {
 					],
 					'ADMINS-AREA', // realm
 					'HTTP-BASIC', // method
-					(string) $auth_user_pass, // safe store password
-					(string) $admin_login['keys'] // safe store privacy-keys as encrypted (will be decrypted in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
+					(string) $auth_user_pass, 		// safe store password
+					(string) $admin_login['keys'] 	// safe store privacy-keys as encrypted (will be decrypted in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
 				);
 				//--
 				$db->logSuccessfulLoginData(
@@ -249,9 +251,9 @@ final class AuthAdminsHandler {
 			} else { // log unsuccessful login
 				//--
 				$db->logUnsuccessfulLoginData(
-					(string) $auth_user_name, 				// failed auth account ID
-					(string) \SmartUtils::get_ip_client(), 	// client IP
-					(string) $_SERVER['HTTP_USER_AGENT'] 	// client Browser Signature
+					(string) $auth_user_name, 						// failed auth account ID
+					(string) \SmartUtils::get_ip_client(), 			// client IP
+					(string) \SmartUtils::get_visitor_useragent() 	// client Browser Signature
 				);
 				//--
 			} //end if else

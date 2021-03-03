@@ -14,6 +14,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 define('SMART_APP_MODULE_AREA', 'ADMIN');
 define('SMART_APP_MODULE_AUTH', true); 		// if set to TRUE requires auth always
 
+// [PHP8]
 
 /**
  * Admin Controller (direct output)
@@ -21,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true); 		// if set to TRUE requires auth always
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20200420
+	// v.20210303
 
 	public function Run() { // (OUTPUTS: HTML)
 
@@ -271,12 +272,12 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$message = 'No Operation ...';
 				//--
 				$frm = $this->RequestVarGet('frm', array(), 'array');
-				$frm['id'] 		= (string) trim((string)$frm['id']);
-				$frm['name_f'] 	= (string) trim((string)$frm['name_f']);
-				$frm['name_l'] 	= (string) trim((string)$frm['name_l']);
-				$frm['email'] 	= (string) trim((string)$frm['email']);
-				$frm['keys'] 	= (string) trim((string)$frm['keys']);
-				$frm['priv'] 	= (array)  $frm['priv'];
+				$frm['id'] 		= (string) trim((string)(isset($frm['id']) 		? $frm['id'] 		: ''));
+				$frm['name_f'] 	= (string) trim((string)(isset($frm['name_f']) 	? $frm['name_f'] 	: ''));
+				$frm['name_l'] 	= (string) trim((string)(isset($frm['name_l']) 	? $frm['name_l'] 	: ''));
+				$frm['email'] 	= (string) trim((string)(isset($frm['email']) 	? $frm['email'] 	: ''));
+				$frm['keys'] 	= (string) trim((string)(isset($frm['keys']) 	? $frm['keys'] 		: ''));
+				$frm['priv'] 	= (array)  ((isset($frm['priv']) && is_array($frm['priv'])) ? $frm['priv'] : []);
 				//--
 				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
 				if(SmartAuth::test_login_privilege('admin') !== true) { // PRIVILEGES
@@ -438,12 +439,12 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetCfg('rawpage', true);
 				//--
 				$frm = $this->RequestVarGet('frm', array(), 'array');
-				$frm['id'] 		= (string) trim((string)$frm['id']);
-				$frm['pass'] 	= (string) trim((string)$frm['pass']);
-				$frm['repass'] 	= (string) trim((string)$frm['repass']);
-				$frm['name_f'] 	= (string) trim((string)$frm['name_f']);
-				$frm['name_l'] 	= (string) trim((string)$frm['name_l']);
-				$frm['email'] 	= (string) trim((string)$frm['email']);
+				$frm['id'] 		= (string) trim((string)(isset($frm['id']) 		? $frm['id'] 		: ''));
+				$frm['pass'] 	= (string) trim((string)(isset($frm['pass']) 	? $frm['pass'] 		: ''));
+				$frm['repass'] 	= (string) trim((string)(isset($frm['repass']) 	? $frm['repass'] 	: ''));
+				$frm['name_f'] 	= (string) trim((string)(isset($frm['name_f']) 	? $frm['name_f'] 	: ''));
+				$frm['name_l'] 	= (string) trim((string)(isset($frm['name_l']) 	? $frm['name_l'] 	: ''));
+				$frm['email'] 	= (string) trim((string)(isset($frm['email']) 	? $frm['email'] 	: ''));
 				//--
 				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
 				if(SmartAuth::test_login_privilege('admin') !== true) { // PRIVILEGES

@@ -100,7 +100,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//--
 		$this->render_done = true; // flag: dissalow multiple page renders per controller
 		//--
-		if(!array_key_exists((string)$page_id, $this->rendered_pages)) {
+		if(!\array_key_exists((string)$page_id, $this->rendered_pages)) {
 			$this->rendered_pages[(string)$page_id] = 0;
 		} //end if
 		$this->rendered_pages[(string)$page_id]++; // register rendered pages
@@ -270,7 +270,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			return;
 		} //end if
 		//--
-		if(!array_key_exists((string)$segment_id, $this->rendered_segments)) {
+		if(!\array_key_exists((string)$segment_id, $this->rendered_segments)) {
 			$this->rendered_segments[(string)$segment_id] = 0;
 		} //end if
 		$this->rendered_segments[(string)$segment_id]++; // flag: dissalow renders the same segment multiple times per controller
@@ -292,7 +292,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 				if((\is_array($pcache_arr['vars'])) && (\is_array($pcache_arr['params']))) { // if valid cache (test ... there must be the 3 sub-arrays as exported previous in pcache)
 					$arr = (array) $pcache_arr['vars'];
 					$this->page_params = (array) $pcache_arr['params'];
-					if(!array_key_exists((string)$segment_id, $this->segments_cached)) {
+					if(!\array_key_exists((string)$segment_id, $this->segments_cached)) {
 						$this->segments_cached[(string)$segment_id] = 0;
 					} //end if
 					$this->segments_cached[(string)$segment_id]++;
@@ -321,7 +321,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			); // save arr vars structure to pcache
 			//--
 			if($result_pcached === true) {
-				if(!array_key_exists((string)$segment_id, $this->segments_cached)) {
+				if(!\array_key_exists((string)$segment_id, $this->segments_cached)) {
 					$this->segments_cached[(string)$segment_id] = 0;
 				} //end if
 				$this->segments_cached[(string)$segment_id]++;
@@ -946,7 +946,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		if(!\is_array($yaml)) {
 			$yaml = [];
 		} //end if
-		if(!\is_array($yaml['RENDER'])) {
+		if((!\array_key_exists('RENDER', $yaml)) OR (!\is_array($yaml['RENDER']))) {
 			$yaml['RENDER'] = [];
 		} //end if
 		//--
@@ -1740,21 +1740,21 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 
 		//-- manage meta from plugins
 		if(\in_array('TEMPLATE@TITLE', (array)$this->page_markers)) {
-			if((string)$data_arr['@meta-title'] != '') {
+			if(isset($data_arr['@meta-title']) AND ((string)$data_arr['@meta-title'] != '')) {
 				$data_arr['smart-markers']['TITLE'] = (string) $data_arr['@meta-title'];
 			} //end if
 		} //end if
 		unset($data_arr['@meta-title']);
 		//--
 		if(\in_array('TEMPLATE@META-DESCRIPTION', (array)$this->page_markers)) {
-			if((string)$data_arr['@meta-description'] != '') {
+			if(isset($data_arr['@meta-description']) AND ((string)$data_arr['@meta-description'] != '')) {
 				$data_arr['smart-markers']['META-DESCRIPTION'] = (string) $data_arr['@meta-description'];
 			} //end if
 		} //end if
 		unset($data_arr['@meta-description']);
 		//--
 		if(\in_array('TEMPLATE@META-KEYWORDS', (array)$this->page_markers)) {
-			if((string)$data_arr['@meta-keywords'] != '') {
+			if(isset($data_arr['@meta-keywords']) AND ((string)$data_arr['@meta-keywords'] != '')) {
 				$data_arr['smart-markers']['META-KEYWORDS'] = (string) $data_arr['@meta-keywords'];
 			} //end if
 		} //end if

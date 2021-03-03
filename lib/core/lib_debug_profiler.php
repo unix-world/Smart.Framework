@@ -139,10 +139,14 @@ public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 	//-- #END# SYNC
 
 	//--
+	$the_request_uri = (string) SmartUtils::get_server_current_request_uri();
+	//--
+
+	//--
 	if($is_main) {
 		$the_file = $the_dir.'debug-main.log';
 	} else {
-		$the_file = $the_dir.'debug-sub-req-'.time().'-'.SmartHashCrypto::sha1($_SERVER['REQUEST_URI']).'.log';
+		$the_file = $the_dir.'debug-sub-req-'.time().'-'.SmartHashCrypto::sha1($the_request_uri).'.log';
 	} //end if else
 	//--
 
@@ -180,8 +184,8 @@ public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 			$arr['date-time'] = date('Y-m-d H:i:s O');
 			$arr['debug-token'] = (string) $y_debug_token;
 			$arr['is-request-main'] = $is_main;
-			$arr['request-hash'] = SmartHashCrypto::sha1($_SERVER['REQUEST_URI']);
-			$arr['request-uri'] = (string) $_SERVER['REQUEST_URI'];
+			$arr['request-hash'] = SmartHashCrypto::sha1($the_request_uri);
+			$arr['request-uri'] = (string) $the_request_uri;
 			$arr['resources-time'] = $dbg_stats['time'];
 			$arr['resources-memory'] = $dbg_stats['memory'];
 			$arr['response-code'] = (int) http_response_code();
@@ -192,14 +196,14 @@ public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 				$arr['request-headers'] = base64_encode(Smart::seryalize(''));
 			} //end if else
 			$arr['env-req-filtered'] = base64_encode(Smart::seryalize((array)SmartFrameworkRegistry::getRequestVars()));
-			$arr['env-get'] = base64_encode(Smart::seryalize((array)$_GET));
-			$arr['env-post'] = base64_encode(Smart::seryalize((array)$_POST));
-			$arr['env-cookies'] = base64_encode(Smart::seryalize((array)$_COOKIE));
-			$arr['env-server'] = base64_encode(Smart::seryalize((array)$_SERVER));
+			$arr['env-get'] = base64_encode(Smart::seryalize(is_array($_GET) ? (array)$_GET : []));
+			$arr['env-post'] = base64_encode(Smart::seryalize(is_array($_POST) ? (array)$_POST : []));
+			$arr['env-cookies'] = base64_encode(Smart::seryalize(is_array($_COOKIE) ? (array)$_COOKIE : []));
+			$arr['env-server'] = base64_encode(Smart::seryalize(is_array($_SERVER) ? (array)$_SERVER : []));
 			if(@session_status() === PHP_SESSION_ACTIVE) {
-				$arr['php-session'] = base64_encode(Smart::seryalize((array)$_SESSION));
+				$arr['php-session'] = (string) base64_encode(Smart::seryalize(is_array($_SESSION) ? (array)$_SESSION : []));
 			} else {
-				$arr['php-session'] = base64_encode(Smart::seryalize(''));
+				$arr['php-session'] = (string) base64_encode(Smart::seryalize(''));
 			} //end if else
 			if(SmartAuth::check_login() === true) {
 				$arr['auth-data'] = array('is_auth' => true, 'login_data' => (array)SmartAuth::get_login_data(), '#login-pass#', SmartAuth::get_login_password());
@@ -647,7 +651,7 @@ private static function print_log_runtime() {
 	$arr_bw = (array) SmartComponents::get_imgdesc_by_bw_id($arr_ident['bw']);
 	//--
 	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;"><b>Client Runtime: Info</b></div>';
-	$log .= '<div class="smartframework_debugbar_inforow">'.'<div style="display:inline-block; margin-right:20px; margin-bottom:10px; margin-top:10px; margin-left:5px;"><img src="'.Smart::escape_html(SmartUtils::get_server_current_url().(string)$arr_bw['img']).'" width="64" height="64" alt="'.Smart::escape_html((string)$arr_bw['img']).'" title="'.Smart::escape_html($arr_bw['img']).'"></div> <div style="display:inline-block;"><b>Browser User-Agent Signature:</b> '.Smart::escape_html((string)$_SERVER['HTTP_USER_AGENT']).'<br><b>Browser ID / Browser Class / Client OS:</b> '.Smart::escape_html((string)$arr_ident['bw'].' / '.(string)$arr_ident['bc'].' / '.(string)$arr_ident['os']).'<br><b>Browser Is Mobile:</b> '.Smart::escape_html((string)$arr_ident['mobile']).'<br><b>Client IP / Client Proxy IP:</b> '.Smart::escape_html((string)$arr_ident['ip'].' / '.(trim((string)$arr_ident['px']) ? (string)$arr_ident['px'] : '-')).'</div>'.'</div>';
+	$log .= '<div class="smartframework_debugbar_inforow">'.'<div style="display:inline-block; margin-right:20px; margin-bottom:10px; margin-top:10px; margin-left:5px;"><img src="'.Smart::escape_html(SmartUtils::get_server_current_url().(string)$arr_bw['img']).'" width="64" height="64" alt="'.Smart::escape_html((string)$arr_bw['img']).'" title="'.Smart::escape_html($arr_bw['img']).'"></div> <div style="display:inline-block;"><b>Browser User-Agent Signature:</b> '.Smart::escape_html((string)SmartUtils::get_visitor_useragent()).'<br><b>Browser ID / Browser Class / Client OS:</b> '.Smart::escape_html((string)$arr_ident['bw'].' / '.(string)$arr_ident['bc'].' / '.(string)$arr_ident['os']).'<br><b>Browser Is Mobile:</b> '.Smart::escape_html((string)$arr_ident['mobile']).'<br><b>Client IP / Client Proxy IP:</b> '.Smart::escape_html((string)$arr_ident['ip'].' / '.(trim((string)$arr_ident['px']) ? (string)$arr_ident['px'] : '-')).'</div>'.'</div>';
 	//--
 	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;"><b>Server App Runtime: Powered by</b></div>';
 	$log .= '<div class="smartframework_debugbar_inforow">'.SmartComponents::app_powered_info('yes').'</div>';

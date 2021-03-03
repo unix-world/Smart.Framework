@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20200420
+	// v.20210303
 
 	private $db;
 
@@ -91,7 +91,7 @@ final class SqAuthAdmins {
 			]
 		);
 		//--
-		if(\Smart::array_size($arr) < 0) {
+		if(\Smart::array_size($arr) <= 0) {
 			return 0;
 		} //end if
 		//--

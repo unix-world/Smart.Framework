@@ -19,6 +19,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
+// [PHP8]
+
 /**
  * Dav Server
  * @ignore
@@ -26,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20200511
+	// v.20210303
 
 	const DAV_RESOURCE_TYPE_COLLECTION = 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION = 'noncollection';
@@ -263,6 +265,9 @@ final class DavServer {
 		} //end if
 		//--
 		if((string)$name != '') {
+			if(!\array_key_exists((string)\strtolower((string)\str_replace('_', '-', (string)$name)), self::$httpRequestHeaders)) {
+				return '';
+			} //end if
 			return (string) self::$httpRequestHeaders[(string)\strtolower((string)\str_replace('_', '-', (string)$name))];
 		} else {
 			return (array) self::$httpRequestHeaders;

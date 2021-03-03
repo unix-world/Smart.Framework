@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20210105 # this should be loaded from app web root only
+// # r.20210303 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -144,7 +144,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 		if((is_dir((string)SMART_ERROR_LOGDIR)) && (is_writable((string)SMART_ERROR_LOGDIR))) { // here must be is_dir(), is_writable() and file_put_contents() as the smart framework libs are not yet initialized in this phase ...
 			@file_put_contents(
 				(string) SMART_ERROR_LOGDIR.SMART_ERROR_LOGFILE,
-				(string) "\n".'===== '.date('Y-m-d H:i:s O')."\n".'PHP '.PHP_VERSION.' [SMART-ERR-HANDLER] #'.$errno.' ['.$ferr.']'.$app_halted."\n".'HTTP-METHOD: '.$_SERVER['REQUEST_METHOD'].' # '.'CLIENT: '.trim($_SERVER['REMOTE_ADDR'].' ; '.$_SERVER['HTTP_CLIENT_IP'].' ; '.$_SERVER['HTTP_X_FORWARDED_FOR'], '; ').' @ '.$_SERVER['HTTP_USER_AGENT']."\n".'URI: ['.SMART_ERROR_AREA.'] @ '.$_SERVER['REQUEST_URI']."\n".'Script: '.$errfile."\n".'Line number: '.$errline."\n".$errstr."\n".'==================================='."\n\n",
+				(string) "\n".'===== '.date('Y-m-d H:i:s O')."\n".'PHP '.PHP_VERSION.' [SMART-ERR-HANDLER] #'.$errno.' ['.$ferr.']'.$app_halted."\n".'HTTP-METHOD: '.(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '').' # '.'CLIENT: '.trim((string)(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '').' ; '.(isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : '').' ; '.(isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR']: ''), '; ').' @ '.(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '')."\n".'URI: ['.SMART_ERROR_AREA.'] @ '.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n".'Script: '.$errfile."\n".'Line number: '.$errline."\n".$errstr."\n".'==================================='."\n\n",
 				FILE_APPEND | LOCK_EX
 			);
 		} //end if
@@ -256,7 +256,7 @@ function smart__framework__err__handler__catch_fatal_errs() {
  */
 function smart__framework__err__handler__get__basepath() {
 	//--
-	$imgprefix = (string) dirname((string)$_SERVER['SCRIPT_NAME']);
+	$imgprefix = (string) dirname((string)(isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : ''));
 	//--
 	if(((string)$imgprefix == '') || ((string)$imgprefix == '/') || ((string)$imgprefix == '\\') || ((string)$imgprefix == '.')) {
 		$imgprefix = ''; // no prefix

@@ -1376,7 +1376,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 */
 	final public function PageViewGetVar($param) {
 		//--
-		if((is_array($param)) OR (is_object($param)) OR ((string)$param == '') OR (is_array($value)) OR (is_object($value))) {
+		if((is_array($param)) OR (is_object($param)) OR ((string)$param == '')) {
 			return null;
 		} //end if
 		//--
@@ -1462,7 +1462,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		$param = (string) strtolower((string)$param);
 		//--
 		if($overwrite === false) {
-			if((string)$this->pageview[(string)$param] != '') {
+			if(array_key_exists((string)$param, $this->pageview) AND ((string)$this->pageview[(string)$param] != '')) {
 				return true;
 			} //end if
 		} //end if
