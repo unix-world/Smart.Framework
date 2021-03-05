@@ -74,7 +74,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode
- * @version     v.20210303
+ * @version     v.20210304
  * @package     @Core
  *
  */
@@ -87,13 +87,34 @@ final class Smart {
 
 	//================================================================
 	/**
+	 * Test if a variable value is Scalar or Null
+	 *
+	 * @param 	MIXED 		$val 			:: The value to be tested
+	 *
+	 * @return 	BOOL						:: FALSE if array, object or resource ; TRUE for the rest
+	 */
+	public static function is_nscalar($val) {
+		//--
+		if(is_scalar($val) OR is_null($val)) {
+			return true;
+		} else {
+			return false;
+		} //end if else
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Get the value for a Config parameter from the app $configs array.
 	 *
-	 * @param 	ENUM 		$param 			:: The selected configuration parameter. Example: 'app.info-url' will get value (STRING) from $configs['app']['info-url'] ; 'app' will get the value (ARRAY) from $configs['app']
+	 * @param 	STRING 		$param 			:: The selected configuration parameter. Example: 'app.info-url' will get value (STRING) from $configs['app']['info-url'] ; 'app' will get the value (ARRAY) from $configs['app']
+	 * @param 	ENUM 		$type 			:: The type to pre-format the value: 'array', 'string', 'boolean', 'integer', 'numeric' OR '' to leave the value as is (raw)
 	 *
 	 * @return 	MIXED						:: The value for the selected parameter. If the Config parameter does not exists, will return an empty string.
 	 */
-	public static function get_from_config(string $param) {
+	public static function get_from_config(string $param, string $type='') {
 		//--
 		global $configs;
 		//--
@@ -103,11 +124,50 @@ final class Smart {
 		//--
 		$value = self::array_get_by_key_path($configs, strtolower((string)$param), '.'); // mixed
 		//--
-		if(is_object($value)) {
-			$value = ''; // fix: dissalow objects in config ; allowed types: BOOL, NUMERIC, STRING, ARRAY
+		if(is_object($value) OR is_resource($value)) {
+			$value = ''; // fix: dissalow objects in config ; allowed types: NULL, BOOL, NUMERIC, STRING, ARRAY
 		} //end if
 		//--
 		self::$Cfgs[(string)$param] = $value; // mixed
+		//--
+		switch((string)$type) {
+			case 'array':
+				if(!is_array($value)) {
+					$value = array();
+				} //end if
+				break;
+			case 'string':
+				if(!self::is_nscalar($value)) {
+					$value = '';
+				} //end if
+				$value = (string) $value;
+				break;
+			case 'boolean':
+				$value = (string) strtolower((string)$value); // {{{SYNC-SMART-BOOL-GET-EXT}}}
+				if((!$value) OR ((string)$value == 'false')) {
+					$value = false;
+				} else {
+					$value = true;
+				} //end if
+				break;
+			case 'integer':
+				if(!self::is_nscalar($value)) {
+					$value = 0;
+				} //end if
+				$value = (int) $value;
+				break;
+			case 'numeric':
+				if(!self::is_nscalar($value)) {
+					$value = 0;
+				} //end if
+				$value = (float) $value;
+				break;
+			case '':
+				// return as is (raw, unformatted) ...
+				break;
+			default:
+				self::log_warning(__CLASS__.'::'.__FUNCTION__.'() // Invalid Type to get from Config for Parameter ['.$param.'] Type: '.$type);
+		} //end switch
 		//--
 		return $value; // mixed
 		//--
@@ -292,7 +352,7 @@ final class Smart {
 						if(is_array($val)) {
 							$arrtype = self::array_type_test($val); // 0: not an array ; 1: non-associative ; 2:associative
 							if($arrtype === 1) { // 1: non-associative
-								for($i=0; $i<Smart::array_size($val); $i++) {
+								for($i=0; $i<self::array_size($val); $i++) {
 									$suffix = (string) $key.'[]='.self::escape_url((string)$val[$i]);
 									$url = (string) self::url_add_suffix((string)$url, (string)$suffix);
 								} //end foreach
@@ -734,49 +794,45 @@ final class Smart {
 	 * @param STRING 		$y_key_path 			:: The composed key path by levels (Ex: key1.key2) :: case-sensitive
 	 * @param STRING 		$y_path_separator 		:: The key path separator (Example: .)
 	 *
-	 * @return MIXED [ NUMERIC / STRING / ARRAY ] 	:: The array value of the specified key path
+	 * @return MIXED 		:: The value from the specified array by the specific key path or NULL if the value does not exists
 	 */
 	public static function array_get_by_key_path(array $y_arr, string $y_key_path, string $y_path_separator) {
 		//--
 		if(self::array_size($y_arr) <= 0) {
-			return '';
+			return null;
 		} //end if
 		//--
 		$y_key_path = (string) trim((string)$y_key_path);
 		$y_path_separator = (string) trim((string)$y_path_separator);
 		//--
 		if((string)$y_key_path == '') {
-			return ''; // dissalow empty key path
+			return null; // dissalow empty key path
 		} //end if
 		//--
-		if(strlen($y_path_separator) != 1) {
-			return ''; // dissalow empty separator
+		if(strlen((string)$y_path_separator) != 1) {
+			return null; // dissalow empty separator
 		} //end if
 		//--
 		$arr = (array) explode((string)$y_path_separator, (string)$y_key_path);
-		$max = count($arr);
+		$max = (int) count($arr);
 		for($i=0; $i<$max; $i++) {
 			if((string)trim((string)$arr[$i]) != '') {
 				if(is_array($y_arr)) {
 					if(array_key_exists($arr[$i], $y_arr)) {
-						$y_arr = $y_arr[$arr[$i]]; // array, string or number
+						$y_arr = $y_arr[$arr[$i]];
 					} else {
-						$y_arr = '';
+						$y_arr = null;
 						break;
 					} //end if
 				} else {
-					$y_arr = '';
+					$y_arr = null;
 					break;
 				} //end if
 			} else {
-				$y_arr = '';
+				$y_arr = null;
 				break;
 			} //end if
 		} //end for
-		//--
-		if($y_arr === null) {
-			$y_arr = '';
-		} //end if
 		//--
 		return $y_arr; // mixed
 		//--

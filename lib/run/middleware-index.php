@@ -39,7 +39,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.7.2.1');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20200622
+ * @version		20210305
  *
  */
 final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
@@ -287,7 +287,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		} //end if
 		$appModule->ShutDown();
 		$appSettings = (array) $appModule->PageViewGetCfgs();
-		if(array_key_exists('status-code', $appSettings)) {
+		if(isset($appSettings['status-code'])) {
 			$appStatusCode = (int) $appSettings['status-code']; // this rewrites what the Run() function returns, which is very OK as this is authoritative !
 		} //end if
 		if($appTestInit === false) {

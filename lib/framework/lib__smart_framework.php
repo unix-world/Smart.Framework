@@ -228,7 +228,7 @@ interface SmartInterfaceAppInfo {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210303
+ * @version 	v.20210304
  * @package 	development:Application
  *
  */
@@ -1002,7 +1002,12 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			return false;
 		} //end if
 		//--
-		if((is_array($param)) OR (is_object($param)) OR ((string)$param == '') OR (is_array($value)) OR (is_object($value))) {
+		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
+			return false;
+		} //end if
+		if(!Smart::is_nscalar($value)) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Value: '.$param);
 			return false;
 		} //end if
 		//--
@@ -1061,7 +1066,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 */
 	final public function PageViewGetCfg($param) {
 		//--
-		if((is_array($param)) OR (is_object($param)) OR ((string)$param == '')) {
+		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return '';
 		} //end if
@@ -1145,8 +1150,12 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			return false;
 		} //end if
 		//--
-		if((is_array($param)) OR (is_object($param)) OR ((string)$param == '') OR (is_array($value)) OR (is_object($value))) {
+		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
+			return false;
+		} //end if
+		if(!Smart::is_nscalar($value)) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Value: '.$param);
 			return false;
 		} //end if
 		//--
@@ -1292,8 +1301,8 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		//--
 		$code = (int) $code;
 		if(is_array($msg)) {
-			$message = (string) $msg[0];
-			$htmlmsg = (string) $msg[1];
+			$message = (string) (isset($msg[0]) ? $msg[0] : '');
+			$htmlmsg = (string) (isset($msg[1]) ? $msg[1] : '');
 		} else {
 			$message = (string) $msg;
 			$htmlmsg = '';
@@ -1376,7 +1385,8 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 */
 	final public function PageViewGetVar($param) {
 		//--
-		if((is_array($param)) OR (is_object($param)) OR ((string)$param == '')) {
+		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return null;
 		} //end if
 		//--
@@ -1455,7 +1465,12 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			return false;
 		} //end if
 		//--
-		if((is_array($param)) OR (is_object($param)) OR ((string)$param == '') OR (is_array($value)) OR (is_object($value))) {
+		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
+			return false;
+		} //end if
+		if(!Smart::is_nscalar($value)) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Value: '.$param);
 			return false;
 		} //end if
 		//--
@@ -1491,7 +1506,12 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			return false;
 		} //end if
 		//--
-		if((is_array($param)) OR (is_object($param)) OR ((string)$param == '') OR (is_array($value)) OR (is_object($value))) {
+		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
+			return false;
+		} //end if
+		if(!Smart::is_nscalar($value)) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Value: '.$param);
 			return false;
 		} //end if
 		//--
@@ -1525,7 +1545,12 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			return false;
 		} //end if
 		//--
-		if((is_array($param)) OR (is_object($param)) OR ((string)$param == '') OR (is_array($value)) OR (is_object($value))) {
+		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
+			return false;
+		} //end if
+		if(!Smart::is_nscalar($value)) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Value: '.$param);
 			return false;
 		} //end if
 		//--
@@ -1578,7 +1603,8 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			return false;
 		} //end if
 		//--
-		if((is_array($param)) OR (is_object($param))) {
+		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return false;
 		} //end if
 		//--

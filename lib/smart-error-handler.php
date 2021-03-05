@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20210303 # this should be loaded from app web root only
+// # r.20210304 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -162,7 +162,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 		if(!headers_sent()) {
 			@http_response_code(500); // try, if not headers send
 		} //end if
-		die('<!-- Smart Error Reporting / Smart Error Handler --><div align="center"><div style="width:548px; border: 1px solid #CCCCCC; margin-top:10px; margin-bottom:10px;"><table align="center" cellpadding="4" style="max-width:540px;"><tr valign="top"><td width="32"><img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sign-crit-error.svg" alt="[!]" title="[!]"></td><td>&nbsp;</td><td><b>'.'Application Runtime Error @ '.SMART_ERROR_AREA.' [#'.$errno.']:<br>'.'</b><i>'.nl2br(htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true),false).'</i></td></tr></table></div><br><div style="width:550px; color:#778899; text-align:justify;"></div>'.$smart_____framework_____last__error.'</div>');
+		die('<!-- Smart Error Reporting / Smart Error Handler --><div align="center"><div style="width:548px; border: 1px solid #CCCCCC; margin-top:10px; margin-bottom:10px;"><table align="center" cellpadding="4" style="max-width:540px;"><tr valign="top"><td width="32"><img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sign-crit-error.svg" alt="[!]" title="[!]"></td><td>&nbsp;</td><td><b>'.'Application Runtime Error @ '.SMART_ERROR_AREA.' [#'.$errno.']:<br>'.'</b><i>'.nl2br((string)htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true), false).'</i></td></tr></table></div><br>'.$smart_____framework_____last__error.'</div>');
 		//--
 	} //end if else
 	//--
@@ -176,7 +176,7 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 	//print_r($exception->getTrace());
 	//--
 	$message = $exception->getMessage();
-	$details = '#'.$exception->getLine().' @ '.$exception->getFile();
+	$details = ' Script: '.$exception->getFile()."\n".' Line: '.$exception->getLine();
 	$exid = sha1('ExceptionID:'.$message.'/'.$details);
 	//--
 	if(is_array($exception->getTrace())) {
@@ -184,7 +184,7 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 		$arr = (array) $exception->getTrace();
 		//--
 		if(((string)SMART_ERROR_HANDLER != 'log') OR ((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes')) {
-			$smart_____framework_____last__error .= ini_get('error_prepend_string').'<b><i>Exception [#'.$exid.']</i><br>Error-Message: '.htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</b><br>Line / File: '.htmlspecialchars((string)$details, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).ini_get('error_append_string'); // fix for PHP 7+
+			$smart_____framework_____last__error .= ini_get('error_prepend_string').'<b><i>Exception [#'.$exid.']</i><br>Error-Message: '.htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</b><div style="color:#555555; padding:5px; margin:5px;">'.htmlspecialchars((string)$details, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</div>'.trim((string)ini_get('error_append_string')); // fix for PHP 7+
 		} //end if
 		//--
 		if((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes') {
@@ -194,15 +194,15 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 		} else {
 			//--
 			for($i=0; $i<2; $i++) { // trace just 2 levels
-				$details .= "\n".'  ----- Line #'.$arr[$i]['line'].' @ Class:['.$arr[$i]['class'].'] '.$arr[$i]['type'].' Function:['.$arr[$i]['function'].'] | File: '.$arr[$i]['file'];
-				$details .= "\n".'  ----- Args * '.print_r($arr[$i]['args'],1);
+				$details .= "\n".'  ----- Line #'.(isset($arr[$i]['line']) ? $arr[$i]['line'] : '').' @ Class: ['.(isset($arr[$i]['class']) ? $arr[$i]['class'] : '').'] '.(isset($arr[$i]['type']) ? $arr[$i]['type'] : '').' Function: ['.(isset($arr[$i]['function']) ? $arr[$i]['function'] : '').'] | File: '.(isset($arr[$i]['file']) ? $arr[$i]['file'] : '');
+				$details .= "\n".'    ----- Args * '.(isset($arr[$i]['args']) ? print_r($arr[$i]['args'],1) : '');
 			} //end for
 			//--
 		} //end if else
 		//--
 	} //end if
 	//--
-	@trigger_error('***** EXCEPTION ***** [#'.$exid.']:'."\n"."\n".'Error-Message: '.$message."\n".$details, E_USER_ERROR); // log the exception as ERROR
+	@trigger_error('***** EXCEPTION ***** [#'.$exid.']:'."\n".'Error-Message: '.$message."\n".$details, E_USER_ERROR); // log the exception as ERROR
 	//-- below code would be executed only if E_USER_ERROR fails to stop the execution
 	if(!headers_sent()) {
 		@http_response_code(500); // try, if not headers send
@@ -218,8 +218,8 @@ if(((string)SMART_ERROR_HANDLER == 'log') AND ((string)SMART_FRAMEWORK_DEBUG_MOD
 	register_shutdown_function('smart__framework__err__handler__catch_fatal_errs');
 } else { // dev
 	ini_set('ignore_repeated_errors', '0'); // do not ignore repeated errors
-	ini_set('error_prepend_string', '<div align="left"><style type="text/css">* { font-family: arial,sans-serif; font-smooth: always; }</style> &nbsp; <font size="7" color="#4E5A92"><b>Code Execution ERROR <img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sign-crit-error.svg"> PHP '.PHP_VERSION.' <img width="48" align="right" src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/php-logo.svg"></b></font><div><hr size="1"><pre>');
-	ini_set('error_append_string', '</pre></div><br><div>'.'<small>'.date('Y-m-d H:i:s O').'</small>'.'<hr size="1"></div><span title="Powered by Smart.Framework"><img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sf-logo.svg"></span><span title="PHP Version: '.PHP_VERSION.'"><img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sign-crit-warn.svg" align="right"></span></div>');
+	ini_set('error_prepend_string', '<div align="left"><style type="text/css">* { font-family: arial,sans-serif; font-smooth: always; }</style> &nbsp; <font size="7" color="#4E5A92"><b>Code Execution ERROR <img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sign-crit-error.svg"> PHP '.PHP_VERSION.'</b></font> <span title="PHP Version: '.PHP_VERSION.'" style="cursor:help;"><img width="48" align="right" src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/php-logo.svg"></span><div><hr size="1"><pre>');
+	ini_set('error_append_string', '</pre></div><br><div>'.'<small>'.date('Y-m-d H:i:s O').'</small>'.'<hr size="1"></div><span title="Powered by Smart.Framework" style="cursor:help;"><img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sf-logo.svg"></span><span title="Error" style="cursor:help;"><img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sign-crit-warn.svg" align="right"></span></div>');
 	ini_set('log_errors_max_len', 16384); // max size of one error to log 16k
 } //end if else
 ini_set('html_errors', '0'); // display errors in TEXT format

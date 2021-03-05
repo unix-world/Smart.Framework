@@ -62,7 +62,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //--
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.7.2.1'); 	// tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.03'); 	// tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.05'); 	// tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 //--
 if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM')) {
@@ -498,7 +498,7 @@ final class SmartFrameworkSecurity {
 	// Filter Input String
 	public static function FilterUnsafeString($y_value) {
 		//--
-		if((is_array($y_value)) || (is_object($y_value))) {
+		if(is_array($y_value) OR is_object($y_value) OR is_resource($y_value)) {
 			return null;
 		} //end if
 		//--
@@ -622,7 +622,7 @@ final class SmartFrameworkSecurity {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20200121
+ * @version 	v.20210304
  * @package 	Application
  *
  */
@@ -733,6 +733,16 @@ final class SmartFrameworkRegistry {
 			//--
 		} else { // # else $type must be a string with one of the following cases #
 			//--
+			if(is_object($val) OR is_resource($val)) { // dissalow objects here !!!
+				$val = null;
+			} //end if
+			//--
+			if(!in_array((string)strtolower((string)$type), ['array', 'mixed', 'raw', ''])) {
+				if((!is_scalar($val)) AND (!is_null($val))) {
+					$val = null;
+				} //end if
+			} //end if
+			//--
 			switch((string)strtolower((string)$type)) {
 				case 'array':
 					if(!is_array($val)) {
@@ -745,7 +755,7 @@ final class SmartFrameworkRegistry {
 					$val = (string) $val;
 					break;
 				case 'boolean':
-					$val = (string) strtolower((string)$val);
+					$val = (string) strtolower((string)$val); // {{{SYNC-SMART-BOOL-GET-EXT}}}
 					if(((string)$val == 'true') OR ((string)$val == 't')) {
 						$val = true;
 					} elseif(((string)$val == 'false') OR ((string)$val == 'f')) {
@@ -788,12 +798,10 @@ final class SmartFrameworkRegistry {
 				case 'raw': // raw, alias for mixed, leave as is
 				case '': // no explicit format (take as raw / mixed)
 					// return as is ... (in this case extra validations have to be done explicit in the controller)
-					if(is_object($val)) { // dissalow objects here !!!
-						$val = '';
-					} //end if
 					break;
 				default:
 					@trigger_error(__CLASS__.'::'.__FUNCTION__.'() // Invalid Request Variable ['.$key.'] Type: '.$type, E_USER_WARNING);
+					return null;
 			} //end switch
 			//--
 		} //end if else

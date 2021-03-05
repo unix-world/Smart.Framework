@@ -55,7 +55,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210303
+ * @version 	v.20210304
  * @package 	@Core:Authentication
  *
  */
@@ -219,8 +219,8 @@ final class SmartAuth {
 	 */
 	public static function get_login_password() {
 		//--
-		if(!array_key_exists('USER_LOGIN_PASS', self::$AuthData)) {
-			return ''; // null pass
+		if((!array_key_exists('USER_LOGIN_PASS', self::$AuthData)) OR (!array_key_exists('KEY', self::$AuthData))) {
+			return ''; // no pass or no key
 		} elseif((string)self::$AuthData['USER_LOGIN_PASS'] == '') {
 			return ''; // empty pass
 		} else {
@@ -239,8 +239,8 @@ final class SmartAuth {
 	 */
 	public static function get_login_privkey() {
 		//--
-		if(!array_key_exists('USER_PRIV_KEYS', self::$AuthData)) {
-			return ''; // null priv-key
+		if((!array_key_exists('USER_PRIV_KEYS', self::$AuthData)) OR (!array_key_exists('KEY', self::$AuthData))) {
+			return ''; // no priv-key or not key
 		} elseif((string)trim((string)self::$AuthData['USER_PRIV_KEYS']) == '') {
 			return ''; // empty priv-key
 		} else {

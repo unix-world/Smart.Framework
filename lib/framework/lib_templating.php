@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils
- * @version 	v.20210303
+ * @version 	v.20210304
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -903,7 +903,8 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 		//-- process markers until the last one detected
 		foreach((array)$y_arr_vars as $key => $val) {
 			if(self::have_marker((string)$mtemplate) === true) {
-				if(!is_array($val)) { // fix
+			//	if(!is_array($val)) { // fix
+				if(Smart::is_nscalar($val)) { // fix
 					$mtemplate = (string) self::replace_marker((string)$mtemplate, (string)$key, (string)$val);
 				} //end if # else do not log, it may occur many times with the loop variables !!!
 			} else {
@@ -1640,7 +1641,7 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 										$tmp_arr_context[(string)$bind_var_key.'.'.strtoupper((string)$key)] = $val; // the context here is PARENT.CHILD instead of PARENT.i.CHILD (non-associative)
 									} //end foreach
 								} else {
-									$tmp_arr_context[(string)$bind_var_key.'.'.'_-VAL-_'] = (string) $y_arr_vars[(string)$bind_var_key][$j];
+									$tmp_arr_context[(string)$bind_var_key.'.'.'_-VAL-_'] = (string) (Smart::is_nscalar($y_arr_vars[(string)$bind_var_key][$j]) ? $y_arr_vars[(string)$bind_var_key][$j] : '');
 								} //end if else
 								$mks_line = (string) self::process_if_syntax(
 									(string) $mks_line,
@@ -1702,19 +1703,19 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 									$mks_line = (string) self::replace_marker(
 										(string) $mks_line,
 										(string) $bind_var_key.'.'.'_-VAL-_'.'.'.strtoupper((string)$key),
-										(string) (is_array($val) ? '' : $val)
+										(string) (Smart::is_nscalar($val) ? $val : '')
 									);
 									$mks_line = (string) self::replace_marker(
 										(string) $mks_line,
 										(string) $bind_var_key.'.'.strtoupper((string)$key), // a shortcut for _-VAL-_.KEY
-										(string) (is_array($val) ? '' : $val)
+										(string) (Smart::is_nscalar($val) ? $val : '')
 									);
 								} //end foreach
 							} else {
 								$mks_line = (string) self::replace_marker(
 									(string) $mks_line,
 									(string) $bind_var_key.'.'.'_-VAL-_',
-									(string) $y_arr_vars[(string)$bind_var_key][$j]
+									(string) (Smart::is_nscalar($y_arr_vars[(string)$bind_var_key][$j]) ? $y_arr_vars[(string)$bind_var_key][$j] : '')
 								);
 							} //end if else
 							//-- render
@@ -1748,7 +1749,7 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 										$tmp_arr_context[(string)$bind_var_key.'.'.strtoupper((string)$zkey.'.'.(string)$key)] = $val;
 									} //end foreach
 								} else {
-									$tmp_arr_context[(string)$bind_var_key.'.'.'_-VAL-_'] = (string) $zval;
+									$tmp_arr_context[(string)$bind_var_key.'.'.'_-VAL-_'] = (string) (Smart::is_nscalar($zval) ? $zval : '');
 								} //end if else
 								$mks_line = (string) self::process_if_syntax(
 									(string) $mks_line,
@@ -1830,7 +1831,7 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 								$mks_line = (string) self::replace_marker(
 									(string) $mks_line,
 									(string) $bind_var_key.'.'.'_-VAL-_',
-									(string) $zval
+									(string) (Smart::is_nscalar($zval) ? $zval : '')
 								);
 							} //end if else
 							//-- render
