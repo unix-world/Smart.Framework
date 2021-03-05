@@ -2087,7 +2087,10 @@ final class SmartFrameworkRuntime {
 		if((defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME')) AND (!defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP'))) {
 			if((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME != '') {
 				if(SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, true)) {
-					$cookie = (string) trim((string)strtolower((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_COOKIE[(string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME])));
+					$cookie = '';
+					if(array_key_exists((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, $_COOKIE)) {
+						$cookie = (string) trim((string)strtolower((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_COOKIE[(string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME])));
+					} //end if
 					if(((string)$cookie == '') OR (strlen((string)$cookie) != 40) OR (!preg_match('/^[a-f0-9]+$/', (string)$cookie))) {
 						$expire = 0;
 						if(defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME')) {

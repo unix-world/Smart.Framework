@@ -403,7 +403,7 @@ final class SmartHtmlParser {
 				if((strpos($code, ' ') !== false) AND (Smart::array_size($tmp_parse_attr) > 0)) { // tag have attributes
 					//--
 					$tmp_arr = (array) explode(' ', $code); // get tag parts
-					$this->elements[$i] = strtolower((string)(isset($tmp_arr[0]) ? $tmp_arr[0] : '')); // recompose the tags
+					$this->elements[$i] = (string) strtolower((string)(isset($tmp_arr[0]) ? $tmp_arr[0] : '')); // recompose the tags
 					foreach($tmp_parse_attr as $key => $val) {
 						$tmp_is_valid_attr = true;
 						if(!preg_match((string)$this->regex_tag_name, (string)$key)) {

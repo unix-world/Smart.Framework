@@ -1162,11 +1162,11 @@ final class SmartMarkdownToHTML {
 				$Element['text'] = $cell;
 				//--
 				if(isset($Block['alignments'][$index])) {
-					if(!is_array($Element['attributes'])) {
+					if((!isset($Element['attributes'])) OR (!is_array($Element['attributes']))) {
 						$Element['attributes'] = array();
 					} //end if
 					//$Element['attributes']['style'] = 'text-align: '.$Block['alignments'][$index].';';
-					$Element['attributes']['style'] = 'text-align: '.$Block['alignments'][$index].'; '.$Element['attributes']['style']; // fix by unixman
+					$Element['attributes']['style'] = 'text-align: '.$Block['alignments'][$index].'; '.(isset($Element['attributes']['style']) ? $Element['attributes']['style'] : ''); // fix by unixman
 				} //end if
 				//--
 				$Elements[] = $Element;
@@ -1524,7 +1524,7 @@ final class SmartMarkdownToHTML {
 		//--
 		$Element['attributes']['href'] = str_replace(array('&', '<'), array('&amp;', '&lt;'), $Element['attributes']['href']);
 		//-- unixman (extra)
-		$remainder = substr($Excerpt['text'], $Element['extent']);
+		$remainder = (string) substr((string)$Excerpt['text'], (isset($Element['extent']) ? $Element['extent'] : 0));
 		$matches = array();
 		if($isImage === true) {
 			$theRegex = (string) $this->regexImgAttribute;

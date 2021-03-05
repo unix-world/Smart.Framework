@@ -114,6 +114,9 @@ final class SmartRobot {
 			if($is_ok === true) {
 				//--
 				$tmp_browse_arr = (array) self::load_url_content((string)$tmp_imglink, (int)SMART_FRAMEWORK_NETSOCKET_TIMEOUT, 'GET', '', '', '', (string)$tmp_allow_credentials); // [OK]
+				if(!array_key_exists('log', $out_arr)) {
+					$out_arr['log'] = '';
+				} //end if
 				$out_arr['log'] .= (string) $tmp_browse_arr['log'];
 				if($tmp_browse_arr['result'] == 1) {
 					if(((string)$tmp_browse_arr['mode'] == 'file') OR ((string)$tmp_browse_arr['mode'] == 'embedded')) {

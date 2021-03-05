@@ -261,6 +261,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		} //end if
 		//--
 
+		//--
+		if(!\array_key_exists((string)$segment_id, $this->rendered_segments)) {
+			$this->rendered_segments[(string)$segment_id] = 0;
+		} //end if
 		//-- must test after seing if the segment ID is valid
 		if($this->rendered_segments[(string)$segment_id] > 0) {
 			\Smart::raise_error(
@@ -270,9 +274,6 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			return;
 		} //end if
 		//--
-		if(!\array_key_exists((string)$segment_id, $this->rendered_segments)) {
-			$this->rendered_segments[(string)$segment_id] = 0;
-		} //end if
 		$this->rendered_segments[(string)$segment_id]++; // flag: dissalow renders the same segment multiple times per controller
 		//--
 
@@ -301,7 +302,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			$pcache_arr = array();
 		} //end if
 		//--
-		if($this->segments_cached[(string)$segment_id] <= 0) {
+		if(!\array_key_exists((string)$segment_id, $this->segments_cached)) {
+			$this->segments_cached[(string)$segment_id] = null;
+		} //end if
+		if((int)$this->segments_cached[(string)$segment_id] <= 0) {
 			$arr = (array) $this->loadSegmentOrPage((string)$segment_id, 'segment'); // get arr vars structure from db
 		} //end if
 		if(\Smart::array_size($arr) <= 0) {
@@ -646,8 +650,8 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			$arr_cfg = array();
 		} //end if
 		//--
-		$syntax = (string) \trim((string)$arr_cfg['syntax']);
-		$escape = (string) \trim((string)$arr_cfg['escape']);
+		$syntax = (string) \trim((string)(isset($arr_cfg['syntax']) ? $arr_cfg['syntax'] : ''));
+		$escape = (string) \trim((string)(isset($arr_cfg['escape']) ? $arr_cfg['escape'] : ''));
 		//--
 
 		//--
@@ -1150,7 +1154,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												break;
 											case '@self-code':
 												$arr_tmp_item['id'] = (string) \base64_decode((string)$this->page_params['self-code']);
-												if(\Smart::array_size($v['config']) <= 0) {
+												if((!\array_key_exists('config', $v)) OR (!\is_array($v['config']))) {
 													$v['config'] = [];
 												} //end if
 												if(!\array_key_exists('syntax', $v['config'])) {
@@ -1165,7 +1169,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 										//--
 									} elseif((string)$v['type'] == 'value') {
 										//--
-										$arr_tmp_item = (array) $this->loadValue((string)$id, (array)$v['config'], (array)$arr_tmp_item, (array)(\is_array($v['translations']) ? $v['translations'] : []));
+										$arr_tmp_item = (array) $this->loadValue((string)$id, (array)$v['config'], (array)$arr_tmp_item, (array)((isset($v['translations']) && \is_array($v['translations'])) ? $v['translations'] : []));
 										//--
 									} elseif((string)$v['type'] == 'translation') {
 										//--
@@ -1184,7 +1188,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 											return array();
 										} //end if
 										//--
-										$arr_tmp_item = (array) $this->loadSegmentOrPage((string)$arr_tmp_item['id'], 'segment', (int)$level, (array)(\is_array($v['render']) ? $v['render'] : []));
+										$arr_tmp_item = (array) $this->loadSegmentOrPage((string)$arr_tmp_item['id'], 'segment', (int)$level, (array)((isset($v['render']) && \is_array($v['render'])) ? $v['render'] : []));
 										//--
 									} elseif((string)$v['type'] == 'plugin') {
 										//-- config is available just for plugin
@@ -1502,7 +1506,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 											$plugin_exec = (array) $plugin_obj->PageViewGetVars();
 											// \Smart::log_notice(\print_r($plugin_exec,1));
 											//--
-											if(\array_key_exists('status-code', $plugin_page_settings)) {
+											if(isset($plugin_page_settings['status-code'])) {
 												$plugin_page_settings['status-code'] = (int) $plugin_page_settings['status-code']; // this rewrites what the Run() function returns, which is very OK as this is authoritative !
 												if(!\in_array((int)$plugin_page_settings['status-code'], (array)\SmartFrameworkRuntime::getHttpStatusCodesALL())) {
 													\Smart::log_notice('PageBuilder: Render Template ERROR: Wrong HTTP Status Code (Set='.(int)$plugin_page_settings['status-code'].') in: ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
@@ -1559,6 +1563,8 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												if((string)$plugin_page_settings['rawpage'] == 'yes') {
 													$this->PageViewSetCfg('rawpage', true);
 												} //end if
+											} else {
+												$plugin_page_settings['rawpage'] = null;
 											} //end if
 											if((string)$plugin_page_settings['rawpage'] != 'yes') {
 												$plugin_page_settings['rawpage'] = '';
@@ -1580,18 +1586,18 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												} //end if else
 											} //end if
 											//-- expires, modified
-											if((int)$plugin_page_settings['expires'] > 0) {
+											if(isset($plugin_page_settings['expires']) AND ((int)$plugin_page_settings['expires'] > 0)) {
 												$this->PageViewSetCfg('expires', (int)$plugin_page_settings['expires']);
 												$this->PageViewSetCfg('modified', (int)$plugin_page_settings['modified']);
 											} //end if
 											//--
-											if((string)$plugin_exec['meta-title'] != '') {
+											if(isset($plugin_exec['meta-title']) AND ((string)$plugin_exec['meta-title'] != '')) {
 												$data_arr['@meta-title'] = (string) $plugin_exec['meta-title'];
 											} //end if
-											if((string)$plugin_exec['meta-description'] != '') {
+											if(isset($plugin_exec['meta-description']) AND ((string)$plugin_exec['meta-description'] != '')) {
 												$data_arr['@meta-description'] = (string) $plugin_exec['meta-description'];
 											} //end if
-											if((string)$plugin_exec['meta-keywords'] != '') {
+											if(isset($plugin_exec['meta-keywords']) AND ((string)$plugin_exec['meta-keywords'] != '')) {
 												$data_arr['@meta-keywords'] = (string) $plugin_exec['meta-keywords'];
 											} //end if
 											//--
@@ -1607,12 +1613,18 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 											//--
 											if(($level === 0) AND (\strpos((string)$key, 'TEMPLATE@') === 0) AND (\in_array((string)$key, (array)$this->page_markers))) { // ((string)$key != 'TEMPLATE@MAIN')) { // allow TEMPLATE@*(!MAIN) just on main page (level=0)
 												//-- don't replace these markers, they are template markers
+												if(!\array_key_exists((string)\substr((string)$key, \strlen('TEMPLATE@')), $data_arr['smart-markers'])) {
+													$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] = '';
+												} //end if
 												$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) $plugin_exec['content']; // append is mandatory here else will not render correctly more than one sub-segment/plugin
 												//--
 											} elseif(\preg_match((string)$this->regex_marker, (string)$key)) {
 												//--
 												if(\strpos((string)$data_arr['code'], '{{:'.(string)$key) !== false) {
 													//-- replace these markers, they are page markers
+													if(!\array_key_exists('{{:'.(string)$key.':}}', $arr_replacements)) {
+														$arr_replacements['{{:'.(string)$key.':}}'] = '';
+													} //end if
 													$arr_replacements['{{:'.(string)$key.':}}'] .= (string) $plugin_exec['content']; // OK: always append
 													//--
 												} else {
@@ -1655,7 +1667,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 							//--
 						} else { // page / segment
 							//--
-							if(\is_array($val[$i]['render'])) {
+							if(isset($val[$i]['render']) && \is_array($val[$i]['render'])) {
 								$val[$i] = (array) $this->doRenderObject((string)$id, (array)$val[$i], (int)$level);
 							} //end if
 							//--
@@ -1668,12 +1680,18 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 								//--
 								if(($level === 0) AND (\strpos((string)$key, 'TEMPLATE@') === 0) AND (\in_array((string)$key, (array)$this->page_markers))) { // ((string)$key != 'TEMPLATE@MAIN')) { // allow TEMPLATE@*(!MAIN) just on main page (level=0)
 									//-- don't replace these markers, they are template markers
+									if(!\array_key_exists((string)\substr((string)$key, \strlen('TEMPLATE@')), $data_arr['smart-markers'])) {
+										$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] = '';
+									} //end if
 									$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) $val[$i]['code']; // append is mandatory here else will not render correctly more than one sub-segment/plugin
 									//--
 								} elseif(\preg_match((string)$this->regex_marker, (string)$key)) {
 									//--
 									if(\strpos((string)$data_arr['code'], '{{:'.(string)$key) !== false) {
 										//-- replace these markers, they are page markers
+										if(!\array_key_exists('{{:'.(string)$key.':}}', $arr_replacements)) {
+											$arr_replacements['{{:'.(string)$key.':}}'] = '';
+										} //end if
 										//$arr_replacements['{{:'.(string)$key.':}}'] .= '<!-- Segment['.(int)$i.']: '.\Smart::escape_html((string)$key).' -->';
 										$arr_replacements['{{:'.(string)$key.':}}'] .= (string) $val[$i]['code']; // OK: always append
 										//$arr_replacements['{{:'.(string)$key.':}}'] .= '<!-- /Segment['.(int)$i.']: '.\Smart::escape_html((string)$key).' -->';
@@ -1686,6 +1704,9 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 									//--
 								} elseif($is_self_content === true) {
 									//--
+									if(!\array_key_exists('@', $arr_replacements)) {
+										$arr_replacements['@'] = '';
+									} //end if
 									$arr_replacements['@'] .= (string) $val[$i]['code']; // OK: always append
 									//--
 								} else {
