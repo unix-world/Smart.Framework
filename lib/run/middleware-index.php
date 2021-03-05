@@ -33,7 +33,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.7.2.1');
 /**
  * Class: Middleware Index Service Handler
  *
- * DO NOT CALL THIS CLASS ANYWHERE AS THIS IS THE MAIN HANDLER FOR admin.php
+ * DO NOT CALL THIS CLASS ANYWHERE AS THIS IS THE MAIN HANDLER FOR index.php
  *
  * @access 		private
  * @internal
@@ -181,7 +181,6 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 			if(!array_key_exists(0, $arr)) {
 				$arr[0] = null;
 			} //end if
-
 			if(!array_key_exists(1, $arr)) {
 				$arr[1] = null;
 			} //end if
@@ -295,13 +294,14 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		if(!defined('SMART_APP_MODULE_DIRECT_OUTPUT') OR SMART_APP_MODULE_DIRECT_OUTPUT !== true) {
 			ob_start();
 		} //end if
+		$appStatusCode = 0; // init (for PHP8)
 		$appTestInit = $appModule->Initialize(); // mixed: null (void) / FALSE
 		if($appTestInit !== false) {
 			$appStatusCode = (int) $appModule->Run();
 		} //end if
 		$appModule->ShutDown();
 		$appSettings = (array) $appModule->PageViewGetCfgs();
-		if(isset($appSettings['status-code'])) {
+		if((isset($appSettings['status-code'])) AND ((int)$appSettings['status-code'] > 0)) {
 			$appStatusCode = (int) $appSettings['status-code']; // this rewrites what the Run() function returns, which is very OK as this is authoritative !
 		} //end if
 		if($appTestInit === false) {
@@ -500,20 +500,34 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		//--
 		//== DEFAULT OUTPUT
 		//--
-		if(isset($appSettings['template-path'])) {
+		if((isset($appSettings['template-path'])) AND ((string)trim((string)$appSettings['template-path']) != '')) {
 			if((string)$appSettings['template-path'] == '@') { // if template path is set to self (module)
 				$the_template_path = '@'; // this is a special setting
 			} else {
 				$the_template_path = Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash(trim((string)$appSettings['template-path'])));
 			} //end if else
-		} else {
-			$the_template_path = Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash(trim((string)$configs['app']['index-template-path']))); // use default template path
+		} else { // use default template path
+			$the_template_path = (string) trim((string)$configs['app']['index-template-path']);
+			if((string)$the_template_path == '') {
+				Smart::log_warning('Invalid Page Template Path In Config: `'.$the_template_path.'`');
+				self::Raise500Error('Invalid Page Template Path. See the error log !');
+				return;
+			} //end if
+			if((string)$the_template_path != '@') {
+				$the_template_path = Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash($the_template_path));
+			} //end if
 		} //end if else
 		//--
-		if(isset($appSettings['template-file'])) {
+		if((isset($appSettings['template-file'])) AND ((string)trim((string)$appSettings['template-file']) != '')) {
 			$the_template_file = Smart::safe_filename(trim((string)$appSettings['template-file']));
-		} else {
-			$the_template_file = Smart::safe_filename(trim((string)$configs['app']['index-template-file'])); // use default template
+		} else { // use default template file
+			$the_template_file = (string) trim((string)$configs['app']['index-template-file']);
+			if((string)$the_template_file == '') {
+				Smart::log_warning('Invalid Page Template File In Config: `'.$the_template_file.'`');
+				self::Raise500Error('Invalid Page Template File. See the error log !');
+				return;
+			} //end if
+			$the_template_file = Smart::safe_filename($the_template_file);
 		} //end if else
 		//--
 		if((string)$the_template_path == '@') {

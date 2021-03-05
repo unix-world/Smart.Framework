@@ -1243,7 +1243,7 @@ final class SmartFrameworkRuntime {
 	public static function outputHttpHeadersNoCache($expiration=-1, $modified=-1, $control='private') {
 		//--
 		if(self::$NoCacheHeadersSent !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'The No-Cache Headers (Expire='.$expiration.' ; Modified='.$modified.'), Already Set (don\'t use this function twice per execution) ...', E_USER_WARNING);
+		//	@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'The No-Cache Headers (Expire='.$expiration.' ; Modified='.$modified.'), Already Set (don\'t use this function twice per execution) ...', E_USER_NOTICE); // do not trigger notice, it may be called also by other libs if must show errors after set previous in a controller
 			return;
 		} //end if
 		//--
