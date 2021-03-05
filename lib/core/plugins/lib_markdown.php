@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -51,7 +51,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private $mkdw_version = 'v.1.5.4-r.20201127@smart'; // with fixes from 1.5.1 -> 1.5.4 + extended syntax by unixman + character encoding fixes
+	private $mkdw_version = 'v.1.5.4-r.20210305@smart'; // with fixes from 1.5.1 -> 1.5.4 + extended syntax by unixman + character encoding fixes
 
 	//===================================
 
@@ -251,8 +251,7 @@ final class SmartMarkdownToHTML {
 				//--
 				$parts = explode("\t", $line);
 				//--
-				$line = $parts[0];
-				//--
+				$line = (string) (isset($parts[0]) ? $parts[0] : '');
 				unset($parts[0]);
 				//--
 				foreach($parts as $z => $part) {
@@ -1068,11 +1067,11 @@ final class SmartMarkdownToHTML {
 				//-- unixman
 				$matches = array();
 				if(preg_match('/'.$this->regexTblAttribute.'/', $headerCell, $matches)) {
-					if(!is_array($HeaderElement['attributes'])) {
+					if((!array_key_exists('attributes', $HeaderElement)) OR (!is_array($HeaderElement['attributes']))) {
 						$HeaderElement['attributes'] = array();
 					} //end if
 					$HeaderElement['attributes'] += $this->parseAttributeData($matches[2]);
-					$headerCell = trim(substr($headerCell, 0, (strlen($headerCell) - strlen($matches[0]))));
+					$headerCell = trim((string)substr($headerCell, 0, (strlen($headerCell) - strlen($matches[0]))));
 				} //end if
 				//-- # end unixman
 				$HeaderElement['text'] = $headerCell;
@@ -1153,11 +1152,11 @@ final class SmartMarkdownToHTML {
 				//-- unixman
 				$matches = array();
 				if(preg_match('/'.$this->regexTblAttribute.'/', $cell, $matches)) {
-					if(!is_array($Element['attributes'])) {
+					if((!array_key_exists('attributes', $Element)) OR (!is_array($Element['attributes']))) {
 						$Element['attributes'] = array();
 					} //end if
 					$Element['attributes'] += $this->parseAttributeData($matches[2]);
-					$cell = trim(substr($cell, 0, (strlen($cell) - strlen($matches[0]))));
+					$cell = trim((string)substr($cell, 0, (strlen($cell) - strlen($matches[0]))));
 				} //end if
 				//-- # end unixman
 				$Element['text'] = $cell;
@@ -1834,24 +1833,32 @@ final class SmartMarkdownToHTML {
 		$attributes = preg_split('/[ ]+/', $attributeString, - 1, PREG_SPLIT_NO_EMPTY);
 		//--
 		$classes = array();
-		foreach($attributes as $z => $attribute) {
-			//--
-			if($attribute[0] === '@') { // @
-				$tmp_arr = explode('=', $attribute);
-				$Data[trim(substr(trim($tmp_arr[0]),1))] = trim(str_replace(array(',', '$'), array('.', ' '), trim($tmp_arr[1])));
-			} elseif($attribute[0] === '#') { // #
-				$Data['id'] = substr($attribute, 1);
-			} else { // .
-				$classes[] = substr($attribute, 1);
-			} //end if else
-			//--
-		} //end foreach
-		//--
-		if(count($classes) > 0) {
-			$Data['class'] = implode(' ', $classes);
+		if(is_array($attributes)) {
+			foreach($attributes as $z => $attribute) {
+				//--
+				if($attribute[0] === '@') { // @
+					$tmp_arr = (array) explode('=', $attribute);
+					if(!array_key_exists(0, $tmp_arr)) {
+						$tmp_arr[0] = null;
+					} //end if
+					if(!array_key_exists(1, $tmp_arr)) {
+						$tmp_arr[1] = null;
+					} //end if
+					$Data[(string)trim((string)substr((string)trim((string)$tmp_arr[0]),1))] = (string) trim((string)str_replace([',', '$'], ['.', ' '], (string)trim((string)$tmp_arr[1])));
+				} elseif($attribute[0] === '#') { // #
+					$Data['id'] = (string) substr((string)$attribute, 1);
+				} else { // .
+					$classes[] = (string) substr((string)$attribute, 1);
+				} //end if else
+				//--
+			} //end foreach
 		} //end if
 		//--
-		return $Data;
+		if(count($classes) > 0) {
+			$Data['class'] = (string) implode(' ', (array)$classes);
+		} //end if
+		//--
+		return (array) $Data;
 		//--
 	} //END FUNCTION
 

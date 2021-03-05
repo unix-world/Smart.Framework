@@ -48,7 +48,7 @@ if(!function_exists('hash_algos')) {
  *
  * @access      PUBLIC
  * @depends     PHP hash_algos() / hash()
- * @version     v.20210303
+ * @version     v.20210305
  * @package     @Core:Crypto
  *
  */
@@ -294,7 +294,7 @@ final class SmartHashCrypto {
  * @hints       Blowfish is a 64-bit (8 bytes) block cipher. Max Key is up to 56 chars length (56 bytes = 448 bits). The CBC mode requires a initialization vector (iv).
  *
  * @depends     classes: Smart
- * @version     v.20200424
+ * @version     v.20210305
  * @package     @Core:Crypto
  *
  */
@@ -389,7 +389,7 @@ final class SmartCipherCrypto {
  * @internal
  *
  * @depends     extensions: PHP OpenSSL ; classes: Smart
- * @version     v.20200424
+ * @version     v.20210305
  *
  */
 final class SmartCryptoOpenSSLCipher {
@@ -430,6 +430,15 @@ final class SmartCryptoOpenSSLCipher {
 		} //end if
 		//--
 		$tmp_mode_crypto 	= (array)  explode('/', (string)$runmode); // Example: 'openssl/blowfish/CBC'
+		if(!array_key_exists(0, $tmp_mode_crypto)) {
+			$tmp_mode_crypto[0] = null;
+		} //end if
+		if(!array_key_exists(1, $tmp_mode_crypto)) {
+			$tmp_mode_crypto[1] = null;
+		} //end if
+		if(!array_key_exists(2, $tmp_mode_crypto)) {
+			$tmp_mode_crypto[2] = null;
+		} //end if
 		$tmp_expl_check 	= (string) trim((string)strtolower((string)$tmp_mode_crypto[0]));
 		$tmp_expl_algo 		= (string) trim((string)strtolower((string)$tmp_mode_crypto[1]));
 		$tmp_expl_method 	= (string) trim((string)strtoupper((string)$tmp_mode_crypto[2]));
@@ -598,9 +607,15 @@ final class SmartCryptoOpenSSLCipher {
 		//-- {{{SYNC-BLOWFISH-PADDING-TRIM}}} :: trim padding spaces
 		$plainText = (string) trim((string)openssl_decrypt((string)$cipherText, (string)$this->crypto_cipher, (string)$this->crypto_key, $this->crypto_opts, (string)$this->crypto_iv));
 		//-- {{{SYNC-BLOWFISH-CHECKSUM}}}
-		$arr = explode('#CHECKSUM-SHA1#', $plainText);
-		$plainText = (string) trim((string)$arr[0]);
-		$checksum = (string) trim((string)$arr[1]);
+		$arr = (array) explode('#CHECKSUM-SHA1#', $plainText);
+		$plainText = '';
+		if(array_key_exists(0, $arr)) {
+			$plainText = (string) trim((string)$arr[0]);
+		} //end if
+		$checksum = '';
+		if(array_key_exists(1, $arr)) {
+			$checksum = (string) trim((string)$arr[1]);
+		} //end if
 		if((string)sha1($plainText) != (string)$checksum) {
 			Smart::log_notice('SmartCryptoOpenSSLCipher/Decrypt: Checksum Failed');
 			return ''; // string is corrupted, avoid to return
@@ -653,7 +668,7 @@ final class SmartCryptoOpenSSLCipher {
  * @internal
  *
  * @depends     classes: Smart
- * @version     v.20200424
+ * @version     v.20210305
  *
  */
 final class SmartCryptoCipherBlowfishCBC {
@@ -829,12 +844,18 @@ final class SmartCryptoCipherBlowfishCBC {
 			$plainText .= (pack('N2', $Xl, $Xr) ^ substr($cipherText, $i - 8, 8));
 		} //end for
 		//-- {{{SYNC-BLOWFISH-PADDING-TRIM}}} :: trim padding spaces
-		$plainText = trim($plainText);
+		$plainText = (string) trim((string)$plainText);
 		//-- {{{SYNC-BLOWFISH-CHECKSUM}}}
 		$arr = (array) explode('#CHECKSUM-SHA1#', $plainText);
-		$plainText = (string) trim((string)$arr[0]);
-		$checksum = (string) trim((string)$arr[1]);
-		if((string)sha1($plainText) != (string)$checksum) {
+		$plainText = '';
+		if(array_key_exists(0, $arr)) {
+			$plainText = (string) trim((string)$arr[0]);
+		} //end if
+		$checksum = '';
+		if(array_key_exists(1, $arr)) {
+			$checksum = (string) trim((string)$arr[1]);
+		} //end if
+		if((string)sha1((string)$plainText) != (string)$checksum) {
 			Smart::log_notice('SmartCryptoCipherBlowfishCBC/Decrypt: Checksum Failed');
 			return ''; // string is corrupted, avoid to return
 		} //end if
@@ -1283,7 +1304,7 @@ echo "plain text: $plaintext";
  * @internal
  *
  * @depends     classes: Smart
- * @version     v.20210303
+ * @version     v.20210305
  *
  */
 final class SmartCryptoCipherHash {
@@ -1443,8 +1464,14 @@ final class SmartCryptoCipherHash {
 
 		//--
 		$arr = (array) explode('#CHECKSUM-MD5#', $out);
-		$out = (string) trim((string)$arr[0]);
-		$chk = (string) trim((string)$arr[1]);
+		$out = '';
+		if(array_key_exists(0, $arr)) {
+			$out = (string) trim((string)$arr[0]);
+		} //end if
+		$chk = '';
+		if(array_key_exists(1, $arr)) {
+			$chk = (string) trim((string)$arr[1]);
+		} //end if
 		//--
 		if((string)md5($out) == (string)$chk) {
 			$out = (string) base64_decode((string)$out);

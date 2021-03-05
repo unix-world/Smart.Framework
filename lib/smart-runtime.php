@@ -442,7 +442,7 @@ SmartCache::setKey('smart-app-runtime', 'visitor-cookie', (string)SMART_APP_VISI
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20200121
+ * @version 	v.20210305
  * @package 	Application
  *
  */
@@ -622,7 +622,7 @@ final class SmartFrameworkSecurity {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20210304
+ * @version 	v.20210305
  * @package 	Application
  *
  */
@@ -950,9 +950,9 @@ final class SmartFrameworkRegistry {
 		//--
 		$subcontext = '';
 		if(strpos((string)$context, '|') !== false) {
-			$arr = (array) explode('|', (string)$context, 3); // separe 1st and 2nd from the rest
-			$context = (string) trim((string)$arr[0]);
-			$subcontext = (string) trim((string)$arr[1]);
+			$arr 		= (array)  explode('|', (string)$context, 3); // separe 1st and 2nd from the rest
+			$context 	= (string) trim((string)(isset($arr[0]) ? $arr[0] : ''));
+			$subcontext = (string) trim((string)(isset($arr[1]) ? $arr[1] : ''));
 			unset($arr);
 		} //end if
 		if((string)$context == '') {
@@ -961,33 +961,72 @@ final class SmartFrameworkRegistry {
 		//--
 		switch((string)$area) {
 			case 'stats':
+				if((!array_key_exists('stats', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['stats']))) {
+					self::$DebugMessages['stats'] = [];
+				} //end if
 				self::$DebugMessages['stats'][(string)$context] = $dbgmsg; // stats will be always rewrite (as assign: =) to avoid duplicates
 				break;
 			case 'optimizations':
+				if((!array_key_exists('optimizations', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['optimizations']))) {
+					self::$DebugMessages['optimizations'] = [];
+				} //end if
+				if((!array_key_exists((string)$context, self::$DebugMessages['optimizations'])) OR (!is_array(self::$DebugMessages['optimizations'][(string)$context]))) {
+					self::$DebugMessages['optimizations'][(string)$context] = [];
+				} //end if
 				self::$DebugMessages['optimizations'][(string)$context][] = $dbgmsg;
 				break;
 			case 'extra':
+				if((!array_key_exists('extra', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['extra']))) {
+					self::$DebugMessages['extra'] = [];
+				} //end if
+				if((!array_key_exists((string)$context, self::$DebugMessages['extra'])) OR (!is_array(self::$DebugMessages['extra'][(string)$context]))) {
+					self::$DebugMessages['extra'][(string)$context] = [];
+				} //end if
 				self::$DebugMessages['extra'][(string)$context][] = $dbgmsg;
 				break;
 			case 'db': // can have sub-context
 				if((string)$subcontext == '') {
-					$subcontext = '-UNDEFINED-SUBCONTEXT-'; // db must have a sub-context always
+					$subcontext = '-UNDEFINED-SUBCONTEXT-'; // db must have always a sub-context
+				} //end if
+				if((!array_key_exists('db', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['db']))) {
+					self::$DebugMessages['db'] = [];
+				} //end if
+				if((!array_key_exists((string)$context, self::$DebugMessages['db'])) OR (!is_array(self::$DebugMessages['db'][(string)$context]))) {
+					self::$DebugMessages['db'][(string)$context] = [];
 				} //end if
 				switch((string)$opmode) {
-					case '+': // increment
-						self::$DebugMessages['db'][(string)$context][(string)$subcontext] += (float) $dbgmsg;
-						break;
 					case '=': // assign
 						self::$DebugMessages['db'][(string)$context][(string)$subcontext] = $dbgmsg;
 						break;
+					case '+': // increment
+						if((!array_key_exists((string)$subcontext, self::$DebugMessages['db'][(string)$context])) OR (is_array(self::$DebugMessages['db'][(string)$context][(string)$subcontext]))) {
+							self::$DebugMessages['db'][(string)$context][(string)$subcontext] = 0;
+						} //end if
+						self::$DebugMessages['db'][(string)$context][(string)$subcontext] += (float) $dbgmsg;
+						break;
 					default: // default, add new entry []
+						if((!array_key_exists((string)$subcontext, self::$DebugMessages['db'][(string)$context])) OR (!is_array(self::$DebugMessages['db'][(string)$context][(string)$subcontext]))) {
+							self::$DebugMessages['db'][(string)$context][(string)$subcontext] = [];
+						} //end if
 						self::$DebugMessages['db'][(string)$context][(string)$subcontext][] = $dbgmsg;
 				} //end switch
 				break;
 			case 'mail':
+				if((!array_key_exists('mail', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['mail']))) {
+					self::$DebugMessages['mail'] = [];
+				} //end if
+				if((!array_key_exists((string)$context, self::$DebugMessages['mail'])) OR (!is_array(self::$DebugMessages['mail'][(string)$context]))) {
+					self::$DebugMessages['mail'][(string)$context] = [];
+				} //end if
 				self::$DebugMessages['mail'][(string)$context][] = $dbgmsg;
 				break;
 			case 'modules':
+				if((!array_key_exists('modules', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['modules']))) {
+					self::$DebugMessages['modules'] = [];
+				} //end if
+				if((!array_key_exists((string)$context, self::$DebugMessages['modules'])) OR (!is_array(self::$DebugMessages['modules'][(string)$context]))) {
+					self::$DebugMessages['modules'][(string)$context] = [];
+				} //end if
 				self::$DebugMessages['modules'][(string)$context][] = $dbgmsg;
 				break;
 			default:
@@ -1038,7 +1077,7 @@ final class SmartFrameworkRegistry {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: Smart, SmartUtils
- * @version		v.20200720
+ * @version		v.20210305
  * @package 	Application
  *
  */
@@ -1381,7 +1420,7 @@ final class SmartFrameworkRuntime {
 				) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register !path-info! variable', E_USER_WARNING);
 			} //end if
 		} else {
-			$semantic_url = (string) $_SERVER['REQUEST_URI'];
+			$semantic_url = (string) (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '');
 		} //end if
 		//--
 		if(strlen($semantic_url) > 65535) { // limit according with Firefox standard which is 65535 ; Apache standard is much lower as 8192
@@ -1395,9 +1434,9 @@ final class SmartFrameworkRuntime {
 
 		//--
 		$get_arr = (array) explode('?/', $semantic_url, 2); // separe 1st from 2nd by ?/ if set
-		$location_str = (string) trim((string)$get_arr[1]);
+		$location_str = (string) trim((string)(isset($get_arr[1]) ? $get_arr[1] : ''));
 		$get_arr = (array) explode('&', $location_str, 2); // separe 1st from 2nd by & if set
-		$location_str = (string) trim((string)$get_arr[0]);
+		$location_str = (string) trim((string)(isset($get_arr[0]) ? $get_arr[0] : ''));
 		$get_arr = array(); // cleanup
 		//--
 
@@ -1413,7 +1452,7 @@ final class SmartFrameworkRuntime {
 			$location_arr = array();
 			if(is_array($location_arx)) {
 				for($i=0; $i<$cnt_arx; $i++) {
-					if((trim((string)$location_arx[$i]) != '') AND (trim((string)$location_arx[$i+1]) != '')) {
+					if(((string)trim((string)$location_arx[$i]) != '') AND (array_key_exists($i+1, $location_arx)) AND ((string)trim((string)$location_arx[$i+1]) != '')) {
 						$location_arx[$i+1] = (string) SmartFrameworkSecurity::urlVarDecodeStr((string)$location_arx[$i+1], false); // do not filter here, will filter later when exracting to avoid double filtering !
 						$location_arx[$i+1] = (string) str_replace((string)rawurlencode('/'), '/', (string)$location_arx[$i+1]);
 						$location_arr[(string)$location_arx[$i]] = (string) $location_arx[$i+1];
@@ -1456,7 +1495,7 @@ final class SmartFrameworkRuntime {
 
 		//--
 		if(self::ifDebug()) {
-			self::DebugRequestLog('========================= FILTER REQUEST:'."\n".date('Y-m-d H:i:s O')."\n".$_SERVER['REQUEST_URI']."\n\n".'===== RAW REQUEST VARS:'."\n".'['.$filter_____info.']'."\n".print_r($filter_____arr, 1)."\n");
+			self::DebugRequestLog('========================= FILTER REQUEST:'."\n".date('Y-m-d H:i:s O')."\n".(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n\n".'===== RAW REQUEST VARS:'."\n".'['.$filter_____info.']'."\n".print_r($filter_____arr, 1)."\n");
 		} //end if
 		//--
 
@@ -1530,7 +1569,7 @@ final class SmartFrameworkRuntime {
 
 		//--
 		if(self::ifDebug()) {
-			self::DebugRequestLog('========================= FILTER COOKIES:'."\n".date('Y-m-d H:i:s O')."\n".$_SERVER['REQUEST_URI']."\n\n".'===== RAW COOKIE VARS:'."\n".'['.$filter_____info.']'."\n".print_r($filter_____arr, 1)."\n");
+			self::DebugRequestLog('========================= FILTER COOKIES:'."\n".date('Y-m-d H:i:s O')."\n".(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n\n".'===== RAW COOKIE VARS:'."\n".'['.$filter_____info.']'."\n".print_r($filter_____arr, 1)."\n");
 		} //end if
 		//--
 
@@ -1956,14 +1995,18 @@ final class SmartFrameworkRuntime {
 		} //end if
 		if((SMART_SOFTWARE_FRONTEND_ENABLED === false) AND ((string)$the_current_script == 'index.php')) {
 			$url_redirect = $the_current_url.'admin.php';
-			if($_SERVER['QUERY_STRING']) {
-				$url_redirect .= (string) '?'.$_SERVER['QUERY_STRING'];
+			if(isset($_SERVER['QUERY_STRING'])) {
+				if((string)$_SERVER['QUERY_STRING'] != '') {
+					$url_redirect .= (string) '?'.$_SERVER['QUERY_STRING'];
+				} //end if
 			} //end if
 		} //end if
 		if((SMART_SOFTWARE_BACKEND_ENABLED === false) AND ((string)$the_current_script == 'admin.php')) {
 			$url_redirect = $the_current_url.'index.php';
-			if($_SERVER['QUERY_STRING']) {
-				$url_redirect .= (string) '?'.$_SERVER['QUERY_STRING'];
+			if(isset($_SERVER['QUERY_STRING'])) {
+				if((string)$_SERVER['QUERY_STRING'] != '') {
+					$url_redirect .= (string) '?'.$_SERVER['QUERY_STRING'];
+				} //end if
 			} //end if
 		} //end if
 		//--

@@ -39,7 +39,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: SmartUnicode
- * @version 	v.20200121
+ * @version 	v.20210305
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -111,8 +111,8 @@ final class SmartPunycode {
 	 */
 	public function encode($input) {
 		$input = (string) SmartUnicode::str_tolower((string)$input);
-		$parts = explode('.', $input);
-		foreach ($parts as &$part) {
+		$parts = (array) explode('.', $input);
+		foreach($parts as &$part) {
 			$part = $this->encodePart($part);
 		} //end for
 		return (string) implode('.', $parts);
@@ -127,9 +127,9 @@ final class SmartPunycode {
 	 */
 	public function decode($input) {
 		$input = strtolower($input);
-		$parts = explode('.', $input);
-		foreach ($parts as &$part) {
-			if (strpos($part, $this->const_PREFIX) !== 0) {
+		$parts = (array) explode('.', $input);
+		foreach($parts as &$part) {
+			if(strpos($part, $this->const_PREFIX) !== 0) {
 				continue;
 			} //end if
 			$part = substr($part, strlen($this->const_PREFIX));

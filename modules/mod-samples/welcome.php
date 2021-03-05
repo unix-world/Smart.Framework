@@ -54,7 +54,10 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$module_area = $this->ControllerGetParam('module-area');
 		$the_lang = (string) $this->ConfigParamGet('regional.language-id');
 		$the_xlang = (string) $this->ConfigParamGet('regional.language-id'); // repeat this to check if caching works
-		$local_num = (string) SmartTextTranslations::formatAsLocalNumber('3141.59265359', -1, true);
+		$local_1num = (string) SmartTextTranslations::formatAsLocalNumber('3141.59265359', -1, true);
+		$local_2num = (string) SmartTextTranslations::formatAsLocalNumber('3.14159265359', -1, true);
+		$local_3num = (string) SmartTextTranslations::formatAsLocalNumber('3141.59265359', 4, true);
+		$local_4num = (string) SmartTextTranslations::formatAsLocalNumber('3.14159265359', 4, true);
 		//--
 		if($this->IfDebug()) {
 			$this->SetDebugData('App Domain', $this->ControllerGetParam('app-domain'));
@@ -79,8 +82,14 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			$this->SetDebugData('Config Language ID', $the_lang);
 			$this->SetDebugData('Current Charset', $this->ControllerGetParam('charset'));
 			$this->SetDebugData('Current TimeZone', $this->ControllerGetParam('timezone'));
-			$this->SetDebugData('Test: Local Number Display (PI * 1000)', $local_num);
-			$this->SetDebugData('Test: Local Number Display, Reverse Sign to minus (PI * 1000)', SmartTextTranslations::reverseSignOfLocalFormattedNumber($local_num));
+			$this->SetDebugData('Test: Local Number Display (PI * 1000)', $local_1num);
+			$this->SetDebugData('Test: Local Number Display, Reverse Sign to minus (PI * 1000)', SmartTextTranslations::reverseSignOfLocalFormattedNumber($local_1num));
+			$this->SetDebugData('Test: Local Number Display (PI)', $local_2num);
+			$this->SetDebugData('Test: Local Number Display, Reverse Sign to minus (PI)', SmartTextTranslations::reverseSignOfLocalFormattedNumber($local_2num));
+			$this->SetDebugData('Test: Local Number Display (PI * 1000, with only 4 decimals)', $local_3num);
+			$this->SetDebugData('Test: Local Number Display, Reverse Sign to minus (PI * 1000, with only 4 decimals)', SmartTextTranslations::reverseSignOfLocalFormattedNumber($local_3num));
+			$this->SetDebugData('Test: Local Number Display (PI, with only 4 decimals)', $local_4num);
+			$this->SetDebugData('Test: Local Number Display, Reverse Sign to minus (PI. with only 4 decimals)', SmartTextTranslations::reverseSignOfLocalFormattedNumber($local_4num));
 		} //end if
 		//--
 

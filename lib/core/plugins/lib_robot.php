@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210302
+ * @version 	v.20210305
  * @package 	Plugins:Network
  *
  */
@@ -265,7 +265,7 @@ final class SmartRobot {
 					'result' => '1',
 					'code' => '200', // HTTP 200 OK
 					'headers' => (string) SmartUnicode::sub_str($y_url_or_path, 0, 50).'...', // try to get the 1st 50 chars for trying to guess the extension
-					'content' => (string) @base64_decode((string)trim((string)$eimg[1])),
+					'content' => (string) @base64_decode((string)trim((string)(isset($eimg[1]) ? $eimg[1] : ''))),
 					'debuglog' => ''
 				);
 				//--

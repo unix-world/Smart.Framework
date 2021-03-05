@@ -48,7 +48,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	@Core:Extra
  *
  */
@@ -285,6 +285,12 @@ final class SmartUtils {
 		$arr = array();
 		$arr = (array) explode("\n", (string)$y_enc_data);
 		$y_enc_data = ''; // free mem
+		if(!array_key_exists(0, $arr)) {
+			$arr[0] = null;
+		} //end if
+		if(!array_key_exists(1, $arr)) {
+			$arr[1] = null;
+		} //end if
 		$arr[0] = (string) trim((string)$arr[0]); // is the data packet
 		$arr[1] = (string) trim((string)$arr[1]); // signature
 		//-- check signature
@@ -307,6 +313,13 @@ final class SmartUtils {
 			//--
 			$arr = array();
 			$arr = (array) explode('#CHECKSUM-SHA1#', (string)$out);
+			if(!array_key_exists(0, $arr)) {
+				$arr[0] = null;
+			} //end if
+			if(!array_key_exists(1, $arr)) {
+				$arr[1] = null;
+			} //end if
+			//--
 			$out = '';
 			$arr[0] = @hex2bin(strtolower(trim((string)$arr[0]))); // don't make it string, may return false ; it is the data packet
 			if(($arr[0] === false) OR ((string)$arr[0] == '')) { // no trim here ... (the real string may contain only some spaces)
@@ -968,7 +981,13 @@ final class SmartUtils {
 		$parsing_ok = true;
 		for($i=0; $i<Smart::array_size($vars); $i++) {
 			//--
-			$pair = explode('=', $vars[$i]);
+			$pair = (array) explode('=', $vars[$i]);
+			if(!array_key_exists(0, $pair)) {
+				$pair[0] = null;
+			} //end if
+			if(!array_key_exists(1, $pair)) {
+				$pair[1] = null;
+			} //end if
 			//--
 			if(((string)$pair[0] == '') OR (!SmartFrameworkSecurity::ValidateVariableName((string)$pair[0], true)) OR ((string)$pair[1] == '')) { // {{{SYNC-REQVARS-CAMELCASE-KEYS}}}
 				$parsing_ok = false;
@@ -1002,7 +1021,10 @@ final class SmartUtils {
 			//--
 			if(strpos((string)$detected_page, '.') !== false) {
 				$arr_pg = (array) explode('.', (string)$detected_page);
-				$the_pg_mod = (string) trim((string)$arr_pg[0]); 		// no controller, use the default one
+				$the_pg_mod = '';
+				if(array_key_exists(0, $arr_pg)) {
+					$the_pg_mod = (string) trim((string)$arr_pg[0]); 	// no controller, use the default one
+				} //end if
 				$the_pg_ctrl = '';
 				if(array_key_exists(1, $arr_pg)) {
 					$the_pg_ctrl = (string) trim((string)$arr_pg[1]); 	// page controller
@@ -1718,7 +1740,7 @@ final class SmartUtils {
 				if(strpos($domain, '.') !== false) { // ex: subdomain.domain.ext or subdomain.domain
 					$domain = (array) explode('.', (string)$domain);
 					$domain = (array) array_reverse($domain);
-					$xout = (string) $domain[1].'.'.$domain[0];
+					$xout = (string) $domain[1].'.'.$domain[0]; // PHP8 OK, as it tests if . exists
 				} else { // ex: localhost
 					$xout = (string) $domain;
 				} //end if else
@@ -1965,10 +1987,16 @@ final class SmartUtils {
 				$tmp_srv_software = (string) $_SERVER['SERVER_SOFTWARE'];
 			} //end if else
 			$tmp_version_arr = (array) explode('/', (string)$tmp_srv_software);
-			$tmp_name_str = trim($tmp_version_arr[0]);
-			$tmp_out = trim($tmp_version_arr[1]);
+			if(!array_key_exists(0, $tmp_version_arr)) {
+				$tmp_version_arr[0] = null;
+			} //end if
+			if(!array_key_exists(1, $tmp_version_arr)) {
+				$tmp_version_arr[1] = null;
+			} //end if
+			$tmp_name_str = (string) trim((string)$tmp_version_arr[0]);
+			$tmp_out = (string) trim((string)$tmp_version_arr[1]);
 			$tmp_version_arr = (array) explode(' ', (string)$tmp_out);
-			$tmp_version_str = trim($tmp_version_arr[0]);
+			$tmp_version_str = (string) trim((string)(isset($tmp_version_arr[0]) ? $tmp_version_arr[0] : ''));
 			//--
 			$xout = array(
 				'name' => (string) $tmp_name_str,

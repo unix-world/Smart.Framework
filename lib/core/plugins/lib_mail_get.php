@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints 		After each operation on the IMAP4 Server should check the $imap4->error string and if non-empty stop and disconnect to free the socket
  *
  * @depends 	classes: Smart
- * @version 	v.20200709
+ * @version 	v.20210305
  * @package 	Plugins:Mailer
  *
  */
@@ -668,14 +668,27 @@ final class SmartMailerImap4Client {
 		$this->crr_mbox = (string) $mbox_name;
 		//--
 		$tmp_arr = (array) explode('* OK [UIDVALIDITY ', (string)$reply);
-		$tmp_uiv = (string) trim((string)$tmp_arr['1']);
+		if(!array_key_exists(0, $tmp_arr)) {
+			$tmp_arr[0] = null;
+		} //end if
+		if(!array_key_exists(1, $tmp_arr)) {
+			$tmp_arr[1] = null;
+		} //end if
+		//--
+		$tmp_uiv = (string) trim((string)$tmp_arr[1]);
 		if((string)$tmp_uiv == '') {
 			$this->error = '[ERR] Select MailBox ('.$mbox_name.') Failed :: Cannot Determine the UIDVALIDITY';
 			return 0;
 		} //end if
 		$tmp_arr = array();
+		//--
 		$tmp_arr = (array) explode('] UIDs', (string)$tmp_uiv);
+		if(!array_key_exists(0, $tmp_arr)) {
+			$tmp_arr[0] = null;
+		} //end if
+		//--
 		$this->crr_uiv = (string) trim((string)$tmp_arr[0]);
+		$tmp_arr = array();
 		//--
 		$count = -1;
 		$recent = -1;
@@ -687,9 +700,18 @@ final class SmartMailerImap4Client {
 					$tmp_x_arr = array();
 					$tmp_txt = $tmp_arr[$i];
 					$tmp_x_arr = (array) explode('* ', (string)$tmp_txt);
+					if(!array_key_exists(0, $tmp_x_arr)) {
+						$tmp_x_arr[0] = null;
+					} //end if
+					if(!array_key_exists(1, $tmp_x_arr)) {
+						$tmp_x_arr[1] = null;
+					} //end if
 					$tmp_txt = (string) trim((string)$tmp_x_arr[1]);
 					$tmp_x_arr = array();
 					$tmp_x_arr = (array) explode(' EXISTS', (string)$tmp_txt);
+					if(!array_key_exists(0, $tmp_x_arr)) {
+						$tmp_x_arr[0] = null;
+					} //end if
 					$tmp_txt = (string) trim((string)$tmp_x_arr[0]);
 					$count = (int) $tmp_txt;
 					if((int)$count < 0) {
@@ -699,9 +721,18 @@ final class SmartMailerImap4Client {
 					$tmp_x_arr = array();
 					$tmp_txt = $tmp_arr[$i];
 					$tmp_x_arr = (array) explode('* ', (string)$tmp_txt);
+					if(!array_key_exists(0, $tmp_x_arr)) {
+						$tmp_x_arr[0] = null;
+					} //end if
+					if(!array_key_exists(1, $tmp_x_arr)) {
+						$tmp_x_arr[1] = null;
+					} //end if
 					$tmp_txt = (string) trim((string)$tmp_x_arr[1]);
 					$tmp_x_arr = array();
 					$tmp_x_arr = (array) explode(' RECENT', (string)$tmp_txt);
+					if(!array_key_exists(0, $tmp_x_arr)) {
+						$tmp_x_arr[0] = null;
+					} //end if
 					$tmp_txt = (string) trim((string)$tmp_x_arr[0]);
 					$recent = (int) $tmp_txt;
 					if((int)$recent < 0) {
@@ -718,8 +749,22 @@ final class SmartMailerImap4Client {
 		if((string)$test == 'ok') {
 			//--
 			$tmp_arr = (array) explode(' (MESSAGES ', (string)$reply);
+			if(!array_key_exists(0, $tmp_arr)) {
+				$tmp_arr[0] = null;
+			} //end if
+			if(!array_key_exists(1, $tmp_arr)) {
+				$tmp_arr[1] = null;
+			} //end if
+			//--
 			$tmp_arr = (string) trim((string)$tmp_arr[1]);
+			//--
 			$tmp_arr = (array) explode(' SIZE ', (string)$tmp_arr);
+			if(!array_key_exists(0, $tmp_arr)) {
+				$tmp_arr[0] = null;
+			} //end if
+			if(!array_key_exists(1, $tmp_arr)) {
+				$tmp_arr[1] = null;
+			} //end if
 			//--
 			if((int)$count < 0) { // bug fix: if could not get count from above, try here
 				$count = (int) trim((string)$tmp_arr[0]);
@@ -939,6 +984,12 @@ final class SmartMailerImap4Client {
 				if((string)$val != '') {
 					//--
 					$tmp_arr = (array) explode(' ', (string)$val);
+					if(!array_key_exists(0, $tmp_arr)) {
+						$tmp_arr[0] = null;
+					} //end if
+					if(!array_key_exists(1, $tmp_arr)) {
+						$tmp_arr[1] = null;
+					} //end if
 					$tmp_arr[0] = (string) trim((string)$tmp_arr[0]);
 					$tmp_arr[1] = (string) trim((string)$tmp_arr[1]);
 					//--
@@ -1007,10 +1058,10 @@ final class SmartMailerImap4Client {
 		} //end if
 		//--
 		$tmp_arr = (array) explode('RFC822.SIZE ', (string)$reply); // The answer is like * {MSGNUM} FETCH (RFC822.SIZE 3663)
-		$tmp_size = trim($tmp_arr[1]);
+		$tmp_size = (string) trim((string)(isset($tmp_arr[1]) ? $tmp_arr[1] : ''));
 		$tmp_arr = array();
 		$tmp_arr = (array) explode(')', (string)$tmp_size);
-		$size = trim((string)$tmp_arr[0]);
+		$size = (string) trim((string)(isset($tmp_arr[0]) ? $tmp_arr[0] : ''));
 		//--
 		if($this->debug) {
 			$this->log .= '[INF] Size For Message #'.$msg_num.' is: ['.$size.']'."\n";
@@ -1122,8 +1173,8 @@ final class SmartMailerImap4Client {
 		if(strpos((string)$reply, (string)$mark_ok) !== false) {
 			//--
 			$tmp_repl_arr = (array) explode((string)$mark_ok, (string)$reply);
-			$tmp_repl_txt = (string) $tmp_repl_arr[0];
-			$tmp_repl_arr = (array) explode("\r\n", trim((string)$tmp_repl_txt));
+			$tmp_repl_txt = (string) (isset($tmp_repl_arr[0]) ? $tmp_repl_arr[0] : '');
+			$tmp_repl_arr = (array) explode("\r\n", (string)trim((string)$tmp_repl_txt));
 			$tmp_repl_arr[0] = ''; // the 1st line is the IMAP Answer
 			//--
 			if($read_lines <= 0) {
@@ -1201,8 +1252,8 @@ final class SmartMailerImap4Client {
 		if(strpos((string)$reply, (string)$mark_ok) !== false) {
 			//--
 			$tmp_repl_arr = (array) explode((string)$mark_ok, (string)$reply);
-			$tmp_repl_txt = (string) $tmp_repl_arr[0];
-			$tmp_repl_arr = (array) explode("\r\n", trim((string)$tmp_repl_txt));
+			$tmp_repl_txt = (string) (isset($tmp_repl_arr[0]) ? $tmp_repl_arr[0] : '');
+			$tmp_repl_arr = (array) explode("\r\n", (string)trim((string)$tmp_repl_txt));
 			$tmp_repl_arr[0] = ''; // the 1st line is the IMAP Answer
 			//--
 			for($i=1; $i<count($tmp_repl_arr); $i++) { // we start at 1 because the 1st line is the IMAP Answer
@@ -1321,12 +1372,18 @@ final class SmartMailerImap4Client {
 		} //end if
 		//--
 		$tmp_arr_uid = (array) explode('[APPENDUID ', (string)$data);
-		$tmp_uid = (string) trim((string)$tmp_arr_uid[1]);
+		$tmp_uid = (string) trim((string)(isset($tmp_arr_uid[1]) ? $tmp_arr_uid[1] : ''));
 		$tmp_arr_uid = array();
 		$tmp_arr_uid = (array) explode('] Append', (string)$tmp_uid);
-		$tmp_uid = (string) trim((string)$tmp_arr_uid[0]);
+		$tmp_uid = (string) trim((string)(isset($tmp_arr_uid[0]) ? $tmp_arr_uid[0] : ''));
 		$tmp_arr_uid = array();
 		$tmp_arr_uid = (array) explode(' ', (string)$tmp_uid);
+		if(!array_key_exists(0, $tmp_arr_uid)) {
+			$tmp_arr_uid[0] = null;
+		} //end if
+		if(!array_key_exists(1, $tmp_arr_uid)) {
+			$tmp_arr_uid[1] = null;
+		} //end if
 		if((string)trim((string)$tmp_arr_uid[0]) == (string)$this->crr_uiv) {
 			$tmp_uid = 'IMAP4-UIV-'.trim((string)$this->crr_uiv).'-UID-'.trim((string)$tmp_arr_uid[1]); // {{{SYNC-IMAP4-SAFE-UIDS}}}
 		} else {
@@ -1558,7 +1615,7 @@ final class SmartMailerImap4Client {
  * @hints 		After each operation on the POP3 Server should check the $pop3->error string and if non-empty stop and disconnect to free the socket
  *
  * @depends 	classes: Smart
- * @version 	v.20200708
+ * @version 	v.20210305
  * @package 	Plugins:Mailer
  *
  */
@@ -2214,9 +2271,9 @@ final class SmartMailerPop3Client {
 			return '';
 		} //end if
 		//--
-		$vars = (array) explode(' ', (string)$reply);
-		$count = trim((string)$vars[1]);
-		$size = trim((string)$vars[2]);
+		$vars 	= (array) explode(' ', (string)$reply);
+		$count 	= trim((string)(isset($vars[1]) ? $vars[1] : ''));
+		$size 	= trim((string)(isset($vars[2]) ? $vars[2] : ''));
 		//--
 		$count = (int) $count;
 		$size = (int) $size;
@@ -2272,7 +2329,7 @@ final class SmartMailerPop3Client {
 		//--
 		if((string)trim((string)$msg_num) != '') {
 			$tmp_arr = (array) explode(' ', (string)$reply); // The answer is like [OK] [MSGNUM] [UIDL]
-			$uid = (string) trim((string)$tmp_arr[2]);
+			$uid = (string) trim((string)(isset($tmp_arr[2]) ? $tmp_arr[2] : ''));
 		} else {
 			$uid = (string) $this->retry_data();
 			if((string)$this->error != '') {
@@ -2328,7 +2385,7 @@ final class SmartMailerPop3Client {
 		} //end if
 		//--
 		$tmp_arr = (array) explode(' ', (string)$reply); // The answer is like [JUNK] [MSGNUM] [MSGSIZE]
-		$size = trim((string)$tmp_arr[2]);
+		$size = (string) trim((string)(isset($tmp_arr[2]) ? $tmp_arr[2] : ''));
 		//--
 		if($this->debug) {
 			$this->log .= '[INF] Size For Message #'.$msg_num.' is: ['.$size.']'."\n";

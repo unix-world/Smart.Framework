@@ -17,7 +17,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* Smart::
 //======================================================
 
-// [REGEX-SAFE-OK]
+// [REGEX-SAFE-OK] ; [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200121
+ * @version 	v.20210305
  * @package 	Plugins:Network
  *
  */
@@ -252,7 +252,7 @@ final class SmartFtpClient {
 		//--
 		$res_data = (array) explode(" ", (string)$this->_resp);
 		//--
-		return (string) $res_data[1];
+		return (string) (isset($res_data[1]) ? $res_data[1] : '');
 		//--
 	} //END FUNCTION
 	//===================================
@@ -948,6 +948,25 @@ final class SmartFtpClient {
 		} //end if
 		//--
 		$res_data = (array) explode(",", (string)$ip_port);
+		if(!array_key_exists(0, $res_data)) {
+			$res_data[0] = null;
+		} //end if
+		if(!array_key_exists(1, $res_data)) {
+			$res_data[1] = null;
+		} //end if
+		if(!array_key_exists(2, $res_data)) {
+			$res_data[2] = null;
+		} //end if
+		if(!array_key_exists(3, $res_data)) {
+			$res_data[3] = null;
+		} //end if
+		if(!array_key_exists(4, $res_data)) {
+			$res_data[4] = null;
+		} //end if
+		if(!array_key_exists(5, $res_data)) {
+			$res_data[5] = null;
+		} //end if
+		//--
 		$ipaddr = $res_data[0].".".$res_data[1].".".$res_data[2].".".$res_data[3];
 		$port = $res_data[4]*256 + $res_data[5];
 		//--

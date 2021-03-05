@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		\Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -818,7 +818,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 					} //end if
 					$drows = (int) Smart::array_size($obj);
 					if((string)$method == 'findone') {
-						if(is_array($obj[0])) {
+						if(array_key_exists(0, $obj) AND is_array($obj[0])) {
 							$obj = (array) $obj[0];
 							$drows = 1;
 						} else {
@@ -1227,7 +1227,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$concern_wr = 'majority'; // make sense if with a sharding cluster
 		} elseif(strpos((string)$type, 'mongo-replica-set:') !== false) { // replica set
 			$replica = (array) explode('mongo-replica-set:', (string)$type);
-			$replica = (string) trim((string)$replica[1]);
+			$replica = (string) trim((string)(isset($replica[1]) ? $replica[1] : ''));
 			$concern_rd = 'available';
 			$concern_wr = 'majority';
 		} else { // mongo-standalone

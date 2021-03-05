@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20201028
+ * @version 	v.20210305
  * @package 	Plugins:Image
  *
  */
@@ -114,7 +114,7 @@ final class SmartDetectImages {
 				//--
 				$y_headers = (string) substr($y_headers, 11);
 				$eimg = (array) explode(';base64,', $y_headers);
-				$eimg[0] = (string) strtolower((string)trim((string)$eimg[0]));
+				$eimg[0] = (string) strtolower((string)trim((string)(isset($eimg[0]) ? $eimg[0] : '')));
 				if((string)$eimg[0] == 'jpeg') {
 					$eimg[0] = 'jpg'; // correction
 				} //end if
@@ -129,11 +129,11 @@ final class SmartDetectImages {
 				//-- try to get file extension by the content (strategy 1)
 				$temp_guess_ext_tmp = array();
 				preg_match('/^content\-disposition:(.*)$/mi', (string)$y_headers, $temp_guess_ext_tmp);
-				$temp_guess_extension = (string) trim((string)$temp_guess_ext_tmp[1]);
+				$temp_guess_extension = (string) trim((string)(isset($temp_guess_ext_tmp[1]) ? $temp_guess_ext_tmp[1] : ''));
 				$temp_guess_extension = (array)  explode(' filename=', (string)$temp_guess_extension);
-				$temp_guess_extension = (string) trim((string)$temp_guess_extension[1]);
+				$temp_guess_extension = (string) trim((string)(isset($temp_guess_extension[1]) ? $temp_guess_extension[1] : ''));
 				$temp_guess_extension = (array)  explode('"', (string)$temp_guess_extension);
-				$temp_guess_extension = (string) trim((string)$temp_guess_extension[1]);
+				$temp_guess_extension = (string) trim((string)(isset($temp_guess_extension[1]) ? $temp_guess_extension[1] : ''));
 				$temp_guess_extension = (string) trim(strtolower(SmartFileSysUtils::get_file_extension_from_path((string)$temp_guess_extension))); // [OK]
 				$temp_guess_ext_tmp = array();
 				//-- test
@@ -151,11 +151,11 @@ final class SmartDetectImages {
 					//-- try to guess by the content type (strategy 2)
 					$temp_guess_ext_tmp = array();
 					preg_match('/^content\-type:(.*)$/mi', (string)$y_headers, $temp_guess_ext_tmp);
-					$temp_guess_extension = (string) trim((string)$temp_guess_ext_tmp[1]);
+					$temp_guess_extension = (string) trim((string)(isset($temp_guess_ext_tmp[1]) ? $temp_guess_ext_tmp[1] : ''));
 					$temp_guess_extension = (array) explode('/', (string)$temp_guess_extension);
-					$temp_guess_extension = (string) trim((string)$temp_guess_extension[1]);
+					$temp_guess_extension = (string) trim((string)(isset($temp_guess_extension[1]) ? $temp_guess_extension[1] : ''));
 					$temp_guess_extension = (array) explode(';', (string)$temp_guess_extension);
-					$temp_guess_extension = (string) trim((string)$temp_guess_extension[0]);
+					$temp_guess_extension = (string) trim((string)(isset($temp_guess_extension[0]) ? $temp_guess_extension[0] : ''));
 					//--
 					switch((string)$temp_guess_extension) {
 						case 'svg':

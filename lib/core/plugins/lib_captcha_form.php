@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartUtils, SmartTextTranslations ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
- * @version 	v.20200619
+ * @version 	v.20210305
  * @package 	development:Captcha
  *
  */
@@ -240,12 +240,12 @@ final class SmartCaptcha {
 		//--
 		$arr_value = array();
 		if((string)$var_value != '') {
-			$arr_value = (array) explode('!', (string)base64_decode(SmartUtils::crypto_blowfish_decrypt(hex2bin((string)$var_value), sha1($y_form_name.SMART_FRAMEWORK_SECURITY_KEY)))); // explode by '!'
+			$arr_value = (array) explode('!', (string)base64_decode((string)SmartUtils::crypto_blowfish_decrypt(hex2bin((string)$var_value), sha1($y_form_name.SMART_FRAMEWORK_SECURITY_KEY)))); // explode by '!'
 		} //end if
 		//--
 		$ok = false; // error check by default
 		//--
-		if((strlen($var_value) > 0) AND ((string)$cookie_value == (string)self::cksum_hash(trim((string)$arr_value[1])))) {
+		if((strlen($var_value) > 0) AND ((string)$cookie_value == (string)self::cksum_hash((string)trim((string)(isset($arr_value[1]) ? $arr_value[1] : ''))))) {
 			//--
 			$ok = true;
 			//--

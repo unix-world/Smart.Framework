@@ -441,7 +441,11 @@ final class SmartSession {
 			//--
 		} //end if
 		//--
+		if(!array_key_exists('visit_COUNTER', $_SESSION)) {
+			$_SESSION['visit_COUNTER'] = 0;
+		} //end if
 		$_SESSION['visit_COUNTER'] += 1; // increment visit counter
+		//--
 		$_SESSION['visit_UPDATE'] = (int) $time_now;
 		//--
 		if(!isset($_SESSION['visitor_UUID'])) {
@@ -478,7 +482,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {

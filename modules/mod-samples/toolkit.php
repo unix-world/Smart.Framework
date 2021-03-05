@@ -43,7 +43,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$fcontent = (string) SmartFileSystem::read('lib/css/toolkit/demo/sample.html');
 		$arr_data = explode('<body>', $fcontent);
-		$fcontent = (string) $arr_data[1];
+		$fcontent = (string) (isset($arr_data[1]) ? $arr_data[1] : '');
 		$arr_data = explode('</body>', $fcontent);
 		$fcontent = (string) $arr_data[0];
 		$arr_data = array(); // free mem

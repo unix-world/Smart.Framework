@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20201028
+ * @version 	v.20210305
  * @package 	Plugins:Mailer
  *
  */
@@ -142,7 +142,7 @@ final class SmartMailerUtils {
 		//------------
 		$tmp_arr = array();
 		$tmp_arr = (array) explode('@', (string)$email);
-		$domain = (string) trim((string)$tmp_arr[1]);
+		$domain = (string) trim((string)(isset($tmp_arr[1]) ? $tmp_arr[1] : ''));
 		$safedom = (string) Smart::safe_validname($domain);
 		$tmp_arr = array();
 		//------------
@@ -791,7 +791,7 @@ final class SmartMailerUtils {
 		} //end if
 		//--
 		$uid = (array) explode('-UID-', (string)$uid);
-		$uid = (string) trim((string)$uid[1]);
+		$uid = (string) trim((string)(isset($uid[1]) ? $uid[1] : ''));
 		if((string)$uid == '') {
 			return '';
 		} //end if
@@ -820,7 +820,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20200715
+ * @version 	v.20210305
  * @package 	Plugins:Mailer
  *
  */
@@ -936,12 +936,12 @@ final class SmartMailerMimeParser {
 		$dec_arr = (array) explode("\n", trim((string)$decoded_link));
 		//print_r($dec_arr);
 		//--
-		$arr['creation-time'] 	= trim((string)$dec_arr[0]);
-		$arr['message-file'] 	= trim((string)$dec_arr[1]);
+		$arr['creation-time'] 	= trim((string)(isset($dec_arr[0]) ? $dec_arr[0] : ''));
+		$arr['message-file'] 	= trim((string)(isset($dec_arr[1]) ? $dec_arr[1] : ''));
 		$arr['message-part'] 	= trim((string)$the_msg_part);
-		$arr['access-key'] 		= trim((string)$dec_arr[2]);
-		$arr['bw-unique-key'] 	= trim((string)$dec_arr[3]);
-		$arr['sf-robot-key']	= trim((string)$dec_arr[4]);
+		$arr['access-key'] 		= trim((string)(isset($dec_arr[2]) ? $dec_arr[2] : ''));
+		$arr['bw-unique-key'] 	= trim((string)(isset($dec_arr[3]) ? $dec_arr[3] : ''));
+		$arr['sf-robot-key']	= trim((string)(isset($dec_arr[4]) ? $dec_arr[4] : ''));
 		//-- check if file path is valid
 		if((string)$arr['message-file'] == '') {
 			$arr = array();
@@ -1227,7 +1227,7 @@ final class SmartMailerMimeParser {
 									$arr_cc_name = (array) explode(',', (string)$head['cc_name']);
 									$out .= '[@]';
 									for($z=0; $z<Smart::array_size($arr_cc_addr); $z++) {
-										$out .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.Smart::escape_html(trim($arr_cc_addr[$z])).' &nbsp; <i>'.Smart::escape_html(trim($arr_cc_name[$z])).'</i>';
+										$out .= '<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.Smart::escape_html((string)trim((string)$arr_cc_addr[$z])).' &nbsp; <i>'.Smart::escape_html((string)trim((string)(isset($arr_cc_name[$z]) ? $arr_cc_name[$z] : ''))).'</i>';
 									} //end for
 								} else {
 									$out .= Smart::escape_html($head['cc_addr']).' &nbsp; <i>'.Smart::escape_html($head['cc_name']).'</i>';
@@ -1616,8 +1616,8 @@ final class SmartMailerMimeParser {
 		//--
 		if(strpos((string)$y_msg_file, '@') !== false) {
 			$tmp_arr = (array) explode('@', (string)$y_msg_file);
-			$out['msg'] = (string) trim((string)$tmp_arr[0]);
-			$out['part'] = (string) trim((string)$tmp_arr[1]);
+			$out['msg']  = (string) trim((string)(isset($tmp_arr[0]) ? $tmp_arr[0] : ''));
+			$out['part'] = (string) trim((string)(isset($tmp_arr[1]) ? $tmp_arr[1] : ''));
 		} else {
 			$out['msg'] = (string) trim((string)$y_msg_file);
 		} //end if else

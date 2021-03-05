@@ -48,7 +48,7 @@ define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)SmartFileSystem::read('lib/
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	Application:ViewComponents
  *
  */
@@ -433,21 +433,24 @@ final class SmartComponents {
 		$css_w_or_h = (string) trim((string)$css_w_or_h);
 		//--
 		$css_w_or_h = (array) explode(';', (string)$css_w_or_h);
-		$css_w_or_h = (string) trim((string)$css_w_or_h[0]);
+		$css_w_or_h = (string) trim((string)(isset($css_w_or_h[0]) ? $css_w_or_h[0] : ''));
 		$matches = array();
 		preg_match('/^([0-9]+)(%|[a-z]{1,2})?$/', (string)$css_w_or_h, $matches);
-		$css_unit = 'px';
+		if(!array_key_exists(0, $matches)) {
+			$matches[0] = null;
+		} //end if
 		if(!array_key_exists(1, $matches)) {
 			$matches[1] = null;
 		} //end if
+		if(!array_key_exists(2, $matches)) {
+			$matches[2] = null;
+		} //end if
+		$css_unit = 'px';
 		$css_num = (int) $matches[1];
 		if($css_num <= 0) {
 			$css_num = 1;
 		} //end if
 		$css_w_or_h = '';
-		if(!array_key_exists(2, $matches)) {
-			$matches[2] = null;
-		} //end if
 		switch((string)$matches[2]) {
 			case '%':
 			case 'vw':

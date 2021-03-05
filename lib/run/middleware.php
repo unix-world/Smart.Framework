@@ -318,10 +318,10 @@ abstract class SmartAbstractAppMiddleware {
 			// [SFR.UA]\n
 			// #END#
 			//--
-			$crrtime = (string) trim((string)$arr_metadata[0]);
-			$filepath = (string) trim((string)$arr_metadata[1]);
-			$access_key = (string) trim((string)$arr_metadata[2]);
-			$unique_key = (string) trim((string)$arr_metadata[3]);
+			$crrtime 	= (string) trim((string)(isset($arr_metadata[0]) ? $arr_metadata[0] : ''));
+			$filepath 	= (string) trim((string)(isset($arr_metadata[1]) ? $arr_metadata[1] : ''));
+			$access_key = (string) trim((string)(isset($arr_metadata[2]) ? $arr_metadata[2] : ''));
+			$unique_key = (string) trim((string)(isset($arr_metadata[3]) ? $arr_metadata[3] : ''));
 			$arr_metadata = array(); // clear
 			//--
 			$timed_hours = 1; // default expire in 1 hour
@@ -369,7 +369,7 @@ abstract class SmartAbstractAppMiddleware {
 				//-- the path must not start with / but this is tested below
 				$tmp_arr_paths = (array) explode('/', $filepath, 2); // only need 1st part for testing
 				//-- allow file downloads just from specific folders like wpub/ or wsys/ (this is a very important security fix to dissalow any downloads that are not in the specific folders)
-				if(((string)substr((string)$filepath, 0, 1) != '/') AND (strpos((string)SMART_FRAMEWORK_DOWNLOAD_FOLDERS, '<'.trim((string)$tmp_arr_paths[0]).'>') !== false) AND (stripos((string)SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, '<'.$tmp_file_ext.'>') === false)) {
+				if(((string)substr((string)$filepath, 0, 1) != '/') AND (strpos((string)SMART_FRAMEWORK_DOWNLOAD_FOLDERS, '<'.trim((string)(isset($tmp_arr_paths[0]) ? $tmp_arr_paths[0] : '')).'>') !== false) AND (stripos((string)SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, '<'.$tmp_file_ext.'>') === false)) {
 					//--
 					SmartFileSysUtils::raise_error_if_unsafe_path($filepath); // re-test finally
 					//-- no need to clear the stat cache as the following checks will do it
@@ -550,7 +550,11 @@ abstract class SmartAbstractAppMiddleware {
 		//--
 		$area = (string) $area;
 		$is_main = (bool) $is_main;
-		if(((int)http_response_code() > 299) OR ($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+		$req_with = '';
+		if(array_key_exists('HTTP_X_REQUESTED_WITH', $_SERVER)) {
+			$req_with = (string) $_SERVER['HTTP_X_REQUESTED_WITH'];
+		} //end if
+		if(((int)http_response_code() > 299) OR ((string)$req_with != '')) {
 			$is_main = false;
 		} //end if
 		//--

@@ -50,7 +50,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210217
+ * @version 	v.20210305
  * @package 	PageBuilder
  *
  */
@@ -1178,7 +1178,7 @@ final class Manager {
 		} //end if
 		if(!$err) {
 			$y_content = (array) \explode(';base64,', (string)$y_content);
-			$y_content = (string) @\base64_decode((string)\trim((string)$y_content[1]));
+			$y_content = (string) @\base64_decode((string)\trim((string)(isset($y_content[1]) ? $y_content[1] : '')));
 			if((string)$y_content == '') {
 				$err = 'Invalid SVG Content';
 			} //end if
@@ -2192,9 +2192,15 @@ final class Manager {
 											$tmp_arr_lvl3[$z]['img-type-html'] = (string) self::getImgForCodeType((string)$tmp_arr_lvl3[$z]['id'], (string)$tmp_arr_lvl3[$z]['mode']);
 										} //end for
 										$tmp_arr_lvl2[$k]['ref-childs'] = (array) $tmp_arr_lvl3;
+										if(!\array_key_exists((string)$tmp_arr_lvl3[$z]['id'], $total)) {
+											$total[(string)$tmp_arr_lvl3[$z]['id']] = 0;
+										} //end if
 										$total[(string)$tmp_arr_lvl3[$z]['id']] += 1;
 									} //end if
 									$tmp_arr_lvl3 = array();
+									if(!\array_key_exists((string)$tmp_arr_lvl2[$k]['id'], $total)) {
+										$total[(string)$tmp_arr_lvl2[$k]['id']] = 0;
+									} //end if
 									$total[(string)$tmp_arr_lvl2[$k]['id']] += 1;
 								} //end if
 							} //end for
@@ -2202,6 +2208,9 @@ final class Manager {
 						} //end if
 						$tmp_arr_lvl2 = array();
 						$arr_pages_data[(string)$arr_controllers[$i]][] = (array) $tmp_arr_lvl1[$j];
+						if(!\array_key_exists((string)$tmp_arr_lvl1[$j]['id'], $total)) {
+							$total[(string)$tmp_arr_lvl1[$j]['id']] = 0;
+						} //end if
 						$total[(string)$tmp_arr_lvl1[$j]['id']] += 1;
 					} //end if
 				} //end for

@@ -68,7 +68,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -2083,7 +2083,10 @@ final class SmartPgsqlDb {
 		//--
 		$y_pgsql_notice = (string) trim((string)$y_pgsql_notice);
 		$arr = explode('SMART-FRAMEWORK-PGSQL-NOTICE: AFFECTED ROWS #', (string)$y_pgsql_notice);
-		$msg = trim((string)$arr[1]);
+		$msg = '';
+		if(array_key_exists(1, $arr)) {
+			$msg = (string) trim((string)$arr[1]);
+		} //end if
 		//--
 		return (int) $msg;
 		//--
@@ -2209,11 +2212,15 @@ final class SmartPgsqlDb {
 	// returns major version for pgsql versions
 	private static function major_version($y_version) {
 		//--
-		$y_version = (string) $y_version;
+		$arr = (array) explode('.', (string)trim((string)$y_version));
+		if(!array_key_exists(0, $arr)) {
+			$arr[0] = null;
+		} //end if
+		if(!array_key_exists(1, $arr)) {
+			$arr[1] = null;
+		} //end if
 		//--
-		$arr = (array) explode('.', trim($y_version));
-		//--
-		return trim($arr[0]).'.'.trim($arr[1]).'.x';
+		return (string) trim((string)$arr[0]).'.'.trim((string)$arr[1]).'.x';
 		//--
 	} //END FUNCTION
 	//======================================================
@@ -2357,7 +2364,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	Plugins:Database:PostgreSQL
  *
  */

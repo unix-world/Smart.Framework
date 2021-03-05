@@ -12,6 +12,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 } //end if
 //-----------------------------------------------------
 
+// [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -24,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20201217
+	// v.20210305
 
 
 	private static $db = null;
@@ -472,11 +473,12 @@ final class PageBuilderFrontend {
 					]
 				);
 			} elseif((string)$y_fld == 'area:tags') {
+				$arr_tag = (array) \explode(':', (string)$y_value);
 				$qresult = \SmartPgsqlDb::{$fx_exec}(
 					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND ("tags" ? $2) AND (SUBSTR("id",1,1) '.$sign_expr.' $3)'.$extra_condition.') '.$qr_suffix,
 					[
-						(string) \explode(':', (string)$y_value)[0], // area
-						(string) \explode(':', (string)$y_value)[1], // tags
+						(string) (isset($arr_tag[0]) ? $arr_tag[0] : ''), // area
+						(string) (isset($arr_tag[1]) ? $arr_tag[1] : ''), // tags
 						(string) '#'
 					]
 				);
@@ -517,11 +519,12 @@ final class PageBuilderFrontend {
 					]
 				);
 			} elseif((string)$y_fld == 'area:tags') {
+				$arr_tag = (array) \explode(':', (string)$y_value);
 				$qresult = self::$db->{$fx_exec}(
 					'SELECT '.$select_what.' FROM `page_builder` WHERE ((`layout` LIKE ?) AND (smart_json_arr_contains(`tags`, ?) = 1) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
 					[
-						(string) \explode(':', (string)$y_value)[0], // area
-						(string) \explode(':', (string)$y_value)[1], // tags
+						(string) (isset($arr_tag[0]) ? $arr_tag[0] : ''), // area
+						(string) (isset($arr_tag[1]) ? $arr_tag[1] : ''), // tags
 						(string) '#'
 					]
 				);

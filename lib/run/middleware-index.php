@@ -178,6 +178,13 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		if(strpos($page, '.') !== false) { // page can be as (module.)controller / (module.)controller(.php|html|stml|json|...) / module.controller.some-indexing-words-for-better-seo(.php|html|stml|json|...)
 			//--
 			$arr = (array) explode('.', (string)$page, 3); // separe 1st and 2nd from the rest
+			if(!array_key_exists(0, $arr)) {
+				$arr[0] = null;
+			} //end if
+
+			if(!array_key_exists(1, $arr)) {
+				$arr[1] = null;
+			} //end if
 			//--
 			if(in_array((string)$arr[1], (array)$reserved_controller_names)) {
 				// Fix to integrate with friendly URLs SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE, if just controller.(.php|html|stml|json|...) has been provided
@@ -200,6 +207,13 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 			} //end if
 			//--
 		} //end if else
+		//--
+		if(!array_key_exists(0, $arr)) {
+			$arr[0] = null;
+		} //end if
+		if(!array_key_exists(1, $arr)) {
+			$arr[1] = null;
+		} //end if
 		//--
 		if(((string)$arr[0] == '') OR ((string)$arr[1] == '')) {
 			if((string)$err404 == '') {

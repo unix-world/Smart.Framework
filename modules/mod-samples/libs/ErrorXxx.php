@@ -16,6 +16,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 } //end if
 //-----------------------------------------------------
 
+// [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -32,7 +33,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20201217
+ * @version 	v.20210305
  *
  */
 abstract class ErrorXxx extends \SmartAbstractAppController {
@@ -53,7 +54,7 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 		$uri = (string) \SmartUtils::get_server_current_request_uri();
 		$uri = (string) \ltrim($uri, '/');
 		$uri = (array)  \explode('?', (string)$uri);
-		$uri = (string) \trim((string)$uri[0]);
+		$uri = (string) \trim((string)(isset($uri[0]) ? $uri[0] : ''));
 		if(((string)$uri != '') AND ((string)\substr((string)$uri, -1, 1) != '/')) {
 			$ext = (string) \SmartFileSysUtils::get_file_extension_from_path($uri);
 			$lext = (string) \strtolower((string)$ext);
@@ -63,9 +64,9 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 			if(\strpos((string)$ext, '.') !== false) { // if at least module.controller
 				$ext = (array) \explode('.', (string)$ext);
 				if(\Smart::array_size($ext) == 3) { // module.controller.ext
-					$ext = (string) $ext[2];
+					$ext = (string) (isset($ext[2]) ? $ext[2] : '');
 				} elseif(\Smart::array_size($ext) == 4) { // module.controller.seo.ext
-					$ext = (string) $ext[3];
+					$ext = (string) (isset($ext[3]) ? $ext[3] : '');
 				} else {
 					$ext = ''; // n/a
 				} //end if else

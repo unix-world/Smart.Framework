@@ -178,6 +178,12 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		if(strpos($page, '.') !== false) { // page can be as module.controller / module.controller(.php|html|stml|json|...)
 			//--
 			$arr = (array) explode('.', (string)$page, 3); // separe 1st and 2nd from the rest
+			if(!array_key_exists(0, $arr)) {
+				$arr[0] = null;
+			} //end if
+			if(!array_key_exists(1, $arr)) {
+				$arr[1] = null;
+			} //end if
 			//--
 			//#
 			//#
@@ -200,6 +206,13 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 			} //end if
 			//--
 		} //end if else
+		//--
+		if(!array_key_exists(0, $arr)) {
+			$arr[0] = null;
+		} //end if
+		if(!array_key_exists(1, $arr)) {
+			$arr[1] = null;
+		} //end if
 		//--
 		if(((string)$arr[0] == '') OR ((string)$arr[1] == '')) {
 			if((string)$err404 == '') {

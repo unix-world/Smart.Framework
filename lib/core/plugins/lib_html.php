@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200519
+ * @version 	v.20210305
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -397,13 +397,13 @@ final class SmartHtmlParser {
 					$tag_have_endline = true;
 				} //end if
 				//--
-				$code = trim(str_replace(array("\t", "\n", "\r"), array(' ', ' ', ' '), (string)$code)); // make tabs and new lines as simple space
+				$code = (string) trim((string)str_replace(["\t", "\n", "\r"], ' ', (string)$code)); // make tabs and new lines as simple space
 				$tmp_parse_attr = (array) $this->get_attributes($code);
 				//--
 				if((strpos($code, ' ') !== false) AND (Smart::array_size($tmp_parse_attr) > 0)) { // tag have attributes
 					//--
-					$tmp_arr = explode(' ', $code); // get tag parts
-					$this->elements[$i] = strtolower((string)$tmp_arr[0]); // recompose the tags
+					$tmp_arr = (array) explode(' ', $code); // get tag parts
+					$this->elements[$i] = strtolower((string)(isset($tmp_arr[0]) ? $tmp_arr[0] : '')); // recompose the tags
 					foreach($tmp_parse_attr as $key => $val) {
 						$tmp_is_valid_attr = true;
 						if(!preg_match((string)$this->regex_tag_name, (string)$key)) {

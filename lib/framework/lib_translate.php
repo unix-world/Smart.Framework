@@ -498,8 +498,12 @@ final class SmartTextTranslations {
 			$y_decimals = -2;
 		} //end if else
 		//--
-		$separator_dec = (string) Smart::get_from_config('regional.decimal-separator');
-		$separator_thd = (string) Smart::get_from_config('regional.thousands-separator');
+		$separator_dec = (string) Smart::get_from_config('regional.decimal-separator', 'string');
+		$separator_thd = (string) Smart::get_from_config('regional.thousands-separator', 'string');
+		if((strlen((string)$separator_dec) > 1) OR (strlen((string)$separator_thd) > 1)) {
+			$separator_dec = '.';
+			$separator_thd = ',';
+		} //end if
 		//--
 		$sign = '';
 		if((string)substr((string)$y_number, 0, 1) == '-') {
@@ -508,19 +512,25 @@ final class SmartTextTranslations {
 		//--
 		$localnum = '0';
 		//--
-		$tmp_arr = explode('.', (string)$y_number);
+		$tmp_arr = (array) explode('.', (string)$y_number);
+		if(!array_key_exists(0, $tmp_arr)) {
+			$tmp_arr[0] = null;
+		} //end if
+		if(!array_key_exists(1, $tmp_arr)) {
+			$tmp_arr[1] = null;
+		} //end if
 		//--
-		$int_part = (string) trim(str_replace(['.', ',', ' ', '-', $separator_dec, $separator_thd], ['', '', '', '', '', ''], (string)$tmp_arr[0]));
-		$dec_part = (string) trim(str_replace(['.', ',', ' ', '-', $separator_dec, $separator_thd], ['', '', '', '', '', ''], (string)$tmp_arr[1]));
+		$int_part = (string) trim((string)str_replace(['.', ',', ' ', '-', $separator_dec, $separator_thd], '', (string)$tmp_arr[0]));
+		$dec_part = (string) trim((string)str_replace(['.', ',', ' ', '-', $separator_dec, $separator_thd], '', (string)$tmp_arr[1]));
 		//--
-		$intx_part = strrev(chunk_split(strrev($int_part), 3, $separator_thd));
-		$intx_part = trim(substr($intx_part, 1));
+		$intx_part = (string) strrev((string)chunk_split((string)strrev((string)$int_part), 3, $separator_thd));
+		$intx_part = (string) trim((string)substr((string)$intx_part, 1));
 		//--
 		if($y_usethousandsep === false) {
 			$intx_part = (string) $int_part;
 		} //end if
 		//--
-		if(count($tmp_arr) > 2) { // invalid
+		if(Smart::array_size($tmp_arr) > 2) { // invalid
 			//--
 			Smart::log_warning('Invalid Number to convert to local (have too many decimal parts): '.$y_number);
 			return (string) '!'.$y_number.'!';

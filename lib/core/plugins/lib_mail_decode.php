@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20201028
+ * @version 	v.20210305
  * @package 	Plugins:Mailer
  *
  */
@@ -162,16 +162,16 @@ final class SmartMailerMimeDecode {
 			//--
 			$tmp_expl = array();
 			$tmp_expl = (array) explode('<', (string)$y_address);
-			$tmp_name = trim($tmp_expl[0]);
-			$tmp_name = trim(str_replace(array("'", '"', '`'), array('', '', ''), $tmp_name));
-			$tmp_expl = (array) explode('>', (string)$tmp_expl[1]);
-			$tmp_email = trim($tmp_expl[0]);
+			$tmp_name = (string) trim((string)(isset($tmp_expl[0]) ? $tmp_expl[0] : ''));
+			$tmp_name = (string) trim((string)str_replace(array("'", '"', '`'), array('', '', ''), $tmp_name));
+			$tmp_expl = (array) explode('>', (string)(isset($tmp_expl[1]) ? $tmp_expl[1] : ''));
+			$tmp_email = (string) trim((string)(isset($tmp_expl[0]) ? $tmp_expl[0] : ''));
 			$tmp_expl = array();
 			//--
 		} else {
 			//--
 			$tmp_name = '';
-			$tmp_email = trim($y_address);
+			$tmp_email = (string) trim((string)$y_address);
 			//--
 		} //end if
 		//--
@@ -772,7 +772,7 @@ final class SmartMailerMimeDecode {
  * @access 		private
  * @internal
  *
- * @version 	v.20200715
+ * @version 	v.20210305
  *
  */
 final class SmartMailerMimeExtract {
@@ -1089,8 +1089,8 @@ final class SmartMailerMimeExtract {
 		} else {
 			//--
 			$ctype = (array) explode('/', (string)$default_ctype);
-			$return->ctype_primary   = (string) trim((string)$ctype[0]);
-			$return->ctype_secondary = (string) trim((string)$ctype[1]);
+			$return->ctype_primary   = (string) trim((string)(isset($ctype[0]) ? $ctype[0] : ''));
+			$return->ctype_secondary = (string) trim((string)(isset($ctype[1]) ? $ctype[1] : ''));
 			$this->_include_bodies ? $return->body = ($this->_decode_bodies ? $this->_decodeBody($body) : $body) : null;
 			//--
 		} //end if else

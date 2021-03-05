@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	Plugins:ViewComponents
  *
  */
@@ -569,7 +569,10 @@ final class SmartViewHtmlHelpers {
 		//--
 		$tmp_dimens = (array) explode('/', (string)trim((string)$y_dimensions));
 		//--
-		$the_width = (int) $tmp_dimens[0];
+		$the_width = 0;
+		if(array_key_exists(0, $tmp_dimens)) {
+			$the_width = (int) $tmp_dimens[0];
+		} //end if
 		$the_height = 0;
 		if(array_key_exists(1, $tmp_dimens)) {
 			$the_height = (int) $tmp_dimens[1];
@@ -789,7 +792,10 @@ final class SmartViewHtmlHelpers {
 		//--
 		$tmp_dimens = (array) explode('/', (string)trim((string)$y_dimensions));
 		//--
-		$the_width = (int) $tmp_dimens[0];
+		$the_width = 0;
+		if(array_key_exists(0, $tmp_dimens)) {
+			$the_width = (int) $tmp_dimens[0];
+		} //end if
 		$the_height = 0;
 		if(array_key_exists(1, $tmp_dimens)) {
 			$the_height = (int) $tmp_dimens[1];

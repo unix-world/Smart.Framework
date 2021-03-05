@@ -1684,11 +1684,15 @@ final class SmartMysqliDb {
 	// returns major version for mysql versions
 	private static function major_version($y_version) {
 		//--
-		$y_version = (string) $y_version;
+		$arr = (array) explode('.', (string)trim((string)$y_version));
+		if(!array_key_exists(0, $arr)) {
+			$arr[0] = null;
+		} //end if
+		if(!array_key_exists(1, $arr)) {
+			$arr[1] = null;
+		} //end if
 		//--
-		$arr = @explode('.', trim($y_version));
-		//--
-		return trim($arr[0]).'.'.trim($arr[1]).'.x';
+		return (string) trim((string)$arr[0]).'.'.trim((string)$arr[1]).'.x';
 		//--
 	} //END FUNCTION
 	//======================================================

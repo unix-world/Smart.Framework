@@ -44,7 +44,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200605
+ * @version 	v.20210305
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -349,7 +349,7 @@ final class SmartYamlConverter {
 			return sprintf('"%s"', $value);
 		} //end if
 		//--
-		$exploded = explode("\n", $value);
+		$exploded = (array) explode("\n", (string)$value);
 		$newValue = '|';
 		$indent += $this->yaml_dump_indent;
 		$spaces = str_repeat(' ', $indent);
@@ -568,13 +568,13 @@ final class SmartYamlConverter {
 		} //end if
 		//--
 		if((strpos((string)$value, ': ') !== false) && ((string)$first_character != '{')) {
-			$array = explode(': ', $value);
-			$key   = (string) trim((string)$array[0]);
+			$array = (array) explode(': ', $value);
+			$key   = (string) trim((string)(isset($array[0]) ? $array[0] : ''));
 			array_shift($array);
 			$value = (string) trim((string)implode(': ', $array));
 			$value = $this->_toType($value);
 			return array($key => $value);
-		} //end if
+		} //end ifexplode
 		//--
 		if(((string)$first_character == '{') && ((string)$last_character == '}')) {
 			$innerValue = (string) trim((string)substr((string)$value, 1, -1));
@@ -700,14 +700,14 @@ final class SmartYamlConverter {
 		unset($regex_seq);
 		unset($regex_map);
 		//--
-		$explode = explode(', ', $inline);
+		$explode = (array) explode(', ', $inline);
 		$stringi = 0;
 		$i = 0;
 		//--
 		while(1) {
 			//-- Re-add the sequences
 			if(!empty($seqs)) {
-				foreach ($explode as $key => $value) {
+				foreach($explode as $key => $value) {
 					if(strpos($value, 'YAMLSeq') !== false) {
 						foreach($seqs as $seqk => $seq) {
 							$explode[$key] = str_replace(('YAMLSeq'.$seqk.'s'), $seq, $value);
@@ -740,8 +740,8 @@ final class SmartYamlConverter {
 			} //end if
 			//-- Re-add the empty strings fix from v.0.5.1
 			if(!empty($saved_empties)) {
-				foreach ($explode as $key => $value) {
-					while (strpos($value,'YAMLEmpty') !== false) {
+				foreach($explode as $key => $value) {
+					while(strpos($value,'YAMLEmpty') !== false) {
 						$explode[$key] = preg_replace('/YAMLEmpty/', '', $value, 1);
 						$value = $explode[$key];
 					} //end while
@@ -1264,8 +1264,8 @@ final class SmartYamlConverter {
 				$key   = $matches[2];
 			} else {
 				// Do some guesswork as to the key and the value
-				$explode = explode(':', $line);
-				$key     = trim($explode[0]);
+				$explode = (array) explode(':', $line);
+				$key     = (string) trim((string)(isset($explode[0]) ? $explode[0] : ''));
 				array_shift($explode);
 				$value   = trim(implode(':', $explode));
 			} //end if else

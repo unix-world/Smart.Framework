@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20201028
+ * @version 	v.20210305
  * @package 	Plugins:Mailer
  *
  */
@@ -363,8 +363,8 @@ final class SmartMailerSend {
 		} //end if
 		//--
 		$tmp_explode_arr = (array) explode('@', (string)$this->from);
-		$tmp_name = (string) trim($tmp_explode_arr[0]); // used for from name in the case it is empty
-		$tmp_domain = (string) trim($tmp_explode_arr[1]); // used for message ID
+		$tmp_name = (string) trim((string)(isset($tmp_explode_arr[0]) ? $tmp_explode_arr[0] : '')); // used for from name in the case it is empty
+		$tmp_domain = (string) trim((string)(isset($tmp_explode_arr[1]) ? $tmp_explode_arr[1] : '')); // used for message ID
 		//--
 		if((string)$this->namefrom != '') {
 			$tmp_name = (string) SmartUnicode::deaccent_str((string)$this->namefrom);
@@ -771,7 +771,7 @@ final class SmartMailerSend {
 		$tmp_my_pid = (int) getmypid();
 		//--
 		$tmp_domain = (array) explode('@', (string)$this->from);
-		$tmp_domain = (string) trim((string)$tmp_domain[1]);
+		$tmp_domain = (string) trim((string)(isset($tmp_domain[1]) ? $tmp_domain[1] : ''));
 		//-- normalize headers if set
 		$headers = (string) str_replace(["\r\n", "\r"], "\n", (string)$headers); // normalize line endings to LF
 		$headers = (string) str_replace(["\n", "\t"], ["\r\n", ' '], (string)$headers); // re-normalize line endings from LF to CRLF and TAB to SPACE
@@ -1044,7 +1044,7 @@ final class SmartMailerSend {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20200708
+ * @version 	v.20210305
  * @package 	Plugins:Mailer
  *
  */

@@ -60,7 +60,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	@Core:FileSystem
  *
  */
@@ -439,8 +439,23 @@ final class SmartFileSysUtils {
 		$file = (string) $file;
 		//--
 		if((strpos($file, '.@') !== false) AND (strpos($file, '@.') !== false)) {
+			//--
 			$arr = (array) explode('.@', (string)$file);
+			if(!array_key_exists(0, $arr)) {
+				$arr[0] = null;
+			} //end if
+			if(!array_key_exists(1, $arr)) {
+				$arr[1] = null;
+			} //end if
+			//--
 			$arr2 = (array) explode('@.', (string)$arr[1]);
+			if(!array_key_exists(0, $arr2)) {
+				$arr2[0] = null;
+			} //end if
+			if(!array_key_exists(1, $arr2)) {
+				$arr2[1] = null;
+			} //end if
+			//--
 			if((string)trim((string)$arr[0]) == '') {
 				$arr[0] = '_empty-filename_';
 			} //end if
@@ -449,6 +464,7 @@ final class SmartFileSysUtils {
 			} else {
 				$file = (string) $arr[0].'.'.$arr2[1];
 			} //end if else
+			//--
 		} //end if
 		//--
 		return (string) $file;
@@ -504,9 +520,25 @@ final class SmartFileSysUtils {
 		$version = '';
 		//--
 		if((strpos($file, '.@') !== false) AND (strpos($file, '@.') !== false)) {
+			//--
 			$arr = (array) explode('.@', (string)$file);
+			if(!array_key_exists(0, $arr)) {
+				$arr[0] = null;
+			} //end if
+			if(!array_key_exists(1, $arr)) {
+				$arr[1] = null;
+			} //end if
+			//--
 			$arr2 = (array) explode('@.', (string)$arr[1]);
+			if(!array_key_exists(0, $arr2)) {
+				$arr2[0] = null;
+			} //end if
+			if(!array_key_exists(1, $arr2)) {
+				$arr2[1] = null;
+			} //end if
+			//--
 			$version = (string) $arr2[0];
+			//--
 		} //end if
 		//--
 		return (string) $version;
@@ -1298,7 +1330,7 @@ final class SmartFileSysUtils {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
  * @depends 	classes: Smart
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	@Core:FileSystem
  *
  */
@@ -3217,7 +3249,7 @@ final class SmartFileSystem {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be safe
  *
  * @depends 	classes: Smart
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	@Core:FileSystem
  *
  */

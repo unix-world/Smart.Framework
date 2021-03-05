@@ -39,7 +39,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @access 		private
  * @internal
  *
- * @version 	v.20201211
+ * @version 	v.20210305
  * @package 	Application:Development
  *
  */
@@ -466,32 +466,32 @@ public static function print_debug_info($y_area, $y_debug_token) {
 		//--
 		$debug_auth .= $txt_main.$txt_url.$txt_token.self::print_log_auth($arr[$i]['auth-data']).'<hr>';
 		//--
-		if(is_array($arr[$i]['log-optimizations'])) {
+		if(isset($arr[$i]['log-optimizations']) AND is_array($arr[$i]['log-optimizations'])) {
 			$debug_optimizations .= $txt_main.$txt_url.$txt_token;
 			foreach($arr[$i]['log-optimizations'] as $key => $val) {
 				$debug_optimizations .= self::print_log_optimizations(strtoupper((string)$key), Smart::unseryalize(base64_decode($val))).'<hr>';
 			} //end foreach
 		} //end if
 		//--
-		if((string)$arr[$i]['log-mail'] != '') {
+		if(isset($arr[$i]['log-mail']) AND Smart::is_nscalar($arr[$i]['log-mail']) AND ((string)$arr[$i]['log-mail'] != '')) {
 			$debug_mail .= $txt_main.$txt_url.$txt_token.self::print_log_mail(Smart::unseryalize(base64_decode($arr[$i]['log-mail']))).'<hr>';
 		} //end if
 		//--
-		if(is_array($arr[$i]['log-db'])) {
+		if(isset($arr[$i]['log-db']) AND is_array($arr[$i]['log-db'])) {
 			$debug_dbqueries .= $txt_main.$txt_url.$txt_token;
 			foreach($arr[$i]['log-db'] as $key => $val) {
 				$debug_dbqueries .= self::print_log_database(strtoupper((string)$key), Smart::unseryalize(base64_decode($val))).'<hr>';
 			} //end foreach
 		} //end if
 		//--
-		if(is_array($arr[$i]['log-extra'])) {
+		if(isset($arr[$i]['log-extra']) AND is_array($arr[$i]['log-extra'])) {
 			$debug_extra .= $txt_main.$txt_url.$txt_token;
 			foreach($arr[$i]['log-extra'] as $key => $val) {
 				$debug_extra .= self::print_log_extra(strtoupper((string)$key), Smart::unseryalize(base64_decode($val))).'<hr>';
 			} //end foreach
 		} //end if
 		//--
-		if(is_array($arr[$i]['log-modules'])) {
+		if(isset($arr[$i]['log-modules']) AND is_array($arr[$i]['log-modules'])) {
 			$debug_modules .= $txt_main.$txt_url.$txt_token;
 			foreach($arr[$i]['log-modules'] as $key => $val) {
 				$debug_modules .= self::print_log_modules(strtoupper((string)$key), Smart::unseryalize(base64_decode($val))).'<hr>';
@@ -1134,6 +1134,31 @@ private static function print_log_database($title, $db_log) {
 				case 'sql':
 				case 'nosql':
 					//--
+					if(!array_key_exists('type', $tmp_arr)) {
+						$tmp_arr['type'] = null;
+					} //end if
+					if(!array_key_exists('connection', $tmp_arr)) {
+						$tmp_arr['connection'] = null;
+					} //end if
+					if(!array_key_exists('query', $tmp_arr)) {
+						$tmp_arr['query'] = null;
+					} //end if
+					if(!array_key_exists('params', $tmp_arr)) {
+						$tmp_arr['params'] = null;
+					} //end if
+					if(!array_key_exists('command', $tmp_arr)) {
+						$tmp_arr['command'] = null;
+					} //end if
+					if(!array_key_exists('rows', $tmp_arr)) {
+						$tmp_arr['rows'] = null;
+					} //end if
+					if(!array_key_exists('skip-count', $tmp_arr)) {
+						$tmp_arr['skip-count'] = null;
+					} //end if
+					if(!array_key_exists('time', $tmp_arr)) {
+						$tmp_arr['time'] = null;
+					} //end if
+					//--
 					if((string)$tmp_arr['skip-count'] != 'yes') {
 						$num++;
 					} //end if
@@ -1215,7 +1240,7 @@ private static function print_log_database($title, $db_log) {
 					//--
 					$log .= '<div class="smartframework_debugbar_inforow" style="font-size:12px; color:'.$tmp_color.';">';
 					$log .= '<b>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($tmp_arr['data']), true).'</b>';
-					if((string)$tmp_arr['connection'] != '') {
+					if(isset($tmp_arr['connection']) AND ((string)$tmp_arr['connection'] != '')) {
 						$log .= ' @ '.Smart::escape_html($tmp_arr['connection']);
 					} //end if
 					$log .= '</div>';
@@ -1228,7 +1253,7 @@ private static function print_log_database($title, $db_log) {
 					//--
 					$log .= '<div class="smartframework_debugbar_inforow" style="font-size:12px; color:'.$tmp_color.';">';
 					$log .= '<b>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($tmp_arr['data']), true).'</b>';
-					if((string)$tmp_arr['connection'] != '') {
+					if(isset($tmp_arr['connection']) AND ((string)$tmp_arr['connection'] != '')) {
 						$log .= ' @ '.Smart::escape_html($tmp_arr['connection']);
 					} //end if
 					$log .= '</div>';

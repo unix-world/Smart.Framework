@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils
- * @version 	v.20210304
+ * @version 	v.20210305
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -434,6 +434,9 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 	public static function read_template_file(string $y_file_path) {
 		//--
 		if(self::$MkTplAnalyzeLdDbg === true) {
+			if(!array_key_exists((string)$y_file_path, self::$MkTplAnalyzeLdRegDbg)) {
+				self::$MkTplAnalyzeLdRegDbg[(string)$y_file_path] = 0;
+			} //end if
 			self::$MkTplAnalyzeLdRegDbg[(string)$y_file_path] += 1;
 		} //end if
 		//--
@@ -655,8 +658,14 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 			$matches[$i][1] = (string) trim((string)$matches[$i][1]);
 			if((string)$matches[$i][1] != '') {
 				if($uppercasekeys === true) {
+					if(!array_key_exists((string)strtoupper((string)$matches[$i][1]), $arr_parts)) {
+						$arr_parts[(string)strtoupper((string)$matches[$i][1])] = 0;
+					} //end if
 					$arr_parts[(string)strtoupper((string)$matches[$i][1])] += 1;
 				} else {
+					if(!array_key_exists((string)$matches[$i][1], $arr_parts)) {
+						$arr_parts[(string)$matches[$i][1]] = 0;
+					} //end if
 					$arr_parts[(string)$matches[$i][1]] += 1; // no strtoupper in this case !! (must preserve case)
 				} //end if else
 			} //end if
@@ -1085,6 +1094,12 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 		$crr_match = (array) $crr_match;
 		$val = (string) $val;
 		//--
+		if(!array_key_exists(0, $crr_match)) {
+			$crr_match[0] = null;
+		} //end if
+		if(!array_key_exists(1, $crr_match)) {
+			$crr_match[1] = null;
+		} //end if
 		if((string)$crr_match[1] != '') { // if escapings
 			//--
 			$escapes = (array) explode('|', (string)$crr_match[1]);
@@ -2226,6 +2241,9 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 		$y_file_path = (string) $y_file_path;
 		//--
 		if(self::$MkTplAnalyzeLdDbg === true) {
+			if(!array_key_exists((string)$y_file_path, self::$MkTplAnalyzeLdRegDbg)) {
+				self::$MkTplAnalyzeLdRegDbg[(string)$y_file_path] = 0;
+			} //end if
 			self::$MkTplAnalyzeLdRegDbg[(string)$y_file_path] += 1;
 		} //end if
 		//--
@@ -2366,6 +2384,9 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 						$is_direct_read = true;
 					} //end if
 					$key = (array) explode(':', $key);
+					if(!array_key_exists(1, $key)) {
+						$key[1] = null;
+					} //end if
 					$key = (string) $key[1];
 					$val = (int) $val;
 					if($val > 1) {

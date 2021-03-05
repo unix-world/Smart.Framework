@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210303
+ * @version 	v.20210305
  * @package 	development:modules:PageBuilder
  *
  */
@@ -605,12 +605,12 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 				return array();
 			} //end if
 		} //end for
-		$realm = (string) $arr_parse_transl_key[0].$arr_parse_transl_key[1];
+		$realm = (string) (isset($arr_parse_transl_key[0]) ? $arr_parse_transl_key[0] : '').(isset($arr_parse_transl_key[1]) ? $arr_parse_transl_key[1] : '');
 		if(!\is_object($this->translators[(string)$realm.'@'.$lang])) {
-			$this->translators[(string)$realm.'@'.$lang] = \SmartTextTranslations::getTranslator((string)$arr_parse_transl_key[0], (string)$arr_parse_transl_key[1], (string)$lang);
+			$this->translators[(string)$realm.'@'.$lang] = \SmartTextTranslations::getTranslator((string)(isset($arr_parse_transl_key[0]) ? $arr_parse_transl_key[0] : ''), (string)(isset($arr_parse_transl_key[1]) ? $arr_parse_transl_key[1] : ''), (string)$lang);
 		} //end if
 		if(\is_object($this->translators[(string)$realm.'@'.$lang])) {
-			$translated_text = $this->translators[(string)$realm.'@'.$lang]->text((string)$arr_parse_transl_key[2]);
+			$translated_text = $this->translators[(string)$realm.'@'.$lang]->text((string)(isset($arr_parse_transl_key[2]) ? $arr_parse_transl_key[2] : ''));
 		} //end if
 		//--
 		$translated_text = (string) \Smart::escape_html((string)$translated_text);

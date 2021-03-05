@@ -74,7 +74,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode
- * @version     v.20210304
+ * @version     v.20210305
  * @package     @Core
  *
  */
@@ -1842,6 +1842,9 @@ final class Smart {
 		$b36_second_of_year = (string) sprintf('%05s', base_convert($b10_second_of_year, 10, 36));
 		//-- 00 .. RR
 		$microtime = (array) explode('.', (string)microtime(true));
+		if(!array_key_exists(1, $microtime)) {
+			$microtime[1] = null;
+		} //end if
 		$b10_microseconds = (int) substr((string)trim((string)$microtime[1]), 0, 3); // 0 .. 999
 		$b36_microseconds = (string) sprintf('%02s', base_convert($b10_microseconds, 10, 36));
 		//-- 1 .. Z
@@ -1915,7 +1918,9 @@ final class Smart {
 		$b62_second_of_year = (string) sprintf('%05s', self::int10_to_base62_str($b10_second_of_year));
 		//-- MICROSECOND: 0 .. 9999999 in base62 is 0000 .. FXsj
 		$microtime = (array) explode('.', (string)microtime(true));
-
+		if(!array_key_exists(1, $microtime)) {
+			$microtime[1] = null;
+		} //end if
 		$b10_microseconds = (string) sprintf('%04s', (int)substr((string)trim((string)$microtime[1]), 0, 4)); // 0000 .. 9999
 		$rand = self::random_number(1, 999); // trick: avoid 0000000000000
 		$b10_randomizer = (string) sprintf('%03s', $rand);
