@@ -408,7 +408,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		$this->urlpath 			= (string) $param_url_path; 												// /frameworks/smart-framework/
 		$this->urladdr 			= (string) $param_url_addr; 												// http(s)://127.0.0.1|localhost:8008/frameworks/smart-framework/
 		$this->urlpage 			= (string) $y_url_page; 													// this may vary depending on semantic URL rule but can be equal with: something.someaction | someaction | something
-		$this->urlquery 		= (string) $_SERVER['QUERY_STRING'] ? '?'.$_SERVER['QUERY_STRING'] : ''; 	// the query URL if any ...
+		$this->urlquery 		= (string) (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '') ? '?'.$_SERVER['QUERY_STRING'] : ''; // the query URL if any ...
 		$this->urluri 			= (string) SmartUtils::get_server_current_request_uri(); 					// the REQUEST_URI
 		$this->uripath 			= (string) SmartUtils::get_server_current_request_path(); 					// the PATH_INFO
 		$this->lang 			= (string) SmartTextTranslations::getLanguage(); 							// current language (ex: en)

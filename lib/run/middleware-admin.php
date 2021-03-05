@@ -294,6 +294,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		if(!defined('SMART_APP_MODULE_DIRECT_OUTPUT') OR SMART_APP_MODULE_DIRECT_OUTPUT !== true) {
 			ob_start();
 		} //end if
+		//--
 		$appStatusCode = 0; // init (for PHP8)
 		$appTestInit = $appModule->Initialize(); // mixed: null (void) / FALSE
 		if($appTestInit !== false) {
@@ -301,14 +302,15 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		} //end if
 		$appModule->ShutDown();
 		$appSettings = (array) $appModule->PageViewGetCfgs();
-		if((isset($appSettings['status-code'])) AND ((int)$appSettings['status-code'] > 0)) {
+		if((isset($appSettings['status-code'])) AND ((int)$appSettings['status-code'] > 0)) { // {{{SYNC-SMART-FRAMEWORK-HANDLE-HTTP-STATUS-CODE}}}
 			$appStatusCode = (int) $appSettings['status-code']; // this rewrites what the Run() function returns, which is very OK as this is authoritative !
 		} //end if
 		if($appTestInit === false) {
-			if($appStatusCode < 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
+			if((int)$appStatusCode < 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
 				$appStatusCode = 500; // if Initialize returns FALSE then expects also and explicit error code (>= 400) and perhaps a message set via $appSettings['status-code'] ; if none implemented, raise the 500 HTTP Status Code
 			} //end if
 		} //end if
+		//--
 		$appRawHeads = (array) $appModule->PageViewGetRawHeaders();
 		$appData = (array) $appModule->PageViewGetVars();
 		if(!defined('SMART_APP_MODULE_DIRECT_OUTPUT') OR SMART_APP_MODULE_DIRECT_OUTPUT !== true) {

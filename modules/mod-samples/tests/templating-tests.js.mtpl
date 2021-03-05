@@ -34,5 +34,4 @@
 // Smart.Framework.Modules Tests (optional)
 [@@@SUB-TEMPLATE:?!modules/mod-tpl-dust/tests/module-test.js.mtpl!@@@]
 [@@@SUB-TEMPLATE:?!modules/mod-tpl-twig/tests/module-test.js.mtpl!@@@]
-[@@@SUB-TEMPLATE:?!modules/mod-tpl-nette-latte/tests/module-test.js.mtpl!@@@]
 [@@@SUB-TEMPLATE:?!modules/mod-tpl-typo3-fluid/tests/module-test.js.mtpl!@@@]

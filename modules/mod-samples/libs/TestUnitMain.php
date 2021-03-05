@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200605
+ * @version 	v.20210305
  *
  */
 final class TestUnitMain {
@@ -155,10 +155,9 @@ final class TestUnitMain {
 		//--
 		$tpl_alt_tpl = (bool) \SmartAppInfo::TestIfModuleExists('mod-tpl');
 		$tpl_alt_dust = (bool) \SmartAppInfo::TestIfModuleExists('mod-tpl-dust');
-		$tpl_alt_latte = (bool) \SmartAppInfo::TestIfModuleExists('mod-tpl-nette-latte');
 		$tpl_alt_twig = (bool) \SmartAppInfo::TestIfModuleExists('mod-tpl-twig');
 		$tpl_alt_typo3fluid = (bool) \SmartAppInfo::TestIfModuleExists('mod-tpl-typo3-fluid');
-		$tpl_alt_avail = (bool) ($tpl_alt_tpl && ($tpl_alt_dust || $tpl_alt_latte || $tpl_alt_twig || $tpl_alt_typo3fluid));
+		$tpl_alt_avail = (bool) ($tpl_alt_tpl && ($tpl_alt_dust || $tpl_alt_twig || $tpl_alt_typo3fluid));
 		//--
 		return \SmartMarkersTemplating::render_file_template( // rendering a complex template with hardcoded sub templates
 			'modules/mod-samples/libs/templates/testunit/test-unit.mtpl.htm',
@@ -238,7 +237,6 @@ final class TestUnitMain {
 				'TEST-UI-COMPONENTS' 		=> (string) $demo_mod_ui_components,
 				'TPL-ALT-AVAIL' 			=> (string) ($tpl_alt_avail ? 'yes' : 'no'),
 				'TPL-DUST-AVAIL' 			=> (string) ($tpl_alt_dust ? 'yes' : 'no'),
-				'TPL-LATTE-AVAIL' 			=> (string) ($tpl_alt_latte ? 'yes' : 'no'),
 				'TPL-TWIG-AVAIL' 			=> (string) ($tpl_alt_twig ? 'yes' : 'no'),
 				'TPL-TYPO3FLUID-AVAIL' 		=> (string) ($tpl_alt_typo3fluid ? 'yes' : 'no')
 			]

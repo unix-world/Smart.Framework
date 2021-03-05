@@ -1506,7 +1506,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 											$plugin_exec = (array) $plugin_obj->PageViewGetVars();
 											// \Smart::log_notice(\print_r($plugin_exec,1));
 											//--
-											if(isset($plugin_page_settings['status-code'])) {
+											if((isset($plugin_page_settings['status-code'])) AND ((int)$plugin_page_settings['status-code'] > 0)) { // {{{SYNC-SMART-FRAMEWORK-HANDLE-HTTP-STATUS-CODE}}}
 												$plugin_page_settings['status-code'] = (int) $plugin_page_settings['status-code']; // this rewrites what the Run() function returns, which is very OK as this is authoritative !
 												if(!\in_array((int)$plugin_page_settings['status-code'], (array)\SmartFrameworkRuntime::getHttpStatusCodesALL())) {
 													\Smart::log_notice('PageBuilder: Render Template ERROR: Wrong HTTP Status Code (Set='.(int)$plugin_page_settings['status-code'].') in: ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);

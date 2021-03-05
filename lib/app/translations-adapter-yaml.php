@@ -20,6 +20,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* SmartYamlConverter->
 //======================================================
 
+// [PHP8]
+
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -36,7 +38,7 @@ define('SMART_FRAMEWORK__INFO__TEXT_TRANSLATIONS_ADAPTER', 'YAML: File based');
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20200515
+ * @version 	v.20210305
  * @package 	Application
  *
  */
@@ -171,7 +173,7 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 		//--
 		@file_put_contents(
 			(string) Smart::safe_pathname('tmp/logs/'.Smart::safe_filename($the_translations_area).'/yaml-translations-usage-'.date('Y-m-d@H').'.tab.tsv'),
-			(string) $the_lang."\t".$y_area."\t".$y_subarea."\t".$y_textkey."\t".'1'."\t".str_replace(["\t", "\n", "\r"], ' ', (string)'['.$_SERVER['REQUEST_METHOD'].']'.$_SERVER['REQUEST_URI'])."\n",
+			(string) $the_lang."\t".$y_area."\t".$y_subarea."\t".$y_textkey."\t".'1'."\t".str_replace(["\t", "\n", "\r"], ' ', (string)'['.(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '').']'.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : ''))."\n",
 			FILE_APPEND | LOCK_EX
 		);
 		//--
