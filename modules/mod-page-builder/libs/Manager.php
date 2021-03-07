@@ -50,7 +50,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210305
+ * @version 	v.20210307
  * @package 	PageBuilder
  *
  */
@@ -703,7 +703,7 @@ final class Manager {
 					} //end if
 					$arr_data_code_yaml = (array) (new \SmartYamlConverter(false))->parse((string)$query['data']); // do not log YAML errors
 					$arr_placehold_orphans = [];
-					if(\Smart::array_size($arr_data_code_yaml['RENDER']) <= 0) {
+					if((!isset($arr_data_code_yaml['RENDER'])) OR (\Smart::array_size($arr_data_code_yaml['RENDER']) <= 0)) {
 						$arr_data_code_yaml['RENDER'] = array();
 					} //end if
 					foreach($arr_extr_placeholders as $placehold_key => $placehold_val) {
@@ -922,7 +922,7 @@ final class Manager {
 						} //end if
 						$arr_data_code_yaml = (array) (new \SmartYamlConverter(false))->parse((string)$query['data']); // do not log YAML errors
 						$arr_placehold_orphans = [];
-						if(\Smart::array_size($arr_data_code_yaml['RENDER']) > 0) {
+						if(isset($arr_data_code_yaml['RENDER']) AND (\Smart::array_size($arr_data_code_yaml['RENDER']) > 0)) {
 							foreach($arr_data_code_yaml['RENDER'] as $datactx_key => $datactx_val) {
 								$datactx_key = (string) \trim((string)$datactx_key);
 								if((string)$datactx_key != '') {
@@ -1511,7 +1511,7 @@ final class Manager {
 						$data['ref'] = '[]'; // reference parent, by default is empty json array []
 						$data['name'] = (string) \trim((string)$y_frm['name']);
 						$data['active'] = '0'; // the page will be inactive at creation time
-						$data['ctrl'] = (string) \SmartUnicode::sub_str((string)\trim((string)$y_frm['ctrl']), 0, 128);
+						$data['ctrl'] = '';
 						$data['published'] = (string) \time();
 						//--
 						if((string)$error == '') {
@@ -1521,8 +1521,10 @@ final class Manager {
 						} //end if
 						if((string)$error == '') {
 							$chk_id = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordIdsById($data['id']);
-							if(\strlen($chk_id['id']) > 0) {
-								$error = self::text('err_3')."\n"; // duplicate ID
+							if(\Smart::array_size($chk_id) > 0) {
+								if(\strlen($chk_id['id']) > 0) {
+									$error = self::text('err_3')."\n"; // duplicate ID
+								} //end if
 							} //end if
 						} //end if
 						if((string)$error == '') {
@@ -1589,7 +1591,7 @@ final class Manager {
 							} //end if
 						} //end for
 						//--
-						$data['translations'] = (int) $y_frm['translations'];
+						$data['translations'] = (int) (isset($y_frm['translations']) ? $y_frm['translations'] : null);
 						if($data['translations'] != 1) {
 							$data['translations'] = 0;
 						} //end if
@@ -1629,7 +1631,7 @@ final class Manager {
 									$data['mode'] = 'html';
 							} //end switch
 							//--
-							$data['layout'] = (string) \trim((string)$y_frm['layout']);
+							$data['layout'] = (string) \trim((string)(isset($y_frm['layout']) ? $y_frm['layout'] : ''));
 							$data['layout'] = (string) \Smart::safe_filename((string)$data['layout']);
 							$data['layout'] = (string) \strtolower((string)$data['layout']);
 							if(\strlen((string)$data['layout']) > 75) {
@@ -1661,7 +1663,7 @@ final class Manager {
 									$data['mode'] = 'html';
 							} //end switch
 							//--
-							$data['layout'] = (string) \trim((string)$y_frm['layout']);
+							$data['layout'] = (string) \trim((string)(isset($y_frm['layout']) ? $y_frm['layout'] : ''));
 							$data['layout'] = (string) \Smart::safe_filename((string)$data['layout']);
 							$data['layout'] = (string) \strtolower((string)$data['layout']);
 							if(\strlen((string)$data['layout']) > 75) {
@@ -1673,7 +1675,7 @@ final class Manager {
 							//--
 						} //end if
 						//--
-						if((string)$y_frm['reset-translations'] == 'all') {
+						if(isset($y_frm['reset-translations']) AND ((string)$y_frm['reset-translations'] == 'all')) {
 							if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-edit') === true)) {
 								if((string)$error == '') {
 									\SmartModDataModel\PageBuilder\PageBuilderBackend::resetRecordTranslationsById($query['id']);
@@ -1691,7 +1693,7 @@ final class Manager {
 						//--
 						$proc_upd_cksum = true;
 						//--
-						if((string)$y_frm['data'] == '') { // frm[data] must not be set here
+						if(!\array_key_exists('data', $y_frm)) { // frm[data] must not be set here
 							//--
 							$redirect = self::composeUrl('op=record-view&id='.\Smart::escape_url($query['id']).'&sop=code');
 							//--
@@ -1734,7 +1736,7 @@ final class Manager {
 						//--
 						$proc_upd_cksum = true;
 						//--
-						if((string)$y_frm['code'] == '') { // frm[code] must not be set here
+						if(!\array_key_exists('code', $y_frm)) { // frm[code] must not be set here
 							//--
 							if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true)) {
 								//--
@@ -1864,7 +1866,7 @@ final class Manager {
 					if((string)$proc_mode == 'insert') {
 						$wr = \SmartModDataModel\PageBuilder\PageBuilderBackend::insertRecord($data);
 					} elseif((string)$proc_mode == 'update') {
-						if((string)$y_frm['language'] != '') {
+						if(isset($y_frm['language']) AND ((string)$y_frm['language'] != '')) {
 							$rdr_sufx = '&translate='.\Smart::escape_url((string)$y_frm['language']);
 							$wr = \SmartModDataModel\PageBuilder\PageBuilderBackend::updateTranslationById($proc_id, $y_frm['language'], $data);
 						} else {

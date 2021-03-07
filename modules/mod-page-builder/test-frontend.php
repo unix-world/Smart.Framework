@@ -30,7 +30,7 @@ if(!SmartAppInfo::TestIfModuleExists('mod-page-builder')) {
  */
 final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\AbstractFrontendController {
 
-	// r.20201106
+	// r.20210307
 
 	public function Run() {
 

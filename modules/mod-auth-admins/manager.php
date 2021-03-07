@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true); 		// if set to TRUE requires auth always
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210303
+	// v.20210307
 
 	public function Run() { // (OUTPUTS: HTML)
 

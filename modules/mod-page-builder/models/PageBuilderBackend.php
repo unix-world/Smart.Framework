@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20210121
+	// v.20210307
 
 
 	private static $db = null;
@@ -409,8 +409,8 @@ final class PageBuilderBackend {
 		$arr = (array) self::getRecordCodeById($y_id);
 		//--
 		if(\Smart::array_size($arr) > 0) {
-			$arr['code'] = (string) $tarr['code'];
-			$arr['lang'] = (string) $tarr['lang'];
+			$arr['code'] = (string) (isset($tarr['code']) ? $tarr['code'] : '');
+			$arr['lang'] = (string) (isset($tarr['lang']) ? $tarr['lang'] : '');
 		} //end if
 		//--
 		return (array) $arr;
@@ -626,7 +626,7 @@ final class PageBuilderBackend {
 		if(\Smart::array_size($y_arr_data) <= 0) {
 			return -2; // empty data
 		} //end if
-		if((string)$y_arr_data['id'] != '') {
+		if(\array_key_exists('id', $y_arr_data)) {
 			return -3; // data must not contain the ID which cannot be changed on edit
 		} //end if
 		//--
@@ -749,7 +749,7 @@ final class PageBuilderBackend {
 		if(((string)$y_lang == '') OR (\strlen((string)$y_lang) != 2) OR (\SmartTextTranslations::validateLanguage((string)$y_lang) !== true)) {
 			return -3; // invalid language
 		} //end if
-		if((string)$y_arr_data['id'] != '') {
+		if(\array_key_exists('id', $y_arr_data)) {
 			return -4; // data must not contain the ID which cannot be changed on edit
 		} //end if
 		//--

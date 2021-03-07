@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFsCardDav {
 
 	// ::
-	// v.20210303
+	// v.20210307
 
 	private static $carddav_ns = 'xmlns:card="urn:ietf:params:xml:ns:carddav"';
 	private static $carddav_urn = 'urn:ietf:params:xml:ns:carddav';
@@ -625,7 +625,10 @@ final class DavFsCardDav {
 			return array( // skip quota info if not express specified
 				'root-dir' 		=> (string) $dav_vfs_root, 		// vfs root dir ; safe on .ht* names
 				'quota' 		=> (int) 0, 					// total quota (0 is unlimited)
-				'free' 			=> (int) $free_space 			// free space (free) in bytes,
+				'used' 			=> (int) 0, 					// don't know, will not calculate
+				'free' 			=> (int) $free_space, 			// free space (free) in bytes,
+				'num-dirs' 		=> (int) 0, 					// # dirs
+				'num-files' 	=> (int) 0 						// # files
 			);
 			//--
 		} //end if

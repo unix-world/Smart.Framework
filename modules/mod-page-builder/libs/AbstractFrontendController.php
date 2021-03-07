@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210305
+ * @version 	v.20210307
  * @package 	development:modules:PageBuilder
  *
  */
@@ -64,7 +64,9 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
-			$this->PageViewSetErrorStatus(502, 'ERROR: Invalid Area for PageBuilde Abstract Controller ...');
+			$this->fatalError(
+				'ERROR: Invalid Area for PageBuilder Abstract Controller: Render Page'
+			);
 			return;
 		} //end if
 		//--
@@ -84,17 +86,16 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		$page_id = (string) \trim((string)$page_id);
 		//--
 		if(((string)$page_id == '') OR ((string)\substr((string)$page_id, 0, 1) == '#')) {
-			$this->PageViewSetErrorStatus(404, 'NOTICE: Empty / Invalid PageBuilder Page ID to Render ...');
+			$this->PageViewSetErrorStatus(404, 'PageBuilder: Empty / Invalid Page ID to Render ...');
 			return;
 		} //end if
 		//--
 
 		//-- must test after seing if the page ID is valid
 		if($this->render_done !== false) {
-			\Smart::raise_error(
+			$this->fatalError(
 				'PageBuilder: The abstract controller '.__CLASS__.' dissalow rendering multiple pages per controller'
 			);
-			die();
 			return;
 		} //end if
 		//--
@@ -158,15 +159,19 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		if($this->page_is_cached !== true) {
 			$arr = (array) $this->loadSegmentOrPage((string)$page_id, 'page'); // get arr vars structure from db
 		} //end if
-		if((int)$this->PageViewGetStatusCode() >= 400) {
+		if((int)$this->PageViewGetStatusCode() >= 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
 			if(\in_array((int)$this->PageViewGetStatusCode(), (array)\SmartFrameworkRuntime::getHttpStatusCodesERR())) {
+				$is_ok = false;
+			} else {
+				$this->PageViewSetErrorStatus(500, 'WARNING: Invalid PageBuilder Status Code: '.(int)$this->PageViewGetStatusCode(), 'WARN');
 				$is_ok = false;
 			} //end if
 		} //end if
 		if(\Smart::array_size($arr) <= 0) {
 			$is_ok = false;
-			\Smart::log_warning('PageBuilder: Invalid Page Load Data: No Array / Empty Array');
-			$this->PageViewSetErrorStatus(500, 'WARNING: Invalid PageBuilder Page Load Data');
+			if((int)$this->PageViewGetStatusCode() < 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
+				$this->PageViewSetErrorStatus(500, 'WARNING: Invalid PageBuilder Page Load Data', 'WARN');
+			} //end if
 		} //end if
 		//--
 		if(($this->page_is_cached !== true) AND ($this->PageCacheisActive())) {
@@ -235,9 +240,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
-			$errmsg = 'ERROR: Invalid Area for PageBuilde Abstract Controller ...';
-			$this->PageViewSetErrorStatus(502, $errmsg);
-			return (string) \SmartComponents::operation_error($errmsg);
+			$this->fatalError(
+				'ERROR: Invalid Area for PageBuilder Abstract Controller: Render Segment'
+			);
+			return '';
 		} //end if
 		//--
 
@@ -256,7 +262,9 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		$segment_id = (string) \trim((string)$segment_id);
 		//--
 		if(((string)$segment_id == '') OR ((string)\substr((string)$segment_id, 0, 1) != '#')) {
-			$this->PageViewSetErrorStatus(500, 'WARNING: Empty / Invalid PageBuilder Segment ID to Render ...');
+			$this->fatalError(
+				'WARNING: Empty / Invalid PageBuilder Segment ID to Render: ['.$segment_id.']'
+			);
 			return '';
 		} //end if
 		//--
@@ -267,11 +275,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		} //end if
 		//-- must test after seing if the segment ID is valid
 		if($this->rendered_segments[(string)$segment_id] > 0) {
-			\Smart::raise_error(
+			$this->fatalError(
 				'PageBuilder: The abstract controller '.__CLASS__.' dissalow rendering multiple times a segment ['.$segment_id.'] per controller'
 			);
-			die();
-			return;
+			return '';
 		} //end if
 		//--
 		$this->rendered_segments[(string)$segment_id]++; // flag: dissalow renders the same segment multiple times per controller
@@ -337,7 +344,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			$this->SetDebugData('Segment ['.(string)$segment_id.'] Pre-Render Data', $arr);
 		} //end if
 		//-- chk err
-		if((int)$this->PageViewGetStatusCode() >= 400) {
+		if((int)$this->PageViewGetStatusCode() >= 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
 			if(\in_array((int)$this->PageViewGetStatusCode(), (array)\SmartFrameworkRuntime::getHttpStatusCodesERR())) {
 				return '';
 			} //end if
@@ -371,9 +378,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
-			$errmsg = 'ERROR: Invalid Area for PageBuilder Abstract Controller ...';
-			$this->PageViewSetErrorStatus(502, $errmsg);
-			return (string) \SmartComponents::operation_error($errmsg);
+			$this->fatalError(
+				'ERROR: Invalid Area for PageBuilder Abstract Controller: Render Segment Markers'
+			);
+			return '';
 		} //end if
 		//--
 
@@ -418,11 +426,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			//--
 		} //end if
 		//--
+
+		//--
 		if((\strpos((string)$segment_code, '{{=%') !== false) OR (\strpos((string)$segment_code, '{{=#') !== false)) {
-			$errmsg = 'ERROR: A PageBuilder segment contains Marker-TPL Syntax that could not be solved because some Marker variables are missing ...';
-			\Smart::log_warning($errmsg."\n".'--- Segment Code:'."\n".$segment_code);
-			$this->PageViewSetErrorStatus(500, $errmsg);
-			return (string) \SmartComponents::operation_error($errmsg);
+			\Smart::log_warning('ERROR: A PageBuilder segment contains Marker-TPL Syntax that could not be solved because some Marker variables are missing ...'."\n".'--- Segment Code:'."\n".$segment_code);
 		} //end if
 		//--
 
@@ -780,21 +787,6 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 	private function loadSegmentOrPage(string $id, string $type, int $level=-1, array $custom_arr_render=[]) {
 
 		//--
-		$this->recursion_control = (int) \max($this->recursion_control, $level);
-		//--
-		if((int)$level >= (int)$this->max_depth) { // fix: needs >= instead of > to comply with page/sub/sub
-			\Smart::raise_error(
-				'PageBuilder: The maximum Page Recursion Level overflow on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] # Level: '.(int)$level.' of max '.(int)$this->max_depth,
-				'Too much recursion detected for this Page'
-			);
-			die();
-			return array();
-		} //end if
-		//--
-		$level = (int) $level + 1;
-		//--
-
-		//--
 		$id = (string) \trim((string)$id);
 		//--
 
@@ -805,6 +797,20 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//--
 
 		//--
+		$this->recursion_control = (int) \max((int)$this->recursion_control, (int)$level);
+		//--
+		if((int)$level >= (int)$this->max_depth) { // fix: needs >= instead of > to comply with page/sub/sub
+			$this->fatalError(
+				'PageBuilder ERROR: (500): The maximum Page Recursion Level overflow on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] # Level: '.(int)$level.' of max '.(int)$this->max_depth,
+				'Too much recursion detected for a PageBuilder Object'
+			);
+			return array();
+		} //end if
+		//--
+		$level = (int) $level + 1;
+		//--
+
+		//--
 		switch((string)$type) {
 			case 'page':
 				$this->current_page[] = (string) $id;
@@ -812,11 +818,9 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			case 'segment':
 				break;
 			default:
-				\Smart::raise_error(
-					'PageBuilder: Invalid Page Load Type on Page/Segment: ['.(string)$id.'] # Type: '.$type,
-					'Invalid Page Load Type'
+				$this->fatalError(
+					'Invalid Type for PageBuilder Object: ['.(string)$id.'] @ Type: '.$type
 				);
-				die();
 				return array();
 		} //end if
 		//--
@@ -831,7 +835,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			$arr = (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getSegment((string)$id, (string)$this->crr_lang);
 			//--
 			if((string)$arr['id'] == '') {
-				$this->PageViewSetErrorStatus(500, 'Invalid PageBuilder Page Segment');
+				$this->PageViewSetErrorStatus(500, 'A PageBuilder Page Segment does not exists');
 				\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Segment: '.$id.' in Page: '.\implode(';', $this->current_page)); // log warning, this is internal, by page settings
 				return (array) $data_arr;
 			} //end if
@@ -846,13 +850,13 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			//--
 			$arr = (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getPage((string)$id, (string)$this->crr_lang);
 			//--
-			if((string)$arr['id'] == '') {
-				$this->PageViewSetErrorStatus(404, 'Invalid PageBuilder Page');
+			if((string)\trim((string)$arr['id']) == '') {
+				$this->PageViewSetErrorStatus(404, 'This PageBuilder Page does not exists');
 				// log no warning as this is external, by request
 				return (array) $data_arr;
 			} //end if
 			//--
-			$this->auth_required += (int) $arr['auth'];
+			$this->auth_required += (int) (isset($arr['auth']) ? $arr['auth'] : 0);
 			$data_arr['auth'] = (int) $this->auth_required;
 			//--
 		} //end if
@@ -935,11 +939,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			$yaml = (array) $ymp->parse((string)$yaml);
 			$yerr = (string) $ymp->getError();
 			if($yerr) {
-				\Smart::raise_error(
-					'PageBuilder: Invalid Data Structure (YAML) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] # '.$yerr,
-					'Invalid Data Structure detected for this Page'
+				$this->fatalError(
+					'PageBuilder: Invalid Data Structure (YAML) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] # YAML Parse Error: '.$yerr,
+					'Invalid PageBuilder Object Data Structure'
 				);
-				die();
 				return array();
 			} //end if
 			$ymp = null;
@@ -984,28 +987,25 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 							if(((string)$v['type'] === 'field') OR ((string)$v['type'] === 'value') OR ((string)$v['type'] === 'translation') OR ((string)$v['type'] === 'segment') OR ((string)$v['type'] === 'plugin')) {
 								$preparse_arr[(string)$key][] = [(string)$k => $v];
 							} else {
-								\Smart::raise_error(
+								$this->fatalError(
 									'PageBuilder: Invalid Data Structure (1.2) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
-									'Invalid Data Structure detected for this Page'
+									'Invalid PageBuilder Object Data Structure'
 								);
-								die();
 								return array();
 							} //end if
 						} else {
-							\Smart::raise_error(
+							$this->fatalError(
 								'PageBuilder: Invalid Data Structure (1.1) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
-								'Invalid Data Structure detected for this Page'
+								'Invalid PageBuilder Object Data Structure'
 							);
-							die();
 							return array();
 						} //end if
 					} //end foreach
 				} else {
-					\Smart::raise_error(
+					$this->fatalError(
 						'PageBuilder: Invalid Data Structure (1.0) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key,
-						'Invalid Data Structure detected for this Page'
+						'Invalid PageBuilder Object Data Structure'
 					);
-					die();
 					return array();
 				} //end if
 			} //end foreach
@@ -1147,7 +1147,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												$arr_tmp_item['id'] = (string) $this->page_params['publisher-date-modified'];
 												break;
 											case '@author-id':
-												$arr_tmp_item['id'] = (string) $this->friendlyAuthorNameById((string)$this->page_params['publisher-id']);
+												$arr_tmp_item['id'] = (string) $this->authorNameById((string)$this->page_params['publisher-id']);
 												break;
 											case '@self-syntax':
 												$arr_tmp_item['id'] = (string) $this->page_params['self-syntax'];
@@ -1180,15 +1180,18 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 										$arr_tmp_item['id'] = (string) '#'.$arr_tmp_item['id'];
 										//--
 										if((string)$arr_tmp_item['id'] == (string)$id) {
-											\Smart::raise_error(
+											$this->fatalError(
 												'PageBuilder: Page Self Circular Reference detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for referenced segment: '.$arr_tmp_item['id'],
-												'Circular self reference detected for this Page'
+												'Circular self reference detected for a PageBuilder Segment'
 											);
-											die();
 											return array();
 										} //end if
 										//--
 										$arr_tmp_item = (array) $this->loadSegmentOrPage((string)$arr_tmp_item['id'], 'segment', (int)$level, (array)((isset($v['render']) && \is_array($v['render'])) ? $v['render'] : []));
+										if((int)$this->PageViewGetStatusCode() >= 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
+										//	\Smart::log_warning('PageBuilder: Sub-Object Errors on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for referenced segment: '.$arr_tmp_item['id']);
+											return (array) $data_arr;
+										} //end if
 										//--
 									} elseif((string)$v['type'] == 'plugin') {
 										//-- config is available just for plugin
@@ -1203,11 +1206,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 										//--
 									} else {
 										//--
-										\Smart::raise_error(
+										$this->fatalError(
 											'PageBuilder: Unknown Data Type ('.(string)$v['type'].') in Runtime detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.']',
 											'Unknown Data Type in Runtime detected for this Page'
 										);
-										die();
 										return array();
 										//--
 									} //end if
@@ -1218,22 +1220,20 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 									//--
 								} else {
 									//--
-									\Smart::raise_error(
+									$this->fatalError(
 										'PageBuilder: Invalid Data Structure (2.3) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
 										'Invalid Data Structure detected for this Page'
 									);
-									die();
 									return array();
 									//--
 								} //end if
 								//--
 							} else {
 								//--
-								\Smart::raise_error(
+								$this->fatalError(
 									'PageBuilder: Invalid Data Structure (2.2) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key.'/'.(string)$k,
 									'Invalid Data Structure detected for this Page'
 								);
-								die();
 								return array();
 								//--
 							} //end if
@@ -1242,11 +1242,10 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 						//--
 					} else {
 						//--
-						\Smart::raise_error(
+						$this->fatalError(
 							'PageBuilder: Invalid Data Structure (2.1) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key,
 							'Invalid Data Structure detected for this Page'
 						);
-						die();
 						return array();
 						//--
 					} //end if else
@@ -1255,7 +1254,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 				//--
 			} else {
 				//--
-				\Smart::raise_error(
+				$this->fatalError(
 					'PageBuilder: Invalid Data Structure (2.0) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] for key: '.(string)$key,
 					'Invalid Data Structure detected for this Page'
 				);
@@ -1326,28 +1325,28 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//--
 		if($level === 0) {
 			if(\SmartModExtLib\PageBuilder\Utils::allowPages() !== true) {
-				$this->PageViewSetErrorStatus(503, 'PageBuilder: Page Objects are Disabled ... Only Segments are Allowed');
+				$this->PageViewSetErrorStatus(503, 'PageBuilder: Page Objects are Disabled ... Only Segments are Allowed', 'WARN');
 				return array();
 			} //end if
 		} //end if
 		//--
 
 		//--
-		if((int)$this->PageViewGetStatusCode() >= 400) {
+		if((int)$this->PageViewGetStatusCode() >= 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
 			return array(); // skip on first err to preserve the last status code
 		} //end if
 		//--
 
 		//--
 		if(!\is_array($data_arr)) {
-			$this->PageViewSetErrorStatus(500, 'PageBuilder: Empty Page Data Format on Page/Segment');
-			\Smart::log_warning('PageBuilder: Empty Page Data Format on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
+			$this->PageViewSetErrorStatus(500, 'PageBuilder: Invalid Render Data Format on Page/Segment');
+			\Smart::log_warning('PageBuilder: Invalid Render Data Format on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
 			return array();
 		} //end if
 		//--
 		if(!\is_array($data_arr['render'])) {
-			$this->PageViewSetErrorStatus(500, 'Invalid Page Render Data on Page/Segment');
-			\Smart::log_warning('PageBuilder: Invalid Page Render Data on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
+			$this->PageViewSetErrorStatus(500, 'PageBuilder: Invalid Render Data on Page/Segment');
+			\Smart::log_warning('PageBuilder: Invalid Render Data on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
 			return array();
 		} //end if
 		//--
@@ -1529,7 +1528,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												} //end if
 											} //end if
 											//--
-											if((int)$plugin_page_settings['status-code'] >= 400) {
+											if((int)$plugin_page_settings['status-code'] >= 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
 												//--
 												if((int)$this->PageViewGetStatusCode() < (int)$plugin_page_settings['status-code']) {
 													$this->PageViewSetErrorStatus((int)$plugin_page_settings['status-code'], (string)$plugin_page_settings['error']);
@@ -1671,7 +1670,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 								$val[$i] = (array) $this->doRenderObject((string)$id, (array)$val[$i], (int)$level);
 							} //end if
 							//--
-							if((string)$val[$i]['mode'] == 'settings') {
+							if(isset($val[$i]['mode']) AND ((string)$val[$i]['mode'] == 'settings')) {
 								//--
 								$this->PageViewSetErrorStatus(500, 'PageBuilder: Render Template ERROR: Settings Segment Pages cannot be used for rendering context');
 								\Smart::log_warning('PageBuilder: Render Template ERROR: Settings Segment Pages cannot be used for rendering context: ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.$val[$i]['mode'].') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
@@ -1693,7 +1692,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 											$arr_replacements['{{:'.(string)$key.':}}'] = '';
 										} //end if
 										//$arr_replacements['{{:'.(string)$key.':}}'] .= '<!-- Segment['.(int)$i.']: '.\Smart::escape_html((string)$key).' -->';
-										$arr_replacements['{{:'.(string)$key.':}}'] .= (string) $val[$i]['code']; // OK: always append
+										$arr_replacements['{{:'.(string)$key.':}}'] .= (string) (isset($val[$i]['code']) ? $val[$i]['code'] : ''); // OK: always append
 										//$arr_replacements['{{:'.(string)$key.':}}'] .= '<!-- /Segment['.(int)$i.']: '.\Smart::escape_html((string)$key).' -->';
 										//--
 									} else {
@@ -1795,7 +1794,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 
 
 	//=====
-	private function friendlyAuthorNameById(string $author_id) {
+	private function authorNameById(string $author_id) {
 		//--
 		$author_id = (string) \trim((string)$author_id);
 		//--
@@ -1808,6 +1807,20 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		$author_id = (string) \ucwords((string)$author_id);
 		//--
 		return (string) $author_id;
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	private function fatalError(string $err_log, string $err_display='') {
+		//--
+		\Smart::raise_error(
+			'PageBuilder ERROR: '.$err_log,
+			'PageBuilder Render ERROR'.(((string)$err_display != '') ? ': '.$err_display : '')
+		);
+		//--
+		die();
 		//--
 	} //END FUNCTION
 	//=====

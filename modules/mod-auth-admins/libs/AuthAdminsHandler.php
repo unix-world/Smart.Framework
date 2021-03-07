@@ -56,7 +56,7 @@ if(!\defined('\\APP_AUTH_DB_SQLITE')) {
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20210303
+ * @version 	v.20210307
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -213,7 +213,7 @@ final class AuthAdminsHandler {
 				//--
 			} //end if else
 			//-- test if login is successful
-			if((string)$admin_login['id'] != '') {
+			if(isset($admin_login['id']) AND ((string)$admin_login['id'] != '')) {
 				//--
 				$logged_in = 'yes'; // user is logged in
 				//--

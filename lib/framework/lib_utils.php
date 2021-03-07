@@ -48,7 +48,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20210305
+ * @version 	v.20210307
  * @package 	@Core:Extra
  *
  */
@@ -1390,12 +1390,15 @@ final class SmartUtils {
 		$allowed_extensions = (string) trim((string)$allowed_extensions);
 		$new_name = (string) $new_name; // an optional override file name (NO extension !!! The extension will be preserved from the uploaded file)
 		//--
+		if((string)$var_name == '') {
+			return 'Invalid File VarName for Upload';
+		} //end if
+		//--
 		if(Smart::array_size($_FILES) <= 0) {
 			return false; // {{{SYNC-FILE-UPLD-FALSE-RET}}} no files uploads detected ; should return no error ...
 		} //end if
-		//--
-		if((string)$var_name == '') {
-			return 'Invalid File VarName for Upload';
+		if((!isset($_FILES[$var_name])) OR (!is_array($_FILES[$var_name]))) {
+			return false; // {{{SYNC-FILE-UPLD-FALSE-RET}}} no files uploads detected ; should return no error ...
 		} //end if
 		//--
 		if(SmartFileSysUtils::check_if_safe_path((string)$dest_dir) != '1') {
@@ -1424,6 +1427,9 @@ final class SmartUtils {
 		} //end if
 		//--
 		if($var_index >= 0) {
+			if((!isset($_FILES[$var_name]['name'])) OR (!is_array($_FILES[$var_name]['name'])) OR (!isset($_FILES[$var_name]['tmp_name'][$var_index]))) {
+				return false; // {{{SYNC-FILE-UPLD-FALSE-RET}}} should return no error because the file may not be uploaded
+			} //end if
 			$the_upld_file_name 	= (string) $_FILES[$var_name]['name'][$var_index];
 			$the_upld_file_tmpname 	= (string) $_FILES[$var_name]['tmp_name'][$var_index];
 			$the_upld_file_error 	= (int)    $_FILES[$var_name]['error'][$var_index];

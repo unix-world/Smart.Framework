@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20210303
+	// v.20210307
 
 	const DAV_RESOURCE_TYPE_COLLECTION = 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION = 'noncollection';
@@ -166,6 +166,7 @@ final class DavServer {
 		if(\Smart::array_size($arr_items) > 0) {
 			foreach($arr_items as $key => $val) {
 				if(\Smart::array_size($val) > 0) { // must check if array is non empty
+					// no need to check isset() for $val[key] as they come from fixed definitions
 					if((string)$val['dav-resource-type'] == (string)self::DAV_RESOURCE_TYPE_COLLECTION) {
 						$val['dav-resource-type'] = (string) self::DAV_RESOURCE_TYPE_COLLECTION;
 						$val['c-xml-restype'] = (string) \trim((string)$val['c-xml-restype']);

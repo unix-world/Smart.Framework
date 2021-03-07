@@ -228,7 +228,7 @@ interface SmartInterfaceAppInfo {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210305
+ * @version 	v.20210307
  * @package 	development:Application
  *
  */
@@ -1269,7 +1269,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		//--
 		$code = (int) $code;
 		if(!in_array((int)$code, (array)SmartFrameworkRuntime::getHttpStatusCodesOK())) { // in the case that the http status code is n/a, use 200 instead
-			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid OK Status Code ('.$code.')');
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid OK Status Code ('.$code.'), reset it to 200');
 			$code = 200;
 		} //end if
 		//--
@@ -1299,7 +1299,6 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			return false;
 		} //end if
 		//--
-		$code = (int) $code;
 		if(is_array($msg)) {
 			$message = (string) (isset($msg[0]) ? $msg[0] : '');
 			$htmlmsg = (string) (isset($msg[1]) ? $msg[1] : '');
@@ -1308,18 +1307,17 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			$htmlmsg = '';
 		} //end if else
 		//--
-		$out = true;
+		$code = (int) $code;
 		if(!in_array((int)$code, (array)SmartFrameworkRuntime::getHttpStatusCodesERR())) { // in the case that the error status code is n/a, use 500 instead
-			$out = false;
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid HTTP Error Status Code ('.$code.'), reset it to 500');
 			$code = 500;
-			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid HTTP Error Status Code ('.$code.')');
-		} else {
-			$out = (bool) $this->PageViewSetCfgs([
-				'status-code' 	=> (int) $code,
-				'error' 		=> (string) $message,
-				'errhtml' 		=> (string) $htmlmsg
-			]);
 		} //end if else
+		//--
+		$out = (bool) $this->PageViewSetCfgs([
+			'status-code' 	=> (int) $code,
+			'error' 		=> (string) $message,
+			'errhtml' 		=> (string) $htmlmsg
+		]);
 		//--
 		switch((string)strtoupper((string)$logtype)) {
 			case 'NOTICE':
@@ -1362,7 +1360,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		//--
 		$code = (int) $code;
 		if(!in_array((int)$code, (array)SmartFrameworkRuntime::getHttpStatusCodesRDR())) { // in the case that the redirect status code is n/a, use 302 instead
-			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Redirect Status Code ('.$code.')');
+			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Redirect Status Code ('.$code.'), reset it to 302');
 			$code = 302;
 		} //end if
 		//--
@@ -1392,7 +1390,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		//--
 		$param = (string) strtolower((string)$param);
 		//--
-		return $this->pageview[(string)$param]; // mixed
+		return (array_key_exists((string)$param, $this->pageview) ? $this->pageview[(string)$param] : null); // mixed
 		//--
 	} //END FUNCTION
 	//=====
