@@ -42,7 +42,7 @@ The original software architecture of this web framework allows it to deliver a 
 
 
 #### This software framework is compatible, stable and actively tested with PHP 7.2 / 7.3 / 7.4 / 8.0 versions.
-**Prefered PHP versions** are: **7.3 / 7.4** which are currently LTS.
+**Prefered PHP version** is: **7.4** (LTS).
 
 <br>
 ### Benchmark Scenario:
