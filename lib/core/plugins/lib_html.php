@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210305
+ * @version 	v.20210308
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -480,7 +480,7 @@ final class SmartHtmlParser {
 			//--
 			$use_dom = true;
 			//--
-			if((string)$this->html != '') {
+			if((string)$this->html != '') { // IMPORTANT: DOMDocument loadHTML() will throw error if $this->html is empty, so test this case ...
 				//--
 				@libxml_use_internal_errors(true);
 				@libxml_clear_errors();
@@ -496,12 +496,12 @@ final class SmartHtmlParser {
 				//--
 				@$dom->loadHTML(
 					(string) $this->html,
-					LIBXML_ERR_WARNING | LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED // {{{SYNC-LIBXML-OPTIONS}}}
+					LIBXML_ERR_WARNING | LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_HTML_NODEFDTD // {{{SYNC-LIBXML-OPTIONS}}} ; important !!! do not use the buggy flag LIBXML_HTML_NOIMPLIED as it will mess up the tags, is not stable enough inside LibXML
 				);
-				$this->html = (string) @$dom->saveHTML(); // get back from DOM
+				$this->html = (string) @$dom->saveHTML(); // get back from DOM ; using @$dom->saveHTML(@$dom->getElementsByTagName('body')->item(0)); is buggy as will not encode entities as #xxxx;
 				//print_r($this->html);
 				$dom = null; // free mem
-				$this->html = (string) trim((string)preg_replace('~<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>\s*~i', '', (string)$this->html)); // cleanup ; fixes: normally with the above options will add no doctype or html / body tags, but use it just in case ; alternative to this: explode by body to get content
+				$this->html = (string) trim((string)preg_replace('~<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>\s*~i', '', (string)$this->html)); // cleanup fix: remove the doctype, html / head / body tags
 				//--
 				if((SmartFrameworkRuntime::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
 					$errors = (array) @libxml_get_errors();
