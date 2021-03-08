@@ -2,7 +2,7 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
-March 06, 2021 :: :: Version 7.2.1 rev.20210306
+March 07, 2021 :: :: Version 7.2.1 rev.20210307
 	* PHP8 Compatible
 	* Removed support for NetteLatte Templating
 
