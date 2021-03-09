@@ -48,7 +48,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20210307
+ * @version 	v.20210309
  * @package 	@Core:Extra
  *
  */
@@ -354,12 +354,10 @@ final class SmartUtils {
 		$y_code = (string) $y_code;
 		$y_repl = (array) $y_repl;
 		//--
-		$tag_start 	= (string) $y_repl['tag-start'];
-		$tag_end 	= (string) $y_repl['tag-end'];
+		$tag_start 	= (string) (isset($y_repl['tag-start']) ? $y_repl['tag-start'] : '');
+		$tag_end 	= (string) (isset($y_repl['tag-end'])   ? $y_repl['tag-end']   : '');
 		//--
 		$tmp_regex_php = array(
-		//	'<'.'%',
-		//	'%'.'>',
 			'<'.'?php',
 			'<'.'?',
 			'?'.'>'
@@ -367,12 +365,10 @@ final class SmartUtils {
 		$tmp_regex_htm = array(
 			$tag_start,
 			$tag_start,
-			$tag_start,
-			$tag_end,
 			$tag_end
 		);
 		//--
-		return str_ireplace($tmp_regex_php, $tmp_regex_htm, $y_code);
+		return (string) str_ireplace((array)$tmp_regex_php, (array)$tmp_regex_htm, (string)$y_code);
 		//--
 	} //END FUNCTION
 	//================================================================

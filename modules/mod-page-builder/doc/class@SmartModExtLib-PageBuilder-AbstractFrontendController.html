@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartModExtLib\PageBuilder\AbstractFrontendController        abstract class \SmartModExtLib\PageBuilder\ AbstractFrontendController  extends">
-	<meta name="keywords" content="smartmodextlib pagebuilder abstractfrontendcontroller, abstract, class, smartmodextlib pagebuilder, abstractfrontendcontroller, extends, smartmodextlib pagebuilder abstractfrontendpagebuilder, frontend, controller, provides, the, definitions, to, create, pagebuilder, controllers, language, php, located, at, modules mod-page-builder libs abstractfrontendcontroller.php, package, development:modules:pagebuilder, namespace, name, version, v.20201112, hints, extend, from, this, one, usage, dynamic, object, new, class method, only, methods, inheritance, chart, →, ↳, smartabstractappcontroller, final, public, function, renderbuilderpage, string, page id, tpl path, tpl file, array, markers, arr markers, getrenderedbuildersegmentcode, segment id, rendersegmentmarkers, segment code, checkifpageorsegmentexist, y id, y ctrl, null, inherited, checkifpageexist, checkifsegmentexist, getpagebyid, getsegmentbyid, getlistofpagesbytag, y tag, y orderby, id, y orderdir, asc, int, y limit, y ofs, countlistofpagesbytag, getlistofsegmentsbytag, countlistofsegmentsbytag, getlistofsegmentsbyarea, y area, countlistofsegmentsbyarea, getlistofsegmentsbyareatag, countlistofsegmentsbyareatag, construct, y module path, y controller, y url page, y hardcoded area, param, relative, path, followed, by, a, trailing">
+	<meta name="keywords" content="smartmodextlib pagebuilder abstractfrontendcontroller, abstract, class, smartmodextlib pagebuilder, abstractfrontendcontroller, extends, smartmodextlib pagebuilder abstractfrontendpagebuilder, frontend, controller, provides, the, definitions, to, create, pagebuilder, controllers, language, php, located, at, modules mod-page-builder libs abstractfrontendcontroller.php, package, development:modules:pagebuilder, namespace, name, version, v.20210307, hints, extend, from, this, one, usage, dynamic, object, new, class method, only, methods, inheritance, chart, →, ↳, smartabstractappcontroller, final, public, function, renderbuilderpage, string, page id, tpl path, tpl file, array, markers, arr markers, getrenderedbuildersegmentcode, segment id, rendersegmentmarkers, segment code, getlistofrenderedpages, getlistofrenderedsegments, checkifpageorsegmentexist, y id, y ctrl, null, inherited, checkifpageexist, checkifsegmentexist, getpagebyid, getsegmentbyid, getlistofpagesbyctrl, y orderby, id, y orderdir, asc, int, y limit, y ofs, countlistofpagesbyctrl, getlistofsegmentsbyctrl, countlistofsegmentsbyctrl, getlistofpagesbytag, y tag, countlistofpagesbytag, getlistofsegmentsbytag, countlistofsegmentsbytag, getlistofsegmentsbyarea, y area, countlistofsegmentsbyarea, getlistofsegmentsbyareatag, countlistofsegmentsbyareatag, construct, y module path, y controller, y url page, y hardcoded area, param">
 	<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 	<title>PHP Documentation for: \SmartModExtLib\PageBuilder\AbstractFrontendController</title>
 	<!-- CSS and Fonts -->
@@ -693,7 +693,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\PageBuilder\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> AbstractFrontendController</span></li>
 		
-		<li><b>Version:</b> v.20201112</li>
+		<li><b>Version:</b> v.20210307</li>
 		
 		<li><b>Hints:</b> extend  frontend controllers from this one</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -757,6 +757,28 @@ select#select-summary {
 	
 	
 	
+</div><div class="doc-container" id="Method--getListOfRenderedPages">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfRenderedPages</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div><div class="doc-container" id="Method--getListOfRenderedSegments">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfRenderedSegments</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
 </div><div class="doc-container" id="Method--checkIfPageOrSegmentExist">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>checkIfPageOrSegmentExist</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>, 
@@ -811,6 +833,62 @@ select#select-summary {
 </div><div class="doc-container" id="Method--getSegmentById">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getSegmentById</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div><div class="doc-container" id="Method--getListOfPagesByCtrl">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfPagesByCtrl</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
+			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ofs` Parameter is OPTIONAL, with the Default Value: 0">$y_ofs</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div><div class="doc-container" id="Method--countListOfPagesByCtrl">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfPagesByCtrl</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div><div class="doc-container" id="Method--getListOfSegmentsByCtrl">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfSegmentsByCtrl</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
+			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ofs` Parameter is OPTIONAL, with the Default Value: 0">$y_ofs</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</b></span>
+	
+	
+	
+	
+	
+</div><div class="doc-container" id="Method--countListOfSegmentsByCtrl">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfSegmentsByCtrl</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -1760,6 +1838,12 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--renderSegmentMarkers"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderSegmentMarkers()</option>
 			
 			
+									<option value="Method--getListOfRenderedPages"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfRenderedPages()</option>
+			
+			
+									<option value="Method--getListOfRenderedSegments"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfRenderedSegments()</option>
+			
+			
 									<option value="Method--checkIfPageOrSegmentExist"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;checkIfPageOrSegmentExist()</option>
 			
 			
@@ -1773,6 +1857,18 @@ function smartHandleDocSelector(obj) {
 			
 			
 									<option value="Method--getSegmentById"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getSegmentById()</option>
+			
+			
+									<option value="Method--getListOfPagesByCtrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfPagesByCtrl()</option>
+			
+			
+									<option value="Method--countListOfPagesByCtrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countListOfPagesByCtrl()</option>
+			
+			
+									<option value="Method--getListOfSegmentsByCtrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfSegmentsByCtrl()</option>
+			
+			
+									<option value="Method--countListOfSegmentsByCtrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;countListOfSegmentsByCtrl()</option>
 			
 			
 									<option value="Method--getListOfPagesByTag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getListOfPagesByTag()</option>
@@ -1959,13 +2055,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2020-12-07 13:43:29 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-09 12:46:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div align="center">
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2020 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
 </div>
 </body>
 </html>

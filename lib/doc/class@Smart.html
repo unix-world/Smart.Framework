@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\Smart        final class \ Smart    {   } ::    Class: Smart (Base Functions) - provides the base methods for an easy and secure development with">
-	<meta name="keywords" content="smart, final, class, base, functions, provides, the, methods, for, an, easy, and, secure, development, with, smart.framework, php, language, located, at, lib framework lib smart.php, package, core, namespace, name, version, v.20201118, depends, extensions, json, classes, smartunicode, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class::method, only, public, function, get from config, string, param, mixed, return, value, selected, parameter, config, does, not, exists, empty, enum, configuration, example, app.info-url, get, from, configs  app info-url, app, array, configs  app, a, configs">
+	<meta name="keywords" content="smart, final, class, base, functions, provides, the, methods, for, an, easy, and, secure, development, with, smart.framework, php, language, located, at, lib framework lib smart.php, package, core, namespace, name, version, v.20210305, depends, extensions, json, classes, smartunicode, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class::method, only, public, function, is nscalar, mixed, val, bool, return, false, array, or, resource, true, rest, param, value, tested, test, a, variable, scalar, null, get from config, string, type, selected, parameter, config">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \Smart">
 	<title>PHP Documentation for: \Smart</title>
 	<!-- CSS and Fonts -->
@@ -696,7 +696,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> Smart</span></li>
 		
-		<li><b>Version:</b> v.20201118</li>
+		<li><b>Version:</b> v.20210305</li>
 		<li><b>Depends:</b> extensions:  PHP JSON ; classes: SmartUnicode</li>
 		<li><b>Hints:</b> It  is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -710,16 +710,33 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<div class="doc-container" id="Method--get_from_config">
+<div class="doc-container" id="Method--is_nscalar">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_nscalar</b></span>&nbsp;(
+				<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$val` Parameter is REQUIRED">$val</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOL} FALSE if array, object or resource ; TRUE for the rest<br>
+@param: {MIXED} $val: The value to be tested</div>
+	
+			<div class="doc-method-comments">Test if a variable value is Scalar or Null</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--get_from_config">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_from_config</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$type` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$type</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
 	
 	
 			<div class="doc-method-ret-params">@return: {MIXED} The value for the selected parameter. If the Config parameter does not exists, will return an empty string.<br>
-@param: {ENUM} $param: The selected configuration parameter. Example: 'app.info-url' will get value (STRING) from $configs['app']['info-url'] ; 'app' will get the value (ARRAY) from $configs['app']</div>
+@param: {STRING} $param: The selected configuration parameter. Example: 'app.info-url' will get value (STRING) from $configs['app']['info-url'] ; 'app' will get the value (ARRAY) from $configs['app']<br>
+@param: {ENUM} $type: The type to pre-format the value: 'array', 'string', 'boolean', 'integer', 'numeric' OR '' to leave the value as is (raw)</div>
 	
 			<div class="doc-method-comments">Get the value for a Config parameter from the app $configs array.</div>
 	
@@ -1120,7 +1137,7 @@ This is a better replacement for the PHP's number_format() which throws a warnin
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
 	
 	
-			<div class="doc-method-ret-params">@return: {MIXED} [ NUMERIC / STRING / ARRAY ] 	:: The array value of the specified key path<br>
+			<div class="doc-method-ret-params">@return: {MIXED} The value from the specified array by the specific key path or NULL if the value does not exists<br>
 @param: {ARRAY} $y_arr: The input array<br>
 @param: {STRING} $y_key_path: The composed key path by levels (Ex: key1.key2) :: case-sensitive<br>
 @param: {STRING} $y_path_separator: The key path separator (Example: .)</div>
@@ -1314,7 +1331,7 @@ ALLOWED CHARS: [a-zA-Z0-9] _ - . @ #</div>
 </div><div class="doc-container" id="Method--safe_varname">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>safe_varname</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_name` Parameter is REQUIRED">$y_name</span></b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_upper` Parameter is OPTIONAL, with the Default Value: false">$y_allow_upper</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_upper` Parameter is OPTIONAL, with the Default Value: true">$y_allow_upper</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -1322,7 +1339,7 @@ ALLOWED CHARS: [a-zA-Z0-9] _ - . @ #</div>
 	
 			<div class="doc-method-ret-params">@return: {STRING} The safe variable name ; if invalid should return empty value<br>
 @param: {STRING} $y_name: Variable Name to be processed<br>
-@param: {BOOL} $y_allow_upper: Allow UpperCase ; *Optional* ; Default is FALSE</div>
+@param: {BOOL} $y_allow_upper: Allow UpperCase ; *Optional* ; Default is TRUE</div>
 	
 			<div class="doc-method-comments">Creates a Safe Valid Variable Name<br>
 NOTICE: this have a special usage and must allow also 0..9 as prefix because is can be used for other purposes not just for real safe variable names, thus if real safe valid variable name must be tested later (real safe variable names cannot start with numbers ...)<br>
@@ -1924,6 +1941,9 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
+									<option value="Method--is_nscalar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_nscalar()</option>
+			
+			
 									<option value="Method--get_from_config"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_from_config()</option>
 			
 			
@@ -2148,13 +2168,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2020-12-07 13:36:00 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-09 12:12:01 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div align="center">
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2020 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
 </div>
 </body>
 </html>

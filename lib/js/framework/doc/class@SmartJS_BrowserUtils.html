@@ -696,7 +696,7 @@ This JavaScript class provides methods to simplify the interraction with the Bro
 		
 		
 		
-		<li><b>Version:</b> 20201028</li>
+		<li><b>Version:</b> 20210204</li>
 		<li><b>Depends:</b> SmartJS_CoreUtils, SmartJS_CryptoHash, SmartJS_Base64, jQuery, SmartJS_ModalBox, jQuery.Gritter, *jQuery.alertable, *SmartSimpleDialog, *SmartJS_BrowserUIUtils</li>
 		
 	</ul>
@@ -1575,7 +1575,8 @@ SmartJS_BrowserUtils.Submit_Form_By_Ajax(); 	// advanced, will handle the XHR fo
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_url` Parameter">y_url</span></b></span>, 
 			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_method` Parameter">y_method</span></b></span>, 
 			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_type` Parameter">y_data_type</span></b></span>, 
-			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_arr_or_serialized` Parameter">y_data_arr_or_serialized</span></b></span>
+			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_arr_or_serialized` Parameter">y_data_arr_or_serialized</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_replace` Parameter">y_replace</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1592,6 +1593,7 @@ SmartJS_BrowserUtils.Submit_Form_By_Ajax(); 	// advanced, will handle the XHR fo
 			@param: {Enum} y_method The Request Method: GET / POST<br>
 			@param: {Enum} y_data_type The type of Data served back by the Request: html | text | json (div_content_html)<br>
 			@param: {Mixed} y_data_arr_or_serialized The Data to be sent: a serialized string via serialize() such as: '&amp;var1=value1&amp;var2=value2' or an associative array as: { var1: &quot;value1&quot;, var2: &quot;value2&quot; }<br>
+			@param: {Boolean} y_replace If TRUE will use the jQuery method .replaceWith() instead of .empty().html()<br>
 	
 	
 	</div>
@@ -1922,13 +1924,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2020-12-07 13:36:12 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-09 12:12:17 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div align="center">
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2020 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
 </div>
 </body>
 </html>
