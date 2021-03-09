@@ -79,7 +79,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20200708
+ * @version 	v.20210309
  * @package 	@Core:Network
  *
  */
@@ -408,7 +408,7 @@ final class SmartHttpClient {
 
 		//-- Get response header
 		$this->header = (string) @fgets($this->socket, 4096);
-		$this->status = (string) trim(substr(trim($this->header), 9, 3));
+		$this->status = (string) trim((string)substr((string)trim((string)$this->header), 9, 3));
 		//--
 		$is_unauth = false;
 		if(((string)$this->status == '401') AND (stripos($this->header, ' 401 Unauthorized') !== false)) {
@@ -643,6 +643,15 @@ final class SmartHttpClient {
 				Smart::log_warning('LibHTTP // RequestFromURL ('.$browser_protocol.$host.':'.$port.$path.') // PHP OpenSSL Extension not installed ...');
 				return 0;
 			} //end if
+			//--
+		} elseif((string)$protocol == 'http://') {
+			//--
+			// OK
+			//--
+		} else {
+			//--
+			Smart::log_notice('LibHTTP // RequestFromURL ('.$url.') // The URL is INVALID (not http or https) ...');
+			return 0;
 			//--
 		} //end if else
 		//--
@@ -1066,7 +1075,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto
- * @version 	v.20200611
+ * @version 	v.20210309
  * @package 	@Core:Network
  *
  */

@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210305
+ * @version 	v.20210309
  * @package 	Plugins:Image
  *
  */
@@ -44,6 +44,10 @@ final class SmartDetectImages {
 	//================================================================
 	// require the first 16 bytes (first 16 characters - string) of an image to detect or full size for GD detect: SVG / PNG / GIF / JPG / WEBP
 	public static function guess_image_extension_by_img_content($pict, $use_gd=false) {
+		//--
+		if(strlen((string)$pict) < 16) {
+			return '';
+		} //end if
 		//--
 		if((stripos((string)$pict, '</svg>') !== false) OR (stripos((string)$pict, '<svg') !== false)) { // use OR as it may be partial content
 			return '.svg'; // {{{SYNC-IMG-DETECT-SVG}}}
@@ -65,9 +69,9 @@ final class SmartDetectImages {
 		} //end if
 		//--
 		$arr_info = (array) @getimagesizefromstring((string)$pict);
-		//$width 	= (int) $arr_info[0]; // not used here
-		//$height 	= (int) $arr_info[1]; // not used here
-		$imgtyp 	= (int) $arr_info[2]; // image type constant
+		//$width 	= (int) (isset($arr_info[0]) ? $arr_info[0] : null); // not used here
+		//$height 	= (int) (isset($arr_info[1]) ? $arr_info[1] : null); // not used here
+		$imgtyp 	= (int) (isset($arr_info[2]) ? $arr_info[2] : null); // image type constant
 		if($imgtyp <= 0) {
 			return ''; // invalid type detected
 		} //end if

@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210305
+ * @version 	v.20210309
  * @package 	Plugins:Network
  *
  */
@@ -50,7 +50,7 @@ final class SmartRobot {
 	 */
 	public static function load_url_img_content($y_img_link, $y_allow_set_credentials='no') {
 		//--
-		// v.20200121
+		// v.20210309
 		//--
 		// ### IMPORTANT ###
 		// BECAUSE OF SECURITY CONCERNS, NEVER USE OR MODIFY THIS FUNCTION TO LOAD A FILE PATH
@@ -61,12 +61,18 @@ final class SmartRobot {
 		$tmp_fake_fname = '';
 		$tmp_fcontent = '';
 		//--
-		$out_arr = [
-			'log' 		=> '',
-			'result' 	=> 0,
-			'extension' => '',
-			'filename' 	=> '',
-			'content' 	=> ''
+		$out_arr = [ // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+			'client' 			=> (string) __METHOD__,
+			'log' 				=> '',
+			'extension' 		=> '',
+			'filename' 			=> '',
+			'mode' 				=> 'file', // DO NOT CHANGE !!
+			'result' 			=> 0,
+			'code' 				=> '400', // HTTP 400 BAD REQUEST
+			'headers' 			=> '',
+			'content' 			=> '',
+			'browse-url-info' 	=> [],
+			'debuglog' 			=> ''
 		];
 		//--
 		if((string)$tmp_imglink != '') {
@@ -114,10 +120,23 @@ final class SmartRobot {
 			if($is_ok === true) {
 				//--
 				$tmp_browse_arr = (array) self::load_url_content((string)$tmp_imglink, (int)SMART_FRAMEWORK_NETSOCKET_TIMEOUT, 'GET', '', '', '', (string)$tmp_allow_credentials); // [OK]
+				//--
+				$out_arr['mode'] 			= (string) $tmp_browse_arr['mode'];
+				$out_arr['result'] 			= (string) $tmp_browse_arr['result'];
+				$out_arr['code'] 			= (string) $tmp_browse_arr['code'];
+				$out_arr['headers'] 		= (string) $tmp_browse_arr['headers'];
+				$out_arr['browse-url-info'] = (array)  $tmp_browse_arr['browse-url-info'];
+				//--
+				if(!array_key_exists('debuglog', $out_arr)) {
+					$out_arr['debuglog'] = '';
+				} //end if
+				$out_arr['debuglog'] .= (string) $tmp_browse_arr['debuglog'];
+				//--
 				if(!array_key_exists('log', $out_arr)) {
 					$out_arr['log'] = '';
 				} //end if
 				$out_arr['log'] .= (string) $tmp_browse_arr['log'];
+				//--
 				if($tmp_browse_arr['result'] == 1) {
 					if(((string)$tmp_browse_arr['mode'] == 'file') OR ((string)$tmp_browse_arr['mode'] == 'embedded')) {
 						$tmp_trust_headers = 'yes'; // SHOULD TRUST ALSO IF LOCAL FILE OR EMBEDDED DATAURL IMAGE
@@ -184,11 +203,12 @@ final class SmartRobot {
 	 * @param STRING 	$y_auth_name				:: used only for URLs, the auth user name
 	 * @param STRING 	$y_auth_pass				:: used only for URLs, the auth password
 	 * @param YES/NO	$y_allow_set_credentials	:: DEFAULT IS SET to NO ; if YES must be set just for internal URLs ; if set to AUTO will try to detect if can trust based on admin.php / index.php local framework scripts ; if the $y_url_or_path to get is detected to be under current URL will send also the Unique / session IDs ; more if detected that is from admin.php and if this is set to YES will send the HTTP-BASIC Auth credentials if detected (using YES with other URLs than Smart.Framework's current URL can be a serious SECURITY ISSUE, so don't !)
+	 * @param BOOL 		$y_allow_num_redirects 		:: DEFAULT IS SET to 2 ; Between 0..5 ; if > 0 will allow this number of redirects if 301/302, but only if not set to send any auth username/pass/credentials to avoid security leaks) ; if 0 will allow no redirects
 	 * @return ARRAY
 	 */
-	public static function load_url_content($y_url_or_path, $y_timeout=30, $y_method='GET', $y_ssl_method='', $y_auth_name='', $y_auth_pass='', $y_allow_set_credentials='no') {
+	public static function load_url_content($y_url_or_path, $y_timeout=30, $y_method='GET', $y_ssl_method='', $y_auth_name='', $y_auth_pass='', $y_allow_set_credentials='no', $y_allow_num_redirects=2) {
 		//--
-		// v.20200121
+		// v.20210309
 		// fixed sessionID with new Dynamic generated
 		//--
 		// ### IMPORTANT ###
@@ -197,16 +217,24 @@ final class SmartRobot {
 		// #################
 		//--
 		$y_url_or_path = (string) $y_url_or_path;
+		$y_allow_num_redirects = (int) $y_allow_num_redirects;
+		if((int)$y_allow_num_redirects < 0) {
+			$y_allow_num_redirects = 0;
+		} elseif((int)$y_allow_num_redirects > 5) {
+			$y_allow_num_redirects = 5;
+		} //end if
 		//--
 		if((string)$y_url_or_path == '') {
 			//--
 			return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+				'client' => (string) __METHOD__,
 				'log' => 'ERROR: FILE Name is Empty ...',
 				'mode' => 'file', // DO NOT CHANGE !!
 				'result' => '0',
 				'code' => '400', // HTTP 400 BAD REQUEST
 				'headers' => '',
 				'content' => '',
+				'browse-url-info' => [],
 				'debuglog' => ''
 			);
 			//--
@@ -246,12 +274,14 @@ final class SmartRobot {
 			case '!unknown!':
 			default:
 				return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+					'client' => (string) __METHOD__,
 					'log' => 'ERROR: FILE Not Found or Invalid Path or Invalid DataURL ...',
 					'mode' => 'file', // DO NOT CHANGE !!
 					'result' => '0',
 					'code' => '404', // HTTP 404 NOT FOUND
 					'headers' => '',
 					'content' => '',
+					'browse-url-info' => [],
 					'debuglog' => ''
 				);
 		} //end switch
@@ -263,24 +293,28 @@ final class SmartRobot {
 				$eimg = (array) explode(';base64,', (string)$y_url_or_path);
 				//--
 				return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+					'client' => (string) __METHOD__,
 					'log' => 'OK ? Not sure, decoded from embedded B64 image !',
 					'mode' => 'embedded', // DO NOT CHANGE !!
 					'result' => '1',
 					'code' => '200', // HTTP 200 OK
 					'headers' => (string) SmartUnicode::sub_str($y_url_or_path, 0, 50).'...', // try to get the 1st 50 chars for trying to guess the extension
 					'content' => (string) @base64_decode((string)trim((string)(isset($eimg[1]) ? $eimg[1] : ''))),
+					'browse-url-info' => [],
 					'debuglog' => ''
 				);
 				//--
 			} else {
 				//--
 				return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+					'client' => (string) __METHOD__,
 					'log' => 'ERROR: Invalid DataURL ...',
 					'mode' => 'file', // DO NOT CHANGE !!
 					'result' => '0',
 					'code' => '404', // HTTP 404 NOT FOUND
 					'headers' => '',
 					'content' => '',
+					'browse-url-info' => [],
 					'debuglog' => ''
 				);
 				//--
@@ -399,14 +433,55 @@ final class SmartRobot {
 			//--
 			$data = (array) $browser->browse_url($y_url_or_path, $y_method, $y_ssl_method, $auth_name, $auth_pass); // do browse
 			//--
+			$prev_redirect = '';
+			$redirect_url = '';
+			$redirect_code = '';
+			if((int)$y_allow_num_redirects > 0) { // only if allow redirects is > 0
+				if(((string)$y_allow_set_credentials != 'yes') AND ((string)trim((string)$y_auth_name) == '') AND ((string)trim((string)$y_auth_pass) == '')) { // allow only redirects without any auth username/pass/credentials
+					if((int)$data['result'] == 1) {
+						if(((int)$data['code'] == 301) OR ((int)$data['code'] == 302)) { // follow a single redirect if any
+							if((string)$data['headers'] != '') {
+								if(strpos((string)$data['headers'], 'Location:') !== false) {
+									$redirect_url = (string) $data['headers'];
+									$redirect_url = (array) explode('Location:', (string)$redirect_url);
+									$redirect_url = (string) (isset($redirect_url[1]) ? $redirect_url[1] : '');
+									$redirect_url = (array) explode("\n", (string)$redirect_url);
+									$redirect_url = (string) (isset($redirect_url[0]) ? $redirect_url[0] : '');
+									$redirect_url = (string) trim((string)$redirect_url);
+									if((string)$redirect_url != '') { // to gandle a redirect this must be a valid URL, starting with http:// or https://
+										if(((string)substr((string)$redirect_url, 0, 7) == 'http://') OR ((string)substr((string)$redirect_url, 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
+											$redirect_code = (int) $data['code'];
+											$data = array(); // clear data
+											$data = (array) self::load_url_content($redirect_url, $y_timeout, $y_method, $y_ssl_method, '', '', 'no', (int)((int)$y_allow_num_redirects - 1)); // DO NOT ALLOW MORE THAN 1 REDIRECT, TO AVOID INFINITE LOOPS BY BUGGY HTTP(S) SERVERS
+											$prev_redirect = (string) (isset($data['browse-url-info']['redirect']) ? $data['browse-url-info']['redirect'] : '');
+										} else {
+											$redirect_url = '';
+										} //end if else
+									} //end if
+								} //end if
+							} //end if
+						} //end if
+					} //end if
+				} //end if
+			} //end if
+			//--
 			return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
-				'log' 		=> (string) $data['log'].$tmp_extra_log,
-				'mode' 		=> (string) $data['mode'], // DO NOT CHANGE !!
-				'result' 	=> (string) $data['result'],
-				'code' 		=> (string) $data['code'],
-				'headers' 	=> (string) $data['headers'],
-				'content' 	=> (string) $data['content'],
-				'debuglog' 	=> (string) $data['debuglog']
+				'client' 			=> (string) __METHOD__,
+				'log' 				=> (string) $data['log'].$tmp_extra_log,
+				'mode' 				=> (string) $data['mode'], // DO NOT CHANGE !!
+				'result' 			=> (string) $data['result'],
+				'code' 				=> (string) $data['code'],
+				'headers' 			=> (string) $data['headers'],
+				'content' 			=> (string) $data['content'],
+				'browse-url-info' 	=> (array) [
+					'url' 			=> (string) $y_url_or_path,
+					'timeout' 		=> (string) (int)$y_timeout,
+					'method' 		=> (string) $y_method,
+					'auth' 			=> (string) ((strlen((string)$y_auth_name) && strlen((string)$y_auth_pass)) ? ($y_auth_name.':'.str_repeat('*', strlen((string)$y_auth_pass))) : ''),
+					'credentials' 	=> (string) $y_allow_set_credentials,
+					'redirect' 		=> (string) ($prev_redirect ? $prev_redirect.' <- ' : '').trim('['.(int)$y_allow_num_redirects.'] '.(string)$redirect_code.' '.$redirect_url),
+				],
+				'debuglog' 			=> (string) $data['debuglog']
 			);
 			//--
 		} //end if else
@@ -427,7 +502,7 @@ final class SmartRobot {
 	 */
 	public static function get_url_or_path_trust_reference($y_url_or_path) {
 		//--
-		// v.20200121
+		// v.20210309
 		//--
 		// ### SECURITY: IMPORTANT !!! ###
 		// BECAUSE OF SECURITY CONCERNS, NEVER USE OR MODIFY THIS FUNCTION TO USE WITH A FILE SYSTEM PATH
@@ -475,22 +550,22 @@ final class SmartRobot {
 			if(((string)strtolower((string)substr((string)$y_url_or_path, 0, 11)) == 'data:image/') AND (stripos((string)$y_url_or_path, ';base64,') !== false)) { // {{{SYNC-DATA-IMAGE}}}
 				$the_url_or_path_type = 'data-url'; // it is a data-url
 				$trust_headers = 'yes';
-			} elseif(((string)substr((string)$y_url_or_path, 0, 7) == 'http://') OR ((string)substr((string)$y_url_or_path, 0, 8) == 'https://')) {
+			} elseif(((string)substr((string)$y_url_or_path, 0, 7) == 'http://') OR ((string)substr((string)$y_url_or_path, 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
 				$the_url_or_path_type = 'url'; // it is an url
-				// trust headers must be preserved as above
+				// trust the headers, must be preserved as above
 			} else { // !!! it is a relative path but for the security reasons must be accessed via the local URL only since content source may be untrusted !!!
 				$y_url_or_path = (string) SmartUtils::get_server_current_url().$y_url_or_path;
 				$the_url_or_path_type = 'url'; // it is an url
-				// trust headers must be preserved as above
+				// trust the headers, must be preserved as above
 			} //end if
 			//--
 		} //end if else
 		//--
 		return array(
-			'url-or-path-fixed' => (string) $y_url_or_path, // fixed URL (ex: for relative URLs the current URL as prefix will be added)
-			'url-or-path-type' 	=> (string) $the_url_or_path_type, // can be URL or Data-URL
-			'allow-credentials' => (string) $allow_credentials, // yes/no (yes only for internal ...)
-			'trust-headers' 	=> (string) $trust_headers // yes/no
+			'url-or-path-fixed' => (string) $y_url_or_path, 		// fixed URL (ex: for relative URLs the current URL as prefix will be added)
+			'url-or-path-type' 	=> (string) $the_url_or_path_type, 	// can be URL or Data-URL
+			'allow-credentials' => (string) $allow_credentials, 	// yes/no (yes only for internal ...)
+			'trust-headers' 	=> (string) $trust_headers 			// yes/no
 		);
 		//--
 	} //END FUNCTION
