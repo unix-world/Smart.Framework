@@ -374,7 +374,7 @@ final class SmartFtpClient {
 		//--
 		//while(list(,$value) = @each($remote_list)) {
 		//while(list($key,$value) = @each($remote_list)) { // FIX to be compatible with the upcoming PHP 7
-		foreach($remote_list as $key => $value) { // Fix: the above is deprecated as of PHP 7.2
+		foreach($remote_list as $key => $value) { // Fix: the above is deprecated as of PHP 7.3
 			//--
 			if((string)$value == (string)$pathname) {
 				$this->error_msg = 'ERROR: Remote file exists: '.$pathname;

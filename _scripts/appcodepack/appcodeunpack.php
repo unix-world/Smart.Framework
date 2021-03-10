@@ -29,7 +29,7 @@ define('SMART_FRAMEWORK_CHARSET', 			'UTF-8'); 				// App Charset: UTF-8
 define('SMART_FRAMEWORK_CHMOD_DIRS', 		0770);					// Folder Permissions: 0770 | 0700
 define('SMART_FRAMEWORK_CHMOD_FILES', 		0660);					// File Permissions: 0660 | 0600
 //--
-if(version_compare(phpversion(), '7.2') < 0) { // check for PHP 7.2 or later
+if(version_compare(phpversion(), '7.3') < 0) { // check for PHP 7.3 or later
 	@http_response_code(500);
 	die('PHP Runtime not supported : '.phpversion().' !'.'<br>PHP versions to run this software are: 7.2 / 7.3 / 7.4 or later');
 } //end if

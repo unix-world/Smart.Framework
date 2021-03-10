@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20210105), (c) 2015-2021 unix-world.org
+	extended by unixman, (stable.20210310), (c) 2015-2021 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 */
 
@@ -337,7 +337,6 @@ a.ux-link:hover {
 	-moz-appearance: none !important;
 	-webkit-appearance: none !important;
 	user-select: none !important;
-	zoom: 1 !important;
 }
 .ux-button:hover,
 .ux-button:focus {
@@ -889,7 +888,6 @@ since IE8 won't execute CSS that contains a CSS3 selector.
 .ux-form-message-inline {
 	display: inline-block;
 	*display: inline;
-	*zoom: 1;
 	vertical-align: middle;
 }
 .ux-form-aligned textarea,
@@ -1301,7 +1299,6 @@ since IE8 won't execute CSS that contains a CSS3 selector.
 .ux-menu-horizontal .ux-menu-separator {
 	display: inline-block;
 	*display: inline;
-	zoom: 1;
 	vertical-align: middle;
 }
 
@@ -1576,7 +1573,6 @@ div.ux-dropdown span.ux-dropbutton {
 	-moz-appearance: none !important;
 	-webkit-appearance: none !important;
 	user-select: none !important;
-	zoom: 1 !important;
 }
 
 div.ux-dropdown ul {

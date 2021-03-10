@@ -29,7 +29,7 @@ if(!defined('SMART_FRAMEWORK_CHARSET')) {
 	define('SMART_FRAMEWORK_CHARSET', 'UTF-8');
 } //end if
 if(!defined('SMART_FRAMEWORK_DEBUG_MODE')) {
-	define('SMART_FRAMEWORK_DEBUG_MODE', 'no'); // if not explicit defined, this must be set here to avoid PHP 7.2+ warnings
+	define('SMART_FRAMEWORK_DEBUG_MODE', 'no'); // if not explicit defined, this must be set here to avoid PHP 7.3+ warnings
 } //end if
 //--
 if(defined('SMART_ERROR_LOG_MANAGEMENT')) {

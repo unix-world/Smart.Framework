@@ -1904,7 +1904,7 @@ final class SmartMailerSmtpClient {
 		//--
 		//while(list(,$line) = @each($lines)) {
 		//while(list($key,$line) = @each($lines)) { // FIX to be compatible with the upcoming PHP 7
-		foreach($lines as $key => $line) { // Fix: the above is deprecated as of PHP 7.2
+		foreach($lines as $key => $line) { // Fix: the above is deprecated as of PHP 7.3
 			//--
 			//$lines_out = null;
 			$lines_out = array(); // Fix !!
@@ -1928,7 +1928,7 @@ final class SmartMailerSmtpClient {
 			$lines_out[] = $line;
 			//-- now send the lines to the server
 			//while(list($key,$line_out) = @each($lines_out)) { // FIX to be compatible with the upcoming PHP 7
-			foreach($lines_out as $key => $line_out) { // Fix: the above is deprecated as of PHP 7.2
+			foreach($lines_out as $key => $line_out) { // Fix: the above is deprecated as of PHP 7.3
 				//--
 				if((string)$line_out != '') {
 					if((string)substr((string)$line_out, 0, 1) == '.') {

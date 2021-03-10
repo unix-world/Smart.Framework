@@ -543,7 +543,7 @@ final class SmartMailerMimeDecode {
 		if(is_array($data)) {
 			//--
 			//while(list($key,$value) = @each($data)) {
-			foreach($data as $key => $value) { // Fix: the above is deprecated as of PHP 7.2
+			foreach($data as $key => $value) { // Fix: the above is deprecated as of PHP 7.3
 				//--
 				if(is_object($value)) {
 					//--
@@ -918,7 +918,7 @@ final class SmartMailerMimeExtract {
 		reset($headers);
 		//--
 		//while(list($key, $value) = @each($headers)) {
-		foreach($headers as $key => $value) { // Fix: the above is deprecated as of PHP 7.2
+		foreach($headers as $key => $value) { // Fix: the above is deprecated as of PHP 7.3
 			//--
 			$headers[(string)$key]['name'] = (string) strtolower($headers[(string)$key]['name']);
 			//--
@@ -933,7 +933,7 @@ final class SmartMailerMimeExtract {
 					//if(isset($content_type['other'])) {
 					if(is_array($content_type['other'])) {
 						//while(list($p_name, $p_value) = @each($content_type['other'])) {
-						foreach($content_type['other'] as $p_name => $p_value) { // Fix: the above is deprecated as of PHP 7.2
+						foreach($content_type['other'] as $p_name => $p_value) { // Fix: the above is deprecated as of PHP 7.3
 							//--
 							if((string)$p_name == 'charset') {
 								$content_charset = $p_value ; // charset
@@ -950,7 +950,7 @@ final class SmartMailerMimeExtract {
 					//if(isset($content_disposition['other'])) {
 					if(is_array($content_disposition['other'])) {
 						//while(list($p_name, $p_value) = @each($content_disposition['other'])) {
-						foreach($content_disposition['other'] as $p_name => $p_value) { // Fix: the above is deprecated as of PHP 7.2
+						foreach($content_disposition['other'] as $p_name => $p_value) { // Fix: the above is deprecated as of PHP 7.3
 							$return->d_parameters[$p_name] = $p_value;
 						} //end while
 					} //end if

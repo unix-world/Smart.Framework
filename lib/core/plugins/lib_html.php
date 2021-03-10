@@ -122,7 +122,7 @@ final class SmartHtmlParser {
 		$len = (int) (strlen((string)$tag) + 1); // will add ' ' or \t or or / '>' at the end for testing
 		$attrib_arr = array();
 		if(is_array($this->elements)) {
-			//while(list($key, $code) = @each($this->elements)) { // Fix: this is deprecated as of PHP 7.2
+			//while(list($key, $code) = @each($this->elements)) { // Fix: this is deprecated as of PHP 7.3
 			foreach($this->elements as $key => $code) {
 				if((strpos($code, '<') !== false) OR (strpos($code, '>') !== false)) { // if valid tag
 					$code = (string) trim((string)str_replace(array("\t", "\n", "\r"), array(' ', ' ', ' '), (string)$code)); // make tabs and new lines as simple space
@@ -621,7 +621,7 @@ final class SmartHtmlParser {
 		//--
 		$raw = (array) explode("\n", (string)$this->html);
 		//--
-		//while(list($key, $line) = @each($raw)) { // Fix: this is deprecated as of PHP 7.2
+		//while(list($key, $line) = @each($raw)) { // Fix: this is deprecated as of PHP 7.3
 		foreach($raw as $key => $line) {
 			//--
 			$line = trim($line);

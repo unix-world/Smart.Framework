@@ -325,8 +325,8 @@ table.dataTable td {
 .dataTables_wrapper {
 	position: relative;
 	clear: both;
-	*zoom: 1;
-	zoom: 1;
+/*	*zoom: 1;
+	zoom: 1; */
 	padding: 5px;
 	border: 1px solid #ECECEC;
 	border-radius: 3px;

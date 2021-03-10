@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210309
+ * @version 	v.20210310
  * @package 	Plugins:Network
  *
  */
@@ -49,8 +49,6 @@ final class SmartRobot {
 	 * @return ARRAY
 	 */
 	public static function load_url_img_content($y_img_link, $y_allow_set_credentials='no') {
-		//--
-		// v.20210309
 		//--
 		// ### IMPORTANT ###
 		// BECAUSE OF SECURITY CONCERNS, NEVER USE OR MODIFY THIS FUNCTION TO LOAD A FILE PATH
@@ -208,8 +206,8 @@ final class SmartRobot {
 	 */
 	public static function load_url_content($y_url_or_path, $y_timeout=30, $y_method='GET', $y_ssl_method='', $y_auth_name='', $y_auth_pass='', $y_allow_set_credentials='no', $y_allow_num_redirects=2) {
 		//--
-		// v.20210309
 		// fixed sessionID with new Dynamic generated
+		// added support for redirects if 301/302 and no auth/credentials
 		//--
 		// ### IMPORTANT ###
 		// BECAUSE OF SECURITY CONCERNS, NEVER USE OR MODIFY THIS FUNCTION TO LOAD A FILE PATH
@@ -433,33 +431,26 @@ final class SmartRobot {
 			//--
 			$data = (array) $browser->browse_url($y_url_or_path, $y_method, $y_ssl_method, $auth_name, $auth_pass); // do browse
 			//--
-			$prev_redirect = '';
 			$redirect_url = '';
 			$redirect_code = '';
+			$prev_redirect = '';
 			if((int)$y_allow_num_redirects > 0) { // only if allow redirects is > 0
-				if(((string)$y_allow_set_credentials != 'yes') AND ((string)trim((string)$y_auth_name) == '') AND ((string)trim((string)$y_auth_pass) == '')) { // allow only redirects without any auth username/pass/credentials
-					if((int)$data['result'] == 1) {
-						if(((int)$data['code'] == 301) OR ((int)$data['code'] == 302)) { // follow a single redirect if any
-							if((string)$data['headers'] != '') {
-								if(strpos((string)$data['headers'], 'Location:') !== false) {
-									$redirect_url = (string) $data['headers'];
-									$redirect_url = (array) explode('Location:', (string)$redirect_url);
-									$redirect_url = (string) (isset($redirect_url[1]) ? $redirect_url[1] : '');
-									$redirect_url = (array) explode("\n", (string)$redirect_url);
-									$redirect_url = (string) (isset($redirect_url[0]) ? $redirect_url[0] : '');
-									$redirect_url = (string) trim((string)$redirect_url);
-									if((string)$redirect_url != '') { // to gandle a redirect this must be a valid URL, starting with http:// or https://
-										if(((string)substr((string)$redirect_url, 0, 7) == 'http://') OR ((string)substr((string)$redirect_url, 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
-											$redirect_code = (int) $data['code'];
-											$data = array(); // clear data
-											$data = (array) self::load_url_content($redirect_url, $y_timeout, $y_method, $y_ssl_method, '', '', 'no', (int)((int)$y_allow_num_redirects - 1)); // DO NOT ALLOW MORE THAN 1 REDIRECT, TO AVOID INFINITE LOOPS BY BUGGY HTTP(S) SERVERS
-											$prev_redirect = (string) (isset($data['browse-url-info']['redirect']) ? $data['browse-url-info']['redirect'] : '');
-										} else {
-											$redirect_url = '';
-										} //end if else
-									} //end if
-								} //end if
-							} //end if
+				if(
+					((string)$y_allow_set_credentials == 'no') AND // must not test != 'yes' because can be 'auto' !!!
+					((string)trim((string)$y_auth_name) == '') AND
+					((string)trim((string)$y_auth_pass) == '')
+				) { // allow only redirects without any auth username/pass/credentials
+					if((string)trim((string)$data['redirect-url']) != '') {
+						if(((string)substr((string)$data['redirect-url'], 0, 7) == 'http://') OR ((string)substr((string)$data['redirect-url'], 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
+							//--
+							$redirect_url = (string) $data['redirect-url'];
+							$redirect_code = (int) $data['code'];
+							//--
+							$data = array(); // clear data
+							$data = (array) self::load_url_content($redirect_url, $y_timeout, $y_method, $y_ssl_method, '', '', 'no', (int)((int)$y_allow_num_redirects - 1)); // ALLOW FINITE NUMBER OF REDIRECTS TO AVOID INFINITE LOOPS BY BUGGY HTTP(S) SERVERS
+							//--
+							$prev_redirect = (string) (isset($data['browse-url-info']['redirect']) ? $data['browse-url-info']['redirect'] : '');
+							//--
 						} //end if
 					} //end if
 				} //end if
@@ -502,7 +493,7 @@ final class SmartRobot {
 	 */
 	public static function get_url_or_path_trust_reference($y_url_or_path) {
 		//--
-		// v.20210309
+		// v.20210310
 		//--
 		// ### SECURITY: IMPORTANT !!! ###
 		// BECAUSE OF SECURITY CONCERNS, NEVER USE OR MODIFY THIS FUNCTION TO USE WITH A FILE SYSTEM PATH

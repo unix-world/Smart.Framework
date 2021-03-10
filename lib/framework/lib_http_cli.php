@@ -79,7 +79,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20210309
+ * @version 	v.20210310
  * @package 	@Core:Network
  *
  */
@@ -302,6 +302,29 @@ final class SmartHttpClient {
 		//--
 		$result = $this->get_answer($url, $user, $pwd, $method, $ssl_version);
 		//--
+		$redirect_url = '';
+		if((int)$result == 1) {
+			if(((int)$this->status == 301) OR ((int)$this->status == 302)) {
+				if((string)$this->header != '') {
+					if(strpos((string)$this->header, 'Location:') !== false) {
+						$redirect_url = (string) $this->header;
+						$redirect_url = (array) explode('Location:', (string)$redirect_url);
+						$redirect_url = (string) (isset($redirect_url[1]) ? $redirect_url[1] : '');
+						$redirect_url = (array) explode("\n", (string)$redirect_url);
+						$redirect_url = (string) (isset($redirect_url[0]) ? $redirect_url[0] : '');
+						$redirect_url = (string) trim((string)$redirect_url);
+						if((string)$redirect_url != '') {
+							if(((string)substr((string)$redirect_url, 0, 7) == 'http://') OR ((string)substr((string)$redirect_url, 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
+								// OK
+							} else {
+								$redirect_url = ''; // malformed redirect URL
+							} //end if else
+						} //end if
+					} //end if
+				} //end if
+			} //end if
+		} //end if
+		//--
 		return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
 			'client' 			=> (string) __CLASS__,
 			'date-time' 		=> (string) date('Y-m-d H:i:s O'),
@@ -323,6 +346,7 @@ final class SmartHttpClient {
 			'pre-code' 			=> (string) $this->pre_status, // if 100-continue, this is the HTTP 1.1 Pre-Status
 			'pre-headers' 		=> (string) $this->pre_header, // if 100-continue, this is the HTTP 1.1 Pre-Header
 			'code' 				=> (string) $this->status,
+			'redirect-url' 		=> (string) $redirect_url,
 			'headers' 			=> (string) $this->header,
 			'content' 			=> (string) $this->body,
 			'log' 				=> (string) 'User-Agent: '.$this->useragent."\n", // this is reserved for calltime functions
@@ -1075,7 +1099,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto
- * @version 	v.20210309
+ * @version 	v.20210310
  * @package 	@Core:Network
  *
  */

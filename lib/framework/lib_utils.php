@@ -48,7 +48,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20210309
+ * @version 	v.20210310
  * @package 	@Core:Extra
  *
  */
@@ -113,9 +113,13 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to set cookies as it takes care to set them according with the cookie domain if set or not per app ; use zero expire time for cookies that will expire with browser session
-	public static function set_cookie($cookie_name, $cookie_data, $expire_time=0, $cookie_path='/', $cookie_domain='@') {
+	public static function set_cookie($cookie_name, $cookie_data, $expire_time=0, $cookie_path='/', $cookie_domain='@', $cookie_samesite='Lax', $cookie_secure=false, $cookie_httponly=false) {
 		//--
 		if(headers_sent()) {
+			return false;
+		} //end if
+		//--
+		if((string)trim((string)$cookie_name) == '') {
 			return false;
 		} //end if
 		//--
@@ -128,13 +132,36 @@ final class SmartUtils {
 			$cookie_domain = (string) self::cookie_default_domain();
 		} //end if
 		//--
-		if((string)$cookie_domain != '') {
-			$cookie_set = @setcookie((string)$cookie_name, (string)$cookie_data, (int)$expire_time, (string)$cookie_path, (string)$cookie_domain); // set it using domain (if running on IP will be set on current IP)
-		} else {
-			$cookie_set = @setcookie((string)$cookie_name, (string)$cookie_data, (int)$expire_time, (string)$cookie_path); // set it without specific domain (will using current IP or subdomain)
-		} //end if else
+		$cookie_samesite = (string) trim((string)$cookie_samesite);
+		if((string)$cookie_samesite != '') {
+			$cookie_samesite = (string) ucfirst((string)strtolower((string)$cookie_samesite));
+		} //end if
+		switch((string)$cookie_samesite) {
+			case 'None':
+			case 'Secure':
+				break;
+			case 'Lax':
+			default:
+				$cookie_samesite = 'Lax';
+		} //end switch
 		//--
-		return (bool) $cookie_set;
+		$options = [
+			'expires' 	=> (int) $expire_time,
+			'path' 		=> (string) $cookie_path,
+			'samesite' 	=> (string) $cookie_samesite
+		]; // by default set it without specific domain (will using current IP or subdomain)
+		//--
+		if((string)$cookie_domain != '') {
+			$options['domain'] = (string) $cookie_domain; // set cookie using domain (if running on IP will be set on current IP)
+		} //end if
+		if($cookie_secure === true) {
+			$options['secure'] = true;
+		} //end if
+		if($cookie_httponly === true) {
+			$options['httponly'] = true;
+		} //end if
+		//--
+		return (bool) @setcookie((string)$cookie_name, (string)$cookie_data, (array)$options);
 		//--
 	} //END FUNCTION
 	//================================================================

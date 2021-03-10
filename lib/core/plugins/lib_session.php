@@ -109,7 +109,7 @@ final class SmartSession {
 		//--
 		self::start(); // start session if not already started
 		//--
-		if(!is_array($_SESSION)) { // fix for php 7.2+
+		if(!is_array($_SESSION)) { // fix for php 7.3+
 			return null;
 		} //end if
 		//--
@@ -138,7 +138,7 @@ final class SmartSession {
 		//--
 		self::start(); // start session if not already started
 		//--
-		if(!is_array($_SESSION)) { // fix for php 7.2+
+		if(!is_array($_SESSION)) { // fix for php 7.3+
 			return false;
 		} //end if
 		//--

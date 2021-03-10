@@ -14,7 +14,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //======================================================
 // Smart-Framework v.7.2
 //======================================================
-// Requires PHP 7.2 or later
+// Requires PHP 7.3 or later
 //======================================================
 // this library should be loaded from app web root only
 //======================================================

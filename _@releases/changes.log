@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+March 10, 2021 :: :: Version 7.2.1 rev.20210310
+	* req. PHP 7.3 or later (removed support for PHP 7.2 because of setcookie option missing SameSite)
+
 March 07, 2021 :: :: Version 7.2.1 rev.20210307
 	* PHP8 Compatible
 	* Removed support for NetteLatte Templating
