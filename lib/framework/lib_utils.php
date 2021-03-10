@@ -113,7 +113,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to set cookies as it takes care to set them according with the cookie domain if set or not per app ; use zero expire time for cookies that will expire with browser session
-	public static function set_cookie($cookie_name, $cookie_data, $expire_time=0, $cookie_path='/', $cookie_domain='@', $cookie_samesite='Lax', $cookie_secure=false, $cookie_httponly=false) {
+	public static function set_cookie($cookie_name, $cookie_data, $expire_time=0, $cookie_path='/', $cookie_domain='@', $cookie_secure=false, $cookie_samesite='Strict', $cookie_httponly=false) {
 		//--
 		if(headers_sent()) {
 			return false;
@@ -138,11 +138,11 @@ final class SmartUtils {
 		} //end if
 		switch((string)$cookie_samesite) {
 			case 'None':
-			case 'Secure':
-				break;
 			case 'Lax':
+				break;
+			case 'Strict':
 			default:
-				$cookie_samesite = 'Lax';
+				$cookie_samesite = 'Strict';
 		} //end switch
 		//--
 		$options = [
@@ -155,10 +155,10 @@ final class SmartUtils {
 			$options['domain'] = (string) $cookie_domain; // set cookie using domain (if running on IP will be set on current IP)
 		} //end if
 		if($cookie_secure === true) {
-			$options['secure'] = true;
+			$options['secure'] = true; // if this is set the cookie will be sent only via HTTPS secure connections
 		} //end if
 		if($cookie_httponly === true) {
-			$options['httponly'] = true;
+			$options['httponly'] = true; // WARNING: a cookie with HttpOnly cannot be accessed by javascript, so use it with precaution
 		} //end if
 		//--
 		return (bool) @setcookie((string)$cookie_name, (string)$cookie_data, (array)$options);
