@@ -62,7 +62,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //--
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.7.2.1'); 	// tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.10'); 	// tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.11'); 	// tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 //--
 if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM')) {
@@ -953,7 +953,7 @@ final class SmartFrameworkRegistry {
 			$arr 		= (array)  explode('|', (string)$context, 3); // separe 1st and 2nd from the rest
 			$context 	= (string) trim((string)(isset($arr[0]) ? $arr[0] : ''));
 			$subcontext = (string) trim((string)(isset($arr[1]) ? $arr[1] : ''));
-			unset($arr);
+			$arr = null;
 		} //end if
 		if((string)$context == '') {
 			$context = '-UNDEFINED-CONTEXT-';
@@ -2083,28 +2083,24 @@ final class SmartFrameworkRuntime {
 		} //end if
 		//--
 		$cookie = '';
+		$wasset = false;
 		//-- {{{SYNC-SMART-UNIQUE-COOKIE}}}
+		$expire = 0;
+		if(defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME')) {
+			$expire = (int) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME;
+			if($expire <= 0) {
+				$expire = 0;
+			} //end if
+		} //end if
 		if((defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME')) AND (!defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP'))) {
 			if((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME != '') {
 				if(SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, true)) {
-					$cookie = '';
-					if(array_key_exists((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, $_COOKIE)) {
-						$cookie = (string) trim((string)strtolower((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_COOKIE[(string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME])));
-					} //end if
+					$cookie = (string) trim((string)strtolower((string)SmartFrameworkRegistry::getCookieVar((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME)));
 					if(((string)$cookie == '') OR (strlen((string)$cookie) != 40) OR (!preg_match('/^[a-f0-9]+$/', (string)$cookie))) {
-						$expire = 0;
-						if(defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME')) {
-							$expire = (int) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME;
-							if($expire < 0) {
-								$expire = 0;
-							} //end if
-							if($expire > 0) {
-								$expire = (int) time() + $expire;
-							} //end if
-						} //end if
 						$entropy = (string) sha1((string)Smart::unique_entropy('uuid-cookie')); // generate a random unique key ; cookie was not yet set or is invalid
-						SmartUtils::set_cookie((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, (string)$entropy, (int)$expire, '/', '@');
+						SmartUtils::set_cookie((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, (string)$entropy, (int)$expire);
 						$cookie = (string) $entropy;
+						$wasset = true;
 					} //end if
 				} else {
 					Smart::raise_error(
@@ -2115,6 +2111,9 @@ final class SmartFrameworkRuntime {
 			} //end if
 		} //end if
 		//-- #end# sync
+		if($wasset !== true) {
+			SmartUtils::set_cookie((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, (string)$cookie, (int)$expire);
+		} //end if
 		define('SMART_APP_VISITOR_COOKIE', (string)$cookie); // empty or cookie ID
 		//--
 	} //END FUNCTION

@@ -82,7 +82,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
 				$select_user = $model->getById((string)$id);
-				unset($model); // close connection
+				$model = null; // close connection
 				//--
 				if(Smart::array_size($select_user) <= 0) { // Check if exist id in admins table
 					$this->PageViewSetVars([
@@ -138,7 +138,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						(string) SmartHashCrypto::password((string)$frm['pass'], (string)$frm['id']),
 						(string) $frm['pass'] // this is required to re-encode keys
 					);
-					unset($model); // close connection
+					$model = null; // close connection
 				} //end if
 				//--
 				if(($wr == 1) AND ((string)$message == '')) {
@@ -212,7 +212,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					return;
 				} //end if
 				//--
-				unset($model); // close connection
+				$model = null; // close connection
 				//--
 				$all_privs = '<superadmin>, '.APP_AUTH_PRIVILEGES;
 				//--
@@ -314,7 +314,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							'priv' 		=> (array)  $frm['priv'],
 						]
 					);
-					unset($model); // close connection
+					$model = null; // close connection
 				} //end if
 				//--
 				if(($wr == 1) AND ((string)$message == '')) {
@@ -390,7 +390,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 								//--
 							} //end if else
 							//--
-							unset($model); // close connection
+							$model = null; // close connection
 							//--
 							break;
 						default:
@@ -481,7 +481,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						'name_f' => (string) $frm['name_f'],
 						'name_l' => (string) $frm['name_l']
 					]);
-					unset($model); // close connection
+					$model = null; // close connection
 				} //end if
 				if(($wr == 1) AND ((string)$message == '')) {
 					$status = 'OK';
@@ -537,7 +537,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
 					$data['totalRows'] = $model->countByFilter($id);
 					$data['rowsList'] = $model->getListByFilter(['id', 'active', 'email', 'name_f', 'name_l', 'modif', 'priv', ['keys' => 'length']], $data['itemsPerPage'], $ofs, $sortby, $sortdir, $id);
-					unset($model); // close connection
+					$model = null; // close connection
 					//--
 				} else {
 					//--

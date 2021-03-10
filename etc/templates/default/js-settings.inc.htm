@@ -1,8 +1,9 @@
-<!-- JS-SETTINGS :: r.20200605 -->
+<!-- JS-SETTINGS :: r.20210310 -->
 <script type="text/javascript">
 	SmartJS_BrowserUtils.param_LanguageId = '[###LANG|js###]';
 	SmartJS_BrowserUtils.param_CookieName = '[###CLIENT-UID-COOKIE-NAME|js###]';
 	SmartJS_BrowserUtils.param_CookieDomain = '[###CLIENT-UID-COOKIE-DOMAIN|js###]';
+	SmartJS_BrowserUtils.param_CookieSameSitePolicy = '[###CLIENT-UID-COOKIE-SAMESITE|js###]';
 	SmartJS_BrowserUtils.param_TemplatePath = '[###TEMPLATE-PATH|js###]';
 	if(Test_Browser_Compliance.checkIsMobileDevice()) { SmartJS_BrowserUtils.param_Use_iFModalBox_Active = 0; } else { SmartJS_BrowserUtils.param_Use_iFModalBox_Active = 1; SmartJS_BrowserUtils.Control_ModalCascading(); } // force popup instead of modal for mobile devices ; for desktop keep modal with cascading control
 [%%%IF:APP-REALM:==ADM;%%%]

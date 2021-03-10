@@ -48,7 +48,7 @@ define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)SmartFileSystem::read('lib/
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations
- * @version 	v.20210305
+ * @version 	v.20210310
  * @package 	Application:ViewComponents
  *
  */
@@ -692,6 +692,7 @@ final class SmartComponents {
 		$arr_data['client-browser'] 			= (string) $os_bw['bw']; 													// client browser (ex: fox)
 		$arr_data['client-uid-cookie-name'] 	= (string) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME;							// client browser UID Cookie Name (as defined in etc/init.php) ; it may be required to pass this cookie name to the Javascript ...)
 		$arr_data['client-uid-cookie-domain'] 	= (string) SmartUtils::cookie_default_domain(); 							// client browser UID Cookie Domain (as defined in etc/init.php) ; it may be required to pass this cookie domain to the Javascript ...)
+		$arr_data['client-uid-cookie-samesite'] = (string) SmartUtils::cookie_default_samesite_policy(); 					// client browser UID Cookie SameSite Policy (as defined in etc/init.php) ; it may be required to pass this cookie domain to the Javascript ...)
 		$arr_data['app-env'] 					= (string) (SmartFrameworkRuntime::ifProdEnv() === true) ? 'prod' : 'dev'; 	// App Environment: dev | prod :: {{{SYNC-APP-ENV-SETT}}}
 		$arr_data['app-namespace'] 				= (string) SMART_SOFTWARE_NAMESPACE;										// NameSpace from configs (as defined in etc/init.php)
 		$arr_data['app-realm'] 					= (string) $the_realm; 														// IDX (for index.php area) ; ADM (for admin.php area)

@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartUtils, SmartTextTranslations ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
- * @version 	v.20210305
+ * @version 	v.20210310
  * @package 	development:Captcha
  *
  */
@@ -89,7 +89,7 @@ final class SmartCaptcha {
 			return false;
 		} //end if
 		//--
-		$ok = (bool) SmartUtils::set_cookie(self::cookie_name_chk($y_form_name), (string)sha1((string)$y_form_name.SMART_FRAMEWORK_SECURITY_KEY), 0);
+		$ok = (bool) SmartUtils::set_cookie(self::cookie_name_chk($y_form_name), (string)sha1((string)$y_form_name.SMART_FRAMEWORK_SECURITY_KEY));
 		if(!$ok) {
 			return false;
 		} //end if
@@ -97,7 +97,7 @@ final class SmartCaptcha {
 		if((string)$y_mode == 'session') {
 			$ok = (bool) SmartSession::set(self::cookie_name_frm($y_form_name), self::cksum_hash($y_captcha_word));
 		} else {
-			$ok = (bool) SmartUtils::set_cookie(self::cookie_name_frm($y_form_name), self::cksum_hash($y_captcha_word), 0);
+			$ok = (bool) SmartUtils::set_cookie(self::cookie_name_frm($y_form_name), self::cksum_hash($y_captcha_word));
 		} //end if else
 		//--
 		return (bool) $ok;
@@ -131,7 +131,7 @@ final class SmartCaptcha {
 		$translator_core_captcha = SmartTextTranslations::getTranslator('@core', 'captcha');
 		//--
 		$uuid = (string) strtoupper(Smart::uuid_10_num().'-'.Smart::uuid_10_str());
-		$js_solver = "var SmartCaptchaChecksum = SmartJS_BrowserUtils.getCookie('".Smart::escape_js(self::cookie_name_chk($y_form_name))."'); if(SmartCaptchaChecksum == '') { SmartCaptchaChecksum = 'invalid-captcha'; alert('".Smart::escape_js($translator_core_captcha->text('error'))."'); } var smartCaptchaTimerCookie = new Date(); var smartCaptchaCookie = SmartJS_CoreUtils.bin2hex(SmartJS_CryptoBlowfish.encrypt(SmartJS_Base64.encode(smartCaptchaTimerCookie.getTime() + '!' + String(SmartJS_CryptoBlowfish.decrypt(fldVal,String(kZ))) + '!Smart.Framework'), SmartJS_CoreUtils.stringTrim(SmartCaptchaChecksum))); SmartJS_BrowserUtils.setCookie('".Smart::escape_js($js_cookie_name)."', smartCaptchaCookie, false, '/', '@');";
+		$js_solver = "var SmartCaptchaChecksum = SmartJS_BrowserUtils.getCookie('".Smart::escape_js(self::cookie_name_chk($y_form_name))."'); if(SmartCaptchaChecksum == '') { SmartCaptchaChecksum = 'invalid-captcha'; alert('".Smart::escape_js($translator_core_captcha->text('error'))."'); } var smartCaptchaTimerCookie = new Date(); var smartCaptchaCookie = SmartJS_CoreUtils.bin2hex(SmartJS_CryptoBlowfish.encrypt(SmartJS_Base64.encode(smartCaptchaTimerCookie.getTime() + '!' + String(SmartJS_CryptoBlowfish.decrypt(fldVal,String(kZ))) + '!Smart.Framework'), SmartJS_CoreUtils.stringTrim(SmartCaptchaChecksum))); SmartJS_BrowserUtils.setCookie('".Smart::escape_js($js_cookie_name)."', smartCaptchaCookie);";
 		//--
 		if($y_use_absolute_url !== true) {
 			$the_abs_url = '';

@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20210305
+ * @version 	v.20210310
  * @package 	Plugins:Mailer
  *
  */
@@ -555,8 +555,7 @@ final class SmartMailerUtils {
 			$htmlparser = new SmartHtmlParser($message);
 			$htmlparser->get_clean_html(); // clean html before ; don't care of html comments
 			$arr_links = $htmlparser->get_tags('img'); // {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
-			$htmlparser = '';
-			unset($htmlparser);
+			$htmlparser = null;
 			//--
 			$chk_duplicates_arr = array();
 			$uniq_id = 0;
@@ -626,8 +625,7 @@ final class SmartMailerUtils {
 		$mail->is_html = ($is_html === true) ? true : false; // false | true
 		$mail->body = (string) $message;
 		//--
-		$message = '';
-		unset($message);
+		$message = null;
 		//--
 
 		//-- attachments
@@ -820,7 +818,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20210305
+ * @version 	v.20210310
  * @package 	Plugins:Mailer
  *
  */
@@ -915,7 +913,7 @@ final class SmartMailerMimeParser {
 		$the_sep_arr = (array) self::mime_separe_part_link($y_enc_msg_file);
 		$y_enc_msg_file = (string) $the_sep_arr['msg'];
 		$the_msg_part = (string) $the_sep_arr['part'];
-		unset($the_sep_arr);
+		$the_sep_arr = null;
 		//--
 		$arr = array(); // {{{SYNC-MIME-ENCRYPT-ARR}}}
 		$arr['error'] = ''; // by default, no error
@@ -1100,12 +1098,12 @@ final class SmartMailerMimeParser {
 
 		//==
 		//--
-		$content = SmartFileSystem::read((string)$the_message_eml);
+		$content = (string) SmartFileSystem::read((string)$the_message_eml);
 		$eml = new SmartMailerMimeDecode();
 		$head = $eml->get_header(SmartUnicode::sub_str((string)$content, 0, 65535)); // some messages fail with 8192 to decode ; a faster compromise would be 16384, but here we can use a higher value since is done once (text 65535)
 		$msg = $eml->get_bodies((string)$content, (string)$the_part_id);
-		unset($eml);
-		unset($content);
+		$eml = null;
+		$content = null;
 		//--
 		//==
 
@@ -1125,12 +1123,12 @@ final class SmartMailerMimeParser {
 			$skip_part_processing = 'no';
 			$skip_part_linking = 'yes';
 			//--
-			if(substr($the_part_id, 0, 4) == 'txt_') {
+			if((string)substr($the_part_id, 0, 4) == 'txt_') {
 				//-- text part
 				$tmp_part = (array) $msg['texts'][(string)$the_part_id];
 				$msg = array();
 				$msg['texts'][(string)$the_part_id] = (array) $tmp_part;
-				unset($tmp_part);
+				$tmp_part = null;
 				//--
 			} else {
 				//-- att / cid part
@@ -1444,8 +1442,8 @@ final class SmartMailerMimeParser {
 								$out .= $tmp_pict_img;
 								if(((string)$val['mode'] == 'text/plain') OR ((string)$y_process_mode == 'print')) {
 									$out .= $val['content'];
-								} else { // for non text/plain parts, use sandbox iframe if non-print mode ; for print mode the iframe sandbox must be manually added to ensure safety !
-									$out .= '<div title="Mime Message HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:5px; left:49vw; opacity:0.25;"><iframe name="'.Smart::escape_html($htmid).'" id="'.Smart::escape_html($htmid).'" width="100%" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="min-height:75vh; height:max-content; border:1px solid #ECECEC;" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>Mime Message</title><meta charset="'.Smart::escape_html(SMART_FRAMEWORK_CHARSET).'">'.SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm').'</head><body>'.$val['content'].'<script>alert(\'If you can see this alert the Mime Message iFrame Sandbox is unsafe ...\');</script></body></html>').'" sandbox></iframe></div>';
+								} else { // for non text/plain parts, implements a sandboxed iframe for the non-print mode ; for print mode the iframe sandbox must be manually set as sandbox="allow-same-origin" to ensure safety !
+									$out .= '<div title="Mime Message HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:5px; left:49vw; opacity:0.25;"><iframe name="'.Smart::escape_html($htmid).'" id="'.Smart::escape_html($htmid).'" width="100%" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="min-height:75vh; height:max-content; border:1px solid #ECECEC;" sandbox="allow-same-origin" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>Mime Message</title><meta charset="'.Smart::escape_html(SMART_FRAMEWORK_CHARSET).'">'.SmartFileSystem::read('lib/core/templates/base-html-styles.inc.htm').'</head><body>'.$val['content'].'<script>alert(\'If you can see this alert the Mime Message iFrame Sandbox is unsafe ...\');</script></body></html>').'"></iframe></div>';
 								} //end if else
 								$out .= '<br><hr><br>';
 							} //end if
@@ -1536,8 +1534,7 @@ final class SmartMailerMimeParser {
 		$htmlparser = new SmartHtmlParser((string)$y_mime_part);
 		$y_mime_part = (string) $htmlparser->get_clean_html(false); // clean, without html comments
 		$arr_links = (array) $htmlparser->get_tags('img'); // {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
-		$htmlparser = '';
-		unset($htmlparser);
+		$htmlparser = null;
 		//--
 		for($i=0; $i<Smart::array_size($arr_links); $i++) {
 			//--

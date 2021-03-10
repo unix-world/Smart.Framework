@@ -203,7 +203,7 @@ function app__err__handler__catch_fatal_errs() {
 define('APPCODEPACK_UNPACK_TESTONLY', true); 												// default is TRUE ; set to FALSE for archive full test + uncompress + replace ; required just for AppCodePack (not for AppCodeUnpack)
 define('APPCODE_REGEX_STRIP_MULTILINE_CSS_COMMENTS', "`\/\*(.+?)\*\/`ism"); 				// regex for remove multi-line comments (by now used just for CSS ...) ; required just for AppCodePack (not for AppCodeUnpack)
 //==
-define('APPCODEPACK_VERSION', 'v.20210302.1258'); 											// current version of this script
+define('APPCODEPACK_VERSION', 'v.20210310.2342'); 											// current version of this script
 define('APPCODEUNPACK_VERSION', (string)APPCODEPACK_VERSION); 								// current version of unpack script (req. for unpack class)
 //==
 header('Cache-Control: no-cache'); 															// HTTP 1.1
@@ -552,7 +552,7 @@ final class AppCodePack {
 							echo "\n".'<div style="padding:7px; line-height:1.125em; font-weight:bold; color: #FFFFFF; background:#009ACE; border:1px solid #0089BD; border-radius:6px; box-shadow: 2px 2px 3px #D2D2D2;">'.'Deploy Result'.' # HTTP Status Code: '.(int)$browser['http-status'].'</div>';
 						} //end if else
 					} //end if else
-					echo '<div style="margin-top:5px; padding:7px; line-height:1.125em; font-size:1.25rem; font-weight:bold; text-align:center; background:#778899; color:#FFFFFF; border-radius:5px;">Selected Release Server URL: `'.AppPackUtils::escape_html((string)$_POST['netarch_deploy_url']).'`</div><br><div align="center"><iframe name="UnpackDeployOnServerResponseSandBox" id="UnpackDeployOnServerResponseSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:80vw; min-width:920px; min-height:50vh; height:max-content; border:1px solid #CCCCCC;" srcdoc="'.AppPackUtils::escape_html($browser['http-body']).'" sandbox></iframe></div>';
+					echo '<div style="margin-top:5px; padding:7px; line-height:1.125em; font-size:1.25rem; font-weight:bold; text-align:center; background:#778899; color:#FFFFFF; border-radius:5px;">Selected Release Server URL: `'.AppPackUtils::escape_html((string)$_POST['netarch_deploy_url']).'`</div><br><div align="center"><iframe name="UnpackDeployOnServerResponseSandBox" id="UnpackDeployOnServerResponseSandBox" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="width:80vw; min-width:920px; min-height:50vh; height:max-content; border:1px solid #CCCCCC;" sandbox="allow-same-origin" srcdoc="'.AppPackUtils::escape_html($browser['http-body']).'"></iframe></div>';
 					unset($browser);
 				} else {
 					echo "\n".'<div title="Status / Errors" style="background:#FF3300; color:#FFFFFF; font-weight:bold; padding:5px; border-radius:5px;">'.'Invalid/Empty Release Package Selected or Invalid/Empty Release Server URL Selected.'.'</div>'."\n";

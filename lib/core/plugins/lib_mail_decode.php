@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210305
+ * @version 	v.20210310
  * @package 	Plugins:Mailer
  *
  */
@@ -141,9 +141,9 @@ final class SmartMailerMimeDecode {
 		$this->reset();
 		$this->expand_structure($structure, $part_id);
 		//-- free memory
-		unset($structure);
-		unset($obj);
-		unset($params);
+		$structure = null;
+		$obj = null;
+		$params = null;
 		//-- what to return
 		return array('texts'=>$this->arr_parts, 'attachments'=>$this->arr_atts);
 		//--
@@ -226,15 +226,15 @@ final class SmartMailerMimeDecode {
 		$params['decode_bodies'] = false; 	// Whether to decode the bodies of the parts. (Transfer encoding)
 		//--
 		$obj = new SmartMailerMimeExtract((string)$message, $this->local_charset); // [OK]
-		unset($message);
+		$message = null;
 		$structure = $obj->decode($params);
 		//--
 		$this->reset();
 		$this->expand_structure($structure, ''); // this will be free after trying to guess atatchments
 		//-- free memory
-		unset($structure);
-		unset($obj);
-		unset($params);
+		$structure = null;
+		$obj = null;
+		$params = null;
 		//-- some process of data
 		$headers = (array) $this->arr_heads[0]; // get first header
 		//--
@@ -492,7 +492,7 @@ final class SmartMailerMimeDecode {
 
 		//== [CLEANUP]
 		//--
-		unset($headers);
+		$headers = null;
 		//--
 		//==
 
@@ -741,7 +741,7 @@ final class SmartMailerMimeDecode {
 //	$eml = new SmartMailerMimeDecode();
 //	$head = $eml->get_header(SmartUnicode::sub_str($message, 0, 8192));
 //	$msg = $eml->get_bodies($message, $part_id); // if $part_id is empty, all message will be displayed
-//	unset($eml);
+//	$eml = null;
 //--
 //--------------------------------------------------------------
 
@@ -772,7 +772,7 @@ final class SmartMailerMimeDecode {
  * @access 		private
  * @internal
  *
- * @version 	v.20210305
+ * @version 	v.20210310
  *
  */
 final class SmartMailerMimeExtract {
@@ -1062,7 +1062,7 @@ final class SmartMailerMimeExtract {
 					$obj = new SmartMailerMimeExtract($this->_decodeBody($body, $content_transfer_encoding['value']), $this->charset); // [OK]
 					$return->parts[] = $obj->decode(array('include_bodies' => $this->_include_bodies, 'decode_bodies' => $this->_decode_bodies));
 					//--
-					unset($obj);
+					$obj = null;
 					//--
 					break;
 				case 'message/rfc822':
@@ -1072,7 +1072,7 @@ final class SmartMailerMimeExtract {
 					$obj = new SmartMailerMimeExtract($this->_decodeBody($body, $content_transfer_encoding['value']), $this->charset); // [OK]
 					$return->parts[] = $obj->decode(array('include_bodies' => $this->_include_bodies, 'decode_bodies' => $this->_decode_bodies));
 					//--
-					unset($obj);
+					$obj = null;
 					//--
 					break;
 				default:

@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20210307
+	// v.20210310
 
 	private $db;
 
@@ -267,7 +267,7 @@ final class SqAuthAdmins {
 					$fields[] = '`'.$tmp_arr[$i].'`';
 				} //end if else
 			} //end for
-			unset($tmp_arr);
+			$tmp_arr = null;
 			$fields = (string) \implode(', ', (array) $fields);
 		} else {
 			$fields = '*';

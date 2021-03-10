@@ -102,6 +102,29 @@ final class SmartUtils {
 
 
 	//================================================================
+	// use this function to get the cookie samesite policy
+	public static function cookie_default_samesite_policy() {
+		//--
+		$cookie_samesite_policy = '';
+		if((defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE')) AND ((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE != '')) {
+			switch((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE) {
+				case 'None':
+				case 'Lax':
+				case 'Strict':
+					$cookie_samesite_policy = (string) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE;
+					break;
+				default:
+					$cookie_samesite_policy = ''; // invalid, fall back to empty string
+			} //end switch
+		} //end if
+		//--
+		return (string) $cookie_samesite_policy;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	// use this function to get cookies as it takes care of safe filtering of cookie values
 	public static function get_cookie($cookie_name) {
 		//--
@@ -113,7 +136,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to set cookies as it takes care to set them according with the cookie domain if set or not per app ; use zero expire time for cookies that will expire with browser session
-	public static function set_cookie($cookie_name, $cookie_data, $expire_time=0, $cookie_path='/', $cookie_domain='@', $cookie_secure=false, $cookie_samesite='Strict', $cookie_httponly=false) {
+	public static function set_cookie($cookie_name, $cookie_data, $expire_seconds=0, $cookie_path='/', $cookie_domain='@', $cookie_samesite='@', $cookie_secure=false, $cookie_httponly=false) {
 		//--
 		if(headers_sent()) {
 			return false;
@@ -123,9 +146,11 @@ final class SmartUtils {
 			return false;
 		} //end if
 		//--
-		$expire_time = (int) $expire_time;
-		if($expire_time < 0) {
-			$expire_time = 0;
+		$expire_seconds = (int) $expire_seconds;
+		if($expire_seconds <= 0) {
+			$expire_seconds = 0;
+		} else {
+			$expire_seconds = time() + $expire_seconds;
 		} //end if
 		//--
 		if((string)$cookie_domain == '@') { // if empty or non @ leave as it is
@@ -133,26 +158,33 @@ final class SmartUtils {
 		} //end if
 		//--
 		$cookie_samesite = (string) trim((string)$cookie_samesite);
+		if((string)$cookie_samesite == '@') {
+			$cookie_samesite = (string) self::cookie_default_samesite_policy();
+		} //end if
 		if((string)$cookie_samesite != '') {
 			$cookie_samesite = (string) ucfirst((string)strtolower((string)$cookie_samesite));
 		} //end if
 		switch((string)$cookie_samesite) {
 			case 'None':
-			case 'Lax':
+				$cookie_secure = true; // new browsers require this if SameSite cookie policy is set explicit to None !!
 				break;
+			case 'Lax':
 			case 'Strict':
+				break;
 			default:
-				$cookie_samesite = 'Strict';
+				$cookie_samesite = '';
 		} //end switch
 		//--
 		$options = [
-			'expires' 	=> (int) $expire_time,
-			'path' 		=> (string) $cookie_path,
-			'samesite' 	=> (string) $cookie_samesite
+			'expires' 	=> (int) $expire_seconds,
+			'path' 		=> (string) $cookie_path
 		]; // by default set it without specific domain (will using current IP or subdomain)
 		//--
 		if((string)$cookie_domain != '') {
 			$options['domain'] = (string) $cookie_domain; // set cookie using domain (if running on IP will be set on current IP)
+		} //end if
+		if((string)$cookie_samesite != '') {
+			$options['samesite'] = (string) $cookie_samesite; // use the same site policy if valid
 		} //end if
 		if($cookie_secure === true) {
 			$options['secure'] = true; // if this is set the cookie will be sent only via HTTPS secure connections
@@ -169,9 +201,9 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to unset cookies as it takes care to set them according with the cookie domain if set or not per app
-	public static function unset_cookie($cookie_name, $cookie_path='/', $cookie_domain='@') {
+	public static function unset_cookie($cookie_name, $cookie_path='/', $cookie_domain='@', $cookie_samesite='@') {
 		//--
-		return (bool) self::set_cookie($cookie_name, '', 1, $cookie_path, $cookie_domain);
+		return (bool) self::set_cookie($cookie_name, '', 0, $cookie_path, $cookie_domain, $cookie_samesite);
 		//--
 	} //END FUNCTION
 	//================================================================
