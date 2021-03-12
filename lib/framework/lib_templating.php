@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils
- * @version 	v.20210305
+ * @version 	v.20210313
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -73,7 +73,6 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 	private static $MkTplVars = array(); 				// registry of template variables
 	private static $MkTplFCount = array(); 				// counter to register how many times a template / sub-template file is read from filesystem (can be used for optimizations)
 	private static $MkTplCache = array(); 				// registry of cached template data
-
 
 	//================================================================
 	/**
@@ -124,7 +123,10 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 		$original_mtemplate = (string) $mtemplate;
 		//-- add TPL START/END to see where it starts load
 		$matches = array();
-		preg_match_all('{\[@@@SUB\-TEMPLATE:([a-zA-Z0-9_\-\.\/\!\?\|%]+)@@@\]}', (string)$mtemplate, $matches, PREG_SET_ORDER, 0); // FIX: add an extra % to parse also SUB-TPL %vars% # {{{SYNC-TPL-EXPR-SUBTPL}}} :: + %
+		$pcre = preg_match_all('{\[@@@SUB\-TEMPLATE:([a-zA-Z0-9_\-\.\/\!\?\|%]+)@@@\]}', (string)$mtemplate, $matches, PREG_SET_ORDER, 0); // FIX: add an extra % to parse also SUB-TPL %vars% # {{{SYNC-TPL-EXPR-SUBTPL}}} :: + %
+		if($pcre === false) {
+			return '<h1>{### ERROR: '.Smart::escape_html((string)SMART_FRAMEWORK_ERR_PCRE_SETTINGS).'] ###}</h1>';
+		} //end if
 		//die('<pre>'.Smart::escape_html(print_r($matches,1)).'</pre>');
 		for($i=0; $i<Smart::array_size($matches); $i++) {
 			$mtemplate = (string) str_replace((string)$matches[$i][0], '⁅***¦SUB-TEMPLATE:'.(string)$matches[$i][1].'(*****INCLUDE:START{*****)¦***⁆'.(string)$matches[$i][0].'⁅***¦SUB-TEMPLATE:'.(string)$matches[$i][1].'(*****}INCLUDE:END*****)¦***⁆', (string)$mtemplate);
@@ -646,7 +648,11 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 		} //end if
 		//--
 		$matches = array();
-		preg_match_all((string)$regex, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
+		$pcre = preg_match_all((string)$regex, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return array();
+		} //end if
 		//die('<pre>'.Smart::escape_html(print_r($matches,1)).'</pre>');
 		//--
 		$arr_parts = array();
@@ -1029,14 +1035,23 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 	*/
 	private static function replace_marker(string $mtemplate, string $key, string $val) {
 		//-- {{{SYNC-TPL-EXPR-MARKER}}}
-		if(((string)$key != '') AND (preg_match('/^[A-Z0-9_\-\.]+$/', (string)$key)) AND (strpos((string)$mtemplate, '[###'.$key) !== false)) {
+		$found = preg_match('/^[A-Z0-9_\-\.]+$/', (string)$key);
+		if($found === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return (string) $mtemplate;
+		} //end if
+		if(((string)$key != '') AND ($found) AND (strpos((string)$mtemplate, '[###'.$key) !== false)) {
 			//--
 			$regex = '/\[###'.preg_quote((string)$key, '/').'((\|[a-z0-9]+)*)'.'###\]/'; // {{{SYNC-REGEX-MARKER-TEMPLATES}}}
 			//--
 			$val = (string) self::prepare_nosyntax_content($val);
 			//--
 			$matches = array();
-			preg_match_all((string)$regex, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
+			$pcre = preg_match_all((string)$regex, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
+			if($pcre === false) {
+				Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+				return (string) $mtemplate;
+			} //end if
 			//--
 			$arr_repls = [];
 			//--
@@ -1329,7 +1344,11 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 		//	$pattern = '{\[%%%IF\:([a-zA-Z0-9_\-\.]*)\:(@\=\=|@\!\=|@\<\=|@\<|@\>\=|@\>|\=\=|\!\=|\<\=|\<|\>\=|\>|\!%|%|\!\?|\?|\^~|\^\*|&~|&\*|\$~|\$\*)([#a-zA-Z0-9_\-\.\|]*);((\([0-9]*\))?)%%%\](.*)?(\[%%%ELSE\:\1\4%%%\](.*)?)?\[%%%\/IF\:\1\4%%%\]}sU'; // previous OK
 			$pattern = '{\[%%%IF\:([a-zA-Z0-9_\-\.]+)\:(@\=\=|@\!\=|@\<\=|@\<|@\>\=|@\>|\=\=|\!\=|\<\=|\<|\>\=|\>|\!%|%|\!\?|\?|\^~|\^\*|&~|&\*|\$~|\$\*)([^\[\]]*);((\([0-9]+\))?)%%%\](.*)?(\[%%%ELSE\:\1\4%%%\](.*)?)?\[%%%\/IF\:\1\4%%%\]}sU'; // new
 			$matches = array();
-			preg_match_all((string)$pattern, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
+			$pcre = preg_match_all((string)$pattern, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
+			if($pcre === false) {
+				Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+				return (string) $mtemplate;
+			} //end if
 			//echo '<pre>'.Smart::escape_html(print_r($matches,1)).'</pre>'; die();
 			//--
 			for($i=0; $i<Smart::array_size($matches); $i++) {
@@ -1606,7 +1625,11 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 			//--
 			$pattern = '{\[%%%LOOP\:([a-zA-Z0-9_\-\.]+)((\([0-9]+\))?%)%%\](.*)?\[%%%\/LOOP\:\1\2%%\]}sU'; // {{{SYNC-TPL-EXPR-LOOP}}}
 			$matches = array();
-			preg_match_all((string)$pattern, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
+			$pcre = preg_match_all((string)$pattern, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
+			if($pcre === false) {
+				Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+				return (string) $mtemplate;
+			} //end if
 			//echo '<pre>'.Smart::escape_html(print_r($matches,1)).'</pre>'; die();
 			//--
 			for($i=0; $i<Smart::array_size($matches); $i++) {
@@ -1890,7 +1913,11 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 			} //end if else
 			//--
 			$matches = array();
-			preg_match_all((string)$regex, (string)$mtemplate, $matches, PREG_SET_ORDER, 0); // {{{SYNC-TPL-EXPR-SUBTPL}}}
+			$pcre = preg_match_all((string)$regex, (string)$mtemplate, $matches, PREG_SET_ORDER, 0); // {{{SYNC-TPL-EXPR-SUBTPL}}}
+			if($pcre === false) {
+				Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+				return array();
+			} //end if
 			//print_r($matches);
 			//--
 			if(Smart::array_size($matches) > 0) {
@@ -1968,7 +1995,13 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 				$key = (string) $key;
 				$val = (string) $val;
 				//--
-				if(((string)$key != '') AND (strpos($key, '..') === false) AND (strpos($val, '..') === false) AND (preg_match('/^[a-zA-Z0-9_\-\.\/\!\?\|%]+$/', $key))) { // {{{SYNC-TPL-EXPR-SUBTPL}}} :: + %
+				$found = preg_match('/^[a-zA-Z0-9_\-\.\/\!\?\|%]+$/', $key);
+				if($found === false) {
+					Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+					return (string) $mtemplate;
+				} //end if
+				//--
+				if(((string)$key != '') AND (strpos($key, '..') === false) AND (strpos($val, '..') === false) AND ($found)) { // {{{SYNC-TPL-EXPR-SUBTPL}}} :: + %
 					//--
 					if((string)$val == '') {
 						//--

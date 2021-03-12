@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20210310
+ * @version 	v.20210312
  * @package 	Plugins:Mailer
  *
  */
@@ -818,7 +818,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20210310
+ * @version 	v.20210312
  * @package 	Plugins:Mailer
  *
  */
@@ -1575,10 +1575,16 @@ final class SmartMailerMimeParser {
 		//--
 		$matches = array(); // init
 		//--
-		preg_match_all('/<img[^>]+src=[\'"]?(cid\:)([^\'"]*)[\'"]?[^>]*>/si', (string)$y_mime_part, $matches, PREG_SET_ORDER, 0); // fix: previous was just i (not si) ; modified on 20200331
+		$pcre = preg_match_all('/<img[^>]+src=[\'"]?(cid\:)([^\'"]*)[\'"]?[^>]*>/si', (string)$y_mime_part, $matches, PREG_SET_ORDER, 0); // fix: previous was just i (not si) ; modified on 20200331
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return (string) $y_mime_part;
+		} //end if
+		//--
 		// $matches[i][0] : the full link
 		// $matches[i][1] : 'cid:'
 		// $matches[i][2] : cid part id
+		//--
 		for($i=0; $i<Smart::array_size($matches); $i++) {
 			$tmp_replace_cid_link = (string) str_replace(
 				["\r\n", "\n", "\r", "\t"],

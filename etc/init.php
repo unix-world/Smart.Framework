@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT]
+// [Smart.Framework / INIT] v.20210313
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -203,8 +203,8 @@ ini_set('ignore_user_abort', '1');											// ignore user aborts (safe for clo
 ini_set('auto_detect_line_endings', '0');									// auto detect line endings
 ini_set('y2k_compliance', '0');												// it is recommended to use this as disabled since POSIX systems keep time based on UNIX epoch
 ini_set('precision', '14');													// decimal number precision
-ini_set('pcre.backtrack_limit', '1000001');									// PCRE BackTrack Limit
-ini_set('pcre.recursion_limit', '100001');									// PCRE Recursion Limit
+ini_set('pcre.backtrack_limit', '8000000');									// PCRE BackTrack Limit 8M (min req. is 1M = 1000000) ; PCRE String Limits
+ini_set('pcre.recursion_limit', '800000');									// PCRE Recursion Limit 800K (min req. is 100K = 100000) ; PCRE Expression Limits
 //-- pcre JIT (you can disable this if you have very complex PCRE expressions combined with PHP functions that overflow the PCRE-JIT Memory)
 //ini_set('pcre.jit', '0');													// PCRE JIT
 //if((int)ini_get('pcre.jit') > 0) { // this may fail badly with very complex regex expressions, so if needed can be disabled

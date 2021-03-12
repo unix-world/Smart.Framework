@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode
- * @version     v.20200121
+ * @version     v.20210312
  * @package     @Core:Extra
  *
  */
@@ -58,7 +58,11 @@ final class SmartParser {
 		$expr = SmartValidator::regex_stringvalidation_expression('url', 'partial');
 		$regex = $expr.'iu'; // insensitive, with /u modifier for unicode strings
 		$arr = array();
-		preg_match_all($regex, $string, $arr);
+		$pcre = preg_match_all($regex, $string, $arr);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return array();
+		} //end if
 		return (array) $arr[0];
 	} //END FUNCTION
 	//================================================================
@@ -102,7 +106,11 @@ final class SmartParser {
 		$expr = SmartValidator::regex_stringvalidation_expression('email', 'partial');
 		$regex = $expr.'iu'; //insensitive, with /u modifier for unicode strings
 		$arr = array();
-		preg_match_all($regex, $string, $arr);
+		$pcre = preg_match_all($regex, $string, $arr);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return array();
+		} //end if
 		return (array) $arr[0];
 	} //END FUNCTION
 	//================================================================
@@ -141,7 +149,11 @@ final class SmartParser {
 		$expr = SmartValidator::regex_stringvalidation_expression('fax', 'partial');
 		$regex = $expr.'iu'; //insensitive, with /u modifier for unicode strings
 		$arr = array();
-		preg_match_all($regex, $string, $arr);
+		$pcre = preg_match_all($regex, $string, $arr);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return array();
+		} //end if
 		return (array) $arr[0];
 	} //END FUNCTION
 	//================================================================
@@ -192,7 +204,7 @@ final class SmartParser {
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode
- * @version     v.170927
+ * @version     v.20210312
  * @package     @Core:Extra
  *
  */

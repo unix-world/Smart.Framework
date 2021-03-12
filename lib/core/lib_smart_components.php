@@ -48,7 +48,7 @@ define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)SmartFileSystem::read('lib/
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations
- * @version 	v.20210310
+ * @version 	v.20210312
  * @package 	Application:ViewComponents
  *
  */
@@ -435,7 +435,10 @@ final class SmartComponents {
 		$css_w_or_h = (array) explode(';', (string)$css_w_or_h);
 		$css_w_or_h = (string) trim((string)(isset($css_w_or_h[0]) ? $css_w_or_h[0] : ''));
 		$matches = array();
-		preg_match('/^([0-9]+)(%|[a-z]{1,2})?$/', (string)$css_w_or_h, $matches);
+		$found = preg_match('/^([0-9]+)(%|[a-z]{1,2})?$/', (string)$css_w_or_h, $matches);
+		if($found === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+		} //end if
 		if(!array_key_exists(0, $matches)) {
 			$matches[0] = null;
 		} //end if

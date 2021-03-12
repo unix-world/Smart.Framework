@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20210305
+ * @version 	v.20210312
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -51,7 +51,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private $mkdw_version = 'v.1.5.4-r.20210305@smart'; // with fixes from 1.5.1 -> 1.5.4 + extended syntax by unixman + character encoding fixes
+	private $mkdw_version = 'v.1.5.4-r.20210312@smart'; // with fixes from 1.5.1 -> 1.5.4 + extended syntax by unixman + character encoding fixes
 
 	//===================================
 
@@ -1139,7 +1139,11 @@ final class SmartMarkdownToHTML {
 			$row = (string) trim($row);
 			$row = (string) trim($row, '|');
 			//--
-			preg_match_all('/(?:(\\\\[|])|[^|`]|`[^`]+`|`)+/', $row, $matches);
+			$pcre = preg_match_all('/(?:(\\\\[|])|[^|`]|`[^`]+`|`)+/', $row, $matches);
+			if($pcre === false) {
+				Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+				return $Block;
+			} //end if
 			//--
 			foreach($matches[0] as $index => $cell) {
 				//--

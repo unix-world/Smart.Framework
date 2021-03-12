@@ -44,7 +44,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210305
+ * @version 	v.20210312
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -666,14 +666,24 @@ final class SmartYamlConverter {
 		$saved_empties = array();
 		//-- Check for empty strings fix from v.0.5.1
 		$regex = '/("")|(\'\')/';
-		if(preg_match_all($regex, $inline, $strings)) {
+		$pcre = preg_match_all($regex, $inline, $strings);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR (1): '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return $inline;
+		} //end if
+		if($pcre) {
 			$saved_empties = $strings[0];
 			$inline = preg_replace($regex, 'YAMLEmpty', $inline);
 		} //end if
 		unset($regex);
 		//-- Check for strings
 		$regex = '/(?:(")|(?:\'))((?(1)[^"]+|[^\']+))(?(1)"|\')/';
-		if(preg_match_all($regex, $inline, $strings)) {
+		$pcre = preg_match_all($regex, $inline, $strings);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR (2): '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return $inline;
+		} //end if
+		if($pcre) {
 			$saved_strings = $strings[0];
 			$inline = preg_replace($regex, 'YAMLString', $inline);
 		} //end if

@@ -68,7 +68,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20210305
+ * @version 	v.20210312
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -1725,7 +1725,11 @@ final class SmartPgsqlDb {
 		} elseif(strpos((string)$query, '$') !== false) {
 			//--
 			$expr_arr = array();
-			preg_match_all('{'.'([^\$]*)?(\$[0-9]+)?'.'}s', (string)$query, $expr_arr, PREG_SET_ORDER, 0);
+			$pcre = preg_match_all('{'.'([^\$]*)?(\$[0-9]+)?'.'}s', (string)$query, $expr_arr, PREG_SET_ORDER, 0);
+			if($pcre === false) {
+				self::error($y_connection, 'PREPARE-PARAM-QUERY', 'ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS, (string)$query, $replacements_arr);
+				return ''; // regex failed
+			} //end if
 			//print_r($expr_arr); die();
 			$expr_count = Smart::array_size($expr_arr);
 			//--
@@ -2364,7 +2368,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20210305
+ * @version 	v.20210312
  * @package 	Plugins:Database:PostgreSQL
  *
  */

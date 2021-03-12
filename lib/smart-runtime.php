@@ -54,6 +54,21 @@ if(!function_exists('preg_match')) {
 	die('PHP PCRE Extension is missing. It is needed for Regular Expression ...');
 } //end if
 //--
+if((int)ini_get('pcre.backtrack_limit') < 1000000) {
+	@http_response_code(500);
+	die('Invalid PCRE Settings: pcre.backtrack_limit in etc/init.php ... Must be at least 1M = 1000000 ; recommended value is 8M = 8000000');
+} //end if
+if((int)ini_get('pcre.recursion_limit') < 100000) {
+	@http_response_code(500);
+	die('Invalid PCRE Settings: pcre.recursion_limit in etc/init.php ... Must be at least 100K = 100000 ; ; recommended value is 800K = 800000');
+} //end if
+//--
+if(defined('SMART_FRAMEWORK_ERR_PCRE_SETTINGS')) {
+	@http_response_code(500);
+	die('A Reserved Constant have been already defined: SMART_FRAMEWORK_ERR_PCRE_SETTINGS');
+} //end if
+define('SMART_FRAMEWORK_ERR_PCRE_SETTINGS', 'PCRE Failed ... Try to increase the `pcre.backtrack_limit` and `pcre.recursion_limit` in etc/init.php');
+//--
 
 //--
 if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_RELEASE_VERSION') || defined('SMART_FRAMEWORK_RELEASE_URL') || defined('SMART_FRAMEWORK_RELEASE_MIDDLEWARE')) {
@@ -62,7 +77,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //--
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.7.2.1'); 	// tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.12'); 	// tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.13'); 	// tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 //--
 if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM')) {

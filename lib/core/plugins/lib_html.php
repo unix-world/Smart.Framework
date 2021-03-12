@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210308
+ * @version 	v.20210312
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -580,10 +580,15 @@ final class SmartHtmlParser {
 		} //end if
 		//--
 		$rcomments = array();
-		if(preg_match_all('#\<\s*?\!\-\-(.*?)\-\-\>#si', (string)$this->html, $rcomments)) { // {{{SYNC-COMMENTS-REGEX}}} ; this will get just VALID comments
+		$pcre = preg_match_all('#\<\s*?\!\-\-(.*?)\-\-\>#si', (string)$this->html, $rcomments);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return;
+		} //end if
+		if($pcre) { // {{{SYNC-COMMENTS-REGEX}}} ; this will get just VALID comments
 			if(is_array($rcomments)) {
-				$this->comments['comment-keys'] = (array) $rcomments[1];
-				$this->comments['comment-tags'] = (array) $rcomments[0];
+				$this->comments['comment-keys'] = (array) (isset($rcomments[1]) && is_array($rcomments[1])) ? $rcomments[1] : [];
+				$this->comments['comment-tags'] = (array) (isset($rcomments[0]) && is_array($rcomments[0])) ? $rcomments[0] : [];
 			} //end if
 		} //end if
 		//--
@@ -677,7 +682,11 @@ final class SmartHtmlParser {
 
 		//--
 		$attr = array();
-		preg_match_all('/'.$attr_with_dbl_quote.'|'.$attr_with_quote.'|'.$attr_without_quote.'/si', (string)$html, $attr);
+		$pcre = preg_match_all('/'.$attr_with_dbl_quote.'|'.$attr_with_quote.'|'.$attr_without_quote.'/si', (string)$html, $attr);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return array();
+		} //end if
 		//--
 		$res = array();
 		//--

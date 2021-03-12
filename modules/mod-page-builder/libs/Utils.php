@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210307
+ * @version 	v.20210312
  * @package 	PageBuilder
  *
  */
@@ -242,7 +242,11 @@ final class Utils {
 			$re = (string) self::REGEX_PLACEHOLDERS;
 		} //end if else
 		//--
-		\preg_match_all((string)$re, (string)$str, $matches);
+		$pcre = \preg_match_all((string)$re, (string)$str, $matches);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return array();
+		} //end if
 		$arr = (array) \Smart::array_sort((array)$matches[0], 'natcasesort');
 		//--
 		return (array) $arr;
@@ -258,7 +262,11 @@ final class Utils {
 		//--
 		$re = (string) self::REGEX_MARKERS;
 		//--
-		\preg_match_all((string)$re, (string)$str, $matches);
+		$pcre = \preg_match_all((string)$re, (string)$str, $matches);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return array();
+		} //end if
 		$arr = (array) \Smart::array_sort((array)$matches[0], 'natcasesort');
 		//--
 		return (array) $arr;
