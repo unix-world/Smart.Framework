@@ -56,7 +56,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetVars([
 					'title' => 'Wait ...',
-					'main' => '<br><div align="center"><img src="lib/framework/img/loading-bars.svg" width="64" height="64"></div>'.
+					'main' => '<br><center><div><img src="lib/framework/img/loading-bars.svg" width="64" height="64"></div></center>'.
 					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'.
 					'<script type="text/javascript">SmartJS_BrowserUtils.CloseDelayedModalPopUp();</script>'
 				]);

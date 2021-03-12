@@ -50,7 +50,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210307
+ * @version 	v.20210312
  * @package 	PageBuilder
  *
  */
@@ -630,7 +630,7 @@ final class Manager {
 				//--
 				if((string)$query['mode'] == 'settings') {
 					//--
-					$out .= '<div align="center" title="'.\Smart::escape_html($query['code']).'"><img src="'.self::$ModulePath.'libs/views/manager/img/syntax-settings.svg" width="256" height="256" alt="Data / Settings Segment" title="Data / Settings Segment" style="opacity:0.7"></div>';
+					$out .= '<center><div title="'.\Smart::escape_html($query['code']).'"><img src="'.self::$ModulePath.'libs/views/manager/img/syntax-settings.svg" width="256" height="256" alt="Data / Settings Segment" title="Data / Settings Segment" style="opacity:0.7"></div></center>';
 					//--
 				} else {
 					//-- EDITOR
@@ -693,7 +693,7 @@ final class Manager {
 				//--
 				if((string)$query['mode'] == 'settings') {
 					//--
-					$out .= '<div align="center" title="'.\Smart::escape_html($query['code']).'"><img src="'.self::$ModulePath.'libs/views/manager/img/syntax-settings.svg" width="256" height="256" alt="Data / Settings Segment" title="Data / Settings Segment" style="opacity:0.7"></div>';
+					$out .= '<center><div title="'.\Smart::escape_html($query['code']).'"><img src="'.self::$ModulePath.'libs/views/manager/img/syntax-settings.svg" width="256" height="256" alt="Data / Settings Segment" title="Data / Settings Segment" style="opacity:0.7"></div></center>';
 					//--
 				} else {
 					//-- {{{SYNC-PAGEBUILDER-COMPARE-CODE-WITH-DATA-PLACEHOLDERS}}}
@@ -1104,7 +1104,7 @@ final class Manager {
 		} //end if
 		//--
 	//	if((string)$query['mode'] == 'raw') {
-	//		return '<br><div align="center">'.'<img src="'.self::$ModulePath.'libs/views/manager/img/syntax-raw.svg" width="256" height="256" alt="N/A" title="N/A" style="opacity:0.2">'.'</div>';
+	//		return '<br><center><div>'.'<img src="'.self::$ModulePath.'libs/views/manager/img/syntax-raw.svg" width="256" height="256" alt="N/A" title="N/A" style="opacity:0.2">'.'</div></center>';
 	//	} //end if
 		//--
 		$the_template = self::$ModulePath.'libs/views/manager/view-record-media.mtpl.htm';

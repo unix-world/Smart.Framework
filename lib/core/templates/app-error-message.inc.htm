@@ -1,4 +1,4 @@
-<!-- Partial Template: Core.AppErrorMessage v.20200121 -->
+<!-- Partial Template: Core.AppErrorMessage v.20210312 -->
 [%%%COMMENT%%%]
 	This must be ONLY a partial HTML template as is used after raising the main error !
 	It must not contain sub-templates as this is preloaded as plain text in memory to assure it will be available also for errors called from register_shutdown_function() handlers
@@ -9,14 +9,14 @@
 		font-smooth: always;
 	}
 </style>
-<div align="center">
+<center><div>
 	<table width="[###WIDTH|int###]" cellspacing="0" cellpadding="8" bordercolor="#CCCCCC" border="1" style="border-style: solid; border-color: #CCCCCC; border-collapse: collapse;">
 		<tr valign="middle" bgcolor="#FFFFFF">
 			<td width="64" align="center">
 				<img src="[###CRR-URL|html###]lib/framework/img/sign-crit-warn.svg">
 			</td>
 			<td align="center">
-				<div align="center">
+				<center><div>
 					<font size="5" color="#DD0000"><b>[###TITLE|html###] :: ERROR</b></font>
 					[%%%IF:AREA:==;%%%]
 					<!-- empty area -->
@@ -24,7 +24,7 @@
 					<br>
 					<font size="4" color="#778899">[###AREA|html###]</font>
 					[%%%/IF:AREA%%%]
-				</div>
+				</div></center>
 			</td>
 		</tr>
 		<tr valign="top" bgcolor="#FFFFFF">
@@ -47,5 +47,5 @@
 			</td>
 		</tr>
 	</table>
-</div>
+</div></center>
 <!-- #END :: Partial Template: Core.AppErrorMessage -->

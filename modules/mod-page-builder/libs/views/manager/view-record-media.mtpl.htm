@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ View Record / Media :: v.20210307 -->
+<!-- Pagebuilder / Manage @ View Record / Media :: v.20210312 -->
 <script>
 var pageBuilderMediaImgDataURL = '';
 var pageBuilderMediaType = '';
@@ -88,13 +88,13 @@ function pageBuilder_MediaDeleteHandle(imgFile) {
 }
 function pageBuilder_MediaDeleteDialog(imgFile, imgPath, imgType, imgSize, isUsed) {
 	if(!isUsed) {
-		SmartJS_BrowserUtils.confirm_Dialog('<i class="sfi sfi-bin2" style="color:#FF5500!important;"></i> &nbsp; Delete this Image: <span style="color:#FF5500; font-size:0.9em;">' + SmartJS_CoreUtils.escape_html(imgFile + ' @ ' + imgType + ' # ' + imgSize) + '</span> ?<br><br><div align="center"><img src="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="max-width:100px; max-height:100px; width:auto !important; height:auto !important;"></div>', function(){ pageBuilder_MediaDeleteHandle(imgFile); }, 'Delete Media Image Confirmation', 550, 275);
+		SmartJS_BrowserUtils.confirm_Dialog('<i class="sfi sfi-bin2" style="color:#FF5500!important;"></i> &nbsp; Delete this Image: <span style="color:#FF5500; font-size:0.9em;">' + SmartJS_CoreUtils.escape_html(imgFile + ' @ ' + imgType + ' # ' + imgSize) + '</span> ?<br><br><center><div><img src="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="max-width:100px; max-height:100px; width:auto !important; height:auto !important;"></div></center>', function(){ pageBuilder_MediaDeleteHandle(imgFile); }, 'Delete Media Image Confirmation', 550, 275);
 	} else {
-		SmartJS_BrowserUtils.alert_Dialog('<i class="sfi sfi-bin2" style="color:#003399!important;"></i> &nbsp; Cannot Delete used Image: <span style="color:#003399; font-size:0.9em;">' + SmartJS_CoreUtils.escape_html(imgFile + ' @ ' + imgType + ' # ' + imgSize) + '</span> !<br><br><div align="center"><img src="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="max-width:100px; max-height:100px; width:auto !important; height:auto !important;"></div>', null, 'Delete Media Image: Used in [#' + isUsed + '] Object(s)', 550, 275);
+		SmartJS_BrowserUtils.alert_Dialog('<i class="sfi sfi-bin2" style="color:#003399!important;"></i> &nbsp; Cannot Delete used Image: <span style="color:#003399; font-size:0.9em;">' + SmartJS_CoreUtils.escape_html(imgFile + ' @ ' + imgType + ' # ' + imgSize) + '</span> !<br><br><center><div><img src="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="max-width:100px; max-height:100px; width:auto !important; height:auto !important;"></div></center>', null, 'Delete Media Image: Used in [#' + isUsed + '] Object(s)', 550, 275);
 	} //end if else
 }
 function pageBuilder_MediaInfoAlert(imgFile, imgPath, imgType, imgSize, isUsed) {
-	SmartJS_BrowserUtils.alert_Dialog('<i class="sfi sfi-info"></i> &nbsp; Image: <span style="color:#778899; font-size:0.9em;">' + SmartJS_CoreUtils.escape_html(imgFile + ' @ ' + imgType + ' # ' + imgSize) + '</span> .<br><br><input type="text" class="ux-input" value="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="width:500px;" onclick="jQuery(this).select();" readonly><br><br><div align="center"><img src="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="max-width:400px; max-height:200px; width:auto !important; height:auto !important;"></div>', null, 'Media Image Info: Used in [#' + isUsed + '] Object(s)', 550, 425);
+	SmartJS_BrowserUtils.alert_Dialog('<i class="sfi sfi-info"></i> &nbsp; Image: <span style="color:#778899; font-size:0.9em;">' + SmartJS_CoreUtils.escape_html(imgFile + ' @ ' + imgType + ' # ' + imgSize) + '</span> .<br><br><input type="text" class="ux-input" value="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="width:500px;" onclick="jQuery(this).select();" readonly><br><br><center><div><img src="' + SmartJS_CoreUtils.escape_html(imgPath) + '" style="max-width:400px; max-height:200px; width:auto !important; height:auto !important;"></div></center>', null, 'Media Image Info: Used in [#' + isUsed + '] Object(s)', 550, 425);
 }
 </script>
 <table width="100%" border="0">

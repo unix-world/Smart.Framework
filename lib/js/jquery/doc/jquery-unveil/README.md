@@ -72,3 +72,8 @@ $(window).trigger("lookup"); // this should be also used with dynamic components
 You can remove all the "unveil" event handlers from "window":
 $(window).off("unveil");
 
+### Using srcset
+<picture>
+	<source type="image/webp" class="unveil" data-unveil="srcset" data-src="image.webp" srcset="">
+	<img class="unveil" data-src="image.jpg" src="">
+</picture>

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartUtils        final class \ SmartUtils    {   } ::    Class: SmartUtils - provides various utility functions for Smart.Framework     Language: PHP">
-	<meta name="keywords" content="smartutils, final, class, provides, various, utility, functions, for, smart.framework, language, php, located, at, lib framework lib utils.php, package, core:extra, namespace, name, version, v.20210309, depends, classes, smart, smartvalidator, smarthashcrypto, smartauth, smartfilesysutils, smartfilesystem, usage, static, object, class::method, this, only, methods, public, function, cookies current size used on domain, cookie size max, cookie default domain, get cookie, cookie name, set cookie, cookie data, expire time, cookie path, cookie domain, unset cookie, url hex encode, y val, url hex decode, y enc val, check ip in range, lower range ip address, upper range ip address, needle ip address, date interval days, y date now, y date past, datetime fixed offset, y timezone offset, ydate, data archive, y str, data unarchive, y enc data, comment php code, y code, y repl, array tag-start, tag-end, pretty print var, y var, indent, pretty print bytes, y bytes, y decimals, y separator, y base, pretty print numbers, y number, number to roman, num, roman to number, roman, extract title, ytxt, y limit, clear numbers, false, extract description, extract keywords, y count, true, extract words from text html, cleanup numbers from text, crypto blowfish algo">
+	<meta name="keywords" content="smartutils, final, class, provides, various, utility, functions, for, smart.framework, language, php, located, at, lib framework lib utils.php, package, core:extra, namespace, name, version, v.20210310, depends, classes, smart, smartvalidator, smarthashcrypto, smartauth, smartfilesysutils, smartfilesystem, usage, static, object, class::method, this, only, methods, public, function, cookies current size used on domain, cookie size max, cookie default domain, cookie default samesite policy, get cookie, cookie name, set cookie, cookie data, expire seconds, cookie path, cookie domain, cookie samesite, cookie secure, false, cookie httponly, unset cookie, url hex encode, y val, url hex decode, y enc val, check ip in range, lower range ip address, upper range ip address, needle ip address, date interval days, y date now, y date past, datetime fixed offset, y timezone offset, ydate, data archive, y str, data unarchive, y enc data, comment php code, y code, y repl, array tag-start, tag-end, pretty print var, y var, indent, pretty print bytes, y bytes, y decimals, y separator, y base, pretty print numbers, y number, number to roman, num, roman to number, roman, extract title, ytxt, y limit, clear numbers, extract description, extract keywords, y count">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartUtils">
 	<title>PHP Documentation for: \SmartUtils</title>
 	<!-- CSS and Fonts -->
@@ -696,7 +696,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartUtils</span></li>
 		
-		<li><b>Version:</b> v.20210309</li>
+		<li><b>Version:</b> v.20210310</li>
 		<li><b>Depends:</b> classes:  Smart, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -743,6 +743,17 @@ select#select-summary {
 	
 	
 	
+</div><div class="doc-container" id="Method--cookie_default_samesite_policy">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cookie_default_samesite_policy</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
 </div><div class="doc-container" id="Method--get_cookie">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_cookie</b></span>&nbsp;(
 				<span class="doc-param-name"><b><span title="`$cookie_name` Parameter is REQUIRED">$cookie_name</span></b></span>
@@ -759,9 +770,12 @@ select#select-summary {
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>set_cookie</b></span>&nbsp;(
 				<span class="doc-param-name"><b><span title="`$cookie_name` Parameter is REQUIRED">$cookie_name</span></b></span>, 
 			<span class="doc-param-name"><b><span title="`$cookie_data` Parameter is REQUIRED">$cookie_data</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$expire_time` Parameter is OPTIONAL, with the Default Value: 0">$expire_time</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$expire_seconds` Parameter is OPTIONAL, with the Default Value: 0">$expire_seconds</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
 			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$cookie_path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_secure` Parameter is OPTIONAL, with the Default Value: false">$cookie_secure</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_httponly` Parameter is OPTIONAL, with the Default Value: false">$cookie_httponly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -775,7 +789,8 @@ select#select-summary {
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>unset_cookie</b></span>&nbsp;(
 				<span class="doc-param-name"><b><span title="`$cookie_name` Parameter is REQUIRED">$cookie_name</span></b></span>, 
 			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$cookie_path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -1541,6 +1556,9 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--cookie_default_domain"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cookie_default_domain()</option>
 			
 			
+									<option value="Method--cookie_default_samesite_policy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cookie_default_samesite_policy()</option>
+			
+			
 									<option value="Method--get_cookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_cookie()</option>
 			
 			
@@ -1739,13 +1757,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-09 12:12:03 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 17:58:05 +0000</small>
 <hr>
 <br>
 <!-- # -->
-<div align="center">
+<div><center>
 	<br>
 	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
-</div>
+</center></div>
 </body>
 </html>

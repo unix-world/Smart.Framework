@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartRobot        final class \ SmartRobot    {   } ::    Class: SmartRobot - Easy to use HTTP Robot.     Language: PHP  Located at:">
-	<meta name="keywords" content="smartrobot, final, class, easy, to, use, http, robot, language, php, located, at, lib core plugins lib robot.php, package, plugins:network, namespace, name, version, v.20210305, depends, classes, smart, usage, static, object, class::method, this, provides, only, methods, public, function, load url img content, string, y img link, yes no, y allow set credentials, no, array, return, param, relative path to image, assumes, current, url, as, prefix, http s some.url:port path to image, port, is, optional, works, also, with, data-url, data-image, default, set, if, yes, must, be, just, for, internal, urls, auto, will, try, detect, can, trust, based, on, admin.php, index.php, local, framework, scripts, the, y url or path, get, detected, under, send, unique, session, ids, more, that, from, and, http-basic, auth, credentials, using, other">
+	<meta name="keywords" content="smartrobot, final, class, easy, to, use, http, robot, language, php, located, at, lib core plugins lib robot.php, package, plugins:network, namespace, name, version, v.20210310, depends, classes, smart, usage, static, object, class::method, this, provides, only, methods, public, function, load url img content, string, y img link, yes no, y allow set credentials, no, array, return, param, relative path to image, assumes, current, url, as, prefix, http s some.url:port path to image, port, is, optional, works, also, with, data-url, data-image, default, set, if, yes, must, be, just, for, internal, urls, auto, will, try, detect, can, trust, based, on, admin.php, index.php, local, framework, scripts, the, y url or path, get, detected, under, send, unique, session, ids, more, that, from, and, http-basic, auth, credentials, using, other">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartRobot">
 	<title>PHP Documentation for: \SmartRobot</title>
 	<!-- CSS and Fonts -->
@@ -696,7 +696,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartRobot</span></li>
 		
-		<li><b>Version:</b> v.20210305</li>
+		<li><b>Version:</b> v.20210310</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -735,7 +735,8 @@ select#select-summary {
 			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ssl_method` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_ssl_method</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_auth_name` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_auth_name</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_auth_pass` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_auth_pass</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>YES/NO</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_set_credentials` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_allow_set_credentials</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>
+			<i>YES/NO</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_set_credentials` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_allow_set_credentials</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>, 
+			<i>BOOL</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_num_redirects` Parameter is OPTIONAL, with the Default Value: 2">$y_allow_num_redirects</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>2</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -748,7 +749,8 @@ select#select-summary {
 @param: {ENUM} $y_ssl_method: SSL Mode: tls | sslv3 | sslv2 | ssl<br>
 @param: {STRING} $y_auth_name: used only for URLs, the auth user name<br>
 @param: {STRING} $y_auth_pass: used only for URLs, the auth password<br>
-@param: {YES/NO} $y_allow_set_credentials: DEFAULT IS SET to NO ; if YES must be set just for internal URLs ; if set to AUTO will try to detect if can trust based on admin.php / index.php local framework scripts ; if the $y_url_or_path to get is detected to be under current URL will send also the Unique / session IDs ; more if detected that is from admin.php and if this is set to YES will send the HTTP-BASIC Auth credentials if detected (using YES with other URLs than Smart.Framework's current URL can be a serious SECURITY ISSUE, so don't !)</div>
+@param: {YES/NO} $y_allow_set_credentials: DEFAULT IS SET to NO ; if YES must be set just for internal URLs ; if set to AUTO will try to detect if can trust based on admin.php / index.php local framework scripts ; if the $y_url_or_path to get is detected to be under current URL will send also the Unique / session IDs ; more if detected that is from admin.php and if this is set to YES will send the HTTP-BASIC Auth credentials if detected (using YES with other URLs than Smart.Framework's current URL can be a serious SECURITY ISSUE, so don't !)<br>
+@param: {BOOL} $y_allow_num_redirects: DEFAULT IS SET to 2 ; Between 0..5 ; if &gt; 0 will allow this number of redirects if 301/302, but only if not set to send any auth username/pass/credentials to avoid security leaks) ; if 0 will allow no redirects</div>
 	
 			<div class="doc-method-comments">Load URL Content (if relative path to a file will be prefixed with current URL for security reasons)</div>
 	
@@ -826,13 +828,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-09 12:12:05 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 17:58:07 +0000</small>
 <hr>
 <br>
 <!-- # -->
-<div align="center">
+<div><center>
 	<br>
 	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
-</div>
+</center></div>
 </body>
 </html>

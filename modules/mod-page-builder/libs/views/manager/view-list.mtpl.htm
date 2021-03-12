@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List / Records :: v.20210307 -->
+<!-- Pagebuilder / Manage @ List / Records :: v.20210312 -->
 <style>
 	.smartGrid_AlignCenter {
 		text-align: center;
@@ -51,7 +51,7 @@ jQuery(function() {
 
 	var displayDel = function(row, cell, value, columnDef, dataContext) {
 		var html = '';
-		html += '<div align="center" style="padding-top:2px;">';
+		html += '<div style="padding-top:2px;"><center>';
 		[%%%IF:LIST-DELETE-URL:!=;%%%]
 		html += '<a href="[###LIST-DELETE-URL|js###]' + SmartJS_CoreUtils.escape_url(value) + '" data-smart="open.modal">';
 		html += '<img src="[###PATH-MODULE|html|js###]libs/views/manager/img/op-delete.svg" alt="Delete" title="Delete">';
@@ -59,7 +59,7 @@ jQuery(function() {
 		[%%%ELSE:LIST-DELETE-URL%%%]
 		html += '&nbsp;';
 		[%%%/IF:LIST-DELETE-URL%%%]
-		html += '</div>';
+		html += '</center></div>';
 		return html;
 	}
 
@@ -72,7 +72,7 @@ jQuery(function() {
 			img = 'type-segment.svg';
 		}
 		var html = '';
-		html += '<div align="center" style="padding-top:2px;">';
+		html += '<div style="padding-top:2px;"><center>';
 		[%%%IF:LIST-RECORD-URL:!=;%%%]
 		html += '<a href="[###LIST-RECORD-URL|js###]' + SmartJS_CoreUtils.escape_url(value) + '" data-smart="open.modal" title="Display">';
 		[%%%/IF:LIST-RECORD-URL%%%]
@@ -80,7 +80,7 @@ jQuery(function() {
 		[%%%IF:LIST-RECORD-URL:!=;%%%]
 		html += '</a>';
 		[%%%/IF:LIST-RECORD-URL%%%]
-		html += '</div>';
+		html += '</center></div>';
 		return html;
 	}
 
@@ -123,7 +123,7 @@ jQuery(function() {
 				break;
 		}
 		var fmtVal = value + ' / ' + dataContext['total_size'] + ' bytes';
-		return '<div align="center" style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(fmtVal) + '" title="' + SmartJS_CoreUtils.escape_html(fmtVal) + '"></div>';
+		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(fmtVal) + '" title="' + SmartJS_CoreUtils.escape_html(fmtVal) + '"></div></center>';
 	}
 
 	var displayActive = function(row, cell, value, columnDef, dataContext) {
@@ -137,7 +137,7 @@ jQuery(function() {
 			img = 'status-linked.svg';
 			txt = 'All Segments are Active if used Programatically';
 		}
-		return '<div align="center" style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(txt) + '" title="' + SmartJS_CoreUtils.escape_html(txt) + '"></div>';
+		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(txt) + '" title="' + SmartJS_CoreUtils.escape_html(txt) + '"></div></center>';
 	}
 
 	var displayAuth = function(row, cell, value, columnDef, dataContext) {
@@ -151,7 +151,7 @@ jQuery(function() {
 			img = 'restr-unknown.svg';
 			txt = 'Unknown (Segments may be used in any context ...)';
 		}
-		return '<div align="center" style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(txt) + '" title="' + SmartJS_CoreUtils.escape_html(txt) + '"></div>';
+		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(txt) + '" title="' + SmartJS_CoreUtils.escape_html(txt) + '"></div></center>';
 	}
 
 	var displayTransl = function(row, cell, value, columnDef, dataContext) {
@@ -161,7 +161,7 @@ jQuery(function() {
 			img = 'translatable.svg';
 			txt = 'Translatable';
 		}
-		return '<div align="center" style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(txt) + '" title="' + SmartJS_CoreUtils.escape_html(txt) + '"></div>';
+		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(txt) + '" title="' + SmartJS_CoreUtils.escape_html(txt) + '"></div></center>';
 	}
 
 	var displayName = function(row, cell, value, columnDef, dataContext) {
