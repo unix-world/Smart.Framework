@@ -1,4 +1,59 @@
-<!-- r.20210312 -->
+<!-- TPL Foot r.20210313 -->
+[%%%IF:SEMAPHORE:&*<load:searchterm-highlight-js>;%%%]
+<!-- Highlight SearchTerm -->
+<style>
+.searchterm_highlight {
+	background-color: #FFCC00 !important;
+	color: #222222 !important;
+	padding: 0 !important;
+	border-radius: 3px !important;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.highlight.css?[###RELEASE-HASH|url|html###]">
+<script type="text/javascript" src="lib/js/jquery/jquery.highlight.js?[###RELEASE-HASH|url|html###]"></script>
+<script>
+jQuery(function(){
+	if((typeof searchTerm != 'undefined') && (searchTerm != null) && (searchTerm != '')) {
+		jQuery('.search-highlight').removeHighlight('searchterm_highlight').highlight(String(searchTerm), 'searchterm_highlight');
+	} //end if
+});
+</script>
+[%%%ELSE:SEMAPHORE%%%]
+<!-- Highlight SearchTerm: skip by Semaphore -->
+[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<load:code-highlight-js>;(1)%%%]
+<!-- HLjs -->
+<link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css?[###RELEASE-HASH|url|html###]">
+<style>
+code.hljs {
+	border: 1px solid #ECECEC;
+}
+code.hljs, code.hljs * {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+}
+:not(pre) > code {
+	background: #3F3F3F;
+	color: #DCDCDC;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+</style>
+<link rel="stylesheet" href="lib/js/jshighlight/css/[%%%IF:SEMAPHORE:&*<theme:dark>;(2)%%%]zenburn[%%%ELSE:SEMAPHORE(2)%%%]github[%%%/IF:SEMAPHORE(2)%%%].css?[###RELEASE-HASH|url|html###]">
+<script type="text/javascript" src="lib/js/jshighlight/highlight.js?[###RELEASE-HASH|url|html###]"></script>
+<script type="text/javascript" src="lib/js/jshighlight/syntax/plaintext.js?[###RELEASE-HASH|url|html###]"></script>
+<script type="text/javascript" src="lib/js/jshighlight/syntax.pak.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Smart HLjs -->
+<script type="text/javascript" src="lib/js/jshighlight/smart-highlight.js?[###RELEASE-HASH|url|html###]"></script>
+<script type="text/javascript">jQuery(document).ready(function() { SmartJS_Custom_Syntax_Highlight('body'); });</script>
+[%%%ELSE:SEMAPHORE(1)%%%]
+<!-- HLjs, Smart HLjs: skip by Semaphore -->
+[%%%/IF:SEMAPHORE(1)%%%]
+[%%%IF:SEMAPHORE:&*<skip:unveil-js>;%%%]
+<!-- Unveil: skip by Semaphore -->
+[%%%ELSE:SEMAPHORE%%%]
 <!-- Unveil -->
-<script type="text/javascript" src="lib/js/jquery/jquery.unveil.js??[###RELEASE-HASH|url|html###]"></script><script>jQuery(function(){ setTimeout(function(){ jQuery('.unveil').unveil(); }, 250); });</script>
+<script type="text/javascript" src="lib/js/jquery/jquery.unveil.js?[###RELEASE-HASH|url|html###]"></script>
+<script>jQuery(function(){ setTimeout(function(){ jQuery('.unveil').unveil(); }, 250); });</script>
+[%%%/IF:SEMAPHORE%%%]
 <!-- #.# -->

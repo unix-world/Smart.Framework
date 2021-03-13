@@ -487,14 +487,18 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$the_semaphore 	= ((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SMART_FRAMEWORK_ADMIN_AREA === true)) ? 'skip-js-ui' : '';
-		$custom_ui 		= $the_semaphore ? 'jqueryui' : '';
+		$semaphores = [];
+		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SMART_FRAMEWORK_ADMIN_AREA === true)) {
+			//-- skip load the default JS-UI and load jQueryUI if is available and is admin area
+			$semaphores[] = 'skip:js-ui';
+			$semaphores[] = 'load:jqueryui';
+			//--
+		} //end if
 		//--
 		$this->PageViewSetVars([
 			'title' 		=> 'Smart.Framework Test and Demo Suite '.' / NetServerID: '.Smart::net_server_id().' ('.Smart::net_server_id(true).')',
 			'main' 			=> (string) $main.$extra_main,
-			'semaphore' 	=> (string) $the_semaphore, // skip load the default JS-UI if jQueryUI is available
-			'custom-js-ui' 	=> (string) $custom_ui // load custom JS-UI (jqueryUI if available)
+			'semaphore' 	=> (string) Smart::array_to_list($semaphores)
 		]);
 		//--
 

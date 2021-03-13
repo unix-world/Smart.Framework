@@ -74,7 +74,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode
- * @version     v.20210305
+ * @version     v.20210313
  * @package     @Core
  *
  */
@@ -2175,7 +2175,8 @@ final class Smart {
 				if(!is_array($val)) {
 					//--
 					$val = (string) trim((string)$val); // must not do strtolower as it is used to store both cases
-					$val = (string) str_replace(array('<', '>', ','), array('‹', '›', ';'), (string)$val);
+					$val = (string) str_replace(['<', '>'], ['‹', '›'], (string)$val); // {{{SYNC-SMARTLIST-BRACKET-REPLACEMENTS}}}
+					$val = (string) str_replace(',', ';', (string)$val); // fix just on value
 					if((string)$val != '') {
 						if(!in_array('<'.$val.'>', $arr)) {
 							$arr[] = '<'.$val.'>';

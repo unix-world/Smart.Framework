@@ -63,7 +63,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @package 	@Core:TemplatingEngine
  *
  */
-final class SmartMarkersTemplating { // syntax: r.20200717
+final class SmartMarkersTemplating { // syntax: r.20210313
 
 	// ::
 
@@ -993,7 +993,7 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 	// do replacements (and escapings) for one marker ; a marker can contain: A-Z 0-9 _ - (and the dot . which is reserved as array level separator)
 	/* {{{SYNC-MARKER-ALL-TEST-SEQUENCES}}}
 	<!-- INFO: The VALID Escaping and Transformers for a Marker are all below ; If other escaping sequences are used the Marker will not be detected and replaced ... -->
-	<!-- Valid Escapings and Transformers: |bool |int |dec[1-4]{1} |num |htmid |jsvar |slug |substr[0-9]{1,5} |subtxt[0-9]{1,5} |lower |upper |ucfirst |ucwords |trim |url |json |js |html |css |nl2br |syntaxhtml -->
+	<!-- Valid Escapings and Transformers: |bool |int |dec[1-4]{1} |num |htmid |jsvar |slug |substr[0-9]{1,5} |subtxt[0-9]{1,5} |lower |upper |ucfirst |ucwords |trim |url |json |js |html |css |nl2br |smartlist |syntaxhtml -->
 	[###MARKER###]
 	[###MARKER|bool###]
 	[###MARKER|int###]
@@ -1210,6 +1210,8 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 					} elseif((string)$escexpr == '|nl2br') {
 						$val = (string) Smart::nl_2_br((string)$val); // Apply Nl2Br
 					//--
+					} elseif((string)$escexpr == '|smartlist') { // Apply SmartList Fix Replacements
+						$val = (string) str_replace(['<', '>'], ['‹', '›'], (string)$val); // {{{SYNC-SMARTLIST-BRACKET-REPLACEMENTS}}}
 					} elseif((string)$escexpr == '|syntaxhtml') {
 						$val = (string) self::prepare_nosyntax_html_template((string)$val); // Prepare a HTML template for display in no-conflict mode: no syntax or markers will be parsed
 					//--
@@ -2038,7 +2040,7 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 							} //end if
 						} //end if
 						*/
-						//--
+						//-- DO NOT MODIFY ORDER !
 						if((string)substr($key, -7, 7) == '|syntax') {
 							$key = (string) substr($key, 0, -7);
 							$sfx = '|syntax';
@@ -2125,7 +2127,7 @@ final class SmartMarkersTemplating { // syntax: r.20200717
 								$cycles += $num_sub_sub_templates;
 							} //end if
 						} //end if
-						//-- escapings must be before detecting and fixing unattended syntax ; any sequence from below must escape at least with prepare_nosyntax_content() or prepare_nosyntax_html_template() to avoid reparsing syntax
+						//-- DO NOT MODIFY ORDER ! escapings must be before detecting and fixing unattended syntax ; any sequence from below must escape at least with prepare_nosyntax_content() or prepare_nosyntax_html_template() to avoid reparsing syntax
 						if((string)$sfx == '|syntax') {
 							$stemplate = (string) self::prepare_nosyntax_content((string)$stemplate); // fix here
 						} elseif((string)$sfx == '|syntaxhtml') {

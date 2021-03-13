@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version:          r.20210224 -->
+<!-- Version:          r.20210313 -->
 <!-- Template:         [###TEMPLATE-PATH|html###][###TEMPLATE-FILE|html###] -->
 <!-- Charset:          [###CHARSET|html###] -->
 <!-- Srv Script:       [###SRV-SCRIPT|html###] -->
@@ -62,7 +62,7 @@ QUnit.config.testTimeout = [###TIMEOUT-NETSOCKET|int###] * 1000; // max time per
 QUnit.done(function(details){ // done handler (more done handlers can be set later)
 	smartQUnitDoneCounter++;
 	jQuery('#smart-qunit-results').empty().text('[[###APP-REALM|js###]] QUnit DONE (#' + smartQUnitDoneCounter + '). Disabled: ' + parseInt(smartQUnitDisabledTests) + '\n' + 'Total: ' + details.total + ' ; Failed: ' + details.failed + ' ; Passed: ' + details.passed + ' ; RunTime: ' + Math.ceil(details.runtime / 1000) + 's');
-	jQuery('#smart-qunit-done').empty().html('<hr><h1 id="qunit-footer">#&nbsp;END&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[###SEMAPHORE|html###]</h1>');
+	jQuery('#smart-qunit-done').empty().html('<hr><h1 id="qunit-footer">#&nbsp;END&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[###FOOTER|html###]</h1>');
 });
 </script>
 <script>

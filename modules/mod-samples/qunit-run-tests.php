@@ -58,7 +58,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$this->PageViewSetVars([
 			'title' 	=> 'QUnit Engine - Sample Testing :: jQuery@JavaScript/PHP',
-			'semaphore' => 'Smart.Framework '.SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.SMART_FRAMEWORK_RELEASE_VERSION,
+			'footer' 	=> 'Smart.Framework '.SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.SMART_FRAMEWORK_RELEASE_VERSION,
 			'main' 		=> SmartMarkersTemplating::render_file_template(
 				$this->ControllerGetParam('module-view-path').'qunit-run-tests.js.mtpl',
 				[
