@@ -15,7 +15,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //	* ONLY CONSTANTS SHOULD BE DEFINED HERE ; IF .htaccess PHP settings will be used, be sure to sync them with this file too
 // ==================
 
-//define('SMART_FRAMEWORK_PROFILING_HTML_PERF', 'yes'); 									// Uncomment this to enable HTML Performance Metrics Profiler (can be used also in production environments for HTML UI Profiling purposes)
+//define('SMART_FRAMEWORK_PROFILING_HTML_PERF', 'yes'); 									// Uncomment this to enable the HTML Performance Profiler (it can be used also in production environments for HTML Metrics and Profiling purposes)
 //define('SMART_FRAMEWORK_DEBUG_MODE', 'yes');												// Uncomment this to enable Debugging and the Web Profiler Toolbar (do not use in production environments but only for internal Debugging / Profiling purposes)
 
 //--------------------------------------- APP NAMESPACE

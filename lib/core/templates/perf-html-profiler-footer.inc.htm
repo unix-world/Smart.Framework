@@ -1,19 +1,39 @@
-<!-- HTML Performance Profiler (footer) # [mode = [###MODE|html###]] # r.20210314 -->
+<!-- HTML Performance Profiler (footer) # [mode = [###MODE|html###]] # v.20210314.r2 -->
 <script>
+var SmartFrameworkHTMLPerformanceProfilerENDMark = 'Smart.Framework.HTML.Performance.Profiler.Page.Render.DONE';
+
 (function(){
 
-	var mode = '[###MODE|js###]';
-	var theEndMark = 'Smart.Framework.HTML.Performance.Profiler.Page.Render.DONE';
+	var SmartFrameworkHTMLPerformanceProfilerMODE = '[###MODE|js###]';
 
 	if(window.performance) {
-		window.performance.mark(theEndMark);
+		window.performance.mark(SmartFrameworkHTMLPerformanceProfilerENDMark);
+	}
+
+	var displayLocalNumber = function(num, decimals) {
+		if(typeof decimals == 'undefined') {
+			decimals = 1;
+		}
+		var lNum;
+		try {
+			lNum = num.toLocaleString('en-US', { minimumFractionDigits : decimals });
+		} catch(err) {
+			lNum = num;
+		}
+		return lNum;
 	}
 
 	var theNavUrl = '';
-	var timeTotalResources = 0;
+	var timeTotalResources = 0; // if there are parallel threads, making sum of durations is not correct ; fix: calculate as ((theTimeLoadingLastResource - theTimeLoadingFirstResource) + theDurationOfLastResource)
+	var theResourcesNum = 0;
+	var theResourcesArr = [];
+	var recordedFirstResourceLoading = false;
+	var theTimeLoadingFirstResource = 0;
 	var theTimeLoadingLastResource = 0;
+	var theDurationOfLastResource = 0;
 	var theTimeFirstPaint = 0;
 	var theTimeFirstContentfulPaint = 0;
+	var theTimeRenderStart = 0;
 	var theTimeRenderDone = 0;
 
 	var processPerformanceEntry = function(obj) {
@@ -47,10 +67,16 @@
 				theNavUrl = name;
 				break;
 			case 'resource':
-				timeTotalResources += duration;
+				theResourcesArr[theResourcesNum] = '#' + (theResourcesNum + 1) + ' [' + displayLocalNumber(duration) + ' ms] ' + name;
+				theResourcesNum++;
+				if(recordedFirstResourceLoading !== true) {
+					recordedFirstResourceLoading = true;
+					theTimeLoadingFirstResource = startTime;
+				}
 				if(startTime >= theTimeLoadingLastResource) {
 					theTimeLoadingLastResource = startTime;
 				}
+				theDurationOfLastResource = duration;
 				break;
 			case 'paint':
 				if(name.toLowerCase() === 'first-paint') {
@@ -64,7 +90,11 @@
 				}
 				break;
 			case 'mark':
-				if(name === theEndMark) {
+				if(name === SmartFrameworkHTMLPerformanceProfilerSTARTMark) {
+					if(startTime >= theTimeRenderStart) {
+						theTimeRenderStart = startTime;
+					}
+				} else if(name === SmartFrameworkHTMLPerformanceProfilerENDMark) {
 					if(startTime >= theTimeRenderDone) {
 						theTimeRenderDone = startTime;
 					}
@@ -74,16 +104,6 @@
 				// nothing to do ...
 		}
 
-	}
-
-	var displayLocalNumber = function(num) {
-		var lNum;
-		try {
-			lNum = num.toLocaleString('en-US', { minimumFractionDigits:1 });
-		} catch(err) {
-			lNum = num;
-		}
-		return lNum;
 	}
 
 	var theLog = [];
@@ -97,23 +117,25 @@
 		for(var i=0; i < p.length; i++) {
 			processPerformanceEntry(p[i]);
 		}
+		timeTotalResources = ((theTimeLoadingLastResource - theTimeLoadingFirstResource) + theDurationOfLastResource);
 		var estimationOffset = 1.5;
 		theLog[theLog.length] = '    - Navigation URL: `' + theNavUrl + '`';
-		theLog[theLog.length] = '    - Page Render Start at: ' + theTimeLoadingLastResource + ' ms';
-		theLog[theLog.length] = '    - First Paint at: ' + ((theTimeFirstPaint ? displayLocalNumber(theTimeFirstPaint) + ' ms' : displayLocalNumber(theTimeLoadingLastResource + estimationOffset) + ' ms (estimated)'));
-		theLog[theLog.length] = '    - First Contentful Paint at: ' + ((theTimeFirstContentfulPaint ? displayLocalNumber(theTimeFirstContentfulPaint) + ' ms' : displayLocalNumber(theTimeLoadingLastResource + estimationOffset) + ' ms (estimated)'));
+		theLog[theLog.length] = '    - Page Render Start at: ' + theTimeRenderStart + ' ms';
+		theLog[theLog.length] = '    - First Paint at: ' + ((theTimeFirstPaint ? displayLocalNumber(theTimeFirstPaint) + ' ms' : displayLocalNumber(theTimeRenderStart + estimationOffset) + ' ms (estimated)'));
+		theLog[theLog.length] = '    - First Contentful Paint at: ' + ((theTimeFirstContentfulPaint ? displayLocalNumber(theTimeFirstContentfulPaint) + ' ms' : displayLocalNumber(theTimeRenderStart + estimationOffset) + ' ms (estimated)'));
 		theLog[theLog.length] = '    - Page Render completed in: ' + displayLocalNumber(theTimeRenderDone) + ' ms';
-		if(timeTotalResources > 0) {
-			theLog[theLog.length] = '    - Background Loading Page Resources (CSS, JS, Media) completed in: ' + displayLocalNumber(timeTotalResources) + ' ms';
-		}
+	//	if((theResourcesNum > 0) || (timeTotalResources > 0)) {
+			theLog[theLog.length] = '    - Background Loading Page Resources (CSS, JS, Media) completed in: ' + displayLocalNumber(timeTotalResources) + ' ms (' + displayLocalNumber(theResourcesNum,0) + ' resources)';
+	//	}
 		theLog[theLog.length] = '    - TOTAL PAGE TIME: ' + displayLocalNumber(theTimeRenderDone + timeTotalResources) + ' ms';
 	}
 
 	theLog[theLog.length] = '----- Smart.Framework HTML Performance Profiler LOG: #END -----';
 
 	console.log(theLog.join('\n'));
+	console.log('---------- Smart.Framework HTML Performance Profiler LIST OF PAGE RESOURCES: START# ----------\n' + theResourcesArr.join('\n') + '\n---------- Smart.Framework HTML Performance Profiler LIST OF PAGE RESOURCES: #END ----------\n');
 
-	if(mode === 'dev') {
+	if(SmartFrameworkHTMLPerformanceProfilerMODE === 'dev') {
 		theLog[1] = '    - Navigation URL (see in the browser addressbar)'; // clear Navigation URL
 		try {
 			document.write('<div onClick="this.style.visibility=\'hidden\';" title="Smart.Framework.HTML.Performance.Profiler @ Mode: `[###MODE|html|js###]`\nClick on this info message to hide it ..." style="cursor:default; position:fixed; bottom:25px; right:25px; padding:10px; background:#FF3300; color:#FFFFFF; font-weight:bold; font-size:1rem; opacity:0.5; border-radius:3px;">*** This info message is displayed just in DEV mode. ***<br>Smart.Framework.HTML.Performance.Profiler is ENABLED.<br>Performance metrics are logged in the Browser Console ...<pre id="Smart.Framework.HTML.Performance.Profiler.Log"></pre></div>');
