@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+March 14, 2021 :: :: Version 7.2.1 rev.20210314
+	* new feature: HTML Performance Metrics Profiler (Javascript)
+
 March 12, 2021 :: :: Version 7.2.1 rev.20210312
 	* fix deprecated <div> align=center in favor of <center> tag for includded HTML
 	* jQuery unveil js can now handle also srcset on picture/source but also img img[src] and picture[source[srcset]]

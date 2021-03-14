@@ -48,7 +48,7 @@ define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)SmartFileSystem::read('lib/
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations
- * @version 	v.20210312
+ * @version 	v.20210314
  * @package 	Application:ViewComponents
  *
  */
@@ -796,6 +796,13 @@ final class SmartComponents {
 			);
 			die();
 			return;
+		} //end if
+		//-- add html performance profiling in TPL
+		if(defined('SMART_FRAMEWORK_PROFILING_HTML_PERF')) {
+			if((stripos((string)$tpl, '</head>') !== false) AND (stripos((string)$tpl, '</body>') !== false)) {
+				$tpl = (string) str_ireplace('</head>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-header.inc.htm', [ 'MODE' => (SmartFrameworkRuntime::ifProdEnv() === true) ? 'prod' : 'dev' ])."\n".'</head>', (string)$tpl);
+				$tpl = (string) str_ireplace('</body>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-footer.inc.htm', [ 'MODE' => (SmartFrameworkRuntime::ifProdEnv() === true) ? 'prod' : 'dev' ])."\n".'</body>', (string)$tpl);
+			} //end if
 		} //end if
 		//-- add debug support in TPL
 		if(SmartFrameworkRuntime::ifDebug()) {

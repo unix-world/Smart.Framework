@@ -77,7 +77,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //--
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.7.2.1'); 	// tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.13'); 	// tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.14'); 	// tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 //--
 if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM')) {
@@ -1258,8 +1258,7 @@ final class SmartFrameworkRuntime {
 	public static function outputHttpHeadersNoCache($expiration=-1, $modified=-1, $control='private') {
 		//--
 		if(self::$NoCacheHeadersSent !== false) {
-		//	@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'The No-Cache Headers (Expire='.$expiration.' ; Modified='.$modified.'), Already Set (don\'t use this function twice per execution) ...', E_USER_NOTICE); // do not trigger notice, it may be called also by other libs if must show errors after set previous in a controller
-			return;
+			return; // this function can run more than once ...
 		} //end if
 		//--
 		$expiration = (int) $expiration; // expire time, in seconds, since now
