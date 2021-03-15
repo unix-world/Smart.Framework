@@ -1,13 +1,24 @@
-<!-- HTML Performance Profiler (footer) # [mode = [###MODE|html###]] # v.20210314.r2 -->
+<!-- HTML Performance Profiler (footer) # r.20210315 -->
 <script>
-var SmartFrameworkHTMLPerformanceProfilerENDMark = 'Smart.Framework.HTML.Performance.Profiler.Page.Render.DONE';
-
 (function(){
 
-	var SmartFrameworkHTMLPerformanceProfilerMODE = '[###MODE|js###]';
+	var copyright = '(c) 2021 unix-world.org';
+
+	if(
+		(typeof SmartFrameworkHTMLPerformanceProfilerSTARTMark == 'undefined') ||
+		(typeof SmartFrameworkHTMLPerformanceProfilerENDMark == 'undefined') ||
+		(typeof SmartFrameworkHTMLPerformanceProfilerEnabled == 'undefined') ||
+		(SmartFrameworkHTMLPerformanceProfilerEnabled !== true)
+	) {
+		return;
+	}
 
 	if(window.performance) {
-		window.performance.mark(SmartFrameworkHTMLPerformanceProfilerENDMark);
+		try {
+			window.performance.mark(SmartFrameworkHTMLPerformanceProfilerENDMark);
+		} catch(err){
+			return;
+		}
 	}
 
 	var displayLocalNumber = function(num, decimals) {
@@ -23,7 +34,7 @@ var SmartFrameworkHTMLPerformanceProfilerENDMark = 'Smart.Framework.HTML.Perform
 		return lNum;
 	}
 
-	var theNavUrl = '';
+	var theNavUrl = '(current)';
 	var timeTotalResources = 0; // if there are parallel threads, making sum of durations is not correct ; fix: calculate as ((theTimeLoadingLastResource - theTimeLoadingFirstResource) + theDurationOfLastResource)
 	var theResourcesNum = 0;
 	var theResourcesArr = [];
@@ -109,39 +120,54 @@ var SmartFrameworkHTMLPerformanceProfilerENDMark = 'Smart.Framework.HTML.Perform
 	var theLog = [];
 
 	theLog[theLog.length] = '----- Smart.Framework HTML Performance Profiler LOG: START# -----';
+	theLog[theLog.length] = '    - Navigation URL: `' + theNavUrl + '`';
 
 	if(!window.performance) {
 		theLog[theLog.length] = '    - N/A';
 	} else {
-		var p = window.performance.getEntries();
-		for(var i=0; i < p.length; i++) {
-			processPerformanceEntry(p[i]);
-		}
-		timeTotalResources = ((theTimeLoadingLastResource - theTimeLoadingFirstResource) + theDurationOfLastResource);
 		var estimationOffset = 1.5;
-		theLog[theLog.length] = '    - Navigation URL: `' + theNavUrl + '`';
-		theLog[theLog.length] = '    - Page Render Start at: ' + theTimeRenderStart + ' ms';
-		theLog[theLog.length] = '    - First Paint at: ' + ((theTimeFirstPaint ? displayLocalNumber(theTimeFirstPaint) + ' ms' : displayLocalNumber(theTimeRenderStart + estimationOffset) + ' ms (estimated)'));
-		theLog[theLog.length] = '    - First Contentful Paint at: ' + ((theTimeFirstContentfulPaint ? displayLocalNumber(theTimeFirstContentfulPaint) + ' ms' : displayLocalNumber(theTimeRenderStart + estimationOffset) + ' ms (estimated)'));
-		theLog[theLog.length] = '    - Page Render completed in: ' + displayLocalNumber(theTimeRenderDone) + ' ms';
-	//	if((theResourcesNum > 0) || (timeTotalResources > 0)) {
+		var p;
+		try {
+			p = window.performance.getEntries();
+		} catch(err) {
+			p = null;
+			console.error('HTML Performance Profiler ERRORS: ' + err);
+		}
+		if(Array.isArray(p)) {
+			for(var i=0; i<p.length; i++) {
+				processPerformanceEntry(p[i]);
+			}
+			timeTotalResources = ((theTimeLoadingLastResource - theTimeLoadingFirstResource) + theDurationOfLastResource);
+			theLog[theLog.length] = '    - Page Render Start at: ' + theTimeRenderStart + ' ms';
+			theLog[theLog.length] = '    - First Paint at: ' + ((theTimeFirstPaint ? displayLocalNumber(theTimeFirstPaint) + ' ms' : displayLocalNumber(theTimeRenderStart + estimationOffset) + ' ms (estimated)'));
+			theLog[theLog.length] = '    - First Contentful Paint at: ' + ((theTimeFirstContentfulPaint ? displayLocalNumber(theTimeFirstContentfulPaint) + ' ms' : displayLocalNumber(theTimeRenderStart + estimationOffset) + ' ms (estimated)'));
+			theLog[theLog.length] = '    - Page Render completed in: ' + displayLocalNumber(theTimeRenderDone) + ' ms';
 			theLog[theLog.length] = '    - Background Loading Page Resources (CSS, JS, Media) completed in: ' + displayLocalNumber(timeTotalResources) + ' ms (' + displayLocalNumber(theResourcesNum,0) + ' resources)';
-	//	}
-		theLog[theLog.length] = '    - TOTAL PAGE TIME: ' + displayLocalNumber(theTimeRenderDone + timeTotalResources) + ' ms';
+			theLog[theLog.length] = '    - TOTAL PAGE TIME: ' + displayLocalNumber(theTimeRenderDone + timeTotalResources) + ' ms';
+		} else {
+			theLog[theLog.length] = '    - ! FAILED ! No Performance Objects Found ...';
+		}
 	}
+
+	var theProfilerVersion = [%%%IF:MODE:==dev;%%%]'# Version: [###VERSION|js|html###] ';[%%%ELSE:MODE%%%]''; // no version[%%%/IF:MODE%%%]
+
+	theLog[theLog.length] = '    [ HTML Performance Profiler ' + theProfilerVersion + '# ' + copyright + ' ]';
+
+	console.log('---------- Smart.Framework HTML Performance Profiler LIST OF PAGE RESOURCES: START# ----------\n' + '@ Navigation URL: `' + theNavUrl + '`\n---------- (' + displayLocalNumber(theResourcesNum,0) + ' resources loaded) ----------\n' + theResourcesArr.join('\n') + '\n---------- Smart.Framework HTML Performance Profiler LIST OF PAGE RESOURCES: #END ----------\n');
 
 	theLog[theLog.length] = '----- Smart.Framework HTML Performance Profiler LOG: #END -----';
 
 	console.log(theLog.join('\n'));
-	console.log('---------- Smart.Framework HTML Performance Profiler LIST OF PAGE RESOURCES: START# ----------\n' + theResourcesArr.join('\n') + '\n---------- Smart.Framework HTML Performance Profiler LIST OF PAGE RESOURCES: #END ----------\n');
 
-	if(SmartFrameworkHTMLPerformanceProfilerMODE === 'dev') {
-		theLog[1] = '    - Navigation URL (see in the browser addressbar)'; // clear Navigation URL
-		try {
-			document.write('<div onClick="this.style.visibility=\'hidden\';" title="Smart.Framework.HTML.Performance.Profiler @ Mode: `[###MODE|html|js###]`\nClick on this info message to hide it ..." style="cursor:default; position:fixed; bottom:25px; right:25px; padding:10px; background:#FF3300; color:#FFFFFF; font-weight:bold; font-size:1rem; opacity:0.5; border-radius:3px;">*** This info message is displayed just in DEV mode. ***<br>Smart.Framework.HTML.Performance.Profiler is ENABLED.<br>Performance metrics are logged in the Browser Console ...<pre id="Smart.Framework.HTML.Performance.Profiler.Log"></pre></div>');
-			setTimeout(function(){ document.getElementById('Smart.Framework.HTML.Performance.Profiler.Log').innerText = theLog.join('\n'); }, 250);
-		} catch(err){}
-	}
+[%%%IF:MODE:==dev;%%%]
+	theLog[1] = '    - Navigation URL (see in the browser addressbar)'; // clear Navigation URL
+	try {
+		document.write('<div onClick="this.style.visibility=\'hidden\';" title="Smart.Framework.HTML.Performance.Profiler @ Mode: `[###MODE|html|js###]`\nClick on this info message to hide it ..." style="cursor:default; position:fixed; bottom:25px; right:25px; padding:10px; background:#FF3300; color:#FFFFFF; font-weight:bold; font-size:1rem; opacity:0.5; border-radius:3px;">*** This info message is displayed just in DEV mode. ***<br>Smart.Framework.HTML.Performance.Profiler is ENABLED.<br>Performance metrics are logged in the Browser Console ...<pre id="Smart.Framework.HTML.Performance.Profiler.Log"></pre></div>');
+		setTimeout(function(){ document.getElementById('Smart.Framework.HTML.Performance.Profiler.Log').innerText = theLog.join('\n'); }, 250);
+	} catch(err){}
+[%%%ELSE:MODE%%%]
+	// no info message
+[%%%/IF:MODE%%%]
 
 })();
 </script>
