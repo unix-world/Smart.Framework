@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20210312
+ * @version 	v.20210316
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -51,7 +51,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private $mkdw_version = 'v.1.5.4-r.20210312@smart'; // with fixes from 1.5.1 -> 1.5.4 + extended syntax by unixman + character encoding fixes
+	private $mkdw_version = 'v.1.5.4-r.20210316@smart'; // with fixes from 1.5.1 -> 1.5.4 + extended syntax by unixman + character encoding fixes
 
 	//===================================
 
@@ -137,9 +137,9 @@ final class SmartMarkdownToHTML {
 						  'time',
 	);
 	//-- extra (attributes can optional start with a type prefix to know which attributes to assign to nested elements (ex: image in a link, or link in a table cell, or image in a link in a table cell)
-	private $regexImgAttribute = '[ ]*{(I\:[ ]*)?((?:[#\.@][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Images - optional starts with {I:
-	private $regexLnkAttribute = '[ ]*{(L\:[ ]*)?((?:[#\.@][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Links  - optional starts with {L:
-	private $regexTblAttribute = '[ ]*{(T\:[ ]*)?((?:[#\.@][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Tables - optional starts with {T:
+	private $regexImgAttribute = '[ ]*{(I\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Images - optional starts with {I:
+	private $regexLnkAttribute = '[ ]*{(L\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Links  - optional starts with {L:
+	private $regexTblAttribute = '[ ]*{(T\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Tables - optional starts with {T:
 	//--
 
 	//===================================
@@ -1447,7 +1447,133 @@ final class SmartMarkdownToHTML {
 		//--
 		$Inline['element']['attributes'] += $Link['element']['attributes'];
 		//--
-		unset($Inline['element']['attributes']['href']);
+		if(array_key_exists('href', $Inline['element']['attributes'])) {
+			unset($Inline['element']['attributes']['href']);
+		} //end if
+		//--
+		if(
+			(array_key_exists('alternate', $Inline['element']['attributes'])) AND
+			(is_array($Inline['element']['attributes']['alternate'])) AND
+			(count($Inline['element']['attributes']['alternate']) === 2)
+		) {
+			//--
+			if(isset($Inline['element']['attributes']['unveil']) AND ($Inline['element']['attributes']['unveil'] === true)) {
+				//-- {{{SYNC-MARKDOWN-UNVEIL-CLASS-FIX}}}
+				if(!isset($Inline['element']['attributes']['class'])) {
+					$Inline['element']['attributes']['class'] = '';
+				} //end if
+				$tmp_classes = (array) explode(' ', (string)$Inline['element']['attributes']['class']);
+				if(!in_array('unveil', $tmp_classes)) {
+					$tmp_classes[] = 'unveil'; // if .unveil class is missing add it
+				} //end if
+				$Inline['element']['attributes']['class'] = (string) implode(' ', (array)$tmp_classes);
+				$tmp_classes = null;
+				//-- #sync
+			} //end if
+			//--
+			$markup = '';
+			//--
+			$markup .= '<picture';
+			$markup .= (isset($Inline['element']['attributes']['id']) ? ' id="'.Smart::escape_html((string)$Inline['element']['attributes']['id']).'"' : '');
+			$markup .= (isset($Inline['element']['attributes']['title']) ? ' title="'.Smart::escape_html((string)$Inline['element']['attributes']['title']).'"' : '');
+			$markup .= '>'."\n";
+			//--
+			$markup .= "\t".'<source';
+			if(is_array($Inline['element']['attributes'])) {
+				foreach($Inline['element']['attributes'] as $key => $val) {
+					if((string)$key == 'unveil') {
+						// skip, this is a processing property to integrate with jQuery.unveil
+					} elseif(((string)$key == 'alternate') AND is_array($val)) {
+						if(isset($Inline['element']['attributes']['unveil']) AND ($Inline['element']['attributes']['unveil'] === true)) {
+							$markup .= ' srcset="" data-src="'.Smart::escape_html((string)$val[0]).'" type="'.Smart::escape_html((string)$val[1]).'"';
+						} else {
+							$markup .= ' srcset="'.Smart::escape_html((string)$val[0]).'" type="'.Smart::escape_html((string)$val[1]).'"';
+						} //end if else
+					} elseif((string)$key == 'id') {
+						// skip, is set on <picture> tag
+					} elseif((string)$key == 'title') {
+						// skip, is set on <picture> tag
+					} elseif((string)$key == 'alt') {
+						// skip, is set on <img> tag
+					} elseif((string)$key == 'src') {
+						// skip, here will use srcset
+					} elseif(Smart::is_nscalar($val)) {
+						if(preg_match('/[a-z0-9\-]/', (string)$key)) {
+							$markup .= ' '.$key.'="'.Smart::escape_html((string)$val).'"';
+						} //end if
+					} //end if
+				} //end foreach
+			} //end if
+			$markup .= '>'."\n";
+			//--
+			$markup .= "\t".'<img';
+			if(is_array($Inline['element']['attributes'])) {
+				foreach($Inline['element']['attributes'] as $key => $val) {
+					if((string)$key == 'unveil') {
+						// skip, this is a processing property to integrate with jQuery.unveil
+					} elseif(((string)$key == 'alternate') AND is_array($val)) {
+						// skip, will be set on <source> tag
+					} elseif((string)$key == 'id') {
+						// skip, is set on <picture> tag
+					} elseif((string)$key == 'title') {
+						// skip, is set on <picture> tag
+					} elseif((string)$key == 'alt') {
+							$markup .= ' alt="'.Smart::escape_html((string)$val).'"';
+					} elseif((string)$key == 'src') {
+						if(isset($Inline['element']['attributes']['unveil']) AND ($Inline['element']['attributes']['unveil'] === true)) {
+							$markup .= ' src="" data-src="'.Smart::escape_html((string)$val).'"';
+						} else {
+							$markup .= ' src="'.Smart::escape_html((string)$val).'"';
+						} //end if else
+					} elseif(Smart::is_nscalar($val)) {
+						if(preg_match('/[a-z0-9\-]/', (string)$key)) {
+							$markup .= ' '.$key.'="'.Smart::escape_html((string)$val).'"';
+						} //end if
+					} //end if
+				} //end foreach
+			} //end if
+			$markup .= '>'."\n";
+			//--
+			$markup .= '</picture>';
+			//--
+			$alternate_img = array(
+				'extent' => $Inline['extent'],
+				'markup' => (string) $markup
+			);
+			//--
+			$markup = null;
+			//--
+			$Inline = (array) $alternate_img;
+			$alternate_img = null;
+			//--
+		} elseif(array_key_exists('alternate', $Inline['element']['attributes'])) {
+			unset($Inline['element']['attributes']['alternate']); // invalid !
+		} //end if
+		//--
+		if(array_key_exists('element', $Inline)) {
+			if(array_key_exists('attributes', $Inline['element'])) {
+				if(array_key_exists('unveil', $Inline['element']['attributes'])) {
+					//-- {{{SYNC-MARKDOWN-UNVEIL-CLASS-FIX}}}
+					if(!isset($Inline['element']['attributes']['class'])) {
+						$Inline['element']['attributes']['class'] = '';
+					} //end if
+					$tmp_classes = (array) explode(' ', (string)$Inline['element']['attributes']['class']);
+					if(!in_array('unveil', $tmp_classes)) {
+						$tmp_classes[] = 'unveil'; // if .unveil class is missing add it
+					} //end if
+					$Inline['element']['attributes']['class'] = (string) implode(' ', (array)$tmp_classes);
+					$tmp_classes = null;
+					//-- #sync
+					if(isset($Inline['element']['attributes']['src'])) {
+						$Inline['element']['attributes']['data-src'] = $Inline['element']['attributes']['src'];
+					} //end if
+					//--
+					$Inline['element']['attributes']['src'] = ''; // will use data-src as src
+					unset($Inline['element']['attributes']['unveil']); // if not markup this key have to be unset
+					//--
+				} //end if
+			} //end if
+		} //end if
 		//--
 		return $Inline;
 		//--
@@ -1826,10 +1952,11 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	// unixman, extra Attributes
+	// unixman, extra Attributes ($ is replaced with a space for @atr=)
 	// Examples:
-	//		[link](http://parsedown.org) {.primary9 #link .Upper-Case @data-smart=open,modal$700$300}
-	//		![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1") {@width=100 @style=box-shadow:$10px$10px$5px$#888888;}
+	//		[link](http://parsedown.org) {L:.primary9 #link .Upper-Case @data-smart=open.modal$700$300}
+	//		![alt text](https://www.gstatic.com/webp/gallery/1.sm.jpg "Logo Title Text 1") {I:@width=100 @style=box-shadow:$10px$10px$5px$#888888; %unveil %alternate=https://www.gstatic.com/webp/gallery/1.sm.webp$image/webp}
+	// 		TABLE / TH / TD {T: @class=bordered}
 	private function parseAttributeData($attributeString) {
 		//--
 		$Data = array();
@@ -1840,7 +1967,7 @@ final class SmartMarkdownToHTML {
 		if(is_array($attributes)) {
 			foreach($attributes as $z => $attribute) {
 				//--
-				if($attribute[0] === '@') { // @
+				if($attribute[0] === '@') { // @ html attr
 					$tmp_arr = (array) explode('=', $attribute);
 					if(!array_key_exists(0, $tmp_arr)) {
 						$tmp_arr[0] = null;
@@ -1848,11 +1975,38 @@ final class SmartMarkdownToHTML {
 					if(!array_key_exists(1, $tmp_arr)) {
 						$tmp_arr[1] = null;
 					} //end if
-					$Data[(string)trim((string)substr((string)trim((string)$tmp_arr[0]),1))] = (string) trim((string)str_replace([',', '$'], ['.', ' '], (string)trim((string)$tmp_arr[1])));
-				} elseif($attribute[0] === '#') { // #
+					$Data[(string)trim((string)substr((string)trim((string)$tmp_arr[0]),1))] = (string) trim((string)str_replace(['$'], [' '], (string)trim((string)$tmp_arr[1])));
+				} elseif($attribute[0] === '#') { // # html id
 					$Data['id'] = (string) substr((string)$attribute, 1);
-				} else { // .
+				} elseif($attribute[0] === '.') { // . html class name
 					$classes[] = (string) substr((string)$attribute, 1);
+				} elseif($attribute[0] === '%') { // % alternate image
+					if((string)$attribute == '%unveil') {
+						$Data['unveil'] = true;
+					} elseif(strpos((string)$attribute, '%alternate=') === 0) {
+						$tmp_attr = (array) explode('$', (string)$attribute);
+						$tmp_altimg = (string) substr((string)$tmp_attr[0], 11);
+						if(
+							(strpos((string)$attribute, '%alternate=') === 0) AND
+							(strpos((string)$attribute, '$') !== false) AND
+							is_array($tmp_attr) AND
+							(count($tmp_attr) === 2) AND
+							((string)trim((string)$tmp_attr[0]) != '') AND
+							((string)trim((string)$tmp_attr[1]) != '') AND
+							((string)trim((string)$tmp_altimg) != '')
+						) {
+							$tmp_attr[0] = (string) $tmp_altimg;
+							$Data['alternate'] = (array) $tmp_attr;
+						} else {
+							Smart::log_notice(__CLASS__.' # Parser Notice: Wrong Attribute (2): `'.$attribute.'` in: `'.$attributeString.'`');
+						} //end if else
+						$tmp_altimg = null;
+						$tmp_attr = null;
+					} else {
+						Smart::log_notice(__CLASS__.' # Parser Notice: Wrong Attribute (1): `'.$attribute.'` in: `'.$attributeString.'`');
+					} //end if else
+				} else { // invalid attribute
+					Smart::log_notice(__CLASS__.' # Parser Notice: Invalid Attribute: `'.$attribute.'` in: `'.$attributeString.'`');
 				} //end if else
 				//--
 			} //end foreach

@@ -2,6 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+March 16, 2021 :: :: Version 7.2.1 rev.20210316
+	* stable on PHP 8, pass all tests
+	* Markdown new features: alternate image (webp) and support for jQuery.unveil
+	* jQuery.unveil will unveil also hidden images (ex: some carousel images may be hidden)
+
 March 14, 2021 :: :: Version 7.2.1 rev.20210314
 	* new feature: HTML Performance Metrics Profiler (Javascript)
 

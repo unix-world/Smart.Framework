@@ -1,7 +1,7 @@
 # [###TITLE|html###] (H1)
 
-&copy;&nbsp;&nbsp;2015-2020&nbsp;unix-world.org
-Extended Markdown Test :: v.20201127
+&copy;&nbsp;&nbsp;2015-2021&nbsp;unix-world.org
+Extended Markdown Test :: v.20210316
 
 ## H2 (Unicode Test) ăĂîÎâÂşŞţŢ
 
@@ -98,7 +98,7 @@ E=mc^2^ for superscript
 - Or minuses
 + Or pluses
 
-[Link with attributes link](http://netbsd.org) {L: .primary9 #link .Upper-Case @data-smart=open,modal$700$300}
+[Link with attributes link](http://netbsd.org) {L: .primary9 #link .Upper-Case @data-smart=open.modal$700$300}
 
 my email is <me@example.com>
 
@@ -244,7 +244,9 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
 
-[![IMAGE ALT TEXT HERE](//img.youtube.com/vi/4rUrYN4cnGs/0.jpg)](//www.youtube.com/watch?v=4rUrYN4cnGs "My Title"){.video-link #link .Extra-Class @target=_blank}
+![Alternate Text](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Alternate Image: Jpeg and Webp with Unveil"){.testClass1 .testClass2 #testID @data-test=Sample$Image %unveil %alternate=https://www.gstatic.com/webp/gallery/1.sm.webp$image/webp}
+
+[![IMAGE ALT TEXT HERE](//img.youtube.com/vi/4rUrYN4cnGs/0.jpg) {I:%unveil}](//www.youtube.com/watch?v=4rUrYN4cnGs "Sample Video Preview Image with Unveil"){L:.video-link #link .Extra-Class @target=_blank}
 
 Fenced code blocks
 
