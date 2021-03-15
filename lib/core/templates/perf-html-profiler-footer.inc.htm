@@ -78,7 +78,7 @@
 				theNavUrl = name;
 				break;
 			case 'resource':
-				theResourcesArr[theResourcesNum] = '#' + (theResourcesNum + 1) + ' [' + displayLocalNumber(duration) + ' ms] ' + name;
+				theResourcesArr[theResourcesNum] = '#' + (theResourcesNum + 1) + ' [' + displayLocalNumber(duration) + ' ms] ' + ((name.indexOf('data:') === 0) ? (name.substring(0, 25) + '...') : name); // avoid display long data URLs
 				theResourcesNum++;
 				if(recordedFirstResourceLoading !== true) {
 					recordedFirstResourceLoading = true;
