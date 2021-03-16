@@ -1,4 +1,4 @@
-<!-- HTML Performance Profiler (footer) # r.20210315 -->
+<!-- HTML Performance Profiler (footer) # r.20210316 -->
 <script>
 (function(){
 
@@ -42,6 +42,8 @@
 	var theTimeLoadingFirstResource = 0;
 	var theTimeLoadingLastResource = 0;
 	var theDurationOfLastResource = 0;
+	var recordedPaintEvents = 0;
+	var markedPaintEvents = false;
 	var theTimeFirstPaint = 0;
 	var theTimeFirstContentfulPaint = 0;
 	var theTimeRenderStart = 0;
@@ -78,7 +80,14 @@
 				theNavUrl = name;
 				break;
 			case 'resource':
-				theResourcesArr[theResourcesNum] = '#' + (theResourcesNum + 1) + ' [' + displayLocalNumber(duration) + ' ms] ' + ((name.indexOf('data:') === 0) ? (name.substring(0, 25) + '...') : name); // avoid display long data URLs
+				var theResourcePrefix = '';
+				if(markedPaintEvents === false) {
+					if(recordedPaintEvents > 0) {
+						markedPaintEvents = true;
+						theResourcePrefix = '*** FP/FCP *** ';
+					}
+				}
+				theResourcesArr[theResourcesNum] = '#' + (theResourcesNum + 1) + ' [' + displayLocalNumber(duration) + ' ms] ' + theResourcePrefix + ((name.indexOf('data:') === 0) ? (name.substring(0, 25) + '...') : name); // avoid display long data URLs
 				theResourcesNum++;
 				if(recordedFirstResourceLoading !== true) {
 					recordedFirstResourceLoading = true;
@@ -91,10 +100,12 @@
 				break;
 			case 'paint':
 				if(name.toLowerCase() === 'first-paint') {
+					recordedPaintEvents++;
 					if(startTime >= theTimeFirstPaint) {
 						theTimeFirstPaint = startTime;
 					}
 				} else if(name.toLowerCase() === 'first-contentful-paint') {
+					recordedPaintEvents++;
 					if(startTime >= theTimeFirstContentfulPaint) {
 						theTimeFirstContentfulPaint = startTime;
 					}
