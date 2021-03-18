@@ -67,7 +67,7 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20210303
+ * @version 	v.20210318
  * @package 	Application:Session
  *
  */
@@ -101,11 +101,16 @@ final class SmartSession {
 	/**
 	 * [PUBLIC] Session Get Variable
 	 *
-	 * @param STRING $yvariable 		variable name
+	 * @param MIXED $yvariable 		variable name to get a specific variable or NULL to get all session data
 	 *
-	 * @return MIXED $_SESSION or $_SESSION[$yvariable]
+	 * @return MIXED $_SESSION (if $yvariable) or $_SESSION[$yvariable] or null if not found or the $yvariable is empty string
 	 */
 	public static function get($yvariable=null) {
+		//--
+		// if $yvariable is NULL will return the full $_SESSION
+		if(!Smart::is_nscalar($yvariable)) {
+			return null;
+		} //end if
 		//--
 		self::start(); // start session if not already started
 		//--
@@ -113,12 +118,14 @@ final class SmartSession {
 			return null;
 		} //end if
 		//--
-		if(($yvariable === null) OR ((string)trim((string)$yvariable) == '')) {
+		if($yvariable === null) {
 			return (array) $_SESSION; // array, all the session variables at once
+		} elseif((string)trim((string)$yvariable) == '') {
+			return null; // variable must be explicit null or a non-empty string
 		} elseif(array_key_exists((string)$yvariable, $_SESSION)) {
 			return $_SESSION[(string)$yvariable]; // mixed
 		} else {
-			return null;
+			return null; // other cases: not found
 		} //end if else
 		//--
 	} //END FUNCTION
@@ -134,7 +141,11 @@ final class SmartSession {
 	 *
 	 * @return BOOLEAN 					TRUE if successful, FALSE if not
 	 */
-	public static function set($yvariable, $yvalue) {
+	public static function set(string $yvariable, $yvalue) {
+		//--
+		if(!$yvariable) {
+			return false;
+		} //end if
 		//--
 		self::start(); // start session if not already started
 		//--
@@ -147,7 +158,7 @@ final class SmartSession {
 				unset($_SESSION[(string)$yvariable]);
 			} //end if
 		} else {
-			$_SESSION[(string)$yvariable] = $yvalue;
+			$_SESSION[(string)$yvariable] = $yvalue; // mixed
 		} //end if else
 		//--
 		return true;
@@ -164,7 +175,7 @@ final class SmartSession {
 	 *
 	 * @return BOOLEAN 					TRUE if successful, FALSE if not
 	 */
-	public static function unsets($yvariable) {
+	public static function unsets(string $yvariable) {
 		//--
 		return (bool) self::set($yvariable, null);
 		//--
@@ -383,42 +394,45 @@ final class SmartSession {
 		$time_now = (int) time();
 		//--
 		if(
-			(Smart::array_size($_SESSION) <= 0) OR
-			(strlen($_SESSION['session_ID']) < 32) OR
-			((string)$_SESSION['visitor_UUID'] != (string)SMART_APP_VISITOR_COOKIE) OR
-			((string)$_SESSION['uniqbrowser_ID'] != (string)$the_sess_client_uuid) OR
-			((string)$_SESSION['session_AREA'] != (string)$sf_sess_area) OR
-			((string)$_SESSION['session_NS'] != (string)$sf_sess_ns) OR
-			((string)$_SESSION['website_ID'] != (string)SMART_SOFTWARE_NAMESPACE) OR
-			((int)((int)$_SESSION['visit_UPDATE'] + (int)$sess_max_expire) < (int)$time_now)
+			(Smart::array_size($_SESSION) <= 0)   OR
+			(!isset($_SESSION['session_ID']))     OR (strlen($_SESSION['session_ID']) < 32)                                  OR
+			(!isset($_SESSION['visitor_UUID']))   OR ((string)$_SESSION['visitor_UUID'] != (string)SMART_APP_VISITOR_COOKIE) OR
+			(!isset($_SESSION['uniqbrowser_ID'])) OR ((string)$_SESSION['uniqbrowser_ID'] != (string)$the_sess_client_uuid)  OR
+			(!isset($_SESSION['session_AREA']))   OR ((string)$_SESSION['session_AREA'] != (string)$sf_sess_area)            OR
+			(!isset($_SESSION['session_NS']))     OR ((string)$_SESSION['session_NS'] != (string)$sf_sess_ns)                OR
+			(!isset($_SESSION['website_ID']))     OR ((string)$_SESSION['website_ID'] != (string)SMART_SOFTWARE_NAMESPACE)   OR
+			((int)((int)(isset($_SESSION['visit_UPDATE']) ? $_SESSION['visit_UPDATE'] : 0) + (int)$sess_max_expire) < (int)$time_now)
 		) {
 			//--
 			if(Smart::array_size($_SESSION) > 0) {
 				//--
-				if(strlen($_SESSION['session_ID']) < 32) {
+				if((!isset($_SESSION['session_ID'])) OR (strlen($_SESSION['session_ID']) < 32)) {
 					Smart::log_warning('Session Reset: Session ID must be at least 32 characters ...');
 				} //end if
 				//--
-				if((string)$_SESSION['visitor_UUID'] != (string)SMART_APP_VISITOR_COOKIE) {
+				if((!isset($_SESSION['visitor_UUID'])) OR ((string)$_SESSION['visitor_UUID'] != (string)SMART_APP_VISITOR_COOKIE)) {
 					Smart::log_warning('Session Reset: Unique Visitor UUID does not match ...');
 				} //end if
 				//--
-				if((string)$_SESSION['uniqbrowser_ID'] != (string)$the_sess_client_uuid) {
+				if((!isset($_SESSION['uniqbrowser_ID'])) OR  ((string)$_SESSION['uniqbrowser_ID'] != (string)$the_sess_client_uuid)) {
 					Smart::log_warning('Session Reset: Unique Browser ID does not match ...');
 				} //end if
 				//--
-				if((string)$_SESSION['session_AREA'] != (string)$sf_sess_area) {
+				if((!isset($_SESSION['session_AREA'])) OR ((string)$_SESSION['session_AREA'] != (string)$sf_sess_area)) {
 					Smart::log_warning('Session Reset: Session Area does not match ...');
 				} //end if
 				//--
-				if((string)$_SESSION['session_NS'] != (string)$sf_sess_ns) {
+				if((!isset($_SESSION['session_NS'])) OR ((string)$_SESSION['session_NS'] != (string)$sf_sess_ns)) {
 					Smart::log_warning('Session Reset: Session NameSpace does not match ...');
 				} //end if
 				//--
-				if((string)$_SESSION['website_ID'] != (string)SMART_SOFTWARE_NAMESPACE) {
+				if((!isset($_SESSION['website_ID'])) OR ((string)$_SESSION['website_ID'] != (string)SMART_SOFTWARE_NAMESPACE)) {
 					Smart::log_warning('Session Reset: Session Website ID does not match ...');
 				} //end if
 				//--
+				if(!isset($_SESSION['visit_UPDATE'])) {
+					Smart::log_warning('Session Reset: Session Expiration Time is not set ...');
+				} //end if
 				if(SmartFrameworkRuntime::ifDebug()) {
 					if((int)((int)$_SESSION['visit_UPDATE'] + (int)$sess_max_expire) < (int)$time_now) {
 						Smart::log_notice('Session Reset: Session Max HardCoded Expiration Time was Reach ; sessionUpdate='.(int)$_SESSION['visit_UPDATE'].' ; maxExpire='.(int)$sess_max_expire.' ; timeNow='.(int)$time_now);
@@ -482,7 +496,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20210305
+ * @version 	v.20210318
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {
@@ -502,7 +516,7 @@ abstract class SmartAbstractCustomSession {
 	//==================================================
 	final public function __construct() {
 		//--
-		// constructor (do not use it, this is not safe to use because changes between PHP versions ...)
+		// constructor (will not use it, this is not safe to use because changes between PHP versions ..., so all logic must be implemented in open)
 		//--
 	} //END FUNCTION
 	//==================================================
