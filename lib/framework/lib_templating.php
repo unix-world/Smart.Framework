@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils
- * @version 	v.20210313
+ * @version 	v.20210317
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -1468,8 +1468,11 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
 							} //end if else
 							break;
-						//-- numbers
+						//-- strings or numbers (compare all as strings)
 						case '==':
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = ''; // fix PHP8 array to string conversion
+							} //end if
 							if((string)$tmp_the_arr == (string)$bind_value) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1477,13 +1480,20 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '!=':
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = ''; // fix PHP8 array to string conversion
+							} //end if
 							if((string)$tmp_the_arr != (string)$bind_value) { // if evaluate to false keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
 								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
 							} //end if else
 							break;
+						//-- numbers
 						case '<=':
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = 0; // fix PHP8 array to string conversion
+							} //end if
 							if((float)$tmp_the_arr <= (float)$bind_value) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1491,6 +1501,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '<':
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = 0; // fix PHP8 array to string conversion
+							} //end if
 							if((float)$tmp_the_arr < (float)$bind_value) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1498,6 +1511,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '>=':
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = 0; // fix PHP8 array to string conversion
+							} //end if
 							if((float)$tmp_the_arr >= (float)$bind_value) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1505,6 +1521,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '>':
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = 0; // fix PHP8 array to string conversion
+							} //end if
 							if((float)$tmp_the_arr > (float)$bind_value) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1512,6 +1531,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '%': // modulo (true/false)
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = 0; // fix PHP8 array to string conversion
+							} //end if
 							if(((int)$tmp_the_arr % (int)$bind_value) == 0) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1519,6 +1541,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '!%': // not modulo (false/true)
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = 0; // fix PHP8 array to string conversion
+							} //end if
 							if(((int)$tmp_the_arr % (int)$bind_value) != 0) { // if evaluate to false keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1527,6 +1552,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							break;
 						//-- string lists
 						case '?': // in list (elements separed by |)
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = ''; // fix PHP8 array to string conversion
+							} //end if
 							$tmp_compare_arr = (array) explode('|', (string)$bind_value);
 							if(in_array((string)$tmp_the_arr, (array)$tmp_compare_arr)) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
@@ -1536,6 +1564,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							$tmp_compare_arr = array();
 							break;
 						case '!?': // not in list (elements separed by |)
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = ''; // fix PHP8 array to string conversion
+							} //end if
 							$tmp_compare_arr = (array) explode('|', (string)$bind_value);
 							if(!in_array((string)$tmp_the_arr, (array)$tmp_compare_arr)) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
@@ -1546,6 +1577,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							break;
 						//-- strings
 						case '^~': // if variable starts with part, case sensitive
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = ''; // fix PHP8 array to string conversion
+							} //end if
 							if(SmartUnicode::str_pos((string)$tmp_the_arr, (string)$bind_value) === 0) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1553,6 +1587,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '^*': // if variable starts with part, case insensitive
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = ''; // fix PHP8 array to string conversion
+							} //end if
 							if(SmartUnicode::str_ipos((string)$tmp_the_arr, (string)$bind_value) === 0) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1560,6 +1597,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '&~': // if variable contains part, case sensitive
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = ''; // fix PHP8 array to string conversion
+							} //end if
 							if(SmartUnicode::str_contains((string)$tmp_the_arr, (string)$bind_value)) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1567,6 +1607,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '&*': // if variable contains part, case insensitive
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = ''; // fix PHP8 array to string conversion
+							} //end if
 							if(SmartUnicode::str_icontains((string)$tmp_the_arr, (string)$bind_value)) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1574,6 +1617,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '$~': // if variable ends with part, case sensitive
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = ''; // fix PHP8 array to string conversion
+							} //end if
 							if(SmartUnicode::sub_str((string)$tmp_the_arr, (-1 * SmartUnicode::str_len((string)$bind_value)), SmartUnicode::str_len((string)$bind_value)) == (string)$bind_value) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1581,6 +1627,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							} //end if else
 							break;
 						case '$*': // if variable ends with part, case insensitive ### !!! Expensive in Execution !!! ###
+							if(is_array($tmp_the_arr)) {
+								$tmp_the_arr = ''; // fix PHP8 array to string conversion
+							} //end if
 							if((SmartUnicode::str_tolower(SmartUnicode::sub_str((string)$tmp_the_arr, (-1 * SmartUnicode::str_len(SmartUnicode::str_tolower((string)$bind_value))), SmartUnicode::str_len(SmartUnicode::str_tolower((string)$bind_value)))) == (string)SmartUnicode::str_tolower((string)$bind_value)) OR (SmartUnicode::str_toupper(SmartUnicode::sub_str((string)$tmp_the_arr, (-1 * SmartUnicode::str_len(SmartUnicode::str_toupper((string)$bind_value))), SmartUnicode::str_len(SmartUnicode::str_toupper((string)$bind_value)))) == (string)SmartUnicode::str_toupper((string)$bind_value))) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
@@ -1859,12 +1908,12 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 									$mks_line = (string) self::replace_marker(
 										(string) $mks_line,
 										(string) $bind_var_key.'.'.'_-VAL-_'.'.'.strtoupper((string)$key),
-										(string) $val
+										(string) (Smart::is_nscalar($val) ? $val : '')
 									);
 									$mks_line = (string) self::replace_marker(
 										(string) $mks_line,
 										(string) $bind_var_key.'.'.strtoupper((string)$zkey.'.'.(string)$key),
-										(string) $val
+										(string) (Smart::is_nscalar($val) ? $val : '')
 									);
 								} //end foreach
 							} else {

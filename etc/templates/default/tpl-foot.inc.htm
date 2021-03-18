@@ -1,4 +1,4 @@
-<!-- TPL Foot r.20210313 -->
+<!-- TPL Foot r.20210318 -->
 [%%%IF:SEMAPHORE:&*<load:searchterm-highlight-js>;%%%]
 <!-- Highlight SearchTerm -->
 <style>
@@ -54,6 +54,12 @@ code.hljs, code.hljs * {
 [%%%ELSE:SEMAPHORE%%%]
 <!-- Unveil -->
 <script type="text/javascript" src="lib/js/jquery/jquery.unveil.js?[###RELEASE-HASH|url|html###]"></script>
-<script>jQuery(function(){ setTimeout(function(){ jQuery('.unveil').unveil(); }, 250); });</script>
+<script>
+jQuery(function(){
+	jQuery(window).on('refreshunveil', function(){ jQuery('.unveil').off('unveil').unveil(); });
+	setTimeout(function(){ jQuery(window).trigger('refreshunveil'); }, 250); // call for init or dom changes that include unveil elements (can include also unhide unveil elements)
+	//jQuery(window).trigger('lookup'); // call after unhide unveil elements
+});
+</script>
 [%%%/IF:SEMAPHORE%%%]
 <!-- #.# -->
