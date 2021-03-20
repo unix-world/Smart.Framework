@@ -38,7 +38,7 @@ define('SMART_FRAMEWORK__INFO__TEXT_TRANSLATIONS_ADAPTER', 'YAML: File based');
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210305
+ * @version 	v.20210320
  * @package 	Application
  *
  */
@@ -158,14 +158,18 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 
 
 	//==================================================================
-	// This will register the usage of every translation as pair of language, area and sub-area, key ; only if used in DEV mode (SmartFrameworkRuntime::ifProdEnv() !== true)
+	// This will register the usage of every translation as pair of language, area and sub-area, key ; if not dev mode will not register
 	public static function setTranslationsKeyUsageCount($the_lang, $y_area, $y_subarea, $y_textkey) {
+		//--
+		if(SmartFrameworkRuntime::ifProdEnv() === true) {
+			return; // this can be used only in DEV mode
+		} //end if
 		//--
 		if(!defined('SMART_FRAMEWORK__DEBUG__TEXT_TRANSLATIONS')) {
 			return; // only go below if this has been explicit defined
 		} //end if
 		//--
-		if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+		if(SmartFrameworkRuntime::isAdminArea() === true) {
 			$the_translations_area = 'adm';
 		} else {
 			$the_translations_area = 'idx';

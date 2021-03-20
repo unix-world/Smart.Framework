@@ -39,7 +39,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A]@v.7.2.1');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210305
+ * @version		20210320
  *
  */
 final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
@@ -64,9 +64,9 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		//--
 		$the_midmark = '[A]';
 		//--
-		if(SMART_FRAMEWORK_ADMIN_AREA !== true) {
+		if(SmartFrameworkRuntime::isAdminArea() !== true) {
 			Smart::raise_error(
-				'Admin Middleware ERROR: SMART_FRAMEWORK_ADMIN_AREA is not set to TRUE'
+				'Middleware ERROR: This Middleware can run only for Admin Area'
 			);
 			return;
 		} //end if

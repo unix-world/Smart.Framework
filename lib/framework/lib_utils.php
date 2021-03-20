@@ -48,7 +48,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20210318
+ * @version 	v.20210320
  * @package 	@Core:Extra
  *
  */
@@ -959,7 +959,7 @@ final class SmartUtils {
 	 *
 	 * @return 	STRING						:: The semantic URL, depends on SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE ( '' | 'standard' | 'semantic' ) ; 'standard' and 'semantic' requires Apache Rewrite ; Examples: '' -> (script.php)?/page/(my-module.)my-page/param1/value1/Param2/Value2 ; 'standard' -> (my-module.)my-page.html?param1=value1&Param2=Value2 ; 'semantic' -> (my-module.)my-page.html?/param1/value1/Param2/Value2
 	 */
-	public static function create_semantic_url($y_url) { // v.20200121
+	public static function create_semantic_url($y_url) { // v.20210320
 		//--
 		$y_url = (string) trim((string)$y_url);
 		if((string)$y_url == '') {
@@ -972,13 +972,20 @@ final class SmartUtils {
 		//--
 		$ignore_script = '';
 		$ignore_module = '';
-		if(SMART_FRAMEWORK_ADMIN_AREA !== true) { // not for admin !
+		if(SmartFrameworkRuntime::isAdminArea() !== true) { // not for admin !
+			//--
 			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT')) {
-				$ignore_script = (string) trim((string)SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT);
+				if(SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT === true) {
+					$ignore_script = (string) 'index.php';
+				} //end if
 			} //end if
+			//--
 			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE')) {
-				$ignore_module = (string) trim((string)SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE);
+				if(SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE === true) {
+					$ignore_module = (string) trim((string)Smart::get_from_config('app.index-default-module', 'string'));
+				} //end if
 			} //end if
+			//--
 		} //end if
 		//--
 		$semantic_separator = '?/';
@@ -1029,7 +1036,7 @@ final class SmartUtils {
 		//--
 		$use_rewrite = false;
 		$use_rfc_params = false;
-		if(SMART_FRAMEWORK_ADMIN_AREA !== true) { // not for admin !
+		if(SmartFrameworkRuntime::isAdminArea() !== true) { // not for admin !
 			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE')) {
 				if((string)SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE == 'semantic') {
 					$use_rewrite = true;
@@ -1199,7 +1206,7 @@ final class SmartUtils {
 			Smart::log_warning('Utils / Create Download Link: Empty Controller Key has been provided. This means the download link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
-		if(SMART_FRAMEWORK_ADMIN_AREA === true) { // {{{SYNC-DWN-CTRL-PREFIX}}}
+		if(SmartFrameworkRuntime::isAdminArea() === true) { // {{{SYNC-DWN-CTRL-PREFIX}}}
 			$y_ctrl_key = (string) 'AdminArea/'.$y_ctrl_key;
 		} else {
 			$y_ctrl_key = (string) 'IndexArea/'.$y_ctrl_key;

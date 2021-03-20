@@ -48,7 +48,7 @@ define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)SmartFileSystem::read('lib/
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations
- * @version 	v.20210316
+ * @version 	v.20210320
  * @package 	Application:ViewComponents
  *
  */
@@ -669,7 +669,7 @@ final class SmartComponents {
 			return array();
 		} //end if
 		//--
-		if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+		if(SmartFrameworkRuntime::isAdminArea() === true) {
 			$the_area = 'admin';
 			$the_realm = 'ADM';
 		} else {
@@ -798,7 +798,7 @@ final class SmartComponents {
 			return;
 		} //end if
 		//-- add html performance profiling in TPL
-		if(defined('SMART_FRAMEWORK_PROFILING_HTML_PERF')) {
+		if(defined('SMART_FRAMEWORK_PROFILING_HTML_PERF') AND (SMART_FRAMEWORK_PROFILING_HTML_PERF === true)) {
 			if((stripos((string)$tpl, '</head>') !== false) AND (stripos((string)$tpl, '</body>') !== false)) {
 				$tpl = (string) str_ireplace('</head>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-header.inc.htm', [ 'MODE' => (SmartFrameworkRuntime::ifProdEnv() === true) ? 'prod' : 'dev', 'VERSION' => (STRING) SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION ])."\n".'</head>', (string)$tpl);
 				$tpl = (string) str_ireplace('</body>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-footer.inc.htm', [ 'MODE' => (SmartFrameworkRuntime::ifProdEnv() === true) ? 'prod' : 'dev', 'VERSION' => (STRING) SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION ])."\n".'</body>', (string)$tpl);
@@ -808,7 +808,7 @@ final class SmartComponents {
 		if(SmartFrameworkRuntime::ifDebug()) {
 			if(class_exists('SmartDebugProfiler')) {
 				if((stripos((string)$tpl, '</head>') !== false) AND (stripos((string)$tpl, '</body>') !== false)) {
-					$tpl = (string) str_ireplace('</head>', "\n".SmartDebugProfiler::js_headers_debug(Smart::escape_url((SMART_FRAMEWORK_ADMIN_AREA === true ? 'admin' : 'index')).'.php?smartframeworkservice=debug')."\n".'</head>', (string)$tpl);
+					$tpl = (string) str_ireplace('</head>', "\n".SmartDebugProfiler::js_headers_debug(Smart::escape_url(((SmartFrameworkRuntime::isAdminArea() === true) ? 'admin' : 'index')).'.php?smartframeworkservice=debug')."\n".'</head>', (string)$tpl);
 					$tpl = (string) str_ireplace('</body>', "\n".SmartDebugProfiler::div_main_debug()."\n".'</body>', (string)$tpl);
 				} //end if
 			} //end if

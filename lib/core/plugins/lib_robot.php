@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210310
+ * @version 	v.20210320
  * @package 	Plugins:Network
  *
  */
@@ -510,28 +510,28 @@ final class SmartRobot {
 			//--
 			if((string)substr($y_url_or_path, 0, 10) == 'admin.php?') {
 				$y_url_or_path = (string) SmartUtils::get_server_current_url().$y_url_or_path;
-				if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+				if(SmartFrameworkRuntime::isAdminArea() === true) {
 					$allow_credentials = 'yes'; // send only if admin
 				} //end if
 				$trust_headers = 'yes';
 			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'admin.php?')) == (string)SmartUtils::get_server_current_url().'admin.php?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
-				if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+				if(SmartFrameworkRuntime::isAdminArea() === true) {
 					$allow_credentials = 'yes'; // send only if admin
 				} //end if
 				$trust_headers = 'yes';
 			} elseif(((string)substr($y_url_or_path, 0, 10) == 'index.php?') OR ((string)substr($y_url_or_path, 0, 1) == '?')) {
 				$y_url_or_path = (string) SmartUtils::get_server_current_url().$y_url_or_path;
-				if(SMART_FRAMEWORK_ADMIN_AREA !== true) {
+				if(SmartFrameworkRuntime::isAdminArea() !== true) {
 					$allow_credentials = 'yes'; // send only if not admin
 				} //end if
 				$trust_headers = 'yes';
 			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'index.php?')) == (string)SmartUtils::get_server_current_url().'index.php?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
-				if(SMART_FRAMEWORK_ADMIN_AREA !== true) {
+				if(SmartFrameworkRuntime::isAdminArea() !== true) {
 					$allow_credentials = 'yes'; // send only if not admin
 				} //end if
 				$trust_headers = 'yes';
 			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'?')) == (string)SmartUtils::get_server_current_url().'?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
-				if(SMART_FRAMEWORK_ADMIN_AREA !== true) {
+				if(SmartFrameworkRuntime::isAdminArea() !== true) {
 					$allow_credentials = 'yes'; // send only if not admin
 				} //end if
 				$trust_headers = 'yes';

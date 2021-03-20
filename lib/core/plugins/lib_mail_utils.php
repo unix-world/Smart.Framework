@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20210312
+ * @version 	v.20210320
  * @package 	Plugins:Mailer
  *
  */
@@ -818,7 +818,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20210312
+ * @version 	v.20210320
  * @package 	Plugins:Mailer
  *
  */
@@ -853,7 +853,7 @@ final class SmartMailerMimeParser {
 			Smart::log_warning('Mail-Utils / Encode Mime File URL: Empty Controller Key has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
-		if(SMART_FRAMEWORK_ADMIN_AREA === true) { // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
+		if(SmartFrameworkRuntime::isAdminArea() === true) { // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
 			$y_ctrl_key = (string) 'AdminMailUtilArea/'.$y_ctrl_key;
 		} else {
 			$y_ctrl_key = (string) 'IndexMailUtilArea/'.$y_ctrl_key;
@@ -904,7 +904,7 @@ final class SmartMailerMimeParser {
 			Smart::log_warning('Mail-Utils / Decode Mime File URL: Empty Controller Key has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
-		if(SMART_FRAMEWORK_ADMIN_AREA === true) { // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
+		if(SmartFrameworkRuntime::isAdminArea() === true) { // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
 			$y_ctrl_key = (string) 'AdminMailUtilArea/'.$y_ctrl_key;
 		} else {
 			$y_ctrl_key = (string) 'IndexMailUtilArea/'.$y_ctrl_key;

@@ -22,7 +22,7 @@ if(SmartFileSystem::is_type_file('modules/smart-extra-libs/staticload.php')) {
 define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
 
 define('SMART_FRAMEWORK_TESTUNIT_BASE_URL', '?/page/samples.testunit/op/');
-if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+if(SmartFrameworkRuntime::isAdminArea() === true) {
 	define('SMART_FRAMEWORK_TESTUNIT_CAPTCHA_MODE', 'session');
 } else {
 	define('SMART_FRAMEWORK_TESTUNIT_CAPTCHA_MODE', 'cookie');
@@ -58,7 +58,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+		if(SmartFrameworkRuntime::isAdminArea() === true) {
 			SmartSession::start(); // start the session
 		} //end if
 		//--
@@ -488,7 +488,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		$semaphores = [];
-		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SMART_FRAMEWORK_ADMIN_AREA === true)) {
+		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SmartFrameworkRuntime::isAdminArea() === true)) {
 			//-- skip load the default JS-UI and load jQueryUI if is available and is admin area
 			$semaphores[] = 'skip:js-ui';
 			$semaphores[] = 'load:jqueryui';

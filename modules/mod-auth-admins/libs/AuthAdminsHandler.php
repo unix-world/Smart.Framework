@@ -56,7 +56,7 @@ if(!\defined('\\APP_AUTH_DB_SQLITE')) {
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20210310
+ * @version 	v.20210320
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -75,7 +75,7 @@ final class AuthAdminsHandler {
 	public static function Authenticate($enforce_ssl=false, $tpl_path='', $tpl_file='') {
 
 		//--
-		if(!\defined('\\SMART_FRAMEWORK_ADMIN_AREA') OR (\SMART_FRAMEWORK_ADMIN_AREA !== true)) {
+		if(\SmartFrameworkRuntime::isAdminArea() !== true) {
 			\http_response_code(500);
 			die(\SmartComponents::http_message_500_internalerror('Authentication system is designed for admin area only ...'));
 		} //end if

@@ -74,7 +74,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode
- * @version     v.20210313
+ * @version     v.20210320
  * @package     @Core
  *
  */
@@ -2263,13 +2263,17 @@ final class Smart {
 	 * A quick replacement for trigger_error() / E_USER_NOTICE.
 	 * This is intended to log APP Level Notices.
 	 * This will log the message as NOTICE into the App Error Log.
-	 * Notices are logged ONLY if SMART_ERROR_HANDLER is set to 'dev' mode.
+	 * Notices are logged ONLY for Development Environment (and NOT for Production Environment)
 	 *
 	 * @param STRING 	$message		:: The message to be triggered
 	 *
 	 * @return -						:: This function does not return anything
 	 */
 	public static function log_notice($message) { // do not make strongtype as NULL will break it
+		//--
+		if(SmartFrameworkRuntime::ifProdEnv() === true) {
+			return; // use this only in DEV mode
+		} //end if
 		//--
 		@trigger_error('#SMART-FRAMEWORK.NOTICE# '.$message, E_USER_NOTICE);
 		//--

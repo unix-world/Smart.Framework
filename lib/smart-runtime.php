@@ -111,9 +111,9 @@ if(!defined('SMART_FRAMEWORK_MAX_BROWSER_COOKIE_SIZE')) {
 //--
 
 //--
-if(!defined('SMART_FRAMEWORK_DEBUG_MODE')) {
+if(!defined('SMART_ERROR_LOG_MANAGEMENT')) {
 	@http_response_code(500);
-	die('A required INIT constant has not been defined: SMART_FRAMEWORK_DEBUG_MODE');
+	die('The Smart Error Handler was not initialized ... SMART_ERROR_LOG_MANAGEMENT');
 } //end if
 //--
 if(!defined('SMART_FRAMEWORK_URL_PARAM_LANGUAGE')) {
@@ -144,9 +144,13 @@ if(defined('SMART_FRAMEWORK_INFO_LOG')) {
 	die('A Reserved Constant have been already defined: SMART_FRAMEWORK_INFO_LOG');
 } //end if
 if(SMART_FRAMEWORK_ADMIN_AREA === true) {
-	define('SMART_FRAMEWORK_INFO_LOG', 'tmp/logs/adm/'.'info-'.date('Y-m-d@H').'.log');
+	if(!define('SMART_FRAMEWORK_INFO_LOG', 'tmp/logs/adm/'.'info-'.date('Y-m-d@H').'.log')) {
+		die('Failed to define the SMART_FRAMEWORK_INFO_LOG (adm) ...');
+	} //end if
 } else {
-	define('SMART_FRAMEWORK_INFO_LOG', 'tmp/logs/idx/'.'info-'.date('Y-m-d@H').'.log');
+	if(!define('SMART_FRAMEWORK_INFO_LOG', 'tmp/logs/idx/'.'info-'.date('Y-m-d@H').'.log')) {
+		die('Failed to define the SMART_FRAMEWORK_INFO_LOG (idx) ...');
+	} //end if
 } //end if else
 //--
 
@@ -160,7 +164,7 @@ if((strlen(SMART_SOFTWARE_NAMESPACE) < 10) OR (strlen(SMART_SOFTWARE_NAMESPACE) 
 	@http_response_code(500);
 	die('A required INIT constant must have a length between 10 and 25 characters: SMART_SOFTWARE_NAMESPACE');
 } //end if
-if(!preg_match('/^[_a-z0-9\-\.]+$/', (string)SMART_SOFTWARE_NAMESPACE)) {
+if(!preg_match('/^[_a-z0-9\-\.]+$/', (string)SMART_SOFTWARE_NAMESPACE)) { // regex namespace
 	@http_response_code(500);
 	die('A required INIT constant contains invalid characters: SMART_SOFTWARE_NAMESPACE');
 } //end if
@@ -174,6 +178,15 @@ if(!defined('SMART_FRAMEWORK_DEFAULT_LANG')) {
 	define('SMART_FRAMEWORK_DEFAULT_LANG', 'en');
 } //end if
 //--
+if(!defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME');
+} //end if
+if(!preg_match('/^[_a-z0-9A-Z]+$/', (string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME)) { // {{{SYNC-REGEX-COOKIE-NAME}}}
+	@http_response_code(500);
+	die('A required INIT constant contains invalid characters: SMART_SOFTWARE_NAMESPACE');
+} //end if
+//--
 if(!defined('SMART_FRAMEWORK_SECURITY_KEY')) {
 	@http_response_code(500);
 	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SECURITY_KEY');
@@ -182,6 +195,10 @@ if(!defined('SMART_FRAMEWORK_SECURITY_KEY')) {
 if(!defined('SMART_FRAMEWORK_SESSION_NAME')) {
 	@http_response_code(500);
 	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SESSION_NAME');
+} //end if
+if(!preg_match('/^[_a-z0-9A-Z]+$/', (string)SMART_FRAMEWORK_SESSION_NAME)) { // {{{SYNC-REGEX-COOKIE-NAME}}}
+	@http_response_code(500);
+	die('A required INIT constant contains invalid characters: SMART_FRAMEWORK_SESSION_NAME');
 } //end if
 if(!defined('SMART_FRAMEWORK_SESSION_HANDLER')) {
 	@http_response_code(500);
@@ -216,6 +233,30 @@ if(((int)SMART_FRAMEWORK_NETSERVER_ID < 0) OR ((int)SMART_FRAMEWORK_NETSERVER_ID
 if(!defined('SMART_FRAMEWORK_SSL_MODE')) {
 	@http_response_code(500);
 	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SSL_MODE');
+} //end if
+if(!defined('SMART_FRAMEWORK_SSL_CIPHERS')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SSL_CIPHERS');
+} //end if
+if(!defined('SMART_FRAMEWORK_SSL_VFY_HOST')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SSL_VFY_HOST');
+} //end if
+if(!defined('SMART_FRAMEWORK_SSL_VFY_PEER')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SSL_VFY_PEER');
+} //end if
+if(!defined('SMART_FRAMEWORK_SSL_VFY_PEER_NAME')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SSL_VFY_PEER_NAME');
+} //end if
+if(!defined('SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED');
+} //end if
+if(!defined('SMART_FRAMEWORK_SSL_DISABLE_COMPRESS')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SSL_DISABLE_COMPRESS');
 } //end if
 //--
 if(!defined('SMART_FRAMEWORK_CHMOD_DIRS')) {
@@ -1092,7 +1133,7 @@ final class SmartFrameworkRegistry {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: Smart, SmartUtils
- * @version		v.20210305
+ * @version		v.20210320
  * @package 	Application
  *
  */
@@ -1102,9 +1143,11 @@ final class SmartFrameworkRuntime {
 	// {{{SYNC-SMART-HTTP-STATUS-CODES}}}
 
 	private static $AppReleaseHash = '';
-	private static $isDebugOn = null;
-	private static $isProdEnv = null;
+
 	private static $isAdminArea = null;
+	private static $isProdEnv = null;
+	private static $isDebugOn = null;
+	private static $isInternalDebugOn = null;
 
 	private static $NoCacheHeadersSent = false;
 
@@ -1148,14 +1191,21 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	// if Internal Debug (Advanced Debug) is ON will return TRUE, else will return FALSE
-	public static function ifInternalDebug() {
+	// if is ADMIN area will return TRUE else will return FALSE
+	public static function isAdminArea() {
 		//--
-		if(defined('SMART_FRAMEWORK_INTERNAL_DEBUG')) {
-			return true;
-		} else {
-			return false;
-		} //end if else
+		if(self::$isAdminArea !== null) {
+			return (bool) self::$isAdminArea;
+		} //end if
+		//--
+		self::$isAdminArea = false;
+		if(defined('SMART_FRAMEWORK_ADMIN_AREA')) {
+			if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+				self::$isAdminArea = true;
+			} //end if
+		} //end if
+		//--
+		return (bool) self::$isAdminArea;
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -1170,8 +1220,8 @@ final class SmartFrameworkRuntime {
 		} //end if
 		//--
 		self::$isProdEnv = false;
-		if(defined('SMART_ERROR_HANDLER')) {
-			if((string)SMART_ERROR_HANDLER == 'log') {
+		if(defined('SMART_FRAMEWORK_ENV')) {
+			if((string)SMART_FRAMEWORK_ENV == 'prod') {
 				self::$isProdEnv = true;
 			} //end if
 		} //end if
@@ -1192,7 +1242,7 @@ final class SmartFrameworkRuntime {
 		//--
 		self::$isDebugOn = false;
 		if(defined('SMART_FRAMEWORK_DEBUG_MODE')) {
-			if((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes') {
+			if(SMART_FRAMEWORK_DEBUG_MODE === true) {
 				self::$isDebugOn = true;
 			} //end if
 		} //end if
@@ -1204,21 +1254,21 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	// if is ADMIN area will return TRUE else will return FALSE
-	public static function isAdminArea() {
+	// if Internal Debug (Advanced Debug) is ON will return TRUE, else will return FALSE
+	public static function ifInternalDebug() {
 		//--
-		if(self::$isAdminArea !== null) {
-			return (bool) self::$isAdminArea;
+		if(self::$isInternalDebugOn !== null) {
+			return (bool) self::$isInternalDebugOn;
 		} //end if
 		//--
-		self::$isAdminArea = false;
-		if(defined('SMART_FRAMEWORK_ADMIN_AREA')) {
-			if(SMART_FRAMEWORK_ADMIN_AREA === true) {
-				self::$isAdminArea = true;
+		self::$isInternalDebugOn = false;
+		if(defined('SMART_FRAMEWORK_INTERNAL_DEBUG')) {
+			if(SMART_FRAMEWORK_INTERNAL_DEBUG === true) {
+				self::$isInternalDebugOn = true;
 			} //end if
 		} //end if
 		//--
-		return (bool) self::$isAdminArea;
+		return (bool) self::$isInternalDebugOn;
 		//--
 	} //END FUNCTION
 	//======================================================================

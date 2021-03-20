@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20210314
+// [Smart.Framework / INIT] v.20210320
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -15,13 +15,13 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //	* ONLY CONSTANTS SHOULD BE DEFINED HERE ; IF .htaccess PHP settings will be used, be sure to sync them with this file too
 // ==================
 
-//define('SMART_FRAMEWORK_PROFILING_HTML_PERF', 'yes'); 									// Uncomment this to enable the HTML Performance Profiler (it can be used also in production environments for HTML Metrics and Profiling purposes)
-//define('SMART_FRAMEWORK_DEBUG_MODE', 'yes');												// Uncomment this to enable Debugging and the Web Profiler Toolbar (do not use in production environments but only for internal Debugging / Profiling purposes)
+//define('SMART_FRAMEWORK_PROFILING_HTML_PERF', true); 										// Uncomment this to enable the HTML Performance Profiler (it can be used also in production environments for HTML Metrics and Profiling purposes)
+//define('SMART_FRAMEWORK_DEBUG_MODE', true);												// Uncomment this to enable Debugging and the Web Profiler Toolbar (do not use in production environments but only for internal Debugging / Profiling purposes)
 
 //--------------------------------------- APP NAMESPACE
 define('SMART_SOFTWARE_NAMESPACE', 			'smartframework.default');						// APP Namespace ID :: [a-z.], length 10..25 :: This should be used as a unique ID identifier for the application (aka application unique ID)
-//--------------------------------------- ERRORS MANAGEMENT
-define('SMART_ERROR_HANDLER', 				'dev'); 										// Error Handler mode: 'log' | 'dev' :: for production is recommended to use 'log' as it will show a blank page with a HTTP 500 Internal Server Error message ; for development or debugging use 'dev' but this will display an error with a HTTP 200 OK instead of HTTP 500
+//--------------------------------------- RUNTIME ENVIRONMENT
+define('SMART_FRAMEWORK_ENV', 				'dev'); 										// APP Environment: can be set to 'dev' or 'prod' ; id set to 'prod' (production environment) will not log E_USER_NOTICE and E_DEPRECATED and will not display in-page error details but just log them ; for development mode set this to 'dev'
 //--------------------------------------- TIMEZONE
 define('SMART_FRAMEWORK_TIMEZONE', 			'UTC'); 										// The timezone for PHP (Example: Europe/London) ; default is: UTC
 define('SMART_FRAMEWORK_DEFAULT_LANG', 		'en');											// The default language for translations (as language ID) ; must be a valid language ID defined in config.php as regional.language-id
@@ -31,8 +31,8 @@ define('SMART_FRAMEWORK_SECURITY_KEY', 		'private-key#0987654321'); 						// ***
 //define('SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO', true); 								// *Optional: if defined and set to TRUE will use the OpenSSL cipher openssl/blowfish/CBC (faster) instead of internal one blowfish.cbc (more compatible across platforms)
 //define('SMART_FRAMEWORK_SECURITY_CRYPTO', 'openssl/aes256/CBC'); 							// *Optional: the crypto algo for general purpose encryption to be used ; default is hash/sha256 ; other modes: hash/sha1, hash/sha384, hash/sha512, openssl/{algo}/{mode} where mode can be: CBC, CFB, OFB ; algo can be: blowfish, aes256, camellia256
 //--------------------------------------- URLS
-define('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT', 'index.php');							// Semantic URL Rewriter Skip Script (just for index.php) ; This can be set to: `index.php` or `` empty (admin.php have no support for this)
-define('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE', 'samples');								// Default Module for Shortening the semantic URLs or the URL rewriter from module.controller.html to just controller.html ; just for index.php (admin.php have no support for this)
+define('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT', true);									// Semantic URL Rewriter Skip Script for Shortening the semantic URLs ; just for index area ; if set to TRUE will skip the 'index.php' part of building semantic URLs
+define('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE', true);									// Semantic URL Rewriter Skip Default Module for Shortening the semantic URLs ; just for index area ; if set to TRUE will skip the default module defined in configs as app.index-default-module
 //define('SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE', 'standard');							// URL Rewrite Mode (requires Apache Rewrite): `standard` | `semantic` :: Apache like rewrite rules (must be enabled in .htaccess) and the SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT must be set to `index.php` ; semantic URLS must be not disabled ; just for index.php (admin.php have no support for this)
 //define('SMART_FRAMEWORK_SEMANTIC_URL_DISABLE', 	true); 									// *Optional: if defined, this will DISABLE the semantic URLs for index.php and admin.php ; Example: http(s)://domain.ext/?/page/sample.action instead of http(s)://domain.ext/?page=sample.action
 //--------------------------------------- COOKIES
@@ -41,9 +41,9 @@ define('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME', intval(60 * 60 * 24));					/
 //define('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN', '*');									// The UniqueID Cookie domain: set it (empty) `` for the current subdomain as `sdom.domain.tld` ; set it as `*` or explicit `domain.tld` for all sub-domains of domain.tld ; default is `` (empty) if not defined at all ; this is for advanced use of cookies management in sensitive production environments where you need per sub-domain encapsulated cookies
 define('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE', 'Lax'); 								// The UniqueID Cookie SameSite Policy ; if not defined will not use any policy (old compatibility) ; If set must be one of these values: Lax / Strict or None ; set to None works only with a https secured connection because new browsers require this !
 //--------------------------------------- SESSION
-define('SMART_FRAMEWORK_SESSION_HANDLER', 	'files');										// Session Handler: 'files' (default / file storage: lightweight but in high concurencies may have locking issues) ; this can be set as 'redis' (DB / in-memory, very fast) or as 'mongodb' (DB / big-data) or as 'dba' or 'sqlite' ; or use your own custom adapter for the session in Smart.Framework you have to build it by extending the SmartAbstractCustomSession abstract class and define here as (example): 'modules/app/session-custom-adapter.php'
 define('SMART_FRAMEWORK_SESSION_NAME', 		'SmartFramework__SESSION'); 					// Session Name ; *** YOU HAVE TO CHANGE IT *** this must be static and must contain only Letters and _
-//define('SMART_FRAMEWORK_SESSION_LIFETIME', 	intval(60 * 60 * 24));						// Session Lifetime in seconds (0 by default) ; set to 0 for expire on browser close ; must be not higher than SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME
+define('SMART_FRAMEWORK_SESSION_HANDLER', 	'files');										// Session Handler: 'files' (default / file storage: lightweight but in high concurencies may have locking issues) ; this can be set as 'redis' (DB / in-memory, very fast) or as 'mongodb' (DB / big-data) or as 'dba' or 'sqlite' ; or use your own custom adapter for the session in Smart.Framework you have to build it by extending the SmartAbstractCustomSession abstract class and define here as (example): 'modules/app/session-custom-adapter.php'
+//define('SMART_FRAMEWORK_SESSION_LIFETIME', intval(60 * 60 * 24));							// Session Lifetime in seconds (0 by default) ; set to 0 for expire on browser close ; must be not higher than SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME
 //define('SMART_FRAMEWORK_SESSION_DOMAIN', 	'*');											// Session (cookie) Domain: set it (empty) `` for the current subdomain as `sdom.domain.tld` ; set it as `*` or explicit `domain.tld` for all sub-domains of domain.tld ; default is `` (empty) if not defined at all ; this is for advanced use of the PHP session cookie management in sensitive production environments where you need per sub-domain encapsulated cookies
 //define('SMART_FRAMEWORK_SESSION_ROBOTS', 	true);											// Uncomment this to enable session also for robots (robot identified user agents)
 //--------------------------------------- HANDLERS
@@ -56,18 +56,17 @@ define('SMART_FRAMEWORK_NETSERVER_ID', 		'1'); 											// Load Balancing: Uni
 //define('SMART_FRAMEWORK_NETSERVER_MAXLOAD', 0);											// Load Balancing and DDOS Protection against High Loads :: if set to 0 will be ignored ; if set to a value > 0 if server load go over this value the server will enter in BUSY state (503 Too busy) ; by example a value of 90 means 90% load over 1 CPU core ; on multi cpus/cores value must be 90 * number of cpus/cores
 //--------------------------------------- SSL CRYPTO OVERALL TUNNINGS
 define('SMART_FRAMEWORK_SSL_MODE', 				'tls');										// SSL/TLS Mode: tls | sslv3
-define('SMART_FRAMEWORK_SSL_CA_FILE',			'');										// SSL/TLS Context CA Path: cafile ; default: '' ; if non-empty, must point to something like 'etc/cacert.pem' or another path to a certification authority pem
 define('SMART_FRAMEWORK_SSL_CIPHERS',			'HIGH');									// SSL/TLS Context Ciphers: ciphers ; default: 'HIGH' ; generally allow only high ciphers
 define('SMART_FRAMEWORK_SSL_VFY_HOST',			true);										// SSL/TLS Context Verify Host: verify_host ; default: true
 define('SMART_FRAMEWORK_SSL_VFY_PEER',			false);										// SSL/TLS Context Verify Peer: verify_peer ; default: false ; this fails with some CAs
 define('SMART_FRAMEWORK_SSL_VFY_PEER_NAME',		false);										// SSL/TLS Context Verify Peer Name: verify_peer_name ; default: false ; allow also wildcard names *
 define('SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED',	true);										// SSL/TLS Context Allow Self-Signed Certificates: allow_self_signed ; default: true ; generally must allow self-signed certificates but verified above
 define('SMART_FRAMEWORK_SSL_DISABLE_COMPRESS',	true);										// SSL/TLS Context Allow Self-Signed Certificates: disable_compression ; default: true ; help mitigate the CRIME attack vector
+define('SMART_FRAMEWORK_SSL_CA_FILE',			'');										// SSL/TLS Context CA Path: cafile ; default: '' ; if non-empty, must point to something like 'etc/cacert.pem' or another path to a certification authority pem
 //---------------------------------------- FILE SYSTEM SETTINGS
 define('SMART_FRAMEWORK_CHMOD_DIRS', 		0770);											// Folder Permissions: 0770 | 0700
 define('SMART_FRAMEWORK_CHMOD_FILES', 		0660);											// File Permissions: 0660 | 0600
-//--------------------------------------- UPLOADS / DOWNLOADS / QUOTA
-//define('SMART_FRAMEWORK_STORAGE_DISK_QUOTA',	0);											// App Disk Quota in MB (0 for unlimited) ; This may be used by the uploads feature but it needs extra development to calculate total sizes of all uploads and compare with this value
+//--------------------------------------- UPLOADS / DOWNLOADS
 define('SMART_FRAMEWORK_DOWNLOAD_FOLDERS', 		'<wpub>');									// Allow downloads ONLY from these folders: <folder1>,<folder2> (relative to the app root)
 define('SMART_FRAMEWORK_DOWNLOAD_EXPIRE',		1);											// Download expiration time in hours (between 1 and 24 hours)
 //define('SMART_FRAMEWORK_DOWNLOAD_SKIP_LOG',	true);										// If defined will disable logging for Downloads
@@ -124,7 +123,7 @@ define('SMART_SOFTWARE_URL_ALLOW_PATHINFO',				2);															// Set to: 0 = 
 define('SMART_FRAMEWORK_CHARSET', 						'UTF-8');													// This must be `UTF-8` 	:: Default Character Set for PHP
 define('SMART_FRAMEWORK_DBSQL_CHARSET', 				'UTF8');													// This must be `UTF8` 		:: Default Character Set for DB SQL Servers
 define('SMART_FRAMEWORK_LANGUAGES_CACHE_DIR', 			'modules/app/translations/');								// Languages Cache Dir		:: Default Languages Cache Dir, should be created by runtime ...
-//define('SMART_FRAMEWORK__DEBUG__TEXT_TRANSLATIONS'	true); 														// If this is set will register the Translation usage for every: Language, Area, Subarea, Key ; (only will operate in DEV mode (SMART_ERROR_HANDLER == 'dev')
+//define('SMART_FRAMEWORK__DEBUG__TEXT_TRANSLATIONS'	true); 														// If this is set will register the use count of Translation for every usage as: Language, Area, Subarea, Key ; (only will operate in DEV mode (SMART_FRAMEWORK_ENV == 'dev')
 //---------------------------------------- CUSTOM IP DETECTION: example, using apache/php behind haproxy or varnish !!! Be very careful when setting cutsom IP detection to avoid detecting wrong client IP address that may impact the overall security !!!
 //define('SMART_FRAMEWORK_IPDETECT_CUSTOM', 			true); 														// only define this and also the SMART_FRAMEWORK_IPDETECT_CLIENT and SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT when using a server proxy like haproxy or varnish to serve the apache/php application or website ; in this case the REMOTE_ADDR will always be the haproxy's / varnish's IP address and the real client IP must come from another custom trusted header that haproxy / varnish will be rewriting and safe forwarding to apache by setting in the haproxy config this: `option forwardfor` / or varnish config these: `remove req.http.X-Forwarded-For;`, 'set req.http.X-Forwarded-For = req.http.rlnclientipaddr;'
 //define('SMART_FRAMEWORK_IPDETECT_CLIENT', 			'HTTP_X_FORWARDED_FOR'); 									// when using a server proxy (ex: haproxy or varnish) here must be set the header key that returns the real client IP (ex: use a trusted header like 'HTTP_X_FORWARDED_FOR' that comes from haproxy / varnish instead of default 'REMOTE_ADDR') ; if no proxy server is set this must NOT be defined at all as the default TRUSTED key is always 'REMOTE_ADDR'
@@ -138,7 +137,14 @@ define('SMART_FRAMEWORK_LANGUAGES_CACHE_DIR', 			'modules/app/translations/');		
 //====================
 
 //---------------------------------------- Set TimeZone in Global Mode per Application
-date_default_timezone_set((string)SMART_FRAMEWORK_TIMEZONE);
+if(!defined('SMART_FRAMEWORK_TIMEZONE')) {
+	@http_response_code(500);
+	die('Smart.Framework INI // A required INIT constant has not been defined: SMART_FRAMEWORK_TIMEZONE');
+} //end if
+if(!date_default_timezone_set((string)SMART_FRAMEWORK_TIMEZONE)) {
+	@http_response_code(500);
+	die('Smart.Framework INI // A required INIT constant has a wrong value: SMART_FRAMEWORK_TIMEZONE');
+} //end if
 //----------------------------------------
 
 //---------------------------------------- PHP RUNTIME CHECKS
@@ -169,6 +175,10 @@ if((string)ini_get('output_handler') != '') {
 if((string)ini_get('zend.multibyte') != '0') {
 	@http_response_code(500);
 	die('Smart.Framework INI // PHP.INI Zend-MultiByte must be disabled ! Unicode support is managed via MBString into Smart.Framework ...');
+} //end if
+if((string)SMART_FRAMEWORK_CHARSET != 'UTF-8') {
+	@http_response_code(500);
+	die('Smart.Framework INI // The SMART_FRAMEWORK_CHARSET must be set to UTF-8 !');
 } //end if
 ini_set('default_charset', (string)SMART_FRAMEWORK_CHARSET); // default charset UTF-8
 if(!function_exists('mb_internal_encoding')) { // *** MBString is required ***
@@ -238,7 +248,7 @@ ini_set('session.serialize_handler', 'php');								// use php (default) ; wddx 
 //---------------------------------------- security: avoid load this multiple times
 if(defined('SMART_FRAMEWORK_INITS')) {
 	@http_response_code(500);
-	die('Smart.Framework INI / Inits already loaded ...');
+	die('Smart.Framework INI // Inits already loaded ...');
 } //end if
 define('SMART_FRAMEWORK_INITS', 'SET'); // avoid reload inits again (if accidentaly you do)
 //----------------------------------------

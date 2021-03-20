@@ -39,7 +39,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.7.2.1');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210305
+ * @version		20210320
  *
  */
 final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
@@ -64,9 +64,9 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		//--
 		$the_midmark = '[I]';
 		//--
-		if(SMART_FRAMEWORK_ADMIN_AREA !== false) {
+		if(SmartFrameworkRuntime::isAdminArea() !== false) {
 			Smart::raise_error(
-				'Index Middleware ERROR: SMART_FRAMEWORK_ADMIN_AREA is not set to FALSE'
+				'Middleware ERROR: This Middleware can run only for Index Area'
 			);
 			return;
 		} //end if

@@ -39,7 +39,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210310
+ * @version		20210320
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -302,7 +302,7 @@ abstract class SmartAbstractAppMiddleware {
 		//--
 		if((string)$decoded_download_packet != '') { // if data is corrupted, decrypt checksum does not match, will return an empty string
 			//--
-			if(SMART_FRAMEWORK_ADMIN_AREA === true) { // {{{SYNC-DWN-CTRL-PREFIX}}}
+			if(SmartFrameworkRuntime::isAdminArea() === true) { // {{{SYNC-DWN-CTRL-PREFIX}}}
 				$controller_key = (string) 'AdminArea/'.$controller_key;
 			} else {
 				$controller_key = (string) 'IndexArea/'.$controller_key;
@@ -454,13 +454,13 @@ abstract class SmartAbstractAppMiddleware {
 	//======================================================================
 	final public static function ServiceStatus($the_midmark) {
 		//--
-		if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+		if(SmartFrameworkRuntime::isAdminArea() === true) {
 			$txt_area = 'Admin';
 		} else {
 			$txt_area = 'Index';
 		} //end if else
 		//--
-		if(defined('SMART_SOFTWARE_DISABLE_STATUS_POWERED') AND SMART_SOFTWARE_DISABLE_STATUS_POWERED === true) {
+		if(defined('SMART_SOFTWARE_DISABLE_STATUS_POWERED') AND (SMART_SOFTWARE_DISABLE_STATUS_POWERED === true)) {
 			$html_status_powered_info = '';
 		} else {
 			$html_status_powered_info = (string) SmartComponents::app_powered_info('no');

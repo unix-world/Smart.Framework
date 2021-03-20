@@ -61,7 +61,7 @@ if(is_dir('modules/vendor')) {
 // The language codes must be enabled as needed in etc/config.php prior to be used
 //--
 /*
-if(SMART_FRAMEWORK_ADMIN_AREA !== true) { // Handles the Language Detection by SubDomain (just for index, not for admin)
+if(SmartFrameworkRuntime::isAdminArea() !== true) { // Handles the Language Detection by SubDomain (just for index, not for admin)
 	SmartFrameworkRuntime::AppSetLanguageBySubdomain('www', []); // 'www' will be used for the default language: 'en'
 } //end if
 */

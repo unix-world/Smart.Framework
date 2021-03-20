@@ -39,7 +39,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @access 		private
  * @internal
  *
- * @version 	v.20210305
+ * @version 	v.20210320
  * @package 	Application:Development
  *
  */
@@ -565,7 +565,7 @@ public static function print_debug_info($y_area, $y_debug_token) {
 //==================================================================
 private static function url_tpl_decrypt($y_tpl_file) {
 	//--
-	if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+	if(SmartFrameworkRuntime::isAdminArea() === true) {
 		$the_area = 'admin';
 	} else {
 		$the_area = 'index';
@@ -585,7 +585,7 @@ private static function url_tpl_decrypt($y_tpl_file) {
 //==================================================================
 private static function url_tpl_encrypt($y_tpl_file) {
 	//--
-	if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+	if(SmartFrameworkRuntime::isAdminArea() === true) {
 		$the_area = 'admin';
 	} else {
 		$the_area = 'index';
@@ -641,7 +641,7 @@ private static function print_log_runtime() {
 	//--
 	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>Client / Server :: RUNTIME Log</b></font></div>';
 	//--
-	if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+	if(SmartFrameworkRuntime::isAdminArea() === true) {
 		$the_area = 'admin';
 	} else {
 		$the_area = 'index';

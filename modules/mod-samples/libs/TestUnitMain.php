@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210305
+ * @version 	v.20210320
  *
  */
 final class TestUnitMain {
@@ -111,7 +111,7 @@ final class TestUnitMain {
 		//--
 
 		//--
-		if(\SMART_FRAMEWORK_ADMIN_AREA === true) {
+		if(\SmartFrameworkRuntime::isAdminArea() === true) {
 			$info_adm = '[ Admin Area ]';
 			$info_pfx = 'adm';
 		} else {

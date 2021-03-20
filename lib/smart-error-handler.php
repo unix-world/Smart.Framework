@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20210312 # this should be loaded from app web root only
+// # r.20210320 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -25,30 +25,65 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //====================
 
 //--
-if(!defined('SMART_FRAMEWORK_CHARSET')) {
-	define('SMART_FRAMEWORK_CHARSET', 'UTF-8');
-} //end if
-if(!defined('SMART_FRAMEWORK_DEBUG_MODE')) {
-	define('SMART_FRAMEWORK_DEBUG_MODE', 'no'); // if not explicit defined, this must be set here to avoid PHP 7.3+ warnings
-} //end if
-//--
 if(defined('SMART_ERROR_LOG_MANAGEMENT')) {
 	@http_response_code(500);
-	die('Smart.Framework / Errors Management already loaded ...'); // avoid load more than once
+	die('Smart.Framework / Errors Management already loaded, the constant SMART_ERROR_LOG_MANAGEMENT has been already defined ...'); // avoid load more than once
+} //end if
+if(!define('SMART_ERROR_LOG_MANAGEMENT', 'SET')) {
+	die('Failed to define the SMART_ERROR_LOG_MANAGEMENT ...');
 } //end if
 //--
-define('SMART_ERROR_LOG_MANAGEMENT', 'SET');
+if(!defined('SMART_FRAMEWORK_PROFILING_HTML_PERF')) {
+	define('SMART_FRAMEWORK_PROFILING_HTML_PERF', false); // if not explicit defined, this must be set here to avoid PHP 7.3+ warnings
+} //end if
+if(!defined('SMART_FRAMEWORK_DEBUG_MODE')) {
+	define('SMART_FRAMEWORK_DEBUG_MODE', false); // if not explicit defined, this must be set here to avoid PHP 7.3+ warnings
+} //end if
 //--
-if(!defined('SMART_ERROR_HANDLER')) {
+if(defined('SMART_ERROR_HANDLER')) {
 	@http_response_code(500);
-	die('A required INIT constant has not been defined: SMART_ERROR_HANDLER');
+	die('SMART_ERROR_HANDLER cannot be defined outside ERROR HANDLER');
+} //end if
+//--
+if(!defined('SMART_FRAMEWORK_ENV')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_ENV');
+} //end if
+switch((string)SMART_FRAMEWORK_ENV) {
+	case 'dev':
+		if(!define('SMART_ERROR_HANDLER', 'dev')) {
+			@http_response_code(500);
+			die('Failed to define the SMART_ERROR_HANDLER (dev) ...');
+		} //end if
+		break;
+	case 'prod':
+		if(!define('SMART_ERROR_HANDLER', 'log')) {
+			@http_response_code(500);
+			die('Failed to define the SMART_ERROR_HANDLER (log) ...');
+		} //end if
+		break;
+	default:
+		@http_response_code(500);
+		die('A required INIT constant has a wrong value: SMART_FRAMEWORK_ENV');
+} //end switch
+if(((string)SMART_ERROR_HANDLER !== 'dev') AND ((string)SMART_ERROR_HANDLER !== 'log')) {
+	@http_response_code(500);
+	die('A required INIT constant has a wrong value: SMART_FRAMEWORK_ENV');
+} //end if
+//--
+if(!defined('SMART_FRAMEWORK_CHARSET')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_CHARSET');
 } //end if
 //--
 if(defined('SMART_ERROR_LOGDIR')) {
 	@http_response_code(500);
 	die('SMART_ERROR_LOGDIR cannot be defined outside ERROR HANDLER');
 } //end if
-define('SMART_ERROR_LOGDIR', (string)smart__framework__err__handler__get__absolute_logpath()); // the function will check if path is safe and correct ; if not will raise a fatal error !
+if(!define('SMART_ERROR_LOGDIR', (string)smart__framework__err__handler__get__absolute_logpath())) { // the function will check if path is safe and correct ; if not will raise a fatal error !
+	@http_response_code(500);
+	die('Failed to define the SMART_ERROR_LOGDIR ...');
+} //end if
 //--
 if(defined('SMART_ERROR_AREA')) { // display this error area
 	@http_response_code(500);
@@ -58,6 +93,10 @@ if(defined('SMART_ERROR_LOGFILE')) { // if set as 'log' or 'off' the errors will
 	@http_response_code(500);
 	die('SMART_ERROR_LOGFILE cannot be defined outside ERROR HANDLER');
 } //end if
+if(!defined('SMART_FRAMEWORK_ADMIN_AREA')) {
+	@http_response_code(500);
+	die('A required RUNTIME constant has not been defined: SMART_FRAMEWORK_ADMIN_AREA');
+} //end if
 if(SMART_FRAMEWORK_ADMIN_AREA === true) {
 	define('SMART_ERROR_AREA', 'ADM');
 	define('SMART_ERROR_LOGFILE', 'phperrors-adm-'.date('Y-m-d@H').'.log');
@@ -65,15 +104,23 @@ if(SMART_FRAMEWORK_ADMIN_AREA === true) {
 	define('SMART_ERROR_AREA', 'IDX');
 	define('SMART_ERROR_LOGFILE', 'phperrors-idx-'.date('Y-m-d@H').'.log');
 } //end if else
+if(!defined('SMART_ERROR_AREA')) { // display this error area
+	@http_response_code(500);
+	die('Failed to define the SMART_ERROR_AREA ...');
+} //end if
+if(!defined('SMART_ERROR_LOGFILE')) { // if set as 'log' or 'off' the errors will be registered into this local error log file
+	@http_response_code(500);
+	die('Failed to define the SMART_ERROR_LOGFILE ...');
+} //end if
 //--
 $smart_____framework_____last__error = ''; // initialize
 //--
 
 //==
-if(((string)SMART_ERROR_HANDLER == 'log') AND ((string)SMART_FRAMEWORK_DEBUG_MODE != 'yes')) { // log :: hide errors and just log them
+if(((string)SMART_ERROR_HANDLER == 'log') AND (SMART_FRAMEWORK_DEBUG_MODE !== true)) { // if log and not debug :: hide errors and just log them
 	ini_set('display_startup_errors', '0');
 	ini_set('display_errors', '0');
-} else { // dev :: display errors and log them
+} else { // dev or log+debug :: display errors and log them
 	ini_set('display_startup_errors', '1');
 	ini_set('display_errors', '1');
 } //end if else
@@ -88,7 +135,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 	//--
 	global $smart_____framework_____last__error; // presume it is already html special chars safe
 	//--
-	if(((string)SMART_ERROR_HANDLER == 'log') AND ((string)SMART_FRAMEWORK_DEBUG_MODE != 'yes')) { // log :: hide errors and just log them
+	if(((string)SMART_ERROR_HANDLER == 'log') AND (SMART_FRAMEWORK_DEBUG_MODE !== true)) { // if log and not debug :: hide errors and just log them
 		$smart_____framework_____last__error = ''; // hide errors if explicit set so (make sense in production environments)
 	} //end if
 	//-- The following error types cannot be handled with a user defined function: E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, and most of E_STRICT raised in the file where set_error_handler() is called : http://php.net/manual/en/function.set-error-handler.php
@@ -133,11 +180,13 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 			$ferr = 'OTHER';
 	} //end switch
 	//--
-	if(((string)SMART_ERROR_HANDLER != 'log') OR ((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes')) {
+	if(((string)SMART_ERROR_HANDLER != 'log') OR (SMART_FRAMEWORK_DEBUG_MODE === true)) { // if not log or debug
 		$is_supressed = false;
 	} //end if
-	if(defined('SMART_ERROR_SILENCE_WARNS_NOTICE')) { // to silence warnings and notices from logs this must be set explicit in init.php as: define('SMART_ERROR_SILENCE_WARNS_NOTICE', true); // Error Handler silence warnings and notices log (available just for SMART_ERROR_HANDLER=log mode)
-		$is_supressed = true;
+	if((string)SMART_ERROR_HANDLER == 'log') {
+		if(defined('SMART_ERROR_SILENCE_WARNS_NOTICE')) { // to silence warnings and notices from logs in prod environments with debug on this must be set explicit in init.php as: define('SMART_ERROR_SILENCE_WARNS_NOTICE', true); // Error Handler silence warnings and notices log (available just for SMART_ERROR_HANDLER=log)
+			$is_supressed = true;
+		} //end if
 	} //end if
 	//--
 	if(($is_supressed !== true) OR ($is_fatal === true)) {
@@ -153,7 +202,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 	if(($errno === E_RECOVERABLE_ERROR) OR ($errno === E_USER_ERROR)) { // this is necessary for: E_RECOVERABLE_ERROR and E_USER_ERROR (which is used just for Exceptions) and all other PHP errors which are FATAL and will stop the execution ; For WARNING / NOTICE type errors we just want to log them, not to stop the execution !
 		//--
 		$message = 'Server Script Execution Halted.'."\n".'See the App Error Log for details';
-		if((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes') {
+		if(SMART_FRAMEWORK_DEBUG_MODE === true) { // if debug
 			$message .= ':'."\n".SMART_ERROR_LOGDIR.SMART_ERROR_LOGFILE;
 		} else {
 			$message .= '.';
@@ -183,11 +232,11 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 		//--
 		$arr = (array) $exception->getTrace();
 		//--
-		if(((string)SMART_ERROR_HANDLER != 'log') OR ((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes')) {
+		if(((string)SMART_ERROR_HANDLER != 'log') OR (SMART_FRAMEWORK_DEBUG_MODE === true)) { // if not log or debug
 			$smart_____framework_____last__error .= ini_get('error_prepend_string').'<b><i>Exception [#'.$exid.']</i><br>Error-Message: '.htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</b><div style="color:#555555; padding:5px; margin:5px;">'.htmlspecialchars((string)$details, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</div>'.trim((string)ini_get('error_append_string')); // fix for PHP 7+
 		} //end if
 		//--
-		if((string)SMART_FRAMEWORK_DEBUG_MODE == 'yes') {
+		if(SMART_FRAMEWORK_DEBUG_MODE === true) { // if debug
 			//--
 			$details .= "\n".print_r($arr,1);
 			//--
@@ -212,11 +261,11 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 });
 //==
 ini_set('ignore_repeated_source', '0'); // do not ignore repeated errors if in different files
-if(((string)SMART_ERROR_HANDLER == 'log') AND ((string)SMART_FRAMEWORK_DEBUG_MODE != 'yes')) { // log :: hide errors and just log them
+if(((string)SMART_ERROR_HANDLER == 'log') AND (SMART_FRAMEWORK_DEBUG_MODE !== true)) { // if log and not debug :: hide errors and just log them
 	ini_set('ignore_repeated_errors', '1'); // ignore repeated errors in the same file on the same line
 	ini_set('log_errors_max_len', 2048); // max size of one error to log 2k (in production environments this is costly)
 	register_shutdown_function('smart__framework__err__handler__catch_fatal_errs');
-} else { // dev
+} else { // dev or log+debug
 	ini_set('ignore_repeated_errors', '0'); // do not ignore repeated errors
 	ini_set('error_prepend_string', '<div align="left"><style type="text/css">* { font-family: arial,sans-serif; font-smooth: always; }</style> &nbsp; <font size="7" color="#4E5A92"><b>Code Execution ERROR <img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sign-crit-error.svg"> PHP '.PHP_VERSION.'</b></font> <span title="PHP Version: '.PHP_VERSION.'" style="cursor:help;"><img width="48" align="right" src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/php-logo.svg"></span><div><hr size="1"><pre>');
 	ini_set('error_append_string', '</pre></div><br><div>'.'<small>'.date('Y-m-d H:i:s O').'</small>'.'<hr size="1"></div><span title="Powered by Smart.Framework" style="cursor:help;"><img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sf-logo.svg"></span><span title="Error" style="cursor:help;"><img src="'.smart__framework__err__handler__get__basepath().'lib/framework/img/sign-crit-warn.svg" align="right"></span></div>');

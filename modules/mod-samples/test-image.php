@@ -18,7 +18,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
 
-if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+if(SmartFrameworkRuntime::isAdminArea() === true) {
 	define('SMART_APP_MODULE_DIRECT_OUTPUT', true); // for admin area do direct output
 } //end if
 
