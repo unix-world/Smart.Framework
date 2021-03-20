@@ -5,28 +5,22 @@
 	<title>jQuery Unveil</title>
 	<script src="../../jquery.js"></script>
 	<script src="../../jquery.unveil.js"></script>
-	<style type="text/css">
-	</style>
 </head>
 <body>
-<h1>A very lightweight plugin to lazy load images (scroll down, there are 3 images that will load just before seeing them)</h1>
+<h1>A very lightweight plugin to lazy load images (scroll down, there are 3 images that will load only when they hit the visible area in the browser)</h1>
 <div class="test">
-	<img class="unveil" src="" data-src="http://t.wallpaperweb.org/wallpaper/digital_art/1280x720/theroadfromnewjerseywallpaper1566_1280x720.jpg" alt="Gallery image 1" width="1024">
+	<picture title="Browser will choose if can display WEBP or JPG">
+		<source class="unveil" srcset="" data-src="https://www.gstatic.com/webp/gallery/4.sm.webp" type="image/webp">
+		<img class="unveil" src="" data-src="https://www.gstatic.com/webp/gallery/4.sm.jpg" alt="Gallery image 3">
+	</picture>
 	<div style="height:1024px;"></div>
-	<img class="unveil" src="" data-src="http://t.wallpaperweb.org/wallpaper/development/1280x720/thelastonewallpaper2525_1280x720.jpg" alt="Gallery image 2" width="1024">
+	<img class="unveil" src="" data-src="https://www.gstatic.com/webp/gallery/2.sm.jpg" alt="Gallery image 1">
 	<div style="height:1024px;"></div>
-	<img class="unveil" src="" data-src="http://t.wallpaperweb.org/wallpaper/nature/1280x720/vintagebridgewallpaper4201_1280x720.jpg" alt="Gallery image 3" width="1024">
+	<iframe class="unveil" src="" data-src="https://www.gstatic.com/webp/gallery/1.sm.jpg" width="320" height="240"></iframe>
 </div>
 <script>
 $(function() {
-
-$(document).ready(function() {
-	$(".unveil").unveil({
-		threshold: 5, // unveil if 5px above image
-	//	attribute: 'data-src-alt' // if this is not present will fallback to 'data-src' attribute
-	});
-});
-
+	$('.unveil').unveil(); // work with img.src, picture.source.srcset, iframe.src
 });
 </script>
 </body>

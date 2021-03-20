@@ -1,6 +1,6 @@
 <!-- start Marker-TPL extended syntax template -->
 [%%%COMMENT%%%]
-Template: templating-test-extended.mtpl.htm # v.20200121
+Template: templating-test-extended.mtpl.htm # v.20210319
 [%%%/COMMENT%%%]<!-- comments are removed -->
 <h1 style="display:inline-block;">[###TITLE###]</h1>
 <div>
@@ -169,6 +169,7 @@ var the_marker = '[###MARKER|js###]';
 var the_textstr = '[###TEXTSTR|js###]';
 var the_number = [###NUMBER|num###];
 var the_unistr = '[###TEST-UNISTR|js###]';
+var the_cssstr = '[###TEST_CSSSTR|js###]';
 var the_strtotrim = '[###TEST-STRTOTRIM|js###]';
 var the_emptystr = '[###TEST-EMPTY|js###]';
 var tpl_src = '[@@@SUB-TEMPLATE:partials/templating-test-extended.inc.htm|js-tpl-encode@@@]';
@@ -184,6 +185,7 @@ var tpl_src = '[@@@SUB-TEMPLATE:partials/templating-test-extended.inc.htm|js-tpl
 			'NUMBER': the_number,
 			'MARK-AREA': 'js',
 			'TEST-UNISTR': the_unistr,
+			'TEST_CSSSTR': the_cssstr,
 			'TEST-STRTOTRIM': the_strtotrim,
 			'TEST-EMPTY': the_emptystr
 		},

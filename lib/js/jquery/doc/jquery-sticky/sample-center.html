@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Sticky Plugin - Demo Center</title>
+	<script src="../../jquery.js"></script>
+	<style>
+	body {
+		height: 1600px;
+		padding: 0;
+		margin: 0;
+	}
+	#sticker {
+		background: #bada55;
+		color: white;
+		width: 300px;
+		font-family: Droid Sans;
+		font-size: 40px;
+		line-height: 1.6em;
+		font-weight: bold;
+		text-align: center;
+		padding: 20px;
+		margin: 0 auto;
+		text-shadow: 0 1px 1px rgba(0,0,0,.2);
+		border-radius: 50px;
+	}
+	</style>
+</head>
+<body>
+	<p>This is test this is text this is text at the top.</p>
+	<div id="sticker">
+		<p>This is the sticky thingy that is really cool.</p>
+	</div>
+	<p>This is test this is text this is text at the bottom.</p>
+	<!-- sticky js -->
+	<script src="../../jquery.sticky.js"></script><!-- should be loaded at the end of body to avoid flickering warnings -->
+	<script>
+	jQuery(function() {
+		$("#sticker").sticky({
+			topSpacing: 5,
+			center: true,
+			className: "hey"
+		});
+	});
+	</script>
+</body>
+</html>

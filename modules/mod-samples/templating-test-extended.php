@@ -95,7 +95,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			'title' => $title,
 			'main' => SmartMarkersTemplating::render_file_template(
 					(string) $tpl, // the TPL view
-					[ // v.20200121
+					[ // v.20210319
 						//-- ALL VARIABLE KEYS ARE CASE INSENSITIVE IN CONTROLLERS ; IN TEMPLATES ALL VARIABLE NAME / KEYS ARE UPPERCASE --
 						'TITLE' => (string) $title,
 						'VIEWS-PATH' => (string) $this->ControllerGetParam('module-view-path'),
@@ -139,6 +139,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'TEST-URL' => 'http://some-url/',
 						'TEST-TXT' => 'this is line one'."\n".'this is line <two>',
 						'TEST-UNISTR' => 'ăĂîÎâÂșȘțȚ țȚȘșÂâÎîĂă " ABc ;',
+						'TEST_CSSSTR' => 'ăĂîÎâÂșȘțȚ țȚȘșÂâÎîĂă " ABc ; .foo#bar \\ // %'."\0\x00\x1F\x00 \r\u0007\u00A9\n",
 						'TEST-STRTOTRIM' => ' abc ',
 						'TEST-EMPTY' => ''
 						//--
