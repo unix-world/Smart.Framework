@@ -48,7 +48,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20210320
+ * @version 	v.20210322
  * @package 	@Core:Extra
  *
  */
@@ -959,7 +959,7 @@ final class SmartUtils {
 	 *
 	 * @return 	STRING						:: The semantic URL, depends on SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE ( '' | 'standard' | 'semantic' ) ; 'standard' and 'semantic' requires Apache Rewrite ; Examples: '' -> (script.php)?/page/(my-module.)my-page/param1/value1/Param2/Value2 ; 'standard' -> (my-module.)my-page.html?param1=value1&Param2=Value2 ; 'semantic' -> (my-module.)my-page.html?/param1/value1/Param2/Value2
 	 */
-	public static function create_semantic_url($y_url) { // v.20210320
+	public static function create_semantic_url($y_url) { // v.20210322
 		//--
 		$y_url = (string) trim((string)$y_url);
 		if((string)$y_url == '') {

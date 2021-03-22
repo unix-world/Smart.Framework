@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20210321
+ * @version 	v.20210322
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -51,7 +51,11 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private $mkdw_version = 'Smart.Markdown.parser@v.1.8.0-r.20210321'; // with fixes from 1.5.1 -> 1.5.4 -> 1.8.0, removed support for HTML markup (was unsafe and could lead to many XSS vulnerabilities ...) + unixman fixes: security, optimizations, extended syntax, character encoding fixes, regex escapings
+	// based on v.1.5.1 with fixes from 1.5.4 -> 1.8.0
+	// removed support for HTML markup (was unsafe and could lead to many XSS vulnerabilities ...)
+	// other fixes by unixman: fixed multiple security vulnerabilities, added optimizations, extend the syntax to support attributes, character encoding fixes, regex escaping, html escaping
+
+	private $mkdw_version = 'Smart.Markdown.parser@v.1.8.0-r.20210322';
 
 	//===================================
 
@@ -248,7 +252,7 @@ final class SmartMarkdownToHTML {
 		$markup = "\n".'<!--  HTML/Markdown :: ( '.Smart::escape_html($info_linebreaks.' '.$info_sbreaks.' '.$info_urls.' '.$info_entities.' '.$info_validatehtml.' T:'.date('YmdHi')).' ) -->'."\n".'<div id="markdown-'.sha1((string)$markup).'-'.Smart::uuid_10_num().'" class="markdown">'."\n".$markup."\n".'</div>'."\n".'<!--  # HTML/Markdown # '.Smart::escape_html((string)$this->mkdw_version).'  -->'."\n"; // if parsed and contain HTML Tags, add div and comments
 		//--
 		if($this->validateHtml) {
-			$htmlparser = new SmartHtmlParser((string)$markup);
+			$htmlparser = new SmartHtmlParser((string)$markup, true, true, false);
 			$markup = (string) $htmlparser->get_clean_html();
 			$htmlparser = null;
 		} //end if

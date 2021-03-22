@@ -38,7 +38,7 @@ define('SMART_FRAMEWORK__INFO__TEXT_TRANSLATIONS_ADAPTER', 'YAML: File based');
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210320
+ * @version 	v.20210322
  * @package 	Application
  *
  */

@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20210320
+// [Smart.Framework / INIT] v.20210322
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY

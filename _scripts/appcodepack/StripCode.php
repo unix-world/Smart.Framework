@@ -29,20 +29,30 @@ if(is_file('modules/vendor/MatthiasMullie/autoload.php')) {
 final class StripCode {
 
 	// ::
-	// v.20210222.1157
+	// v.20210322
 
-	public static function strip_css_code($y_file) {
+
+	public static function strip_css_code(string $filePath) {
 		//--
-		$y_file = (string) $y_file; // expects: file.css
+		if( // {{{SYNC-CSS-CHEKS}}}
+			(self::checkFilePath((string)$filePath) !== true) OR
+			((string)\substr((string)$filePath, -4, 4) != '.css') OR // expects: file.css or path/to/file.css
+			((int)\strlen((string)$filePath) < 5)
+		) {
+			return '';
+		} //end if
 		//--
 		$output = '';
 		try {
 			$cssMinifier = new \MatthiasMullie\Minify\CSS('/* CSS */');
-			$cssMinifier->setImportExtensions([]); // no extensions
-			$cssMinifier->add($y_file);
+			$cssMinifier->setMaxImportSize(0);
+			$cssMinifier->setImportExtensions([]); // no extensions to import, this is a single file saved in place
+			$cssMinifier->add($filePath);
 			$output = (string) $cssMinifier->minify();
-		} catch (Exception $e) {
-			throw new Exception('CSS Minify Failed: '.$e->getMessage());
+			$cssMinifier = null;
+		} catch(Exception $e) {
+		//	throw new Exception('CSS Minify Failed: '.$e->getMessage());
+			return '';
 		} //end try catch
 		//--
 		return (string) trim((string)$output);
@@ -50,17 +60,25 @@ final class StripCode {
 	} //END FUNCTION
 
 
-	public static function strip_js_code($y_file) {
+	public static function strip_js_code(string $filePath) {
 		//--
-		$y_file = (string) $y_file; // expects: file.js
+		if( // {{{SYNC-CSS-CHEKS}}}
+			(self::checkFilePath((string)$filePath) !== true) OR
+			((string)\substr((string)$filePath, -3, 3) != '.js') OR // expects: file.js or path/to/file.js
+			((int)\strlen((string)$filePath) < 4)
+		) {
+			return '';
+		} //end if
 		//--
 		$output = '';
 		try {
 			$jsMinifier = new \MatthiasMullie\Minify\JS('/* Javascript */');
-			$jsMinifier->add($y_file);
+			$jsMinifier->add($filePath);
 			$output = (string) $jsMinifier->minify();
+			$jsMinifier = null;
 		} catch (Exception $e) {
-			throw new Exception('JS Minify Failed: '.$e->getMessage());
+		//	throw new Exception('JS Minify Failed: '.$e->getMessage());
+			return '';
 		} //end try catch
 		//--
 		return (string) trim((string)$output);
@@ -68,11 +86,20 @@ final class StripCode {
 	} //END FUNCTION
 
 
-	public static function strip_php_code($y_file) {
+	public static function strip_php_code(string $filePath) { // expects: file.php
 		//--
-		$y_file = (string) $y_file; // expects: file.php
+		if( // {{{SYNC-CSS-CHEKS}}}
+			(self::checkFilePath((string)$filePath) !== true) OR
+			((string)\substr((string)$filePath, -4, 4) != '.php') OR // expects: file.php or path/to/file.php
+			((int)\strlen((string)$filePath) < 5)
+		) {
+			return '';
+		} //end if
 		//--
-		$output = (string) file_get_contents($y_file);
+		$output = (string) file_get_contents($filePath);
+		if((string)$output == '') {
+			return '';
+		} //end if
 		//--
 		$strip = [
 			T_COMMENT 		=> true,
@@ -85,8 +112,8 @@ final class StripCode {
 			foreach($tokens as $key => $token) {
 				if(!is_array($token)) {
 					$output .= (string) $token;
-				} elseif(!isset($strip[(string)$token[0]])) { // skip tokens in strip
-					$output .= (string) $token[1];
+				} elseif(!isset($strip[(string)(isset($token[0]) ? $token[0] : '')])) { // skip strip tokens sa set above
+					$output .= (string) (isset($token[1]) ? $token[1] : '');
 				} else {
 					$output .= "\n";
 				} //end if else
@@ -94,6 +121,27 @@ final class StripCode {
 		} // end if
 		//--
 		return (string) trim((string)$output);
+		//--
+	} //END FUNCTION
+
+
+	//===== [PRIVATES]
+
+
+	private static function checkFilePath(string $filePath) {
+		//-- must allow absolute paths
+		if( // {{{SYNC-CSS-CHEKS}}}
+			((string)$filePath == '') OR
+			((string)$filePath == '/') OR
+			((string)$filePath == '.') OR
+			((string)$filePath == '..') OR
+			(strpos((string)$filePath, '..') !== false) OR
+			((string)\substr((string)$filePath, 0, 1) == '.')
+		) {
+			return false;
+		} //end if
+		//--
+		return true;
 		//--
 	} //END FUNCTION
 

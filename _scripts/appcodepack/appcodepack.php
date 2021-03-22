@@ -1450,12 +1450,12 @@ public static function strip_code($y_file) {
 	//--
 	if(!method_exists('StripCode', 'strip_php_code')) {
 		AppPackUtils::raise_error(
-			'Method Not Found: StripCode::strip_php_code($y_file)',
-			'A required PHP Method Not Found: StripCode::strip_php_code($y_file) in StripCode.php'
+			'Method Not Found: StripCode::strip_php_code()',
+			'A required PHP Method Not Found: StripCode::strip_php_code() in StripCode.php'
 		);
 	} //end if
 	//--
-	return (string) StripCode::strip_php_code($y_file);
+	return (string) StripCode::strip_php_code((string)$y_file);
 	//--
 } //END FUNCTION
 //====================================================
@@ -1562,12 +1562,12 @@ public static function strip_code($y_file) {
 	//--
 	if(!method_exists('StripCode', 'strip_js_code')) {
 		AppPackUtils::raise_error(
-			'Method Not Found: StripCode::strip_js_code($y_file)',
-			'A required PHP Method Not Found: StripCode::strip_js_code($y_file) in StripCode.php'
+			'Method Not Found: StripCode::strip_js_code()',
+			'A required PHP Method Not Found: StripCode::strip_js_code() in StripCode.php'
 		);
 	} //end if
 	//--
-	return (string) StripCode::strip_js_code($y_file);
+	return (string) StripCode::strip_js_code((string)$y_file);
 	//--
 } //END FUNCTION
 //====================================================
@@ -1746,12 +1746,12 @@ public static function strip_code($y_file) {
 	//--
 	if(!method_exists('StripCode', 'strip_css_code')) {
 		AppPackUtils::raise_error(
-			'Method Not Found: StripCode::strip_css_code($y_file)',
-			'A required PHP Method Not Found: StripCode::strip_css_code($y_file) in StripCode.php'
+			'Method Not Found: StripCode::strip_css_code()',
+			'A required PHP Method Not Found: StripCode::strip_css_code() in StripCode.php'
 		);
 	} //end if
 	//--
-	return (string) StripCode::strip_css_code($y_file);
+	return (string) StripCode::strip_css_code((string)$y_file);
 	//--
 } //END FUNCTION
 //====================================================

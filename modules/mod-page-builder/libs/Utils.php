@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210312
+ * @version 	v.20210322
  * @package 	PageBuilder
  *
  */
@@ -168,7 +168,7 @@ final class Utils {
 
 	public static function renderMarkdown($markdown_code) {
 		//--
-		return (string) \SmartMarkersTemplating::prepare_nosyntax_html_template(self::fixSafeCode((new \SmartMarkdownToHTML(true, true, true, false))->text((string)$markdown_code))); // Breaks=1,Markup=0,Links=1,Entities=1
+		return (string) \SmartMarkersTemplating::prepare_nosyntax_html_template(self::fixSafeCode((new \SmartMarkdownToHTML(true, true, true, false, false))->text((string)$markdown_code))); // B:1 S:1 L:1 E:1 V:0
 		//--
 	} //END FUNCTION
 

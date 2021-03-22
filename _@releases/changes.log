@@ -2,6 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+March 22, 2021 :: :: Version 7.2.1 rev.20210322
+	* PHP: Smart Markdown parser security improvements and optimizations ; can integrate with Smart Html Cleanup
+	* PHP: Smart Html Cleanup now supports also tidy not only DomDocument ; many fixes
+	* Javascript: Bug Fixes to Core to detect if a number is finite
+	* Javascript: fixes for cookie set / delete
+
 March 16, 2021 :: :: Version 7.2.1 rev.20210316
 	* stable on PHP 8, pass all tests
 	* Markdown new features: alternate image (webp) and support for jQuery.unveil

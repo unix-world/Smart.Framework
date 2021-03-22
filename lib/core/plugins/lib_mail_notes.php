@@ -193,7 +193,7 @@ final class SmartMailerNotes {
 				} //end if
 			} //end for
 			if($found_apple_objects > 0) {
-				$y_mime_part = (string) implode('', (array)$arr_all_tags); // re-compose :: {{{SYNC-HTMP-PARSER-RECOMPOSE}}}
+				$y_mime_part = (string) implode('', (array)$arr_all_tags); // re-compose :: {{{SYNC-HTML-PARSER-RECOMPOSE}}}
 			} //end if
 			$arr_all_tags = null;
 			$found_apple_objects = null;

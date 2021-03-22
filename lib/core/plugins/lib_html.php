@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210321
+ * @version 	v.20210322
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -50,8 +50,9 @@ final class SmartHtmlParser {
 	private $is_clean 				= false;				// init: false ; will be set to true after html is cleaned to avoid re-clean
 	//-- extra settings
 	private $signature 				= true;					// if set to true will add the signature for the cleanup code as html comments
-	private $dom_processing 		= true;					// if set to false will dissalow post-processing of html cleanup with DomDocument ; if set to true (default) if DomDocument class is available will use it for post-processing of html cleanup
-	private $dom_log_errors 		= false; 				// if set to true will log LibXML -> DomDocument errors and warnings
+	private $dom_processing 		= true;					// if set to false will dissalow post-processing of html cleanup with Tidy (if available) or DomDocument (if available and Tidy not available) ; if set to true (default) if tidy or DomDocument class is available (by checking in this order) will use any of it it for post-processing of html cleanup
+	private $dom_log_errors 		= false; 				// if set to true will log Tidy or LibXML -> DomDocument errors and warnings
+	private $dom_prefer_domdoc 		= false; 				// if set to TRUE will prefer DomDocument instead of Tidy for dom processing
 	//-- regex expressions
 	private $expr_tag_name 			= ''; 					// regex expr: the allowed characters in tag names (just for open tags ... the end tags will add / and space
 	private $expr_tag_start 		= ''; 					// regex expr: tag start
@@ -67,9 +68,11 @@ final class SmartHtmlParser {
 	public function __construct($y_html='', $y_signature=true, $y_allow_dom_processing=true, $y_log_dom_warn_err=false) {
 		//--
 		$this->html = (string) $y_html;
-		$this->signature = (bool) $y_signature;
-		$this->dom_processing = (bool) $y_allow_dom_processing;
-		$this->dom_log_errors = (bool) $y_log_dom_warn_err;
+		//--
+		$this->signature 			= (bool) $y_signature;
+		$this->dom_processing 		= (bool) $y_allow_dom_processing;
+		$this->dom_log_errors 		= (bool) $y_log_dom_warn_err;
+		$this->dom_prefer_domdoc 	= (int)  $y_allow_dom_processing;
 		//--
 		$this->expr_tag_name 		= SmartValidator::regex_stringvalidation_segment('tag-name');
 		$this->expr_tag_start 		= SmartValidator::regex_stringvalidation_segment('tag-start');
@@ -157,7 +160,7 @@ final class SmartHtmlParser {
 
 	//=========================================================================
 	// TODO: add allowed tags attributes
-	public function get_clean_html($y_comments=true, $y_extra_tags_remove=array(), $y_extra_tags_clean=array(), $y_allowed_tags=array()) {
+	public function get_clean_html($y_comments=true, $y_extra_tags_remove=array(), $y_extra_tags_clean=array(), $y_allowed_tags=array(), $y_allow_media_tags=false, $y_allow_iframes=false) {
 
 		//--
 		if(!SmartValidator::validate_html_or_xml_code((string)$this->html)) {
@@ -180,11 +183,11 @@ final class SmartHtmlParser {
 		//--
 
 		//--
-		$this->clean_html((bool)$y_comments, (array)$y_extra_tags_remove, (array)$y_extra_tags_clean, (array)$y_allowed_tags);
+		$this->clean_html((bool)$y_comments, (array)$y_extra_tags_remove, (array)$y_extra_tags_clean, (array)$y_allowed_tags, (bool)$y_allow_media_tags, (bool)$y_allow_iframes);
 		//--
 
 		//--
-		//return (string) (print_r($this->elements,1));
+		//print_r($this->elements,1); die();
 		return (string) $this->html;
 		//--
 
@@ -220,6 +223,9 @@ final class SmartHtmlParser {
 		$this->html = (string) str_replace(array('<'.'?', '?'.'>', '<'.'%', '%'.'>'), array('<tag-question:start', 'tag-question:end>', '<tag-percent:start', 'tag-percent:end>'), (string)$this->html);
 		//--
 
+		/* {{{SYNC-HTML-CLEAN-UNBREAK-PRE}}}
+		 * This breaks the PRE and CODE formatted code or ASCII art.
+		 * This feature has been designed just for html code prettify but it can be dropped.
 		//-- standardize spaces and new lines
 		$arr_spaces_cleanup = array(
 			//shorten multiple tabs and spaces
@@ -232,6 +238,10 @@ final class SmartHtmlParser {
 		);
 		//--
 		$this->html = (string) preg_replace((array)array_keys((array)$arr_spaces_cleanup), (array)array_values((array)$arr_spaces_cleanup), (string)$this->html);
+		//--
+		*/
+
+		//--
 		$this->html = (string) SmartUnicode::fix_charset($this->html);
 		//--
 
@@ -259,11 +269,14 @@ final class SmartHtmlParser {
 
 
 	//=========================================================================
-	private function removeComments($html) {
+	private function remove_comments($html) {
+
 		//--
 		if((string)$html == '') {
 			return '';
 		} //end if
+		//--
+
 		//--
 		return (string) preg_replace(
 			'#\<\s*?\!\-\-(.*?)\-\-\>#si', // {{{SYNC-COMMENTS-REGEX}}} ; just VALID comments
@@ -271,19 +284,79 @@ final class SmartHtmlParser {
 			(string) $html
 		);
 		//--
+
 	} //END FUNCTION
 	//=========================================================================
 
 
 	//=========================================================================
-	private function clean_html($y_comments, $y_extra_tags_remove=array(), $y_extra_tags_clean=array(), $y_allowed_tags=array()) {
+	private function extract_body_contents_from_html($html) {
+
+		//--
+		// THIS IS A FIX for Tidy and DomDocument as some version of these parsers may fail to return just the body ...
+		//--
+
+		//--
+		// cleanup fix: remove the !doctype, html / body tags, but not their contents ; remove the head tag includdings it's contents
+		//--
+		if((strpos($html, '<') !== false) OR (strpos($html, '>') !== false)) {
+			$arr_tags_list = array( // remove these tags but keep their content
+				'!doctype' 	=> false, // does not have a tag end
+				'html' 		=> true,
+				'body' 		=> true,
+			); // for the head tag, it must be removed completely
+			$arr_tags_repl = array();
+			foreach($arr_tags_list as $key => $val) {
+				$tmp_regex_tag = (array) $this->regex_tag((string)$key);
+				$arr_tags_repl[] = $tmp_regex_tag['delimiter'].$tmp_regex_tag['tag-start'].$tmp_regex_tag['delimiter'].'si';
+				if($val === true) {
+					$arr_tags_repl[] = $tmp_regex_tag['delimiter'].$tmp_regex_tag['tag-end'].$tmp_regex_tag['delimiter'].'si';
+				} //end if
+			} //end if
+			//print_r($arr_tags_repl); die();
+			$html = (string) preg_replace((array)$arr_tags_repl, '', (string)$html); // remove !doctype, html and body but preserve their contents
+			//-- remove head tag and also it's contents
+			$tmp_regex_head_tag = (array) $this->regex_tag('head');
+			$tmp_regex_expt_head_tag = (string) $tmp_regex_head_tag['delimiter'].'('.$tmp_regex_head_tag['tag-start'].')'.'.*?'.'('.$tmp_regex_head_tag['tag-end'].')'.$tmp_regex_head_tag['delimiter'].'si';
+			$html = (string) preg_replace((string)$tmp_regex_expt_head_tag, '', (string)$html); // remove completely head and it's contents
+		} //end if
+		//--
+
+		//--
+		$html = (string) trim((string)$html); // cleanup fix: trim
+		//--
+
+		//--
+		return (string) $html;
+		//--
+
+	} //END FUNCTION
+	//=========================================================================
+
+
+	//=========================================================================
+	private function compose_html_document($body) {
+
+		//--
+		// THIS IS A FIX for Tidy and DomDocument as some version of these parsers fail if only body provided ...
+		// Trick: the meta charset have not be supplied because if set to UTF-8 the DomDocument will decode all possible entities, includding &Prime; thus the fixback to &quot; is no more available to force &quot; instead of " when using DomDocument
+		//--
+		return (string) '<!DOCTYPE html>'."\n".'<html>'."\n".'<head>'."\n".'<title>HTML Document</title>'."\n".'</head>'."\n".'<body>'."\n".$body."\n".'</body>'."\n".'</html>'."\n";
+		//--
+
+	} //END FUNCTION
+	//=========================================================================
+
+
+	//=========================================================================
+	private function clean_html(string $y_comments, array $y_extra_tags_remove, array $y_extra_tags_clean, array $y_allowed_tags, bool $y_allow_media_tags, bool $y_allow_iframes) {
 
 		//-- CLEANUP DISSALOWED AND FIX INVALID HTML TAGS
 		// * it will use code standardize before to fix active PHP tags and weird characters
 		// * will convert all UTF-8 characters to the coresponding HTML-ENTITIES
 		// * will remove all tags that are unsafe like <script> or <head> and many other dissalowed unsafe tags
 		// * if allowed tags are specified they will take precedence and will be filtered via strip_tags by allowing only these tags, at the end of cleanup to be safer !
-		// * if DomDocument is detected and is allowed to be used by current settings will be used finally to do (post-processing) extra cleanup and fixes
+		// * if tidy or DomDocument is detected and is allowed to be used by current settings will be used finally to do (post-processing) extra cleanup and fixes
 		//--
 
 		//--
@@ -308,20 +381,24 @@ final class SmartHtmlParser {
 			'style',
 			'script',
 			'noscript',
-			'frameset',
-			'frame',
-			'iframe',
-			'canvas',
-			'audio',
-			'video',
+			'form',
 			'applet',
 			'param',
 			'object',
-			'form',
-			'xml',
 			'xmp',
-			'o:p'
+			'xml',
+			'frameset',
+			'frame',
 		);
+		if(!$y_allow_iframes) {
+			$arr_tags_2x_list_bad[] = 'iframe';
+		} //end if
+		if(!$y_allow_media_tags) {
+			$arr_tags_2x_list_bad[] = 'audio';
+			$arr_tags_2x_list_bad[] = 'video';
+			$arr_tags_2x_list_bad[] = 'canvas';
+		} //end if
+		$arr_tags_2x_list_bad[] = 'o:p'; // must be at the end, cleanup word formatting
 		if(Smart::array_size($y_extra_tags_remove) > 0) { // add extra entries such as: img, p, div, ...
 			for($i=0; $i<count($y_extra_tags_remove); $i++) {
 				if(preg_match((string)$this->regex_tag_name, (string)$y_extra_tags_remove[$i])) {
@@ -336,7 +413,7 @@ final class SmartHtmlParser {
 		if($y_comments === false) {
 			for($i=0; $i<count($arr_tags_0x_list_comments); $i++) {
 				$arr_tags_2x_repl_bad[] = (string) $arr_tags_0x_list_comments[$i];
-				$arr_tags_2x_repl_good[] = (string) '<!-- # -->'; // comment ; must be non-empty to avoid break compatibility with DOMDocument !!
+				$arr_tags_2x_repl_good[] = (string) '<!-- # -->'; // comment ; must be non-empty to avoid break compatibility with DOMDocument in the case it is used !!
 			} //end for
 		} //end if
 		for($i=0; $i<count($arr_tags_2x_list_bad); $i++) {
@@ -355,12 +432,10 @@ final class SmartHtmlParser {
 			'base',
 			'meta',
 			'link',
-			'track',
-			'source',
 			'plaintext',
 			'marquee'
 		));
-		if(Smart::array_size($y_extra_tags_clean) > 0) { // add extra entries such as: img, p, div, ...
+		if(Smart::array_size($y_extra_tags_clean) > 0) {
 			for($i=0; $i<count($y_extra_tags_clean); $i++) {
 				if(preg_match((string)$this->regex_tag_name, (string)$y_extra_tags_clean[$i])) {
 					if(!in_array((string)$y_extra_tags_clean[$i], $arr_tags_1x_list_bad)) {
@@ -433,8 +508,8 @@ final class SmartHtmlParser {
 							$tmp_is_valid_attr = false; // remove attributes of which value are old Netscape JS ; Ex: border="&{getBorderWidth( )};"
 						} elseif(substr((string)trim((string)$val), 0, 11) == 'javascript:') {
 							$tmp_is_valid_attr = false; // remove attributes that contain javascript:
-						} elseif((stripos((string)trim((string)$val), 'java') !== false) AND (stripos((string)trim((string)$val), 'script') !== false) AND (strpos((string)trim((string)$val), ':') !== false)) {
-							$tmp_is_valid_attr = false; // remove attributes that contain java + script + :
+					//	} elseif((stripos((string)trim((string)$val), 'java') !== false) AND (stripos((string)trim((string)$val), 'script') !== false) AND (strpos((string)trim((string)$val), ':') !== false)) { // this is not safe and may remove unwanted attributes ... too restrictive, disable it !
+					//		$tmp_is_valid_attr = false; // remove attributes that contain java + script + :
 						} //end for
 						if($tmp_is_valid_attr) {
 							$this->elements[$i] .= ' '.strtolower($key).'='.'"'.str_replace(array('"', '<', '>'), array('&quot;', '&lt;', '&gt;'), (string)$val).'"';
@@ -463,7 +538,7 @@ final class SmartHtmlParser {
 		} //end for
 		//--
 
-		//-- {{{SYNC-HTMP-PARSER-RECOMPOSE}}}
+		//-- {{{SYNC-HTML-PARSER-RECOMPOSE}}}
 		$this->html = (string) SmartUnicode::convert_charset((string)implode('', (array)$this->elements), 'UTF-8', 'HTML-ENTITIES');
 		//--
 
@@ -495,74 +570,104 @@ final class SmartHtmlParser {
 		//--
 		if($this->dom_processing !== false) {
 			//--
-			if(class_exists('tidy')) {
-				//--
-				if($y_comments === false) {
-					$this->html = $this->removeComments((string)$this->html); // remove comments prior to cleanup with tidy, this is much safe
-				} //end if
+			if((class_exists('tidy')) AND ((int)$this->dom_prefer_domdoc != 2)) { // IMPORTANT: do not initialize tidy if html is empty, it is very expensive
 				//--
 				$use_dom = 'T';
 				//--
-				$etidy = (string) strtolower((string)SMART_FRAMEWORK_DBSQL_CHARSET);
-				//--
-				$ctidy = [
-					'quiet' => true,
-					'show-errors' => 1, // err level 0..6
-					'show-warnings' => true,
-					'char-encoding' => (string) $etidy,
-					'input-encoding' => (string) $etidy,
-					'output-encoding' => (string) $etidy,
-					'output-bom' => false,
-					'newline' => 'LF',
-					'doctype' => 'omit',
-					'output-xhtml' => false,
-					'output-html' => true,
-					'wrap' => 1024,
-					'indent' => true,
-					'indent-attributes' => false,
-					'tab-size' => 4,
-					'numeric-entities' => false,
-					'quote-nbsp' => true,
-					'quote-ampersand' => true,
-					'fix-bad-comments' => true,
-					'drop-proprietary-attributes' => false,
-					'tidy-mark' => false,
-					'hide-comments' => false,
-					'hide-endtags' => false,
-					'clean' => true,
-					'new-blocklevel-tags' => 'article aside audio bdi canvas details dialog figcaption figure footer header hgroup main menu menuitem nav section summary template track video source picture',
-					'new-empty-tags' => 'command embed keygen source track wbr',
-					'new-inline-tags' => 'audio command datalist embed keygen mark menuitem meter output progress time video source picture wbr'
-				];
-				$tidy = new tidy();
-				//--
-				$tidy->parseString((string)$this->html, (array)$ctidy, (string)$etidy); // tidy uses utf8 instead of UTF-8
-				$tidy->cleanRepair();
-				//--
-				if((SmartFrameworkRuntime::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
-					$notice_log = $tidy->errorBuffer;
-					if((string)$notice_log != '') {
-						Smart::log_notice('SmartHtmlParser NOTICE [Tidy]:'."\n".$notice_log."\n".'#END'."\n");
-					} //end if
+				if((string)$this->html != '') {
+					//--
+					$max_err_level = 0; // 0: no errors ; 1: minimal ; 2: more
+					$enable_warns = false; // if set to true will output the HTML validation report to logs
 					if(SmartFrameworkRuntime::ifDebug()) {
-						Smart::log_notice('SmartHtmlParser / Debug Tidy Clean HTML-String:'."\n".$this->html."\n".'#END');
+						$max_err_level = 2;
+						$enable_warns = true;
+					} elseif($this->dom_log_errors === true) {
+						$max_err_level = 1;
 					} //end if
+					//--
+					$etidy = (string) strtolower((string)SMART_FRAMEWORK_DBSQL_CHARSET); // tidy uses utf8 instead of UTF-8
+					//--
+					$ctidy = [
+						'quiet' => true,
+						'show-errors' => (int) $max_err_level, // err level 0..6
+						'show-warnings' => (bool) $enable_warns,
+						'char-encoding' => (string) $etidy,
+						'input-encoding' => (string) $etidy,
+						'output-encoding' => (string) $etidy,
+						'output-bom' => false,
+						'newline' => 'LF',
+						'doctype' => 'omit',
+						'output-xml' => false,
+						'input-xml' => false,
+						'output-xhtml' => false,
+						'output-html' => true,
+						'wrap' => 1024,
+						'indent' => false, // must be set to FALSE to save space and to keep this compatible with the code generated by DomDocument below
+						'indent-attributes' => false,
+						'tab-size' => 4,
+						'ncr' => true,
+						'preserve-entities' => true,
+						'numeric-entities' => true,
+						'uppercase-tags' => false,
+						'uppercase-attributes' => false,
+						'quote-nbsp' => true,
+						'quote-ampersand' => true,
+						'quote-marks' => true,
+						'fix-bad-comments' => true,
+						'fix-uri' => true,
+						'merge-divs' => false,
+						'merge-spans' => false,
+						'tidy-mark' => false,
+						'hide-comments' => false,
+						'hide-endtags' => false,
+						'drop-empty-paras' => false,
+						'drop-font-tags' => false,
+						'drop-proprietary-attributes' => false,
+						'clean' => true,
+					//	'show-body-only' => true, // this option is not used, will extract body later
+						'new-blocklevel-tags' => 'article aside audio bdi canvas details dialog figcaption figure footer header hgroup main menu menuitem nav section summary template track video source picture',
+						'new-empty-tags' => 'command embed keygen source track wbr',
+						'new-inline-tags' => 'audio command datalist embed keygen mark meter output progress time video source picture wbr', // deprecated in HTML 5.2: menuitem
+						'new-pre-tags' => 'pre code'
+					];
+					$tidy = new tidy();
+					//--
+					$tidy->parseString((string)$this->compose_html_document((string)$this->html), (array)$ctidy, (string)$etidy); // fix: in some versions of tidy the first comment dissapear if not enclosed in a body container, so need this function: compose_html_document
+					$testClean = $tidy->cleanRepair();
+					//--
+					if((SmartFrameworkRuntime::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
+						$notice_log = $tidy->errorBuffer;
+						if((string)$notice_log != '') {
+							Smart::log_notice(__CLASS__.' # Tidy [Result='.$testClean.'] Log:'."\n".$notice_log."\n".'#END'."\n");
+						} //end if
+						if(SmartFrameworkRuntime::ifDebug()) {
+							Smart::log_notice(__CLASS__.' # Debug Tidy [Result='.$testClean.'] Clean HTML-String:'."\n".$this->html."\n".'#END');
+						} //end if
+					} //end if
+					//--
+				//	$this->html = (string) $tidy; // $tidy tostring() returns only the inside of the body if show-body-only is set to TRUE ; $tidy->html() returns the full document ; if show-body-only option miss from some builds of Tidy may return the full HTML document instead of body only so get rid of this option and apply postfixes to get just the body
+				//	$this->html = (string) $tidy->html(); // returns the full HTML documents and later in post-fixes will get just the body contents
+					$this->html = (string) $tidy->body(); // returns the body contents, includding the body tags and later in post-fixes will get just the body contents
+					//print_r($this->html); die();
+					//--
+					$tidy = null;
+					$ctidy = null;
+					$etidy = null;
+					//-- post fixes
+					$this->html = (string) $this->extract_body_contents_from_html($this->html);
+					if($y_comments === false) {
+						$this->html = $this->remove_comments((string)$this->html); // remove comments after tidy cleanup which suppose the bad comments have been fixed, this is much safe
+					} //end if
+					//--
+					//print_r($this->html); die();
+					//--
 				} //end if
 				//--
-				$this->html = '';
-				foreach($tidy->body()->child as $child) {
-					$this->html .= (string)$child;
-				} //end foreach
-				//--
-				$tidy = null;
-				$ctidy = null;
-				$etidy = null;
-				//--
-			} elseif(class_exists('DOMDocument')) { // DOMDocument does not such a good job as Tidy ; for example &quot; will convert to real " ... which is not so good
+			} elseif(class_exists('DOMDocument')) { // DOMDocument will be used if available and tidy is not available ; it does not such a good job as Tidy ; for example will convert &quot; to real " ... which is not so good !
 				//--
 				$use_dom = 'D';
 				//--
-				if((string)$this->html != '') { // IMPORTANT: DOMDocument loadHTML() will throw error if $this->html is empty, so test this case ...
+				if((string)$this->html != '') { // IMPORTANT: do not initialize DOMDocument if html is empty, it is very expensive ; this also must be checked because the DOMDocument loadHTML() will throw error if $this->html is empty, so test this case ...
 					//--
 					@libxml_use_internal_errors(true);
 					@libxml_clear_errors();
@@ -572,50 +677,62 @@ final class SmartHtmlParser {
 					$dom->encoding = (string) SMART_FRAMEWORK_CHARSET;
 					$dom->strictErrorChecking = false; 	// do not throw errors
 					$dom->preserveWhiteSpace = false; 	// set this to false in order to real format HTML ...
-					$dom->formatOutput = false; 			// try to format pretty-print the code (will work just partial as the preserve white space is true ...)
+					$dom->formatOutput = false; 		// try to format pretty-print the code (will work just partial as the preserve white space is true ...)
 					$dom->resolveExternals = false; 	// disable load external entities from a doctype declaration
 					$dom->validateOnParse = false; 		// this must be explicit disabled as if set to true it may try to download the DTD and after to validate (insecure ...)
+					$dom->recover = true; // trying to parse non-well formed documents, for HTML make sense but not for XML
+				//	$dom->substituteEntities = false; 	// this attribute ir proprietary for LibXML, it does not make any difference ... still buggy with replacing &quot; with " (it's decoded value)
+					//-- pre fixes
+					$this->html = (string) str_replace('&quot;', '&Prime;', $this->html); // fix: DomDocument will decode the &quot; to ", thus substitute with &Prime; (&#8243;) which is a unicode verion of it ″ and restore back thereafter ; if there are any &Prime; already converting &Prime; to &quot; later is not a problem ...
 					//--
-					@$dom->loadHTML(
-						(string) $this->html,
+					$testClean = @$dom->loadHTML(
+						(string) $this->compose_html_document((string)$this->html), // fix: in some versions of DomDocument or LibXML if not enclosed in a body container there are some strange behaviours when getting back the HTML code, so need this function: compose_html_document
 						LIBXML_ERR_WARNING | LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_HTML_NODEFDTD // {{{SYNC-LIBXML-OPTIONS}}} ; important !!! do not use the buggy flag LIBXML_HTML_NOIMPLIED as it will mess up the tags, is not stable enough inside LibXML
 					);
-					$this->html = (string) @$dom->saveHTML(); // get back from DOM ; using @$dom->saveHTML(@$dom->getElementsByTagName('body')->item(0)); is buggy as will not encode entities as #xxxx;
-					//print_r($this->html);
+				//	$this->html = (string) @$dom->saveHTML(@$dom->getElementsByTagName('body')->item(0)); // get back from DOM, only body ; using this will will decode all possible entities, includding &Prime; thus the fixback to &quot; is no more available to force &quot; instead of " when using DomDocument
+					$this->html = (string) @$dom->saveHTML(); // get back from DOM, the full document, will extract later only the body
+					//print_r($this->html); die();
 					$dom = null; // free mem
-					$this->html = (string) trim((string)preg_replace('~<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>\s*~i', '', (string)$this->html)); // cleanup fix: remove the doctype, html / head / body tags {{{SYNC-CLEANUP-TAGS-HTML-HEAD-BODY}}}
-					//-- for safety this must be done after DOMDocument processing due to the too many new empty lines between tags that breaks html code in DOMDocument (don't now why ...)
-					if($y_comments === false) {
-						$this->html = $this->removeComments((string)$this->html); // remove comments, no DOM processing available
-					} //end if
 					//--
 					if((SmartFrameworkRuntime::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
 						$errors = (array) @libxml_get_errors();
 						if(Smart::array_size($errors) > 0) {
 							$notice_log = '';
+							$max_err_level = 1;
+							if(SmartFrameworkRuntime::ifDebug()) {
+								$max_err_level = 2;
+							} //end if
 							foreach($errors as $z => $error) {
-								if(is_object($error)) {
-									$notice_log .= 'FORMAT-ERROR: ['.$error->code.'] / Level: '.$error->level.' / Line: '.$error->line.' / Column: '.$error->column.' / Message: '.trim((string)$error->message)."\n";
+								if((int)$error->level <= (int)$max_err_level) {
+									if(is_object($error)) {
+										$notice_log .= 'FORMAT-ERROR: ['.$error->code.'] / Level: '.$error->level.' / Line: '.$error->line.' / Column: '.$error->column.' / Message: '.trim((string)$error->message)."\n";
+									} //end if
 								} //end if
 							} //end foreach
 							if((string)$notice_log != '') {
-								Smart::log_notice('SmartHtmlParser NOTICE [DOMDocument]:'."\n".$notice_log."\n".'#END'."\n");
+								Smart::log_notice(__CLASS__.' # DOMDocument [Result='.$testClean.'] Log:'."\n".$notice_log."\n".'#END'."\n");
 							} //end if
 							if(SmartFrameworkRuntime::ifDebug()) {
-								Smart::log_notice('SmartHtmlParser / Debug DomDocument Clean HTML-String:'."\n".$this->html."\n".'#END');
+								Smart::log_notice(__CLASS__.' # Debug DomDocument [Result='.$testClean.'] Clean HTML-String:'."\n".$this->html."\n".'#END');
 							} //end if
 						} //end if
 					} //end if
 					//--
 					@libxml_clear_errors();
 					@libxml_use_internal_errors(false);
+					//-- post fixes
+					$this->html = (string) str_replace('&Prime;', '&quot;', $this->html); // fix back &quot;
+					$this->html = (string) $this->extract_body_contents_from_html($this->html);
+					if($y_comments === false) {
+						$this->html = $this->remove_comments((string)$this->html); // remove comments, for safety this must be done after DOMDocument processing due to the too many new empty lines between tags that breaks html code in DOMDocument (don't now why ...)
+					} //end if
 					//--
 				} //end if
 				//--
 			} else {
 				//--
 				if($y_comments === false) {
-					$this->html = $this->removeComments((string)$this->html); // remove comments, no DOM processing available
+					$this->html = $this->remove_comments((string)$this->html); // remove comments, no DOM processing available
 				} //end if
 				//--
 			} //end if else
@@ -623,7 +740,7 @@ final class SmartHtmlParser {
 		} else {
 			//--
 			if($y_comments === false) {
-				$this->html = $this->removeComments((string)$this->html); // remove comments, DOM processing not enable
+				$this->html = $this->remove_comments((string)$this->html); // remove comments, DOM processing not enable
 			} //end if
 			//--
 		} //end if
@@ -632,8 +749,8 @@ final class SmartHtmlParser {
 		//--
 		if($this->signature) {
 			if($use_dom) {
-				$start_signature = '<!-- Smart/HTML.Cleaner ['.$use_dom.'] -->';
-				$end_signature = '<!-- [/'.$use_dom.'] Smart/HTML.Cleaner -->';
+				$start_signature = '<!-- Smart/HTML.Cleaner ['.Smart::escape_html($use_dom).'] -->';
+				$end_signature = '<!-- [/'.Smart::escape_html($use_dom).'] Smart/HTML.Cleaner -->';
 			} else {
 				$start_signature = '<!-- Smart/HTML.Cleaner [S] -->';
 				$end_signature = '<!-- [/S] Smart/HTML.Cleaner -->';
@@ -716,16 +833,20 @@ final class SmartHtmlParser {
 		//--
 		$raw = (array) explode("\n", (string)$this->html);
 		//--
-		//while(list($key, $line) = @each($raw)) { // Fix: this is deprecated as of PHP 7.3
 		foreach($raw as $key => $line) {
 			//--
+			/* {{{SYNC-HTML-CLEAN-UNBREAK-PRE}}}
+			 * This was disabled because breaks some important things like the contents of pre / code and other pre-formats like ascii art which should be kept intact (unaltered content, especially on code snippets ...) ; if this is enabled can generate unpredictable things ...
+			 * This feature has been designed just for html code prettify but it can be dropped.
 			$line = trim($line);
 			if((string)$line == '') {
 				continue;
 			} //end if
-			$line .= "\n"; // fix: if tag is on multiple lines
+			*/
 			//--
-			for($charsindex=0; $charsindex<strlen($line); $charsindex++) { // Fix: must be strlen() not SmartUnicode as it will break the parsing (Fix: 160203)
+			$line .= "\n"; // fix: add back the newline of which the lines were exploded by
+			//--
+			for($charsindex=0; $charsindex<strlen($line); $charsindex++) { // Fix: must be strlen() not SmartUnicode as it will break the parsing
 				if($ignorechar == true) {
 					$ignorechar = false;
 				} //end if

@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20210320 # this should be loaded from app web root only
+// # r.20210322 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -49,7 +49,7 @@ if(!defined('SMART_FRAMEWORK_ENV')) {
 	@http_response_code(500);
 	die('A required INIT constant has not been defined: SMART_FRAMEWORK_ENV');
 } //end if
-switch((string)SMART_FRAMEWORK_ENV) {
+switch((string)SMART_FRAMEWORK_ENV) { // allow just 'dev' or 'prod'
 	case 'dev':
 		if(!define('SMART_ERROR_HANDLER', 'dev')) {
 			@http_response_code(500);
