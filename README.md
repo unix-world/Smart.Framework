@@ -2,15 +2,15 @@
 ## Dual-licensed: under BSD license or GPLv3 license (at your choice)
 ### This software project is open source.
 #### You must choose which license to use depending on your use case: BSD license or GPLv3 license
-<b>(c) 2009 - 2021 unix-world.org</b> / <i>support&#64;unix-world.org</i>
+**(c) 2009 - 2021 unix-world.org** / support&#64;unix-world.org
 
  &nbsp; | &nbsp;
 ------------- | -------------
- **Demo URL:** | <a href="http://demo.unix-world.org/smart-framework/" target="_blank">http://demo.unix-world.org/smart-framework</a>
- **Download URL:** | <a href="https://github.com/unix-world/Smart.Framework" target="_blank">https://github.com/unix-world/Smart.Framework</a>
- **Download Modules URL:** | <a href="https://github.com/unix-world/Smart.Framework.Modules" target="_blank">https://github.com/unix-world/Smart.Framework.Modules</a>
+ **Demo URL:** | [http://demo.unix-world.org/smart-framework/](http://demo.unix-world.org/smart-framework/)
+ **Download URL:** | [https://github.com/unix-world/Smart.Framework](https://github.com/unix-world/Smart.Framework)
+ **Download Modules URL:** | [https://github.com/unix-world/Smart.Framework.Modules](https://github.com/unix-world/Smart.Framework.Modules)
 
-<br>
+&nbsp;
 
 ### Smart.Framework design philosophy:
 * A very **pragmatic** and practical aproach: **A Practical Web Framework for Practical People**
@@ -44,7 +44,7 @@ The original software architecture of this web framework allows it to deliver a 
 #### This software framework is compatible, stable and actively tested with PHP 7.3 / 7.4 / 8.0 versions.
 **Prefered PHP version** is: **7.4** (LTS).
 
-<br>
+&nbsp;
 ### Benchmark Scenario:
 **Using a simple controller (no Caching) that Outputs: 'Hello World'**
 The benchmark was running using *Apache Benchmark* suite with the following command:

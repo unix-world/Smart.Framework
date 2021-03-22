@@ -1,11 +1,11 @@
-# [###TITLE|html###] (H1)
+# '[###TITLE|html###]' (<H1> "Heading 1" &reg; &#169; &#169a;)
 
 &copy;&nbsp;&nbsp;2015-2021&nbsp;unix-world.org
-Extended Markdown Test :: v.20210316
+Extended Markdown Test :: v.20210321
 
-## H2 (Unicode Test) ăĂîÎâÂşŞţŢ
+## H2 (Unicode <Test>) ăĂîÎâÂşŞţŢ &quot;&nbsp;&quot; &lt;&quot;&gt;
 
-### H3 (Alternate Unicode Test) ăĂîÎâÂșȘțȚ
+### H3 (Alternate Unicode <Test>) ăĂîÎâÂșȘțȚ
 
 #### H4
 
@@ -15,25 +15,26 @@ Extended Markdown Test :: v.20210316
 
 Alternatively, for H1 and H2, an underline-ish style:
 
-Alt-H1
+Alt-<H1>
 ======
 
-Alt-H2
+Alt-<H2>
 ------
 
-Line 1
-Line 2\s
-Line 3
-``` ```
-Line 4
-Line 5
+<Line1 <i>> 1
+&Line2 &copy; <i>& 2\s
+`Line3 <i>` 3 <a>
+\S
+<Line4> 4
+"Line5 <i> 5" <a>
+ &Line6
 
-[Go To Anchor](#anchor)
+[Go To <anchor>](#anchor<x>)
 
-Emphasis, aka italics, with *asterisks* or _underscores_.
+Emphasis, aka <italics>, with *asterisks* or _underscores_.
 
 ~~~~
-This is a pre-formated text
+This is a pre-"formated" <text>
 and this is another line ...
 ~~~~
 
@@ -43,7 +44,7 @@ PHP code (PHP Start-Tag and PHP End-Tag must be removed ...)
 
 // php sample code
 function test() {
-	echo 'this is a test ...';
+	echo 'this is <a> "test" &copy; ...';
 }
 
 test();
@@ -51,10 +52,25 @@ test();
 ?>
 ```
 
-##### Test PHP code injection:
+##### Test code injection:
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png?#time123456&now98765&a=<"> "Logo Title Text 1")
+<http://#inline.url.tag?#time123456&now98765&c="&a=<">>
+<">
+
+---
+
+<%
+href="#&quot;">Test
+%>
 <?
-test();
+test('<a href="#">Test</a>');
 ?>
+	<%
+	href="#">Test
+	%>
+	<?
+	test('<a href="#">Test</a>');
+	?>
 
 ``` ```
 
@@ -70,6 +86,9 @@ Syntax:
 CO~2~ for subscript
 E=mc^2^ for superscript
 
+- - -
+some text aligned on left (default)
+
 |{T:@class=hidden}|
 | :---: |
 | some centered text |
@@ -78,25 +97,37 @@ E=mc^2^ for superscript
 | ---: |
 | some text aligned on right |
 
-<div style="height:100px; background:#DDEEFF;">abcd</div>
+- - -
 
-1. First ordered list item
-2. Another item
+1. First ordered <list> "item"
+
+	This is a paragraph inside list
+		And a preformat
+2. Another <"item">
 	* Unordered sub-list.
-1. Actual numbers don't matter, just that it's a number
+	- Another
+3. Actual numbers don't matter, just that it's a number
 	1. Ordered sub-list
+	1. Another
 4. And another item.
-
-		You can have properly indented paragraphs within list items. Notice the blank line above, and the leading spaces (at least one, but we'll use three here to also align the raw Markdown).
+Continuation on next line
+	And another new line here
+		You can have "properly" <indented> preformat within list items. Notice the blank line above, and the leading spaces (at least one, but we'll use three here to also align the raw Markdown).
 
 		To have a line break without a paragraph, you will need to use two trailing spaces.⋅⋅
 
         Note that this line is separate, but within the same paragraph.
 		(This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)
 
-* Unordered list can use asterisks
+* Unordered <list> can
+	use "**asterisks**"
 - Or minuses
 + Or pluses
+
+Some Paragraph
+	Some Preformat area
+	Line ...
+		Line ...
 
 [Link with attributes link](http://netbsd.org) {L: .primary9 #link .Upper-Case @data-smart=open.modal$700$300}
 
@@ -104,15 +135,22 @@ my email is <me@example.com>
 
 [I'm an inline-style link](https://www.google.com)
 
+[Inline link ](?#!/url-(parentheses)) with parentheses in URL
+[Inline email link ](mailto:test@local)
+
 [I'm an inline-style link with title](https://www.google.com "Google's Homepage")
+[I'm an inline-style link with title](https://www.google.com "Google's <span>Homepage<span>")
 
 [I'm a reference-style link][Arbitrary case-insensitive reference text]
 
-[I'm a relative reference to a repository file](lib/license_bsd.txt)
+[`I'm a relative reference to a repository file`](lib/license_bsd.txt)
 
 [You can use numbers for reference-style link definitions][1]
 
 Or leave it empty and use the [link text itself]
+
+[![Logo](lib/framework/img/sf-logo.svg "Slimbox"){I:@width=256 @height=256}](lib/framework/img/sf-logo.svg){L:@data-slimbox=slimbox}
+[![Logo](lib/framework/img/sf-logo.svg) icon with text](http://demo.unix-world.org/smart-framework)
 
 Some text to show that the reference links can follow later.
 
@@ -123,13 +161,13 @@ Some text to show that the reference links can follow later.
 Here's our logo (hover to see the title text):
 
 Inline-style:
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1") {I: @width=100 @style=box-shadow:$10px$10px$5px$#888888;}
+![alt text](https://parsedown.org/md.png "Logo Title Text 1") {I: @width=100 @style=box-shadow:$10px$10px$5px$#888888;}
 
 Reference-style:
 ![alt text][logo] {@width=50}
 
 Refered Link: [logo]
-[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+[logo]: //parsedown.org/md.png "Logo Title Text 2"
 
 Inline `code` has `back-ticks around` it.
 
@@ -278,12 +316,12 @@ Preformatted blocks are useful for ASCII art:
 External linking action
 --------------------
 
-I get 10 times more traffic from [Google] [1] than from
-[Yahoo] [2] or [MSN] [3].
+The top search engines are: [Google] [1] and also
+[Bing] [2] or [Yandex] [3].
 
-  [1]: http://google.com/        "Google"
-  [2]: http://search.yahoo.com/  "Yahoo Search"
-  [3]: http://search.msn.com/    "MSN Search"
+  [1]: https://google.com/        "Google"
+  [2]: //www.bing.com/            "Bing"
+  [3]: http://yandex.com/         "Yandex"
 
 
 [](#) {L: @id=anchor}
@@ -300,11 +338,15 @@ I get 10 times more traffic from [Google] [1] than from
 </dl>
 ```
 
-**Below should be rendered as plain HTML (HTML tags disallowed in this Markdown ...)**
-<dl>
+**Below should be rendered as plain HTML (HTML tags are disabled in this Markdown Parser ...)**
+<!-- the code below should be escaped -->
+<dl><!-- this is a comment -->
+  <!-- this is a nother comment -->
   <dt>Definition list</dt>
   <dd>Is something people use sometimes.</dd>
-
+<!-- and another
+multiline
+comment -->
   <dt>Markdown in HTML</dt>
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>

@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210312
+ * @version 	v.20210321
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -259,6 +259,23 @@ final class SmartHtmlParser {
 
 
 	//=========================================================================
+	private function removeComments($html) {
+		//--
+		if((string)$html == '') {
+			return '';
+		} //end if
+		//--
+		return (string) preg_replace(
+			'#\<\s*?\!\-\-(.*?)\-\-\>#si', // {{{SYNC-COMMENTS-REGEX}}} ; just VALID comments
+			'',
+			(string) $html
+		);
+		//--
+	} //END FUNCTION
+	//=========================================================================
+
+
+	//=========================================================================
 	private function clean_html($y_comments, $y_extra_tags_remove=array(), $y_extra_tags_clean=array(), $y_allowed_tags=array()) {
 
 		//-- CLEANUP DISSALOWED AND FIX INVALID HTML TAGS
@@ -474,79 +491,152 @@ final class SmartHtmlParser {
 		//--
 
 		//--
-		$use_dom = false;
+		$use_dom = null;
 		//--
-		if(($this->dom_processing !== false) AND (class_exists('DOMDocument'))) {
+		if($this->dom_processing !== false) {
 			//--
-			$use_dom = true;
-			//--
-			if((string)$this->html != '') { // IMPORTANT: DOMDocument loadHTML() will throw error if $this->html is empty, so test this case ...
+			if(class_exists('tidy')) {
 				//--
-				@libxml_use_internal_errors(true);
-				@libxml_clear_errors();
+				if($y_comments === false) {
+					$this->html = $this->removeComments((string)$this->html); // remove comments prior to cleanup with tidy, this is much safe
+				} //end if
 				//--
-				$dom = new DOMDocument(5, (string)SMART_FRAMEWORK_CHARSET);
+				$use_dom = 'T';
 				//--
-				$dom->encoding = (string) SMART_FRAMEWORK_CHARSET;
-				$dom->strictErrorChecking = false; 	// do not throw errors
-				$dom->preserveWhiteSpace = false; 	// set this to false in order to real format HTML ...
-				$dom->formatOutput = true; 			// try to format pretty-print the code (will work just partial as the preserve white space is true ...)
-				$dom->resolveExternals = false; 	// disable load external entities from a doctype declaration
-				$dom->validateOnParse = false; 		// this must be explicit disabled as if set to true it may try to download the DTD and after to validate (insecure ...)
+				$etidy = (string) strtolower((string)SMART_FRAMEWORK_DBSQL_CHARSET);
 				//--
-				@$dom->loadHTML(
-					(string) $this->html,
-					LIBXML_ERR_WARNING | LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_HTML_NODEFDTD // {{{SYNC-LIBXML-OPTIONS}}} ; important !!! do not use the buggy flag LIBXML_HTML_NOIMPLIED as it will mess up the tags, is not stable enough inside LibXML
-				);
-				$this->html = (string) @$dom->saveHTML(); // get back from DOM ; using @$dom->saveHTML(@$dom->getElementsByTagName('body')->item(0)); is buggy as will not encode entities as #xxxx;
-				//print_r($this->html);
-				$dom = null; // free mem
-				$this->html = (string) trim((string)preg_replace('~<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>\s*~i', '', (string)$this->html)); // cleanup fix: remove the doctype, html / head / body tags
+				$ctidy = [
+					'quiet' => true,
+					'show-errors' => 1, // err level 0..6
+					'show-warnings' => true,
+					'char-encoding' => (string) $etidy,
+					'input-encoding' => (string) $etidy,
+					'output-encoding' => (string) $etidy,
+					'output-bom' => false,
+					'newline' => 'LF',
+					'doctype' => 'omit',
+					'output-xhtml' => false,
+					'output-html' => true,
+					'wrap' => 1024,
+					'indent' => true,
+					'indent-attributes' => false,
+					'tab-size' => 4,
+					'numeric-entities' => false,
+					'quote-nbsp' => true,
+					'quote-ampersand' => true,
+					'fix-bad-comments' => true,
+					'drop-proprietary-attributes' => false,
+					'tidy-mark' => false,
+					'hide-comments' => false,
+					'hide-endtags' => false,
+					'clean' => true,
+					'new-blocklevel-tags' => 'article aside audio bdi canvas details dialog figcaption figure footer header hgroup main menu menuitem nav section summary template track video source picture',
+					'new-empty-tags' => 'command embed keygen source track wbr',
+					'new-inline-tags' => 'audio command datalist embed keygen mark menuitem meter output progress time video source picture wbr'
+				];
+				$tidy = new tidy();
+				//--
+				$tidy->parseString((string)$this->html, (array)$ctidy, (string)$etidy); // tidy uses utf8 instead of UTF-8
+				$tidy->cleanRepair();
 				//--
 				if((SmartFrameworkRuntime::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
-					$errors = (array) @libxml_get_errors();
-					if(Smart::array_size($errors) > 0) {
-						$notice_log = '';
-						foreach($errors as $z => $error) {
-							if(is_object($error)) {
-								$notice_log .= 'FORMAT-ERROR: ['.$error->code.'] / Level: '.$error->level.' / Line: '.$error->line.' / Column: '.$error->column.' / Message: '.trim((string)$error->message)."\n";
-							} //end if
-						} //end foreach
-						if((string)$notice_log != '') {
-							Smart::log_notice('SmartHtmlParser NOTICE [DOMDocument]:'."\n".$notice_log."\n".'#END'."\n");
-						} //end if
-						if(SmartFrameworkRuntime::ifDebug()) {
-							Smart::log_notice('SmartHtmlParser / Debug HTML-String:'."\n".$this->html."\n".'#END');
-						} //end if
+					$notice_log = $tidy->errorBuffer;
+					if((string)$notice_log != '') {
+						Smart::log_notice('SmartHtmlParser NOTICE [Tidy]:'."\n".$notice_log."\n".'#END'."\n");
+					} //end if
+					if(SmartFrameworkRuntime::ifDebug()) {
+						Smart::log_notice('SmartHtmlParser / Debug Tidy Clean HTML-String:'."\n".$this->html."\n".'#END');
 					} //end if
 				} //end if
 				//--
-				@libxml_clear_errors();
-				@libxml_use_internal_errors(false);
+				$this->html = '';
+				foreach($tidy->body()->child as $child) {
+					$this->html .= (string)$child;
+				} //end foreach
 				//--
+				$tidy = null;
+				$ctidy = null;
+				$etidy = null;
+				//--
+			} elseif(class_exists('DOMDocument')) { // DOMDocument does not such a good job as Tidy ; for example &quot; will convert to real " ... which is not so good
+				//--
+				$use_dom = 'D';
+				//--
+				if((string)$this->html != '') { // IMPORTANT: DOMDocument loadHTML() will throw error if $this->html is empty, so test this case ...
+					//--
+					@libxml_use_internal_errors(true);
+					@libxml_clear_errors();
+					//--
+					$dom = new DOMDocument(5, (string)SMART_FRAMEWORK_CHARSET);
+					//--
+					$dom->encoding = (string) SMART_FRAMEWORK_CHARSET;
+					$dom->strictErrorChecking = false; 	// do not throw errors
+					$dom->preserveWhiteSpace = false; 	// set this to false in order to real format HTML ...
+					$dom->formatOutput = false; 			// try to format pretty-print the code (will work just partial as the preserve white space is true ...)
+					$dom->resolveExternals = false; 	// disable load external entities from a doctype declaration
+					$dom->validateOnParse = false; 		// this must be explicit disabled as if set to true it may try to download the DTD and after to validate (insecure ...)
+					//--
+					@$dom->loadHTML(
+						(string) $this->html,
+						LIBXML_ERR_WARNING | LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_HTML_NODEFDTD // {{{SYNC-LIBXML-OPTIONS}}} ; important !!! do not use the buggy flag LIBXML_HTML_NOIMPLIED as it will mess up the tags, is not stable enough inside LibXML
+					);
+					$this->html = (string) @$dom->saveHTML(); // get back from DOM ; using @$dom->saveHTML(@$dom->getElementsByTagName('body')->item(0)); is buggy as will not encode entities as #xxxx;
+					//print_r($this->html);
+					$dom = null; // free mem
+					$this->html = (string) trim((string)preg_replace('~<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>\s*~i', '', (string)$this->html)); // cleanup fix: remove the doctype, html / head / body tags {{{SYNC-CLEANUP-TAGS-HTML-HEAD-BODY}}}
+					//-- for safety this must be done after DOMDocument processing due to the too many new empty lines between tags that breaks html code in DOMDocument (don't now why ...)
+					if($y_comments === false) {
+						$this->html = $this->removeComments((string)$this->html); // remove comments, no DOM processing available
+					} //end if
+					//--
+					if((SmartFrameworkRuntime::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
+						$errors = (array) @libxml_get_errors();
+						if(Smart::array_size($errors) > 0) {
+							$notice_log = '';
+							foreach($errors as $z => $error) {
+								if(is_object($error)) {
+									$notice_log .= 'FORMAT-ERROR: ['.$error->code.'] / Level: '.$error->level.' / Line: '.$error->line.' / Column: '.$error->column.' / Message: '.trim((string)$error->message)."\n";
+								} //end if
+							} //end foreach
+							if((string)$notice_log != '') {
+								Smart::log_notice('SmartHtmlParser NOTICE [DOMDocument]:'."\n".$notice_log."\n".'#END'."\n");
+							} //end if
+							if(SmartFrameworkRuntime::ifDebug()) {
+								Smart::log_notice('SmartHtmlParser / Debug DomDocument Clean HTML-String:'."\n".$this->html."\n".'#END');
+							} //end if
+						} //end if
+					} //end if
+					//--
+					@libxml_clear_errors();
+					@libxml_use_internal_errors(false);
+					//--
+				} //end if
+				//--
+			} else {
+				//--
+				if($y_comments === false) {
+					$this->html = $this->removeComments((string)$this->html); // remove comments, no DOM processing available
+				} //end if
+				//--
+			} //end if else
+			//--
+		} else {
+			//--
+			if($y_comments === false) {
+				$this->html = $this->removeComments((string)$this->html); // remove comments, DOM processing not enable
 			} //end if
 			//--
-		} //end if
-		//--
-
-		//-- this must be done after DOMDocument processing due to the too many new empty lines between tags that breaks html code in DOMDocument (don't now why ...)
-		if($y_comments === false) {
-			$this->html = (string) preg_replace(
-				'#\<\s*?\!\-\-(.*?)\-\-\>#si', // {{{SYNC-COMMENTS-REGEX}}} ; just VALID comments
-				'',
-				(string) $this->html
-			);
 		} //end if
 		//--
 
 		//--
 		if($this->signature) {
 			if($use_dom) {
-				$start_signature = '<!-- Smart/HTML.Cleaner [@] -->';
-				$end_signature = '<!-- [/@] Smart/HTML.Cleaner -->';
+				$start_signature = '<!-- Smart/HTML.Cleaner ['.$use_dom.'] -->';
+				$end_signature = '<!-- [/'.$use_dom.'] Smart/HTML.Cleaner -->';
 			} else {
-				$start_signature = '<!-- Smart/HTML.Cleaner [#] -->';
-				$end_signature = '<!-- [/#] Smart/HTML.Cleaner -->';
+				$start_signature = '<!-- Smart/HTML.Cleaner [S] -->';
+				$end_signature = '<!-- [/S] Smart/HTML.Cleaner -->';
 			} //end if else
 		} else {
 			$start_signature = '';

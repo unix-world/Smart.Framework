@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.7.2.1 / smart.framework.v.7.2 -- */
 
-/* v.20201030 */
+/* v.20210321 */
 
 /* ----------------------------- */
 
@@ -113,7 +113,7 @@
 
 /* Pre, Code */
 .markdown pre {
-	border: 1px solid #ECECEC;
+	border: 1px solid #F0F0F0;
 	background: #F9F9F9;
 	padding: 3px;
 	white-space: pre-line;
@@ -121,6 +121,10 @@
 }
 .markdown code {
 	white-space: pre;
+}
+.markdown li pre {
+	margin-left: 20px;
+	margin-right: 20px;
 }
 /* -- */
 

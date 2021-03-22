@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20210316
+ * @version 	v.20210321
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -51,92 +51,94 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private $mkdw_version = 'v.1.5.4-r.20210316@smart'; // with fixes from 1.5.1 -> 1.5.4 + extended syntax by unixman + character encoding fixes
+	private $mkdw_version = 'Smart.Markdown.parser@v.1.8.0-r.20210321'; // with fixes from 1.5.1 -> 1.5.4 -> 1.8.0, removed support for HTML markup (was unsafe and could lead to many XSS vulnerabilities ...) + unixman fixes: security, optimizations, extended syntax, character encoding fixes, regex escapings
 
 	//===================================
 
 	//--
-	private $breaksEnabled = true; // add <br> for text on multiple lines
-	private $markupEscaped = true; // allow html tags or not
-	private $urlsLinked = false; // use URLs
-	private $htmlEntitiesEscaped = false; // escape HTML Entities such as &nbsp; (this is useful and normally should not be disabled)
+	private $breaksEnabled = true; 			// add <br> for text on multiple lines
+	private $sBreakEnabled = true;			// enable \s and \S
+	private $urlsLinked = true; 			// parse URLs from texts
+	private $htmlEntitiesDisabled = false; 	// if TRUE will Disable the HTML Entities such as &nbsp; (this is useful and normally should not be disabled)
+	private $validateHtml = false; 			// Validate the HTML Code using the SmartHtmlParser with DOM
 	//--
-	private $BlockTypes = array(
-		'#' => array('Header'),
-		'*' => array('Rule', 'List'),
-		'+' => array('List'),
-		'-' => array('SetextHeader', 'Table', 'Rule', 'List'),
-		'0' => array('List'),
-		'1' => array('List'),
-		'2' => array('List'),
-		'3' => array('List'),
-		'4' => array('List'),
-		'5' => array('List'),
-		'6' => array('List'),
-		'7' => array('List'),
-		'8' => array('List'),
-		'9' => array('List'),
-		':' => array('Table'),
-		'<' => array('Comment', 'Markup'),
-		'=' => array('SetextHeader'),
-		'>' => array('Quote'),
-		'[' => array('Reference'),
-		'_' => array('Rule'),
-		'`' => array('FencedCode'),
-		'|' => array('Table'),
-	//	'~' => array('FencedCode'),
-		'~' => array('FencedPreformat'), // fix by unixman
-	);
-//	private $DefinitionTypes = array(
-//		'[' => array('Reference'),
-//	); // removed since v.1.5.4
-	private $unmarkedBlockTypes = array(
-		'Code',
-	);
-	private $InlineTypes = array(
-		'"' => array('SpecialCharacter'),
-		'!' => array('Image'),
-		'&' => array('SpecialCharacter'),
-		'*' => array('Emphasis'),
-		':' => array('Url'),
-		'<' => array('UrlTag', 'EmailTag', 'Markup', 'SpecialCharacter'),
-		'>' => array('SpecialCharacter'),
-		'[' => array('Link'),
-		'_' => array('Emphasis'),
-		'`' => array('Code'),
-		'~' => array('Strikethrough', 'Subscript'), // '~' => array('Strikethrough') # extended syntax by unixman
-		'^' => array('Superscript'), // extended syntax by unixman
-		'\\' => array('EscapeSequence'),
-	);
-	private $inlineMarkerList = '!"*_&[:<>`~^\\'; // $inlineMarkerList = '!"*_&[:<>`~\\'; # extended syntax by unixman
 	private $DefinitionData;
-	private $specialCharacters = array(
+	//--
+
+	private $BlockTypes = [
+		'#' => [ 'Header' ],
+		'*' => [ 'Rule', 'List' ],
+		'+' => [ 'List' ],
+		'-' => [ 'SetextHeader', 'Table', 'Rule', 'List' ],
+		'0' => [ 'List' ],
+		'1' => [ 'List' ],
+		'2' => [ 'List' ],
+		'3' => [ 'List' ],
+		'4' => [ 'List' ],
+		'5' => [ 'List' ],
+		'6' => [ 'List' ],
+		'7' => [ 'List' ],
+		'8' => [ 'List' ],
+		'9' => [ 'List' ],
+		':' => [ 'Table' ],
+		'<' => [ 'Validate' ],
+		'=' => [ 'SetextHeader' ],
+		'>' => [ 'Quote' ],
+		'[' => [ 'Reference' ],
+		'_' => [ 'Rule' ],
+		'`' => [ 'FencedCode' ],
+		'|' => [ 'Table' ],
+		'~' => [ 'FencedPreformat' ], // fix by unixman, use 'FencedPreformat' instead of 'FencedCode'
+	];
+
+	private $unmarkedBlockTypes = [
+		'Code',
+	];
+
+	private $InlineTypes = [ // this one is from v.1.5.4 but is safer than the
+		'"'  => [ 'SpecialCharacter'],
+		'!'  => [ 'Image'],
+		'&'  => [ 'SpecialCharacter' ],
+		'*'  => [ 'Emphasis' ],
+		':'  => [ 'Url' ],
+		'<'  => [ 'UrlTag', 'EmailTag', 'SpecialCharacter', 'Validate' ],
+		'>'  => [ 'SpecialCharacter' ],
+		'['  => [ 'Link' ],
+		'_'  => [ 'Emphasis' ],
+		'`'  => [ 'Code' ],
+		'~'  => [ 'Strikethrough', 'Subscript' ], // '~' => array('Strikethrough') # extended syntax by unixman
+		'^'  => [ 'Superscript' ], // extended syntax by unixman
+		'\\' => [ 'EscapeSequence' ],
+	];
+
+	private $inlineMarkerList = '!"*_&[:<>`~^\\'; // $inlineMarkerList = '!"*_&[:<>`~\\'; // this is from v.1.5.4 and extended syntax by unixman
+
+	/* old, from v.1.5.4
+	private $specialCharacters = [
 		'\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '>', '#', '+', '-', '.', '!', '|',
-	);
-	private $StrongRegex = array(
+	];
+	*/
+	private $specialCharacters = [ // fix from 1.8.0, added ~
+		'\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '>', '#', '+', '-', '.', '!', '|', '~'
+	];
+
+	/* old, from v.1.5.4
+	private $StrongRegex = [
 		'*' => '/^[*]{2}((?:\\\\\*|[^*]|[*][^*]*[*])+?)[*]{2}(?![*])/s',
 		'_' => '/^__((?:\\\\_|[^_]|_[^_]*_)+?)__(?!_)/us',
-	);
-	private $EmRegex = array(
+	];
+	*/
+	private $StrongRegex = [ // fix from 1.8.0
+		'*' => '/^[*]{2}((?:\\\\\*|[^*]|[*][^*]*+[*])+?)[*]{2}(?![*])/s',
+		'_' => '/^__((?:\\\\_|[^_]|_[^_]*+_)+?)__(?!_)/us',
+	];
+
+	private $EmRegex = [
 		'*' => '/^[*]((?:\\\\\*|[^*]|[*][*][^*]+?[*][*])+?)[*](?![*])/s',
 		'_' => '/^_((?:\\\\_|[^_]|__[^_]*__)+?)_(?!_)\b/us',
-	);
-	private $regexHtmlAttribute = '[a-zA-Z_:][\w:.-]*(?:\s*=\s*(?:[^"\'=<>`\s]+|"[^"]*"|\'[^\']*\'))?';
-	private $voidElements = array(
-		'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source',
-	);
-	private $textLevelElements = array(
-		'a', 'br', 'bdo', 'abbr', 'blink', 'nextid', 'acronym', 'basefont',
-		'b', 'em', 'big', 'cite', 'small', 'spacer', 'listing',
-		'i', 'rp', 'del', 'code',          'strike', 'marquee',
-		'q', 'rt', 'ins', 'font',          'strong',
-		's', 'tt', 'sub', 'mark',
-		'u', 'xm', 'sup', 'nobr',
-				   'var', 'ruby',
-				   'wbr', 'span',
-						  'time',
-	);
-	//-- extra (attributes can optional start with a type prefix to know which attributes to assign to nested elements (ex: image in a link, or link in a table cell, or image in a link in a table cell)
+	];
+
+	//-- extra, by unixman: attributes can optional start with a type prefix to know which attributes to assign to nested elements (ex: image in a link, or link in a table cell, or image in a link in a table cell)
 	private $regexImgAttribute = '[ ]*{(I\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Images - optional starts with {I:
 	private $regexLnkAttribute = '[ ]*{(L\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Links  - optional starts with {L:
 	private $regexTblAttribute = '[ ]*{(T\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Tables - optional starts with {T:
@@ -148,16 +150,14 @@ final class SmartMarkdownToHTML {
 	/**
 	 * Class constructor with many options
 	 */
-	public function __construct($y_breaksEnabled=true, $y_markupEscaped=true, $y_urlsLinked=true, $y_htmlEntitiesEscaped=false) {
+	public function __construct(bool $y_breaksEnabled=true, bool $y_sBreakEnabled=true, bool $y_urlsLinked=true, bool $y_htmlEntitiesDisabled=false, bool $y_validateHtml=false) {
 		//--
-		if(!$y_markupEscaped) {
-			$y_urlsLinked = false; // fix
-		} //end if
+		$this->breaksEnabled 			= (bool) $y_breaksEnabled; // add <br> for text on multiple lines
+		$this->sBreakEnabled 			= (bool) $y_sBreakEnabled; // enable ``` ``` \S \s
+		$this->urlsLinked 				= (bool) $y_urlsLinked; // parse URLs from texts
+		$this->htmlEntitiesDisabled 	= (bool) $y_htmlEntitiesDisabled; // if disabled the Markdown parser will disallow all html entities (ex: &reg; &copy) and will escape them as regular text
 		//--
-		$this->breaksEnabled 		= (bool) $y_breaksEnabled;
-		$this->markupEscaped 		= (bool) $y_markupEscaped;
-		$this->urlsLinked 			= (bool) $y_urlsLinked;
-		$this->htmlEntitiesEscaped 	= (bool) $y_htmlEntitiesEscaped;
+		$this->validateHtml 			= (bool) $y_validateHtml; // validate the HTML via Cleaner, (if Tidy or DOM is available will be used) ; this is slow ... but adds extra safety ; this is normally needed only with untrusted markdown that can come from untrusted users, normally should not be enabled
 		//--
 	} //END FUNCTION
 
@@ -168,16 +168,27 @@ final class SmartMarkdownToHTML {
 	 * @return STRING HTML code
 	 */
 	public function text($text) {
+		//-- check
+		if(!Smart::is_nscalar($text)) {
+			Smart::log_notice(__METHOD__.' # Text is not nScalar: '.print_r($text,1));
+			return '<!-- Markdown Parser Failed ... Text is not nScalar ... -->';
+		} //end if
 		//-- make sure no definitions are set
 		$this->DefinitionData = array(); // init
 		//-- Fix broking curly quotes: ‘ = &lsquo; [0145] ; ’ = &rsquo; [0146] ; “ = &ldquo; [0147] ; ” = &rdquo; [0148]
 		$text = (string) str_replace(['‘', '’', '“', '”'], ['\'', '\'', '"', '"'], $text); // bug fix (special apostrophes will break the UTF-8 markdown ... don't know why !? but need fixing ; perhaps they are interpreted different in UTF-16 context !!!)
-		//-- hack: allow space syntax (needed when a new line is required without content, to avoid use &nbsp; which is complicated ...)
-		$text = (string) str_replace('``` ```', '&nbsp;', $text);
 		//-- standardize line breaks
 		$text = (string) str_replace(["\r\n", "\r"], "\n", $text);
-		//-- fix \s
-		$text = (string) str_replace('\\s'."\n", '&nbsp;'."\n".'&nbsp;'."\n", $text); // fix: replace \\s\n with a new line
+		//-- special breaks: ``` ``` is a replacement syntax for \S, which both renders as &nbsp; ; \s will render as \n&nbsp;\n ; if html entities are enabled the use of &nbsp; can supply the same functionality but if the html entities are disabled there is no way to use directly &nbsp; thus these will make the job
+		if($this->sBreakEnabled) {
+			$text = (string) str_replace('``` ```', '&nbsp;', $text); // this acts like \S {{{SYNC-MARKDOWN-S-BREAK-CAPITAL}}}
+			$text = (string) str_replace(['\\S'."\n", '\\S'], '&nbsp;', $text); // this acts like ``` ``` as when sBreaks Enabled will have both \s \S
+			$text = (string) str_replace(['\\s'."\n", '\\s'], '&nbsp;'."\n".'&nbsp;'."\n", $text); // fix: replace \\s\n with a new line
+		} else {
+			$text = (string) str_replace('``` ```', '', $text);
+			$text = (string) str_replace(['\\S'."\n", '\\S'], '', $text);
+			$text = (string) str_replace(['\\s'."\n", '\\s'], "\n", $text);
+		} //end if else
 		//-- remove surrounding line breaks
 		$text = (string) trim($text, "\n");
 		//-- split text into lines
@@ -185,11 +196,11 @@ final class SmartMarkdownToHTML {
 		$text = ''; // free mem
 		//-- iterate through lines to identify blocks
 		$markup = (string) $this->lines($lines);
-		$lines = array(); // free mem
+		$lines = null; // free mem
 		//-- trim line breaks
 		$markup = (string) trim($markup, "\n");
 		//-- prepare the HTML
-		$markup = (string) $this->prepareHTML($markup);
+		$markup = (string) $this->prepareHTML((string)$markup);
 		//-- fix charset
 		$markup = (string) SmartUnicode::fix_charset($markup); // fix by unixman (in case that broken UTF-8 characters are detected just try to fix them to avoid break JSON)
 		//-- Comment Out PHP tags
@@ -200,46 +211,164 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	//-- # Blocks
+	//===== [PRIVATES]
 
-	private function prepareHTML($markup) {
+
+	//-- # prepare HTML
+
+
+	private function prepareHTML(string $markup) {
 		//--
 		if($this->breaksEnabled) {
 			$info_linebreaks = 'B:1';
 		} else {
 			$info_linebreaks = 'B:0';
 		} //end if else
-		if($this->markupEscaped) {
-			$info_markup = 'M:0';
+		if($this->sBreakEnabled) {
+			$info_sbreaks = 'S:1';
 		} else {
-			$info_markup = 'M:1';
+			$info_sbreaks = 'S:0';
 		} //end if else
 		if($this->urlsLinked) {
 			$info_urls = 'L:1';
 		} else {
 			$info_urls = 'L:0';
 		} //end if else
-		if($this->htmlEntitiesEscaped) {
+		if($this->htmlEntitiesDisabled) {
 			$info_entities = 'E:0';
 		} else {
 			$info_entities = 'E:1';
 		} //end if else
-		//-- it always add tags ...
-		return (string) $markup = "\n".'<!--  HTML/Markdown # ( '.Smart::escape_html($info_linebreaks.' '.$info_markup.' '.$info_urls.' '.$info_entities.' T:'.date('YmdHi')).' )  -->'."\n".'<div id="markdown-'.sha1((string)$markup).'-'.Smart::uuid_10_num().'" class="markdown">'."\n".$markup."\n".'</div>'."\n".'<!--  # HTML/Markdown # '.Smart::escape_html((string)$this->mkdw_version).' #  -->'."\n"; // if parsed and contain HTML Tags, add div and comments
+		if($this->validateHtml) {
+			$info_validatehtml = 'V:1';
+		} else {
+			$info_validatehtml = 'V:0';
+		} //end if
+		//--
+		$markup = "\n".'<!--  HTML/Markdown :: ( '.Smart::escape_html($info_linebreaks.' '.$info_sbreaks.' '.$info_urls.' '.$info_entities.' '.$info_validatehtml.' T:'.date('YmdHi')).' ) -->'."\n".'<div id="markdown-'.sha1((string)$markup).'-'.Smart::uuid_10_num().'" class="markdown">'."\n".$markup."\n".'</div>'."\n".'<!--  # HTML/Markdown # '.Smart::escape_html((string)$this->mkdw_version).'  -->'."\n"; // if parsed and contain HTML Tags, add div and comments
+		//--
+		if($this->validateHtml) {
+			$htmlparser = new SmartHtmlParser((string)$markup);
+			$markup = (string) $htmlparser->get_clean_html();
+			$htmlparser = null;
+		} //end if
+		//--
+		return (string) $markup;
 		//--
 	} //END FUNCTION
 
 
-	private function lines(array $lines) {
+	//-- # unmarked Text
+
+	private function unmarkedText($text) {
+		//--
+		if(!Smart::is_nscalar($text)) {
+			return '';
+		} //end if
+		//--
+		if($this->breaksEnabled) {
+			//--
+			$text = (string) preg_replace('/[ ]*\n/', "<br>\n", (string)$text);
+			//--
+		} else {
+			//--
+			$text = (string) preg_replace('/(?:[ ][ ]+|[ ]*\\\\)\n/', "<br>\n", (string)$text);
+			$text = (string) str_replace(" \n", "\n", (string)$text);
+			//--
+		} //end if else
+		//--
+		return (string) $text;
+		//--
+	} //END FUNCTION
+
+
+	//-- # Lines, Paragraph
+
+
+	private function line($text) {
+		//--
+		if(!Smart::is_nscalar($text)) {
+			return '';
+		} //end if
+		//--
+		$markup = '';
+		//--
+		while($excerpt = strpbrk($text, $this->inlineMarkerList)) { // $excerpt is based on the first occurrence of a marker
+			//--
+			$marker = $excerpt[0];
+			//--
+			$markerPosition = strpos($text, $marker); // mixed
+			//--
+			$Excerpt = array('text' => $excerpt, 'context' => $text);
+			//--
+			foreach($this->InlineTypes[$marker] as $z => $inlineType) {
+				//--
+				$Inline = $this->{'inline'.$inlineType}($Excerpt);
+				//--
+				if(!isset($Inline)) {
+					continue;
+				} //end if
+				//-- makes sure that the inline belongs to "our" marker
+				if(isset($Inline['position']) AND ($Inline['position'] > $markerPosition)) {
+					continue;
+				} //end if
+				//-- sets a default inline position
+				if(!isset($Inline['position'])) {
+					$Inline['position'] = $markerPosition;
+				} //end if
+				//-- the text that comes before the inline
+				$unmarkedText = substr($text, 0, $Inline['position']);
+				//-- compile the unmarked text
+				$markup .= $this->unmarkedText($unmarkedText);
+				//-- compile the inline
+				$markup .= isset($Inline['markup']) ? $Inline['markup'] : $this->element($Inline['element']);
+				//-- remove the examined text
+				$text = substr($text, $Inline['position'] + $Inline['extent']);
+				//--
+				continue 2;
+				//--
+			} //end foreach
+			//-- the marker does not belong to an inline
+			$unmarkedText = substr($text, 0, $markerPosition + 1);
+			//--
+			$markup .= $this->unmarkedText($unmarkedText);
+			//--
+			$text = substr($text, $markerPosition + 1);
+			//--
+		} //end while
+		//--
+		$markup .= $this->unmarkedText($text);
+		//--
+		return (string) $markup;
+		//--
+	} //END FUNCTION
+
+
+	private function lines($lines) {
+		//--
+		if(!is_array($lines)) {
+			return '';
+		} //end if
 		//--
 		$CurrentBlock = null;
 		//--
+		$crrLine = -1;
+		$emptyLines = 0;
+		//--
 		foreach($lines as $z => $line) {
 			//--
-		//	if(chop($line) === '') {
+			$crrLine++;
+			//--
+			if(trim($line) === '') {
+				$emptyLines++; // count plus
+			} else {
+				$emptyLines = 0; // restart counting
+			} //end if
+			//--
 			if(rtrim($line) === '') {
 				//--
-				if(isset($CurrentBlock)) {
+			//	if(isset($CurrentBlock)) {
+				if(is_array($CurrentBlock)) { // fix by unixman
 					$CurrentBlock['interrupted'] = true;
 				} //end if
 				//--
@@ -249,7 +378,7 @@ final class SmartMarkdownToHTML {
 			//--
 			if(strpos($line, "\t") !== false) {
 				//--
-				$parts = explode("\t", $line);
+				$parts = (array) explode("\t", $line);
 				//--
 				$line = (string) (isset($parts[0]) ? $parts[0] : '');
 				unset($parts[0]);
@@ -276,8 +405,7 @@ final class SmartMarkdownToHTML {
 			//--
 			$Line = array('body' => $line, 'indent' => $indent, 'text' => $text);
 			//--
-			//if(isset($CurrentBlock['incomplete'])) {
-			if(isset($CurrentBlock['continuable'])) { // fix from 1.5.4
+			if(isset($CurrentBlock['continuable'])) {
 				//--
 				$Block = $this->{'block'.$CurrentBlock['type'].'Continue'}($Line, $CurrentBlock);
 				//--
@@ -294,8 +422,6 @@ final class SmartMarkdownToHTML {
 						$CurrentBlock = $this->{'block'.$CurrentBlock['type'].'Complete'}($CurrentBlock);
 						//--
 					} //end if
-					//--
-					//unset($CurrentBlock['incomplete']); // fix from 1.5.4
 					//--
 				} //end if else
 				//--
@@ -327,8 +453,7 @@ final class SmartMarkdownToHTML {
 					} //end if
 					//--
 					if(method_exists($this, 'block'.$blockType.'Continue')) {
-						//$Block['incomplete'] = true;
-						$Block['continuable'] = true; // fix from 1.5.4
+						$Block['continuable'] = true;
 					} //end if
 					//--
 					$CurrentBlock = $Block;
@@ -354,8 +479,7 @@ final class SmartMarkdownToHTML {
 			//--
 		} //end foreach
 		//--
-		//if(isset($CurrentBlock['incomplete']) AND method_exists($this, 'block'.$CurrentBlock['type'].'Complete')) {
-		if(isset($CurrentBlock['continuable']) AND method_exists($this, 'block'.$CurrentBlock['type'].'Complete')) { // fix from 1.5.4
+		if(isset($CurrentBlock['continuable']) AND method_exists($this, 'block'.$CurrentBlock['type'].'Complete')) {
 			//--
 			$CurrentBlock = $this->{'block'.$CurrentBlock['type'].'Complete'}($CurrentBlock);
 			//--
@@ -380,7 +504,24 @@ final class SmartMarkdownToHTML {
 		//--
 		$markup .= "\n";
 		//--
-		return $markup;
+		return (string) $markup;
+		//--
+	} //END FUNCTION
+
+
+	private function paragraph($Line) {
+		//--
+		if(!is_array($Line)) {
+			return;
+		} //end if
+		//--
+		return array( // Block
+			'element' => array(
+				'name' => 'p',
+				'text' => $Line['text'],
+				'handler' => 'line',
+			),
+		);
 		//--
 	} //END FUNCTION
 
@@ -388,9 +529,41 @@ final class SmartMarkdownToHTML {
 	//-- # Code
 
 
-	private function blockCode($Line, $Block = null) {
+	private function inlineCode($Excerpt) {
 		//--
-		if(isset($Block) AND !isset($Block['type']) AND !isset($Block['interrupted'])) {
+		if(!is_array($Excerpt)) {
+			return;
+		} //end if
+		//--
+		$marker = (string) $Excerpt['text'][0];
+		//--
+	//	if(preg_match('/^('.$marker.'+)[ ]*(.+?)[ ]*(?<!'.$marker.')\1(?!'.$marker.')/s', (string)$Excerpt['text'], $matches)) {
+		if(preg_match('/^('.preg_quote((string)$marker).'+)[ ]*(.+?)[ ]*(?<!'.preg_quote((string)$marker).')\1(?!'.preg_quote((string)$marker).')/s', (string)$Excerpt['text'], $matches)) { // fix by unixman, keep original + add preg_quote() otherwise is totally unsafe and can also crash the PHP code execution
+			//--
+			$text = (string) (isset($matches[2]) ? $matches[2] : '');
+			$text = (string) preg_replace("/[ ]*\n/", ' ', $text);
+			//--
+			return array(
+				'extent' => strlen($matches[0]),
+				'element' => array(
+					'name' => 'code',
+					'text' => $text,
+				),
+			);
+			//--
+		} //end if
+		//--
+	} //END FUNCTION
+
+
+	private function blockCode($Line, $Block=null) {
+		//--
+		if(
+			!is_array($Line) AND
+			isset($Block) AND // specific check for isset
+			!isset($Block['type']) AND
+			!isset($Block['interrupted'])
+		) {
 			return;
 		} //end if
 		//--
@@ -416,7 +589,7 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function blockCodeContinue($Line, $Block) {
+	private function blockCodeContinue($Line, $Block=null) {
 		//--
 		if($Line['indent'] >= 4) {
 			//--
@@ -441,54 +614,9 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function blockCodeComplete($Block) {
+	private function blockCodeComplete($Block=null) {
 		//--
-		$text = $Block['element']['text']['text'];
-		//--
-		$Block['element']['text']['text'] = Smart::escape_html($text); // fix from: html special chars ENT_NOQUOTES UTF-8
-		//--
-		return $Block;
-		//--
-	} //END FUNCTION
-
-
-	//-- # Comment
-
-
-	private function blockComment($Line) {
-		//--
-		if($this->markupEscaped) {
-			return;
-		} //end if
-		//--
-		if(isset($Line['text'][3]) AND ($Line['text'][3] === '-') AND ($Line['text'][2] === '-') AND ($Line['text'][1] === '!')) {
-			//--
-			$Block = array(
-				'markup' => $Line['body'],
-			);
-			//--
-			if(preg_match('/-->$/', $Line['text'])) {
-				$Block['closed'] = true;
-			} //end if
-			//--
-			return $Block;
-			//--
-		} //end if
-		//--
-	} //END FUNCTION
-
-
-	private function blockCommentContinue($Line, array $Block) {
-		//--
-		if(isset($Block['closed'])) {
-			return;
-		} //end if
-		//--
-		$Block['markup'] .= "\n" . $Line['body'];
-		//--
-		if(preg_match('/-->$/', $Line['text'])) {
-			$Block['closed'] = true;
-		} //end if
+		// all escapings are centralized now ; test ok
 		//--
 		return $Block;
 		//--
@@ -498,10 +626,18 @@ final class SmartMarkdownToHTML {
 	//-- # Fenced Code
 
 
+	// no need for inlineFencedCode
+
+
 	private function blockFencedCode($Line) {
 		//--
+		if(!is_array($Line)) {
+			return;
+		} //end if
+		//--
 		//if(preg_match('/^(['.$Line['text'][0].']{3,})[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches)) {
-		if(preg_match('/^['.$Line['text'][0].']{3,}[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches)) { // fix from 1.5.4
+	//	if(preg_match('/^['.$Line['text'][0].']{3,}[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches)) { // fix from 1.5.4
+		if(preg_match('/^['.preg_quote((string)$Line['text'][0]).']{3,}[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches)) { // fix by unixman, keep v.1.5.4 + add preg_quote() otherwise is totally unsafe and can also crash the PHP code execution
 			//--
 			$Element = array(
 				'name' => 'code',
@@ -545,7 +681,11 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function blockFencedCodeContinue($Line, $Block) {
+	private function blockFencedCodeContinue($Line, $Block=null) {
+		//--
+		if((!is_array($Line)) OR (!is_array($Block))) {
+			return;
+		} //end if
 		//--
 		if(isset($Block['complete'])) {
 			return;
@@ -559,7 +699,7 @@ final class SmartMarkdownToHTML {
 			//--
 		} //end if
 		//--
-		if(preg_match('/^'.$Block['char'].'{3,}[ ]*$/', $Line['text'])) {
+		if(preg_match('/^'.preg_quote((string)$Block['char']).'{3,}[ ]*$/', $Line['text'])) { // fix by unixman, keep original version + add preg_quote() otherwise is totally unsafe and can also crash the PHP code execution
 			//--
 			$Block['element']['text']['text'] = substr($Block['element']['text']['text'], 1);
 			$Block['complete'] = true;
@@ -577,23 +717,28 @@ final class SmartMarkdownToHTML {
 
 	private function blockFencedCodeComplete($Block) {
 		//--
-		$text = $Block['element']['text']['text'];
-		$text = Smart::escape_html($text); // fix from: html special chars ENT_NOQUOTES UTF-8
-		//--
-		$Block['element']['text']['text'] = $text;
+		// all escapings are centralized now ; test ok
 		//--
 		return $Block;
 		//--
 	} //END FUNCTION
 
 
-	//-- # Pre(format) :: by unixman (copied from *FencedCode*) to separate handle pre from code
+	//-- # Fenced (Code) Preformat :: by unixman (derived from FencedCode) to separate handle 'pre' vs 'code' html tags
+
+
+	// no need for inlineFencedPreformat
 
 
 	private function blockFencedPreformat($Line) {
 		//--
-		//if(preg_match('/^(['.$Line['text'][0].']{3,})[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches)) {
-		if(preg_match('/^['.$Line['text'][0].']{3,}[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches)) { // fix from 1.5.4
+		if(!is_array($Line)) {
+			return;
+		} //end if
+		//--
+	//	if(preg_match('/^(['.$Line['text'][0].']{3,})[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches)) {
+	//	if(preg_match('/^['.$Line['text'][0].']{3,}[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches)) { // fix from 1.5.4
+		if(preg_match('/^['.preg_quote((string)$Line['text'][0]).']{3,}[ ]*([\w-]+)?[ ]*$/', $Line['text'], $matches)) { // fix by unixman, keep v.1.5.4 + add preg_quote() otherwise is totally unsafe and can also crash the PHP code execution
 			//--
 			$Element = array(
 				'name' => 'pre',
@@ -616,7 +761,11 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function blockFencedPreformatContinue($Line, $Block) {
+	private function blockFencedPreformatContinue($Line, $Block=null) {
+		//--
+		if((!is_array($Line)) OR (!is_array($Block))) {
+			return;
+		} //end if
 		//--
 		if(isset($Block['complete'])) {
 			return;
@@ -630,7 +779,8 @@ final class SmartMarkdownToHTML {
 			//--
 		} //end if
 		//--
-		if(preg_match('/^'.$Block['char'].'{3,}[ ]*$/', $Line['text'])) {
+	//	if(preg_match('/^'.$Block['char'].'{3,}[ ]*$/', $Line['text'])) {
+		if(preg_match('/^'.preg_quote((string)$Block['char']).'{3,}[ ]*$/', $Line['text'])) { // fix by unixman, keep original + add preg_quote() otherwise is totally unsafe and can also crash the PHP code execution
 			//--
 			$Block['element']['text']['text'] = substr($Block['element']['text']['text'], 1);
 			$Block['complete'] = true;
@@ -648,10 +798,7 @@ final class SmartMarkdownToHTML {
 
 	private function blockFencedPreformatComplete($Block) {
 		//--
-		$text = $Block['element']['text']['text'];
-		$text = Smart::escape_html($text); // fix from: html special chars ENT_NOQUOTES UTF-8
-		//--
-		$Block['element']['text']['text'] = $text;
+		// all escapings are centralized now ; test ok
 		//--
 		return $Block;
 		//--
@@ -661,7 +808,14 @@ final class SmartMarkdownToHTML {
 	//-- # Header
 
 
+	//-- no need for inlineHeader
+
+
 	private function blockHeader($Line) {
+		//--
+		if(!is_array($Line)) {
+			return;
+		} //end if
 		//--
 		if(isset($Line['text'][1])) {
 			//--
@@ -695,17 +849,24 @@ final class SmartMarkdownToHTML {
 	//-- # List
 
 
+	// no need for inlineList
+
+
 	private function blockList($Line) {
 		//--
-		list($name, $pattern) = $Line['text'][0] <= '-' ? array('ul', '[*+-]') : array('ol', '[0-9]+[.]');
+		if(!is_array($Line)) {
+			return;
+		} //end if
 		//--
-		if(preg_match('/^('.$pattern.'[ ]+)(.*)/', $Line['text'], $matches)) {
+		list($name, $pattern) = (array) (($Line['text'][0] <= '-') ? ['ul', '[*+-]'] : ['ol', '[0-9]+[.]']); // {{{MARKDOWN-PATTERN-UL-OL}}}
+		//--
+		if(preg_match('/^('.$pattern.'[ ]+)(.*)/', $Line['text'], $matches)) { // no need for preg_quote() here, the $pattern is a regex that come from above {{{MARKDOWN-PATTERN-UL-OL}}}
 			//--
 			$Block = array(
 				'indent' => $Line['indent'],
-				'pattern' => $pattern,
+				'pattern' => (string) $pattern,
 				'element' => array(
-					'name' => $name,
+					'name' => (string) $name,
 					'handler' => 'elements',
 				),
 			);
@@ -718,7 +879,7 @@ final class SmartMarkdownToHTML {
 				),
 			);
 			//--
-			$Block['element']['text'][]= & $Block['li'];
+			$Block['element']['text'][] =& $Block['li']; // pass by reference to reflect later changes
 			//--
 			return $Block;
 			//--
@@ -727,9 +888,13 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function blockListContinue($Line, array $Block) {
+	private function blockListContinue($Line, $Block=null) {
 		//--
-		if($Block['indent'] === $Line['indent'] AND preg_match('/^'.$Block['pattern'].'(?:[ ]+(.*)|$)/', $Line['text'], $matches)) {
+		if((!is_array($Line)) OR (!is_array($Block))) {
+			return;
+		} //end if
+		//--
+		if($Block['indent'] === $Line['indent'] AND preg_match('/^'.$Block['pattern'].'(?:[ ]+(.*)|$)/', $Line['text'], $matches)) { // no need for preg_quote() here, the $Block['pattern'] is a regex that come from above {{{MARKDOWN-PATTERN-UL-OL}}}
 			//--
 			if(isset($Block['interrupted'])) {
 				//--
@@ -791,7 +956,14 @@ final class SmartMarkdownToHTML {
 	//-- # Quote
 
 
+	// no need for inlineQuote
+
+
 	private function blockQuote($Line) {
+		//--
+		if(!is_array($Line)) {
+			return;
+		} //end if
 		//--
 		if(preg_match('/^>[ ]?(.*)/', $Line['text'], $matches)) {
 			//--
@@ -810,7 +982,11 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function blockQuoteContinue($Line, array $Block) {
+	private function blockQuoteContinue($Line, $Block=null) {
+		//--
+		if((!is_array($Line)) OR (!is_array($Block))) {
+			return;
+		} //end if
 		//--
 		if($Line['text'][0] === '>' AND preg_match('/^>[ ]?(.*)/', $Line['text'], $matches)) {
 			//--
@@ -842,9 +1018,17 @@ final class SmartMarkdownToHTML {
 	//-- # Rule
 
 
+	// no need for inlineRule
+
+
 	private function blockRule($Line) {
 		//--
-		if(preg_match('/^(['.$Line['text'][0].'])([ ]*\1){2,}[ ]*$/', $Line['text'])) {
+		if(!is_array($Line)) {
+			return;
+		} //end if
+		//--
+	//	if(preg_match('/^(['.$Line['text'][0].'])([ ]*\1){2,}[ ]*$/', $Line['text'])) {
+		if(preg_match('/^(['.preg_quote((string)$Line['text'][0]).'])([ ]*\1){2,}[ ]*$/', $Line['text'])) { // fix by unixman, keep original + add preg_quote() otherwise is totally unsafe and can also crash the PHP code execution
 			//--
 			$Block = array(
 				'element' => array(
@@ -859,112 +1043,29 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	//-- # Setext
+	//-- # Setext Header
 
 
-	private function blockSetextHeader($Line, array $Block = null) {
+	// no need for inlineSetextHeader
+
+
+	private function blockSetextHeader($Line, $Block=null) {
 		//--
-		if(!isset($Block) OR isset($Block['type']) OR isset($Block['interrupted'])) {
+		if((!is_array($Line)) OR (!is_array($Block))) {
 			return;
 		} //end if
 		//--
-	//	if(chop($Line['text'], $Line['text'][0]) === '') {
+		if(isset($Block['type']) OR isset($Block['interrupted'])) {
+			return;
+		} //end if
+		//--
 		if(rtrim($Line['text'], $Line['text'][0]) === '') {
 			//--
-			$Block['element']['name'] = $Line['text'][0] === '=' ? 'h1' : 'h2';
+			$Block['element']['name'] = (string) (($Line['text'][0] === '=') ? 'h1' : 'h2');
 			//--
 			return $Block;
 			//--
 		} //end if
-		//--
-	} //END FUNCTION
-
-
-	//-- # Markup
-
-
-	private function blockMarkup($Line) {
-		//--
-		if($this->markupEscaped) {
-			return;
-		} //end if
-		//--
-		if(preg_match('/^<(\w*)(?:[ ]*'.$this->regexHtmlAttribute.')*[ ]*(\/)'.'?'.'>/', $Line['text'], $matches)) {
-			//--
-			//if(in_array($matches[1], $this->textLevelElements)) {
-			if(in_array(strtolower($matches[1]), $this->textLevelElements)) { // fix from 1.5.4
-				return;
-			} //end if
-			//--
-			$Block = array(
-				'name' => $matches[1],
-				'depth' => 0,
-				'markup' => $Line['text'],
-			);
-			//--
-			$length = strlen($matches[0]);
-			//--
-			$remainder = substr($Line['text'], $length);
-			//--
-			if(trim($remainder) === '') {
-				//--
-				if(isset($matches[2]) OR in_array($matches[1], $this->voidElements)) {
-					//--
-					$Block['closed'] = true;
-					$Block['void'] = true;
-					//--
-				} //end if
-				//--
-			} else {
-				//--
-				if(isset($matches[2]) OR in_array($matches[1], $this->voidElements)) {
-					return;
-				} //end if
-				//--
-				if(preg_match('/<\/'.$matches[1].'>[ ]*$/i', $remainder)) {
-					$Block['closed'] = true;
-				} //end if
-				//--
-			} //end if else
-			//--
-			return $Block;
-			//--
-		} //end if
-		//--
-	} //END FUNCTION
-
-
-	private function blockMarkupContinue($Line, array $Block) {
-		//--
-		if(isset($Block['closed'])) {
-			return;
-		} //end if
-		//--
-		if(preg_match('/^<'.$Block['name'].'(?:[ ]*'.$this->regexHtmlAttribute.')*[ ]*>/i', $Line['text'])) { // open
-			$Block['depth'] ++;
-		} //end if
-		//--
-		if(preg_match('/(.*?)<\/'.$Block['name'].'>[ ]*$/i', $Line['text'], $matches)) { // close
-			//--
-			if($Block['depth'] > 0) {
-				$Block['depth'] --;
-			} else {
-				$Block['closed'] = true;
-			} //end if else
-			//--
-		} //end if
-		//--
-		if(isset($Block['interrupted'])) {
-			//--
-			$Block['markup'] .= "\n";
-			//--
-			unset($Block['interrupted']);
-			//--
-		} //end if
-		//--
-		$Block['markup'] .= "\n".$Line['body'];
-		//--
-		return $Block;
 		//--
 	} //END FUNCTION
 
@@ -972,7 +1073,14 @@ final class SmartMarkdownToHTML {
 	//-- # Reference
 
 
+	// no need for inlineReference
+
+
 	private function blockReference($Line) {
+		//--
+		if(!is_array($Line)) {
+			return;
+		} //end if
 		//--
 		if(preg_match('/^\[(.+?)\]:[ ]*<?(\S+?)>?(?:[ ]+["\'(](.+)["\')])?[ ]*$/', $Line['text'], $matches)) {
 			//--
@@ -1003,14 +1111,20 @@ final class SmartMarkdownToHTML {
 	//-- # Table
 
 
-	private function blockTable($Line, array $Block = null) {
+	// no need for inlineTable
+
+
+	private function blockTable($Line, $Block=null) {
 		//--
-		if(!isset($Block) OR isset($Block['type']) OR isset($Block['interrupted'])) {
+		if((!is_array($Line)) OR (!is_array($Block))) {
 			return;
 		} //end if
 		//--
-	//	if((strpos($Block['element']['text'], '|') !== false) AND (chop($Line['text'], ' -:|') === '')) {
-		if((strpos($Block['element']['text'], '|') !== false) AND (rtrim($Line['text'], ' -:|') === '')) {
+		if(isset($Block['type']) OR isset($Block['interrupted'])) {
+			return;
+		} //end if
+		//--
+		if((strpos((string)$Block['element']['text'], '|') !== false) AND ((string)rtrim((string)$Line['text'], ' -:|') === '')) {
 			//-- unixman
 			if($Block['element']['text'][0] === '|') {
 				$is_full_width = true;
@@ -1036,11 +1150,11 @@ final class SmartMarkdownToHTML {
 				//--
 				$alignment = null;
 				//--
-				if($dividerCell[0] === ':') {
+				if(isset($dividerCell[0]) AND ((string)$dividerCell[0] === ':')) {
 					$alignment = 'left';
 				} //end if
 				//--
-				if(substr($dividerCell, - 1) === ':') {
+				if((string)substr((string)$dividerCell, - 1) === ':') {
 					$alignment = $alignment === 'left' ? 'center' : 'right';
 				} //end if
 				//--
@@ -1050,11 +1164,11 @@ final class SmartMarkdownToHTML {
 			//--
 			$HeaderElements = array();
 			//--
-			$header = $Block['element']['text'];
-			$header = trim($header);
-			$header = trim($header, '|');
+			$header = (string) $Block['element']['text'];
+			$header = (string) trim($header);
+			$header = (string) trim($header, '|');
 			//--
-			$headerCells = explode('|', $header);
+			$headerCells = (array) explode('|', $header);
 			//--
 			foreach($headerCells as $index => $headerCell) {
 				//--
@@ -1066,39 +1180,39 @@ final class SmartMarkdownToHTML {
 				);
 				//-- unixman
 				$matches = array();
-				if(preg_match('/'.$this->regexTblAttribute.'/', $headerCell, $matches)) {
+				if(preg_match('/'.$this->regexTblAttribute.'/', $headerCell, $matches)) { // no need for preg_quote() here, $this->regexTblAttribute is a REGEX expr
 					if((!array_key_exists('attributes', $HeaderElement)) OR (!is_array($HeaderElement['attributes']))) {
 						$HeaderElement['attributes'] = array();
 					} //end if
-					$HeaderElement['attributes'] += $this->parseAttributeData($matches[2]);
-					$headerCell = trim((string)substr($headerCell, 0, (strlen($headerCell) - strlen($matches[0]))));
+					$HeaderElement['attributes'] += $this->parseAttributeData((string)(isset($matches[2]) ? $matches[2] : ''));
+					$headerCell = (string) trim((string)substr((string)$headerCell, 0, (strlen((string)$headerCell) - strlen((string)(isset($matches[0]) ? $matches[0] : '')))));
 				} //end if
 				//-- # end unixman
-				$HeaderElement['text'] = $headerCell;
+				$HeaderElement['text'] = (string) $headerCell;
 				//--
 				if(isset($alignments[$index])) {
 					//--
-					$alignment = $alignments[$index];
+					$alignment = (string) $alignments[$index];
 					//--
-					if(!is_array($HeaderElement['attributes'])) {
+					if((!array_key_exists('attributes', $HeaderElement)) OR (!is_array($HeaderElement['attributes']))) {
 						$HeaderElement['attributes'] = array();
 					} //end if
 					$HeaderElement['attributes']['style'] = 'text-align: '.$alignment.';';
 					//--
 				} //end if
 				//--
-				$HeaderElements[] = $HeaderElement;
+				$HeaderElements[] = (array) $HeaderElement;
 				//--
 			} //end foreach
 			//--
 			$Block = array(
-				'alignments' => $alignments,
-				'identified' => true,
-				'element' => array(
-					'name' => 'table',
-					'handler' => 'elements',
-					'attributes' => ($is_full_width ? ['class' => 'full-width-table'] : [])
-				),
+				'alignments' 	=> (array) $alignments,
+				'identified' 	=> true,
+				'element' 		=> [
+					'name' 			=> 'table',
+					'handler' 		=> 'elements',
+					'attributes' 	=> (array) ($is_full_width ? ['class' => 'full-width-table'] : [])
+				],
 			);
 			//--
 			$Block['element']['text'][]= array(
@@ -1118,14 +1232,18 @@ final class SmartMarkdownToHTML {
 				'text' => $HeaderElements
 			);
 			//--
-			return $Block;
+			return (array) $Block;
 			//--
 		} //end if
 		//--
 	} //END FUNCTION
 
 
-	private function blockTableContinue($Line, array $Block) {
+	private function blockTableContinue($Line, $Block=null) {
+		//--
+		if((!is_array($Line)) OR (!is_array($Block))) {
+			return;
+		} //end if
 		//--
 		if(isset($Block['interrupted'])) {
 			return;
@@ -1145,37 +1263,39 @@ final class SmartMarkdownToHTML {
 				return $Block;
 			} //end if
 			//--
-			foreach($matches[0] as $index => $cell) {
-				//--
-				$cell = trim($cell);
-				//--
-				$Element = array(
-					'name' => 'td',
-					'handler' => 'line',
-				);
-				//-- unixman
-				$matches = array();
-				if(preg_match('/'.$this->regexTblAttribute.'/', $cell, $matches)) {
-					if((!array_key_exists('attributes', $Element)) OR (!is_array($Element['attributes']))) {
-						$Element['attributes'] = array();
+			if(is_array($matches[0])) {
+				foreach($matches[0] as $index => $cell) {
+					//--
+					$cell = (string) trim((string)$cell);
+					//--
+					$Element = array(
+						'name' => 'td',
+						'handler' => 'line',
+					);
+					//-- unixman
+					$matches = array();
+					if(preg_match('/'.$this->regexTblAttribute.'/', $cell, $matches)) { // no need for preg_quote() here, $this->regexTblAttribute is a REGEX expr
+						if((!array_key_exists('attributes', $Element)) OR (!is_array($Element['attributes']))) {
+							$Element['attributes'] = array();
+						} //end if
+						$Element['attributes'] += $this->parseAttributeData((string)(isset($matches[2]) ? $matches[2] : ''));
+						$cell = trim((string)substr($cell, 0, (strlen((string)$cell) - strlen((string)(isset($matches[0]) ? $matches[0] : '')))));
 					} //end if
-					$Element['attributes'] += $this->parseAttributeData($matches[2]);
-					$cell = trim((string)substr($cell, 0, (strlen($cell) - strlen($matches[0]))));
-				} //end if
-				//-- # end unixman
-				$Element['text'] = $cell;
-				//--
-				if(isset($Block['alignments'][$index])) {
-					if((!isset($Element['attributes'])) OR (!is_array($Element['attributes']))) {
-						$Element['attributes'] = array();
+					//-- # end unixman
+					$Element['text'] = $cell;
+					//--
+					if(isset($Block['alignments'][$index])) {
+						if((!isset($Element['attributes'])) OR (!is_array($Element['attributes']))) {
+							$Element['attributes'] = array();
+						} //end if
+						//$Element['attributes']['style'] = 'text-align: '.$Block['alignments'][$index].';';
+						$Element['attributes']['style'] = 'text-align: '.$Block['alignments'][$index].'; '.(isset($Element['attributes']['style']) ? $Element['attributes']['style'] : ''); // fix by unixman
 					} //end if
-					//$Element['attributes']['style'] = 'text-align: '.$Block['alignments'][$index].';';
-					$Element['attributes']['style'] = 'text-align: '.$Block['alignments'][$index].'; '.(isset($Element['attributes']['style']) ? $Element['attributes']['style'] : ''); // fix by unixman
-				} //end if
-				//--
-				$Elements[] = $Element;
-				//--
-			} //end foreach
+					//--
+					$Elements[] = $Element;
+					//--
+				} //end foreach
+			} //end if
 			//--
 			$Element = array(
 				'name' => 'tr',
@@ -1192,187 +1312,52 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	//-- # ~
+	//-- # Validate
 
 
-	private function paragraph($Line) {
+	private function inlineValidate($Excerpt) {
 		//--
-		$Block = array(
-			'element' => array(
-				'name' => 'p',
-				'text' => $Line['text'],
-				'handler' => 'line',
-			),
-		);
-		//--
-		return $Block;
+		return;
 		//--
 	} //END FUNCTION
 
 
-	//-- # Inline Elements
-
-	//public function line($text) { // fixed from v.1.5.4
-	private function line($text) { // fixed from v.1.5.4 ; marked as private
-		/*
+	private function blockValidate($Line) {
 		//--
-		$markup = '';
-		//--
-		$unexaminedText = $text;
-		//--
-		$markerPosition = 0;
-		//--
-		while($excerpt = strpbrk($unexaminedText, $this->inlineMarkerList)) {
-			//--
-			$marker = $excerpt[0];
-			//--
-			$markerPosition += strpos($unexaminedText, $marker); // because it uses safe unicode strlen this is used to calculate string intervals and must be unicode safe strpos
-			//--
-			$Excerpt = array('text' => $excerpt, 'context' => $text);
-			//--
-			foreach($this->InlineTypes[$marker] as $z => $inlineType) {
-				//--
-				$Inline = $this->{'inline'.$inlineType}($Excerpt);
-				//--
-				if(!isset($Inline)) {
-					continue;
-				} //end if
-				//--
-				if(isset($Inline['position']) AND $Inline['position'] > $markerPosition) { // position is ahead of marker
-					continue;
-				} //end if
-				//--
-				if(!isset($Inline['position'])) {
-					$Inline['position'] = $markerPosition;
-				} //end if
-				//--
-				$unmarkedText = substr($text, 0, $Inline['position']);
-				//--
-				$markup .= $this->unmarkedText($unmarkedText);
-				$markup .= isset($Inline['markup']) ? $Inline['markup'] : $this->element($Inline['element']);
-				//--
-				$text = substr($text, $Inline['position'] + $Inline['extent']);
-				//--
-				$unexaminedText = $text;
-				//--
-				$markerPosition = 0;
-				//--
-				continue 2;
-				//--
-			} //end foreach
-			//--
-			$unexaminedText = substr($excerpt, 1);
-			//--
-			$markerPosition ++;
-			//--
-		} //end while
-		//--
-		$markup .= $this->unmarkedText($text);
-		//--
-		*/
-		//--
-		$markup = '';
-		//--
-		while($excerpt = strpbrk($text, $this->inlineMarkerList)) { // $excerpt is based on the first occurrence of a marker
-			//--
-			$marker = $excerpt[0];
-			//--
-			$markerPosition = strpos($text, $marker);
-			//--
-			$Excerpt = array('text' => $excerpt, 'context' => $text);
-			//--
-			foreach($this->InlineTypes[$marker] as $z => $inlineType) {
-				//--
-				$Inline = $this->{'inline'.$inlineType}($Excerpt);
-				//--
-				if(!isset($Inline)) {
-					continue;
-				} //end if
-				//-- makes sure that the inline belongs to "our" marker
-				if(isset($Inline['position']) and $Inline['position'] > $markerPosition) {
-					continue;
-				} //end if
-				//-- sets a default inline position
-				if(!isset($Inline['position'])) {
-					$Inline['position'] = $markerPosition;
-				} //end if
-				//-- the text that comes before the inline
-				$unmarkedText = substr($text, 0, $Inline['position']);
-				//-- compile the unmarked text
-				$markup .= $this->unmarkedText($unmarkedText);
-				//-- compile the inline
-				$markup .= isset($Inline['markup']) ? $Inline['markup'] : $this->element($Inline['element']);
-				//-- remove the examined text
-				$text = substr($text, $Inline['position'] + $Inline['extent']);
-				//--
-				continue 2;
-				//--
-			} //end foreach
-			//-- the marker does not belong to an inline
-			$unmarkedText = substr($text, 0, $markerPosition + 1);
-			//--
-			$markup .= $this->unmarkedText($unmarkedText);
-			//--
-			$text = substr($text, $markerPosition + 1);
-			//--
-		} //end while
-		//--
-		$markup .= $this->unmarkedText($text);
-		//--
-		return (string) $markup;
+		return;
 		//--
 	} //END FUNCTION
 
 
-	//-- # ~
-
-
-	private function inlineCode($Excerpt) {
-		//--
-		$marker = (string) $Excerpt['text'][0];
-		//--
-		if(preg_match('/^('.$marker.'+)[ ]*(.+?)[ ]*(?<!'.$marker.')\1(?!'.$marker.')/s', (string)$Excerpt['text'], $matches)) {
-			//--
-			$text = (string) $matches[2];
-			$text = (string) Smart::escape_html($text); // fix from: html special chars ENT_NOQUOTES UTF-8
-			$text = (string) preg_replace("/[ ]*\n/", ' ', $text);
-			//--
-			return array(
-				'extent' => strlen($matches[0]),
-				'element' => array(
-					'name' => 'code',
-					'text' => $text,
-				),
-			);
-			//--
-		} //end if
-		//--
-	} //END FUNCTION
+	//-- # Email Tag
 
 
 	private function inlineEmailTag($Excerpt) {
-		//-- unixman
+		//--
 		if($this->urlsLinked !== true) {
+			return; // fix by unixman
+		} //end if
+		if(!is_array($Excerpt)) {
 			return;
 		} //end if
-		//-- #end unixman
+		//--
 		if((strpos((string)$Excerpt['text'], '>') !== false) AND preg_match('/^<((mailto:)?\S+?@\S+?)>/i', (string)$Excerpt['text'], $matches)) {
 			//--
-			$url = (string) $matches[1];
+			$url = (string) (isset($matches[1]) ? $matches[1] : '');
 			//--
 			if(!isset($matches[2])) {
 				$url = (string) 'mailto:'.$url;
 			} //end if
 			//--
 			return array(
-				'extent' => strlen($matches[0]),
-				'element' => array(
+				'extent' => (int) strlen(isset($matches[0]) ? $matches[0] : 0),
+				'element' => [
 					'name' => 'a',
-					'text' => (string) $matches[1],
-					'attributes' => array(
-						'href' => $url,
-					),
-				),
+					'text' => (string) (isset($matches[1]) ? $matches[1] : ''),
+					'attributes' => [
+						'href' => (string) $url,
+					],
+				],
 			);
 			//--
 		} //end if
@@ -1380,7 +1365,17 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	// no need for blockEmailTag
+
+
+	//-- # Emphasis
+
+
 	private function inlineEmphasis($Excerpt) {
+		//--
+		if(!is_array($Excerpt)) {
+			return;
+		} //end if
 		//--
 		if(!isset($Excerpt['text'][1])) {
 			return;
@@ -1388,9 +1383,11 @@ final class SmartMarkdownToHTML {
 		//--
 		$marker = (string) $Excerpt['text'][0];
 		//--
-		if($Excerpt['text'][1] === $marker AND preg_match($this->StrongRegex[$marker], $Excerpt['text'], $matches)) {
+	//	if($Excerpt['text'][1] === $marker AND preg_match($this->StrongRegex[$marker], $Excerpt['text'], $matches)) {
+		if(((string)$Excerpt['text'][1] === (string)$marker) AND isset($this->StrongRegex[$marker]) AND preg_match($this->StrongRegex[$marker], $Excerpt['text'], $matches)) { // fix by unixman ; no need for preg_quote() here, $this->StrongRegex[key] if isset() is a REGEX expr
 			$emphasis = 'b'; // 'strong';
-		} elseif(preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches)) {
+	//	} elseif(preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches)) {
+		} elseif(isset($this->EmRegex[$marker]) AND preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches)) { // fix by unixman ; no need for preg_quote() here, $this->EmRegex[key] if isset() is a REGEX expr
 			$emphasis = 'i'; // 'em';
 		} else {
 			return;
@@ -1408,7 +1405,17 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	// no need for blockEmphasis
+
+
+	//-- # EscapeSequence
+
+
 	private function inlineEscapeSequence($Excerpt) {
+		//--
+		if(!is_array($Excerpt)) {
+			return;
+		} //end if
 		//--
 		if(isset($Excerpt['text'][1]) AND in_array($Excerpt['text'][1], $this->specialCharacters)) {
 			return array(
@@ -1420,7 +1427,17 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	// no need for blockEmphasis
+
+
+	//-- # Image
+
+
 	private function inlineImage($Excerpt) {
+		//--
+		if(!is_array($Excerpt)) {
+			return;
+		} //end if
 		//--
 		if(!isset($Excerpt['text'][1]) OR $Excerpt['text'][1] !== '[') {
 			return;
@@ -1498,8 +1515,8 @@ final class SmartMarkdownToHTML {
 					} elseif((string)$key == 'src') {
 						// skip, here will use srcset
 					} elseif(Smart::is_nscalar($val)) {
-						if(preg_match('/[a-z0-9\-]/', (string)$key)) {
-							$markup .= ' '.$key.'="'.Smart::escape_html((string)$val).'"';
+						if(preg_match('/['.SmartValidator::regex_stringvalidation_segment('tag-name').']/i', (string)$key)) {
+							$markup .= ' '.strtolower((string)$key).'="'.Smart::escape_html((string)$val).'"';
 						} //end if
 					} //end if
 				} //end foreach
@@ -1526,8 +1543,8 @@ final class SmartMarkdownToHTML {
 							$markup .= ' src="'.Smart::escape_html((string)$val).'"';
 						} //end if else
 					} elseif(Smart::is_nscalar($val)) {
-						if(preg_match('/[a-z0-9\-]/', (string)$key)) {
-							$markup .= ' '.$key.'="'.Smart::escape_html((string)$val).'"';
+						if(preg_match('/['.SmartValidator::regex_stringvalidation_segment('tag-name').']/i', (string)$key)) {
+							$markup .= ' '.strtolower((string)$key).'="'.Smart::escape_html((string)$val).'"';
 						} //end if
 					} //end if
 				} //end foreach
@@ -1580,7 +1597,13 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function inlineLink($Excerpt, $isImage=false) {
+	// no need for blockImage
+
+
+	//-- # Link
+
+
+	private function inlineLink($Excerpt, $isImage=false) { // updated to fixes from v.1.8.0
 		//-- unixman
 		if($this->urlsLinked !== true) {
 			return;
@@ -1600,7 +1623,8 @@ final class SmartMarkdownToHTML {
 		//--
 		$remainder = $Excerpt['text'];
 		//--
-		if(preg_match('/\[((?:[^][]|(?R))*)\]/', $remainder, $matches)) {
+	//	if(preg_match('/\[((?:[^][]|(?R))*)\]/', $remainder, $matches)) {
+		if(preg_match('/\[((?:[^][]++|(?R))*+)\]/', $remainder, $matches)) { // fix from 1.8.0
 			//--
 			$Element['text'] = $matches[1];
 			//--
@@ -1614,8 +1638,8 @@ final class SmartMarkdownToHTML {
 			//--
 		} //end if else
 		//--
-		//if(preg_match('/^[(]((?:[^ ()]|[(][^ )]+[)])+)(?:[ ]+("[^"]+"|\'[^\']+\'))?[)]/', $remainder, $matches)) {
-		if(preg_match('/^[(]((?:[^ ()]|[(][^ )]+[)])+)(?:[ ]+("[^"]*"|\'[^\']*\'))?[)]/', $remainder, $matches)) { // fix from 1.5.4
+	//	if(preg_match('/^[(]((?:[^ ()]|[(][^ )]+[)])+)(?:[ ]+("[^"]*"|\'[^\']*\'))?[)]/', $remainder, $matches)) { // fix from 1.5.4
+		if(preg_match('/^[(]\s*+((?:[^ ()]++|[(][^ )]+[)])++)(?:[ ]+("[^"]*+"|\'[^\']*+\'))?\s*+[)]/', $remainder, $matches)) { // fix from 1.8.0
 			//--
 			$Element['attributes']['href'] = $matches[1];
 			//--
@@ -1629,7 +1653,7 @@ final class SmartMarkdownToHTML {
 			//--
 			if(preg_match('/^\s*\[(.*?)\]/', $remainder, $matches)) {
 				//--
-				//$definition = $matches[1] ? $matches[1] : $Element['text'];
+			//	$definition = $matches[1] ? $matches[1] : $Element['text'];
 				$definition = strlen($matches[1]) ? $matches[1] : $Element['text']; // fix from 1.5.4
 				$definition = strtolower($definition);
 				//--
@@ -1661,8 +1685,8 @@ final class SmartMarkdownToHTML {
 		} else {
 			$theRegex = (string) $this->regexLnkAttribute;
 		} //end if else
-		if(preg_match('/'.$theRegex.'/', $remainder, $matches)) {
-			$Element['attributes'] += $this->parseAttributeData($matches[2]);
+		if(preg_match('/'.$theRegex.'/', $remainder, $matches)) { // no need for preg_quote() here, the $theRegex is always a REGEX expr
+			$Element['attributes'] += $this->parseAttributeData((string)(isset($matches[2]) ? $matches[2] : ''));
 			$extent += strlen($matches[0]);
 		} //end if
 		//-- #end unixman
@@ -1674,56 +1698,40 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function inlineMarkup($Excerpt) {
-		//--
-		if($this->markupEscaped OR (strpos($Excerpt['text'], '>') === false)) {
-			return;
-		} //end if
-		//--
-		if(($Excerpt['text'][1] === '/') AND preg_match('/^<\/\w*[ ]*>/s', $Excerpt['text'], $matches)) {
-			return array(
-				'markup' => $matches[0],
-				'extent' => strlen($matches[0]),
-			);
-		} //end if
-		//--
-		if(($Excerpt['text'][1] === '!') AND preg_match('/^<!---?[^>-](?:-?[^-])*-->/s', $Excerpt['text'], $matches)) {
-			return array(
-				'markup' => $matches[0],
-				'extent' => strlen($matches[0]),
-			);
-		} //end if
-		//--
-		if(($Excerpt['text'][1] !== ' ') AND preg_match('/^<\w*(?:[ ]*'.$this->regexHtmlAttribute.')*[ ]*\/'.'?'.'>/s', $Excerpt['text'], $matches)) {
-			return array(
-				'markup' => $matches[0],
-				'extent' => strlen($matches[0]),
-			);
-		} //end if
-		//--
-	} //END FUNCTION
+	// no need for blockLink
+
+
+	//-- # Special Character
 
 
 	private function inlineSpecialCharacter($Excerpt) {
 		//--
-		if($Excerpt['text'][0] === '&' AND !preg_match('/^&#?\w+;/', $Excerpt['text'])) {
+		if(!is_array($Excerpt)) {
+			return;
+		} //end if
+		//--
+	//	if($Excerpt['text'][0] === '&' AND !preg_match('/^&#?\w+;/', $Excerpt['text'])) {
+	//	if(substr((string)$Excerpt['text'], 0, 1) === '&' AND !preg_match('/^&(#?+[0-9a-zA-Z]++);/', $Excerpt['text'])) { // fix adapted from v.1.8.0
+		if(((string)substr((string)$Excerpt['text'], 0, 1) === '&') AND (!preg_match('/^&([a-zA-Z]+|\#[0-9]+);/', $Excerpt['text']))) { // fix by unixman
 			return array(
 				'markup' => '&amp;',
 				'extent' => 1,
 			);
 		} //end if
 		//--
-		$SpecialCharacter = array('>' => 'gt', '<' => 'lt', '"' => 'quot');
+		$SpecialCharacter = [
+			'<' => '&lt;',
+			'>' => '&gt;',
+			'"' => '&quot;'
+		];
 		//-- #unixman fix
-		if($this->markupEscaped) {
-			if($this->htmlEntitiesEscaped) {
-				$SpecialCharacter['&'] = 'amp';
-			} //end if
+		if($this->htmlEntitiesDisabled) {
+			$SpecialCharacter['&'] = '&amp;';
 		} //end if
 		//-- #end unixman
 		if(isset($SpecialCharacter[$Excerpt['text'][0]])) {
 			return array(
-				'markup' => '&'.$SpecialCharacter[$Excerpt['text'][0]].';',
+				'markup' => (string) $SpecialCharacter[$Excerpt['text'][0]],
 				'extent' => 1,
 			);
 		} //end if
@@ -1731,8 +1739,18 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	// no need for blockSpecialCharacter
+
+
+	//-- # Superscript
+
+
 	// added by unixman to extend syntax: ^Superscript^
 	private function inlineSuperscript($Excerpt) {
+		//--
+		if(!is_array($Excerpt)) {
+			return;
+		} //end if
 		//--
 		if(!isset($Excerpt['text'][0])) {
 			return;
@@ -1740,20 +1758,30 @@ final class SmartMarkdownToHTML {
 		//--
 		if($Excerpt['text'][0] === '^' AND preg_match('/^\^(?=\S)(.+?)(?<=\S)\^/', $Excerpt['text'], $matches)) {
 			return array(
-				'extent' => strlen($matches[0]),
-				'element' => array(
+				'extent' => (int) strlen((isset($matches[0]) ? $matches[0] : 0)),
+				'element' => [
 					'name' => 'sup',
-					'text' => $matches[1],
+					'text' => (string) (isset($matches[1]) ? $matches[1] : ''),
 					'handler' => 'line',
-				),
+				],
 			);
 		} //end if
 		//--
 	} //END FUNCTION
 
 
+	// no need for blockSuperscript
+
+
+	//-- # Subscript
+
+
 	// added by unixman to extend syntax: ~Subscript~
 	private function inlineSubscript($Excerpt) {
+		//--
+		if(!is_array($Excerpt)) {
+			return;
+		} //end if
 		//--
 		if(!isset($Excerpt['text'][0])) {
 			return;
@@ -1761,20 +1789,30 @@ final class SmartMarkdownToHTML {
 		//--
 		if($Excerpt['text'][0] === '~' AND $Excerpt['text'][1] !== '~' AND preg_match('/^~(?=\S)(.+?)(?<=\S)~/', $Excerpt['text'], $matches)) {
 			return array(
-				'extent' => strlen($matches[0]),
-				'element' => array(
+				'extent' => (int) strlen((isset($matches[0]) ? $matches[0] : 0)),
+				'element' => [
 					'name' => 'sub',
-					'text' => $matches[1],
+					'text' => (string) (isset($matches[1]) ? $matches[1] : null),
 					'handler' => 'line',
-				),
+				],
 			);
 		} //end if
 		//--
 	} //END FUNCTION
 
 
+	// no need for blockSubscript
+
+
+	//-- # Strikethrough
+
+
 	// syntax: ~~Strikethrough~~
 	private function inlineStrikethrough($Excerpt) {
+		//--
+		if(!is_array($Excerpt)) {
+			return;
+		} //end if
 		//--
 		if(!isset($Excerpt['text'][1])) {
 			return;
@@ -1782,36 +1820,53 @@ final class SmartMarkdownToHTML {
 		//--
 		if($Excerpt['text'][1] === '~' AND preg_match('/^~~(?=\S)(.+?)(?<=\S)~~/', $Excerpt['text'], $matches)) {
 			return array(
-				'extent' => strlen($matches[0]),
-				'element' => array(
+				'extent' => (int) strlen(isset($matches[0]) ? $matches[0] : 0),
+				'element' => [
 					'name' => 'del',
-					'text' => $matches[1],
+					'text' => (string) (isset($matches[1]) ? $matches[1] : ''),
 					'handler' => 'line',
-				),
+				],
 			);
 		} //end if
 		//--
 	} //END FUNCTION
 
 
+	// no need for blockStrikethrough
+
+
+	//-- # Url
+
+
 	private function inlineUrl($Excerpt) {
 		//--
-		if($this->urlsLinked !== true OR !isset($Excerpt['text'][2]) OR $Excerpt['text'][2] !== '/') {
+		if($this->urlsLinked !== true) {
+			return;
+		} //end if
+		if(!is_array($Excerpt)) {
+			return;
+		} //end if
+		if((!isset($Excerpt['text'][2])) OR ($Excerpt['text'][2] !== '/')) {
 			return;
 		} //end if
 		//--
-		if(preg_match('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)) {
+	//	if(preg_match('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)) {
+		if((strpos($Excerpt['context'], 'http') !== false) AND (preg_match('/\bhttps?+:[\/]{2}[^\s<]+\b\/*+/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE))) { // fix from 1.8.0
+			//--
+			if(!array_key_exists(0, $matches)) {
+				$matches[0] = array();
+			} //end if
 			//--
 			$Inline = array(
-				'extent' => strlen($matches[0][0]),
-				'position' => $matches[0][1],
-				'element' => array(
+				'extent' => (int) strlen(isset($matches[0][0]) ? (string)$matches[0][0] : ''),
+				'position' => (isset($matches[0][1]) ? $matches[0][1] : null), // here must be null if not isset()
+				'element' => [
 					'name' => 'a',
-					'text' => $matches[0][0],
-					'attributes' => array(
-						'href' => $matches[0][0],
-					),
-				),
+					'text' => (string) (isset($matches[0][0]) ? $matches[0][0] : ''),
+					'attributes' => [
+						'href' => (string) (isset($matches[0][0]) ? $matches[0][0] : ''),
+					],
+				],
 			);
 			//--
 			return $Inline;
@@ -1821,25 +1876,35 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	// no need for blockUrl
+
+
+	//-- # Url Tag
+
+
 	private function inlineUrlTag($Excerpt) {
 		//-- unixman
 		if($this->urlsLinked !== true) {
 			return;
 		} //end if
+		if(!is_array($Excerpt)) {
+			return;
+		} //end if
 		//-- #end unixman
-		if((strpos($Excerpt['text'], '>') !== false) AND preg_match('/^<(\w+:\/{2}[^ >]+)>/i', $Excerpt['text'], $matches)) {
+	//	if((strpos($Excerpt['text'], '>') !== false) AND preg_match('/^<(\w+:\/{2}[^ >]+)>/i', $Excerpt['text'], $matches)) {
+		if((strpos($Excerpt['text'], '>') !== false) AND preg_match('/^<(\w++:\/{2}[^ >]++)>/i', $Excerpt['text'], $matches)) { // fix from 1.8.0
 			//--
-			$url = str_replace(array('&', '<'), array('&amp;', '&lt;'), $matches[1]);
+			$url = (string) (isset($matches[1]) ? $matches[1] : ''); // fix from 1.8.0, no need to escape here, also in inlineUrl() the href is not escaped, will be escaped later
 			//--
 			return array(
-				'extent' => strlen($matches[0]),
-				'element' => array(
+				'extent' => (int) strlen(isset($matches[0]) ? $matches[0] : 0),
+				'element' => [
 					'name' => 'a',
-					'text' => $url,
-					'attributes' => array(
-						'href' => $url,
-					),
-				),
+					'text' => (string) $url,
+					'attributes' => [
+						'href' => (string) $url,
+					],
+				],
 			);
 			//--
 		} //end if
@@ -1847,32 +1912,27 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	//-- # ~
-
-	private function unmarkedText($text) {
-		//--
-		if($this->breaksEnabled) {
-			//--
-			$text = (string) preg_replace('/[ ]*\n/', "<br>\n", (string)$text); // <br />
-			//--
-		} else {
-			//--
-			$text = (string) preg_replace('/(?:[ ][ ]+|[ ]*\\\\)\n/', "<br>\n", (string)$text); // <br />
-			$text = (string) str_replace(" \n", "\n", (string)$text);
-			//--
-		} //end if else
-		//--
-		return $text;
-		//--
-	} //END FUNCTION
+	// no need for blocUrlTag
 
 
 	//-- # Handlers
 
 
-	private function element(array $Element) {
+	private function element($Element) {
 		//--
-		$markup = '<'.$Element['name'];
+		if(!is_array($Element)) {
+			return '';
+		} //end if
+		//--
+		$regex_tag_name = (string) '/^['.SmartValidator::regex_stringvalidation_segment('tag-name').']+$/i'; // {{{SYNC-HTML-TAGS-REGEX}}}
+		$el_name = (string) strtolower((string)trim((string)$Element['name']));
+		//--
+		if(((string)$el_name == '') OR (!preg_match((string)$regex_tag_name, (string)$el_name))) {
+			Smart::log_notice(__METHOD__.' # Markdown Invalid HTML Element (skip): '.print_r($Element,1));
+			return '<!-- NOTICE: Markdown Invalid HTML Element: skip -->';
+		} //end if
+		//--
+		$markup = '<'.Smart::escape_html($el_name);
 		//--
 	//	if(isset($Element['attributes'])) {
 		if((array_key_exists('attributes', $Element)) AND (is_array($Element['attributes']))) {
@@ -1881,46 +1941,50 @@ final class SmartMarkdownToHTML {
 				//--
 			//	if($value === null) {
 				$value = (string) trim((string)$value);
-				if(!$value) {
+				if((string)$value == '') {
 					continue;
 				} //end if
 				//--
-				$markup .= ' '.Smart::escape_html($name).'="'.Smart::escape_html($value).'"';
+				$markup .= ' '.Smart::escape_html((string)$name).'="'.Smart::escape_html((string)$value).'"'; // fix by unixman: all escapings of attributes are centralized now HERE !!
 				//--
 			} //end foreach
 			//--
 		} //end if
 		//--
-		if(isset($Element['text'])) {
+	//	if(isset($Element['text'])) {
+		if(array_key_exists('text', $Element)) {
 			//--
 			$markup .= '>';
 			//--
 			if(isset($Element['handler'])) {
-				//$markup .= $this->$Element['handler']($Element['text']);
-				$markup .= $this->{$Element['handler']}($Element['text']); // fix from 1.5.4
+				$markup .= (string) $this->{$Element['handler']}($Element['text']);
 			} else {
-				$markup .= $Element['text'];
+				$markup .= (string) Smart::escape_html((string)$Element['text']); // fix by unixman: all escapings for texts are centralized now HERE !!
 			} //end if else
 			//--
-			$markup .= '</'.$Element['name'].'>';
+			$markup .= '</'.Smart::escape_html($el_name).'>';
 			//--
 		} else {
 			//--
-			$markup .= '>'; // ' />'
+			$markup .= '>';
 			//--
 		} //end if else
 		//--
-		return $markup;
+		return (string) $markup;
 		//--
 	} //END FUNCTION
 
 
-	private function elements(array $Elements) {
+	private function elements($Elements) {
+		//--
+		if(!is_array($Elements)) {
+			return '';
+		} //end if
 		//--
 		$markup = '';
 		//--
 		foreach($Elements as $z => $Element) {
-			$markup .= "\n" . $this->element($Element);
+			$markup .= "\n".$this->element($Element);
 		} //end foreach
 		//--
 		$markup .= "\n";
@@ -1932,22 +1996,52 @@ final class SmartMarkdownToHTML {
 
 	private function li($lines) { // Fixed: No Unicode String Functions here !!!
 		//--
-		$markup = $this->lines($lines);
-		//--
-		$trimmedMarkup = trim($markup);
-		//--
-		if(!in_array('', $lines) AND substr($trimmedMarkup, 0, 3) === '<p>') {
-			//--
-			$markup = $trimmedMarkup;
-			$markup = substr($markup, 3);
-			//--
-			$position = (int) strpos($markup, '</p>');
-			//--
-			$markup = substr_replace($markup, '', $position, 4);
-			//--
+		if(!is_array($lines)) {
+			return '';
 		} //end if
 		//--
-		return $markup;
+		$markup = (string) $this->lines($lines);
+		//--
+		$trimmedMarkup = (string) trim((string)$markup);
+		//--
+		/*
+	//	if(!in_array('', $lines) AND substr($trimmedMarkup, 0, 3) === '<p>') {
+		if(
+			(!in_array('', $lines)) AND
+			((string)substr((string)$trimmedMarkup, 0, 3) === '<p>') AND
+			(strpos((string)$markup, '</p>') !== false) // fix by unixman: make sure there is also the end of p tag
+		) {
+			//--
+			$markup = (string) $trimmedMarkup;
+			$markup = (string) substr((string)$markup, 3);
+			//--
+			$position = (int) strpos((string)$markup, '</p>');
+			//--
+			$markup = (string) substr_replace($markup, '', $position, 4);
+			//--
+		} //end if
+		*/
+		if( // a better fix for the above code by unixman, if p tag have attributes, the above code will not match (but this one fixes)
+			(
+			//	(!in_array('', $lines)) AND // this is intended with replacing all occurences of <p> and </p> in the below code
+				(
+					(strpos((string)$markup, '<p>') !== false) OR
+					(strpos((string)$markup, '</p>') !== false)
+				)
+			)
+		) {
+			//--
+			// the original code was to replace only first <p> and last </p>, so the below regex does so
+			$markup = (string) preg_replace('#<p[^>]*?'.'>#si', '', (string)$markup, 1); // replace first ocurence only
+			$markup = (string) preg_replace('#</p[^>]*?'.'>(?!.*</p[^>]*?'.'>)#mi', '', (string)$markup, 1); // replace last ocurence only
+			// but the conclusion is that is better to replace all occurences of <p> and </p> in ul/ol li ... the lists will display better
+			/* this was tested to replace ALL <p> and </p>
+		//	$markup = (string) preg_replace('#<p[^>]*?'.'>#si', '', (string)$markup); // replace all ocurences
+		//	$markup = (string) preg_replace('#</p[^>]*?'.'>#si', '', (string)$markup); // replace all ocurences
+			*/
+		} //end if
+		//--
+		return (string) $markup;
 		//--
 	} //END FUNCTION
 
@@ -1957,7 +2051,7 @@ final class SmartMarkdownToHTML {
 	//		[link](http://parsedown.org) {L:.primary9 #link .Upper-Case @data-smart=open.modal$700$300}
 	//		![alt text](https://www.gstatic.com/webp/gallery/1.sm.jpg "Logo Title Text 1") {I:@width=100 @style=box-shadow:$10px$10px$5px$#888888; %unveil %alternate=https://www.gstatic.com/webp/gallery/1.sm.webp$image/webp}
 	// 		TABLE / TH / TD {T: @class=bordered}
-	private function parseAttributeData($attributeString) {
+	private function parseAttributeData(string $attributeString) {
 		//--
 		$Data = array();
 		//--
@@ -2012,7 +2106,7 @@ final class SmartMarkdownToHTML {
 			} //end foreach
 		} //end if
 		//--
-		if(count($classes) > 0) {
+		if(Smart::array_size($classes) > 0) {
 			$Data['class'] = (string) implode(' ', (array)$classes);
 		} //end if
 		//--

@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils
- * @version 	v.20210317
+ * @version 	v.20210321
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -204,12 +204,14 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 		//--
 		$y_ignore_if_empty = (string) $y_ignore_if_empty;
 		//--
-		$mtemplate = (string) trim((string)$mtemplate);
-		//--
-		if(((string)$y_ignore_if_empty != 'yes') AND ((string)$mtemplate == '')) {
+	//	$mtemplate = (string) trim((string)$mtemplate); // do not trim partial template, to be consistent with render file template
+	//	if(((string)$y_ignore_if_empty != 'yes') AND ((string)$mtemplate == '')) {
+		if(((string)$y_ignore_if_empty != 'yes') AND ((string)trim((string)$mtemplate) == '')) {
 			//--
-			Smart::raise_error('Empty Marker-TPL Content: '.print_r($y_arr_vars,1));
-			return (string) 'ERROR: (301) in '.__CLASS__;
+		//	Smart::raise_error('Empty Marker-TPL Content: '.print_r($y_arr_vars,1));
+		//	return (string) 'ERROR: (301) in '.__CLASS__;
+			Smart::log_warning('Empty Marker-TPL Content for Template: '.print_r($y_arr_vars,1));
+			return (string) $mtemplate;
 			//--
 		} //end if
 		//--
@@ -375,7 +377,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 		//--
 		$y_use_caching = 'no';
 		//--
-		$mtemplate = (string) trim((string)$mtemplate);
+		$mtemplate = (string) trim((string)$mtemplate); // trim the mixed template, it is mainly used for main templates
 		//--
 		if(((string)$y_ignore_if_empty != 'yes') AND ((string)$mtemplate == '')) {
 			//--
