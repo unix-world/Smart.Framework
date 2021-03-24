@@ -74,7 +74,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode
- * @version     v.20210322
+ * @version     v.20210323
  * @package     @Core
  *
  */
@@ -185,9 +185,11 @@ final class Smart {
 	 */
 	public static function fix_path_separator(string $y_path) {
 		//--
-		if((string)DIRECTORY_SEPARATOR == '\\') { // if on Windows, Fix Path Separator !!!
-			if(strpos((string)$y_path, '\\') !== false) {
-				$y_path = (string) str_replace((string)DIRECTORY_SEPARATOR, '/', (string)$y_path); // convert \ to / on paths
+		if((string)$y_path != '') {
+			if((string)DIRECTORY_SEPARATOR == '\\') { // if on Windows, Fix Path Separator !!!
+				if(strpos((string)$y_path, '\\') !== false) {
+					$y_path = (string) str_replace((string)DIRECTORY_SEPARATOR, '/', (string)$y_path); // convert \ to / on paths
+				} //end if
 			} //end if
 		} //end if
 		//--
@@ -267,7 +269,17 @@ final class Smart {
 	 */
 	public static function path_info(string $y_path) {
 		//--
-		$path_info = (array) pathinfo((string)$y_path, PATHINFO_DIRNAME | PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME);
+		$path_info = pathinfo((string)$y_path, PATHINFO_DIRNAME | PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME); // mixed return ... do not cast to array !!
+		//-- PHP8 fix
+		$path_info = (array) self::array_init_keys(
+			$path_info,
+			[
+				'dirname',
+				'basename',
+				'filename',
+				'extension'
+			]
+		);
 		//--
 		$path_info['dirname'] = (string) self::fix_path_separator((string)$path_info['dirname']);
 		//--
@@ -924,6 +936,42 @@ final class Smart {
 			},
 			array_change_key_case($y_arr, $case)
 		);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Array Initialize Keys
+	 *
+	 * @param ARRAY 		$y_arr 					:: The input array
+	 * @param ENUM 			$y_keys 				:: The array keys to initialize: will add these keys to the array assigned with a NULL value only if the key does not exists ; the existing keys will be preserved with their existing values ; must be a non-associative array, as: [ 'key1', 'key2', '', ...] ; a key can be also an empty string
+	 *
+	 * @return ARRAY 								:: The modified array
+	 */
+	public static function array_init_keys($y_arr, $y_keys) {
+		//--
+		if(!is_array($y_arr)) {
+			$y_arr = array();
+		} //end if
+		//--
+		if(self::array_type_test($y_keys) == 1) {
+			$num_keys = (int) self::array_size($y_keys);
+			if((int)$num_keys > 0) {
+				for($i=0; $i<$num_keys; $i++) {
+					if(self::is_nscalar($y_keys[$i])) {
+						if(!array_key_exists((string)$y_keys[$i], $y_arr)) {
+							$y_arr[(string)$y_keys[$i]] = null;
+						} //end if
+					} else {
+						self::log_warning('WARNING: '.__CLASS__.'::'.__FUNCTION__.'()'.' array key is not nScalar: '.print_r($y_keys[$i]));
+					} //end if else
+				} //end for
+			} //end if
+		} //end if
+		//--
+		return (array) $y_arr;
 		//--
 	} //END FUNCTION
 	//================================================================
