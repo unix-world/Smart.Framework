@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils
- * @version 	v.20210325
+ * @version 	v.20210325.1343
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -119,7 +119,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 		//--
 		$y_arr_sub_templates = (array) $y_arr_sub_templates;
 		//--
-		$mtemplate = (string) self::do_read_template_file_from_fs((string)$y_file_path);
+		$mtemplate = (string) self::read_from_fs_the_template_file((string)$y_file_path);
 		$original_mtemplate = (string) $mtemplate;
 		//-- add TPL START/END to see where it starts load
 		$matches = array();
@@ -311,7 +311,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 		//--
 		$y_arr_vars = (array) array_change_key_case((array)$y_arr_vars, CASE_UPPER); // make all keys upper (only 1st level, not nested)
 		//--
-		$mtemplate = (string) self::read_template_or_subtemplate_file((string)$y_file_path, (string)$y_use_caching);
+		$mtemplate = (string) self::read_from_optimal_place_the_template_file((string)$y_file_path, (string)$y_use_caching);
 		if((string)$mtemplate == '') {
 			Smart::raise_error('Empty or Un-Readable Marker-TPL File: '.$y_file_path);
 			return (string) 'ERROR: (103) in '.__CLASS__;
@@ -424,45 +424,22 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 
 	//================================================================
 	/**
-	 * Read a Marker File Template from FileSystem or from Persistent (Memory) Cache if exists
-	 * !!! This is intended for very special usage ... !!! This is used automatically by the render_file_template() and used in combination with render_mixed_template() may produce the same results ... it make non-sense using it with render_template() as this should be used for internal (php) templates as all external templates should be loaded with render_file_template()
+	 * Read a Marker File Template from FileSystem or from Memory Cache if exists, otherwise read from FileSystem or PCache (if enabled)
+	 * !!! This is intended for very special usage ... !!!
+	 * This is used automatically by the render_file_template() and used in combination with render_mixed_template() may produce the same results ... it make non-sense using it with render_template() as this should be used for internal (php) templates as all external templates should be loaded with render_file_template()
 	 *
 	 * @access 		private
 	 * @internal
 	 *
 	 * @param 	STRING 		$y_file_path 					:: The relative path to the file Marker-TPL
+	 * @param 	ENUM 		$y_use_caching 					:: 'yes' will cache the template (incl. sub-templates if any) into memory to avoid re-read them from file system (to be used if a template is used more than once per execution) ; 'no' means no caching is used (default)
 	 *
 	 * @return 	STRING										:: The template string
 	 *
 	 */
-	public static function read_template_file(string $y_file_path) {
+	public static function read_template_file(string $y_file_path, string $y_use_caching='no') {
 		//--
-		if(self::$MkTplAnalyzeLdDbg === true) {
-			if(!array_key_exists((string)$y_file_path, self::$MkTplAnalyzeLdRegDbg)) {
-				self::$MkTplAnalyzeLdRegDbg[(string)$y_file_path] = 0;
-			} //end if
-			self::$MkTplAnalyzeLdRegDbg[(string)$y_file_path] += 1;
-		} //end if
-		//--
-		$mtemplate = (string) self::read_from_fs_or_pcache_the_template_file($y_file_path);
-		//--
-		$cached_key = 'read_template_file:'.$y_file_path; // {{{SYNC-TPL-DEBUG-CACHED-KEY}}}
-		if(SmartFrameworkRuntime::ifDebug()) {
-			if(!array_key_exists((string)$cached_key, self::$MkTplFCount)) {
-				self::$MkTplFCount[(string)$cached_key] = 0;
-			} //end if
-			self::$MkTplFCount[(string)$cached_key]++; // register to counter anytime is read from FileSystem
-		} //end if
-		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
-			self::$MkTplVars['@TEMPLATE:'.$y_file_path][] = 'Direct Reading a Template from FS';
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
-				'title' => '[TPL-Direct-ReadFileTemplate-From-FS] :: Marker-TPL / Direct-File-Read ; Serving from FS the File Template: '.$y_file_path.' ;',
-				'data' => 'Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit($mtemplate)
-			]);
-		} //end if
-		//--
-		return (string) $mtemplate;
+		return (string) self::read_from_optimal_place_the_template_file((string)$y_file_path, (string)$y_use_caching);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2069,7 +2046,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 						//--
 						$mtemplate = (string) str_replace(
 							'[@@@SUB-TEMPLATE:'.$key.'@@@]',
-							'', // clear (this is required for the cases the sub-templates must not includded in some cases: a kind of IF syntax)
+							'', // clear (this is required for the cases the sub-templates must not includded in some cases: a kind of IF syntax ; this is used just for the case with programatically set a fixed array of templates to load)
 							(string) $mtemplate
 						);
 						//--
@@ -2092,14 +2069,6 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							$pfx = '?';
 							$is_optional = true;
 						} //end if
-						/* not necessary as TPL is being cached at read in raw format
-						if((string)$pfx != '') {
-							if((string)$y_use_caching == 'yes') {
-								Smart::raise_error('Invalid Marker-TPL Optional Sub-Template (optional sub-templates cannot be rendered with caching enabled) for key: `'.$key.'` # `'.$stpl_path.'` '.'['.$y_base_path.']'.' detected in Template:'."\n".self::log_template($mtemplate));
-								return (string) 'ERROR: (702) in '.__CLASS__;
-							} //end if
-						} //end if
-						*/
 						//-- DO NOT MODIFY ORDER !
 						if((string)substr($key, -7, 7) == '|syntax') {
 							$key = (string) substr($key, 0, -7);
@@ -2116,17 +2085,6 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 						} elseif((string)substr($key, -14, 14) == '|js-tpl-encode') {
 							$key = (string) substr($key, 0, -14);
 							$sfx = '|js-tpl-encode';
-						} //end if
-						if((string)$sfx != '') {
-							/* not necessary as TPL is being cached at read in raw format
-							if((string)$y_use_caching == 'yes') {
-								Smart::raise_error('Invalid Marker-TPL Sub-Template Escapings (escaped sub-templates cannot be rendered with caching enabled) for key: `'.$key.'` # `'.$stpl_path.'` '.'['.$y_base_path.']'.' detected in Template:'."\n".self::log_template($mtemplate));
-								return (string) 'ERROR: (703) in '.__CLASS__;
-							} //end if
-							*/
-							/* this is no more compatible with loading ++ levels ... either before was actually because was able to load 2 pre-levels until get up here
-							$process_sub_sub_templates = false; // no syntax parsed if escaped ; must not load sub-templates because it is considered a flat string not a template that must be escaped somehow
-							*/
 						} //end if
 						//--
 						if(((string)substr($key, 0, 1) == '%') AND ((string)substr($key, -1, 1) == '%')) { // variable, only can be set programatically, full path to the template file is specified
@@ -2163,7 +2121,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 						if(($is_optional === true) OR (self::$MkTplAnalyzeLdDbg === true)) { // for Analyze Make just TRY TO Load Sub-TPLs to avoid load errors if the paths are defined in the TPL-Load Array not in the TPL
 							$stemplate = '';
 							if(SmartFileSystem::is_type_file((string)$stpl_path)) {
-								$stemplate = (string) self::read_template_or_subtemplate_file((string)$stpl_path, (string)$y_use_caching); // read
+								$stemplate = (string) self::read_from_optimal_place_the_template_file((string)$stpl_path, (string)$y_use_caching); // read
 							} elseif(self::$MkTplAnalyzeLdDbg === true) {
 								if($is_variable === true) {
 									$stemplate = "\n".'{@ *****'."\n".'Marker-TPL ANALYSIS INFO: THIS IS A *VARIABLE* SUB-TEMPLATE: '.$key.' # using the implicit base path: '.$val.' #'."\n".'The variable Sub-Templates must be specified in the real usage context using the @SUB-TEMPLATES@ custom definition.'."\n".'***** @}'."\n";
@@ -2178,7 +2136,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 								Smart::raise_error('Invalid Marker-TPL Sub-Template File for key: `'.$key.'` # `'.$stpl_path.'` '.'['.$y_base_path.']'.' detected in Template:'."\n".self::log_template($mtemplate));
 								return (string) 'ERROR: (708) in '.__CLASS__;
 							} //end if
-							$stemplate = (string) self::read_template_or_subtemplate_file((string)$stpl_path, (string)$y_use_caching); // read
+							$stemplate = (string) self::read_from_optimal_place_the_template_file((string)$stpl_path, (string)$y_use_caching); // read
 						} //end if else
 						//--
 						if($process_sub_sub_templates === true) {
@@ -2208,7 +2166,13 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 						if(self::have_subtemplate((string)$stemplate) === true) {
 							if(self::$MkTplAnalyzeLdDbg !== true) { // if analyze TPL don't log to notice (because the [@@@SUB-TEMPLATE:%variable@@@] may not load always the variable replacements !!!
 								$arr_subtpls = (array) self::analize_extract_subtpls($stemplate);
-								Smart::log_notice('Invalid or Undefined Marker-TPL: Marker Sub-Templates detected in Template:'."\n".'SUB-TEMPLATES:'.print_r($arr_subtpls,1)."\n".self::log_template($stemplate));
+								$errmsg = 'Invalid / Undefined or Failed to load some Marker Sub-Templates detected in Template:'."\n".'SUB-TEMPLATES:'.print_r($arr_subtpls,1)."\n".self::log_template($stemplate);
+								if($process_sub_sub_templates !== true) { // if false then it could not load all required sub-templates, so raise an error
+									Smart::raise_error($errmsg);
+									return (string) 'ERROR: (709) in '.__CLASS__;
+								} else {
+									Smart::log_notice($errmsg);
+								} //end if
 							} //end if
 							$stemplate = (string) str_replace(array('[@@@', '@@@]'), array('⁅@@@¦', '¦@@@⁆'), (string)$stemplate); // protect against cascade recursion or undefined sub-templates {{{SYNC-SUBTPL-PROTECT}}}
 						} //end if
@@ -2254,12 +2218,32 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 		if(self::have_subtemplate((string)$mtemplate) === true) {
 			if(self::$MkTplAnalyzeLdDbg !== true) { // if analyze TPL don't log to notice (because the [@@@SUB-TEMPLATE:%variable@@@] may not load always the variable replacements !!!
 				$arr_subtpls = (array) self::analize_extract_subtpls($mtemplate);
-				Smart::log_notice('Invalid or Undefined Marker-TPL: Marker Sub-Templates detected in Template:'."\n".'SUB-TEMPLATES:'.print_r($arr_subtpls,1)."\n".self::log_template($mtemplate));
+				$errmsg = (string) 'Invalid / Undefined or Failed to load some Marker Sub-Templates detected in Template:'."\n".'SUB-TEMPLATES:'.print_r($arr_subtpls,1)."\n".self::log_template($mtemplate);
+				if($process_sub_sub_templates !== true) { // if false then it could not load all required sub-templates, so raise an error
+					Smart::raise_error($errmsg);
+					return (string) 'ERROR: (710) in '.__CLASS__;
+				} else {
+					Smart::log_notice($errmsg);
+				} //end if
 			} //end if
 			$mtemplate = (string) str_replace(array('[@@@', '@@@]'), array('⁅@@@¦', '¦@@@⁆'), (string)$mtemplate); // finally protect against undefined sub-templates {{{SYNC-SUBTPL-PROTECT}}}
 		} //end if
 		//--
 		return (string) $mtemplate;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function read_from_fs_the_template_file(string $y_file_path) {
+		//--
+		if((strpos((string)$y_file_path, '.php.') !== false) OR (substr((string)$y_file_path, -4, 4) == '.php')) {
+			Smart::raise_error('ERROR: Invalid Marker-TPL File Path (PHP File Extension should not be used for a template): '.$y_file_path);
+			return (string) 'ERROR: (401) in '.__CLASS__;
+		} //end if
+		//--
+		return (string) SmartFileSystem::read((string)$y_file_path);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2311,7 +2295,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 			} //end if
 		} //end if
 		//--
-		$tpl = (string) self::do_read_template_file_from_fs((string)$y_file_path);
+		$tpl = (string) self::read_from_fs_the_template_file((string)$y_file_path);
 		//--
 		if((string)$the_cache_key != '') {
 			if((string)$tpl != '') {
@@ -2333,7 +2317,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 
 
 	//================================================================
-	private static function read_template_or_subtemplate_file(string $y_file_path, string $y_use_caching) {
+	private static function read_from_optimal_place_the_template_file(string $y_file_path, string $y_use_caching) {
 		//--
 		$y_file_path = (string) $y_file_path;
 		//--
@@ -2344,7 +2328,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 			self::$MkTplAnalyzeLdRegDbg[(string)$y_file_path] += 1;
 		} //end if
 		//--
-		$cached_key = 'read_template_or_subtemplate_file:'.$y_file_path; // {{{SYNC-TPL-DEBUG-CACHED-KEY}}}
+		$cached_key = 'read_from_optimal_place_the_template_file:'.$y_file_path; // {{{SYNC-TPL-DEBUG-CACHED-KEY}}}
 		//--
 		if(array_key_exists((string)$cached_key, (array)self::$MkTplCache)) {
 			//--
@@ -2372,7 +2356,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 			self::$MkTplCache[(string)$cached_key] = (string) self::read_from_fs_or_pcache_the_template_file($y_file_path);
 			//--
 			if(SmartFrameworkRuntime::ifDebug()) {
-				self::$MkTplVars['@SUB-TEMPLATE:'.$y_file_path][] = 'Reading a Sub-Template from FS and REGISTER in VCache';
+				self::$MkTplVars['@SUB-TEMPLATE:'.$y_file_path][] = 'Reading a Sub-Template from FS ; VCacheFlag: '.$y_use_caching;
 				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
 					'title' => '[TPL-ReadFileTemplate-From-FS-Register-In-VCache] :: Marker-TPL / Registering to VCache the File Template: '.$y_file_path.' ;',
 					'data' => 'Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit(self::$MkTplCache[(string)$cached_key])
@@ -2396,20 +2380,6 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 			return (string) $mtemplate;
 			//--
 		} //end if else
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	private static function do_read_template_file_from_fs(string $y_file_path) {
-		//--
-		if((strpos((string)$y_file_path, '.php.') !== false) OR (substr((string)$y_file_path, -4, 4) == '.php')) {
-			Smart::raise_error('ERROR: Invalid Marker-TPL File Path (PHP File Extension should not be used for a template): '.$y_file_path);
-			return (string) 'ERROR: (401) in '.__CLASS__;
-		} //end if
-		//--
-		return (string) SmartFileSystem::read((string)$y_file_path);
 		//--
 	} //END FUNCTION
 	//================================================================

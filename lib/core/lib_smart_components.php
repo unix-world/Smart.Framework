@@ -48,7 +48,7 @@ define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)SmartFileSystem::read('lib/
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations
- * @version 	v.20210322
+ * @version 	v.20210325
  * @package 	Application:ViewComponents
  *
  */
@@ -788,7 +788,7 @@ final class SmartComponents {
 		//--
 
 		//-- read TPL
-		$tpl = (string) trim((string)SmartMarkersTemplating::read_template_file((string)$template_path.$template_file));
+		$tpl = (string) trim((string)SmartMarkersTemplating::read_template_file((string)$template_path.$template_file)); // no caching by default, the app template is loaded once
 		if((string)$tpl == '') {
 			Smart::raise_error(
 				'#SMART-FRAMEWORK-RENDER-APP-TEMPLATE#'."\n".'The Template File is either: Empty / Does not Exists / Cannot be Read: '.$template_path.$template_file,
