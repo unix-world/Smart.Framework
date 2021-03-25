@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils
- * @version 	v.20210322
+ * @version 	v.20210325
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -2012,7 +2012,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 	//================================================================
 	/*
 	 * Inject marker sub-templates
-	 * Limits: max 3 levels: template -> sub-template -> sub-sub-template ; max 127 cycles overall: template + sub-templates + sub-sub-templates)
+	 * Limits: max 3 levels: template -> sub-template -> sub-sub-template ; max 127 sub-tpls loads overall ; max 12 sub-levels
 	 *
 	 * @throws			Smart::raise_error()
 	 *
@@ -2022,13 +2022,20 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 	 * @param ARRAY 	$y_arr_vars_sub_templates 	:: Empty Array or Mappings Array [ '%sub-tpl1%' => '@/tpl1.htm', 'tpl2.htm' => '@', 'tpl3.htm' => 'path/to/this/tpl/' ]
 	 * @return STRING 								:: the prepared marker template contents
 	 */
-	private static function load_subtemplates(string $y_use_caching, string $y_base_path, string $mtemplate, array $y_arr_vars_sub_templates, int $cycles=0, bool $process_sub_sub_templates=true) {
+	private static function load_subtemplates(string $y_use_caching, string $y_base_path, string $mtemplate, array $y_arr_vars_sub_templates, int $sub_tpls_loaded=0, int $sub_levels=0) {
 		//--
 		$y_use_caching = (string) $y_use_caching;
 		$y_base_path = (string) $y_base_path;
 		$mtemplate = (string) $mtemplate;
 		$y_arr_vars_sub_templates = (array) $y_arr_vars_sub_templates;
-		$cycles = (int) $cycles;
+		$sub_tpls_loaded = (int) $sub_tpls_loaded;
+		$sub_levels = (int) $sub_levels;
+		//--
+		if((int)$sub_levels <= 8) { // limit to max 12 levels as: 1 template, 1 sub-template, 1 sub-sub-template + other 9 sub-sub... levels (0..8)
+			$process_sub_sub_templates = true;
+		} else {
+			$process_sub_sub_templates = false;
+		} //end if else
 		//--
 		if((string)$y_base_path == '') {
 			Smart::raise_error('Marker Template Load Sub-Templates: INVALID Base Path (Empty) ... / Template: '.$mtemplate);
@@ -2036,6 +2043,8 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 		} //end if
 		//--
 		if(Smart::array_size($y_arr_vars_sub_templates) > 0) {
+			//--
+			$sub_levels++;
 			//--
 			if(SmartFrameworkRuntime::ifDebug()) {
 				$bench = microtime(true);
@@ -2066,7 +2075,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 						//--
 						if(SmartFrameworkRuntime::ifDebug()) {
 							SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
-								'title' => '[TPL-Parsing:Load] :: Marker-TPL / Skipping Sub-Template File: Key='.$key.' ; *Path='.$val.' ; Cycle='.$cycles,
+								'title' => '[TPL-Parsing:Load] :: Marker-TPL / Skipping Sub-Template File: Key='.$key.' ; *Path='.$val.' ; Sub-TPLs Loaded='.$sub_tpls_loaded.' ; Sub-Levels='.$sub_levels,
 								'data' => 'Unset based on empty Path value ...'
 							]);
 						} //end if
@@ -2115,7 +2124,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 								return (string) 'ERROR: (703) in '.__CLASS__;
 							} //end if
 							*/
+							/* this is no more compatible with loading ++ levels ... either before was actually because was able to load 2 pre-levels until get up here
 							$process_sub_sub_templates = false; // no syntax parsed if escaped ; must not load sub-templates because it is considered a flat string not a template that must be escaped somehow
+							*/
 						} //end if
 						//--
 						if(((string)substr($key, 0, 1) == '%') AND ((string)substr($key, -1, 1) == '%')) { // variable, only can be set programatically, full path to the template file is specified
@@ -2174,8 +2185,8 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 							$arr_sub_sub_templates = (array) self::detect_subtemplates((string)$stemplate); // detect sub-sub templates
 							$num_sub_sub_templates = Smart::array_size($arr_sub_sub_templates);
 							if($num_sub_sub_templates > 0) {
-								$stemplate = (string) self::load_subtemplates((string)$y_use_caching, (string)$y_base_path, (string)$stemplate, (array)$arr_sub_sub_templates, (int)$cycles, false); // this is level 3 !!
-								$cycles += $num_sub_sub_templates;
+								$stemplate = (string) self::load_subtemplates((string)$y_use_caching, (string)$y_base_path, (string)$stemplate, (array)$arr_sub_sub_templates, (int)$sub_tpls_loaded, (int)$sub_levels);
+								$sub_tpls_loaded += $num_sub_sub_templates;
 							} //end if
 						} //end if
 						//-- DO NOT MODIFY ORDER ! escapings must be before detecting and fixing unattended syntax ; any sequence from below must escape at least with prepare_nosyntax_content() or prepare_nosyntax_html_template() to avoid reparsing syntax
@@ -2207,7 +2218,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 						//--
 						if(SmartFrameworkRuntime::ifDebug()) {
 							SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
-								'title' => '[TPL-Parsing:Load] :: Marker-TPL / INCLUDE Sub-Template File: Key='.$key.' ; Path='.$stpl_path.' ; Cycle='.$cycles,
+								'title' => '[TPL-Parsing:Load] :: Marker-TPL / INCLUDE Sub-Template File: Key='.$key.' ; Path='.$stpl_path.' ; Sub-TPLs Loaded='.$sub_tpls_loaded.' ; Sub-Levels='.$sub_levels,
 								'data' => 'Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit($stemplate)
 							]);
 						} //end if
@@ -2222,9 +2233,9 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 					//--
 				} //end if else
 				//--
-				$cycles++;
-				if($cycles > 127) { // protect against infinite loop, max 127 loops (incl. sub-sub templates) :: hard limit
-					Smart::log_warning('Marker-TPL: Inclusion of the Sub-Template: '.$stpl_path.' failed as it overflows the maximum hard limit: only 127 loops (sub-templates) are allowed. Current Cycle is: #'.$cycles);
+				$sub_tpls_loaded++;
+				if((int)$sub_tpls_loaded > 127) { // protect against infinite loop, max 127 loops (incl. sub-sub templates) :: hard limit
+					Smart::log_warning('Marker-TPL: Inclusion of the Sub-Template: '.$stpl_path.' failed as it overflows the maximum hard limit: only 127 loops (sub-templates) are allowed. Current Sub-TPLs Loaded are: #'.$sub_tpls_loaded);
 					break;
 				} //end if
 				//--
@@ -2234,7 +2245,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 				$bench = Smart::format_number_dec((float)(microtime(true) - (float)$bench), 9, '.', '');
 				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
 					'title' => '[TPL-Parsing:Load.DONE] :: Marker-TPL / INCLUDE Sub-Templates Completed ; Time = '.$bench.' sec.',
-					'data' => 'Total Cycles: '.$cycles
+					'data' => 'Total Sub-TPLs Loaded: '.$sub_tpls_loaded
 				]);
 			} //end if
 			//--

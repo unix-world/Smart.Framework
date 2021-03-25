@@ -1,6 +1,6 @@
 <!-- start Marker-TPL extended syntax template -->
 [%%%COMMENT%%%]
-Template: templating-test-extended.mtpl.htm # v.20210319
+Template: templating-test-extended.mtpl.htm # v.20210325
 [%%%/COMMENT%%%]<!-- comments are removed -->
 <h1 style="display:inline-block;">[###TITLE###]</h1>
 <div>
@@ -161,9 +161,6 @@ Template: templating-test-extended.mtpl.htm # v.20210319
 <br>
 <div style="font-weight:bold; font-size:16px; background:#ECECEC;"> JS Test for Marker escaping :: VALID Escaping Sequences for a Marker (below):<br>[###MARKER|html###]</div>
 </div>
-<hr>
-<h1>#END Test</h1>
-<br>
 <script>
 var the_marker = '[###MARKER|js###]';
 var the_textstr = '[###TEXTSTR|js###]';
@@ -224,4 +221,10 @@ var tpl_src = '[@@@SUB-TEMPLATE:partials/templating-test-extended.inc.htm|js-tpl
 	//--
 })();
 </script>
+<br>
+<hr>
+[@@@SUB-TEMPLATE:partials/templating-test-extended-level1.inc.htm@@@]
+<hr>
+<h1>#END Test</h1>
+<br>
 <!-- end Marker-TPL extended syntax template -->

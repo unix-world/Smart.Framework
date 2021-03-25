@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+March 25, 2021 :: :: Version 7.2.1 rev.20210325
+	* PHP: Marker-TPL supports 12 sub-levels instead of 3
+
 March 22, 2021 :: :: Version 7.2.1 rev.20210322
 	* PHP: Smart Markdown parser security improvements and optimizations ; can integrate with Smart Html Cleanup
 	* PHP: Smart Html Cleanup now supports also tidy not only DomDocument ; many fixes
