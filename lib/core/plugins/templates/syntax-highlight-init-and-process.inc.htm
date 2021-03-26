@@ -1,4 +1,4 @@
-<!-- Partial Template: Plugins.SyntaxHighlight r.20200619 -->
+<!-- Partial Template: Plugins.SyntaxHighlightInitAndProcess r.20210327 -->
 <link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/core/css/tpl-highlight.css">
 <link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
 <style>
@@ -10,12 +10,17 @@ code.hljs, code.hljs * {
 <!-- HLjs Base -->
 <link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/css/[###CSS-THEME|html###].css">
 <script type="text/javascript" src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/highlight.js"></script>
+<script type="text/javascript" src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/smart-highlight.js"></script>
 <script type="text/javascript" src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/syntax/plaintext.js"></script>
 <!-- HLjs Plugins [[###SYNTAX-PACKS|html###]] -->
 [%%%LOOP:SYNTAX-PLUGINS%%%]
 <script type="text/javascript" src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/[###SYNTAX-PLUGINS._-VAL-_|html###].js"></script>[%%%IF:SYNTAX-PLUGINS._-ITERATOR-_:<###SYNTAX-PLUGINS._-MAXCOUNT-_###;%%%][%%%|N%%%][%%%/IF:SYNTAX-PLUGINS._-ITERATOR-_%%%]
 [%%%/LOOP:SYNTAX-PLUGINS%%%]
+<!-- HLjs Extra Html -->
+[###EXT-JSHTML###]
 <!-- HLjs Async Render -->
-<script type="text/javascript" src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/smart-highlight.js"></script>
-[@@@SUB-TEMPLATE:!lib/core/plugins/templates/syntax-highlight-process.inc.htm!@@@]
-<!-- #END :: Partial Template: Plugins.SyntaxHighlight -->
+<script type="text/javascript">
+var SmartViewHelpersSyntaxHighlightAreas = '[###AREAS-SELECTOR|js###]';
+</script>
+[@@@SUB-TEMPLATE:!lib/core/plugins/templates/syntax-highlight-process-static.inc.htm!@@@]
+<!-- #END :: Partial Template: Plugins.SyntaxHighlightInitAndProcess -->

@@ -60,7 +60,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210305
+ * @version 	v.20210327
  * @package 	@Core:FileSystem
  *
  */
@@ -764,13 +764,32 @@ final class SmartFileSysUtils {
 		$lfile = (string) strtolower($file);
 		//--
 		if(in_array((string)$lfile, [ // all lowercase as file is already strtolower
+			'#release',
 			'license',
+			'license-bsd',
+			'license-gplv3',
+			'changelog',
+			'changes',
 			'readme',
 			'makefile',
 			'cmake',
 			'meson.build',
+			'go.mod', // go module
+			'go.sum', // go checksum
+			'mime.types', // apache
+			'magic', // apache
+			'manifest', // github
+			'exports',
+			'fstab',
+			'group',
+			'hosts',
+			'machine-id',
 			'.htaccess',
-			'.htpasswd'
+			'.htpasswd',
+			'.gitignore',
+			'.gitattributes',
+			'.gitmodules',
+			'.properties',
 		])) {
 			$extension = (string) $lfile;
 		} else {
@@ -786,6 +805,8 @@ final class SmartFileSysUtils {
 			case 'dust': // tpl dust
 			case 'twig': // twig templating
 			case 't3fluid': // typo3 fluid templating
+			case 'latte': // nette latte templating
+			case 'django': // django templating
 				$type = 'text/html';
 				$disp = 'attachment';
 				break;
@@ -833,10 +854,18 @@ final class SmartFileSysUtils {
 			case 'sh': // shell script
 			case 'bash': // bash (shell) script
 			case 'awk': // AWK script
-			case 'asm': // assembler
+			case 'll': // llvm IR assembler
+			case 's': // llvm IR assembler
+			case 'asm': // assembler (x86)
+			case 'aasm': // assembler (arm)
+			case 'masm': // assembler (mips)
 			case 'cmd': // windows command file
 			case 'bat': // windows batch file
+			case 'ps1': // windows powershell
+			case 'psm1': // windows powershell
+			case 'psd1': // windows powershell
 			case 'asp': // active server page
+			case 'csharp': // C#
 			case 'cs': // C#
 			case 'm': // Objective C Method
 			case 'c': // C
@@ -844,7 +873,9 @@ final class SmartFileSysUtils {
 			case 'y': // Yacc source code file
 			case 'f': // Fortran
 			case 'fs': // Fortran Sharp
+			case 'fsharp': // Fortran Sharp
 			case 'r': // R language
+			case 'd': // D language
 			case 'diff': // Diff File
 			case 'patch': // Diff Patch
 			case 'pro': // QT project file
@@ -862,15 +893,28 @@ final class SmartFileSysUtils {
 			case 'toml': // Tom's Obvious, Minimal Language (used with Cargo / Rust definitions)
 			case 'rs': // Rust Language
 			case 'go': // Go Lang
+			case 'go.mod': // Go Module
+			case 'go.sum': // Go Module Checksum
 			case 'coffee': // Coffee Script
 			case 'cson': // Coffee Script
 			case 'ocaml': // Ocaml
 			case 'ml': // Ocaml ML
+			case 'mli': // Ocaml MLI (plain signature)
 			case 'erl': // Erlang
+			case 'hrl': // Erlang macro
 			case 'pl': // perl
 			case 'pm': // perl module
 			case 'py': // python
+			case 'phps': // php source, assign text/plain !
+			case 'php3': // php3 source, assign text/plain !
+			case 'php4': // php4 source, assign text/plain !
+			case 'php5': // php5 source, assign text/plain !
+			case 'php6': // n/a ; php6 source, assign text/plain !
+			case 'php7': // php7 source, assign text/plain !
+			case 'php8': // php8 source, assign text/plain !
+			case 'php9': // php9 source, assign text/plain !
 			case 'hh': // hip-hop (a kind of PHP for HipHop VM)
+			case 'swift': // apple swift language
 			case 'vala': // vala language
 			case 'vapi': // vala vapi
 			case 'deps': // vala deps
@@ -878,12 +922,32 @@ final class SmartFileSysUtils {
 			case 'hxml': // haxe compiler arguments
 			case 'hs': // haskell
 			case 'lhs': // haskell literate
-			case 'scala': // Scala
+			case 'jsp': // java server page (html + syntax)
 			case 'java': // java source code
-			case 'jsp': // java server page
+			case 'groovy': // apache groovy language
+			case 'gvy': // apache groovy language
+			case 'gy': // apache groovy language
+			case 'gsh': // apache groovy language, shell script
+			case 'kotlin': // kotlin language
+			case 'kt': // kotlin language
+			case 'ktm': // kotlin language module
+			case 'kts': // kotlin language script, shell script
+			case 'scala': // Scala
+			case 'sc': // scala
+			case 'gradle': // automation tool for java like languages
 			case 'pas': // Delphi / Pascal
 			case 'as': // action script
+			case 'ts': // type script
+			case 'tsx': // type script
 			case 'basic': // Basic
+			case 'bas': // basic
+			case 'vb': // visual basic - vbnet
+			case 'vbs': // visual basic script - vbnet
+			case 'openscad': // openscad
+			case 'jscad': // openscad (js version)
+			case 'scad': // openscad
+			case 'stl': // openscad
+			case 'obj': // openscad
 			case 'inc': // include file
 			case 'ins': // install config file
 			case 'inf': // info file
@@ -892,20 +956,43 @@ final class SmartFileSysUtils {
 			case 'yaml': // yaml file
 			case 'md': // markdown
 			case 'markdown': // markdown
+			case 'protobuf': // protocol buffers
+			case 'pb': // protocol buffers
+			case 'vhd': // vhdl
+			case '#release': // release
 			case 'license': // license
+			case 'license-bsd': // license
+			case 'license-gplv3': // license
+			case 'changelog': // changelog
+			case 'changes': // changes
 			case 'readme': // license
 			case 'makefile': // makefile
 			case 'cmake': // cmake file
 			case 'meson.build': // meson build file
+			case 'mime.types': // apache
+			case 'magic': // apache
+			case 'manifest': // github
+			case 'exports': // linux exports
+			case 'fstab': // linux fstab
+			case 'group': // linux group
+			case 'hosts': // linux hosts
+			case 'machine-id': // openbsd machine-id
 			case '.htaccess': // .htaccess
 			case '.htpasswd': // .htpasswd
+			case '.gitignore': // git ignore
+			case '.gitattributes': // git attributes
+			case '.gitmodules': // git modules
+			case '.properties': // properties file
 			case 'pem': // PEM Certificate File
 			case 'crl': // Certificate Revocation List
 			case 'crt': // Certificate File
 			case 'key': // Certificate Key File
+			case 'keys': // Bind DNS keys
 			case 'dns': // DNS Config
 			case 'csp': // Content Security Policy
 			case 'httph': // HTTP Header
+			case 'dist': // .dist files are often configuration files which do not contain the real-world deploy-specific parameters
+			case 'lock': // ex: yarn.lock
 				$type = 'text/plain';
 				$disp = 'attachment';
 				break;

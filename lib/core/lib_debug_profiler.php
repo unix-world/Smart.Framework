@@ -39,7 +39,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @access 		private
  * @internal
  *
- * @version 	v.20210322
+ * @version 	v.20210326
  * @package 	Application:Development
  *
  */
@@ -364,9 +364,8 @@ public static function display_marker_tpl_debug($y_tpl_file, array $y_arr_sub_te
 	if(self::test_tpl_file_for_debug($y_tpl_file) === true) {
 		$content = (string) SmartMarkersTemplating::analyze_debug_file_template((string)$y_tpl_file, (array)$y_arr_sub_templates);
 		if(class_exists('SmartViewHtmlHelpers')) {
-			$content .= (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('',['web','tpl']);
+			$content .= (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('div#tpl-display-for-highlight', ['web','tpl']);
 			$content .= "\n".'<!-- SmartProfiler div-id:tpl-display-for-highlight -->'."\n";
-			$content .= (string) SmartViewHtmlHelpers::html_js_highlightsyntax('div#tpl-display-for-highlight');
 		} //end if
 	} elseif((string)trim((string)$y_tpl_file) == '') {
 		$content = '<h1>WARNING: Empty Marker-TPL Template to Debug</h1>';

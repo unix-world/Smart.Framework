@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210310
+ * @version 	v.20210327
  * @package 	Plugins:ViewComponents
  *
  */
@@ -53,48 +53,32 @@ final class SmartViewHtmlHelpers {
 
 	//================================================================
 	/**
-	 * Return the HTML / CSS / Javascript code to HighlightJs DOM Areas in a DOM Selector
-	 * If a valid DOM Selector is specified all code areas in that dom selector will be highlighted
-	 * @hints This should be rendered just once per HTML page for a specific DOM Selector ; It can be used more than once per HTML page with different DOM Selectors that are not contained one within another
-	 *
-	 * @param STRING 	$dom_selector		A valid jQuery HTML-DOM Selector as container(s) for Pre>Code (see jQuery ...)
-	 *
-	 * @return STRING						[HTML Code]
-	 */
-	public static function html_js_highlightsyntax($dom_selector) {
-		//--
-		return (string) SmartMarkersTemplating::render_file_template(
-			'lib/core/plugins/templates/syntax-highlight-process.inc.htm',
-			[
-				'AREAS-SELECTOR' 	=> (string) $dom_selector
-			]
-		);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
 	 * Return the HTML / CSS / Javascript code to Load the required Javascripts for the Highlight.Js
 	 * If a valid DOM Selector is specified all code areas in that dom selector will be highlighted
 	 * This function should not be rendered more than once in a HTML page
 	 *
-	 * @param STRING 	$dom_selector			A valid jQuery HTML-DOM Selector as container(s) for Pre>Code (see jQuery ...)
-	 * @param ARRAY 	$plugins 				The Array with enum of packages to load
-	 * @param ENUM 		$theme 					The Visual CSS Theme to Load
-	 * @param BOOL 		$loadpacks 				If TRUE will load syntax packed files instead of syntax single files which are many
+	 * @param STRING 	$dom_selector			A valid jQuery HTML-DOM Selector as container(s) for Pre>Code (see jQuery ...) ; Can be: 'body', '#id-element', ...
+	 * @param MIXED 	$plugins 				NULL to load all or ARRAY with enum of packages to load (available Plugins: 'web', 'tpl', 'lnx', 'lnx', 'srv', 'net', 'lang') ; Default is set to load only 'web'
+	 * @param ENUM 		$theme 					The Visual CSS Theme to Load ; Available Themes: 'default', 'atom-one-light', 'github-gist', 'github', 'googlecode', 'grayscale', 'ocean', 'tomorrow-night-blue', 'xcode', 'zenburn' ; Default is set to: 'default'
+	 * @param BOOL 		$loadpacks 				If TRUE will load syntax packed files instead of syntax single files which are many ; Default is TRUE
 	 * @param BOOL 		$use_absolute_url 		If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
+	 * @param STRING 	$ext_jshtml 			Extra Js/HTML Code ; Default is '' ; Here can be loaded ext syntax packs ; ex: '<script type="text/javascript" src="modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'
 	 *
 	 * @return STRING							[HTML Code]
 	 */
-	public static function html_jsload_highlightsyntax($dom_selector, array $plugins=['web'], $theme='github', $loadpacks=true, $use_absolute_url=false) {
+	public static function html_jsload_highlightsyntax($dom_selector, $plugins=['web'], $theme='github', $loadpacks=true, $use_absolute_url=false, $ext_jshtml='') {
+		//--
+		if(!is_array($plugins)) {
+			$plugins = [ 'web', 'tpl', 'lnx', 'lnx', 'srv', 'net', 'lang' ];
+		} //end if
 		//--
 		if($use_absolute_url !== true) {
 			$the_abs_url = '';
 		} else {
 			$the_abs_url = (string) SmartUtils::get_server_current_url();
 		} //end if else
+		//--
+		$ext_jshtml = (string) $ext_jshtml;
 		//--
 		$theme = (string) strtolower((string)$theme);
 		switch((string)$theme) {
@@ -162,13 +146,14 @@ final class SmartViewHtmlHelpers {
 		} //end if
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
-			'lib/core/plugins/templates/syntax-highlight-init.inc.htm',
+			'lib/core/plugins/templates/syntax-highlight-init-and-process.inc.htm',
 			[
 				'HLJS-PREFIX-URL' 	=> (string) $the_abs_url,
 				'CSS-THEME' 		=> (string) $theme,
 				'SYNTAX-PLUGINS' 	=> (array)  $arr_stx_plugs,
 				'SYNTAX-PACKS' 		=> (string) $syntax_packs,
-				'AREAS-SELECTOR' 	=> (string) $dom_selector
+				'AREAS-SELECTOR' 	=> (string) $dom_selector,
+				'EXT-JSHTML' 		=> (string) $ext_jshtml
 			]
 		);
 		//--
@@ -223,22 +208,29 @@ final class SmartViewHtmlHelpers {
 				$fpack = 'web';
 				$ftype = 'less';
 				break;
+			case 'rst': // similar with markdown
 			case 'md':
 			case 'markdown':
 				$fpack = 'web';
 				$ftype = 'markdown';
+				break;
+			case 'sql':
+				$fpack = 'web';
+				$ftype = 'sql';
 				break;
 			case 'pgsql':
 				$fpack = 'web';
 				$ftype = 'pgsql';
 				break;
 			case 'php':
+			case 'phps':
 			case 'php3':
 			case 'php4':
 			case 'php5':
 			case 'php6': // n/a
 			case 'php7':
 			case 'php8':
+			case 'php9':
 			case 'hh': // hip hop, a kind of static PHP
 				$fpack = 'web';
 				$ftype = 'php';
@@ -246,10 +238,6 @@ final class SmartViewHtmlHelpers {
 			case 'scss':
 				$fpack = 'web';
 				$ftype = 'scss';
-				break;
-			case 'sql':
-				$fpack = 'web';
-				$ftype = 'sql';
 				break;
 			case 'yaml':
 			case 'yml':
@@ -262,10 +250,13 @@ final class SmartViewHtmlHelpers {
 			case 'html':
 			case 'glade': // gnome glade xml
 			case 'ui': // qt ui xml
+			case 'jsp': // java server page
+			case 'asp': // active server page
 				$fpack = 'web';
 				$ftype = 'xml';
 				break;
 			//-- tpl (depends on web)
+			case 'mtpl':
 			case 'htm':
 				$fpack = 'web,tpl';
 				$ftype = 'markertpl';
@@ -352,7 +343,19 @@ final class SmartViewHtmlHelpers {
 				// no handler
 		} //end switch
 		//--
-		if((string)strtolower((string)$fname) == 'cmake') {
+		if(stripos((string)$fname, '.mtpl.') !== false) {
+			$fpack = 'web,tpl';
+			$ftype = 'markertpl';
+		} elseif(
+			(in_array((string)$ftype, ['html', 'htm', 'js', 'json', 'css', 'xml', 'markdown', 'md', 'txt', 'log', 'yaml', 'yml'])) AND
+			((stripos((string)$fname, '.inc.') !== false) OR (stripos((string)$fname, '.tpl.') !== false))
+		) {
+			$fpack = 'web,tpl';
+			$ftype = 'markertpl';
+		} elseif(stripos((string)$fname, '.t3fluid.') !== false) {
+			$fpack = 'web';
+			$ftype = 'xml';
+		} elseif((string)strtolower((string)$fname) == 'cmake') {
 			$fpack = 'lang';
 			$ftype = 'cmake';
 		} elseif((string)strtolower((string)$fname) == 'makefile') {
@@ -361,11 +364,20 @@ final class SmartViewHtmlHelpers {
 		} elseif((string)$fname == 'pf.conf') {
 			$fpack = 'srv';
 			$ftype = 'pf';
-		} elseif((in_array((string)$ftype, ['xml', 'html', 'md', 'json'])) OR ((string)$fext == 'txt')) {
-			if((stripos((string)$fname, '.mtpl.') !== false) OR (stripos((string)$fname, '.inc.') !== false)) {
-				$fpack = 'web,tpl';
-				$ftype = 'markertpl';
-			} //end if
+		} elseif(
+			((string)$fname == 'httpd.conf') OR
+			((string)$fname == 'httpd2.conf') OR
+			((string)$fname == 'apache.conf') OR
+			((string)$fname == 'apache2.conf') OR
+			((string)$fname == 'hosts.conf') OR
+			((string)$fname == 'svn.conf') OR // apache svn conf
+			((string)$fname == '.htaccess') OR // apache .htaccess (.htpasswd is plain text only)
+			((strpos((string)$fname, 'php-') === 0) AND ((string)substr((string)$fname, -5, 5) == '.conf')) OR // apache php conf
+			((strpos((string)$fname, 'mod-') === 0) AND ((string)substr((string)$fname, -5, 5) == '.conf')) OR // apache module conf
+			(((strpos((string)$fname, 'httpd-') === 0) OR (strpos((string)$fname, 'httpd_') === 0)) AND ((string)substr((string)$fname, -5, 5) == '.conf'))
+		) {
+			$fpack = 'srv';
+			$ftype = 'apache';
 		} //end if
 		//--
 		return array(

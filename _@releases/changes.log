@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+March 27, 2021 :: :: Version 7.2.1 rev.20210327
+	* HighlightJs ViewHelpers - new features
+	* mime type better detection
+
 March 25, 2021 :: :: Version 7.2.1 rev.20210325
 	* PHP: Marker-TPL supports 12 sub-levels instead of 3
 
