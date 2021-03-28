@@ -68,7 +68,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20210312
+ * @version 	v.20210328
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -1670,7 +1670,7 @@ final class SmartPgsqlDb {
 	 */
 	public static function prepare_param_query($query, $replacements_arr, $y_connection='DEFAULT') { // {{{SYNC-SQL-PARAM-QUERY}}}
 
-		// version: 181219
+		// version: 20210328
 
 		//==
 		$y_connection = self::check_connection($y_connection, 'PREPARE-PARAM-QUERY');
@@ -1687,45 +1687,28 @@ final class SmartPgsqlDb {
 			return ''; // empty query not allowed
 		} //end if
 		//--
-		if(strpos($query, "'") !== false) { // this must be avoided as below will be exploded by ? thus if a ? is inside '' this is a problem ...
-			self::error($y_connection, 'PREPARE-PARAM-QUERY', 'Query used for prepare with params in '.__FUNCTION__.'() cannot contain single quotes to prevent possible SQL injections which can produce unpredictable results !', (string)$query, $replacements_arr);
-			return ''; // single quote is not allowed
-		} //end if
-		//--
-		if(!is_array($replacements_arr)) {
+		if(!is_array($replacements_arr)) { // MUST BE ARRAY
 			self::error($y_connection, 'PREPARE-PARAM-QUERY', 'Query Replacements is NOT Array !', (string)$query, $replacements_arr);
 			return ''; // replacements must be an array
 		} //end if
 		//--
+		if(Smart::array_size($replacements_arr) <= 0) { // this must be a separate check than if is array ; if there are no replacements return the plain / unchanged query (as below) like it would not contain $# or ?
+			return (string) $query; // this situation is important for a query like: SELECT * FROM table WHERE (json_field::jsonb ? 1) and if it would have no
+		} //end if
+		//--
 		$out_query = '';
 		//--
-		if(strpos((string)$query, '?') !== false) {
+		$regex_have_dollar_params = '{'.'([^\$]*)?(\$[0-9]+)?'.'}s';
+		//--
+		if((strpos((string)$query, '$') !== false) AND (preg_match((string)$regex_have_dollar_params, (string)$query))) { // 1st check for $# instead of ? because the query can contains $# but also ? as part of newer json syntax like: SELECT * FROM table WHERE (json_field::jsonb ? $1)
 			//--
-			$expr_arr = (array) explode('?', (string)$query);
-			$expr_count = count($expr_arr);
-			//--
-			for($i=0; $i<$expr_count; $i++) {
-				//--
-				$out_query .= (string) $expr_arr[$i];
-				//--
-				if($i < ($expr_count - 1)) { // this is req. as it comes from explode
-					//--
-					if(!array_key_exists((string)$i, $replacements_arr)) {
-						self::error($y_connection, 'PREPARE-PARAM-QUERY', 'Invalid Replacements Array.Size ; Key: #'.$i, (string)$query, $replacements_arr);
-						return ''; // array key does not exists in replacements
-						break;
-					} //end if
-					//-- {{{SYNC-DETECT-PURE-NUMERIC-INT-OR-DECIMAL-VALUES}}} :: for PostgreSQL IS IMPOSSIBLE TO KNOW OUT OF CONTEXT TO PASS A PURE NUMERIC OR A STRING VALUE BECAUSE OF ERRORS ; THUS IS SAFE TO USE ESCAPE LITERAL WHICH ALWAYS ADDS QUOTES ARROUND VALUES (INCL. NUMERIC) ; ERROR EXAMPLE: DO A QUERY WHERE A VALUE = NUMERIC WHERE COLUMN IS TEXT
-					$out_query .= (string) self::escape_literal((string)$replacements_arr[$i], '', $y_connection);
-					//--
-				} //end if
-				//--
-			} //end for
-			//--
-		} elseif(strpos((string)$query, '$') !== false) {
+			if(strpos($query, "'") !== false) { // do this check only if contains $# ... this must be avoided as below will be exploded by $# thus if a $# is inside '' this is a problem ...
+				self::error($y_connection, 'PREPARE-PARAM-QUERY', 'Query used for prepare with $# params in '.__FUNCTION__.'() cannot contain single quotes to prevent possible SQL injections which can produce unpredictable results !', (string)$query, $replacements_arr);
+				return ''; // single quote is not allowed
+			} //end if
 			//--
 			$expr_arr = array();
-			$pcre = preg_match_all('{'.'([^\$]*)?(\$[0-9]+)?'.'}s', (string)$query, $expr_arr, PREG_SET_ORDER, 0);
+			$pcre = preg_match_all((string)$regex_have_dollar_params, (string)$query, $expr_arr, PREG_SET_ORDER, 0);
 			if($pcre === false) {
 				self::error($y_connection, 'PREPARE-PARAM-QUERY', 'ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS, (string)$query, $replacements_arr);
 				return ''; // regex failed
@@ -1757,9 +1740,37 @@ final class SmartPgsqlDb {
 				//--
 			} //end for
 			//--
+		} elseif(strpos((string)$query, '?') !== false) {
+			//--
+			if(strpos($query, "'") !== false) { // do this check only if contains ? ... this must be avoided as below will be exploded by ? thus if a ? is inside '' this is a problem ...
+				self::error($y_connection, 'PREPARE-PARAM-QUERY', 'Query used for prepare with ? params in '.__FUNCTION__.'() cannot contain single quotes to prevent possible SQL injections which can produce unpredictable results !', (string)$query, $replacements_arr);
+				return ''; // single quote is not allowed
+			} //end if
+			//--
+			$expr_arr = (array) explode('?', (string)$query);
+			$expr_count = count($expr_arr);
+			//--
+			for($i=0; $i<$expr_count; $i++) {
+				//--
+				$out_query .= (string) $expr_arr[$i];
+				//--
+				if($i < ($expr_count - 1)) { // this is req. as it comes from explode
+					//--
+					if(!array_key_exists((string)$i, $replacements_arr)) {
+						self::error($y_connection, 'PREPARE-PARAM-QUERY', 'Invalid Replacements Array.Size ; Key: #'.$i, (string)$query, $replacements_arr);
+						return ''; // array key does not exists in replacements
+						break;
+					} //end if
+					//-- {{{SYNC-DETECT-PURE-NUMERIC-INT-OR-DECIMAL-VALUES}}} :: for PostgreSQL IS IMPOSSIBLE TO KNOW OUT OF CONTEXT TO PASS A PURE NUMERIC OR A STRING VALUE BECAUSE OF ERRORS ; THUS IS SAFE TO USE ESCAPE LITERAL WHICH ALWAYS ADDS QUOTES ARROUND VALUES (INCL. NUMERIC) ; ERROR EXAMPLE: DO A QUERY WHERE A VALUE = NUMERIC WHERE COLUMN IS TEXT
+					$out_query .= (string) self::escape_literal((string)$replacements_arr[$i], '', $y_connection);
+					//--
+				} //end if
+				//--
+			} //end for
+			//--
 		} else {
 			//--
-			$out_query = (string) $query;
+			$out_query = (string) $query; // query contains no $# or ? ... return it unchanged
 			//--
 		} //end if else
 		//--
@@ -2368,7 +2379,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20210312
+ * @version 	v.20210328
  * @package 	Plugins:Database:PostgreSQL
  *
  */

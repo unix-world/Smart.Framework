@@ -62,7 +62,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem
- * @version 	v.20210303
+ * @version 	v.20210328
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -476,7 +476,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem
- * @version 	v.20210303
+ * @version 	v.20210328
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -1491,7 +1491,7 @@ final class SmartSQliteUtilDb {
 	 * @return STRING								:: The SQL processed (partial/full) Statement
 	 */
 	public static function prepare_param_query($db, $query, $replacements_arr) { // {{{SYNC-SQL-PARAM-QUERY}}}
-		//-- version: 181219
+		//-- version: 20210328
 		if(!is_string($query)) {
 			self::error($db, 'PREPARE-PARAM-QUERY', 'Query is not a string !', print_r($query,1), $replacements_arr);
 			return ''; // query must be a string
@@ -1502,19 +1502,23 @@ final class SmartSQliteUtilDb {
 			return ''; // empty query not allowed
 		} //end if
 		//--
-		if(strpos($query, "'") !== false) { // this must be avoided as below will be exploded by ? thus if a ? is inside '' this is a problem ...
-			self::error($db, 'PREPARE-PARAM-QUERY', 'Query used for prepare with params in '.__FUNCTION__.'() cannot contain single quotes to prevent possible SQL injections which can produce unpredictable results !', (string)$query, $replacements_arr);
-			return ''; // single quote is not allowed
-		} //end if
-		//--
 		if(!is_array($replacements_arr)) {
 			self::error($db, 'PREPARE-PARAM-QUERY', 'Query Replacements is NOT Array !', (string)$query, $replacements_arr);
 			return ''; // replacements must be an array
 		} //end if
 		//--
+		if(Smart::array_size($replacements_arr) <= 0) { // this must be a separate check than if is array ; if there are no replacements return the plain / unchanged query (as below) like it would not contain ?
+			return (string) $query; // this situation is important for a query like: SELECT * FROM table WHERE (json_field::jsonb ? 1) and if it would have no
+		} //end if
+		//--
 		$out_query = '';
 		//--
 		if(strpos((string)$query, '?') !== false) {
+			//--
+			if(strpos($query, "'") !== false) { // do this check only if contains ? ... this must be avoided as below will be exploded by ? thus if a ? is inside '' this is a problem ...
+				self::error($db, 'PREPARE-PARAM-QUERY', 'Query used for prepare with params in '.__FUNCTION__.'() cannot contain single quotes to prevent possible SQL injections which can produce unpredictable results !', (string)$query, $replacements_arr);
+				return ''; // single quote is not allowed
+			} //end if
 			//--
 			$expr_arr = (array) explode('?', (string)$query);
 			$expr_count = count($expr_arr);
@@ -1543,7 +1547,7 @@ final class SmartSQliteUtilDb {
 			//--
 		} else {
 			//--
-			$out_query = (string) $query;
+			$out_query = (string) $query; // query contains no ? ... return it unchanged
 			//--
 		} //end if else
 		//--
@@ -1814,7 +1818,7 @@ final class SmartSQliteUtilDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20210303
+ * @version 	v.20210328
  * @package 	Plugins:Database:SQLite
  *
  */

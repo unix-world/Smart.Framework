@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210327
+ * @version 	v.20210328
  * @package 	Plugins:ViewComponents
  *
  */
@@ -1092,14 +1092,14 @@ final class SmartViewHtmlHelpers {
 		$is_paging = false;
 		$orig_total = $total;
 		$orig_limit = $limit;
-		if((string)$options['nav-mode'] == 'pages') { // navigate by page number instead of offset
+		if(isset($options['nav-mode']) AND ((string)$options['nav-mode'] == 'pages')) { // navigate by page number instead of offset
 			$is_paging = true;
 			$total = Smart::format_number_int(ceil($total / $limit), '+');
 			$current = Smart::format_number_int(ceil($current / $limit), '+');
 			$limit = (int) 1;
 		} //end if
 		$opt_zerolink = '';
-		if((string)$options['zero-link'] != '') {
+		if(isset($options['zero-link']) AND ((string)$options['zero-link'] != '')) {
 			if((string)$options['zero-link'] == '@') {
 				$options['zero-link'] = (string) str_replace('{{{offset}}}', '', (string)$link);
 			} //end if
@@ -1110,11 +1110,11 @@ final class SmartViewHtmlHelpers {
 			$opt_emptydiv = (string) $options['empty-div'];
 		} //end if
 		$showfirst = true; // show go first
-		if($options['show-first'] === false) {
+		if(array_key_exists('show-first', $options) AND ($options['show-first'] === false)) {
 			$showfirst = false;
 		} //end if
 		$showlast = true; // show go last
-		if($options['show-last'] === false) {
+		if(array_key_exists('show-last', $options) AND ($options['show-last'] === false)) {
 			$showlast = false;
 		} //end if
 		//--
@@ -1301,13 +1301,13 @@ final class SmartViewHtmlHelpers {
 			return (string) '<!-- Navigation Pager (2) -->[ ERROR: Invalid Navigation Pager: Limit is ZERO ]<!-- #END# Navigation Pager -->';
 		} //end if
 		//--
-		if((string)$options['nav-mode'] == 'pages') { // navigate by page number instead of offset
+		if(isset($options['nav-mode']) AND ((string)$options['nav-mode'] == 'pages')) { // navigate by page number instead of offset
 			$total = Smart::format_number_int(ceil($total / $limit), '+');
 			$current = Smart::format_number_int(ceil($current / $limit), '+');
 			$limit = (int) 1;
 		} //end if
 		$opt_zerolink = '';
-		if((string)$options['zero-link'] != '') {
+		if(isset($options['zero-link']) AND ((string)$options['zero-link'] != '')) {
 			if((string)$options['zero-link'] == '@') {
 				$options['zero-link'] = (string) str_replace('{{{offset}}}', '', (string)$link);
 			} //end if
@@ -1318,11 +1318,11 @@ final class SmartViewHtmlHelpers {
 			$opt_emptydiv = (string) $options['empty-div'];
 		} //end if
 		$showfirst = true; // show go prev-next
-		if($options['show-first'] === false) {
+		if(array_key_exists('show-first', $options) AND ($options['show-first'] === false)) {
 			$showfirst = false;
 		} //end if
 		$showlast = true; // show go last
-		if($options['show-last'] === false) {
+		if(array_key_exists('show-last', $options) AND ($options['show-last'] === false)) {
 			$showlast = false;
 		} //end if
 		//--
@@ -1398,7 +1398,7 @@ final class SmartViewHtmlHelpers {
 			//--
 			$data = array();
 			//--
-			if((string)$arr[(string)$min] == '') {
+			if((!isset($arr[(string)$min])) OR ((string)$arr[(string)$min] == '')) {
 				if((int)$min === (int)$crr) {
 					$data[(string)$min] = 'SELECTED';
 				} else {
@@ -1421,7 +1421,7 @@ final class SmartViewHtmlHelpers {
 				} //end if else
 			} //end foreach
 			//--
-			if((string)$arr[(string)$max] == '') {
+			if((!isset($arr[(string)$max])) OR ((string)$arr[(string)$max] == '')) {
 				if(($max > ($adjacents + 1)) AND ((string)$arr[(string)($max-1)] == '')) {
 					$data['..'] = 'DOTS';
 				} else {
