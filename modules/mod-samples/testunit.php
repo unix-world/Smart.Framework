@@ -489,7 +489,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 		$semaphores = [];
 		if(SmartFrameworkRuntime::isAdminArea() !== true) {
-			$semaphores[] = 'load:growl-toastr';
+			if(rand(0,1) == 1) {
+				$semaphores[] = 'load:growl-toastr';
+			} //end if
 		} else {
 			if(rand(0,1) == 1) {
 				$semaphores[] = 'skip:growl';

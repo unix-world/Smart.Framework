@@ -1,5 +1,5 @@
 /*
- * Toastr v.3.0.8
+ * Toastr v.3.1.7
  * (c) 2021 unix-world.org
  *
  * Based on Toastr v.2.1.1
@@ -20,42 +20,33 @@
 
 .toast-title {
 	font-weight: bold;
+	word-wrap: break-word;
 }
 .toast-message {
 	word-wrap: break-word;
 }
-.toast-title,
-.toast-message,
-.toast-message label,
-.toast-message a {
-	color: #ffffff;
-}
+
 .toast-message a:hover {
-	color: #cccccc;
 	text-decoration: none;
 }
 .toast-close-button {
+	z-index: 2147483001;
 	position: relative;
 	right: -0.3em;
 	top: -0.3em;
 	float: right;
 	font-size: 20px;
 	font-weight: bold;
-	color: #ffffff;
 	text-shadow: 0 1px 0 #ffffff;
 	opacity: 0.8;
 }
 .toast-close-button:hover,
 .toast-close-button:focus {
-	color: #000000;
 	text-decoration: none;
 	cursor: pointer;
 	opacity: 0.4;
 }
-/*Additional properties for button version
- iOS requires the button element instead of an anchor tag.
- If you want the anchor version, it requires `href="#"`.*/
-button.toast-close-button {
+button.toast-close-button { /* Additional properties for button version iOS requires the button element instead of an anchor tag. If you want the anchor version, it requires `href="#"`. */
 	padding: 0;
 	cursor: pointer;
 	background: transparent;
@@ -108,7 +99,7 @@ button.toast-close-button {
 	font-size: 14px;
 	position: relative;
 	overflow: hidden;
-	margin: 0 0 6px;
+	margin: 0 0 10px 0;
 	padding: 15px 15px 15px 20px;
 /*	width: 300px; */
 	min-width: 300px !important;
@@ -119,7 +110,7 @@ button.toast-close-button {
 	border-radius: 3px 3px 3px 3px;
 	background-position: 15px center;
 	background-repeat: no-repeat;
-	box-shadow: 0 0 7px #888888;
+	box-shadow: 0 0 5px rgba(136,136,136,0.75);
 	opacity: 0.9;
 }
 @media all and (max-width:639px) {
@@ -146,76 +137,121 @@ button.toast-close-button {
 .toast-progress {
 	position: absolute;
 	left: 0;
-	bottom: 0;
+	top: 0;
 	height: 4px;
-	background-color: #FFFFFF;
 	opacity: 0.4;
 }
+
+/* appearance */
+
 .toast,
-.toast-darknote {
-	background-color: #030303;
+.toast * {
+	background-color: #D9EDF7;
 }
-.toast-notice {
+.toast > .toast-progress {
 	background-color: #FFFFFF;
-	opacity: 0.75 !important;
+}
+.toast,
+.toast * {
+	color: #222222;
+}
+
+.toast-darknote,
+.toast-darknote * {
+	background-color: #333333;
+}
+.toast-darknote > .toast-progress {
+	background-color: #FFFFFF;
+}
+.toast-darknote,
+.toast-darknote * {
+	color: #FFFFFF;
+}
+
+.toast-notice,
+.toast-notice * {
+	background-color: #FFFFFF;
+	opacity: 0.75;
 }
 .toast-notice > .toast-progress {
-	background-color: #444444;
+	background-color: #ECECEC;
 }
-.toast-notice > .toast-title,
-.toast-notice > .toast-message,
-.toast-notice > .toast-message label,
-.toast-notice > .toast-message a {
-	color: #777777;
+.toast-notice,
+.toast-notice * {
+	color: #555555;
 }
-.toast-notice > .toast-message a:hover {
-	color: #333333;
-	text-decoration: none;
-}
-.toast-notice > .toast-close-button {
-	color: #777777;
-}
-.toast-notice > .toast-close-button:hover,
-.toast-notice > .toast-close-button:focus {
-	color: #333333;
-}
-.toast-light {
+
+.toast-light,
+.toast-light * {
 	background-color: #FEFF99;
+	opacity: 0.75;
 }
 .toast-light > .toast-progress {
-	background-color: #222222;
+	background-color: #E0E0E0;
 }
-.toast-light > .toast-title,
-.toast-light > .toast-message,
-.toast-light > .toast-message label,
-.toast-light > .toast-message a {
+.toast-light,
+.toast-light * {
 	color: #333333;
 }
-.toast-light > .toast-message a:hover {
-	color: #111111;
-	text-decoration: none;
-}
-.toast-light > .toast-close-button {
-	color: #333333;
-}
-.toast-light > .toast-close-button:hover,
-.toast-light > .toast-close-button:focus {
-	color: #111111;
-}
-.toast-info {
+
+.toast-info,
+.toast-info * {
 	background-color: #2F96B4;
 }
-.toast-success {
+.toast-info > .toast-progress {
+	background-color: #FFFFFF;
+}
+.toast-info,
+.toast-info * {
+	color: #FFFFFF;
+}
+
+.toast-success,
+.toast-success * {
 	background-color: #51A351;
 }
-.toast-warning {
+.toast-success > .toast-progress {
+	background-color: #FFFFFF;
+}
+.toast-success,
+.toast-success * {
+	color: #FFFFFF;
+}
+
+.toast-warning,
+.toast-warning * {
 	background-color: #F89406;
 }
-.toast-error {
+.toast-warning > .toast-progress {
+	background-color: #FFFFFF;
+}
+.toast-warning,
+.toast-warning * {
+	color: #FFFFFF;
+}
+
+.toast-error,
+.toast-error * {
 	background-color: #BD362F;
 }
-.toast-colored {
+.toast-error > .toast-progress {
+	background-color: #FFFFFF;
+}
+.toast-error,
+.toast-error * {
+	color: #FFFFFF;
+}
+
+.toast-colored,
+.toast-colored * {
 	background-color: #FF4073;
+}
+.toast-colored > .toast-progress {
+	background-color: #FFFFFF;
+}
+.toast-colored,
+.toast-colored * {
+	color: #FFFFFF;
 }
 
 /* END */

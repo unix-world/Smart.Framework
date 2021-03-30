@@ -6,7 +6,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 	<script src="../../jquery.js"></script>
 	<link href="../jquery.toastr.css" rel="stylesheet" type="text/css">
-	<link href="../jquery.toastr-icons.css" rel="stylesheet" type="text/css">
 	<script src="../jquery.toastr.js"></script>
 	<style>
 		.row {
@@ -17,8 +16,7 @@
 
 <body class="container">
 <section class="row">
-	<h1>toastr</h1>
-
+	<h1>Toastr Demo</h1>
 	<div class="well row">
 		<div class="row">
 			<div class="span4">
@@ -68,7 +66,6 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="span2">
 				<div class="control-group" id="toastTypeGroup">
 					<div class="controls">
@@ -96,6 +93,9 @@
 						</label>
 						<label class="radio">
 							<input type="radio" name="toasts" value="colored">Colored
+						</label>
+						<label class="radio">
+							<input type="radio" name="toasts" value="">Default
 						</label>
 					</div>
 				</div>
@@ -129,25 +129,20 @@
 					</div>
 				</div>
 			</div>
-
 			<div class="span2">
 				<div class="control-group">
 					<div class="controls">
 						<label class="control-label" for="showEasing">Show Easing</label>
 						<input id="showEasing" type="text" placeholder="swing, linear" class="input-mini" value="swing">
-
 						<label class="control-label" for="hideEasing">Hide Easing</label>
 						<input id="hideEasing" type="text" placeholder="swing, linear" class="input-mini" value="linear">
-
 						<label class="control-label" for="showMethod">Show Method</label>
 						<input id="showMethod" type="text" placeholder="show, fadeIn, slideDown" class="input-mini" value="fadeIn">
-
 						<label class="control-label" for="hideMethod">Hide Method</label>
 						<input id="hideMethod" type="text" placeholder="hide, fadeOut, slideUp" class="input-mini" value="fadeOut">
 					</div>
 				</div>
 			</div>
-
 			<div class="span3">
 				<div class="control-group">
 					<div class="controls">
@@ -166,30 +161,18 @@
 				</div>
 			</div>
 		</div>
-
 		<div class="row">
 			<button type="button" class="btn btn-primary" id="showtoast">Show Toast</button>
 			<button type="button" class="btn btn-danger" id="cleartoasts">Clear Toasts</button>
 			<button type="button" class="btn btn-danger" id="clearlasttoast">Clear Last Toast</button>
 		</div>
-
 		<div class="row" style='margin-top: 25px;'>
 			<pre id='toastrOptions'></pre>
 		</div>
 	</div>
 </section>
-
-<footer class="row">
-	<h2>Links</h2>
-
-	<ul>
-		<li><a href="http://nuget.org/packages/toastr">NuGet</a></li>
-		<li><a href="https://github.com/CodeSeven/toastr">GitHub</a></li>
-	</ul>
-</footer>
-
 <script type="text/javascript">
-	$(function () {
+	$(function () { // v.3.1.7
 
 		if(typeof jQuery.toastr == 'undefined') {
 			alert('jQuery.toastr is N/A');
@@ -199,7 +182,6 @@
 			alert('window toastr is detected ...');
 			return;
 		} //end if
-		var toastr = jQuery.toastr;
 
 		var i = -1;
 		var toastCount = 0;
@@ -228,7 +210,7 @@
 		};
 
 		$('#showtoast').click(function () {
-			var shortCutFunction = $("#toastTypeGroup input:radio:checked").val();
+			var theCssClass = $("#toastTypeGroup input:radio:checked").val();
 			var msg = $('#message').val();
 			var title = $('#title').val() || '';
 			var $showDuration = $('#showDuration');
@@ -242,7 +224,7 @@
 			var toastIndex = toastCount++;
 			var addClear = $('#addClear').prop('checked');
 
-			toastr.options = {
+			theOptions = {
 				closeButton: $('#closeButton').prop('checked'),
 				debug: $('#debugInfo').prop('checked'),
 				newestOnTop: $('#newestOnTop').prop('checked'),
@@ -265,66 +247,75 @@
 			};
 
 			if ($('#addBehaviorOnToastClick').prop('checked')) {
-				toastr.options.onclick = function () {
+				theOptions.onclick = function () {
 					alert('You can perform some custom action after a toast goes away');
 				};
 			}
 
 			if ($showDuration.val().length) {
-				toastr.options.showDuration = $showDuration.val();
+				theOptions.showDuration = $showDuration.val();
 			}
 
 			if ($hideDuration.val().length) {
-				toastr.options.hideDuration = $hideDuration.val();
+				theOptions.hideDuration = $hideDuration.val();
 			}
 
 			if ($timeOut.val().length) {
-				toastr.options.timeOut = addClear ? 0 : $timeOut.val();
+				theOptions.timeOut = addClear ? 0 : $timeOut.val();
 			}
 
 			if ($extendedTimeOut.val().length) {
-				toastr.options.extendedTimeOut = addClear ? 0 : $extendedTimeOut.val();
+				theOptions.extendedTimeOut = addClear ? 0 : $extendedTimeOut.val();
 			}
 
 			if ($showEasing.val().length) {
-				toastr.options.showEasing = $showEasing.val();
+				theOptions.showEasing = $showEasing.val();
 			}
 
 			if ($hideEasing.val().length) {
-				toastr.options.hideEasing = $hideEasing.val();
+				theOptions.hideEasing = $hideEasing.val();
 			}
 
 			if ($showMethod.val().length) {
-				toastr.options.showMethod = $showMethod.val();
+				theOptions.showMethod = $showMethod.val();
 			}
 
 			if ($hideMethod.val().length) {
-				toastr.options.hideMethod = $hideMethod.val();
+				theOptions.hideMethod = $hideMethod.val();
 			}
 
 			if (addClear) {
 				msg = getMessageWithClearButton(msg);
-				toastr.options.tapToDismiss = false;
+				theOptions.tapToDismiss = false;
 			}
 			if (!msg) {
 				msg = getMessage();
 			}
 
 			$('#toastrOptions').text('Command: toastr["'
-							+ shortCutFunction
-							+ '"]("'
-							+ msg
-							+ (title ? '", "' + title : '')
-							+ '")\n\ntoastr.options = '
-							+ JSON.stringify(toastr.options, null, 2)
+				+ theCssClass
+				+ '"]("'
+				+ msg
+				+ (title ? '", "' + title : '')
+				+ '")\n\ntheOptions = '
+				+ JSON.stringify(theOptions, null, 2)
 			);
 
-			var $toast = toastr[shortCutFunction](msg, title); // Wire up an event handler to a button in the toast, if it exists
-			$toastlast = $toast;
+			theCssClass = $.toastr.translateCssClasses(theCssClass);
 
+			theOptions.title = title;
+			theOptions.message = msg;
+			if(theCssClass) {
+				theOptions.appearanceClass = theCssClass;
+			}
+
+			var $toast = $.toastr.notify(theOptions); // Wire up an event handler to a button in the toast, if it exists
 			if(typeof $toast === 'undefined'){
+				alert('Could no create a toastr ...');
 				return;
 			}
+
+			$toastlast = $toast;
 
 			if ($toast.find('#okBtn').length) {
 				$toast.delegate('#okBtn', 'click', function () {
@@ -354,6 +345,7 @@
 			toastr.clear();
 		//	jQuery.toastr.clear();
 		});
+
 	})
 </script>
 </body>
