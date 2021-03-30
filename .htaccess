@@ -1,7 +1,7 @@
 
 #####
 ### Smart.Framework .htaccess sample for Apache 2.2 / 2.4
-### r.7.2.1 / smart.framework.v.7.2 @ 20210105
+### r.7.2.1 / smart.framework.v.7.2 @ 20210329
 ### (c) 2015-2021 unix-world.org
 #####
 
@@ -32,7 +32,7 @@ php_flag zend.multibyte					Off
 ###
 
 ### Cross Origin Access for some resources (uncomment this for use with multiple sub-domains for cross domain requests)
-#<FilesMatch "\.(woff2|woff|ttf|svg|png|gif|jpg|jpe|jpeg|webm)$">
+#<FilesMatch "\.(woff2|woff|ttf|svg|png|gif|jpg|jpe|jpeg|webp|webm|ogv|ogg|mp4)$">
 #	Header set Access-Control-Allow-Origin "*"
 #</FilesMatch>
 ###

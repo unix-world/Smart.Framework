@@ -2,6 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+March 30, 2021 :: :: Version 7.2.1 rev.20210330
+	* Added alternative js growl (toastr)
+	* refactoring and optimizations for PHP code
+	* updated documentation for PHP / JS
+
 March 27, 2021 :: :: Version 7.2.1 rev.20210327
 	* HighlightJs ViewHelpers - new features
 	* mime type better detection

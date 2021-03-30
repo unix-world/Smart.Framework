@@ -13,10 +13,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - Regional Text
-// DEPENDS:
-//	* Smart::
-//	* SmartPersistentCache::
-//	* SmartAdapterTextTranslations:: *APP-BOOTSTRAP*
 //======================================================
 
 // [REGEX-SAFE-OK] ; [PHP8]
@@ -38,8 +34,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations
- * @version 	v.20210304
+ * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations, SmartFrameworkRuntime, SmartFrameworkRegistry
+ * @version 	v.20210330
  * @package 	@Core:Translations
  *
  */
@@ -957,8 +953,8 @@ final class SmartTextTranslations {
  * @hints 		Do not use this object directly by creating a new instance ; You should obtain this object as SmartTextTranslations::getTranslator($area, $subarea) for current language or as SmartTextTranslations::getTranslator($area, $subarea, $custom_language) for a custom language
  *
  * @access 		PUBLIC
- * @depends 	classes: Smart, SmartTextTranslations
- * @version 	v.20210303
+ * @depends 	classes: Smart, SmartTextTranslations, SmartFrameworkRuntime, SmartFrameworkRegistry
+ * @version 	v.20210330
  * @package 	@Core:Translations
  *
  */
@@ -1070,7 +1066,7 @@ final class SmartTextTranslator {
  * @access 		private
  * @internal
  *
- * @version 	v.20210303
+ * @version 	v.20210330
  * @package 	development:@Core
  *
  */

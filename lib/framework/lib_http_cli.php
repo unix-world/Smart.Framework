@@ -13,11 +13,14 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - HTTP(S) Client w. (TLS/SSL)
-// DEPENDS:
-//	* Smart::
-//	* SmartFileSysUtils::
-//	* SmartFileSystem::
 //======================================================
+
+//--
+if(!function_exists('stream_context_create')) {
+	@http_response_code(500);
+	die('ERROR: The PHP stream_context_create is required for Smart.Framework / Lib HTTP Cli');
+} //end if
+//--
 
 
 //=====================================================================================
@@ -78,8 +81,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart
- * @version 	v.20210310
+ * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils
+ * @version 	v.20210330
  * @package 	@Core:Network
  *
  */
@@ -1099,7 +1102,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto
- * @version 	v.20210310
+ * @version 	v.20210330
  * @package 	@Core:Network
  *
  */

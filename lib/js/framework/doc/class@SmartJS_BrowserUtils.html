@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="SmartJS_BrowserUtils        static class SmartJS_BrowserUtils  {  } .    CLASS :: Browser Utils This JavaScript class provides methods to simplify the">
-	<meta name="keywords" content="smartjs browserutils, static, class, browser, utils, this, javascript, provides, methods, to, simplify, the, interraction, with, ajax, forms, and, provide, basic, implementation, of, several, ui, util, components, language, located, at, lib js framework smart-framework.pak.js, browser utils.js, package, sf.javascript:browser, name, usage, smartjs browserutils.method, version, depends, smartjs coreutils, smartjs cryptohash, smartjs base64, jquery, smartjs modalbox, jquery.gritter, jquery.alertable, smartsimpledialog, smartjs browseruiutils, public, function, windowisiframe, boolean, return, true, if, iframe, false, not, detect, a, window, is, windowispopup, popup, parsecurrenturlgetparams, object, param1: value1, param1: value, parse, current, url, extract, get, params, sample, code, http s some.url  param1 value1&amp;param2 value, printpage, void, fires, print, dialog, show, event, page, countdown, integer, counter, string, elid, js-code, evcode, custom, set, in, js, execute, when, done">
+	<meta name="keywords" content="smartjs browserutils, static, class, browser, utils, this, javascript, provides, methods, to, simplify, the, interraction, with, ajax, forms, and, provide, basic, implementation, of, several, ui, util, components, language, located, at, lib js framework smart-framework.pak.js, browser utils.js, package, sf.javascript:browser, name, usage, smartjs browserutils.method, version, depends, smartjs coreutils, smartjs cryptohash, smartjs base64, jquery, smartjs modalbox, jquery.gritter, jquery.toastr, jquery.alertable, smartsimpledialog, smartjs browseruiutils, public, function, windowisiframe, boolean, return, true, if, iframe, false, not, detect, a, window, is, windowispopup, popup, parsecurrenturlgetparams, object, param1: value1, param1: value, parse, current, url, extract, get, params, sample, code, http s some.url  param1 value1&amp;param2 value, printpage, void, fires, print, dialog, show, event, page, countdown, integer, counter, string, elid, js-code, evcode, custom, set, in, js, execute, when">
 	<meta name="summary" content="Smart.Framework : Javascript Documentation: SmartJS_BrowserUtils">
 	<title>JS Documentation for: SmartJS_BrowserUtils</title>
 	<!-- CSS and Fonts -->
@@ -696,8 +696,8 @@ This JavaScript class provides methods to simplify the interraction with the Bro
 		
 		
 		
-		<li><b>Version:</b> 20210312</li>
-		<li><b>Depends:</b> SmartJS_CoreUtils, SmartJS_CryptoHash, SmartJS_Base64, jQuery, SmartJS_ModalBox, jQuery.Gritter, *jQuery.alertable, *SmartSimpleDialog, *SmartJS_BrowserUIUtils</li>
+		<li><b>Version:</b> 20210330</li>
+		<li><b>Depends:</b> SmartJS_CoreUtils, SmartJS_CryptoHash, SmartJS_Base64, jQuery, *SmartJS_ModalBox, *jQuery.gritter, *jQuery.toastr, *jQuery.alertable, *SmartSimpleDialog, *SmartJS_BrowserUIUtils</li>
 		
 	</ul>
 </div>
@@ -1067,21 +1067,21 @@ All page elements that must be visible over this overlay must have zIndex in ran
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`class_name` Parameter">class_name</span></b></span>, 
 			<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`options` Parameter">options</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
 	
 	
-			@return: {Object} The growl notification as HTML object<br>
+			@return: {Boolean} TRUE if Success FALSE if Fail<br>
 	
 	
 	
 			@param: {String} title a title for the notification (HTML) ; it can be empty string<br>
 			@param: {String} text the main notification message (HTML) ; this is mandatory<br>
-			@param: {String} image the URL link to a notification icon image (gif/png/jpg/webp) or null<br>
+			@param: {String} image the URL link to a notification icon image (svg/gif/png/jpg/webp) or null<br>
 			@param: {Integer} time the notification display time in milliseconds<br>
 			@param: {Boolean} sticky *Optional* FALSE by default (will auto-close after the display time expire) ; TRUE to set sticky (require manual close, will not auto-close)<br>
 			@param: {String} class_name *Optional* a CSS class name for the notification or empty string to use default one<br>
-			@param: {Object} options *Optional* can map handlers for notification: before_open, after_open, before_close, after_close<br>
+			@param: {Object} options *Optional* can map handlers (functions) for notification: before_open, after_open, before_close, after_close<br>
 	
 	
 	</div>
@@ -1090,20 +1090,19 @@ All page elements that must be visible over this overlay must have zIndex in ran
 	
 </div><div class="doc-container" id="Method--GrowlNotificationRemove">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>GrowlNotificationRemove</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`id` Parameter">id</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
 	
 	
+			@return: {Boolean} TRUE if Success FALSE if Fail<br>
 	
 	
 	
-			@param: {String} id The HTML id of the Growl Notification to remove<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Remove a Growl Notification by ID from the current browser window (page)</div>
+			<div class="doc-method-comments">Remove all Growl Notifications from the current browser window (page)</div>
 	
 	
 </div><div class="doc-container" id="Method--MaximizeElement">
@@ -1325,7 +1324,7 @@ This function must be called by a form button onClick followed by 'return false;
 	
 			@param: {String} name The cookie Name<br>
 			@param: {String} value The cookie Value<br>
-			@param: {Numeric} expire *Optional* The cookie expire time in seconds since unix epoch (or set it to FALSE or zero to expire by session) ; (default is 0)<br>
+			@param: {Numeric} expire *Optional* The cookie expire time in seconds since now ; if set to zero will expire by session ; if set to -1 will be unset (deleted) ; default is 0<br>
 			@param: {String} path *Optional* The cookie path (default is /)<br>
 			@param: {String} domain *Optional* The cookie domain (default is NULL) ; use '@' to use the SmartJS_BrowserUtils.param_CookieDomain<br>
 			@param: {Enum} samesite *Optional* The SameSite cookie policy ; Can be: None, Lax, Strict ; (default is NULL) ; use '@' to use the SmartJS_BrowserUtils.param_CookieSameSitePolicy<br>
@@ -1353,7 +1352,7 @@ This function must be called by a form button onClick followed by 'return false;
 	
 			@param: {String} name The cookie Name<br>
 			@param: {String} path *Optional* The cookie path (default is /)<br>
-			@param: {String} domain *Optional* The cookie domain (default is NULL)<br>
+			@param: {String} domain *Optional* The cookie domain (default is NULL) ; use '@' to use the SmartJS_BrowserUtils.param_CookieDomain<br>
 			@param: {Enum} samesite *Optional* The SameSite cookie policy ; Can be: None, Lax, Strict ; (default is NULL) ; use '@' to use the SmartJS_BrowserUtils.param_CookieSameSitePolicy<br>
 			@param: {Boolean} secure *Optional* Force Cookie Secure Mode (default is FALSE)<br>
 	
@@ -1383,6 +1382,28 @@ This function must be called by a form button onClick followed by 'return false;
 	</div>
 			<div class="doc-method-comments">Force a text limit on a TextArea (will also attach a CounterField)</div>
 	
+	
+</div><div class="doc-container" id="Method--catch_ENTERKey">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>catch_ENTERKey</b></span>&nbsp;(
+			<i>{Event}</i>&nbsp;<span class="doc-param-name"><b><span title="`evt` Parameter">evt</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
+	<div class="doc-method-ret-params">
+			@hint: The input needs this html attribute: onKeyDown=&quot;SmartJS_BrowserUtils.catch_ENTERKey(event);&quot;<br>
+	
+	
+	
+			@fires: Catch and Disable use of ENTER key in a field<br>
+	
+			@listens: ENTER Key press event<br>
+	
+			@param: {Event} evt The EVENT Object Reference<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Catch ENTER Key in an Input[type=text] or other compatible input field</div>
+	
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> &lt;input type=<span class="hljs-string">&quot;text&quot;</span> onKeyDown=<span class="hljs-string">&quot;SmartJS_BrowserUtils.catch_ENTERKey(event);&quot;</span>&gt;</code></pre>
 	
 </div><div class="doc-container" id="Method--catch_TABKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>catch_TABKey</b></span>&nbsp;(
@@ -1722,10 +1743,52 @@ Requires in HTML:<br>
 	<h2 class="doc-header">class Properties</h2>
 </div>
 <!-- properties r.20200121 -->
-<div class="doc-container" id="Property--param_Notifications">
+<div class="doc-container" id="Property--param_CookieName">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CookieName</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
+			<div class="doc-method-comments">Cookie Name (must be set as in PHP, see the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME)</div>
+	
+</div><div class="doc-container" id="Property--param_CookieLifeTime">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CookieLifeTime</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Integer}</i>
+			<div class="doc-method-comments">Cookie Domain (must be set as in PHP, see the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME)</div>
+	
+</div><div class="doc-container" id="Property--param_CookieDomain">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CookieDomain</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
+			<div class="doc-method-comments">Cookie Domain (must be set as in PHP, see the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN)</div>
+	
+</div><div class="doc-container" id="Property--param_CookieSameSitePolicy">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CookieSameSitePolicy</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
+			<div class="doc-method-comments">Cookie SameSite Policy (must be set as in PHP, see the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE)</div>
+	
+</div><div class="doc-container" id="Property--param_LanguageId">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_LanguageId</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'en'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
+			<div class="doc-method-comments">Default Language ID (must be set as in PHP, see the SMART_FRAMEWORK_DEFAULT_LANG)</div>
+	
+</div><div class="doc-container" id="Property--param_TemplatePath">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_TemplatePath</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'etc/templates/default/'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
+			<div class="doc-method-comments">Default Template Path (must be set as in PHP, see config-index / config-admin)</div>
+	
+</div><div class="doc-container" id="Property--param_Notifications">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_Notifications</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'growl'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 			<div class="doc-method-comments">Notification Mode<br>
 Allowed Values: 'growl' | 'dialog'</div>
+	
+</div><div class="doc-container" id="Property--param_Type_Notification_Dialog">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_Type_Notification_Dialog</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'auto'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
+			<div class="doc-method-comments">Growl Notification Type<br>
+Allowed Values: 'auto' | 'native' | 'alertable' | 'dialog' | 'ui' ; auto=autoselect (reverse order, starting from ui to 'native' with fallback) ; native = browser:alert/prompt ; alertable = use jQuery.alertable ; dialog = use SmartSimpleDialog ; ui = use SmartJS_BrowserUIUtils</div>
+	
+</div><div class="doc-container" id="Property--param_Type_Notification_Growl">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_Type_Notification_Growl</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'auto'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
+			<div class="doc-method-comments">Growl Notification Type<br>
+Allowed Values: 'auto' | 'gritter' | 'toastr' ; If Explicit set on 'gritter' and gritter is n/a will fallback to alert ; If Explicit set on 'toastr' and toastr is n/a will fallback to alert</div>
+	
+</div><div class="doc-container" id="Property--param_Time_Notification_OK">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_Time_Notification_OK</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>1000</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Integer}</i>
+			<div class="doc-method-comments">Growl Notification Time when OK (in microseconds)</div>
+	
+</div><div class="doc-container" id="Property--param_Time_Notification_ERR">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_Time_Notification_ERR</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>3000</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Integer}</i>
+			<div class="doc-method-comments">Growl Notification Time when ERR (in microseconds)</div>
 	
 </div><div class="doc-container" id="Property--param_NotifyLoadError">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_NotifyLoadError</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>false</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Boolean}</i>
@@ -1869,6 +1932,8 @@ function smartHandleDocSelector(obj) {
 						
 									<option value="Method--textArea_addLimit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;textArea_addLimit()</option>
 			
+									<option value="Method--catch_ENTERKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;catch_ENTERKey()</option>
+			
 									<option value="Method--catch_TABKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;catch_TABKey()</option>
 			
 									<option value="Method--checkAll_CkBoxes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;checkAll_CkBoxes()</option>
@@ -1897,7 +1962,27 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
+									<option value="Property--param_CookieName"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CookieName</option>
+			
+									<option value="Property--param_CookieLifeTime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CookieLifeTime</option>
+			
+									<option value="Property--param_CookieDomain"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CookieDomain</option>
+			
+									<option value="Property--param_CookieSameSitePolicy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CookieSameSitePolicy</option>
+			
+									<option value="Property--param_LanguageId"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_LanguageId</option>
+			
+									<option value="Property--param_TemplatePath"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_TemplatePath</option>
+			
 									<option value="Property--param_Notifications"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_Notifications</option>
+			
+									<option value="Property--param_Type_Notification_Dialog"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_Type_Notification_Dialog</option>
+			
+									<option value="Property--param_Type_Notification_Growl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_Type_Notification_Growl</option>
+			
+									<option value="Property--param_Time_Notification_OK"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_Time_Notification_OK</option>
+			
+									<option value="Property--param_Time_Notification_ERR"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_Time_Notification_ERR</option>
 			
 									<option value="Property--param_NotifyLoadError"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotifyLoadError</option>
 			
@@ -1928,7 +2013,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 17:58:14 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-30 00:54:46 +0000</small>
 <hr>
 <br>
 <!-- # -->

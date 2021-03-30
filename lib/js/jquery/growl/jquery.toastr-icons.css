@@ -1,0 +1,54 @@
+/*
+ * Toastr Icons v.3.0.8
+ * (c) 2021 unix-world.org
+ *
+ * Based on Toastr v.2.1.1
+ * Copyright 2012-2015
+ * Authors: John Papa, Hans Fjällemark, and Tim Ferrell.
+ * All Rights Reserved.
+ * Use, reproduction, distribution, and modification of this code is subject to the terms and
+ * conditions of the MIT license
+ * ARIA Support: Greta Krafsig
+ * Project: https://github.com/CodeSeven/toastr
+ */
+
+/*
+// (c) 2021 unix-world.org
+// fixes by unixman r.20210330:
+// 	* Added renders: darknote, notice
+*/
+
+#toast-container > div {
+	padding: 15px 15px 15px 50px !important;
+}
+
+#toast-container > .toast-darknote,
+#toast-container > .toast-notice,
+#toast-container > .toast-light,
+#toast-container > .toast-colored {
+	background-image: url("../../../../lib/framework/img/sign-notice.svg") !important;
+	background-size: 24px 24px;
+	background-position: 10px 10px;
+}
+#toast-container > .toast-info {
+	background-image: url("../../../../lib/framework/img/sign-info.svg") !important;
+	background-size: 24px 24px;
+	background-position: 10px 10px;
+}
+#toast-container > .toast-success {
+	background-image: url("../../../../lib/framework/img/sign-ok.svg") !important;
+	background-size: 24px 24px;
+	background-position: 10px 10px;
+}
+#toast-container > .toast-warning {
+	background-image: url("../../../../lib/framework/img/sign-warn.svg") !important;
+	background-size: 24px 24px;
+	background-position: 10px 10px;
+}
+#toast-container > .toast-error {
+	background-image: url("../../../../lib/framework/img/sign-error.svg") !important;
+	background-size: 24px 24px;
+	background-position: 10px 10px;
+}
+
+/* END */

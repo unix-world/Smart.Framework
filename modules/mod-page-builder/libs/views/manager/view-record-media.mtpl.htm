@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ View Record / Media :: v.20210312 -->
+<!-- Pagebuilder / Manage @ View Record / Media :: v.20210329 -->
 <script>
 var pageBuilderMediaImgDataURL = '';
 var pageBuilderMediaType = '';
@@ -15,11 +15,11 @@ function pageBuilder_MediaUploadHandle(imgDataURL, imgType, imgName) {
 		SmartJS_BrowserUtils.Overlay_Show();
 		var saveURL = 'admin.php?page=page-builder.manage&op=record-upload-media&id=[###RECORD-ID|url|js###]';
 		var errFx = function(title, message) {
-			SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils.param_Time_Notification_ERR), false, 'gritter-red');
+			SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils.param_Time_Notification_ERR), false, 'red');
 			setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, parseInt(SmartJS_BrowserUtils.param_Time_Notification_ERR)); // jQuery('#img_uploader_btn').prop('disabled', false);
 		}
 		var okFx = function(title, message) {
-			SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils.param_Time_Notification_OK), false, 'gritter-green');
+			SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils.param_Time_Notification_OK), false, 'green');
 			setTimeout(function(){ self.location = 'admin.php?page=page-builder.manage&op=record-view&id=[###RECORD-ID|url|js###]&sop=media'; }, parseInt(SmartJS_BrowserUtils.param_Time_Notification_OK));
 		}
 		var ajax = SmartJS_BrowserUtils.Ajax_XHR_Request_From_URL(saveURL, 'POST', 'json', '&type=' + SmartJS_CoreUtils.escape_url(imgType) + '&name=' + SmartJS_CoreUtils.escape_url(theOriginalImgName) + '&content=' + SmartJS_CoreUtils.escape_url(imgDataURL) + '&cksum=' + SmartJS_CoreUtils.escape_url(SmartJS_CryptoHash.sha1(imgDataURL)));
@@ -53,11 +53,11 @@ function pageBuilder_MediaDeleteHandle(imgFile) {
 	SmartJS_BrowserUtils.Overlay_Show();
 	var deleteURL = 'admin.php?page=page-builder.manage&op=record-delete-media&id=[###RECORD-ID|url|js###]';
 	var errFx = function(title, message) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils.param_Time_Notification_ERR), false, 'gritter-red');
+		SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils.param_Time_Notification_ERR), false, 'red');
 		setTimeout(function(){ SmartJS_BrowserUtils.Overlay_Hide(); }, parseInt(SmartJS_BrowserUtils.param_Time_Notification_ERR));
 	}
 	var okFx = function(title, message) {
-		SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils.param_Time_Notification_OK), false, 'gritter-green');
+		SmartJS_BrowserUtils.GrowlNotificationAdd(SmartJS_CoreUtils.escape_html(title), SmartJS_CoreUtils.escape_html(message), null, parseInt(SmartJS_BrowserUtils.param_Time_Notification_OK), false, 'green');
 		setTimeout(function(){ self.location = 'admin.php?page=page-builder.manage&op=record-view&id=[###RECORD-ID|url|js###]&sop=media'; }, parseInt(SmartJS_BrowserUtils.param_Time_Notification_OK));
 	}
 	var ajax = SmartJS_BrowserUtils.Ajax_XHR_Request_From_URL(deleteURL, 'POST', 'json', '&fname=' + SmartJS_CoreUtils.escape_url(imgFile));

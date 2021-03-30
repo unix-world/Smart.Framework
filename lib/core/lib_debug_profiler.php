@@ -18,12 +18,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart.Framework - Debug Profiler
-// DEPENDS:
-//	* Smart::
-//	* SmartComponents::
-//	* SmartViewHtmlHelpers:: [OPTIONAL]
-// REQUIRED CSS:
-//	* tpl-highlight.css
 //======================================================
 
 
@@ -39,7 +33,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @access 		private
  * @internal
  *
- * @version 	v.20210326
+ * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
+ * @version 	v.20210330
  * @package 	Application:Development
  *
  */
@@ -363,10 +358,10 @@ public static function display_marker_tpl_debug($y_tpl_file, array $y_arr_sub_te
 	//--
 	if(self::test_tpl_file_for_debug($y_tpl_file) === true) {
 		$content = (string) SmartMarkersTemplating::analyze_debug_file_template((string)$y_tpl_file, (array)$y_arr_sub_templates);
-		if(class_exists('SmartViewHtmlHelpers')) {
-			$content .= (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('div#tpl-display-for-highlight', ['web','tpl']);
-			$content .= "\n".'<!-- SmartProfiler div-id:tpl-display-for-highlight -->'."\n";
-		} //end if
+		$content .= SmartFileSystem::read('lib/core/plugins/templates/syntax-highlight-init-static.inc.htm');
+		$content .= "\n".'<script>var SmartViewHelpersSyntaxHighlightAreas = \'div#tpl-display-for-highlight\';</script>'."\n";
+		$content .= SmartFileSystem::read('lib/core/plugins/templates/syntax-highlight-process-static.inc.htm');
+		$content .= "\n".'<!-- SmartProfiler div-id:tpl-display-for-highlight -->'."\n";
 	} elseif((string)trim((string)$y_tpl_file) == '') {
 		$content = '<h1>WARNING: Empty Marker-TPL Template to Debug</h1>';
 	} else {

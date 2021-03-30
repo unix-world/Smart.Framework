@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20210322
+// [Smart.Framework / INIT] v.20210330
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -71,7 +71,7 @@ define('SMART_FRAMEWORK_DOWNLOAD_FOLDERS', 		'<wpub>');									// Allow downloa
 define('SMART_FRAMEWORK_DOWNLOAD_EXPIRE',		1);											// Download expiration time in hours (between 1 and 24 hours)
 //define('SMART_FRAMEWORK_DOWNLOAD_SKIP_LOG',	true);										// If defined will disable logging for Downloads
 define('SMART_FRAMEWORK_UPLOAD_PICTS', 			'<svg>,<png>,<gif>,<jpg>,<jpeg>,<webp>'); 	// Uploads images type ALLOWED extensions list
-define('SMART_FRAMEWORK_UPLOAD_MOVIES', 		'<webm>,<ogv>,<mp4>,<mov>'); 				// Uploads video type ALLOWED extensions list
+define('SMART_FRAMEWORK_UPLOAD_MOVIES', 		'<webm>,<ogv>,<ogg>,<mp4>,<mov>'); 			// Uploads video type ALLOWED extensions list
 define('SMART_FRAMEWORK_UPLOAD_DOCS', 			'<txt>,<md>,<pdf>,<odt>,<ods>,<odp>,<csv>,<doc>,<rtf>,<xls>,<ppt>'); // Uploads document type ALLOWED extensions list
 define('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS',	SMART_FRAMEWORK_UPLOAD_PICTS.','.SMART_FRAMEWORK_UPLOAD_MOVIES.','.SMART_FRAMEWORK_UPLOAD_DOCS.',<json>,<yaml>,<xml>,<eml>,<ics>,<vcf>,<7z>,<zip>,<rar>,<tar>,<tgz>,<tbz>,<gz>,<bz2>,<xz>,<ps>,<eps>,<tif>,<tiff>,<wmf>,<bmp>,<swf>,<webp>'); // *OPTIONAL* The List of Allowed file extensions for Uploads ; if set and empty, will dissalow any upload by default ; if set and non-empty will only allow files with these extensions to be uploaded (if this is set the SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS will not count at all)
 define('SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS', 	'<htm>,<html>,<js>,<sass>,<scss>,<css>,<shtml>,<phtml>,<php>,<sql>,<inc>,<tpl>,<mtpl>,<twig>,<latte>,<t3fluid>,<pl>,<py>,<pyc>,<pyo>,<rb>,<go>,<asp>,<jsp>,<sh>,<bash>,<bat>,<cmd>,<cgi>,<fcgi>,<fastcgi>,<scgi>,<wsgi>,<exe>,<msi>,<dll>,<dylib>,<bin>,<so>'); // The List of DENIED file extensions for Uploads ; files with these extensions will not be allowed to be uploaded by default

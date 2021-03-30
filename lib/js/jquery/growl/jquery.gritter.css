@@ -1,4 +1,4 @@
-/* Gritter for jQuery Version: 1.7.4.2 :: with fixes by unixman r.20190213 */
+/* Gritter for jQuery Version: 1.7.4.3 :: with fixes by unixman r.20210330 */
 
 #gritter-notice-wrapper {
 	z-index: 2147483000;
@@ -8,7 +8,7 @@
 	min-width: 300px !important;
 	max-width: 450px !important;
 	opacity: 0.95;
-	max-height: 96% !important;
+	max-height: 96vh !important;
 	overflow-y: auto;
 	overflow-x: hidden;
 }
@@ -108,13 +108,13 @@
 
 /* ----- */
 
-/* neutral */
+/* neutral (aka white) */
 .gritter-neutral .gritter-item,
 .gritter-neutral .gritter-bottom,
 .gritter-neutral .gritter-top {
 	background-color: #FFFFFF;
 	color: #777777;
-	opacity: 0.7;
+	opacity: 0.9;
 }
 
 /* dark */
@@ -123,14 +123,6 @@
 .gritter-dark .gritter-top {
 	background-color: #777777;
 	color: #FFFFFF;
-}
-
-/* light */
-.gritter-light .gritter-item,
-.gritter-light .gritter-bottom,
-.gritter-light .gritter-top {
-	background-color: #FEFF99;
-	color: #111111;
 }
 
 /* yellow */
@@ -145,16 +137,8 @@
 .gritter-red .gritter-item,
 .gritter-red .gritter-bottom,
 .gritter-red .gritter-top {
-	background-color: #FF4400;
+	background-color: #FF3300;
 	color: #FFFFFF;
-}
-
-/* pink */
-.gritter-pink .gritter-item,
-.gritter-pink .gritter-bottom,
-.gritter-pink .gritter-top {
-	background-color: #FF4073;
-	color: #111111;
 }
 
 /* green */
@@ -171,6 +155,24 @@
 .gritter-blue .gritter-top {
 	background-color: #344A78;
 	color: #FFFFFF;
+}
+
+/** non-standards */
+
+/* light */
+.gritter-light .gritter-item,
+.gritter-light .gritter-bottom,
+.gritter-light .gritter-top {
+	background-color: #FEFF99;
+	color: #111111;
+}
+
+/* pink */
+.gritter-pink .gritter-item,
+.gritter-pink .gritter-bottom,
+.gritter-pink .gritter-top {
+	background-color: #FF4073;
+	color: #111111;
 }
 
 /* END */

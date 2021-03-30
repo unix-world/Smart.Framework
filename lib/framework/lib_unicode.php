@@ -18,14 +18,12 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //======================================================
 
 
-//================================================================
-// other locales than C may break many things ; Example: 3.5 may become become 3,5 or dates may become uncompatible as format in the overall context ; starting from date() to SQL escapes all will be affected with unpredictable results when working in a mixed locales unicode context other than C
+//-- other locales than C may break many things ; Example: 3.5 may become become 3,5 or dates may become uncompatible as format in the overall context ; starting from date() to SQL escapes all will be affected with unpredictable results when working in a mixed locales unicode context other than C
 if((string)setlocale(LC_ALL, 0) != 'C') { // {{{SYNC-LOCALES-CHECK}}}
 	@http_response_code(500);
 	die('ERROR: The PHP locales must be reset to C (default) to support the standard UTF-8 context in Smart.Framework / Unicode');
 } //end if
-//================================================================
-// require the PHP MBString Extension (this is the fastest and safest Unicode library to use in PHP)
+//-- require the PHP MBString Extension (this is the fastest and safest Unicode library to use in PHP)
 if(!function_exists('mb_stripos')) {
 	@http_response_code(500);
 	die('ERROR: The PHP MBString Extension is required for Unicode support into Smart.Framework / Unicode');
@@ -34,8 +32,7 @@ if((!function_exists('utf8_decode')) OR (!function_exists('utf8_encode'))) {
 	@http_response_code(500);
 	die('ERROR: The PHP UTF8-Decode/Encode (from XML Extension) is required for Smart.Framework / Unicode');
 } //end if
-//================================================================
-// require UTF-8 Character Set
+//-- require UTF-8 Character Set
 if(defined('SMART_FRAMEWORK_CHARSET')) {
 	if((string)SMART_FRAMEWORK_CHARSET != 'UTF-8') {
 		@http_response_code(500);
@@ -53,13 +50,13 @@ if(defined('SMART_FRAMEWORK_CHARSET')) {
 	@http_response_code(500);
 	die('The SMART_FRAMEWORK_CHARSET must be set ...');
 } //end if
-//================================================================
-// the MBString replacement character must be ? to be compatible with utf8_decode()
+//-- the MBString replacement character must be ? to be compatible with utf8_decode()
 if(mb_substitute_character() !== 63) {
 	@http_response_code(500);
 	die('MBString Internal Substitute Character must be set to 63(?) but is set to: '.mb_substitute_character());
 } //end if
-//================================================================
+//--
+
 
 // [REGEX-SAFE-OK]
 
@@ -159,7 +156,7 @@ if(mb_substitute_character() !== 63) {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP MBString, PHP XML
- * @version     v.20200605
+ * @version     v.20210330
  * @package     @Core
  *
  */
@@ -408,7 +405,12 @@ final class SmartUnicode {
 	 */
 	public static function str_wordcount($str) {
 		//--
-		return (int) Smart::array_size(preg_split('/\s+/', (string)$str, -1, PREG_SPLIT_NO_EMPTY)); // no need to trim with this flag
+		$arr = preg_split('/\s+/', (string)$str, -1, PREG_SPLIT_NO_EMPTY); // mixed ; don't cast to array no need to trim with this flag
+		if(is_array($arr)) {
+			return (int) count($arr); // avoid rely on smart array size here to avoid circular dependency with smart lib
+		} //end if
+		//--
+		return 0; // if preg_split returned false on failure
 		//--
 	} //END FUNCTION
 	//================================================================

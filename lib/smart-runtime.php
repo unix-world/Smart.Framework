@@ -77,7 +77,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //--
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.7.2.1'); 	// tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.28'); 	// tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.03.30'); 	// tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 //--
 if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM')) {
@@ -380,11 +380,13 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
+//--------------------------------------- LOAD SMART TRANSLATIONS SUPPORT ; before smart components, it depends on it
+require('lib/app/lib_translations.php');
+//--------------------------------------- LOAD SMART COMPONENTS ; before plugins, some plugins depend on it
+require('lib/core/lib_smart_components.php');
 //--------------------------------------- REGISTER AUTO-LOAD OF PLUGINS (by dependency injection)
 require('lib/core/plugins/autoload.php');
-//--------------------------------------- LOAD SMART-COMPONENTS
-require('lib/core/lib_smart_components.php');
-//--------------------------------------- CONDITIONAL LOAD (DEBUG: PROFILER)
+//--------------------------------------- CONDITIONAL LOAD THE DEBUG (PROFILER) ; at the end, it depends at least on smart components
 if(SmartFrameworkRuntime::ifDebug()) {
 	//-- load debug profiler
 	require('lib/core/lib_debug_profiler.php');
@@ -498,7 +500,7 @@ SmartCache::setKey('smart-app-runtime', 'visitor-cookie', (string)SMART_APP_VISI
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20210305
+ * @version 	v.20210330
  * @package 	Application
  *
  */
@@ -678,7 +680,7 @@ final class SmartFrameworkSecurity {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20210305
+ * @version 	v.20210330
  * @package 	Application
  *
  */
@@ -1133,7 +1135,7 @@ final class SmartFrameworkRegistry {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: Smart, SmartUtils
- * @version		v.20210322
+ * @version		v.20210330
  * @package 	Application
  *
  */
@@ -2215,6 +2217,101 @@ final class SmartFrameworkRuntime {
 
 //==================================================================================
 //================================================================================== CLASS END
+//==================================================================================
+
+
+//==================================================================================
+//================================================================================== INTERFACE START
+//==================================================================================
+
+
+/**
+ * Abstract Inteface Smart App Bootstrap
+ * The extended object MUST NOT CONTAIN OTHER FUNCTIONS BECAUSE MAY NOT WORK as Expected !!!
+ *
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20210330
+ *
+ */
+interface SmartInterfaceAppBootstrap {
+
+	// :: INTERFACE
+
+
+	//=====
+	/**
+	 * App Bootstrap Run :: This function is automatically called when App bootstraps.
+	 * By example it can be used to connect to a database, install monitor or other operations.
+	 * THIS MUST BE EXTENDED TO HANDLE THE REQUIRED CODE EXECUTION AT THE BOOTSTRAP RUN SEQUENCE
+	 * RETURN: -
+	 */
+	public static function Run();
+	//=====
+
+
+	//=====
+	/**
+	 * App Bootstrap Authenticate :: This function must implement Authentication if any.
+	 * IT MUST HANDLE OVERALL AUTHENTICATION (IF ANY) ...
+	 * RETURN: -
+	 */
+	public static function Authenticate($area);
+	//=====
+
+
+} //END INTERFACE
+
+
+//==================================================================================
+//================================================================================== INTERFACE END
+//==================================================================================
+
+
+//==================================================================================
+//================================================================================== INTERFACE START
+//==================================================================================
+
+
+/**
+ * Abstract Inteface Smart App Info
+ * The extended object MUST NOT CONTAIN OTHER FUNCTIONS BECAUSE MAY NOT WORK as Expected !!!
+ *
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20210330
+ *
+ */
+interface SmartInterfaceAppInfo {
+
+	// :: INTERFACE
+
+
+	//=====
+	/**
+	 * Test if a specific App Template Exists
+	 * RETURN: true or false
+	 */
+	public static function TestIfTemplateExists($y_template_name);
+	//=====
+
+
+	//=====
+	/**
+	 * Test if a specific App Module Exists
+	 * RETURN: true or false
+	 */
+	public static function TestIfModuleExists($y_module_name);
+	//=====
+
+
+} //END INTERFACE
+
+
+//==================================================================================
+//================================================================================== INTERFACE END
 //==================================================================================
 
 

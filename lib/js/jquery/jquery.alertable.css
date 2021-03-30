@@ -4,8 +4,8 @@
 // Developed by Cory LaViska for A Beautiful Site, LLC
 // Licensed under the MIT license: http://opensource.org/licenses/MIT
 
-// r.20190211
-// (c) 2019 unix-world.org
+// r.20210329
+// (c) 2019-2021 unix-world.org
 // License: BSD
 // contains fixes by unixman
 */
@@ -13,7 +13,7 @@
 /* Modal */
 .alertable {
 	position: fixed;
-	z-index: 9999;
+	z-index: 2147482005;
 	top: 10vh;
 	left: calc(50% - 150px);
 	width: 300px;
@@ -21,12 +21,15 @@
 	border-radius: 4px;
 	padding: 20px;
 	margin: 0 auto;
+	max-height: 70vh !important;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 /* Overlay */
 .alertable-overlay {
 	position: fixed;
-	z-index: 9998;
+	z-index: 2147482004;
 	top: 0;
 	right: 0;
 	bottom: 0;

@@ -13,9 +13,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - Cache Support
-// DEPENDS:
-//	* Smart::
-//	* SmartParser::
 //======================================================
 
 // [PHP8]
@@ -47,8 +44,8 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	-
- * @version 	v.20210303
+ * @depends 	classes: Smart, SmartFrameworkRuntime, SmartFrameworkRegistry
+ * @version 	v.20210330
  * @package 	@Core
  *
  */
@@ -229,8 +226,8 @@ final class SmartCache {
  * @access 		private
  * @internal
  *
- * @depends 	-
- * @version 	v.20200121
+ * @depends 	classes: Smart, SmartFrameworkRuntime, SmartFrameworkRegistry
+ * @version 	v.20210330
  * @package 	development:Application
  *
  */

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartFileSystem        final class \ SmartFileSystem    {   } ::    Class: SmartFileSystem - provides the File System Access functions. This class">
-	<meta name="keywords" content="smartfilesystem, final, class, provides, the, file, system, access, functions, this, enforces, use, of, relative, paths, to, force, using, correct, path, in, a, web, environment, application, must, be, folder, as, some-folder, or, some-folder my-file.txt, absolute, are, denied, by, internal, checks, they, not, safe, from, security, point, view, also, backward, like, some-file-or-folder, is, above, exposed, reasons, files, and, folders, contain, only, characters, a-z, can, slashes, separators, no, spaces, allowed, all, operations, against, toc tou, time-of-check, time-of-use, expoits, language, php, located, at, lib framework lib filesys.php, package, core:filesystem, namespace, name, version, v.20210305, depends, classes, smart, hints, handle, thread, concurency, filesystem, way, lock ex, lock, exclusive, feature">
+	<meta name="keywords" content="smartfilesystem, final, class, provides, the, file, system, access, functions, this, enforces, use, of, relative, paths, to, force, using, correct, path, in, a, web, environment, application, must, be, folder, as, some-folder, or, some-folder my-file.txt, absolute, are, denied, by, internal, checks, they, not, safe, from, security, point, view, also, backward, like, some-file-or-folder, is, above, exposed, reasons, files, and, folders, contain, only, characters, a-z, can, slashes, separators, no, spaces, allowed, all, operations, against, toc tou, time-of-check, time-of-use, expoits, language, php, located, at, lib framework lib filesys.php, package, core:filesystem, namespace, name, version, v.20210330, depends, classes, smart, hints, handle, thread, concurency, filesystem, way, lock ex, lock, exclusive, feature">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartFileSystem">
 	<title>PHP Documentation for: \SmartFileSystem</title>
 	<!-- CSS and Fonts -->
@@ -702,7 +702,7 @@ All operations in this class are safe against TOC/TOU (time-of-check to time-of-
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartFileSystem</span></li>
 		
-		<li><b>Version:</b> v.20210305</li>
+		<li><b>Version:</b> v.20210330</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		<li><b>Hints:</b> This  class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -1220,10 +1220,10 @@ It will FAIL in non-recursive mode if the directory (folder) is not empty.</div>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">SmartFileSystem</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br></span><span style="color: #FFFFFF">?&gt;</span>
-</span>
-</code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
+	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c4"><span class="c1">&lt;?php<br>
+<br></span><span class="c2">//&nbsp;Usage&nbsp;example:<br>
+&nbsp;</span><span class="c1">SmartFileSystem</span><span class="c3">::</span><span class="c1">some_method_of_this_class</span><span class="c3">(...);<br>
+<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
 </div>
 <!-- Summary List -->
 <br>
@@ -1359,7 +1359,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 17:58:04 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-30 00:54:32 +0000</small>
 <hr>
 <br>
 <!-- # -->

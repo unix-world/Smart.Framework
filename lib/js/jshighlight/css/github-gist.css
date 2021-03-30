@@ -3,14 +3,14 @@
 // HighlightJs: v.9.13.1
 */
 
-/**
- * GitHub Gist Theme
- * Author : Louis Barranqueiro - https://github.com/LouisBarranqueiro
+/*
+GitHub Gist Theme (c) Louis Barranqueiro https://github.com/LouisBarranqueiro
+modified by unixman r.20210330, (c) 2021 unix-world.org
  */
 
 .hljs {
 	display: block;
-	background: white;
+	background: #FCFCFC;
 	padding: 0.5rem;
 	color: #333333;
 	overflow-x: auto;
@@ -19,6 +19,10 @@
 .hljs-comment,
 .hljs-meta {
 	color: #969896;
+}
+
+.hljs-meta {
+	font-weight: bold;
 }
 
 .hljs-string,
@@ -34,6 +38,7 @@
 .hljs-selector-tag,
 .hljs-type {
 	color: #a71d5d;
+	font-weight: bold;
 }
 
 .hljs-literal,
@@ -52,6 +57,11 @@
 	color: #333333;
 }
 
+.hljs-regexp,
+.hljs-link {
+	color: #009926;
+}
+
 .hljs-title,
 .hljs-attr,
 .hljs-selector-id,
@@ -59,6 +69,14 @@
 .hljs-selector-attr,
 .hljs-selector-pseudo {
 	color: #795da3;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-selector-id,
+.hljs-type,
+.hljs-class {
+	font-weight: bold;
 }
 
 .hljs-addition {

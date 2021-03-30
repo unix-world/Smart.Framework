@@ -13,14 +13,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - Marker-TPL Templating
-// DEPENDS:
-//	* Smart::
-//	* SmartUnicode::
-//	* SmartParser::
-//	* SmartFileSystem::
-//	* SmartFileSysUtils::
-//	* SmartPersistentCache::
-// 	* SmartFrameworkRegistry::
 //======================================================
 
 // [REGEX-SAFE-OK] ; [PHP8]
@@ -58,8 +50,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils
- * @version 	v.20210325.1343
+ * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartPersistentCache, SmartFrameworkRuntime, SmartFrameworkRegistry
+ * @version 	v.20210330
  * @package 	@Core:TemplatingEngine
  *
  */

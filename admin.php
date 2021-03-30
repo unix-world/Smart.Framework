@@ -7,7 +7,7 @@
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //####################
 
-//== v.20200605
+//== v.20210330
 //--
 ini_set('display_errors', '1'); 											// temporary enable this to display bootstrap errors if any ; will be managed later by Smart Error Handler
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 			// on bootstrap show real-time errors (sync with Smart Error Handler)
@@ -38,6 +38,7 @@ setlocale(LC_ALL, 'C'); // DON'T CHANGE THIS !!! THIS IS COMPATIBLE WILL ALL UTF
 require('lib/smart-error-handler.php'); 									// Smart Error Handler
 require('lib/smart-runtime.php'); 											// Smart Runtime
 require('etc/config-admin.php'); 											// Admin Config
+require('lib/run/abstract-controller.php'); 								// Service Controller Definition
 require('lib/run/middleware.php'); 											// Service Handler Definition
 require('lib/run/middleware-admin.php'); 									// Admin Service Handler
 //--

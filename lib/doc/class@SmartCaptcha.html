@@ -798,10 +798,23 @@ On Verify Success the Captcha clears automatically all stored values</div>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//==<br>&nbsp;//--&nbsp;captch&nbsp;form&nbsp;needs&nbsp;a&nbsp;captcha&nbsp;plugin&nbsp;to&nbsp;work&nbsp;with&nbsp;(ex:&nbsp;image)<br>&nbsp;//&nbsp;See:&nbsp;\SmartModExtLib\Samples\TestUnitMain::captchaImg()<br>&nbsp;//&nbsp;Also&nbsp;See:&nbsp;modules/mod-samples/testunit.php&nbsp;#&nbsp;case&nbsp;'testunit.captcha'<br>&nbsp;//&nbsp;The&nbsp;method&nbsp;SmartCaptcha::initCaptchaPlugin()&nbsp;must&nbsp;be&nbsp;used&nbsp;to&nbsp;init&nbsp;a&nbsp;captcha&nbsp;plugin&nbsp;(ex:&nbsp;image)<br>&nbsp;//--&nbsp;captcha&nbsp;form&nbsp;(draw)<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">echo&nbsp;</span><span style="color: #FFFFFF">SmartCaptcha</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">drawCaptchaForm</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'form_name'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'?page=samples.testunit&amp;op=testunit.captcha'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;controller&nbsp;should&nbsp;output&nbsp;HTML&nbsp;code&nbsp;to&nbsp;render&nbsp;the&nbsp;form<br>&nbsp;//--&nbsp;captcha&nbsp;check&nbsp;(verify)<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">echo&nbsp;</span><span style="color: #FFFFFF">$check&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">SmartCaptcha</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">verifyCaptcha</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'form_name'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'cookie'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;and&nbsp;this&nbsp;is&nbsp;the&nbsp;way&nbsp;you&nbsp;verify&nbsp;the&nbsp;captcha&nbsp;(1&nbsp;=&nbsp;ok&nbsp;;&nbsp;0&nbsp;=&nbsp;not&nbsp;ok)<br>&nbsp;//--&nbsp;some&nbsp;more&nbsp;info&nbsp;on&nbsp;verify()<br>&nbsp;//&nbsp;captcha&nbsp;will&nbsp;reset&nbsp;(clear)&nbsp;by&nbsp;default&nbsp;upon&nbsp;each&nbsp;SmartCaptcha::verifyCaptcha()<br>&nbsp;//&nbsp;to&nbsp;avoid&nbsp;this&nbsp;(default)&nbsp;behaviour,&nbsp;you&nbsp;can&nbsp;set&nbsp;the&nbsp;3rd&nbsp;parameters&nbsp;of&nbsp;verify()&nbsp;to&nbsp;FALSE<br>&nbsp;//&nbsp;but&nbsp;if&nbsp;you&nbsp;do&nbsp;so,&nbsp;don't&nbsp;forget&nbsp;to&nbsp;manually&nbsp;clear&nbsp;captcha&nbsp;by&nbsp;calling&nbsp;SmartCaptcha::clearCaptcha()&nbsp;at&nbsp;the&nbsp;end&nbsp;!!!<br>&nbsp;//--<br>&nbsp;//==<br><br></span><span style="color: #FFFFFF">?&gt;</span>
-</span>
-</code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
+	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
+<br></span><span class="c2">//==<br>
+&nbsp;//--&nbsp;captch&nbsp;form&nbsp;needs&nbsp;a&nbsp;captcha&nbsp;plugin&nbsp;to&nbsp;work&nbsp;with&nbsp;(ex:&nbsp;image)<br>
+&nbsp;//&nbsp;See:&nbsp;\SmartModExtLib\Samples\TestUnitMain::captchaImg()<br>
+&nbsp;//&nbsp;Also&nbsp;See:&nbsp;modules/mod-samples/testunit.php&nbsp;#&nbsp;case&nbsp;&#39;testunit.captcha&#39;<br>
+&nbsp;//&nbsp;The&nbsp;method&nbsp;SmartCaptcha::initCaptchaPlugin()&nbsp;must&nbsp;be&nbsp;used&nbsp;to&nbsp;init&nbsp;a&nbsp;captcha&nbsp;plugin&nbsp;(ex:&nbsp;image)<br>
+&nbsp;//--&nbsp;captcha&nbsp;form&nbsp;(draw)<br>
+&nbsp;</span><span class="c3">echo&nbsp;</span><span class="c1">SmartCaptcha</span><span class="c3">::</span><span class="c1">drawCaptchaForm</span><span class="c3">(</span><span class="c4">&#39;form_name&#39;</span><span class="c3">,&nbsp;</span><span class="c4">&#39;?page=samples.testunit&amp;op=testunit.captcha&#39;</span><span class="c3">);&nbsp;</span><span class="c2">//&nbsp;this&nbsp;controller&nbsp;should&nbsp;output&nbsp;HTML&nbsp;code&nbsp;to&nbsp;render&nbsp;the&nbsp;form<br>
+&nbsp;//--&nbsp;captcha&nbsp;check&nbsp;(verify)<br>
+&nbsp;</span><span class="c3">echo&nbsp;</span><span class="c1">$check&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">SmartCaptcha</span><span class="c3">::</span><span class="c1">verifyCaptcha</span><span class="c3">(</span><span class="c4">&#39;form_name&#39;</span><span class="c3">,&nbsp;</span><span class="c1">true</span><span class="c3">,&nbsp;</span><span class="c4">&#39;cookie&#39;</span><span class="c3">);&nbsp;</span><span class="c2">//&nbsp;and&nbsp;this&nbsp;is&nbsp;the&nbsp;way&nbsp;you&nbsp;verify&nbsp;the&nbsp;captcha&nbsp;(1&nbsp;=&nbsp;ok&nbsp;;&nbsp;0&nbsp;=&nbsp;not&nbsp;ok)<br>
+&nbsp;//--&nbsp;some&nbsp;more&nbsp;info&nbsp;on&nbsp;verify()<br>
+&nbsp;//&nbsp;captcha&nbsp;will&nbsp;reset&nbsp;(clear)&nbsp;by&nbsp;default&nbsp;upon&nbsp;each&nbsp;SmartCaptcha::verifyCaptcha()<br>
+&nbsp;//&nbsp;to&nbsp;avoid&nbsp;this&nbsp;(default)&nbsp;behaviour,&nbsp;you&nbsp;can&nbsp;set&nbsp;the&nbsp;3rd&nbsp;parameters&nbsp;of&nbsp;verify()&nbsp;to&nbsp;FALSE<br>
+&nbsp;//&nbsp;but&nbsp;if&nbsp;you&nbsp;do&nbsp;so,&nbsp;don&#39;t&nbsp;forget&nbsp;to&nbsp;manually&nbsp;clear&nbsp;captcha&nbsp;by&nbsp;calling&nbsp;SmartCaptcha::clearCaptcha()&nbsp;at&nbsp;the&nbsp;end&nbsp;!!!<br>
+&nbsp;//--<br>
+&nbsp;//==<br>
+<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
 </div>
 <!-- Summary List -->
 <br>
@@ -865,7 +878,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 17:58:08 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-30 00:54:36 +0000</small>
 <hr>
 <br>
 <!-- # -->

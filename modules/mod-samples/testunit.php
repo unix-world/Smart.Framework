@@ -488,6 +488,16 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		$semaphores = [];
+		if(SmartFrameworkRuntime::isAdminArea() !== true) {
+			$semaphores[] = 'load:growl-toastr';
+		} else {
+			if(rand(0,1) == 1) {
+				$semaphores[] = 'skip:growl';
+			} //end if
+			if(rand(0,1) == 1) {
+				$semaphores[] = 'dialog:alertable';
+			} //end if
+		} //end if
 		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SmartFrameworkRuntime::isAdminArea() === true)) {
 			//-- skip load the default JS-UI and load jQueryUI if is available and is admin area
 			$semaphores[] = 'skip:js-ui';

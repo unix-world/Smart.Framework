@@ -1,4 +1,4 @@
-<!-- Partial Template: Plugins.SyntaxHighlightInitAndProcess r.20210327 -->
+<!-- Partial Template: Plugins.SyntaxHighlightInitAndProcess r.20210330 -->
 <link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/core/css/tpl-highlight.css">
 <link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
 <style>
@@ -10,7 +10,6 @@ code.hljs, code.hljs * {
 <!-- HLjs Base -->
 <link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/css/[###CSS-THEME|html###].css">
 <script type="text/javascript" src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/highlight.js"></script>
-<script type="text/javascript" src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/smart-highlight.js"></script>
 <script type="text/javascript" src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/syntax/plaintext.js"></script>
 <!-- HLjs Plugins [[###SYNTAX-PACKS|html###]] -->
 [%%%LOOP:SYNTAX-PLUGINS%%%]
@@ -18,6 +17,8 @@ code.hljs, code.hljs * {
 [%%%/LOOP:SYNTAX-PLUGINS%%%]
 <!-- HLjs Extra Html -->
 [###EXT-JSHTML###]
+<!-- HLjs Smart -->
+<script type="text/javascript" src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/smart-highlight.js"></script>
 <!-- HLjs Async Render -->
 <script type="text/javascript">
 var SmartViewHelpersSyntaxHighlightAreas = '[###AREAS-SELECTOR|js###]';

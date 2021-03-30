@@ -18,14 +18,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart.Framework - Smart Components
-// DEPENDS:
-//	* Smart::
-//	* SmartUtils::
-//	* SmartFileSystem::
-//	* SmartTextTranslations::
-//	* SmartMarkersTemplating::
-// REQUIRED CSS:
-//	* notifications.css
 //======================================================
 
 // [REGEX-SAFE-OK] ; [PHP8]
@@ -47,8 +39,8 @@ define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)SmartFileSystem::read('lib/
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations
- * @version 	v.20210325
+ * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating, SmartFrameworkRuntime
+ * @version 	v.20210330
  * @package 	Application:ViewComponents
  *
  */
@@ -840,7 +832,7 @@ final class SmartComponents {
 	 */
 	public static function get_imgdesc_by_bw_id($y_bw) {
 		//--
-		switch(strtolower((string)$y_bw)) { // {{{SYNC-CLI-BW-ID}}}
+		switch((string)strtolower((string)$y_bw)) { // {{{SYNC-CLI-BW-ID}}}
 			case '@s#':
 				$desc = 'Smart.Framework @Robot';
 				$pict = 'browser/@smart-robot';
@@ -928,7 +920,7 @@ final class SmartComponents {
 	 */
 	public static function get_imgdesc_by_os_id($y_os_id) {
 		//--
-		switch(strtolower((string)$y_os_id)) { // {{{SYNC-SRV-OS-ID}}} ; {{{SYNC-CLI-OS-ID}}}
+		switch((string)strtolower((string)$y_os_id)) { // {{{SYNC-SRV-OS-ID}}} ; {{{SYNC-CLI-OS-ID}}}
 			//-
 			case 'macosx':
 			case 'macos':

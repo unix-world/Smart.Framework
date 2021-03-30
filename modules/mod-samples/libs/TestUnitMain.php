@@ -305,8 +305,8 @@ final class TestUnitMain {
 		} else {
 			//--
 			$code = 'ERROR';
-			$title = 'CAPTCHA NOT Checked yet ...';
-			$desc = 'Please fill the Date field ...'.$tmp_data;
+			$title = 'CAPTCHA NOT Checked yet <a> ...';
+			$desc = 'Please fill the <b>Date field</b> ...'.$tmp_data;
 			//--
 			if(\strlen($frm['text_area_1']) > 0) {
 				$redir = \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.main&time='.\time().'&tab='.\Smart::escape_url($tab);

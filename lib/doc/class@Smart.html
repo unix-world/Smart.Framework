@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\Smart        final class \ Smart    {   } ::    Class: Smart (Base Functions) - provides the base methods for an easy and secure development with">
-	<meta name="keywords" content="smart, final, class, base, functions, provides, the, methods, for, an, easy, and, secure, development, with, smart.framework, php, language, located, at, lib framework lib smart.php, package, core, namespace, name, version, v.20210305, depends, extensions, json, classes, smartunicode, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class::method, only, public, function, is nscalar, mixed, val, bool, return, false, array, or, resource, true, rest, param, value, tested, test, a, variable, scalar, null, get from config, string, type, selected, parameter, config">
+	<meta name="keywords" content="smart, final, class, base, functions, provides, the, methods, for, an, easy, and, secure, development, with, smart.framework, php, language, located, at, lib framework lib smart.php, package, core, namespace, name, version, v.20210330, depends, extensions, json, classes, smartunicode, smartframeworkruntime, smartframeworkregistry, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class::method, only, public, function, is nscalar, mixed, val, bool, return, false, array, or, resource, true, rest, param, value, tested, test, a, variable, scalar, null, get from config, string, type, selected">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \Smart">
 	<title>PHP Documentation for: \Smart</title>
 	<!-- CSS and Fonts -->
@@ -696,8 +696,8 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> Smart</span></li>
 		
-		<li><b>Version:</b> v.20210305</li>
-		<li><b>Depends:</b> extensions:  PHP JSON ; classes: SmartUnicode</li>
+		<li><b>Version:</b> v.20210330</li>
+		<li><b>Depends:</b> extensions:  PHP JSON ; classes: SmartUnicode, SmartFrameworkRuntime, SmartFrameworkRegistry</li>
 		<li><b>Hints:</b> It  is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -1179,6 +1179,23 @@ This is a better replacement for the PHP's number_format() which throws a warnin
 @param: {ENUM} $y_mode: Change Mode: LOWER | UPPER</div>
 	
 			<div class="doc-method-comments">Array Recursive Change Key Case</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--array_init_keys">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>array_init_keys</b></span>&nbsp;(
+				<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr` Parameter is REQUIRED">$y_arr</span></b></span>, 
+			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_keys` Parameter is REQUIRED">$y_keys</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+			<div class="doc-method-ret-params">@return: {ARRAY} The modified array<br>
+@param: {ARRAY} $y_arr: The input array<br>
+@param: {ENUM} $y_keys: The array keys to initialize: will add these keys to the array assigned with a NULL value only if the key does not exists ; the existing keys will be preserved with their existing values ; must be a non-associative array, as: [ 'key1', 'key2', '', ...] ; a key can be also an empty string</div>
+	
+			<div class="doc-method-comments">Array Initialize Keys</div>
 	
 	
 	
@@ -1845,7 +1862,7 @@ This will add messages to the App Info Log. (depending if on admin or index, wil
 			<div class="doc-method-comments">A quick replacement for trigger_error() / E_USER_NOTICE.<br>
 This is intended to log APP Level Notices.<br>
 This will log the message as NOTICE into the App Error Log.<br>
-Notices are logged ONLY if SMART_ERROR_HANDLER is set to 'dev' mode.</div>
+Notices are logged ONLY for Development Environment (and NOT for Production Environment)</div>
 	
 	
 	
@@ -1906,10 +1923,10 @@ This will log the message as ERROR into the App Error Log and stop the execution
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br></span><span style="color: #FFFFFF">?&gt;</span>
-</span>
-</code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
+	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c4"><span class="c1">&lt;?php<br>
+<br></span><span class="c2">//&nbsp;Usage&nbsp;example:<br>
+&nbsp;</span><span class="c1">Smart</span><span class="c3">::</span><span class="c1">some_method_of_this_class</span><span class="c3">(...);<br>
+<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
 </div>
 <!-- Summary List -->
 <br>
@@ -2023,6 +2040,9 @@ function smartHandleDocSelector(obj) {
 			
 			
 									<option value="Method--array_change_key_case_recursive"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;array_change_key_case_recursive()</option>
+			
+			
+									<option value="Method--array_init_keys"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;array_init_keys()</option>
 			
 			
 									<option value="Method--array_type_test"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;array_type_test()</option>
@@ -2168,7 +2188,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 17:58:03 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-30 00:54:30 +0000</small>
 <hr>
 <br>
 <!-- # -->

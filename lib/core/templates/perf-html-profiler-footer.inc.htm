@@ -1,4 +1,4 @@
-<!-- HTML Performance Profiler (footer) # r.20210316 -->
+<!-- HTML Performance Profiler (footer) # r.20210330 -->
 <script>
 (function(){
 
@@ -35,7 +35,7 @@
 	}
 
 	var theNavUrl = '(current)';
-	var timeTotalResources = 0; // if there are parallel threads, making sum of durations is not correct ; fix: calculate as ((theTimeLoadingLastResource - theTimeLoadingFirstResource) + theDurationOfLastResource)
+	var timeTotalResources = 0; // if there are parallel threads, making sum of durations is not reflecting the reality ; fix: calculate as ((theTimeLoadingLastResource - theTimeLoadingFirstResource) + theDurationOfLastResource)
 	var theResourcesNum = 0;
 	var theResourcesArr = [];
 	var recordedFirstResourceLoading = false;
@@ -173,7 +173,7 @@
 [%%%IF:MODE:==dev;%%%]
 	theLog[1] = '    - Navigation URL (see in the browser addressbar)'; // clear Navigation URL
 	try {
-		document.write('<div onClick="this.style.visibility=\'hidden\';" title="Smart.Framework.HTML.Performance.Profiler @ Mode: `[###MODE|html|js###]`\nClick on this info message to hide it ..." style="cursor:default; position:fixed; bottom:25px; right:25px; padding:10px; background:#FF3300; color:#FFFFFF; font-weight:bold; font-size:1rem; opacity:0.5; border-radius:3px;">*** This info message is displayed just in DEV mode. ***<br>Smart.Framework.HTML.Performance.Profiler is ENABLED.<br>Performance metrics are logged in the Browser Console ...<pre id="Smart.Framework.HTML.Performance.Profiler.Log"></pre></div>');
+		document.write('<div onmouseover="this.style.opacity=0.95;" onmouseout="this.style.opacity=0.55;" onClick="this.style.visibility=\'hidden\';" title="Smart.Framework.HTML.Performance.Profiler @ Mode: `[###MODE|html|js###]`\nClick on this info message to hide it ..." style="cursor:default; position:fixed; bottom:25px; right:25px; padding:10px; background:#223344; color:#FFFFFF; font-weight:bold; font-size:1rem; opacity:0.55; border-radius:3px;">*** This info message is displayed just in DEV mode. ***<br>Smart.Framework.HTML.Performance.Profiler is ENABLED.<br>Performance metrics are logged in the Browser Console ...<pre id="Smart.Framework.HTML.Performance.Profiler.Log"></pre></div>');
 		setTimeout(function(){ document.getElementById('Smart.Framework.HTML.Performance.Profiler.Log').innerText = theLog.join('\n'); }, 250);
 	} catch(err){}
 [%%%ELSE:MODE%%%]

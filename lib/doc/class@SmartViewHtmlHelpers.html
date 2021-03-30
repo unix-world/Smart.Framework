@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartViewHtmlHelpers        final class \ SmartViewHtmlHelpers    {   } ::    Class: SmartViewHelpers - Easy to use HTML ViewHelper Components.">
-	<meta name="keywords" content="smartviewhtmlhelpers, final, class, smartviewhelpers, easy, to, use, html, viewhelper, components, language, php, located, at, lib core plugins lib viewhelpers.php, package, plugins:viewcomponents, namespace, name, version, v.20210310, depends, classes, smart, usage, static, object, class::method, this, provides, only, methods, public, function, html js highlightsyntax, string, dom selector, hints, should, be, rendered, just, once, per, page, for, a, specific, dom, selector, it, can, used, more, than, with, different, selectors, that, are, not, contained, one, within, another, return, code, param, valid, jquery, html-dom, as, container s, pre code, see, the, css, javascript, highlightjs, areas, in, if, is, specified, all, will, highlighted, html jsload highlightsyntax, array, plugins, web, enum, theme, github, bool, loadpacks, true">
+	<meta name="keywords" content="smartviewhtmlhelpers, final, class, smartviewhelpers, easy, to, use, html, viewhelper, components, language, php, located, at, lib core plugins lib viewhelpers.php, package, plugins:viewcomponents, namespace, name, version, v.20210328, depends, classes, smart, usage, static, object, class::method, this, provides, only, methods, public, function, html jsload highlightsyntax, string, dom selector, mixed, plugins, array, web, enum, theme, github, bool, loadpacks, true, use absolute url, false, ext jshtml, return, code, param, a, valid, jquery, html-dom, selector, as, container s, for, pre code, see, can, be, body, id-element, null, load, all, or, with, of, packages, available, tpl, lnx, srv, net, lang, default, is, set, the, visual, css, themes, atom-one-light, github-gist, googlecode, grayscale, ocean, tomorrow-night-blue, xcode, zenburn, if, will">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartViewHtmlHelpers">
 	<title>PHP Documentation for: \SmartViewHtmlHelpers</title>
 	<!-- CSS and Fonts -->
@@ -696,7 +696,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartViewHtmlHelpers</span></li>
 		
-		<li><b>Version:</b> v.20210310</li>
+		<li><b>Version:</b> v.20210328</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -710,41 +710,26 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<div class="doc-container" id="Method--html_js_highlightsyntax">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_js_highlightsyntax</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$dom_selector` Parameter is REQUIRED">$dom_selector</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
-	
-	
-			<div class="doc-method-ret-params">@hints: This  should be rendered just once per HTML page for a specific DOM Selector ; It can be used more than once per HTML page with different DOM Selectors that are not contained one within another<br>
-@return: {STRING} [HTML Code]<br>
-@param: {STRING} $dom_selector: A valid jQuery HTML-DOM Selector as container(s) for Pre&gt;Code (see jQuery ...)</div>
-	
-			<div class="doc-method-comments">Return the HTML / CSS / Javascript code to HighlightJs DOM Areas in a DOM Selector<br>
-If a valid DOM Selector is specified all code areas in that dom selector will be highlighted</div>
-	
-	
-	
-</div><div class="doc-container" id="Method--html_jsload_highlightsyntax">
+<div class="doc-container" id="Method--html_jsload_highlightsyntax">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>html_jsload_highlightsyntax</b></span>&nbsp;(
 				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$dom_selector` Parameter is REQUIRED">$dom_selector</span></b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$plugins` Parameter is OPTIONAL, with the Default Value: array(0 =&gt; &quot;web&quot;)">$plugins</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array(0 =&gt; &quot;web&quot;)</b></span>, 
+			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$plugins` Parameter is OPTIONAL, with the Default Value: array(0 =&gt; &quot;web&quot;)">$plugins</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array(0 =&gt; &quot;web&quot;)</b></span>, 
 			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$theme` Parameter is OPTIONAL, with the Default Value: &quot;github&quot;">$theme</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;github&quot;</b></span>, 
 			<i>BOOL</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$loadpacks` Parameter is OPTIONAL, with the Default Value: true">$loadpacks</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<i>BOOL</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$use_absolute_url` Parameter is OPTIONAL, with the Default Value: false">$use_absolute_url</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+			<i>BOOL</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$use_absolute_url` Parameter is OPTIONAL, with the Default Value: false">$use_absolute_url</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ext_jshtml` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$ext_jshtml</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 			<div class="doc-method-ret-params">@return: {STRING} [HTML Code]<br>
-@param: {STRING} $dom_selector: A valid jQuery HTML-DOM Selector as container(s) for Pre&gt;Code (see jQuery ...)<br>
-@param: {ARRAY} $plugins: The Array with enum of packages to load<br>
-@param: {ENUM} $theme: The Visual CSS Theme to Load<br>
-@param: {BOOL} $loadpacks: If TRUE will load syntax packed files instead of syntax single files which are many<br>
-@param: {BOOL} $use_absolute_url: If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE</div>
+@param: {STRING} $dom_selector: A valid jQuery HTML-DOM Selector as container(s) for Pre&gt;Code (see jQuery ...) ; Can be: 'body', '#id-element', ...<br>
+@param: {MIXED} $plugins: NULL to load all or ARRAY with enum of packages to load (available Plugins: 'web', 'tpl', 'lnx', 'lnx', 'srv', 'net', 'lang') ; Default is set to load only 'web'<br>
+@param: {ENUM} $theme: The Visual CSS Theme to Load ; Available Themes: 'default', 'atom-one-light', 'github-gist', 'github', 'googlecode', 'grayscale', 'ocean', 'tomorrow-night-blue', 'xcode', 'zenburn' ; Default is set to: 'default'<br>
+@param: {BOOL} $loadpacks: If TRUE will load syntax packed files instead of syntax single files which are many ; Default is TRUE<br>
+@param: {BOOL} $use_absolute_url: If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE<br>
+@param: {STRING} $ext_jshtml: Extra Js/HTML Code ; Default is '' ; Here can be loaded ext syntax packs ; ex: '&lt;script type=&quot;text/javascript&quot; src=&quot;modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/twig.js&quot;&gt;&lt;/script&gt;'</div>
 	
 			<div class="doc-method-comments">Return the HTML / CSS / Javascript code to Load the required Javascripts for the Highlight.Js<br>
 If a valid DOM Selector is specified all code areas in that dom selector will be highlighted<br>
@@ -1302,9 +1287,6 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--html_js_highlightsyntax"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_js_highlightsyntax()</option>
-			
-			
 									<option value="Method--html_jsload_highlightsyntax"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;html_jsload_highlightsyntax()</option>
 			
 			
@@ -1412,7 +1394,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 17:58:08 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-30 00:54:37 +0000</small>
 <hr>
 <br>
 <!-- # -->

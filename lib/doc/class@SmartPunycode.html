@@ -774,10 +774,14 @@ select#select-summary {
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [@] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br>$domain_iso&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">encode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'j&ouml;sefsson.t&szlig;st123.org'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;xn--jsefsson-n4a.xn--tst123-bta.org<br>&nbsp;</span><span style="color: #FFFFFF">$domain_unicode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">decode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'xn--jsefsson-n4a.xn--tst123-bta.org'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;j&ouml;sefsson.t&szlig;st123.org<br><br>&nbsp;</span><span style="color: #FFFFFF">$email_iso&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">encode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'r&auml;ksm&ouml;rg&aring;s@j&ouml;sefsson.t&szlig;st123.org'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;xn--rksmrgs@jsefsson-vnbx43ag.xn--tst123-bta.org<br>&nbsp;</span><span style="color: #FFFFFF">$email_unicode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">decode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'xn--rksmrgs@jsefsson-vnbx43ag.xn--tst123-bta.org'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;r&auml;ksm&ouml;rg&aring;s@j&ouml;sefsson.t&szlig;st123.org<br><br></span><span style="color: #FFFFFF">?&gt;</span>
-</span>
-</code><!-- [/@] Smart/HTML.Cleaner --></code></pre>
+	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
+<br>
+$domain_iso&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">=&nbsp;(string)&nbsp;(new&nbsp;</span><span class="c1">SmartPunycode</span><span class="c2">())-&gt;</span><span class="c1">encode</span><span class="c2">(</span><span class="c3">&#39;j&ouml;sefsson.t&szlig;st123.org&#39;</span><span class="c2">);&nbsp;</span><span class="c4">//&nbsp;outputs:&nbsp;xn--jsefsson-n4a.xn--tst123-bta.org<br>
+&nbsp;</span><span class="c1">$domain_unicode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">=&nbsp;(string)&nbsp;(new&nbsp;</span><span class="c1">SmartPunycode</span><span class="c2">())-&gt;</span><span class="c1">decode</span><span class="c2">(</span><span class="c3">&#39;xn--jsefsson-n4a.xn--tst123-bta.org&#39;</span><span class="c2">);&nbsp;</span><span class="c4">//&nbsp;outputs:&nbsp;j&ouml;sefsson.t&szlig;st123.org<br>
+<br>
+&nbsp;</span><span class="c1">$email_iso&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">=&nbsp;(string)&nbsp;(new&nbsp;</span><span class="c1">SmartPunycode</span><span class="c2">())-&gt;</span><span class="c1">encode</span><span class="c2">(</span><span class="c3">&#39;r&auml;ksm&ouml;rg&aring;s@j&ouml;sefsson.t&szlig;st123.org&#39;</span><span class="c2">);&nbsp;</span><span class="c4">//&nbsp;outputs:&nbsp;xn--rksmrgs@jsefsson-vnbx43ag.xn--tst123-bta.org<br>
+&nbsp;</span><span class="c1">$email_unicode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">=&nbsp;(string)&nbsp;(new&nbsp;</span><span class="c1">SmartPunycode</span><span class="c2">())-&gt;</span><span class="c1">decode</span><span class="c2">(</span><span class="c3">&#39;xn--rksmrgs@jsefsson-vnbx43ag.xn--tst123-bta.org&#39;</span><span class="c2">);&nbsp;</span><span class="c4">//&nbsp;outputs:&nbsp;r&auml;ksm&ouml;rg&aring;s@j&ouml;sefsson.t&szlig;st123.org<br>
+<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
 </div>
 <!-- Summary List -->
 <br>
@@ -838,7 +842,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-12 17:58:06 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-03-30 00:54:35 +0000</small>
 <hr>
 <br>
 <!-- # -->
