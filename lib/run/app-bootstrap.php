@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //-----------------------------------------------------
 
 //======================================================
-// Smart-Framework - App Bootstrap :: r.20210330
+// Smart-Framework - App Bootstrap :: r.20210331
 // DEPENDS: SmartFramework, SmartFrameworkRuntime
 //======================================================
 // This file can be customized per App ...
@@ -129,93 +129,12 @@ if(defined('SMART_FRAMEWORK_SESSION_HANDLER') AND ((string)SMART_FRAMEWORK_SESSI
 } //end if else
 //==
 
-//==
-/**
- * Function AutoLoad Modules (Libs / Models) via Dependency Injection
- *
- * @access 		private
- * @internal
- * @version		v.20210303
- *
- */
-function autoload__SmartFrameworkModClasses($classname) {
-	//--
-	$classname = (string) $classname;
-	//--
-	if((strpos($classname, '\\') === false) OR (!preg_match('/^[a-zA-Z0-9_\\\]+$/', $classname))) { // if have no namespace or not valid character set
-		return;
-	} //end if
-	//--
-	if((strpos($classname, 'SmartModExtLib\\') === false) AND (strpos($classname, 'SmartModDataModel\\') === false)) { // must start with this namespaces only
-		return;
-	} //end if
-	//--
-	$parts = (array) explode('\\', $classname);
-	if(count($parts) != 3) { // need for [0], [1] and [2]
-		return;
-	} //end if
-	//--
-	$max = (int) count($parts) - 1; // the last is the class
-	//--
-	$dir = 'modules/mod';
-	//--
-	if((string)$parts[1] != '') {
-		//--
-		$dir .= (string) strtolower((string)implode('-', preg_split('/(?=[A-Z])/', (string)$parts[1])));
-		//--
-		if((string)$parts[0] == 'SmartModExtLib') {
-			//--
-			$dir .= '/libs/';
-			//--
-		} elseif((string)$parts[0] == 'SmartModDataModel') {
-			//--
-			$dir .= '/models/';
-			//--
-		} else {
-			//--
-			return; // other namespaces are not managed here
-			//--
-		} //end if else
-		//--
-		if((string)$parts[2] != '') {
-			for($i=2; $i<$max; $i++) {
-				$dir .= (string) $parts[$i].'/';
-			} //end for
-		} //end if
-		//--
-	} else {
-		//--
-		return; // no module detected
-		//--
-	} //end if
-	//--
-	$dir = (string) $dir;
-	$file = (string) $parts[(int)$max];
-	$path = (string) $dir.$file;
-	$path = (string) trim((string)str_replace(array('\\', "\0"), array('', ''), $path)); // filter out null byte and backslash
-	//--
-	if(((string)$path == '') OR ((string)$path == '/') OR (!preg_match('/^[_a-zA-Z0-9\-\/]+$/', $path))) {
-		return; // invalid path characters in file
-	} //end if
-	//--
-	if(!is_file($path.'.php')) { // here must be used is_file() because is autoloader ...
-		return; // file does not exists
-	} //end if
-	//--
-	require_once($path.'.php');
-	//--
-} //END FUNCTION
-//==
-spl_autoload_register('autoload__SmartFrameworkModClasses', true, false); // throw / prepend
-//==
-
 
 //=====================================================================================
 //===================================================================================== CLASS START
 //=====================================================================================
 
-// REQUIRED
-define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // software version for DB Validation
+define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART RUNTIME
 
 /**
  * Class Smart.Framework App.BootStrap

@@ -20,12 +20,8 @@ if(is_file('maintenance.html')) {
 	die('<!-- Smart.Framework [A] 503 Maintenance -->');
 } //end if
 //--
-define('SMART_FRAMEWORK_SESSION_PREFIX', 	'adm-sess'); 					// session prefix
 define('SMART_FRAMEWORK_ADMIN_AREA', 		true); 							// run app in private/admin mode
 define('SMART_FRAMEWORK_RUNTIME_READY', 	microtime(true)); 				// semaphore, runtime can execute scripts
-define('SMART_FRAMEWORK_APP_REQUEST', 		'lib/run/app-request.php'); 	// App Request Script
-define('SMART_FRAMEWORK_APP_BOOTSTRAP', 	'lib/run/app-bootstrap.php'); 	// App Boostrap Script
-define('SMART_APP_TEMPLATES_DIR', 			'etc/templates/'); 				// App Templates Dir
 //--
 require('etc/init.php'); 													// the PHP.INI local settings (they must be called first !!!)
 //--

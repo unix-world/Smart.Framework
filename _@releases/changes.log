@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+March 31, 2021 :: :: Version 7.2.1 rev.20210331
+	* refactoring and optimizations for the framework libs
+	* refactored the error handler and register_shutdown_function in error handler
+
 March 30, 2021 :: :: Version 7.2.1 rev.20210330
 	* Added alternative js growl (toastr)
 	* Rework for Growl and Toastr + optimizations

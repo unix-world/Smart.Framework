@@ -103,7 +103,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210330
+ * @version 	v.20210331
  * @package 	development:Application
  *
  */
@@ -196,18 +196,6 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 				return;
 			} //end if
 		} //end if
-		/* this is no more necessary, as it uses an optional hard-coded value to ensure a particular area ...
-		switch((string)$param_area) {
-			case 'index':
-			case 'admin':
-				break;
-			default: // invalid value
-				Smart::raise_error(
-					__METHOD__.'() :: Invalid Parameter: Area: '.$param_area
-				);
-				return;
-		} //end switch
-		*/
 		//--
 		if((string)$y_module_path == '') {
 			Smart::raise_error(

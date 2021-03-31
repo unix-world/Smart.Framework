@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-//========================================= Demo-Only Settings (these Settings are only required by ModSamples)
+//========================================= Demo-Only Settings
 // !!! REMOVE these Settings when using this config in real production environments !!!
 // ... They are required just for Samples / Testing / Development purposes ...
 define('SMART_FRAMEWORK_TEST_MODE', true);

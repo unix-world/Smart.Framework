@@ -3,11 +3,6 @@
 // (c) 2006-2020 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
-//----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
-if(!defined('SMART_FRAMEWORK_APP_BOOTSTRAP')) { // this must be defined in the first line of the application
-	@http_response_code(500);
-	die('Invalid Runtime App Bootstrap Status in PHP Script: '.@basename(__FILE__).' ...');
-} //end if
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
 if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
 	@http_response_code(500);

@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / MongoDB based Persistent Cache]
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	SmartMongoDbPersistentCache, SmartMongoDb, Smart
- * @version 	v.20200121
+ * @version 	v.20210331
  * @package 	Application:Caching
  *
  */

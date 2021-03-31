@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / SQLite Custom Session]
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -29,7 +29,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'SQLite: DB file based')
  *
  * @access 		PUBLIC
  * @depends 	SmartSQliteDb, Smart, SmartPersistentCache, PHP SQLite3 Extension
- * @version 	v.20200121
+ * @version 	v.20210331
  * @package 	Application
  *
  */
@@ -161,8 +161,12 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 			]
 		);
 		//--
+		if(Smart::array_size($arr) <= 0) {
+			return ''; // not found
+		} //end if
+		//--
 		if((int)$arr['expire_at'] < (int)time()) {
-			return '';
+			return ''; // expired
 		} //end if
 		//--
 		return (string) SmartPersistentCache::varUncompress((string)$arr['data']); // data is serialized session as string

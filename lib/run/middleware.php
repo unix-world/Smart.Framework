@@ -23,6 +23,13 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 // requires: SMART_FRAMEWORK_RELEASE_MIDDLEWARE
 
+//--
+if(defined('SMART_APP_TEMPLATES_DIR')) {
+	@http_response_code(500);
+	die('A Reserved Constant have been already defined: SMART_APP_TEMPLATES_DIR');
+} //end if
+define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
+//--
 
 //==================================================================================
 //================================================================================== CLASS START
@@ -39,7 +46,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210330
+ * @version		20210331
  *
  */
 abstract class SmartAbstractAppMiddleware {

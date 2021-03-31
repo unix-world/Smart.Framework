@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / MongoDB Custom Session]
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -27,7 +27,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'MongoDB: DB NoSQL based
  *
  * @access 		PUBLIC
  * @depends 	SmartMongoDb, Smart
- * @version 	v.20200121
+ * @version 	v.20210331
  * @package 	Application
  *
  */
@@ -230,6 +230,10 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 			Smart::log_warning('MongoDB Custom Session: Read Error: '.$err->getMessage());
 			return '';
 		} //end try catch
+		//--
+		if(Smart::array_size($arr) <= 0) {
+			return ''; // not found
+		} //end if
 		//--
 		if((int)$arr['expire_at'] < (int)time()) {
 			return ''; // expired

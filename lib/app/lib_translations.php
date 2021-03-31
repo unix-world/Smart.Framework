@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Text Translations]
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -35,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version 	v.20210330
+ * @version 	v.20210331
  * @package 	@Core:Translations
  *
  */
@@ -954,7 +954,7 @@ final class SmartTextTranslations {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartTextTranslations, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version 	v.20210330
+ * @version 	v.20210331
  * @package 	@Core:Translations
  *
  */
@@ -1066,7 +1066,7 @@ final class SmartTextTranslator {
  * @access 		private
  * @internal
  *
- * @version 	v.20210330
+ * @version 	v.20210331
  * @package 	development:@Core
  *
  */
