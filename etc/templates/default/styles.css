@@ -18,12 +18,14 @@
 	/* font-size-adjust: 0.55; */
 }
 
-html, body{
+html, body {
 	width: 96% auto;
 	/*height: 96% auto;*/
 	margin: 0px;
 	padding: 0px;
 }
+
+/* base styles */
 
 body {
 	background: #FFFFFF;
@@ -47,6 +49,10 @@ li {
 table, pre, code, code * {
 	font-size: 0.875rem; /* 14px */
 	line-height: 1.25;
+}
+
+small {
+	font-size: 0.75rem;
 }
 
 h1 {
@@ -90,7 +96,6 @@ hr {
 	height: 1px;
 }
 
-/* ----- tables ----- */
 table {
 	font-weight: normal;
 	text-align:left;
@@ -102,7 +107,6 @@ td {
 	font-weight: normal;
 }
 
-/* ----- links ----- */
 a, a:link, a:visited, a:hover {
 	color: #000000;
 }

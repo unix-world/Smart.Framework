@@ -27,7 +27,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'DBA: DB file based');
  *
  * @access 		PUBLIC
  * @depends 	SmartDbaDb, Smart, SmartPersistentCache, PHP DBA Extension
- * @version 	v.20210331
+ * @version 	v.20210402
  * @package 	Application
  *
  */
@@ -155,7 +155,7 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 	//==================================================
 	public function gc($lifetime) {
 		//--
-		if(Smart::random_number(0, 10) == 1) {
+		if(Smart::random_number(0, 10) == 5) {
 			$this->dba->clearExpiredKeys(250); // session.gc_probability = 1 ; session.gc_divisor = 100 ; run this just on 10% of Garbage Collections ...
 		} //end if
 		//--

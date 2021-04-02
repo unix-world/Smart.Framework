@@ -27,7 +27,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'Redis: Memory based');
  *
  * @access 		PUBLIC
  * @depends 	SmartRedisDb, Smart
- * @version 	v.20210331
+ * @version 	v.20210402
  * @package 	Application
  *
  */
@@ -151,7 +151,7 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 	//==================================================
 	public function gc($lifetime) {
 		//--
-		return true; // for Redis the Keys are Expiring from it's internal mechanism, so GC will not be used here ...
+		return true; // for Redis the Keys are Expiring from it's internal mechanism, so GC will have nothing to do here ...
 		//--
 	} //END FUNCTION
 	//==================================================

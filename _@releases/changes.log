@@ -2,6 +2,16 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+April 02, 2021 :: :: Version 7.2.1 rev.20210402
+	* Fix signature for HTTP Status and Error Messages
+	* Fix HTTP Message Error and Status Templates ; The Message error should not contain any loadable sub-resource to avoid infinite cycles with 404 if sub-resource is also not found
+	* Return HTTP 202 for servicestatus
+	* notifications.css - Separe Notifications Icons from the rest: notifications-icons.css
+	* Extend TPL Include Syntax with: |tpl-uri-encode / |tpl-b64-encode
+	* Refactoring of Smart Error Handler + Error Last Message HTML TRUE/FALSE + Escapings
+	* Various Works arround better IP detection (Client and Proxy)
+	* Refactoring: App Bootstrap, Smart Error Handler, Lib Runtime
+
 March 31, 2021 :: :: Version 7.2.1 rev.20210331
 	* refactoring and optimizations for the framework libs
 	* refactored the error handler and register_shutdown_function in error handler

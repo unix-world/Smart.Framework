@@ -29,7 +29,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'SQLite: DB file based')
  *
  * @access 		PUBLIC
  * @depends 	SmartSQliteDb, Smart, SmartPersistentCache, PHP SQLite3 Extension
- * @version 	v.20210331
+ * @version 	v.20210402
  * @package 	Application
  *
  */
@@ -198,7 +198,7 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 	//==================================================
 	public function gc($lifetime) {
 		//--
-		if(Smart::random_number(0, 10) == 1) {
+		if(Smart::random_number(0, 10) == 5) {
 			$this->sqlite->write_data(
 				'DELETE FROM `smart_framework_sessions` WHERE (`expire_at` < ?)',
 				[

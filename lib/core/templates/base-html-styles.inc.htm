@@ -1,58 +1,81 @@
 <style type="text/css">
-/* v.20210330 */
+/* v.20210402 */
 * {
-	font-family: 'IBM Plex Sans',arial,sans-serif;
+	font-family: 'IBM Plex Sans', 'Noto Sans', arial, sans-serif;
 	font-smooth: always;
 }
+
+/* base styles */
+
 body {
 	background: #FFFFFF;
-	color: #000000;
+	color: #111111;
 }
-body, div, p, ol, ul, table, form, fieldset, blockquote {
-	font-size: 14px;
+
+body {
+	font-size: 16px;
 	line-height: 1.5;
 }
+
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.5;
+}
+
 li {
-	list-style-position: inside;
+	list-style-position: inside; /* bugfix for chrome */
 }
-pre, code, address, dl {
-	font-size: 13px;
-	line-height: 1.5;
+
+table, pre, code, code * {
+	font-size: 0.875rem; /* 14px */
+	line-height: 1.25;
 }
+
 small {
-	font-size: 11px;
-	line-height: 1.5;
+	font-size: 0.75rem;
 }
+
 h1 {
-	font-size: 32px;
-	margin-top: 10px;
-	margin-bottom: 10px;
+	font-size: 2rem; /* 32px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
 }
 h2 {
-	font-size: 28px;
-	margin-top: 8px;
-	margin-bottom: 8px;
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
 }
 h3 {
-	font-size: 24px;
-	margin-top: 6px;
-	margin-bottom: 6px;
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
 }
 h4 {
-	font-size: 20px;
-	margin-top: 5px;
-	margin-bottom: 5px;
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
 }
 h5 {
-	font-size: 18px;
-	margin-top: 4px;
-	margin-bottom: 4px;
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
 }
 h6 {
-	font-size: 16px;
-	margin-top: 3px;
-	margin-bottom: 3px;
+	font-size: 1rem; /* 16px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
 }
+
+img {
+	border: 0;
+}
+
+hr {
+	border: none 0;
+	border-top: 1px solid #CCCCCC;
+	height: 1px;
+}
+
 table {
 	font-weight: normal;
 	text-align:left;
@@ -63,12 +86,8 @@ th {
 td {
 	font-weight: normal;
 }
+
 a, a:link, a:visited, a:hover {
 	color: #000000;
-}
-hr {
-	height: 1px;
-	border: none 0;
-	border-top: 1px solid #CCCCCC;
 }
 </style>

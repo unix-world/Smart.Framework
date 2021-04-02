@@ -35,7 +35,7 @@ define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)SmartFileSystem::read('lib/
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating, SmartFrameworkRuntime
- * @version 	v.20210330
+ * @version 	v.20210402
  * @package 	Application:ViewComponents
  *
  */
@@ -103,7 +103,7 @@ final class SmartComponents {
 				'CHARSET' 			=> SmartUtils::get_encoding_charset(),
 				'BASE-URL' 			=> SmartUtils::get_server_current_url(),
 				'TITLE' 			=> (string) $y_title,
-				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp #</b> '.Smart::escape_html(SmartUtils::get_server_current_protocol().SmartUtils::get_server_current_domain_name().SmartUtils::get_server_current_port().SmartUtils::get_server_current_path()),
+				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp</b><br>'.Smart::escape_html(SmartUtils::get_server_current_protocol().SmartUtils::get_server_current_domain_name().SmartUtils::get_server_current_port().SmartUtils::get_server_current_path()),
 				'MESSAGE-HTML' 		=> (string) $y_html_message
 			],
 			'no'
@@ -129,7 +129,7 @@ final class SmartComponents {
 				'CHARSET' 			=> SmartUtils::get_encoding_charset(),
 				'BASE-URL' 			=> SmartUtils::get_server_current_url(),
 				'TITLE' 			=>(string) $y_title,
-				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp #</b> '.Smart::escape_html(SmartUtils::get_server_current_request_method().': '.SmartUtils::get_server_current_protocol().SmartUtils::get_server_current_domain_name().SmartUtils::get_server_current_port().SmartUtils::get_server_current_request_uri()),
+				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp</b><br>'.Smart::escape_html(SmartUtils::get_server_current_request_method().': '.SmartUtils::get_server_current_protocol().SmartUtils::get_server_current_domain_name().SmartUtils::get_server_current_port().SmartUtils::get_server_current_request_uri()),
 				'MESSAGE-HTML' 		=> self::operation_error(Smart::escape_html((string)$y_message), '100%'),
 				'EXTMSG-HTML' 		=> (string) $y_html_message
 			],

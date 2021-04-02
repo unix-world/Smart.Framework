@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20210310
+	// v.20210402
 
 	private $db;
 
@@ -391,10 +391,6 @@ final class SqAuthAdmins {
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::raise_error('Invalid AUTH DB Connection !');
 			return -100;
-		} //end if
-		//--
-		if(\Smart::random_number(0, 100) == 50) {
-			$this->db->write_data('VACUUM');
 		} //end if
 		//--
 		if((string)$id == '') {
