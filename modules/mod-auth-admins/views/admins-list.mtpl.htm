@@ -31,10 +31,9 @@
 	var TheGrid = new Smart_Grid(IdOfGrid, 'infoTotalRows', itemURL+'list', 'auth_admins_list_tbl', 'id', 'ASC', '', 'filtering');
 	//--
 </script>
-
-<div style="color:#778899; line-height:24px; font-size:24px; font-weight:bold; display:flex; align-items:center;"><a href="admin.php"><img width="24" height="24" src="modules/mod-auth-admins/views/img/globe.svg" style="vertical-align:middle; margin-right:10px;"></a> Auth.Admins Management :: <span id="infoTotalRows"># / # @</span></div>
+<div style="color:#778899; line-height:24px; font-size:24px; font-weight:bold; display:flex; align-items:center;"><a href="admin.php"><img width="64" height="64" src="modules/mod-auth-admins/views/img/globe.svg" style="vertical-align:middle; margin-right:10px;"></a> Auth.Admins Management :: <span id="infoTotalRows"># / # @</span></div>
 <br>
-<form id="filtering" name="filtering" class="ux-form">
+<form id="filtering" name="filtering" class="ux-form" onSubmit="return false;">
 	<span style="display:inline-block;">
 		<input type="text" id="filter-id" name="id" placeholder="ID" value="" style="width:175px;">
 	</span>
