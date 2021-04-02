@@ -1,5 +1,5 @@
 
-/* -- CSS Start :: Smart.Framework / App :: r.20210331 -- */
+/* -- CSS Start :: Smart.Framework / App :: r.20210402 -- */
 
 /* ----------------------------- */
 
@@ -22,6 +22,7 @@
 /* -- core -- */
 
 @import url("../../../lib/core/css/notifications.css");
+@import url("../../../lib/core/css/notifications-icons.css");
 
 @import url("../../../lib/core/css/tpl-highlight.css");
 

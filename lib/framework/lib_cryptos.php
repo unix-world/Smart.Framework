@@ -12,9 +12,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework - Crypto Support: BlowFish (CBC) built-in / BlowFish/AES256/Camellia256 (CBC/CFB/OFB via OpenSSL)
+// Smart-Framework - Crypto Support (symmetric, encrypt/decrypt): BlowFish (CBC) built-in / BlowFish/AES256/Camellia256 (CBC/CFB/OFB via OpenSSL)
 //======================================================
-// NOTICE: This is now unicode safe ...
+// NOTICE: This is unicode safe
 //	* Recommended type is CBC
 //	* Unicode issues were fixed as this: because Blowfish is not unicode safe we do B64Encode before BlowFish encode
 //	* Returned string is Upper Bin2Hex
@@ -1052,7 +1052,7 @@ echo "plain text: $plaintext";
  * @internal
  *
  * @depends     classes: Smart, SmartHashCrypto
- * @version     v.20210330
+ * @version     v.20210401
  *
  */
 final class SmartCryptoCipherHash {
@@ -1087,7 +1087,9 @@ final class SmartCryptoCipherHash {
 		if((string)substr((string)$mode, 0, 5) == 'hash/') {
 			$cfgcrypto = '';
 			if(defined('SMART_FRAMEWORK_SECURITY_CRYPTO')) {
-				$cfgcrypto = (string) SMART_FRAMEWORK_SECURITY_CRYPTO;
+				if((string)trim((string)SMART_FRAMEWORK_SECURITY_CRYPTO) != '') {
+					$cfgcrypto = (string) trim((string)SMART_FRAMEWORK_SECURITY_CRYPTO);
+				} //end if
 			} //end if
 			$arr = (array) explode('/', (string)$cfgcrypto);
 			$mode = '';

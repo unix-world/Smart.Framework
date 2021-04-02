@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210302
+ * @version 	v.20210331
  *
  */
 final class TestUnitFileSystem {
@@ -98,7 +98,21 @@ final class TestUnitFileSystem {
 		$tests[] = 'NEW-FOLDER: '.$the_folder;
 		$tests[] = 'NEW-FILE: '.$the_file;
 		//--
+		$tests[] = 'POST MAX SIZE from php.ini is: `'.ini_get('post_max_size').'`';
+		//--
 
+		//--
+		if((string)$err == '') {
+			$max_upload_size = (int) \SmartFileSysUtils::max_upload_size();
+			$the_test = 'CHECK MAX UPLOAD SIZE from php.ini: '.$max_upload_size.' Bytes (parsed) / `'.trim((string)ini_get('upload_max_filesize')).'` (original)';
+			$tests[] = $the_test;
+			if(
+				((int)$max_upload_size < 0) OR
+				((int)$max_upload_size >= PHP_INT_MAX)
+			) {
+				$err = 'ERROR: MAX UPLOAD SIZE from php.ini have an INVALID value !!!';
+			} //end if
+		} //end if
 		//--
 		if((string)$err == '') {
 			$the_test = 'CHECK TEST SAFE PATH NAME: DIR / FILE ...';
@@ -151,11 +165,20 @@ final class TestUnitFileSystem {
 				(!\SmartFileSysUtils::check_if_safe_path('/this/is/absolute', 'no')) OR
 				(\SmartFileSysUtils::check_if_safe_path('/this/is/absolute')) OR
 				(\SmartFileSysUtils::check_if_safe_path('/this/is/../backward/path')) OR
-				(\SmartFileSysUtils::check_if_safe_path('../backward/path')) OR
+				(\SmartFileSysUtils::check_if_safe_path('../backward/path'))
+			) {
+				$err = 'ERROR: CHECK TEST ABSOLUTE / BACKWARD PATHS ... FAILED !!!';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'CHECK TEST VARIOUS PROTECTED PATHS ...';
+			$tests[] = $the_test;
+			if(
 				(\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'yes', 'no')) OR
 				(!\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'yes', 'yes'))
 			) {
-				$err = 'ERROR: CHECK TEST ABSOLUTE / BACKWARD / PROTECTED PATHS ... FAILED !!!';
+				$err = 'ERROR: CHECK TEST PROTECTED PATHS ... FAILED !!!';
 			} //end if
 		} //end if
 		//--

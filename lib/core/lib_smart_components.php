@@ -103,7 +103,7 @@ final class SmartComponents {
 				'CHARSET' 			=> SmartUtils::get_encoding_charset(),
 				'BASE-URL' 			=> SmartUtils::get_server_current_url(),
 				'TITLE' 			=> (string) $y_title,
-				'SIGNATURE-HTML' 	=> '<b>Smart.Framework // Web :: '.Smart::escape_html(SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.SMART_FRAMEWORK_RELEASE_VERSION.' # '.SMART_SOFTWARE_APP_NAME.' / '.SMART_SOFTWARE_NAMESPACE).'</b>'.'<br>'.Smart::escape_html(SmartUtils::get_server_current_url().SmartUtils::get_server_current_script()),
+				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp #</b> '.Smart::escape_html(SmartUtils::get_server_current_protocol().SmartUtils::get_server_current_domain_name().SmartUtils::get_server_current_port().SmartUtils::get_server_current_path()),
 				'MESSAGE-HTML' 		=> (string) $y_html_message
 			],
 			'no'
@@ -129,7 +129,7 @@ final class SmartComponents {
 				'CHARSET' 			=> SmartUtils::get_encoding_charset(),
 				'BASE-URL' 			=> SmartUtils::get_server_current_url(),
 				'TITLE' 			=>(string) $y_title,
-				'SIGNATURE-HTML' 	=> '<b>Smart.Framework // Web :: '.Smart::escape_html(SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.SMART_FRAMEWORK_RELEASE_VERSION.' # '.SMART_SOFTWARE_APP_NAME.' / '.SMART_SOFTWARE_NAMESPACE).'</b>'.'<br>'.Smart::escape_html(SmartUtils::get_server_current_url().SmartUtils::get_server_current_script()),
+				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp #</b> '.Smart::escape_html(SmartUtils::get_server_current_request_method().': '.SmartUtils::get_server_current_protocol().SmartUtils::get_server_current_domain_name().SmartUtils::get_server_current_port().SmartUtils::get_server_current_request_uri()),
 				'MESSAGE-HTML' 		=> self::operation_error(Smart::escape_html((string)$y_message), '100%'),
 				'EXTMSG-HTML' 		=> (string) $y_html_message
 			],

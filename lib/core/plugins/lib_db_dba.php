@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP DBA Extension ; classes: Smart
- * @version 	v.20200121
+ * @version 	v.20210401
  * @package 	Plugins:Database:Dba
  *
  */
@@ -131,7 +131,7 @@ final class SmartDbaDb {
 			if((float)$y_debug_exch_slowtime > 0) {
 				$this->slow_time = (float) $y_debug_exch_slowtime;
 			} else {
-				$this->slow_time = (float) Smart::get_from_config('dba.slowtime');
+				$this->slow_time = (float) Smart::get_from_config('dba.slowtime', 'numeric');
 			} //end if
 			if($this->slow_time < 0.0000001) {
 				$this->slow_time = 0.0000001;
@@ -1277,7 +1277,8 @@ final class SmartDbaDb {
 		//--
 		Smart::raise_error(
 			'#DBA@'.$this->file.'# (`'.$this->description.'`) :: Q# // DBA Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Key:'."\n".$y_key,
-			$out // msg to display
+			$out, // msg to display
+			true // is html
 		);
 		die(''); // just in case
 		//--
@@ -1304,7 +1305,7 @@ final class SmartDbaDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartUtils
- * @version 	v.20200121
+ * @version 	v.20210401
  * @package 	Plugins:Database:Dba
  *
  */
@@ -1437,7 +1438,7 @@ final class SmartDbaUtilDb {
 			return (string) self::$handler;
 		} //end if
 		//--
-		$arr = Smart::get_from_config('dba');
+		$arr = (array) Smart::get_from_config('dba', 'array');
 		//--
 		if(is_array($arr)) {
 			if((string)$arr['handler'] == '@autoselect') {

@@ -1,0 +1,54 @@
+
+/* -- CSS Start :: Smart.Framework / Components / Notifications :: r.7.2.1 / smart.framework.v.7.2 -- */
+
+/* ----------------------------- */
+
+/* Notifications Icons r.20210402 */
+/* Keep as separate file from notifications.css because the notifications base styles are used as inline in some places and have no access to this relative paths */
+
+div#operation_info {
+	padding-left: 52px;
+	background-image: url(../../framework/img/sign-info.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_question {
+	padding-left: 52px;
+	background-image: url(../../framework/img/sign-question.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_notice {
+	padding-left: 52px;
+	background-image: url(../../framework/img/sign-notice.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_warn {
+	padding-left: 52px;
+	background-image: url(../../framework/img/sign-warn.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* -- */
+
+div#operation_error {
+	padding-left: 52px;
+	background-image: url(../../framework/img/sign-error.svg);
+	background-repeat: no-repeat;
+	background-position: 10px 14px;
+}
+
+/* ----------------------------- */
+
+/* -- CSS End -- */

@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart
- * @version 	v.20210305
+ * @version 	v.20210401
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		\Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -134,19 +134,19 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		$y_configs_arr = (array) $y_configs_arr;
 		//--
 		if(Smart::array_size($y_configs_arr) <= 0) { // if not from constructor, try to use the default
-			$y_configs_arr = Smart::get_from_config('mongodb');
+			$y_configs_arr = (array) Smart::get_from_config('mongodb', 'array');
 		} //end if
 		//--
 		if(Smart::array_size($y_configs_arr) > 0) {
-			$type 		= (string) $y_configs_arr['type'];
-			$db 		= (string) $y_configs_arr['dbname'];
-			$host 		= (string) $y_configs_arr['server-host'];
-			$port 		= (string) $y_configs_arr['server-port'];
-			$timeout 	= (string) $y_configs_arr['timeout'];
-			$username 	= (string) $y_configs_arr['username'];
-			$password 	= (string) $y_configs_arr['password'];
-			$timeslow 	= (float)  $y_configs_arr['slowtime'];
-		//	$transact 	= (string) $y_configs_arr['transact']; // reserved for future usage (only MongoDB v.4+ supports transactions ...)
+			$type 		= (string) (isset($y_configs_arr['type'])        ? $y_configs_arr['type']        : null);
+			$db 		= (string) (isset($y_configs_arr['dbname'])      ? $y_configs_arr['dbname']      : null);
+			$host 		= (string) (isset($y_configs_arr['server-host']) ? $y_configs_arr['server-host'] : null);
+			$port 		= (string) (isset($y_configs_arr['server-port']) ? $y_configs_arr['server-port'] : null);
+			$timeout 	= (string) (isset($y_configs_arr['timeout'])     ? $y_configs_arr['timeout']     : null);
+			$username 	= (string) (isset($y_configs_arr['username'])    ? $y_configs_arr['username']    : null);
+			$password 	= (string) (isset($y_configs_arr['password'])    ? $y_configs_arr['password']    : null);
+			$timeslow 	= (float)  (isset($y_configs_arr['slowtime'])    ? $y_configs_arr['slowtime']    : null);
+		//	$transact 	= (string) (isset($y_configs_arr['transact'])    ? $y_configs_arr['transact']    : null); // reserved for future usage (only MongoDB v.4+ supports transactions ...)
 		} else {
 			$this->error('[CHECK-CONFIGS]', 'MongoDB Configuration Init', 'CHECK Connection Config', 'Empty Configuration');
 			return;
@@ -1402,7 +1402,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	//--
 	$def_warn = 'Execution Halted !';
 	$y_warning = (string) trim((string)$y_warning);
-	if(Smart::array_size($y_query) > 0) {
+	if(is_array($y_query)) { // can be also an empty array
 		$y_query = (string) print_r($y_query,1);
 	} //end if
 	$the_params = '- '.'MongoDB Manager v.'.$this->extver.' -';
@@ -1439,7 +1439,8 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	//--
 	Smart::raise_error(
 		'#MONGO-DB@'.$y_conhash.' :: Q# // MongoDB Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Statement:'.$y_query,
-		$out // msg to display
+		$out, // msg to display
+		true // is html
 	);
 	die(''); // just in case
 	//--

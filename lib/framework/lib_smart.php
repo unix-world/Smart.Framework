@@ -13,9 +13,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - Base
-// DEPENDS:
-//  * SmartUnicode::
-// DEPENDS-PHP: 7.2 or later
+// DEPENDS-PHP: 7.3 or later
 // DEPENDS-EXT: PHP XML, PHP JSON
 //======================================================
 
@@ -74,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version     v.20210330
+ * @version     v.20210401
  * @package     @Core
  *
  */
@@ -969,6 +967,8 @@ final class Smart {
 					} //end if else
 				} //end for
 			} //end if
+		} else {
+			self::log_warning('WARNING: '.__CLASS__.'::'.__FUNCTION__.'()'.' array keys is not compliant ... must be non-associative array: '.print_r($y_keys[$i]));
 		} //end if
 		//--
 		return (array) $y_arr;
@@ -2358,14 +2358,17 @@ final class Smart {
 	 *
 	 * @return -								:: This function does not return anything
 	 */
-	public static function raise_error($message_to_log, $message_to_display='') { // do not make strongtype as NULL will break it
+	public static function raise_error($message_to_log, $message_to_display='', $is_html_message_to_display=false) { // do not make strongtype as NULL will break it
 		//--
-		global $smart_____framework_____last__error; // presume it is already html special chars safe
+		global $smart_____framework_____last__error;
+		global $smart_____framework_____is_html_last__error;
 		//--
 		if((string)trim((string)$message_to_display) == '') {
 			$message_to_display = 'See Error Log for More Details'; // avoid empty message to display
+			$is_html_message_to_display = false;
 		} //end if
 		$smart_____framework_____last__error = (string) $message_to_display;
+		$smart_____framework_____is_html_last__error = (bool) $is_html_message_to_display;
 		@trigger_error('#SMART-FRAMEWORK.ERROR# '.$message_to_log, E_USER_ERROR);
 		die('App Level Raise ERROR. Execution Halted. '.$message_to_display); // normally this line will never be executed because the E_USER_ERROR via Smart Error Handler will die() before ... but this is just in case, as this is a fatal error and the execution should be halted here !
 		//--

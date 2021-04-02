@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Sockets ; classes: Smart
- * @version 	v.20210303
+ * @version 	v.20210401
  * @package 	Plugins:Database:Redis
  *
  */
@@ -129,14 +129,14 @@ final class SmartRedisDb {
 		//--
 		if(((string)$host == '') AND ((string)$port == '') AND ((string)$db == '')) {
 			//-- use values from configs
-			$redis_cfg 				= (array)  Smart::get_from_config('redis');
+			$redis_cfg 				= (array)  Smart::get_from_config('redis', 'array');
 			//--
-			$host 					= (string) $redis_cfg['server-host'];
-			$port 					= (string) $redis_cfg['server-port'];
-			$db   					= (string) $redis_cfg['dbnum'];
-			$password 				= (string) $redis_cfg['password'];
-			$timeout 				= (int)    $redis_cfg['timeout'];
-			$y_debug_exch_slowtime 	= (float)  $redis_cfg['slowtime'];
+			$host 					= (string) (isset($redis_cfg['server-host']) ? $redis_cfg['server-host'] : null);
+			$port 					= (string) (isset($redis_cfg['server-port']) ? $redis_cfg['server-port'] : null);
+			$db   					= (string) (isset($redis_cfg['dbnum'])       ? $redis_cfg['dbnum']       : null);
+			$password 				= (string) (isset($redis_cfg['password'])    ? $redis_cfg['password']    : null);
+			$timeout 				= (int)    (isset($redis_cfg['timeout'])     ? $redis_cfg['timeout']     : null);
+			$y_debug_exch_slowtime 	= (float)  (isset($redis_cfg['slowtime'])    ? $redis_cfg['slowtime']    : null);
 			//--
 		} //end if
 		//--
@@ -739,7 +739,8 @@ final class SmartRedisDb {
 		//--
 		Smart::raise_error(
 			'#REDIS@'.$this->socket.'# (`'.$this->description.'`) :: Q# // Redis Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Command:'."\n".$y_query,
-			$out // msg to display
+			$out, // msg to display
+			true // is html
 		);
 		die(''); // just in case
 		//--

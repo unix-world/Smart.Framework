@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200605
+ * @version 	v.20210401
  *
  */
 final class TestUnitPCache {
@@ -110,6 +110,16 @@ final class TestUnitPCache {
 		$tests[] = '***** Persistent Cache Backend: ['.$thePcacheVersionInfo.'] *****';
 		$tests[] = '*** Persistent Cache Storage: '.$pcache_mode.' # '.$test_scale.' SCALE Test ('.(int)$num_keys.') keys ***';
 		$tests[] = '===== Persistent Cache / TESTS with a huge size Variable (String/Json) Key-Size of 2x'.\SmartUtils::pretty_print_bytes(\strlen($pcache_test_arch_content), 2).' : =====';
+		//--
+		if(stripos((string)$thePcacheVersionInfo, 'redis:') === 0) {
+			$tests[] = '=== Redis Re-Use the connection Test (see the debug log ... it must have reuse it !) ===';
+			$redis = new \SmartRedisDb( // TEST FOR REDIS TO REUSE THE CONNECTION (for the rest they are in their test libs, but for Redis implement it here ...)
+				(string) \get_called_class(), 	// desc (late state binding to get this class or class that extends this)
+				(bool)   false 					// fatal err
+			); // use the connection values from configs
+			$redis->get('fake-test-just-for-reuse-the-connection');
+			$redis = null;
+		} //end if
 		//--
 		$err = '';
 		//--

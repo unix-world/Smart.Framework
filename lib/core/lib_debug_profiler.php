@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
- * @version 	v.20210330
+ * @version 	v.20210401
  * @package 	Application:Development
  *
  */
@@ -677,7 +677,7 @@ private static function print_log_runtime() {
 			'PHP Integer Max: ' => (string) PHP_INT_MAX,
 			'PHP Integer Min: ' => (string) (defined('PHP_INT_MIN') ? PHP_INT_MIN : 'undefined'), // available just since PHP 7.0
 			'PHP Loaded Modules (Extensions)' => (string) strtolower(implode(', ', (array)@get_loaded_extensions())),
-			'PHP INI Settings' => (array) ini_get_all(null, false)
+			'PHP INI Settings (App Local)' => (array) ini_get_all(null, false)
 		]
 	];
 	//--
@@ -730,6 +730,11 @@ private static function print_log_configs() {
 			$log .= '<table width="100%" cellpadding="1" cellspacing="0" border="0" style="font-size:13px;">';
 			$j=0;
 			foreach($val as $k => $v) {
+				if(stripos((string)$k, 'pass') !== false) {
+					$v = '******* (passwords are not revealed)'; // avoid display passwords as clear text
+				} elseif(stripos((string)$k, 'key') !== false) {
+					$v = '['.(int)strlen((string)$v).']'.'+++++++ (keys are not revealed)'; // avoid display keys as clear text
+				} //end if
 				$j++;
 				if($j % 2) {
 					$color = '#FFFFFF';
@@ -740,6 +745,11 @@ private static function print_log_configs() {
 			} //end foreach
 			$log .= '</table>';
 		} else {
+			if(stripos((string)$key, 'pass') !== false) {
+				$val = '******* (passwords are not revealed)'; // avoid display passwords as clear text
+			} elseif(stripos((string)$key, 'key') !== false) {
+				$val = '['.(int)strlen((string)$val).']'.'+++++++ (keys are not revealed)'; // avoid display keys as clear text
+			} //end if
 			$log .= '<pre>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html((string)$val), true).'</pre>';
 		} //end if else
 		$log .= '</div></td></tr>';
@@ -792,13 +802,16 @@ private static function print_log_configs() {
 		$i++;
 		//--
 		if(((string)$key == 'SMART_FRAMEWORK_CHMOD_DIRS') OR ((string)$key == 'SMART_FRAMEWORK_CHMOD_FILES')) {
-			if(is_numeric($val)) {
-				$val = (string) '0'.@decoct($val).' (octal)';
+			if(is_int($val)) {
+				$val = (string) str_pad((string)decoct((int)$val), 4, '0', STR_PAD_LEFT).' (octal)';
 			} else {
-				$val = (string) $val.' (!!! Warning, Invalid ... Must be OCTAL !!!)';
+				$val = (string) $val.' (!!! Warning, Invalid ... Must be NUMERIC / OCTAL !!!)';
 			} //end if
-		} elseif((string)$key == 'APP_AUTH_ADMIN_PASSWORD') {
-			$val = '*****'; // avoid display pass as clear text
+	//	} elseif((string)$key == 'APP_AUTH_ADMIN_PASSWORD') {
+		} elseif(stripos((string)$key, 'PASS') !== false) {
+			$val = '******* (passwords are not revealed)'; // avoid display passwords as clear text
+		} elseif(stripos((string)$key, 'KEY') !== false) {
+			$val = '['.(int)strlen((string)$val).']'.'+++++++ (keys are not revealed)'; // avoid display keys as clear text
 		} //end if
 		//--
 		$log .= '<table cellspacing="0" cellpadding="2" width="100%">';
@@ -855,6 +868,9 @@ private static function print_log_headers($response_code, $response_heads_arr, $
 			break;
 		case 302:
 			$status_code_msg = 'Temporary Redirect';
+			break;
+		case 304:
+			$status_code_msg = 'Not Modified';
 			break;
 		//--
 		case 400:
@@ -999,7 +1015,7 @@ private static function print_log_environment($req_filtered, $cookies_arr, $get_
 		$log .= '<table cellspacing="0" cellpadding="2">';
 		foreach($server_arr as $debug_key => $debug_val) {
 			if((string)$debug_key == 'PHP_AUTH_PW') {
-				$debug_val = '*****'; // avoid display pass as clear text
+				$debug_val = '******* (passwords are not revealed)';
 			} //end if
 			$log .= '<tr valign="top"><td style="min-width: 200px;"><div class="smartframework_debugbar_inforow"><b>'.Smart::escape_html($debug_key).'</b></div></td><td><div class="smartframework_debugbar_inforow"><font color="#000000">'.($debug_val ? SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($debug_val), true) : '&nbsp;').'</font></div></td></tr>';
 		} //end while
@@ -1062,7 +1078,9 @@ private static function print_log_auth($auth_arr) {
 				$log .= '<pre>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html(SmartUtils::pretty_print_var($debug_val)), true).'</pre>';
 			} else {
 				if((string)$debug_key == 'login-password') {
-					$debug_val = '*****'; // avoid display pass as clear text
+					$debug_val = '******* (passwords are not revealed)'; // avoid display pass as clear text
+				} elseif((string)$debug_key == 'login-privkey') {
+					$debug_val = '['.(int)strlen((string)$debug_val).']'.'+++++++ (keys are not revealed)'; // avoid display pass as clear text
 				} //end if
 				$log .= SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($debug_val), true);
 			} //end if else

@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200605
+ * @version 	v.20210401
  *
  */
 final class TestUnitMySQLi {
@@ -47,7 +47,8 @@ final class TestUnitMySQLi {
 		//--
 
 		//--
-		$cfg_mysqli = (array) \Smart::get_from_config('mysqli');
+		$cfg_mysqli = (array) \Smart::get_from_config('mysqli', 'array');
+		$cfg_mysqli = (array) \SmartMysqliDb::conform_config_array((array)$cfg_mysqli);
 		//--
 
 		//--

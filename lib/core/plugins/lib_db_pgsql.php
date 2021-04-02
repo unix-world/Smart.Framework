@@ -68,7 +68,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20210328
+ * @version 	v.20210401
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -194,6 +194,13 @@ final class SmartPgsqlDb {
 		} //end if else
 		//--
 
+		//--
+		if(((string)$yhost == '') OR ((int)$yport <= 0) OR ((string)$ydb == '') OR ((string)$yuser == '')) { // {{{SYNC-PGSQL-CFG-PARAMS-CHECK}}}
+			self::error('', '[PRE-CONNECT]', 'The Default PostgreSQL Configs are not complete !', 'Some of the configs[pgsql] parameters are missing !', 'Can not connect to PostgreSQL Server');
+			return;
+		} //end if
+		//--
+
 		//-- {{{SYNC-CONNECTIONS-IDS}}}
 		$the_conn_key = (string) $yhost.':'.$yport.'@'.$ydb.'#'.$yuser;
 		//--
@@ -263,7 +270,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		$transact = strtoupper((string)$y_transact_mode);
+		$transact = (string) strtoupper((string)$y_transact_mode);
 		switch((string)$transact) {
 			case 'SERIALIZABLE':
 			case 'REPEATABLE READ':
@@ -2088,6 +2095,42 @@ final class SmartPgsqlDb {
 	//======================================================
 
 
+	//======================================================
+	/**
+	 * Conform the PostgreSQL Connection Array (fix for PHP8)
+	 *
+	 * @param ARRAY 	$cfg			:: The configuration array or an empty array
+	 * @return ARRAY
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public static function conform_config_array($cfg) {
+		//--
+		if(!is_array($cfg)) {
+			$cfg = array();
+		} //end if
+		//--
+		return (array) Smart::array_init_keys(
+			(array) $cfg,
+			[
+				'type',
+				'server-host',
+				'server-port',
+				'dbname',
+				'username',
+				'password',
+				'timeout',
+				'slowtime',
+				'transact'
+			]
+		);
+		//--
+	} //END FUNCTION
+	//======================================================
+
+
 	//======================================================================
 	// # PRIVATES
 	//======================================================================
@@ -2122,22 +2165,25 @@ final class SmartPgsqlDb {
 	 */
 	private static function check_connection($y_connection, $y_description) {
 		//--
-		global $configs;
+		$cfg = (array) Smart::get_from_config('pgsql', 'array');
 		//--
 		if($y_connection === 'DEFAULT') { // just for the default connection !!!
 			//--
 			if(!defined('SMART_FRAMEWORK_DB_LINK_PostgreSQL')) { // PostgreSQL default connection is exported as constant to avoid re-connection which can break transactions
 				//--
-				if(!is_array($configs['pgsql'])) {
-					self::error('', 'CHECK-DEFAULT-PGSQL-CONFIGS', 'The Default PostgreSQL Configs not detected !', 'The configs[pgsql] is not an array !', $y_description);
+				if(Smart::array_size($cfg) <= 0) {
+					self::error('', 'CHECK-DEFAULT-PGSQL-CONFIGS', 'The Default PostgreSQL Configs not detected !', 'The configs[pgsql] is not an array or not set correctly !', $y_description);
 					return null;
 				} //end if
-				if(((string)$configs['pgsql']['server-host'] == '') OR ((string)$configs['pgsql']['server-port'] == '') OR ((string)$configs['pgsql']['dbname'] == '') OR ((string)$configs['pgsql']['username'] == '')) {
+				//--
+				$cfg = (array) self::conform_config_array($cfg);
+				//--
+				if(((string)$cfg['server-host'] == '') OR ((int)$cfg['server-port'] <= 0) OR ((string)$cfg['dbname'] == '') OR ((string)$cfg['username'] == '')) { // {{{SYNC-PGSQL-CFG-PARAMS-CHECK}}}
 					self::error('', 'CHECK-DEFAULT-PGSQL-CONFIGS', 'The Default PostgreSQL Configs are not complete !', 'Some of the configs[pgsql] parameters are missing !', $y_description);
 					return null;
 				} //end if
 				//-- {{{SYNC-CONNECTIONS-IDS}}}
-				$the_conn_key = (string) $configs['pgsql']['server-host'].':'.$configs['pgsql']['server-port'].'@'.$configs['pgsql']['dbname'].'#'.$configs['pgsql']['username'];
+				$the_conn_key = (string) $cfg['server-host'].':'.$cfg['server-port'].'@'.$cfg['dbname'].'#'.$cfg['username'];
 				if((array_key_exists('pgsql', (array)SmartFrameworkRegistry::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['pgsql']))) { // if the connection was made before using the SmartPgsqlExtDb
 					//--
 					$y_connection = SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key];
@@ -2155,15 +2201,15 @@ final class SmartPgsqlDb {
 				} else {
 					//--
 					$y_connection = self::server_connect( // create a DEFAULT connection using default postgresql connection params from config
-						(string)$configs['pgsql']['server-host'],
-						(int)$configs['pgsql']['server-port'],
-						(string)$configs['pgsql']['dbname'],
-						(string)$configs['pgsql']['username'],
-						(string)$configs['pgsql']['password'],
-						(int)$configs['pgsql']['timeout'],
-						(string)$configs['pgsql']['transact'],
-						(float)$configs['pgsql']['slowtime'],
-						(string)$configs['pgsql']['type']
+						(string) $cfg['server-host'],
+						(int)    $cfg['server-port'],
+						(string) $cfg['dbname'],
+						(string) $cfg['username'],
+						(string) $cfg['password'],
+						(int)    $cfg['timeout'],
+						(string) $cfg['transact'],
+						(float)  $cfg['slowtime'],
+						(string) $cfg['type']
 					);
 					//--
 					define('SMART_FRAMEWORK_DB_LINK_PostgreSQL', $y_connection);
@@ -2299,7 +2345,8 @@ final class SmartPgsqlDb {
 	//--
 	Smart::raise_error(
 		'#POSTGRESQL-DB@'.$y_connection.' :: Q# // PgSQL Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params / Title:'."\n".print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query,
-		$out // msg to display
+		$out, // msg to display
+		true // is html
 	);
 	die(''); // just in case
 	//--
@@ -2379,7 +2426,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20210328
+ * @version 	v.20210401
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -2405,10 +2452,19 @@ final class SmartPgsqlExtDb {
 	 */
 	public function __construct(array $y_configs_arr) {
 		//--
-		$y_configs_arr = (array) $y_configs_arr;
+		$y_configs_arr = (array) SmartPgsqlDb::conform_config_array($y_configs_arr);
 		//-- {{{SYNC-CONNECTIONS-IDS}}}
 		$the_conn_key = (string) $y_configs_arr['server-host'].':'.$y_configs_arr['server-port'].'@'.$y_configs_arr['dbname'].'#'.$y_configs_arr['username'];
-		if((array_key_exists('pgsql', (array)SmartFrameworkRegistry::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['pgsql']))) {
+		if(
+			( // {{{SYNC-PGSQL-CFG-PARAMS-CHECK}}}
+				((string)$y_configs_arr['server-host'] != '') AND
+				((int)$y_configs_arr['server-port'] > 0) AND
+				((string)$y_configs_arr['dbname'] != '') AND
+				((string)$y_configs_arr['username'] != '')
+			) AND
+			(array_key_exists('pgsql', (array)SmartFrameworkRegistry::$Connections)) AND
+			(array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['pgsql']))
+		) {
 			//-- try to reuse the connection :: only check if array key exists, not if it is a valid resource ; this should be as so to avoid mismatching connection mixings (if by example will re-use the connection of another server, and connection is broken in the middle of a transaction, it will fail ugly ;) and out of any control !
 			$this->connection = SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key];
 			//--
@@ -2423,15 +2479,15 @@ final class SmartPgsqlExtDb {
 		} else {
 			//-- connect
 			$this->connection = SmartPgsqlDb::server_connect(
-				(string)$y_configs_arr['server-host'],
-				(int)$y_configs_arr['server-port'],
-				(string)$y_configs_arr['dbname'],
-				(string)$y_configs_arr['username'],
-				(string)$y_configs_arr['password'],
-				(int)$y_configs_arr['timeout'],
-				(string)$y_configs_arr['transact'],
-				(float)$y_configs_arr['slowtime'],
-				(string)$y_configs_arr['type']
+				(string) $y_configs_arr['server-host'],
+				(int)    $y_configs_arr['server-port'],
+				(string) $y_configs_arr['dbname'],
+				(string) $y_configs_arr['username'],
+				(string) $y_configs_arr['password'],
+				(int)    $y_configs_arr['timeout'],
+				(string) $y_configs_arr['transact'],
+				(float)  $y_configs_arr['slowtime'],
+				(string) $y_configs_arr['type']
 			);
 			//--
 			$this->check_server_version(true); // re-validate

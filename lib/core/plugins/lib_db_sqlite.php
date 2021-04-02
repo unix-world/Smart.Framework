@@ -62,7 +62,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem
- * @version 	v.20210328
+ * @version 	v.20210401
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -476,7 +476,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem
- * @version 	v.20210328
+ * @version 	v.20210401
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -504,8 +504,6 @@ final class SmartSQliteUtilDb {
 	//======================================================
 	// SQLite will automatically lock file on write access (does not allow multiple write acess at same time)
 	public static function open($file_name, $timeout_busy_sec=60, $register_extra_functions=true) {
-		//--
-		global $configs;
 		//-- check if available
 		self::check_is_available();
 		//--
@@ -595,9 +593,10 @@ final class SmartSQliteUtilDb {
 					'data' => 'SQLite Library Version: '.$arr_version['versionString'].' / '.$arr_version['versionNumber']
 				]);
 				//--
-				if(is_array($configs['sqlite'])) {
-					if((float)$configs['sqlite']['slowtime'] > 0) {
-						self::$slow_time = (float) $configs['sqlite']['slowtime'];
+				$cfg = (array) Smart::get_from_config('sqlite', 'array');
+				if(Smart::array_size($cfg) > 0) {
+					if(isset($cfg['slowtime']) AND ((float)$cfg['slowtime'] > 0)) {
+						self::$slow_time = (float) $cfg['slowtime'];
 					} //end if
 				} //end if
 				if(self::$slow_time < 0.0000001) {
@@ -1786,7 +1785,8 @@ final class SmartSQliteUtilDb {
 	//--
 	Smart::raise_error(
 		'#SQLITE-DB@'.$the_conn.' :: Q# // SQLite Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params / Title:'."\n".print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query,
-		$out // msg to display
+		$out, // msg to display
+		true // is html
 	);
 	die(''); // just in case
 	//--
@@ -1818,7 +1818,7 @@ final class SmartSQliteUtilDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20210328
+ * @version 	v.20210401
  * @package 	Plugins:Database:SQLite
  *
  */

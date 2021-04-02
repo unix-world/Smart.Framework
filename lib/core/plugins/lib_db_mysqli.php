@@ -72,7 +72,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210328
+ * @version 	v.20210401
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -186,11 +186,18 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(strlen($ypass) > 0) {
+		if((string)$ypass != '') {
 			$password = (string) base64_decode((string)$ypass);
 		} else {
 			$password = '';
 		} //end if else
+		//--
+
+		//--
+		if(((string)$yhost == '') OR ((int)$yport <= 0) OR ((string)$ydb == '') OR ((string)$yuser == '')) { // {{{SYNC-MYSQLI-CFG-PARAMS-CHECK}}}
+			self::error('[PRE-CONNECT]', 'PHP-MySQLi', 'The Default MySQL Configs are not complete !', 'Some of the configs[mysqli] parameters are missing !', 'Can not connect to Server');
+			return;
+		} //end if
 		//--
 
 		//-- {{{SYNC-CONNECTIONS-IDS}}}
@@ -1565,6 +1572,42 @@ final class SmartMysqliDb {
 	//======================================================
 
 
+	//======================================================
+	/**
+	 * Conform the MySQLi Connection Array (fix for PHP8)
+	 *
+	 * @param ARRAY 	$cfg			:: The configuration array or an empty array
+	 * @return ARRAY
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public static function conform_config_array($cfg) {
+		//--
+		if(!is_array($cfg)) {
+			$cfg = array();
+		} //end if
+		//--
+		return (array) Smart::array_init_keys(
+			(array) $cfg,
+			[
+				'type',
+				'server-host',
+				'server-port',
+				'dbname',
+				'username',
+				'password',
+				'timeout',
+				'slowtime',
+				'transact'
+			]
+		);
+		//--
+	} //END FUNCTION
+	//======================================================
+
+
 	//======================================================================
 	//===== PRIVATES
 	//======================================================================
@@ -1581,22 +1624,25 @@ final class SmartMysqliDb {
 	 */
 	private static function check_connection($y_connection, $y_description) {
 		//--
-		global $configs;
+		$cfg = (array) Smart::get_from_config('mysqli', 'array');
 		//--
 		if($y_connection === 'DEFAULT') { // just for the default connection !!!
 			//--
 			if(!defined('SMART_FRAMEWORK_DB_LINK_MySQL')) { // MySQL default connection constant to avoid re-connection which can break transactions
 				//--
-				if(!is_array($configs['mysqli'])) {
+				if(Smart::array_size($cfg) <= 0) {
 					self::error('', 'CHECK-DEFAULT-MYSQLI-CONFIGS', 'The Default MySQLi Configs not detected !', 'The configs[mysqli] is not an array !', $y_description);
 					return null;
 				} //end if
-				if(((string)$configs['mysqli']['server-host'] == '') OR ((string)$configs['mysqli']['server-port'] == '') OR ((string)$configs['mysqli']['dbname'] == '') OR ((string)$configs['mysqli']['username'] == '')) {
+				//--
+				$cfg = (array) self::conform_config_array($cfg);
+				//--
+				if(((string)$cfg['server-host'] == '') OR ((int)$cfg['server-port'] <= 0) OR ((string)$cfg['dbname'] == '') OR ((string)$cfg['username'] == '')) { // {{{SYNC-MYSQLI-CFG-PARAMS-CHECK}}}
 					self::error('', 'CHECK-DEFAULT-MYSQLI-CONFIGS', 'The Default MySQLi Configs are not complete !', 'Some of the configs[mysqli] parameters are missing !', $y_description);
 					return null;
 				} //end if
 				//-- {{{SYNC-CONNECTIONS-IDS}}}
-				$the_conn_key = (string) $configs['mysqli']['server-host'].':'.$configs['mysqli']['server-port'].'@'.$configs['mysqli']['dbname'].'#'.$configs['mysqli']['username'];
+				$the_conn_key = (string) $cfg['server-host'].':'.$cfg['server-port'].'@'.$cfg['dbname'].'#'.$cfg['username'];
 				if((array_key_exists('mysqli', (array)SmartFrameworkRegistry::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['mysqli']))) { // if the connection was made before using the SmartMysqliExtDb
 					//--
 					$y_connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)$the_conn_key];
@@ -1614,15 +1660,15 @@ final class SmartMysqliDb {
 				} else {
 					//--
 					$y_connection = self::server_connect( // create a DEFAULT connection using default mysqli connection params from config
-						(string)$configs['mysqli']['server-host'],
-						(int)$configs['mysqli']['server-port'],
-						(string)$configs['mysqli']['dbname'],
-						(string)$configs['mysqli']['username'],
-						(string)$configs['mysqli']['password'],
-						(int)$configs['mysqli']['timeout'],
-						(string)$configs['mysqli']['transact'],
-						(float)$configs['mysqli']['slowtime'],
-						(string)$configs['mysqli']['type']
+						(string) $cfg['server-host'],
+						(int)    $cfg['server-port'],
+						(string) $cfg['dbname'],
+						(string) $cfg['username'],
+						(string) $cfg['password'],
+						(int)    $cfg['timeout'],
+						(string) $cfg['transact'],
+						(float)  $cfg['slowtime'],
+						(string) $cfg['type']
 					);
 					//--
 					define('SMART_FRAMEWORK_DB_LINK_MySQL', (string)$the_conn_key);
@@ -1661,7 +1707,7 @@ final class SmartMysqliDb {
 			//--
 		} //end if
 		//--
-		return $y_connection;
+		return $y_connection; // obj / mixed
 		//--
 	} //END FUNCTION
 	//======================================================
@@ -1762,7 +1808,8 @@ final class SmartMysqliDb {
 	//--
 	Smart::raise_error(
 		'#MYSQLi-DB@'.$y_connection_id.' :: Q# // MySQLi Client :: ERROR :: '.$err_log, // err to register
-		$out // msg to display
+		$out, // msg to display
+		true // is html
 	);
 	die(''); // just in case
 	//--
@@ -1812,7 +1859,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210328
+ * @version 	v.20210401
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -1834,10 +1881,19 @@ final class SmartMysqliExtDb {
 	 */
 	public function __construct(array $y_configs_arr) {
 		//--
-		$y_configs_arr = (array) $y_configs_arr;
+		$y_configs_arr = (array) SmartMysqliDb::conform_config_array($y_configs_arr);
 		//-- {{{SYNC-CONNECTIONS-IDS}}}
 		$the_conn_key = (string) $y_configs_arr['server-host'].':'.$y_configs_arr['server-port'].'@'.$y_configs_arr['dbname'].'#'.$y_configs_arr['username'];
-		if((array_key_exists('mysqli', (array)SmartFrameworkRegistry::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['mysqli']))) {
+		if(
+			( // {{{SYNC-MYSQLI-CFG-PARAMS-CHECK}}}
+				((string)$y_configs_arr['server-host'] != '') AND
+				((int)$y_configs_arr['server-port'] > 0) AND
+				((string)$y_configs_arr['dbname'] != '') AND
+				((string)$y_configs_arr['username'] != '')
+			) AND
+			(array_key_exists('mysqli', (array)SmartFrameworkRegistry::$Connections)) AND
+			(array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['mysqli']))
+		) {
 			//-- try to reuse the connection :: only check if array key exists, not if it is a valid resource ; this should be as so to avoid mismatching connection mixings (if by example will re-use the connection of another server, and connection is broken in the middle of a transaction, it will fail ugly ;) and out of any control !
 			$this->connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)$the_conn_key];
 			//--
@@ -1852,15 +1908,15 @@ final class SmartMysqliExtDb {
 		} else {
 			//-- connect
 			$this->connection = SmartMysqliDb::server_connect(
-				(string)$y_configs_arr['server-host'],
-				(int)$y_configs_arr['server-port'],
-				(string)$y_configs_arr['dbname'],
-				(string)$y_configs_arr['username'],
-				(string)$y_configs_arr['password'],
-				(int)$y_configs_arr['timeout'],
-				(string)$y_configs_arr['transact'],
-				(float)$y_configs_arr['slowtime'],
-				(string)$y_configs_arr['type']
+				(string) $y_configs_arr['server-host'],
+				(int)    $y_configs_arr['server-port'],
+				(string) $y_configs_arr['dbname'],
+				(string) $y_configs_arr['username'],
+				(string) $y_configs_arr['password'],
+				(int)    $y_configs_arr['timeout'],
+				(string) $y_configs_arr['transact'],
+				(float)  $y_configs_arr['slowtime'],
+				(string) $y_configs_arr['type']
 			);
 			//--
 			$this->check_server_version(true); // re-validate

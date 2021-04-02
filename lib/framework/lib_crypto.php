@@ -12,15 +12,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework - Crypto Support: BlowFish (CBC) built-in / BlowFish/AES256/Camellia256 (CBC/CFB/OFB via OpenSSL)
-// DEPENDS:
-//	* Smart::
-// DEPENDS-EXT: PHP OpenSSL *optional*
+// Smart-Framework - Crypto Support: Hash Crypto (asymmetric, encrypt only as hash)
 //======================================================
-// NOTICE: This is now unicode safe ...
-//	* Recommended type is CBC
-//	* Unicode issues were fixed as this: because Blowfish is not unicode safe we do B64Encode before BlowFish encode
-//	* Returned string is Upper Bin2Hex
+// NOTICE: This is unicode safe
 //======================================================
 
 // [PHP8]

@@ -67,7 +67,7 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20210318
+ * @version 	v.20210402
  * @package 	Application:Session
  *
  */
@@ -114,7 +114,7 @@ final class SmartSession {
 		//--
 		self::start(); // start session if not already started
 		//--
-		if(!is_array($_SESSION)) { // fix for php 7.3+
+		if((!isset($_SESSION)) OR (!is_array($_SESSION))) { // fix for PHP8
 			return null;
 		} //end if
 		//--
@@ -149,7 +149,7 @@ final class SmartSession {
 		//--
 		self::start(); // start session if not already started
 		//--
-		if(!is_array($_SESSION)) { // fix for php 7.3+
+		if((!isset($_SESSION)) OR (!is_array($_SESSION))) { // fix for PHP8
 			return false;
 		} //end if
 		//--
@@ -202,12 +202,21 @@ final class SmartSession {
 		//--
 		$browser_os_ip_identification = SmartUtils::get_os_browser_ip(); // get browser and os identification
 		//--
+		if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM') AND (SMART_FRAMEWORK_IPDETECT_CUSTOM === true)) {
+			if(defined('SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK') AND (SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK)) {
+				if((string)$browser_os_ip_identification['ip'] == (string)SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK) {
+					Smart::log_warning(__METHOD__.' # Session support is disabled for the fake IP defined by SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK ('.SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK.') ; Client IP is ('.$browser_os_ip_identification['ip'].') ; To prevent the huge risk that someone with a fake IP can hijack another one`s session !');
+					return;
+				} //end if
+			} //end if
+		} //end if
+		//--
 		if((string)$browser_os_ip_identification['bw'] == '@s#') {
 			return; // this must be before identify bot ; in this case start no session for the self browser (session is blocked before a request to finalize thus it cannot be used !!!)
 		} //end if
 		//--
 		if((string)$browser_os_ip_identification['bw'] == 'bot') {
-			if(!defined('SMART_FRAMEWORK_SESSION_ROBOTS') OR SMART_FRAMEWORK_SESSION_ROBOTS !== true) {
+			if(!defined('SMART_FRAMEWORK_SESSION_ROBOTS') OR (SMART_FRAMEWORK_SESSION_ROBOTS !== true)) {
 				return; // in this case start no session for robots (as they do not need to share info between many visits)
 			} //end if
 		} //end if
@@ -496,7 +505,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20210318
+ * @version 	v.20210402
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {

@@ -51,7 +51,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartPersistentCache, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version 	v.20210330
+ * @version 	v.20210402
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -243,7 +243,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 	 * // [@@@SUB-TEMPLATE:?path/to/tpl.htm@@@] 				:: sub-template with relative path to template, optional, if exists
 	 * // [@@@SUB-TEMPLATE:!etc/path/to/tpl.htm!@@@] 		:: sub-template with relative path to framework, using exact this path
 	 * // [@@@SUB-TEMPLATE:?!if-exists/path/to/tpl.htm!@@@] 	:: sub-template with relative path to framework, using exact this path, optional, if exists
-	 * // [@@@SUB-TEMPLATE:{tpl}|{escape}@@@] 				:: sub-template (using any kind of path from above), apply escape (any of): |syntax |syntaxhtml |html |js |js-tpl-encode
+	 * // [@@@SUB-TEMPLATE:{tpl}|{escape}@@@] 				:: sub-template (using any kind of path from above), apply escape (any of): |syntax |syntaxhtml |html |js |js-tpl-encode |tpl-uri-encode |tpl-b64-encode
 	 * // [@@@SUB-TEMPLATE:%variable%@@@] 					:: variable sub-template ; must be defined in $y_arr_vars['@SUB-TEMPLATES@'] array as key (variable) => value (path)
 	 * // [%%%IF:TEST-VARIABLE:@==|@!=|@<=|@<|@>=|@>|==|!=|<=|<|>=|>|!%|%|!?|?|^~|^*|&~|&*|$~|$*{string/number/a|list|with|elements/###MARKER###};%%%] conditional IF part, display when condition is matched [%%%ELSE:TEST-VARIABLE%%%] conditional ELSE part, display otherwise (optional) [%%%/IF:TEST-VARIABLE%%%]
 	 * // [%%%LOOP:ARR-VARIABLE%%%] [###ARR-VARIABLE.ID|int###]. [###ARR-VARIABLE.NAME|html###] [%%%/LOOP:ARR-VARIABLE%%%]
@@ -2077,6 +2077,12 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 						} elseif((string)substr($key, -14, 14) == '|js-tpl-encode') {
 							$key = (string) substr($key, 0, -14);
 							$sfx = '|js-tpl-encode';
+						} elseif((string)substr($key, -15, 15) == '|tpl-uri-encode') {
+							$key = (string) substr($key, 0, -15);
+							$sfx = '|tpl-uri-encode';
+						} elseif((string)substr($key, -15, 15) == '|tpl-b64-encode') {
+							$key = (string) substr($key, 0, -15);
+							$sfx = '|tpl-b64-encode';
 						} //end if
 						//--
 						if(((string)substr($key, 0, 1) == '%') AND ((string)substr($key, -1, 1) == '%')) { // variable, only can be set programatically, full path to the template file is specified
@@ -2153,6 +2159,13 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 						} elseif((string)$sfx == '|js-tpl-encode') { // this is used to pass a tpl to js for render in js
 							$stemplate = (string) self::escape_template((string)$stemplate, 'yes'); // fix here ; no need to fix before or after as encode (url escape) will escape all sequences to avoid conflicts
 							$stemplate = (string) Smart::escape_js((string)$stemplate);
+						} elseif((string)$sfx == '|tpl-uri-encode') { // this is used for inline uri encoded svgs
+							$stemplate = (string) self::prepare_nosyntax_content((string)$stemplate); // fix before
+							$stemplate = (string) Smart::escape_url((string)$stemplate); // not use the escape template here because may modify the contents (trim)
+							$stemplate = (string) Smart::escape_html((string)$stemplate);
+						} elseif((string)$sfx == '|tpl-b64-encode') { // this is used for inline images
+							$stemplate = (string) base64_encode((string)$stemplate);
+							$stemplate = (string) Smart::escape_html((string)$stemplate);
 						} //end if
 						//-- fix unattended syntax
 						if(self::have_subtemplate((string)$stemplate) === true) {
@@ -2256,7 +2269,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 		$use_pcache = false;
 		$ptime_cache = 0;
 		if(!SmartFrameworkRuntime::ifDebug()) {
-			if(defined('SMART_SOFTWARE_MKTPL_PCACHETIME')) {
+			if(defined('SMART_SOFTWARE_MKTPL_PCACHETIME') AND (SMART_SOFTWARE_MKTPL_PCACHETIME !== false)) {
 				if(is_int(SMART_SOFTWARE_MKTPL_PCACHETIME)) {
 					if(((int)SMART_SOFTWARE_MKTPL_PCACHETIME >= 0) AND ((int)SMART_SOFTWARE_MKTPL_PCACHETIME <= 31622400)) { // 0 unlimited ; 1 sec .. 366 days
 						$use_pcache = true;
@@ -2408,7 +2421,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 	private static function debug_tpl_length() {
 		//--
 		$len = 255; // default
-		if(defined('SMART_SOFTWARE_MKTPL_DEBUG_LEN')) {
+		if(defined('SMART_SOFTWARE_MKTPL_DEBUG_LEN') AND (SMART_SOFTWARE_MKTPL_DEBUG_LEN !== false)) {
 			if((int)SMART_SOFTWARE_MKTPL_DEBUG_LEN >= 255) {
 				if((int)SMART_SOFTWARE_MKTPL_DEBUG_LEN <= 524280) {
 					$len = (int) SMART_SOFTWARE_MKTPL_DEBUG_LEN;

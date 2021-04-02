@@ -35,106 +35,11 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // * SMART_FRAMEWORK_SESSION_HANDLER
 //####################
 
-//== Set Persistent-Cache Adapter (or use none/blackhole)
-if(defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') AND ((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER != '')) {
-	switch((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER) {
-		case 'redis': // Redis is significant faster than DBA or SQLite but needs RAM memory which could not be available ...
-			if(!is_array($configs['redis'])) {
-				Smart::raise_error('ERROR: The Custom Persistent Cache handler is set to: '.SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER.' but the Redis config is not available');
-				die('');
-			} //end if
-			require('lib/app/persistent-cache-redis.php'); // load the Redis based persistent cache
-			break;
-		case 'mongodb': // MongoDB is faster than DBA or SQLite and can scale in a big data cluster (slower than Redis) ...
-			if(!is_array($configs['mongodb'])) {
-				Smart::raise_error('ERROR: The Custom Persistent Cache handler is set to: '.SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER.' but the MongoDB config is not available');
-				die('');
-			} //end if
-			require('lib/app/persistent-cache-mongodb.php'); // load the MongoDB based persistent cache
-			break;
-		case 'dba': // DBA is significant faster than SQLite
-			if((!is_array($configs['dba'])) OR (SmartDbaUtilDb::isDbaAndHandlerAvailable() !== true)) {
-				Smart::raise_error('ERROR: The Custom Persistent Cache handler is set to: '.SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER.' but the DBA config is not available or wrong');
-				die('');
-			} //end if
-			require('lib/app/persistent-cache-dba.php'); // load the DBA based persistent cache
-			break;
-		case 'sqlite': // this is designed to be used only if DBA is N/A or for small websites
-			if((!is_array($configs['sqlite'])) OR (!class_exists('SQLite3'))) {
-				Smart::raise_error('ERROR: The Custom Persistent Cache handler is set to: '.SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER.' but the SQLite config is not available or wrong');
-				die('');
-			} //end if
-			require('lib/app/persistent-cache-sqlite.php'); // load the SQLite3 based persistent cache (this uses fatal err)
-			break;
-		default:
-			SmartFrameworkRuntime::requirePhpScript((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER, 'Custom Persistent Cache Handler');
-			if(!class_exists('SmartPersistentCache', false)) { // explicit autoload is false
-				Smart::raise_error('ERROR: The Custom Persistent Cache handler is set to: '.SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER.' but the php file is missing the `SmartPersistentCache` class');
-				die('');
-			} //end if
-	} //end switch
-} else {
-	require('lib/app/persistent-cache-x-blackhole.php'); // load the Blackhole (x-none) persistent cache which will implement only definitions and is required for compatibility but having no storage at all
-} //end if else
-//== Set Text-Translations Adapter (depends on Persistent-Cache)
-if(defined('SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM') AND ((string)SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM != '')) {
-	SmartFrameworkRuntime::requirePhpScript((string)SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM, 'Custom Translations Adapter');
-	if(!class_exists('SmartAdapterTextTranslations', false)) { // explicit autoload is false
-		Smart::raise_error('ERROR: The Custom Translations Adapter handler is set to: '.SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM.' but the php file is missing the `SmartAdapterTextTranslations` class');
-		die('');
-	} //end if
-} else {
-	require('lib/app/translations-adapter-yaml.php'); // text translations (YAML based adapter)
-} //end if else
-//== Set Custom Session Handler Adapter if any (or fallback to files)
-if(defined('SMART_FRAMEWORK_SESSION_HANDLER') AND ((string)SMART_FRAMEWORK_SESSION_HANDLER !== 'files')) {
-	switch((string)SMART_FRAMEWORK_SESSION_HANDLER) {
-		case 'redis': // Redis is significant faster than DBA or SQLite but needs RAM memory which could not be available ...
-			if(!is_array($configs['redis'])) {
-				Smart::raise_error('ERROR: The Custom Session Handler is set to: '.SMART_FRAMEWORK_SESSION_HANDLER.' but the Redis config is not available');
-				die('');
-			} //end if
-			require('lib/app/custom-session-redis.php'); // use custom session based on Redis
-			break;
-		case 'mongodb': // MongoDB is faster than DBA or SQLite and can scale in a big data cluster (slower than Redis) ...
-			if(!is_array($configs['mongodb'])) {
-				Smart::raise_error('ERROR: The Custom Session Handler is set to: '.SMART_FRAMEWORK_SESSION_HANDLER.' but the MongoDB config is not available');
-				die('');
-			} //end if
-			require('lib/app/custom-session-mongodb.php'); // use custom session based on MongoDB
-			break;
-		case 'dba': // DBA is significant faster than SQLite
-			if((!is_array($configs['dba'])) OR (SmartDbaUtilDb::isDbaAndHandlerAvailable() !== true)) {
-				Smart::raise_error('ERROR: The Custom Session Handler is set to: '.SMART_FRAMEWORK_SESSION_HANDLER.' but the DBA config is not available or wrong');
-				die('');
-			} //end if
-			require('lib/app/custom-session-dba.php'); // use custom session based on DBA
-			break;
-		case 'sqlite': // this is designed to be used only if DBA is N/A or for small websites
-			if((!is_array($configs['sqlite'])) OR (!class_exists('SQLite3'))) {
-				Smart::raise_error('ERROR: The Custom Session Handler is set to: '.SMART_FRAMEWORK_SESSION_HANDLER.' but the SQLite config is not available or wrong');
-				die('');
-			} //end if
-			require('lib/app/custom-session-sqlite.php'); // use custom session based on SQLite3 (this uses fatal err)
-			break;
-		default:
-			SmartFrameworkRuntime::requirePhpScript((string)SMART_FRAMEWORK_SESSION_HANDLER, 'Custom Session Handler');
-			if(!class_exists('SmartCustomSession', false)) { // explicit autoload is false
-				Smart::raise_error('ERROR: The Custom Session Handler is set to: '.SMART_FRAMEWORK_SESSION_HANDLER.' but the php file is missing the `SmartCustomSession` class');
-				die('');
-			} //end if
-	} //end switch
-} else {
-	// using files based session (default, built-in)
-} //end if else
-//==
-
+define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART RUNTIME
 
 //=====================================================================================
 //===================================================================================== CLASS START
 //=====================================================================================
-
-define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART RUNTIME
 
 /**
  * Class Smart.Framework App.BootStrap
@@ -143,26 +48,56 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20210303
+ * @version 	v.20210401
  *
  */
 final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 	// ::
 
-	private static $isRunning 		= false;
-	private static $authCompleted 	= false;
+	private static $initCompleted 	= false;			// flag to avoid re-create required dirs
+	private static $authCompleted 	= false; 			// flag to avoid re-authenticate
+	private static $isRunning 		= false; 			// flag to avoid re-run
+
+	private static $isSetLanguageBySubdomain = false; 	// flag to avoid set again language by subdomain
+
+
+	//===== [PUBLIC:REQUIRED]
 
 
 	//======================================================================
-	// REQUIRED
+	public static function Initialize() {
+		//--
+		global $configs;
+		//--
+		if(self::$initCompleted !== false) {
+			return; // avoid run after it was used by runtime
+		} //end if
+		self::$initCompleted = true;
+		//--
+		if(!is_array($configs)) { // check here to avoid do this check in each private or in Run() or Authenticate() which are called after this Initialize()
+			http_response_code(500);
+			die((string)SmartComponents::http_message_500_internalerror('Configs is not an array ...'));
+			return;
+		} //end if
+		//--
+		self::createRequiredDirs(); 				// load at the begining
+		self::setPersistentCacheAdapter(); 			// may depend on dirs if using file system like dba or sqlite
+		self::setTextTranslationsAdapter(); 		// depends on persistent cache
+		self::setCustomSessionHandlerAdapter(); 	// load at the end
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
 	public static function Run() {
 		//--
 		global $configs; // expose to app-custom-bootstrap.inc.php
 		//--
 		if(self::$isRunning !== false) {
 			http_response_code(500);
-			die(SmartComponents::http_message_500_internalerror('App Boostrap is already running ...'));
+			die((string)SmartComponents::http_message_500_internalerror('App Boostrap is already running ...'));
 			return;
 		} //end if
 		self::$isRunning = true;
@@ -174,13 +109,13 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 
 	//======================================================================
-	public static function Authenticate($area) {
+	public static function Authenticate($area) { // THIS SHOULD BE RUN IN MIDDLEWARE IDX/ADM ONLY
 		//--
 		global $configs; // expose to app-auth-*.inc.php
 		//--
 		if(self::$authCompleted !== false) {
 			http_response_code(500);
-			die(SmartComponents::http_message_500_internalerror('App Boostrap Auth already loaded ...'));
+			die((string)SmartComponents::http_message_500_internalerror('App Boostrap Auth already loaded ...'));
 			return;
 		} //end if
 		self::$authCompleted = true;
@@ -200,6 +135,426 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 				);
 				die('Invalid Auth Realm'); // just in case
 		} //end switch
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//===== [PUBLIC:CUSTOM]
+
+
+	//======================================================================
+	// Handles the Language Detection by SubDomain
+	// if used this will set the app language by sub-domain
+	// this will work only if more than one languages are defined in configs, otherwise will raise an error
+	// NOTICE: by default the language can be set only by URL Parameter or Cookie
+	// if this is used can set language by subdomain ; it must be called in modules/app/app-custom-bootstrap.inc.php
+	// it can be set by checking if admin area is set to true to handle only one of the index or admin areas ; or if no condition will handle both
+	// 1st param: 'www' will be used for the default language ; must not contain dots
+	// 2nd param: if TRUE will redirect the 'en' subdomain (because matches the default language as set in SMART_FRAMEWORK_DEFAULT_LANG) to the subdomain to 'www' (1st parameter)
+	// 3rd param: if TRUE will redirect all other subdomains (except 'www' and the 'en' subdomains), to 'www' (1st parameter)
+	public static function AppSetLanguageBySubdomain(string $default_subdomain='www', bool $redirect_default_language_to_default_subdomain=true, bool $redirect_other_subdomains=false) { // r.20210401
+		//--
+		if(self::$isSetLanguageBySubdomain !== false) {
+			return; // avoid run after it was used by runtime
+		} //end if
+		self::$isSetLanguageBySubdomain = true;
+		//--
+		$arr_available_languages = (array) SmartTextTranslations::getAvailableLanguages(); // ex: ['en', 'ro']
+		if(Smart::array_size($arr_available_languages) <= 1) {
+			Smart::raise_error(__METHOD__.' # can be used only if more than one languages are set in configs ...'."\n".'The list of defined languages in configs is:'."\n".print_r($arr_available_languages,1));
+			die('');
+			return; // for only one language that is also the default one, make non sense
+		} //end if
+		//--
+		$default_subdomain = (string) trim((string)$default_subdomain);
+		if(
+			(strpos((string)$default_subdomain, '-') === 0) OR
+			(substr((string)$default_subdomain, -1, 1) === '-') OR
+			(!preg_match('/^[a-z0-9\-]{1,63}$/', (string)$default_subdomain))
+		) {
+			return; // invalid default subdomain ; contain only standard ASCII alphanumeric characters a to z; numerals 0 to 9 and/or hyphens (-) and not underscore ; not begin or end with a hyphen (-)
+		} //end if
+		//--
+		if($redirect_default_language_to_default_subdomain === true) {
+			unset($arr_available_languages[(string)SmartTextTranslations::getDefaultLanguage()]); // default language must be unset, it is mapped to the $default_subdomain
+		} //end if
+		//--
+		$pdom = (string) trim((string)SmartUtils::get_server_current_subdomain_name());
+		if(((string)$pdom != '') AND ((string)$pdom != (string)$default_subdomain)) {
+			//--
+			if(((string)$pdom != (string)SmartTextTranslations::getDefaultLanguage()) AND (SmartTextTranslations::validateLanguage($pdom))) { // other languages
+				SmartTextTranslations::setLanguage((string)$pdom); // set only other languages if valid: ro, de, ...
+				return;
+			} else {
+				if(
+					(($redirect_default_language_to_default_subdomain === true) AND ((string)$pdom == (string)SmartTextTranslations::getDefaultLanguage())) OR
+					(($redirect_other_subdomains === true) AND ((string)$pdom != (string)SmartTextTranslations::getDefaultLanguage()) AND ((string)$pdom != (string)$default_subdomain) AND (!in_array((string)$pdom, (array)$arr_available_languages)))
+				) {
+					http_response_code(301); // permanent redirect if the language code is not valid
+					self::outputHttpSafeHeader('Location: '.SmartUtils::get_server_current_protocol().($default_subdomain ? $default_subdomain.'.' : '').SmartUtils::get_server_current_basedomain_name().SmartUtils::get_server_current_request_uri()); // force redirect
+					die(''); // stop here, mandatory
+				} //end if else
+			} //end if else
+			//--
+		} //end if else
+		//--
+		SmartTextTranslations::setLanguage((string)SmartTextTranslations::getDefaultLanguage()); // set default language: EN
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//===== [PRIVATES]
+
+
+	//======================================================================
+	private static function createRequiredDirs() {
+		//--
+		clearstatcache(true); // do a full clear stat cache at the begining
+		//-- tmp dir
+		$dir = 'tmp/';
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			SmartFileSystem::dir_create($dir);
+		} //end if
+		if((!SmartFileSystem::is_type_dir($dir)) OR (!SmartFileSystem::have_access_write($dir))) {
+			Smart::raise_error(
+				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+				'App Init ERROR :: TMP @ '.substr((string)sprintf('%o', (string)fileperms('/tmp')), -4) // this must be explicit if failed to write to TMP folder ... it means cannot log !
+			);
+			return;
+		} //end if
+		if(!SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFileSystem::is_type_file('tmp/SMART-FRAMEWORK__DEBUG-ON')) {
+				if(SmartFileSystem::is_type_dir('tmp/logs/idx/')) {
+					SmartFileSystem::dir_delete('tmp/logs/idx/', true);
+				} //end if
+				if(SmartFileSystem::is_type_dir('tmp/logs/adm/')) {
+					SmartFileSystem::dir_delete('tmp/logs/adm/', true);
+				} //end if
+				SmartFileSystem::delete('tmp/SMART-FRAMEWORK__DEBUG-ON');
+			} //end if
+		} else {
+			SmartFileSystem::write_if_not_exists('tmp/SMART-FRAMEWORK__DEBUG-ON', 'DEBUG:ON');
+		} //end if else
+		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
+			SmartFileSystem::write($dir.'.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n"); // {{{SYNC-TMP-FOLDER-HTACCESS}}}
+			if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
+				Smart::raise_error(
+					'#SMART-FRAMEWORK-CREATE-REQUIRED-FILES#'."\n".'A required file cannot be created in #TMP: `'.$dir.'.htaccess`',
+					'App Init ERROR TMP#ACCESS' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+				);
+				return;
+			} //end if
+		} //end if
+		if(!SmartFileSystem::is_type_file($dir.'index.html')) {
+			SmartFileSystem::write($dir.'index.html', '');
+			if(!SmartFileSystem::is_type_file($dir.'index.html')) {
+				Smart::raise_error(
+					'#SMART-FRAMEWORK-CREATE-REQUIRED-FILES#'."\n".'A required file cannot be created in #TMP: `'.$dir.'index.html`',
+					'App Init ERROR TMP#INDEX-HTML' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+				);
+				return;
+			} //end if
+		} //end if
+		//-- tmp logs dir
+		$dir = 'tmp/logs/';
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			SmartFileSystem::dir_create($dir);
+			if(SmartFileSystem::is_type_dir($dir)) {
+				SmartFileSystem::write($dir.'index.html', '');
+			} //end if
+		} // end if
+		if(!SmartFileSystem::have_access_write($dir)) {
+			Smart::raise_error(
+				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+				'App Init ERROR TMP#LOGS' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+			);
+			return;
+		} //end if
+		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
+			SmartFileSystem::write($dir.'.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n"); // {{{SYNC-TMP-FOLDER-HTACCESS}}}
+		} //end if
+		//-- tmp logs/idx dir
+		$dir = 'tmp/logs/idx/';
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			SmartFileSystem::dir_create($dir);
+			if(SmartFileSystem::is_type_dir($dir)) {
+				SmartFileSystem::write($dir.'index.html', '');
+			} //end if
+		} // end if
+		if(!SmartFileSystem::have_access_write($dir)) {
+			Smart::raise_error(
+				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+				'App Init ERROR TMP#LOGS#IDX' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+			);
+			return;
+		} //end if
+		//-- tmp logs/admin dir
+		$dir = 'tmp/logs/adm/';
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			SmartFileSystem::dir_create($dir);
+			if(SmartFileSystem::is_type_dir($dir)) {
+				SmartFileSystem::write($dir.'index.html', '');
+			} //end if
+		} // end if
+		if(!SmartFileSystem::have_access_write($dir)) {
+			Smart::raise_error(
+				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+				'App Init ERROR TMP#LOGS#ADM' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+			);
+			return;
+		} //end if
+		//-- tmp cache dir
+		$dir = 'tmp/cache/';
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			SmartFileSystem::dir_create($dir);
+			if(SmartFileSystem::is_type_dir($dir)) {
+				SmartFileSystem::write($dir.'index.html', '');
+			} //end if
+		} // end if
+		if(!SmartFileSystem::have_access_write($dir)) {
+			Smart::raise_error(
+				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+				'App Init ERROR TMP#CACHE' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+			);
+			return;
+		} //end if
+		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
+			SmartFileSystem::write($dir.'.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n"); // {{{SYNC-TMP-FOLDER-HTACCESS}}}
+		} //end if
+		//-- tmp sessions dir
+		$dir = 'tmp/sessions/';
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			SmartFileSystem::dir_create($dir);
+			if(SmartFileSystem::is_type_dir($dir)) {
+				SmartFileSystem::write($dir.'index.html', '');
+			} //end if
+		} // end if
+		if(!SmartFileSystem::have_access_write($dir)) {
+			Smart::raise_error(
+				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+				'App Init ERROR TMP#SESS' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+			);
+			return;
+		} //end if
+		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
+			SmartFileSystem::write($dir.'.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n"); // {{{SYNC-TMP-FOLDER-HTACCESS}}}
+		} //end if
+		//-- wpub dir
+		$dir = 'wpub/'; // {{{SYNC-WPUB-DIR}}}
+		$ctrlfile = $dir.'#wpub';
+		$htfile = $dir.'.htaccess';
+		$robotsfile = $dir.'robots.txt';
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			SmartFileSystem::dir_create($dir);
+			if(SmartFileSystem::is_type_dir($dir)) {
+				SmartFileSystem::write($dir.'index.html', '');
+				SmartFileSystem::write($robotsfile, 'User-agent: *'."\n".'Disallow: *'); // by default avoid robots to index it ; this file can be edited manually
+			} //end if
+		} // end if
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			Smart::raise_error(
+				__METHOD__."\n".'General ERROR :: #WEB-PUBLIC Folder: `'.$dir.'` does NOT exists !',
+				'App Init ERROR'
+			);
+			return;
+		} //end if
+		if(!SmartFileSystem::have_access_write($dir)) {
+			Smart::raise_error(
+				__METHOD__."\n".'General ERROR :: #WEB-PUBLIC Folder: `'.$dir.'` is NOT writable !',
+				'App Init ERROR'
+			);
+			return;
+		} //end if
+		if(!SmartFileSystem::is_type_file($ctrlfile)) {
+			SmartFileSystem::write($ctrlfile, 'FileName: #wpub (#WEB-PUBLIC)'."\n".'Created by: App-Runtime'."\n".date('Y-m-d H:i:s O'));
+			if(!SmartFileSystem::is_type_file($ctrlfile)) {
+				Smart::raise_error(
+					__METHOD__."\n".'Cannot Connect to FileSystem #WEB-PUBLIC, the control file is missing `'.$ctrlfile.'`',
+					'App Init ERROR'
+				);
+				return;
+			} //end if
+		} //end if
+		if(!SmartFileSystem::is_type_file($htfile)) {
+			SmartFileSystem::write($htfile, (string)trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n"); // trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".
+			if(!SmartFileSystem::is_type_file($htfile)) {
+				Smart::raise_error(
+					__METHOD__."\n".'The `.htaccess` file is missing on FileSystem #WEB-PUBLIC: '.$htfile,
+					'App Init ERROR'
+				);
+				return;
+			} //end if
+		} //end if
+		//--
+		$dir = '#db/'; // {{{SYNC-#DB-FOLDER-HTACCESS}}}
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			SmartFileSystem::dir_create($dir, false, true); // allow protected paths
+		} //end if
+		if(!SmartFileSystem::have_access_write($dir)) {
+			Smart::raise_error(
+				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+				'App Init ERROR'
+			);
+			return;
+		} //end if
+		//--
+		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
+			if(@file_put_contents((string)$dir.'.htaccess', (string)'### Smart.Framework // '.__METHOD__.' @ HtAccess Data Protection ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', LOCK_EX)) {
+				SmartFileSystem::fix_file_chmod((string)$dir.'.htaccess'); // apply file chmod
+			} //end if
+			if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
+				Smart::raise_error(
+					'#SMART-FRAMEWORK-CREATE-REQUIRED-FILES#'."\n".'A required file cannot be created in #DB: `'.$dir.'.htaccess`',
+					'App Init ERROR'
+				);
+				return;
+			} //end if
+		} //end if
+		if(!SmartFileSystem::is_type_file($dir.'index.html')) {
+			if(@file_put_contents((string)$dir.'index.html', '', LOCK_EX)) {
+				SmartFileSystem::fix_file_chmod((string)$dir.'index.html'); // apply file chmod
+			} //end if
+			if(!SmartFileSystem::is_type_file($dir.'index.html')) {
+				Smart::raise_error(
+					'#SMART-FRAMEWORK-CREATE-REQUIRED-FILES#'."\n".'A required file cannot be created in #DB: `'.$dir.'index.html`',
+					'App Init ERROR'
+				);
+				return;
+			} //end if
+		} //end if
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	private static function setPersistentCacheAdapter() { // Set Persistent-Cache Adapter (or use none/blackhole)
+		//--
+		global $configs;
+		//--
+		if(defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') AND ((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER != '')) {
+			//--
+			switch((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER) {
+				case 'redis': // Redis is significant faster than DBA or SQLite but needs RAM memory which could not be available ...
+					if((!isset($configs['redis'])) OR (!is_array($configs['redis']))) {
+						Smart::raise_error('ERROR: The Custom Persistent Cache handler is set to: '.SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER.' but the Redis config is not available');
+						die('');
+					} //end if
+					require('lib/app/persistent-cache-redis.php'); // load the Redis based persistent cache
+					break;
+				case 'mongodb': // MongoDB is faster than DBA or SQLite and can scale in a big data cluster (slower than Redis) ...
+					if((!isset($configs['mongodb'])) OR (!is_array($configs['mongodb']))) {
+						Smart::raise_error('ERROR: The Custom Persistent Cache handler is set to: '.SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER.' but the MongoDB config is not available');
+						die('');
+					} //end if
+					require('lib/app/persistent-cache-mongodb.php'); // load the MongoDB based persistent cache
+					break;
+				case 'dba': // DBA is significant faster than SQLite
+					if((!isset($configs['dba'])) OR (!is_array($configs['dba'])) OR (SmartDbaUtilDb::isDbaAndHandlerAvailable() !== true)) {
+						Smart::raise_error('ERROR: The Custom Persistent Cache handler is set to: '.SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER.' but the DBA config is not available or wrong');
+						die('');
+					} //end if
+					require('lib/app/persistent-cache-dba.php'); // load the DBA based persistent cache
+					break;
+				case 'sqlite': // this is designed to be used only if DBA is N/A or for small websites
+					if((!isset($configs['sqlite'])) OR (!is_array($configs['sqlite'])) OR (!class_exists('SQLite3'))) {
+						Smart::raise_error('ERROR: The Custom Persistent Cache handler is set to: '.SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER.' but the SQLite config is not available or wrong');
+						die('');
+					} //end if
+					require('lib/app/persistent-cache-sqlite.php'); // load the SQLite3 based persistent cache (this uses fatal err)
+					break;
+				default:
+					SmartFrameworkRuntime::requirePhpScript((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER, 'Custom Persistent Cache Handler');
+					if(!class_exists('SmartPersistentCache', false)) { // explicit autoload is false
+						Smart::raise_error('ERROR: The Custom Persistent Cache handler is set to: '.SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER.' but the php file is missing the `SmartPersistentCache` class');
+						die('');
+					} //end if
+			} //end switch
+			//--
+		} else {
+			//--
+			require('lib/app/persistent-cache-x-blackhole.php'); // load the Blackhole (x-none) persistent cache which will implement only definitions and is required for compatibility but having no storage at all
+			//--
+		} //end if else
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	private static function setTextTranslationsAdapter() { // Set Text-Translations Adapter (depends on Persistent-Cache)
+		//--
+		global $configs;
+		//--
+		if(defined('SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM') AND ((string)trim((string)SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM) != '')) {
+			//--
+			SmartFrameworkRuntime::requirePhpScript((string)SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM, 'Custom Translations Adapter');
+			if(!class_exists('SmartAdapterTextTranslations', false)) { // explicit autoload is false
+				Smart::raise_error('ERROR: The Custom Translations Adapter handler is set to: '.SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM.' but the php file is missing the `SmartAdapterTextTranslations` class');
+				die('');
+			} //end if
+			//--
+		} else {
+			//--
+			require('lib/app/translations-adapter-yaml.php'); // text translations (YAML based adapter)
+			//--
+		} //end if else
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	private static function setCustomSessionHandlerAdapter() { // Set Custom Session Handler Adapter if any (or fallback to files)
+		//--
+		global $configs;
+		//--
+		if(defined('SMART_FRAMEWORK_SESSION_HANDLER') AND ((string)SMART_FRAMEWORK_SESSION_HANDLER !== 'files')) {
+			//--
+			switch((string)SMART_FRAMEWORK_SESSION_HANDLER) {
+				case 'redis': // Redis is significant faster than DBA or SQLite but needs RAM memory which could not be available ...
+					if(!is_array($configs['redis'])) {
+						Smart::raise_error('ERROR: The Custom Session Handler is set to: '.SMART_FRAMEWORK_SESSION_HANDLER.' but the Redis config is not available');
+						die('');
+					} //end if
+					require('lib/app/custom-session-redis.php'); // use custom session based on Redis
+					break;
+				case 'mongodb': // MongoDB is faster than DBA or SQLite and can scale in a big data cluster (slower than Redis) ...
+					if(!is_array($configs['mongodb'])) {
+						Smart::raise_error('ERROR: The Custom Session Handler is set to: '.SMART_FRAMEWORK_SESSION_HANDLER.' but the MongoDB config is not available');
+						die('');
+					} //end if
+					require('lib/app/custom-session-mongodb.php'); // use custom session based on MongoDB
+					break;
+				case 'dba': // DBA is significant faster than SQLite
+					if((!is_array($configs['dba'])) OR (SmartDbaUtilDb::isDbaAndHandlerAvailable() !== true)) {
+						Smart::raise_error('ERROR: The Custom Session Handler is set to: '.SMART_FRAMEWORK_SESSION_HANDLER.' but the DBA config is not available or wrong');
+						die('');
+					} //end if
+					require('lib/app/custom-session-dba.php'); // use custom session based on DBA
+					break;
+				case 'sqlite': // this is designed to be used only if DBA is N/A or for small websites
+					if((!is_array($configs['sqlite'])) OR (!class_exists('SQLite3'))) {
+						Smart::raise_error('ERROR: The Custom Session Handler is set to: '.SMART_FRAMEWORK_SESSION_HANDLER.' but the SQLite config is not available or wrong');
+						die('');
+					} //end if
+					require('lib/app/custom-session-sqlite.php'); // use custom session based on SQLite3 (this uses fatal err)
+					break;
+				default:
+					SmartFrameworkRuntime::requirePhpScript((string)SMART_FRAMEWORK_SESSION_HANDLER, 'Custom Session Handler');
+					if(!class_exists('SmartCustomSession', false)) { // explicit autoload is false
+						Smart::raise_error('ERROR: The Custom Session Handler is set to: '.SMART_FRAMEWORK_SESSION_HANDLER.' but the php file is missing the `SmartCustomSession` class');
+						die('');
+					} //end if
+			} //end switch
+			//--
+		} else {
+			//--
+			// using files based session (default, built-in PHP)
+			//--
+		} //end if else
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -231,7 +586,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210303
+ * @version 	v.20210401
  * @package 	Application
  *
  */

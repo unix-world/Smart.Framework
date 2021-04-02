@@ -3,27 +3,24 @@
 
 /* ----------------------------- */
 
-/* Notifications r.20201216 */
+/* Notifications r.20210402 */
 
 div#operation_info {
 	background-color: #FFFFFF !important;
 	color: #333333 !important;
-	background-image: url(../../framework/img/sign-info.svg);
-	background-repeat: no-repeat;
-	background-position: 10px 10px;
 	line-height: 36px;
 	text-align: left;
 	font-size: 1.25rem;
 	font-weight: bold;
 	font-style: normal;
-	padding-left: 52px;
+	padding-left: 16px;
 	padding-right: 16px;
 	padding-top: 12px;
 	padding-bottom: 8px;
 /*	margin: 0 auto; */
 	margin-top: 8px;
 	margin-bottom: 8px;
-	max-width: calc(98% - 10px) !important;
+	max-width: calc(100% - 10px) !important;
 	min-width: 100px;
 	min-height: 40px;
 	height: auto !important;
@@ -37,22 +34,19 @@ div#operation_info {
 div#operation_question {
 	background-color: #F2EFE8 !important;
 	color: #424242 !important;
-	background-image: url(../../framework/img/sign-question.svg);
-	background-repeat: no-repeat;
-	background-position: 10px 10px;
 	line-height: 36px;
 	text-align: left;
 	font-size: 1.25rem;
 	font-weight: bold;
 	font-style: normal;
-	padding-left: 52px;
+	padding-left: 16px;
 	padding-right: 16px;
 	padding-top: 12px;
 	padding-bottom: 8px;
 /*	margin: 0 auto; */
 	margin-top: 8px;
 	margin-bottom: 8px;
-	max-width: calc(98% - 10px) !important;
+	max-width: calc(100% - 10px) !important;
 	min-width: 100px;
 	min-height: 40px;
 	height: auto !important;
@@ -66,22 +60,19 @@ div#operation_question {
 div#operation_notice {
 	background-color: #EEEEEE !important;
 	color: #555555 !important;
-	background-image: url(../../framework/img/sign-notice.svg);
-	background-repeat: no-repeat;
-	background-position: 10px 10px;
 	line-height: 36px;
 	text-align: left;
 	font-size: 1.25rem;
 	font-weight: bold;
 	font-style: normal;
-	padding-left: 52px;
+	padding-left: 16px;
 	padding-right: 16px;
 	padding-top: 12px;
 	padding-bottom: 8px;
 /*	margin: 0 auto; */
 	margin-top: 8px;
 	margin-bottom: 8px;
-	max-width: calc(98% - 10px) !important;
+	max-width: calc(100% - 10px) !important;
 	min-width: 100px;
 	min-height: 40px;
 	height: auto !important;
@@ -95,22 +86,19 @@ div#operation_notice {
 div#operation_warn {
 	background-color: #FFC107 !important;
 	color: #3E2723 !important;
-	background-image: url(../../framework/img/sign-warn.svg);
-	background-repeat: no-repeat;
-	background-position: 10px 10px;
 	line-height: 36px;
 	text-align: left;
 	font-size: 1.25rem;
 	font-weight: bold;
 	font-style: normal;
-	padding-left: 52px;
+	padding-left: 16px;
 	padding-right: 16px;
 	padding-top: 12px;
 	padding-bottom: 8px;
 /*	margin: 0 auto; */
 	margin-top: 8px;
 	margin-bottom: 8px;
-	max-width: calc(98% - 10px) !important;
+	max-width: calc(100% - 10px) !important;
 	min-width: 100px;
 	min-height: 40px;
 	height: auto !important;
@@ -124,56 +112,53 @@ div#operation_warn {
 div#operation_error {
 	background-color: #C62828 !important;
 	color: #FFFFFF !important;
-	background-image: url(../../framework/img/sign-error.svg);
-	background-repeat: no-repeat;
-	background-position: 10px 10px;
 	line-height: 36px;
 	text-align: left;
 	font-size: 1.25rem;
 	font-weight: bold;
 	font-style: normal;
-	padding-left: 52px;
+	padding-left: 16px;
 	padding-right: 16px;
 	padding-top: 12px;
 	padding-bottom: 8px;
 /*	margin: 0 auto; */
 	margin-top: 8px;
 	margin-bottom: 8px;
-	max-width: calc(98% - 10px) !important;
+	max-width: calc(100% - 10px) !important;
 	min-width: 100px;
 	min-height: 40px;
 	height: auto !important;
 	border-radius: 6px;
 	opacity:1;
 	box-shadow: 1px 1px 2px 2px #ECECEC;
+	box-sizing: content-box;
 }
 
 /* -- */
 
 @media all and (max-width:1279px) {
-
 	div#operation_question, div#operation_notice, div#operation_info, div#operation_warn, div#operation_error {
-		max-width: calc(95% - 10px) !important;
+		max-width: calc(99% - 10px) !important;
 	}
-
 }
 
 @media all and (max-width:959px) {
-
 	div#operation_question, div#operation_notice, div#operation_info, div#operation_warn, div#operation_error {
-		max-width: calc(93% - 10px) !important;
+		max-width: calc(98% - 10px) !important;
 	}
-
 }
 
 @media all and (max-width:767px) {
-
 	div#operation_question, div#operation_notice, div#operation_info, div#operation_warn, div#operation_error {
-		max-width: calc(92% - 10px) !important;
+		max-width: calc(97% - 10px) !important;
 	}
-
 }
 
+@media all and (max-width:639px) {
+	div#operation_question, div#operation_notice, div#operation_info, div#operation_warn, div#operation_error {
+		max-width: calc(96% - 10px) !important;
+	}
+}
 
 /* ----------------------------- */
 

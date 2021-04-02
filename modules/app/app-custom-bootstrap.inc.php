@@ -31,11 +31,11 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //======================================================
 
 //-- defines the modules version (required for AppReleaseHash and modules identification)
-define('SMART_APP_MODULES_RELEASE', 'm.sf.2021-03-31'); // this can be used for tracking changes to custom app modules
+define('SMART_APP_MODULES_RELEASE', 'm.sf.2021-04-02'); // this can be used for tracking changes to custom app modules
 //--
 
 //-- checks the minimum version of the Smart.Framework to run on
-define('SMART_APP_MODULES_MIN_FRAMEWORK_VER', 'v.7.2.1.r.2021.03.31'); // this must be used to validate the required minimum framework version
+define('SMART_APP_MODULES_MIN_FRAMEWORK_VER', 'v.7.2.1.r.2021.04.02'); // this must be used to validate the required minimum framework version
 if(version_compare((string)SMART_FRAMEWORK_RELEASE_TAGVERSION.(string)SMART_FRAMEWORK_RELEASE_VERSION, (string)SMART_APP_MODULES_MIN_FRAMEWORK_VER) < 0) {
 	@http_response_code(500);
 	die('The Custom App Modules require the Smart.Framework '.SMART_APP_MODULES_MIN_FRAMEWORK_VER.' or later !');
@@ -56,16 +56,17 @@ if(is_dir('modules/vendor')) {
 
 //--
 // # Below is a sample code that can handle set languages by subdomains (www.dom.ext | ro.dom.ext | de.dom.ext ...): www => en ; ro => ro ; de => de ...
-//--
-// Note that the default language (en) will be mapped by default to www ; all the rest of available languages like ro, de, ... will be mapped to each subdomain as above
-// The language codes must be enabled as needed in etc/config.php prior to be used
+// !!! IMPORTANT !!! DO NOT ENABLE IT IF ONLY ONE LANGUAGE IS SET IN CONFIGS BECAUSE WILL RAISE AN ERROR ... can work with only 2+ languages defined in configs !
+// For the below example:
+// 	* 1st param: 'www' will be used for the default language ; must not contain dots
+// 	* 2nd param: if TRUE will redirect the 'en' subdomain (because matches the default language as set in SMART_FRAMEWORK_DEFAULT_LANG) to the subdomain to 'www' (1st parameter)
+// 	* 3rd param: if TRUE will redirect all other subdomains (except 'www' and the 'en' subdomains), to 'www' (1st parameter)
 //--
 /*
-if(SmartFrameworkRuntime::isAdminArea() !== true) { // Handles the Language Detection by SubDomain (just for index, not for admin)
-	SmartFrameworkRuntime::AppSetLanguageBySubdomain('www', []); // 'www' will be used for the default language: 'en'
+if(SmartFrameworkRuntime::isAdminArea() !== true) { // just for index, not for admin
+	SmartAppBootstrap::AppSetLanguageBySubdomain('www', true, true); // Handles the Language Detection by SubDomain
 } //end if
 */
 //--
-
 
 // end of php code

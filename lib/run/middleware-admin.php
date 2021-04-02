@@ -39,7 +39,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A]@v.7.2.1');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210331
+ * @version		20210402
  *
  */
 final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
@@ -120,6 +120,11 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		//--
 		if((string)$smartframeworkservice == 'status') {
 			//--
+			if(!headers_sent()) {
+				http_response_code(202); // Accepted
+			} else {
+				Smart::log_warning('Headers Already Sent before SERVICE STATUS');
+			} //end if else
 			SmartFrameworkRuntime::outputHttpHeadersNoCache(); // headers: cache control, force no-cache
 			echo self::ServiceStatus($the_midmark);
 			//--
@@ -401,32 +406,42 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 					Smart::log_warning('Redirection HTTP Status ['.(int)$appStatusCode.'] was used in a page controller without a redirection URL ...');
 				} //end if
 				break;
+			//-- extended 3xx statuses (CACHE CONTROL)
+			case 304: // OK, CACHED
+				if(!headers_sent()) {
+					http_response_code(304); // Not Modified (use it carefully)
+				} else {
+					Smart::log_warning('Headers Already Sent before HTTP-STATUS='.(int)$appStatusCode);
+				} //end if else
+				break;
 			//-- extended 2xx statuses: NOTICE / WARNING / ERROR that can be used for REST / API
 			case 208: // ERROR
 				if(!headers_sent()) {
 					http_response_code(208); // Already Reported (this should be used only as an alternate SUCCESS code instead of 200 for ERRORS)
 				} else {
-					Smart::log_warning('Headers Already Sent before 208 ...');
+					Smart::log_warning('Headers Already Sent before HTTP-STATUS='.(int)$appStatusCode);
 				} //end if else
 				break;
 			case 203: // WARNING
 				if(!headers_sent()) {
 					http_response_code(203); // Non-Authoritative Information (this should be used only as an alternate SUCCESS code instead of 200 for WARNINGS)
 				} else {
-					Smart::log_warning('Headers Already Sent before 203 ...');
+					Smart::log_warning('Headers Already Sent before HTTP-STATUS='.(int)$appStatusCode);
 				} //end if else
 				break;
 			case 202: // NOTICE
 				if(!headers_sent()) {
 					http_response_code(202); // Accepted (this should be used only as an alternate SUCCESS code instead of 200 for NOTICES)
 				} else {
-					Smart::log_warning('Headers Already Sent before 202 ...');
+					Smart::log_warning('Headers Already Sent before HTTP-STATUS='.(int)$appStatusCode);
 				} //end if else
 				break;
 			//-- DEFAULT: OK
 			case 200:
 			default: // any other codes not listed above are not supported and will be interpreted as 200
-				// nothing to do here ...
+				if(headers_sent()) {
+					Smart::log_warning('Headers Already Sent before HTTP-STATUS=200');
+				} //end if
 		} //end switch
 		//--
 		//== PREPARE THE OUTPUT

@@ -21,7 +21,9 @@ if(is_file('maintenance.html')) {
 } //end if
 //--
 define('SMART_FRAMEWORK_ADMIN_AREA', 		false); 						// run app in public/index mode
+//--
 define('SMART_FRAMEWORK_RUNTIME_READY', 	microtime(true)); 				// semaphore, runtime can execute scripts
+define('SMART_FRAMEWORK_RUNTIME_MODE', 		'web.app'); 					// runtime mode: 'web.app' or 'task' for externals
 //--
 require('etc/init.php'); 													// the PHP.INI local settings (they must be called first !!!)
 //--

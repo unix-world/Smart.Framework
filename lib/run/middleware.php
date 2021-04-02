@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210331
+ * @version		20210402
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -231,15 +231,12 @@ abstract class SmartAbstractAppMiddleware {
 		//--
 		$lang = ''; // init
 		//--
-		if(!defined('SMART_FRAMEWORK_URL_PARAM_LANGUAGE')) {
-			self::$LANGUAGE_DETECTED = false;
-			return (bool) self::$LANGUAGE_DETECTED;
-		} //end if
-		if((string)trim((string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE) == '') {
-			self::$LANGUAGE_DETECTED = false;
-			return (bool) self::$LANGUAGE_DETECTED;
-		} //end if
-		if(!SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE)) { // {{{SYNC-APP-URL-LANG-PARAM}}} ; if not empty may contain only characters: [a-z]
+		if(
+			(!defined('SMART_FRAMEWORK_URL_PARAM_LANGUAGE')) OR
+			(SMART_FRAMEWORK_URL_PARAM_LANGUAGE == '') OR // this is the default case
+			((string)trim((string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE) == '') OR // this if was wrong set
+			(!SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE)) // {{{SYNC-APP-URL-LANG-PARAM}}} ; if not empty may contain only characters: [a-z]
+		) {
 			self::$LANGUAGE_DETECTED = false;
 			return (bool) self::$LANGUAGE_DETECTED;
 		} //end if
@@ -473,7 +470,7 @@ abstract class SmartAbstractAppMiddleware {
 			$html_status_powered_info = (string) SmartComponents::app_powered_info('no');
 		} //end if else
 		//--
-		return (string) SmartComponents::http_status_message('200 OK :: '.Smart::escape_html($txt_area).' / Service Available', '<script type="text/javascript">setTimeout(function(){ self.location = self.location; }, 60000);</script><img height="32" src="lib/framework/img/loading-bars.svg"><div><h2 style="display:inline;">'.date('Y-m-d H:i:s O').' // Smart.Framework :: '.Smart::escape_html($the_midmark).'</h2></div><br>'.$html_status_powered_info.'<br>');
+		return (string) SmartComponents::http_status_message('OK :: '.Smart::escape_html($txt_area).' / Service Available', '<script type="text/javascript">setTimeout(function(){ self.location = self.location; }, 60000);</script><img height="32" src="lib/framework/img/loading-bars.svg"><div><h2 style="display:inline;">'.date('Y-m-d H:i:s O').' // Smart.Framework :: '.Smart::escape_html($the_midmark).'</h2></div><br>'.$html_status_powered_info.'<br>');
 		//--
 	} //END FUNCTION
 	//======================================================================

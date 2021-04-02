@@ -17,7 +17,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 // [REGEX-SAFE-OK] ; [PHP8]
 
-
 //==================================================================================
 //================================================================================== CLASS START
 //==================================================================================
@@ -39,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20210331
+ * @version 	v.20210401
  * @package 	Application
  *
  */
@@ -178,6 +177,7 @@ final class SmartFrameworkSecurity {
 	/**
 	 * Return the url decoded (+/- filtered) variable from RAWURLENCODE / URLENCODE
 	 * It may be used ONLY when working with RAW PATH INFO / RAW QUERY URLS !!!
+	 * IMPORTANT: the $_GET and $_REQUEST are already decoded. Using urldecode() on an element in $_GET or $_REQUEST could have unexpected and dangerous results.
 	 *
 	 * @param STRING 				$y_var		the input variable
 	 * @param BOOLEAN 				$y_filter 	*Optional* Default to TRUE ; if FALSE will only decode but not filter variable ; DO NOT DISABLE FILTERING EXCEPT WHEN YOU CALL IT LATER EXPLICIT !!!
@@ -185,7 +185,7 @@ final class SmartFrameworkSecurity {
 	 */
 	public static function urlVarDecodeStr($y_urlencoded_str_var, $y_filter=true) {
 		//--
-		$y_urlencoded_str_var = (string) @urldecode((string)$y_urlencoded_str_var); // use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + !
+		$y_urlencoded_str_var = (string) urldecode((string)$y_urlencoded_str_var); // use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + !
 		//--
 		if($y_filter) {
 			$y_urlencoded_str_var = (string) self::FilterUnsafeString($y_urlencoded_str_var);
@@ -219,7 +219,7 @@ final class SmartFrameworkSecurity {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20210331
+ * @version 	v.20210401
  * @package 	Application
  *
  */
@@ -674,7 +674,7 @@ final class SmartFrameworkRegistry {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: Smart, SmartUtils
- * @version		v.20210331
+ * @version		v.20210401
  * @package 	Application
  *
  */
@@ -692,14 +692,30 @@ final class SmartFrameworkRuntime {
 
 	private static $NoCacheHeadersSent = false;
 
-	private static $HttpStatusCodesOK  = [200, 202, 203, 208]; 								// list of framework available HTTP OK Status Codes (sync with middlewares)
+	private static $HttpStatusCodesOK  = [200, 202, 203, 208, 304]; 						// list of framework available HTTP OK Status Codes (sync with middlewares)
 	private static $HttpStatusCodesRDR = [301, 302]; 										// list of framework available HTTP Redirect Status Codes (sync with middlewares)
 	private static $HttpStatusCodesERR = [400, 401, 403, 404, 429, 500, 502, 503, 504]; 	// list of framework available HTTP Error Status Codes (sync with middlewares)
 
 	private static $RequestProcessed 			= false; 	// after all request variables are processed this will be set to true to avoid re-process request variables which can be a huge security issue if re-process is called by mistake !
-	private static $RequiredDirsCreated 		= false;	// after creating required dirs this will be set to true to avoid re-run that function again
 	private static $RedirectionMonitorStarted 	= false; 	// after the redirection monitor have been started this will be set to true to avoid re-run it
 	private static $HighLoadMonitorStats 		= null; 	// register the high load monitor caches
+
+
+	//======================================================================
+	public static function InstantFlush() {
+		//--
+		$output_buffering_status = @ob_get_status();
+		//-- type: 0 = PHP_OUTPUT_HANDLER_INTERNAL ; 1 = PHP_OUTPUT_HANDLER_USER
+		if(is_array($output_buffering_status) AND array_key_exists('type', $output_buffering_status) AND array_key_exists('chunk_size', $output_buffering_status)) {
+			if(((string)$output_buffering_status['type'] == '0') AND ((int)$output_buffering_status['chunk_size'] > 0)) { // avoid to break user level output buffering(s), so enable this just for level zero (internal, if set in php.ini)
+				@ob_flush();
+			} //end if
+		} //end if
+		//--
+		@flush();
+		//--
+	} //END FUNCTION
+	//======================================================================
 
 
 	//======================================================================
@@ -707,21 +723,22 @@ final class SmartFrameworkRuntime {
 	public static function requirePhpScript($script, $area) {
 		//--
 		$script = (string) trim((string)$script);
+		$area = (string) $area;
+		//--
+		$err = '';
 		//--
 		if(strlen((string)$script) < 5) {
-			Smart::raise_error('ERROR: Cannot Include a PHP Script for the area: `'.$area.'` ; script is: '.$script.' ; reason: the file path is too short');
-			return;
+			$err = 'path is too short';
+		} elseif((string)substr((string)$script, -4, 4) !== '.php') {
+			$err = 'path must end with .php file extension';
+		} elseif(!SmartFileSysUtils::check_if_safe_path((string)$script)) {
+			$err = 'path is not relative/safe';
+		} elseif(!SmartFileSystem::is_type_file((string)$script)) {
+			$err = 'was not found';
 		} //end if
-		if((string)substr((string)$script, -4, 4) !== '.php') {
-			Smart::raise_error('ERROR: Cannot Include a PHP Script for the area: `'.$area.'` ; script is: '.$script.' ; reason: the file path must end with .php file extension');
-			return;
-		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)$script)) {
-			Smart::raise_error('ERROR: Cannot Include a PHP Script for the area: `'.$area.'` ; script is: '.$script.' ; reason: the file path is not relative/safe');
-			return;
-		} //end if
-		if(!SmartFileSystem::is_type_file((string)$script)) {
-			Smart::raise_error('ERROR: Cannot Include a PHP Script for the area: `'.$area.'` ; script is: '.$script.' ; reason: the file was not found');
+		//--
+		if((string)$err != '') {
+			Smart::raise_error('ERROR: Cannot Include a PHP Script for the area: `'.$area.'` ; script is: `'.$script.'` ; reason: the file '.$err);
 			return;
 		} //end if
 		//--
@@ -1243,40 +1260,6 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	// this will set the app language by sub-domain (this is a special case because by default the language is set by URL Parameter or Cookie)
-	// if en is the default languages will result something like: (www.dom.ext | ro.dom.ext | de.dom.ext ...): www => en ; ro => ro ; de => de ...
-	// the default language will be mapped by default to www sub-domain ; the rest of available languages will be mapped as language code as sub-domain
-	// Example: $arr_skip_subdomains = [ 'sdom1', 'sdom2', ... ]; // the list of subdomains that are excepted
-	public static function AppSetLanguageBySubdomain(string $default_subdomain='www', array $arr_skip_subdomains=[]) { // r.20200617
-		//--
-		$default_subdomain = (string) trim((string)$default_subdomain);
-		if(strpos((string)$default_subdomain, '.') !== false) {
-			return; // invalid default domain
-		} //end if
-		//--
-		$pdom = (string) trim((string)SmartUtils::get_server_current_subdomain_name());
-		if(((string)$pdom != '') AND ((string)$pdom != (string)$default_subdomain)) {
-			//--
-			if(((string)$pdom != (string)SmartTextTranslations::getDefaultLanguage()) AND (SmartTextTranslations::validateLanguage($pdom))) {
-				SmartTextTranslations::setLanguage($pdom); // set only other languages if valid: RO, DE, ...
-				return;
-			} else {
-				if(!in_array((string)$pdom, (array)$arr_skip_subdomains)) {
-					http_response_code(301); // permanent redirect if the language code is not valid
-					self::outputHttpSafeHeader('Location: '.SmartUtils::get_server_current_protocol().($default_subdomain ? $default_subdomain.'.' : '').SmartUtils::get_server_current_basedomain_name().SmartUtils::get_server_current_request_uri()); // force redirect
-					die('');
-				} //end if
-			} //end if
-			//--
-		} //end if else
-		//--
-		SmartTextTranslations::setLanguage((string)SmartTextTranslations::getDefaultLanguage()); // set default language: EN
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
 	// Avoid run this function before Smart.Framework was loaded, it depends on it
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
 	public static function SingleUser_Mode_Monitor() {
@@ -1314,7 +1297,7 @@ final class SmartFrameworkRuntime {
 				$tmp_sysload_avg[0] = (float) $tmp_sysload_avg[0];
 				if($tmp_sysload_avg[0] > $tmp_max_load) { // protect against system overload over max
 					if(!headers_sent()) {
-						http_response_code(503);
+						http_response_code(504); // gateway timeout
 					} //end if
 					Smart::log_warning('#SMART-FRAMEWORK-HIGH-LOAD-PROTECT#'."\n".'Smart.Framework // Web :: System Overload Protection: The System is Too Busy ... Try Again Later. The Load Averages reached the maximum allowed value by current settings ... ['.$tmp_sysload_avg[0].' of '.$tmp_max_load.']');
 					die(SmartComponents::http_message_503_serviceunavailable('The Service is Too busy, try again later ...', SmartComponents::operation_warn('<b>Smart.Framework // Web :: System Overload Protection</b><br>The Load Averages reached the maximum allowed value by current settings ...', '100%')));
@@ -1326,243 +1309,6 @@ final class SmartFrameworkRuntime {
 		self::$HighLoadMonitorStats = (array) $tmp_sysload_avg;
 		//--
 		return (array) self::$HighLoadMonitorStats;
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	// Avoid run this function before Smart.Framework was loaded, it depends on it
-	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
-	public static function Create_Required_Dirs() {
-		//--
-		if(!defined('SMART_FRAMEWORK_VERSION')) {
-			if(!headers_sent()) {
-				http_response_code(500);
-			} //end if
-			die('Smart Runtime // Create Required Dirs :: Requires Smart.Framework to be loaded ...');
-			return;
-		} //end if
-		//--
-		if(self::$RequiredDirsCreated !== false) {
-			return; // avoid run after it was used by runtime
-		} //end if
-		self::$RequiredDirsCreated = true;
-		//--
-		clearstatcache(true); // do a full clear stat cache at the begining
-		//-- tmp dir
-		$dir = 'tmp/';
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir);
-		} else { // manage debug cleanup
-			if(!self::ifDebug()) {
-				if(SmartFileSystem::is_type_file('tmp/SMART-FRAMEWORK__DEBUG-ON')) {
-					if(SmartFileSystem::is_type_dir('tmp/logs/idx/')) {
-						SmartFileSystem::dir_delete('tmp/logs/idx/', true);
-					} //end if
-					if(SmartFileSystem::is_type_dir('tmp/logs/adm/')) {
-						SmartFileSystem::dir_delete('tmp/logs/adm/', true);
-					} //end if
-					SmartFileSystem::delete('tmp/SMART-FRAMEWORK__DEBUG-ON');
-				} //end if
-			} else {
-				SmartFileSystem::write_if_not_exists('tmp/SMART-FRAMEWORK__DEBUG-ON', 'DEBUG:ON');
-			} //end if else
-		} // end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
-				'App Init ERROR'
-			);
-			return;
-		} //end if
-		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
-			SmartFileSystem::write($dir.'.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n"); // {{{SYNC-TMP-FOLDER-HTACCESS}}}
-			if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
-				Smart::raise_error(
-					'#SMART-FRAMEWORK-CREATE-REQUIRED-FILES#'."\n".'A required file cannot be created in #TMP: `'.$dir.'.htaccess`',
-					'App Init ERROR'
-				);
-				return;
-			} //end if
-		} //end if
-		if(!SmartFileSystem::is_type_file($dir.'index.html')) {
-			SmartFileSystem::write($dir.'index.html', '');
-			if(!SmartFileSystem::is_type_file($dir.'index.html')) {
-				Smart::raise_error(
-					'#SMART-FRAMEWORK-CREATE-REQUIRED-FILES#'."\n".'A required file cannot be created in #TMP: `'.$dir.'index.html`',
-					'App Init ERROR'
-				);
-				return;
-			} //end if
-		} //end if
-		//-- tmp cache dir
-		$dir = 'tmp/cache/';
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir);
-			if(SmartFileSystem::is_type_dir($dir)) {
-				SmartFileSystem::write($dir.'index.html', '');
-			} //end if
-		} // end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
-				'App Init ERROR'
-			);
-			return;
-		} //end if
-		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
-			SmartFileSystem::write($dir.'.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n"); // {{{SYNC-TMP-FOLDER-HTACCESS}}}
-		} //end if
-		//-- tmp logs dir
-		$dir = 'tmp/logs/';
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir);
-			if(SmartFileSystem::is_type_dir($dir)) {
-				SmartFileSystem::write($dir.'index.html', '');
-			} //end if
-		} // end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
-				'App Init ERROR'
-			);
-			return;
-		} //end if
-		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
-			SmartFileSystem::write($dir.'.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n"); // {{{SYNC-TMP-FOLDER-HTACCESS}}}
-		} //end if
-		//-- tmp logs/admin dir
-		$dir = 'tmp/logs/adm/';
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir);
-			if(SmartFileSystem::is_type_dir($dir)) {
-				SmartFileSystem::write($dir.'index.html', '');
-			} //end if
-		} // end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
-				'App Init ERROR'
-			);
-			return;
-		} //end if
-		//-- tmp logs/idx dir
-		$dir = 'tmp/logs/idx/';
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir);
-			if(SmartFileSystem::is_type_dir($dir)) {
-				SmartFileSystem::write($dir.'index.html', '');
-			} //end if
-		} // end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
-				'App Init ERROR'
-			);
-			return;
-		} //end if
-		//-- tmp sessions dir
-		$dir = 'tmp/sessions/';
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir);
-			if(SmartFileSystem::is_type_dir($dir)) {
-				SmartFileSystem::write($dir.'index.html', '');
-			} //end if
-		} // end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
-				'App Init ERROR'
-			);
-			return;
-		} //end if
-		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
-			SmartFileSystem::write($dir.'.htaccess', trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n".trim((string)SMART_FRAMEWORK_HTACCESS_FORBIDDEN)."\n"); // {{{SYNC-TMP-FOLDER-HTACCESS}}}
-		} //end if
-		//-- wpub dir
-		$dir = 'wpub/'; // {{{SYNC-WPUB-DIR}}}
-		$ctrlfile = $dir.'#wpub';
-		$htfile = $dir.'.htaccess';
-		$robotsfile = $dir.'robots.txt';
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir);
-			if(SmartFileSystem::is_type_dir($dir)) {
-				SmartFileSystem::write($dir.'index.html', '');
-				SmartFileSystem::write($robotsfile, 'User-agent: *'."\n".'Disallow: *'); // by default avoid robots to index it ; this file can be edited manually
-			} //end if
-		} // end if
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: #WEB-PUBLIC Folder: `'.$dir.'` does NOT exists !',
-				'App Init ERROR'
-			);
-			return;
-		} //end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: #WEB-PUBLIC Folder: `'.$dir.'` is NOT writable !',
-				'App Init ERROR'
-			);
-			return;
-		} //end if
-		if(!SmartFileSystem::is_type_file($ctrlfile)) {
-			SmartFileSystem::write($ctrlfile, 'FileName: #wpub (#WEB-PUBLIC)'."\n".'Created by: App-Runtime'."\n".date('Y-m-d H:i:s O'));
-			if(!SmartFileSystem::is_type_file($ctrlfile)) {
-				Smart::raise_error(
-					__METHOD__."\n".'Cannot Connect to FileSystem #WEB-PUBLIC, the control file is missing `'.$ctrlfile.'`',
-					'App Init ERROR'
-				);
-				return;
-			} //end if
-		} //end if
-		if(!SmartFileSystem::is_type_file($htfile)) {
-			SmartFileSystem::write($htfile, (string)trim((string)SMART_FRAMEWORK_HTACCESS_NOEXECUTION)."\n"); // trim((string)SMART_FRAMEWORK_HTACCESS_NOINDEXING)."\n".
-			if(!SmartFileSystem::is_type_file($htfile)) {
-				Smart::raise_error(
-					__METHOD__."\n".'The `.htaccess` file is missing on FileSystem #WEB-PUBLIC: '.$htfile,
-					'App Init ERROR'
-				);
-				return;
-			} //end if
-		} //end if
-		//--
-		$dir = '#db/'; // {{{SYNC-#DB-FOLDER-HTACCESS}}}
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir, false, true); // allow protected paths
-		} //end if
-		if(!SmartFileSystem::have_access_write($dir)) {
-			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
-				'App Init ERROR'
-			);
-			return;
-		} //end if
-		//--
-		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
-			if(@file_put_contents((string)$dir.'.htaccess', (string)'### Smart.Framework // '.__METHOD__.' @ HtAccess Data Protection ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', LOCK_EX)) {
-				SmartFileSystem::fix_file_chmod((string)$dir.'.htaccess'); // apply file chmod
-			} //end if
-			if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
-				Smart::raise_error(
-					'#SMART-FRAMEWORK-CREATE-REQUIRED-FILES#'."\n".'A required file cannot be created in #DB: `'.$dir.'.htaccess`',
-					'App Init ERROR'
-				);
-				return;
-			} //end if
-		} //end if
-		if(!SmartFileSystem::is_type_file($dir.'index.html')) {
-			if(@file_put_contents((string)$dir.'index.html', '', LOCK_EX)) {
-				SmartFileSystem::fix_file_chmod((string)$dir.'index.html'); // apply file chmod
-			} //end if
-			if(!SmartFileSystem::is_type_file($dir.'index.html')) {
-				Smart::raise_error(
-					'#SMART-FRAMEWORK-CREATE-REQUIRED-FILES#'."\n".'A required file cannot be created in #DB: `'.$dir.'index.html`',
-					'App Init ERROR'
-				);
-				return;
-			} //end if
-		} //end if
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -1591,14 +1337,20 @@ final class SmartFrameworkRuntime {
 		$the_current_url = SmartUtils::get_server_current_url();
 		$the_current_script = SmartUtils::get_server_current_script();
 		//--
-		if((SMART_SOFTWARE_FRONTEND_ENABLED === false) AND (SMART_SOFTWARE_BACKEND_ENABLED === false)) { // both frontend and backend are disabled
+		$is_disabled_frontent = (bool) ((defined('SMART_SOFTWARE_FRONTEND_DISABLED') && (SMART_SOFTWARE_FRONTEND_DISABLED === true)) ? true : false);
+		$is_disabled_backend  = (bool) ((defined('SMART_SOFTWARE_BACKEND_DISABLED')  && (SMART_SOFTWARE_BACKEND_DISABLED === true))  ? true : false);
+		//--
+		if(
+			($is_disabled_frontent === true) AND
+			($is_disabled_backend  === true)
+		) { // both frontend and backend are disabled, avoid circular redirect from below
 			if(!headers_sent()) {
 				http_response_code(500);
 			} //end if
 			die((string)SmartComponents::http_error_message('App Config ERROR', 'The FRONTEND and the BACKEND of this application are both DISABLED in the config/init ! ...'));
 			return;
 		} //end if
-		if((SMART_SOFTWARE_FRONTEND_ENABLED === false) AND ((string)$the_current_script == 'index.php')) {
+		if(($is_disabled_frontent === true) AND ((string)$the_current_script == 'index.php')) {
 			$url_redirect = $the_current_url.'admin.php';
 			if(isset($_SERVER['QUERY_STRING'])) {
 				if((string)$_SERVER['QUERY_STRING'] != '') {
@@ -1606,7 +1358,7 @@ final class SmartFrameworkRuntime {
 				} //end if
 			} //end if
 		} //end if
-		if((SMART_SOFTWARE_BACKEND_ENABLED === false) AND ((string)$the_current_script == 'admin.php')) {
+		if(($is_disabled_backend === true) AND ((string)$the_current_script == 'admin.php')) {
 			$url_redirect = $the_current_url.'index.php';
 			if(isset($_SERVER['QUERY_STRING'])) {
 				if((string)$_SERVER['QUERY_STRING'] != '') {
@@ -1771,7 +1523,7 @@ final class SmartFrameworkRuntime {
  * @access 		private
  * @internal
  *
- * @version 	v.20210331
+ * @version 	v.20210401
  *
  */
 interface SmartInterfaceAppBootstrap {
@@ -1781,7 +1533,16 @@ interface SmartInterfaceAppBootstrap {
 
 	//=====
 	/**
-	 * App Bootstrap Run :: This function is automatically called when App bootstraps.
+	 * App Bootstrap Init :: This function is automatically called when App bootstraps before Run(), by the smart runtime.
+	 * By example it can be used to create the required dirs and files on local file system.
+	 * THIS MUST BE EXTENDED TO HANDLE THE REQUIRED CODE EXECUTION AT THE BOOTSTRAP INIT SEQUENCE
+	 * RETURN: -
+	 */
+	public static function Initialize();
+
+	//=====
+	/**
+	 * App Bootstrap Run :: This function is automatically called when App bootstraps after Initialize(), by the smart runtime.
 	 * By example it can be used to connect to a database, install monitor or other operations.
 	 * THIS MUST BE EXTENDED TO HANDLE THE REQUIRED CODE EXECUTION AT THE BOOTSTRAP RUN SEQUENCE
 	 * RETURN: -
@@ -1792,11 +1553,12 @@ interface SmartInterfaceAppBootstrap {
 
 	//=====
 	/**
-	 * App Bootstrap Authenticate :: This function must implement Authentication if any.
-	 * IT MUST HANDLE OVERALL AUTHENTICATION (IF ANY) ...
+	 * App Bootstrap Authenticate :: This function is automatically called when App bootstraps after Initialize() and Run(), by the middleware service only when the bootstrap sequence completed.
+	 * By example it can be used to authenticate / login into any area: admin or index ... or as well not providing any authentication at all if not required so ...
+	 * THIS MUST BE EXTENDED TO HANDLE THE REQUIRED CODE EXECUTION AT THE BOOTSTRAP AUTHENTICATE SEQUENCE
 	 * RETURN: -
 	 */
-	public static function Authenticate($area);
+	public static function Authenticate(string $area);
 	//=====
 
 
@@ -1820,7 +1582,7 @@ interface SmartInterfaceAppBootstrap {
  * @access 		private
  * @internal
  *
- * @version 	v.20210331
+ * @version 	v.20210401
  *
  */
 interface SmartInterfaceAppInfo {

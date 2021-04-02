@@ -1636,15 +1636,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		//--
 		if($this->directoutput === true) { // OK
 			//--
-			$output_buffering_status = @ob_get_status();
-			//-- type: 0 = PHP_OUTPUT_HANDLER_INTERNAL ; 1 = PHP_OUTPUT_HANDLER_USER
-			if(is_array($output_buffering_status)) {
-				if(((string)$output_buffering_status['type'] == '0') AND ($output_buffering_status['chunk_size'] > 0)) { // avoid to break user level output buffering(s), so enable this just for level zero (internal, if set in php.ini)
-					@ob_flush();
-				} //end if
-			} //end if
-			//--
-			@flush();
+			SmartFrameworkRuntime::InstantFlush();
 			//--
 		} else { // WARNING: N/A
 			//--

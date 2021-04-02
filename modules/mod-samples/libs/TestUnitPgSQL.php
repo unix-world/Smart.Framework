@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200605
+ * @version 	v.20210401
  *
  */
 final class TestUnitPgSQL {
@@ -47,7 +47,8 @@ final class TestUnitPgSQL {
 		//--
 
 		//--
-		$cfg_pgsql = (array) \Smart::get_from_config('pgsql');
+		$cfg_pgsql = (array) \Smart::get_from_config('pgsql', 'array');
+		$cfg_pgsql = (array) \SmartMysqliDb::conform_config_array((array)$cfg_pgsql);
 		//--
 
 		//--

@@ -13,11 +13,36 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - FileSystem Utils
-// DEPENDS:
-//	* Smart::
+// the constant SMART_FRAMEWORK_RUNTIME_MODE can change the behaviour of this library ; if set to 'task' will override the allow access to protected folders and will always allow ...
 //======================================================
 
 // [REGEX-SAFE-OK] ; [PHP8]
+
+//--
+if(!defined('SMART_FRAMEWORK_CHMOD_DIRS')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_CHMOD_DIRS');
+} //end if
+if(
+	(!is_int(SMART_FRAMEWORK_CHMOD_DIRS)) OR
+	(!in_array((string)str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_DIRS), 4, '0', STR_PAD_LEFT), [ '0700', '0750', '0755', '0770', '0775', '0777' ]))
+) {
+	@http_response_code(500);
+	die('Invalid INIT constant value for SMART_FRAMEWORK_CHMOD_DIRS: '.SMART_FRAMEWORK_CHMOD_DIRS.' (decimal) / '.str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_DIRS), 4, '0', STR_PAD_LEFT).' (octal)');
+} //end if
+//--
+if(!defined('SMART_FRAMEWORK_CHMOD_FILES')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_CHMOD_FILES');
+} //end if
+if(
+	(!is_int(SMART_FRAMEWORK_CHMOD_DIRS)) OR
+	(!in_array((string)str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_FILES), 4, '0', STR_PAD_LEFT), [ '0600', '0640', '0644', '0660', '0664', '0666' ]))
+) {
+	@http_response_code(500);
+	die('Invalid INIT constant value for SMART_FRAMEWORK_CHMOD_FILES: '.SMART_FRAMEWORK_CHMOD_FILES.' (decimal) / '.str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_FILES), 4, '0', STR_PAD_LEFT).' (octal)');
+} //end if
+//--
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -60,7 +85,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210330
+ * @version 	v.20210331
  * @package 	@Core:FileSystem
  *
  */
@@ -83,16 +108,26 @@ final class SmartFileSysUtils {
 		} //end if
 		//--
 		$last = (string) strtoupper((string)substr((string)$inival, -1, 1));
-		$value = (int) $inival;
+		$value = (int) intval((string)$inival);
 		//--
-		if((string)$last === 'K') {
+		if((string)$last === 'K') { // kilo
 			$value *= 1000;
-		} elseif((string)$last === 'M') {
+		} elseif((string)$last === 'M') { // mega
 			$value *= 1000 * 1000;
-		} elseif((string)$last === 'G') {
+		} elseif((string)$last === 'G') { // giga
 			$value *= 1000 * 1000 * 1000;
-		} elseif((string)$last === 'T') {
+		} elseif((string)$last === 'T') { // tera
 			$value *= 1000 * 1000 * 1000 * 1000;
+		} elseif((string)$last === 'P') { // peta
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000;
+		/* the below unit of measures may overflow the max 64-bit integer value with higher values set in php.ini ... anyway there is no case to upload such large files ...
+		} elseif((string)$last === 'E') { // exa
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
+		} elseif((string)$last === 'Z') { // zetta
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
+		} elseif((string)$last === 'Y') { // yotta
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
+		*/
 		} //end if else
 		//--
 		return (int) Smart::format_number_int($value, '+');
@@ -124,7 +159,7 @@ final class SmartFileSysUtils {
 			return 0;
 		} //end if
 		//--
-		if(strlen((string)$y_fname) > 255) {
+		if((int)strlen((string)$y_fname) > 255) {
 			return 0;
 		} //end if
 		//--
@@ -148,6 +183,12 @@ final class SmartFileSysUtils {
 	 * @return 	0/1												:: returns 1 if VALID ; 0 if INVALID
 	 */
 	public static function check_if_safe_path($y_path, $y_deny_absolute_path='yes', $y_allow_protected_relative_paths='no') { // {{{SYNC-FS-PATHS-CHECK}}}
+		//-- override
+		if(defined('SMART_FRAMEWORK_RUNTIME_MODE')) {
+			if((string)SMART_FRAMEWORK_RUNTIME_MODE == 'task') { // {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
+				$y_allow_protected_relative_paths = 'yes'; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
 		//-- dissalow empty paths
 		if((string)trim((string)$y_path) == '') {
 			return 0;
@@ -197,6 +238,12 @@ final class SmartFileSysUtils {
 	 *
 	 */
 	public static function raise_error_if_unsafe_path($y_path, $y_deny_absolute_path='yes', $y_allow_protected_relative_paths='no') { // {{{SYNC-FS-PATHS-CHECK}}}
+		//-- override
+		if(defined('SMART_FRAMEWORK_RUNTIME_MODE')) {
+			if((string)SMART_FRAMEWORK_RUNTIME_MODE == 'task') { // {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
+				$y_allow_protected_relative_paths = 'yes'; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
 		//-- dissalow empty paths
 		if((string)trim((string)$y_path) == '') {
 			//--
@@ -252,7 +299,7 @@ final class SmartFileSysUtils {
 			} //end if
 		} //end if
 		//-- test max path length
-		if(strlen((string)$y_path) > 1024) {
+		if((int)strlen((string)$y_path) > 1024) {
 			//--
 			Smart::raise_error(
 				'Smart.Framework // FileSystemUtils // Check Max Path Length (1024) // ACCESS DENIED to invalid path: '.$y_path,
@@ -387,7 +434,7 @@ final class SmartFileSysUtils {
 	 */
 	public static function add_dir_last_slash($y_path) {
 		//--
-		$y_path = (string) trim((string)Smart::fix_path_separator(trim((string)$y_path)));
+		$y_path = (string) trim((string)Smart::fix_path_separator((string)trim((string)$y_path)));
 		//--
 		if(((string)$y_path == '') OR ((string)$y_path == '.') OR ((string)$y_path == './')) {
 			return './'; // this is a mandatory security fix for the cases when used with dirname() which may return empty or just .
@@ -490,7 +537,7 @@ final class SmartFileSysUtils {
 			return (string) $file;
 		} //end if
 		//--
-		$file = (string) self::version_remove(trim((string)$file));
+		$file = (string) self::version_remove((string)trim((string)$file));
 		//--
 		$file_no_ext = (string) self::get_noext_file_name_from_path($file); // fix: removed strtolower()
 		$file_ext = (string) self::get_file_extension_from_path($file); // fix: removed strtolower()
@@ -580,7 +627,7 @@ final class SmartFileSysUtils {
 	 */
 	public static function get_dir_from_path($y_path) {
 		//--
-		$y_path = Smart::safe_pathname($y_path);
+		$y_path = (string) Smart::safe_pathname($y_path);
 		//--
 		if((string)$y_path == '') {
 			return '';
@@ -588,7 +635,7 @@ final class SmartFileSysUtils {
 		//--
 		$arr = (array) Smart::path_info((string)$y_path);
 		//--
-		return (string) trim(Smart::safe_pathname((string)$arr['dirname'])); // this may contain /
+		return (string) trim((string)Smart::safe_pathname((string)$arr['dirname'])); // this may contain /
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -603,7 +650,7 @@ final class SmartFileSysUtils {
 	 */
 	public static function get_file_name_from_path($y_path) {
 		//--
-		$y_path = Smart::safe_pathname($y_path);
+		$y_path = (string) Smart::safe_pathname($y_path);
 		//--
 		if((string)$y_path == '') {
 			return '';
@@ -611,7 +658,7 @@ final class SmartFileSysUtils {
 		//--
 		$arr = (array) Smart::path_info((string)$y_path);
 		//--
-		return (string) trim(Smart::safe_filename((string)$arr['basename']));
+		return (string) trim((string)Smart::safe_filename((string)$arr['basename']));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -626,7 +673,7 @@ final class SmartFileSysUtils {
 	 */
 	public static function get_noext_file_name_from_path($y_path) {
 		//--
-		$y_path = Smart::safe_pathname($y_path);
+		$y_path = (string) Smart::safe_pathname($y_path);
 		//--
 		if((string)$y_path == '') {
 			return '';
@@ -637,17 +684,17 @@ final class SmartFileSysUtils {
 		$tmp_ext = (string) $arr['extension'];
 		$tmp_file = (string) $arr['basename'];
 		//--
-		$str_len = strlen($tmp_file) - strlen($tmp_ext) - 1;
+		$str_len = (int) ((int)strlen($tmp_file) - (int)strlen($tmp_ext) - 1);
 		//--
-		if(strlen($tmp_ext) > 0) {
+		if((int)strlen($tmp_ext) > 0) {
 			// with .extension
-			$tmp_xfile = substr($tmp_file, 0, $str_len);
+			$tmp_xfile = (string) substr((string)$tmp_file, 0, (int)$str_len);
 		} else {
 			// no extension
-			$tmp_xfile = $tmp_file;
+			$tmp_xfile = (string) $tmp_file;
 		} //end if else
 		//--
-		return (string) trim(Smart::safe_filename((string)$tmp_xfile));
+		return (string) trim((string)Smart::safe_filename((string)$tmp_xfile));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -662,7 +709,7 @@ final class SmartFileSysUtils {
 	 */
 	public static function get_file_extension_from_path($y_path) {
 		//--
-		$y_path = Smart::safe_pathname($y_path);
+		$y_path = (string) Smart::safe_pathname($y_path);
 		//--
 		if((string)$y_path == '') {
 			return '';
@@ -670,7 +717,7 @@ final class SmartFileSysUtils {
 		//--
 		$arr = (array) Smart::path_info((string)$y_path);
 		//--
-		return (string) trim((string)strtolower(Smart::safe_filename((string)$arr['extension'])));
+		return (string) trim((string)strtolower((string)Smart::safe_filename((string)$arr['extension'])));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -694,7 +741,7 @@ final class SmartFileSysUtils {
 		//--
 		$y_id = (string) strtoupper((string)trim((string)$y_id));
 		//--
-		if((strlen((string)$y_id) != 10) OR (!preg_match('/^[A-Z0-9]+$/', (string)$y_id))) {
+		if(((int)strlen((string)$y_id) != 10) OR (!preg_match('/^[A-Z0-9]+$/', (string)$y_id))) {
 			Smart::log_warning(__METHOD__.'() // Prefixed Path UID10(B36) // Invalid ID ['.$y_id.']');
 			$y_id = '0000000000'; // str-10.B36 (uuid10)
 		} //end if
@@ -728,9 +775,9 @@ final class SmartFileSysUtils {
 	 */
 	public static function prefixed_sha1_path($y_id) { // here the number of levels does not matter too much as at the end will be a cache file
 		//--
-		$y_id = (string) strtolower(trim((string)$y_id));
+		$y_id = (string) strtolower((string)trim((string)$y_id));
 		//--
-		if((strlen((string)$y_id) != 40) OR (!preg_match('/^[a-f0-9]+$/', (string)$y_id))) {
+		if(((int)strlen((string)$y_id) != 40) OR (!preg_match('/^[a-f0-9]+$/', (string)$y_id))) {
 			Smart::log_warning(__METHOD__.'() // Prefixed Path SHA1-40(B16) // Invalid ID ['.$y_id.']');
 			$y_id = '0000000000000000000000000000000000000000'; // str-40.hex (sha1)
 		} //end if
@@ -760,8 +807,8 @@ final class SmartFileSysUtils {
 		//--
 		$yfile = (string) Smart::safe_pathname((string)$yfile);
 		//--
-		$file = (string) self::get_file_name_from_path($yfile); // bug fixed: if a full path is sent, try to get just the file name to return
-		$lfile = (string) strtolower($file);
+		$file = (string) self::get_file_name_from_path((string)$yfile); // bug fixed: if a full path is sent, try to get just the file name to return
+		$lfile = (string) strtolower((string)$file);
 		//--
 		if(in_array((string)$lfile, [ // all lowercase as file is already strtolower
 			'#release',
@@ -1374,7 +1421,7 @@ final class SmartFileSysUtils {
 			//--
 			return array(
 				(string) $type, // mime type
-				(string) $disp.'; filename="'.Smart::safe_filename($file, '-').'"', // mime header disposition suffix
+				(string) $disp.'; filename="'.Smart::safe_filename((string)$file, '-').'"', // mime header disposition suffix
 				(string) $disp // mime disposition
 			);
 			//--
@@ -1417,7 +1464,7 @@ final class SmartFileSysUtils {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
  * @depends 	classes: Smart
- * @version 	v.20210330
+ * @version 	v.20210331
  * @package 	@Core:FileSystem
  *
  */
@@ -2674,6 +2721,12 @@ final class SmartFileSystem {
 	 * @return 	INTEGER								:: 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)
 	 */
 	public static function dir_create($dir_name, $recursive=false, $allow_protected_paths=false) {
+		//-- override (this is actually done automatically in raise_error_if_unsafe_path and check_if_safe_path but reflect also here this as there are logs below ...
+		if(defined('SMART_FRAMEWORK_RUNTIME_MODE')) {
+			if((string)SMART_FRAMEWORK_RUNTIME_MODE == 'task') { // {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
+				$allow_protected_paths = true; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
 		//--
 		$dir_name = (string) $dir_name;
 		//--
@@ -2799,11 +2852,11 @@ final class SmartFileSystem {
 		$protected_dirsource = (string) $protected_dirsource;
 		$protected_dirdest = (string) $protected_dirdest;
 		//--
-		if(strlen($dirsource) <= 0) {
+		if((int)strlen((string)$dirsource) <= 0) {
 			Smart::log_warning(__METHOD__.'() // Copy Dir: The Source Dir Name is Empty !');
 			return 0; // empty source dir
 		} //end if
-		if(strlen($dirdest) <= 0) {
+		if((int)strlen((string)$dirdest) <= 0) {
 			Smart::log_warning(__METHOD__.'() // Copy Dir: The Destination Dir Name is Empty !');
 			return 0; // empty destination dir
 		} //end if
@@ -2811,10 +2864,10 @@ final class SmartFileSystem {
 		clearstatcache(true, $dirsource);
 		clearstatcache(true, $dirdest);
 		//--
-		if(strlen($protected_dirsource) <= 0) {
+		if((int)strlen((string)$protected_dirsource) <= 0) {
 			$protected_dirsource = (string) $dirsource; // 1st time
 		} //end if
-		if(strlen($protected_dirdest) <= 0) {
+		if((int)strlen((string)$protected_dirdest) <= 0) {
 			if(self::path_exists($dirdest)) {
 				Smart::log_warning(__METHOD__.'() // Copy Dir: The Destination Dir exists: S='.$destination);
 				return 0;
@@ -3263,39 +3316,6 @@ final class SmartFileSystem {
 	//================================================================
 
 
-	//================================================================
-	/*** TO BE DONE IN THE FUTURE TO EXTEND THE SEARCH PATTER FILTERING CAPABILITIES ON GET STORAGE
-	//================================================================
-	// check a file by given filter
-	// returns 1/0 if valid or not ...
-	private static function test_filename_file_by_filter($file, $filter_fname, $filter_fext, $filter_special_extensions) {
-		//--
-		$out = 0;
-		//--
-		if(
-			(
-				(((string)$filter_fname == '') AND ((string)$filter_fext == '')) OR // both filters by name or extension are empty
-				(((string)$filter_fname != '') AND (stripos($file, $filter_fname) !== false)) OR // filter by name
-				(((string)$filter_fext != '') AND ((string)strtolower(SmartFileSysUtils::get_file_extension_from_path($file)) == (string)strtolower($filter_fext))) // filter by extension
-			)
-			AND (
-				(Smart::array_size($filter_special_extensions) <= 0) OR
-				((Smart::array_size($filter_special_extensions) > 0) AND (in_array(strtolower(SmartFileSysUtils::get_file_extension_from_path($file)), $filter_special_extensions)))
-			)
-		) {
-			//--
-			$out = 1;
-			//--
-		} //end if
-		//--
-		return $out;
-		//--
-	} //END FUNCTION
-	//================================================================
-	***/
-	//================================================================
-
-
 } //END CLASS
 
 
@@ -3336,7 +3356,7 @@ final class SmartFileSystem {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be safe
  *
  * @depends 	classes: Smart
- * @version 	v.20210330
+ * @version 	v.20210331
  * @package 	@Core:FileSystem
  *
  */
@@ -3384,16 +3404,16 @@ final class SmartGetFileSystem {
 	//================================================================
 	private function init_vars() {
 		//--
-		$this->num_size = 0;
-		$this->num_dirs_size = 0;
-		$this->num_files_size = 0;
-		$this->num_links = 0;
-		$this->num_dirs = 0;
-		$this->num_files = 0;
+		$this->num_size 			= 0;
+		$this->num_dirs_size 		= 0;
+		$this->num_files_size 		= 0;
+		$this->num_links 			= 0;
+		$this->num_dirs 			= 0;
+		$this->num_files 			= 0;
 		$this->pattern_file_matches = array();
-		$this->pattern_dir_matches = array();
-		$this->scanned_folders = array();
-		$this->errors_arr = array();
+		$this->pattern_dir_matches 	= array();
+		$this->scanned_folders 		= array();
+		$this->errors_arr 			= array();
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -3589,8 +3609,8 @@ final class SmartGetFileSystem {
 							$tmp_allow_addition = 1;
 							$tmp_add_pattern = 0;
 							//-- this is for #private folders, will prevent searching in folders containing for example this file: .private-folder but can be overriden by the $search_prevent_override option exluding a particular path like folder/private/user1
-							if((strlen($search_prevent_file) > 0) AND (SmartFileSystem::is_type_file($dir_name.$search_prevent_file))) {
-								if((strlen($search_prevent_override) <= 0) OR ((strlen($search_prevent_override) > 0) AND (!SmartFileSystem::is_type_file($dir_name.$search_prevent_override)))) {
+							if(((int)strlen($search_prevent_file) > 0) AND (SmartFileSystem::is_type_file($dir_name.$search_prevent_file))) {
+								if(((int)strlen($search_prevent_override) <= 0) OR (((int)strlen($search_prevent_override) > 0) AND (!SmartFileSystem::is_type_file($dir_name.$search_prevent_override)))) {
 									$tmp_allow_addition = 0;
 								} //end if
 							} //end if

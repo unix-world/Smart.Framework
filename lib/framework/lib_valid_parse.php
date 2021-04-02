@@ -13,9 +13,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - Validators and Parsers
-// DEPENDS:
-//	* Smart::
-//  * SmartUnicode::
 //======================================================
 
 
@@ -204,7 +201,7 @@ final class SmartParser {
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode
- * @version     v.20210312
+ * @version     v.20210401
  * @package     @Core:Extra
  *
  */
@@ -497,9 +494,8 @@ final class SmartValidator {
 	 * @return 	STRING							:: The IP address if valid (as string) or an empty string if Invalid
 	 */
 	public static function validate_filter_ip_address($ip) {
-		//--
-		$ip = @filter_var((string)$ip, FILTER_VALIDATE_IP);
-		//--
+		//-- {{{SYNC-IP-VALIDATE}}}
+		$ip = filter_var((string)$ip, FILTER_VALIDATE_IP); // if fail will return FALSE
 		if($ip === false) {
 			$ip = '';
 		} //end if
