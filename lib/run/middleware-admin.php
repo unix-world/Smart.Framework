@@ -39,7 +39,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A]@v.7.2.1');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210403
+ * @version		20210407
  *
  */
 final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
@@ -301,19 +301,33 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		} //end if
 		//--
 		$appStatusCode = 0; // init (for PHP8)
-		$appTestInit = $appModule->Initialize(); // mixed: null (void) / FALSE
-		if($appTestInit !== false) {
-			$appStatusCode = (int) $appModule->Run();
-		} //end if
-		$appModule->ShutDown();
+		$appSkipRun = false;
+		//--
+		$appStatusCode = $appModule->Initialize(); // mixed: null (void) / FALSE / TRUE / INT Status-Code
 		$appSettings = (array) $appModule->PageViewGetCfgs();
-		if((isset($appSettings['status-code'])) AND ((int)$appSettings['status-code'] > 0)) { // {{{SYNC-SMART-FRAMEWORK-HANDLE-HTTP-STATUS-CODE}}}
-			$appStatusCode = (int) $appSettings['status-code']; // this rewrites what the Run() function returns, which is very OK as this is authoritative !
+		if(
+			(($appStatusCode === false) OR (($appStatusCode !== true) AND ((int)$appStatusCode != 0))) OR
+			((isset($appSettings['status-code'])) AND ((int)$appSettings['status-code'] != 0)) // {{{SYNC-SMART-FRAMEWORK-HANDLE-HTTP-STATUS-CODE}}}
+		) {
+			$appSkipRun = true; // skip Run
+		} else {
+			$appStatusCode = $appModule->Run(); // mixed: null (void) / FALSE / TRUE / INT Status-Code
+			$appSettings = (array) $appModule->PageViewGetCfgs();
 		} //end if
-		if($appTestInit === false) {
-			if((int)$appStatusCode < 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
-				$appStatusCode = 500; // if Initialize returns FALSE then expects also and explicit error code (>= 400) and perhaps a message set via $appSettings['status-code'] ; if none implemented, raise the 500 HTTP Status Code
+		if($appStatusCode === false) {
+			$appStatusCode = 500;
+		} elseif($appStatusCode === true) {
+			$appStatusCode = 200;
+		} else {
+			$appStatusCode = intval($appStatusCode);
+		} //end if
+		$appStatusCode = (int) $appStatusCode; // ensure int
+		$appModule->ShutDown();
+		if((isset($appSettings['status-code'])) AND ((int)$appSettings['status-code'] != 0)) { // {{{SYNC-SMART-FRAMEWORK-HANDLE-HTTP-STATUS-CODE}}}
+			if(((int)$appStatusCode != 0) AND ((int)$appStatusCode != (int)$appSettings['status-code'])) {
+				Smart::log_warning('The middleware service '.$the_midmark.' detected different status codes in controller: '.$page.' ; Run='.(int)$appStatusCode.' ; Status-Code='.(int)$appSettings['status-code']);
 			} //end if
+			$appStatusCode = (int) $appSettings['status-code']; // this rewrites what the Run() function returns, which is very OK as this is authoritative !
 		} //end if
 		//--
 		$appRawHeads = (array) $appModule->PageViewGetRawHeaders();
@@ -322,7 +336,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 			$ctrl_output = ob_get_contents();
 			ob_end_clean();
 			if((string)$ctrl_output != '') {
-				Smart::log_warning('The middleware service '.$the_midmark.' detected an illegal output in the controller: '.$page."\n".'The result of this output is: '.$ctrl_output);
+				Smart::log_warning('The middleware service '.$the_midmark.' detected an illegal output in controller: '.$page."\n".'The result of this output is: '.$ctrl_output);
 			} //end if
 			$ctrl_output = '';
 		} else {
@@ -388,7 +402,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 				if((string)$appSettings['redirect-url'] != '') { // expects a valid URL
 					$the_redirect_link = '<a href="'.Smart::escape_html((string)$appSettings['redirect-url']).'">'.Smart::escape_html((string)$appSettings['redirect-url']).'</a>';
 					if(headers_sent()) {
-						Smart::log_warning('Headers Already Sent before Redirection: ['.$appStatusCode.'] ; URL: '.$appSettings['redirect-url']);
+						Smart::log_warning('Headers Already Sent in controller ['.$page.'] before Redirection: ['.$appStatusCode.'] ; URL: '.$appSettings['redirect-url']);
 						self::Raise500Error('The app failed to Redirect to: '.$the_redirect_link);
 						return;
 					} //end if
@@ -403,7 +417,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 					echo '<h1>'.Smart::escape_html($the_redirect_text).'</h1>'.'<br>'.'If the page redirection fails, click on the below link:'.'<br>'.$the_redirect_link;
 					return; // break stop
 				} else {
-					Smart::log_warning('Redirection HTTP Status ['.(int)$appStatusCode.'] was used in a page controller without a redirection URL ...');
+					Smart::log_warning('Redirection HTTP Status ['.(int)$appStatusCode.'] was used in controller ['.$page.'] without a redirection URL ...');
 				} //end if
 				break;
 			//-- extended 3xx statuses (CACHE CONTROL)
@@ -411,7 +425,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 				if(!headers_sent()) {
 					http_response_code(304); // Not Modified (use it carefully)
 				} else {
-					Smart::log_warning('Headers Already Sent before HTTP-STATUS='.(int)$appStatusCode);
+					Smart::log_warning('Headers Already Sent in controller ['.$page.'] before HTTP-STATUS='.(int)$appStatusCode);
 				} //end if else
 				break;
 			//-- extended 2xx statuses: NOTICE / WARNING / ERROR that can be used for REST / API
@@ -419,28 +433,31 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 				if(!headers_sent()) {
 					http_response_code(208); // Already Reported (this should be used only as an alternate SUCCESS code instead of 200 for ERRORS)
 				} else {
-					Smart::log_warning('Headers Already Sent before HTTP-STATUS='.(int)$appStatusCode);
+					Smart::log_warning('Headers Already Sent in controller ['.$page.'] before HTTP-STATUS='.(int)$appStatusCode);
 				} //end if else
 				break;
 			case 203: // WARNING
 				if(!headers_sent()) {
 					http_response_code(203); // Non-Authoritative Information (this should be used only as an alternate SUCCESS code instead of 200 for WARNINGS)
 				} else {
-					Smart::log_warning('Headers Already Sent before HTTP-STATUS='.(int)$appStatusCode);
+					Smart::log_warning('Headers Already Sent in controller ['.$page.'] before HTTP-STATUS='.(int)$appStatusCode);
 				} //end if else
 				break;
 			case 202: // NOTICE
 				if(!headers_sent()) {
 					http_response_code(202); // Accepted (this should be used only as an alternate SUCCESS code instead of 200 for NOTICES)
 				} else {
-					Smart::log_warning('Headers Already Sent before HTTP-STATUS='.(int)$appStatusCode);
+					Smart::log_warning('Headers Already Sent in controller ['.$page.'] before HTTP-STATUS='.(int)$appStatusCode);
 				} //end if else
 				break;
 			//-- DEFAULT: OK
 			case 200:
 			default: // any other codes not listed above are not supported and will be interpreted as 200
 				if(headers_sent()) {
-					Smart::log_warning('Headers Already Sent before HTTP-STATUS=200');
+					Smart::log_warning('Headers Already Sent in controller ['.$page.'] before HTTP-STATUS=200');
+				} //end if
+				if(((int)$appStatusCode != 0) AND ((int)$appStatusCode != 200)) {
+					Smart::log_warning('Invalid HTTP-STATUS='.(int)$appStatusCode.' detected in controller ['.$page.'] ; was set to HTTP-STATUS=200');
 				} //end if
 		} //end switch
 		//--

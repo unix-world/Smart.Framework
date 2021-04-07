@@ -103,7 +103,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210331
+ * @version 	v.20210407
  * @package 	development:Application
  *
  */
@@ -278,14 +278,11 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		$this->charset 			= (string) SMART_FRAMEWORK_CHARSET;											// current charset (ex: UTF-8)
 		$this->timezone 		= (string) SMART_FRAMEWORK_TIMEZONE; 										// current timezone (ex: UTC)
 		//--
-		$this->pageheaders 		= array();
-		$this->pagesettings 	= array();
-		$this->pageview 		= array();
-		$this->availsettings 	= (array) $this->availsettings;
+		$this->pageheaders 		= array(); 																	// Page Current Headers
+		$this->pageview 		= array(); 																	// Page Current View
 		//--
-		for($i=0; $i<count($this->availsettings); $i++) {
-			$this->pagesettings[(string)$this->availsettings[$i]] = null; // fix for PHP8
-		} //end for
+		$this->availsettings 	= (array) $this->availsettings; 											// Page Available Settings
+		$this->pagesettings 	= (array) Smart::array_init_keys([], (array)$this->availsettings); 			// Page Current Settings ; init keys is fix for PHP8
 		//--
 	} //END FUNCTION
 	//=====
@@ -1650,20 +1647,10 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 
 	//=====
 	/**
-	 * The Controller Runtime - This function is required to be re-defined in all controllers
-	 *
-	 * @return 	INTEGER					:: *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 202/203/208 (OK with notice/warning/error messages - used only for REST/APIs), 301 (Permanent Redirect), 302 (Temporary Redirect), 404 (Not Found), 403 (Forbidden), 401 (Authentication Required), 400 (Error), 429 (Too many Requests), 500 (Internal Error), 502 (Bad Gateway), 503 (Service Unavailable) ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this->PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code)
-	 */
-	abstract public function Run(); //END FUNCTION
-	//=====
-
-
-	//=====
-	/**
-	 * This is the pre Run() function
+	 * This is a pre Run() function
 	 * This function will be called before Run()
 	 *
-	 * @return BOOL 					:: *OPTIONAL* If an ERROR occurs during initialize it can return FALSE to avoid continue and call the Run() method ; ShutDown() method will still be called ; otherwise it can return TRUE or VOID
+	 * @return MIXED 					:: *OPTIONAL* If an ERROR occurs during initialize it can return FALSE or any valid and supported HTTP ERR Status Codes as 4xx / 5xx to avoid continue and dissalow calling the Run() method ; otherwise it can return TRUE or VOID ; or it can return any SUCCESS or REDIRECT HTTP Status Codes 2xx / 3xx and this will also prevent executing Run() method (but in this situation an output, at least 'main' or 'redirect-url' must be set)
 	 */
 	public function Initialize() {
 		// *** optional*** can be redefined in a controller (as a pre-run init, if required) but is not mandatory ...
@@ -1673,8 +1660,18 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 
 	//=====
 	/**
-	 * This is the post Run() function
-	 * This function will be called after Run()
+	 * The Controller Runtime - This function is required to be re-defined in all controllers
+	 *
+	 * @return 	MIXED					:: *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 202/203/208 (OK with notice/warning/error messages - used only for REST/APIs), 301 (Permanent Redirect), 302 (Temporary Redirect), 404 (Not Found), 403 (Forbidden), 401 (Authentication Required), 400 (Error), 429 (Too many Requests), 500 (Internal Error), 502 (Bad Gateway), 503 (Service Unavailable) ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this->PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code) ; It also can return VOID or TRUE as HTTP Status 200 or return FALSE as HTTP Status 500
+	 */
+	abstract public function Run(); //END FUNCTION
+	//=====
+
+
+	//=====
+	/**
+	 * This is the post Initialize() / post Run() function
+	 * This function will be called after Initialize() and Run() wether or not Run() is executed (Initialize() may prevent Run() to be executed but in any case Shutdown() will be executed ...)
 	 *
 	 * This function is the (real) Controller Destructor - This function is optional and can be re-defined in controllers where a destructor is required.
 	 * It will replace the class destructor __destruct() which is NOT SAFE in all cases (see php bug #31570).
@@ -1688,7 +1685,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 * This function (by replacing __destruct()) can be used if you have to cleanup a temporary folder (tmp/) after Run().
 	 * Because of the PHP Bug #31570, the __destruct() can't operate on relative paths and will produce wrong and unexpected results !!!
 	 *
-	 * @returns VOID :: This function does not return anything
+	 * @returns VOID :: This function does not return anything and if it sets any page settings, configs, status codes, headers or anything else will be ignored ; the purpose of this function is just to be used as a safe destructor !
 	 */
 	public function ShutDown() {
 		// *** optional*** can be redefined in a controller (as a post-run init, as safe destructor, if required) but is not mandatory ...

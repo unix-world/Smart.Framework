@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210403
+ * @version		20210407
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -57,8 +57,9 @@ abstract class SmartAbstractAppMiddleware {
 	private static $LANGUAGE_DETECTED = null;
 
 	private static $DEBUG_COOKIE_DATA = '';
-	private static $DEBUG_COOKIE_IDX = 'SmartFramework__DebugIdxID';
-	private static $DEBUG_COOKIE_ADM = 'SmartFramework__DebugAdmID';
+
+	private const DEBUG_COOKIE_IDX = 'SmartFramework__DebugIdxID';
+	private const DEBUG_COOKIE_ADM = 'SmartFramework__DebugAdmID';
 
 
 	//=====
@@ -491,10 +492,10 @@ abstract class SmartAbstractAppMiddleware {
 		//--
 		switch((string)$area) {
 			case 'idx':
-				$cookie_name = (string) self::$DEBUG_COOKIE_IDX;
+				$cookie_name = (string) self::DEBUG_COOKIE_IDX;
 				break;
 			case 'adm':
-				$cookie_name = (string) self::$DEBUG_COOKIE_ADM;
+				$cookie_name = (string) self::DEBUG_COOKIE_ADM;
 				break;
 			default:
 				return false;
@@ -522,10 +523,10 @@ abstract class SmartAbstractAppMiddleware {
 		//--
 		switch((string)$area) {
 			case 'idx':
-				$cookie_name = (string) self::$DEBUG_COOKIE_IDX;
+				$cookie_name = (string) self::DEBUG_COOKIE_IDX;
 				break;
 			case 'adm':
-				$cookie_name = (string) self::$DEBUG_COOKIE_ADM;
+				$cookie_name = (string) self::DEBUG_COOKIE_ADM;
 				break;
 			default:
 				return false;
@@ -564,10 +565,10 @@ abstract class SmartAbstractAppMiddleware {
 		//--
 		switch((string)$area) {
 			case 'idx':
-				$cookie_name = (string) self::$DEBUG_COOKIE_IDX;
+				$cookie_name = (string) self::DEBUG_COOKIE_IDX;
 				break;
 			case 'adm':
-				$cookie_name = (string) self::$DEBUG_COOKIE_ADM;
+				$cookie_name = (string) self::DEBUG_COOKIE_ADM;
 				break;
 			default:
 				return false;
