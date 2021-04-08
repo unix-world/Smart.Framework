@@ -48,7 +48,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20210401
+ * @version 	v.20210408
  *
  */
 final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
@@ -162,8 +162,6 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 		//--
 		$arr_available_languages = (array) SmartTextTranslations::getAvailableLanguages(); // ex: ['en', 'ro']
 		if(Smart::array_size($arr_available_languages) <= 1) {
-			Smart::raise_error(__METHOD__.' # can be used only if more than one languages are set in configs ...'."\n".'The list of defined languages in configs is:'."\n".print_r($arr_available_languages,1));
-			die('');
 			return; // for only one language that is also the default one, make non sense
 		} //end if
 		//--
