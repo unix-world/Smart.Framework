@@ -350,7 +350,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		if((int)$appStatusCode < 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
 			if(((int)$appSettings['expires'] > 0) AND (!SmartFrameworkRuntime::ifDebug())) {
 				SmartFrameworkRuntime::outputHttpHeadersNoCache((int)$appSettings['expires'], (int)$appSettings['modified'], (string)$appSettings['c-control']); // headers: cache expiration control
-			} else {
+			} elseif((int)$appSettings['expires'] != 304) { // {{{SYNC-MIDDLEWARE-CACHED-STATUS-CODE}}}
 				SmartFrameworkRuntime::outputHttpHeadersNoCache(); // headers: cache control, force no-cache
 			} //end if else
 		} //end if

@@ -48,7 +48,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20210408
+ * @version 	v.20210412
  *
  */
 final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
@@ -190,7 +190,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 					(($redirect_other_subdomains === true) AND ((string)$pdom != (string)SmartTextTranslations::getDefaultLanguage()) AND ((string)$pdom != (string)$default_subdomain) AND (!in_array((string)$pdom, (array)$arr_available_languages)))
 				) {
 					http_response_code(301); // permanent redirect if the language code is not valid
-					self::outputHttpSafeHeader('Location: '.SmartUtils::get_server_current_protocol().($default_subdomain ? $default_subdomain.'.' : '').SmartUtils::get_server_current_basedomain_name().SmartUtils::get_server_current_request_uri()); // force redirect
+					SmartFrameworkRuntime::outputHttpSafeHeader('Location: '.SmartUtils::get_server_current_protocol().($default_subdomain ? $default_subdomain.'.' : '').SmartUtils::get_server_current_basedomain_name().SmartUtils::get_server_current_request_uri()); // force redirect
 					die(''); // stop here, mandatory
 				} //end if else
 			} //end if else
