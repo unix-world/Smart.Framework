@@ -33,7 +33,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210305
+ * @version 	v.20210407
  *
  */
 abstract class ErrorXxx extends \SmartAbstractAppController {
@@ -196,9 +196,10 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 		//--
 		$this->errmsg = (string) $y_message; // must be before initialize
 		//--
-		$this->Initialize();
-		$this->Run();
-		$this->ShutDown();
+		$this->Initialize(); // in this context don't check for exit code here
+		$this->Run(); // in this context don't check for exit code here
+		$this->ShutDown(); // always ...
+		//--
 		$cfgs = (array) $this->getRenderCfgs();
 		$vars = (array) $this->getRenderVars();
 		//--

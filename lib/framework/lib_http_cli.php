@@ -82,7 +82,7 @@ if(!function_exists('stream_context_create')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils
- * @version 	v.20210330
+ * @version 	v.20210412
  * @package 	@Core:Network
  *
  */
@@ -823,7 +823,7 @@ final class SmartHttpClient {
 				$header_form_type = 'application/x-www-form-urlencoded';
 				$post_string = '';
 				foreach($this->postvars as $key => $value) {
-					$post_string .= (string) SmartHttpUtils::encode_var_post($key, $value);
+					$post_string .= (string) SmartHttpUtils::encode_var_post($key, $value); // {{{SYNC-URL-REQ-LAST-AMPERSTAND}}}
 				} //end foreach
 			} //end if else
 			//--
@@ -1101,8 +1101,8 @@ final class SmartHttpClient {
  * @hints 		It is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.
  *
  * @access 		PUBLIC
- * @depends 	classes: Smart, SmartHashCrypto
- * @version 	v.20210330
+ * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
+ * @version 	v.20210412
  * @package 	@Core:Network
  *
  */
@@ -1114,44 +1114,33 @@ final class SmartHttpUtils {
 	// encode a COOKIE variable ; returns the HTTP Cookie string
 	public static function encode_var_cookie($name, $value) {
 		//--
-		$name = (string) Smart::safe_varname($name);
+		$name = (string) trim((string)$name);
 		//--
-		if((string)$name == '') {
+		if(((string)$name == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$name))) { // {{{SYNC-REQVARS-VALIDATION}}}
 			return '';
 		} //end if
 		//--
-		return (string) $name.'='.rawurlencode($value).';';
+		if(!Smart::is_nscalar($value)) {
+			return '';
+		} //end if
+		//--
+		return (string) $name.'='.rawurlencode((string)$value).';';
 		//--
 	} //END FUNCTION
 	//==============================================
 
 
 	//==============================================
-	// encode a POST variable ; returns the HTTP POST String
-	public static function encode_var_post($varname, $value) {
+	// encode a POST variable ; returns the HTTP POST String followed by an amperstand: &
+	public static function encode_var_post($name, $value) {
 		//--
-		$varname = (string) Smart::safe_varname($varname);
+		$name = (string) trim((string)$name);
 		//--
-		if((string)$varname == '') {
-			return '';
+		$out = (string) Smart::url_build_query([ (string)$name => $value ], false); // {{{SYNC-URL-REQ-LAST-AMPERSTAND}}}
+		//--
+		if((string)$out != '') {
+			$out .= '&'; // {{{SYNC-URL-REQ-LAST-AMPERSTAND}}}
 		} //end if
-		//--
-		$out = '';
-		//--
-		if(is_array($value)) {
-			$arrtype = Smart::array_type_test($value); // 0: not an array ; 1: non-associative ; 2:associative
-			if($arrtype === 1) { // 1: non-associative
-				for($i=0; $i<Smart::array_size($value); $i++) {
-					$out .= (string) $varname.'[]='.rawurlencode($value[$i]).'&';
-				} //end foreach
-			} else { // 2: associative
-				foreach($value as $key => $val) {
-					$out .= (string) $varname.'['.rawurlencode($key).']='.rawurlencode($val).'&';
-				} //end foreach
-			} //end if else
-		} else {
-			$out = (string) $varname.'='.rawurlencode($value).'&';
-		} //end if else
 		//--
 		return (string) $out;
 		//--
@@ -1159,7 +1148,7 @@ final class SmartHttpUtils {
 	//==============================================
 
 
-	//================================================================
+	//==============================================
 	public static function http_multipart_form_delimiter() { // {{{SYNC-MULTIPART-BUILD}}}
 		//--
 		$timeduid = (string) strtolower((string)SmartHashCrypto::crc32b(microtime(true).'-'.time(), true));
@@ -1168,10 +1157,10 @@ final class SmartHttpUtils {
 		return '_===-MForm.Part____.'.$timeduid.'_'.md5('@MFormPart---#Boundary@'.$entropy).'_P_.-=_'; // 69 chars of 70 max
 		//--
 	} //END FUNCTION
-	//================================================================
+	//==============================================
 
 
-	//================================================================
+	//==============================================
 	public static function http_multipart_form_build($delimiter, $fields, $files) { // {{{SYNC-MULTIPART-BUILD}}}
 		//--
 		$delimiter = (string) $delimiter;
@@ -1250,7 +1239,7 @@ final class SmartHttpUtils {
 		return (string) $data;
 		//--
 	} //END FUNCTION
-	//================================================================
+	//==============================================
 
 
 	//==============================================

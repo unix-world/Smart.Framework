@@ -1,4 +1,4 @@
-<!-- View: admins-list v.20210312 -->
+<!-- View: admins-list v.20210419 -->
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css?[###RELEASE-HASH|url|html###]">
 <script type="text/javascript" src="lib/js/jquery/pager/jquery.simplePagination.js?[###RELEASE-HASH|url|html###]"></script>
 <script type="text/javascript" src="lib/js/jquery/jquery.event.drag.js?[###RELEASE-HASH|url|html###]"></script>
@@ -28,7 +28,7 @@
 	//--
 	var itemURL = '[###ACTIONS-URL|js###]';
 	var IdOfGrid = 'AdminsListGrid';
-	var TheGrid = new Smart_Grid(IdOfGrid, 'infoTotalRows', itemURL+'list', 'auth_admins_list_tbl', 'id', 'ASC', '', 'filtering');
+	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', itemURL+'list', 'auth_admins_list_tbl', 'id', 'ASC', '', 'filtering');
 	//--
 </script>
 <div style="color:#778899; line-height:24px; font-size:24px; font-weight:bold; display:flex; align-items:center;"><a href="admin.php"><img width="64" height="64" src="modules/mod-auth-admins/views/img/globe.svg" style="vertical-align:middle; margin-right:10px;"></a> Auth.Admins Management :: <span id="infoTotalRows"># / # @</span></div>
@@ -39,7 +39,7 @@
 	</span>
 	<button type="button" class="ux-button ux-button-special" onClick="TheGrid.loadGridData(0);">Filter &nbsp; <i class="sfi sfi-search"></i></button>
 	<button type="button" class="ux-button ux-button-regular" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);">Reset &nbsp; <i class="sfi sfi-history"></i></button>
-	<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="SmartJS_BrowserUtils.PopUpLink('[###ACTIONS-URL|js|html###]new-form', 'auth_admins_list_mod'); return false;"> Add new &nbsp; <i class="sfi sfi-user-plus"></i></button>
+	<button type="button" class="ux-button ux-button-primary" style="margin-left:50px;" onClick="smartJ$Browser.PopUpLink('[###ACTIONS-URL|js|html###]new-form', 'auth_admins_list_mod'); return false;"> Add new &nbsp; <i class="sfi sfi-user-plus"></i></button>
 </form>
 <br>
 <div id="AdminsListNavPager"></div>
@@ -54,11 +54,11 @@ $(function() {
 		var fname = dataContext['name_f'];
 		var lname = dataContext['name_l'];
 		var active = dataContext['active'];
-		$(cellNode).empty().html('').append('<button class="ux-button ux-button-xsmall" onClick="SmartJS_BrowserUtils.PopUpLink(\'' + SmartJS_CoreUtils.escape_js(itemURL + 'edit-form' +'&id=' + SmartJS_CoreUtils.escape_url(id_user)) +'\', \'auth_admins_list_mod\'); return false;" title="Edit (Click to Open the Editor)"><i class="sfi sfi-user-check"></i></button>&nbsp;');
+		$(cellNode).empty().html('').append('<button class="ux-button ux-button-xsmall" onClick="smartJ$Browser.PopUpLink(\'' + smartJ$Utils.escape_js(itemURL + 'edit-form' +'&id=' + smartJ$Utils.escape_url(id_user)) +'\', \'auth_admins_list_mod\'); return false;" title="Edit (Click to Open the Editor)"><i class="sfi sfi-user-check"></i></button>&nbsp;');
 	}
 	function formatter_Keys(row, cell, value, columnDef, dataContext) {
 		if(value > 0) {
-			return '<i class="sfi sfi-key" style="color:#FFCC00; cursor:help;" title="Key Size: ' + SmartJS_CoreUtils.escape_html(value) + '"></i>';
+			return '<i class="sfi sfi-key" style="color:#FFCC00; cursor:help;" title="Key Size: ' + smartJ$Utils.escape_html(value) + '"></i>';
 		}
 		return '';
 	}
@@ -82,7 +82,7 @@ $(function() {
 
 	// Column Updaters
 	function updateCellData(url_segment_update) {
-		SmartJS_BrowserUtils.Submit_Form_By_Ajax('', '[###ACTIONS-URL|js|html###]edit-cell' + url_segment_update, 'yes', 'TheGrid.loadGridData(TheGrid.getOffset());', 'TheGrid.loadGridData(TheGrid.getOffset());');
+		smartJ$Browser.SubmitFormByAjax('', '[###ACTIONS-URL|js|html###]edit-cell' + url_segment_update, 'yes', 'TheGrid.loadGridData(TheGrid.getOffset());', 'TheGrid.loadGridData(TheGrid.getOffset());');
 	}
 
 	// Grid Data Defs
@@ -130,7 +130,7 @@ $(function() {
 	TheGrid.grid.onCellChange = function(row, cell, dataContext, columnDef) {
 		switch(columnDef.field) {
 			case 'active':
-				updateCellData('&column=' + SmartJS_CoreUtils.escape_url(columnDef.field) + '&value=' + SmartJS_CoreUtils.escape_url(dataContext[columnDef.field]) + '&id=' + SmartJS_CoreUtils.escape_url(dataContext['id']));
+				updateCellData('&column=' + smartJ$Utils.escape_url(columnDef.field) + '&value=' + smartJ$Utils.escape_url(dataContext[columnDef.field]) + '&id=' + smartJ$Utils.escape_url(dataContext['id']));
 				break;
 			default: // invalid
 				console.log('WARNING: Table Column is not editable: ' + columnDef.field);

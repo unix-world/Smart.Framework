@@ -1,15 +1,15 @@
-<!-- Partial Template: Plugins.UIPickerDate r.20200121 -->
+<!-- Partial Template: Plugins.UIPickerDate r.20210419 -->
 <span id="date-area-[###THE-ID|htmid|html###]" title="[###TEXT-SELECT|html###] [[###ALT-DATE-FORMAT|html###]]">
 <input type="hidden" id="[###THE-ID|htmid|html###]" name="[###THE-VAR|html###]" value="[###THE-VALUE|html###]">
 <input type="text" id="date-entry-[###THE-ID|htmid|html###]" name="dtfmt__[###THE-VAR|html###]" maxlength="13" value="" readonly="readonly" class="ux-field datetime_Field_DatePicker" style="[###STYLE-SIZE|html###]" autocomplete="off">
 </span>
 <script type="text/javascript">
-if(typeof SmartJS_BrowserUIUtils != 'undefined') {
+if(typeof(smartJ$UI) != 'undefined') {
 	(function() {
 		try {
-			SmartJS_BrowserUIUtils.Date_Picker_Init('[###THE-ID|htmid|js###]', '[###ALT-DATE-FORMAT|js###]', '[###THE-VALUE|js###]', [###FDOW|int###], [###DATE-MIN###], [###DATE-MAX###], 2, '[###EVAL-JS|js###]');
+			smartJ$UI.DatePickerInit('[###THE-ID|htmid|js###]', '[###ALT-DATE-FORMAT|js###]', '[###THE-VALUE|js###]', [###FDOW|int###], [###DATE-MIN###], [###DATE-MAX###], 2, '[###EVAL-JS|js###]');
 			jQuery('#date-entry-[###THE-ID|htmid|js###]').on('click', function(e){
-				setTimeout(function(){ try { SmartJS_BrowserUIUtils.Date_Picker_Display('[###THE-ID|htmid|js###]'); } catch(err){} }, 200);
+				setTimeout(function(){ try { smartJ$UI.DatePickerDisplay('[###THE-ID|htmid|js###]'); } catch(err){} }, 200);
 			}).on('dblclick doubletap', function(e){
 				jQuery('#[###THE-ID|htmid|js###]').val('');
 				jQuery(this).val('');

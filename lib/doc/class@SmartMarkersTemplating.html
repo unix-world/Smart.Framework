@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartMarkersTemplating        final class \ SmartMarkersTemplating    {   } ::    Class: SmartMarkersTemplating - provides a very fast and low footprint">
-	<meta name="keywords" content="smartmarkerstemplating, final, class, provides, a, very, fast, and, low, footprint, templating, system, marker-tpl, language, php, located, at, lib framework lib templating.php, package, core:templatingengine, namespace, name, version, v.20210330, depends, classes, smart, smartunicode, smartfilesystem, smartfilesysutils, smartpersistentcache, smartframeworkruntime, smartframeworkregistry, usage, static, object, class::method, this, only, methods, public, function, analyze debug template, string, mtemplate, return, the, analyze, info, html js, param, marker, template, no, sub-templates, are, loaded, is, intended, for, development, debug, never, use, in, production, environments, render template, array, y arr vars, y ignore if empty, parsed, partial, text html, markers, ex, span, marker1, br, marker2, associative, with, variables, mapping, keys, to, case, insensitive, value1, value2, markern, enum, yes, will, ignore, if, empty">
+	<meta name="keywords" content="smartmarkerstemplating, final, class, provides, a, very, fast, and, low, footprint, templating, system, marker-tpl, language, php, located, at, lib framework lib templating.php, package, core:templatingengine, namespace, name, version, v.20210412, depends, classes, smart, smartunicode, smartfilesystem, smartfilesysutils, smartpersistentcache, smartframeworkruntime, smartframeworkregistry, usage, static, object, class::method, this, only, methods, public, function, analyze debug template, string, mtemplate, return, the, analyze, info, html js, param, marker, template, no, sub-templates, are, loaded, is, intended, for, development, debug, never, use, in, production, environments, render template, array, y arr vars, y ignore if empty, parsed, partial, text html, markers, ex, span, marker1, br, marker2, associative, with, variables, mapping, keys, to, case, insensitive, value1, value2, markern, enum, yes, will, ignore, if, empty">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMarkersTemplating">
 	<title>PHP Documentation for: \SmartMarkersTemplating</title>
 	<!-- CSS and Fonts -->
@@ -468,12 +468,13 @@
 <!-- skip logo -->
 <!-- class r.20200121 -->
 <!-- Styles -->
-<!-- styles r.20200121 -->
+<!-- styles r.20210417 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
-.doc-located {
+.doc-located,
+.doc-version {
 	color: #999999;
 }
 .doc-modifiers {
@@ -499,10 +500,19 @@
 	color: #777777;
 }
 .doc-ns,
+.doc-frozen,
 .doc-param-optional {
 	color: #778899;
 }
 .doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
 	color: #3F51B5;
 }
 .doc-implements {
@@ -696,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartMarkersTemplating</span></li>
 		
-		<li><b>Version:</b> v.20210330</li>
+		<li><b>Version:</b> v.20210412</li>
 		<li><b>Depends:</b> classes:  Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartPersistentCache, SmartFrameworkRuntime, SmartFrameworkRegistry</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -770,7 +780,7 @@ This is intended for DEVELOPMENT / DEBUG ONLY (never use this in production envi
  <span class="hljs-comment">// &lbrack;@@@SUB-TEMPLATE:?path/to/tpl.htm@@@&rbrack; 				:: sub-template with relative path to template, optional, if exists</span>
  <span class="hljs-comment">// &lbrack;@@@SUB-TEMPLATE:!etc/path/to/tpl.htm!@@@&rbrack; 		:: sub-template with relative path to framework, using exact this path</span>
  <span class="hljs-comment">// &lbrack;@@@SUB-TEMPLATE:?!if-exists/path/to/tpl.htm!@@@&rbrack; 	:: sub-template with relative path to framework, using exact this path, optional, if exists</span>
- <span class="hljs-comment">// &lbrack;@@@SUB-TEMPLATE:{tpl}|{escape}@@@&rbrack; 				:: sub-template (using any kind of path from above), apply escape (any of): |syntax |syntaxhtml |html |js |js-tpl-encode</span>
+ <span class="hljs-comment">// &lbrack;@@@SUB-TEMPLATE:{tpl}|{escape}@@@&rbrack; 				:: sub-template (using any kind of path from above), apply escape (any of): |syntax |syntaxhtml |html |js |js-tpl-encode |tpl-uri-encode |tpl-b64-encode</span>
  <span class="hljs-comment">// &lbrack;@@@SUB-TEMPLATE:%variable%@@@&rbrack; 					:: variable sub-template ; must be defined in $y_arr_vars['@SUB-TEMPLATES@'] array as key (variable) =&gt; value (path)</span>
  <span class="hljs-comment">// &lbrack;%%%IF:TEST-VARIABLE:@==|@!=|@&lt;=|@&lt;|@&gt;=|@&gt;|==|!=|&lt;=|&lt;|&gt;=|&gt;|!%|%|!?|?|^~|^*|&amp;~|&amp;*|$~|$*{string/number/a|list|with|elements/###MARKER###};%%%&rbrack; conditional IF part, display when condition is matched &lbrack;%%%ELSE:TEST-VARIABLE%%%&rbrack; conditional ELSE part, display otherwise (optional) &lbrack;%%%/IF:TEST-VARIABLE%%%&rbrack;</span>
  <span class="hljs-comment">// &lbrack;%%%LOOP:ARR-VARIABLE%%%&rbrack; &lbrack;###ARR-VARIABLE.ID|int###&rbrack;. &lbrack;###ARR-VARIABLE.NAME|html###&rbrack; &lbrack;%%%/LOOP:ARR-VARIABLE%%%&rbrack;</span>
@@ -888,7 +898,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-31 00:10:19 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:31 +0000</small>
 <hr>
 <br>
 <!-- # -->

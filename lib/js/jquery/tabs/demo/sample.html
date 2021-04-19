@@ -6,12 +6,20 @@
 
 	<script type="text/javascript" src="../../jquery.js"></script>
 
+	<script>
+		const smartJ$Options = {
+			BrowserUtils: {
+				ModalBoxActive: 0,
+				LoaderImg: '../../../framework/img/loading.svg'
+			}
+		}
+		Object.freeze(smartJ$Options); // sec.
+		window.smartJ$Options = smartJ$Options; // g-exp.
+	</script>
+
 	<script type="text/javascript" src="../../../framework/src/core_utils.js"></script>
 	<script type="text/javascript" src="../../../framework/src/crypt_utils.js"></script>
 	<script type="text/javascript" src="../../../framework/src/browser_utils.js"></script>
-	<script>
-		SmartJS_BrowserUtils.param_LoaderImg = '../../../framework/img/loading.svg';
-	</script>
 
 	<link rel="stylesheet" href="../jquery.tabs.css" type="text/css">
 	<script type="text/javascript" src="../jquery.tabs.js"></script>

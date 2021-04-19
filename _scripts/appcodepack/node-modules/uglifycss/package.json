@@ -22,14 +22,14 @@
   "_resolved": "https://registry.npmjs.org/uglifycss/-/uglifycss-0.0.29.tgz",
   "_shasum": "abe49531155d146e75dd2fdf933d371bc1180054",
   "_spec": "uglifycss",
-  "_where": "/home/admin/ugcss",
+  "_where": "/opt/node-modules/uglifycss",
   "author": {
     "name": "Franck Marcia",
     "email": "franck.marcia@gmail.com",
     "url": "https://github.com/fmarcia"
   },
   "bin": {
-    "uglifycss": "./uglifycss"
+    "uglifycss": "uglifycss"
   },
   "bugs": {
     "url": "https://github.com/fmarcia/uglifycss/issues"

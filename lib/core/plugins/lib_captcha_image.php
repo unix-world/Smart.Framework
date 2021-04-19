@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / Captcha Image]
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -68,7 +68,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartSvgCaptchaPoint
- * @version 	v.20200121
+ * @version 	v.20210419
  * @package 	development:Captcha
  */
 final class SmartSVGCaptcha {
@@ -119,9 +119,9 @@ final class SmartSVGCaptcha {
 	/**
 	 * Class constructor
 	 *
-	 * @param INT $numchars The number of glyphs the captcha will contain.
-	 * @param INT $width The width of the captcha.
-	 * @param INT $height The height of the captcha.
+	 * @param INT $numchars The number of glyphs (characters) the captcha will contain
+	 * @param INT $width The width of the captcha
+	 * @param INT $height The height of the captcha
 	 * @param MIXED $difficulty The difficulty of the captcha to generate ; Valid values are: 0 = default difficulty ; 1 = easy difficulty ; 2 = medium difficulty ; 3 = hard difficulty ; alternate can be an array of settings
 	 */
 	public function __construct($numchars, $width, $height, $difficulty=0) {

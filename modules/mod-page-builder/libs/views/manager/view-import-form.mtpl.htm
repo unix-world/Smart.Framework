@@ -1,9 +1,9 @@
-<!-- Pagebuilder / Manage @ Import.Form / Records :: v.20210312 -->
+<!-- Pagebuilder / Manage @ Import.Form / Records :: v.20210413 -->
 <script type="text/javascript">
 function smartModJS_PgBldr_Validate_Form() {
 	var xl03xmlfile = jQuery('#sel-xl03xmlfile').val();
 	if(!xl03xmlfile) {
-		SmartJS_BrowserUtils.alert_Dialog('Please select an XL03 XML Spreadsheet for upload', null, 'Notification');
+		smartJ$Browser.AlertDialog('Please select an XL03 XML Spreadsheet for upload', null, 'Notification');
 		return false;
 	}
 	return true;

@@ -51,11 +51,11 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartPersistentCache, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version 	v.20210402
+ * @version 	v.20210412
  * @package 	@Core:TemplatingEngine
  *
  */
-final class SmartMarkersTemplating { // syntax: r.20210313
+final class SmartMarkersTemplating { // syntax: r.20210412
 
 	// ::
 
@@ -151,7 +151,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 	//================================================================
 	/**
 	 * Escape a Marker Template (String Template ; no sub-templates are allowed as this function is intended to pass a template to be rendered via javascript ...)
-	 * NOTICE: This kind of escaped templates can be rendered by client-side javascript from a javascript variable in a HTML page using SmartJS_CoreUtils.renderMarkersTpl() function (not all features of the server-side Marker Templating are supported, see the SmartJS_CoreUtils documentation ...)
+	 * NOTICE: This kind of escaped templates can be rendered by client-side javascript from a javascript variable in a HTML page using smartJ$Utils.renderMarkersTpl() function (not all features of the server-side Marker Templating are supported, see the smartJ$Utils documentation ...)
 	 *
 	 * @access 		private
 	 * @internal
@@ -1131,7 +1131,7 @@ final class SmartMarkersTemplating { // syntax: r.20210313
 						$val = (string) Smart::create_slug((string)$val, false); // do not apply strtolower as it can be later combined with |lower flag
 					} elseif((string)$escexpr == '|htmid') { // HTML-ID: a-zA-Z0-9_-
 						$val = (string) Smart::create_htmid((string)$val);
-					} elseif((string)$escexpr == '|jsvar') { // JS-Variable: a-zA-Z0-9_
+					} elseif((string)$escexpr == '|jsvar') { // JS-Variable: a-zA-Z0-9_$
 						$val = (string) Smart::create_jsvar((string)$val);
 					//--
 					} elseif(((string)substr((string)$escexpr, 0, 7) == '|substr') OR ((string)substr((string)$escexpr, 0, 7) == '|subtxt')) { // Sub(String|Text) (0,num)

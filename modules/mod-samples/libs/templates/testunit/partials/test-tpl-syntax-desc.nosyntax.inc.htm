@@ -94,8 +94,8 @@
 	</div>
 	<script>
 	jQuery(document).ready(function() {
-		SmartJS_BrowserUIUtils.Smart_DataTable_Init('mtpl-syntax-tbl', {
-			filter: false,
+		smartJ$UI.DataTableInit('mtpl-syntax-tbl', {
+		//	filter: false,
 			sort: true,
 			paginate: false,
 			colorder: [
@@ -110,7 +110,7 @@
 						if(type === 'type' || type === 'sort' || type === 'filter') {
 							return data;
 						} else {
-							return '<span style="color:#CCCCCC;">' + SmartJS_CoreUtils.escape_html(data) + '</span>';
+							return '<span style="color:#CCCCCC;">' + smartJ$Utils.escape_html(data) + '</span>';
 						}
 					}
 				},
@@ -120,7 +120,7 @@
 				}
 			]
 		});
-	//	SmartJS_BrowserUIUtils.Smart_DataTable_FilterColumns('mtpl-syntax-tbl', 0, '^(1|2|3|4|5)\.$');
+		smartJ$UI.DataTableColumnsFilter('mtpl-syntax-tbl', 0, '^(.*)$');
 	});
 	</script>
 </div>

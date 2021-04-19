@@ -1,4 +1,4 @@
-/* SlimBox, fix by unixman r.20190121 (all using svg icons) */
+/* SlimBox, fix by unixman r.20210407 (all using svg icons) */
 
 .lbLoading {
 	background: #FFFFFF url(loading.svg) no-repeat center;
@@ -45,7 +45,9 @@
 }
 
 #lbPrevLink:hover {
-	background: transparent url(previcon.svg) no-repeat 0 15%;
+	background: rgba(255,255,255,0.1) url(previcon.svg) no-repeat 0 15%;
+	background-size: 32px auto;
+	opacity: 0.75;
 }
 
 #lbNextLink {
@@ -53,7 +55,9 @@
 }
 
 #lbNextLink:hover {
-	background: transparent url(nexticon.svg) no-repeat 100% 15%;
+	background: rgba(255,255,255,0.1) url(nexticon.svg) no-repeat 100% 15%;
+	background-size: 32px auto;
+	opacity: 0.75;
 }
 
 #lbBottom {
@@ -75,6 +79,7 @@
 	width: 35px;
 	height: 35px;
 	background: transparent url(closeicon.svg) no-repeat center;
+	background-size: auto;
 	margin: 5px 0;
 	outline: none;
 }

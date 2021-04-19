@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ TreeList / Records :: v.20210312 -->
+<!-- Pagebuilder / Manage @ TreeList / Records :: v.20210408 -->
 <script src="lib/js/jquery/tree/simpletree.js"></script>
 <style>
 .simpletree-toggle, .simpletree-notoggle {
@@ -148,7 +148,7 @@ function pageBuilderFormBtnResetFilter() {
 <script type="text/javascript">
 	jQuery(document).ready(function(){
 		var isFullTreeCheckboxChecked = false;
-		if(SmartJS_BrowserUtils.getCookie('[###COOKIE-FULLTREE|js###]') === '[###VALUE-FULLTREE|js###]') {
+		if(smartJ$Browser.getCookie('[###COOKIE-FULLTREE|js###]') === '[###VALUE-FULLTREE|js###]') {
 			isFullTreeCheckboxChecked = true;
 		} //end if
 		jQuery('#display-fulltree').prop("checked", isFullTreeCheckboxChecked);
@@ -159,7 +159,7 @@ function pageBuilderFormBtnResetFilter() {
 			jQuery('#filter-ctrl').val('');
 			displayFullTree = jQuery(this).val() || '';
 		} //end if else
-		SmartJS_BrowserUtils.setCookie('[###COOKIE-FULLTREE|js###]', displayFullTree);
+		smartJ$Browser.setCookie('[###COOKIE-FULLTREE|js###]', displayFullTree);
 		pageBuilderFormBtnFilter();
 	});
 </script>
@@ -169,7 +169,7 @@ function pageBuilderFormBtnResetFilter() {
 <script type="text/javascript">
 	jQuery(document).ready(function(){
 		var isDataSetCheckboxChecked = false;
-		if(SmartJS_BrowserUtils.getCookie('[###COOKIE-DATASETS|js###]') === '[###VALUE-DATASETS|js###]') {
+		if(smartJ$Browser.getCookie('[###COOKIE-DATASETS|js###]') === '[###VALUE-DATASETS|js###]') {
 			isDataSetCheckboxChecked = true;
 		} //end if
 		jQuery('#display-datasets').prop("checked", isDataSetCheckboxChecked);
@@ -179,7 +179,7 @@ function pageBuilderFormBtnResetFilter() {
 		if(jQuery(this).is(':checked')) {
 			displayDataSets = jQuery(this).val() || '';
 		} //end if else
-		SmartJS_BrowserUtils.setCookie('[###COOKIE-DATASETS|js###]', displayDataSets);
+		smartJ$Browser.setCookie('[###COOKIE-DATASETS|js###]', displayDataSets);
 		pageBuilderFormBtnFilter();
 	});
 </script>

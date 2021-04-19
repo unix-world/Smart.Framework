@@ -2,8 +2,8 @@
 // r.7.2.1 / smart.framework.v.7.2
 
 /*
- * SmartQUnit 1.2.1
- * @version 20210224
+ * SmartQUnit 1.2.2
+ * @version 20210415
  *
  * (c) 2018-2021 unix-world.org
  * Released under the BSD license
@@ -28,7 +28,7 @@ var SmartQUnit = new function() { // START CLASS
 			timeout: parseInt(QUnit.config.testTimeout) * 1000, // ajax timeout in sec
 			cache: false // no cache at all for any ajax request !!!
 		}).done(function(msg) {
-			if(typeof fxDone == 'function') {
+			if(typeof(fxDone) == 'function') {
 				fxDone(QAsyncTestDone, testOK, msg, testHtmlDiv);
 			} else {
 				var value = 'Test Implementation ERROR: INVALID AJAX TEST DONE FUNCTION !';
@@ -107,11 +107,11 @@ var SmartQUnit = new function() { // START CLASS
 
 	var htmlspecialchars = function(str) {
 		//--
-		if((typeof str == 'undefined') || (str == undefined) || (str == null)) {
+		if(str == undefined) {
 			str = '';
-		} else {
-			str = String(str); // force string
-		} //end if else
+		} //end if
+		//--
+		str = String(str); // force string
 		//-- replace basics
 		str = str.replace(/&/g, '&amp;');
 		str = str.replace(/</g, '&lt;');

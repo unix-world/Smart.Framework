@@ -63,7 +63,7 @@ function Smart_JsCharts_LineChart() {
 		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
 		datasetFill: false,
 		pointDotRadius: 6,
-		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=SmartJS_CoreUtils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
 	});
 	//--
 	document.getElementById('legend-line').innerHTML = LineGfx.generateLegend();
@@ -112,7 +112,7 @@ function Smart_JsCharts_AreaChart() {
 		animationSteps: 20,
 		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
 		datasetFill: true,
-		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=SmartJS_CoreUtils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
 	});
 	//--
 	document.getElementById('legend-area').innerHTML = AreaChartGfx.generateLegend();
@@ -168,7 +168,7 @@ function Smart_JsCharts_StackedAreaChart() {
 		responsive: true,
 		animationSteps: 20,
 		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
-		legendTemplate: "<% for (var i=datasets.length-1; i>=0; i--){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=SmartJS_CoreUtils.stringReplaceAll(' ', '&nbsp;', SmartJS_CoreUtils.escape_html(datasets[i].label))%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+		legendTemplate: "<% for (var i=datasets.length-1; i>=0; i--){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.stringReplaceAll(' ', '&nbsp;', smartJ$Utils.escape_html(datasets[i].label))%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
 	});
 	document.getElementById('legend-stacked-area').innerHTML = StackedAreaGfx.generateLegend();
 	//--
@@ -223,7 +223,7 @@ function Smart_JsCharts_StackedRelativeAreaChart() {
 		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
 		relativePoints: true,
 		bezierCurve: false,
-		legendTemplate: "<% for (var i=datasets.length-1; i>=0; i--){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=SmartJS_CoreUtils.stringReplaceAll(' ', '&nbsp;', SmartJS_CoreUtils.escape_html(datasets[i].label))%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+		legendTemplate: "<% for (var i=datasets.length-1; i>=0; i--){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.stringReplaceAll(' ', '&nbsp;', smartJ$Utils.escape_html(datasets[i].label))%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
 	});
 	document.getElementById('legend-stacked-relative-area').innerHTML = StackedRelativeAreaGfx.generateLegend();
 	//--
@@ -414,7 +414,7 @@ function Smart_JsCharts_BarChart() {
 		responsive: true,
 		animationSteps: 20,
 		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
-		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=SmartJS_CoreUtils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
 	});
 	//--
 	document.getElementById('legend-bar').innerHTML = BarChartGfx.generateLegend();
@@ -466,7 +466,7 @@ function Smart_JsCharts_StackedBarChart() {
 		responsive: true,
 		animationSteps: 20,
 		multiTooltipTemplate: "<%= datasetLabel %> : <%= value %>",
-		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=SmartJS_CoreUtils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+		legendTemplate : "<% for (var i=0; i<datasets.length; i++){%><span style=\"padding:2px; background-color:<%=datasets[i].strokeColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(datasets[i].label){%><%=smartJ$Utils.escape_html(datasets[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
 	});
 	//--
 	document.getElementById('legend-stacked-bar').innerHTML = BarStackedChartGfx.generateLegend();
@@ -522,7 +522,7 @@ function Smart_JsCharts_DoughnutChart() {
 	var DoughnutChartGfx = new Chart(DoughnutChartCanvas).Doughnut(doughnutData, {
 		responsive: true,
 		animationSteps: 20,
-		legendTemplate : "<% for (var i=0; i<segments.length; i++){%><span style=\"padding:2px; background-color:<%=segments[i].fillColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(segments[i].label){%><%=SmartJS_CoreUtils.escape_html(segments[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+		legendTemplate : "<% for (var i=0; i<segments.length; i++){%><span style=\"padding:2px; background-color:<%=segments[i].fillColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(segments[i].label){%><%=smartJ$Utils.escape_html(segments[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
 	});
 	//--
 	document.getElementById('legend-doughnut').innerHTML = DoughnutChartGfx.generateLegend();
@@ -561,7 +561,7 @@ function Smart_JsCharts_PieChart() {
 	var PieChartGfx = new Chart(PieChartCanvas).Pie(data, {
 		responsive: true,
 		animationSteps: 20,
-		legendTemplate : "<% for (var i=0; i<segments.length; i++){%><span style=\"padding:2px; background-color:<%=segments[i].fillColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(segments[i].label){%><%=SmartJS_CoreUtils.escape_html(segments[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
+		legendTemplate : "<% for (var i=0; i<segments.length; i++){%><span style=\"padding:2px; background-color:<%=segments[i].fillColor%>\">&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;<%if(segments[i].label){%><%=smartJ$Utils.escape_html(segments[i].label)%><%}%> &nbsp; &nbsp; &nbsp; <%}%>"
 	});
 	//--
 	document.getElementById('legend-pie').innerHTML = PieChartGfx.generateLegend();

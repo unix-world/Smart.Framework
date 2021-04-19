@@ -1,4 +1,4 @@
-<!-- v.20210312 -->
+<!-- v.20210413 -->
 <center><div><table><tr><td>
 	<legend><h1>Change Password for Account</h1></legend><br>
 	<form id="change_pass_form" name="change_pass_form" class="ux-form ux-form-aligned" onSubmit="return false;">
@@ -16,8 +16,8 @@
 			<input id="repass" type="password" autocomplete="off" name="frm[repass]" placeholder="Retype Password" class="ux-input-1-2" title="Retype the password" pattern=".{7,30}" required title="must match the password field above">
 		</div>
 		<div class="ux-controls">
-			<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.CloseDelayedModalPopUp();"> Cancel &nbsp; <i class="sfi sfi-spinner11"></i></button>
-			<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.Submit_Form_By_Ajax('change_pass_form', '[###ACTIONS-URL|html###]change-pass-update', 'yes'); return false;"> Save &nbsp; <i class="sfi sfi-checkmark"></i></button>
+			<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.CloseDelayedModalPopUp();"> Cancel &nbsp; <i class="sfi sfi-spinner11"></i></button>
+			<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.SubmitFormByAjax('change_pass_form', '[###ACTIONS-URL|html###]change-pass-update', 'yes'); return false;"> Save &nbsp; <i class="sfi sfi-checkmark"></i></button>
 		</div>
 	</form>
 </td></tr></table></div></center>

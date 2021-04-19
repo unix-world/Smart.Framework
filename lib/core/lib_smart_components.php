@@ -35,7 +35,7 @@ define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)SmartFileSystem::read('lib/
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating, SmartFrameworkRuntime
- * @version 	v.20210402
+ * @version 	v.20210413
  * @package 	Application:ViewComponents
  *
  */
@@ -680,9 +680,10 @@ final class SmartComponents {
 		$arr_data['client-is-mobile'] 			= (string) $os_bw['mobile']; 												// client browser is Mobile (yes/no)
 		$arr_data['client-class'] 				= (string) $os_bw['bc']; 													// client browser Class (ex: gk)
 		$arr_data['client-browser'] 			= (string) $os_bw['bw']; 													// client browser (ex: fox)
-		$arr_data['client-uid-cookie-name'] 	= (string) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME;							// client browser UID Cookie Name (as defined in etc/init.php) ; it may be required to pass this cookie name to the Javascript ...)
-		$arr_data['client-uid-cookie-domain'] 	= (string) SmartUtils::cookie_default_domain(); 							// client browser UID Cookie Domain (as defined in etc/init.php) ; it may be required to pass this cookie domain to the Javascript ...)
-		$arr_data['client-uid-cookie-samesite'] = (string) SmartUtils::cookie_default_samesite_policy(); 					// client browser UID Cookie SameSite Policy (as defined in etc/init.php) ; it may be required to pass this cookie domain to the Javascript ...)
+		$arr_data['client-uid-cookie-name'] 	= (string) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME;							// client browser UID Cookie Name (as defined in etc/init.php) ; it may be required to pass this cookie name to the Javascript ...
+		$arr_data['client-uid-cookie-lifetime'] = (int)    SmartUtils::cookie_default_expire(); 							// client browser UID Cookie Default Expire (as defined in etc/init.php) ; it may be required to pass the cookie default lifetime to the Javascript ...
+		$arr_data['client-uid-cookie-domain'] 	= (string) SmartUtils::cookie_default_domain(); 							// client browser UID Cookie Default Domain (as defined in etc/init.php) ; it may be required to pass the cookie default domain to the Javascript ...
+		$arr_data['client-uid-cookie-samesite'] = (string) SmartUtils::cookie_default_samesite_policy(); 					// client browser UID Cookie Default SameSite Policy (as defined in etc/init.php) ; it may be required to pass the cookie default SameSite policy to the Javascript ...
 		$arr_data['app-env'] 					= (string) (SmartFrameworkRuntime::ifProdEnv() === true) ? 'prod' : 'dev'; 	// App Environment: dev | prod :: {{{SYNC-APP-ENV-SETT}}}
 		$arr_data['app-namespace'] 				= (string) SMART_SOFTWARE_NAMESPACE;										// NameSpace from configs (as defined in etc/init.php)
 		$arr_data['app-realm'] 					= (string) $the_realm; 														// IDX (for index.php area) ; ADM (for admin.php area)

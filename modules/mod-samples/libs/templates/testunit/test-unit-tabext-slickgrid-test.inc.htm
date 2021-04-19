@@ -136,15 +136,27 @@ $(function() {
 		} //END FUNCTION
 	} //END FUNCTION
 
+	var sortedCol = null;
 	grid.onSort = function(sortCol, sortAsc) {
 		//--
 		sortdir = sortAsc ? 1 : -1;
 		sortcol = sortCol.field;
 		//-- sort
-		data.sort(dynamicSort(sortcol));
+		if(sortedCol != sortcol) {
+			if((sortcol == 'id') || (sortcol == 'percent')) {
+				data.sort(smartJ$Utils.numericSort(sortcol));
+			} else {
+				data.sort(smartJ$Utils.textSort(sortcol)); // no need to sort using locales
+			} //end if else
+		} else {
+			if(sortAsc == 1) {
+				data.reverse();
+			} //end if else
+		} //end if else
 		if(sortAsc != 1) {
 			data.reverse();
 		} //end if else
+		sortedCol = sortcol;
 		//--
 		grid.removeAllRows();
 		grid.render();

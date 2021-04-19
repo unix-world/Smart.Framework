@@ -101,7 +101,7 @@ var tpl = '<div class="cell-inner">\
 	var data = [];
 
 	function renderCell(row, cell, value, columnDef, dataContext) {
-		return SmartJS_CoreUtils.renderMarkersTpl(tpl, {
+		return smartJ$Utils.renderMarkersTpl(tpl, {
 			'NAME': String(dataContext.name),
 			'TITLE': String(dataContext.title),
 			'EMAIL': String(dataContext.email),
@@ -114,7 +114,7 @@ var tpl = '<div class="cell-inner">\
 	}
 
 	function renderAsyncCell(cellNode, row, dataContext, colDef) {
-		var cell = SmartJS_CoreUtils.renderMarkersTpl(tpl, {
+		var cell = smartJ$Utils.renderMarkersTpl(tpl, {
 			'NAME': String(dataContext.name),
 			'TITLE': String(dataContext.title),
 			'EMAIL': String(dataContext.email),

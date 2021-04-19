@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210322
+ * @version 	v.20210412
  * @package 	Plugins:Network
  *
  */
@@ -390,7 +390,7 @@ final class SmartRobot {
 						//-- {{{SYNC-SMART-UNIQUE-COOKIE}}}
 						if((defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME')) AND (!defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP'))) {
 							if((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME != '') {
-								if(SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, true)) {
+								if(SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME)) { // {{{SYNC-VALIDATE-UID-COOKIE-NAME}}}
 									//--
 									if((string)SMART_APP_VISITOR_COOKIE != '') { // if set, then forward
 										if(SmartFrameworkRuntime::ifDebug()) {

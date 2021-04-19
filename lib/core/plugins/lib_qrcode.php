@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart
- * @version 	v.20200121
+ * @version 	v.20210419
  * @package 	Plugins:Barcodes
  */
 final class SmartQR2DBarcode {
@@ -117,7 +117,8 @@ final class SmartQR2DBarcode {
 		//--
 		list($code, $widths, $width, $height, $x, $y, $w, $h) = (array) $this->encode_and_calculate_size($symbology, $data, $options);
 		//--
-		$svg  = '<'.'?xml version="1.0"?'.'>';
+		$svg = '';
+	//	$svg .= '<'.'?xml version="1.0"?'.'>';
 		$svg .= '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="'.(int)$width.'" height="'.(int)$height.'" viewBox="0 0 '.(int)$width.' '.(int)$height.'">'."\n";
 		$svg .= '<g>';
 		$bgcolor = (isset($options['bc']) ? $options['bc'] : '#FFFFFF');

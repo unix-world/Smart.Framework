@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20210307
+	// v.20210413
 
 	const DAV_RESOURCE_TYPE_COLLECTION = 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION = 'noncollection';
@@ -103,7 +103,8 @@ final class DavServer {
 		} //end if
 		//--
 		if($urldecode === true) {
-			$path_url = (string) \rawurldecode($path_url);
+		//	$path_url = (string) \rawurldecode($path_url); // fix (below)
+			$path_url = (string) \SmartFrameworkSecurity::urlVarDecodeStr($path_url, true); // fix: use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + ! ; urlVarDecodeStr also apply filter
 		} //end if
 		$path_url = (string) \ltrim($path_url, '/');
 		//--

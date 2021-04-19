@@ -5,100 +5,40 @@
 	<br>
 	<form class="ux-form" id="test_form_ajax" name="test_form_ajax" method="post" action="#">
 	<input type="hidden" name="test_ajax_var" value="Testing by Ajax (hidden) ...">
-	<style type="text/css">
-	#myFormFluidTable div.ux-fluid-table {
-		width: 1024px;
-	}
-	#myFormFluidTable div.ux-fluid-table div.ux-fluid-tbl-row {
-		width: 100%;
-	}
-	#myFormFluidTable div.ux-fluid-table div.ux-fluid-tbl-row div.ux-fluid-tbl-cell {
-		width: 50%;
-		border: 0px;
-		padding: 3px;
-		padding-bottom: 5px;
-	}
-	@media all and (max-width: 1023px) {
-		#myFormFluidTable div.ux-fluid-table {
-			width: 100% !important;
-		}
-		#myFormFluidTable div.ux-fluid-table div.ux-fluid-tbl-row {
-			display: block !important;
-		}
-		#myFormFluidTable div.ux-fluid-table div.ux-fluid-tbl-row div.ux-fluid-tbl-cell {
-			display: inline-block !important;
-			width: 100% !important;
-			text-align: left !important;
-		}
-		#myFormFluidTable div.ux-fluid-table div.ux-fluid-tbl-row div.ux-fluid-tbl-cell * {
-			text-align: left !important;
-			margin-left: 0px !important;
-			margin-right: 0px !important;
-		}
-	}
-	</style>
-	<div id="myFormFluidTable">
-		<div class="ux-fluid-table">
-			<div class="ux-fluid-tbl-row">
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_CALENDAR###]
-				</div>
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_TIMEPICKER###]
-				</div>
+	<div id="myFormFluidTable" style="max-width: 1024px;">
+		<div class="ux-grid-row">
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_CALENDAR###]</div>
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_TIMEPICKER###]</div>
+		</div>
+		<div class="ux-grid-row">
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_AUTOCOMPLETE-SINGLE###]</div>
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_AUTOCOMPLETE-MULTI###]</div>
+		</div>
+		<div class="ux-grid-row">
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_SINGLE-SELECT###]</div>
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_SINGLE-BLANK-SELECT###]</div>
+		</div>
+		<div class="ux-grid-row">
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_SINGLE-SEARCH-SELECT###]</div>
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_MULTI-SELECT###]</div>
+		</div>
+		<div class="ux-grid-row">
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_NORMAL-LIST-M###]</div>
+			<div class="ux-grid-col s12 m6">
+				[###TEST-ELEMENTS_NORMAL-LIST-S###]
+				<br>
+				[###TEST-ELEMENTS-YES_NO###]
+				<br>
+				[###TEST-ELEMENTS-TRUE_FALSE###]
 			</div>
-			<div class="ux-fluid-tbl-row">
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_AUTOCOMPLETE-SINGLE###]
-				</div>
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_AUTOCOMPLETE-MULTI###]
-				</div>
-			</div>
-			<div class="ux-fluid-tbl-row">
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_SINGLE-SELECT###]
-				</div>
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_SINGLE-BLANK-SELECT###]
-				</div>
-			</div>
-			<div class="ux-fluid-tbl-row">
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_SINGLE-SEARCH-SELECT###]
-				</div>
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_MULTI-SELECT###]
-				</div>
-			</div>
-			<div class="ux-fluid-tbl-row">
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_NORMAL-LIST-M###]
-				</div>
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_NORMAL-LIST-S###]
-					<br>
-					[###TEST-ELEMENTS-YES_NO###]
-					<br>
-					[###TEST-ELEMENTS-TRUE_FALSE###]
-				</div>
-			</div>
-			<div class="ux-fluid-tbl-row">
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_MULTIBOX-SELECT###]
-				</div>
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_LIMITED-AREA###]
-				</div>
-			</div>
-			<div class="ux-fluid-tbl-row" style="padding-top:10px; padding-bottom:10px;">
-				<div class="ux-fluid-tbl-cell">
-					[###TEST-ELEMENTS_CAPTCHA###]
-				</div>
-				<div class="ux-fluid-tbl-cell" style="vertical-align:bottom!important;">
-					[###TEST-BUTTONS_AJAX-POST###]
-				</div>
-			</div>
+		</div>
+		<div class="ux-grid-row">
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_MULTIBOX-SELECT###]</div>
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_LIMITED-AREA###]</div>
+		</div>
+		<div class="ux-grid-row">
+			<div class="ux-grid-col s12 m6">[###TEST-ELEMENTS_CAPTCHA###]</div>
+			<div class="ux-grid-col s12 m6">[###TEST-BUTTONS_AJAX-POST###]</div>
 		</div>
 	</div>
 	</form>

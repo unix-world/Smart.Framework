@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List # Filter :: v.20210312 -->
+<!-- Pagebuilder / Manage @ List # Filter :: v.20210413 -->
 <style>
 #pgbld-btn-reset-cnt:hover i.sfi,
 #pgbld-btn-alt-list:hover i.sfi {
@@ -47,7 +47,7 @@
 		&nbsp;
 	</td>
 	<td style="width:32px;">
-		<div id="pgbld-btn-alt-list" style="color:#CCCCCC; cursor:pointer;" title="[###TXT-ALT-LINK|html###]" onclick="var ckVal = ''; [%%%IF:LIST-ALT-COOKIE:!=;%%%]try{ ckVal = SmartJS_BrowserUtils.getCookie('[###LIST-ALT-COOKIE|js|html###]'); if(!ckVal){ ckVal = ''; } if(ckVal){ ckVal = ((ckVal.indexOf('?') == 0) || (ckVal.indexOf('&') == 0)) ? ckVal : '&' + ckVal; } } catch(err){} [%%%/IF:LIST-ALT-COOKIE%%%]self.location='[###LIST-ALT-LINK|js|html###]'+String(ckVal);"><i class="sfi sfi-tree sfi-3x"></i></div>
+		<div id="pgbld-btn-alt-list" style="color:#CCCCCC; cursor:pointer;" title="[###TXT-ALT-LINK|html###]" onclick="var ckVal = ''; [%%%IF:LIST-ALT-COOKIE:!=;%%%]try{ ckVal = smartJ$Browser.getCookie('[###LIST-ALT-COOKIE|js|html###]'); if(!ckVal){ ckVal = ''; } if(ckVal){ ckVal = ((ckVal.indexOf('?') == 0) || (ckVal.indexOf('&') == 0)) ? ckVal : '&' + ckVal; } } catch(err){} [%%%/IF:LIST-ALT-COOKIE%%%]self.location='[###LIST-ALT-LINK|js|html###]'+String(ckVal);"><i class="sfi sfi-tree sfi-3x"></i></div>
 	</td>
 	<td style="width:16px;">
 		&nbsp;
@@ -60,7 +60,7 @@
 	</td>
 	<td style="width:32px;">
 		[%%%IF:IS-DEV-MODE:==yes;%%%]
-		<div id="pgbld-btn-reset-cnt" style="color:#CCCCCC; cursor:pointer;" title="[###TXT-RESET-COUNTER|html###]" onclick="SmartJS_BrowserUtils.confirm_Dialog('<i class=&quot;sfi sfi-meter2&quot;></i> &nbsp; Do you want to Reset the Hit Counter on All PageBuilder Objects ?', function(){ SmartJS_BrowserUtils.Submit_Form_By_Ajax(false, 'admin.php?page=page-builder.manage&op=reset-counter&back=[###LIST-CRR-LINK|url|js###]', 'yes'); }, 'Reset the PageBuilder Objects Hit Counter', 550, 155); return false;"><i class="sfi sfi-meter2 sfi-3x"></i></div>
+		<div id="pgbld-btn-reset-cnt" style="color:#CCCCCC; cursor:pointer;" title="[###TXT-RESET-COUNTER|html###]" onclick="smartJ$Browser.ConfirmDialog('<i class=&quot;sfi sfi-meter2&quot;></i> &nbsp; Do you want to Reset the Hit Counter on All PageBuilder Objects ?', function(){ smartJ$Browser.SubmitFormByAjax(false, 'admin.php?page=page-builder.manage&op=reset-counter&back=[###LIST-CRR-LINK|url|js###]', 'yes'); }, 'Reset the PageBuilder Objects Hit Counter', 550, 155); return false;"><i class="sfi sfi-meter2 sfi-3x"></i></div>
 		[%%%ELSE:IS-DEV-MODE%%%]
 		&nbsp;
 		[%%%/IF:IS-DEV-MODE%%%]

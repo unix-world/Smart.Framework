@@ -23,7 +23,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* navpager.css
 // REQUIRED JS LIBS:
 //	* js-base.inc.htm
-//	* js-ui.inc.htm [SmartJS_BrowserUIUtils] or an extension
+//	* js-ui.inc.htm [smartJ$UI] or an extension
 //	* js/jsedithtml [cleditor]
 //	* js/jseditcode [codemirror]
 //======================================================
@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210328
+ * @version 	v.20210419
  * @package 	Plugins:ViewComponents
  *
  */
@@ -965,7 +965,7 @@ final class SmartViewHtmlHelpers {
 				if((string)$y_draw == 'checkboxes') { // checkboxes
 					//--
 					if((string)$y_sync_values == 'yes') {
-						$tmp_onclick = ' onClick="SmartJS_BrowserUtils.checkAll_CkBoxes(this.form.name, \''.Smart::escape_html(Smart::escape_js($tmp_el_id)).'\', this.checked);"';
+						$tmp_onclick = ' onClick="try { smartJ$Browser.CheckAllCheckBoxes(this.form.name, \''.Smart::escape_html(Smart::escape_js($tmp_el_id)).'\', this.checked); } catch(err){}"';
 					} else {
 						$tmp_onclick = '';
 					} //end if else
@@ -1968,9 +1968,9 @@ final class SmartViewHtmlHelpers {
 		$delay = (int) $delay;
 		//--
 		if($delay > 0) {
-			return 'SmartJS_BrowserUtils.RedirectDelayedToURL(\''.Smart::escape_js((string)$y_redir_url).'\', '.(int)$delay.');';
+			return 'smartJ$Browser.RedirectDelayedToURL(\''.Smart::escape_js((string)$y_redir_url).'\', '.(int)$delay.');';
 		} else {
-			return 'SmartJS_BrowserUtils.RedirectToURL(\''.Smart::escape_js((string)$y_redir_url).'\');';
+			return 'smartJ$Browser.RedirectToURL(\''.Smart::escape_js((string)$y_redir_url).'\');';
 		} //end if else
 		//--
 	} //END FUNCTION
@@ -1988,9 +1988,9 @@ final class SmartViewHtmlHelpers {
 		$y_redir_url = (string) $y_redir_url;
 		//--
 		if((string)$y_redir_url != '') {
-			return 'SmartJS_BrowserUtils.RefreshParent(\''.Smart::escape_js((string)$y_redir_url).'\');';
+			return 'smartJ$Browser.RefreshParent(\''.Smart::escape_js((string)$y_redir_url).'\');';
 		} else {
-			return 'SmartJS_BrowserUtils.RefreshParent();';
+			return 'smartJ$Browser.RefreshParent();';
 		} //end if else
 		//--
 	} //END FUNCTION
@@ -2008,9 +2008,9 @@ final class SmartViewHtmlHelpers {
 		//--
 		$y_delay = (int) $y_delay; // microseconds
 		if($y_delay > 0) {
-			return 'SmartJS_BrowserUtils.CloseDelayedModalPopUp('.(int)$y_delay.');';
+			return 'smartJ$Browser.CloseDelayedModalPopUp('.(int)$y_delay.');';
 		} else {
-			return 'SmartJS_BrowserUtils.CloseDelayedModalPopUp();';
+			return 'smartJ$Browser.CloseDelayedModalPopUp();';
 		} //end if else
 		//--
 	} //END FUNCTION
@@ -2073,7 +2073,7 @@ final class SmartViewHtmlHelpers {
 			$y_time = 1; // miliseconds
 		} //end if
 		//--
-		return 'SmartJS_BrowserUtils.GrowlNotificationAdd('.$y_title.', '.$y_text.', \''.Smart::escape_js($y_image).'\', '.(int)$y_time.', '.(string)$y_sticky.', \''.Smart::escape_js((string)$y_class).'\');';
+		return 'smartJ$Browser.GrowlNotificationAdd('.$y_title.', '.$y_text.', \''.Smart::escape_js($y_image).'\', '.(int)$y_time.', '.(string)$y_sticky.', \''.Smart::escape_js((string)$y_class).'\');';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2094,7 +2094,7 @@ final class SmartViewHtmlHelpers {
 			$y_id = '';
 		} //end if
 		//--
-		return 'SmartJS_BrowserUtils.GrowlNotificationRemove('.$y_id.');';
+		return 'smartJ$Browser.GrowlNotificationRemove('.$y_id.');';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2111,7 +2111,7 @@ final class SmartViewHtmlHelpers {
 	 */
 	public static function js_code_ui_confirm_dialog($y_question_html, $y_ok_jscript_function='', $y_width='', $y_height='', $y_title='?') {
 		//--
-		return 'SmartJS_BrowserUtils.confirm_Dialog(\''.Smart::escape_js($y_question_html).'\', \''.Smart::escape_js($y_ok_jscript_function).'\', \''.Smart::escape_js($y_title).'\', '.(int)$y_width.', '.(int)$y_height.');';
+		return 'smartJ$Browser.ConfirmDialog(\''.Smart::escape_js($y_question_html).'\', \''.Smart::escape_js($y_ok_jscript_function).'\', \''.Smart::escape_js($y_title).'\', '.(int)$y_width.', '.(int)$y_height.');';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2128,7 +2128,7 @@ final class SmartViewHtmlHelpers {
 	 */
 	public static function js_code_ui_alert_dialog($y_message, $y_ok_jscript_function='', $y_width='', $y_height='', $y_title='!') {
 		//--
-		return 'SmartJS_BrowserUtils.alert_Dialog(\''.Smart::escape_js($y_message).'\', \''.Smart::escape_js($y_ok_jscript_function).'\', \''.Smart::escape_js($y_title).'\', '.(int)$y_width.', '.(int)$y_height.');';
+		return 'smartJ$Browser.AlertDialog(\''.Smart::escape_js($y_message).'\', \''.Smart::escape_js($y_ok_jscript_function).'\', \''.Smart::escape_js($y_title).'\', '.(int)$y_width.', '.(int)$y_height.');';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2153,7 +2153,7 @@ final class SmartViewHtmlHelpers {
 		//--
 		$tmp_use_growl = 'auto';
 		//--
-		$js_post = 'SmartJS_BrowserUtils.Submit_Form_By_Ajax(\''.Smart::escape_js($y_form_id).'\', \''.Smart::escape_js($y_script_url).'\', \''.Smart::escape_js($tmp_use_growl).'\', \''.Smart::escape_js($y_js_evcode).'\');';
+		$js_post = 'smartJ$Browser.SubmitFormByAjax(\''.Smart::escape_js($y_form_id).'\', \''.Smart::escape_js($y_script_url).'\', \''.Smart::escape_js($tmp_use_growl).'\', \''.Smart::escape_js($y_js_evcode).'\');';
 		//--
 		if(strlen($y_confirm_question) > 0) {
 			$js_post = (string) self::js_code_ui_confirm_dialog($y_confirm_question, (string)$js_post);
@@ -2243,7 +2243,7 @@ final class SmartViewHtmlHelpers {
 			$y_force_dims = Smart::format_number_int($y_force_dims, '+'); // 0 or 1
 		} //end if
 		//--
-		return 'SmartJS_BrowserUtils.confirmSubmitForm(\''.Smart::escape_js($y_question).'\', this.form, \''.Smart::escape_js($y_popuptarget).'\', \''.$y_width.'\', \''.$y_height.'\', \''.$y_force_popup.'\', \''.$y_force_dims.'\'); return false;';
+		return 'smartJ$Browser.confirmSubmitForm(\''.Smart::escape_js($y_question).'\', this.form, \''.Smart::escape_js($y_popuptarget).'\', \''.$y_width.'\', \''.$y_height.'\', \''.$y_force_popup.'\', \''.$y_force_dims.'\'); return false;';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2269,7 +2269,7 @@ final class SmartViewHtmlHelpers {
 			$y_question = 'Do you want to leave this page ?';
 		} //end if else
 		//--
-		return 'SmartJS_BrowserUtils.PageAwayControl(\''.Smart::escape_js($y_question).'\');';
+		return 'smartJ$Browser.PageAwayControl(\''.Smart::escape_js($y_question).'\');';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2286,7 +2286,7 @@ final class SmartViewHtmlHelpers {
 	 */
 	public static function js_code_disable_away_page() {
 		//--
-		return 'SmartJS_BrowserUtils.param_PageAway = true;';
+		return 'smartJ$Browser.setFlag(\'PageAway\', true);';
 		//--
 	} //END FUCTION
 	//================================================================
@@ -2312,7 +2312,7 @@ final class SmartViewHtmlHelpers {
 		//--
 		$y_js_evcode = (string) trim((string)$y_js_evcode);
 		//--
-		return 'try { SmartJS_BrowserUIUtils.AutoCompleteField(\'single\', \''.Smart::escape_js((string)$y_element_id).'\', \''.Smart::escape_js((string)$y_script).'\', \''.Smart::escape_js((string)$y_term_var).'\', '.(int)$y_min_len.', \''.Smart::escape_js((string)$y_js_evcode).'\'); } catch(e) { console.log(\'Failed to initialize JS-UI AutoComplete-Single: \' + e); }';
+		return 'try { smartJ$UI.AutoCompleteField(\'single\', \''.Smart::escape_js((string)$y_element_id).'\', \''.Smart::escape_js((string)$y_script).'\', \''.Smart::escape_js((string)$y_term_var).'\', '.(int)$y_min_len.', \''.Smart::escape_js((string)$y_js_evcode).'\'); } catch(e) { console.log(\'Failed to initialize JS-UI AutoComplete-Single: \' + e); }';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2338,7 +2338,7 @@ final class SmartViewHtmlHelpers {
 		//--
 		$y_js_evcode = (string) trim((string)$y_js_evcode);
 		//--
-		return 'try { SmartJS_BrowserUIUtils.AutoCompleteField(\'multilist\', \''.Smart::escape_js((string)$y_element_id).'\', \''.Smart::escape_js((string)$y_script).'\', \''.Smart::escape_js((string)$y_term_var).'\', '.(int)$y_min_len.', \''.Smart::escape_js((string)$y_js_evcode).'\'); } catch(e) { console.log(\'Failed to initialize JS-UI AutoComplete-Multi: \' + e); }';
+		return 'try { smartJ$UI.AutoCompleteField(\'multilist\', \''.Smart::escape_js((string)$y_element_id).'\', \''.Smart::escape_js((string)$y_script).'\', \''.Smart::escape_js((string)$y_term_var).'\', '.(int)$y_min_len.', \''.Smart::escape_js((string)$y_js_evcode).'\'); } catch(e) { console.log(\'Failed to initialize JS-UI AutoComplete-Multi: \' + e); }';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2363,7 +2363,7 @@ final class SmartViewHtmlHelpers {
 			$prevreload = 'false';
 		} //end if else
 		//--
-		return 'try { SmartJS_BrowserUIUtils.Tabs_Init(\''.Smart::escape_js($y_id_of_tabs).'\', '.$y_selected.', '.$prevreload.'); } catch(e) { console.log(\'Failed to initialize JS-UI Tabs: \' + e); }';
+		return 'try { smartJ$UI.TabsInit(\''.Smart::escape_js($y_id_of_tabs).'\', '.$y_selected.', '.$prevreload.'); } catch(e) { console.log(\'Failed to initialize JS-UI Tabs: \' + e); }';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2386,7 +2386,7 @@ final class SmartViewHtmlHelpers {
 			$activate = 'true';
 		} //end if else
 		//--
-		return 'try { SmartJS_BrowserUIUtils.Tabs_Activate(\''.Smart::escape_js($y_id_of_tabs).'\', '.$activate.'); } catch(e) { console.log(\'Failed to activate JS-UI Tabs: \' + e); }';
+		return 'try { smartJ$UI.TabsActivate(\''.Smart::escape_js($y_id_of_tabs).'\', '.$activate.'); } catch(e) { console.log(\'Failed to activate JS-UI Tabs: \' + e); }';
 		//--
 	} //END FUNCTION
 	//================================================================

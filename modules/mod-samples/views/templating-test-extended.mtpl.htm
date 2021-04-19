@@ -1,6 +1,6 @@
 <!-- start Marker-TPL extended syntax template -->
 [%%%COMMENT%%%]
-Template: templating-test-extended.mtpl.htm # v.20210325
+Template: templating-test-extended.mtpl.htm # v.20210418
 [%%%/COMMENT%%%]<!-- comments are removed -->
 <h1 style="display:inline-block;">[###TITLE###]</h1>
 <div>
@@ -163,6 +163,7 @@ Template: templating-test-extended.mtpl.htm # v.20210325
 </div>
 <script>
 var the_marker = '[###MARKER|js###]';
+var the_special = '[###SPECIALS|js###]';
 var the_textstr = '[###TEXTSTR|js###]';
 var the_number = [###NUMBER|num###];
 var the_unistr = '[###TEST-UNISTR|js###]';
@@ -174,10 +175,11 @@ var tpl_src = '[@@@SUB-TEMPLATE:partials/templating-test-extended.inc.htm|js-tpl
 <script>
 (function(){
 	//--
-	tpl = SmartJS_CoreUtils.renderMarkersTpl(
+	tpl = smartJ$Utils.renderMarkersTpl(
 		String(tpl_src),
 		{
 			'MARKER': the_marker,
+			'SPECIALS': the_special,
 			'TEXTSTR' : the_textstr,
 			'NUMBER': the_number,
 			'MARK-AREA': 'js',
@@ -207,9 +209,9 @@ var tpl_src = '[@@@SUB-TEMPLATE:partials/templating-test-extended.inc.htm|js-tpl
 		errors++;
 		console.error('WARNING: JS-TPL Renderer differs from PHP-TPL Renderer (1) !');
 	} //end if
-	if(SmartJS_CoreUtils.stringTrim(the_tpl_php) != SmartJS_CoreUtils.stringTrim(jQuery('<div/>').html(tpl).text())) {
+	if(smartJ$Utils.stringTrim(the_tpl_php) != smartJ$Utils.stringTrim(jQuery('<div/>').html(tpl).text())) {
 		errors++;
-		console.log('WARNING: HTML Normalized TPL from JS' + SmartJS_CoreUtils.stringTrim(jQuery('<div/>').html(tpl).text()));
+		console.log('WARNING: HTML Normalized TPL from JS' + smartJ$Utils.stringTrim(jQuery('<div/>').html(tpl).text()));
 		console.error('WARNING: JS-TPL Renderer differs from PHP-TPL Renderer (2) !');
 	} //end if
 	//--

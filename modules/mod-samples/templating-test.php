@@ -47,11 +47,15 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
+		$title = 'Marker-TPL Templating Render Demo - Syntax';
+		//--
+
+		//--
 		if((string)$op == 'viewsource') {
 			//--
-			$this->PageViewSetVar(
-				'main',
-				(string) SmartMarkersTemplating::render_file_template(
+			$this->PageViewSetVars([
+				'title' => $title.' (View Source)',
+				'main' => (string) SmartMarkersTemplating::render_file_template(
 					(string) $stpl,
 					[
 						'@SUB-TEMPLATES@' => [
@@ -62,14 +66,14 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'TPL-TYPE' 			=> 'Template'
 					]
 				)
-			);
+			]);
 			return;
 			//--
 		} elseif((string)$op == 'viewpartialsource') {
 			//--
-			$this->PageViewSetVar(
-				'main',
-				(string) SmartMarkersTemplating::render_file_template(
+			$this->PageViewSetVars([
+				'title' => $title.' (View Partial Source)',
+				'main' => (string) SmartMarkersTemplating::render_file_template(
 					(string) $stpl,
 					[
 						'@SUB-TEMPLATES@' => [
@@ -80,14 +84,12 @@ class SmartAppIndexController extends SmartAbstractAppController {
 						'TPL-TYPE' 			=> 'Sub-Template'
 					]
 				)
-			);
+			]);
 			return;
 			//--
 		} //end if
 		//--
 
-		//--
-		$title = 'Marker-TPL Templating Render Demo - Syntax';
 		//--
 		$data = [ // v.20200121
 			//-- ### ALL VARIABLE KEYS ARE CASE INSENSITIVE IN CONTROLLERS ; IN TEMPLATES ALL VARIABLE NAME / KEYS ARE UPPERCASE ; variable names will allow also - (. is reserved for separator as arr[key] is ARR.KEY)

@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List / Records :: v.20210312 -->
+<!-- Pagebuilder / Manage @ List / Records :: v.20210419 -->
 <style>
 	.smartGrid_AlignCenter {
 		text-align: center;
@@ -30,7 +30,7 @@
 <script type="text/javascript" src="lib/js/jquery/slickgrid/smart-grid.js"></script>
 <script type="text/javascript">
 	var IdOfGrid = 'PageBuilderSlickGrid';
-	var TheGrid = new Smart_Grid(IdOfGrid, 'infoTotalRows', '[###LIST-JSON-URL|js###]', 'PageBuilder_Smart_Slickgrid_List', 'id', 'DESC', '', 'filtering');
+	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', '[###LIST-JSON-URL|js###]', 'PageBuilder_Smart_Slickgrid_List', 'id', 'DESC', '', 'filtering');
 </script>
 <script type="text/javascript">
 function pageBuilderFormBtnFilter() {
@@ -53,7 +53,7 @@ jQuery(function() {
 		var html = '';
 		html += '<div style="padding-top:2px;"><center>';
 		[%%%IF:LIST-DELETE-URL:!=;%%%]
-		html += '<a href="[###LIST-DELETE-URL|js###]' + SmartJS_CoreUtils.escape_url(value) + '" data-smart="open.modal">';
+		html += '<a href="[###LIST-DELETE-URL|js###]' + smartJ$Utils.escape_url(value) + '" data-smart="open.modal">';
 		html += '<img src="[###PATH-MODULE|html|js###]libs/views/manager/img/op-delete.svg" alt="Delete" title="Delete">';
 		html += '</a>';
 		[%%%ELSE:LIST-DELETE-URL%%%]
@@ -74,9 +74,9 @@ jQuery(function() {
 		var html = '';
 		html += '<div style="padding-top:2px;"><center>';
 		[%%%IF:LIST-RECORD-URL:!=;%%%]
-		html += '<a href="[###LIST-RECORD-URL|js###]' + SmartJS_CoreUtils.escape_url(value) + '" data-smart="open.modal" title="Display">';
+		html += '<a href="[###LIST-RECORD-URL|js###]' + smartJ$Utils.escape_url(value) + '" data-smart="open.modal" title="Display">';
 		[%%%/IF:LIST-RECORD-URL%%%]
-		html += '<img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + SmartJS_CoreUtils.escape_html(img) + '" alt="' + SmartJS_CoreUtils.escape_html(txt) + '" title="' + SmartJS_CoreUtils.escape_html(txt) + '">';
+		html += '<img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + smartJ$Utils.escape_html(img) + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '">';
 		[%%%IF:LIST-RECORD-URL:!=;%%%]
 		html += '</a>';
 		[%%%/IF:LIST-RECORD-URL%%%]
@@ -86,12 +86,12 @@ jQuery(function() {
 
 	var displayCtrl = function(row, cell, value, columnDef, dataContext) {
 		value = String(value);
-		return '<span style="color:#778899;" title="' + SmartJS_CoreUtils.escape_html(dataContext['layout']) + '">&nbsp;' + SmartJS_CoreUtils.escape_html(value) + '</span>';
+		return '<span style="color:#778899;" title="' + smartJ$Utils.escape_html(dataContext['layout']) + '">&nbsp;' + smartJ$Utils.escape_html(value) + '</span>';
 	}
 
 	var displaySpecial = function(row, cell, value, columnDef, dataContext) {
 		value = String(value);
-		return '<span style="color:#F3973B;">&nbsp;' + SmartJS_CoreUtils.escape_html(value) + '&nbsp;</span>';
+		return '<span style="color:#F3973B;">&nbsp;' + smartJ$Utils.escape_html(value) + '&nbsp;</span>';
 	}
 
 	var displayID = function(row, cell, value, columnDef, dataContext) {
@@ -100,7 +100,7 @@ jQuery(function() {
 		if(value.substr(0, 1) == '#') {
 			style = ' font-style:italic;';
 		}
-		return '<div align="left" style="display:inline-block; padding-left:10px; padding-right:10px; padding-top:0px;' + style + '" title="' + SmartJS_CoreUtils.escape_html(dataContext['ref']) + '">' + SmartJS_CoreUtils.escape_html(value) + '</div>';
+		return '<div align="left" style="display:inline-block; padding-left:10px; padding-right:10px; padding-top:0px;' + style + '" title="' + smartJ$Utils.escape_html(dataContext['ref']) + '">' + smartJ$Utils.escape_html(value) + '</div>';
 	}
 
 	var displayCodeType = function(row, cell, value, columnDef, dataContext) {
@@ -123,7 +123,7 @@ jQuery(function() {
 				break;
 		}
 		var fmtVal = value + ' / ' + dataContext['total_size'] + ' bytes';
-		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(fmtVal) + '" title="' + SmartJS_CoreUtils.escape_html(fmtVal) + '"></div></center>';
+		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(fmtVal) + '" title="' + smartJ$Utils.escape_html(fmtVal) + '"></div></center>';
 	}
 
 	var displayActive = function(row, cell, value, columnDef, dataContext) {
@@ -137,7 +137,7 @@ jQuery(function() {
 			img = 'status-linked.svg';
 			txt = 'All Segments are Active if used Programatically';
 		}
-		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(txt) + '" title="' + SmartJS_CoreUtils.escape_html(txt) + '"></div></center>';
+		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div></center>';
 	}
 
 	var displayAuth = function(row, cell, value, columnDef, dataContext) {
@@ -151,7 +151,7 @@ jQuery(function() {
 			img = 'restr-unknown.svg';
 			txt = 'Unknown (Segments may be used in any context ...)';
 		}
-		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(txt) + '" title="' + SmartJS_CoreUtils.escape_html(txt) + '"></div></center>';
+		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div></center>';
 	}
 
 	var displayTransl = function(row, cell, value, columnDef, dataContext) {
@@ -161,12 +161,12 @@ jQuery(function() {
 			img = 'translatable.svg';
 			txt = 'Translatable';
 		}
-		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + SmartJS_CoreUtils.escape_html(txt) + '" title="' + SmartJS_CoreUtils.escape_html(txt) + '"></div></center>';
+		return '<center><div style="padding-top:2px;"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div></center>';
 	}
 
 	var displayName = function(row, cell, value, columnDef, dataContext) {
 		value = String(value);
-		return '<span style="color:#555555;" title="' + SmartJS_CoreUtils.escape_html(dataContext['tags']) + '">&nbsp;' + SmartJS_CoreUtils.escape_html(value) + '</span>';
+		return '<span style="color:#555555;" title="' + smartJ$Utils.escape_html(dataContext['tags']) + '">&nbsp;' + smartJ$Utils.escape_html(value) + '</span>';
 	}
 
 	var diffColSize = function(colName) {

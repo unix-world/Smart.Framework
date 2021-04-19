@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210407
+ * @version		20210419
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -236,7 +236,7 @@ abstract class SmartAbstractAppMiddleware {
 			(!defined('SMART_FRAMEWORK_URL_PARAM_LANGUAGE')) OR
 			(SMART_FRAMEWORK_URL_PARAM_LANGUAGE == '') OR // this is the default case
 			((string)trim((string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE) == '') OR // this if was wrong set
-			(!SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE)) // {{{SYNC-APP-URL-LANG-PARAM}}} ; if not empty may contain only characters: [a-z]
+			(!preg_match('/^[a-z]{1,10}$/', (string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE)) // {{{SYNC-APP-URL-LANG-PARAM}}} ; if not empty may contain only characters: [a-z]
 		) {
 			self::$LANGUAGE_DETECTED = false;
 			return (bool) self::$LANGUAGE_DETECTED;

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartUnicode        final class \ SmartUnicode    {   } ::    Class: SmartUnicode - provides the string util functions to work safe with Unicode">
-	<meta name="keywords" content="smartunicode, final, class, provides, the, string, util, functions, to, work, safe, with, unicode, multibyte, strings, characters, compatbile, utf-8, all, latin, based, character, sets, iso-8859-1, base, usa, uk, irish, italian, sweden, norway, denmark, spanish, portugal, dutch, iso-8859, extended, german, austrian, finland, czech, slovak, poland, hungary, romania, slovenia, croatia, serbia, bosnia, albania, take, a, look, at, replacement, table, below, language, php, located, lib framework lib unicode.php, package, core, namespace, name, version, v.20210330, depends, extensions, mbstring, xml, hints, you, must, make, always, difference, for, what, are, goint, do, if, need, bytes, length, then, use, strlen, includding, instead, number, of, in, smartunicode::str len, variables, know">
+	<meta name="keywords" content="smartunicode, final, class, provides, the, string, util, functions, to, work, safe, with, unicode, multibyte, strings, characters, compatbile, utf-8, all, latin, based, character, sets, iso-8859-1, base, usa, uk, irish, italian, sweden, norway, denmark, spanish, portugal, dutch, iso-8859, extended, german, austrian, finland, czech, slovak, poland, hungary, romania, slovenia, croatia, serbia, bosnia, albania, take, a, look, at, replacement, table, below, language, php, located, lib framework lib unicode.php, package, core, namespace, name, version, v.20210331, depends, extensions, mbstring, xml, hints, you, must, make, always, difference, for, what, are, goint, do, if, need, bytes, length, then, use, strlen, includding, instead, number, of, in, smartunicode::str len, variables, know">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartUnicode">
 	<title>PHP Documentation for: \SmartUnicode</title>
 	<!-- CSS and Fonts -->
@@ -468,12 +468,13 @@
 <!-- skip logo -->
 <!-- class r.20200121 -->
 <!-- Styles -->
-<!-- styles r.20200121 -->
+<!-- styles r.20210417 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
-.doc-located {
+.doc-located,
+.doc-version {
 	color: #999999;
 }
 .doc-modifiers {
@@ -499,10 +500,19 @@
 	color: #777777;
 }
 .doc-ns,
+.doc-frozen,
 .doc-param-optional {
 	color: #778899;
 }
 .doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
 	color: #3F51B5;
 }
 .doc-implements {
@@ -698,7 +708,7 @@ Take a look at the replacement table below.</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartUnicode</span></li>
 		
-		<li><b>Version:</b> v.20210330</li>
+		<li><b>Version:</b> v.20210331</li>
 		<li><b>Depends:</b> extensions:  PHP MBString, PHP XML</li>
 		<li><b>Hints:</b> You  must make always a difference for what you are goint to do with a string. If you need bytes length, then use strlen() with all strings, includding unicode ! If you need instead the number of characters in a string, then use SmartUnicode::str_len() for all variables / strings you know (or you just suppose) that are unicode.</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -1336,7 +1346,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-31 00:10:17 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:29 +0000</small>
 <hr>
 <br>
 <!-- # -->

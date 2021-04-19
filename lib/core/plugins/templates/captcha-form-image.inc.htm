@@ -1,10 +1,10 @@
-<!-- Partial Template: Plugins.CaptchaFormImage r.20200619 -->
-<div id="Smart-Captcha-Area-[###RELEASE-UUID|html###]" class="Smart-Captcha-Area" title="Captcha - [###CAPTCHA-TXT-ENTER|js###]">
-	<div id="Smart-Captcha-Container-[###RELEASE-UUID|html###]" class="Smart-Captcha-Container">
-		<div id="Smart-Captcha-Plugin-[###RELEASE-UUID|html###]" class="Smart-Captcha-Plugin">
-			<img src="[###BASE-URL|html###][###CAPTCHA-IMG-SRC|html###]" alt="[###CAPTCHA-TXT-IMG|html###]" title="[###CAPTCHA-IMG-TITLE|html###]" onClick="(function(img) { var captcha_date = new Date(); img.attr('src', '[###BASE-URL|js###][###CAPTCHA-IMG-SRC|js###]' + String(captcha_date.getTime()) + String(captcha_date.getMilliseconds())); try { img.parent().parent().find('input').val(''); } catch(err){ console.error('Captcha Plugin ERROR: Cannot Reset Input Field on Image Change !'); } })(jQuery(this));">
+<!-- Partial Template: Plugins.CaptchaFormImage r.20210419 -->
+<div id="Smart-Captcha-Area-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Area" title="Captcha - [###CAPTCHA-TXT-ENTER|js###]">
+	<div id="Smart-Captcha-Container-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Container">
+		<div id="Smart-Captcha-Plugin-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Plugin">
+			<img src="[###BASE-URL|html###][###CAPTCHA-IMG-SRC|html###]" alt="[###CAPTCHA-TXT-IMG|html###]" title="[###CAPTCHA-IMG-TITLE|html###]" onClick="(function(img) { const captcha_date = new Date(); img.attr('src', '[###BASE-URL|js###][###CAPTCHA-IMG-SRC|js###]' + String(captcha_date.getTime()) + String(captcha_date.getMilliseconds())); try { img.parent().parent().find('input').val(''); } catch(err){ console.error('Captcha Plugin ERROR: Cannot Reset Input Field on Image Change !'); } })(jQuery(this));">
 		</div>
-		<div id="Smart-Captcha-Input-[###RELEASE-UUID|html###]" class="Smart-Captcha-Input">
+		<div id="Smart-Captcha-Input-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Input">
 			<span>[###CAPTCHA-TXT-CONFIRM|html###]</span><br>
 			[@@@SUB-TEMPLATE:!lib/core/plugins/templates/captcha-form-input.inc.htm!@@@]
 		</div>

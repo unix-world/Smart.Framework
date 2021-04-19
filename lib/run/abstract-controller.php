@@ -103,7 +103,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210407
+ * @version 	v.20210419
  * @package 	development:Application
  *
  */

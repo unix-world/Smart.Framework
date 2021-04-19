@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// r.20210307
+	// r.20210408
 
 	public function Run() {
 
@@ -211,10 +211,11 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$name = $this->RequestVarGet('name', '', 'string');
 				$content = $this->RequestVarGet('content', '', 'string');
 				$cksum = $this->RequestVarGet('cksum', '', 'string');
+				$as = $this->RequestVarGet('as', '', 'string');
 				$this->PageViewSetCfg('rawpage', 'yes');
 				$this->PageViewSetVar(
 					'main',
-					\SmartModExtLib\PageBuilder\Manager::UploadMedia($id, $type, $name, $content, $cksum)
+					\SmartModExtLib\PageBuilder\Manager::UploadMedia($id, $type, $name, $content, $cksum, $as)
 				);
 				break;
 			case 'record-delete-media': // JSON

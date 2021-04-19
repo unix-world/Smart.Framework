@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version     v.20210401
+ * @version     v.20210413
  * @package     @Core
  *
  */
@@ -342,49 +342,116 @@ final class Smart {
 
 
 	//================================================================
+	private static function url_encode_value(string $value, bool $y_allow_late_binding_params) {
+		//--
+		if(
+			($y_allow_late_binding_params === true) AND
+			((string)substr((string)$value, 0, 3) == '{{{') AND
+			((string)substr((string)$value, -3, 3) == '}}}') AND
+			((string)$value != '{{{}}}')
+		) { // this is {{{param}}} ; protect: `{{{` and `}}}` if starts or ends with them and not {{{}}}
+			$value = (string) substr((string)$value, 3);
+			$value = (string) substr((string)$value, 0, (int)strlen((string)$value)-3);
+			$value = (string) '{{{'.rawurlencode((string)$value).'}}}';
+		} else {
+			$value = (string) rawurlencode((string)$value);
+		} //end if
+		//--
+		return (string) $value;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// on init this function $suffix must be set to ''
+	private static function url_encode_params(string $name, $value, bool $y_allow_late_binding_params, string $suffix='') {
+		//--
+		$ret = [];
+		//--
+		if(self::array_size($value) > 0) { // Non-Empty Array
+			$arrtype = self::array_type_test($value); // 0: not an array ; 1: non-associative ; 2:associative
+			foreach($value as $kk => $vv) {
+				if($arrtype === 1) { // 1: non-associative
+					$ek = (string) '[]';
+				} else { // 2: associative
+					$ek = (string) '['.rawurlencode((string)$kk).']';
+				} //end if else
+				if(is_array($vv)) {
+					$ret[] = (string) self::url_encode_params((string)$name, (array)$vv, (bool)$y_allow_late_binding_params, (string)$suffix.$ek);
+				} else {
+					$ret[] = (string) rawurlencode((string)$name).$suffix.$ek.'='.self::url_encode_value((string)$vv, (bool)$y_allow_late_binding_params);
+				} //end if else
+			} //end foreach
+		} elseif(self::is_nscalar($value) OR is_array($value)) { // nScalar or Empty Array
+			if(is_array($value)) {
+				$value = null; // keep empty arrays, normally they are discarded by the http_build_query()
+			} elseif($value === true) {
+				$value = 1;
+			} elseif($value === false) {
+				$value = 0;
+			} //end if
+			$ret[] = (string) rawurlencode((string)$name).$suffix.'='.self::url_encode_value((string)$value, (bool)$y_allow_late_binding_params);
+		} //end if else
+		//--
+		return (string) implode('&', (array)$ret);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	/**
-	 * Add URL Params (Build a standard RFC3986 URL from script and parameters) as: script.xyz?a=b&param1=value1&param2=value2
+	 * Build an URL Query (Build a standard RFC3986 URL from an array of parameters) as: a=b&param1=value1&param2=value2&c[0]=a&c[1]=x&d[a]=15&d[b]=z
+	 *
+	 * @param 	ARRAY		$y_params 						:: Associative array as [param1 => value1, Param2 => Value2]
+	 * @param 	BOOLEAN 	$y_allow_late_binding_params	:: Allow late binding params ex: a={{{param}}}&b=true
+	 *
+	 * @return 	STRING							:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
+	 */
+	public static function url_build_query(array $y_params, bool $y_allow_late_binding_params) {
+		//--
+		if(self::array_size($y_params) <= 0) {
+			return '';
+		} //end if
+		//--
+		$out = '';
+		if(is_array($y_params)) {
+			foreach($y_params as $key => $val) {
+				if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
+					$out .= self::url_encode_params((string)$key, $val, (bool)$y_allow_late_binding_params);
+				} //end if
+			} //end foreach
+		} //end if
+		//--
+		return (string) $out;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Add URL Params (Build a standard RFC3986 URL from script and parameters) as: script.xyz?a=b&param1=value1&param2=value2&param3={{{late-binding}}}
+	 * It allows late binding params such as 'param3' => '{{{late-binding}}}'
 	 *
 	 * @param 	STRING 		$y_url				:: The base URL like: script.php or script.php?a=b or empty
-	 * @param 	ARRAY		$y_params 			:: Associative array as [param1 => value1, Param2 => Value2]
+	 * @param 	ARRAY		$y_params 			:: Associative array as [param1 => value1, Param2 => Value2, param3 => {{{late-binding}}}]
 	 *
 	 * @return 	STRING							:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
 	 */
 	public static function url_add_params(string $y_url, array $y_params) {
 		//--
+		if(self::array_size($y_params) <= 0) {
+			return (string) $y_url;
+		} //end if
+		//--
 		$url = (string) trim((string)$y_url);
 		//--
 		if(is_array($y_params)) {
 			foreach($y_params as $key => $val) {
-				if((string)$key != '') {
-					if(SmartFrameworkSecurity::ValidateVariableName((string)$key, true)) { // {{{SYNC-REQVARS-CAMELCASE-KEYS}}}
-						$suffix = '';
-						if(is_array($val)) {
-							$arrtype = self::array_type_test($val); // 0: not an array ; 1: non-associative ; 2:associative
-							if($arrtype === 1) { // 1: non-associative
-								for($i=0; $i<self::array_size($val); $i++) {
-									$suffix = (string) $key.'[]='.self::escape_url((string)$val[$i]);
-									$url = (string) self::url_add_suffix((string)$url, (string)$suffix);
-								} //end foreach
-							} else { // 2: associative
-								foreach($val as $kk => $vv) {
-									$suffix = (string) $key.'['.self::escape_url((string)$kk).']='.self::escape_url((string)$vv);
-									$url = (string) self::url_add_suffix((string)$url, (string)$suffix);
-								} //end foreach
-							} //end if else
-						} elseif((string)$val != '') {
-							$suffix = (string) $key.'=';
-							if((substr((string)$val, 0, 3) == '{{{') AND (substr((string)$val, -3, 3) == '}}}')) { // this is {{{param}}}
-								$tmp_val = (string) substr((string)$val, 3);
-								$tmp_val = (string) substr((string)$tmp_val, 0, (int)strlen((string)$tmp_val)-3);
-								$suffix .= (string) '{{{'.self::escape_url((string)$tmp_val).'}}}';
-								$tmp_val = '';
-							} else {
-								$suffix .= (string) self::escape_url((string)$val);
-							} //end if else
-							$url = (string) self::url_add_suffix((string)$url, (string)$suffix);
-						} //end if
-					} //end if
+				if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
+					$url = (string) self::url_add_suffix((string)$url, (string)self::url_build_query([ (string)$key => $val ], true));
 				} //end if
 			} //end foreach
 		} else {
@@ -421,7 +488,7 @@ final class Smart {
 			$y_suffix = (string) substr((string)$y_suffix, 1);
 		} //end if
 		//--
-		if((strpos((string)$y_suffix, '?') !== false) OR ((string)substr((string)$y_suffix, 0, 1) == '&')) {
+		if((strpos((string)$y_suffix, '?') !== false) OR (strpos((string)$y_suffix, '&') === 0)) {
 			self::log_notice('[URL Add Suffix] WARNING: The URL Suffix should not contain ? or start with & :: [URL: '.$y_url.' :: Suffix: '.$y_suffix.']');
 		} //end if
 		//--
@@ -662,6 +729,29 @@ final class Smart {
 
 	//================================================================
 	/**
+	 * Format a number as FLOAT
+	 *
+	 * @param 	NUMERIC 	$y_number		:: A numeric value
+	 * @param 	ENUM		$y_signed		:: Default to '' ; If set to '+' will return (enforce) an UNSIGNED/POSITIVE Number, Otherwise if set to '' will return just a regular SIGNED Number wich can be negative or positive
+	 *
+	 * @return 	FLOAT						:: An float number
+	 */
+	public static function format_number_float($y_number, $y_signed='') { // do not make strongtype as NULL will break it
+		//--
+		if((string)$y_signed == '+') { // unsigned integer
+			if((float)$y_number < 0) { // {{{SYNC-SMART-FLOAT+}}}
+				$y_number = 0; // it must be zero if negative for the all logic in this framework
+			} //end if
+		} //end if
+		//--
+		return (float) $y_number;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Format a number as INTEGER (NOTICE: On 64-bit systems PHP_INT_MAX is: 9223372036854775807 ; On 32-bit old systems the PHP_INT_MAX is just 2147483647)
 	 *
 	 * @param 	NUMERIC 	$y_number		:: A numeric value
@@ -689,15 +779,22 @@ final class Smart {
 	 * This is a better replacement for the PHP's number_format() which throws a warning if first argument passed is a string since PHP 5.3
 	 *
 	 * @param 	NUMERIC 	$y_number			:: A numeric value
-	 * @param 	INTEGER+	$y_decimals			:: The number of decimal to use (safe value is between 0..8, keeping in mind the 14 max precision)
+	 * @param 	INTEGER+	$y_decimals			:: The number of decimal to use (safe value is between 1..13, keeping in mind the 14 max precision) ; Default is 2
 	 * @param 	STRING		$y_sep_decimals 	:: The decimal separator symbol as: 	. or , (default is .)
 	 * @param 	STRING 		$y_sep_thousands	:: The thousand separator symbol as: 	, or . (default is [none])
 	 *
 	 * @return 	DECIMAL							:: A decimal number
 	 */
-	public static function format_number_dec($y_number, $y_decimals=0, $y_sep_decimals='.', $y_sep_thousands='') { // do not make strongtype as NULL will break it
+	public static function format_number_dec($y_number, $y_decimals=2, $y_sep_decimals='.', $y_sep_thousands='') { // do not make strongtype as NULL will break it
+		//-- fix decimals
+		$y_decimals = (int) self::format_number_int($y_decimals,'+');
+		if($y_decimals < 1) {
+			$y_decimals = 1;
+		} elseif($y_decimals > 13) {
+			$y_decimals = 13;
+		} //end if
 		//-- by default number_format() returns string, so enforce string as output to keep decimals
-		return (string) number_format(((float)$y_number), self::format_number_int($y_decimals,'+'), (string)$y_sep_decimals, (string)$y_sep_thousands); // {{{SYNC-SMART-DECIMAL}}}
+		return (string) number_format(((float)$y_number), (int)$y_decimals, (string)$y_sep_decimals, (string)$y_sep_thousands); // {{{SYNC-SMART-DECIMAL}}}
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1607,11 +1704,11 @@ final class Smart {
 	 *
 	 * @param STRING 		$y_str			:: The string to be processed
 	 *
-	 * @return STRING 						:: The Js-Var which will contain only: a-z A-Z 0-9 _
+	 * @return STRING 						:: The Js-Var which will contain only: a-z A-Z 0-9 _ $
 	 */
 	public static function create_jsvar(string $y_str) {
 		//--
-		return (string) trim((string)preg_replace('/[^a-zA-Z0-9_]/', '', (string)$y_str));
+		return (string) trim((string)preg_replace('/[^a-zA-Z0-9_\$]/', '', (string)$y_str));
 		//--
 	} //END FUNCTION
 	//================================================================

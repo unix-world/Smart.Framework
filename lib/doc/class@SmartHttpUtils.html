@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartHttpUtils        final class \ SmartHttpUtils    {   } ::    Class: Smart HTTP Utils - provides utils function to work with HTTP protocol.">
-	<meta name="keywords" content="smarthttputils, final, class, smart, http, utils, provides, function, to, work, with, protocol, language, php, located, at, lib framework lib http cli.php, package, core:network, namespace, name, version, v.20210330, depends, classes, smarthashcrypto, hints, it, is, recommended, use, the, methods, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, and, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class::method, only, public, encode var cookie, value, encode var post, varname, http multipart form delimiter, http multipart form build, delimiter, fields, files, chunked part decode, string, chunk, return, decoded, message, param, encoded, dechunk, a, transfer-encoding, chunked, part, ex, body, was, not, properly, returned, unmodified, properties">
+	<meta name="keywords" content="smarthttputils, final, class, smart, http, utils, provides, function, to, work, with, protocol, language, php, located, at, lib framework lib http cli.php, package, core:network, namespace, name, version, v.20210412, depends, classes, smarthashcrypto, smartframeworksecurity, hints, it, is, recommended, use, the, methods, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, and, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class::method, only, public, encode var cookie, value, encode var post, http multipart form delimiter, http multipart form build, delimiter, fields, files, chunked part decode, string, chunk, return, decoded, message, param, encoded, dechunk, a, transfer-encoding, chunked, part, ex, body, was, not, properly, returned, unmodified, properties">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartHttpUtils">
 	<title>PHP Documentation for: \SmartHttpUtils</title>
 	<!-- CSS and Fonts -->
@@ -468,12 +468,13 @@
 <!-- skip logo -->
 <!-- class r.20200121 -->
 <!-- Styles -->
-<!-- styles r.20200121 -->
+<!-- styles r.20210417 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
-.doc-located {
+.doc-located,
+.doc-version {
 	color: #999999;
 }
 .doc-modifiers {
@@ -499,10 +500,19 @@
 	color: #777777;
 }
 .doc-ns,
+.doc-frozen,
 .doc-param-optional {
 	color: #778899;
 }
 .doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
 	color: #3F51B5;
 }
 .doc-implements {
@@ -696,8 +706,8 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartHttpUtils</span></li>
 		
-		<li><b>Version:</b> v.20210330</li>
-		<li><b>Depends:</b> classes:  Smart, SmartHashCrypto</li>
+		<li><b>Version:</b> v.20210412</li>
+		<li><b>Depends:</b> classes:  Smart, SmartHashCrypto, SmartFrameworkSecurity</li>
 		<li><b>Hints:</b> It  is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -725,7 +735,7 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--encode_var_post">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encode_var_post</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$varname` Parameter is REQUIRED">$varname</span></b></span>, 
+				<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
 			<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 	
 	
@@ -868,7 +878,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-31 00:10:19 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:30 +0000</small>
 <hr>
 <br>
 <!-- # -->

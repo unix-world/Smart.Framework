@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210307
+ * @version 	v.20210407
  * @package 	development:modules:PageBuilder
  *
  */
@@ -1487,25 +1487,33 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 											);
 											$plugin_obj->initPlugin((string)$plugin_fname, (array)$plugin_cfg, (string)$this->ControllerGetParam('module-path'), (array)$this->page_params, (array)$data_arr); // initialize before run !
 											//--
-											$plugin_test_init = $plugin_obj->Initialize(); // pre-run
-											if($plugin_test_init !== false) {
-												$plugin_status = (int) $plugin_obj->Run(); // run
-											} else {
-												$plugin_status = 500;
-											} //end if else
-											$plugin_obj->ShutDown(); // post run
+											$plugin_status = 0;
+											$plugin_skip_run = false;
 											//--
-											$plugin_raw_heads = (array) $plugin_obj->PageViewGetRawHeaders();
-											if(\Smart::array_size($plugin_raw_heads) > 0) {
-												$this->PageViewSetRawHeaders((array)$plugin_raw_heads);
-											} //end if
-											//--
+											$plugin_status = $plugin_obj->Initialize(); // mixed: null (void) / FALSE / TRUE / INT Status-Code
 											$plugin_page_settings = (array) $plugin_obj->PageViewGetCfgs();
-											//--
-											$plugin_exec = (array) $plugin_obj->PageViewGetVars();
-											// \Smart::log_notice(\print_r($plugin_exec,1));
-											//--
-											if((isset($plugin_page_settings['status-code'])) AND ((int)$plugin_page_settings['status-code'] > 0)) { // {{{SYNC-SMART-FRAMEWORK-HANDLE-HTTP-STATUS-CODE}}}
+											if(
+												(($plugin_status === false) OR (($plugin_status !== true) AND ((int)$plugin_status != 0))) OR
+												((isset($plugin_page_settings['status-code'])) AND ((int)$plugin_page_settings['status-code'] != 0)) // {{{SYNC-SMART-FRAMEWORK-HANDLE-HTTP-STATUS-CODE}}}
+											) {
+												$plugin_skip_run = true; // skip Run
+											} else {
+												$plugin_status = $plugin_obj->Run(); // mixed: null (void) / FALSE / TRUE / INT Status-Code
+												$plugin_page_settings = (array) $plugin_obj->PageViewGetCfgs();
+											} //end if else
+											if($plugin_status === false) {
+												$plugin_status = 500;
+											} elseif($plugin_status === true) {
+												$plugin_status = 200;
+											} else {
+												$plugin_status = intval($plugin_status);
+											} //end if
+											$plugin_status = (int) $plugin_status; // ensure int
+											$plugin_obj->ShutDown();
+											if((isset($plugin_page_settings['status-code'])) AND ((int)$plugin_page_settings['status-code'] != 0)) { // {{{SYNC-SMART-FRAMEWORK-HANDLE-HTTP-STATUS-CODE}}}
+												if(((int)$plugin_status != 0) AND ((int)$plugin_status != (int)$plugin_page_settings['status-code'])) {
+													\Smart::log_warning('PageBuilder: Render Template WARNING: Different HTTP Status Codes (Set='.(int)$plugin_page_settings['status-code'].'; Exit='.(int)$plugin_status.') in: ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
+												} //end if
 												$plugin_page_settings['status-code'] = (int) $plugin_page_settings['status-code']; // this rewrites what the Run() function returns, which is very OK as this is authoritative !
 												if(!\in_array((int)$plugin_page_settings['status-code'], (array)\SmartFrameworkRuntime::getHttpStatusCodesALL())) {
 													\Smart::log_notice('PageBuilder: Render Template ERROR: Wrong HTTP Status Code (Set='.(int)$plugin_page_settings['status-code'].') in: ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
@@ -1513,7 +1521,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												} //end if
 											} else {
 												$plugin_page_settings['status-code'] = 200;
-												if((int)$plugin_status > 0) {
+												if((int)$plugin_status != 0) {
 													if(!\in_array((int)$plugin_status, (array)\SmartFrameworkRuntime::getHttpStatusCodesALL())) {
 														\Smart::log_notice('PageBuilder: Render Template ERROR: Wrong HTTP Status Code (Return='.(int)$plugin_status.') in: ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
 													} else {
@@ -1522,9 +1530,14 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												} //end if
 											} //end if
 											//--
-											if($plugin_test_init === false) {
-												if((int)$plugin_page_settings['status-code'] < 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
-													$plugin_page_settings['status-code'] = 500; // if Initialize returns FALSE then expects also and explicit error code (>= 400) and perhaps a message set via $appSettings['status-code'] ; if none implemented, raise the 500 HTTP Status Code
+											$plugin_exec = (array) $plugin_obj->PageViewGetVars();
+											// \Smart::log_notice(\print_r($plugin_exec,1));
+											//--
+											if((int)$plugin_page_settings['status-code'] < 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
+												//-- expires, modified
+												if(isset($plugin_page_settings['expires']) AND ((int)$plugin_page_settings['expires'] > 0)) {
+													$this->PageViewSetCfg('expires', (int)$plugin_page_settings['expires']);
+													$this->PageViewSetCfg('modified', (int)$plugin_page_settings['modified']);
 												} //end if
 											} //end if
 											//--
@@ -1549,95 +1562,96 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 													//--
 												} //end if
 												//--
-											} else { // 2xx
+											} else { // 2xx / 304
 												//--
 												if((int)$this->PageViewGetStatusCode() < (int)$plugin_page_settings['status-code']) {
 													$this->PageViewSetOkStatus((int)$plugin_page_settings['status-code']);
 												} //end if
-												//--
-											} //end if
-											//-- rawpage, rawmime, rawdisp
-											if(isset($plugin_page_settings['rawpage'])) {
-												$plugin_page_settings['rawpage'] = (string) \strtolower((string)$plugin_page_settings['rawpage']);
+												//-- rawpage, rawmime, rawdisp
+												if(isset($plugin_page_settings['rawpage'])) {
+													$plugin_page_settings['rawpage'] = (string) \strtolower((string)$plugin_page_settings['rawpage']);
+													if((string)$plugin_page_settings['rawpage'] == 'yes') {
+														$this->PageViewSetCfg('rawpage', true);
+													} //end if
+												} else {
+													$plugin_page_settings['rawpage'] = null;
+												} //end if
+												if((string)$plugin_page_settings['rawpage'] != 'yes') {
+													$plugin_page_settings['rawpage'] = '';
+												} //end if
 												if((string)$plugin_page_settings['rawpage'] == 'yes') {
-													$this->PageViewSetCfg('rawpage', true);
+													if(isset($plugin_page_settings['rawmime'])) {
+														$plugin_page_settings['rawmime'] = (string) \trim((string)$plugin_page_settings['rawmime']);
+														if((string)$plugin_page_settings['rawmime'] != '') {
+															$this->PageViewSetCfg('rawmime', (string)$plugin_page_settings['rawmime']);
+														} //end if
+													} //end if else
 												} //end if
-											} else {
-												$plugin_page_settings['rawpage'] = null;
-											} //end if
-											if((string)$plugin_page_settings['rawpage'] != 'yes') {
-												$plugin_page_settings['rawpage'] = '';
-											} //end if
-											if((string)$plugin_page_settings['rawpage'] == 'yes') {
-												if(isset($plugin_page_settings['rawmime'])) {
-													$plugin_page_settings['rawmime'] = (string) \trim((string)$plugin_page_settings['rawmime']);
-													if((string)$plugin_page_settings['rawmime'] != '') {
-														$this->PageViewSetCfg('rawmime', (string)$plugin_page_settings['rawmime']);
-													} //end if
-												} //end if else
-											} //end if
-											if((string)$plugin_page_settings['rawpage'] == 'yes') {
-												if(isset($plugin_page_settings['rawdisp'])) {
-													$plugin_page_settings['rawdisp'] = (string) \trim((string)$plugin_page_settings['rawdisp']);
-													if((string)$plugin_page_settings['rawdisp'] != '') {
-														$this->PageViewSetCfg('rawdisp', (string)$plugin_page_settings['rawdisp']);
-													} //end if
-												} //end if else
-											} //end if
-											//-- expires, modified
-											if(isset($plugin_page_settings['expires']) AND ((int)$plugin_page_settings['expires'] > 0)) {
-												$this->PageViewSetCfg('expires', (int)$plugin_page_settings['expires']);
-												$this->PageViewSetCfg('modified', (int)$plugin_page_settings['modified']);
-											} //end if
-											//--
-											if(isset($plugin_exec['meta-title']) AND ((string)$plugin_exec['meta-title'] != '')) {
-												$data_arr['@meta-title'] = (string) $plugin_exec['meta-title'];
-											} //end if
-											if(isset($plugin_exec['meta-description']) AND ((string)$plugin_exec['meta-description'] != '')) {
-												$data_arr['@meta-description'] = (string) $plugin_exec['meta-description'];
-											} //end if
-											if(isset($plugin_exec['meta-keywords']) AND ((string)$plugin_exec['meta-keywords'] != '')) {
-												$data_arr['@meta-keywords'] = (string) $plugin_exec['meta-keywords'];
-											} //end if
-											//--
-											$plugin_exp_vars = (array) $plugin_obj->getPluginExportVars();
-											if((\Smart::array_size($plugin_exp_vars) > 0) AND (\Smart::array_type_test($plugin_exp_vars) == 2)) {
-												foreach($plugin_exp_vars as $export_key => $export_var) {
-													if(\preg_match((string)$this->regex_marker, (string)$export_key)) {
-														$this->plugin_markers[(string)$export_key] = (string) $export_var; // later values will rewrite previous ones if any
-													} //end if
-												} //end foreach
-											} //end if
-											$plugin_exp_vars = null;
-											//--
-											if(($level === 0) AND (\strpos((string)$key, 'TEMPLATE@') === 0) AND (\in_array((string)$key, (array)$this->page_markers))) { // ((string)$key != 'TEMPLATE@MAIN')) { // allow TEMPLATE@*(!MAIN) just on main page (level=0)
-												//-- don't replace these markers, they are template markers
-												if(!\array_key_exists((string)\substr((string)$key, \strlen('TEMPLATE@')), $data_arr['smart-markers'])) {
-													$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] = '';
+												if((string)$plugin_page_settings['rawpage'] == 'yes') {
+													if(isset($plugin_page_settings['rawdisp'])) {
+														$plugin_page_settings['rawdisp'] = (string) \trim((string)$plugin_page_settings['rawdisp']);
+														if((string)$plugin_page_settings['rawdisp'] != '') {
+															$this->PageViewSetCfg('rawdisp', (string)$plugin_page_settings['rawdisp']);
+														} //end if
+													} //end if else
 												} //end if
-												$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) $plugin_exec['content']; // append is mandatory here else will not render correctly more than one sub-segment/plugin
+												//-- raw heads
+												$plugin_raw_heads = (array) $plugin_obj->PageViewGetRawHeaders();
+												if(\Smart::array_size($plugin_raw_heads) > 0) {
+													$this->PageViewSetRawHeaders((array)$plugin_raw_heads);
+												} //end if
 												//--
-											} elseif(\preg_match((string)$this->regex_marker, (string)$key)) {
+												if(isset($plugin_exec['meta-title']) AND ((string)$plugin_exec['meta-title'] != '')) {
+													$data_arr['@meta-title'] = (string) $plugin_exec['meta-title'];
+												} //end if
+												if(isset($plugin_exec['meta-description']) AND ((string)$plugin_exec['meta-description'] != '')) {
+													$data_arr['@meta-description'] = (string) $plugin_exec['meta-description'];
+												} //end if
+												if(isset($plugin_exec['meta-keywords']) AND ((string)$plugin_exec['meta-keywords'] != '')) {
+													$data_arr['@meta-keywords'] = (string) $plugin_exec['meta-keywords'];
+												} //end if
 												//--
-												if(\strpos((string)$data_arr['code'], '{{:'.(string)$key) !== false) {
-													//-- replace these markers, they are page markers
-													if(!\array_key_exists('{{:'.(string)$key.':}}', $arr_replacements)) {
-														$arr_replacements['{{:'.(string)$key.':}}'] = '';
+												$plugin_exp_vars = (array) $plugin_obj->getPluginExportVars();
+												if((\Smart::array_size($plugin_exp_vars) > 0) AND (\Smart::array_type_test($plugin_exp_vars) == 2)) {
+													foreach($plugin_exp_vars as $export_key => $export_var) {
+														if(\preg_match((string)$this->regex_marker, (string)$export_key)) {
+															$this->plugin_markers[(string)$export_key] = (string) $export_var; // later values will rewrite previous ones if any
+														} //end if
+													} //end foreach
+												} //end if
+												$plugin_exp_vars = null;
+												//--
+												if(($level === 0) AND (\strpos((string)$key, 'TEMPLATE@') === 0) AND (\in_array((string)$key, (array)$this->page_markers))) { // ((string)$key != 'TEMPLATE@MAIN')) { // allow TEMPLATE@*(!MAIN) just on main page (level=0)
+													//-- don't replace these markers, they are template markers
+													if(!\array_key_exists((string)\substr((string)$key, \strlen('TEMPLATE@')), $data_arr['smart-markers'])) {
+														$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] = '';
 													} //end if
-													$arr_replacements['{{:'.(string)$key.':}}'] .= (string) $plugin_exec['content']; // OK: always append
+													$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) (isset($plugin_exec['content']) ? $plugin_exec['content'] : ''); // append is mandatory here else will not render correctly more than one sub-segment/plugin
+													//--
+												} elseif(\preg_match((string)$this->regex_marker, (string)$key)) {
+													//--
+													if(\strpos((string)$data_arr['code'], '{{:'.(string)$key) !== false) {
+														//-- replace these markers, they are page markers
+														if(!\array_key_exists('{{:'.(string)$key.':}}', $arr_replacements)) {
+															$arr_replacements['{{:'.(string)$key.':}}'] = '';
+														} //end if
+														$arr_replacements['{{:'.(string)$key.':}}'] .= (string) (isset($plugin_exec['content']) ? $plugin_exec['content'] : ''); // OK: always append
+														//--
+													} else {
+														//--
+														\Smart::log_notice('PageBuilder: Render Template WARNING: Unused Render Marker (Plugin): ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
+														//--
+													} //end if
 													//--
 												} else {
 													//--
-													\Smart::log_notice('PageBuilder: Render Template WARNING: Unused Render Marker (Plugin): ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
+													$this->PageViewSetErrorStatus(500, 'PageBuilder: Render Template ERROR: Invalid Render Marker (3)');
+													\Smart::log_warning('PageBuilder: Render Template ERROR: Invalid Render Marker (3): ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
 													//--
-												} //end if
+												} //end if else
 												//--
-											} else {
-												//--
-												$this->PageViewSetErrorStatus(500, 'PageBuilder: Render Template ERROR: Invalid Render Marker (3)');
-												\Smart::log_warning('PageBuilder: Render Template ERROR: Invalid Render Marker (3): ['.(string)$key.'] @ '.(string)$data_arr['id'].'/'.(string)$val[$i]['id'].' ('.(string)$val[$i]['type'].'/'.'PLUGIN'.') on Page/Segment: '.(string)$id.' ; Level: '.(int)$level);
-												//--
-											} //end if else
+											} //end if
+											//--
 										} else {
 											//--
 											$this->PageViewSetErrorStatus(500, 'Plugin Class is Invalid');

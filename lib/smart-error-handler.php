@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20210403 # this should be loaded from app web root only
+// # r.20210419 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)

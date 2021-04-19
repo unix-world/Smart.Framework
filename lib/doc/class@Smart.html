@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\Smart        final class \ Smart    {   } ::    Class: Smart (Base Functions) - provides the base methods for an easy and secure development with">
-	<meta name="keywords" content="smart, final, class, base, functions, provides, the, methods, for, an, easy, and, secure, development, with, smart.framework, php, language, located, at, lib framework lib smart.php, package, core, namespace, name, version, v.20210330, depends, extensions, json, classes, smartunicode, smartframeworkruntime, smartframeworkregistry, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class::method, only, public, function, is nscalar, mixed, val, bool, return, false, array, or, resource, true, rest, param, value, tested, test, a, variable, scalar, null, get from config, string, type, selected">
+	<meta name="keywords" content="smart, final, class, base, functions, provides, the, methods, for, an, easy, and, secure, development, with, smart.framework, php, language, located, at, lib framework lib smart.php, package, core, namespace, name, version, v.20210413, depends, extensions, json, classes, smartunicode, smartframeworkruntime, smartframeworkregistry, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class::method, only, public, function, is nscalar, mixed, val, bool, return, false, array, or, resource, true, rest, param, value, tested, test, a, variable, scalar, null, get from config, string, type, selected">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \Smart">
 	<title>PHP Documentation for: \Smart</title>
 	<!-- CSS and Fonts -->
@@ -468,12 +468,13 @@
 <!-- skip logo -->
 <!-- class r.20200121 -->
 <!-- Styles -->
-<!-- styles r.20200121 -->
+<!-- styles r.20210417 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
-.doc-located {
+.doc-located,
+.doc-version {
 	color: #999999;
 }
 .doc-modifiers {
@@ -499,10 +500,19 @@
 	color: #777777;
 }
 .doc-ns,
+.doc-frozen,
 .doc-param-optional {
 	color: #778899;
 }
 .doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
 	color: #3F51B5;
 }
 .doc-implements {
@@ -696,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> Smart</span></li>
 		
-		<li><b>Version:</b> v.20210330</li>
+		<li><b>Version:</b> v.20210413</li>
 		<li><b>Depends:</b> extensions:  PHP JSON ; classes: SmartUnicode, SmartFrameworkRuntime, SmartFrameworkRegistry</li>
 		<li><b>Hints:</b> It  is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -858,6 +868,23 @@ The directory separator character is the forward slash (/), except Windows where
 	
 	
 	
+</div><div class="doc-container" id="Method--url_build_query">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>url_build_query</b></span>&nbsp;(
+				<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_params` Parameter is REQUIRED">$y_params</span></b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_allow_late_binding_params` Parameter is REQUIRED">$y_allow_late_binding_params</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant<br>
+@param: {ARRAY} $y_params: Associative array as [param1 =&gt; value1, Param2 =&gt; Value2]<br>
+@param: {BOOLEAN} $y_allow_late_binding_params: Allow late binding params ex: a={{{param}}}&amp;b=true</div>
+	
+			<div class="doc-method-comments">Build an URL Query (Build a standard RFC3986 URL from an array of parameters) as: a=b&amp;param1=value1&amp;param2=value2&amp;c[0]=a&amp;c[1]=x&amp;d[a]=15&amp;d[b]=z</div>
+	
+	
+	
 </div><div class="doc-container" id="Method--url_add_params">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>url_add_params</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_url` Parameter is REQUIRED">$y_url</span></b></span>, 
@@ -869,9 +896,10 @@ The directory separator character is the forward slash (/), except Windows where
 	
 			<div class="doc-method-ret-params">@return: {STRING} The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant<br>
 @param: {STRING} $y_url: The base URL like: script.php or script.php?a=b or empty<br>
-@param: {ARRAY} $y_params: Associative array as [param1 =&gt; value1, Param2 =&gt; Value2]</div>
+@param: {ARRAY} $y_params: Associative array as [param1 =&gt; value1, Param2 =&gt; Value2, param3 =&gt; {{{late-binding}}}]</div>
 	
-			<div class="doc-method-comments">Add URL Params (Build a standard RFC3986 URL from script and parameters) as: script.xyz?a=b&amp;param1=value1&amp;param2=value2</div>
+			<div class="doc-method-comments">Add URL Params (Build a standard RFC3986 URL from script and parameters) as: script.xyz?a=b&amp;param1=value1&amp;param2=value2&amp;param3={{{late-binding}}}<br>
+It allows late binding params such as 'param3' =&gt; '{{{late-binding}}}'</div>
 	
 	
 	
@@ -1041,6 +1069,23 @@ This is a safe replacement for PHP unserialize() which can break the security if
 	
 	
 	
+</div><div class="doc-container" id="Method--format_number_float">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>format_number_float</b></span>&nbsp;(
+				<i>NUMERIC</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_number` Parameter is REQUIRED">$y_number</span></b></span>, 
+			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_signed` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_signed</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;FLOAT
+	
+	
+			<div class="doc-method-ret-params">@return: {FLOAT} An float number<br>
+@param: {NUMERIC} $y_number: A numeric value<br>
+@param: {ENUM} $y_signed: Default to '' ; If set to '+' will return (enforce) an UNSIGNED/POSITIVE Number, Otherwise if set to '' will return just a regular SIGNED Number wich can be negative or positive</div>
+	
+			<div class="doc-method-comments">Format a number as FLOAT</div>
+	
+	
+	
 </div><div class="doc-container" id="Method--format_number_int">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>format_number_int</b></span>&nbsp;(
 				<i>NUMERIC</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_number` Parameter is REQUIRED">$y_number</span></b></span>, 
@@ -1061,7 +1106,7 @@ This is a safe replacement for PHP unserialize() which can break the security if
 </div><div class="doc-container" id="Method--format_number_dec">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>format_number_dec</b></span>&nbsp;(
 				<i>NUMERIC</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_number` Parameter is REQUIRED">$y_number</span></b></span>, 
-			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_decimals` Parameter is OPTIONAL, with the Default Value: 0">$y_decimals</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_decimals` Parameter is OPTIONAL, with the Default Value: 2">$y_decimals</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>2</b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sep_decimals` Parameter is OPTIONAL, with the Default Value: &quot;.&quot;">$y_sep_decimals</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;.&quot;</b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sep_thousands` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_sep_thousands</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
@@ -1071,7 +1116,7 @@ This is a safe replacement for PHP unserialize() which can break the security if
 	
 			<div class="doc-method-ret-params">@return: {DECIMAL} A decimal number<br>
 @param: {NUMERIC} $y_number: A numeric value<br>
-@param: {INTEGER+} $y_decimals: The number of decimal to use (safe value is between 0..8, keeping in mind the 14 max precision)<br>
+@param: {INTEGER+} $y_decimals: The number of decimal to use (safe value is between 1..13, keeping in mind the 14 max precision) ; Default is 2<br>
 @param: {STRING} $y_sep_decimals: The decimal separator symbol as: 	. or , (default is .)<br>
 @param: {STRING} $y_sep_thousands: The thousand separator symbol as: 	, or . (default is [none])</div>
 	
@@ -1443,7 +1488,7 @@ ALLOWED CHARS: [a-z0-9] .</div>
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
-			<div class="doc-method-ret-params">@return: {STRING} The Js-Var which will contain only: a-z A-Z 0-9 _<br>
+			<div class="doc-method-ret-params">@return: {STRING} The Js-Var which will contain only: a-z A-Z 0-9 _ $<br>
 @param: {STRING} $y_str: The string to be processed</div>
 	
 			<div class="doc-method-comments">Creates a compliant Js-Var (JavaScript Variable Name) from a string</div>
@@ -1886,7 +1931,8 @@ This will log the message as WARNING into the App Error Log.</div>
 </div><div class="doc-container" id="Method--raise_error">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>raise_error</b></span>&nbsp;(
 				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$message_to_log` Parameter is REQUIRED">$message_to_log</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$message_to_display` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$message_to_display</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$message_to_display` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$message_to_display</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$is_html_message_to_display` Parameter is OPTIONAL, with the Default Value: false">$is_html_message_to_display</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;-
@@ -1985,6 +2031,9 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--str_replace_last"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;str_replace_last()</option>
 			
 			
+									<option value="Method--url_build_query"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;url_build_query()</option>
+			
+			
 									<option value="Method--url_add_params"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;url_add_params()</option>
 			
 			
@@ -2016,6 +2065,9 @@ function smartHandleDocSelector(obj) {
 			
 			
 									<option value="Method--unseryalize"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unseryalize()</option>
+			
+			
+									<option value="Method--format_number_float"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;format_number_float()</option>
 			
 			
 									<option value="Method--format_number_int"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;format_number_int()</option>
@@ -2188,7 +2240,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-31 00:10:17 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:29 +0000</small>
 <hr>
 <br>
 <!-- # -->

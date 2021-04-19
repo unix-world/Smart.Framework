@@ -2,19 +2,21 @@
 TRANSLATIONS:
   @language: RO
   @area: core
-  @version: 2020-01-21
+  @version: 2021-04-16
   captcha:
     error: |
-      Sesiunea Captcha a expirat ...
-      Apăsați Click pe imaginea Captcha pentru a o re-încărca și încercați să re-introduceți codul.
+      Captcha a expirat ... Încercați să re-încărcați pagina.
       Dacă problema persistă contactați administratorul website-ului !
     confirm: 'Confirmați că nu sunteți Robot'
-    verify: 'Cod Verificare'
+    verify: 'Cod Validare'
     failed: 'Verificare Captcha nereuşită'
-    click: 'Click pentru a re-încărca Imaginea'
     image: 'Imagine Captcha'
+    click: 'Click pentru a re-încărca Imaginea'
     enter: 'Introduceți codul din imagine în câmpul de verificare.'
-    interractive: 'Pentru a valida acest captcha desenați fluent peste imaginea alăturată o formă cât mai asemănătoare începând de la punct.'
-    helper: 'Ca alternativă scanați codul de bare și aflați codul de verificare pe care trebuie să îl introduceți.'
+    easy: 'Nu sunt robot !'
+    tick: 'Marcati checkbox-ul alăturat după cronometru pentru a confirma că nu sunteți robot.'
+    interractive: 'Pentru a valida acest captcha: desenați fluent peste zona de desen alăturată o formă cât mai asemănătoare cu cea din fundal, începând de la punct.'
+    helper: 'Accesibilitate: Ca alternativă scanați codul de bare alăturat și aflați codul de verificare pe care trebuie să îl introduceți.'
+    accessibility: 'Accesibilitate: Click pentru a accesa Contextul de Accessibilitate al verificării Captcha'
     passed: 'Verificare reușită !'
 #END

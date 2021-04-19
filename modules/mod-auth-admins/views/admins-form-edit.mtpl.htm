@@ -1,4 +1,4 @@
-<!-- v.20210312 -->
+<!-- v.20210413 -->
 [@@@SUB-TEMPLATE:admin-form-styles.mtpl.htm@@@]
 <center><div><table><tr><td>
 	<form id="edit_form" name="edit_form" class="ux-form ux-form-aligned" onSubmit="return false;">
@@ -38,8 +38,8 @@
 			<div style="display:inline-block;">[###PRIV-LIST-HTML###]</div>
 		</div>
 		<div class="ux-controls">
-			<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.CloseDelayedModalPopUp();"> Cancel &nbsp; <i class="sfi sfi-spinner11"></i></button>
-			<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="SmartJS_BrowserUtils.Submit_Form_By_Ajax('edit_form', '[###ACTIONS-URL|html###]edit-update', 'yes'); return false;"> Save &nbsp; <i class="sfi sfi-checkmark"></i></button>
+			<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.CloseDelayedModalPopUp();"> Cancel &nbsp; <i class="sfi sfi-spinner11"></i></button>
+			<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.SubmitFormByAjax('edit_form', '[###ACTIONS-URL|html###]edit-update', 'yes'); return false;"> Save &nbsp; <i class="sfi sfi-checkmark"></i></button>
 		</div>
 	</form>
 </td></tr></table></div></center>

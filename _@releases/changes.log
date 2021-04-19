@@ -2,6 +2,18 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+April 19, 2021 :: :: Version 7.2.1 rev.20210419
+	* Optimizations for the new Javascript ES6, incl. SmartGrid and UIUtils
+	* MAJOR RELEASE (see below backward incompatible changes for Smart.Framework Javascript which was migrated from ES5 to ES6)
+
+April 18, 2021 :: :: Version 7.2.1 rev.20210418
+	* smart framework Javascript migrated to ES6 (classes ans some functions have been renamed ... for compatibility mode with old projects look at the mod-xtra-vanilla/views/js/smart-framework.fix.js and load this after loading the lib/js/framework/smart-framework.pak.js, most of the features should still work, they have been aliased ...)
+	* update compatibility with new class names from smart framework Javascript ES6 in all modules
+	* controller Initialize() now support also HTTP Status codes
+	* Smart.Capcha has been rewritten to version 2, now by default will try to detect with a single click (I'm not a robot) and only then if not successful will fallback to draw a shape ; added accesibility descriptions
+	* translations for captcha (en / ro) have been slighly changes and new keys have been added
+	* documentation updated
+
 April 03, 2021 :: :: Version 7.2.1 rev.20210403
 	* fix some form submit return false
 

@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20210312 -->
+<!-- AuthAdmins Login # v.20210419 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -29,7 +29,7 @@ a#special {
 	var AuthAdmins_LogURL = "";
 	function AuthAdmins_Login() {
 		if((typeof AuthAdmins_LogURL != "undefined") && (AuthAdmins_LogURL != "") && (AuthAdmins_LogURL != null)) {
-			var AuthAdmins_LogZURL = SmartJS_CryptoBlowfish.decrypt(String(AuthAdmins_LogURL), String(SmartJS_CoreUtils.hex2bin('[###SECRET|js###]'))); if(AuthAdmins_LogZURL) { SmartJS_BrowserUtils.RedirectToURL(String(AuthAdmins_LogZURL)); }
+			var AuthAdmins_LogZURL = smartJ$CryptoBlowfish.decrypt(String(AuthAdmins_LogURL), String(smartJ$Utils.hex2bin('[###SECRET|js###]'))); if(AuthAdmins_LogZURL) { smartJ$Browser.RedirectToURL(String(AuthAdmins_LogZURL)); }
 		} //end if
 	} //END FUNCTION
 </script>
@@ -58,11 +58,11 @@ a#special {
 							[%%%/LOOP:LOGIN-NSPACES%%%]
 						</select>
 						<script type="text/javascript">
-						if(typeof SmartJS_BrowserUIUtils != 'undefined') {
+						if(typeof(smartJ$UI) != 'undefined') {
 							try {
-								SmartJS_BrowserUIUtils.Smart_SelectList('auth-admins-title-login', 300, null, false, false);
+								smartJ$UI.SelectList('auth-admins-title-login', 300, null, false, false);
 							} catch(err) {
-								console.log('Failed to Apply List Select on AuthAdmins Login :: ERR: ' + err);
+								console.warn('Failed to Apply List Select on AuthAdmins Login :: ERR:', err);
 							}
 						}
 						</script>

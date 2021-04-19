@@ -1,27 +1,10 @@
-<!-- JS-SETTINGS :: r.20210402 -->
+<!-- JS-SETTINGS :: r.20210418 -->
 <script type="text/javascript">
-	SmartJS_BrowserUtils.param_LanguageId = '[###LANG|js###]';
-	SmartJS_BrowserUtils.param_CookieName = '[###CLIENT-UID-COOKIE-NAME|js###]';
-	SmartJS_BrowserUtils.param_CookieDomain = '[###CLIENT-UID-COOKIE-DOMAIN|js###]';
-	SmartJS_BrowserUtils.param_CookieSameSitePolicy = '[###CLIENT-UID-COOKIE-SAMESITE|js###]';
-	SmartJS_BrowserUtils.param_TemplatePath = '[###TEMPLATE-PATH|js###]';
-[%%%IF:SEMAPHORE:&*<skip:growl>;%%%]
-	SmartJS_BrowserUtils.param_Notifications = 'dialog';
-[%%%ELSE:SEMAPHORE%%%]
-	SmartJS_BrowserUtils.param_Notifications = 'growl';
-[%%%/IF:SEMAPHORE%%%]
-[%%%IF:SEMAPHORE:&*<dialog:alertable>;(1)%%%]
-	SmartJS_BrowserUtils.param_Type_Notification_Dialog = 'alertable';
-[%%%ELSE:SEMAPHORE(1)%%%]
-	SmartJS_BrowserUtils.param_Type_Notification_Dialog = 'auto';
-[%%%/IF:SEMAPHORE(1)%%%]
-	if(Test_Browser_Compliance.checkIsMobileDevice()) { SmartJS_BrowserUtils.param_Use_iFModalBox_Active = 0; } else { SmartJS_BrowserUtils.param_Use_iFModalBox_Active = 1; SmartJS_BrowserUtils.Control_ModalCascading(); } // force popup instead of modal for mobile devices ; for desktop keep modal with cascading control
-[%%%IF:APP-REALM:==ADM;%%%]
-	SmartJS_BrowserUtils.param_NotifyLoadError = true;
-	SmartJS_BrowserUtils.param_Use_iFModalBox_Protection = 1;
-[%%%ELSE:APP-REALM%%%]
-	SmartJS_BrowserUtils.param_NotifyLoadError = false;
-	SmartJS_BrowserUtils.param_Use_iFModalBox_Protection = 0;
-[%%%/IF:APP-REALM%%%]
+	if(!smartJ$TestBrowser.checkCookies()) {
+		alert('NOTICE: Your browser does not support Cookies !');
+	} //end if
+	if(!smartJ$TestBrowser.checkJsRuntime()) {
+		alert('NOTICE: Your browser does not support Javascript ES6 !');
+	} //end if
 </script>
 <!-- # -->

@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true); 		// if set to TRUE requires auth always
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210307
+	// v.20210411
 
 	public function Run() { // (OUTPUTS: HTML)
 
@@ -57,8 +57,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetVars([
 					'title' => 'Wait ...',
 					'main' => '<br><center><div><img src="lib/framework/img/loading-bars.svg" width="64" height="64"></div></center>'.
-					'<script type="text/javascript">SmartJS_BrowserUtils.RefreshParent();</script>'.
-					'<script type="text/javascript">SmartJS_BrowserUtils.CloseDelayedModalPopUp();</script>'
+					'<script type="text/javascript">smartJ$Browser.RefreshParent();</script>'.
+					'<script type="text/javascript">smartJ$Browser.CloseDelayedModalPopUp();</script>'
 				]);
 				//--
 				break;
@@ -160,7 +160,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$jsevcode = '';
 				if((string)$frm['id'] == (string)SmartAuth::get_login_id()) { // if change password for current account must handle different
 					$redirect = '';
-					$jsevcode = 'SmartJS_BrowserUtils.RefreshParent(); SmartJS_BrowserUtils.CloseDelayedModalPopUp();';
+					$jsevcode = 'smartJ$Browser.RefreshParent(); smartJ$Browser.CloseDelayedModalPopUp();';
 				} //end if
 				//--
 				$this->PageViewSetVar(

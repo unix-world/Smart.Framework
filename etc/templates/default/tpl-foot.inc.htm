@@ -1,4 +1,4 @@
-<!-- TPL Foot r.20210402 -->
+<!-- TPL Foot r.20210407 -->
 [%%%IF:SEMAPHORE:&*<load:searchterm-highlight-js>;%%%]
 <!-- Highlight SearchTerm -->
 <style>
@@ -12,8 +12,8 @@
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.highlight.css?[###RELEASE-HASH|url|html###]">
 <script type="text/javascript" src="lib/js/jquery/jquery.highlight.js?[###RELEASE-HASH|url|html###]"></script>
 <script>
-jQuery(function(){
-	if((typeof searchTerm != 'undefined') && (searchTerm != null) && (searchTerm != '')) {
+jQuery(() => {
+	if((typeof(searchTerm) != 'undefined') && (searchTerm != null) && (searchTerm != '')) {
 		jQuery('.search-highlight').removeHighlight('searchterm_highlight').highlight(String(searchTerm), 'searchterm_highlight');
 	} //end if
 });
@@ -47,7 +47,7 @@ code.hljs, code.hljs * {
 [@@@SUB-TEMPLATE:?!modules/mod-highlight-syntax/libs/templates/tpl-foot-hljs-ext.inc.htm!@@@]
 [%%%/IF:SEMAPHORE(2)%%%]
 <script type="text/javascript" src="lib/js/jshighlight/smart-highlight.js?[###RELEASE-HASH|url|html###]"></script>
-<script type="text/javascript">jQuery(document).ready(function() { SmartJS_Custom_Syntax_Highlight('body'); });</script>
+<script type="text/javascript">jQuery(() => { if(typeof(SmartJS_Custom_Syntax_Highlight) == 'function') { SmartJS_Custom_Syntax_Highlight('body'); } });</script>
 [%%%ELSE:SEMAPHORE(1)%%%]
 <!-- HLjs, Smart HLjs: skip by Semaphore -->
 [%%%/IF:SEMAPHORE(1)%%%]
@@ -57,9 +57,9 @@ code.hljs, code.hljs * {
 <!-- Unveil -->
 <script type="text/javascript" src="lib/js/jquery/jquery.unveil.js?[###RELEASE-HASH|url|html###]"></script>
 <script>
-jQuery(function(){
-	jQuery(window).on('refreshunveil', function(){ jQuery('.unveil').off('unveil').unveil(); });
-	setTimeout(function(){ jQuery(window).trigger('refreshunveil'); }, 250); // call for init or dom changes that include unveil elements (can include also unhide unveil elements)
+jQuery(() => {
+	jQuery(window).on('refreshunveil', () => { jQuery('.unveil').off('unveil').unveil(); });
+	setTimeout(() => { jQuery(window).trigger('refreshunveil'); }, 250); // call for init or dom changes that include unveil elements (can include also unhide unveil elements)
 	//jQuery(window).trigger('lookup'); // call after unhide unveil elements
 });
 </script>

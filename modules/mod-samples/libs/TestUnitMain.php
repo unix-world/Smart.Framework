@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210320
+ * @version 	v.20210416
  *
  */
 final class TestUnitMain {
@@ -57,7 +57,7 @@ final class TestUnitMain {
 		//--
 		if(\Smart::array_size($frx) > 0) { // test form data :: because is modal we have to close it in order to refresh the parent
 			//--
-			return '<table><tr><td><h1>Form Sent (Test) !</h1><hr><pre>'.\Smart::escape_html(\print_r($frx,1)).'</pre></td></tr></table><script>SmartJS_BrowserUtils.RefreshParent();</script><br><br><input class="ux-button" id="myCloseButton" type="button" value="[Close Me]" onClick="SmartJS_BrowserUtils.CloseModalPopUp(); return false;"><br><br><b>This page will auto-close in 9 seconds [Counting: <span id="mycounter">9</span>]</b><script>SmartJS_BrowserUtils.CountDown(9, \'mycounter\', \'SmartJS_BrowserUtils.CloseDelayedModalPopUp(500);\');</script><br><br><b><i>After closing this window, parent will refresh ...</i></b>';
+			return '<table><tr><td><h1>Form Sent (Test) !</h1><hr><pre>'.\Smart::escape_html(\print_r($frx,1)).'</pre></td></tr></table><script>smartJ$Browser.RefreshParent();</script><br><br><input class="ux-button" id="myCloseButton" type="button" value="[Close Me]" onClick="smartJ$Browser.CloseModalPopUp(); return false;"><br><br><b>This page will auto-close in 9 seconds [Counting: <span id="mycounter">9</span>]</b><script>smartJ$Browser.CountDown(9, \'mycounter\', \'smartJ$Browser.CloseDelayedModalPopUp(500);\');</script><br><br><b><i>After closing this window, parent will refresh ...</i></b>';
 			//--
 		} //end if
 		//--
@@ -107,7 +107,7 @@ final class TestUnitMain {
 		//-- multi-select (checkboxes)
 		$array_of_values 	= array('id1' => 'Label 1', 'id2' => 'Label 2', 'id3' => 'Label 3');
 		$selected_values 	= array('id2', 'id3');
-		$elem_multi_boxes 	= \SmartViewHtmlHelpers::html_select_list_multi('test-unit-m-list-3', $selected_values, 'form', $array_of_values, 'frm[list_multi_two][]', 'checkboxes'); // returns HTML Code
+		$elem_multi_boxes 	= \SmartViewHtmlHelpers::html_select_list_multi('test-unit-m-list-3', $selected_values, 'form', $array_of_values, 'frm[list_multi_two][]', 'checkboxes', 'yes'); // returns HTML Code
 		//--
 
 		//--
@@ -123,11 +123,11 @@ final class TestUnitMain {
 		//--
 		$demo_mod_ext_toolkits = '';
 		$demo_mod_ext_components = '';
-		if(\SmartAppInfo::TestIfModuleExists('mod-ui-uikit')) {
-			$demo_mod_ext_toolkits .= \SmartFileSystem::read('modules/mod-ui-uikit/testunit/templates/tab-ui-components.inc.htm');
-		} //end if
 		if(\SmartAppInfo::TestIfModuleExists('mod-ui-bootstrap')) {
 			$demo_mod_ext_toolkits .= \SmartFileSystem::read('modules/mod-ui-bootstrap/testunit/templates/tab-ui-components.inc.htm');
+		} //end if
+		if(\SmartAppInfo::TestIfModuleExists('mod-ui-uikit')) {
+			$demo_mod_ext_toolkits .= \SmartFileSystem::read('modules/mod-ui-uikit/testunit/templates/tab-ui-components.inc.htm');
 		} //end if
 		if(\SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) {
 			$demo_mod_ext_toolkits .= \SmartFileSystem::read('modules/mod-ui-jqueryui/testunit/templates/tab-ui-components.inc.htm');
@@ -188,7 +188,7 @@ final class TestUnitMain {
 				'TEST-ELEMENTS_SINGLE-BLANK-SELECT' 		=> 'SingleSelect DropDown List (from Multi): '.$one_single_with_blank_select,
 				'TEST-ELEMENTS_SINGLE-SEARCH-SELECT' 		=> 'SingleSelect DropDown List with Search: '.$elem_single_select,
 				'TEST-ELEMENTS_MULTI-SELECT' 				=> '<span>MultiSelect DropDown List: </span>'.$elem_multi_select,
-				'TEST-ELEMENTS_MULTIBOX-SELECT' 			=> 'MultiSelect CheckBoxes:<br>'.$elem_multi_boxes,
+				'TEST-ELEMENTS_MULTIBOX-SELECT' 			=> 'MultiSelect CheckBoxes (Sync):<br>'.$elem_multi_boxes,
 				'TEST-ELEMENTS_NORMAL-LIST-S' 				=> (string) $test_normal_list_s,
 				'TEST-ELEMENTS_NORMAL-LIST-M' 				=> (string) $test_normal_list_m,
 				'TEST-ELEMENTS_CALENDAR' 					=> 'Calendar Selector: '.\SmartViewHtmlHelpers::html_js_date_field('frm_calendar_id', 'frm[date]', \Smart::escape_html(isset($frm['date']) ? $frm['date'] : ''), 'Select Date', "'0d'", "'1y'", [], 'alert(\'You selected the date: \' + date);'),
@@ -295,7 +295,7 @@ final class TestUnitMain {
 				} else {
 					$redir = '';
 					$div_id = 'answer_ajax';
-					$div_htm = '<table border="0" bgcolor="#DDEEFF" width="100%"><tr><td><h1>OK, form sent on: '.\date('Y-m-d H:i:s').'</h1></td></tr><tr><td><div align="left"><img width="64" src="lib/framework/img/sign-ok.svg"></div><div><a data-smart="open.modal" href="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'test.markdown" target="testunit-json-test">Test Link 1 (modal link)</a><br><a href="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'test.json" target="_blank">Test Link 2 (default link)</a><br><a data-slimbox="slimbox" title="Image 3" href="?page=samples.test-image"><img src="?page=samples.test-image" alt="Click to Test Image Gallery" title="Click to Test Image Gallery"></a></div></td></tr><tr><td><hr><b>Here is the content of the text area:</b><br><pre>'.\Smart::escape_html($frm['text_area_1']).'</pre></td></tr></table>';
+					$div_htm = '<table border="0" bgcolor="#DDEEFF" width="100%"><tr><td><h1>OK, form sent on: '.\date('Y-m-d H:i:s').'</h1></td></tr><tr><td><div align="left"><img width="64" src="lib/framework/img/sign-ok.svg"></div><div><a data-smart="open.modal" href="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'test.markdown" target="testunit-json-test" title="Modal">Test Link 1 (modal link)</a><br><a href="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'test.json" target="_blank">Test Link 2 (default link)</a><br><a data-slimbox="slimbox" title="Image 3" href="?page=samples.test-image"><img src="?page=samples.test-image" alt="Click to Test Image Gallery" title="Click to Test Image Gallery"></a></div></td></tr><tr><td><hr><b>Here is the content of the text area:</b><br><pre>'.\Smart::escape_html($frm['text_area_1']).'</pre></td></tr></table>';
 				} //end if else
 				//--
 				\SmartCaptcha::clearCaptcha(self::captchaFormName(), self::captchaMode()); // everything OK, so clear captcha
@@ -416,12 +416,11 @@ final class TestUnitMain {
 	//============================================================
 	private static function captchaFormPluginUrl() {
 		//--
-		$url = \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.captcha';
-		if(\Smart::random_number(0,1)) {
-			$url = '';
+		if(\SmartFrameworkRuntime::isAdminArea() !== true) {
+			return ''; // on index display only the Smart.Captcha
 		} //end if
 		//--
-		return (string) $url;
+		return (string) \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.captcha';
 		//--
 	} //END FUNCTION
 	//============================================================

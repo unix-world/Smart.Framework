@@ -5,10 +5,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
-	<meta name="description" content="SmartJS_DateUtils        static class SmartJS_DateUtils  {  } .    CLASS :: Date Utils Date Utils class for Javascript     Language: Javascript  Located">
-	<meta name="keywords" content="smartjs dateutils, static, class, date, utils, for, javascript, language, located, at, lib js framework smart-framework.pak.js, date utils.js, package, sf.javascript:core, name, usage, smartjs dateutils.method, version, depends, smartjs coreutils, methods, public, function, createsafedate, integer, year, month, day, object, return, normalized, as, yyyy, param, the, raw, if, wrong, will, fix, ahead, or, behind, create, a, safe, standardizedate, instanceof, that, need, to, be, fixed, normalize, getisodate, string, yyyy-mm-dd, get, iso, calculatedaysoffset, sdate1, sdate2, offset, in, seconds, between, and, mm, dd, calculate, days, two, dates, calculatemonthsoffset, months, addyears, years, number, of, add, substract, addmonths, adddays, daysinmonth, tested, specific, given, isleapyear, boolean, true, is, leap, false, not, test, formatdate, format">
-	<meta name="summary" content="Smart.Framework : Javascript Documentation: SmartJS_DateUtils">
-	<title>JS Documentation for: SmartJS_DateUtils</title>
+	<meta name="description" content="smartJ$Date        static class smartJ$Date  {  } .    CLASS :: Smart DateUtils [ES6] Date Utils class for Javascript     Language: Javascript  Located">
+	<meta name="keywords" content="smartj date, static, class, smart, dateutils, es6, date, utils, for, javascript, language, located, at, lib js framework smart-framework.pak.js, date utils.js, package, sf.javascript:core, name, frozen, yes, version, usage, smartj date.method, depends, smartj utils, methods, public, createsafedate, integer, year, month, day, object, return, normalized, as, yyyy, param, the, raw, if, wrong, will, fix, ahead, or, behind, create, a, safe, function, standardizedate, instanceof, that, need, to, be, fixed, normalize, getisodate, string, yyyy-mm-dd, get, iso, calculatedaysoffset, sdate1, sdate2, offset, in, seconds, between, and, mm, dd, calculate, days, two, dates, calculatemonthsoffset, months, addyears, years, number, of, add, substract, addmonths, adddays, isleapyear, boolean, true, is, leap, false, not, tested, test">
+	<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$Date">
+	<title>JS Documentation for: smartJ$Date</title>
 	<!-- CSS and Fonts -->
 		<!-- skip fonts -->
 	
@@ -466,14 +466,15 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210417 -->
 <!-- Styles -->
-<!-- styles r.20200121 -->
+<!-- styles r.20210417 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
-.doc-located {
+.doc-located,
+.doc-version {
 	color: #999999;
 }
 .doc-modifiers {
@@ -499,10 +500,19 @@
 	color: #777777;
 }
 .doc-ns,
+.doc-frozen,
 .doc-param-optional {
 	color: #778899;
 }
 .doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
 	color: #3F51B5;
 }
 .doc-implements {
@@ -677,13 +687,13 @@ select#select-summary {
 
 </style>
 <!-- Headings -->
-<h1 title="PHP class: `SmartJS_DateUtils` @ JavaScript" id="Class--Summary-">
-	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">SmartJS_DateUtils</span><br>
+<h1 title="PHP class: `smartJ$Date` @ JavaScript" id="Class--Summary-">
+	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">smartJ$Date</span><br>
 	{
 	}&nbsp;.
 </h1>
 <!-- Description -->
-<div class="doc-comments">CLASS :: Date Utils<br>
+<div class="doc-comments">CLASS :: Smart DateUtils [ES6]<br>
 Date Utils class for Javascript</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
@@ -691,13 +701,14 @@ Date Utils class for Javascript</div><br>
 		<li><span class="doc-language"><b>Language:</b> Javascript<span></li>
 		<li><span class="doc-located"><b>Located at:</b> lib/js/framework/smart-framework.pak.js; date_utils.js</span></li>
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Core</span></li>
-		<li><span class="doc-name"><b>Class Name:</b> SmartJS_DateUtils</span></li>
-		<li><b>Usage:</b> SmartJS_DateUtils.method();</li>
+		<li><span class="doc-name"><b>Class Name:</b> smartJ$Date</span></li>
+		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210419</span></li>
+		<li><b>Usage:</b> smartJ$Date.method();</li>
 		
 		
 		
-		<li><b>Version:</b> 20200121</li>
-		<li><b>Depends:</b> SmartJS_CoreUtils</li>
+		<li><b>Depends:</b> smartJ$Utils</li>
 		
 	</ul>
 </div>
@@ -706,14 +717,14 @@ Date Utils class for Javascript</div><br>
 <div class="doc-container" id="Methods--Summary-">
 	<h2 class="doc-header">class Methods</h2>
 </div>
-<!-- methods r.20200121 -->
+<!-- methods r.20210414 -->
 <div class="doc-container" id="Method--createSafeDate">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>createSafeDate</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>createSafeDate</b></span>&nbsp;=&nbsp;(
 			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>, 
 			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`month` Parameter">month</span></b></span>, 
 			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`day` Parameter">day</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
 	
 	
@@ -790,11 +801,11 @@ Date Utils class for Javascript</div><br>
 	
 	
 </div><div class="doc-container" id="Method--calculateMonthsOffset">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>calculateMonthsOffset</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>calculateMonthsOffset</b></span>&nbsp;=&nbsp;(
 			<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate1` Parameter">sdate1</span></b></span>, 
 			<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`sdate2` Parameter">sdate2</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
 	<div class="doc-method-ret-params">
 	
 	
@@ -873,6 +884,25 @@ Date Utils class for Javascript</div><br>
 			<div class="doc-method-comments">Add Days to a Date Object</div>
 	
 	
+</div><div class="doc-container" id="Method--isLeapYear">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isLeapYear</b></span>&nbsp;(
+			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if the Year is Leap or FALSE if is Not Leap<br>
+	
+	
+	
+			@param: {Integer} year The Year to be tested<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Test if the given Year is a Leap Year or not</div>
+	
+	
 </div><div class="doc-container" id="Method--daysInMonth">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>daysInMonth</b></span>&nbsp;(
 			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>, 
@@ -894,25 +924,6 @@ Date Utils class for Javascript</div><br>
 			<div class="doc-method-comments">Get the Number Of Days in a specific Month of the given Year</div>
 	
 	
-</div><div class="doc-container" id="Method--isLeapYear">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isLeapYear</b></span>&nbsp;(
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`year` Parameter">year</span></b></span>
-	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
-	<div class="doc-method-ret-params">
-	
-	
-			@return: {Boolean} TRUE if the Year is Leap or FALSE if is Not Leap<br>
-	
-	
-	
-			@param: {Integer} year The Year to be tested<br>
-	
-	
-	</div>
-			<div class="doc-method-comments">Test if the given Year is a Leap Year or not</div>
-	
-	
 </div><div class="doc-container" id="Method--formatDate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>formatDate</b></span>&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`format` Parameter">format</span></b></span>, 
@@ -921,7 +932,7 @@ Date Utils class for Javascript</div><br>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is similar with jQueryUI formatDate<br>
+			@hint: It is similar with jQueryUI formatDate<br>
 	
 	
 			@return: {String} The date in the above format<br>
@@ -960,7 +971,7 @@ yy - year (four digit) ;<br>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
 	<div class="doc-method-ret-params">
-			@hint: This is similar with jQueryUI determineDate<br>
+			@hint: It is similar with jQueryUI determineDate<br>
 	
 	
 			@return: {Mixed} A Date object or null if fails to validate expression<br>
@@ -986,15 +997,14 @@ new Date(2037, 12 - 1, 31) 	:: a date in the future as object ;<br>
 <div class="doc-container" id="Properties--Summary-">
 	<h2 class="doc-header">class Properties</h2>
 </div>
-<!-- properties r.20200121 -->
+<!-- properties r.20210417 -->
 
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
 	<h2 class="doc-header">class Constants</h2>
 </div>
-<!-- constants r.20200121 -->
-
+<!-- constants r.20210417 -->
 
 <!-- Sample Code -->
 <br>
@@ -1002,48 +1012,54 @@ new Date(2037, 12 - 1, 31) 	:: a date in the future as object ;<br>
 	<h2 class="doc-header">Sample code: JavaScript</h2>
 </div>
 <div class="doc-code">
-	<pre><br><code class="hljs javascript"> <span class="hljs-keyword">var</span> d = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+	<pre><br><code class="hljs javascript"> <span class="hljs-keyword">let</span> d = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
  <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(d, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
 
- <span class="hljs-keyword">var</span> dz  = SmartJS_DateUtils.standardizeDate(d);
+ <span class="hljs-keyword">let</span> dz = smartJ$<span class="hljs-built_in">Date</span>.standardizeDate(d);
  <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(dz, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
 
- <span class="hljs-keyword">var</span> ds  = SmartJS_DateUtils.standardizeDate({ <span class="hljs-attr">year</span>: d.getFullYear(), <span class="hljs-attr">month</span>: d.getMonth()+<span class="hljs-number">1</span>, <span class="hljs-attr">day</span>: d.getDate() });
+ <span class="hljs-keyword">let</span> ds = smartJ$<span class="hljs-built_in">Date</span>.standardizeDate({ <span class="hljs-attr">year</span>: d.getFullYear(), <span class="hljs-attr">month</span>: d.getMonth()+<span class="hljs-number">1</span>, <span class="hljs-attr">day</span>: d.getDate() });
  <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(ds, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
 
- <span class="hljs-keyword">var</span> iso = SmartJS_DateUtils.getIsoDate(ds);
+ <span class="hljs-keyword">let</span> iso = smartJ$<span class="hljs-built_in">Date</span>.getIsoDate(ds);
  <span class="hljs-built_in">console</span>.log(iso);
 
- <span class="hljs-keyword">var</span> d1 = SmartJS_DateUtils.createSafeDate(d.getFullYear(), d.getMonth()+<span class="hljs-number">1</span>, d.getDate());
+ <span class="hljs-keyword">let</span> d1 = smartJ$<span class="hljs-built_in">Date</span>.createSafeDate(d.getFullYear(), d.getMonth()+<span class="hljs-number">1</span>, d.getDate());
  <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(d1, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
 
- <span class="hljs-keyword">var</span> d2 = SmartJS_DateUtils.createSafeDate(d.getFullYear(), (d.getMonth()+<span class="hljs-number">1</span>)+<span class="hljs-number">3</span>, d.getDate());
+ <span class="hljs-keyword">let</span> d2 = smartJ$<span class="hljs-built_in">Date</span>.createSafeDate(d.getFullYear(), (d.getMonth()+<span class="hljs-number">1</span>)+<span class="hljs-number">3</span>, d.getDate());
  <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(d2, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
 
- <span class="hljs-keyword">var</span> o = SmartJS_DateUtils.calculateDaysOffset(d1, d2);
+ <span class="hljs-keyword">let</span> o = smartJ$<span class="hljs-built_in">Date</span>.calculateDaysOffset(d1, d2);
  <span class="hljs-built_in">console</span>.log(o);
 
- <span class="hljs-keyword">var</span> o = SmartJS_DateUtils.calculateDaysOffset(d2, d1);
- <span class="hljs-built_in">console</span>.log(o);
+ <span class="hljs-keyword">let</span> ox = smartJ$<span class="hljs-built_in">Date</span>.calculateDaysOffset(d2, d1);
+ <span class="hljs-built_in">console</span>.log(ox);
 
- <span class="hljs-keyword">var</span> m = SmartJS_DateUtils.calculateMonthsOffset(d1, d2);
+ <span class="hljs-keyword">let</span> m = smartJ$<span class="hljs-built_in">Date</span>.calculateMonthsOffset(d1, d2);
  <span class="hljs-built_in">console</span>.log(m);
 
- <span class="hljs-keyword">var</span> m = SmartJS_DateUtils.calculateMonthsOffset(d2, d1);
- <span class="hljs-built_in">console</span>.log(m);
+ <span class="hljs-keyword">let</span> mx = smartJ$<span class="hljs-built_in">Date</span>.calculateMonthsOffset(d2, d1);
+ <span class="hljs-built_in">console</span>.log(mx);
 
- <span class="hljs-keyword">var</span> a1 = SmartJS_DateUtils.addYears(ds, <span class="hljs-number">1</span>);
+ <span class="hljs-keyword">let</span> a1 = smartJ$<span class="hljs-built_in">Date</span>.addYears(ds, <span class="hljs-number">1</span>);
  <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(a1, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
 
- <span class="hljs-keyword">var</span> a2 = SmartJS_DateUtils.addMonths(ds, <span class="hljs-number">12</span>);
+ <span class="hljs-keyword">let</span> a2 = smartJ$<span class="hljs-built_in">Date</span>.addMonths(ds, <span class="hljs-number">12</span>);
  <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(a2, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
 
- <span class="hljs-keyword">var</span> a3 = SmartJS_DateUtils.addDays(ds, <span class="hljs-number">365</span>);
- <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(a3, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));</code><br></pre>
+ <span class="hljs-keyword">let</span> a3 = smartJ$<span class="hljs-built_in">Date</span>.addDays(ds, <span class="hljs-number">365</span>);
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(a3, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
+
+ <span class="hljs-keyword">let</span> fd = smartJ$<span class="hljs-built_in">Date</span>.formatDate(<span class="hljs-string">'yy-mm-dd'</span>, d);
+ <span class="hljs-built_in">console</span>.log(fd);
+
+ <span class="hljs-keyword">let</span> dd = smartJ$<span class="hljs-built_in">Date</span>.determineDate(d);
+ <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(dd, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));</code><br></pre>
 </div>
 <!-- Summary List -->
 <br>
-<!-- summary r.20200121 -->
+<!-- summary r.20210414 -->
 <script>
 // summary r.20200121
 function smartHandleDocSelector(obj) {
@@ -1065,13 +1081,13 @@ function smartHandleDocSelector(obj) {
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
-		<option value="" selected>* Javascript Class SmartJS_DateUtils # Documentation Index *</option>
-		<optgroup label="Class SmartJS_DateUtils">
+		<option value="" selected>* Javascript Class smartJ$Date # Documentation Index *</option>
+		<optgroup label="Class smartJ$Date">
 			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--createSafeDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;createSafeDate()</option>
+									<option value="Method--createSafeDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;createSafeDate()</option>
 			
 									<option value="Method--standardizeDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;standardizeDate()</option>
 			
@@ -1079,7 +1095,7 @@ function smartHandleDocSelector(obj) {
 			
 									<option value="Method--calculateDaysOffset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;calculateDaysOffset()</option>
 			
-									<option value="Method--calculateMonthsOffset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;calculateMonthsOffset()</option>
+									<option value="Method--calculateMonthsOffset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;calculateMonthsOffset()</option>
 			
 									<option value="Method--addYears"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addYears()</option>
 			
@@ -1087,9 +1103,9 @@ function smartHandleDocSelector(obj) {
 			
 									<option value="Method--addDays"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addDays()</option>
 			
-									<option value="Method--daysInMonth"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;daysInMonth()</option>
-			
 									<option value="Method--isLeapYear"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isLeapYear()</option>
+			
+									<option value="Method--daysInMonth"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;daysInMonth()</option>
 			
 									<option value="Method--formatDate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;formatDate()</option>
 			
@@ -1115,7 +1131,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-31 00:10:34 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:43 +0000</small>
 <hr>
 <br>
 <!-- # -->

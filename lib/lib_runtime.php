@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20210401
+ * @version 	v.20210419
  * @package 	Application
  *
  */
@@ -49,10 +49,46 @@ final class SmartFrameworkSecurity {
 
 
 	//======================================================================
-	// Validate variable names (by default allow to register ONLY lowercase variables to avoid interfere with PHP reserved variables !! security fix !! ; allow camel case or upper is optional)
-	public static function ValidateVariableName($y_varname, $y_allow_upper_letters=false) {
+	// Validate an URL variable name
+	public static function ValidateUrlVariableName($y_varname) {
 
-		// VALIDATE INPUT VARIABLE NAMES v.20200121
+		// VALIDATE INPUT (REQUEST / COOKIES) VARIABLE NAMES .20210413
+
+		//--
+		$y_varname = (string) $y_varname; // force string
+		//--
+
+		//--
+		$regex_var_name = '/^[a-zA-Z0-9_\-]+$/'; // {{{SYNC-REGEX-URL-VARNAME}}}
+		//--
+
+		//-- init
+		$out = 0;
+		//-- validate characters (variable must not be empty, must not start with an underscore or a number
+		if(((string)$y_varname != '') AND (preg_match((string)$regex_var_name, (string)$y_varname))) {
+			$out = 1;
+		} //end if else
+		//-- corrections (variable name must be between 1 char and 128 chars)
+		if((int)strlen((string)$y_varname) < 1) {
+			$out = 0;
+		} elseif((int)strlen((string)$y_varname) > 128) {
+			$out = 0;
+		} //end if
+		//--
+
+		//--
+		return (int) $out;
+		//--
+
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	// Validate a PHP variable name
+	public static function ValidateVariableName($y_varname, $y_allow_upper_letters=true) {
+
+		// VALIDATE PHP VARIABLE NAMES v.20210413
 
 		//--
 		$y_varname = (string) $y_varname; // force string
@@ -91,19 +127,32 @@ final class SmartFrameworkSecurity {
 
 
 	//======================================================================
-	// Filter Input String
+	/**
+	 * Return a filtered string value for untrusted string (or similar, scalar or null) variables.
+	 * It may be used for filtering insecure / untrusted variables.
+	 * Notice: For this to work correctly expects the filter to be provided by SMART_FRAMEWORK_SECURITY_FILTER_INPUT
+	 *
+	 * @param STRING/NUMERIC/BOOLEAN/NULL 	$y_value	the input variable value
+	 * @return STRING/NULL								the filtered value
+	 */
 	public static function FilterUnsafeString($y_value) {
-		//--
-		if(is_array($y_value) OR is_object($y_value) OR is_resource($y_value)) {
+		//-- v.20210413
+		if(is_object($y_value) OR is_resource($y_value) OR is_array($y_value)) { // dissalow here, it always
 			return null;
 		} //end if
 		//--
+		$is_filtered = false;
 		if(defined('SMART_FRAMEWORK_SECURITY_FILTER_INPUT')) {
 			if((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT != '') {
+				$is_filtered = true;
 				if((string)$y_value != '') {
-					$y_value = preg_replace((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT, '', (string)$y_value);
+					$y_value = (string) preg_replace((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT, '', (string)$y_value);
 				} //end if
 			} //end if
+		} //end if
+		//--
+		if(!$is_filtered) {
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() // Could Not Apply Filter, No Filter Defined !', E_USER_WARNING);
 		} //end if
 		//--
 		return (string) $y_value;
@@ -114,60 +163,49 @@ final class SmartFrameworkSecurity {
 
 	//======================================================================
 	/**
-	 * Return the filtered values for GET/POST REQUEST variables (Max: 3+1 levels for arrays).
-	 * It is used to prevent insecure variables.
-	 * All the input vars should be always filtered to avoid extremely long arrays or insecure characters.
+	 * Return the filtered values for GET/POST/REQUEST/COOKIE variables, using the FilterUnsafeString method
+	 * It may be used for filtering insecure / untrusted string or array variables
+	 * For array variables it also filters the keys
+	 * When using the raw values from $_GET, $_POST, $_REQUEST or $_COOKIE - all the values should be always filtered prior to be used in PHP to avoid insecure characters.
+	 * Notice: For this to work correctly expects the filter to be provided by SMART_FRAMEWORK_SECURITY_FILTER_INPUT
+	 * Important: All the REQUEST=GET+POST and COOKIE variables from SmartFrameworkRegistry are already filtered, no need to filter them again, but if you are using any raw value from $_GET, $_POST, $_REQUEST or $_COOKIE it must be filtered !
 	 *
-	 * @param STRING/ARRAY 		$y_var	the input variable
-	 * @return STRING/ARRAY				[processed]
+	 * @param STRING/NUMERIC/BOOLEAN/NULL/ARRAY 		$y_var	the input variable value
+	 * @return MIXED											the filtered value
 	 */
 	public static function FilterGetPostCookieVars($y_var) {
-		//-- v.150527 magic_quotes_gpc has been removed since PHP 5.4, no more check for it
+		//-- v.20210413
 		if(!isset($y_var)) {
 			return $y_var; // fix for Illegal string offset
 		} //end if
 		//--
-		if(is_array($y_var)) { // array
+		if(is_object($y_var) OR is_resource($y_var)) { // objects or resources are not allowed to com from GET/POST/REQUEST/COOKIE
 			//--
-			$newvar = array();
+			$y_var = null; // invalid !! it comes from request
 			//--
+		} elseif(is_array($y_var)) { // array
+			//--
+			$narr = [];
 			foreach($y_var as $key => $val) {
-				//--
-				if(is_array($val)) { // array
-					//--
-					foreach($val as $tmp_key => $tmp_val) {
-						//--
-						if(is_array($tmp_val)) { // array
-							//--
-							foreach($tmp_val as $tmpx_key => $tmpx_val) {
-								//--
-								$newvar[(string)$key][(string)$tmp_key][(string)$tmpx_key] = (string) self::FilterUnsafeString((string)$tmpx_val); // 1
-								//--
-							} //end while
-							//--
-						} else { // string
-							//--
-							$newvar[(string)$key][(string)$tmp_key] = (string) self::FilterUnsafeString((string)$tmp_val); // 2
-							//--
-						} //end if else
-						//--
-					} //end while
-					//--
-				} else { // string
-					//--
-					$newvar[(string)$key] = (string) self::FilterUnsafeString((string)$val); // 3
-					//--
+				if(is_object($val) OR is_resource($val)) { // objects or resources are not allowed to com from GET/POST/REQUEST/COOKIE
+					$val = null;
+				} elseif(is_array($val)) { // array
+					$val = (array) self::FilterGetPostCookieVars((array)$val);
+				} else { // nScalar
+					$val = (string) self::FilterUnsafeString((string)$val);
 				} //end if else
-				//--
-			} //end while
+				$narr[self::FilterUnsafeString((string)$key)] = $val; // mixed
+			} //end foreach
+			$y_var = (array) $narr;
+			$narr = null;
 			//--
-		} else { // string
+		} else { // nScalar
 			//--
-			$newvar = (string) self::FilterUnsafeString((string)$y_var); // 4
+			$y_var = (string) self::FilterUnsafeString((string)$y_var);
 			//--
 		} //end if
 		//--
-		return $newvar; // string or array
+		return $y_var; // mixed
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -181,14 +219,14 @@ final class SmartFrameworkSecurity {
 	 *
 	 * @param STRING 				$y_var		the input variable
 	 * @param BOOLEAN 				$y_filter 	*Optional* Default to TRUE ; if FALSE will only decode but not filter variable ; DO NOT DISABLE FILTERING EXCEPT WHEN YOU CALL IT LATER EXPLICIT !!!
-	 * @return STRING				[processed]
+	 * @return STRING				the decoded +/- filtered value
 	 */
 	public static function urlVarDecodeStr($y_urlencoded_str_var, $y_filter=true) {
 		//--
 		$y_urlencoded_str_var = (string) urldecode((string)$y_urlencoded_str_var); // use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + !
 		//--
-		if($y_filter) {
-			$y_urlencoded_str_var = (string) self::FilterUnsafeString($y_urlencoded_str_var);
+		if($y_filter !== false) {
+			$y_urlencoded_str_var = (string) self::FilterUnsafeString((string)$y_urlencoded_str_var);
 		} //end if
 		//--
 		return (string) $y_urlencoded_str_var;
@@ -219,7 +257,7 @@ final class SmartFrameworkSecurity {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20210401
+ * @version 	v.20210419
  * @package 	Application
  *
  */
@@ -280,7 +318,7 @@ final class SmartFrameworkRegistry {
 		} //end if
 		//--
 		$key = (string) trim((string)$key);
-		if(((string)$key == '') OR (!SmartFrameworkSecurity::ValidateVariableName((string)$key, true))) { // {{{SYNC-REQVARS-CAMELCASE-KEYS}}}
+		if(((string)$key == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
 			return false;
 		} //end if
 		//--
@@ -294,7 +332,7 @@ final class SmartFrameworkRegistry {
 	public static function issetRequestVar($key) {
 		//--
 		$key = (string) trim((string)$key);
-		if(((string)$key == '') OR (!SmartFrameworkSecurity::ValidateVariableName((string)$key, true))) { // {{{SYNC-REQVARS-CAMELCASE-KEYS}}}
+		if((string)$key == '') {
 			return false;
 		} //end if
 		//--
@@ -310,7 +348,7 @@ final class SmartFrameworkRegistry {
 	public static function getRequestVar($key, $defval=null, $type='') { // {{{SYNC-REQUEST-DEF-PARAMS}}}
 		//--
 		$key = (string) trim((string)$key);
-		if(((string)$key == '') OR (!SmartFrameworkSecurity::ValidateVariableName((string)$key, true))) { // {{{SYNC-REQVARS-CAMELCASE-KEYS}}}
+		if((string)$key == '') {
 			return null;
 		} //end if
 		//--
@@ -421,8 +459,8 @@ final class SmartFrameworkRegistry {
 			return false; // request registry is locked
 		} //end if
 		//--
-		$key = (string) trim((string)$key); // {{{SYNC-COOKIEVARS-KEYS}}}
-		if((string)$key == '') {
+		$key = (string) trim((string)$key);
+		if(((string)$key == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
 			return false;
 		} //end if
 		//--
@@ -435,7 +473,7 @@ final class SmartFrameworkRegistry {
 
 	public static function issetCookieVar($key) {
 		//--
-		$key = (string) trim((string)$key); // {{{SYNC-COOKIEVARS-KEYS}}}
+		$key = (string) trim((string)$key);
 		if((string)$key == '') {
 			return false;
 		} //end if
@@ -451,7 +489,7 @@ final class SmartFrameworkRegistry {
 
 	public static function getCookieVar($key) {
 		//--
-		$key = (string) trim((string)$key); // {{{SYNC-COOKIEVARS-KEYS}}}
+		$key = (string) trim((string)$key);
 		if((string)$key == '') {
 			return null;
 		} //end if
@@ -674,7 +712,7 @@ final class SmartFrameworkRegistry {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: Smart, SmartUtils
- * @version		v.20210401
+ * @version		v.20210419
  * @package 	Application
  *
  */
@@ -1100,57 +1138,53 @@ final class SmartFrameworkRuntime {
 	//======================================================================
 	// This will run before loading the Smart.Framework and must not depend on it's classes
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
-	public static function Extract_Filtered_Request_Get_Post_Vars($filter_____arr, $filter_____info) {
+	public static function Extract_Filtered_Request_Get_Post_Vars($arr, $info) {
 
-		// FILTER INPUT GET/POST VARIABLES v.20200121 (with collision fix and private space check)
-		// This no more limits the input variables as it is handled via prior checks to PHP.INI: max_input_vars and max_input_nesting_level
-		// If any of: GET / POST overflow the max_input_vars and max_input_nesting_level a PHP warning is issued !!
-		// The max_input_vars applies separately to each of the input variables, includding array(s) keys
-		// The max_input_nesting_level also must be at least 5
+		// FILTER INPUT GET/POST VARIABLES v.20210412
 
 		//-- check if can run
 		if(self::$RequestProcessed !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Cannot Register Request/'.$filter_____info.' Vars, Registry is already locked !', E_USER_WARNING);
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Cannot Register Request/'.$info.' Vars, Registry is already locked !', E_USER_WARNING);
 			return; // avoid run after it was already processed
 		} //end if
 		//--
 
 		//--
 		if(self::ifDebug()) {
-			self::DebugRequestLog('========================= FILTER REQUEST:'."\n".date('Y-m-d H:i:s O')."\n".(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n\n".'===== RAW REQUEST VARS:'."\n".'['.$filter_____info.']'."\n".print_r($filter_____arr, 1)."\n");
+			self::DebugRequestLog('========================= FILTER REQUEST:'."\n".date('Y-m-d H:i:s O')."\n".(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n\n".'===== RAW REQUEST VARS:'."\n".'['.$info.']'."\n".print_r($arr, 1)."\n");
 		} //end if
 		//--
 
 		//-- process
-		if(is_array($filter_____arr)) {
+		if(is_array($arr)) {
 			//--
-			foreach($filter_____arr as $filter_____key => $filter_____val) {
+			foreach($arr as $key => $val) {
 				//--
-				$filter_____key = (string) $filter_____key; // force string
+				$key = (string) $key; // force string
 				//--
-				if(((string)trim((string)$filter_____key) != '') AND (SmartFrameworkSecurity::ValidateVariableName($filter_____key, true))) { // {{{SYNC-REQVARS-CAMELCASE-KEYS}}}
+				if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
 					//--
-					if(is_array($filter_____val)) { // array
+					if(is_array($val)) { // array
 						//--
 						if(self::ifDebug()) {
-							self::DebugRequestLog('#EXTRACT-FILTER-REQUEST-VAR-ARRAY:'."\n".$filter_____key.'='.print_r($filter_____val,1)."\n");
+							self::DebugRequestLog('#EXTRACT-FILTER-REQUEST-VAR-ARRAY:'."\n".$key.'='.print_r($val,1)."\n");
 						} //end if
 						//--
 						SmartFrameworkRegistry::setRequestVar(
-							(string) $filter_____key,
-							(array) SmartFrameworkSecurity::FilterGetPostCookieVars($filter_____val)
-						) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register an array request variable: '.$filter_____key.' @ '.$filter_____info, E_USER_WARNING);
+							(string) $key,
+							(array) SmartFrameworkSecurity::FilterGetPostCookieVars($val)
+						) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register an array request variable: '.$key.' @ '.$info, E_USER_WARNING);
 						//--
 					} else { // string
 						//--
 						if(self::ifDebug()) {
-							self::DebugRequestLog('#EXTRACT-FILTER-REQUEST-VAR-STRING:'."\n".$filter_____key.'='.$filter_____val."\n");
+							self::DebugRequestLog('#EXTRACT-FILTER-REQUEST-VAR-STRING:'."\n".$key.'='.$val."\n");
 						} //end if
 						//--
 						SmartFrameworkRegistry::setRequestVar(
-							(string) $filter_____key,
-							(string) SmartFrameworkSecurity::FilterGetPostCookieVars($filter_____val)
-						) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register a string request variable: '.$filter_____key.' @ '.$filter_____info, E_USER_WARNING);
+							(string) $key,
+							(string) SmartFrameworkSecurity::FilterGetPostCookieVars($val)
+						) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register a string request variable: '.$key.' @ '.$info, E_USER_WARNING);
 						//--
 					} //end if else
 					//--
@@ -1174,9 +1208,9 @@ final class SmartFrameworkRuntime {
 	//======================================================================
 	// This will run before loading the Smart.Framework and must not depend on it's classes
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
-	public static function Extract_Filtered_Cookie_Vars($filter_____arr) {
+	public static function Extract_Filtered_Cookie_Vars($arr) {
 
-		// FILTER INPUT COOKIES VARIABLES v.181019 (with collision fix and private space check)
+		// FILTER INPUT COOKIES VARIABLES v.20210412
 
 		//-- check if can run
 		if(self::$RequestProcessed !== false) {
@@ -1186,45 +1220,32 @@ final class SmartFrameworkRuntime {
 		//--
 
 		//--
-		$filter_____info = 'COOKIES';
+		$info = 'COOKIES';
 		//--
 
 		//--
 		if(self::ifDebug()) {
-			self::DebugRequestLog('========================= FILTER COOKIES:'."\n".date('Y-m-d H:i:s O')."\n".(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n\n".'===== RAW COOKIE VARS:'."\n".'['.$filter_____info.']'."\n".print_r($filter_____arr, 1)."\n");
+			self::DebugRequestLog('========================= FILTER COOKIES:'."\n".date('Y-m-d H:i:s O')."\n".(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n\n".'===== RAW COOKIE VARS:'."\n".'['.$info.']'."\n".print_r($arr, 1)."\n");
 		} //end if
 		//--
 
 		//-- process
-		if(is_array($filter_____arr)) {
+		if(is_array($arr)) {
 			//--
-			$num = 0;
-			//--
-			foreach($filter_____arr as $filter_____key => $filter_____val) {
+			foreach($arr as $key => $val) {
 				//--
-				$num++;
+				$key = (string) $key; // force string
 				//--
-				$filter_____key = (string) trim((string)$filter_____key); // force string + trim (for cookies use no validate var name ...)
-				//--
-				if(substr($filter_____key, 0, 11) != 'filter_____') { // avoid collisions with the variables in this function
+				if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
 					//--
-					if((string)$filter_____key != '') {
-						//--
-						if(self::ifDebug()) {
-							self::DebugRequestLog('#EXTRACT-FILTER-COOKIE-VAR:'."\n".$filter_____key.'='.$filter_____val."\n");
-						} //end if
-						SmartFrameworkRegistry::setCookieVar(
-							(string) $filter_____key,
-							(string) SmartFrameworkSecurity::FilterGetPostCookieVars($filter_____val)
-						) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register a cookie variable: '.$filter_____key.' @ '.$filter_____info, E_USER_WARNING);
-						//--
+					if(self::ifDebug()) {
+						self::DebugRequestLog('#EXTRACT-FILTER-COOKIE-VAR:'."\n".$key.'='.$val."\n");
 					} //end if
+					SmartFrameworkRegistry::setCookieVar(
+						(string) $key,
+						(string) SmartFrameworkSecurity::FilterGetPostCookieVars($val)
+					) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register a cookie variable: '.$key.' @ '.$info, E_USER_WARNING);
 					//--
-				} //end if
-				//--
-				if($num >= 1024) {
-					@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Too many cookie variables detected. Stoped to register at: #'.$num, E_USER_WARNING);
-					break;
 				} //end if
 				//--
 			} //end foreach
@@ -1394,27 +1415,11 @@ final class SmartFrameworkRuntime {
 		//--
 		if((string)$url_redirect != '') {
 			//--
-			$gopage = '<!DOCTYPE html>
-			<!-- template :: RUNTIME REDIRECTION / PATH SUFFIX -->
-			<html>
-				<head>
-					<meta charset="UTF-8">
-					<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-					<meta http-equiv="refresh" content="3;URL='.Smart::escape_html($url_redirect).'">
-					<title>301 Moved Permanently</title>
-				</head>
-				<body>
-					<h1>301 Moved Permanently</h1>
-					<h2>Redirecting to a valid URL ... wait ...</h2><br>
-					<script type="text/javascript">setTimeout("self.location=\''.Smart::escape_js($url_redirect).'\'",1500);</script>
-				</body>
-			</html>';
-			//--
 			if(!headers_sent()) {
 				http_response_code(301); // permanent redirect
 				self::outputHttpSafeHeader('Location: '.$url_redirect); // force redirect
 			} //end if
-			die((string)$gopage);
+			die('');
 			return;
 		} //end if
 		//--
@@ -1451,7 +1456,7 @@ final class SmartFrameworkRuntime {
 		} //end if
 		if((defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME')) AND (!defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP'))) {
 			if((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME != '') {
-				if(SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, true)) {
+				if(SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME)) { // {{{SYNC-VALIDATE-UID-COOKIE-NAME}}}
 					$cookie = (string) trim((string)strtolower((string)SmartFrameworkRegistry::getCookieVar((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME)));
 					if(((string)$cookie == '') OR (strlen((string)$cookie) != 40) OR (!preg_match('/^[a-f0-9]+$/', (string)$cookie))) {
 						$entropy = (string) sha1((string)Smart::unique_entropy('uuid-cookie')); // generate a random unique key ; cookie was not yet set or is invalid
@@ -1523,7 +1528,7 @@ final class SmartFrameworkRuntime {
  * @access 		private
  * @internal
  *
- * @version 	v.20210401
+ * @version 	v.20210419
  *
  */
 interface SmartInterfaceAppBootstrap {
@@ -1582,7 +1587,7 @@ interface SmartInterfaceAppBootstrap {
  * @access 		private
  * @internal
  *
- * @version 	v.20210401
+ * @version 	v.20210419
  *
  */
 interface SmartInterfaceAppInfo {

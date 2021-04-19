@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartSVGCaptcha        final class \ SmartSVGCaptcha    {   } -&gt;    Class: SVG Captcha - A SVG Image Plugin for SmartCaptcha Create a Form Captcha">
-	<meta name="keywords" content="smartsvgcaptcha, final, class, svg, captcha, a, image, plugin, for, smartcaptcha, create, form, validation, vector, language, php, located, at, lib core plugins lib captcha image.php, package, development:captcha, namespace, name, version, v.20200121, depends, classes, smart, smartsvgcaptchapoint, methods, public, function, construct, int, numchars, width, height, mixed, difficulty, param, the, number, of, glyphs, will, contain, to, generate, valid, values, are, default, easy, medium, hard, alternate, can, be, an, array, settings, constructor, draw image, string, return, code, and, get code, generated, get, must, call, only, after, properties, constants, documentation, index, definition, list, on">
+	<meta name="keywords" content="smartsvgcaptcha, final, class, svg, captcha, a, image, plugin, for, smartcaptcha, create, form, validation, vector, language, php, located, at, lib core plugins lib captcha image.php, package, development:captcha, namespace, name, version, v.20210419, depends, classes, smart, smartsvgcaptchapoint, methods, public, function, construct, int, numchars, width, height, mixed, difficulty, param, the, number, of, glyphs, characters, will, contain, to, generate, valid, values, are, default, easy, medium, hard, alternate, can, be, an, array, settings, constructor, draw image, string, return, code, and, get code, generated, get, must, call, only, after, properties, constants, documentation, index, definition, list, on">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartSVGCaptcha">
 	<title>PHP Documentation for: \SmartSVGCaptcha</title>
 	<!-- CSS and Fonts -->
@@ -468,12 +468,13 @@
 <!-- skip logo -->
 <!-- class r.20200121 -->
 <!-- Styles -->
-<!-- styles r.20200121 -->
+<!-- styles r.20210417 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
-.doc-located {
+.doc-located,
+.doc-version {
 	color: #999999;
 }
 .doc-modifiers {
@@ -499,10 +500,19 @@
 	color: #777777;
 }
 .doc-ns,
+.doc-frozen,
 .doc-param-optional {
 	color: #778899;
 }
 .doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
 	color: #3F51B5;
 }
 .doc-implements {
@@ -697,7 +707,7 @@ Create a Form Captcha Validation Vector Image (SVG)</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartSVGCaptcha</span></li>
 		
-		<li><b>Version:</b> v.20200121</li>
+		<li><b>Version:</b> v.20210419</li>
 		<li><b>Depends:</b> classes:  Smart, SmartSvgCaptchaPoint</li>
 		
 		
@@ -722,9 +732,9 @@ Create a Form Captcha Validation Vector Image (SVG)</div><br>
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
 	
 	
-			<div class="doc-method-ret-params">@param: {INT} $numchars: The number of glyphs the captcha will contain.<br>
-@param: {INT} $width: The width of the captcha.<br>
-@param: {INT} $height: The height of the captcha.<br>
+			<div class="doc-method-ret-params">@param: {INT} $numchars: The number of glyphs (characters) the captcha will contain<br>
+@param: {INT} $width: The width of the captcha<br>
+@param: {INT} $height: The height of the captcha<br>
 @param: {MIXED} $difficulty: The difficulty of the captcha to generate ; Valid values are: 0 = default difficulty ; 1 = easy difficulty ; 2 = medium difficulty ; 3 = hard difficulty ; alternate can be an array of settings</div>
 	
 			<div class="doc-method-comments">Class constructor</div>
@@ -831,7 +841,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-31 00:10:23 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:34 +0000</small>
 <hr>
 <br>
 <!-- # -->

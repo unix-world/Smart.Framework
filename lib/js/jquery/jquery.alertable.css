@@ -4,7 +4,7 @@
 // Developed by Cory LaViska for A Beautiful Site, LLC
 // Licensed under the MIT license: http://opensource.org/licenses/MIT
 
-// r.20210329
+// r.20210407
 // (c) 2019-2021 unix-world.org
 // License: BSD
 // contains fixes by unixman
@@ -15,9 +15,11 @@
 	position: fixed;
 	z-index: 2147482005;
 	top: 10vh;
-	left: calc(50% - 150px);
-	width: 300px;
-	background: white;
+	left: 50%;
+	transform: translateX(-50%);
+	min-width: 275px;
+	width: 70vw;
+	background: #FFFFFF;
 	border-radius: 4px;
 	padding: 20px;
 	margin: 0 auto;
@@ -34,13 +36,16 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
-	background: rgba(0, 0, 0, .5);
+	background: rgba(0, 0, 0, 0.5);
 }
 
 /* Message */
 .alertable-message {
 	margin-bottom: 20px;
 	white-space: pre-wrap;
+}
+.alertable-message-html {
+	white-space: normal !important;
 }
 
 /* Prompt */
@@ -64,6 +69,10 @@
 
 /* Button group */
 .alertable-buttons {
+	position: fixed; /* for old browsers */
+	position: sticky;
+	bottom: 10px;
+	right: 10px;
 	text-align: right;
 }
 
@@ -79,9 +88,9 @@
 	color: #333333;
 	font-family: inherit;
 	font-size: inherit;
-	border-radius: 4px;
+	border-radius: 3px;
 	padding: 6px 12px;
-	margin-left: 4px;
+	margin-left: 10px;
 	cursor: pointer;
 }
 
@@ -103,9 +112,9 @@
 	font-family: inherit;
 	font-size: inherit;
 	color: #888888;
-	border-radius: 4px;
+	border-radius: 3px;
 	padding: 6px 12px;
-	margin-left: 4px;
+	margin-left: 10px;
 	cursor: pointer;
 }
 

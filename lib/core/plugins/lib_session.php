@@ -67,7 +67,7 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20210402
+ * @version 	v.20210415
  * @package 	Application:Session
  *
  */
@@ -256,7 +256,7 @@ final class SmartSession {
 			Smart::log_warning('WARNING: Session Name must have a length between 10 and 25 characters :: SMART_FRAMEWORK_SESSION_NAME');
 			return;
 		} //end if
-		if(!SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_SESSION_NAME, true)) {
+		if(!SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_SESSION_NAME)) {
 			Smart::log_warning('WARNING: Session Name have an invalid value :: SMART_FRAMEWORK_SESSION_NAME');
 			return;
 		} //end if
@@ -362,16 +362,28 @@ final class SmartSession {
 				$tmp_exp_seconds = 0;
 			} //end if
 		} //end if
+		$options = [ // {{{SYNC-PHP-COOKIE-OPTIONS}}}
+			'lifetime' 	=> (int) $tmp_exp_seconds, // for the session cookie this is 'expires'
+			'path' 		=> (string) '/'
+		]; // by default set it without specific domain (will using current IP or subdomain)
+		$cookie_domain = '';
 		if(defined('SMART_FRAMEWORK_SESSION_DOMAIN') AND ((string)SMART_FRAMEWORK_SESSION_DOMAIN != '')) {
 			if((string)SMART_FRAMEWORK_SESSION_DOMAIN == '*') {
 				$cookie_domain = (string) SmartUtils::get_server_current_basedomain_name();
 			} else {
 				$cookie_domain = (string) SMART_FRAMEWORK_SESSION_DOMAIN;
 			} //end if
-			@session_set_cookie_params((int)$tmp_exp_seconds, '/', (string)$cookie_domain); // session cookie expire, the path and domain
-		} else {
-			@session_set_cookie_params((int)$tmp_exp_seconds, '/'); // session cookie expire and the path
 		} // end if
+		if((string)$cookie_domain != '') {
+			$options['domain'] = (string) $cookie_domain; // set cookie using domain (if running on IP will be set on current IP)
+		} //end if
+		$cookie_samesite = (string) SmartUtils::cookie_default_samesite_policy();
+		if((string)$cookie_samesite != '') {
+			$options['samesite'] = (string) $cookie_samesite; // use the same site policy if valid
+		} //end if
+		// do not set httponly = TRUE as the ajax (javascript) must send the cookies and if TRUE this cookie will not be accessible by javascript !
+		// a question: should be there an option to set the cookie attribute: secure = TRUE ? if so needs to detect if the protocol is HTTPS and not start session if not ! ... reflection moment ;-) ...
+		@session_set_cookie_params((array)$options); // session cookie options ; req. PHP 7.3+
 		//-- be sure that session_write_close() is executed at the end of script if script if die premature and before pgsql shutdown register in the case of DB sessions
 		register_shutdown_function('session_write_close');
 		//-- handle custom session handler
@@ -505,7 +517,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20210402
+ * @version 	v.20210415
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {

@@ -29,47 +29,47 @@ CustomCipher@Options:&nbsp;<span style="color:#CCCCCC;">PHP:[###HASHCRYPT-OPTION
 	var the_error = 0;
 	//--
 	var unicodeText = $('#unicode-string').text();
-	var the_sha512 = SmartJS_CryptoHash.sha512(unicodeText);
-	var the_sha1 = SmartJS_CryptoHash.sha1(unicodeText);
-	var the_md5 = SmartJS_CryptoHash.md5(unicodeText);
-	var the_crc32b = SmartJS_CryptoHash.crc32b(unicodeText);
+	var the_sha512 = smartJ$CryptoHash.sha512(unicodeText);
+	var the_sha1 = smartJ$CryptoHash.sha1(unicodeText);
+	var the_md5 = smartJ$CryptoHash.md5(unicodeText);
+	var the_crc32b = smartJ$CryptoHash.crc32b(unicodeText);
 	//--
-	var b64enc = SmartJS_Base64.encode(unicodeText);
-	var b64dec = SmartJS_Base64.decode(b64enc);
+	var b64enc = smartJ$Base64.encode(unicodeText);
+	var b64dec = smartJ$Base64.decode(b64enc);
 	//--
-	var bin2hex = SmartJS_CoreUtils.bin2hex(unicodeText).toUpperCase();
-	var hex2bin = SmartJS_CoreUtils.hex2bin(SmartJS_CoreUtils.stringTrim(bin2hex).toLowerCase());
+	var bin2hex = smartJ$Utils.bin2hex(unicodeText).toUpperCase();
+	var hex2bin = smartJ$Utils.hex2bin(smartJ$Utils.stringTrim(bin2hex).toLowerCase());
 	//--
 	var bf_key = $('#blowfisk-key').val();
-	var bf_enc = SmartJS_CryptoBlowfish.encrypt(unicodeText, bf_key);
-	var bf_dec = SmartJS_CryptoBlowfish.decrypt(bf_enc, bf_key);
+	var bf_enc = smartJ$CryptoBlowfish.encrypt(unicodeText, bf_key);
+	var bf_dec = smartJ$CryptoBlowfish.decrypt(bf_enc, bf_key);
 	//--
-	var jsescTxt = SmartJS_CoreUtils.escape_js(unicodeText);
-	var htmlcode = 'Unicode@String:&nbsp;<span style="color:#FF5500;">' + SmartJS_CoreUtils.escape_html(unicodeText) + '</span><br>';
-	htmlcode += SmartJS_CoreUtils.nl2br('Escaped@JS:&nbsp;<span style="color:#778899;">' + SmartJS_CoreUtils.escape_html(jsescTxt) + '</span>' + "\n");
-	htmlcode += 'SHA512:&nbsp;<span style="color:#888888;">' + SmartJS_CoreUtils.escape_html(the_sha512) + '</span><br>';
-	htmlcode += 'SHA1:&nbsp;<span style="color:#999999;">' + SmartJS_CoreUtils.escape_html(the_sha1) + '</span><br>';
-	htmlcode += 'MD5:&nbsp;<span style="color:#AAAAAA;">' + SmartJS_CoreUtils.escape_html(the_md5) + '</span><br>';
-	htmlcode += 'CRC32B:&nbsp;<span style="color:#AAAAAA;">' + SmartJS_CoreUtils.escape_html(the_crc32b) + '</span><br>';
-	htmlcode += 'Base64@Encoded:&nbsp;<span style="color:#666699;">' + SmartJS_CoreUtils.escape_html(b64enc) + '</span><br>';
-	htmlcode += 'Base64@Decoded:&nbsp;<span style="color:#FF5500;">' + SmartJS_CoreUtils.escape_html(b64dec) + '</span><br>';
-	htmlcode += 'Bin2Hex@Encoded:&nbsp;<span style="color:#444477;">' + SmartJS_CoreUtils.escape_html(bin2hex) + '</span><br>';
-	htmlcode += 'Hex2Bin@Decoded:&nbsp;<span style="color:#FF5500;">' + SmartJS_CoreUtils.escape_html(hex2bin) + '</span><br>';
-	htmlcode += 'Blowfish@Encrypted:&nbsp;<span style="color:#66AA00;">' + SmartJS_CoreUtils.escape_html(bf_enc) + '</span><br>';
-	htmlcode += 'Blowfish@Decrypted:&nbsp;<span style="color:#FF5500;">' + SmartJS_CoreUtils.escape_html(bf_dec) + '</span><br>';
+	var jsescTxt = smartJ$Utils.escape_js(unicodeText);
+	var htmlcode = 'Unicode@String:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(unicodeText) + '</span><br>';
+	htmlcode += smartJ$Utils.nl2br('Escaped@JS:&nbsp;<span style="color:#778899;">' + smartJ$Utils.escape_html(jsescTxt) + '</span>' + "\n");
+	htmlcode += 'SHA512:&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_sha512) + '</span><br>';
+	htmlcode += 'SHA1:&nbsp;<span style="color:#999999;">' + smartJ$Utils.escape_html(the_sha1) + '</span><br>';
+	htmlcode += 'MD5:&nbsp;<span style="color:#AAAAAA;">' + smartJ$Utils.escape_html(the_md5) + '</span><br>';
+	htmlcode += 'CRC32B:&nbsp;<span style="color:#AAAAAA;">' + smartJ$Utils.escape_html(the_crc32b) + '</span><br>';
+	htmlcode += 'Base64@Encoded:&nbsp;<span style="color:#666699;">' + smartJ$Utils.escape_html(b64enc) + '</span><br>';
+	htmlcode += 'Base64@Decoded:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(b64dec) + '</span><br>';
+	htmlcode += 'Bin2Hex@Encoded:&nbsp;<span style="color:#444477;">' + smartJ$Utils.escape_html(bin2hex) + '</span><br>';
+	htmlcode += 'Hex2Bin@Decoded:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(hex2bin) + '</span><br>';
+	htmlcode += 'Blowfish@Encrypted:&nbsp;<span style="color:#66AA00;">' + smartJ$Utils.escape_html(bf_enc) + '</span><br>';
+	htmlcode += 'Blowfish@Decrypted:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(bf_dec) + '</span><br>';
 	htmlcode += 'Blowfish@Options:&nbsp;<span style="color:#CCCCCC;">JS:blowfish/CBC</span>' + '<br>';
 	$('#testunit-partial-crypto').html(htmlcode);
 	//-- JS Tests
-	if((b64dec !== unicodeText) || (SmartJS_CryptoHash.sha1(b64dec) !== the_sha1)) {
-		alert('ERROR: Base64 Encode/Decode Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_sha1 + '\n' + 'After: `' + b64dec + '` / ' + SmartJS_CryptoHash.sha1(b64dec));
+	if((b64dec !== unicodeText) || (smartJ$CryptoHash.sha1(b64dec) !== the_sha1)) {
+		alert('ERROR: Base64 Encode/Decode Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_sha1 + '\n' + 'After: `' + b64dec + '` / ' + smartJ$CryptoHash.sha1(b64dec));
 		the_error++;
 	} //end if
-	if((hex2bin !== unicodeText) || (SmartJS_CryptoHash.sha1(hex2bin) !== the_sha1)) {
-		alert('ERROR: Bin2Hex / Hex2Bin Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_sha1 + '\n' + 'After: `' + hex2bin + '` / ' + SmartJS_CryptoHash.sha1(hex2bin));
+	if((hex2bin !== unicodeText) || (smartJ$CryptoHash.sha1(hex2bin) !== the_sha1)) {
+		alert('ERROR: Bin2Hex / Hex2Bin Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_sha1 + '\n' + 'After: `' + hex2bin + '` / ' + smartJ$CryptoHash.sha1(hex2bin));
 		the_error++;
 	} //end if
-	if((bf_dec !== unicodeText) || (SmartJS_CryptoHash.sha1(bf_dec) !== the_sha1)) {
-		alert('ERROR: BlowFish Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_sha1 + '\n' + 'After: `' + bf_dec + '` / ' + SmartJS_CryptoHash.sha1(bf_dec));
+	if((bf_dec !== unicodeText) || (smartJ$CryptoHash.sha1(bf_dec) !== the_sha1)) {
+		alert('ERROR: BlowFish Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_sha1 + '\n' + 'After: `' + bf_dec + '` / ' + smartJ$CryptoHash.sha1(bf_dec));
 		the_error++;
 	} //end if
 	//-- compare with PHP
@@ -113,12 +113,12 @@ CustomCipher@Options:&nbsp;<span style="color:#CCCCCC;">PHP:[###HASHCRYPT-OPTION
 		alert('ERROR: Hex2Bin comparison with PHP failed ...');
 		the_error++;
 	} //end if
-	if((bf_enc != $('#blowfish-encrypted').text()) || (SmartJS_CryptoHash.sha1(bf_enc) != SmartJS_CryptoHash.sha1($('#blowfish-encrypted').text()))) {
+	if((bf_enc != $('#blowfish-encrypted').text()) || (smartJ$CryptoHash.sha1(bf_enc) != smartJ$CryptoHash.sha1($('#blowfish-encrypted').text()))) {
 		alert('ERROR: PHP Blowfish encrypted is different than Javascript one ...');
 		the_error++;
 	} //end if
-	var decode_php_blowfish = SmartJS_CryptoBlowfish.decrypt($('#blowfish-encrypted').text(), bf_key);
-	if((decode_php_blowfish != unicodeText) || (SmartJS_CryptoHash.sha1(decode_php_blowfish) != SmartJS_CryptoHash.sha1(unicodeText))) {
+	var decode_php_blowfish = smartJ$CryptoBlowfish.decrypt($('#blowfish-encrypted').text(), bf_key);
+	if((decode_php_blowfish != unicodeText) || (smartJ$CryptoHash.sha1(decode_php_blowfish) != smartJ$CryptoHash.sha1(unicodeText))) {
 		alert('ERROR: Javascript decrypted Blowfish is different than PHP one ...' + decode_php_blowfish);
 		the_error++;
 	} //end if
@@ -127,7 +127,7 @@ CustomCipher@Options:&nbsp;<span style="color:#CCCCCC;">PHP:[###HASHCRYPT-OPTION
 		the_error++;
 	} //end if
 	//--
-	if(($('#unicode-string').text() != $('#hash-decrypted').text()) || (SmartJS_CryptoHash.sha1($('#unicode-string').text()) != SmartJS_CryptoHash.sha1($('#hash-decrypted').text()))) {
+	if(($('#unicode-string').text() != $('#hash-decrypted').text()) || (smartJ$CryptoHash.sha1($('#unicode-string').text()) != smartJ$CryptoHash.sha1($('#hash-decrypted').text()))) {
 		alert('ERROR: PHP Hash Decrypted is different than than original PHP string ...');
 		the_error++;
 	} //end if

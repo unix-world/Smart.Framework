@@ -5,10 +5,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
-	<meta name="description" content="SmartJS_CoreUtils        static class SmartJS_CoreUtils  {  } .    CLASS :: Core Utils This class provide the core functions for JavaScript API of">
-	<meta name="keywords" content="smartjs coreutils, static, class, core, utils, this, provide, the, functions, for, javascript, api, of, smart.framework, language, located, at, lib js framework smart-framework.pak.js, core utils.js, package, sf.javascript:core, name, usage, smartjs coreutils.method, version, methods, public, function, isfinitenumber, number, num, boolean, return, true, is, finite, and, nan, false, otherwise, param, to, be, tested, check, if, a, valid, must, stringtrim, string, str, trimmed, trim, begining, or, end, by, any, whitespace, space, n, r, t, stringucfirst, hint, implementation, compatible, with, php, unicode, mb convert case mb case upper, on, first, letter, processed, make, uppercase, character, stringucwords, mb convert case mb case title, each, word, in, while, making, lowercase, others, stringreplaceall, token, newtoken, part, replaced, replacement, where, do, replacements">
-	<meta name="summary" content="Smart.Framework : Javascript Documentation: SmartJS_CoreUtils">
-	<title>JS Documentation for: SmartJS_CoreUtils</title>
+	<meta name="description" content="smartJ$Utils        static class smartJ$Utils  {  } .    CLASS :: Smart CoreUtils (ES6) The class provides the core methods for JavaScript API of">
+	<meta name="keywords" content="smartj utils, static, class, smart, coreutils, es6, the, provides, core, methods, for, javascript, api, of, smart.framework, language, located, at, lib js framework smart-framework.pak.js, core utils.js, package, sf.javascript:core, name, frozen, yes, version, usage, smartj utils.method, public, isfinitenumber, number, num, boolean, return, true, is, finite, and, nan, false, otherwise, param, to, be, tested, check, if, a, valid, must, stringpureval, mixed, input, trim, string, value, converted, using, rules, from, above, will, output, result, pure, an, undefined, null, or, casted, empty, as, in, php, not, object, function, safety, numerioc, values, they, are, stringtrim, str, trimmed, begining, end, by, any, whitespace, space, n, r, t, stringucfirst, hint, implementation">
+	<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$Utils">
+	<title>JS Documentation for: smartJ$Utils</title>
 	<!-- CSS and Fonts -->
 		<!-- skip fonts -->
 	
@@ -466,14 +466,15 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210417 -->
 <!-- Styles -->
-<!-- styles r.20200121 -->
+<!-- styles r.20210417 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
-.doc-located {
+.doc-located,
+.doc-version {
 	color: #999999;
 }
 .doc-modifiers {
@@ -499,10 +500,19 @@
 	color: #777777;
 }
 .doc-ns,
+.doc-frozen,
 .doc-param-optional {
 	color: #778899;
 }
 .doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
 	color: #3F51B5;
 }
 .doc-implements {
@@ -677,26 +687,27 @@ select#select-summary {
 
 </style>
 <!-- Headings -->
-<h1 title="PHP class: `SmartJS_CoreUtils` @ JavaScript" id="Class--Summary-">
-	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">SmartJS_CoreUtils</span><br>
+<h1 title="PHP class: `smartJ$Utils` @ JavaScript" id="Class--Summary-">
+	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">smartJ$Utils</span><br>
 	{
 	}&nbsp;.
 </h1>
 <!-- Description -->
-<div class="doc-comments">CLASS :: Core Utils<br>
-This class provide the core functions for JavaScript API of Smart.Framework</div><br>
+<div class="doc-comments">CLASS :: Smart CoreUtils (ES6)<br>
+The class provides the core methods for JavaScript API of Smart.Framework</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> Javascript<span></li>
 		<li><span class="doc-located"><b>Located at:</b> lib/js/framework/smart-framework.pak.js; core_utils.js</span></li>
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Core</span></li>
-		<li><span class="doc-name"><b>Class Name:</b> SmartJS_CoreUtils</span></li>
-		<li><b>Usage:</b> SmartJS_CoreUtils.method();</li>
+		<li><span class="doc-name"><b>Class Name:</b> smartJ$Utils</span></li>
+		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210419</span></li>
+		<li><b>Usage:</b> smartJ$Utils.method();</li>
 		
 		
 		
-		<li><b>Version:</b> 20210322</li>
 		
 		
 	</ul>
@@ -706,12 +717,12 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 <div class="doc-container" id="Methods--Summary-">
 	<h2 class="doc-header">class Methods</h2>
 </div>
-<!-- methods r.20200121 -->
+<!-- methods r.20210414 -->
 <div class="doc-container" id="Method--isFiniteNumber">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isFiniteNumber</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>isFiniteNumber</b></span>&nbsp;=&nbsp;(
 			<i>{Number}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
 	
 	
@@ -726,11 +737,37 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 			<div class="doc-method-comments">Check if a number is valid: must be Number, Finite and !NaN</div>
 	
 	
+</div><div class="doc-container" id="Method--stringPureVal">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringPureVal</b></span>&nbsp;=&nbsp;(
+			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`input` Parameter">input</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`trim` Parameter">trim</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The value converted to string, using rules from above<br>
+	
+	
+	
+			@param: {Mixed} input The input<br>
+			@param: {Boolean} trim If TRUE will trim the output result<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Return a pure string value from an input<br>
+RULES:<br>
+- Undefined, Null or False will be casted to empty string as ''<br>
+- True will be casted to '1' as in PHP not to 'true' as in Javascript<br>
+- Object or Function will be casted to empty string for safety, as ''<br>
+- Numerioc values will be casted to string as they are</div>
+	
+	
 </div><div class="doc-container" id="Method--stringTrim">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringTrim</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringTrim</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
 	
 	
@@ -746,12 +783,12 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 	
 	
 </div><div class="doc-container" id="Method--stringUcFirst">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringUcFirst</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringUcFirst</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This implementation is compatible with PHP unicode mb_convert_case/MB_CASE_UPPER on the first letter<br>
+			@hint: The implementation is compatible with PHP unicode mb_convert_case/MB_CASE_UPPER on the first letter<br>
 	
 	
 			@return: {String} The processed string<br>
@@ -766,12 +803,12 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 	
 	
 </div><div class="doc-container" id="Method--stringUcWords">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringUcWords</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringUcWords</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This implementation is compatible with PHP unicode mb_convert_case/MB_CASE_TITLE<br>
+			@hint: The implementation is compatible with PHP unicode mb_convert_case/MB_CASE_TITLE<br>
 	
 	
 			@return: {String} The processed string<br>
@@ -786,12 +823,12 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 	
 	
 </div><div class="doc-container" id="Method--stringReplaceAll">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringReplaceAll</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringReplaceAll</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`token` Parameter">token</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`newToken` Parameter">newToken</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
 	
 	
@@ -838,7 +875,7 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
 	<div class="doc-method-ret-params">
-			@hint: This is compatible just with the PHP preg_match_all()<br>
+			@hint: It is compatible just with the PHP preg_match_all()<br>
 	
 	
 			@return: {Array} The array with matches<br>
@@ -854,90 +891,118 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 	
 	
 </div><div class="doc-container" id="Method--stringContains">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringContains</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringContains</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>, 
 			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`pos` Parameter">pos</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
 	
 	
-			@return: {Boolean} TRUE if the str contains search at the pos<br>
+			@return: {Boolean} TRUE if the str contains search begining from the pos<br>
 	
 	
 	
 			@param: {String} str The string to search in (haystack)<br>
 			@param: {String} search The string to search for in haystack (needle)<br>
-			@param: {Integer} pos The position to start<br>
+			@param: {Integer} pos *Optional* ; Default is zero ; The position to start (0 ... n)<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Find if a string contains another sub-string</div>
+			<div class="doc-method-comments">Find if a string contains another sub-string, case sensitive</div>
 	
 	
-</div><div class="doc-container" id="Method--stringSplitbyColon">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringSplitbyColon</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+</div><div class="doc-container" id="Method--stringIContains">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringIContains</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>, 
+			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`pos` Parameter">pos</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
 	
 	
-			@return: {Array} The array with string parts splitted<br>
+			@return: {Boolean} TRUE if the str contains search begining from the pos<br>
 	
 	
 	
-			@param: {String} str The string to be splitted by : (colon)<br>
+			@param: {String} str The string to search in (haystack)<br>
+			@param: {String} search The string to search for in haystack (needle)<br>
+			@param: {Integer} pos *Optional* ; Default is zero ; The position to start (0 ... n)<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Split string by colon with trimming prefix/suffix</div>
+			<div class="doc-method-comments">Find if a string contains another sub-string, case insensitive</div>
 	
 	
-</div><div class="doc-container" id="Method--stringSplitbySemicolon">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringSplitbySemicolon</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+</div><div class="doc-container" id="Method--stringStartsWith">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringStartsWith</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
 	
 	
-			@return: {Array} The array with string parts splitted<br>
+			@return: {Boolean} TRUE if the str starts with the search begining from the pos<br>
 	
 	
 	
-			@param: {String} str The string to be splitted by ; (semicolon)<br>
+			@param: {String} str The string to search in (haystack)<br>
+			@param: {String} search The string to search for in haystack (needle)<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Split string by semicolon with trimming prefix/suffix</div>
+			<div class="doc-method-comments">Find if a string starts with another sub-string, case sensitive</div>
 	
 	
-</div><div class="doc-container" id="Method--stringSplitbyComma">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringSplitbyComma</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+</div><div class="doc-container" id="Method--stringIStartsWith">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringIStartsWith</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
 	
 	
-			@return: {Array} The array with string parts splitted<br>
+			@return: {Boolean} TRUE if the str starts with the search begining from the pos<br>
 	
 	
 	
-			@param: {String} str The string to be splitted by , (comma)<br>
+			@param: {String} str The string to search in (haystack)<br>
+			@param: {String} search The string to search for in haystack (needle)<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Split string by comma with trimming prefix/suffix</div>
+			<div class="doc-method-comments">Find if a string starts with another sub-string, case insensitive</div>
+	
+	
+</div><div class="doc-container" id="Method--preg_quote">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>preg_quote</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+			@hint: It is compatible with PHP preg_quote() method.<br>
+	
+	
+			@return: {String} The processed string<br>
+	
+	
+	
+			@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Quote regular expression characters in a string.</div>
 	
 	
 </div><div class="doc-container" id="Method--stringSplitbyEqual">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringSplitbyEqual</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbyEqual</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
 	<div class="doc-method-ret-params">
 	
 	
@@ -949,14 +1014,71 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 	
 	
 	</div>
-			<div class="doc-method-comments">Split string by equal with trimming prefix/suffix</div>
+			<div class="doc-method-comments">Split string by equal (=) with trimming prefix/suffix</div>
+	
+	
+</div><div class="doc-container" id="Method--stringSplitbyColon">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbyColon</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Array} The array with string parts splitted<br>
+	
+	
+	
+			@param: {String} str The string to be splitted by : (colon)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Split string by colon (:) with trimming prefix/suffix</div>
+	
+	
+</div><div class="doc-container" id="Method--stringSplitbySemicolon">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbySemicolon</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Array} The array with string parts splitted<br>
+	
+	
+	
+			@param: {String} str The string to be splitted by ; (semicolon)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Split string by semicolon (;) with trimming prefix/suffix</div>
+	
+	
+</div><div class="doc-container" id="Method--stringSplitbyComma">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbyComma</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Array} The array with string parts splitted<br>
+	
+	
+	
+			@param: {String} str The string to be splitted by , (comma)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Split string by comma (,) with trimming prefix/suffix</div>
 	
 	
 </div><div class="doc-container" id="Method--arrayGetFirst">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>arrayGetFirst</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>arrayGetFirst</b></span>&nbsp;=&nbsp;(
 			<i>{Array}</i>&nbsp;<span class="doc-param-name"><b><span title="`arr` Parameter">arr</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
 	<div class="doc-method-ret-params">
 	
 	
@@ -972,10 +1094,10 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 	
 	
 </div><div class="doc-container" id="Method--arrayGetLast">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>arrayGetLast</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>arrayGetLast</b></span>&nbsp;=&nbsp;(
 			<i>{Array}</i>&nbsp;<span class="doc-param-name"><b><span title="`arr` Parameter">arr</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
 	<div class="doc-method-ret-params">
 	
 	
@@ -990,12 +1112,33 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 			<div class="doc-method-comments">Get the last element from an Array</div>
 	
 	
+</div><div class="doc-container" id="Method--format_number_float">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_float</b></span>&nbsp;=&nbsp;(
+			<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`allow_negatives` Parameter">allow_negatives</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Float}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Float} A float number<br>
+	
+	
+	
+			@param: {Numeric} num A numeric value<br>
+			@param: {Boolean} allow_negatives *Optional* ; default is TRUE ; If set to FALSE will disallow negative values and if negative value detected will reset it to zero<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Format a number as FLOAT</div>
+	
+	
 </div><div class="doc-container" id="Method--format_number_int">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>format_number_int</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_int</b></span>&nbsp;=&nbsp;(
 			<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_number` Parameter">y_number</span></b></span>, 
 			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_allow_negatives` Parameter">y_allow_negatives</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
 	<div class="doc-method-ret-params">
 	
 	
@@ -1012,13 +1155,13 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 	
 	
 </div><div class="doc-container" id="Method--format_number_dec">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>format_number_dec</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_dec</b></span>&nbsp;=&nbsp;(
 			<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_number` Parameter">y_number</span></b></span>, 
 			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_decimals` Parameter">y_decimals</span></b></span>, 
 			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_allow_negatives` Parameter">y_allow_negatives</span></b></span>, 
 			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_discard_trailing_zeroes` Parameter">y_discard_trailing_zeroes</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
 	
 	
@@ -1027,9 +1170,9 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 	
 	
 			@param: {Numeric} y_number A numeric value as Number or String<br>
-			@param: {Integer} y_decimals The number of decimal to use (between 1 and 4)<br>
-			@param: {Boolean} y_allow_negatives *Optional* If FALSE will disallow negative (will return just positive / unsigned values)<br>
-			@param: {Boolean} y_discard_trailing_zeroes *Optional* If set to FALSE will keep trailing zeroes, otherwise will discard them<br>
+			@param: {Integer} y_decimals *Optional* Default is 2 ; The number of decimal to use (between 1 and 13)<br>
+			@param: {Boolean} y_allow_negatives *Optional* Default is TRUE ; If FALSE will disallow negative (will return just positive / unsigned values)<br>
+			@param: {Boolean} y_discard_trailing_zeroes *Optional* Default is FALSE ; If set to TRUE will discard trailing zeroes<br>
 	
 	
 	</div>
@@ -1042,7 +1185,7 @@ This class provide the core functions for JavaScript API of Smart.Framework</div
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is compatible with PHP stripslashes() function.<br>
+			@hint: It is compatible with PHP stripslashes() method.<br>
 	
 	
 			@return: {String} The processed string<br>
@@ -1064,7 +1207,7 @@ It will remove double / quoted slashes.</div>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is compatible with PHP addcslashes() function.<br>
+			@hint: It is compatible with PHP addcslashes() method.<br>
 	
 	
 			@return: {String} Returns the escaped string<br>
@@ -1080,12 +1223,12 @@ It will remove double / quoted slashes.</div>
 	
 	
 </div><div class="doc-container" id="Method--escape_css">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_css</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>escape_css</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is like the Smart::escape_css() from the PHP Smart.Framework.<br>
+			@hint: It is like the Smart::escape_css() from the PHP Smart.Framework.<br>
 	
 	
 			@return: {String} The safe escaped string to be injected in CSS code<br>
@@ -1100,12 +1243,12 @@ It will remove double / quoted slashes.</div>
 	
 	
 </div><div class="doc-container" id="Method--escape_html">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_html</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>escape_html</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is like the Smart::escape_html() from the PHP Smart.Framework.<br>
+			@hint: It is like the Smart::escape_html() from the PHP Smart.Framework.<br>
 	
 	
 			@return: {String} The safe escaped string to be injected in HTML code<br>
@@ -1126,7 +1269,7 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is like the Smart::escape_js() from the PHP Smart.Framework.<br>
+			@hint: It is like the Smart::escape_js() from the PHP Smart.Framework.<br>
 	
 	
 			@return: {String} The escaped string using the json encode standard to be injected between single quotes '' or double quotes &quot;&quot;<br>
@@ -1141,12 +1284,12 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 </div><div class="doc-container" id="Method--escape_url">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_url</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>escape_url</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is a shortcut to the encodeURIComponent() to provide a standard into Smart.Framework/JS.<br>
+			@hint: It is like the Smart::escape_url() ; can be used as a shortcut to the encodeURIComponent() to provide a standard into Smart.Framework/JS.<br>
 	
 	
 			@return: {String} The escaped URL variable<br>
@@ -1161,12 +1304,12 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 </div><div class="doc-container" id="Method--nl2br">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>nl2br</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>nl2br</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is compatible with the PHP nl2br() function.<br>
+			@hint: It is compatible with the PHP nl2br() method.<br>
 	
 	
 			@return: {String} The processed string with &lt;br&gt; html tags if new lines were detected<br>
@@ -1182,7 +1325,7 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 </div><div class="doc-container" id="Method--utf8_encode">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8_encode</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`string` Parameter">string</span></b></span>
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1192,7 +1335,7 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 	
-			@param: {String} string The string to be processed<br>
+			@param: {String} str The string to be processed<br>
 	
 	
 	</div>
@@ -1201,7 +1344,7 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 </div><div class="doc-container" id="Method--utf8_decode">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8_decode</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`string` Parameter">string</span></b></span>
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`utftext` Parameter">utftext</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1211,7 +1354,7 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 	
-			@param: {String} string The string to be processed<br>
+			@param: {String} utftext The string to be processed<br>
 	
 	
 	</div>
@@ -1224,7 +1367,7 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is like PHP SmartUnicode deaccent str<br>
+			@hint: It is like PHP SmartUnicode deaccent str<br>
 	
 	
 			@return: {String} The de-accented string<br>
@@ -1245,7 +1388,7 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is compatible with PHP bin2hex() function.<br>
+			@hint: It is compatible with PHP bin2hex() method.<br>
 	
 	
 			@return: {String} The processed string<br>
@@ -1265,7 +1408,7 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: This is compatible with PHP hex2bin() function.<br>
+			@hint: It is compatible with PHP hex2bin() method.<br>
 	
 	
 			@return: {String} The processed string<br>
@@ -1277,26 +1420,6 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	</div>
 			<div class="doc-method-comments">Decodes a hexadecimally encoded binary string.</div>
-	
-	
-</div><div class="doc-container" id="Method--preg_quote">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>preg_quote</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
-	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
-	<div class="doc-method-ret-params">
-			@hint: This is compatible with PHP preg_quote() function.<br>
-	
-	
-			@return: {String} The processed string<br>
-	
-	
-	
-			@param: {String} str The string to be processed<br>
-	
-	
-	</div>
-			<div class="doc-method-comments">Quote regular expression characters in a string.</div>
 	
 	
 </div><div class="doc-container" id="Method--uuid">
@@ -1318,17 +1441,19 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 </div><div class="doc-container" id="Method--textSort">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>textSort</b></span>&nbsp;(
-			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`property` Parameter">property</span></b></span>
+			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`property` Parameter">property</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`useLocale` Parameter">useLocale</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Method}
 	<div class="doc-method-ret-params">
 	
 	
-			@return: {Mixed} The sorted stack<br>
+			@return: {Method} The stack sort method<br>
 	
 	
 	
 			@param: {Mixed} property The stack to be sorted<br>
+			@param: {Boolean} useLocale *Optional* default is FALSE ; if TRUE will try sort using locales and if fail will fallback on raw string comparison ; if FALSE will use the default string comparison<br>
 	
 	
 	</div>
@@ -1336,14 +1461,14 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 </div><div class="doc-container" id="Method--numericSort">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>numericSort</b></span>&nbsp;(
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>numericSort</b></span>&nbsp;=&nbsp;(
 			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`property` Parameter">property</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Method}
 	<div class="doc-method-ret-params">
 	
 	
-			@return: {Mixed} The sorted stack<br>
+			@return: {Method} The stack sort method<br>
 	
 	
 	
@@ -1352,6 +1477,67 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	</div>
 			<div class="doc-method-comments">Sort a stack (array / object / property) using Numeric Sort algorithm</div>
+	
+	
+</div><div class="doc-container" id="Method--create_slug">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>create_slug</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`lowercase` Parameter">lowercase</span></b></span>, 
+			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`maxlen` Parameter">maxlen</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The slug which will contain only: a-z 0-9 _ - (A-Z will be converted to a-z if lowercase is enforced)<br>
+	
+	
+	
+			@param: {String} str The string to be processed<br>
+			@param: {Boolean} lowercase *OPTIONAL* If TRUE will return the slug with enforced lowercase characters ; DEFAULT is FALSE<br>
+			@param: {Integer} maxlen *OPTIONAL* If a positive value greater than zero is supplied here the slug max length will be constrained to the value<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Creates a Slug (URL safe slug) from a string</div>
+	
+	
+</div><div class="doc-container" id="Method--create_htmid">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>create_htmid</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The HTML-ID which will contain only: a-z A-Z 0-9 _ -<br>
+	
+	
+	
+			@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Creates a compliant HTML-ID (HTML ID used for HTML elements) from a string</div>
+	
+	
+</div><div class="doc-container" id="Method--create_jsvar">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>create_jsvar</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The Js-Var which will contain only: a-z A-Z 0-9 _ $<br>
+	
+	
+	
+			@param: {String} str The string to be processed<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Creates a compliant Js-Var (JavaScript Variable Name) from a string</div>
 	
 	
 </div><div class="doc-container" id="Method--renderMarkersTpl">
@@ -1377,12 +1563,12 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	</div>
-			<div class="doc-method-comments">Render Simple Marker-TPL Template + Comments + Specials (only markers replacements with escaping or processing syntax and support for comments and special replacements: SPACE, TAB, R, N ; no support for IF / LOOP / INCLUDE syntax since the js regex is too simplistic and this can be implemented using real js code)<br>
-This is compatible just with the REPLACE MARKERS of Smart.Framework PHP server-side Marker-TPL Templating for substitutions on client-side, except the extended syntax as IF/LOOP/INCLUDE.</div>
+			<div class="doc-method-comments">Render Simple Marker-TPL Template + Comments + Specials (only markers replacements with escaping or processing syntax and support for comments and special replacements: SPACE, TAB, R, N ; no support for IF / LOOP / INCLUDE syntax since the js regex is too simplistic and it can be implemented using real js code)<br>
+It is compatible just with the REPLACE MARKERS of Smart.Framework PHP server-side Marker-TPL Templating for substitutions on client-side, except the extended syntax as IF/LOOP/INCLUDE.</div>
 	
 			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> <span class="hljs-comment">// sample client side MarkersTPL rendering</span>
- <span class="hljs-keyword">var</span> tpl = <span class="hljs-string">'&lt;div onclick=&quot;var question=\'&lbrack;###QUESTION|js|html###&rbrack;\'; alert(question);&quot;&gt;&lbrack;###TITLE|html###&rbrack;&lt;/div&gt;'</span>; <span class="hljs-comment">// the TPL</span>
- <span class="hljs-keyword">var</span> html = SmartJS_CoreUtils.renderMarkersTpl( <span class="hljs-comment">// render TPL</span>
+ <span class="hljs-keyword">const</span> tpl = <span class="hljs-string">'&lt;div onclick=&quot;let question=\'&lbrack;###QUESTION|js|html###&rbrack;\'; alert(question);&quot;&gt;&lbrack;###TITLE|html###&rbrack;&lt;/div&gt;'</span>; <span class="hljs-comment">// the TPL</span>
+ <span class="hljs-keyword">let</span> html = smartJ$Utils.renderMarkersTpl( <span class="hljs-comment">// render TPL</span>
  		tpl,
  		{
  			<span class="hljs-string">'TITLE'</span>: <span class="hljs-string">'A Title'</span>,
@@ -1396,21 +1582,20 @@ This is compatible just with the REPLACE MARKERS of Smart.Framework PHP server-s
 <div class="doc-container" id="Properties--Summary-">
 	<h2 class="doc-header">class Properties</h2>
 </div>
-<!-- properties r.20200121 -->
+<!-- properties r.20210417 -->
 
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
 	<h2 class="doc-header">class Constants</h2>
 </div>
-<!-- constants r.20200121 -->
-
+<!-- constants r.20210417 -->
 
 <!-- Sample Code -->
 
 <!-- Summary List -->
 <br>
-<!-- summary r.20200121 -->
+<!-- summary r.20210414 -->
 <script>
 // summary r.20200121
 function smartHandleDocSelector(obj) {
@@ -1432,57 +1617,69 @@ function smartHandleDocSelector(obj) {
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
-		<option value="" selected>* Javascript Class SmartJS_CoreUtils # Documentation Index *</option>
-		<optgroup label="Class SmartJS_CoreUtils">
+		<option value="" selected>* Javascript Class smartJ$Utils # Documentation Index *</option>
+		<optgroup label="Class smartJ$Utils">
 			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--isFiniteNumber"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isFiniteNumber()</option>
+									<option value="Method--isFiniteNumber"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;isFiniteNumber()</option>
 			
-									<option value="Method--stringTrim"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringTrim()</option>
+									<option value="Method--stringPureVal"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringPureVal()</option>
 			
-									<option value="Method--stringUcFirst"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringUcFirst()</option>
+									<option value="Method--stringTrim"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringTrim()</option>
 			
-									<option value="Method--stringUcWords"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringUcWords()</option>
+									<option value="Method--stringUcFirst"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringUcFirst()</option>
 			
-									<option value="Method--stringReplaceAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringReplaceAll()</option>
+									<option value="Method--stringUcWords"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringUcWords()</option>
+			
+									<option value="Method--stringReplaceAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringReplaceAll()</option>
 			
 									<option value="Method--stringIReplaceAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringIReplaceAll()</option>
 			
 									<option value="Method--stringRegexMatchAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringRegexMatchAll()</option>
 			
-									<option value="Method--stringContains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringContains()</option>
+									<option value="Method--stringContains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringContains()</option>
 			
-									<option value="Method--stringSplitbyColon"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringSplitbyColon()</option>
+									<option value="Method--stringIContains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringIContains()</option>
 			
-									<option value="Method--stringSplitbySemicolon"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringSplitbySemicolon()</option>
+									<option value="Method--stringStartsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringStartsWith()</option>
 			
-									<option value="Method--stringSplitbyComma"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringSplitbyComma()</option>
+									<option value="Method--stringIStartsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringIStartsWith()</option>
 			
-									<option value="Method--stringSplitbyEqual"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringSplitbyEqual()</option>
+									<option value="Method--preg_quote"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;preg_quote()</option>
 			
-									<option value="Method--arrayGetFirst"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;arrayGetFirst()</option>
+									<option value="Method--stringSplitbyEqual"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyEqual()</option>
 			
-									<option value="Method--arrayGetLast"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;arrayGetLast()</option>
+									<option value="Method--stringSplitbyColon"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyColon()</option>
 			
-									<option value="Method--format_number_int"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;format_number_int()</option>
+									<option value="Method--stringSplitbySemicolon"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbySemicolon()</option>
 			
-									<option value="Method--format_number_dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;format_number_dec()</option>
+									<option value="Method--stringSplitbyComma"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyComma()</option>
+			
+									<option value="Method--arrayGetFirst"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;arrayGetFirst()</option>
+			
+									<option value="Method--arrayGetLast"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;arrayGetLast()</option>
+			
+									<option value="Method--format_number_float"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_float()</option>
+			
+									<option value="Method--format_number_int"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_int()</option>
+			
+									<option value="Method--format_number_dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_dec()</option>
 			
 									<option value="Method--stripslashes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stripslashes()</option>
 			
 									<option value="Method--addcslashes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addcslashes()</option>
 			
-									<option value="Method--escape_css"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_css()</option>
+									<option value="Method--escape_css"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_css()</option>
 			
-									<option value="Method--escape_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_html()</option>
+									<option value="Method--escape_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_html()</option>
 			
 									<option value="Method--escape_js"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_js()</option>
 			
-									<option value="Method--escape_url"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_url()</option>
+									<option value="Method--escape_url"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_url()</option>
 			
-									<option value="Method--nl2br"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;nl2br()</option>
+									<option value="Method--nl2br"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;nl2br()</option>
 			
 									<option value="Method--utf8_encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8_encode()</option>
 			
@@ -1494,13 +1691,17 @@ function smartHandleDocSelector(obj) {
 			
 									<option value="Method--hex2bin"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hex2bin()</option>
 			
-									<option value="Method--preg_quote"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;preg_quote()</option>
-			
 									<option value="Method--uuid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;uuid()</option>
 			
 									<option value="Method--textSort"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;textSort()</option>
 			
-									<option value="Method--numericSort"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;numericSort()</option>
+									<option value="Method--numericSort"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;numericSort()</option>
+			
+									<option value="Method--create_slug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_slug()</option>
+			
+									<option value="Method--create_htmid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_htmid()</option>
+			
+									<option value="Method--create_jsvar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_jsvar()</option>
 			
 									<option value="Method--renderMarkersTpl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderMarkersTpl()</option>
 			
@@ -1521,7 +1722,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-31 00:10:33 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:43 +0000</small>
 <hr>
 <br>
 <!-- # -->

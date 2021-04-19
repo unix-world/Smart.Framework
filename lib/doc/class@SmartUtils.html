@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartUtils        final class \ SmartUtils    {   } ::    Class: SmartUtils - provides various utility functions for Smart.Framework     Language: PHP">
-	<meta name="keywords" content="smartutils, final, class, provides, various, utility, functions, for, smart.framework, language, php, located, at, lib framework lib utils.php, package, core:extra, namespace, name, version, v.20210330, depends, classes, smart, smartunicode, smartvalidator, smarthashcrypto, smartauth, smartfilesysutils, smartfilesystem, smartframeworkruntime, smartframeworkregistry, usage, static, object, class::method, this, only, methods, public, function, cookies current size used on domain, cookie size max, cookie default domain, cookie default samesite policy, get cookie, string, cookie name, set cookie, cookie data, expire seconds, cookie path, cookie domain, cookie samesite, bool, cookie secure, false, cookie httponly, unset cookie, url hex encode, y val, url hex decode, y enc val, check ip in range, lower range ip address, upper range ip address, needle ip address, date interval days, y date now, y date past, datetime fixed offset, y timezone offset, ydate, data archive, y str, data unarchive, y enc data, comment php code, y code, y repl, array tag-start, tag-end, pretty print var, y var, indent, pretty print bytes, y bytes, y decimals, y separator, y base, pretty print numbers, y number, number to roman, num, roman to number, roman, extract title, ytxt">
+	<meta name="keywords" content="smartutils, final, class, provides, various, utility, functions, for, smart.framework, language, php, located, at, lib framework lib utils.php, package, core:extra, namespace, name, version, v.20210417, depends, classes, smart, smartunicode, smartvalidator, smarthashcrypto, smartauth, smartfilesysutils, smartfilesystem, smartframeworksecurity, smartframeworkruntime, smartframeworkregistry, usage, static, object, class::method, this, only, methods, public, function, cookies current size used on domain, cookie size max, cookie default expire, cookie default domain, cookie default samesite policy, get cookie, string, cookie name, set cookie, cookie data, expire seconds, cookie path, cookie domain, cookie samesite, bool, cookie secure, false, cookie httponly, unset cookie, url hex encode, y val, url hex decode, y enc val, check ip in range, lower range ip address, upper range ip address, needle ip address, date interval days, y date now, y date past, datetime fixed offset, y timezone offset, ydate, data archive, y str, data unarchive, y enc data, comment php code, y code, y repl, array tag-start, tag-end, pretty print var, y var, indent, pretty print bytes, y bytes, y decimals, y separator, y base, pretty print numbers, y number, number to roman, num, roman to number, roman">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartUtils">
 	<title>PHP Documentation for: \SmartUtils</title>
 	<!-- CSS and Fonts -->
@@ -468,12 +468,13 @@
 <!-- skip logo -->
 <!-- class r.20200121 -->
 <!-- Styles -->
-<!-- styles r.20200121 -->
+<!-- styles r.20210417 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
-.doc-located {
+.doc-located,
+.doc-version {
 	color: #999999;
 }
 .doc-modifiers {
@@ -499,10 +500,19 @@
 	color: #777777;
 }
 .doc-ns,
+.doc-frozen,
 .doc-param-optional {
 	color: #778899;
 }
 .doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
 	color: #3F51B5;
 }
 .doc-implements {
@@ -696,8 +706,8 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartUtils</span></li>
 		
-		<li><b>Version:</b> v.20210330</li>
-		<li><b>Depends:</b> classes:  Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkRuntime, SmartFrameworkRegistry</li>
+		<li><b>Version:</b> v.20210417</li>
+		<li><b>Depends:</b> classes:  Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRuntime, SmartFrameworkRegistry</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -723,6 +733,17 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--cookie_size_max">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cookie_size_max</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div><div class="doc-container" id="Method--cookie_default_expire">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cookie_default_expire</b></span>&nbsp;(
 		
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -790,7 +811,9 @@ select#select-summary {
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cookie_name` Parameter is REQUIRED">$cookie_name</span></b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$cookie_path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$cookie_samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_secure` Parameter is OPTIONAL, with the Default Value: false">$cookie_secure</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cookie_httponly` Parameter is OPTIONAL, with the Default Value: false">$cookie_httponly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -1484,7 +1507,7 @@ This function should be used always across the Smart.Framework to get the client
 			<div class="doc-method-ret-params">@return: {STRING} IP Address or a space (if no proxy address detected)</div>
 	
 			<div class="doc-method-comments">Get the Client Proxy IP if any such as: HTTP_CLIENT_IP or HTTP_X_FORWARDED_FOR<br>
-This function should be used always across the Smart.Framework to get the client's proxy IP and never must use directly HTTP_CLIENT_IP or HTTP_X_FORWARDED_FOR as they may change when using apache/php behind haproxy or varnish !</div>
+This function should be used always across the Smart.Framework to get the client's proxy IP and never must use directly HTTP_CLIENT_IP or HTTP_X_FORWARDED_FOR or other headers directly as they may change when using apache/php behind haproxy or varnish !</div>
 	
 	
 	
@@ -1551,6 +1574,9 @@ function smartHandleDocSelector(obj) {
 			
 			
 									<option value="Method--cookie_size_max"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cookie_size_max()</option>
+			
+			
+									<option value="Method--cookie_default_expire"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cookie_default_expire()</option>
 			
 			
 									<option value="Method--cookie_default_domain"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;cookie_default_domain()</option>
@@ -1757,7 +1783,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-31 00:10:19 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:31 +0000</small>
 <hr>
 <br>
 <!-- # -->

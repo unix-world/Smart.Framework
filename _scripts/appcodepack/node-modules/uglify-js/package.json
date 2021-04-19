@@ -1,8 +1,8 @@
 {
   "_from": "uglify-js",
-  "_id": "uglify-js@3.4.9",
+  "_id": "uglify-js@3.13.3",
   "_inBundle": false,
-  "_integrity": "sha512-8CJsbKOtEbnJsTyv6LE6m6ZKniqMiFWmm9sRbopbkGs3gMPPfd3Fh8iIA4Ykv5MgaTbqHr4BaoGLJLZNhsrW1Q==",
+  "_integrity": "sha512-otIc7O9LyxpUcQoXzj2hL4LPWKklO6LJWoJUzNa8A17Xgi4fOeDC8FBDOLHnC/Slo1CQgsZMcM6as0M76BZaig==",
   "_location": "/uglify-js",
   "_phantomChildren": {},
   "_requested": {
@@ -19,10 +19,10 @@
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/uglify-js/-/uglify-js-3.4.9.tgz",
-  "_shasum": "af02f180c1207d76432e473ed24a28f4a782bae3",
+  "_resolved": "https://registry.npmjs.org/uglify-js/-/uglify-js-3.13.3.tgz",
+  "_shasum": "ce72a1ad154348ea2af61f50933c76cc8802276e",
   "_spec": "uglify-js",
-  "_where": "/home/admin/ugl",
+  "_where": "/opt/node-modules/uglify-js",
   "author": {
     "name": "Mihai Bazon",
     "email": "mihai.bazon@gmail.com",
@@ -32,18 +32,14 @@
     "uglifyjs": "bin/uglifyjs"
   },
   "bugs": {
-    "url": "https://github.com/mishoo/UglifyJS2/issues"
+    "url": "https://github.com/mishoo/UglifyJS/issues"
   },
   "bundleDependencies": false,
-  "dependencies": {
-    "commander": "~2.17.1",
-    "source-map": "~0.6.1"
-  },
   "deprecated": false,
   "description": "JavaScript parser, mangler/compressor and beautifier toolkit",
   "devDependencies": {
-    "acorn": "~5.7.1",
-    "semver": "~5.5.0"
+    "acorn": "~7.1.0",
+    "semver": "~6.3.0"
   },
   "engines": {
     "node": ">=0.8.0"
@@ -54,7 +50,7 @@
     "tools",
     "LICENSE"
   ],
-  "homepage": "https://github.com/mishoo/UglifyJS2#readme",
+  "homepage": "https://github.com/mishoo/UglifyJS#readme",
   "keywords": [
     "cli",
     "compress",
@@ -95,10 +91,10 @@
   "name": "uglify-js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mishoo/UglifyJS2.git"
+    "url": "git+https://github.com/mishoo/UglifyJS.git"
   },
   "scripts": {
-    "test": "node test/run-tests.js"
+    "test": "node test/compress.js && node test/mocha.js"
   },
-  "version": "3.4.9"
+  "version": "3.13.3"
 }

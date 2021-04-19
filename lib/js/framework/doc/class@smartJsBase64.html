@@ -5,10 +5,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
-	<meta name="description" content="SmartJS_CryptoBlowfish        static class SmartJS_CryptoBlowfish  {  } .    CLASS :: Blowfish (CBC) :: encrypt / decrypt Blowfish (CBC) for JavaScript">
-	<meta name="keywords" content="smartjs cryptoblowfish, static, class, blowfish, cbc, encrypt, decrypt, for, javascript, language, located, at, lib js framework smart-framework.pak.js, crypt utils.js, package, sf.javascript:crypto, name, usage, smartjs cryptoblowfish.method, version, depends, smartjs coreutils, methods, public, function, string, plaintext, key, return, the, encrypted, param, plain, encryption, encrypts, using, an, ciphertext, decrypted, decrypts, properties, constants, documentation, index, definition, list, generated, on">
-	<meta name="summary" content="Smart.Framework : Javascript Documentation:">
-	<title>JS Documentation for: SmartJS_CryptoBlowfish</title>
+	<meta name="description" content="smartJ$Base64        static class smartJ$Base64  {  } .    CLASS :: Smart Base64 [ES6] Base64 for JavaScript: Encode / Decode     Language: Javascript">
+	<meta name="keywords" content="smartj base64, static, class, smart, base64, es6, for, javascript, encode, decode, language, located, at, lib js framework smart-framework.pak.js, crypt utils.js, package, sf.javascript:crypto, name, frozen, yes, version, usage, smartj base64.method, throws, console.error, depends, smartj utils, smartj testcrypto, methods, public, function, string, s, boolean, bin, hint, btoa, does, not, support, utf-8, but, only, ascii, return, the, encoded, param, plain, to, be, set, true, if, is, binary, avoid, re-encode, a, supports, also, atob, b64, decoded, from, properties, constants, documentation, index, definition, list, generated, on">
+	<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$Base64">
+	<title>JS Documentation for: smartJ$Base64</title>
 	<!-- CSS and Fonts -->
 		<!-- skip fonts -->
 	
@@ -466,14 +466,15 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210417 -->
 <!-- Styles -->
-<!-- styles r.20200121 -->
+<!-- styles r.20210417 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
-.doc-located {
+.doc-located,
+.doc-version {
 	color: #999999;
 }
 .doc-modifiers {
@@ -499,10 +500,19 @@
 	color: #777777;
 }
 .doc-ns,
+.doc-frozen,
 .doc-param-optional {
 	color: #778899;
 }
 .doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
 	color: #3F51B5;
 }
 .doc-implements {
@@ -677,27 +687,28 @@ select#select-summary {
 
 </style>
 <!-- Headings -->
-<h1 title="PHP class: `SmartJS_CryptoBlowfish` @ JavaScript" id="Class--Summary-">
-	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">SmartJS_CryptoBlowfish</span><br>
+<h1 title="PHP class: `smartJ$Base64` @ JavaScript" id="Class--Summary-">
+	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">smartJ$Base64</span><br>
 	{
 	}&nbsp;.
 </h1>
 <!-- Description -->
-<div class="doc-comments">CLASS :: Blowfish (CBC) :: encrypt / decrypt<br>
-Blowfish  (CBC) for JavaScript</div><br>
+<div class="doc-comments">CLASS :: Smart Base64 [ES6]<br>
+Base64 for JavaScript: Encode / Decode</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> Javascript<span></li>
 		<li><span class="doc-located"><b>Located at:</b> lib/js/framework/smart-framework.pak.js; crypt_utils.js</span></li>
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Crypto</span></li>
-		<li><span class="doc-name"><b>Class Name:</b> SmartJS_CryptoBlowfish</span></li>
-		<li><b>Usage:</b> SmartJS_CryptoBlowfish.method();</li>
+		<li><span class="doc-name"><b>Class Name:</b> smartJ$Base64</span></li>
+		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210419</span></li>
+		<li><b>Usage:</b> smartJ$Base64.method();</li>
+		<li><span class="doc-throws"><b>Throws:</b> console.error</span></li>
 		
 		
-		
-		<li><b>Version:</b> 20200424</li>
-		<li><b>Depends:</b> SmartJS_CoreUtils</li>
+		<li><b>Depends:</b> smartJ$Utils, smartJ$TestCrypto</li>
 		
 	</ul>
 </div>
@@ -706,47 +717,53 @@ Blowfish  (CBC) for JavaScript</div><br>
 <div class="doc-container" id="Methods--Summary-">
 	<h2 class="doc-header">class Methods</h2>
 </div>
-<!-- methods r.20200121 -->
-<div class="doc-container" id="Method--encrypt">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encrypt</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`plaintext` Parameter">plaintext</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`key` Parameter">key</span></b></span>
+<!-- methods r.20210414 -->
+<div class="doc-container" id="Method--encode">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encode</b></span>&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`bin` Parameter">bin</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
+			@hint: Javascript btoa () does not support UTF-8 but only ASCII<br>
+	
+			@throws: console.error<br>
+	
+			@return: {String} the Base64 encoded string<br>
 	
 	
-			@return: {String} The Blowfish encrypted string<br>
 	
-	
-	
-			@param: {String} plaintext The plain string<br>
-			@param: {String} key The encryption key<br>
+			@param: {String} s The plain string (to be encoded)<br>
+			@param: {Boolean} bin Set to TRUE if the string is binary to avoid re-encode to UTF-8<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Blowfish encrypts (CBC) plaintext using an encryption key</div>
+			<div class="doc-method-comments">Encode a string to Base64<br>
+Supports also UTF-8</div>
 	
 	
-</div><div class="doc-container" id="Method--decrypt">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decrypt</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`ciphertext` Parameter">ciphertext</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`key` Parameter">key</span></b></span>
+</div><div class="doc-container" id="Method--decode">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decode</b></span>&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`bin` Parameter">bin</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
+			@hint: Javascript atob () does not support UTF-8 but only ASCII<br>
+	
+			@throws: console.error<br>
+	
+			@return: {String} the plain (B64 decoded) string<br>
 	
 	
-			@return: {String} The decrypted string<br>
 	
-	
-	
-			@param: {String} ciphertext The Blowfish encrypted string<br>
-			@param: {String} key The encryption key<br>
+			@param: {String} s The B64 encoded string<br>
+			@param: {Boolean} bin Set to TRUE if the string is binary to avoid re-encode to UTF-8<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Blowfish decrypts (CBC) ciphertext using the encryption key</div>
+			<div class="doc-method-comments">Decode a string from Base64<br>
+Supports also UTF-8</div>
 	
 	
 </div>
@@ -755,21 +772,20 @@ Blowfish  (CBC) for JavaScript</div><br>
 <div class="doc-container" id="Properties--Summary-">
 	<h2 class="doc-header">class Properties</h2>
 </div>
-<!-- properties r.20200121 -->
+<!-- properties r.20210417 -->
 
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
 	<h2 class="doc-header">class Constants</h2>
 </div>
-<!-- constants r.20200121 -->
-
+<!-- constants r.20210417 -->
 
 <!-- Sample Code -->
 
 <!-- Summary List -->
 <br>
-<!-- summary r.20200121 -->
+<!-- summary r.20210414 -->
 <script>
 // summary r.20200121
 function smartHandleDocSelector(obj) {
@@ -791,15 +807,15 @@ function smartHandleDocSelector(obj) {
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
-		<option value="" selected>* Javascript Class SmartJS_CryptoBlowfish # Documentation Index *</option>
-		<optgroup label="Class SmartJS_CryptoBlowfish">
+		<option value="" selected>* Javascript Class smartJ$Base64 # Documentation Index *</option>
+		<optgroup label="Class smartJ$Base64">
 			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--encrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;encrypt()</option>
+									<option value="Method--encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;encode()</option>
 			
-									<option value="Method--decrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decrypt()</option>
+									<option value="Method--decode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decode()</option>
 			
 			
 		</optgroup>
@@ -818,7 +834,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-31 00:10:34 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:43 +0000</small>
 <hr>
 <br>
 <!-- # -->

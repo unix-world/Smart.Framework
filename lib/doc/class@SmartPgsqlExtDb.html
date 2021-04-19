@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartPgsqlExtDb        final class \ SmartPgsqlExtDb    {   } -&gt;    Class: SmartPgsqlExtDb - provides a Dynamic (Extended) PostgreSQL DB Server Client">
-	<meta name="keywords" content="smartpgsqlextdb, final, class, provides, a, dynamic, extended, postgresql, db, server, client, that, can, be, used, with, custom, made, connections, tested, and, stable, on, versions, 9.0.x, 9.1.x, 9.2.x, 9.3.x, 9.4.x, 9.5.x, 9.6.x, 10.x, 11.x, pgpool-ii, 3.0.x, 3.1.x, 3.2.x, 3.3.x, 3.4.x, 3.5.x, 3.6.x, 3.7.x, 4.0.x, pgbouncer, all, this, is, to, other, servers, than, default, language, php, located, at, lib core plugins lib db pgsql.php, package, plugins:database:postgresql, namespace, name, version, v.20210328, depends, extensions, classes, smart, smartunicode, smartutils, hints, have, no, catcheable, exception, because, the, only, errors, will, raise, are, when, returns, an, error, regarding, malformed, sql, statement, which, not, acceptable, just, so, fatal, usage, object">
+	<meta name="keywords" content="smartpgsqlextdb, final, class, provides, a, dynamic, extended, postgresql, db, server, client, that, can, be, used, with, custom, made, connections, tested, and, stable, on, versions, 9.0.x, 9.1.x, 9.2.x, 9.3.x, 9.4.x, 9.5.x, 9.6.x, 10.x, 11.x, pgpool-ii, 3.0.x, 3.1.x, 3.2.x, 3.3.x, 3.4.x, 3.5.x, 3.6.x, 3.7.x, 4.0.x, pgbouncer, all, this, is, to, other, servers, than, default, language, php, located, at, lib core plugins lib db pgsql.php, package, plugins:database:postgresql, namespace, name, version, v.20210401, depends, extensions, classes, smart, smartunicode, smartutils, hints, have, no, catcheable, exception, because, the, only, errors, will, raise, are, when, returns, an, error, regarding, malformed, sql, statement, which, not, acceptable, just, so, fatal, usage, object">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartPgsqlExtDb">
 	<title>PHP Documentation for: \SmartPgsqlExtDb</title>
 	<!-- CSS and Fonts -->
@@ -468,12 +468,13 @@
 <!-- skip logo -->
 <!-- class r.20200121 -->
 <!-- Styles -->
-<!-- styles r.20200121 -->
+<!-- styles r.20210417 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
 }
-.doc-located {
+.doc-located,
+.doc-version {
 	color: #999999;
 }
 .doc-modifiers {
@@ -499,10 +500,19 @@
 	color: #777777;
 }
 .doc-ns,
+.doc-frozen,
 .doc-param-optional {
 	color: #778899;
 }
 .doc-param-value {
+	color: #3F51B5;
+}
+.doc-param-set,
+.doc-param-get {
+	color: #888888;
+}
+.doc-param-set-comment,
+.doc-param-get-comment {
 	color: #3F51B5;
 }
 .doc-implements {
@@ -700,7 +710,7 @@ This class is made to be used with custom made PostgreSQL connections (other ser
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartPgsqlExtDb</span></li>
 		
-		<li><b>Version:</b> v.20210328</li>
+		<li><b>Version:</b> v.20210401</li>
 		<li><b>Depends:</b> extensions:  PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils</li>
 		<li><b>Hints:</b> This  class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -1208,7 +1218,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-03-31 00:10:25 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:35 +0000</small>
 <hr>
 <br>
 <!-- # -->

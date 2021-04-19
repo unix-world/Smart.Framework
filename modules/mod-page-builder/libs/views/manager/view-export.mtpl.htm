@@ -1,14 +1,14 @@
-<!-- Pagebuilder / Manage @ Export / Records :: v.20210312 -->
+<!-- Pagebuilder / Manage @ Export / Records :: v.20210413 -->
 <script type="text/javascript">
 function smartModJS_PgBldr_Validate_Form() {
 	var lang = jQuery('#sel-lang').val();
 	if(!lang) {
-		SmartJS_BrowserUtils.alert_Dialog('Please select the Export Language from the list', null, 'Notification');
+		smartJ$Browser.AlertDialog('Please select the Export Language from the list', null, 'Notification');
 		return false;
 	}
 	var mode = jQuery('#sel-mode').val();
 	if(!mode) {
-		SmartJS_BrowserUtils.alert_Dialog('Please select the Export Mode from the list', null, 'Notification');
+		smartJ$Browser.AlertDialog('Please select the Export Mode from the list', null, 'Notification');
 		return false;
 	}
 	return true;

@@ -1,7 +1,7 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%/COMMENT%%%]
-//===== QUnit Tests.Core: START :: r.20191109
+//===== QUnit Tests.Core: START :: r.20210411
 
 (function() {
 
@@ -38,10 +38,10 @@
 				function(QAsyncTestDone, testOK, msg) {
 					var value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 					var testMsg = testOK;
-					if((typeof msg == 'string') && (SmartJS_CoreUtils.stringContains(msg, 'COOKIE-TEST: ', 0) === true) && (SmartJS_CoreUtils.stringContains(msg, ' = ') === true)) {
-						var arr = SmartJS_CoreUtils.stringSplitbyColon(msg);
-						var arx = SmartJS_CoreUtils.stringSplitbyEqual(arr[1]);
-						var test = SmartJS_CoreUtils.stringTrim(SmartJS_BrowserUtils.getCookie(arx[0]));
+					if((typeof msg == 'string') && (smartJ$Utils.stringContains(msg, 'COOKIE-TEST: ', 0) === true) && (smartJ$Utils.stringContains(msg, ' = ') === true)) {
+						var arr = smartJ$Utils.stringSplitbyColon(msg);
+						var arx = smartJ$Utils.stringSplitbyEqual(arr[1]);
+						var test = smartJ$Utils.stringTrim(smartJ$Browser.getCookie(arx[0]));
 						if(test === arx[1]) {
 							value = 'Test OK: PHP / Javascript Cookies.';
 							testMsg = testOK + ': ' + arr[1] + ' / ' + arx[0] + ' = ' + test;

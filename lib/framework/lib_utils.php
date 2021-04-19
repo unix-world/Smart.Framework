@@ -37,8 +37,8 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version 	v.20210401
+ * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRuntime, SmartFrameworkRegistry
+ * @version 	v.20210417
  * @package 	@Core:Extra
  *
  */
@@ -67,6 +67,24 @@ final class SmartUtils {
 	public static function cookie_size_max() {
 		//--
 		return (int) SMART_FRAMEWORK_MAX_BROWSER_COOKIE_SIZE; // the max cookie size is 4096 includding name, time, domain, ... and the rest of cookie data, thus use max safe is 3072 bytes per cookie
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// use this function to get the cookie default expiration
+	public static function cookie_default_expire() {
+		//--
+		$expire = 0;
+		if(defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME')) {
+			$expire = (int) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME;
+			if($expire <= 0) {
+				$expire = 0;
+			} //end if
+		} //end if
+		//--
+		return (int) $expire;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -132,7 +150,9 @@ final class SmartUtils {
 			return false;
 		} //end if
 		//--
-		if((string)trim((string)$cookie_name) == '') {
+		$cookie_name = (string) trim((string)$cookie_name);
+		//--
+		if(((string)$cookie_name == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$cookie_name))) { // {{{SYNC-REQVARS-VALIDATION}}}
 			return false;
 		} //end if
 		//--
@@ -175,7 +195,7 @@ final class SmartUtils {
 				$cookie_samesite = '';
 		} //end switch
 		//--
-		$options = [
+		$options = [ // {{{SYNC-PHP-COOKIE-OPTIONS}}}
 			'expires' 	=> (int) $expire_seconds,
 			'path' 		=> (string) $cookie_path
 		]; // by default set it without specific domain (will using current IP or subdomain)
@@ -193,7 +213,7 @@ final class SmartUtils {
 			$options['httponly'] = true; // WARNING: a cookie with HttpOnly cannot be accessed by javascript, so use it with precaution
 		} //end if
 		//--
-		return (bool) @setcookie((string)$cookie_name, (string)$cookie_data, (array)$options);
+		return (bool) @setcookie((string)$cookie_name, (string)$cookie_data, (array)$options); // req. PHP 7.3+
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -201,9 +221,9 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to unset cookies as it takes care to set them according with the cookie domain if set or not per app
-	public static function unset_cookie(string $cookie_name, string $cookie_path='/', string $cookie_domain='@', string $cookie_samesite='@') {
+	public static function unset_cookie(string $cookie_name, string $cookie_path='/', string $cookie_domain='@', string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) {
 		//--
-		return (bool) self::set_cookie($cookie_name, null, -1, $cookie_path, $cookie_domain, $cookie_samesite);
+		return (bool) self::set_cookie($cookie_name, null, -1, $cookie_path, $cookie_domain, $cookie_samesite, $cookie_secure, $cookie_httponly);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1051,7 +1071,7 @@ final class SmartUtils {
 				$pair[1] = null;
 			} //end if
 			//--
-			if(((string)$pair[0] == '') OR (!SmartFrameworkSecurity::ValidateVariableName((string)$pair[0], true)) OR ((string)$pair[1] == '')) { // {{{SYNC-REQVARS-CAMELCASE-KEYS}}}
+			if(((string)trim((string)$pair[0]) == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$pair[0])) OR ((string)$pair[1] == '')) { // {{{SYNC-REQVARS-VALIDATION}}}
 				$parsing_ok = false;
 				break;
 			} //end if
@@ -2381,9 +2401,9 @@ final class SmartUtils {
 			} elseif(strpos($the_lower_signature, 'seamonkey') !== false) {
 				$wp_browser = 'smk'; // mozilla seamonkey
 				$wp_class = 'gk'; // gecko class
-			} elseif(strpos($the_lower_signature, ' edge/') !== false) {
+			} elseif((strpos($the_lower_signature, ' edg/') !== false) OR (strpos($the_lower_signature, ' edge/') !== false)) {
 				$wp_browser = 'iee'; //microsoft edge
-				$wp_class = 'ie'; // trident class
+				$wp_class = 'wk'; // webkit class
 			} elseif((strpos($the_lower_signature, ' msie ') !== false) OR (strpos($the_lower_signature, ' trident/') !== false)) {
 				$wp_browser = 'iex'; // internet explorer (must be before any stealth browsers as ex.: opera)
 				$wp_class = 'ie'; // trident class
@@ -2457,6 +2477,13 @@ final class SmartUtils {
 			} elseif((strpos($the_lower_signature, 'linux mobile') !== false) OR (strpos($the_lower_signature, 'ubuntu; mobile') !== false) OR (strpos($the_lower_signature, 'tizen') !== false) OR (strpos($the_lower_signature, 'blackberry') !== false)) {
 				$wp_os = 'lxm'; // linux mobile
 				$wp_mb = 'yes';
+			} //end if
+			//-- later fix
+			if((string)$wp_browser == 'sfr') {
+				if(((string)$wp_os != 'mac') AND ((string)$wp_os != 'ios')) { // safari can run just on Mac and iOS ; Webkit fakes also the signature as Safari
+					$wp_browser = 'wkt'; // webkit
+					$wp_class = 'xy'; // various class
+				} //end if
 			} //end if
 			//-- identify ip addr
 			$wp_ip = self::get_ip_client();

@@ -95,12 +95,13 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			'title' => $title,
 			'main' => SmartMarkersTemplating::render_file_template(
 					(string) $tpl, // the TPL view
-					[ // v.20210319
+					[ // v.20210418
 						//-- ALL VARIABLE KEYS ARE CASE INSENSITIVE IN CONTROLLERS ; IN TEMPLATES ALL VARIABLE NAME / KEYS ARE UPPERCASE --
 						'TITLE' => (string) $title,
 						'VIEWS-PATH' => (string) $this->ControllerGetParam('module-view-path'),
 						'NUMBER' => (Smart::random_number(0,1)) ? '1' : '-1',
 						'MARKER' => (string) Smart::json_encode('<a>&amp;1234567890.コアテスト·スイート./\\.abcdefghijklmniopqrstuvwxyz:'.date('Y-m-d H:i:s').':~`!@#$%^&*()_-+={}[]|,.?</a>'),
+						'SPECIALS' => (string) $txtstr."\x00\x00\x01\u0007\u007E".' <a href="">Html & Special\'s Chars & "Test"</a>', // IMPORTANT ! This is a test for htmlspecialchars on both PHP and Javascript
 						'TEXTSTR' => (string) $txtstr,
 						'TEXTIFSTR' => (string) $txtstr.' : ; <###END###> ',
 						'MARK-AREA' => 'php',
