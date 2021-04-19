@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20210419 -->
+<!-- AuthAdmins Login # v.20210420 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -25,15 +25,20 @@ a#special {
 	border-bottom: dotted 1px #CCCCCC;
 }
 </style>
-<script type="text/javascript">
-	var AuthAdmins_LogURL = "";
-	function AuthAdmins_Login() {
-		if((typeof AuthAdmins_LogURL != "undefined") && (AuthAdmins_LogURL != "") && (AuthAdmins_LogURL != null)) {
-			var AuthAdmins_LogZURL = smartJ$CryptoBlowfish.decrypt(String(AuthAdmins_LogURL), String(smartJ$Utils.hex2bin('[###SECRET|js###]'))); if(AuthAdmins_LogZURL) { smartJ$Browser.RedirectToURL(String(AuthAdmins_LogZURL)); }
-		} //end if
-	} //END FUNCTION
+<script>
+	const AuthAdminsRdr = () => {
+		const url = $('#auth-admins-title-login option:selected').val();
+		if((url != undefined) && url) {
+			const rdr = smartJ$CryptoBlowfish.decrypt(String(url), String(smartJ$Utils.hex2bin('[###SECRET|js###]')));
+			if(rdr) { smartJ$Browser.RedirectToURL(String(rdr)); }
+		}
+	};
+	const AuthAdminsAreaSelector = () => {
+		const lV = $('#auth-admins-title-login option:selected').text();
+		$('#login-ns').text(lV);
+	};
 </script>
-<div style="text-align: center; padding: 8px;">
+<div style="text-align:center; padding:8px;">
 	<div><center>
 		<table cellpadding="0">
 			<tr>
@@ -46,33 +51,25 @@ a#special {
 		</table>
 	</center></div>
 	<hr>
-	<div id="AuthAdmins_LogIn"><center>
+	<div><center>
 		<table border="0">
 			<tr>
 				<td align="center">
 					<div title="Select here the Login NameSpace and Click the Login link below ...">
 						<font size="4"><b>Select the Login NameSpace:</b>&nbsp;&nbsp;&nbsp;</font>
-						<select title="Available Login Namespaces" name="NorthICE_LOGIN" id="auth-admins-title-login" size="1" style="max-width:300px!important; " onChange="AuthAdmins_TitleLogin();">
+						<select title="Available Login Namespaces" id="auth-admins-title-login" size="1" style="max-width:300px!important; " onChange="AuthAdminsAreaSelector();">
 							[%%%LOOP:LOGIN-NSPACES%%%]
 							<option value="[###LOGIN-NSPACES._-VAL-_|html###]">[###LOGIN-NSPACES._-KEY-_|html###]</option>
 							[%%%/LOOP:LOGIN-NSPACES%%%]
 						</select>
-						<script type="text/javascript">
-						if(typeof(smartJ$UI) != 'undefined') {
-							try {
-								smartJ$UI.SelectList('auth-admins-title-login', 300, null, false, false);
-							} catch(err) {
-								console.warn('Failed to Apply List Select on AuthAdmins Login :: ERR:', err);
-							}
-						}
-						</script>
+						<script>(() => { if(typeof(smartJ$UI) != 'undefined') { try { smartJ$UI.SelectList('auth-admins-title-login', 300, null, false, false); } catch(err){} } })();</script>
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<td align="center">
 					<div title="Click here to Login to the selected Namespace ...">
-						<a id="special" href="javascript:void(0)" onClick="javascript:AuthAdmins_Login();"><font color="#7BC043" size="5"><b>Login to :// <span id="AuthAdmins_TitleLogin">[NameSpace]</span></b></font></a>
+						<a id="special" href="javascript:void(0)" onClick="AuthAdminsRdr();"><font color="#7BC043" size="5"><b>Login to :// <span id="login-ns">[NameSpace]</span></b></font></a>
 					</div>
 					<div style="cursor:help;">
 						<img border="0" width="160" height="160" src="[###MOD-IMG-PATH|html###]globe.svg" style="opacity:0.55;" alt="AuthAdmins module for Smart.Framework" title="AuthAdmins module for Smart.Framework">
@@ -84,18 +81,9 @@ a#special {
 			</tr>
 		</table>
 	</center></div>
-	<script type="text/javascript">
-		function AuthAdmins_TitleLogin() {
-			AuthAdmins_LogURL = $("#auth-admins-title-login option:selected").val();
-			var LoginListValue = $("#auth-admins-title-login option:selected").text();
-			$("#AuthAdmins_TitleLogin").text(LoginListValue);
-		} //END FUNCTION
-		AuthAdmins_TitleLogin();
-	</script>
 	<br>
-	<div><center>
-		[###POWERED-HTML###]
-	</center></div>
+	<div><center>[###POWERED-HTML###]</center></div>
 	<a data-smart="open.modal" href="http://www.unix-world.org" target="unix_world_org" id="copyright"><b>&copy;&nbsp;2006-[###CRR-YEAR|html###]&nbsp;unix-world.org</b></a>
 </div>
+<script>AuthAdminsAreaSelector();</script>
 <!-- # AuthAdmins Login -->

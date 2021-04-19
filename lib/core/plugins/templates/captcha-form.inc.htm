@@ -1,7 +1,7 @@
-<!-- Partial Template: Plugins.CaptchaForm r.20210419 -->
+<!-- Partial Template: Plugins.CaptchaForm r.20210420 -->
 <link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.css?[###RELEASE-HASH|html###]">
-<script type="text/javascript" src="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.js?[###RELEASE-HASH|html###]"></script>
-<script type="text/javascript">
+<script src="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.js?[###RELEASE-HASH|html###]"></script>
+<script>
 jQuery(() => {
 (() => {
 
@@ -31,7 +31,10 @@ jQuery(() => {
 	}
 
 	const $time = new Date();
+	const $entropy = h$.crc32b(u$.stringIReplaceAll('-', '', d$.getIsoDate($time, true)));
 	const $delay = Math.floor(Math.random() * 10) + 7;
+
+	$('.Smart-Captcha-Logo').attr('title', 'Secure Captcha by Smart.Framework # E:' + $entropy).css({'cursor':'context-menu'});
 
 	b$.CountDown(u$.format_number_int($delay, false), 'Smart-Captcha-Check-Timer-[###RELEASE-UUID|htmid|js###]', () => {
 		jQuery('#Smart-Captcha-Check-Timer-[###RELEASE-UUID|htmid|js###]').hide();
@@ -136,8 +139,8 @@ jQuery(() => {
 		accessibilityContext(250);
 	});
 
-	ectx.canvasWidth = parseInt($ecanvas.width());
-	ectx.canvasHeight = parseInt($ecanvas.height());
+	ectx.canvasWidth = u$.format_number_int(Number.parseInt($ecanvas.width()), false);
+	ectx.canvasHeight = u$.format_number_int(Number.parseInt($ecanvas.height()), false);
 	ectx.strokeStyle = '#888888';
 	ectx.shadowColor = '#AAAAAA';
 	ectx.shadowBlur = 2;
@@ -165,6 +168,9 @@ jQuery(() => {
 		const $now = new Date();
 		let isTick = true;
 		if(Math.floor(($now - $time) / 1000) < u$.format_number_int($delay, false)) {
+			isTick = false;
+		}
+		if(isTick && (Number.parseInt($entropy.substr(1,1) + $entropy.substr(3,1) + $entropy.substr(5,1), 16) > 3072)) {
 			isTick = false;
 		}
 		if(isTick) {
@@ -203,7 +209,7 @@ jQuery(() => {
 })();
 });
 </script>
-<div id="Smart-Captcha-Area-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Area" title="Secure Captcha by Smart.Framework">
+<div id="Smart-Captcha-Area-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Area" title="Smart.Captcha">
 	<div id="Smart-Captcha-Container-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Container">
 		<div id="Smart-Captcha-Plugin-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Plugin">
 			<div id="Smart-Captcha-Check-[###RELEASE-UUID|htmid|html###]" class="Smart-Captcha-Check">

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartViewHtmlHelpers        final class \ SmartViewHtmlHelpers    {   } ::    Class: SmartViewHelpers - Easy to use HTML ViewHelper Components.">
-	<meta name="keywords" content="smartviewhtmlhelpers, final, class, smartviewhelpers, easy, to, use, html, viewhelper, components, language, php, located, at, lib core plugins lib viewhelpers.php, package, plugins:viewcomponents, namespace, name, version, v.20210419, depends, classes, smart, usage, static, object, class::method, this, provides, only, methods, public, function, html jsload highlightsyntax, string, dom selector, mixed, plugins, array, web, enum, theme, github, bool, loadpacks, true, use absolute url, false, ext jshtml, return, code, param, a, valid, jquery, html-dom, selector, as, container s, for, pre code, see, can, be, body, id-element, null, load, all, or, with, of, packages, available, tpl, lnx, srv, net, lang, default, is, set, the, visual, css, themes, atom-one-light, github-gist, googlecode, grayscale, ocean, tomorrow-night-blue, xcode, zenburn, if, will">
+	<meta name="keywords" content="smartviewhtmlhelpers, final, class, smartviewhelpers, easy, to, use, html, viewhelper, components, language, php, located, at, lib core plugins lib viewhelpers.php, package, plugins:viewcomponents, namespace, name, version, v.20210420, depends, classes, smart, usage, static, object, class::method, this, provides, only, methods, public, function, html jsload highlightsyntax, string, dom selector, mixed, plugins, array, web, enum, theme, github, bool, loadpacks, true, use absolute url, false, ext jshtml, return, code, param, a, valid, jquery, html-dom, selector, as, container s, for, pre code, see, can, be, body, id-element, null, load, all, or, with, of, packages, available, tpl, lnx, srv, net, lang, default, is, set, the, visual, css, themes, atom-one-light, github-gist, googlecode, grayscale, ocean, tomorrow-night-blue, xcode, zenburn, if, will">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartViewHtmlHelpers">
 	<title>PHP Documentation for: \SmartViewHtmlHelpers</title>
 	<!-- CSS and Fonts -->
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartViewHtmlHelpers</span></li>
 		
-		<li><b>Version:</b> v.20210419</li>
+		<li><b>Version:</b> v.20210420</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -739,7 +739,7 @@ select#select-summary {
 @param: {ENUM} $theme: The Visual CSS Theme to Load ; Available Themes: 'default', 'atom-one-light', 'github-gist', 'github', 'googlecode', 'grayscale', 'ocean', 'tomorrow-night-blue', 'xcode', 'zenburn' ; Default is set to: 'default'<br>
 @param: {BOOL} $loadpacks: If TRUE will load syntax packed files instead of syntax single files which are many ; Default is TRUE<br>
 @param: {BOOL} $use_absolute_url: If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE<br>
-@param: {STRING} $ext_jshtml: Extra Js/HTML Code ; Default is '' ; Here can be loaded ext syntax packs ; ex: '&lt;script type=&quot;text/javascript&quot; src=&quot;modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/twig.js&quot;&gt;&lt;/script&gt;'</div>
+@param: {STRING} $ext_jshtml: Extra Js/HTML Code ; Default is '' ; Here can be loaded ext syntax packs ; ex: '&lt;script src=&quot;modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/twig.js&quot;&gt;&lt;/script&gt;'</div>
 	
 			<div class="doc-method-comments">Return the HTML / CSS / Javascript code to Load the required Javascripts for the Highlight.Js<br>
 If a valid DOM Selector is specified all code areas in that dom selector will be highlighted<br>
@@ -1187,7 +1187,7 @@ Supported syntax parsers: CSS, Javascript, Json, HTML, XML, YAML, Markdown, SQL,
 @param: {STRING} $y_class: *optional* the CSS class</div>
 	
 			<div class="doc-method-comments">Returns the JS Code to add (raise) a Growl Notification (sticky or not)<br>
-Must be enclosed in a &lt;script type=&quot;text/javascript&quot;&gt;...&lt;/script&gt; html tag or can be used for a JS action (ex: onClick=&quot;...&quot;)</div>
+Must be enclosed in a &lt;script&gt;...&lt;/script&gt; html tag or can be used for a JS action (ex: onClick=&quot;...&quot;)</div>
 	
 	
 	
@@ -1203,7 +1203,7 @@ Must be enclosed in a &lt;script type=&quot;text/javascript&quot;&gt;...&lt;/scr
 @param: {STRING} $y_id: *optional* the Growl ID ; default is '' ; if non empty will remove just the Growl that match the ID ; otherwise will remove ALL Growl instances</div>
 	
 			<div class="doc-method-comments">Returns the JS Code to remove a Growl Notification (sticky or not)<br>
-Must be enclosed in a &lt;script type=&quot;text/javascript&quot;&gt;...&lt;/script&gt; html tag or can be used for a JS action (ex: onClick=&quot;...&quot;)</div>
+Must be enclosed in a &lt;script&gt;...&lt;/script&gt; html tag or can be used for a JS action (ex: onClick=&quot;...&quot;)</div>
 	
 	
 	
@@ -1222,7 +1222,7 @@ Must be enclosed in a &lt;script type=&quot;text/javascript&quot;&gt;...&lt;/scr
 	
 			<div class="doc-method-comments">Return the JS Code to Submit a HTML Form by Ajax<br>
 Expects a standardized (json) reply created with SmartViewHtmlHelpers::js_ajax_replyto_html_form()<br>
-Must be enclosed in a &lt;script type=&quot;text/javascript&quot;&gt;...&lt;/script&gt; html tag or can be used for a JS action (ex: onClick=&quot;...&quot;)</div>
+Must be enclosed in a &lt;script&gt;...&lt;/script&gt; html tag or can be used for a JS action (ex: onClick=&quot;...&quot;)</div>
 	
 	
 	
@@ -1269,8 +1269,8 @@ NOTICE:<br>
 
 <!-- Summary List -->
 <br>
-<!-- summary r.20200121 -->
-<script type="text/javascript">
+<!-- summary r.20210420 -->
+<script>
 // summary r.20200121
 function smartHandleDocSelector(obj) {
 	if(!obj) {
@@ -1400,11 +1400,11 @@ function smartHandleDocSelector(obj) {
 		
 	</select>
 </div>
-<!-- summary-selectjs r.20200121 -->
+<!-- summary-selectjs r.20210420 -->
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:34 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 23:00:01 +0000</small>
 <hr>
 <br>
 <!-- # -->

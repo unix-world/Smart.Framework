@@ -50,7 +50,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210419
+ * @version 	v.20210420
  * @package 	PageBuilder
  *
  */
@@ -324,7 +324,7 @@ final class Manager {
 				'TAB-LNK-INFO'		=> (string) self::composeUrl('op=record-view-tab-info&id='.\Smart::escape_url($query['id'])),
 				'TAB-TXT-MEDIA'		=> (string) '<img height="16" src="'.self::$ModulePath.'libs/views/manager/img/media.svg'.'" alt="'.self::text('tab_media').'" title="'.self::text('tab_media').'">'.'&nbsp;'.self::text('tab_media'),
 				'TAB-LNK-MEDIA'		=> (string) self::composeUrl('op=record-view-tab-media&id='.\Smart::escape_url($query['id'])),
-				'JS-TABS'			=> (string) '<script type="text/javascript">smartJ$UI.TabsInit(\'tabs\', '.(int)$selected_tab.', false);</script>'
+				'JS-TABS'			=> (string) '<script>smartJ$UI.TabsInit(\'tabs\', '.(int)$selected_tab.', false);</script>'
 			]
 		);
 		//--
@@ -430,9 +430,9 @@ final class Manager {
 			//--
 			$extra_form_start = '<form class="ux-form" name="page_form_props" id="page_form_props" method="post" action="#" onsubmit="return false;"><input type="hidden" name="frm[form_mode]" value="props">';
 			$extra_form_end = '</form>';
-			$extra_scripts = '<script type="text/javascript">smartJ$Browser.setFlag(\'PageAway\', false);</script>';
+			$extra_scripts = '<script>smartJ$Browser.setFlag(\'PageAway\', false);</script>';
 			$extra_scripts .= '<script>smartJ$UI.TabsActivate(\'tabs\', false);</script>';
-			$extra_scripts .= '<script type="text/javascript">smartJ$Browser.RefreshParent();</script>';
+			$extra_scripts .= '<script>smartJ$Browser.RefreshParent();</script>';
 			//--
 		} else {
 			//--
@@ -683,7 +683,7 @@ final class Manager {
 					$out .= '</div>'."\n";
 					$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', false);</script>';
 					$out .= '<script>smartJ$UI.TabsActivate(\'tabs\', false);</script>';
-					$out .= '<script type="text/javascript">smartJ$Browser.RefreshParent();</script>'; // not necessary
+					$out .= '<script>smartJ$Browser.RefreshParent();</script>'; // not necessary
 					//--
 				} //end if else
 				//--
@@ -890,7 +890,7 @@ final class Manager {
 				$out .= '<div align="left"><font size="4" color="#003399"><b>&lt;/<i>yaml</i>&gt;</b></font></div>'."\n";
 				$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', false);</script>';
 				$out .= '<script>smartJ$UI.TabsActivate(\'tabs\', false);</script>';
-				$out .= '<script type="text/javascript">smartJ$Browser.RefreshParent();</script>'; // not necessary
+				$out .= '<script>smartJ$Browser.RefreshParent();</script>'; // not necessary
 				//--
 			} else {
 				//-- CODE VIEW
@@ -1444,7 +1444,7 @@ final class Manager {
 			[
 				'BUTTONS-CLOSE' 	=> (string) '<input type="button" value="'.\Smart::escape_html($translator_window->text('button_close')).'" class="ux-button" onClick="smartJ$Browser.CloseModalPopUp(); return false;">',
 				'THE-TTL' 			=> (string) '<img height="16" src="'.self::$ModulePath.'libs/views/manager/img/op-add.svg'.'" alt="'.self::text('ttl_add').'" title="'.self::text('ttl_add').'">'.'&nbsp;'.self::text('ttl_add'),
-				'REFRESH-PARENT' 	=> (string) '<script type="text/javascript">smartJ$Browser.RefreshParent();</script>',
+				'REFRESH-PARENT' 	=> (string) '<script>smartJ$Browser.RefreshParent();</script>',
 				'FORM-NAME' 		=> (string) 'page_form_add',
 				'LABELS-TYPE'		=> (string) self::text('record_syntax'),
 				'CONTROLS-TYPE' 	=> (string) \SmartViewHtmlHelpers::html_select_list_single('ptype', '', 'form', (array)$arr_objects, 'frm[ptype]', '275/0', '', 'no', 'yes'),
@@ -1969,7 +1969,7 @@ final class Manager {
 			[
 				'BUTTONS-CLOSE' 	=> (string) '<input type="button" value="'.\Smart::escape_html($translator_window->text('button_close')).'" class="ux-button" onClick="smartJ$Browser.CloseModalPopUp(); return false;">',
 				'THE-TTL' 			=> (string) '<img height="16" src="'.self::$ModulePath.'libs/views/manager/img/op-clone.svg'.'" alt="'.self::text('ttl_clone').'" title="'.self::text('ttl_clone').'">'.'&nbsp;'.self::text('ttl_clone'),
-				'REFRESH-PARENT' 	=> (string) '<script type="text/javascript">smartJ$Browser.RefreshParent();</script>',
+				'REFRESH-PARENT' 	=> (string) '<script>smartJ$Browser.RefreshParent();</script>',
 				'FORM-NAME' 		=> (string) 'page_form_clone',
 				'CLONED-ID' 		=> (string) \Smart::escape_html((string)$y_id),
 				'LABELS-CLONE' 		=> (string) self::text('clone'),
@@ -2013,9 +2013,9 @@ final class Manager {
 			//--
 			if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-delete') === true)) {
 				//--
-				$rdw = '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_redirect(self::composeUrl('op=record-view&id='.\Smart::escape_url($tmp_rd_arr['id'])), 3500).'</script>';
+				$rdw = '<script>'.\SmartViewHtmlHelpers::js_code_wnd_redirect(self::composeUrl('op=record-view&id='.\Smart::escape_url($tmp_rd_arr['id'])), 3500).'</script>';
 				//--
-				$out .= '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_refresh_parent().'</script>';
+				$out .= '<script>'.\SmartViewHtmlHelpers::js_code_wnd_refresh_parent().'</script>';
 				//--
 				$chk_is_used = 0;
 				$fdir = (string) \SmartModExtLib\PageBuilder\Utils::getMediaFolderByObjectId((string)$tmp_rd_arr['id']);
@@ -2048,7 +2048,7 @@ final class Manager {
 							} //end if
 						} //end if
 						$out .= '<br>'.\SmartComponents::operation_ok(self::text('op_compl'));
-						$out .= '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_close_modal_popup().'</script>'; // ok
+						$out .= '<script>'.\SmartViewHtmlHelpers::js_code_wnd_close_modal_popup().'</script>'; // ok
 					} elseif($chk_del == -1) {
 						$out .= '<br>'.\SmartComponents::operation_warn('Delete Failed: Empty ID');
 						$out .= $rdw;
@@ -2065,8 +2065,8 @@ final class Manager {
 			} else {
 				//--
 				$out .= '<br>'.\SmartComponents::operation_error(self::text('msg_no_priv_del'));
-				$out .= '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_refresh_parent().'</script>';
-				$out .= '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(1500).'</script>'; // ok
+				$out .= '<script>'.\SmartViewHtmlHelpers::js_code_wnd_refresh_parent().'</script>';
+				$out .= '<script>'.\SmartViewHtmlHelpers::js_code_wnd_close_modal_popup(1500).'</script>'; // ok
 				//--
 			} //end if else
 			//--

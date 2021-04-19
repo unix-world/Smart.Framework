@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Captcha :: r.7.2.1 / smart.framework.v.7.2 -- */
 
-/* v.20210417 */
+/* v.20210420 */
 
 /* ----------------------------- */
 
@@ -141,10 +141,12 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div {
 }
 
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Success {
-	color: #333333 !important;
-	font-weight: bold;
-	font-style: italic;
 	text-align: right;
+}
+div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Success span * {
+	color: #555555 !important;
+	font-weight: bold;
+	font-size: 1rem !important;
 }
 
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Info {
@@ -229,7 +231,7 @@ div.Smart-Captcha-Area img.Smart-Captcha-Logo {
 	}
 
 	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Info {
-		min-height: 90px;
+		min-height: 50px;
 	}
 
 	div.Smart-Captcha-Area img.Smart-Captcha-Logo {

@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210419
+ * @version		20210420
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -471,7 +471,7 @@ abstract class SmartAbstractAppMiddleware {
 			$html_status_powered_info = (string) SmartComponents::app_powered_info('no');
 		} //end if else
 		//--
-		return (string) SmartComponents::http_status_message('OK :: '.Smart::escape_html($txt_area).' / Service Available', '<script type="text/javascript">setTimeout(function(){ self.location = self.location; }, 60000);</script><img height="32" src="lib/framework/img/loading-bars.svg"><div><h2 style="display:inline;">'.date('Y-m-d H:i:s O').' // Smart.Framework :: '.Smart::escape_html($the_midmark).'</h2></div><br>'.$html_status_powered_info.'<br>');
+		return (string) SmartComponents::http_status_message('OK :: '.Smart::escape_html($txt_area).' / Service Available', '<script>setTimeout(function(){ self.location = self.location; }, 60000);</script><img height="32" src="lib/framework/img/loading-bars.svg"><div><h2 style="display:inline;">'.date('Y-m-d H:i:s O').' // Smart.Framework :: '.Smart::escape_html($the_midmark).'</h2></div><br>'.$html_status_powered_info.'<br>');
 		//--
 	} //END FUNCTION
 	//======================================================================

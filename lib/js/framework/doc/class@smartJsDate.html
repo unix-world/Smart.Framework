@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="smartJ$Date        static class smartJ$Date  {  } .    CLASS :: Smart DateUtils [ES6] Date Utils class for Javascript     Language: Javascript  Located">
-	<meta name="keywords" content="smartj date, static, class, smart, dateutils, es6, date, utils, for, javascript, language, located, at, lib js framework smart-framework.pak.js, date utils.js, package, sf.javascript:core, name, frozen, yes, version, usage, smartj date.method, depends, smartj utils, methods, public, createsafedate, integer, year, month, day, object, return, normalized, as, yyyy, param, the, raw, if, wrong, will, fix, ahead, or, behind, create, a, safe, function, standardizedate, instanceof, that, need, to, be, fixed, normalize, getisodate, string, yyyy-mm-dd, get, iso, calculatedaysoffset, sdate1, sdate2, offset, in, seconds, between, and, mm, dd, calculate, days, two, dates, calculatemonthsoffset, months, addyears, years, number, of, add, substract, addmonths, adddays, isleapyear, boolean, true, is, leap, false, not, tested, test">
+	<meta name="keywords" content="smartj date, static, class, smart, dateutils, es6, date, utils, for, javascript, language, located, at, lib js framework smart-framework.pak.js, date utils.js, package, sf.javascript:core, name, frozen, yes, version, usage, smartj date.method, depends, smartj utils, methods, public, createsafedate, integer, year, month, day, object, return, normalized, as, yyyy, param, the, raw, if, wrong, will, fix, ahead, or, behind, create, a, safe, function, standardizedate, instanceof, that, need, to, be, fixed, normalize, getisodate, boolean, withtime, string, yyyy-mm-dd, hh:ii:ss, true, use, provided, without, any, normalization, and, in, addition, get, iso, calculatedaysoffset, sdate1, sdate2, offset, seconds, between, mm, dd, calculate, days, two, dates, calculatemonthsoffset, months, addyears, years, number, of, add, substract, addmonths">
 	<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$Date">
 	<title>JS Documentation for: smartJ$Date</title>
 	<!-- CSS and Fonts -->
@@ -703,7 +703,7 @@ Date Utils class for Javascript</div><br>
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Core</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$Date</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20210419</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210420</span></li>
 		<li><b>Usage:</b> smartJ$Date.method();</li>
 		
 		
@@ -762,17 +762,19 @@ Date Utils class for Javascript</div><br>
 	
 </div><div class="doc-container" id="Method--getIsoDate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getIsoDate</b></span>&nbsp;(
-			<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>
+			<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`date` Parameter">date</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`withTime` Parameter">withTime</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
 	
 	
-			@return: {String} Normalized Date String as: YYYY-MM-DD<br>
+			@return: {String} Normalized Date String as: YYYY-MM-DD or YYYY-MM-DD HH:ii:ss<br>
 	
 	
 	
 			@param: {Object} date The Raw Date Object as { year: YYYY, month: 1..12, day: 1..31 }<br>
+			@param: {Boolean} withTime If TRUE will use the date as provided, without any normalization and will return in addition: HH:ii:ss<br>
 	
 	
 	</div>
@@ -1024,6 +1026,9 @@ new Date(2037, 12 - 1, 31) 	:: a date in the future as object ;<br>
  <span class="hljs-keyword">let</span> iso = smartJ$<span class="hljs-built_in">Date</span>.getIsoDate(ds);
  <span class="hljs-built_in">console</span>.log(iso);
 
+ <span class="hljs-keyword">let</span> iso2 = smartJ$<span class="hljs-built_in">Date</span>.getIsoDate(ds, <span class="hljs-literal">true</span>);
+ <span class="hljs-built_in">console</span>.log(iso2);
+
  <span class="hljs-keyword">let</span> d1 = smartJ$<span class="hljs-built_in">Date</span>.createSafeDate(d.getFullYear(), d.getMonth()+<span class="hljs-number">1</span>, d.getDate());
  <span class="hljs-built_in">console</span>.log(<span class="hljs-built_in">JSON</span>.stringify(d1, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>));
 
@@ -1127,11 +1132,11 @@ function smartHandleDocSelector(obj) {
 		
 	</select>
 </div>
-<!-- summary-selectjs r.20200121 -->
+<!-- summary-selectjs r.20210420 -->
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 12:36:43 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 23:00:11 +0000</small>
 <hr>
 <br>
 <!-- # -->

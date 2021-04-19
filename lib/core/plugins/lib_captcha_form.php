@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartUtils, SmartTextTranslations ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
- * @version 	v.20210419
+ * @version 	v.20210420
  * @package 	development:Captcha
  *
  */
@@ -131,7 +131,7 @@ final class SmartCaptcha {
 		$translator_core_captcha = SmartTextTranslations::getTranslator('@core', 'captcha');
 		//--
 		$uuid = (string) strtoupper((string)Smart::uuid_10_num().'-'.Smart::uuid_10_str());
-		$js_exports = 'const u$ = smartJ$Utils; const b$ = smartJ$Browser; const e$ = smartJ$Base64; const c$ = smartJ$CryptoBlowfish;';
+		$js_exports = 'const u$ = smartJ$Utils; const b$ = smartJ$Browser; const e$ = smartJ$Base64; const c$ = smartJ$CryptoBlowfish; const h$ = smartJ$CryptoHash; const d$ = smartJ$Date;';
 		$js_solver = 'let SmartCaptchaChecksum = u$.addcslashes(u$.stringTrim(b$.getCookie('."'".Smart::escape_js(self::cookie_name_chk($y_form_name))."') || ''), '\\x00..\\x1F'); if(!!!SmartCaptchaChecksum) { SmartCaptchaChecksum = 'invalid-captcha'; alert('".Smart::escape_js($translator_core_captcha->text('error'))."'); } let smartCaptchaTimerCookie = new Date(); let smartCaptchaCookie = ".'u$.bin2hex('.'c$.encrypt('.'e$.encode('."smartCaptchaTimerCookie.getTime() + '!' + String(".'c$.decrypt('."fldVal,String(kZ))) + '!Smart.Framework'), ".'u$.stringTrim('."SmartCaptchaChecksum))); ".'b$.setCookie('."'".Smart::escape_js($js_cookie_name)."', smartCaptchaCookie);";
 		//--
 		if($y_use_absolute_url !== true) {

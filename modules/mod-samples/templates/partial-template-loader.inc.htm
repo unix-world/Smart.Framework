@@ -25,7 +25,7 @@
 <!-- Srv ReqUri:       [###SRV-REQURI|html###] -->
 <!-- Debug Mode:       [###DEBUG-MODE|html###] -->
 <div id="page-loader"></div>
-<script type="text/javascript">
+<script>
 jQuery('#page-loader').css({
 	position: 'fixed',
 	left: '0px',
@@ -36,10 +36,6 @@ jQuery('#page-loader').css({
 	'z-index': 2147483001,
 });
 </script>
-<script type="text/javascript">
-$(function(){
-	setTimeout(function(){ $('#page-loader').fadeOut('slow') }, 250);
-});
-</script>
+<script>$(() => { setTimeout(() => { $('#page-loader').fadeOut('slow') }, 250); });</script>
 <!-- #END# partial-template-loader -->
 [%%%/IF:APP-REALM%%%]

@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
-	<title>jQuery Time Picker</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<title>jQuery Time Picker</title>
 
-	<script type="text/javascript" src="../../jquery.js"></script>
-	<script type="text/javascript" src="../../../framework/src/core_utils.js"></script>
-	<script type="text/javascript" src="../../../framework/src/browser_utils.js"></script>
+<script src="../../jquery.js"></script>
 
-	<link rel="stylesheet" href="../css/jquery.timepicker.css" type="text/css">
-	<script type="text/javascript" src="../jquery.timepicker.js"></script>
+<script>
+const smartJ$Options = {
+	BrowserUtils: {
+		ModalBoxActive: 0,
+		LoaderImg: '../../../framework/img/loading.svg'
+	}
+}
+Object.freeze(smartJ$Options); // sec.
+window.smartJ$Options = smartJ$Options; // g-exp.
+</script>
+<script src="../../../framework/smart-framework.pak.js"></script>
+
+<link rel="stylesheet" href="../css/jquery.timepicker.css" type="text/css">
+<script src="../jquery.timepicker.js"></script>
 </head>
 <body>
 <h1>jQuery Time Picker</h1>

@@ -1,15 +1,15 @@
-<!-- JS-BASE :: r.20210419 -->
-<!-- jQuery --><script type="text/javascript" src="lib/js/jquery/jquery.js?[###RELEASE-HASH|url|html###]"></script><script type="text/javascript">jQuery.ajaxSetup({ timeout: 0, cache: false });</script><script type="text/javascript" src="lib/js/jquery/jquery.smart.compat.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- JS-BASE :: r.20210420 -->
+<!-- jQuery --><script src="lib/js/jquery/jquery.js?[###RELEASE-HASH|url|html###]"></script><script>jQuery.ajaxSetup({ timeout: 0, cache: false });</script><script src="lib/js/jquery/jquery.smart.compat.js?[###RELEASE-HASH|url|html###]"></script>
 [%%%IF:SEMAPHORE:&*<skip:growl>;%%%]
 <!-- Notifications Growl: skip by Semaphore -->
 [%%%ELSE:SEMAPHORE%%%]
 [%%%IF:SEMAPHORE:&*<load:growl-toastr>;(1)%%%]
-<!-- Notifications Growl (toastr) --><link rel="stylesheet" type="text/css" href="lib/js/jquery/growl/jquery.toastr.css?[###RELEASE-HASH|url|html###]"><script type="text/javascript" src="lib/js/jquery/growl/jquery.toastr.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Notifications Growl (toastr) --><link rel="stylesheet" type="text/css" href="lib/js/jquery/growl/jquery.toastr.css?[###RELEASE-HASH|url|html###]"><script src="lib/js/jquery/growl/jquery.toastr.js?[###RELEASE-HASH|url|html###]"></script>
 [%%%ELSE:SEMAPHORE(1)%%%]
-<!-- Notifications Growl (gritter) --><link rel="stylesheet" type="text/css" href="lib/js/jquery/growl/jquery.gritter.css?[###RELEASE-HASH|url|html###]"><script type="text/javascript" src="lib/js/jquery/growl/jquery.gritter.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Notifications Growl (gritter) --><link rel="stylesheet" type="text/css" href="lib/js/jquery/growl/jquery.gritter.css?[###RELEASE-HASH|url|html###]"><script src="lib/js/jquery/growl/jquery.gritter.js?[###RELEASE-HASH|url|html###]"></script>
 [%%%/IF:SEMAPHORE(1)%%%]
 [%%%/IF:SEMAPHORE%%%]
-<!-- Notifications Dialog --><link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.alertable.css?[###RELEASE-HASH|url|html###]"><script type="text/javascript" src="lib/js/jquery/jquery.alertable.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Notifications Dialog --><link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.alertable.css?[###RELEASE-HASH|url|html###]"><script src="lib/js/jquery/jquery.alertable.js?[###RELEASE-HASH|url|html###]"></script>
 <!-- Framework -->
 <script>
 const smartJ$Options = {
@@ -35,8 +35,22 @@ const smartJ$Options = {
 Object.freeze(smartJ$Options); // sec.
 window.smartJ$Options = smartJ$Options; // g-exp.
 </script>
-<script type="text/javascript" src="lib/js/framework/smart-framework.pak.js?[###RELEASE-HASH|url|html###]"></script>
-[%%%COMMENT%%%]<!-- Framework (dev.src) --><script type="text/javascript" src="lib/js/framework/src/browser_check.js?[###RELEASE-HASH|url|html###]"></script><script type="text/javascript" src="lib/js/framework/src/core_utils.js?[###RELEASE-HASH|url|html###]"></script><script type="text/javascript" src="lib/js/framework/src/date_utils.js?[###RELEASE-HASH|url|html###]"></script><script type="text/javascript" src="lib/js/framework/src/arch_utils.js?[###RELEASE-HASH|url|html###]"></script><script type="text/javascript" src="lib/js/framework/src/crypt_utils.js?[###RELEASE-HASH|url|html###]"></script><script type="text/javascript" src="lib/js/framework/src/ifmodalbox.js?[###RELEASE-HASH|url|html###]"></script><script type="text/javascript" src="lib/js/framework/src/browser_utils.js?[###RELEASE-HASH|url|html###]"></script><script type="text/javascript" src="lib/js/framework/src/ifmodalbox_scanner.js?[###RELEASE-HASH|url|html###]"></script>[%%%/COMMENT%%%]
-<!-- Media --><script type="text/javascript" src="lib/js/jquery/jquery.easing.js?[###RELEASE-HASH|url|html###]"></script><link rel="stylesheet" type="text/css" href="lib/js/jquery/slimbox/css/slimbox.css?[###RELEASE-HASH|url|html###]"><script type="text/javascript" src="lib/js/jquery/slimbox/slimbox.js?[###RELEASE-HASH|url|html###]"></script><script type="text/javascript" src="lib/js/jquery/slimbox/slimbox_scanner.js?[###RELEASE-HASH|url|html###]"></script>
-<!-- Utils -->[%%%IF:APP-REALM:==ADM;%%%]<script type="text/javascript" src="lib/js/jquery/jquery.idle.js?[###RELEASE-HASH|url|html###]"></script>[%%%ELSE:APP-REALM%%%]<!-- SKIP Loading / Realm: [###APP-REALM|html###] -->[%%%/IF:APP-REALM%%%]
+[%%%IF:SEMAPHORE:&*<load:smart-framework-js-dev-src>;%%%]
+<!-- Framework (dev.src) -->
+<script src="lib/js/framework/src/core_utils.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/date_utils.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/crypt_utils.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/ifmodalbox.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/browser_check.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/browser_utils.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/framework/src/ifmodalbox_scanner.js?[###RELEASE-HASH|url|html###]"></script>
+[%%%ELSE:SEMAPHORE%%%]
+<script src="lib/js/framework/smart-framework.pak.js?[###RELEASE-HASH|url|html###]"></script>
+[%%%/IF:SEMAPHORE%%%]
+<!-- Media -->
+<script src="lib/js/jquery/jquery.easing.js?[###RELEASE-HASH|url|html###]"></script>
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/slimbox/css/slimbox.css?[###RELEASE-HASH|url|html###]">
+<script src="lib/js/jquery/slimbox/slimbox.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/jquery/slimbox/slimbox_scanner.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Utils -->[%%%IF:APP-REALM:==ADM;%%%]<script src="lib/js/jquery/jquery.idle.js?[###RELEASE-HASH|url|html###]"></script>[%%%ELSE:APP-REALM%%%]<!-- SKIP Loading / Realm: [###APP-REALM|html###] -->[%%%/IF:APP-REALM%%%]
 <!-- # -->

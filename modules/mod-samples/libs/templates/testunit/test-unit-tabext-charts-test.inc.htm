@@ -1,7 +1,7 @@
 <!-- Partial Template: TestUnit.SampleCharts -->
 <b>A full set of responsive Charts: Line, Z-Line (+/- ErrorBars), Area, Bubbles, Bars (+/- ErrorBars), Stacked Bars, Stacked Area (+/- Relative), Doughnut, Pie, Polar, Radar. Optionals: Bezier Curves, Legend for charts. Customizable: Colors, Tooltips, Legends, Axis and many more ...</b>
 <script src="lib/js/jscharts/charts.pak.js"></script>
-<script type="text/javascript">
+<script>
 function randomScalingFactor() {
 	return Math.round(Math.random()*1000);
 } //END FUNCTION
@@ -14,7 +14,7 @@ function randomScalingFactor() {
 	<canvas id="canvas-line" width="600" height="400"></canvas>
 </div>
 <div id="legend-line" style="padding:8px; border: 1px solid #ECECEC;"></div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_LineChart() {
 	//--
 	var lineChartData = {
@@ -77,7 +77,7 @@ function Smart_JsCharts_LineChart() {
 	<canvas id="canvas-area" width="600" height="400"></canvas>
 </div>
 <div id="legend-area" style="padding:8px; border: 1px solid #ECECEC; text-align:right;"></div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_AreaChart() {
 	//--
 	var lineChartData = {
@@ -128,7 +128,7 @@ function Smart_JsCharts_AreaChart() {
 	<canvas id="canvas-stacked-area" width="600" height="400"></canvas>
 </div>
 <div id="legend-stacked-area" style="padding:8px; border: 1px solid #ECECEC; text-align:center;"></div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_StackedAreaChart() {
 	//--
 	var areaChartData = {
@@ -181,7 +181,7 @@ function Smart_JsCharts_StackedAreaChart() {
 	<canvas id="canvas-stacked-relative-area" width="600" height="400"></canvas>
 </div>
 <div id="legend-stacked-relative-area" style="padding:8px; border: 1px solid #ECECEC; text-align:center;"></div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_StackedRelativeAreaChart() {
 	//--
 	var areaChartData = {
@@ -237,7 +237,7 @@ function Smart_JsCharts_StackedRelativeAreaChart() {
 <div style="width:90%">
 	<canvas id="canvas-zline" width="600" height="400"></canvas>
 </div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_ZLineChart() {
 	//--
 	var lineChartData = {
@@ -297,7 +297,7 @@ function Smart_JsCharts_ZLineChart() {
 <div style="width:90%">
 	<canvas id="canvas-bubbles" width="600" height="400"></canvas>
 </div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_BubbleChart() {
 	//--
 	var lineChartData = {
@@ -373,7 +373,7 @@ function Smart_JsCharts_BubbleChart() {
 	<canvas id="canvas-bar" width="600" height="400"></canvas>
 </div>
 <div id="legend-bar" style="padding:8px; border: 1px solid #ECECEC;"></div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_BarChart() {
 	//--
 	var barChartData = {
@@ -428,7 +428,7 @@ function Smart_JsCharts_BarChart() {
 	<canvas id="canvas-sbar" width="600" height="400"></canvas>
 </div>
 <div id="legend-stacked-bar" style="padding:8px; border: 1px solid #ECECEC; text-align:right;"></div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_StackedBarChart() {
 	//--
 	var barChartData = {
@@ -482,7 +482,7 @@ function Smart_JsCharts_StackedBarChart() {
 	<canvas id="canvas-doughnut" width="600" height="400"></canvas>
 </div>
 <div id="legend-doughnut" style="padding:8px; border: 1px solid #ECECEC;"></div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_DoughnutChart() {
 	//--
 	var doughnutData = [
@@ -536,7 +536,7 @@ function Smart_JsCharts_DoughnutChart() {
 	<canvas id="canvas-pie" width="600" height="400"></canvas>
 </div>
 <div id="legend-pie" style="padding:8px; border: 1px solid #ECECEC; text-align:right;"></div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_PieChart() {
 	//--
 	var data = [
@@ -576,7 +576,7 @@ function Smart_JsCharts_PieChart() {
 <div style="width:90%;">
 	<canvas id="canvas-polar" width="600" height="400"></canvas>
 </div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_PolarAreaChart() {
 	//--
 	var polarData = [
@@ -626,7 +626,7 @@ function Smart_JsCharts_PolarAreaChart() {
 <div style="width:90%;">
 	<canvas id="canvas-radar" width="600" height="400"></canvas>
 </div>
-<script type="text/javascript">
+<script>
 function Smart_JsCharts_RadarChart() {
 	//--
 	var radarChartData = {
@@ -667,7 +667,7 @@ function Smart_JsCharts_RadarChart() {
 </td>
 </tr>
 </table>
-<script type="text/javascript">
+<script>
 	Smart_JsCharts_LineChart();
 	Smart_JsCharts_AreaChart();
 	Smart_JsCharts_StackedAreaChart()

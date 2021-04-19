@@ -1,4 +1,4 @@
-<!-- TPL Foot r.20210407 -->
+<!-- TPL Foot r.20210420 -->
 [%%%IF:SEMAPHORE:&*<load:searchterm-highlight-js>;%%%]
 <!-- Highlight SearchTerm -->
 <style>
@@ -10,7 +10,7 @@
 }
 </style>
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.highlight.css?[###RELEASE-HASH|url|html###]">
-<script type="text/javascript" src="lib/js/jquery/jquery.highlight.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/jquery/jquery.highlight.js?[###RELEASE-HASH|url|html###]"></script>
 <script>
 jQuery(() => {
 	if((typeof(searchTerm) != 'undefined') && (searchTerm != null) && (searchTerm != '')) {
@@ -40,14 +40,14 @@ code.hljs, code.hljs * {
 }
 </style>
 <link rel="stylesheet" href="lib/js/jshighlight/css/[%%%IF:SEMAPHORE:&*<theme:dark>;(2)%%%]zenburn[%%%ELSE:SEMAPHORE(2)%%%]github[%%%/IF:SEMAPHORE(2)%%%].css?[###RELEASE-HASH|url|html###]">
-<script type="text/javascript" src="lib/js/jshighlight/highlight.js?[###RELEASE-HASH|url|html###]"></script>
-<script type="text/javascript" src="lib/js/jshighlight/syntax/plaintext.js?[###RELEASE-HASH|url|html###]"></script>
-<script type="text/javascript" src="lib/js/jshighlight/syntax.pak.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/jshighlight/highlight.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/jshighlight/syntax/plaintext.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/jshighlight/syntax.pak.js?[###RELEASE-HASH|url|html###]"></script>
 [%%%IF:SEMAPHORE:&*<load:code-highlight-ext-js>;(2)%%%]
 [@@@SUB-TEMPLATE:?!modules/mod-highlight-syntax/libs/templates/tpl-foot-hljs-ext.inc.htm!@@@]
 [%%%/IF:SEMAPHORE(2)%%%]
-<script type="text/javascript" src="lib/js/jshighlight/smart-highlight.js?[###RELEASE-HASH|url|html###]"></script>
-<script type="text/javascript">jQuery(() => { if(typeof(SmartJS_Custom_Syntax_Highlight) == 'function') { SmartJS_Custom_Syntax_Highlight('body'); } });</script>
+<script src="lib/js/jshighlight/smart-highlight.js?[###RELEASE-HASH|url|html###]"></script>
+<script>jQuery(() => { if(typeof(SmartJS_Custom_Syntax_Highlight) == 'function') { SmartJS_Custom_Syntax_Highlight('body'); } });</script>
 [%%%ELSE:SEMAPHORE(1)%%%]
 <!-- HLjs, Smart HLjs: skip by Semaphore -->
 [%%%/IF:SEMAPHORE(1)%%%]
@@ -55,7 +55,7 @@ code.hljs, code.hljs * {
 <!-- Unveil: skip by Semaphore -->
 [%%%ELSE:SEMAPHORE%%%]
 <!-- Unveil -->
-<script type="text/javascript" src="lib/js/jquery/jquery.unveil.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/jquery/jquery.unveil.js?[###RELEASE-HASH|url|html###]"></script>
 <script>
 jQuery(() => {
 	jQuery(window).on('refreshunveil', () => { jQuery('.unveil').off('unveil').unveil(); });

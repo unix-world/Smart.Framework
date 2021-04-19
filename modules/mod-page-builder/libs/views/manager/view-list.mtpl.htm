@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List / Records :: v.20210419 -->
+<!-- Pagebuilder / Manage @ List / Records :: v.20210420 -->
 <style>
 	.smartGrid_AlignCenter {
 		text-align: center;
@@ -19,20 +19,20 @@
 	}
 </style>
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css">
-<script type="text/javascript" src="lib/js/jquery/pager/jquery.simplePagination.js"></script>
-<script type="text/javascript" src="lib/js/jquery/jquery.event.drag.js"></script>
-<script type="text/javascript" src="lib/js/jquery/jquery.event.drop.js"></script>
-<script type="text/javascript" src="lib/js/jquery/jquery.simulate.js"></script>
+<script src="lib/js/jquery/pager/jquery.simplePagination.js"></script>
+<script src="lib/js/jquery/jquery.event.drag.js"></script>
+<script src="lib/js/jquery/jquery.event.drop.js"></script>
+<script src="lib/js/jquery/jquery.simulate.js"></script>
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid.css">
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid-fixes.css">
-<script type="text/javascript" src="lib/js/jquery/slickgrid/slick.grid.js"></script>
-<script type="text/javascript" src="lib/js/jquery/slickgrid/slick.editors.js"></script>
-<script type="text/javascript" src="lib/js/jquery/slickgrid/smart-grid.js"></script>
-<script type="text/javascript">
+<script src="lib/js/jquery/slickgrid/slick.grid.js"></script>
+<script src="lib/js/jquery/slickgrid/slick.editors.js"></script>
+<script src="lib/js/jquery/slickgrid/smart-grid.js"></script>
+<script>
 	var IdOfGrid = 'PageBuilderSlickGrid';
 	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', '[###LIST-JSON-URL|js###]', 'PageBuilder_Smart_Slickgrid_List', 'id', 'DESC', '', 'filtering');
 </script>
-<script type="text/javascript">
+<script>
 function pageBuilderFormBtnFilter() {
 	TheGrid.loadGridData(0);
 }
@@ -46,7 +46,7 @@ function pageBuilderFormBtnResetFilter() {
 	<div id="PageBuilderNavPager"></div>
 </div>
 <form class="ux-form"><div id="PageBuilderSlickGrid" class="slickgrid-table" style="font-size:10px;width:100%;height:10px;"></div></form>
-<script type="text/javascript">
+<script>
 jQuery(function() {
 
 	var displayDel = function(row, cell, value, columnDef, dataContext) {

@@ -1,31 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>jQuery Tabs</title>
+<meta charset="utf-8">
+<title>jQuery Tabs</title>
+<script src="../../jquery.js"></script>
 
-	<script type="text/javascript" src="../../jquery.js"></script>
+<script>
+const smartJ$Options = {
+	BrowserUtils: {
+		ModalBoxActive: 0,
+		LoaderImg: '../../../framework/img/loading.svg'
+	}
+}
+Object.freeze(smartJ$Options); // sec.
+window.smartJ$Options = smartJ$Options; // g-exp.
+</script>
+<script src="../../../framework/smart-framework.pak.js"></script>
 
-	<script>
-		const smartJ$Options = {
-			BrowserUtils: {
-				ModalBoxActive: 0,
-				LoaderImg: '../../../framework/img/loading.svg'
-			}
-		}
-		Object.freeze(smartJ$Options); // sec.
-		window.smartJ$Options = smartJ$Options; // g-exp.
-	</script>
-
-	<script type="text/javascript" src="../../../framework/src/core_utils.js"></script>
-	<script type="text/javascript" src="../../../framework/src/crypt_utils.js"></script>
-	<script type="text/javascript" src="../../../framework/src/browser_utils.js"></script>
-
-	<link rel="stylesheet" href="../jquery.tabs.css" type="text/css">
-	<script type="text/javascript" src="../jquery.tabs.js"></script>
+<link rel="stylesheet" href="../jquery.tabs.css" type="text/css">
+<script src="../jquery.tabs.js"></script>
 </head>
 <body>
-
 <div id="tabs_draw">
 	<div id="tabs_nav">
 		<ul>
@@ -45,10 +40,8 @@
 		...
 	</div>
 </div>
-
 <script>
-	SmartSimpleTabs.initTabs('tabs_draw');
+SmartSimpleTabs.initTabs('tabs_draw');
 </script>
-
 </body>
 </html>

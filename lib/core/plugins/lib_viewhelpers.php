@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210419
+ * @version 	v.20210420
  * @package 	Plugins:ViewComponents
  *
  */
@@ -62,7 +62,7 @@ final class SmartViewHtmlHelpers {
 	 * @param ENUM 		$theme 					The Visual CSS Theme to Load ; Available Themes: 'default', 'atom-one-light', 'github-gist', 'github', 'googlecode', 'grayscale', 'ocean', 'tomorrow-night-blue', 'xcode', 'zenburn' ; Default is set to: 'default'
 	 * @param BOOL 		$loadpacks 				If TRUE will load syntax packed files instead of syntax single files which are many ; Default is TRUE
 	 * @param BOOL 		$use_absolute_url 		If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
-	 * @param STRING 	$ext_jshtml 			Extra Js/HTML Code ; Default is '' ; Here can be loaded ext syntax packs ; ex: '<script type="text/javascript" src="modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'
+	 * @param STRING 	$ext_jshtml 			Extra Js/HTML Code ; Default is '' ; Here can be loaded ext syntax packs ; ex: '<script src="modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'
 	 *
 	 * @return STRING							[HTML Code]
 	 */
@@ -2049,7 +2049,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Returns the JS Code to add (raise) a Growl Notification (sticky or not)
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @param STRING $y_title		:: The Growl Title
 	 * @param STRING $y_text		:: The Growl Text
@@ -2082,7 +2082,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Returns the JS Code to remove a Growl Notification (sticky or not)
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @param STRING $y_id 			:: *optional* the Growl ID ; default is '' ; if non empty will remove just the Growl that match the ID ; otherwise will remove ALL Growl instances
 	 * @return STRING				:: JS Code
@@ -2103,7 +2103,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Return the JS Code to init a JS-UI Confirm Dialog
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @access 		private
 	 * @internal
@@ -2120,7 +2120,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Return the JS Code to init a JS-UI Alert Dialog
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @access 		private
 	 * @internal
@@ -2138,7 +2138,7 @@ final class SmartViewHtmlHelpers {
 	/**
 	 * Return the JS Code to Submit a HTML Form by Ajax
 	 * Expects a standardized (json) reply created with SmartViewHtmlHelpers::js_ajax_replyto_html_form()
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @param $y_form_id 			HTML form ID (Example: myForm)
 	 * @param $y_script_url 		the php script to post to (Example: admin.php)
@@ -2222,7 +2222,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Return the JS Code to Confirm Form Submit by raising a Dialog / Notification (depend on global settings)
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @access 		private
 	 * @internal
@@ -2252,7 +2252,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Return the JS Code to Init Page-Away Confirmation when trying to leave a page
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @access 		private
 	 * @internal
@@ -2278,7 +2278,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Return the JS Code to Disable Page-Away Confirmation when trying to leave a page
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @access 		private
 	 * @internal
@@ -2295,7 +2295,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Returns the JS Code to Init an Input Field with AutoComplete Single
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @access 		private
 	 * @internal
@@ -2321,7 +2321,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Returns the JS Code to Init an Input Field with AutoComplete Multi
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @access 		private
 	 * @internal
@@ -2347,7 +2347,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Returns the JS Code to Init a JS-UI Tabs Element
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @access 		private
 	 * @internal
@@ -2372,7 +2372,7 @@ final class SmartViewHtmlHelpers {
 	//================================================================
 	/**
 	 * Returns the JS Code to Activate/Deactivate JS-UI Tabs Element
-	 * Must be enclosed in a <script type="text/javascript">...</script> html tag or can be used for a JS action (ex: onClick="...")
+	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
 	 * @access 		private
 	 * @internal

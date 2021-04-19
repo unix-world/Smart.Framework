@@ -1,43 +1,50 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
-	<title>jQuery UI Time Picker by Francois Gelinas</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+<title>jQuery UI Time Picker by Francois Gelinas</title>
 
-	<script type="text/javascript" src="../../jquery.js"></script>
-	<script type="text/javascript" src="../../../framework/src/core_utils.js"></script>
-	<script type="text/javascript" src="../../../framework/src/browser_utils.js"></script>
+<script src="../../jquery.js"></script>
 
-	<link rel="stylesheet" href="../css/jquery.timepicker.css" type="text/css">
-	<script type="text/javascript" src="../jquery.timepicker.js"></script>
+<script>
+const smartJ$Options = {
+	BrowserUtils: {
+		ModalBoxActive: 0,
+		LoaderImg: '../../../framework/img/loading.svg'
+	}
+}
+Object.freeze(smartJ$Options); // sec.
+window.smartJ$Options = smartJ$Options; // g-exp.
+</script>
+<script src="../../../framework/smart-framework.pak.js"></script>
 
-	<style type="text/css">
-		/* some styling for the page */
-		body { font-size: 10px; /* for the widget natural size */}
-		#content { font-size: 1.1em; /* for the rest of the page to show at a normal size */
-				   font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-				   width: 950px; margin: auto;
+<link rel="stylesheet" href="../css/jquery.timepicker.css" type="text/css">
+<script src="../jquery.timepicker.js"></script>
+
+<style type="text/css">
+	/* some styling for the page */
+	body { font-size: 10px; /* for the widget natural size */}
+	#content { font-size: 1.1em; /* for the rest of the page to show at a normal size */
+			   font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+			   width: 950px; margin: auto;
+	}
+	.box { border: 1px solid #888; padding: 15px; margin:12px; }
+	.code { margin: 6px; padding: 9px; background-color: #fdf5ce; border: 1px solid #c77405; }
+	fieldset { padding: 0.5em 2em }
+	hr { margin: 0.5em 0; clear: both }
+	a { cursor: pointer; }
+	#requirements li { line-height: 1.6em; }
+</style>
+
+<script>
+$(document).ready(function() {
+	$('#floating_timepicker').timepicker({
+		onSelect: function(time, inst) {
+			$('#floating_selected_time').html('You selected ' + time);
 		}
-		.box { border: 1px solid #888; padding: 15px; margin:12px; }
-		.code { margin: 6px; padding: 9px; background-color: #fdf5ce; border: 1px solid #c77405; }
-		fieldset { padding: 0.5em 2em }
-		hr { margin: 0.5em 0; clear: both }
-		a { cursor: pointer; }
-		#requirements li { line-height: 1.6em; }
-	</style>
-
-	<script type="text/javascript">
-
-		$(document).ready(function() {
-			$('#floating_timepicker').timepicker({
-				onSelect: function(time, inst) {
-					$('#floating_selected_time').html('You selected ' + time);
-				}
-			});
-		});
-
-
-	</script>
+	});
+});
+</script>
 </head>
 <body>
 
@@ -81,7 +88,7 @@
 	<div>
 		Default time picker :
 		<input type="text" style="width: 70px;" id="timepicker.1" value="" />
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function() {
 				$('#timepicker\\.1').timepicker();
 			});
@@ -97,7 +104,7 @@
 	<div>
 		Time picker with period (AM/PM) in input and with hours leading 0s :
 		<input type="text" style="width: 70px;" id="timepicker_6" value="01:30 PM" />
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function() {
 				$('#timepicker_6').timepicker({
 					showPeriod: true,
@@ -118,7 +125,7 @@
 	<div>
 		Time picker with labels in another language (Fran&ccedil;ais) :
 		<input type="text" style="width: 70px;" id="timepicker_locale" value="13h30" />
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function() {
 				$('#timepicker_locale').timepicker({
 					hourText: 'Heures',
@@ -145,7 +152,7 @@
 		Time picker with restricted (disabled) hours / minutes. 8:30 PM to 6:30 AM disabled :
 		<input type="text" style="width: 70px" id="timepicker_7" value="01:30 PM" />
 
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function() {
 				$('#timepicker_7').timepicker({
 					showPeriod: true,
@@ -197,7 +204,7 @@ function OnMinuteShowCallback(hour, minute) {
 
 
 
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function() {
 				$('#timepicker_showon').timepicker({
 					showOn: 'button',
@@ -224,7 +231,7 @@ function OnMinuteShowCallback(hour, minute) {
 		Time picker without the AM/PM labels on the left (showPeriodLabels option set to false:
 		<input type="text" style="width: 70px;" id="timepicker_noPeriodLabels" value="13:30" />
 
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function() {
 				$('#timepicker_noPeriodLabels').timepicker({
 					showPeriodLabels: false
@@ -247,7 +254,7 @@ function OnMinuteShowCallback(hour, minute) {
 
 		Custom defined hours range (Business hours 6am to 9pm) and minutes increment set to 15 instead of 5
 		<input type="text" style="width: 70px" id="timepicker_customrange" value="13:30">
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function() {
 			   $('#timepicker_customrange').timepicker({
 				   hours: { starts: 6, ends: 21 },
@@ -276,7 +283,7 @@ function OnMinuteShowCallback(hour, minute) {
 	<div>
 		onSelect (hours and minutes both trigger event) and onClose events :
 		<input type="text" style="width: 70px" id="timepicker_3" value="13:30" />
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function() {
 				$('#timepicker_3').timepicker({
 					onClose: function(time, inst) {
@@ -335,7 +342,7 @@ $('#timepicker').timepicker({
 			<a onclick="$('#script_inline').toggle(200); return false;">[Show code]</a>
 		</div>
 		<div id="timepicker_inline_7" style="font-size: 10px; float: left; margin-left: 24px;"></div>
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function() {
 			   $('#timepicker_inline_7').timepicker({
 				   altField: '#timepicker_alt',

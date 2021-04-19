@@ -17,7 +17,7 @@ div.barcode2d {
 		<td><b>RMS4 KIX (PNG)</b><div class="barcode1d" id="test_barcodes_1d_kix"></div></td>
 	</tr>
 </table>
-<script type="text/javascript">
+<script>
 jQuery(function() {
 	smartJ$Browser.LoadElementContentByAjax('test_barcodes_1d_eanupc', 'lib/framework/img/loading-bubbles.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-eanupc', 'GET', 'html');
 	smartJ$Browser.LoadElementContentByAjax('test_barcodes_1d_128', 'lib/framework/img/loading-bubbles.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-code128', 'GET', 'html');
@@ -39,8 +39,8 @@ jQuery(function() {
 		<td><b>PDF 417 (PNG)</b><div class="barcode2d" id="test_barcodes_2d_p417"></div></td>
 	</tr>
 </table>
-<script type="text/javascript">
-$(function() {
+<script>
+$(() => {
 	smartJ$Browser.LoadElementContentByAjax('test_barcodes_2d_mqr', 'lib/framework/img/loading-spin.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-mqrcode', 'GET', 'html');
 	smartJ$Browser.LoadElementContentByAjax('test_barcodes_2d_qr', 'lib/framework/img/loading-spin.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-qrcode', 'GET', 'html');
 	smartJ$Browser.LoadElementContentByAjax('test_barcodes_2d_aztec', 'lib/framework/img/loading-spin.svg', TESTUNIT_BASE_URL + 'testunit.barcodes-aztec', 'GET', 'html');

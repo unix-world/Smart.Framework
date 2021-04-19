@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ TreeList / Records :: v.20210408 -->
+<!-- Pagebuilder / Manage @ TreeList / Records :: v.20210420 -->
 <script src="lib/js/jquery/tree/simpletree.js"></script>
 <style>
 .simpletree-toggle, .simpletree-notoggle {
@@ -61,7 +61,7 @@ div.scroll-top:hover {
 }
 </style>
 <div title="Scroll Top" class="scroll-top" onClick="jQuery('html, body').animate({scrollTop: 0}, 300);"><i class="sfi sfi-arrow-up"></i></div>
-<script type="text/javascript">
+<script>
 function pageBuilderFormBtnFilter() {
 	jQuery('#filtering').submit();
 }
@@ -115,7 +115,7 @@ function pageBuilderFormBtnResetFilter() {
 	[%%%/LOOP:DATA%%%]
 </ul>
 [%%%IF:FILTER:@>0;%%%]
-<script type="text/javascript">
+<script>
 	var foundItems = [];
 	[%%%LOOP:FILTER%%%]
 	foundItems.push('id-[###FILTER.HASH-ID|js###]');[%%%|N%%%]
@@ -137,7 +137,7 @@ function pageBuilderFormBtnResetFilter() {
 [%%%ELSE:FILTER%%%]
 <!-- no js highlights -->
 [%%%/IF:FILTER%%%]
-<script type="text/javascript">
+<script>
 	jQuery('ul.pagebuilder-tree').simpletree({
 		useAnimation: false,
 		signCollapsed: '<i class="sfi sfi-folder-plus sfi-lg" style="color:#555555;"></i>',
@@ -145,7 +145,7 @@ function pageBuilderFormBtnResetFilter() {
 	});
 </script>
 [%%%IF:HAVE-FULLTREE:==yes;%%%]
-<script type="text/javascript">
+<script>
 	jQuery(document).ready(function(){
 		var isFullTreeCheckboxChecked = false;
 		if(smartJ$Browser.getCookie('[###COOKIE-FULLTREE|js###]') === '[###VALUE-FULLTREE|js###]') {
@@ -166,7 +166,7 @@ function pageBuilderFormBtnResetFilter() {
 [%%%/IF:HAVE-FULLTREE%%%]
 [%%%COMMENT%%%]
 [%%%IF:HAVE-DATASETS:==yes;%%%]
-<script type="text/javascript">
+<script>
 	jQuery(document).ready(function(){
 		var isDataSetCheckboxChecked = false;
 		if(smartJ$Browser.getCookie('[###COOKIE-DATASETS|js###]') === '[###VALUE-DATASETS|js###]') {

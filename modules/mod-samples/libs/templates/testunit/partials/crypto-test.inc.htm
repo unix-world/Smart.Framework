@@ -23,29 +23,29 @@ CustomCipher@Options:&nbsp;<span style="color:#CCCCCC;">PHP:[###HASHCRYPT-OPTION
 <hr>
 <h2>Javascript Unicode Crypto Tests:</h2>
 <div id="testunit-partial-crypto" style="white-space: nowrap !important;"></div>
-<script type="text/javascript">
-(function() {
+<script>
+(() => {
 	//--
-	var the_error = 0;
+	let the_error = 0;
 	//--
-	var unicodeText = $('#unicode-string').text();
-	var the_sha512 = smartJ$CryptoHash.sha512(unicodeText);
-	var the_sha1 = smartJ$CryptoHash.sha1(unicodeText);
-	var the_md5 = smartJ$CryptoHash.md5(unicodeText);
-	var the_crc32b = smartJ$CryptoHash.crc32b(unicodeText);
+	let unicodeText = $('#unicode-string').text();
+	let the_sha512 = smartJ$CryptoHash.sha512(unicodeText);
+	let the_sha1 = smartJ$CryptoHash.sha1(unicodeText);
+	let the_md5 = smartJ$CryptoHash.md5(unicodeText);
+	let the_crc32b = smartJ$CryptoHash.crc32b(unicodeText);
 	//--
-	var b64enc = smartJ$Base64.encode(unicodeText);
-	var b64dec = smartJ$Base64.decode(b64enc);
+	let b64enc = smartJ$Base64.encode(unicodeText);
+	let b64dec = smartJ$Base64.decode(b64enc);
 	//--
-	var bin2hex = smartJ$Utils.bin2hex(unicodeText).toUpperCase();
-	var hex2bin = smartJ$Utils.hex2bin(smartJ$Utils.stringTrim(bin2hex).toLowerCase());
+	let bin2hex = smartJ$Utils.bin2hex(unicodeText).toUpperCase();
+	let hex2bin = smartJ$Utils.hex2bin(smartJ$Utils.stringTrim(bin2hex).toLowerCase());
 	//--
-	var bf_key = $('#blowfisk-key').val();
-	var bf_enc = smartJ$CryptoBlowfish.encrypt(unicodeText, bf_key);
-	var bf_dec = smartJ$CryptoBlowfish.decrypt(bf_enc, bf_key);
+	let bf_key = $('#blowfisk-key').val();
+	let bf_enc = smartJ$CryptoBlowfish.encrypt(unicodeText, bf_key);
+	let bf_dec = smartJ$CryptoBlowfish.decrypt(bf_enc, bf_key);
 	//--
-	var jsescTxt = smartJ$Utils.escape_js(unicodeText);
-	var htmlcode = 'Unicode@String:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(unicodeText) + '</span><br>';
+	let jsescTxt = smartJ$Utils.escape_js(unicodeText);
+	let htmlcode = 'Unicode@String:&nbsp;<span style="color:#FF5500;">' + smartJ$Utils.escape_html(unicodeText) + '</span><br>';
 	htmlcode += smartJ$Utils.nl2br('Escaped@JS:&nbsp;<span style="color:#778899;">' + smartJ$Utils.escape_html(jsescTxt) + '</span>' + "\n");
 	htmlcode += 'SHA512:&nbsp;<span style="color:#888888;">' + smartJ$Utils.escape_html(the_sha512) + '</span><br>';
 	htmlcode += 'SHA1:&nbsp;<span style="color:#999999;">' + smartJ$Utils.escape_html(the_sha1) + '</span><br>';
@@ -117,7 +117,7 @@ CustomCipher@Options:&nbsp;<span style="color:#CCCCCC;">PHP:[###HASHCRYPT-OPTION
 		alert('ERROR: PHP Blowfish encrypted is different than Javascript one ...');
 		the_error++;
 	} //end if
-	var decode_php_blowfish = smartJ$CryptoBlowfish.decrypt($('#blowfish-encrypted').text(), bf_key);
+	let decode_php_blowfish = smartJ$CryptoBlowfish.decrypt($('#blowfish-encrypted').text(), bf_key);
 	if((decode_php_blowfish != unicodeText) || (smartJ$CryptoHash.sha1(decode_php_blowfish) != smartJ$CryptoHash.sha1(unicodeText))) {
 		alert('ERROR: Javascript decrypted Blowfish is different than PHP one ...' + decode_php_blowfish);
 		the_error++;

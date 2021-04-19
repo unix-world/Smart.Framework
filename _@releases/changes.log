@@ -2,6 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+April 20, 2021 :: :: Version 7.2.1 rev.20210420
+	* Smart.Captcha bug fix: was never entering the stage 2 but only 1 or 3
+	* add entropy for Smart.Captcha
+	* garbage cleaning inside code: php, js, html, ..., comments
+
 April 19, 2021 :: :: Version 7.2.1 rev.20210419
 	* Optimizations for the new Javascript ES6, incl. SmartGrid and UIUtils
 	* MAJOR RELEASE (see below backward incompatible changes for Smart.Framework Javascript which was migrated from ES5 to ES6)

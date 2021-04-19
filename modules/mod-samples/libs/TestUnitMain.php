@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210416
+ * @version 	v.20210420
  *
  */
 final class TestUnitMain {
@@ -175,7 +175,7 @@ final class TestUnitMain {
 				'TESTUNIT_BASE_URL' 						=> (string) \SMART_FRAMEWORK_TESTUNIT_BASE_URL,
 				'NO-CACHE-TIME' 							=> (string) \time(),
 				'CURRENT-DATE-TIME' 						=> (string) \date('Y-m-d H:i:s O'),
-				'TEST-JS_SCRIPTS_Init-Tabs' 				=> '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_uitabs_init('tabs_draw', \Smart::format_number_int($tab,'+')).'</script>', // '<script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_uitabs_activate('tabs_draw', false).'</script>',
+				'TEST-JS_SCRIPTS_Init-Tabs' 				=> '<script>'.\SmartViewHtmlHelpers::js_code_uitabs_init('tabs_draw', \Smart::format_number_int($tab,'+')).'</script>', // '<script>'.\SmartViewHtmlHelpers::js_code_uitabs_activate('tabs_draw', false).'</script>',
 				'Test-Buttons_AJAX-POST' 					=> (string) $btnop,
 				'TEST-VAR'  								=> '<div style="background-color: #ECECEC; padding: 10px;"><b>Smart.Framework</b> :: PHP/Javascript web framework :: Test and Demo Suite @ '.$info_adm.'</div>',
 				'TEST-ELEMENTS_DIALOG' 						=> '<a class="ux-button ux-button-primary" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h1>Do you like this framework ?</h1><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="Yes">Yes</option><option value="No">No</option></select></div>', 'jQuery.alertable.alert(\'Well ... then you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\').always(function(){});').' return false;">Test JS-UI Dialog &nbsp; <i class="sfi sfi-share"></i></a>',
@@ -195,8 +195,8 @@ final class TestUnitMain {
 				'TEST-ELEMENTS_TIMEPICKER' 					=> 'TimePicker Selector: '.\SmartViewHtmlHelpers::html_js_time_field('frm_timepicker_id', 'frm[time]', \Smart::escape_html(isset($frm['time']) ? $frm['time'] : ''), 'Select Time', '9', '19', '0', '55', '5', '3', [], 'alert(\'You selected the time: \' + time);'),
 				'TEST-ELEMENTS-YES_NO' 						=> \SmartViewHtmlHelpers::html_selector_yes_no('yes_or_no', 'y'),
 				'TEST-ELEMENTS-TRUE_FALSE' 					=> \SmartViewHtmlHelpers::html_selector_true_false('true_or_false', '0'),
-				'TEST-ELEMENTS_AUTOCOMPLETE-SINGLE' 		=> 'AutoComplete Single: '.'<input id="auto-complete-fld" type="text" name="frm[autocomplete]" style="width:75px;"><script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_init_select_autocomplete_single('auto-complete-fld', \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.autocomplete', 'src', 1, 'alert(\'You selected: \' + value);').'</script>',
-				'TEST-ELEMENTS_AUTOCOMPLETE-MULTI'			=> 'Autocomplete Multi: '.'<input id="auto-complete-mfld" type="text" name="frm[mautocomplete]" style="width:125px;"><script type="text/javascript">'.\SmartViewHtmlHelpers::js_code_init_select_autocomplete_multi('auto-complete-mfld', \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.autocomplete', 'src', 1, 'alert(\'You selected: \' + value);').'</script>',
+				'TEST-ELEMENTS_AUTOCOMPLETE-SINGLE' 		=> 'AutoComplete Single: '.'<input id="auto-complete-fld" type="text" name="frm[autocomplete]" style="width:75px;"><script>'.\SmartViewHtmlHelpers::js_code_init_select_autocomplete_single('auto-complete-fld', \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.autocomplete', 'src', 1, 'alert(\'You selected: \' + value);').'</script>',
+				'TEST-ELEMENTS_AUTOCOMPLETE-MULTI'			=> 'Autocomplete Multi: '.'<input id="auto-complete-mfld" type="text" name="frm[mautocomplete]" style="width:125px;"><script>'.\SmartViewHtmlHelpers::js_code_init_select_autocomplete_multi('auto-complete-mfld', \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.autocomplete', 'src', 1, 'alert(\'You selected: \' + value);').'</script>',
 				'TEST-elements_Captcha' 					=> (string) \SmartCaptcha::drawCaptchaForm(self::captchaFormName(), self::captchaFormPluginUrl(), (string)self::captchaMode()),
 				'test-elements_limited-area' 				=> '<div>Limited TextArea:</div>'.\SmartViewHtmlHelpers::html_js_limited_text_area('', 'frm[text_area_1]', '', 300, '400px', '90px'),
 				'POWERED-INFO' 								=> (string) \SmartComponents::app_powered_info('no', [ [], [ 'type' => 'cside', 'name' => $arr_bw['desc'], 'logo' => \SmartUtils::get_server_current_url().$arr_bw['img'], 'url' => '' ] ]),

@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true); 		// if set to TRUE requires auth always
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210411
+	// v.20210420
 
 	public function Run() { // (OUTPUTS: HTML)
 
@@ -57,8 +57,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetVars([
 					'title' => 'Wait ...',
 					'main' => '<br><center><div><img src="lib/framework/img/loading-bars.svg" width="64" height="64"></div></center>'.
-					'<script type="text/javascript">smartJ$Browser.RefreshParent();</script>'.
-					'<script type="text/javascript">smartJ$Browser.CloseDelayedModalPopUp();</script>'
+					'<script>smartJ$Browser.RefreshParent();</script>'.
+					'<script>smartJ$Browser.CloseDelayedModalPopUp();</script>'
 				]);
 				//--
 				break;
