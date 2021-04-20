@@ -2,8 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+April 21, 2021 :: :: Version 7.2.1 rev.20210421
+	* bug fixes and optimizations
+
 April 20, 2021 :: :: Version 7.2.1 rev.20210420
-	* Smart.Captcha bug fix: was never entering the stage 2 but only 1 or 3
+	* Smart.Captcha bug fix: it was never entering the stage 2 by internal algorithm but only 1 or 3
 	* add entropy for Smart.Captcha
 	* garbage cleaning inside code: php, js, html, ..., comments
 	* fix datepicker to allow re-select the same date

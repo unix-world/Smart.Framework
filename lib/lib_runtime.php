@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20210420
+ * @version 	v.20210421
  * @package 	Application
  *
  */
@@ -257,7 +257,7 @@ final class SmartFrameworkSecurity {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	-
- * @version 	v.20210420
+ * @version 	v.20210421
  * @package 	Application
  *
  */
@@ -712,7 +712,7 @@ final class SmartFrameworkRegistry {
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: Smart, SmartUtils
- * @version		v.20210420
+ * @version		v.20210421
  * @package 	Application
  *
  */
@@ -1528,7 +1528,7 @@ final class SmartFrameworkRuntime {
  * @access 		private
  * @internal
  *
- * @version 	v.20210420
+ * @version 	v.20210421
  *
  */
 interface SmartInterfaceAppBootstrap {
@@ -1587,7 +1587,7 @@ interface SmartInterfaceAppBootstrap {
  * @access 		private
  * @internal
  *
- * @version 	v.20210420
+ * @version 	v.20210421
  *
  */
 interface SmartInterfaceAppInfo {

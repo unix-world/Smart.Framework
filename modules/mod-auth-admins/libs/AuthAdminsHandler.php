@@ -56,7 +56,7 @@ if(!\defined('\\APP_AUTH_DB_SQLITE')) {
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20210420
+ * @version 	v.20210421
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -161,13 +161,9 @@ final class AuthAdminsHandler {
 		} //end if
 		//--
 
-		//--
-		$secret = \SmartHashCrypto::sha256('Smart.Framework.Modules/AuthAdmins @'.\date('Y-m-d H:i:s').'#'.\SMART_FRAMEWORK_SECURITY_KEY);
-		//--
-
 		//-- manage login or logout
 		$logged_in = 'no'; // user is not logged in (unsuccessful username or password)
-		$login_or_logout_form = (string) \SmartComponents::http_message_401_unauthorized('Authorization Required', \SmartComponents::operation_notice('Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.<script>setTimeout(function(){ self.location = \''.\Smart::escape_js(\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3500);</script>', '100%').'<img src="'.\SmartUtils::get_server_current_url().self::$img_loader.'">');
+		$login_or_logout_form = (string) \SmartComponents::http_message_401_unauthorized('Authorization Required', \SmartComponents::operation_notice('Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.<script>setTimeout(() => { self.location = \''.\Smart::escape_js(\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3500);</script>', '100%').'<img src="'.\SmartUtils::get_server_current_url().self::$img_loader.'">');
 		//--
 		if(isset($_REQUEST['logout']) AND ((string)$_REQUEST['logout'] != '')) { // do logout
 			//--
@@ -266,7 +262,7 @@ final class AuthAdminsHandler {
 				die(\SmartComponents::http_error_message('App Auth Namespaces not set in config !', 'You must set the App Auth Namespaces in config as array (app-auth.adm-namespaces) with pairs of [key=namespace title / val=namespace url] of all login namespaces. Manually REFRESH this page after by pressing F5 ...'));
 			} //end if
 			foreach((array)$arr_login_namespaces as $key => $val) {
-				$arr_login_namespaces[(string)$key] = (string) \SmartUtils::crypto_blowfish_encrypt((string)$val, (string)$secret);
+				$arr_login_namespaces[(string)$key] = (string) \SmartUtils::crypto_blowfish_encrypt((string)$val);
 			} //end foreach
 			//--
 			$login_or_logout_form = (string) \SmartComponents::render_app_template(
@@ -281,7 +277,6 @@ final class AuthAdminsHandler {
 							'LOGIN-NSPACES' => (array) $arr_login_namespaces,
 							'POWERED-HTML' 	=> (string) \SmartComponents::app_powered_info('no'),
 							'CRR-YEAR' 		=> (string) \date('Y'),
-							'SECRET' 		=> (string) \bin2hex((string)(string)$secret),
 							'LOGOUT-URL' 	=> (string) \SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script().'?logout=yes'
 						]
 					)
@@ -313,11 +308,11 @@ final class AuthAdminsHandler {
 		//--
 		if(((string)$logged_in != 'yes') OR (\SmartAuth::check_login() !== true)) { // IF NOT LOGGED IN
 			//--
+			\SmartFrameworkRuntime::outputHttpHeadersNoCache(); // fix: needs no cache headers
+			//--
 			if((string)$try_auth != 'no') { // this is optional because on this side will die() anyway ...
-				\header('WWW-Authenticate: Basic realm="Private Area"');
+				\header((string)\SmartFrameworkRuntime::outputHttpSafeHeader('WWW-Authenticate: Basic realm="Private Area", charset="'.\SMART_FRAMEWORK_CHARSET.'"'));
 				\http_response_code(401);
-			} else {
-				\SmartFrameworkRuntime::outputHttpHeadersNoCache(); // fix: needs no cache headers
 			} //end if
 			//--
 			die((string)$login_or_logout_form); // display login or logot form

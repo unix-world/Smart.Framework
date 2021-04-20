@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true); 		// if set to TRUE requires auth always
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210420
+	// v.20210421
 
 	public function Run() { // (OUTPUTS: HTML)
 
@@ -48,6 +48,37 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		switch((string)$action) {
+
+			case 'login-check':
+				//--
+				$this->PageViewSetCfg('rawpage', true);
+				//--
+				$url = $this->RequestVarGet('url', '', 'string');
+				$redirect = (string) SmartUtils::crypto_blowfish_decrypt((string)$url);
+				//--
+				if((string)$redirect != '') {
+					$this->PageViewSetVar(
+						'main',
+						SmartViewHtmlHelpers::js_ajax_replyto_html_form(
+							'OK',
+							'You are logged in',
+							'Login Check Successful ...<br>'.Smart::escape_html((string)date('Y-m-d H:i:s O')),
+							(string) $redirect
+						)
+					);
+				} else {
+					$this->PageViewSetVar(
+						'main',
+						SmartViewHtmlHelpers::js_ajax_replyto_html_form(
+							'WARNING',
+							'You are logged in',
+							'NO Redirect URL Provided for Login !<br>Login Check Successful ...<br>'.Smart::escape_html((string)date('Y-m-d H:i:s O')),
+							'admin.php'
+						)
+					);
+				} //end if else
+				//--
+				break;
 
 
 			case 'close-modal': // Closes the Modal and Refresh the Parent (OUTPUTS: HTML)

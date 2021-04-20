@@ -1,4 +1,4 @@
-<!-- Partial Template: Core.AppPoweredInfo v.20210420 -->
+<!-- Partial Template: Core.AppPoweredInfo v.20210421 -->
 <div id="Powered-Info" style="position:relative!important; display:block!important; background:#FFFFFF!important; color:#cccccc!important; padding-left:5px; max-width:800px!important; border:1px solid #ECECEC; border-radius:3px;">
 	<div style="display:block!important; padding:0!important; margin:0!important; width:250px!important; text-align:left!important;">
 		<div style="display:inline-block!important; margin:10px!important; cursor:pointer;">
@@ -29,6 +29,157 @@
 		[%%%/IF:ARR-CSIDE.NAME%%%]
 		</div>
 	[%%%/LOOP:ARR-CSIDE%%%]
+		<div style="display:inline-block!important; margin:10px!important; cursor:help;">
+			<canvas id="Watch-Canvas" width="64" height="64" style="background:#FFFFFF; opacity:0.35;" title="... and many hours of software development = Time ..."></canvas>
+		</div>
 	</div>
 </div>
+<script>
+// the following javascript code (watch) is open-source, from (c) 2021 developer.mozilla.org # sample basic animations for canvas
+(() => {
+	let scaled = false;
+	const animate = (fx) => {
+		if(typeof(fx) !== 'function') {
+			return;
+		}
+		try {
+			self.requestAnimationFrame(fx);
+		} catch(err) {
+			console.error('ERR: Animation:', err);
+		}
+	};
+
+	const watch = () => {
+		let now = new Date();
+
+		const $canvas = $('#Watch-Canvas');
+		if(!$canvas) {
+			console.log('INF: Watch: Canvas not found');
+			return;
+		}
+		let ctx;
+		try {
+			ctx = $canvas[0].getContext('2d');
+		} catch(err) {
+			ctx = null;
+			console.error('ERR: Watch:', err);
+		}
+		if(!ctx) {
+			console.warn('WARN: Watch: Could not find Canvas Context');
+			return;
+		}
+
+		if(!scaled) {
+			scaled = !scaled;
+			ctx.scale(0.42, 0.42);
+		}
+
+		ctx.save();
+		ctx.clearRect(0, 0, 150, 150);
+		ctx.translate(75, 75);
+		ctx.scale(0.4, 0.4);
+		ctx.rotate(-Math.PI / 2);
+		ctx.strokeStyle = '#444444';
+		ctx.fillStyle = '#FFFFFF';
+		ctx.lineWidth = 8;
+		ctx.lineCap = 'round';
+
+		// Hour marks
+		ctx.save();
+		let i;
+		for(i=0; i<12; i++) {
+			switch(i) {
+				case 2: // 3
+				case 5: // 6
+				case 8: // 9
+				case 11: // 12
+					ctx.strokeStyle = '#ED2839';
+					break;
+				default:
+					ctx.strokeStyle = '#333333';
+			}
+			ctx.beginPath();
+			ctx.rotate(Math.PI / 6);
+			ctx.moveTo(100, 0);
+			ctx.lineTo(120, 0);
+			ctx.stroke();
+		}
+		ctx.restore();
+
+		// Minute marks
+		ctx.save();
+		ctx.lineWidth = 5;
+		for(i=0; i<60; i++) {
+			if(i % 5!= 0) {
+				ctx.beginPath();
+				ctx.moveTo(117, 0);
+				ctx.lineTo(120, 0);
+				ctx.stroke();
+			}
+			ctx.rotate(Math.PI / 30);
+		}
+		ctx.restore();
+
+		var sec = now.getSeconds();
+		var min = now.getMinutes();
+		var hr  = now.getHours();
+		hr = hr >= 12 ? hr - 12 : hr;
+
+		ctx.fillStyle = '#222222';
+
+		// write Hours
+		ctx.save();
+		ctx.rotate(hr * (Math.PI / 6) + (Math.PI / 360) * min + (Math.PI / 21600) *sec);
+		ctx.lineWidth = 14;
+		ctx.beginPath();
+		ctx.moveTo(-20, 0);
+		ctx.lineTo(80, 0);
+		ctx.stroke();
+		ctx.restore();
+
+		// write Minutes
+		ctx.save();
+		ctx.rotate((Math.PI / 30) * min + (Math.PI / 1800) * sec);
+		ctx.lineWidth = 10;
+		ctx.beginPath();
+		ctx.moveTo(-28, 0);
+		ctx.lineTo(112, 0);
+		ctx.stroke();
+		ctx.restore();
+
+		// Write seconds
+		ctx.save();
+		ctx.rotate(sec * Math.PI / 30);
+		ctx.strokeStyle = '#ED2839';
+		ctx.fillStyle = '#ED2839';
+		ctx.lineWidth = 6;
+		ctx.beginPath();
+		ctx.moveTo(-30, 0);
+		ctx.lineTo(83, 0);
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.arc(0, 0, 10, 0, Math.PI * 2, true);
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(95, 0, 10, 0, Math.PI * 2, true);
+		ctx.stroke();
+		ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+		ctx.arc(0, 0, 3, 0, Math.PI * 2, true);
+		ctx.fill();
+		ctx.restore();
+
+		ctx.beginPath();
+		ctx.lineWidth = 7;
+		ctx.strokeStyle = '#555555';
+		ctx.arc(0, 0, 142, 0, Math.PI * 2, true);
+		ctx.stroke();
+
+		ctx.restore();
+
+		animate(watch);
+	};
+
+	animate(watch);
+})();
+</script>
 <!-- #END :: Partial Template: Core.AppPoweredInfo -->

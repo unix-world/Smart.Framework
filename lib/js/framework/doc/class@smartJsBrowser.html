@@ -703,7 +703,7 @@ The JavaScript class provides methods to simplify the interraction with the Brow
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Browser</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$Browser</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20210420</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210421</span></li>
 		<li><b>Usage:</b> smartJ$Browser.method();</li>
 		
 		
@@ -1103,7 +1103,8 @@ It will add a maximize / un-maximize button and the handler for it to be able to
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>OverlayShow</b></span>&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`text` Parameter">text</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`title` Parameter">title</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`css_class` Parameter">css_class</span></b></span>
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`css_class` Parameter">css_class</span></b></span>, 
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`overlay_id` Parameter">overlay_id</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
@@ -1117,6 +1118,7 @@ It will add a maximize / un-maximize button and the handler for it to be able to
 			@param: {String} text *Optional* a text to display in overlay as notification<br>
 			@param: {String} title *Optional* a title to display for overlay as notification<br>
 			@param: {String} css_class *Optional* a CSS class name for the notification (if any)<br>
+			@param: {String} overlay_id *Optional* the overlay ID ; default is null and will use a hard-coded ID<br>
 	
 	
 	</div>
@@ -1126,6 +1128,7 @@ All page elements that must be visible over the overlay must have zIndex in rang
 	
 </div><div class="doc-container" id="Method--OverlayClear">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>OverlayClear</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`overlay_id` Parameter">overlay_id</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1134,6 +1137,7 @@ All page elements that must be visible over the overlay must have zIndex in rang
 	
 	
 	
+			@param: {String} overlay_id *Optional* the overlay ID ; default is null and will use a hard-coded ID<br>
 	
 	
 	</div>
@@ -1216,7 +1220,8 @@ after_close: 	() =&gt; {}<br>
 			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_title` Parameter">y_title</span></b></span>, 
 			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_width` Parameter">y_width</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_height` Parameter">y_height</span></b></span>
+			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_height` Parameter">y_height</span></b></span>, 
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`dialogType` Parameter">dialogType</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1231,6 +1236,7 @@ after_close: 	() =&gt; {}<br>
 			@param: {String} y_title *Optional* a title for the alert / Dialog (HTML)<br>
 			@param: {Integer} y_width *Optional* the width of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default width will be used<br>
 			@param: {Integer} y_height *Optional* the height of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default height will be used<br>
+			@param: {String} dialogType *Optional* The Dialog Type ; default is 'auto'<br>
 	
 	
 	</div>
@@ -1246,7 +1252,8 @@ If none of the above are available will try to use jQuery.alertable/alert else j
 			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_title` Parameter">y_title</span></b></span>, 
 			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_width` Parameter">y_width</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_height` Parameter">y_height</span></b></span>
+			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_height` Parameter">y_height</span></b></span>, 
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`dialogType` Parameter">dialogType</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1261,6 +1268,7 @@ If none of the above are available will try to use jQuery.alertable/alert else j
 			@param: {String} y_title *Optional* a title for the confirm / Dialog (HTML)<br>
 			@param: {Integer} y_width *Optional* the width of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default width will be used<br>
 			@param: {Integer} y_height *Optional* the height of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default height will be used<br>
+			@param: {String} dialogType *Optional* The Dialog Type ; default is 'auto'<br>
 	
 	
 	</div>
@@ -1598,8 +1606,10 @@ The function must be called by a form button onClick followed by 'return false;'
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`the_form_id` Parameter">the_form_id</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`url` Parameter">url</span></b></span>, 
 			<i>{Yes/No}</i>&nbsp;<span class="doc-param-name"><b><span title="`growl` Parameter">growl</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`everrcode` Parameter">everrcode</span></b></span>
+			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
+			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`everrcode` Parameter">everrcode</span></b></span>, 
+			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evfailcode` Parameter">evfailcode</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`failalertable` Parameter">failalertable</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1614,8 +1624,10 @@ The function must be called by a form button onClick followed by 'return false;'
 			@param: {String} the_form_id The form ID ; Set it to FALSE/NULL/'' (to use without a real form by emulating a form like XHR request from URL)<br>
 			@param: {String} url The destination URL where form or XHR request will be sent to<br>
 			@param: {Yes/No} growl *Optional* If 'yes' will use the Growl notifications otherwise (if 'no') will use Dialog notifications ; default is set to 'auto'<br>
-			@param: {String} evcode *Optional* the JS Code to execute on SUCCESS answer (before anything else)<br>
-			@param: {String} everrcode *Optional* the JS Code to execute on ERROR answer (before anything else)<br>
+			@param: {JS-Code} evcode *Optional* the JS Code to execute on SUCCESS answer (before anything else)<br>
+			@param: {JS-Code} everrcode *Optional* the JS Code to execute on ERROR answer (before anything else)<br>
+			@param: {JS-Code} evfailcode *Optional* the JS Code to execute on REQUEST FAIL answer<br>
+			@param: {Boolean} failalertable *Optional* if set to TRUE will set the fail dialog to 'alertable' instead of 'auto' if alertable is available<br>
 	
 	
 	</div>
@@ -1708,7 +1720,7 @@ smartJ$Browser.SubmitFormByAjax(); 	// advanced, will handle the XHR form reques
 	
 </div><div class="doc-container" id="Method--LoadElementContentByAjax">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>LoadElementContentByAjax</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_div` Parameter">y_div</span></b></span>, 
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_elemID` Parameter">y_elemID</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_img_loader` Parameter">y_img_loader</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_url` Parameter">y_url</span></b></span>, 
 			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_method` Parameter">y_method</span></b></span>, 
@@ -1726,7 +1738,7 @@ smartJ$Browser.SubmitFormByAjax(); 	// advanced, will handle the XHR form reques
 			@fires: load the div content by ajax in the background and if successful will replace the div content with what comes by ajax<br>
 	
 	
-			@param: {String} y_div The ID of the Div (or other compatible) HTML Element(s) to bind to<br>
+			@param: {String} y_elemID The ID of the Div (or other compatible) HTML Element(s) to bind to<br>
 			@param: {String} y_img_loader If non-empty, a pre-loader image that will be displayed while loading ; if set to TRUE will use smartJ$Browser.param_LoaderImg;<br>
 			@param: {String} y_url The URL to send the Request to<br>
 			@param: {Enum} y_method The Request Method: GET / POST<br>
@@ -2181,7 +2193,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-19 23:00:11 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:58 +0000</small>
 <hr>
 <br>
 <!-- # -->

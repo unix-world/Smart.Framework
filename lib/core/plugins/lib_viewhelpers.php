@@ -2143,17 +2143,20 @@ final class SmartViewHtmlHelpers {
 	 * @param $y_form_id 			HTML form ID (Example: myForm)
 	 * @param $y_script_url 		the php script to post to (Example: admin.php)
 	 * @param $y_confirm_question 	if not empty will ask a confirmation question
-	 * @param $y_js_evcode			if not empty, JS to execute on Success (before anything else)
+	 * @param $y_js_evcode			if not empty, the JS Code to execute on SUCCESS answer (before anything else)
+	 * @param $y_js_everrcode		if not empty, the JS Code to execute on ERROR answer (before anything else)
+	 * @param $y_js_evfailcode		if not empty, the JS Code to execute on REQUEST FAIL answer
+	 * @param $y_failalertable 		if set to TRUE will set the fail dialog to 'alertable' instead of 'auto' if alertable is available
 	 *
 	 * @return STRING				[javascript code]
 	 */
-	public static function js_ajax_submit_html_form($y_form_id, $y_script_url, $y_confirm_question='', $y_js_evcode='') {
+	public static function js_ajax_submit_html_form($y_form_id, $y_script_url, $y_confirm_question='', $y_js_evcode='', $y_js_everrcode='', $y_js_evfailcode='', $y_failalertable=false) {
 		//--
 		$y_js_evcode = (string) trim((string)$y_js_evcode);
 		//--
 		$tmp_use_growl = 'auto';
 		//--
-		$js_post = 'smartJ$Browser.SubmitFormByAjax(\''.Smart::escape_js($y_form_id).'\', \''.Smart::escape_js($y_script_url).'\', \''.Smart::escape_js($tmp_use_growl).'\', \''.Smart::escape_js($y_js_evcode).'\');';
+		$js_post = 'smartJ$Browser.SubmitFormByAjax(\''.Smart::escape_js($y_form_id).'\', \''.Smart::escape_js($y_script_url).'\', \''.Smart::escape_js($tmp_use_growl).'\', \''.Smart::escape_js($y_js_evcode).'\', \''.Smart::escape_js($y_js_everrcode).'\', \''.Smart::escape_js($y_js_evfailcode).'\', '.($y_failalertable === true ? 'true' : 'false').');';
 		//--
 		if(strlen($y_confirm_question) > 0) {
 			$js_post = (string) self::js_code_ui_confirm_dialog($y_confirm_question, (string)$js_post);
