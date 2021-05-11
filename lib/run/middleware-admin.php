@@ -1,5 +1,5 @@
 <?php
-// Smart.Framework / Middleware / Admin
+// Smart.Framework / Middleware / Admin | Task
 // (c) 2006-2020 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
@@ -20,9 +20,11 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //####################
 
-
-define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A]@v.7.2.1');
-
+if(defined('SMART_FRAMEWORK_RELEASE_MIDDLEWARE')) {
+	@http_response_code(500);
+	die('SMART_FRAMEWORK_RELEASE_MIDDLEWARE cannot be defined outside MIDDLEWARE [A][T]');
+} //end if
+define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A][T]@v.7.2.1');
 
 //==================================================================================
 //================================================================================== CLASS START
@@ -31,15 +33,15 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A]@v.7.2.1');
 // [REGEX-SAFE-OK]
 
 /**
- * Class: Middleware Admin Service Handler
+ * Class: Middleware Admin | Task Service Handler
  *
- * DO NOT CALL THIS CLASS ANYWHERE AS THIS IS THE MAIN HANDLER FOR admin.php
+ * DO NOT CALL THIS CLASS ANYWHERE AS THIS IS THE MAIN HANDLER FOR admin.php | task.php
  *
  * @access 		private
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210421
+ * @version		20210510
  *
  */
 final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
@@ -52,44 +54,66 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 	//====================================================================
 	public static function Run() {
 		//--
-		global $configs;
-		//--
 		//==
 		//--
 		if(self::$MiddlewareCompleted !== false) { // avoid to execute more than 1 this middleware !
-			self::Raise500Error('Middleware App Execution already completed ...');
+			SmartFrameworkRuntime::Raise500Error('Middleware App Execution already completed ...');
 			return;
 		} //end if
 		self::$MiddlewareCompleted = true;
 		//--
-		$the_midmark = '[A]';
-		//--
-		if(SmartFrameworkRuntime::isAdminArea() !== true) {
+		if(SmartFrameworkRegistry::isAdminArea() !== true) {
 			Smart::raise_error(
-				'Middleware ERROR: This Middleware can run only for Admin Area'
+				'Middleware ERROR: This Middleware can run only for Admin or Task Areas'
 			);
 			return;
 		} //end if
 		//--
+		// ### TASKS are behaving like admin area but with some extra special privileges but having some extra restrictions
+		// Tasks:
+		// 	* must be restricted by a specific list of IP addresses
+		// 	* must be restricted via the admin authentication system
+		// 	* must run in a separate area than admin, but using the admin middleware
+		// 	* will not be allowed to run in shared controller mode or inherit from 3rd party controllers except the abstract controller
+		// 	* will have certain unrestricted privileges that are not applicable for admin or index
+		// ###
+		//--
+		if(SmartFrameworkRegistry::isTaskArea() === true) {
+			$the_midmark = '[T]';
+			$the_area = 'task';
+			if(defined('SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS') AND ((string)trim((string)SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS) != '')) {
+				if(stripos((string)SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS, '<'.SmartUtils::get_ip_client().'>') === false) {
+					SmartFrameworkRuntime::Raise403Error('Tasks: Allowed IP Address list does not contain this IP ...');
+					return;
+				} //end if
+			} else {
+				SmartFrameworkRuntime::Raise503Error('Tasks: Allowed IP Address list is empty, Access to this area is disabled by configs ...');
+				return;
+			} //end if else
+		} else {
+			$the_midmark = '[A]';
+			$the_area = 'admin';
+		} //end if else
+		//--
 		if(!defined('SMART_APP_TEMPLATES_DIR')) {
-			self::Raise500Error('The SMART_APP_TEMPLATES_DIR not defined ...');
+			SmartFrameworkRuntime::Raise500Error('The SMART_APP_TEMPLATES_DIR not defined ...');
 			return;
 		} //end if
 		//--
 		if(defined('SMART_APP_MODULE_AREA')) {
-			self::Raise500Error('Smart App Area must NOT be Defined outside controllers ...');
+			SmartFrameworkRuntime::Raise500Error('Smart App Area must NOT be Defined outside controllers ...');
 			return;
 		} //end if
 		if(defined('SMART_APP_MODULE_AUTH')) {
-			self::Raise500Error('Smart App Module Auth must NOT be Defined outside controllers ...');
+			SmartFrameworkRuntime::Raise500Error('Smart App Module Auth must NOT be Defined outside controllers ...');
 			return;
 		} //end if
 		if(defined('SMART_APP_MODULE_REALM_AUTH')) {
-			self::Raise500Error('Smart App Module Realm Auth must NOT be Defined outside controllers ...');
+			SmartFrameworkRuntime::Raise500Error('Smart App Module Realm Auth must NOT be Defined outside controllers ...');
 			return;
 		} //end if
 		if(defined('SMART_APP_MODULE_DIRECT_OUTPUT')) {
-			self::Raise500Error('Smart App Module Direct Output must NOT be Defined outside controllers ...');
+			SmartFrameworkRuntime::Raise500Error('Smart App Module Direct Output must NOT be Defined outside controllers ...');
 			return;
 		} //end if
 		//--
@@ -103,7 +127,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 					break;
 				case 'debug':
 				case 'debug-tpl':
-				//	if(!SmartFrameworkRuntime::ifDebug()) {
+				//	if(!SmartFrameworkRegistry::ifDebug()) {
 				//		$smartframeworkservice = '';
 				//	} //end if
 					break;
@@ -134,15 +158,19 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		//--
 		//== OVERALL AUTHENTICATION BREAKPOINT
 		//--
-		SmartAppBootstrap::Authenticate('admin'); // if the auth uses session it may start now
+		SmartAppBootstrap::Authenticate('admin'); // if the auth uses session it may start now ; tasks should authenticate also on 'admin' area realm
 		//--
 		//== RAW OUTPUT FOR DEBUG
 		//--
 		if((string)$smartframeworkservice == 'debug') {
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRuntime::outputHttpHeadersNoCache(); // headers: cache control, force no-cache
-				echo self::DebugInfoGet('adm');
+				if(SmartFrameworkRegistry::isTaskArea() === true) {
+					echo self::DebugInfoGet('tsk');
+				} else {
+					echo self::DebugInfoGet('adm');
+				} //end if else
 			} else {
 				http_response_code(404);
 				echo SmartComponents::http_message_404_notfound('NO DEBUG Service has been activated on this server ...');
@@ -152,7 +180,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 			//--
 		} elseif((string)$smartframeworkservice == 'debug-tpl') {
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRuntime::outputHttpHeadersNoCache(); // headers: cache control, force no-cache
 				echo SmartDebugProfiler::display_marker_tpl_debug((string)SmartFrameworkRegistry::getRequestVar('tpl'));
 			} else {
@@ -177,8 +205,9 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		$page = (string) SmartUnicode::utf8_to_iso((string)SmartFrameworkRegistry::getRequestVar('page'));
 		$page = (string) trim((string)str_replace(array('/', '\\', ':', '?', '&', '=', '%'), array('', '', '', '', '', '', ''), $page)); // fix for get as it automatically replaces . with _ (so, reverse), but also fix some invalid characters ...
 		if((string)$page == '') {
-			$page = (string) $configs['app']['admin-home'];
+			$page = (string) trim((string)Smart::get_from_config('app.'.$the_area.'-home', 'string'));
 		} //end if
+		$defmod = (string) trim((string)Smart::get_from_config('app.'.$the_area.'-default-module', 'string'));
 		//--
 		if(strpos($page, '.') !== false) { // page can be as module.controller / module.controller(.php|html|stml|json|...)
 			//--
@@ -195,13 +224,13 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 			$arr[0] = (string) trim((string)strtolower((string)$arr[0])); // module
 			$arr[1] = (string) trim((string)strtolower((string)$arr[1])); // controller
 			//#
-			//# Admin will NOT integrate with friendly URLs SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE
+			//# Admin or Task will NOT integrate with friendly URLs SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE
 			//# that feature is just for Index
 			//#
 			//--
-		} elseif((string)$configs['app']['admin-default-module'] != '') {
+		} elseif((string)$defmod != '') {
 			//--
-			$arr[0] = (string) trim((string)strtolower((string)$configs['app']['admin-default-module'])); // get default module
+			$arr[0] = (string) trim((string)strtolower((string)$defmod)); // get default module
 			$arr[1] = (string) trim((string)strtolower((string)$page)); // controller
 			//--
 		} else {
@@ -236,65 +265,95 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		} //end if
 		//--
 		$the_controller_name = (string) $arr[0].'.'.$arr[1];
-		$the_path_to_module = Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash('modules/mod-'.Smart::safe_filename($arr[0])));
-		$the_module = Smart::safe_pathname($the_path_to_module.Smart::safe_filename($arr[1]).'.php');
-		if(!SmartFileSystem::is_type_file($the_module)) {
+		$the_path_to_module = (string) Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash('modules/mod-'.Smart::safe_filename($arr[0])));
+		$the_controller_file = (string) Smart::safe_pathname($the_path_to_module.Smart::safe_filename($arr[1]).'.php');
+		if(!SmartFileSystem::is_type_file($the_controller_file)) {
 			if((string)$err404 == '') {
 				$err404 = 'Page does not exist: '.$page;
 			} //end if
 		} //end if
 		//--
 		if((string)$err404 != '') {
-			self::Raise404Error((string)$err404);
+			SmartFrameworkRuntime::Raise404Error((string)$err404);
 			return;
 		} //end if
 		//--
-		if((!SmartFileSysUtils::check_if_safe_path($the_path_to_module)) OR (!SmartFileSysUtils::check_if_safe_path($the_module))) {
-			self::Raise400Error('Insecure Module Access for Page: '.$page);
+		if((!SmartFileSysUtils::check_if_safe_path($the_path_to_module)) OR (!SmartFileSysUtils::check_if_safe_path($the_controller_file))) {
+			SmartFrameworkRuntime::Raise400Error('Insecure Module Access for Page: '.$page);
 			return;
 		} //end if
 		//--
-		if((class_exists('SmartAppIndexController')) OR (class_exists('SmartAppAdminController'))) {
-			self::Raise500Error('Module Class Runtimes must be defined only in modules ...');
+		if((class_exists('SmartAppIndexController')) OR (class_exists('SmartAppAdminController')) OR (class_exists('SmartAppTaskController'))) {
+			SmartFrameworkRuntime::Raise500Error('Module Class Runtimes must be defined only in modules ...');
 			return;
 		} //end if
 		//--
-		require((string)$the_module);
+		require((string)$the_controller_file);
 		//--
-		if(((string)SMART_APP_MODULE_AREA !== 'ADMIN') AND ((string)SMART_APP_MODULE_AREA !== 'SHARED')) {
-			self::Raise403Error('Page Access Denied for Admin Area: '.$page);
-			return;
+		if(SmartFrameworkRegistry::isTaskArea() === true) {
+			if((string)SMART_APP_MODULE_AREA !== 'TASK') { // tasks cannot use shared controllers !!!
+				SmartFrameworkRuntime::Raise403Error('Page Access Denied for Task Area: '.$page);
+				return;
+			} //end if
+		} else {
+			if(((string)SMART_APP_MODULE_AREA !== 'ADMIN') AND ((string)SMART_APP_MODULE_AREA !== 'SHARED')) {
+				SmartFrameworkRuntime::Raise403Error('Page Access Denied for Admin Area: '.$page);
+				return;
+			} //end if
+		} //end if else
+		if(defined('SMART_APP_MODULE_AUTOLOAD')) {
+			require_once((string)$the_path_to_module.'lib/autoload.php');
 		} //end if
 		if(defined('SMART_APP_MODULE_AUTH')) {
 			if(SmartAuth::check_login() !== true) {
-				self::Raise403Error('Page Access Denied ! No Authentication: '.$page);
+				SmartFrameworkRuntime::Raise403Error('Page Access Denied ! No Authentication: '.$page);
 				return;
 			} //end if
 			if(defined('SMART_APP_MODULE_REALM_AUTH')) {
 				if((string)SmartAuth::get_login_realm() !== (string)SMART_APP_MODULE_REALM_AUTH) {
-					self::Raise403Error('Page Access Denied ! Invalid Login Realm: '.$page);
+					SmartFrameworkRuntime::Raise403Error('Page Access Denied ! Invalid Login Realm: '.$page);
 					return;
 				} //end if
 			} //end if
 		} //end if
 		//--
-		if(!class_exists('SmartAppAdminController')) {
-			self::Raise500Error('Invalid Module Class Runtime for Page: '.$page);
-			return;
-		} //end if
-		if(!is_subclass_of('SmartAppAdminController', 'SmartAbstractAppController')) {
-			self::Raise500Error('Invalid Module Class Inheritance for Controller Page: '.$page);
-			return;
-		} //end if
+		if(SmartFrameworkRegistry::isTaskArea() === true) {
+			if(!class_exists('SmartAppTaskController')) {
+				SmartFrameworkRuntime::Raise500Error('Invalid Module Class Runtime for TASK Page: '.$page);
+				return;
+			} //end if
+			if(!is_subclass_of('SmartAppTaskController', 'SmartAbstractAppController')) {
+				SmartFrameworkRuntime::Raise500Error('Invalid Module Class Inheritance for TASK Controller Page: '.$page);
+				return;
+			} //end if
+		} else {
+			if(!class_exists('SmartAppAdminController')) {
+				SmartFrameworkRuntime::Raise500Error('Invalid Module Class Runtime for ADMIN Page: '.$page);
+				return;
+			} //end if
+			if(!is_subclass_of('SmartAppAdminController', 'SmartAbstractAppController')) {
+				SmartFrameworkRuntime::Raise500Error('Invalid Module Class Inheritance for ADMIN Controller Page: '.$page);
+				return;
+			} //end if
+		} //end if else
 		//--
 		//== RUN THE MODULE
 		//--
-		$appModule = new SmartAppAdminController(
-			$the_path_to_module,
-			$the_controller_name,
-			$page,
-			'admin'
-		);
+		if(SmartFrameworkRegistry::isTaskArea() === true) {
+			$appModule = new SmartAppTaskController(
+				(string) $the_path_to_module,
+				(string) $the_controller_name,
+				(string) $page,
+				(string) 'task'
+			);
+		} else {
+			$appModule = new SmartAppAdminController(
+				(string) $the_path_to_module,
+				(string) $the_controller_name,
+				(string) $page,
+				(string) 'admin'
+			);
+		} //end if else
 		//--
 		if(!defined('SMART_APP_MODULE_DIRECT_OUTPUT') OR SMART_APP_MODULE_DIRECT_OUTPUT !== true) {
 			ob_start();
@@ -348,7 +407,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		//== CACHE CONTROL
 		//--
 		if((int)$appStatusCode < 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
-			if(((int)$appSettings['expires'] > 0) AND (!SmartFrameworkRuntime::ifDebug())) {
+			if(((int)$appSettings['expires'] > 0) AND (!SmartFrameworkRegistry::ifDebug())) {
 				SmartFrameworkRuntime::outputHttpHeadersNoCache((int)$appSettings['expires'], (int)$appSettings['modified'], (string)$appSettings['c-control']); // headers: cache expiration control
 			} elseif((int)$appSettings['expires'] != 304) { // {{{SYNC-MIDDLEWARE-CACHED-STATUS-CODE}}}
 				SmartFrameworkRuntime::outputHttpHeadersNoCache(); // headers: cache control, force no-cache
@@ -360,64 +419,51 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		switch((int)$appStatusCode) {
 			//-- server errors
 			case 504:
-				self::Raise504Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				SmartFrameworkRuntime::Raise504Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 503:
-				self::Raise503Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				SmartFrameworkRuntime::Raise503Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 502:
-				self::Raise502Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				SmartFrameworkRuntime::Raise502Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 500:
-				self::Raise500Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				SmartFrameworkRuntime::Raise500Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			//-- client errors
 			case 429:
-				self::Raise429Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				SmartFrameworkRuntime::Raise429Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 404:
-				self::Raise404Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				SmartFrameworkRuntime::Raise404Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 403:
-				self::Raise403Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				SmartFrameworkRuntime::Raise403Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 401:
-				self::Raise401Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				SmartFrameworkRuntime::Raise401Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 400:
-				self::Raise400Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				SmartFrameworkRuntime::Raise400Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			//-- redirect 3xx statuses
 			case 301:
 			case 302:
 				if((string)$appSettings['redirect-url'] != '') { // expects a valid URL
-					$the_redirect_link = '<a href="'.Smart::escape_html((string)$appSettings['redirect-url']).'">'.Smart::escape_html((string)$appSettings['redirect-url']).'</a>';
-					if(headers_sent()) {
-						Smart::log_warning('Headers Already Sent in controller ['.$page.'] before Redirection: ['.$appStatusCode.'] ; URL: '.$appSettings['redirect-url']);
-						self::Raise500Error('The app failed to Redirect to: '.$the_redirect_link);
-						return;
-					} //end if
-					if((int)$appStatusCode == 301) {
-						$the_redirect_text = 'Moved Permanently'; // permanent redirect for HTTP 1.0 / HTTP 1.1
-						http_response_code(301);
-					} else { // any other code will be interpreted as 302 (the default redirection in PHP)
-						$the_redirect_text = 'Found'; // temporary redirect for HTTP 1.0 / HTTP 1.1
-						http_response_code(302);
-					} //end if else
-					SmartFrameworkRuntime::outputHttpSafeHeader('Location: '.$appSettings['redirect-url']);
-					echo '<h1>'.Smart::escape_html($the_redirect_text).'</h1>'.'<br>'.'If the page redirection fails, click on the below link:'.'<br>'.$the_redirect_link;
+					SmartFrameworkRuntime::Raise3xxRedirect((int)$appStatusCode, (string)$appSettings['redirect-url']);
 					return; // break stop
 				} else {
 					Smart::log_warning('Redirection HTTP Status ['.(int)$appStatusCode.'] was used in controller ['.$page.'] without a redirection URL ...');
+					SmartFrameworkRuntime::Raise500Error('Empty Redirect URL for HTTP Status: '.(int)$appStatusCode);
 				} //end if
 				break;
 			//-- extended 3xx statuses (CACHE CONTROL)
@@ -541,10 +587,10 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 				$the_template_path = Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash(trim((string)$appSettings['template-path'])));
 			} //end if else
 		} else { // use default template path
-			$the_template_path = (string) trim((string)$configs['app']['admin-template-path']);
+			$the_template_path = (string) trim((string)Smart::get_from_config('app.'.$the_area.'-template-path', 'string'));
 			if((string)$the_template_path == '') {
 				Smart::log_warning('Invalid Page Template Path In Config: `'.$the_template_path.'`');
-				self::Raise500Error('Invalid Page Template Path. See the error log !');
+				SmartFrameworkRuntime::Raise500Error('Invalid Page Template Path. See the error log !');
 				return;
 			} //end if
 			if((string)$the_template_path != '@') {
@@ -555,10 +601,10 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		if((isset($appSettings['template-file'])) AND ((string)trim((string)$appSettings['template-file']) != '')) {
 			$the_template_file = Smart::safe_filename(trim((string)$appSettings['template-file']));
 		} else { // use default template file
-			$the_template_file = (string) trim((string)$configs['app']['admin-template-file']);
+			$the_template_file = (string) trim((string)Smart::get_from_config('app.'.$the_area.'-template-file', 'string'));
 			if((string)$the_template_file == '') {
 				Smart::log_warning('Invalid Page Template File In Config: `'.$the_template_file.'`');
-				self::Raise500Error('Invalid Page Template File. See the error log !');
+				SmartFrameworkRuntime::Raise500Error('Invalid Page Template File. See the error log !');
 				return;
 			} //end if
 			$the_template_file = Smart::safe_filename($the_template_file);
@@ -573,27 +619,31 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 		//--
 		if(!SmartFileSysUtils::check_if_safe_path($the_template_path)) {
 			Smart::log_warning('Invalid Page Template Path: '.$the_template_path);
-			self::Raise500Error('Invalid Page Template Path. See the error log !');
+			SmartFrameworkRuntime::Raise500Error('Invalid Page Template Path. See the error log !');
 			return;
 		} //end if
 		if(!SmartFileSystem::is_type_dir($the_template_path)) {
 			Smart::log_warning('Page Template Path does not Exists: '.$the_template_path);
-			self::Raise500Error('Page Template Path does not Exists. See the error log !');
+			SmartFrameworkRuntime::Raise500Error('Page Template Path does not Exists. See the error log !');
 			return;
 		} //end if
 		if(!SmartFileSysUtils::check_if_safe_path($the_template_path.$the_template_file)) {
 			Smart::log_warning('Invalid Page Template File: '.$the_template_path.$the_template_file);
-			self::Raise500Error('Invalid Page Template File. See the error log !');
+			SmartFrameworkRuntime::Raise500Error('Invalid Page Template File. See the error log !');
 			return;
 		} //end if
 		if(!SmartFileSystem::is_type_file($the_template_path.$the_template_file)) {
 			Smart::log_warning('Page Template File does not Exists: '.$the_template_path.$the_template_file);
-			self::Raise500Error('Page Template File does not Exists. See the error log !');
+			SmartFrameworkRuntime::Raise500Error('Page Template File does not Exists. See the error log !');
 			return;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
-			self::DebugInfoCookieSet('adm');
+		if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartFrameworkRegistry::isTaskArea() === true) {
+				self::DebugInfoCookieSet('tsk');
+			} else {
+				self::DebugInfoCookieSet('adm');
+			} //end if else
 		} // end if
 		echo SmartComponents::render_app_template((string)$the_template_path, (string)$the_template_file, (array)$appData);
 		//--

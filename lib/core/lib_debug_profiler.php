@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
- * @version 	v.20210401
+ * @version 	v.20210430
  * @package 	Application:Development
  *
  */
@@ -71,7 +71,7 @@ public static function register_extra_debug_log($class_name, $method_name) {
 public static function js_headers_debug($y_profiler_url) {
 
 	//--
-	if(!SmartFrameworkRuntime::ifDebug()) {
+	if(!SmartFrameworkRegistry::ifDebug()) {
 		return '';
 	} //end if
 	//--
@@ -95,7 +95,7 @@ public static function js_headers_debug($y_profiler_url) {
 public static function div_main_debug() {
 
 	//--
-	if(!SmartFrameworkRuntime::ifDebug()) {
+	if(!SmartFrameworkRegistry::ifDebug()) {
 		return '';
 	} //end if
 	//--
@@ -112,11 +112,11 @@ public static function div_main_debug() {
 public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 
 	//-- {{{SYNC-DEBUG-DATA}}}
-	if(!SmartFrameworkRuntime::ifDebug()) {
+	if(!SmartFrameworkRegistry::ifDebug()) {
 		return false;
 	} //end if
 	//--
-	if(((string)$y_area != 'idx') AND ((string)$y_area != 'adm')) {
+	if(((string)$y_area != 'idx') AND ((string)$y_area != 'adm') AND ((string)$y_area != 'tsk')) {
 		return false;
 	} //end if
 	//--
@@ -236,7 +236,7 @@ public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 public static function test_tpl_file_for_debug($y_tpl_file) {
 
 	//--
-	if(!SmartFrameworkRuntime::ifDebug()) {
+	if(!SmartFrameworkRegistry::ifDebug()) {
 		return false;
 	} //end if
 	//--
@@ -284,7 +284,7 @@ public static function test_tpl_file_for_debug($y_tpl_file) {
 public static function read_tpl_file_for_debug($y_tpl_file) {
 
 	//--
-	if(!SmartFrameworkRuntime::ifDebug()) {
+	if(!SmartFrameworkRegistry::ifDebug()) {
 		return array();
 	} //end if
 	//--
@@ -337,7 +337,7 @@ public static function display_debug_page($title, $content) {
 public static function display_marker_tpl_debug($y_tpl_file, array $y_arr_sub_templates=[], $y_use_decrypt=true) {
 
 	//--
-	if(!SmartFrameworkRuntime::ifDebug()) {
+	if(!SmartFrameworkRegistry::ifDebug()) {
 		return '';
 	} //end if
 	//--
@@ -383,11 +383,11 @@ public static function print_debug_info($y_area, $y_debug_token) {
 	global $configs;
 
 	//-- {{{SYNC-DEBUG-DATA}}}
-	if(!SmartFrameworkRuntime::ifDebug()) {
+	if(!SmartFrameworkRegistry::ifDebug()) {
 		return '';
 	} //end if
 	//--
-	if(((string)$y_area != 'idx') AND ((string)$y_area != 'adm')) {
+	if(((string)$y_area != 'idx') AND ((string)$y_area != 'adm') AND ((string)$y_area != 'tsk')) {
 		return '';
 	} //end if
 	//--
@@ -554,8 +554,12 @@ public static function print_debug_info($y_area, $y_debug_token) {
 //==================================================================
 private static function url_tpl_decrypt($y_tpl_file) {
 	//--
-	if(SmartFrameworkRuntime::isAdminArea() === true) {
-		$the_area = 'admin';
+	if(SmartFrameworkRegistry::isAdminArea() === true) {
+		if(SmartFrameworkRegistry::isTaskArea() === true) {
+			$the_area = 'task';
+		} else {
+			$the_area = 'admin';
+		} //end if else
 	} else {
 		$the_area = 'index';
 	} //end if else
@@ -574,8 +578,12 @@ private static function url_tpl_decrypt($y_tpl_file) {
 //==================================================================
 private static function url_tpl_encrypt($y_tpl_file) {
 	//--
-	if(SmartFrameworkRuntime::isAdminArea() === true) {
-		$the_area = 'admin';
+	if(SmartFrameworkRegistry::isAdminArea() === true) {
+		if(SmartFrameworkRegistry::isTaskArea() === true) {
+			$the_area = 'task';
+		} else {
+			$the_area = 'admin';
+		} //end if else
 	} else {
 		$the_area = 'index';
 	} //end if else
@@ -630,26 +638,38 @@ private static function print_log_runtime() {
 	//--
 	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>Client / Server :: RUNTIME Log</b></font></div>';
 	//--
-	if(SmartFrameworkRuntime::isAdminArea() === true) {
-		$the_area = 'admin';
+	if(SmartFrameworkRegistry::isAdminArea() === true) {
+		if(SmartFrameworkRegistry::isTaskArea() === true) {
+			$the_area = 'task';
+		} else {
+			$the_area = 'admin';
+		} //end if else
 	} else {
 		$the_area = 'index';
 	} //end if else
 	//--
 	$arr_ident = (array) SmartUtils::get_os_browser_ip();
-	$arr_bw = (array) SmartComponents::get_imgdesc_by_bw_id($arr_ident['bw']);
+	$arr_bw = (array) SmartComponents::get_imgdesc_by_bw_id((string)$arr_ident['bw']);
 	//--
 	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;"><b>Client Runtime: Info</b></div>';
 	$log .= '<div class="smartframework_debugbar_inforow">'.'<div style="display:inline-block; margin-right:20px; margin-bottom:10px; margin-top:10px; margin-left:5px;"><img src="'.Smart::escape_html(SmartUtils::get_server_current_url().(string)$arr_bw['img']).'" width="64" height="64" alt="'.Smart::escape_html((string)$arr_bw['img']).'" title="'.Smart::escape_html($arr_bw['img']).'"></div> <div style="display:inline-block;"><b>Browser User-Agent Signature:</b> '.Smart::escape_html((string)SmartUtils::get_visitor_useragent()).'<br><b>Browser ID / Browser Class / Client OS:</b> '.Smart::escape_html((string)$arr_ident['bw'].' / '.(string)$arr_ident['bc'].' / '.(string)$arr_ident['os']).'<br><b>Browser Is Mobile:</b> '.Smart::escape_html((string)$arr_ident['mobile']).'<br><b>Client IP / Client Proxy IP:</b> '.Smart::escape_html((string)$arr_ident['ip'].' / '.(trim((string)$arr_ident['px']) ? (string)$arr_ident['px'] : '-')).'</div>'.'</div>';
 	//--
 	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;"><b>Server App Runtime: Powered by</b></div>';
-	$log .= '<div class="smartframework_debugbar_inforow">'.SmartComponents::app_powered_info('yes').'</div>';
+	$log .= '<div class="smartframework_debugbar_inforow">';
+	$log .= (string) SmartComponents::app_powered_info(
+		'yes',
+		[], // no extra plugins
+		false, // don't exclude db plugins
+		false, // don't display watch
+		true // display logo
+	);
+	$log .= '</div>';
 	//--
 	$arr = [
 		'Server Runtime: Smart.Framework' => [
 			'Smart.Framework Middleware Area' => $the_area,
 			'Smart.Framework Release / Tag / Branch' => SMART_FRAMEWORK_RELEASE_VERSION.' / '.SMART_FRAMEWORK_RELEASE_TAGVERSION.' / '.SMART_FRAMEWORK_VERSION,
-			'Smart.Framework Encoding: Internal / DB' => SMART_FRAMEWORK_CHARSET.' / '.SMART_FRAMEWORK_DBSQL_CHARSET
+			'Smart.Framework Encoding: Internal / DB' => SMART_FRAMEWORK_CHARSET.' / '.SMART_FRAMEWORK_SQL_CHARSET
 		],
 		'Server Domain: Info' => [
 			'Server Full URL' => SmartUtils::get_server_current_url(),
@@ -864,10 +884,10 @@ private static function print_log_headers($response_code, $response_heads_arr, $
 			break;
 		//--
 		case 301:
-			$status_code_msg = 'Permanent Redirect';
+			$status_code_msg = 'Moved Permanently (Permanent Redirect)';
 			break;
 		case 302:
-			$status_code_msg = 'Temporary Redirect';
+			$status_code_msg = 'Found (Temporary Redirect)';
 			break;
 		case 304:
 			$status_code_msg = 'Not Modified';

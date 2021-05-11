@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/Toolkit
 // Route: ?/page/samples.toolkit (?page=samples.toolkit)
 // (c) 2006-2020 unix-world.org - all rights reserved

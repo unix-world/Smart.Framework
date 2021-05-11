@@ -33,7 +33,7 @@
 <div style="width:100% !important; padding-left:10px; padding-top:2px; padding-right:10px; box-sizing: border-box !important; -moz-box-sizing: border-box !important; -webkit-box-sizing: border-box !important;">
 
 	<div class="ux-section">
-		<h1 class="lightSpeedIn animated delay-1s">UX Toolkit <span style="color:#CCCCCC!important; font-weight:normal!important; font-size:75%!important;">r.20210310</span> - Overview</h1>
+		<h1 class="lightSpeedIn animated delay-1s">UX Toolkit <span style="color:#CCCCCC!important; font-weight:normal!important; font-size:75%!important;">r.20210511</span> - Overview</h1>
 	</div>
 
 	<br>
@@ -119,16 +119,18 @@
 	<h3>Send Buttons</h3>
 	<p>
 		<button class="ux-button ux-button-primary ux-button-xlarge"><i class="sfi sfi-arrow-up sfi-xl"></i> &nbsp; Submit Button</button> &nbsp;
-		<button class="ux-button ux-button-secondary ux-button-large"><i class="sfi sfi-arrow-up sfi-lg"></i> &nbsp; Submit Button</button> &nbsp;
+		<button class="ux-button ux-button-large"><i class="sfi sfi-arrow-up sfi-lg"></i> &nbsp; Submit Button</button> &nbsp;
 		<button class="ux-button ux-button-regular"><i class="sfi sfi-arrow-up"></i> &nbsp; Submit (Button)</button> &nbsp;
 		<button class="ux-button ux-button-highlight ux-button-small"><i class="sfi sfi-arrow-up sfi-sm"></i> &nbsp; Submit Button</button> &nbsp;
 		<button class="ux-button ux-button-special ux-button-xsmall"><i class="sfi sfi-arrow-up sfi-xs"></i> &nbsp; Submit Button</button> &nbsp;
+		<button class="ux-button ux-button-secondary ux-button-super"><i class="sfi sfi-arrow-up"></i> &nbsp; Submit Button</button> &nbsp;
 		<br>
 		<input class="ux-button ux-button-special ux-button-xlarge" type="submit" value="Submit Input"> &nbsp;
 		<input class="ux-button ux-button-info ux-button-large" type="button" value="Submit Input"> &nbsp;
 		<input class="ux-button ux-button-dark" type="reset" value="Submit Input"> &nbsp;
 		<input class="ux-button ux-button-small" type="button" value="Submit Input"> &nbsp;
 		<input class="ux-button ux-button-secondary ux-button-xsmall" type="submit" value="Submit Input"> &nbsp;
+		<input class="ux-button ux-button-regular ux-button-super" type="submit" value="Submit Input"> &nbsp;
 	</p>
 
 	<br>
@@ -755,7 +757,7 @@
 				</div>
 				<div class="ux-u-1 ux-u-md-1-3">
 					<label>State</label>
-					<select class="ux-input-medium">
+					<select>
 						<option>AL</option>
 						<option>CA</option>
 						<option>IL</option>
@@ -796,7 +798,7 @@
 			<aside class="ux-form-message">This is another required field.</aside>
 
 			<label>State</label>
-			<select class="ux-input-medium">
+			<select>
 				<option>AL</option>
 				<option>CA</option>
 				<option>IL</option>
@@ -949,10 +951,10 @@
 	</form>
 
 
-	<h3>Form Selects</h3>
+	<h3>Form XL Fields</h3>
 
-	<form class="ux-form">
-		<select class="ux-input-medium">
+	<form>
+		<select class="ux-field ux-field-xl">
 			<option>Brazil</option>
 			<option>Canada</option>
 			<option>United States</option>
@@ -961,13 +963,16 @@
 		</select>
 		<br>
 		<br>
-		<select multiple="multiple" class="ux-input-large">
+		<select multiple="multiple" class="ux-field ux-field-xl">
 			<option>Brazil</option>
 			<option>Canada</option>
 			<option>United States</option>
 			<option>United Kingdom</option>
 			<option>Venezuela</option>
 		</select>
+		<br>
+		<br>
+		<input type="text" class="ux-field ux-field-xl" placeholder="XL">
 	</form>
 
 

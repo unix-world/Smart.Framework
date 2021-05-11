@@ -1,6 +1,6 @@
 <?php
 // [APP - Bootstrap / Smart.Framework]
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //-----------------------------------------------------
 
 //======================================================
-// Smart-Framework - App Bootstrap :: r.20210421
+// Smart-Framework - App Bootstrap :: r.20210506
 // DEPENDS: SmartFramework, SmartFrameworkRuntime
 //======================================================
 // This file can be customized per App ...
@@ -48,7 +48,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20210421
+ * @version 	v.20210506
  *
  */
 final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
@@ -59,8 +59,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 	private static $authCompleted 	= false; 			// flag to avoid re-authenticate
 	private static $isRunning 		= false; 			// flag to avoid re-run
 
-	private static $isSetLanguageBySubdomain = false; 	// flag to avoid set again language by subdomain
-
+	private static $isSetLanguageBySubdomain  = false; 	// flag to avoid set again language by subdomain
 
 	//===== [PUBLIC:REQUIRED]
 
@@ -71,6 +70,8 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 		global $configs;
 		//--
 		if(self::$initCompleted !== false) {
+			http_response_code(500);
+			die((string)SmartComponents::http_message_500_internalerror('App Boostrap is already initialized ...'));
 			return; // avoid run after it was used by runtime
 		} //end if
 		self::$initCompleted = true;
@@ -81,10 +82,11 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			return;
 		} //end if
 		//--
-		self::createRequiredDirs(); 				// load at the begining
+		self::createRequiredDirs(); 				// must be first
+		//--
 		self::setPersistentCacheAdapter(); 			// may depend on dirs if using file system like dba or sqlite
 		self::setTextTranslationsAdapter(); 		// depends on persistent cache
-		self::setCustomSessionHandlerAdapter(); 	// load at the end
+		self::setCustomSessionHandlerAdapter(); 	// must be after persistent cache
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -98,7 +100,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 		if(self::$isRunning !== false) {
 			http_response_code(500);
 			die((string)SmartComponents::http_message_500_internalerror('App Boostrap is already running ...'));
-			return;
+			return; // avoid run after it was used by runtime
 		} //end if
 		self::$isRunning = true;
 		//--
@@ -109,14 +111,14 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 
 	//======================================================================
-	public static function Authenticate($area) { // THIS SHOULD BE RUN IN MIDDLEWARE IDX/ADM ONLY
+	public static function Authenticate($area) { // THIS SHOULD BE RUN IN MIDDLEWARE IDX/ADM|TSK ONLY
 		//--
 		global $configs; // expose to app-auth-*.inc.php
 		//--
 		if(self::$authCompleted !== false) {
 			http_response_code(500);
 			die((string)SmartComponents::http_message_500_internalerror('App Boostrap Auth already loaded ...'));
-			return;
+			return; // avoid run after it was used by runtime
 		} //end if
 		self::$authCompleted = true;
 		//--
@@ -222,7 +224,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			);
 			return;
 		} //end if
-		if(!SmartFrameworkRuntime::ifDebug()) {
+		if(!SmartFrameworkRegistry::ifDebug()) {
 			if(SmartFileSystem::is_type_file('tmp/SMART-FRAMEWORK__DEBUG-ON')) {
 				if(SmartFileSystem::is_type_dir('tmp/logs/idx/')) {
 					SmartFileSystem::dir_delete('tmp/logs/idx/', true);
@@ -300,6 +302,21 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			Smart::raise_error(
 				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
 				'App Init ERROR TMP#LOGS#ADM' // this must be explicit if failed to write to TMP folder ... it means cannot log !
+			);
+			return;
+		} //end if
+		//-- tmp logs/task dir
+		$dir = 'tmp/logs/tsk/';
+		if(!SmartFileSystem::is_type_dir($dir)) {
+			SmartFileSystem::dir_create($dir);
+			if(SmartFileSystem::is_type_dir($dir)) {
+				SmartFileSystem::write($dir.'index.html', '');
+			} //end if
+		} // end if
+		if(!SmartFileSystem::have_access_write($dir)) {
+			Smart::raise_error(
+				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+				'App Init ERROR TMP#LOGS#TSK' // this must be explicit if failed to write to TMP folder ... it means cannot log !
 			);
 			return;
 		} //end if
@@ -432,6 +449,10 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 		//--
 		global $configs;
 		//--
+		if(class_exists('SmartPersistentCache')) {
+			return;
+		} //end if
+		//--
 		if(defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') AND ((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER != '')) {
 			//--
 			switch((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER) {
@@ -473,7 +494,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			//--
 		} else {
 			//--
-			require('lib/app/persistent-cache-x-blackhole.php'); // load the Blackhole (x-none) persistent cache which will implement only definitions and is required for compatibility but having no storage at all
+			// using Blackhole SmartPersistentCache (default, built-in Framework) / or using a 3rd party class
 			//--
 		} //end if else
 		//--
@@ -485,6 +506,10 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 	private static function setTextTranslationsAdapter() { // Set Text-Translations Adapter (depends on Persistent-Cache)
 		//--
 		global $configs;
+		//--
+		if(class_exists('SmartAdapterTextTranslations')) {
+			return;
+		} //end if
 		//--
 		if(defined('SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM') AND ((string)trim((string)SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM) != '')) {
 			//--
@@ -508,6 +533,10 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 	private static function setCustomSessionHandlerAdapter() { // Set Custom Session Handler Adapter if any (or fallback to files)
 		//--
 		global $configs;
+		//--
+		if(class_exists('SmartCustomSession')) {
+			return;
+		} //end if
 		//--
 		if(defined('SMART_FRAMEWORK_SESSION_HANDLER') AND ((string)SMART_FRAMEWORK_SESSION_HANDLER !== 'files')) {
 			//--
@@ -584,7 +613,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210421
+ * @version 	v.20210506
  * @package 	Application
  *
  */
@@ -605,13 +634,13 @@ final class SmartAppInfo implements SmartInterfaceAppInfo {
 	 */
 	public static function TestIfTemplateExists($y_template_name) {
 		//--
-		$y_template_name = Smart::safe_filename((string)$y_template_name);
+		$y_template_name = (string) Smart::safe_filename((string)$y_template_name);
 		if((string)$y_template_name == '') {
 			return false;
 		} //end if
 		//--
 		$test_cache = '';
-		if(array_key_exists((string)'TestIfTemplateExists:'.$y_template_name, self::$cache)) {
+		if(array_key_exists((string)'TestIfTemplateExists:'.$y_template_name, (array)self::$cache)) {
 			$test_cache = (string) self::$cache['TestIfTemplateExists:'.$y_template_name];
 		} //end if
 		//--
@@ -651,7 +680,7 @@ final class SmartAppInfo implements SmartInterfaceAppInfo {
 	 */
 	public static function TestIfModuleExists($y_module_name) {
 		//--
-		$y_module_name = Smart::safe_filename((string)$y_module_name);
+		$y_module_name = (string) Smart::safe_filename((string)$y_module_name);
 		if((string)$y_module_name == '') {
 			return false;
 		} //end if

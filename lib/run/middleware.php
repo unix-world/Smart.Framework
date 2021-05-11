@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210421
+ * @version		20210510
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -60,7 +60,7 @@ abstract class SmartAbstractAppMiddleware {
 
 	private const DEBUG_COOKIE_IDX = 'SmartFramework__DebugIdxID';
 	private const DEBUG_COOKIE_ADM = 'SmartFramework__DebugAdmID';
-
+	private const DEBUG_COOKIE_TSK = 'SmartFramework__DebugTskID';
 
 	//=====
 	public static function Run() {
@@ -92,132 +92,6 @@ abstract class SmartAbstractAppMiddleware {
 			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before RawHeaders');
 			//--
 		} //end if else
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	final public static function Raise400Error($y_msg, $y_htmlmsg='') {
-		//--
-		if(!headers_sent()) {
-			http_response_code(400);
-		} else {
-			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before 400 ...');
-		} //end if else
-		die(SmartComponents::http_message_400_badrequest((string)$y_msg, (string)$y_htmlmsg));
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	final public static function Raise401Error($y_msg, $y_htmlmsg='') {
-		//--
-		if(!headers_sent()) {
-			http_response_code(401);
-		} else {
-			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before 401 ...');
-		} //end if else
-		die(SmartComponents::http_message_401_unauthorized((string)$y_msg, (string)$y_htmlmsg));
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	final public static function Raise403Error($y_msg, $y_htmlmsg='') {
-		//--
-		if(!headers_sent()) {
-			http_response_code(403);
-		} else {
-			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before 403 ...');
-		} //end if else
-		die(SmartComponents::http_message_403_forbidden((string)$y_msg, (string)$y_htmlmsg));
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	final public static function Raise404Error($y_msg, $y_htmlmsg='') {
-		//--
-		if(!headers_sent()) {
-			http_response_code(404);
-		} else {
-			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before 404 ...');
-		} //end if else
-		die(SmartComponents::http_message_404_notfound((string)$y_msg, (string)$y_htmlmsg));
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	final public static function Raise429Error($y_msg, $y_htmlmsg='') {
-		//--
-		if(!headers_sent()) {
-			http_response_code(429);
-		} else {
-			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before 429 ...');
-		} //end if else
-		die(SmartComponents::http_message_429_toomanyrequests((string)$y_msg, (string)$y_htmlmsg));
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	final public static function Raise500Error($y_msg, $y_htmlmsg='') {
-		//--
-		if(!headers_sent()) {
-			http_response_code(500);
-		} else {
-			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before 500 ...');
-		} //end if else
-		die(SmartComponents::http_message_500_internalerror((string)$y_msg, (string)$y_htmlmsg));
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	final public static function Raise502Error($y_msg, $y_htmlmsg='') {
-		//--
-		if(!headers_sent()) {
-			http_response_code(502);
-		} else {
-			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before 502 ...');
-		} //end if else
-		die(SmartComponents::http_message_502_badgateway((string)$y_msg, (string)$y_htmlmsg));
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	final public static function Raise503Error($y_msg, $y_htmlmsg='') {
-		//--
-		if(!headers_sent()) {
-			http_response_code(503);
-		} else {
-			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before 503 ...');
-		} //end if else
-		die(SmartComponents::http_message_503_serviceunavailable((string)$y_msg, (string)$y_htmlmsg));
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	final public static function Raise504Error($y_msg, $y_htmlmsg='') {
-		//--
-		if(!headers_sent()) {
-			http_response_code(504);
-		} else {
-			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before 504 ...');
-		} //end if else
-		die(SmartComponents::http_message_504_gatewaytimeout((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -297,25 +171,21 @@ abstract class SmartAbstractAppMiddleware {
 		//--
 		if((string)SMART_APP_VISITOR_COOKIE == '') {
 			Smart::log_info('File Download', 'Failed: 400 / Invalid Visitor Cookie'.' on Client: '.$client_signature);
-			self::Raise400Error('ERROR: Invalid Visitor UUID. Cookies must be enabled to enable this feature !');
+			SmartFrameworkRuntime::Raise400Error('ERROR: Invalid Visitor UUID. Cookies must be enabled to enable this feature !');
 			return '';
 		} //end if
 		//--
 		$downloaded_file = ''; // init
 		//--
-		$decoded_download_packet = (string) SmartUtils::decode_download_link((string)$encrypted_download_pack);
+		$decoded_download_packet = (string) SmartFrameworkRuntime::Decode_Download_Link((string)$encrypted_download_pack);
 		//--
 		if((string)$decoded_download_packet != '') { // if data is corrupted, decrypt checksum does not match, will return an empty string
 			//--
-			if(SmartFrameworkRuntime::isAdminArea() === true) { // {{{SYNC-DWN-CTRL-PREFIX}}}
-				$controller_key = (string) 'AdminArea/'.$controller_key;
-			} else {
-				$controller_key = (string) 'IndexArea/'.$controller_key;
-			} //end if
+			$controller_key = (string) (defined('SMART_ERROR_AREA') ? SMART_ERROR_AREA : '').'/'.$controller_key; // {{{SYNC-DWN-CTRL-PREFIX}}}
 			//-- {{{SYNC-DOWNLOAD-ENCRYPT-ARR}}}
 			$arr_metadata = explode("\n", (string)$decoded_download_packet, 6); // only need first 5 parts
 			//print_r($arr_metadata);
-			// #PACKET-STRUCTURE# [we will have an array like below, according with the: SmartUtils::create_download_link()]
+			// #PACKET-STRUCTURE# [we will have an array like below, according with the: SmartFrameworkRuntime::Create_Download_Link()]
 			// [TimedAccess]\n
 			// [FilePath]\n
 			// [AccessKey]\n
@@ -341,20 +211,20 @@ abstract class SmartAbstractAppMiddleware {
 			if((int)$timed_hours > 0) {
 				if((int)$crrtime < (int)(time() - (60 * 60 * $timed_hours))) {
 					Smart::log_info('File Download', 'Failed: 403 / Download expired at: '.date('Y-m-d H:i:s O', (int)$crrtime).' for: '.$filepath.' on Client: '.$client_signature);
-					self::Raise403Error('ERROR: The Access Key for this Download is Expired !');
+					SmartFrameworkRuntime::Raise403Error('ERROR: The Access Key for this Download is Expired !');
 					return '';
 				} //end if
 			} //end if
 			//--
 			if((string)$access_key != (string)sha1('DownloadLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$filepath.'^'.$controller_key)) {
 				Smart::log_info('File Download', 'Failed: 403 / Invalid Access Key for: '.$filepath.' on Client: '.$client_signature);
-				self::Raise403Error('ERROR: Invalid Access Key for this Download !');
+				SmartFrameworkRuntime::Raise403Error('ERROR: Invalid Access Key for this Download !');
 				return '';
 			} //end if
 			//--
 			if((string)$unique_key != (string)SmartHashCrypto::sha1('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$filepath.'+'.$controller_key)) {
 				Smart::log_info('File Download', 'Failed: 403 / Invalid Client (Unique) Key for: '.$filepath.' on Client: '.$client_signature);
-				self::Raise403Error('ERROR: Invalid Client Key to Access this Download !');
+				SmartFrameworkRuntime::Raise403Error('ERROR: Invalid Client Key to Access this Download !');
 				return '';
 			} //end if
 			//--
@@ -365,8 +235,8 @@ abstract class SmartAbstractAppMiddleware {
 					$skip_log = 'yes'; // do not log if accessed via admin area and user is authenticated
 				} //end if
 				//--
-				$tmp_file_ext = (string) strtolower(SmartFileSysUtils::get_file_extension_from_path($filepath)); // [OK]
-				$tmp_file_name = (string) strtolower(SmartFileSysUtils::get_file_name_from_path($filepath));
+				$tmp_file_ext = (string) strtolower((string)SmartFileSysUtils::get_file_extension_from_path($filepath)); // [OK]
+				$tmp_file_name = (string) strtolower((string)SmartFileSysUtils::get_file_name_from_path($filepath));
 				//--
 				$tmp_eval = SmartFileSysUtils::mime_eval($tmp_file_name);
 				$mime_type = (string) $tmp_eval[0];
@@ -374,7 +244,23 @@ abstract class SmartAbstractAppMiddleware {
 				//-- the path must not start with / but this is tested below
 				$tmp_arr_paths = (array) explode('/', $filepath, 2); // only need 1st part for testing
 				//-- allow file downloads just from specific folders like wpub/ or wsys/ (this is a very important security fix to dissalow any downloads that are not in the specific folders)
-				if(((string)substr((string)$filepath, 0, 1) != '/') AND (strpos((string)SMART_FRAMEWORK_DOWNLOAD_FOLDERS, '<'.trim((string)(isset($tmp_arr_paths[0]) ? $tmp_arr_paths[0] : '')).'>') !== false) AND (stripos((string)SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, '<'.$tmp_file_ext.'>') === false)) {
+				if(
+					((string)substr((string)$filepath, 0, 1) != '/')
+					AND
+					(
+						( // only: task.php, using tmp/ as prefix
+							(SmartFrameworkRegistry::isAdminArea() AND SmartFrameworkRegistry::isTaskArea()) // is task
+							AND
+							((string)substr((string)$filepath, 0, 4) == 'tmp/') // and the folder starts with tmp/
+						)
+						OR
+						( // all the rest of cases: index.php, admin.php or task.php
+							(strpos((string)SMART_FRAMEWORK_DOWNLOAD_FOLDERS, '<'.trim((string)(isset($tmp_arr_paths[0]) ? $tmp_arr_paths[0] : '')).'>') !== false)
+							AND
+							(stripos((string)SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, '<'.$tmp_file_ext.'>') === false)
+						)
+					)
+				) {
 					//--
 					SmartFileSysUtils::raise_error_if_unsafe_path($filepath); // re-test finally
 					//-- no need to clear the stat cache as the following checks will do it
@@ -387,7 +273,7 @@ abstract class SmartAbstractAppMiddleware {
 							if(($fsize <= 0) OR (!SmartFileSystem::have_access_read($filepath))) {
 								//--
 								Smart::log_info('File Download', 'Failed: 404 / The requested File is Empty or Not Readable: '.$filepath.' on Client: '.$client_signature);
-								self::Raise404Error('WARNING: The requested File is Empty or Not Readable !');
+								SmartFrameworkRuntime::Raise404Error('WARNING: The requested File is Empty or Not Readable !');
 								return '';
 								//--
 							} //end if
@@ -408,7 +294,7 @@ abstract class SmartAbstractAppMiddleware {
 						} else {
 							//--
 							Smart::log_info('File Download', 'Failed: 500 / Headers Already Sent: '.$filepath.' on Client: '.$client_signature);
-							self::Raise500Error('ERROR: Download Failed, Headers Already Sent !');
+							SmartFrameworkRuntime::Raise500Error('ERROR: Download Failed, Headers Already Sent !');
 							return '';
 							//--
 						} //end if else
@@ -422,14 +308,14 @@ abstract class SmartAbstractAppMiddleware {
 					} else {
 						//--
 						Smart::log_info('File Download', 'Failed: 404 / The requested File does not Exists or is Not Accessible: '.$filepath.' on Client: '.$client_signature);
-						self::Raise404Error('WARNING: The requested File for Download does not Exists or is Not Accessible !');
+						SmartFrameworkRuntime::Raise404Error('WARNING: The requested File for Download does not Exists or is Not Accessible !');
 						return '';
 						//--
 					} //end if else
 				} else {
 					//--
 					Smart::log_info('File Download', 'Failed: 403 / Access to this File is Denied: '.$filepath.' on Client: '.$client_signature);
-					self::Raise403Error('ERROR: Download Access to this File is Denied !');
+					SmartFrameworkRuntime::Raise403Error('ERROR: Download Access to this File is Denied !');
 					return '';
 					//--
 				} //end if else
@@ -437,7 +323,7 @@ abstract class SmartAbstractAppMiddleware {
 			} else {
 				//--
 				Smart::log_info('File Download', 'Failed: 400 / Unsafe File Path: '.$filepath.' on Client: '.$client_signature);
-				self::Raise400Error('ERROR: Unsafe Download File Path !');
+				SmartFrameworkRuntime::Raise400Error('ERROR: Unsafe Download File Path !');
 				return '';
 				//--
 			} //end if else
@@ -445,7 +331,7 @@ abstract class SmartAbstractAppMiddleware {
 		} else {
 			//--
 			Smart::log_info('File Download', 'Failed: 400 / Invalid Data Packet'.' on Client: '.$client_signature);
-			self::Raise400Error('ERROR: Invalid Download Data Packet !');
+			SmartFrameworkRuntime::Raise400Error('ERROR: Invalid Download Data Packet !');
 			return '';
 			//--
 		} //end if else
@@ -459,8 +345,12 @@ abstract class SmartAbstractAppMiddleware {
 	//======================================================================
 	final public static function ServiceStatus($the_midmark) {
 		//--
-		if(SmartFrameworkRuntime::isAdminArea() === true) {
-			$txt_area = 'Admin';
+		if(SmartFrameworkRegistry::isAdminArea() === true) {
+			if(SmartFrameworkRegistry::isTaskArea() === true) {
+				$txt_area = 'Task';
+			} else {
+				$txt_area = 'Admin';
+			} //end if else
 		} else {
 			$txt_area = 'Index';
 		} //end if else
@@ -480,7 +370,7 @@ abstract class SmartAbstractAppMiddleware {
 	//======================================================================
 	final public static function DebugInfoCookieSet($area) {
 		//--
-		if(!SmartFrameworkRuntime::ifDebug()) {
+		if(!SmartFrameworkRegistry::ifDebug()) {
 			return false;
 		} //end if
 		//--
@@ -496,6 +386,9 @@ abstract class SmartAbstractAppMiddleware {
 				break;
 			case 'adm':
 				$cookie_name = (string) self::DEBUG_COOKIE_ADM;
+				break;
+			case 'tsk':
+				$cookie_name = (string) self::DEBUG_COOKIE_TSK;
 				break;
 			default:
 				return false;
@@ -515,7 +408,7 @@ abstract class SmartAbstractAppMiddleware {
 	//======================================================================
 	final public static function DebugInfoGet($area) {
 		//--
-		if(!SmartFrameworkRuntime::ifDebug()) {
+		if(!SmartFrameworkRegistry::ifDebug()) {
 			return '';
 		} //end if
 		//--
@@ -527,6 +420,9 @@ abstract class SmartAbstractAppMiddleware {
 				break;
 			case 'adm':
 				$cookie_name = (string) self::DEBUG_COOKIE_ADM;
+				break;
+			case 'tsk':
+				$cookie_name = (string) self::DEBUG_COOKIE_TSK;
 				break;
 			default:
 				return false;
@@ -549,7 +445,7 @@ abstract class SmartAbstractAppMiddleware {
 	//======================================================================
 	final public static function DebugInfoSet($area, $is_main) {
 		//--
-		if(!SmartFrameworkRuntime::ifDebug()) {
+		if(!SmartFrameworkRegistry::ifDebug()) {
 			return false;
 		} //end if
 		//--
@@ -557,7 +453,7 @@ abstract class SmartAbstractAppMiddleware {
 		$is_main = (bool) $is_main;
 		$req_with = '';
 		if(array_key_exists('HTTP_X_REQUESTED_WITH', $_SERVER)) {
-			$req_with = (string) $_SERVER['HTTP_X_REQUESTED_WITH'];
+			$req_with = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_X_REQUESTED_WITH']);
 		} //end if
 		if(((int)http_response_code() > 299) OR ((string)$req_with != '')) {
 			$is_main = false;
@@ -569,6 +465,9 @@ abstract class SmartAbstractAppMiddleware {
 				break;
 			case 'adm':
 				$cookie_name = (string) self::DEBUG_COOKIE_ADM;
+				break;
+			case 'tsk':
+				$cookie_name = (string) self::DEBUG_COOKIE_TSK;
 				break;
 			default:
 				return false;

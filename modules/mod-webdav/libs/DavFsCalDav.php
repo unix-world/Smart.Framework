@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFsCalDav {
 
 	// ::
-	// v.20210307
+	// v.20210428
 
 	private static $caldav_ns = 'xmlns:cal="urn:ietf:params:xml:ns:caldav" xmlns:cs="http://calendarserver.org/ns/"';
 	private static $caldav_urn = 'urn:ietf:params:xml:ns:caldav';
@@ -237,7 +237,7 @@ final class DavFsCalDav {
 			\http_response_code(415); // unsupported media type
 			return 415;
 		} //end if
-		if(\defined('\\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS')) {
+		if(\defined('\\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS') AND ((string)\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS != '')) {
 			if(\stripos((string)\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, '<'.$the_ext.'>') === false) {
 				\http_response_code(415); // unsupported media type
 				return 415;

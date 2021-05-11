@@ -18,6 +18,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* SmartUnicode::
 //	* SmartUtils::
 //	* SmartFileSystem::
+//	* SmartComponents::
 // DEPENDS-EXT: PHP SQLite3 Extension
 //======================================================
 
@@ -61,8 +62,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem
- * @version 	v.20210401
+ * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
+ * @version 	v.20210503
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -92,13 +93,13 @@ final class SmartSQliteDb {
 
 		//--
 		if((string)$sqlite_db_file == '') {
-			\Smart::log_warning(__METHOD__.' SQlite File is Empty');
+			Smart::log_warning(__METHOD__.' SQlite File is Empty');
 			return;
 		} //end if
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
 				'type' => 'metainfo',
@@ -475,8 +476,8 @@ final class SmartSQliteDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem
- * @version 	v.20210401
+ * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
+ * @version 	v.20210503
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -580,7 +581,7 @@ final class SmartSQliteUtilDb {
 			//--
 			$db->busyTimeout((int)$timeout_busy_sec * 1000); // the $timeout_busy_sec is in seconds ; we set a busy timeout in miliseconds
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				//--
 				$arr_version = @$db->version(); // mixed
 				//--
@@ -641,7 +642,7 @@ final class SmartSQliteUtilDb {
 			return;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
 				'type' => 'open-close',
 				'data' => 'Open SQLite Database: '.$file_name
@@ -688,7 +689,7 @@ final class SmartSQliteUtilDb {
 					Smart::log_warning('WARNING: '.__METHOD__.' # Failed to Register Internal Function: `'.(string)$func.'` with SQLite DB');
 				} //end if
 			} //end foreach
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
 					'type' => 'nosql',
 					'data' => 'SQLite Registered Extra Functions: '.implode(', ', (array)array_keys((array)$ext_functions))
@@ -732,7 +733,7 @@ final class SmartSQliteUtilDb {
 				//--
 				@$db->close();
 				//--
-				if(SmartFrameworkRuntime::ifDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
 					//--
 					SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
 						'type' => 'open-close',
@@ -782,14 +783,14 @@ final class SmartSQliteUtilDb {
 		//--
 		if($custom === null) {
 			$fx = 'smart_'.$func;
-			$ex = '\\SmartSQliteFunctions::'.$func;
+			$ex = 'SmartSQliteFunctions::'.$func;
 		} else {
 			$fx = 'custom_fx_'.$custom;
 			$ex = (string) $func;
 		} //end if else
 		//--
-		if(SmartFrameworkRuntime::ifInternalDebug()) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifInternalDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				//--
 				$time_start = microtime(true);
 				//--
@@ -798,8 +799,8 @@ final class SmartSQliteUtilDb {
 		//--
 		$ok = (bool) $db->createFunction((string)$fx, (string)$ex, (int)$argnum);
 		//--
-		if(SmartFrameworkRuntime::ifInternalDebug()) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifInternalDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				//--
 				$time_end = (float) (microtime(true) - (float)$time_start);
 				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
@@ -864,7 +865,7 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -908,7 +909,7 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if else
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
 			//--
@@ -942,7 +943,7 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -1004,7 +1005,7 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
 			//--
@@ -1038,7 +1039,7 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -1104,7 +1105,7 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
 			//--
@@ -1139,7 +1140,7 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -1209,7 +1210,7 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
 			//--
@@ -1243,7 +1244,7 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -1264,7 +1265,7 @@ final class SmartSQliteUtilDb {
 			$sqlite_error = 'SQLite3-ERR:: '.@$db->lastErrorMsg();
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
 			//--
@@ -1730,66 +1731,66 @@ final class SmartSQliteUtilDb {
 	 *
 	 */
 	private static function error($db, $y_area, $y_error_message, $y_query, $y_params_or_title, $y_warning='') {
-	//--
-	if(!($db instanceof SQLite3)) {
-		$the_conn = (string) $db;
-	} else {
-		$the_conn = (string) self::get_connection_id($db);
-	} //end if else
-	//--
-	if(defined('SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
-		throw new Exception('#SQLITE-DB@'.\SmartFileSysUtils::get_file_name_from_path($the_conn).'# :: Q# // SQLite Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
-		return;
-	} //end if
-	//--
-	$def_warn = 'Execution Halted !';
-	$y_warning = (string) trim((string)$y_warning);
-	if(SmartFrameworkRuntime::ifDebug()) {
-		$width = 750;
-		$the_area = (string) $y_area;
-		if((string)$y_warning == '') {
-			$y_warning = (string) $def_warn;
-		} //end if
-		$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
-		if(is_array($y_params_or_title)) {
-			$the_params = '*** Params ***'."\n".print_r($y_params_or_title, 1);
-		} elseif((string)$y_params_or_title != '') {
-			$the_params = '[ Reference Title ]: '.$y_params_or_title;
+		//--
+		if(!($db instanceof SQLite3)) {
+			$the_conn = (string) $db;
 		} else {
-			$the_params = '- No Params or Reference Title -';
+			$the_conn = (string) self::get_connection_id($db);
+		} //end if else
+		//--
+		if(defined('SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
+			throw new Exception('#SQLITE-DB@'.SmartFileSysUtils::get_file_name_from_path($the_conn).'# :: Q# // SQLite Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
+			return;
 		} //end if
-		$the_query_info = (string) trim((string)$y_query);
-		if((string)$the_query_info == '') {
-			$the_query_info = '-'; // query cannot e empty in this case (templating enforcement)
-		} //end if
-	} else {
-		$width = 550;
-		$the_area = '';
-		$the_error_message = 'Operation FAILED: '.$def_warn;
-		$the_params = '';
-		$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
-	} //end if else
-	//--
-	$out = SmartComponents::app_error_message(
-		'SQLite Client',
-		'SQLite',
-		'Embedded',
-		'SQL/DB',
-		'lib/core/img/db/sqlite-logo.svg',
-		$width, // width
-		$the_area, // area
-		$the_error_message, // err msg
-		$the_params, // title or params
-		$the_query_info // sql statement
-	);
-	//--
-	Smart::raise_error(
-		'#SQLITE-DB@'.$the_conn.' :: Q# // SQLite Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params / Title:'."\n".print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query,
-		$out, // msg to display
-		true // is html
-	);
-	die(''); // just in case
-	//--
+		//--
+		$def_warn = 'Execution Halted !';
+		$y_warning = (string) trim((string)$y_warning);
+		if(SmartFrameworkRegistry::ifDebug()) {
+			$width = 750;
+			$the_area = (string) $y_area;
+			if((string)$y_warning == '') {
+				$y_warning = (string) $def_warn;
+			} //end if
+			$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
+			if(is_array($y_params_or_title)) {
+				$the_params = '*** Params ***'."\n".print_r($y_params_or_title, 1);
+			} elseif((string)$y_params_or_title != '') {
+				$the_params = '[ Reference Title ]: '.$y_params_or_title;
+			} else {
+				$the_params = '- No Params or Reference Title -';
+			} //end if
+			$the_query_info = (string) trim((string)$y_query);
+			if((string)$the_query_info == '') {
+				$the_query_info = '-'; // query cannot e empty in this case (templating enforcement)
+			} //end if
+		} else {
+			$width = 550;
+			$the_area = '';
+			$the_error_message = 'Operation FAILED: '.$def_warn;
+			$the_params = '';
+			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
+		} //end if else
+		//--
+		$out = (string) SmartComponents::app_error_message(
+			'SQLite Client',
+			'SQLite',
+			'Embedded',
+			'SQL/DB',
+			'lib/core/img/db/sqlite-logo.svg',
+			(int)    $width, // width
+			(string) $the_area, // area
+			(string) $the_error_message, // err msg
+			(string) $the_params, // title or params
+			(string) $the_query_info // sql statement
+		);
+		//--
+		Smart::raise_error(
+			'#SQLITE-DB@'.$the_conn.' :: Q# // SQLite Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params / Title:'."\n".print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query,
+			$out, // msg to display
+			true // is html
+		);
+		die(''); // just in case
+		//--
 	} //END FUNCTION
 	//======================================================
 
@@ -1818,7 +1819,7 @@ final class SmartSQliteUtilDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20210401
+ * @version 	v.20210503
  * @package 	Plugins:Database:SQLite
  *
  */

@@ -14,6 +14,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Smart-Framework - MongoDB Client
 // DEPENDS:
 //	* Smart::
+//	* SmartComponents::
 // DEPENDS-EXT: PHP MongoDB / PECL (v.1.1.0 or later)
 //======================================================
 
@@ -43,7 +44,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * $cfg_mongo['slowtime']		= 0.0035;									// 0.0025 .. 0.0090 slow query time (for debugging)
  *
  * // sample mongo connect
- * $mongo = new \SmartMongoDb($cfg_mongo);
+ * $mongo = new SmartMongoDb($cfg_mongo);
  *
  * </code>
  *
@@ -51,11 +52,11 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints 		Important: MongoDB database specifies that max BSON document size is 16 megabytes and supports no more than 100 levels of nesting, thus this limit cannot be exceeded from PHP side when creating new mongodb documents: https://docs.mongodb.com/manual/reference/limits/ ; To store documents larger than the maximum size, MongoDB provides the GridFS API
  *
  * @access 		PUBLIC
- * @depends 	extensions: PHP MongoDB ; classes: Smart
- * @version 	v.20210401
+ * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartComponents
+ * @version 	v.20210503
  * @package 	Plugins:Database:MongoDB
  *
- * @throws 		\Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
+ * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
  *
  */
 final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to avoid break the comments !!!
@@ -200,7 +201,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$this->timeout = 60;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			if($this->fatal_err === true) {
 				$txt_conn = 'FATAL ERRORS';
@@ -656,7 +657,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		$method = (string) $method;
 		$args = (array) $args;
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -762,15 +763,15 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				//-- fix: select just particular fields
 				$opts['projection'] = array(); // arrProjFields
 				if(array_key_exists(2, $args) AND (Smart::array_size($args[2]) > 0)) {
-					if(\Smart::array_type_test($args[2]) === 2) { // associative
+					if(Smart::array_type_test($args[2]) === 2) { // associative
 						foreach((array)$args[2] as $key => $val) {
 							$key = (string) trim((string)$key);
 							if((string)$key != '') {
 								$opts['projection'][(string)$key] = $val; // mixed: number or array
 							} //end if
 						} //end foreach
-					} elseif(\Smart::array_type_test($args[2]) === 1) { // non-associative
-						for($i=0; $i<\Smart::array_size($args[2]); $i++) {
+					} elseif(Smart::array_type_test($args[2]) === 1) { // non-associative
+						for($i=0; $i<Smart::array_size($args[2]); $i++) {
 							$key = (string) trim((string)$args[2][$i]);
 							if((string)$key != '') {
 								$opts['projection'][(string)$key] = 1; // must be 1 here
@@ -804,8 +805,8 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				//print_r($cursor->toArray()); die();
 				$obj = array();
 				if(is_object($cursor)) {
-					$obj = \Smart::json_decode(
-						(string) \Smart::json_encode(
+					$obj = Smart::json_decode(
+						(string) Smart::json_encode(
 							(array)$cursor->toArray(),
 							false, // no pretty print
 							true, // unescaped unicode
@@ -960,7 +961,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				} catch(Exception $err) {
 					if((string)$method == 'upsert') {
 						if(stripos((string)trim((string)$err->getMessage()), 'E11000 duplicate key error') === 0) { // avoid log upsert duplicate key errors which may occur in high concurrency when multiple processes try to update the same record exactly in the same time ; if upsert we assume that any process can do insert or update (order can be random)
-							if(SmartFrameworkRuntime::ifDebug()) {
+							if(SmartFrameworkRegistry::ifDebug()) {
 								Smart::log_notice('#MongoDB# :: Ignoring Upsert Duplicate Key: '.$err->getMessage());
 							} //end if
 							return array();
@@ -1125,8 +1126,8 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 					$cursor->setTypeMap(['root' => 'array', 'document' => 'array', 'array' => 'array']);
 					//print_r($cursor->toArray()); die();
 					if(is_object($cursor)) {
-						$obj = \Smart::json_decode(
-							(string) \Smart::json_encode(
+						$obj = Smart::json_decode(
+							(string) Smart::json_encode(
 								(array)$cursor->toArray(),
 								false, // no pretty print
 								true, // unescaped unicode
@@ -1167,7 +1168,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			if($skipdbg !== true) {
 				if($this->connected === true) { // avoid register pre-connect commands like version)
 					//--
@@ -1269,7 +1270,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$this->mongodbclient = &SmartFrameworkRegistry::$Connections['mongodb'][(string)$this->connex_key];
 			$this->connected = true;
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
 					'type' => 'open-close',
 					'data' => 'Re-Using MongoDB Manager Instance :: ServerType ['.$type.']: '.$this->connex_key.$nfo_replica
@@ -1289,7 +1290,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				return false;
 			} //end try catch
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
 					'type' => 'open-close',
 					'data' => 'Creating MongoDB Manager Instance :: ServerType ['.$type.']: '.$this->connex_key.$nfo_replica
@@ -1304,7 +1305,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				return false;
 			} //end if
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				//--
 				SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
 					'type' => 'metainfo',
@@ -1325,7 +1326,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
 				'type' => 'set',
@@ -1357,7 +1358,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		//--
 		SmartFrameworkRegistry::$Connections['mongodb'][(string)$this->connex_key] = null; // close connection
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
 				'type' => 'open-close',
 				'data' => 'Destroying MongoDB Manager Instance: '.$this->connex_key
@@ -1384,66 +1385,66 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 *
 	 */
 	private function error($y_conhash, $y_area, $y_info, $y_error_message, $y_query='', $y_warning='', $y_is_fatal=null) {
-	//--
-	if(($y_is_fatal === true) OR ($y_is_fatal === false)) { // depends on how is set, conform
-		$y_is_fatal = (bool) $y_is_fatal;
-	} else { // NULL :: default, depend on how $this->fatal_err is
-		if($this->fatal_err === false) {
-			$y_is_fatal = false;
-		} else {
-			$y_is_fatal = true;
+		//--
+		if(($y_is_fatal === true) OR ($y_is_fatal === false)) { // depends on how is set, conform
+			$y_is_fatal = (bool) $y_is_fatal;
+		} else { // NULL :: default, depend on how $this->fatal_err is
+			if($this->fatal_err === false) {
+				$y_is_fatal = false;
+			} else {
+				$y_is_fatal = true;
+			} //end if else
 		} //end if else
-	} //end if else
-	//--
-	if($y_is_fatal === false) {
-		throw new Exception('#MONGO-DB@'.$y_conhash.'# :: Q# // MongoDB Client :: EXCEPTION :: '.$y_area."\n".$y_info.': '.$y_error_message);
-		return;
-	} //end if
-	//--
-	$def_warn = 'Execution Halted !';
-	$y_warning = (string) trim((string)$y_warning);
-	if(is_array($y_query)) { // can be also an empty array
-		$y_query = (string) print_r($y_query,1);
-	} //end if
-	$the_params = '- '.'MongoDB Manager v.'.$this->extver.' -';
-	if(SmartFrameworkRuntime::ifDebug()) {
-		$width = 750;
-		$the_area = (string) $y_area;
-		if((string)$y_warning == '') {
-			$y_warning = (string) $def_warn;
+		//--
+		if($y_is_fatal === false) {
+			throw new Exception('#MONGO-DB@'.$y_conhash.'# :: Q# // MongoDB Client :: EXCEPTION :: '.$y_area."\n".$y_info.': '.$y_error_message);
+			return;
 		} //end if
-		$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
-		$the_query_info = (string) trim((string)$y_query);
-		$y_query = ' '.trim((string)$the_params."\n".$y_info."\n".$y_query);
-	} else {
-		$width = 550;
-		$the_area = '';
-		$the_error_message = 'Operation FAILED: '.$def_warn;
-		$y_query = ' '.trim((string)$the_params."\n".$y_info."\n".$y_query);
-		$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
-		$the_params = '';
-	} //end if else
-	//--
-	$out = SmartComponents::app_error_message(
-		'MongoDB Manager',
-		'MongoDB',
-		'NoSQL/DB',
-		'Server',
-		'lib/core/img/db/mongodb-logo.svg',
-		$width, // width
-		$the_area, // area
-		$the_error_message, // err msg
-		$the_params, // title or params
-		$the_query_info // command
-	);
-	//--
-	Smart::raise_error(
-		'#MONGO-DB@'.$y_conhash.' :: Q# // MongoDB Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Statement:'.$y_query,
-		$out, // msg to display
-		true // is html
-	);
-	die(''); // just in case
-	//--
+		//--
+		$def_warn = 'Execution Halted !';
+		$y_warning = (string) trim((string)$y_warning);
+		if(is_array($y_query)) { // can be also an empty array
+			$y_query = (string) print_r($y_query,1);
+		} //end if
+		$the_params = '- '.'MongoDB Manager v.'.$this->extver.' -';
+		if(SmartFrameworkRegistry::ifDebug()) {
+			$width = 750;
+			$the_area = (string) $y_area;
+			if((string)$y_warning == '') {
+				$y_warning = (string) $def_warn;
+			} //end if
+			$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
+			$the_query_info = (string) trim((string)$y_query);
+			$y_query = ' '.trim((string)$the_params."\n".$y_info."\n".$y_query);
+		} else {
+			$width = 550;
+			$the_area = '';
+			$the_error_message = 'Operation FAILED: '.$def_warn;
+			$y_query = ' '.trim((string)$the_params."\n".$y_info."\n".$y_query);
+			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
+			$the_params = '';
+		} //end if else
+		//--
+		$out = (string) SmartComponents::app_error_message(
+			'MongoDB Manager',
+			'MongoDB',
+			'NoSQL/DB',
+			'Server',
+			'lib/core/img/db/mongodb-logo.svg',
+			(int)    $width, // width
+			(string) $the_area, // area
+			(string) $the_error_message, // err msg
+			(string) $the_params, // title or params
+			(string) $the_query_info // command
+		);
+		//--
+		Smart::raise_error(
+			'#MONGO-DB@'.$y_conhash.' :: Q# // MongoDB Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Statement:'.$y_query,
+			$out, // msg to display
+			true // is html
+		);
+		die(''); // just in case
+		//--
 	} //END FUNCTION
 	//======================================================
 

@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20210507
  *
  */
 final class TestUnitBarcodes {
@@ -41,7 +41,7 @@ final class TestUnitBarcodes {
 		//--
 		$str = (string) self::generateCodeForBarcode1D();
 		//--
-		return (new \SmartQR2DBarcode('L'))->renderAsSVG((string)$str, ['cm'=>'#555555','wq'=>0]);
+		return (string) '<span title="'.\Smart::escape_html((string)$str).'">'.(new \SmartQR2DBarcode('M'))->renderAsSVG((string)$str, ['cm'=>'#555555','wq'=>0]).'</span>';
 		//--
 	} //END FUNCTION
 	//============================================================

@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/TemplatingTestExtended
 // Route: ?/page/samples.templating-test-extended (?page=samples.templating-test-extended)
 // (c) 2006-2020 unix-world.org - all rights reserved

@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/DirectOutput
 // Route: ?/page/samples.direct-output (?page=direct-output)
 // (c) 2006-2020 unix-world.org - all rights reserved
@@ -34,10 +33,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 		//-- dissalow run this sample if not test mode enabled
 		if(!defined('SMART_FRAMEWORK_TEST_MODE') OR (SMART_FRAMEWORK_TEST_MODE !== true)) {
-			if(!headers_sent()) {
-				http_response_code(503);
-			} //end if
-			die(SmartComponents::http_message_503_serviceunavailable('ERROR: Test mode is disabled ...'));
+			SmartFrameworkRuntime::Raise503Error('ERROR: Test mode is disabled ...');
 			return;
 		} //end if
 		//--

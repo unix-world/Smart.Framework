@@ -103,7 +103,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210421
+ * @version 	v.20210506
  * @package 	development:Application
  *
  */
@@ -253,36 +253,41 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			return;
 		} //end switch
 		//--
+		$safe_url_query = '';
+		if(isset($_SERVER['QUERY_STRING']) && ((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['QUERY_STRING']) != '')) {
+			$safe_url_query = (string) '?'.SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['QUERY_STRING']); // the URL query
+		} //end if
+		//--
 		$ctrl_arr = (array) explode('.', (string)$y_controller);
 		//--
-		$this->appenv 			= (string) (SmartFrameworkRuntime::ifProdEnv() === true) ? 'prod' : 'dev'; 	// app environment: dev | prod :: {{{SYNC-APP-ENV-SETT}}}
-		$this->releasehash 		= (string) SmartFrameworkRuntime::getAppReleaseHash(); 						// the release hash based on app framework version, framework release and modules version
-		$this->modulearea 		= (string) $param_area; 													// index | admin
-		$this->modulepath 		= (string) $y_module_path; 													// modules/mod-something/
-		$this->modulename 		= (string) Smart::base_name($y_module_path); 								// mod-something
-		$this->module 			= (string) (isset($ctrl_arr[0]) ? $ctrl_arr[0] : ''); 						// something (module name part of the controller)
-		$this->action 			= (string) (isset($ctrl_arr[1]) ? $ctrl_arr[1] : ''); 						// someaction (controller name part of the controller)
-		$this->controller 		= (string) $y_controller; 													// something.someaction (the controller)
-		$this->urlproto 		= (string) SmartUtils::get_server_current_protocol(); 						// http:// | https://
-		$this->urlbasedomain 	= (string) SmartUtils::get_server_current_basedomain_name();				// 127.0.0.1|localhost|dom.ext
-		$this->urldomain 		= (string) SmartUtils::get_server_current_domain_name(); 					// 127.0.0.1|localhost|sdom.dom.ext
-		$this->urlport 			= (string) SmartUtils::get_server_current_port(); 							// 80 | 443 | ...
-		$this->urlscript 		= (string) $param_url_script; 												// index.php | admin.php
-		$this->urlpath 			= (string) $param_url_path; 												// /frameworks/smart-framework/
-		$this->urladdr 			= (string) $param_url_addr; 												// http(s)://127.0.0.1|localhost:8008/frameworks/smart-framework/
-		$this->urlpage 			= (string) $y_url_page; 													// this may vary depending on semantic URL rule but can be equal with: something.someaction | someaction | something
-		$this->urlquery 		= (string) (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '') ? '?'.$_SERVER['QUERY_STRING'] : ''; // the query URL if any ...
-		$this->urluri 			= (string) SmartUtils::get_server_current_request_uri(); 					// the REQUEST_URI
-		$this->uripath 			= (string) SmartUtils::get_server_current_request_path(); 					// the PATH_INFO
-		$this->lang 			= (string) SmartTextTranslations::getLanguage(); 							// current language (ex: en)
-		$this->charset 			= (string) SMART_FRAMEWORK_CHARSET;											// current charset (ex: UTF-8)
-		$this->timezone 		= (string) SMART_FRAMEWORK_TIMEZONE; 										// current timezone (ex: UTC)
+		$this->appenv 			= (string) (SmartFrameworkRegistry::ifProdEnv() === true) ? 'prod' : 'dev'; 		// app environment: dev | prod :: {{{SYNC-APP-ENV-SETT}}}
+		$this->releasehash 		= (string) SmartUtils::get_app_release_hash(); 										// the release hash based on app framework version, framework release and modules version
+		$this->modulearea 		= (string) $param_area; 															// index | admin
+		$this->modulepath 		= (string) $y_module_path; 															// modules/mod-something/
+		$this->modulename 		= (string) Smart::base_name($y_module_path); 										// mod-something
+		$this->module 			= (string) (isset($ctrl_arr[0]) ? $ctrl_arr[0] : ''); 								// something (module name part of the controller)
+		$this->action 			= (string) (isset($ctrl_arr[1]) ? $ctrl_arr[1] : ''); 								// someaction (controller name part of the controller)
+		$this->controller 		= (string) $y_controller; 															// something.someaction (the controller)
+		$this->urlproto 		= (string) SmartUtils::get_server_current_protocol(); 								// http:// | https://
+		$this->urlbasedomain 	= (string) SmartUtils::get_server_current_basedomain_name();						// 127.0.0.1|localhost|dom.ext
+		$this->urldomain 		= (string) SmartUtils::get_server_current_domain_name(); 							// 127.0.0.1|localhost|sdom.dom.ext
+		$this->urlport 			= (string) SmartUtils::get_server_current_port(); 									// 80 | 443 | ...
+		$this->urlscript 		= (string) $param_url_script; 														// index.php | admin.php
+		$this->urlpath 			= (string) $param_url_path; 														// /frameworks/smart-framework/
+		$this->urladdr 			= (string) $param_url_addr; 														// http(s)://127.0.0.1|localhost:8008/frameworks/smart-framework/
+		$this->urlpage 			= (string) $y_url_page; 															// this may vary depending on semantic URL rule but can be equal with: something.someaction | someaction | something
+		$this->urlquery 		= (string) $safe_url_query; 														// the filtered, safe URL query
+		$this->urluri 			= (string) SmartUtils::get_server_current_request_uri(); 							// the REQUEST_URI
+		$this->uripath 			= (string) SmartUtils::get_server_current_request_path(); 							// the PATH_INFO
+		$this->lang 			= (string) SmartTextTranslations::getLanguage(); 									// current language (ex: en)
+		$this->charset 			= (string) (defined('SMART_FRAMEWORK_CHARSET') ? SMART_FRAMEWORK_CHARSET : ''); 	// current charset (ex: UTF-8)
+		$this->timezone 		= (string) (defined('SMART_FRAMEWORK_TIMEZONE') ? SMART_FRAMEWORK_TIMEZONE : ''); 	// current timezone (ex: UTC)
 		//--
-		$this->pageheaders 		= array(); 																	// Page Current Headers
-		$this->pageview 		= array(); 																	// Page Current View
+		$this->pageheaders 		= array(); 																			// Page Current Headers
+		$this->pageview 		= array(); 																			// Page Current View
 		//--
-		$this->availsettings 	= (array) $this->availsettings; 											// Page Available Settings
-		$this->pagesettings 	= (array) Smart::array_init_keys([], (array)$this->availsettings); 			// Page Current Settings ; init keys is fix for PHP8
+		$this->availsettings 	= (array) $this->availsettings; 													// Page Available Settings
+		$this->pagesettings 	= (array) Smart::array_init_keys([], (array)$this->availsettings); 					// Page Current Settings ; init keys is fix for PHP8
 		//--
 	} //END FUNCTION
 	//=====
@@ -331,7 +336,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 */
 	final public function IfProdEnv() {
 		//--
-		return (bool) SmartFrameworkRuntime::ifProdEnv();
+		return (bool) SmartFrameworkRegistry::ifProdEnv();
 		//--
 	} //END FUNCTION
 	//=====
@@ -345,7 +350,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 */
 	final public function IfDebug() {
 		//--
-		return (bool) SmartFrameworkRuntime::ifDebug();
+		return (bool) SmartFrameworkRegistry::ifDebug();
 		//--
 	} //END FUNCTION
 	//=====
@@ -462,7 +467,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @param 	ENUM 		$param 		:: The selected parameter
 	 * The valid param values are:
-	 * 		app-env 					:: 		ex: dev | prod ; based on: SmartFrameworkRuntime::ifProdEnv()
+	 * 		app-env 					:: 		ex: dev | prod ; based on: SmartFrameworkRegistry::ifProdEnv()
 	 * 		app-namespace 				:: 		ex: smartframework.default (the app namespace as defined in etc/init.php)
 	 * 		app-domain 					:: 		ex: 127.0.0.1|localhost|sdom.dom.ext|dom.ext (the domain set in configs, that may differ by area: $configs['app']['index-domain'] | $configs['app']['admin-domain'])
 	 * 		release-hash 				:: 		ex: 29bp3w (the release hash based on app framework version, framework release and modules version)
@@ -593,6 +598,15 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 				break;
 			case 'uri-path':
 				$out = $this->uripath;
+				break;
+			case 'cookie-default-expire':
+				$out = SmartUtils::cookie_default_expire();
+				break;
+			case 'cookie-default-domain':
+				$out = SmartUtils::cookie_default_domain();
+				break;
+			case 'cookie-default-samesite-policy':
+				$out = SmartUtils::cookie_default_samesite_policy();
 				break;
 			case 'lang':
 				$out = $this->lang;
@@ -1633,7 +1647,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		//--
 		if($this->directoutput === true) { // OK
 			//--
-			SmartFrameworkRuntime::InstantFlush();
+			Smart::InstantFlush();
 			//--
 		} else { // WARNING: N/A
 			//--
@@ -1699,6 +1713,73 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 //=====================================================================================
 //===================================================================================== CLASS END
 //=====================================================================================
+
+
+//=========================
+//==
+/**
+ * Function AutoLoad Modules (Libs / Models) via Dependency Injection
+ *
+ * @access 		private
+ * @internal
+ * @version		v.20210428
+ *
+ */
+function autoload__SmartFrameworkModClasses($classname) {
+	//--
+	$classname = (string) $classname;
+	//--
+	if((strpos($classname, '\\') === false) OR (!preg_match('/^[a-zA-Z0-9_\\\]+$/', $classname))) { // if have no namespace or not valid character set
+		return;
+	} //end if
+	//--
+	if((strpos($classname, 'SmartModExtLib\\') === false) AND (strpos($classname, 'SmartModDataModel\\') === false)) { // must start with this namespaces only
+		return;
+	} //end if
+	//--
+	$parts = (array) explode('\\', $classname);
+	if(count($parts) != 3) { // need for [0], [1] and [2]
+		return;
+	} //end if
+	if((string)trim((string)$parts[0]) == '') { // type
+		return; // no module detected
+	} //end if
+	if((string)trim((string)$parts[1]) == '') { // mod suffix
+		return; // no module detected
+	} //end if
+	if((string)trim((string)$parts[2]) == '') { // class file
+		return; // invalid
+	} //end if
+	//--
+	$dir = 'modules/mod';
+	$dir .= (string) strtolower((string)implode('-', preg_split('/(?=[A-Z])/', (string)$parts[1])));
+	if((string)$parts[0] == 'SmartModExtLib') {
+		$dir .= '/libs/';
+	} elseif((string)$parts[0] == 'SmartModDataModel') {
+		$dir .= '/models/';
+	} else {
+		return; // other namespaces are not managed here
+	} //end if else
+	$dir = (string) $dir;
+	$file = (string) $parts[2];
+	$path = (string) $dir.$file;
+	$path = (string) trim((string)str_replace(['\\', "\0"], '', (string)$path)); // filter out null byte and backslash
+	//--
+	if(((string)$path == '') OR (!preg_match('/^[_a-zA-Z0-9\-\/]+$/', (string)$path))) {
+		return; // invalid path characters in file
+	} //end if
+	//--
+	if(!is_file((string)$path.'.php')) { // here must be used is_file() because is autoloader ...
+		return; // file does not exists
+	} //end if
+	//--
+	require_once((string)$path.'.php');
+	//--
+} //END FUNCTION
+//==
+spl_autoload_register('autoload__SmartFrameworkModClasses', true, false); // throw / append
+//==
+//=========================
 
 
 // end of php code

@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210420
+ * @version 	v.20210503
  *
  */
 final class TestUnitMain {
@@ -41,10 +41,8 @@ final class TestUnitMain {
 
 		//--
 		if(!\defined('\\SMART_FRAMEWORK_TESTUNIT_BASE_URL')) {
-			//--
-			\http_response_code(500);
-			die((string)\SmartComponents::http_message_500_internalerror('ERROR: TEST UNIT BASE URL has not been defined ...'));
-			//--
+			\SmartFrameworkRuntime::Raise500Error('ERROR: TEST UNIT BASE URL has not been defined ...');
+			return;
 		} //end if
 		//--
 
@@ -57,7 +55,7 @@ final class TestUnitMain {
 		//--
 		if(\Smart::array_size($frx) > 0) { // test form data :: because is modal we have to close it in order to refresh the parent
 			//--
-			return '<table><tr><td><h1>Form Sent (Test) !</h1><hr><pre>'.\Smart::escape_html(\print_r($frx,1)).'</pre></td></tr></table><script>smartJ$Browser.RefreshParent();</script><br><br><input class="ux-button" id="myCloseButton" type="button" value="[Close Me]" onClick="smartJ$Browser.CloseModalPopUp(); return false;"><br><br><b>This page will auto-close in 9 seconds [Counting: <span id="mycounter">9</span>]</b><script>smartJ$Browser.CountDown(9, \'mycounter\', \'smartJ$Browser.CloseDelayedModalPopUp(500);\');</script><br><br><b><i>After closing this window, parent will refresh ...</i></b>';
+			return '<table><tr><td><h1>Form Sent (Test) !</h1><hr><pre>'.\Smart::escape_html(\print_r($frx,1)).'</pre></td></tr></table><script>smartJ$Browser.RefreshParent();</script><br><br><input class="ux-button" id="myCloseButton" type="button" value="[Close Me]" onClick="smartJ$Browser.CloseModalPopUp(); return false;"><br><br><b>This page will auto-close in 9 seconds [Counting: <span id="mycounter">9</span>]</b><script>smartJ$Browser.CountDown(9, \'mycounter\', \'console.log(counter, elID); smartJ$Browser.CloseDelayedModalPopUp(500);\');</script><br><br><b><i>After closing this window, parent will refresh ...</i></b>';
 			//--
 		} //end if
 		//--
@@ -75,7 +73,7 @@ final class TestUnitMain {
 		//-- end
 
 		//-- lists with one element
-		$one_single_select 				= \SmartViewHtmlHelpers::html_select_list_single('test-unit-s-list-one', '', 'form', array('one' => 'One'), 'frm[one_single]', '150', '', 'no', 'no', '#JS-UI#'); // returns HTML Code
+		$one_single_select 				= \SmartViewHtmlHelpers::html_select_list_single('test-unit-s-list-one', '', 'form', array('one' => 'One'), 'frm[one_single]', '150', '', 'no', 'no', '', '#JS-UI#'); // returns HTML Code
 		$one_single_with_blank_select 	= \SmartViewHtmlHelpers::html_select_list_multi('test-unit-lst-m-1', '', 'form', array('one' => 'One'), 'frm[one_multi][]', 'list', 'no', '200', '', '#JS-UI-FILTER#'); // returns HTML Code
 		//--
 		$test_normal_list_s 			= \SmartViewHtmlHelpers::html_select_list_single('test_normal_s', '', 'form', [1 => 'Val 1', 2 => 'Val 2', 3 => 'Val 3', 4 => 'Val 4', 5 => 'Val 5']);
@@ -84,23 +82,24 @@ final class TestUnitMain {
 
 		//-- misc purpose data array
 		$array_of_values = array();
-		$array_of_values[] = 'a&"/><i>Italic</i></body>';
-		$array_of_values[] = 'a&"/><i>Italic</i></body>';
-		$array_of_values[] = '#OPTGROUP#';
-		$array_of_values[] = 'Labels';
+		$array_of_values['#OPTGROUP#1'] = 'Labels';
 		for($i=1; $i<=500; $i++) {
-			$array_of_values[] = 'id'.$i;
-			$array_of_values[] = 'Label '.$i;
+			$array_of_values['id'.$i] = 'Label '.$i;
 		} //end for
+		//--
+		$array_of_values['#OPTGROUP#2'] = 'HTML Safety Test';
+		//--
+		$weird = 'a&"/><i>Italic</i></body>';
+		$array_of_values['safety-test:'.$weird] = (string) $weird;
 		//--
 
 		//-- single-select
 		$selected_value 	= 'id2';
-		$elem_single_select = \SmartViewHtmlHelpers::html_select_list_single('test-unit-s-list-two', $selected_value, 'form', $array_of_values, 'frm[list_single]', '150', 'onChange="alert(\''.\Smart::escape_js('Getting value from the "SingleList": ').'\' + $(\'#test-unit-s-list-two\').val());"', 'no', 'yes', '#JS-UI-FILTER#'); // returns HTML Code
+		$elem_single_select = \SmartViewHtmlHelpers::html_select_list_single('test-unit-s-list-two', $selected_value, 'form', $array_of_values, 'frm[list_single]', '150', 'onChange="alert(\''.\Smart::escape_js('Getting value from the "SingleList": ').'\' + $(\'#test-unit-s-list-two\').val());"', 'no', 'yes', '', '#JS-UI-FILTER#'); // returns HTML Code
 		//--
 
 		//-- draw a multi-select (classic)
-		$selected_values 	= '<id1>,<id3>';
+		$selected_values 	= [ 'id1', 'id3' ];
 		$elem_multi_select 	= \SmartViewHtmlHelpers::html_select_list_multi('test-unit-m-list-2', $selected_values, 'form', $array_of_values, 'frm[list_multi_one][]', 'list', 'no', '250', 'onBlur="alert(\''.\Smart::escape_js('Getting value from the:'."\n".' "MultiList": ').'\' + $(\'#test-unit-m-list-2\').val());"', '#JS-UI-FILTER#'); // returns HTML Code
 		//--
 
@@ -111,9 +110,14 @@ final class TestUnitMain {
 		//--
 
 		//--
-		if(\SmartFrameworkRuntime::isAdminArea() === true) {
-			$info_adm = '[ Admin Area ]';
-			$info_pfx = 'adm';
+		if(\SmartFrameworkRegistry::isAdminArea() === true) {
+			if(\SmartFrameworkRegistry::isTaskArea() === true) {
+				$info_adm = '[ Task Area ]';
+				$info_pfx = 'tsk';
+			} else {
+				$info_adm = '[ Admin Area ]';
+				$info_pfx = 'adm';
+			} //end if else
 		} else {
 			$info_adm = '[ Index ]';
 			$info_pfx = 'idx';
@@ -150,7 +154,7 @@ final class TestUnitMain {
 		//--
 
 		//--
-		$arr_bw = (array) \SmartComponents::get_imgdesc_by_bw_id(\SmartUtils::get_os_browser_ip('bw'));
+		$arr_bw = (array) \SmartComponents::get_imgdesc_by_bw_id((string)\SmartUtils::get_os_browser_ip('bw'));
 		$tpl_path = 'modules/mod-samples/libs/templates/testunit';
 		//--
 		$tpl_alt_tpl = (bool) \SmartAppInfo::TestIfModuleExists('mod-tpl');
@@ -178,8 +182,8 @@ final class TestUnitMain {
 				'TEST-JS_SCRIPTS_Init-Tabs' 				=> '<script>'.\SmartViewHtmlHelpers::js_code_uitabs_init('tabs_draw', \Smart::format_number_int($tab,'+')).'</script>', // '<script>'.\SmartViewHtmlHelpers::js_code_uitabs_activate('tabs_draw', false).'</script>',
 				'Test-Buttons_AJAX-POST' 					=> (string) $btnop,
 				'TEST-VAR'  								=> '<div style="background-color: #ECECEC; padding: 10px;"><b>Smart.Framework</b> :: PHP/Javascript web framework :: Test and Demo Suite @ '.$info_adm.'</div>',
-				'TEST-ELEMENTS_DIALOG' 						=> '<a class="ux-button ux-button-primary" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h1>Do you like this framework ?</h1><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="Yes">Yes</option><option value="No">No</option></select></div>', 'jQuery.alertable.alert(\'Well ... then you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\').always(function(){});').' return false;">Test JS-UI Dialog &nbsp; <i class="sfi sfi-share"></i></a>',
-				'TEST-ELEMENTS_ALERT' 						=> '<a class="ux-button ux-button-secondary" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_alert_dialog('<h2>You can press now OK !</h2><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="One">One</option><option value="Two">Two</option></select></div>', 'jQuery.alertable.alert(\'Good ... you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\').always(function(){});').' return false;">Test JS-UI Alert  &nbsp; <i class="sfi sfi-share"></i></a>',
+				'TEST-ELEMENTS_DIALOG' 						=> '<a class="ux-button ux-button-primary" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h1>Do you like this framework ?</h1><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="Yes">Yes</option><option value="No">No</option></select></div>', 'smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(\'Well ... then you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\'))').' return false;">Test JS-UI Dialog &nbsp; <i class="sfi sfi-share"></i></a>',
+				'TEST-ELEMENTS_ALERT' 						=> '<a class="ux-button ux-button-secondary" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_alert_dialog('<h2>You can press now OK !</h2><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="One">One</option><option value="Two">Two</option></select></div>', 'smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(\'Good ... you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\'))').' return false;">Test JS-UI Alert  &nbsp; <i class="sfi sfi-share"></i></a>',
 				'TEST-ELEMENTS_SEND-CONFIRM-MODAL' 			=> (string) $basic_form_start.$basic_form_send_modal.$basic_form_end,
 				'TEST-ELEMENTS_SEND-CONFIRM-POPUP' 			=> (string) $basic_form_start.$basic_form_send_popup.$basic_form_end,
 				'TEST-ELEMENTS-WND-INTERRACTIONS-MODAL' 	=> (string) \SmartModExtLib\Samples\TestUnitBrowserWinInterractions::bttnModalTestInit(),
@@ -199,7 +203,21 @@ final class TestUnitMain {
 				'TEST-ELEMENTS_AUTOCOMPLETE-MULTI'			=> 'Autocomplete Multi: '.'<input id="auto-complete-mfld" type="text" name="frm[mautocomplete]" style="width:125px;"><script>'.\SmartViewHtmlHelpers::js_code_init_select_autocomplete_multi('auto-complete-mfld', \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.autocomplete', 'src', 1, 'alert(\'You selected: \' + value);').'</script>',
 				'TEST-elements_Captcha' 					=> (string) \SmartCaptcha::drawCaptchaForm(self::captchaFormName(), self::captchaFormPluginUrl(), (string)self::captchaMode()),
 				'test-elements_limited-area' 				=> '<div>Limited TextArea:</div>'.\SmartViewHtmlHelpers::html_js_limited_text_area('', 'frm[text_area_1]', '', 300, '400px', '90px'),
-				'POWERED-INFO' 								=> (string) \SmartComponents::app_powered_info('no', [ [], [ 'type' => 'cside', 'name' => $arr_bw['desc'], 'logo' => \SmartUtils::get_server_current_url().$arr_bw['img'], 'url' => '' ] ]),
+				'POWERED-INFO' 								=> (string) \SmartComponents::app_powered_info(
+																	'no',
+																	[
+																		[],
+																		[
+																			'type' => 'cside',
+																			'name' => (string) $arr_bw['desc'],
+																			'logo' => (string) \SmartUtils::get_server_current_url().$arr_bw['img'],
+																			'url' => ''
+																		]
+																	],
+																	false, // don't exclude db plugins
+																	true, // display watch
+																	true // display logo
+																),
 				'STR-NUM' 									=> '1abc', // this will be converted to num !!
 				'NUM-NUM' 									=> '0.123456789',
 				'IFTEST' 									=> \Smart::random_number(1,2),
@@ -256,7 +274,7 @@ final class TestUnitMain {
 		//--
 
 		//--
-		$tmp_data = '<br><br><hr><pre>'.'GET:'.'<br>'.\Smart::escape_html(\print_r(\SmartFrameworkSecurity::FilterGetPostCookieVars($_GET),1)).'<hr>'.'POST:'.'<br>'.\Smart::escape_html(\print_r(\SmartFrameworkSecurity::FilterGetPostCookieVars($_POST),1)).'</pre>';
+		$tmp_data = '<br><br><hr><pre>'.'GET:'.'<br>'.\Smart::escape_html(\print_r(\SmartFrameworkSecurity::FilterRequestVar($_GET),1)).'<hr>'.'POST:'.'<br>'.\Smart::escape_html(\print_r(\SmartFrameworkSecurity::FilterRequestVar($_POST),1)).'</pre>';
 		//--
 
 		//--
@@ -268,18 +286,22 @@ final class TestUnitMain {
 		//--
 
 		//--
+		$code = '?';
+		$title = '!';
+		$desc = '...';
 		$evcode = '';
+		$redir = '';
+		$div_id = '';
+		$div_htm = '';
+		$hide_form_on_success = false;
 		//--
-		if(\strlen($frm['date']) > 0) {
+		if((string)$frm['date'] != '') {
 			//--
 			if($captcha_ok !== true) {
 				//--
 				$code = 'ERROR';
 				$title = 'CAPTCHA verification FAILED ...';
 				$desc = 'Please enter a valid captcha value:'.$tmp_data;
-				$redir = '';
-				$div_id = '';
-				$div_htm = '';
 				//--
 			} else {
 				//--
@@ -287,7 +309,7 @@ final class TestUnitMain {
 				$title = 'Captcha validation OK ... The page or just the Captcha will be refreshed depending if TextArea is filled or not ...';
 				$desc = 'Form sent successful:'.$tmp_data;
 				//--
-				if(\strlen($frm['text_area_1']) <= 0) {
+				if((string)$frm['text_area_1'] == '') {
 					$evcode = 'alert(\'The page will be redirected shortly (because the request answer set it - custom action) ...\');';
 					$redir = \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.main&time='.\time().'&tab='.\Smart::escape_url($tab);
 					$div_id = '';
@@ -296,6 +318,7 @@ final class TestUnitMain {
 					$redir = '';
 					$div_id = 'answer_ajax';
 					$div_htm = '<table border="0" bgcolor="#DDEEFF" width="100%"><tr><td><h1>OK, form sent on: '.\date('Y-m-d H:i:s').'</h1></td></tr><tr><td><div align="left"><img width="64" src="lib/framework/img/sign-ok.svg"></div><div><a data-smart="open.modal" href="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'test.markdown" target="testunit-json-test" title="Modal">Test Link 1 (modal link)</a><br><a href="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'test.json" target="_blank">Test Link 2 (default link)</a><br><a data-slimbox="slimbox" title="Image 3" href="?page=samples.test-image"><img src="?page=samples.test-image" alt="Click to Test Image Gallery" title="Click to Test Image Gallery"></a></div></td></tr><tr><td><hr><b>Here is the content of the text area:</b><br><pre>'.\Smart::escape_html($frm['text_area_1']).'</pre></td></tr></table>';
+					$hide_form_on_success = true;
 				} //end if else
 				//--
 				\SmartCaptcha::clearCaptcha(self::captchaFormName(), self::captchaMode()); // everything OK, so clear captcha
@@ -308,11 +331,9 @@ final class TestUnitMain {
 			$title = 'CAPTCHA NOT Checked yet <a> ...';
 			$desc = 'Please fill the <b>Date field</b> ...'.$tmp_data;
 			//--
-			if(\strlen($frm['text_area_1']) > 0) {
-				$redir = \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.main&time='.\time().'&tab='.\Smart::escape_url($tab);
-			} else {
-				$redir = '';
-			} //end if else
+			if((string)$frm['text_area_1'] != '') {
+				$redir = \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.main&time='.\time().'&tab='.\Smart::escape_url($tab); // test redir if error ! must not work !
+			} //end if
 			//--
 			$div_id = '';
 			$div_htm = '';
@@ -321,7 +342,7 @@ final class TestUnitMain {
 		//--
 
 		//--
-		return \SmartViewHtmlHelpers::js_ajax_replyto_html_form($code, $title, $desc, $redir, $div_id, $div_htm, $evcode); // mixed output (json)
+		return \SmartViewHtmlHelpers::js_ajax_replyto_html_form($code, $title, $desc, $redir, $div_id, $div_htm, $evcode, $hide_form_on_success); // mixed output (json)
 		//--
 
 	} //END FUNCTION
@@ -416,7 +437,7 @@ final class TestUnitMain {
 	//============================================================
 	private static function captchaFormPluginUrl() {
 		//--
-		if(\SmartFrameworkRuntime::isAdminArea() !== true) {
+		if(\SmartFrameworkRegistry::isAdminArea() !== true) {
 			return ''; // on index display only the Smart.Captcha
 		} //end if
 		//--

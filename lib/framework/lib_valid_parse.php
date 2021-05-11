@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode
- * @version     v.20210312
+ * @version     v.20210506
  * @package     @Core:Extra
  *
  */
@@ -201,7 +201,7 @@ final class SmartParser {
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode
- * @version     v.20210401
+ * @version     v.20210506
  * @package     @Core:Extra
  *
  */

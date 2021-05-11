@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/Testunit
 // Route: ?/page/samples.testunit (?page=samples.testunit)
 // (c) 2006-2020 unix-world.org - all rights reserved
@@ -22,7 +21,7 @@ if(SmartFileSystem::is_type_file('modules/smart-extra-libs/staticload.php')) {
 define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
 
 define('SMART_FRAMEWORK_TESTUNIT_BASE_URL', '?/page/samples.testunit/op/');
-if(SmartFrameworkRuntime::isAdminArea() === true) {
+if(SmartFrameworkRegistry::isAdminArea() === true) {
 	define('SMART_FRAMEWORK_TESTUNIT_CAPTCHA_MODE', 'session');
 } else {
 	define('SMART_FRAMEWORK_TESTUNIT_CAPTCHA_MODE', 'cookie');
@@ -58,7 +57,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::isAdminArea() === true) {
+		if(SmartFrameworkRegistry::isAdminArea() === true) {
 			SmartSession::start(); // start the session
 		} //end if
 		//--
@@ -488,11 +487,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		$semaphores = [];
-		if(SmartFrameworkRuntime::isAdminArea() !== true) {
-			if(rand(0,1) == 1) {
-				$semaphores[] = 'load:growl-toastr';
-			} //end if
-		} else {
+		if(SmartFrameworkRegistry::isAdminArea() === true) {
 			if(rand(0,1) == 1) {
 				$semaphores[] = 'skip:growl';
 			} //end if
@@ -500,7 +495,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$semaphores[] = 'dialog:alertable';
 			} //end if
 		} //end if
-		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SmartFrameworkRuntime::isAdminArea() === true)) {
+		if(rand(0,1) == 1) {
+			$semaphores[] = 'load:code-highlight-js';
+		} //end if
+		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SmartFrameworkRegistry::isAdminArea() === true)) {
 			//-- skip load the default JS-UI and load jQueryUI if is available and is admin area
 			$semaphores[] = 'skip:js-ui';
 			$semaphores[] = 'load:jqueryui';

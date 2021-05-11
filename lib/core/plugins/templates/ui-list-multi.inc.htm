@@ -1,11 +1,10 @@
-<!-- Partial Template: Plugins.UIListMulti r.20210420 -->
-<!-- require: jquery.multiselect.css jquery.multiselect.js jquery.multiselect.filter.css jquery.multiselect.filter.js -->
+<!-- Partial Template: Plugins.UIListMulti r.20210502 -->
 <script>
 if(typeof(smartJ$UI) != 'undefined') {
 	try {
-		smartJ$UI.SelectList('[###ID|js###]', [###WIDTH|int###], [###HEIGHT|int###], [###USE-JQ|bool###], [###HAVE-FILTER|bool###]);
+		smartJ$UI.SelectList('[###ID|js###]', [###WIDTH|int###], [###HEIGHT|int###], [###IS-MULTI|bool###], [###HAVE-FILTER|bool###]);
 	} catch(err) {
-		console.log('UI List Multi Select ERR:', err);
+		console.warn('UI List Multi Select ERR:', err);
 	}
 }
 </script>

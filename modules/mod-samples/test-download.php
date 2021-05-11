@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/TestDownload
 // Route: ?/page/samples.test-download (?page=samples.test-download)
 // (c) 2006-2020 unix-world.org - all rights reserved
@@ -19,7 +18,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
 
 /**
- * Index Controller
+ * Index Controller r.20210430
  *
  * @ignore
  *
@@ -70,7 +69,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		} //end if
 
 		$download_key 	= (string) sha1((string)time().SMART_FRAMEWORK_SECURITY_KEY); // generate a unique download key that will expire shortly
-		$download_link 	= (string) SmartUtils::create_download_link((string)$this->download_file, (string)$download_key); // generate an encrypted internal download link to serve that file once
+		$download_link 	= (string) SmartFrameworkRuntime::Create_Download_Link((string)$this->download_file, (string)$download_key); // generate an encrypted internal download link to serve that file once
 
 		$this->PageViewSetRawHeaders([
 			'Z-Test-Header-FileMTime:' 	=> (int)    filemtime($this->download_file),

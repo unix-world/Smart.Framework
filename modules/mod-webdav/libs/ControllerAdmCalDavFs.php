@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @hint This abstract controller can be used to build a DAV Service / CalDAV over the Admin Middleware service
  *
- * @version		20210307
+ * @version		20210422
  * @package 	development:modules:Webdav
  *
  */
@@ -48,9 +48,9 @@ abstract class ControllerAdmCalDavFs extends \SmartAbstractAppController {
 
 	final public function DavFsRunServer($dav_fs_root_path, $show_usage_quota=false, $nfo_title='DAV@webICalendar', $nfo_signature='Smart.Framework::CalDAV', $nfo_prefix_crrpath='DAV:', $nfo_lnk_welcome='', $nfo_txt_welcome='CalDAV :: Home', $nfo_svg_logo='modules/mod-webdav/libs/img/ical.svg') {
 
-		//-- set nocache headers
-		\header('Cache-Control: no-cache'); // HTTP 1.1
-		\header('Pragma: no-cache'); // HTTP 1.0
+		//-- set nocache headers {{{SYNC-HTTP-NOCACHE-HEADERS}}}
+		\header('Cache-Control: no-cache, must-revalidate'); // HTTP 1.1 no-cache, not use their stale copy
+		\header('Pragma: no-cache'); // HTTP 1.0 no-cache
 		//--
 
 		//--

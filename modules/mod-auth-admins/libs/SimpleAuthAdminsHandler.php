@@ -24,13 +24,6 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
-//--
-if(\headers_sent()) {
-	\http_response_code(500);
-	die(\SmartComponents::http_error_message('500 Internal Server Error', 'Authentication Failed, Headers Already Sent ...'));
-} //end if
-//--
-
 
 /**
  * Simple Auth Admins Handler
@@ -39,7 +32,7 @@ if(\headers_sent()) {
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD and *optional* the APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY ; they must be set in set in config-admin.php
  * Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)
  *
- * @version 	v.20210421
+ * @version 	v.20210511
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -48,39 +41,55 @@ final class SimpleAuthAdminsHandler {
 	// ::
 
 	//================================================================
-	public static function Authenticate($enforce_ssl=false) {
+	public static function Authenticate($enforce_https=false) {
 		//--
-		if(\SmartFrameworkRuntime::isAdminArea() !== true) {
-			\http_response_code(500);
-			die(\SmartComponents::http_message_500_internalerror('Authentication system is designed for admin area only ...'));
+		if(\headers_sent()) {
+			\SmartFrameworkRuntime::Raise500Error('Authentication Failed, Headers Already Sent ...');
+			die('SimpleAuthAdminsHandler:headersSent');
+			return;
 		} //end if
 		//--
-		if($enforce_ssl === true) {
+		if(\SmartFrameworkRegistry::isAdminArea() !== true) {
+			\SmartFrameworkRuntime::Raise500Error('Authentication system is designed for admin area only ...');
+			die('SimpleAuthAdminsHandler:NotAdminArea');
+			return;
+		} //end if
+		//--
+		if(defined('APP_AUTH_ADMIN_ENFORCE_HTTPS')) {
+			if(APP_AUTH_ADMIN_ENFORCE_HTTPS !== false) {
+				$enforce_https = true;
+			} else {
+				$enforce_https = false;
+			} //end if else
+		} //end if
+		if($enforce_https === true) {
 			if((string)\SmartUtils::get_server_current_protocol() !== 'https://') {
-				\http_response_code(403);
-				die(\SmartComponents::http_error_message('This Web Area require SSL', 'You have to switch from http:// to https:// in order to use this Web Area'));
+				\SmartFrameworkRuntime::Raise403Error('This Web Area require HTTPS.'."\n".'Switch from http:// to https:// in order to use this Web Area');
+				die('SimpleAuthAdminsHandler:NotHTTPS');
+				return;
 			} //end if
 		} //end if
 		//--
 		if(!\defined('\\APP_AUTH_ADMIN_USERNAME') OR !defined('\\APP_AUTH_ADMIN_PASSWORD')) {
-			//--
-			\http_response_code(503);
-			die(\SmartComponents::http_message_503_serviceunavailable('Authentication APP_AUTH_ADMIN_USERNAME / APP_AUTH_ADMIN_PASSWORD not set in config ...')); // must be set in config-admin.php
-			//--
+			\SmartFrameworkRuntime::Raise503Error('Authentication APP_AUTH_ADMIN_USERNAME / APP_AUTH_ADMIN_PASSWORD not set in config ...'); // must be set in config-admin.php
+			die('SimpleAuthAdminsHandler:UserOrPasswordNotSet');
+			return;
 		} elseif((string)\trim((string)\APP_AUTH_ADMIN_USERNAME) == '') {
-			//--
-			\http_response_code(503);
-			die(\SmartComponents::http_message_503_serviceunavailable('Authentication APP_AUTH_ADMIN_USERNAME was set but is Empty ...'));
-			//--
+			\SmartFrameworkRuntime::Raise503Error('Authentication APP_AUTH_ADMIN_USERNAME was set but is Empty ...');
+			die('SimpleAuthAdminsHandler:UserIsEmpty');
+			return;
 		} elseif((string)\trim((string)\APP_AUTH_ADMIN_PASSWORD) == '') {
-			//--
-			\http_response_code(503);
-			die(\SmartComponents::http_message_503_serviceunavailable('Authentication APP_AUTH_ADMIN_PASSWORD was set but is Empty ...'));
-			//--
+			\SmartFrameworkRuntime::Raise503Error('Authentication APP_AUTH_ADMIN_PASSWORD was set but is Empty ...');
+			die('SimpleAuthAdminsHandler:PasswordIsEmpty');
+			return;
 		} //end if
 		//--
-		if(isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']) AND ((string)$_SERVER['PHP_AUTH_USER'] === (string)\APP_AUTH_ADMIN_USERNAME) AND ((string)$_SERVER['PHP_AUTH_PW'] === (string)\APP_AUTH_ADMIN_PASSWORD)) {
-			//-- OK, loggen in
+		if(
+			isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']) AND
+			((string)trim((string)$_SERVER['PHP_AUTH_USER']) != '') AND ((string)trim((string)$_SERVER['PHP_AUTH_PW']) != '') AND
+			((string)$_SERVER['PHP_AUTH_USER'] === (string)\APP_AUTH_ADMIN_USERNAME) AND ((string)$_SERVER['PHP_AUTH_PW'] === (string)\APP_AUTH_ADMIN_PASSWORD)
+		) {
+			//-- OK, logged in
 			$privileges = '<superadmin>,<admin>';
 			if(\defined('\\APP_AUTH_PRIVILEGES')) {
 				$privileges .= ','.\APP_AUTH_PRIVILEGES;
@@ -114,19 +123,39 @@ final class SimpleAuthAdminsHandler {
 				(string) $priv_keys 					// safe store privacy-keys as encrypted (will be decrypted in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
 			);
 			//--
+			if( // single user login hook by user account {{{SYNC-SINGLE-USER-LOGIN-HOOK}}}
+				\defined('\\SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE') AND
+				\defined('\\SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE') AND
+				\defined('\\SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID')
+			) {
+				if((string)\SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID != '') {
+					if((string)\SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID !== (string)\SmartAuth::get_login_id()) {
+						\SmartFrameworkRuntime::Raise503Error(
+							(string) \SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE,
+							(string) \SmartComponents::operation_ok('Single User Lock File: '.\Smart::escape_html((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE), '80%').\SmartComponents::operation_notice((string)\Smart::nl_2_br((string)\Smart::escape_html((string)\SmartFileSystem::read((string)\SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE))), '80%')
+						);
+						die('SimpleAuthAdminsHandler:SingleUserAccountIdHook');
+					} //end if
+				} //end if
+			} //end if
+			//--
 		} else {
 			//-- log unsuccessful login
 			if(isset($_SERVER['PHP_AUTH_USER']) AND ((string)$_SERVER['PHP_AUTH_USER'] != '')) {
-				@\file_put_contents(
+				\SmartFileSystem::write(
 					'tmp/logs/adm/'.'simple-auth-fail-'.\date('Y-m-d@H').'.log',
-					'[ERR]'."\t".\Smart::normalize_spaces((string)\date('Y-m-d H:i:s O'))."\t".\Smart::normalize_spaces((string)$_SERVER['PHP_AUTH_USER'])."\t".\Smart::normalize_spaces((string)\SmartUtils::get_ip_client())."\t".\Smart::normalize_spaces((string)\SmartUtils::get_visitor_useragent())."\n",
-					\FILE_APPEND | \LOCK_EX
+					'[FAIL]'."\t".\Smart::normalize_spaces((string)\date('Y-m-d H:i:s O'))."\t".\Smart::normalize_spaces((string)$_SERVER['PHP_AUTH_USER'])."\t".\Smart::normalize_spaces((string)\SmartUtils::get_ip_client())."\t".\Smart::normalize_spaces((string)\SmartUtils::get_visitor_useragent())."\n",
+					'a'
 				);
 			} //end if
 			//-- NOT OK, display the Login Form and Exit
-			\header('WWW-Authenticate: Basic realm="Private Area"');
-			\http_response_code(401);
-			die(\SmartComponents::http_message_401_unauthorized('Authorization Required', \SmartComponents::operation_notice('Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.', '100%')));
+			\SmartFrameworkRuntime::Raise401Prompt(
+				'Authorization Required',
+				(string) \SmartComponents::http_message_401_unauthorized('Authorization Required', \SmartComponents::operation_notice('Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.')),
+				'Default Private Area'
+			);
+			die('SimpleAuthAdminsHandler:401Prompt');
+			return;
 			//--
 		} //end if
 		//--

@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20210310), (c) 2015-2021 unix-world.org
+	extended by unixman, (stable.20210511), (c) 2015-2021 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 */
 
@@ -455,6 +455,15 @@ a.ux-link:hover {
 	border: 0 !important;
 }
 
+.ux-button-super {
+	padding: 7px 12px 7px 12px !important;
+	margin-bottom: 10px !important; /* sync with .ux-field-xl */
+}
+.ux-button-super, .ux-button-super * {
+	font-size: 1.25rem !important; /* 20px */
+	line-height: 1.25rem !important; /* 20px */
+}
+
 .ux-button-xsmall {
 	padding: 5px 8px 5px 8px !important;
 }
@@ -695,6 +704,12 @@ so we can ignore the csslint warning.
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
+}
+
+.ux-field-xl {
+	font-size: 1.25rem !important;
+	margin-bottom: 10px;
+	margin-right: 10px;
 }
 
 .ux-form select option,

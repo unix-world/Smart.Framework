@@ -1,0 +1,45 @@
+<table style="width:98vw;">
+	<tr>
+		<td width="64">
+			<img id="appcodepack-img" width="48" height="48" alt="[###NAME|html###]" title="[###NAME|html###] [###VERSION|html###]" src="[###MOD-VIEW-PATH|html###]img/appcodepack.svg" class="">
+		</td>
+		<td>
+			<h1 id="appcodepack-txt" class="headingText">
+				<span class="colorSmart">Smart</span><span class="colorDoubleColon">::</span><span class="colorNamePrefix">[###NAME-PREFIX|html###]</span><span class="colorDot">.</span><span class="colorNameSuffix">[###NAME-SUFFIX|html###]</span>
+			</h1>
+		</td>
+		<td> &nbsp; &nbsp; &nbsp; </td>
+		<td align="right">
+			<img width="48" height="48" alt="PHP-Logo" title="PHP[###PHP-BIN-VER|html###]" src="lib/framework/img/php-logo.svg" class="helpCursor">
+			&nbsp;
+			<img width="48" height="48" alt="JS-Logo" title="Javascript Optimizer[###JS-MIN-VER|html###]" src="lib/framework/img/javascript-logo.svg" class="helpCursor">
+			&nbsp;
+			<img width="48" height="48" alt="CSS-Logo" title="CSS Optimizer[###CSS-MIN-VER|html###]" src="lib/framework/img/css-logo.svg" class="helpCursor">
+			&nbsp;
+			<img width="48" height="48" alt="NodeJS-Logo" title="NodeJS[###NODE-BIN-VER|html###]" src="lib/framework/img/nodejs-logo.svg" class="helpCursor">
+			&nbsp;
+		</td>
+		<td align="right">
+			&nbsp;
+			<img width="48" height="48" alt="Smart.Framework-Logo" title="Smart.Framework[###SF-VER|html###]" src="lib/framework/img/sf-logo.svg" class="helpCursor">
+			&nbsp;
+		</td>
+	</tr>
+</table>
+[%%%IF:MODAL:!=yes;%%%]
+<script>
+const homeURL = 'task.php?page=app-release.app-manage';
+const homeSelRun = () => {
+	setTimeout(() => { self.location = String(homeURL); }, 250);
+};
+const homeAppRun = () => {
+	setTimeout(() => { self.location = smartJ$Utils.url_add_suffix(String(homeURL), '&appid=' + '[###APP-ID|url|js###]'); }, 250);
+};
+</script>
+<script>
+$(() => {
+	$('#appcodepack-img').on('click', () => { homeSelRun(); }).addClass('pointerCursor');
+	$('#appcodepack-txt').on('click', () => { homeAppRun(); }).addClass('pointerCursor');
+});
+</script>
+[%%%/IF:MODAL%%%]

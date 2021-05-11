@@ -22,6 +22,15 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 // [PHP8]
 
+//--
+if(!defined('SMART_FRAMEWORK_SECURITY_KEY')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SECURITY_KEY');
+} //end if
+if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) == '') {
+	die('Empty INIT constant value for SMART_FRAMEWORK_SECURITY_KEY');
+} //end if
+//--
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -42,7 +51,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints       Blowfish is a 64-bit (8 bytes) block cipher. Max Key is up to 56 chars length (56 bytes = 448 bits). The CBC mode requires a initialization vector (iv).
  *
  * @depends     classes: Smart, SmartCryptoCipherBlowfishCBC, SmartCryptoOpenSSLCipher, SmartCryptoCipherHash
- * @version     v.20210330
+ * @version     v.20210506
  * @package     @Core:Crypto
  *
  */
@@ -136,8 +145,8 @@ final class SmartCipherCrypto {
  * @access 		private
  * @internal
  *
- * @depends     extensions: PHP OpenSSL ; classes: Smart, SmartHashCrypto
- * @version     v.20210330
+ * @depends     extensions: PHP OpenSSL ; classes: Smart, SmartHashCrypto ; constants SMART_FRAMEWORK_SECURITY_KEY
+ * @version     v.20210506
  *
  */
 final class SmartCryptoOpenSSLCipher {
@@ -147,10 +156,10 @@ final class SmartCryptoOpenSSLCipher {
 
 	//==============================================================
 	//-- @ PRIVATE
-	private $crypto_cipher;		// Crypto Cipher (ex: BF-CBC)
-	private $crypto_key;		// Crypto Key
-	private $crypto_iv;			// Crypto IV (initialization vector)
-	private $crypto_opts; 		// Crypto Options (OpenSSL options: OPENSSL_RAW_DATA OPENSSL_ZERO_PADDING)
+	private $crypto_cipher 	= null;		// Crypto Cipher (ex: BF-CBC)
+	private $crypto_key 	= null;		// Crypto Key
+	private $crypto_iv 		= null;		// Crypto IV (initialization vector)
+	private $crypto_opts 	= null; 	// Crypto Options (OpenSSL options: OPENSSL_RAW_DATA OPENSSL_ZERO_PADDING)
 	//--
 	//==============================================================
 
@@ -415,8 +424,8 @@ final class SmartCryptoOpenSSLCipher {
  * @access 		private
  * @internal
  *
- * @depends     classes: Smart, SmartHashCrypto
- * @version     v.20210330
+ * @depends     classes: Smart, SmartHashCrypto ; constants: SMART_FRAMEWORK_SECURITY_KEY
+ * @version     v.20210506
  *
  */
 final class SmartCryptoCipherBlowfishCBC {
@@ -426,11 +435,11 @@ final class SmartCryptoCipherBlowfishCBC {
 
 	//==============================================================
 	//--
-	private $_P = array(); 	// P-Array contains 18 32-bit subkeys
-	private $_S = array(); 	// Array of four S-Blocks each containing 256 32-bit entries
+	private $_P 	= []; 		// P-Array contains 18 32-bit subkeys
+	private $_S 	= []; 		// Array of four S-Blocks each containing 256 32-bit entries
 	//--
-	private $_iv = null;	// Initialization vector
-	private $_key = '';		// the key
+	private $_iv 	= null;		// Initialization vector
+	private $_key 	= '';		// the key
 	//--
 	//==============================================================
 
@@ -1051,8 +1060,8 @@ echo "plain text: $plaintext";
  * @access 		private
  * @internal
  *
- * @depends     classes: Smart, SmartHashCrypto
- * @version     v.20210401
+ * @depends     classes: Smart, SmartHashCrypto ; constants: SMART_FRAMEWORK_SECURITY_KEY
+ * @version     v.20210506
  *
  */
 final class SmartCryptoCipherHash {
@@ -1062,11 +1071,11 @@ final class SmartCryptoCipherHash {
 
 	//========================================
 	// @ PRIVATE
-	private $hash_key;			// @var	string :: Hashed value of the user provided encryption key
+	private $hash_key 		= null;		// @var	string :: Hashed value of the user provided encryption key
 	// @ PRIVATE
-	private $hash_length;		// @var	int :: String length of hashed values using the current algorithm
+	private $hash_length 	= 0;		// @var	int :: String length of hashed values using the current algorithm
 	// @PRIVATE
-	private $mode;				// @var enum :: md5, sha1, sha256, sha384, sha512
+	private $mode 			= null;		// @var enum :: md5, sha1, sha256, sha384, sha512
 	//========================================
 
 
@@ -1085,17 +1094,14 @@ final class SmartCryptoCipherHash {
 
 		// for the case: hash/sha256
 		if((string)substr((string)$mode, 0, 5) == 'hash/') {
-			$cfgcrypto = '';
-			if(defined('SMART_FRAMEWORK_SECURITY_CRYPTO')) {
-				if((string)trim((string)SMART_FRAMEWORK_SECURITY_CRYPTO) != '') {
-					$cfgcrypto = (string) trim((string)SMART_FRAMEWORK_SECURITY_CRYPTO);
-				} //end if
-			} //end if
-			$arr = (array) explode('/', (string)$cfgcrypto);
+			$cfgcrypto = (string) $mode;
 			$mode = '';
+			$arr = (array) explode('/', (string)$cfgcrypto);
+			$cfgcrypto = null;
 			if(array_key_exists(1, $arr)) {
 				$mode = (string) trim((string)$arr[1]);
 			} //end if
+			$arr = null;
 		} //end if
 
 		// mode
@@ -1278,7 +1284,7 @@ final class SmartCryptoCipherHash {
 				$result = SmartHashCrypto::sha512($string);
 				break;
 			default:
-				Smart::log_warning('ERROR: Invalid mode for: SmartCryptoCipherHash / _hash: '.$this->mode.' ; Using sha1()');
+				Smart::log_warning('ERROR: Invalid mode for: '.__CLASS__.' / '.__METHOD__.': '.$this->mode.' ; Using sha1()');
 				$result = (string) sha1((string)$string);
 		} //end switch
 

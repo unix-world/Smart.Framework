@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/BenchMark
 // Route: ?/page/samples.benchmark (?page=samples.benchmark)
 // (c) 2006-2020 unix-world.org - all rights reserved

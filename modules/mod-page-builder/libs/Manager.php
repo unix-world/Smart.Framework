@@ -50,7 +50,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210420
+ * @version 	v.20210502
  * @package 	PageBuilder
  *
  */
@@ -603,11 +603,12 @@ final class Manager {
 				(string) $tselmode,
 				(array) $arr_langs,
 				'translate',
-				'150/0', // $y_dimension
+				'150/0',
 				'onChange="var theSelLang = String(jQuery(this).val()); self.location = \''.\Smart::escape_js(self::composeUrl('op=record-view&sop=code&id='.\Smart::escape_url($query['id']))).'\' + \'&translate=\' + smartJ$Utils.escape_url(theSelLang);"', // $y_custom_js
-				'no', // $y_raw
-				'no', // $y_allowblank
-				'#JS-UI#' // $y_extrastyle
+				'no',
+				'no',
+				'',
+				'#JS-UI#'
 			);
 		} //end if
 		//--
@@ -634,6 +635,7 @@ final class Manager {
 					//--
 				} else {
 					//-- EDITOR
+					$out .= '<form name="page_form_html" id="page_form_html" method="post" action="#" onsubmit="return false;">';
 					$out .= '<div id="code-editor" align="left">';
 					if((string)$query['mode'] == 'raw') {
 						$out .= '<font size="4" color="#FF7700"><b>&lt;<i>raw</i>&gt;</b>'.' - '.self::text('ttl_edtc').'</font>';
@@ -654,7 +656,6 @@ final class Manager {
 					$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-back.svg'.'" alt="'.self::text('cancel').'" title="'.self::text('cancel').'" style="cursor:pointer;" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h3>'.self::text('msg_unsaved').'</h3>'.'<br>'.'<b>'.\Smart::escape_html($translator_window->text('confirm_action')).'</b>', 'smartJ$Browser.LoadElementContentByAjax('."jQuery('#code-editor').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');").'">';
 					$out .= (string) self::getPreviewButtons((string)$query['id']);
 					$out .= '</div>'."\n";
-					$out .= '<form name="page_form_html" id="page_form_html" method="post" action="#" onsubmit="return false;">';
 					$out .= '<input type="hidden" name="frm[form_mode]" value="code">';
 					if((string)$y_lang != '') {
 						$out .= '<input type="hidden" name="frm[language]" value="'.\Smart::escape_html((string)$y_lang).'">';
@@ -669,7 +670,6 @@ final class Manager {
 					//	$out .= \SmartViewHtmlHelpers::html_js_htmlarea('pbld_code_htmleditor', 'frm[code]', $query['code'], '885px', '70vh', true); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
 						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'html', true, '885px', '70vh');
 					} //end if else
-					$out .= "\n".'</form>'."\n";
 					$out .= '<div align="left">';
 					if((string)$query['mode'] == 'raw') {
 						$out .= '<font size="4" color="#FF7700"><b>&lt;/<i>raw</i>&gt;</b></font>';
@@ -681,6 +681,7 @@ final class Manager {
 						$out .= '<font size="4" color="#666699"><b>&lt;/<i>html5</i>&gt;</b></font>';
 					} //end if else
 					$out .= '</div>'."\n";
+					$out .= "\n".'</form>'."\n";
 					$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', false);</script>';
 					$out .= '<script>smartJ$UI.TabsActivate(\'tabs\', false);</script>';
 					$out .= '<script>smartJ$Browser.RefreshParent();</script>'; // not necessary
@@ -876,6 +877,7 @@ final class Manager {
 			if((string)$y_mode == 'form') {
 				//-- CODE EDITOR
 				$out = '';
+				$out .= '<form class="ux-form" name="page_form_yaml" id="page_form_yaml" method="post" action="#" onsubmit="return false;">';
 				$out .= '<div align="left" id="yaml-editor"><font size="4" color="#003399"><b>&lt;<i>yaml</i>&gt;</b>'.' - '.self::text('ttl_edtac').'</font>';
 				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-save.svg'.'" alt="'.self::text('save').'" title="'.self::text('save').'" style="cursor:pointer;" onClick="'.\SmartViewHtmlHelpers::js_ajax_submit_html_form('page_form_yaml', self::composeUrl('op=record-edit-do&id='.\Smart::escape_url($query['id']))).'">';
@@ -883,11 +885,10 @@ final class Manager {
 				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-back.svg'.'" alt="'.self::text('cancel').'" title="'.self::text('cancel').'" style="cursor:pointer;" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h3>'.self::text('msg_unsaved').'</h3>'.'<br>'.'<b>'.\Smart::escape_html($translator_window->text('confirm_action')).'</b>', 'smartJ$Browser.LoadElementContentByAjax('."jQuery('#yaml-editor').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-data&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');").'">';
 				$out .= (string) self::getPreviewButtons((string)$query['id']);
 				$out .= '</div>'."\n";
-				$out .= '<form class="ux-form" name="page_form_yaml" id="page_form_yaml" method="post" action="#" onsubmit="return false;">';
 				$out .= '<input type="hidden" name="frm[form_mode]" value="yaml">';
 				$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', 'frm[data]', $query['data'], 'yaml', true, '885px', '70vh'); // OK.new
-				$out .= "\n".'</form>'."\n";
 				$out .= '<div align="left"><font size="4" color="#003399"><b>&lt;/<i>yaml</i>&gt;</b></font></div>'."\n";
+				$out .= "\n".'</form>'."\n";
 				$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', false);</script>';
 				$out .= '<script>smartJ$UI.TabsActivate(\'tabs\', false);</script>';
 				$out .= '<script>smartJ$Browser.RefreshParent();</script>'; // not necessary
@@ -1938,7 +1939,16 @@ final class Manager {
 			//--
 		} //end if
 		//--
-		return (string) \SmartViewHtmlHelpers::js_ajax_replyto_html_form($result, $title, $message, $redirect);
+		return (string) \SmartViewHtmlHelpers::js_ajax_replyto_html_form(
+			(string) $result,
+			(string) $title,
+			(string) $message,
+			(string) $redirect,
+			'',
+			'',
+			'',
+			true // hide form on success
+		);
 		//--
 	} // END FUNCTION
 	//==================================================================
@@ -2274,7 +2284,7 @@ final class Manager {
 		return (string) \SmartMarkersTemplating::render_file_template(
 			self::$ModulePath.'libs/views/manager/view-list-tree.mtpl.htm',
 			[
-				'IS-DEV-MODE' 		=> (string) ((\SmartFrameworkRuntime::ifProdEnv() !== true) ? 'yes' : 'no'),
+				'IS-DEV-MODE' 		=> (string) ((\SmartFrameworkRegistry::ifProdEnv() !== true) ? 'yes' : 'no'),
 				'COOKIE-DATASETS' 	=> (string) $cookie_display_datasets,
 				'VALUE-DATASETS' 	=> (string) $cookie_value_datasets,
 				'DISPLAY-DATASETS' 	=> (string) $display_datasets,
@@ -2381,7 +2391,7 @@ final class Manager {
 		return (string) \SmartMarkersTemplating::render_file_template(
 			(string) self::$ModulePath.'libs/views/manager/view-list.mtpl.htm',
 			[
-				'IS-DEV-MODE' 		=> (string) ((\SmartFrameworkRuntime::ifProdEnv() !== true) ? 'yes' : 'no'),
+				'IS-DEV-MODE' 		=> (string) ((\SmartFrameworkRegistry::ifProdEnv() !== true) ? 'yes' : 'no'),
 				'SHOW-FILTER-CTRL' 	=> 'yes',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'ALLOW-PAGES' 		=> (string) $allow_pages,

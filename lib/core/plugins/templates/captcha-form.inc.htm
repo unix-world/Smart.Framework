@@ -1,4 +1,4 @@
-<!-- Partial Template: Plugins.CaptchaForm r.20210421 -->
+<!-- Partial Template: Plugins.CaptchaForm r.20210507 -->
 <link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.css?[###RELEASE-HASH|html###]">
 <script src="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.js?[###RELEASE-HASH|html###]"></script>
 <script>
@@ -36,8 +36,8 @@ jQuery(() => {
 
 	$('.Smart-Captcha-Logo').attr('title', 'Secure Captcha by Smart.Framework # E:' + $entropy).css({'cursor':'context-menu'});
 
-	b$.CountDown(u$.format_number_int($delay, false), 'Smart-Captcha-Check-Timer-[###RELEASE-UUID|htmid|js###]', () => {
-		jQuery('#Smart-Captcha-Check-Timer-[###RELEASE-UUID|htmid|js###]').hide();
+	b$.CountDown(u$.format_number_int($delay, false), 'Smart-Captcha-Check-Timer-[###RELEASE-UUID|htmid|js###]', (counter, elID) => {
+		jQuery('#' + elID).hide();
 		jQuery('#Smart-Captcha-Check-Info-[###RELEASE-UUID|htmid|js###] i#Smart-Captcha-Check-Helper').removeClass('sfi-clock2').addClass('sfi-arrow-right');
 	});
 
@@ -47,8 +47,14 @@ jQuery(() => {
 
 	const $mc = jQuery('#Smart-Captcha-Motion-[###RELEASE-UUID|htmid|js###]');
 
-	let e1_[###RELEASE-UUID|jsvar###] = c$.decrypt('[###CAPTCHA-IMG-SRC|js###]', '([###CAPTCHA-JS-EXPORTS|js###])');
-	let e2_[###RELEASE-UUID|jsvar###] = e$.decode('[###CAPTCHA-QR-CODE|js###]');
+	let e1_[###RELEASE-UUID|jsvar###] = Mutation$Observer(
+		'[###CAPTCHA-IMG-SRC|js###]',
+		'setInterval(() => { [###CAPTCHA-JS-EXPORTS|js###] $entropy = h$.crc32b(subtle$CryptoDigest(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); }, 700);'
+	);
+	let e2_[###RELEASE-UUID|jsvar###] = Mutation$Observer(
+		'[###CAPTCHA-QR-CODE|js###]',
+		'setInterval(() => { [###CAPTCHA-JS-EXPORTS|js###] $entropy = h$.crc32b(subtle$CryptoDigest(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); }, 800);'
+	);
 
 	const contextSupport_[###RELEASE-UUID|jsvar###] = () => {
 		if(($bclass === 'rb') || ($bclass === 'tx') || ($bclass === 'xy') || (($bmobile === 'no') && ($bsign === 'wkt')) || (($bmobile === 'yes') && ($bsign === 'iex'))) {
@@ -111,7 +117,7 @@ jQuery(() => {
 			if((typeof(zSVG) === 'string') && zSVG) {
 				$fld.find('input').show();
 				$fld.find('div#Smart-Captcha-Info-[###RELEASE-UUID|htmid|js###]').empty().css({'height':'auto'}).html('[###CAPTCHA-TXT-ENTER|html|js###] [###CAPTCHA-QR-HELPER|html|js###]');
-				$box.empty().css({'height':'auto'}).addClass('strip-back').html('<img style="cursor:default;" src="' + u$.escape_html(zSVG) + '" alt="[###CAPTCHA-TXT-IMG|html|js###]" title="[###CAPTCHA-TXT-IMG|html|js###]">');
+				$box.empty().css({'height':'auto'}).addClass('strip-back').html('<div style="cursor:default;" title="[###CAPTCHA-TXT-IMG|html|js###]">' + $('<div></div>').html(e$.decode(zSVG)).html() + '</div>');
 				if((typeof(qSVG) !== 'string') && e2_[###RELEASE-UUID|jsvar###]) {
 					try {
 						eval('(() => { ' + String(e2_[###RELEASE-UUID|jsvar###]) + ' })();');
@@ -122,7 +128,7 @@ jQuery(() => {
 					}
 				}
 				if((typeof(qSVG) === 'string') && qSVG) {
-					$box.append('<br><img style="cursor:help;" src="' + u$.escape_html(qSVG) + '" alt="[###CAPTCHA-QR-HELPER|html|js###]" title="[###CAPTCHA-QR-HELPER|html|js###]"><div class="Smart-Captcha-Accessibility-Symbols" title="Accessibility Context for Captcha"><i class="sfi sfi-headphones"></i>&nbsp;<i class="sfi sfi-accessibility"></i></div>');
+					$box.append('<br><div style="cursor:help; margin-top:7px;" title="[###CAPTCHA-QR-HELPER|html|js###]">' + $('<div></div>').html(e$.decode(qSVG)).html() + '</div><div class="Smart-Captcha-Accessibility-Symbols" title="Accessibility Context for Captcha"><i class="sfi sfi-headphones"></i>&nbsp;<i class="sfi sfi-accessibility"></i></div>');
 				}
 			} else if((typeof(aTan) == 'number') && u$.isFiniteNumber(aTan) && (aTan > 1)) {
 				$inf.empty().html('<div class="Smart-Captcha-Success"><br><img width="48" height="48" src="[###BASE-URL|html|js###]lib/framework/img/loading-spin.svg">');

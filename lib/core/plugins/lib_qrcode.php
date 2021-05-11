@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Minimalist QRCode Implementation
 // supports only binary encoding
 // License: BSD
-// (c) 2019-2020 unix-world.org
+// (c) 2019-2021 unix-world.org
 //============================================================
 // TECHNICAL DATA / FEATURES OF QRCODE:
 // * Encodable Character Set: 	UTF-8 + Binary
@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart
- * @version 	v.20210420
+ * @version 	v.20210507
  * @package 	Plugins:Barcodes
  */
 final class SmartQR2DBarcode {
@@ -111,7 +111,7 @@ final class SmartQR2DBarcode {
 	private function render_as_svg($symbology, $data, $options) {
 		//--
 		if(!is_array($options)) {
-			$options = array();
+			$options = [];
 		} //end if
 		$options['md'] = 1; // this is mandatory for QRCode with SVG
 		//--
@@ -128,12 +128,10 @@ final class SmartQR2DBarcode {
 			$svg .= ' fill="'.Smart::escape_html($bgcolor).'"/>';
 		} //end if
 		$colors = [
-			($options['cs'] ? (string)$options['cs'] : '#FFFFFF'),
-			($options['cm'] ? (string)$options['cm'] : '#000000')
+			(string) ($options['cs'] ? $options['cs'] : '#FFFFFF'),
+			(string) ($options['cm'] ? $options['cm'] : '#000000')
 		];
-		$svg .= (string) $this->dispatch_render_svg(
-			$code, $x, $y, $w, $h, $colors, $widths, $options
-		);
+		$svg .= (string) $this->dispatch_render_svg($code, $x, $y, $w, $h, $colors, $widths, $options);
 		$svg .= '</g>'."\n".'</svg>';
 		//--
 		return (string) $svg;
@@ -158,25 +156,25 @@ final class SmartQR2DBarcode {
 			(isset($options['w9']) ? (int)$options['w9'] : 1),
 		];
 		//--
-		$size = $this->dispatch_calculate_size($code, $widths, $options);
-		$dscale = ($code && isset($code['g']) && $code['g'] == 'm') ? 4 : 1;
-		$scale = (isset($options['sf']) ? (float)$options['sf'] : $dscale);
-		$scalex = (isset($options['sx']) ? (float)$options['sx'] : $scale);
-		$scaley = (isset($options['sy']) ? (float)$options['sy'] : $scale);
-		$dpadding = ($code && isset($code['g']) && $code['g'] == 'm') ? 0 : 10;
-		$padding = (isset($options['p']) ? (int)$options['p'] : $dpadding);
-		$vert = (isset($options['pv']) ? (int)$options['pv'] : $padding);
-		$horiz = (isset($options['ph']) ? (int)$options['ph'] : $padding);
-		$top = (isset($options['pt']) ? (int)$options['pt'] : $vert);
-		$left = (isset($options['pl']) ? (int)$options['pl'] : $horiz);
-		$right = (isset($options['pr']) ? (int)$options['pr'] : $horiz);
-		$bottom = (isset($options['pb']) ? (int)$options['pb'] : $vert);
-		$dwidth = ceil($size[0] * $scalex) + $left + $right;
-		$dheight = ceil($size[1] * $scaley) + $top + $bottom;
-		$iwidth = (isset($options['w']) ? (int)$options['w'] : $dwidth);
-		$iheight = (isset($options['h']) ? (int)$options['h'] : $dheight);
-		$swidth = $iwidth - $left - $right;
-		$sheight = $iheight - $top - $bottom;
+		$size 		= $this->dispatch_calculate_size($code, $widths, $options);
+		$dscale 	= ($code && isset($code['g']) && $code['g'] == 'm') ? 4 : 1;
+		$scale 		= (isset($options['sf']) ? (float)$options['sf'] : $dscale);
+		$scalex 	= (isset($options['sx']) ? (float)$options['sx'] : $scale);
+		$scaley 	= (isset($options['sy']) ? (float)$options['sy'] : $scale);
+		$dpadding 	= ($code && isset($code['g']) && $code['g'] == 'm') ? 0 : 10;
+		$padding 	= (isset($options['p']) ? (int)$options['p'] : $dpadding);
+		$vert 		= (isset($options['pv']) ? (int)$options['pv'] : $padding);
+		$horiz 		= (isset($options['ph']) ? (int)$options['ph'] : $padding);
+		$top 		= (isset($options['pt']) ? (int)$options['pt'] : $vert);
+		$left 		= (isset($options['pl']) ? (int)$options['pl'] : $horiz);
+		$right 		= (isset($options['pr']) ? (int)$options['pr'] : $horiz);
+		$bottom 	= (isset($options['pb']) ? (int)$options['pb'] : $vert);
+		$dwidth 	= ceil($size[0] * $scalex) + $left + $right;
+		$dheight 	= ceil($size[1] * $scaley) + $top + $bottom;
+		$iwidth 	= (isset($options['w']) ? (int)$options['w'] : $dwidth);
+		$iheight 	= (isset($options['h']) ? (int)$options['h'] : $dheight);
+		$swidth 	= $iwidth - $left - $right;
+		$sheight 	= $iheight - $top - $bottom;
 		//--
 		return array(
 			$code, $widths, $iwidth, $iheight,
@@ -191,7 +189,7 @@ final class SmartQR2DBarcode {
 
 	private function dispatch_encode($symbology, $data, $options) {
 		//--
-		switch(strtoupper((string)$symbology)) {
+		switch((string)strtoupper((string)$symbology)) {
 			case 'QRH':
 				return (array) $this->qr_encode($data, 3);
 				break;
@@ -241,8 +239,8 @@ final class SmartQR2DBarcode {
 
 	private function matrix_calculate_size($code, $widths) {
 		//--
-		$width = ($code['q'][3] * $widths[0] + $code['s'][0] * $widths[1] + $code['q'][1] * $widths[0]);
-		$height = ($code['q'][0] * $widths[0] + $code['s'][1] * $widths[1] + $code['q'][2] * $widths[0]);
+		$width  = (int) ($code['q'][3] * $widths[0] + $code['s'][0] * $widths[1] + $code['q'][1] * $widths[0]);
+		$height = (int) ($code['q'][0] * $widths[0] + $code['s'][1] * $widths[1] + $code['q'][2] * $widths[0]);
 		//--
 		return array($width, $height);
 		//--
@@ -251,19 +249,26 @@ final class SmartQR2DBarcode {
 
 	private function matrix_render_svg($code, $x, $y, $w, $h, $colors, $widths, $options) {
 		//--
-		$shape = (isset($options['ms']) ? (string)strtolower((string)$options['ms']) : '');
+		$shape   = (isset($options['ms']) ? (string)strtolower((string)$options['ms']) : '');
 		$density = (isset($options['md']) ? (float)$options['md'] : 1);
 		//--
-		list($width, $height) = (array) $this->matrix_calculate_size($code, $widths);
+		$arr = (array) $this->matrix_calculate_size($code, $widths);
+		$width  = (int) $arr[0];
+		$height = (int) $arr[1];
+		$arr = null;
 		if($width && $height) {
 			$scale = min($w / $width, $h / $height);
-			if ($scale > 1) $scale = floor($scale);
-			$x = floor($x + ($w - $width * $scale) / 2);
-			$y = floor($y + ($h - $height * $scale) / 2);
+			if($scale > 1) {
+				$scale = (int) floor($scale);
+			} elseif($scale < 1) {
+				$scale = 1;
+			} //end if
+			$x = (int) floor($x + ($w - $width * $scale) / 2);
+			$y = (int) floor($y + ($h - $height * $scale) / 2);
 		} else {
 			$scale = 1;
-			$x = floor($x + $w / 2);
-			$y = floor($y + $h / 2);
+			$x = (int) floor($x + $w / 2);
+			$y = (int) floor($y + $h / 2);
 		} //end if else
 		//--
 		$tx = 'translate('.(int)$x.' '.(int)$y.')';
@@ -301,9 +306,11 @@ final class SmartQR2DBarcode {
 				$cy = $y + $h / 2;
 				$rx = $w * $md / 2;
 				$ry = $h * $md / 2;
+				//--
 				$svg  = '<ellipse cx="'.(float)$cx.'" cy="'.(float)$cy.'"';
 				$svg .= ' rx="'.(float)$rx.'" ry="'.(float)$ry.'"';
 				$svg .= ' fill="'.Smart::escape_html($mc).'"/>';
+				//--
 				break;
 				//--
 			case 'x':
@@ -312,6 +319,7 @@ final class SmartQR2DBarcode {
 				$y1 = $y + (1 - $md) * $h / 2;
 				$x2 = $x + $w - (1 - $md) * $w / 2;
 				$y2 = $y + $h - (1 - $md) * $h / 2;
+				//--
 				$svg  = '<line x1="'.(float)$x1.'" y1="'.(float)$y1.'"';
 				$svg .= ' x2="'.(float)$x2.'" y2="'.(float)$y2.'"';
 				$svg .= ' stroke="'.Smart::escape_html($mc).'"';
@@ -321,6 +329,7 @@ final class SmartQR2DBarcode {
 				$svg .= ' stroke="'.Smart::escape_html($mc).'"';
 				$svg .= ' stroke-width="'.(float)((float)$md / 5).'"/>';
 				$svg = '<g>'.$svg.'</g>';
+				//--
 				break;
 				//--
 			default: // s
@@ -329,7 +338,8 @@ final class SmartQR2DBarcode {
 				$y += (1 - $md) * $h / 2;
 				$w *= $md;
 				$h *= $md;
-				$svg = '<rect x="'.(float)$x.'" y="'.(float)$y.'"';
+				//--
+				$svg  = '<rect x="'.(float)$x.'" y="'.(float)$y.'"';
 				$svg .= ' width="'.(float)$w.'" height="'.(float)$h.'"';
 				$svg .= ' fill="'.Smart::escape_html($mc).'"/>';
 				//--
@@ -375,24 +385,25 @@ final class SmartQR2DBarcode {
 		} //end if
 		$data = (string) substr($data, 0, $max_chars);
 		//-- Convert from character level to bit level
+		$code = [];
 		switch($mode) {
 			case 0: // numeric
 			case 1: // alphanumeric
 			case 3: // kanji
 			case 2: // binary
 			default:
-				$code = $this->qr_encode_binary($data, $version_group);
+				$code = (array) $this->qr_encode_binary($data, $version_group);
 				break;
 		} //end switch
-		for($i=0; $i<4; $i++) {
+		for($i = 0; $i < 4; $i++) {
 			$code[] = 0;
 		} //end for
 		while(count($code) % 8) {
 			$code[] = 0;
 		} //end while
 		//-- Convert from bit level to byte level
-		$data = array();
-		for($i=0, $n=count($code); $i<$n; $i+=8) {
+		$data = [];
+		for($i = 0, $n = count($code); $i < $n; $i += 8) {
 			$byte = 0;
 			if($code[$i + 0]) { $byte |= 0x80; }
 			if($code[$i + 1]) { $byte |= 0x40; }
@@ -405,7 +416,7 @@ final class SmartQR2DBarcode {
 			$data[] = $byte;
 		} //end for
 		//--
-		for($i=count($data), $a=1, $n=$ec_params[0]; $i<$n; $i++, $a^=1) {
+		for($i = count($data), $a = 1, $n = $ec_params[0]; $i < $n; $i++, $a ^= 1) {
 			$data[] = $a ? 236 : 17;
 		} //end for
 		//--
@@ -416,9 +427,9 @@ final class SmartQR2DBarcode {
 
 	private function qr_detect_version($data, $mode, $ecl) {
 		//--
-		$length = strlen((string)$data);
+		$length = (int) strlen((string)$data);
 		//--
-		for($v=0; $v<40; $v++) {
+		for($v = 0; $v < 40; $v++) {
 			if($length <= $this->qr_capacity[$v][$ecl][$mode]) {
 				return (int) ($v + 1);
 			} //end if
@@ -432,7 +443,7 @@ final class SmartQR2DBarcode {
 	private function qr_encode_binary($data, $version_group) {
 		//--
 		$code = array(0, 1, 0, 0);
-		$length = strlen((string)$data);
+		$length = (int) strlen((string)$data);
 		//--
 		switch($version_group) {
 			case 2:  // 27 - 40
@@ -456,7 +467,7 @@ final class SmartQR2DBarcode {
 				$code[] = $length & 0x0001;
 		} //end switch
 		//--
-		for($i=0; $i<$length; $i++) {
+		for($i = 0; $i < $length; $i++) {
 			$ch = ord(substr($data, $i, 1));
 			$code[] = $ch & 0x80;
 			$code[] = $ch & 0x40;
@@ -476,16 +487,16 @@ final class SmartQR2DBarcode {
 	private function qr_encode_ec($data, $ec_params, $version) {
 		//--
 		$blocks = $this->qr_ec_split($data, $ec_params);
-		$ec_blocks = array();
+		$ec_blocks = [];
 		//--
-		for($i=0, $n=count($blocks); $i<$n; $i++) {
+		for($i = 0, $n = count($blocks); $i < $n; $i++) {
 			$ec_blocks[] = $this->qr_ec_divide($blocks[$i], $ec_params);
 		} //end for
 		//--
 		$data = $this->qr_ec_interleave($blocks);
 		$ec_data = $this->qr_ec_interleave($ec_blocks);
 		//--
-		$code = array();
+		$code = [];
 		//--
 		foreach($data as $kk => $ch) {
 			$code[] = $ch & 0x80;
@@ -507,7 +518,7 @@ final class SmartQR2DBarcode {
 			$code[] = $ch & 0x02;
 			$code[] = $ch & 0x01;
 		} //end foreach
-		for($n=$this->qr_remainder_bits[$version - 1]; $n>0; $n--) {
+		for($n = (int)$this->qr_remainder_bits[$version - 1]; $n > 0; $n--) {
 			$code[] = 0;
 		} //end for
 		//--
@@ -518,7 +529,7 @@ final class SmartQR2DBarcode {
 
 	private function qr_ec_split($data, $ec_params) {
 		//--
-		$blocks = array();
+		$blocks = [];
 		$offset = 0;
 		//--
 		for($i = $ec_params[2], $length = $ec_params[3]; $i > 0; $i--) {
@@ -538,7 +549,7 @@ final class SmartQR2DBarcode {
 
 	private function qr_ec_divide($data, $ec_params) {
 		//--
-		$num_data = count($data);
+		$num_data = (int) count($data);
 		$num_error = $ec_params[1];
 		$generator = $this->qr_ec_polynomials[$num_error];
 		$message = $data;
@@ -562,8 +573,8 @@ final class SmartQR2DBarcode {
 
 	private function qr_ec_interleave($blocks) {
 		//--
-		$data = array();
-		$num_blocks = count($blocks);
+		$data = [];
+		$num_blocks = (int) count($blocks);
 		//--
 		for($offset = 0; true; $offset++) {
 			$break = true;
@@ -586,9 +597,9 @@ final class SmartQR2DBarcode {
 	private function qr_create_matrix($version, $data) {
 		//--
 		$size = $version * 4 + 17;
-		$matrix = array();
+		$matrix = [];
 		for($i = 0; $i < $size; $i++) {
-			$row = array();
+			$row = [];
 			for($j = 0; $j < $size; $j++) {
 				$row[] = 0;
 			} //end for
@@ -649,7 +660,7 @@ final class SmartQR2DBarcode {
 		$row = $size - 1;
 		$dir = -1;
 		$offset = 0;
-		$length = count($data);
+		$length = (int) count($data);
 		while($col > 0 && $offset < $length) {
 			if(!$matrix[$row][$col]) {
 				$matrix[$row][$col] = $data[$offset] ? 5 : 4;
@@ -680,6 +691,7 @@ final class SmartQR2DBarcode {
 		$best_mask = 0;
 		$best_matrix = $this->qr_apply_mask($matrix, $size, $best_mask);
 		$best_penalty = $this->qr_penalty($best_matrix, $size);
+		//--
 		for($test_mask = 1; $test_mask < 8; $test_mask++) {
 			$test_matrix = $this->qr_apply_mask($matrix, $size, $test_mask);
 			$test_penalty = $this->qr_penalty($test_matrix, $size);
@@ -920,88 +932,88 @@ final class SmartQR2DBarcode {
 	/*  maximum encodable characters = $qr_capacity [ (version - 1) ]  */
 	/*    [ (0 for L, 1 for M, 2 for Q, 3 for H)                    ]  */
 	/*    [ (0 for numeric, 1 for alpha, 2 for binary, 3 for kanji) ]  */
-	private $qr_capacity = array(
-		array(array(  41,   25,   17,   10), array(  34,   20,   14,    8),
-			  array(  27,   16,   11,    7), array(  17,   10,    7,    4)),
-		array(array(  77,   47,   32,   20), array(  63,   38,   26,   16),
-			  array(  48,   29,   20,   12), array(  34,   20,   14,    8)),
-		array(array( 127,   77,   53,   32), array( 101,   61,   42,   26),
-			  array(  77,   47,   32,   20), array(  58,   35,   24,   15)),
-		array(array( 187,  114,   78,   48), array( 149,   90,   62,   38),
-			  array( 111,   67,   46,   28), array(  82,   50,   34,   21)),
-		array(array( 255,  154,  106,   65), array( 202,  122,   84,   52),
-			  array( 144,   87,   60,   37), array( 106,   64,   44,   27)),
-		array(array( 322,  195,  134,   82), array( 255,  154,  106,   65),
-			  array( 178,  108,   74,   45), array( 139,   84,   58,   36)),
-		array(array( 370,  224,  154,   95), array( 293,  178,  122,   75),
-			  array( 207,  125,   86,   53), array( 154,   93,   64,   39)),
-		array(array( 461,  279,  192,  118), array( 365,  221,  152,   93),
-			  array( 259,  157,  108,   66), array( 202,  122,   84,   52)),
-		array(array( 552,  335,  230,  141), array( 432,  262,  180,  111),
-			  array( 312,  189,  130,   80), array( 235,  143,   98,   60)),
-		array(array( 652,  395,  271,  167), array( 513,  311,  213,  131),
-			  array( 364,  221,  151,   93), array( 288,  174,  119,   74)),
-		array(array( 772,  468,  321,  198), array( 604,  366,  251,  155),
-			  array( 427,  259,  177,  109), array( 331,  200,  137,   85)),
-		array(array( 883,  535,  367,  226), array( 691,  419,  287,  177),
-			  array( 489,  296,  203,  125), array( 374,  227,  155,   96)),
-		array(array(1022,  619,  425,  262), array( 796,  483,  331,  204),
-			  array( 580,  352,  241,  149), array( 427,  259,  177,  109)),
-		array(array(1101,  667,  458,  282), array( 871,  528,  362,  223),
-			  array( 621,  376,  258,  159), array( 468,  283,  194,  120)),
-		array(array(1250,  758,  520,  320), array( 991,  600,  412,  254),
-			  array( 703,  426,  292,  180), array( 530,  321,  220,  136)),
-		array(array(1408,  854,  586,  361), array(1082,  656,  450,  277),
-			  array( 775,  470,  322,  198), array( 602,  365,  250,  154)),
-		array(array(1548,  938,  644,  397), array(1212,  734,  504,  310),
-			  array( 876,  531,  364,  224), array( 674,  408,  280,  173)),
-		array(array(1725, 1046,  718,  442), array(1346,  816,  560,  345),
-			  array( 948,  574,  394,  243), array( 746,  452,  310,  191)),
-		array(array(1903, 1153,  792,  488), array(1500,  909,  624,  384),
-			  array(1063,  644,  442,  272), array( 813,  493,  338,  208)),
-		array(array(2061, 1249,  858,  528), array(1600,  970,  666,  410),
-			  array(1159,  702,  482,  297), array( 919,  557,  382,  235)),
-		array(array(2232, 1352,  929,  572), array(1708, 1035,  711,  438),
-			  array(1224,  742,  509,  314), array( 969,  587,  403,  248)),
-		array(array(2409, 1460, 1003,  618), array(1872, 1134,  779,  480),
-			  array(1358,  823,  565,  348), array(1056,  640,  439,  270)),
-		array(array(2620, 1588, 1091,  672), array(2059, 1248,  857,  528),
-			  array(1468,  890,  611,  376), array(1108,  672,  461,  284)),
-		array(array(2812, 1704, 1171,  721), array(2188, 1326,  911,  561),
-			  array(1588,  963,  661,  407), array(1228,  744,  511,  315)),
-		array(array(3057, 1853, 1273,  784), array(2395, 1451,  997,  614),
-			  array(1718, 1041,  715,  440), array(1286,  779,  535,  330)),
-		array(array(3283, 1990, 1367,  842), array(2544, 1542, 1059,  652),
-			  array(1804, 1094,  751,  462), array(1425,  864,  593,  365)),
-		array(array(3517, 2132, 1465,  902), array(2701, 1637, 1125,  692),
-			  array(1933, 1172,  805,  496), array(1501,  910,  625,  385)),
-		array(array(3669, 2223, 1528,  940), array(2857, 1732, 1190,  732),
-			  array(2085, 1263,  868,  534), array(1581,  958,  658,  405)),
-		array(array(3909, 2369, 1628, 1002), array(3035, 1839, 1264,  778),
-			  array(2181, 1322,  908,  559), array(1677, 1016,  698,  430)),
-		array(array(4158, 2520, 1732, 1066), array(3289, 1994, 1370,  843),
-			  array(2358, 1429,  982,  604), array(1782, 1080,  742,  457)),
-		array(array(4417, 2677, 1840, 1132), array(3486, 2113, 1452,  894),
-			  array(2473, 1499, 1030,  634), array(1897, 1150,  790,  486)),
-		array(array(4686, 2840, 1952, 1201), array(3693, 2238, 1538,  947),
-			  array(2670, 1618, 1112,  684), array(2022, 1226,  842,  518)),
-		array(array(4965, 3009, 2068, 1273), array(3909, 2369, 1628, 1002),
-			  array(2805, 1700, 1168,  719), array(2157, 1307,  898,  553)),
-		array(array(5253, 3183, 2188, 1347), array(4134, 2506, 1722, 1060),
-			  array(2949, 1787, 1228,  756), array(2301, 1394,  958,  590)),
-		array(array(5529, 3351, 2303, 1417), array(4343, 2632, 1809, 1113),
-			  array(3081, 1867, 1283,  790), array(2361, 1431,  983,  605)),
-		array(array(5836, 3537, 2431, 1496), array(4588, 2780, 1911, 1176),
-			  array(3244, 1966, 1351,  832), array(2524, 1530, 1051,  647)),
-		array(array(6153, 3729, 2563, 1577), array(4775, 2894, 1989, 1224),
-			  array(3417, 2071, 1423,  876), array(2625, 1591, 1093,  673)),
-		array(array(6479, 3927, 2699, 1661), array(5039, 3054, 2099, 1292),
-			  array(3599, 2181, 1499,  923), array(2735, 1658, 1139,  701)),
-		array(array(6743, 4087, 2809, 1729), array(5313, 3220, 2213, 1362),
-			  array(3791, 2298, 1579,  972), array(2927, 1774, 1219,  750)),
-		array(array(7089, 4296, 2953, 1817), array(5596, 3391, 2331, 1435),
-			  array(3993, 2420, 1663, 1024), array(3057, 1852, 1273,  784)),
-	);
+	private $qr_capacity = [
+		[[  41,   25,   17,   10], [  34,   20,   14,    8],
+			[  27,   16,   11,    7], [  17,   10,    7,    4]],
+		[[  77,   47,   32,   20], [  63,   38,   26,   16],
+			[  48,   29,   20,   12], [  34,   20,   14,    8]],
+		[[ 127,   77,   53,   32], [ 101,   61,   42,   26],
+			[  77,   47,   32,   20], [  58,   35,   24,   15]],
+		[[ 187,  114,   78,   48], [ 149,   90,   62,   38],
+			[ 111,   67,   46,   28], [  82,   50,   34,   21]],
+		[[ 255,  154,  106,   65], [ 202,  122,   84,   52],
+			[ 144,   87,   60,   37], [ 106,   64,   44,   27]],
+		[[ 322,  195,  134,   82], [ 255,  154,  106,   65],
+			[ 178,  108,   74,   45], [ 139,   84,   58,   36]],
+		[[ 370,  224,  154,   95], [ 293,  178,  122,   75],
+			[ 207,  125,   86,   53], [ 154,   93,   64,   39]],
+		[[ 461,  279,  192,  118], [ 365,  221,  152,   93],
+			[ 259,  157,  108,   66], [ 202,  122,   84,   52]],
+		[[ 552,  335,  230,  141], [ 432,  262,  180,  111],
+			[ 312,  189,  130,   80], [ 235,  143,   98,   60]],
+		[[ 652,  395,  271,  167], [ 513,  311,  213,  131],
+			[ 364,  221,  151,   93], [ 288,  174,  119,   74]],
+		[[ 772,  468,  321,  198], [ 604,  366,  251,  155],
+			[ 427,  259,  177,  109], [ 331,  200,  137,   85]],
+		[[ 883,  535,  367,  226], [ 691,  419,  287,  177],
+			[ 489,  296,  203,  125], [ 374,  227,  155,   96]],
+		[[1022,  619,  425,  262], [ 796,  483,  331,  204],
+			[ 580,  352,  241,  149], [ 427,  259,  177,  109]],
+		[[1101,  667,  458,  282], [ 871,  528,  362,  223],
+			[ 621,  376,  258,  159], [ 468,  283,  194,  120]],
+		[[1250,  758,  520,  320], [ 991,  600,  412,  254],
+			[ 703,  426,  292,  180], [ 530,  321,  220,  136]],
+		[[1408,  854,  586,  361], [1082,  656,  450,  277],
+			[ 775,  470,  322,  198], [ 602,  365,  250,  154]],
+		[[1548,  938,  644,  397], [1212,  734,  504,  310],
+			[ 876,  531,  364,  224], [ 674,  408,  280,  173]],
+		[[1725, 1046,  718,  442], [1346,  816,  560,  345],
+			[ 948,  574,  394,  243], [ 746,  452,  310,  191]],
+		[[1903, 1153,  792,  488], [1500,  909,  624,  384],
+			[1063,  644,  442,  272], [ 813,  493,  338,  208]],
+		[[2061, 1249,  858,  528], [1600,  970,  666,  410],
+			[1159,  702,  482,  297], [ 919,  557,  382,  235]],
+		[[2232, 1352,  929,  572], [1708, 1035,  711,  438],
+			[1224,  742,  509,  314], [ 969,  587,  403,  248]],
+		[[2409, 1460, 1003,  618], [1872, 1134,  779,  480],
+			[1358,  823,  565,  348], [1056,  640,  439,  270]],
+		[[2620, 1588, 1091,  672], [2059, 1248,  857,  528],
+			[1468,  890,  611,  376], [1108,  672,  461,  284]],
+		[[2812, 1704, 1171,  721], [2188, 1326,  911,  561],
+			[1588,  963,  661,  407], [1228,  744,  511,  315]],
+		[[3057, 1853, 1273,  784], [2395, 1451,  997,  614],
+			[1718, 1041,  715,  440], [1286,  779,  535,  330]],
+		[[3283, 1990, 1367,  842], [2544, 1542, 1059,  652],
+			[1804, 1094,  751,  462], [1425,  864,  593,  365]],
+		[[3517, 2132, 1465,  902], [2701, 1637, 1125,  692],
+			[1933, 1172,  805,  496], [1501,  910,  625,  385]],
+		[[3669, 2223, 1528,  940], [2857, 1732, 1190,  732],
+			[2085, 1263,  868,  534], [1581,  958,  658,  405]],
+		[[3909, 2369, 1628, 1002], [3035, 1839, 1264,  778],
+			[2181, 1322,  908,  559], [1677, 1016,  698,  430]],
+		[[4158, 2520, 1732, 1066], [3289, 1994, 1370,  843],
+			[2358, 1429,  982,  604], [1782, 1080,  742,  457]],
+		[[4417, 2677, 1840, 1132], [3486, 2113, 1452,  894],
+			[2473, 1499, 1030,  634], [1897, 1150,  790,  486]],
+		[[4686, 2840, 1952, 1201], [3693, 2238, 1538,  947],
+			[2670, 1618, 1112,  684], [2022, 1226,  842,  518]],
+		[[4965, 3009, 2068, 1273], [3909, 2369, 1628, 1002],
+			[2805, 1700, 1168,  719], [2157, 1307,  898,  553]],
+		[[5253, 3183, 2188, 1347], [4134, 2506, 1722, 1060],
+			[2949, 1787, 1228,  756], [2301, 1394,  958,  590]],
+		[[5529, 3351, 2303, 1417], [4343, 2632, 1809, 1113],
+			[3081, 1867, 1283,  790], [2361, 1431,  983,  605]],
+		[[5836, 3537, 2431, 1496], [4588, 2780, 1911, 1176],
+			[3244, 1966, 1351,  832], [2524, 1530, 1051,  647]],
+		[[6153, 3729, 2563, 1577], [4775, 2894, 1989, 1224],
+			[3417, 2071, 1423,  876], [2625, 1591, 1093,  673]],
+		[[6479, 3927, 2699, 1661], [5039, 3054, 2099, 1292],
+			[3599, 2181, 1499,  923], [2735, 1658, 1139,  701]],
+		[[6743, 4087, 2809, 1729], [5313, 3220, 2213, 1362],
+			[3791, 2298, 1579,  972], [2927, 1774, 1219,  750]],
+		[[7089, 4296, 2953, 1817], [5596, 3391, 2331, 1435],
+			[3993, 2420, 1663, 1024], [3057, 1852, 1273,  784]],
+	];
 
 
 	/*  $qr_ec_params[                                              */
@@ -1014,228 +1026,228 @@ final class SmartQR2DBarcode {
 	/*    number of blocks in second group,                         */
 	/*    number of data codewords per block in second group        */
 	/*  );                                                          */
-	private $qr_ec_params = array(
-		array(   19,  7,  1,  19,  0,   0 ),
-		array(   16, 10,  1,  16,  0,   0 ),
-		array(   13, 13,  1,  13,  0,   0 ),
-		array(    9, 17,  1,   9,  0,   0 ),
-		array(   34, 10,  1,  34,  0,   0 ),
-		array(   28, 16,  1,  28,  0,   0 ),
-		array(   22, 22,  1,  22,  0,   0 ),
-		array(   16, 28,  1,  16,  0,   0 ),
-		array(   55, 15,  1,  55,  0,   0 ),
-		array(   44, 26,  1,  44,  0,   0 ),
-		array(   34, 18,  2,  17,  0,   0 ),
-		array(   26, 22,  2,  13,  0,   0 ),
-		array(   80, 20,  1,  80,  0,   0 ),
-		array(   64, 18,  2,  32,  0,   0 ),
-		array(   48, 26,  2,  24,  0,   0 ),
-		array(   36, 16,  4,   9,  0,   0 ),
-		array(  108, 26,  1, 108,  0,   0 ),
-		array(   86, 24,  2,  43,  0,   0 ),
-		array(   62, 18,  2,  15,  2,  16 ),
-		array(   46, 22,  2,  11,  2,  12 ),
-		array(  136, 18,  2,  68,  0,   0 ),
-		array(  108, 16,  4,  27,  0,   0 ),
-		array(   76, 24,  4,  19,  0,   0 ),
-		array(   60, 28,  4,  15,  0,   0 ),
-		array(  156, 20,  2,  78,  0,   0 ),
-		array(  124, 18,  4,  31,  0,   0 ),
-		array(   88, 18,  2,  14,  4,  15 ),
-		array(   66, 26,  4,  13,  1,  14 ),
-		array(  194, 24,  2,  97,  0,   0 ),
-		array(  154, 22,  2,  38,  2,  39 ),
-		array(  110, 22,  4,  18,  2,  19 ),
-		array(   86, 26,  4,  14,  2,  15 ),
-		array(  232, 30,  2, 116,  0,   0 ),
-		array(  182, 22,  3,  36,  2,  37 ),
-		array(  132, 20,  4,  16,  4,  17 ),
-		array(  100, 24,  4,  12,  4,  13 ),
-		array(  274, 18,  2,  68,  2,  69 ),
-		array(  216, 26,  4,  43,  1,  44 ),
-		array(  154, 24,  6,  19,  2,  20 ),
-		array(  122, 28,  6,  15,  2,  16 ),
-		array(  324, 20,  4,  81,  0,   0 ),
-		array(  254, 30,  1,  50,  4,  51 ),
-		array(  180, 28,  4,  22,  4,  23 ),
-		array(  140, 24,  3,  12,  8,  13 ),
-		array(  370, 24,  2,  92,  2,  93 ),
-		array(  290, 22,  6,  36,  2,  37 ),
-		array(  206, 26,  4,  20,  6,  21 ),
-		array(  158, 28,  7,  14,  4,  15 ),
-		array(  428, 26,  4, 107,  0,   0 ),
-		array(  334, 22,  8,  37,  1,  38 ),
-		array(  244, 24,  8,  20,  4,  21 ),
-		array(  180, 22, 12,  11,  4,  12 ),
-		array(  461, 30,  3, 115,  1, 116 ),
-		array(  365, 24,  4,  40,  5,  41 ),
-		array(  261, 20, 11,  16,  5,  17 ),
-		array(  197, 24, 11,  12,  5,  13 ),
-		array(  523, 22,  5,  87,  1,  88 ),
-		array(  415, 24,  5,  41,  5,  42 ),
-		array(  295, 30,  5,  24,  7,  25 ),
-		array(  223, 24, 11,  12,  7,  13 ),
-		array(  589, 24,  5,  98,  1,  99 ),
-		array(  453, 28,  7,  45,  3,  46 ),
-		array(  325, 24, 15,  19,  2,  20 ),
-		array(  253, 30,  3,  15, 13,  16 ),
-		array(  647, 28,  1, 107,  5, 108 ),
-		array(  507, 28, 10,  46,  1,  47 ),
-		array(  367, 28,  1,  22, 15,  23 ),
-		array(  283, 28,  2,  14, 17,  15 ),
-		array(  721, 30,  5, 120,  1, 121 ),
-		array(  563, 26,  9,  43,  4,  44 ),
-		array(  397, 28, 17,  22,  1,  23 ),
-		array(  313, 28,  2,  14, 19,  15 ),
-		array(  795, 28,  3, 113,  4, 114 ),
-		array(  627, 26,  3,  44, 11,  45 ),
-		array(  445, 26, 17,  21,  4,  22 ),
-		array(  341, 26,  9,  13, 16,  14 ),
-		array(  861, 28,  3, 107,  5, 108 ),
-		array(  669, 26,  3,  41, 13,  42 ),
-		array(  485, 30, 15,  24,  5,  25 ),
-		array(  385, 28, 15,  15, 10,  16 ),
-		array(  932, 28,  4, 116,  4, 117 ),
-		array(  714, 26, 17,  42,  0,   0 ),
-		array(  512, 28, 17,  22,  6,  23 ),
-		array(  406, 30, 19,  16,  6,  17 ),
-		array( 1006, 28,  2, 111,  7, 112 ),
-		array(  782, 28, 17,  46,  0,   0 ),
-		array(  568, 30,  7,  24, 16,  25 ),
-		array(  442, 24, 34,  13,  0,   0 ),
-		array( 1094, 30,  4, 121,  5, 122 ),
-		array(  860, 28,  4,  47, 14,  48 ),
-		array(  614, 30, 11,  24, 14,  25 ),
-		array(  464, 30, 16,  15, 14,  16 ),
-		array( 1174, 30,  6, 117,  4, 118 ),
-		array(  914, 28,  6,  45, 14,  46 ),
-		array(  664, 30, 11,  24, 16,  25 ),
-		array(  514, 30, 30,  16,  2,  17 ),
-		array( 1276, 26,  8, 106,  4, 107 ),
-		array( 1000, 28,  8,  47, 13,  48 ),
-		array(  718, 30,  7,  24, 22,  25 ),
-		array(  538, 30, 22,  15, 13,  16 ),
-		array( 1370, 28, 10, 114,  2, 115 ),
-		array( 1062, 28, 19,  46,  4,  47 ),
-		array(  754, 28, 28,  22,  6,  23 ),
-		array(  596, 30, 33,  16,  4,  17 ),
-		array( 1468, 30,  8, 122,  4, 123 ),
-		array( 1128, 28, 22,  45,  3,  46 ),
-		array(  808, 30,  8,  23, 26,  24 ),
-		array(  628, 30, 12,  15, 28,  16 ),
-		array( 1531, 30,  3, 117, 10, 118 ),
-		array( 1193, 28,  3,  45, 23,  46 ),
-		array(  871, 30,  4,  24, 31,  25 ),
-		array(  661, 30, 11,  15, 31,  16 ),
-		array( 1631, 30,  7, 116,  7, 117 ),
-		array( 1267, 28, 21,  45,  7,  46 ),
-		array(  911, 30,  1,  23, 37,  24 ),
-		array(  701, 30, 19,  15, 26,  16 ),
-		array( 1735, 30,  5, 115, 10, 116 ),
-		array( 1373, 28, 19,  47, 10,  48 ),
-		array(  985, 30, 15,  24, 25,  25 ),
-		array(  745, 30, 23,  15, 25,  16 ),
-		array( 1843, 30, 13, 115,  3, 116 ),
-		array( 1455, 28,  2,  46, 29,  47 ),
-		array( 1033, 30, 42,  24,  1,  25 ),
-		array(  793, 30, 23,  15, 28,  16 ),
-		array( 1955, 30, 17, 115,  0,   0 ),
-		array( 1541, 28, 10,  46, 23,  47 ),
-		array( 1115, 30, 10,  24, 35,  25 ),
-		array(  845, 30, 19,  15, 35,  16 ),
-		array( 2071, 30, 17, 115,  1, 116 ),
-		array( 1631, 28, 14,  46, 21,  47 ),
-		array( 1171, 30, 29,  24, 19,  25 ),
-		array(  901, 30, 11,  15, 46,  16 ),
-		array( 2191, 30, 13, 115,  6, 116 ),
-		array( 1725, 28, 14,  46, 23,  47 ),
-		array( 1231, 30, 44,  24,  7,  25 ),
-		array(  961, 30, 59,  16,  1,  17 ),
-		array( 2306, 30, 12, 121,  7, 122 ),
-		array( 1812, 28, 12,  47, 26,  48 ),
-		array( 1286, 30, 39,  24, 14,  25 ),
-		array(  986, 30, 22,  15, 41,  16 ),
-		array( 2434, 30,  6, 121, 14, 122 ),
-		array( 1914, 28,  6,  47, 34,  48 ),
-		array( 1354, 30, 46,  24, 10,  25 ),
-		array( 1054, 30,  2,  15, 64,  16 ),
-		array( 2566, 30, 17, 122,  4, 123 ),
-		array( 1992, 28, 29,  46, 14,  47 ),
-		array( 1426, 30, 49,  24, 10,  25 ),
-		array( 1096, 30, 24,  15, 46,  16 ),
-		array( 2702, 30,  4, 122, 18, 123 ),
-		array( 2102, 28, 13,  46, 32,  47 ),
-		array( 1502, 30, 48,  24, 14,  25 ),
-		array( 1142, 30, 42,  15, 32,  16 ),
-		array( 2812, 30, 20, 117,  4, 118 ),
-		array( 2216, 28, 40,  47,  7,  48 ),
-		array( 1582, 30, 43,  24, 22,  25 ),
-		array( 1222, 30, 10,  15, 67,  16 ),
-		array( 2956, 30, 19, 118,  6, 119 ),
-		array( 2334, 28, 18,  47, 31,  48 ),
-		array( 1666, 30, 34,  24, 34,  25 ),
-		array( 1276, 30, 20,  15, 61,  16 ),
-	);
+	private $qr_ec_params = [
+		[   19,  7,  1,  19,  0,   0 ],
+		[   16, 10,  1,  16,  0,   0 ],
+		[   13, 13,  1,  13,  0,   0 ],
+		[    9, 17,  1,   9,  0,   0 ],
+		[   34, 10,  1,  34,  0,   0 ],
+		[   28, 16,  1,  28,  0,   0 ],
+		[   22, 22,  1,  22,  0,   0 ],
+		[   16, 28,  1,  16,  0,   0 ],
+		[   55, 15,  1,  55,  0,   0 ],
+		[   44, 26,  1,  44,  0,   0 ],
+		[   34, 18,  2,  17,  0,   0 ],
+		[   26, 22,  2,  13,  0,   0 ],
+		[   80, 20,  1,  80,  0,   0 ],
+		[   64, 18,  2,  32,  0,   0 ],
+		[   48, 26,  2,  24,  0,   0 ],
+		[   36, 16,  4,   9,  0,   0 ],
+		[  108, 26,  1, 108,  0,   0 ],
+		[   86, 24,  2,  43,  0,   0 ],
+		[   62, 18,  2,  15,  2,  16 ],
+		[   46, 22,  2,  11,  2,  12 ],
+		[  136, 18,  2,  68,  0,   0 ],
+		[  108, 16,  4,  27,  0,   0 ],
+		[   76, 24,  4,  19,  0,   0 ],
+		[   60, 28,  4,  15,  0,   0 ],
+		[  156, 20,  2,  78,  0,   0 ],
+		[  124, 18,  4,  31,  0,   0 ],
+		[   88, 18,  2,  14,  4,  15 ],
+		[   66, 26,  4,  13,  1,  14 ],
+		[  194, 24,  2,  97,  0,   0 ],
+		[  154, 22,  2,  38,  2,  39 ],
+		[  110, 22,  4,  18,  2,  19 ],
+		[   86, 26,  4,  14,  2,  15 ],
+		[  232, 30,  2, 116,  0,   0 ],
+		[  182, 22,  3,  36,  2,  37 ],
+		[  132, 20,  4,  16,  4,  17 ],
+		[  100, 24,  4,  12,  4,  13 ],
+		[  274, 18,  2,  68,  2,  69 ],
+		[  216, 26,  4,  43,  1,  44 ],
+		[  154, 24,  6,  19,  2,  20 ],
+		[  122, 28,  6,  15,  2,  16 ],
+		[  324, 20,  4,  81,  0,   0 ],
+		[  254, 30,  1,  50,  4,  51 ],
+		[  180, 28,  4,  22,  4,  23 ],
+		[  140, 24,  3,  12,  8,  13 ],
+		[  370, 24,  2,  92,  2,  93 ],
+		[  290, 22,  6,  36,  2,  37 ],
+		[  206, 26,  4,  20,  6,  21 ],
+		[  158, 28,  7,  14,  4,  15 ],
+		[  428, 26,  4, 107,  0,   0 ],
+		[  334, 22,  8,  37,  1,  38 ],
+		[  244, 24,  8,  20,  4,  21 ],
+		[  180, 22, 12,  11,  4,  12 ],
+		[  461, 30,  3, 115,  1, 116 ],
+		[  365, 24,  4,  40,  5,  41 ],
+		[  261, 20, 11,  16,  5,  17 ],
+		[  197, 24, 11,  12,  5,  13 ],
+		[  523, 22,  5,  87,  1,  88 ],
+		[  415, 24,  5,  41,  5,  42 ],
+		[  295, 30,  5,  24,  7,  25 ],
+		[  223, 24, 11,  12,  7,  13 ],
+		[  589, 24,  5,  98,  1,  99 ],
+		[  453, 28,  7,  45,  3,  46 ],
+		[  325, 24, 15,  19,  2,  20 ],
+		[  253, 30,  3,  15, 13,  16 ],
+		[  647, 28,  1, 107,  5, 108 ],
+		[  507, 28, 10,  46,  1,  47 ],
+		[  367, 28,  1,  22, 15,  23 ],
+		[  283, 28,  2,  14, 17,  15 ],
+		[  721, 30,  5, 120,  1, 121 ],
+		[  563, 26,  9,  43,  4,  44 ],
+		[  397, 28, 17,  22,  1,  23 ],
+		[  313, 28,  2,  14, 19,  15 ],
+		[  795, 28,  3, 113,  4, 114 ],
+		[  627, 26,  3,  44, 11,  45 ],
+		[  445, 26, 17,  21,  4,  22 ],
+		[  341, 26,  9,  13, 16,  14 ],
+		[  861, 28,  3, 107,  5, 108 ],
+		[  669, 26,  3,  41, 13,  42 ],
+		[  485, 30, 15,  24,  5,  25 ],
+		[  385, 28, 15,  15, 10,  16 ],
+		[  932, 28,  4, 116,  4, 117 ],
+		[  714, 26, 17,  42,  0,   0 ],
+		[  512, 28, 17,  22,  6,  23 ],
+		[  406, 30, 19,  16,  6,  17 ],
+		[ 1006, 28,  2, 111,  7, 112 ],
+		[  782, 28, 17,  46,  0,   0 ],
+		[  568, 30,  7,  24, 16,  25 ],
+		[  442, 24, 34,  13,  0,   0 ],
+		[ 1094, 30,  4, 121,  5, 122 ],
+		[  860, 28,  4,  47, 14,  48 ],
+		[  614, 30, 11,  24, 14,  25 ],
+		[  464, 30, 16,  15, 14,  16 ],
+		[ 1174, 30,  6, 117,  4, 118 ],
+		[  914, 28,  6,  45, 14,  46 ],
+		[  664, 30, 11,  24, 16,  25 ],
+		[  514, 30, 30,  16,  2,  17 ],
+		[ 1276, 26,  8, 106,  4, 107 ],
+		[ 1000, 28,  8,  47, 13,  48 ],
+		[  718, 30,  7,  24, 22,  25 ],
+		[  538, 30, 22,  15, 13,  16 ],
+		[ 1370, 28, 10, 114,  2, 115 ],
+		[ 1062, 28, 19,  46,  4,  47 ],
+		[  754, 28, 28,  22,  6,  23 ],
+		[  596, 30, 33,  16,  4,  17 ],
+		[ 1468, 30,  8, 122,  4, 123 ],
+		[ 1128, 28, 22,  45,  3,  46 ],
+		[  808, 30,  8,  23, 26,  24 ],
+		[  628, 30, 12,  15, 28,  16 ],
+		[ 1531, 30,  3, 117, 10, 118 ],
+		[ 1193, 28,  3,  45, 23,  46 ],
+		[  871, 30,  4,  24, 31,  25 ],
+		[  661, 30, 11,  15, 31,  16 ],
+		[ 1631, 30,  7, 116,  7, 117 ],
+		[ 1267, 28, 21,  45,  7,  46 ],
+		[  911, 30,  1,  23, 37,  24 ],
+		[  701, 30, 19,  15, 26,  16 ],
+		[ 1735, 30,  5, 115, 10, 116 ],
+		[ 1373, 28, 19,  47, 10,  48 ],
+		[  985, 30, 15,  24, 25,  25 ],
+		[  745, 30, 23,  15, 25,  16 ],
+		[ 1843, 30, 13, 115,  3, 116 ],
+		[ 1455, 28,  2,  46, 29,  47 ],
+		[ 1033, 30, 42,  24,  1,  25 ],
+		[  793, 30, 23,  15, 28,  16 ],
+		[ 1955, 30, 17, 115,  0,   0 ],
+		[ 1541, 28, 10,  46, 23,  47 ],
+		[ 1115, 30, 10,  24, 35,  25 ],
+		[  845, 30, 19,  15, 35,  16 ],
+		[ 2071, 30, 17, 115,  1, 116 ],
+		[ 1631, 28, 14,  46, 21,  47 ],
+		[ 1171, 30, 29,  24, 19,  25 ],
+		[  901, 30, 11,  15, 46,  16 ],
+		[ 2191, 30, 13, 115,  6, 116 ],
+		[ 1725, 28, 14,  46, 23,  47 ],
+		[ 1231, 30, 44,  24,  7,  25 ],
+		[  961, 30, 59,  16,  1,  17 ],
+		[ 2306, 30, 12, 121,  7, 122 ],
+		[ 1812, 28, 12,  47, 26,  48 ],
+		[ 1286, 30, 39,  24, 14,  25 ],
+		[  986, 30, 22,  15, 41,  16 ],
+		[ 2434, 30,  6, 121, 14, 122 ],
+		[ 1914, 28,  6,  47, 34,  48 ],
+		[ 1354, 30, 46,  24, 10,  25 ],
+		[ 1054, 30,  2,  15, 64,  16 ],
+		[ 2566, 30, 17, 122,  4, 123 ],
+		[ 1992, 28, 29,  46, 14,  47 ],
+		[ 1426, 30, 49,  24, 10,  25 ],
+		[ 1096, 30, 24,  15, 46,  16 ],
+		[ 2702, 30,  4, 122, 18, 123 ],
+		[ 2102, 28, 13,  46, 32,  47 ],
+		[ 1502, 30, 48,  24, 14,  25 ],
+		[ 1142, 30, 42,  15, 32,  16 ],
+		[ 2812, 30, 20, 117,  4, 118 ],
+		[ 2216, 28, 40,  47,  7,  48 ],
+		[ 1582, 30, 43,  24, 22,  25 ],
+		[ 1222, 30, 10,  15, 67,  16 ],
+		[ 2956, 30, 19, 118,  6, 119 ],
+		[ 2334, 28, 18,  47, 31,  48 ],
+		[ 1666, 30, 34,  24, 34,  25 ],
+		[ 1276, 30, 20,  15, 61,  16 ],
+	];
 
 
-	private $qr_ec_polynomials = array(
-		7 => array(
+	private $qr_ec_polynomials = [
+		7 => [
 			0, 87, 229, 146, 149, 238, 102, 21
-		),
-		10 => array(
+		],
+		10 => [
 			0, 251, 67, 46, 61, 118, 70, 64, 94, 32, 45
-		),
-		13 => array(
+		],
+		13 => [
 			0, 74, 152, 176, 100, 86, 100,
 			106, 104, 130, 218, 206, 140, 78
-		),
-		15 => array(
+		],
+		15 => [
 			0, 8, 183, 61, 91, 202, 37, 51,
 			58, 58, 237, 140, 124, 5, 99, 105
-		),
-		16 => array(
+		],
+		16 => [
 			0, 120, 104, 107, 109, 102, 161, 76, 3,
 			91, 191, 147, 169, 182, 194, 225, 120
-		),
-		17 => array(
+		],
+		17 => [
 			0, 43, 139, 206, 78, 43, 239, 123, 206,
 			214, 147, 24, 99, 150, 39, 243, 163, 136
-		),
-		18 => array(
+		],
+		18 => [
 			0, 215, 234, 158, 94, 184, 97, 118, 170, 79,
 			187, 152, 148, 252, 179, 5, 98, 96, 153
-		),
-		20 => array(
+		],
+		20 => [
 			0, 17, 60, 79, 50, 61, 163, 26, 187, 202, 180,
 			221, 225, 83, 239, 156, 164, 212, 212, 188, 190
-		),
-		22 => array(
+		],
+		22 => [
 			0, 210, 171, 247, 242, 93, 230, 14, 109, 221, 53, 200,
 			74, 8, 172, 98, 80, 219, 134, 160, 105, 165, 231
-		),
-		24 => array(
+		],
+		24 => [
 			0, 229, 121, 135, 48, 211, 117, 251, 126, 159, 180, 169,
 			152, 192, 226, 228, 218, 111, 0, 117, 232, 87, 96, 227, 21
-		),
-		26 => array(
+		],
+		26 => [
 			0, 173, 125, 158, 2, 103, 182, 118, 17,
 			145, 201, 111, 28, 165, 53, 161, 21, 245,
 			142, 13, 102, 48, 227, 153, 145, 218, 70
-		),
-		28 => array(
+		],
+		28 => [
 			0, 168, 223, 200, 104, 224, 234, 108, 180,
 			110, 190, 195, 147, 205, 27, 232, 201, 21, 43,
 			245, 87, 42, 195, 212, 119, 242, 37, 9, 123
-		),
-		30 => array(
+		],
+		30 => [
 			0, 41, 173, 145, 152, 216, 31, 179, 182, 50, 48,
 			110, 86, 239, 96, 222, 125, 42, 173, 226, 193,
 			224, 130, 156, 37, 251, 216, 238, 40, 192, 180
-		),
-	);
+		],
+	];
 
 
-	private $qr_log = array(
+	private $qr_log = [
 		  0,   0,   1,  25,   2,  50,  26, 198,
 		  3, 223,  51, 238,  27, 104, 199,  75,
 		  4, 100, 224,  14,  52, 141, 239, 129,
@@ -1268,10 +1280,10 @@ final class SmartQR2DBarcode {
 		 11, 245,  22, 235, 122, 117,  44, 215,
 		 79, 174, 213, 233, 230, 231, 173, 232,
 		116, 214, 244, 234, 168,  80,  88, 175,
-	);
+	];
 
 
-	private $qr_exp = array(
+	private $qr_exp = [
 		  1,   2,   4,   8,  16,  32,  64, 128,
 		 29,  58, 116, 232, 205, 135,  19,  38,
 		 76, 152,  45,  90, 180, 117, 234, 201,
@@ -1304,134 +1316,134 @@ final class SmartQR2DBarcode {
 		247, 243, 251, 235, 203, 139,  11,  22,
 		 44,  88, 176, 125, 250, 233, 207, 131,
 		 27,  54, 108, 216, 173,  71, 142,   1,
-	);
+	];
 
 
-	private $qr_remainder_bits = array(
+	private $qr_remainder_bits = [
 		0, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3,
 		4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0,
-	);
+	];
 
 
-	private $qr_alignment_patterns = array(
-		array(6, 18),
-		array(6, 22),
-		array(6, 26),
-		array(6, 30),
-		array(6, 34),
-		array(6, 22, 38),
-		array(6, 24, 42),
-		array(6, 26, 46),
-		array(6, 28, 50),
-		array(6, 30, 54),
-		array(6, 32, 58),
-		array(6, 34, 62),
-		array(6, 26, 46, 66),
-		array(6, 26, 48, 70),
-		array(6, 26, 50, 74),
-		array(6, 30, 54, 78),
-		array(6, 30, 56, 82),
-		array(6, 30, 58, 86),
-		array(6, 34, 62, 90),
-		array(6, 28, 50, 72,  94),
-		array(6, 26, 50, 74,  98),
-		array(6, 30, 54, 78, 102),
-		array(6, 28, 54, 80, 106),
-		array(6, 32, 58, 84, 110),
-		array(6, 30, 58, 86, 114),
-		array(6, 34, 62, 90, 118),
-		array(6, 26, 50, 74,  98, 122),
-		array(6, 30, 54, 78, 102, 126),
-		array(6, 26, 52, 78, 104, 130),
-		array(6, 30, 56, 82, 108, 134),
-		array(6, 34, 60, 86, 112, 138),
-		array(6, 30, 58, 86, 114, 142),
-		array(6, 34, 62, 90, 118, 146),
-		array(6, 30, 54, 78, 102, 126, 150),
-		array(6, 24, 50, 76, 102, 128, 154),
-		array(6, 28, 54, 80, 106, 132, 158),
-		array(6, 32, 58, 84, 110, 136, 162),
-		array(6, 26, 54, 82, 110, 138, 166),
-		array(6, 30, 58, 86, 114, 142, 170),
-	);
+	private $qr_alignment_patterns = [
+		[ 6, 18 ],
+		[ 6, 22 ],
+		[ 6, 26 ],
+		[ 6, 30 ],
+		[ 6, 34 ],
+		[ 6, 22, 38 ],
+		[ 6, 24, 42 ],
+		[ 6, 26, 46 ],
+		[ 6, 28, 50 ],
+		[ 6, 30, 54 ],
+		[ 6, 32, 58 ],
+		[ 6, 34, 62 ],
+		[ 6, 26, 46, 66 ],
+		[ 6, 26, 48, 70 ],
+		[ 6, 26, 50, 74 ],
+		[ 6, 30, 54, 78 ],
+		[ 6, 30, 56, 82 ],
+		[ 6, 30, 58, 86 ],
+		[ 6, 34, 62, 90 ],
+		[ 6, 28, 50, 72,  94 ],
+		[ 6, 26, 50, 74,  98 ],
+		[ 6, 30, 54, 78, 102 ],
+		[ 6, 28, 54, 80, 106 ],
+		[ 6, 32, 58, 84, 110 ],
+		[ 6, 30, 58, 86, 114 ],
+		[ 6, 34, 62, 90, 118 ],
+		[ 6, 26, 50, 74,  98, 122 ],
+		[ 6, 30, 54, 78, 102, 126 ],
+		[ 6, 26, 52, 78, 104, 130 ],
+		[ 6, 30, 56, 82, 108, 134 ],
+		[ 6, 34, 60, 86, 112, 138 ],
+		[ 6, 30, 58, 86, 114, 142 ],
+		[ 6, 34, 62, 90, 118, 146 ],
+		[ 6, 30, 54, 78, 102, 126, 150 ],
+		[ 6, 24, 50, 76, 102, 128, 154 ],
+		[ 6, 28, 54, 80, 106, 132, 158 ],
+		[ 6, 32, 58, 84, 110, 136, 162 ],
+		[ 6, 26, 54, 82, 110, 138, 166 ],
+		[ 6, 30, 58, 86, 114, 142, 170 ],
+	];
 
 
 	/*  format info string = $qr_format_info[            */
 	/*    (0 for L, 8 for M, 16 for Q, 24 for H) + mask  */
 	/*  ];                                               */
-	private $qr_format_info = array(
-		array( 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0 ),
-		array( 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1 ),
-		array( 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0 ),
-		array( 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1 ),
-		array( 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1 ),
-		array( 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0 ),
-		array( 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1 ),
-		array( 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0 ),
-		array( 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0 ),
-		array( 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1 ),
-		array( 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0 ),
-		array( 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1 ),
-		array( 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1 ),
-		array( 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0 ),
-		array( 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1 ),
-		array( 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0 ),
-		array( 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1 ),
-		array( 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0 ),
-		array( 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1 ),
-		array( 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0 ),
-		array( 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0 ),
-		array( 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1 ),
-		array( 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0 ),
-		array( 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1 ),
-		array( 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1 ),
-		array( 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0 ),
-		array( 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1 ),
-		array( 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0 ),
-		array( 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0 ),
-		array( 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1 ),
-		array( 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0 ),
-		array( 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1 ),
-	);
+	private $qr_format_info = [
+		[ 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0 ],
+		[ 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1 ],
+		[ 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0 ],
+		[ 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1 ],
+		[ 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1 ],
+		[ 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0 ],
+		[ 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1 ],
+		[ 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0 ],
+		[ 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0 ],
+		[ 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1 ],
+		[ 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0 ],
+		[ 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1 ],
+		[ 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1 ],
+		[ 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0 ],
+		[ 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 1 ],
+		[ 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0 ],
+		[ 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1 ],
+		[ 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0 ],
+		[ 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1 ],
+		[ 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0 ],
+		[ 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0 ],
+		[ 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1 ],
+		[ 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0 ],
+		[ 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1 ],
+		[ 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1 ],
+		[ 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0 ],
+		[ 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1 ],
+		[ 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0 ],
+		[ 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0 ],
+		[ 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1 ],
+		[ 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0 ],
+		[ 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1 ],
+	];
 
 
 	/*  version info string = $qr_version_info[ (version - 7) ]  */
-	private $qr_version_info = array(
-		array( 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0 ),
-		array( 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0 ),
-		array( 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1 ),
-		array( 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1 ),
-		array( 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0 ),
-		array( 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0 ),
-		array( 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1 ),
-		array( 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1 ),
-		array( 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0 ),
-		array( 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0 ),
-		array( 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1 ),
-		array( 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1 ),
-		array( 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0 ),
-		array( 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0 ),
-		array( 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1 ),
-		array( 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1 ),
-		array( 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0 ),
-		array( 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0 ),
-		array( 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1 ),
-		array( 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1 ),
-		array( 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0 ),
-		array( 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0 ),
-		array( 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1 ),
-		array( 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1 ),
-		array( 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0 ),
-		array( 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1 ),
-		array( 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0 ),
-		array( 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0 ),
-		array( 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1 ),
-		array( 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1 ),
-		array( 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0 ),
-		array( 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0 ),
-		array( 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1 ),
-		array( 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1 ),
-	);
+	private $qr_version_info = [
+		[ 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0 ],
+		[ 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0 ],
+		[ 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1 ],
+		[ 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1 ],
+		[ 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0 ],
+		[ 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0 ],
+		[ 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1 ],
+		[ 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1 ],
+		[ 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0 ],
+		[ 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0 ],
+		[ 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1 ],
+		[ 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1 ],
+		[ 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0 ],
+		[ 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0 ],
+		[ 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1 ],
+		[ 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1 ],
+		[ 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0 ],
+		[ 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0 ],
+		[ 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1 ],
+		[ 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1 ],
+		[ 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0 ],
+		[ 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0 ],
+		[ 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1 ],
+		[ 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1 ],
+		[ 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0 ],
+		[ 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1 ],
+		[ 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0 ],
+		[ 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0 ],
+		[ 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1 ],
+		[ 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1 ],
+		[ 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0 ],
+		[ 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0 ],
+		[ 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1 ],
+		[ 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1 ],
+	];
 
 
 } //END CLASS

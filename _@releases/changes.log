@@ -2,6 +2,21 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+May 11, 2021 :: :: Version 7.2.1 rev.20210511
+	* major refactoring
+	* replaced define() with const wherever possible to speedup the code
+	* methods refactoring to avoid circular dependencies between the framework libs:
+		SmartUtils::Create_Download_Link() 			-> 	SmartFrameworkRuntime::Create_Download_Link()
+		SmartFrameworkRuntime::getAppReleaseHash() 	-> 	SmartUtils::get_app_release_hash()
+		SmartFrameworkRuntime::ifInternalDebug() 	-> 	SmartFrameworkRegistry::ifInternalDebug()
+		SmartFrameworkRuntime::ifDebug() 			-> 	SmartFrameworkRegistry::ifDebug()
+		SmartFrameworkRuntime::ifProdEnv() 			-> 	SmartFrameworkRegistry::ifProdEnv()
+		SmartFrameworkRuntime::isAdminArea() 		-> 	SmartFrameworkRegistry::isAdminArea()
+		SmartFrameworkRuntime::isTaskArea() 		-> 	SmartFrameworkRegistry::isTaskArea()
+		SmartFrameworkSecurity::Filter_*() 			-> 	SmartFrameworkSecurity::Filter*() // removed underscore from names
+	* implemented standalone app
+	* refactoring the appcodepack/unpack as a new module: mod app release
+
 April 21, 2021 :: :: Version 7.2.1 rev.20210421
 	* bug fixes and optimizations
 

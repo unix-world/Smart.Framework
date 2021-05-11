@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/QunitRunTests
 // Route: ?page=samples.qunit-run-tests
 // (c) 2006-2021 unix-world.org - all rights reserved

@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210309
+ * @version 	v.20210428
  * @package 	Plugins:Image
  *
  */
@@ -55,7 +55,7 @@ final class SmartDetectImages {
 		//--
 		if(($use_gd === true) AND (!function_exists('getimagesizefromstring'))) {
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice(__METHOD__.'(): GD / getimagesizefromstring() is not available, fall back to quick detection ...');
 			} //end if
 			//--
@@ -218,7 +218,7 @@ final class SmartDetectImages {
 		//--
 		$pict = (string) $pict;
 		if(strlen($pict) < 16) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice(__METHOD__.'(): expects the first 16 bytes for detection (but have only '.strlen($pict).' bytes) ...');
 			} //end if
 			return '';

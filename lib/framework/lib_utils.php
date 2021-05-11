@@ -37,8 +37,8 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version 	v.20210417
+ * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
+ * @version 	v.20210506
  * @package 	@Core:Extra
  *
  */
@@ -46,7 +46,26 @@ final class SmartUtils {
 
 	// ::
 
-	private static $cache = array();
+	private static $AppReleaseHash = null;
+
+	private static $cache = [];
+
+
+	//================================================================
+	// get the App Release Hash based on Framework Version.Release.ModulesRelease
+	// Avoid run this function before Smart.Framework was loaded, it depends on it
+	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
+	public static function get_app_release_hash() {
+		//--
+		if((string)self::$AppReleaseHash == '') {
+			$hash = (string) SmartHashCrypto::crc32b((string)(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') ? SMART_FRAMEWORK_RELEASE_TAGVERSION : '').(string)(defined('SMART_FRAMEWORK_RELEASE_VERSION') ? SMART_FRAMEWORK_RELEASE_VERSION : '').(string)(defined('SMART_APP_MODULES_RELEASE') ? SMART_APP_MODULES_RELEASE : ''), true); // get as b36
+			self::$AppReleaseHash = (string) strtolower((string)$hash);
+		} //end if
+		//--
+		return (string) self::$AppReleaseHash;
+		//--
+	} //END FUNCTION
+	//================================================================
 
 
 	//================================================================
@@ -134,7 +153,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to get cookies as it takes care of safe filtering of cookie values
-	public static function get_cookie(string $cookie_name) {
+	public static function get_cookie(?string $cookie_name) {
 		//--
 		return SmartFrameworkRegistry::getCookieVar((string)$cookie_name); // mixed: null / string
 		//--
@@ -144,7 +163,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to set cookies as it takes care to set them according with the cookie domain if set or not per app ; use zero expire time for cookies that will expire with browser session
-	public static function set_cookie(string $cookie_name, $cookie_data, $expire_seconds=0, string $cookie_path='/', string $cookie_domain='@', string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) {
+	public static function set_cookie(?string $cookie_name, $cookie_data, ?int $expire_seconds=0, ?string $cookie_path='/', ?string $cookie_domain='@', ?string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) {
 		//--
 		if(headers_sent()) {
 			return false;
@@ -221,7 +240,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to unset cookies as it takes care to set them according with the cookie domain if set or not per app
-	public static function unset_cookie(string $cookie_name, string $cookie_path='/', string $cookie_domain='@', string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) {
+	public static function unset_cookie(?string $cookie_name, ?string $cookie_path='/', ?string $cookie_domain='@', ?string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) {
 		//--
 		return (bool) self::set_cookie($cookie_name, null, -1, $cookie_path, $cookie_domain, $cookie_samesite, $cookie_secure, $cookie_httponly);
 		//--
@@ -231,7 +250,7 @@ final class SmartUtils {
 
 	//================================================================
 	// simple encode a URL parameter using bin2hex()
-	public static function url_hex_encode($y_val) {
+	public static function url_hex_encode(?string $y_val) {
 		//--
 		return (string) @bin2hex((string)$y_val);
 		//--
@@ -241,7 +260,7 @@ final class SmartUtils {
 
 	//================================================================
 	// simple encode a URL parameter using hex2bin()
-	public static function url_hex_decode($y_enc_val) {
+	public static function url_hex_decode(?string $y_enc_val) {
 		//--
 		return (string) SmartFrameworkSecurity::FilterUnsafeString((string)@hex2bin((string)$y_enc_val));
 		//--
@@ -250,7 +269,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function check_ip_in_range($lower_range_ip_address, $upper_range_ip_address, $needle_ip_address) {
+	public static function check_ip_in_range(?string $lower_range_ip_address, ?string $upper_range_ip_address, ?string $needle_ip_address) {
 			//-- Get the numeric reprisentation of the IP Address with IP2long
 			$min 	= ip2long($lower_range_ip_address);
 			$max 	= ip2long($upper_range_ip_address);
@@ -264,7 +283,7 @@ final class SmartUtils {
 
 	//================================================================
 	// will return the time interval in days between 2 dates (negative = past ; positive = future)
-	public static function date_interval_days($y_date_now, $y_date_past) {
+	public static function date_interval_days(?string $y_date_now, ?string $y_date_past) {
 		//--
 		$y_date_now = date('Y-m-d', @strtotime($y_date_now));
 		$y_date_past = date('Y-m-d', @strtotime($y_date_past));
@@ -302,7 +321,7 @@ final class SmartUtils {
 
 	//================================================================
 	// Archive data (string) to B64/Zlib-Raw/Hex
-	public static function data_archive($y_str) {
+	public static function data_archive(?string $y_str) {
 		//-- if empty data, return empty string
 		if((string)$y_str == '') {
 			return '';
@@ -351,7 +370,7 @@ final class SmartUtils {
 
 	//================================================================
 	// Unarchive data (string) from B64/Zlib-Raw/Hex
-	public static function data_unarchive($y_enc_data) {
+	public static function data_unarchive(?string $y_enc_data) {
 		//--
 		$y_enc_data = (string) trim((string)$y_enc_data);
 		//--
@@ -428,7 +447,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function comment_php_code($y_code, $y_repl=['tag-start' => '<!--? ', 'tag-end' => ' ?-->']) {
+	public static function comment_php_code(?string $y_code, array $y_repl=['tag-start' => '<!--? ', 'tag-end' => ' ?-->']) {
 		//--
 		$y_code = (string) $y_code;
 		$y_repl = (array) $y_repl;
@@ -454,7 +473,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function pretty_print_var($y_var, $indent=0) {
+	public static function pretty_print_var($y_var, ?int $indent=0) {
 		//--
 		$out = '';
 		//--
@@ -527,7 +546,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function pretty_print_bytes($y_bytes, $y_decimals=1, $y_separator=' ', $y_base=1000) {
+	public static function pretty_print_bytes($y_bytes, ?int $y_decimals=1, ?string $y_separator=' ', ?int $y_base=1000) {
 		//--
 		$y_decimals = (int) $y_decimals;
 		if($y_decimals < 0) {
@@ -645,7 +664,7 @@ final class SmartUtils {
 	//================================================================
 	// based on PHP roman to number, author: Sterling Hughes <sterling@php.net>
 	// min: 0 ; max: MMMMCMXCIX
-	public static function roman_to_number($roman) {
+	public static function roman_to_number(?string $roman) {
 		//--
 		$roman = (string) $roman;
 		//--
@@ -701,7 +720,7 @@ final class SmartUtils {
 
 	//================================================================
 	// extract HTML title (must not exceed 128 characters ; recommended is max 65) ; no changes
-	public static function extract_title($ytxt, $y_limit=65, $clear_numbers=false) {
+	public static function extract_title(?string $ytxt, ?int $y_limit=65, bool $clear_numbers=false) {
 		//--
 		$ytxt = (string) Smart::striptags((string)$ytxt, 'no'); // will do strip tags
 		$ytxt = (string) Smart::normalize_spaces((string)$ytxt); // will do normalize spaces
@@ -730,7 +749,7 @@ final class SmartUtils {
 
 	//================================================================
 	// extract HTML meta description (must not exceed 256 characters ; recommended is max 155 characters)
-	public static function extract_description($ytxt, $y_limit=155, $clear_numbers=false) {
+	public static function extract_description(?string $ytxt, ?int $y_limit=155, bool $clear_numbers=false) {
 		//--
 		$ytxt = (string) trim((string)$ytxt);
 		if((string)$ytxt == '') {
@@ -765,7 +784,7 @@ final class SmartUtils {
 	// will find the keywords listed descending by the occurence number
 	// keywords with higher frequency will be listed first
 	// We add Strategy: Max 2% up to 7% of keywords from existing text (SEO req.)
-	public static function extract_keywords($ytxt, $y_count=97, $clear_numbers=true) {
+	public static function extract_keywords(?string $ytxt, ?int $y_count=97, bool $clear_numbers=true) {
 		//--
 		$ytxt = (string) trim((string)$ytxt);
 		if((string)$ytxt == '') {
@@ -822,7 +841,7 @@ final class SmartUtils {
 
 	//================================================================
 	// prepare HTML compliant keywords from a string
-	public static function extract_words_from_text_html($ytxt) {
+	public static function extract_words_from_text_html(?string $ytxt) {
 		//--
 		$ytxt = Smart::striptags((string)$ytxt, 'no');
 		$ytxt = Smart::normalize_spaces((string)$ytxt);
@@ -863,7 +882,7 @@ final class SmartUtils {
 	//================================================================
 	// This always provides a compatible layer with the JS Blowfish CBC
 	// It must be used for safe exchanging data between PHP and Javascript
-	public static function crypto_blowfish_encrypt($y_data, $y_key='') {
+	public static function crypto_blowfish_encrypt(?string $y_data, ?string $y_key='') {
 		//--
 		if((string)$y_data == '') { // do not trim !
 			return '';
@@ -886,7 +905,7 @@ final class SmartUtils {
 	//================================================================
 	// This always provides a compatible layer with the JS Blowfish CBC
 	// It must be used for safe exchanging data between PHP and Javascript
-	public static function crypto_blowfish_decrypt($y_data, $y_key='') {
+	public static function crypto_blowfish_decrypt(?string $y_data, ?string $y_key='') {
 		//--
 		if((string)trim((string)$y_data) == '') {
 			return '';
@@ -926,7 +945,7 @@ final class SmartUtils {
 	//================================================================
 	// This is intended for general use of symetric crypto api in Smart.Framework
 	// It can use any of the: hash or openssl algos: blowfish, twofish, serpent, ghost
-	public static function crypto_encrypt($y_data, $y_key='') {
+	public static function crypto_encrypt(?string $y_data, ?string $y_key='') {
 		//--
 		if((string)$y_key == '') {
 			$key = (string) SMART_FRAMEWORK_SECURITY_KEY;
@@ -945,7 +964,7 @@ final class SmartUtils {
 	//================================================================
 	// This is intended for general use of symetric crypto api in Smart.Framework
 	// It can use any of the: hash or openssl algos: blowfish, twofish, serpent, ghost
-	public static function crypto_decrypt($y_data, $y_key='') {
+	public static function crypto_decrypt(?string $y_data, ?string $y_key='') {
 		//--
 		if((string)$y_key == '') {
 			$key = (string) SMART_FRAMEWORK_SECURITY_KEY;
@@ -963,286 +982,6 @@ final class SmartUtils {
 
 	//================================================================
 	/**
-	 * Create a semantic URL like: (script.php)?/param1/value1/Param2/Value2
-	 *
-	 * @param 	STRING 	$y_url 				:: The standard URL in RFC3986 format as: (script.php)?page=my-module.my-page&param1=value1&Param2=Value2
-	 *
-	 * @return 	STRING						:: The semantic URL, depends on SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE ( '' | 'standard' | 'semantic' ) ; 'standard' and 'semantic' requires Apache Rewrite ; Examples: '' -> (script.php)?/page/(my-module.)my-page/param1/value1/Param2/Value2 ; 'standard' -> (my-module.)my-page.html?param1=value1&Param2=Value2 ; 'semantic' -> (my-module.)my-page.html?/param1/value1/Param2/Value2
-	 */
-	public static function create_semantic_url($y_url) { // v.20210322
-		//--
-		$y_url = (string) trim((string)$y_url);
-		if((string)$y_url == '') {
-			return ''; // if URL is empty nothing to do ...
-		} //end if
-		//--
-		if(defined('SMART_FRAMEWORK_SEMANTIC_URL_DISABLE') AND (SMART_FRAMEWORK_SEMANTIC_URL_DISABLE === true)) {
-			return (string) $y_url;
-		} //end if
-		//--
-		$ignore_script = '';
-		$ignore_module = '';
-		if(SmartFrameworkRuntime::isAdminArea() !== true) { // not for admin !
-			//--
-			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT')) {
-				if(SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT === true) {
-					$ignore_script = (string) 'index.php';
-				} //end if
-			} //end if
-			//--
-			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE')) {
-				if(SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE === true) {
-					$ignore_module = (string) trim((string)Smart::get_from_config('app.index-default-module', 'string'));
-				} //end if
-			} //end if
-			//--
-		} //end if
-		//--
-		$semantic_separator = '?/';
-		//--
-		if(strpos((string)$y_url, (string)$semantic_separator) !== false) {
-			return (string) $y_url; // it is already semantic or at least appear to be ...
-		} // end if
-		//--
-		$arr = (array) Smart::url_parse((string)$y_url);
-		//print_r($arr); die();
-		//--
-		$arr['scheme'] 	= (string) trim((string)$arr['scheme']); 	// http / https
-		$arr['host'] 	= (string) trim((string)$arr['host']); 		// 127.0.0.1
-		$arr['port'] 	= (string) trim((string)$arr['port']); 		// 80 / 443 / 8088 ...
-		$arr['path'] 	= (string) trim((string)$arr['path']); 		// /some/path
-		$arr['query'] 	= (string) trim((string)$arr['query']);		// page=some&op=other
-		//--
-		if((string)$arr['query'] == '') {
-			return (string) $y_url; // there is no query string to format as semantic
-		} //end if
-		//--
-		$semantic_url = '';
-		//--
-		if((string)$arr['host'] != '') {
-			if((string)$arr['scheme'] != '') {
-				$semantic_url .= (string) $arr['scheme'].':';
-			} //end if
-			$semantic_url .= (string) '//'.$arr['host'];
-			if(((string)$arr['port'] != '') AND ((string)$arr['port'] != '80') AND ((string)$arr['port'] != '443')) {
-				$semantic_url .= (string) ':'.$arr['port'];
-			} //end if
-		} //end if
-		//--
-		if((string)$ignore_script != '') {
-			$len = (int) strlen((string)$ignore_script);
-			if((int)$len > 0) {
-				if((string)$arr['path'] == (string)$ignore_script) {
-					$arr['path'] = '';
-				} elseif((string)substr((string)$arr['path'], (-1*(int)$len), (int)$len) == (string)$ignore_script) {
-					$len = (int)strlen((string)$arr['path']) - (int)$len;
-					if($len > 0) {
-						$arr['path'] = (string) substr((string)$arr['path'], 0, (int)$len);
-					} //end if
-				} //end if
-			} //end if
-		} //end if
-		$semantic_url .= (string) $arr['path'];
-		//--
-		$use_rewrite = false;
-		$use_rfc_params = false;
-		if(SmartFrameworkRuntime::isAdminArea() !== true) { // not for admin !
-			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE')) {
-				if((string)SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE == 'semantic') {
-					$use_rewrite = true;
-				} elseif((string)SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE == 'standard') {
-					$use_rewrite = true;
-					$use_rfc_params = true;
-				} //end switch
-			} //end if
-		} //end if
-		//--
-		$vars = explode('&', $arr['query']);
-		$asvars = array(); // store params except page
-		$detected_page = ''; // store page if found
-		$parsing_ok = true;
-		for($i=0; $i<Smart::array_size($vars); $i++) {
-			//--
-			$pair = (array) explode('=', $vars[$i]);
-			if(!array_key_exists(0, $pair)) {
-				$pair[0] = null;
-			} //end if
-			if(!array_key_exists(1, $pair)) {
-				$pair[1] = null;
-			} //end if
-			//--
-			if(((string)trim((string)$pair[0]) == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$pair[0])) OR ((string)$pair[1] == '')) { // {{{SYNC-REQVARS-VALIDATION}}}
-				$parsing_ok = false;
-				break;
-			} //end if
-			//--
-			if((string)$pair[0] === 'page') {
-				$detected_page = (string) $pair[1];
-			} else {
-				$asvars[(string)$pair[0]] = (string) $pair[1];
-			} //end if else
-			//--
-		} //end for
-		$vars = array();
-		//--
-		if($parsing_ok !== true) {
-			return (string) $y_url; // there is something wrong with the URL
-		} //end if
-		//--
-		if(Smart::array_size($asvars) > 0) {
-			$have_params = true;
-		} else {
-			$have_params = false;
-		} //end if else
-		//--
-		$semantic_suffix = '';
-		$have_semantic_separator = false;
-		$page_rewrite_ok = false;
-		//--
-		if((string)$detected_page != '') {
-			//--
-			if(strpos((string)$detected_page, '.') !== false) {
-				$arr_pg = (array) explode('.', (string)$detected_page);
-				$the_pg_mod = '';
-				if(array_key_exists(0, $arr_pg)) {
-					$the_pg_mod = (string) trim((string)$arr_pg[0]); 	// no controller, use the default one
-				} //end if
-				$the_pg_ctrl = '';
-				if(array_key_exists(1, $arr_pg)) {
-					$the_pg_ctrl = (string) trim((string)$arr_pg[1]); 	// page controller
-				} //end if
-				$the_pg_ext = '';
-				if(array_key_exists(2, $arr_pg)) {
-					$the_pg_ext = (string) trim((string)$arr_pg[2]); 	// page extension **OPTIONAL**
-				} //end if
-				$arr_pg = array();
-			} else {
-				$the_pg_mod = ''; 						// no controller, use the default one
-				$the_pg_ctrl = (string) $detected_page; // page controller
-				$the_pg_ext = ''; 						// page extension
-			} //end if else
-			//--
-			$pg_link = '';
-			if(((string)$the_pg_mod == '') OR ((string)$the_pg_mod == (string)$ignore_module)) {
-				$pg_link .= (string) $the_pg_ctrl;
-			} else {
-				$pg_link .= (string) $the_pg_mod.'.'.$the_pg_ctrl;
-			} //end if
-			//--
-			if(($use_rewrite === true) AND (((string)$semantic_url == '') OR ((string)substr((string)$semantic_url, -1, 1) == '/'))) { // PAGE (with REWRITE)
-				//--
-				if((string)$the_pg_ext == '') {
-					$the_pg_ext = 'html';
-				} //end if
-				//--
-				$page_rewrite_ok = true;
-				$semantic_suffix .= (string) $pg_link.'.'.$the_pg_ext;
-				//--
-			} else {
-				//--
-				$semantic_suffix .= (string) $semantic_separator.'page'.'/'.$pg_link.'/';
-				$have_semantic_separator = true;
-				//--
-			} //end if else
-			//--
-		} //end if
-		//--
-		if($have_params === true) {
-			//--
-			foreach($asvars as $key => $val) {
-				//--
-				if(($page_rewrite_ok === true) AND ($use_rfc_params === true)) {
-					//--
-					$semantic_suffix = (string) Smart::url_add_suffix((string)$semantic_suffix, (string)$key.'='.$val);
-					//--
-				} else {
-					//--
-					$val = (string) str_replace('/', (string)Smart::escape_url('/'), (string)$val);
-					$val = (string) str_replace((string)Smart::escape_url('/'), (string)Smart::escape_url((string)Smart::escape_url('/')), (string)$val); // needs double encode the / character for semantic URLs to avoid conflict with param/value
-					//--
-					if($have_semantic_separator !== true) {
-						$semantic_suffix .= (string) $semantic_separator;
-						$have_semantic_separator = true;
-					} //end if
-					$semantic_suffix .= (string) $key.'/'.$val.'/';
-					//--
-				} //end if else
-				//--
-			} //end foreach
-			//--
-		} //end if
-		//--
-		if((string)$semantic_suffix == '') {
-			return (string) $y_url; // something get wrong with the conversion, maybe the URL query is formatted in a different way that could not be understood
-		} //end if
-		//--
-		$semantic_url .= (string) $semantic_suffix;
-		//--
-		return (string) $semantic_url;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	// Create a Download Link for the Download Handler
-	public static function decode_download_link($y_encrypted_link) {
-		//--
-		return (string) trim((string)SmartUtils::crypto_decrypt(
-			(string) $y_encrypted_link,
-			'Smart.Framework//DownloadLink'.SMART_FRAMEWORK_SECURITY_KEY // {{{SYNC-DOWNLOAD-LINK-CRYPT-KEY}}}
-		));
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	// Create a Download Link for the Download Handler
-	public static function create_download_link($y_file, $y_ctrl_key) {
-		//--
-		$y_file = (string) trim((string)$y_file);
-		if((string)$y_file == '') {
-			Smart::log_warning('Utils / Create Download Link: Empty File Path has been provided. This means the download link will be unavaliable (empty) to assure security protection.');
-			return '';
-		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path($y_file)) {
-			Smart::log_warning('Utils / Create Download Link: Invalid File Path has been provided. This means the download link will be unavaliable (empty) to assure security protection. File: '.$y_file);
-			return '';
-		} //end if
-		//--
-		$y_ctrl_key = (string) trim((string)$y_ctrl_key);
-		if((string)$y_ctrl_key == '') {
-			Smart::log_warning('Utils / Create Download Link: Empty Controller Key has been provided. This means the download link will be unavaliable (empty) to assure security protection.');
-			return '';
-		} //end if
-		if(SmartFrameworkRuntime::isAdminArea() === true) { // {{{SYNC-DWN-CTRL-PREFIX}}}
-			$y_ctrl_key = (string) 'AdminArea/'.$y_ctrl_key;
-		} else {
-			$y_ctrl_key = (string) 'IndexArea/'.$y_ctrl_key;
-		} //end if
-		//--
-		$crrtime = (int) time();
-		$access_key = SmartHashCrypto::sha1('DownloadLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$y_file.'^'.$y_ctrl_key);
-		$unique_key = SmartHashCrypto::sha1('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.self::unique_auth_client_private_key().':'.$y_file.'+'.$y_ctrl_key);
-		//-- {{{SYNC-DOWNLOAD-ENCRYPT-ARR}}}
-		$safe_download_link = self::crypto_encrypt(
-			trim((string)$crrtime)."\n". 									// set the current time
-			trim((string)$y_file)."\n". 									// the file path
-			trim((string)$access_key)."\n". 								// access key based on UniqueID cookie
-			trim((string)$unique_key)."\n".									// unique key based on: User-Agent and IP
-			'-'."\n",														// self robot browser UserAgentName/ID key (does not apply here)
-			'Smart.Framework//DownloadLink'.SMART_FRAMEWORK_SECURITY_KEY 	// {{{SYNC-DOWNLOAD-LINK-CRYPT-KEY}}}
-		);
-		//--
-		return (string) Smart::escape_url((string)trim((string)$safe_download_link));
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
 	 * Reads and return one Uploaded File
 	 *
 	 * @param STRING 	$var_name					:: The HTML Variable Name
@@ -1251,7 +990,7 @@ final class SmartUtils {
 	 * @param STRING	$allowed_extensions			:: The list of allowed file extensions ; Default is '' ; Example to restrict to several extensions: '<ext1>,<ext2>,...<ext100>,...' ; set to empty string to allow all extenstions supported via Smart.Framework INI: SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS / SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS
 	 * @return ARRAY								:: array [ status => 'OK' | 'WARN' | 'ERR', 'message' => '' | 'WARN Message' | 'ERR Message', 'msg-code' => 0..n, 'filename' => '' | 'filename.ext', 'filetype' => '' | 'ext', 'filesize' => Bytes, 'filecontent' => '' | 'the Contents of the file ...' ]
 	 */
-	public static function read_uploaded_file($var_name, $var_index=-1, $max_size=0, $allowed_extensions='') {
+	public static function read_uploaded_file(?string $var_name, ?int $var_index=-1, ?int $max_size=0, ?string $allowed_extensions='') {
 		//-- {{{SYNC-HANDLE-F-UPLOADS}}}
 		$var_name 	= (string) trim((string)$var_name);
 		$var_index 	= (int)    $var_index; // can be negative or 0..n
@@ -1285,7 +1024,21 @@ final class SmartUtils {
 			return (array) $out;
 		} //end if
 		//--
+		$the_upld_file_name 	= '';
+		$the_upld_file_tmpname 	= '';
+		$the_upld_file_error 	= -777;
+		//--
 		if($var_index >= 0) {
+			if( // {{{SYNC-CHECK-MULTI-UPLOAD-FILES-ARR}}}
+				(!isset($_FILES[$var_name]['name']))     OR (!is_array($_FILES[$var_name]['name']))     OR (!isset($_FILES[$var_name]['name'][$var_index])) OR
+				(!isset($_FILES[$var_name]['tmp_name'])) OR (!is_array($_FILES[$var_name]['tmp_name'])) OR (!isset($_FILES[$var_name]['tmp_name'][$var_index])) OR
+				(!isset($_FILES[$var_name]['error']))    OR (!is_array($_FILES[$var_name]['error']))    OR (!isset($_FILES[$var_name]['error'][$var_index]))
+			) {
+				$out['status'] = 'WARN';
+				$out['message'] = 'No files uploads detected ...';
+				$out['msg-code'] = 1;
+				return (array) $out;
+			} //end if
 			$the_upld_file_name 	= (string) $_FILES[$var_name]['name'][$var_index];
 			$the_upld_file_tmpname 	= (string) $_FILES[$var_name]['tmp_name'][$var_index];
 			$the_upld_file_error 	= (int)    $_FILES[$var_name]['error'][$var_index];
@@ -1348,7 +1101,7 @@ final class SmartUtils {
 				return (array) $out;
 			} //end if
 		} else {
-			if(defined('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS')) {
+			if(defined('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS') AND ((string)SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS != '')) {
 				if(stripos((string)SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, '<'.$tmp_fext.'>') === false) {
 					$out['status'] = 'WARN';
 					$out['message'] = 'Upload Failed: The uploaded file extension is not in the current allowed extensions list configuration for file: '.$the_upld_file_name;
@@ -1455,7 +1208,7 @@ final class SmartUtils {
 	 * @param BOOLEAN 	$enforce_lowercase 			:: Set to TRUE to enforce lowercase file name ; DEFAULT is FALSE
 	 * @return MIXED								:: '' (empty string) if all OK ; FALSE (boolean) if upload failed ; otherwise will return a non-empty string with the ERROR / WARNING message if the file was not successfuly stored in the destination directory
 	 */
-	public static function store_uploaded_file($dest_dir, $var_name, $var_index=-1, $allow_rewrite=true, $max_size=0, $allowed_extensions='', $new_name='', $enforce_lowercase=false) {
+	public static function store_uploaded_file(?string $dest_dir, ?string $var_name, ?int $var_index=-1, bool $allow_rewrite=true, ?int $max_size=0, ?string $allowed_extensions='', ?string $new_name='', bool $enforce_lowercase=false) {
 		//-- {{{SYNC-HANDLE-F-UPLOADS}}} v.20200419
 		$dest_dir = (string) $dest_dir;
 		$var_name = (string) trim((string)$var_name);
@@ -1508,8 +1261,16 @@ final class SmartUtils {
 			} //end if
 		} //end if
 		//--
+		$the_upld_file_name 	= '';
+		$the_upld_file_tmpname 	= '';
+		$the_upld_file_error 	= -777;
+		//--
 		if($var_index >= 0) {
-			if((!isset($_FILES[$var_name]['name'])) OR (!is_array($_FILES[$var_name]['name'])) OR (!isset($_FILES[$var_name]['tmp_name'][$var_index]))) {
+			if( // {{{SYNC-CHECK-MULTI-UPLOAD-FILES-ARR}}}
+				(!isset($_FILES[$var_name]['name']))     OR (!is_array($_FILES[$var_name]['name']))     OR (!isset($_FILES[$var_name]['name'][$var_index])) OR
+				(!isset($_FILES[$var_name]['tmp_name'])) OR (!is_array($_FILES[$var_name]['tmp_name'])) OR (!isset($_FILES[$var_name]['tmp_name'][$var_index])) OR
+				(!isset($_FILES[$var_name]['error']))    OR (!is_array($_FILES[$var_name]['error']))    OR (!isset($_FILES[$var_name]['error'][$var_index]))
+			) {
 				return false; // {{{SYNC-FILE-UPLD-FALSE-RET}}} should return no error because the file may not be uploaded
 			} //end if
 			$the_upld_file_name 	= (string) $_FILES[$var_name]['name'][$var_index];
@@ -1575,7 +1336,7 @@ final class SmartUtils {
 				return 'Upload Failed: The uploaded file extension is not in the current custom allowed extensions list for file: '.$the_upld_file_name;
 			} //end if
 		} else {
-			if(defined('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS')) {
+			if(defined('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS') AND ((string)SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS != '')) {
 				if(stripos((string)SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, '<'.$tmp_fext.'>') === false) {
 					return 'Upload Failed: The uploaded file extension is not in the current allowed extensions list configuration for file: '.$the_upld_file_name;
 				} //end if
@@ -1704,7 +1465,7 @@ final class SmartUtils {
 			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) trim((string)$_SERVER['HTTP_USER_AGENT']);
+		return (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_USER_AGENT']));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1724,7 +1485,7 @@ final class SmartUtils {
 	// This should be used just for tracking purposes and can be trusted as ~ 99% ONLY if the SMART_APP_VISITOR_COOKIE is defined ; if SMART_APP_VISITOR_COOKIE is not used then it may be trusted ~ 90%
 	public static function get_visitor_tracking_uid() {
 		//--
-		return (string) SmartHashCrypto::sha1('>'.SMART_SOFTWARE_NAMESPACE.'['.SMART_FRAMEWORK_SECURITY_KEY.']'.self::client_ident_private_key().'>'.SMART_APP_VISITOR_COOKIE);
+		return (string) SmartHashCrypto::sha1('>'.SMART_SOFTWARE_NAMESPACE.'['.SMART_FRAMEWORK_SECURITY_KEY.']'.self::client_ident_private_key().'>'.(defined('SMART_APP_VISITOR_COOKIE') ? SMART_APP_VISITOR_COOKIE : '#'));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1746,7 +1507,7 @@ final class SmartUtils {
 			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) strtoupper((string)trim((string)$_SERVER['REQUEST_METHOD'])); // string
+		return (string) strtoupper((string)trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['REQUEST_METHOD']))); // string
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1755,7 +1516,7 @@ final class SmartUtils {
 	//================================================================
 	public static function get_server_current_protocol() {
 		//--
-		if((isset($_SERVER['HTTPS'])) AND ((string)trim((string)strtolower((string)$_SERVER['HTTPS'])) == 'on')) {
+		if((isset($_SERVER['HTTPS'])) AND ((string)trim((string)strtolower((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTPS']))) == 'on')) {
 			$current_protocol = 'https://';
 		} else {
 			$current_protocol = 'http://';
@@ -1775,7 +1536,7 @@ final class SmartUtils {
 			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) trim((string)$_SERVER['SERVER_PORT']);
+		return (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_PORT']));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1789,7 +1550,7 @@ final class SmartUtils {
 			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) trim((string)$_SERVER['SERVER_ADDR']);
+		return (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_ADDR']));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1803,7 +1564,7 @@ final class SmartUtils {
 			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) trim((string)$_SERVER['SERVER_NAME']);
+		return (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_NAME']));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1883,7 +1644,7 @@ final class SmartUtils {
 			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) $_SERVER['PATH_INFO'];
+		return (string) SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1897,7 +1658,7 @@ final class SmartUtils {
 			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) $_SERVER['REQUEST_URI'];
+		return (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['REQUEST_URI']);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1911,7 +1672,7 @@ final class SmartUtils {
 			return ''; // fix for PHP8
 		} //end if
 		//--
-		return (string) Smart::fix_path_separator((string)trim((string)$_SERVER['SCRIPT_NAME'])); // Fix: on Windows it can contain \ instead of /
+		return (string) Smart::fix_path_separator((string)trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SCRIPT_NAME']))); // Fix: on Windows it can contain \ instead of /
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2044,12 +1805,12 @@ final class SmartUtils {
 		if(!array_key_exists('QUERY_STRING', $_SERVER)) {
 			$url_query = ''; // fix for PHP8
 		} else {
-			$url_query = (string) trim((string)$_SERVER['QUERY_STRING']); // will get without the prefix '?' as: page=one&subpage=two
+			$url_query = (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['QUERY_STRING'])); // will get without the prefix '?' as: page=one&subpage=two
 		} //end if
 		//--
 		if((string)$url_query == '') {
 			$url_query = '?'; // at least '?' is expected even if the url query is empty
-		} elseif((string)substr($url_query, 0, 1) != '?') { // add '?' prefix if missing, this is required for building url with suffixes, all current url builders rely on assuming there will be a '?' as prefix
+		} elseif((string)substr((string)$url_query, 0, 1) != '?') { // add '?' prefix if missing, this is required for building url with suffixes, all current url builders rely on assuming there will be a '?' as prefix
 			$url_query = '?'.$url_query;
 		} //end if else
 		//--
@@ -2072,7 +1833,7 @@ final class SmartUtils {
 			if(!array_key_exists('SERVER_SOFTWARE', $_SERVER)) {
 				$tmp_srv_software = ''; // fix for PHP8
 			} else {
-				$tmp_srv_software = (string) $_SERVER['SERVER_SOFTWARE'];
+				$tmp_srv_software = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_SOFTWARE']);
 			} //end if else
 			$tmp_version_arr = (array) explode('/', (string)$tmp_srv_software);
 			if(!array_key_exists(0, $tmp_version_arr)) {
@@ -2114,7 +1875,7 @@ final class SmartUtils {
 			if(!array_key_exists('SERVER_SOFTWARE', $_SERVER)) {
 				$tmp_srv_software = ''; // fix for PHP8
 			} else {
-				$tmp_srv_software = (string) $_SERVER['SERVER_SOFTWARE'];
+				$tmp_srv_software = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_SOFTWARE']);
 			} //end if else
 			//--
 			$the_lower_os = (string) strtolower((string)$tmp_srv_software);
@@ -2202,7 +1963,7 @@ final class SmartUtils {
 	public static function get_ip_client() {
 		//--
 		// # if SMART_FRAMEWORK_IPDETECT_CUSTOM is set to TRUE, should be only for PRIVATE NETWORKS, just in case the IP detection fails for some buggy proxies then can use the below fix:
-		// define('SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK', '0.0.0.0'); // If using this fix, if this mandatory function cannot determine the IP address for a client (ex: malformed headers), instead of raise fatal error it can use a fake IP address for the client IP !!! IMPORTANT: if you have to use it never use here other IP addresses than one of these (IPV4 0.0.0.0 / IPV6 ::ffff:0000:0000 ; IPV4 255.255.255.255 / IPV6 ::ffff:ffff:ffff) or the SECURITY CAN BE SERIOUS COMPROMISED by XSS or session hijacking !!! MORE: it is not safe to use this fallback at all ! USE IT ON YOUR OWN RISK !!!!!!!
+		// const SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK = '0.0.0.0'; // If using this fix, if this mandatory function cannot determine the IP address for a client (ex: malformed headers), instead of raise fatal error it can use a fake IP address for the client IP !!! IMPORTANT: if you have to use it never use here other IP addresses than one of these (IPV4 0.0.0.0 / IPV6 ::ffff:0000:0000 ; IPV4 255.255.255.255 / IPV6 ::ffff:ffff:ffff) or the SECURITY CAN BE SERIOUS COMPROMISED by XSS or session hijacking !!! MORE: it is not safe to use this fallback at all ! USE IT ON YOUR OWN RISK !!!!!!!
 		// # !!! NEVER USE THE ABOVE FIX FOR PUBLIC NETWORKS !!! IT IS MORE THAN DANGEROUS !!!
 		//--
 		if(array_key_exists('get_ip_client', self::$cache)) {
@@ -2236,7 +1997,7 @@ final class SmartUtils {
 		//--
 		$tmp_hdr = '';
 		if(array_key_exists((string)$the_hdr, (array)$_SERVER)) {
-			$tmp_hdr = (string) $_SERVER[(string)$the_hdr]; // fix for PHP8
+			$tmp_hdr = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER[(string)$the_hdr]); // fix for PHP8
 		} //end if
 		//--
 		$ip = ''; // init
@@ -2244,7 +2005,7 @@ final class SmartUtils {
 		$ip = (string) self::_iplist_get_first_address((string)$tmp_hdr); // can be one IP or a list with multiple addresses ; here the 1st one is the client's IP ...
 		$ip = (string) SmartValidator::validate_filter_ip_address($ip);
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Client',
 				'data' => 'Validation Header:'."\n".self::pretty_print_var(self::$cache['get_ip_client:validated-header'])
@@ -2257,7 +2018,7 @@ final class SmartUtils {
 		//--
 		if((string)$ip == '') {
 			if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM') AND (SMART_FRAMEWORK_IPDETECT_CUSTOM === true)) { // use the following fix ONLY with IP custom detect case ...
-				if(defined('SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK') AND (SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK)) {
+				if(defined('SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK') AND (SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK)) { // hidden feature, this is extremely dangerous !!
 					$ip = (string) SmartValidator::validate_filter_ip_address((string)SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK);
 				} //end if
 			} //end if
@@ -2336,7 +2097,7 @@ final class SmartUtils {
 		} //end if
 		//--
 		self::$cache['get_ip_proxyclient:validated-headers'] = (array) $arr_hdrs;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Proxy Client',
 				'data' => 'Validation Headers:'."\n".self::pretty_print_var(self::$cache['get_ip_proxyclient:validated-headers'])
@@ -2346,10 +2107,10 @@ final class SmartUtils {
 		$proxy = ''; // init
 		//--
 		for($i=0; $i<Smart::array_size($arr_hdrs); $i++) {
-			if(isset($_SERVER[(string)$arr_hdrs[$i]]) AND ((string)$_SERVER[(string)$arr_hdrs[$i]] != '')) {
+			if(isset($_SERVER[(string)$arr_hdrs[$i]]) AND ((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER[(string)$arr_hdrs[$i]]) != '')) {
 				$proxy = (string) self::_iplist_get_last_address((string)$_SERVER[(string)$arr_hdrs[$i]]);
 				if((string)$proxy != '') {
-					if(SmartFrameworkRuntime::ifDebug()) {
+					if(SmartFrameworkRegistry::ifDebug()) {
 						SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
 							'title' => 'SmartUtils // Get IP Proxy Client',
 							'data' => 'Validated at Header: `'.$arr_hdrs[$i].'` = `'.$proxy.'`'
@@ -2371,7 +2132,7 @@ final class SmartUtils {
 	//================================================================
 	// GET OS, BROWSER, IP :: ACCESS LOG
 	// This will be used only once
-	public static function get_os_browser_ip($y_mode='') {
+	public static function get_os_browser_ip(?string $y_mode='') {
 		//--
 		if((!array_key_exists('get_os_browser_ip', self::$cache)) OR (!is_array(self::$cache['get_os_browser_ip']))) {
 			self::$cache['get_os_browser_ip'] = []; // fix for PHP8
@@ -2389,7 +2150,7 @@ final class SmartUtils {
 			//--
 			$the_srv_signature = '';
 			if(array_key_exists('HTTP_USER_AGENT', $_SERVER)) { // fix for PHP8
-				$the_srv_signature = (string) $_SERVER['HTTP_USER_AGENT'];
+				$the_srv_signature = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_USER_AGENT']);
 			} //end if
 			$the_lower_signature = (string) strtolower((string)$the_srv_signature);
 			//--
@@ -2533,7 +2294,7 @@ final class SmartUtils {
 	 * @return ARRAY					:: [ stdout, stderr, exitcode ]
 	 *
 	 */
-	public static function run_proc_cmd($cmd, $inargs=null, $cwd='tmp/cache/run-proc-cmd', $env=null) {
+	public static function run_proc_cmd(?string $cmd, ?array $inargs=null, ?string $cwd='tmp/cache/run-proc-cmd', ?array $env=null) {
 
 		//-- initialize
 		$descriptorspec = [
@@ -2754,8 +2515,8 @@ final class SmartUtils {
 	 */
 	public static function registerInternalCacheToDebugLog() {
 		//--
-		if(SmartFrameworkRuntime::ifInternalDebug()) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifInternalDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
 					'title' => 'SmartUtils // Internal Cache',
 					'data' => 'Dump:'."\n".print_r(self::$cache,1)

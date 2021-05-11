@@ -71,8 +71,8 @@ if((string)$var == 'some-string') {
  * @hints       It is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.
  *
  * @access      PUBLIC
- * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version     v.20210413
+ * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
+ * @version     v.20210506
  * @package     @Core
  *
  */
@@ -80,7 +80,7 @@ final class Smart {
 
 	// ::
 
-	private static $Cfgs = array(); // registry of cached config data
+	private static $Cfgs = []; // registry of cached config data
 
 
 	//================================================================
@@ -112,7 +112,7 @@ final class Smart {
 	 *
 	 * @return 	MIXED						:: The value for the selected parameter. If the Config parameter does not exists, will return an empty string.
 	 */
-	public static function get_from_config(string $param, string $type='') {
+	public static function get_from_config(?string $param, ?string $type='') {
 		//--
 		global $configs;
 		//--
@@ -205,7 +205,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The real path
 	 */
-	public static function real_path(string $y_path) {
+	public static function real_path(?string $y_path) {
 		//--
 		$the_path = (string) @realpath((string)$y_path);
 		//--
@@ -223,7 +223,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The dirname or . or empty string
 	 */
-	public static function dir_name(string $y_path) {
+	public static function dir_name(?string $y_path) {
 		//--
 		$dir_name = (string) dirname((string)$y_path);
 		//--
@@ -243,7 +243,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The basename
 	 */
-	public static function base_name(string $y_path, string $y_suffix='') {
+	public static function base_name(?string $y_path, ?string $y_suffix='') {
 		//--
 		if((string)$y_suffix != '') {
 			$base_name = (string) basename((string)$y_path, (string)$y_suffix);
@@ -265,7 +265,7 @@ final class Smart {
 	 *
 	 * @return 	ARRAY						:: The pathinfo array
 	 */
-	public static function path_info(string $y_path) {
+	public static function path_info(?string $y_path) {
 		//--
 		$path_info = pathinfo((string)$y_path, PATHINFO_DIRNAME | PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME); // mixed return ... do not cast to array !!
 		//-- PHP8 fix
@@ -297,7 +297,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: This function returns a string with the replaced value only on first occurence if search value is found
 	 */
-	public static function str_replace_first(string $search, string $replace, string $str) {
+	public static function str_replace_first(?string $search, ?string $replace, ?string $str) {
 		//--
 		if((string)$str != '') {
 			if((string)$search != '') {
@@ -324,7 +324,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: This function returns a string with the replaced value only on last occurence if search value is found
 	 */
-	public static function str_replace_last(string $search, string $replace, string $str) {
+	public static function str_replace_last(?string $search, ?string $replace, ?string $str) {
 		//--
 		if((string)$str != '') {
 			if((string)$search != '') {
@@ -342,7 +342,7 @@ final class Smart {
 
 
 	//================================================================
-	private static function url_encode_value(string $value, bool $y_allow_late_binding_params) {
+	private static function url_encode_value(?string $value, bool $y_allow_late_binding_params) {
 		//--
 		if(
 			($y_allow_late_binding_params === true) AND
@@ -365,7 +365,7 @@ final class Smart {
 
 	//================================================================
 	// on init this function $suffix must be set to ''
-	private static function url_encode_params(string $name, $value, bool $y_allow_late_binding_params, string $suffix='') {
+	private static function url_encode_params(?string $name, $value, bool $y_allow_late_binding_params, ?string $suffix='') {
 		//--
 		$ret = [];
 		//--
@@ -409,7 +409,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
 	 */
-	public static function url_build_query(array $y_params, bool $y_allow_late_binding_params) {
+	public static function url_build_query(?array $y_params, bool $y_allow_late_binding_params) {
 		//--
 		if(self::array_size($y_params) <= 0) {
 			return '';
@@ -440,7 +440,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
 	 */
-	public static function url_add_params(string $y_url, array $y_params) {
+	public static function url_add_params(?string $y_url, ?array $y_params) {
 		//--
 		if(self::array_size($y_params) <= 0) {
 			return (string) $y_url;
@@ -473,7 +473,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
 	 */
-	public static function url_add_suffix(string $y_url, string $y_suffix) {
+	public static function url_add_suffix(?string $y_url, ?string $y_suffix) {
 		//--
 		$y_url = (string) trim((string)$y_url);
 		$y_suffix = (string) trim((string)$y_suffix);
@@ -515,7 +515,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The prepared URL as script.php?a=b&c=d&e=%20d#myAnchor
 	 */
-	public static function url_add_anchor(string $y_url, string $y_anchor) {
+	public static function url_add_anchor(?string $y_url, ?string $y_anchor) {
 		//--
 		$y_url = (string) trim((string)$y_url);
 		$y_anchor = (string) trim((string)$y_anchor);
@@ -547,7 +547,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The escaped URL variable using the RFC3986 standard format (this variable can be appended to URL, by example: ?variable={escaped-value-returned-by-this-method}
 	 */
-	public static function escape_url($y_string) { // do not make strongtype as NULL will break it
+	public static function escape_url(?string $y_string) { // do not make strongtype as NULL will break it
 		//--
 		return (string) rawurlencode((string)$y_string);
 		//--
@@ -564,7 +564,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The escaped string using htmlspecialchars() standards with Unicode-Safe control
 	 */
-	public static function escape_html($y_string) { // do not make strongtype as NULL will break it
+	public static function escape_html(?string $y_string) { // do not make strongtype as NULL will break it
 		//-- v.181203
 		// Default is: ENT_HTML401 | ENT_COMPAT
 		// keep the ENT_HTML401 instead of ENT_HTML5 to avoid troubles with misc. HTML Parsers (robots, htmldoc, ...)
@@ -586,7 +586,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The escaped string using the WD-CSS21-20060411 standard
 	 */
-	public static function escape_css($y_string) { // do not make strongtype as NULL will break it
+	public static function escape_css(?string $y_string) { // do not make strongtype as NULL will break it
 		//-- http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q6
 		return (string) addcslashes((string)$y_string, "\x00..\x1F!\"#$%&'()*+,./:;<=>?@[\\]^`{|}~"); // inspired from Latte Templating
 		//--
@@ -602,7 +602,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The escaped string using a json_encode() standard to be injected between single quotes '' or double quotes ""
 	 */
-	public static function escape_js($str) { // do not make strongtype as NULL will break it
+	public static function escape_js(?string $str) { // do not make strongtype as NULL will break it
 		//-- v.20200605
 		// Prepare a string to pass in JavaScript Single or Double Quotes
 		// By The Situation:
@@ -685,7 +685,7 @@ final class Smart {
 	 *
 	 * @return 	MIXED						:: The PHP native Variable: NULL ; INT ; NUMERIC ; STRING ; ARRAY
 	 */
-	public static function json_decode($json, bool $return_array=true) {
+	public static function json_decode(?string $json, bool $return_array=true) {
 		//-- decode json v.170503
 		return @json_decode((string)$json, (bool)$return_array, 512, JSON_BIGINT_AS_STRING); // as json decode depth is added just in PHP 5.5 use the default depth = 512 by now ...
 		//--
@@ -719,7 +719,7 @@ final class Smart {
 	 *
 	 * @return 	MIXED						:: The PHP native Variable
 	 */
-	public static function unseryalize($y_json) { // do not make strongtype as NULL will break it
+	public static function unseryalize(?string $y_json) { // do not make strongtype as NULL will break it
 		//-- unseryalize json v.170503
 		return self::json_decode((string)$y_json, true);
 		//--
@@ -736,7 +736,7 @@ final class Smart {
 	 *
 	 * @return 	FLOAT						:: An float number
 	 */
-	public static function format_number_float($y_number, $y_signed='') { // do not make strongtype as NULL will break it
+	public static function format_number_float($y_number, ?string $y_signed='') { // do not make strongtype as NULL will break it
 		//--
 		if((string)$y_signed == '+') { // unsigned integer
 			if((float)$y_number < 0) { // {{{SYNC-SMART-FLOAT+}}}
@@ -759,7 +759,7 @@ final class Smart {
 	 *
 	 * @return 	INTEGER						:: An integer number
 	 */
-	public static function format_number_int($y_number, $y_signed='') { // do not make strongtype as NULL will break it
+	public static function format_number_int($y_number, ?string $y_signed='') { // do not make strongtype as NULL will break it
 		//--
 		if((string)$y_signed == '+') { // unsigned integer
 			if((int)$y_number < 0) { // {{{SYNC-SMART-INT+}}}
@@ -785,7 +785,7 @@ final class Smart {
 	 *
 	 * @return 	DECIMAL							:: A decimal number
 	 */
-	public static function format_number_dec($y_number, $y_decimals=2, $y_sep_decimals='.', $y_sep_thousands='') { // do not make strongtype as NULL will break it
+	public static function format_number_dec($y_number, $y_decimals=2, ?string $y_sep_decimals='.', ?string $y_sep_thousands='') { // do not make strongtype as NULL will break it
 		//-- fix decimals
 		$y_decimals = (int) self::format_number_int($y_decimals,'+');
 		if($y_decimals < 1) {
@@ -829,7 +829,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 						:: The sorted array
 	 */
-	public static function array_sort(array $y_arr, string $y_mode) {
+	public static function array_sort(array $y_arr, ?string $y_mode) {
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return array();
@@ -903,7 +903,7 @@ final class Smart {
 	 *
 	 * @return MIXED 		:: The value from the specified array by the specific key path or NULL if the value does not exists
 	 */
-	public static function array_get_by_key_path(array $y_arr, string $y_key_path, string $y_path_separator) {
+	public static function array_get_by_key_path(array $y_arr, ?string $y_key_path, ?string $y_path_separator) {
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return null;
@@ -957,7 +957,7 @@ final class Smart {
 	 *
 	 * @return BOOL 								:: TRUE if Key Exist / FALSE if NOT
 	 */
-	public static function array_test_key_by_path_exists(array $y_arr, string $y_key_path, string $y_path_separator) {
+	public static function array_test_key_by_path_exists(array $y_arr, ?string $y_key_path, ?string $y_path_separator) {
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return false;
@@ -1005,7 +1005,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 								:: The modified array
 	 */
-	public static function array_change_key_case_recursive(array $y_arr, string $y_mode) {
+	public static function array_change_key_case_recursive(array $y_arr, ?string $y_mode) {
 		//--
 		if(self::array_size($y_arr) <= 0) { // fix bug if empty array / max nested level
 			return array();
@@ -1189,7 +1189,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The processed string (text)
 	 */
-	public static function text_cut_by_limit(string $ytxt, int $ylen, bool $y_cut_words=true, string $y_suffix='...') {
+	public static function text_cut_by_limit(?string $ytxt, ?int $ylen, bool $y_cut_words=true, ?string $y_suffix='...') {
 		//--
 		$ytxt = (string) trim((string)$ytxt);
 		$ylen = self::format_number_int($ylen, '+');
@@ -1231,7 +1231,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The formatted string
 	 */
-	public static function nl_2_br($y_code) { // do not make strongtype as NULL will break it
+	public static function nl_2_br(?string $y_code) { // do not make strongtype as NULL will break it
 		//--
 		return nl2br((string)trim((string)$y_code), false); // 2nd param is false for not xhtml tags, since PHP 5.3 !!
 		//--
@@ -1248,7 +1248,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The processed HTML Code
 	 */
-	public static function striptags(string $yhtmlcode, string $ynewline='yes') {
+	public static function striptags(?string $yhtmlcode, string $ynewline='yes') {
 		//--
 		$yhtmlcode = (string) $yhtmlcode;
 		$ynewline = (string) $ynewline;
@@ -1418,7 +1418,7 @@ final class Smart {
 	 * @return STRING 						:: The fixed (filesys) safe string
 	 *
 	 */
-	public static function safe_fix_invalid_filesys_names(string $y_fsname) {
+	public static function safe_fix_invalid_filesys_names(?string $y_fsname) {
 		//-- v.190105
 		$y_fsname = (string) trim((string)$y_fsname);
 		//-- {{{SYNC-SAFE-PATH-CHARS}}} {{{SYNC-CHK-SAFE-PATH}}}
@@ -1459,7 +1459,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The safe path ; if invalid will return empty value
 	 */
-	public static function safe_pathname(string $y_path, string $ysupresschar='') {
+	public static function safe_pathname(?string $y_path, ?string $ysupresschar='') {
 		//-- v.170920
 		$y_path = (string) trim((string)$y_path); // force string and trim
 		if((string)$y_path == '') {
@@ -1509,7 +1509,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The safe file or dir name ; if invalid will return empty value
 	 */
-	public static function safe_filename(string $y_fname, string $ysupresschar='') {
+	public static function safe_filename(?string $y_fname, ?string $ysupresschar='') {
 		//-- v.170920
 		$y_fname = (string) trim((string)$y_fname); // force string and trim
 		if((string)$y_fname == '') {
@@ -1551,7 +1551,7 @@ final class Smart {
 	 *
 	 * @return STRING 							:: The safe variable name ; if invalid should return empty value
 	 */
-	public static function safe_varname(string $y_name, bool $y_allow_upper=true) {
+	public static function safe_varname(?string $y_name, bool $y_allow_upper=true) {
 		//-- v.20210302
 		$y_name = (string) trim((string)$y_name); // force string and trim
 		if((string)$y_name == '') {
@@ -1587,7 +1587,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The safe name ; if invalid should return empty value
 	 */
-	public static function safe_validname(string $y_name, string $ysupresschar='') {
+	public static function safe_validname(?string $y_name, ?string $ysupresschar='') {
 		//-- v.170920
 		$y_name = (string) trim((string)$y_name); // force string and trim
 		if((string)$y_name == '') {
@@ -1628,7 +1628,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The safe name ; if invalid should return empty value
 	 */
-	public static function safe_username(string $y_name) {
+	public static function safe_username(?string $y_name) {
 		//-- v.170920
 		$y_name = (string) trim((string)$y_name); // force string and trim
 		if((string)$y_name == '') {
@@ -1659,7 +1659,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The slug which will contain only: a-z 0-9 _ - (A-Z will be converted to a-z if lowercase is enforced)
 	 */
-	public static function create_slug(string $y_str, bool $y_lowercase=false, $y_maxlen=0) {
+	public static function create_slug(?string $y_str, bool $y_lowercase=false, ?int $y_maxlen=0) {
 		//--
 		$y_str = (string) SmartUnicode::deaccent_str((string)trim((string)$y_str));
 		$y_str = (string) preg_replace('/[^a-zA-Z0-9_\-]/', '-', (string)$y_str);
@@ -1690,7 +1690,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The HTML-ID which will contain only: a-z A-Z 0-9 _ -
 	 */
-	public static function create_htmid(string $y_str) {
+	public static function create_htmid(?string $y_str) {
 		//--
 		return (string) trim((string)preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$y_str));
 		//--
@@ -1706,7 +1706,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The Js-Var which will contain only: a-z A-Z 0-9 _ $
 	 */
-	public static function create_jsvar(string $y_str) {
+	public static function create_jsvar(?string $y_str) {
 		//--
 		return (string) trim((string)preg_replace('/[^a-zA-Z0-9_\$]/', '', (string)$y_str));
 		//--
@@ -1723,8 +1723,8 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The normalized text
 	 */
-	public static function normalize_spaces(string $y_txt) { // do not make strongtype as NULL will break it
-		//--
+	public static function normalize_spaces(?string $y_txt) { // do not make strongtype as NULL will break it
+		//-- {{{SYNC-NORMALIZE-SPACES}}}
 		return (string) str_replace(["\r\n", "\r", "\n", "\t", "\x0B", "\0", "\f"], ' ', (string)$y_txt);
 		//--
 	} //END FUNCTION
@@ -1791,7 +1791,7 @@ final class Smart {
 	 *
 	 * @return INTEGER 						:: An integer random number
 	 */
-	public static function random_number(int $y_min=0, int $y_max=-1, bool $y_seed=false) {
+	public static function random_number(?int $y_min=0, ?int $y_max=-1, bool $y_seed=false) {
 		//-- seed the mt_rand() using mt_srand()
 		if($y_seed !== false) {
 			if($y_seed === true) {
@@ -1852,7 +1852,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: variable length Unique Entropy string
 	 */
-	public static function unique_entropy(string $y_suffix='', bool $y_use_net_server_id=true) {
+	public static function unique_entropy(?string $y_suffix='', bool $y_use_net_server_id=true) {
 		//--
 		$netserverid = '';
 		if($y_use_net_server_id !== false) {
@@ -1867,7 +1867,7 @@ final class Smart {
 
 	//================================================================
 	// converts a 64-bit integer number to base62 (string)
-	private static function int10_to_base62_str($num) { // do not make strongtype as NULL will break it
+	private static function int10_to_base62_str(?int $num) {
 		//--
 		$num = (int) $num;
 		if($num < 0) {
@@ -2228,7 +2228,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 					:: The separed URL (associative array) as: protocol, server, port, path, scriptname
 	 */
-	public static function url_parse(string $y_url) {
+	public static function url_parse(?string $y_url) {
 		//--
 		$y_url = (string) $y_url;
 		//--
@@ -2353,7 +2353,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 					:: The Array: Array(elem1, elem2, ..., elemN)
 	 */
-	public static function list_to_array(string $y_list, bool $y_trim=true) {
+	public static function list_to_array(?string $y_list, bool $y_trim=true) {
 		//--
 		if((string)trim((string)$y_list) == '') {
 			return array(); // empty list
@@ -2391,7 +2391,7 @@ final class Smart {
 	 *
 	 * @return -						:: This function does not return anything
 	 */
-	public static function log_info($title, $message) { // do not make strongtype as NULL will break it
+	public static function log_info(?string $title, ?string $message) { // do not make strongtype as NULL will break it
 		//--
 		if((defined('SMART_FRAMEWORK_INFO_LOG')) AND (is_dir(self::dir_name((string)SMART_FRAMEWORK_INFO_LOG)))) { // must use is_dir here to avoid dependency with smart file system lib
 			@file_put_contents((string)SMART_FRAMEWORK_INFO_LOG, '[INF]'."\t".date('Y-m-d H:i:s O')."\t".self::normalize_spaces($title)."\t".self::normalize_spaces($message)."\n", FILE_APPEND | LOCK_EX);
@@ -2414,9 +2414,9 @@ final class Smart {
 	 *
 	 * @return -						:: This function does not return anything
 	 */
-	public static function log_notice($message) { // do not make strongtype as NULL will break it
+	public static function log_notice(?string $message) { // do not make strongtype as NULL will break it
 		//--
-		if(SmartFrameworkRuntime::ifProdEnv() === true) {
+		if(SmartFrameworkRegistry::ifProdEnv() === true) {
 			return; // use this only in DEV mode
 		} //end if
 		//--
@@ -2436,7 +2436,7 @@ final class Smart {
 	 *
 	 * @return -						:: This function does not return anything
 	 */
-	public static function log_warning($message) { // do not make strongtype as NULL will break it
+	public static function log_warning(?string $message) { // do not make strongtype as NULL will break it
 		//--
 		@trigger_error('#SMART-FRAMEWORK.WARNING# '.$message, E_USER_WARNING);
 		//--
@@ -2455,7 +2455,7 @@ final class Smart {
 	 *
 	 * @return -								:: This function does not return anything
 	 */
-	public static function raise_error($message_to_log, $message_to_display='', $is_html_message_to_display=false) { // do not make strongtype as NULL will break it
+	public static function raise_error(?string $message_to_log, ?string $message_to_display='', bool $is_html_message_to_display=false) { // do not make strongtype as NULL will break it
 		//--
 		global $smart_____framework_____last__error;
 		global $smart_____framework_____is_html_last__error;
@@ -2468,6 +2468,23 @@ final class Smart {
 		$smart_____framework_____is_html_last__error = (bool) $is_html_message_to_display;
 		@trigger_error('#SMART-FRAMEWORK.ERROR# '.$message_to_log, E_USER_ERROR);
 		die('App Level Raise ERROR. Execution Halted. '.$message_to_display); // normally this line will never be executed because the E_USER_ERROR via Smart Error Handler will die() before ... but this is just in case, as this is a fatal error and the execution should be halted here !
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	public static function InstantFlush() {
+		//--
+		$output_buffering_status = @ob_get_status();
+		//-- type: 0 = PHP_OUTPUT_HANDLER_INTERNAL ; 1 = PHP_OUTPUT_HANDLER_USER
+		if(is_array($output_buffering_status) AND array_key_exists('type', $output_buffering_status) AND array_key_exists('chunk_size', $output_buffering_status)) {
+			if(((string)$output_buffering_status['type'] == '0') AND ((int)$output_buffering_status['chunk_size'] > 0)) { // avoid to break user level output buffering(s), so enable this just for level zero (internal, if set in php.ini)
+				@ob_flush();
+			} //end if
+		} //end if
+		//--
+		@flush();
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2503,8 +2520,8 @@ final class Smart {
 	 */
 	public static function registerInternalCacheToDebugLog() {
 		//--
-		if(SmartFrameworkRuntime::ifInternalDebug()) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifInternalDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
 					'title' => 'Smart (Base) // Internal Cache',
 					'data' => 'Dump of Cfgs:'."\n".print_r(self::$Cfgs,1)

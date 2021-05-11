@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<!-- AppCodeUnpack v.20210511 -->
+<!-- (c) 2013-2021 unix-world.org - all rights reserved -->
+<html>
+<head>
+<meta charset="[###CHARSET|html###]">
+<meta http-equiv="Content-Type" content="text/html; charset=[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="AppCodeUnpack (standalone), Smart.Framework">
+<link rel="icon" href="data:,">
+<title>[###TITLE|html###]</title>
+<!-- Font Styles -->
+<style type="text/css">* { font-family: 'IBM Plex Sans',arial,sans-serif; }</style>
+<!-- Toolkit Styles -->
+[###CSS-TOOLKIT-STYLES###]
+<!-- Default Styles -->
+[###CSS-DEFAULT-STYLES###]
+<!-- Notif. Styles -->
+[###CSS-NOTIF-STYLES###]
+<!-- Local Styles -->
+[###CSS-LOCAL-STYLES###]
+<!-- JS jQuery -->
+[###JS-JQUERY###]
+<script>jQuery.ajaxSetup({ timeout: 0, cache: false });</script>
+<!-- JS Smart Utils, Date, Crypto -->
+[###JS-SMART-UTILS###]
+[###JS-SMART-DATE###]
+[###JS-SMART-CRYPTO###]
+<!-- CSS and JS Gritter -->
+[###CSS-GRITTER###]
+<style>
+#gritter-notice-wrapper {
+	min-width: 550px !important;
+	max-width: 550px !important;
+	width: 500px !important;
+}
+@media all and (max-width:639px) {
+	#gritter-notice-wrapper {
+		min-width: 275px !important;
+		max-width: 550px !important;
+		width: 96% !important;
+	}
+}
+</style>
+[###JS-GRITTER###]
+<!-- CSS and JS Alertable -->
+[###CSS-ALERTABLE###]
+[###JS-ALERTABLE###]
+<!-- AppCodeUnpack JS -->
+[###JS-APPCODEUNPACK###]
+<!-- Local Js Functions -->
+<script>
+const disableHomeLinks = () => {
+	$('#appcodepack-img').off('click').removeClass('pointerCursor');
+	$('#appcodepack-txt').off('click').removeClass('pointerCursor');
+};
+const enableHomeLinks = () => {
+	$('#appcodepack-img').on('click', () => {
+		const logout = confirm('Logout ?');
+		if(logout) {
+			self.location='[###SCRIPT|js###]?logout=yes';
+		}
+	}).addClass('pointerCursor');
+	$('#appcodepack-txt').on('click', () => { self.location='[###SCRIPT|js###]'; }).addClass('pointerCursor');
+};
+const hideLoader = () => {
+	$('#Loader-Img').hide();
+}
+const showLoader = () => {
+	$('#Loader-Img').show();
+}
+const hideForm = (the_form_id) => {
+	the_form_id = AppCodeUnpackJs.stringPureVal(the_form_id, true);
+	if(the_form_id == '') {
+		console.error('hideForm', 'The FormID empty');
+		return;
+	}
+	disableHomeLinks();
+	showLoader();
+	const $form = $('form#' + the_form_id);
+	if(typeof($form.get(0)) == 'undefined') {
+		return;
+	}
+	$form.find('button').each((idx, el) => {
+		$(el).prop('disabled', true);
+	});
+	$form.hide();
+};
+const showForm = (the_form_id) => {
+	the_form_id = AppCodeUnpackJs.stringPureVal(the_form_id, true);
+	if(the_form_id == '') {
+		console.error('showForm', 'The FormID empty');
+		return;
+	}
+	setTimeout(() => {
+		hideLoader();
+		enableHomeLinks();
+		const $form = $('form#' + the_form_id);
+		if(typeof($form.get(0)) == 'undefined') {
+			return;
+		}
+		$form.show();
+		$form.find('button').each((idx, el) => {
+			$(el).prop('disabled', false);
+		});
+	}, 2000);
+};
+</script>
+<!-- #.# -->
+</head>
+<body>
+<div id="app-container"><!-- app container: start# -->
+<table style="width:100%;">
+	<tr>
+		<td width="64">
+			<img id="appcodepack-img" width="48" height="48" alt="[###NAME|html###]" title="[###NAME|html###] [###VERSION|html###]" src="data:image/svg+xml,[###APPCODEUNPACK-SVG|url|html###]" class="">
+		</td>
+		<td>
+			<h1 id="appcodepack-txt" class="headingText">
+				<span class="colorSmart">Smart</span><span class="colorDoubleColon">::</span><span class="colorNamePrefix">[###NAME-PREFIX|html###]</span><span class="colorDot">.</span><span class="colorNameSuffix">[###NAME-SUFFIX|html###]</span>
+			</h1>
+		</td>
+		<td> &nbsp; &nbsp; &nbsp; </td>
+		<td align="right">
+			<img width="48" height="48" alt="NetArchive-Logo" title="NetArchive Packager by Smart.Framework, deploy dir: [%%%|N%%%]`[###REALPATH-CRR|html###]`" src="data:image/svg+xml,[###NETARCH-SVG|url|html###]" class="helpCursor">
+			&nbsp;
+			<img width="48" height="48" alt="PHP-Logo" title="PHP App Deploy Management" src="data:image/svg+xml,[###PHP-SVG|url|html###]" class="helpCursor">
+			&nbsp;
+			<img width="48" height="48" alt="Apache-Logo" title="Security by Apache HTTP/S Server" src="data:image/svg+xml,[###APACHE-SVG|url|html###]" class="helpCursor">
+			&nbsp;
+		</td>
+		<td align="right">
+			&nbsp;
+			<img width="48" height="48" alt="Smart.Framework-Logo" title="Smart.Framework-Logo" src="data:image/svg+xml,[###SF-SVG|url|html###]" class="helpCursor">
+			&nbsp;
+		</td>
+	</tr>
+</table>
+<hr>
+<div class="boxTable blueTable">
+	<table width="width:100%;">
+		<tr valign="top">
+			<td>Auth Allowed IPs: `[###AUTH-IP-LIST|html###]`</td>
+		</tr>
+		<tr valign="top">
+			<td>Auth UserName: `[###AUTH-USER-ID|html###]` ; Auth Enforce HTTPS: `[###AUTH-ENF-HTTPS|html###]`</td>
+		</tr>
+		<tr valign="top">
+			<td>List of Managed AppIDs: `[###APP-IDS-LST|html###]`</td>
+		</tr>
+	</table>
+</div>
+<div class="sTaskTitle">
+<center>
+	<h2 id="title">[###OP-TITLE|html###]</h2>
+</center>
+</div>
+<hr>
+[###MAIN###]
+<br>
+<hr>
+<div align="right"><small class="colorCopyright">(c) 2013-[###YEAR|html###] unix-world.org</small></div>
+</div><!-- #end: app container -->
+<img id="Loader-Img" width="64" height="64" alt="Loading..." title="Loading..." src="data:image/svg+xml,[###LOADING-SVG|url|html###]" style="display:none; position:fixed; top:5px; left:48vw;">
+<script>
+enableHomeLinks();
+hideLoader();
+[%%%IF:SHOW-LOADER:==yes;%%%]
+$(() => {
+	setTimeout(() => { showLoader(); }, 250);
+});
+[%%%/IF:SHOW-LOADER%%%]
+</script>
+</body>
+</html>
+<!-- script: [###SCRIPT|html###] -->

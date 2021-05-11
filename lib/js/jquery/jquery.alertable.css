@@ -4,7 +4,7 @@
 // Developed by Cory LaViska for A Beautiful Site, LLC
 // Licensed under the MIT license: http://opensource.org/licenses/MIT
 
-// r.20210420
+// r.20210424
 // (c) 2019-2021 unix-world.org
 // License: BSD
 // contains fixes by unixman
@@ -27,6 +27,7 @@
 	min-height: 100px;
 	height: 25vh;
 	max-height: 720px;
+	border: 1px solid #F2F2F2;
 }
 
 /* Overlay */
@@ -37,7 +38,7 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
-	background: rgba(0, 0, 0, 0.5);
+	background: rgba(238, 238, 238, 0.55);
 }
 
 /* Form */

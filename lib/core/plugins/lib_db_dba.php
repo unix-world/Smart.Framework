@@ -15,7 +15,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Smart-Framework - DBA Database Client
 // DEPENDS:
 //	* Smart::
-//	* SmartUtils::
+//	* SmartComponents::
 // DEPENDS-EXT: PHP DBA Extension
 //======================================================
 
@@ -40,8 +40,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
- * @depends 	extensions: PHP DBA Extension ; classes: Smart
- * @version 	v.20210401
+ * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartComponents
+ * @version 	v.20210503
  * @package 	Plugins:Database:Dba
  *
  */
@@ -120,7 +120,7 @@ final class SmartDbaDb {
 		// 'd' lock mode not supported by GDBM handler version 1.8.3 or later
 		$this->lock = 'l'; // use always the 'l' locking by using an external lock file .lck ; this is widely supported and PHP will handle this
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			if($this->fatal_err === true) {
 				$txt_conn = 'FATAL ERRORS';
@@ -168,7 +168,7 @@ final class SmartDbaDb {
 			return;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|log', [
 				'type' => 'open-close',
 				'data' => 'DBA :: Connected to: '.$this->file.' :: '.$this->description.' @ Resource: '.$this->dba
@@ -208,7 +208,7 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|log', [
 				'type' => 'metainfo',
 				'data' => 'DBA Handlers: '.implode(', ', (array)SmartDbaUtilDb::getDbaHandlers())
@@ -253,7 +253,7 @@ final class SmartDbaDb {
 	public function getTtl($key) {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice('#DBA# :: '.__FUNCTION__.'() Method Aborted. Detected Previous DBA Error before calling this method');
 			} //end if
 			return false;
@@ -272,7 +272,7 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -293,7 +293,7 @@ final class SmartDbaDb {
 			$op = null; // free mem
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-queries', 1, '+');
 			//--
@@ -336,7 +336,7 @@ final class SmartDbaDb {
 	public function getKey($key) {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice('#DBA# :: '.__FUNCTION__.'() Method Aborted. Detected Previous DBA Error before calling this method');
 			} //end if
 			return false;
@@ -355,7 +355,7 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -376,7 +376,7 @@ final class SmartDbaDb {
 			$op = null; // free mem
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-queries', 1, '+');
 			//--
@@ -415,7 +415,7 @@ final class SmartDbaDb {
 	public function setKey($key, $value, $expire=0) {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice('#DBA# :: '.__FUNCTION__.'() Method Aborted. Detected Previous DBA Error before calling this method');
 			} //end if
 			return false;
@@ -448,7 +448,7 @@ final class SmartDbaDb {
 			'value' 	=> (string) $value
 		]);
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -457,7 +457,7 @@ final class SmartDbaDb {
 		@dba_delete((string)sha1((string)$key), $this->dba); // first delete to try save space and avoid duplicates on some drivers
 		$op = @dba_replace((string)sha1((string)$key), (string)$data, $this->dba); // insert or replace (upsert)
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-queries', 1, '+');
 			//--
@@ -499,7 +499,7 @@ final class SmartDbaDb {
 	public function keyExists($key) {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice('#DBA# :: '.__FUNCTION__.'() Method Aborted. Detected Previous DBA Error before calling this method');
 			} //end if
 			return false;
@@ -518,7 +518,7 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -532,7 +532,7 @@ final class SmartDbaDb {
 			} //end if
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-queries', 1, '+');
 			//--
@@ -571,7 +571,7 @@ final class SmartDbaDb {
 	public function unsetKey($key) {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice('#DBA# :: '.__FUNCTION__.'() Method Aborted. Detected Previous DBA Error before calling this method');
 			} //end if
 			return false;
@@ -590,7 +590,7 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -599,7 +599,7 @@ final class SmartDbaDb {
 		$op = @dba_delete((string)sha1((string)$key), $this->dba);
 		$this->optimizeDb(true); // randomly optimize DB
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-queries', 1, '+');
 			//--
@@ -637,7 +637,7 @@ final class SmartDbaDb {
 	public function optimizeDb($randomly=false) {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice('#DBA# :: '.__FUNCTION__.'() Method Aborted. Detected Previous DBA Error before calling this method');
 			} //end if
 			return false;
@@ -653,7 +653,7 @@ final class SmartDbaDb {
 			} //end if
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -661,7 +661,7 @@ final class SmartDbaDb {
 		//--
 		$op = @dba_optimize($this->dba);
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-queries', 1, '+');
 			//--
@@ -697,7 +697,7 @@ final class SmartDbaDb {
 	public function getKeysList() {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice('#DBA# :: '.__FUNCTION__.'() Method Aborted. Detected Previous DBA Error before calling this method');
 			} //end if
 			return [];
@@ -708,7 +708,7 @@ final class SmartDbaDb {
 			return [];
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -716,7 +716,7 @@ final class SmartDbaDb {
 		//--
 		$xarr = (array) $this->iterateAllDbKeysAndCleanup();
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-queries', 1, '+');
 			//--
@@ -753,7 +753,7 @@ final class SmartDbaDb {
 	public function clearExpiredKeys($limit=0) {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice('#DBA# :: '.__FUNCTION__.'() Method Aborted. Detected Previous DBA Error before calling this method');
 			} //end if
 			return false;
@@ -764,7 +764,7 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -772,7 +772,7 @@ final class SmartDbaDb {
 		//--
 		$xarr = (array) $this->iterateAllDbKeysAndCleanup($limit);
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-queries', 1, '+');
 			//--
@@ -807,7 +807,7 @@ final class SmartDbaDb {
 	public function truncateDb($testFirstKey=false) {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice('#DBA# :: '.__FUNCTION__.'() Method Aborted. Detected Previous DBA Error before calling this method');
 			} //end if
 			return false;
@@ -818,7 +818,7 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -827,7 +827,7 @@ final class SmartDbaDb {
 		$res = (string) $this->dba;
 		$this->close(false); // do not halt driver, must reconnect
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-queries', 1, '+');
 			//--
@@ -1067,7 +1067,7 @@ final class SmartDbaDb {
 			$o_mode = (string) $this->mode;
 		} //end if else
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|log', [
 				'type' => 'open-close',
 				'data' => 'DBA :: '.($truncate === true ? 'Truncate @ Re' : '').'Open Connection ['.$o_mode.'] to: '.$this->file.' :: '.$this->description
@@ -1145,7 +1145,7 @@ final class SmartDbaDb {
 		//--
 		if($this->dba) {
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				if($halt !== false) {
 					SmartFrameworkRegistry::setDebugMsg('db', 'dba|log', [
 						'type' => 'open-close',
@@ -1228,7 +1228,7 @@ final class SmartDbaDb {
 		$is_fatal = (bool) $this->fatal_err;
 		//--
 		if($is_fatal === false) { // NON-FATAL ERROR
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'dba|log', [
 					'type' => 'metainfo',
 					'data' => 'DBA (`'.$this->description.'`) :: SILENT WARNING: '.$y_area."\n".'Key: '.$y_key."\n".'Error-Message: '.$y_error_message."\n".'The settings for this DBA instance allow just silent warnings on connection fail.'."\n".'All next method calls to this DBA instance will be discarded silently ...'
@@ -1240,7 +1240,7 @@ final class SmartDbaDb {
 		//--
 		$def_warn = 'Execution Halted !';
 		$y_warning = (string) trim((string)$y_warning);
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$width = 750;
 			$the_area = (string) $y_area;
 			if((string)$y_warning == '') {
@@ -1262,17 +1262,17 @@ final class SmartDbaDb {
 			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
 		} //end if else
 		//--
-		$out = SmartComponents::app_error_message(
+		$out = (string) SmartComponents::app_error_message(
 			'Dba Client',
 			'Dba',
 			'Embedded',
 			'DataStore/DB',
 			'lib/core/img/db/dba-logo.svg',
-			$width, // width
-			$the_area, // area
-			$the_error_message, // err msg
-			$the_params, // title or params
-			$the_query_info // key
+			(int)    $width, // width
+			(string) $the_area, // area
+			(string) $the_error_message, // err msg
+			(string) $the_params, // title or params
+			(string) $the_query_info // key
 		);
 		//--
 		Smart::raise_error(
@@ -1304,8 +1304,8 @@ final class SmartDbaDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartUtils
- * @version 	v.20210401
+ * @depends 	extensions: PHP DBA Extension ; classes: Smart
+ * @version 	v.20210503
  * @package 	Plugins:Database:Dba
  *
  */

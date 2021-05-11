@@ -23,6 +23,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
 //	* Smart::
 //	* SmartUnicode::
 //	* SmartUtils::
+//	* SmartComponents::
 // DEPENDS-EXT: PHP PgSQL Extension
 //======================================================
 
@@ -67,8 +68,8 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
- * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20210401
+ * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
+ * @version 	v.20210503
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -119,13 +120,13 @@ final class SmartPgsqlDb {
 	public static function server_connect($yhost, $yport, $ydb, $yuser, $ypass, $ytimeout, $y_transact_mode='', $y_debug_sql_slowtime=0, $y_type='postgresql') {
 
 		//--
-		if(defined('SMART_FRAMEWORK_DBSQL_CHARSET')) {
-			if((string)SMART_FRAMEWORK_DBSQL_CHARSET != 'UTF8') {
-				self::error('[PRE-CONNECT]', 'PHP-PgSQL', 'Check App Configuration', 'The SMART_FRAMEWORK_DBSQL_CHARSET must be set as: UTF8', 'Invalid INI Settings');
+		if(defined('SMART_FRAMEWORK_SQL_CHARSET')) {
+			if((string)SMART_FRAMEWORK_SQL_CHARSET != 'UTF8') {
+				self::error('[PRE-CONNECT]', 'PHP-PgSQL', 'Check App Configuration', 'The SMART_FRAMEWORK_SQL_CHARSET must be set as: UTF8', 'Invalid INI Settings');
 				return;
 			} //end if
 		} else {
-			self::error('[PRE-CONNECT]', 'PHP-PgSQL', 'Check App Configuration', 'The SMART_FRAMEWORK_DBSQL_CHARSET must be set', 'Invalid INI Settings');
+			self::error('[PRE-CONNECT]', 'PHP-PgSQL', 'Check App Configuration', 'The SMART_FRAMEWORK_SQL_CHARSET must be set', 'Invalid INI Settings');
 			return;
 		} //end if else
 		//--
@@ -154,7 +155,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//-- debug settings
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$y_debug_sql_slowtime = (float) $y_debug_sql_slowtime;
 			if($y_debug_sql_slowtime <= 0) {
@@ -173,11 +174,11 @@ final class SmartPgsqlDb {
 		//--
 
 		//-- debug inits
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|slow-time', number_format(self::$slow_time, 7, '.', ''), '=');
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 				'type' => 'metainfo',
-				'data' => 'Database Server: PgSQL ('.$y_type.') / App Connector Version: '.SMART_FRAMEWORK_VERSION.' / Connection Charset: '.SMART_FRAMEWORK_DBSQL_CHARSET
+				'data' => 'Database Server: PgSQL ('.$y_type.') / App Connector Version: '.SMART_FRAMEWORK_VERSION.' / Connection Charset: '.SMART_FRAMEWORK_SQL_CHARSET
 			]);
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 				'type' => 'metainfo',
@@ -212,7 +213,7 @@ final class SmartPgsqlDb {
 			return;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 				'type' => 'open-close',
 				'data' => 'Connected to PgSQL Server: '.$the_conn_key,
@@ -226,7 +227,7 @@ final class SmartPgsqlDb {
 		//--
 		$tmp_pg_tracefile = 'tmp/logs/pgsql-trace.log';
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			if(defined('SMART_FRAMEWORK_DEBUG_SQL_TRACE')) {
 				if(function_exists('pg_trace')) {
@@ -244,22 +245,22 @@ final class SmartPgsqlDb {
 			return;
 		} //end if
 		$server_encoding = @pg_fetch_row($result);
-		if((!is_array($server_encoding)) OR ((string)trim((string)$server_encoding[0]) != (string)trim((string)SMART_FRAMEWORK_DBSQL_CHARSET))) {
-			self::error($connection, 'Encoding-Get-Charset', 'Wrong Server Encoding on PgSQL Server', 'Server='.$server_encoding[0], 'Client='.SMART_FRAMEWORK_DBSQL_CHARSET);
+		if((!is_array($server_encoding)) OR ((string)trim((string)$server_encoding[0]) != (string)trim((string)SMART_FRAMEWORK_SQL_CHARSET))) {
+			self::error($connection, 'Encoding-Get-Charset', 'Wrong Server Encoding on PgSQL Server', 'Server='.$server_encoding[0], 'Client='.SMART_FRAMEWORK_SQL_CHARSET);
 			return;
 		} //end if
 		@pg_free_result($result);
 		//--
 
 		//--
-		$encoding = @pg_set_client_encoding($connection, SMART_FRAMEWORK_DBSQL_CHARSET);
+		$encoding = @pg_set_client_encoding($connection, (string)SMART_FRAMEWORK_SQL_CHARSET);
 		//--
-		if(($encoding < 0) OR ((string)@pg_client_encoding() != (string)SMART_FRAMEWORK_DBSQL_CHARSET)) {
-			self::error($connection, 'Encoding-Check-Charset', 'Failed to set Client Encoding on PgSQL Server', 'Server='.SMART_FRAMEWORK_DBSQL_CHARSET, 'Client='.@pg_client_encoding());
+		if(($encoding < 0) OR ((string)@pg_client_encoding() != (string)SMART_FRAMEWORK_SQL_CHARSET)) {
+			self::error($connection, 'Encoding-Check-Charset', 'Failed to set Client Encoding on PgSQL Server', 'Server='.SMART_FRAMEWORK_SQL_CHARSET, 'Client='.@pg_client_encoding());
 			return;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 				'type' => 'set',
 				'data' => 'SET Client Encoding [+check] to: '.@pg_client_encoding(),
@@ -289,7 +290,7 @@ final class SmartPgsqlDb {
 					self::error($connection, 'Check-Session-Transaction-Level', 'Failed to Set Session Transaction Level as '.$transact, 'Error='.@pg_last_error($connection), 'DB='.$ydb);
 					return;
 				} //end if
-				if(SmartFrameworkRuntime::ifDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
 					SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 						'type' => 'set',
 						'data' => 'SET Session Transaction Isolation Level [+check] to: '.strtoupper($chk[0]),
@@ -607,7 +608,7 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -645,7 +646,7 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -661,7 +662,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|total-queries', 1, '+');
 			//--
@@ -729,7 +730,7 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -767,7 +768,7 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -782,7 +783,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|total-queries', 1, '+');
 			//--
@@ -870,7 +871,7 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -908,7 +909,7 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -923,7 +924,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|total-queries', 1, '+');
 			//--
@@ -1028,7 +1029,7 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -1066,7 +1067,7 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -1081,7 +1082,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|total-queries', 1, '+');
 			//--
@@ -1179,7 +1180,7 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -1220,13 +1221,13 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|total-queries', 1, '+');
 			//--
@@ -1347,7 +1348,7 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -1447,13 +1448,13 @@ final class SmartPgsqlDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|total-queries', 1, '+');
 			//--
@@ -2037,7 +2038,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 				'type' => 'metainfo',
 				'data' => 'PostgreSQL Server Version: '.$pgsql_version,
@@ -2190,7 +2191,7 @@ final class SmartPgsqlDb {
 					//--
 					define('SMART_FRAMEWORK_DB_LINK_PostgreSQL', $y_connection);
 					//--
-					if(SmartFrameworkRuntime::ifDebug()) {
+					if(SmartFrameworkRegistry::ifDebug()) {
 						SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 							'type' => 'open-close',
 							'data' => 'Re-Using Connection to PgSQL Server as DEFAULT: '.$the_conn_key,
@@ -2296,60 +2297,60 @@ final class SmartPgsqlDb {
 	 *
 	 */
 	private static function error($y_connection, $y_area, $y_error_message, $y_query, $y_params_or_title, $y_warning='') {
-	//--
-	if(defined('SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
-		throw new Exception('#POSTGRESQL-DB@'.$y_connection.'# :: Q# // PgSQL Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
-		return;
-	} //end if
-	//--
-	$def_warn = 'Execution Halted !';
-	$y_warning = (string) trim((string)$y_warning);
-	if(SmartFrameworkRuntime::ifDebug()) {
-		$width = 750;
-		$the_area = (string) $y_area;
-		if((string)$y_warning == '') {
-			$y_warning = (string) $def_warn;
+		//--
+		if(defined('SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
+			throw new Exception('#POSTGRESQL-DB@'.$y_connection.'# :: Q# // PgSQL Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
+			return;
 		} //end if
-		$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
-		if(is_array($y_params_or_title)) {
-			$the_params = '*** Params ***'."\n".print_r($y_params_or_title, 1);
-		} elseif((string)$y_params_or_title != '') {
-			$the_params = '[ Reference Title ]: '.$y_params_or_title;
+		//--
+		$def_warn = 'Execution Halted !';
+		$y_warning = (string) trim((string)$y_warning);
+		if(SmartFrameworkRegistry::ifDebug()) {
+			$width = 750;
+			$the_area = (string) $y_area;
+			if((string)$y_warning == '') {
+				$y_warning = (string) $def_warn;
+			} //end if
+			$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
+			if(is_array($y_params_or_title)) {
+				$the_params = '*** Params ***'."\n".print_r($y_params_or_title, 1);
+			} elseif((string)$y_params_or_title != '') {
+				$the_params = '[ Reference Title ]: '.$y_params_or_title;
+			} else {
+				$the_params = '- No Params or Reference Title -';
+			} //end if
+			$the_query_info = (string) trim((string)$y_query);
+			if((string)$the_query_info == '') {
+				$the_query_info = '-'; // query cannot e empty in this case (templating enforcement)
+			} //end if
 		} else {
-			$the_params = '- No Params or Reference Title -';
-		} //end if
-		$the_query_info = (string) trim((string)$y_query);
-		if((string)$the_query_info == '') {
-			$the_query_info = '-'; // query cannot e empty in this case (templating enforcement)
-		} //end if
-	} else {
-		$width = 550;
-		$the_area = '';
-		$the_error_message = 'Operation FAILED: '.$def_warn;
-		$the_params = '';
-		$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
-	} //end if else
-	//--
-	$out = SmartComponents::app_error_message(
-		'PgSQL Client',
-		'PostgreSQL',
-		'SQL/DB',
-		'Server',
-		'lib/core/img/db/postgresql-logo.svg',
-		$width, // width
-		$the_area, // area
-		$the_error_message, // err msg
-		$the_params, // title or params
-		$the_query_info // sql statement
-	);
-	//--
-	Smart::raise_error(
-		'#POSTGRESQL-DB@'.$y_connection.' :: Q# // PgSQL Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params / Title:'."\n".print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query,
-		$out, // msg to display
-		true // is html
-	);
-	die(''); // just in case
-	//--
+			$width = 550;
+			$the_area = '';
+			$the_error_message = 'Operation FAILED: '.$def_warn;
+			$the_params = '';
+			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
+		} //end if else
+		//--
+		$out = (string) SmartComponents::app_error_message(
+			'PgSQL Client',
+			'PostgreSQL',
+			'SQL/DB',
+			'Server',
+			'lib/core/img/db/postgresql-logo.svg',
+			(int)    $width, // width
+			(string) $the_area, // area
+			(string) $the_error_message, // err msg
+			(string) $the_params, // title or params
+			(string) $the_query_info // sql statement
+		);
+		//--
+		Smart::raise_error(
+			'#POSTGRESQL-DB@'.$y_connection.' :: Q# // PgSQL Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params / Title:'."\n".print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query,
+			$out, // msg to display
+			true // is html
+		);
+		die(''); // just in case
+		//--
 	} //END FUNCTION
 	//======================================================
 
@@ -2425,8 +2426,8 @@ SQL;
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
- * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils
- * @version 	v.20210401
+ * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
+ * @version 	v.20210503
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -2468,7 +2469,7 @@ final class SmartPgsqlExtDb {
 			//-- try to reuse the connection :: only check if array key exists, not if it is a valid resource ; this should be as so to avoid mismatching connection mixings (if by example will re-use the connection of another server, and connection is broken in the middle of a transaction, it will fail ugly ;) and out of any control !
 			$this->connection = SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key];
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 					'type' => 'open-close',
 					'data' => 'Re-Using Connection to PgSQL Server: '.$the_conn_key,

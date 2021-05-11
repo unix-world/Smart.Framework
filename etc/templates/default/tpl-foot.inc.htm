@@ -1,4 +1,4 @@
-<!-- TPL Foot r.20210420 -->
+<!-- TPL Foot r.20210503 -->
 [%%%IF:SEMAPHORE:&*<load:searchterm-highlight-js>;%%%]
 <!-- Highlight SearchTerm -->
 <style>
@@ -21,36 +21,11 @@ jQuery(() => {
 [%%%ELSE:SEMAPHORE%%%]
 <!-- Highlight SearchTerm: skip by Semaphore -->
 [%%%/IF:SEMAPHORE%%%]
-[%%%IF:SEMAPHORE:&*<load:code-highlight-js>;(1)%%%]
-<!-- HLjs -->
-<link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css?[###RELEASE-HASH|url|html###]">
-<style>
-code.hljs {
-	border: 1px solid #ECECEC;
-}
-code.hljs, code.hljs * {
-	font-family: 'IBM Plex Mono', mono;
-	font-smooth: always;
-}
-:not(pre) > code {
-	background: #3F3F3F;
-	color: #DCDCDC;
-	padding-left: 2px;
-	padding-right: 2px;
-}
-</style>
-<link rel="stylesheet" href="lib/js/jshighlight/css/[%%%IF:SEMAPHORE:&*<theme:dark>;(2)%%%]zenburn[%%%ELSE:SEMAPHORE(2)%%%]github[%%%/IF:SEMAPHORE(2)%%%].css?[###RELEASE-HASH|url|html###]">
-<script src="lib/js/jshighlight/highlight.js?[###RELEASE-HASH|url|html###]"></script>
-<script src="lib/js/jshighlight/syntax/plaintext.js?[###RELEASE-HASH|url|html###]"></script>
-<script src="lib/js/jshighlight/syntax.pak.js?[###RELEASE-HASH|url|html###]"></script>
-[%%%IF:SEMAPHORE:&*<load:code-highlight-ext-js>;(2)%%%]
-[@@@SUB-TEMPLATE:?!modules/mod-highlight-syntax/libs/templates/tpl-foot-hljs-ext.inc.htm!@@@]
-[%%%/IF:SEMAPHORE(2)%%%]
-<script src="lib/js/jshighlight/smart-highlight.js?[###RELEASE-HASH|url|html###]"></script>
-<script>jQuery(() => { if(typeof(SmartJS_Custom_Syntax_Highlight) == 'function') { SmartJS_Custom_Syntax_Highlight('body'); } });</script>
-[%%%ELSE:SEMAPHORE(1)%%%]
+[%%%IF:SEMAPHORE:&*<load:code-highlight-js>;%%%]
+[@@@SUB-TEMPLATE:!etc/templates/default/js-hljs.inc.htm!@@@]
+[%%%ELSE:SEMAPHORE%%%]
 <!-- HLjs, Smart HLjs: skip by Semaphore -->
-[%%%/IF:SEMAPHORE(1)%%%]
+[%%%/IF:SEMAPHORE%%%]
 [%%%IF:SEMAPHORE:&*<skip:unveil-js>;%%%]
 <!-- Unveil: skip by Semaphore -->
 [%%%ELSE:SEMAPHORE%%%]

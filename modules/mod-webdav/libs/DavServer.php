@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20210413
+	// v.20210505
 
 	const DAV_RESOURCE_TYPE_COLLECTION = 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION = 'noncollection';
@@ -104,7 +104,7 @@ final class DavServer {
 		//--
 		if($urldecode === true) {
 		//	$path_url = (string) \rawurldecode($path_url); // fix (below)
-			$path_url = (string) \SmartFrameworkSecurity::urlVarDecodeStr($path_url, true); // fix: use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + ! ; urlVarDecodeStr also apply filter
+			$path_url = (string) \SmartFrameworkSecurity::DecodeAndFilterUrlVarString($path_url, true); // fix: use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + ! ; DecodeAndFilterUrlVarString also apply filter
 		} //end if
 		$path_url = (string) \ltrim($path_url, '/');
 		//--
@@ -325,7 +325,7 @@ final class DavServer {
 		//--
 		if(\Smart::array_size($errors) > 0) {
 			//--
-			if(\SmartFrameworkRuntime::ifDebug()) {
+			if(\SmartFrameworkRegistry::ifDebug()) {
 				$notice_log = '';
 				foreach($errors as $z => $error) {
 					if(\is_object($error)) {

@@ -1,23 +1,23 @@
-<!-- Partial Template: Plugins.UIPickerTime r.20210420 -->
+<!-- Partial Template: Plugins.UIPickerTime r.20210502 -->
 <span id="time-area-[###THE-ID|htmid|html###]" title="[###TEXT-SELECT|html###] [HH:ii]">
 <input type="text" name="[###THE-VAR|html###]" id="[###THE-ID|htmid|html###]" maxlength="5" value="[###THE-VALUE|html###]" readonly="readonly" class="ux-field datetime_Field_TimePicker" style="[###STYLE-SIZE|html###]" autocomplete="off">
 </span>
 <script>
 if(typeof(smartJ$UI) != 'undefined') {
-	(function() {
+	(() => {
 		try {
 			smartJ$UI.TimePickerInit('[###THE-ID|htmid|js###]', [###H-START|int###], [###H-END|int###], [###MIN-START|int###], [###MIN-END|int###], [###MIN-INTERVAL|int###], [###DISPLAY-ROWS|int###], '[###EVAL-JS|js###]');
-			jQuery('#[###THE-ID|htmid|js###]').on('click', function(e){
-				setTimeout(function(){ smartJ$UI.TimePickerDisplay('[###THE-ID|htmid|js###]'); }, 200);
-			}).on('dblclick doubletap', function(e){
-				jQuery(this).val('');
+			jQuery('#[###THE-ID|htmid|js###]').on('click', (e) => {
+				setTimeout(() => { try { smartJ$UI.TimePickerDisplay('[###THE-ID|htmid|js###]'); } catch(err){} }, 100);
+			}).on('dblclick doubletap', (e) => {
+				jQuery(e.currentTarget).val('');
 			});
 		} catch(err) {
-			console.log('UI TimePicker ERR: ' + err);
+			console.error('UI TimePicker ERR: ' + err);
 		}
 	})();
 } else {
-	console.log('UI:Js:TimePicker: No TimePicker widget is available ...');
+	console.warn('UI:Js:TimePicker: No TimePicker widget is available ...');
 }
 </script>
 <!-- #END :: Partial Template: Plugins.UIPickerTime -->

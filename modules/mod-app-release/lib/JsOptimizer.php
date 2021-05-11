@@ -1,0 +1,183 @@
+<?php
+// [@[#[!SF.DEV-ONLY!]#]@]
+// Javascript Optimizer
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.7.2.1 / smart.framework.v.7.2
+
+//----------------------------------------------------- PREVENT S EXECUTION [T]
+if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIME_MODE != 'web.task')) { // this must be defined in the first line of the application :: {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
+	@http_response_code(500);
+	die('Invalid Runtime Mode in PHP Script: '.@basename(__FILE__).' ...');
+} //end if
+//-----------------------------------------------------
+
+// AppPackUtils free
+
+//=====================================================================================
+//===================================================================================== CLASS START
+//=====================================================================================
+
+/**
+ * Javascript Code Optimizer for Software Releases
+ *
+ * DEPENDS:
+ * Smart::
+ * SmartFileSysUtils::
+ * SmartFileSystem::
+ * SmartUtils::
+ *
+ * AppCodeUtils::
+ * StripCode::
+ *
+ * @depends external: node+uglifyJs ; constants: TASK_APP_RELEASE_CODEPACK_NODEJS_BIN, TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS
+ *
+ * @access 		private
+ * @internal
+ *
+ */
+final class JsOptimizer {
+
+	// ::
+	// v.20210511
+
+
+	//====================================================
+	// js strip
+	public static function strip_code(?string $y_file) {
+		//--
+		$y_file = (string) trim((string)$y_file);
+		//--
+		SmartFileSysUtils::raise_error_if_unsafe_path($y_file, 'no');
+		//--
+		if(!SmartFileSystem::is_type_file($y_file)) {
+			return '';
+		} //end if
+		//--
+		if(!class_exists('StripCode')) {
+			if(!is_file('StripCode.php')) {
+				Smart::raise_error(
+					'Not Found: StripCode.php',
+					'A required PHP File was not Found: StripCode.php'
+				);
+			} //end if
+			require_once('StripCode.php');
+		} //end if
+		//--
+		if(!method_exists('StripCode', 'strip_js_code')) {
+			Smart::raise_error(
+				'Method Not Found: StripCode::strip_js_code()',
+				'A required PHP Method Not Found: StripCode::strip_js_code() in StripCode.php'
+			);
+		} //end if
+		//--
+		return (string) StripCode::strip_js_code((string)$y_file);
+		//--
+	} //END FUNCTION
+	//====================================================
+
+
+	//====================================================
+	// js minify
+	public static function minify_code(?string $y_script_path) {
+		//--
+		$y_script_path = (string) trim((string)$y_script_path);
+		$y_script_path = (string) Smart::real_path((string)$y_script_path);
+		//--
+		$enc_content = '';
+		$err = '';
+		//--
+		if((string)$y_script_path == '') {
+			$err = 'ERROR: JsOptimizer/Minify / Empty Path ...';
+		} elseif((defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN')) && (defined('TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS'))) {
+			if(AppCodeUtils::checkIfExecutable((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN) === true) {
+				if(SmartFileSystem::is_type_file((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS)) {
+					if(SmartFileSystem::have_access_read((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS)) {
+						//--
+						$exitcode = -1;
+						$enc_errors = '';
+						//--
+						$parr = (array) SmartUtils::run_proc_cmd(
+							(string) escapeshellcmd((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN).' '.Smart::real_path((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS).' -m --beautify beautify=false,ascii_only=true -- '.escapeshellarg((string)$y_script_path),
+							null,
+							null,
+							null
+						); // [--beautify beautify=false,ascii-only=true] required to preserve safe unicode sequences ; [--screw-ie8] required to dissalow IE8 hacks to support IE<9 which can break other code
+						$exitcode = $parr['exitcode']; // don't make it INT !!!
+						$enc_content = (string) $parr['stdout'];
+						$enc_errors = (string) $parr['stderr'];
+						//--
+						if(($exitcode === 0) AND ((string)$enc_errors == '')) { // exitcode is zero (0) on success and no stderror
+							//-- this is risky for a language like javascript or php and fails if comments are inside strings !!!
+							// OK
+							//--
+						} else {
+							//--
+							$err = 'ERROR: JsOptimizer/Minify Failed with ExitCode['.$exitcode.'] on this File: '.$y_script_path."\n".$enc_errors;
+						} //end if
+						//--
+						$exitcode = -1;
+						$enc_errors = '';
+						//--
+					} else {
+						$err = 'ERROR: JsOptimizer/Minify MODULE is NOT Readable: '.TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS;
+					} //end if else
+				} else {
+					$err = 'ERROR: JsOptimizer/Minify MODULE NOT Found: '.TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS;
+				} //end if
+			} else {
+				$err = 'ERROR: JsOptimizer/Minify / BINARY NOT Found: '.TASK_APP_RELEASE_CODEPACK_NODEJS_BIN;
+			} //end if
+		} else {
+			$err = 'ERROR: JsOptimizer/Minify / Incomplete Configuration ...';
+		} //end if else
+		//--
+		return array('content' => (string)$enc_content, 'error' => (string)$err);
+		//--
+	} //END FUNCTION
+	//====================================================
+
+
+	//====================================================
+	// js lint
+	public static function lint_code(?string $y_script_path) {
+		//--
+		$y_script_path = (string) trim((string)$y_script_path);
+		//--
+		$err = '';
+		//--
+		if((string)$y_script_path == '') {
+			$err = 'ERROR: Js-Lint / Empty Script Path';
+		} elseif(defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN') AND ((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN != '')) {
+			if(AppCodeUtils::checkIfExecutable((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN) === true) {
+				$parr = (array) SmartUtils::run_proc_cmd(
+					(string) escapeshellcmd((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN).' -c '.escapeshellarg((string)$y_script_path),
+					null,
+					null,
+					null
+				);
+				$exitcode = $parr['exitcode']; // don't make it INT !!!
+				$lint_content = (string) $parr['stdout'];
+				$lint_errors = (string) $parr['stderr'];
+				if(($exitcode !== 0) OR ((string)$lint_errors != '')) { // exitcode is zero (0) on success and no stderror
+					$err = 'ERROR: Js-Lint Failed with ExitCode['.$exitcode.'] on this File: '.$y_script_path."\n".$lint_errors;
+				} //end if
+			} else {
+				$err = 'ERROR: Js-Lint / BINARY NOT Found or NOT Executable: '.TASK_APP_RELEASE_CODEPACK_NODEJS_BIN;
+			} //end if
+		} //end if
+		//--
+		return (string) $err;
+		//--
+	} //END FUNCTION
+	//====================================================
+
+
+} //END CLASS
+
+
+//=====================================================================================
+//===================================================================================== CLASS END
+//=====================================================================================
+
+
+// end of php code

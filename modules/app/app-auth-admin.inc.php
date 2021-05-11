@@ -39,8 +39,8 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 // This is the best way to integrate with framework's authentication system by using SmartAuth:: object.
 //-------------------------------------------
 if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\SmartModExtLib\\AuthAdmins\\SimpleAuthAdminsHandler'))) {
-	http_response_code(500);
-	die(SmartComponents::http_error_message('500 Internal Server Error', 'A required module is missing: `mod-auth-admins` ...'));
+	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` ...');
+	die('AppAuthAdmin:ModuleMissing:AuthAdmins');
 } //end if
 \SmartModExtLib\AuthAdmins\SimpleAuthAdminsHandler::Authenticate(
 	false // enforce SSL: TRUE/FALSE
@@ -55,8 +55,8 @@ if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\S
 //-------------------------------------------
 /*
 if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\SmartModExtLib\\AuthAdmins\\AuthAdminsHandler'))) {
-	http_response_code(500);
-	die(SmartComponents::http_error_message('500 Internal Server Error', 'A required module is missing: `mod-auth-admins` ...'));
+	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` ...');
+	die('AppAuthAdmin:ModuleMissing:AuthAdmins');
 } //end if
 \SmartModExtLib\AuthAdmins\AuthAdminsHandler::Authenticate(
 	false // enforce SSL: TRUE/FALSE

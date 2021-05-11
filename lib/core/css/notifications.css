@@ -3,159 +3,138 @@
 
 /* ----------------------------- */
 
-/* Notifications r.20210402 */
+/* Notifications r.20210502 */
 
-div#operation_info {
-	background-color: #FFFFFF !important;
+div#operation_info,      div.operation_info,
+div#operation_notice,    div.operation_notice,
+div#operation_important, div.operation_important,
+div#operation_question,  div.operation_question,
+div#operation_success,   div.operation_success,
+div#operation_warn,      div.operation_warn,
+div#operation_error,     div.operation_error {
+	line-height: 36px;
+	text-align: left;
+	font-size: 1.25rem;
+	font-weight: bold;
+	font-style: normal;
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-top: 12px;
+	padding-bottom: 8px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	max-width: calc(100% - 10px) !important;
+	min-width: 100px;
+	min-height: 40px;
+	height: auto !important;
+	border-radius: 5px;
+	box-shadow: 1px 1px 2px 2px #ECECEC;
+	box-sizing: content-box !important;
+	opacity: 1 !important;
+}
+
+/* ----------------------------- */
+
+div#operation_info,
+div.operation_info {
+	background-color: #FBFBFB !important;
 	color: #333333 !important;
-	line-height: 36px;
-	text-align: left;
-	font-size: 1.25rem;
-	font-weight: bold;
-	font-style: normal;
-	padding-left: 16px;
-	padding-right: 16px;
-	padding-top: 12px;
-	padding-bottom: 8px;
-/*	margin: 0 auto; */
-	margin-top: 8px;
-	margin-bottom: 8px;
-	max-width: calc(100% - 10px) !important;
-	min-width: 100px;
-	min-height: 40px;
-	height: auto !important;
-	border-radius: 6px;
-	opacity:1;
-	box-shadow: 1px 1px 2px 2px #ECECEC;
 }
 
 /* -- */
 
-div#operation_question {
-	background-color: #F2EFE8 !important;
-	color: #424242 !important;
-	line-height: 36px;
-	text-align: left;
-	font-size: 1.25rem;
-	font-weight: bold;
-	font-style: normal;
-	padding-left: 16px;
-	padding-right: 16px;
-	padding-top: 12px;
-	padding-bottom: 8px;
-/*	margin: 0 auto; */
-	margin-top: 8px;
-	margin-bottom: 8px;
-	max-width: calc(100% - 10px) !important;
-	min-width: 100px;
-	min-height: 40px;
-	height: auto !important;
-	border-radius: 6px;
-	opacity:1;
-	box-shadow: 1px 1px 2px 2px #ECECEC;
+div#operation_notice,
+div.operation_notice {
+	background-color: #E4E3A8 !important;
+	color: #444444 !important;
 }
 
 /* -- */
 
-div#operation_notice {
-	background-color: #EEEEEE !important;
-	color: #555555 !important;
-	line-height: 36px;
-	text-align: left;
-	font-size: 1.25rem;
-	font-weight: bold;
-	font-style: normal;
-	padding-left: 16px;
-	padding-right: 16px;
-	padding-top: 12px;
-	padding-bottom: 8px;
-/*	margin: 0 auto; */
-	margin-top: 8px;
-	margin-bottom: 8px;
-	max-width: calc(100% - 10px) !important;
-	min-width: 100px;
-	min-height: 40px;
-	height: auto !important;
-	border-radius: 6px;
-	opacity:1;
-	box-shadow: 1px 1px 2px 2px #ECECEC;
+div#operation_important,
+div.operation_important {
+	background-color: #448FCE !important;
+	color: #FDFDFD !important;
 }
 
 /* -- */
 
-div#operation_warn {
-	background-color: #FFC107 !important;
+div#operation_question,
+div.operation_question {
+	background-color: #778888 !important;
+	color: #FFFFFF !important;
+}
+
+/* -- */
+
+div#operation_success,
+div.operation_success {
+	background-color: #A9D837 !important;
+	color: #333333 !important;
+}
+
+/* -- */
+
+div#operation_warn,
+div.operation_warn {
+	background-color: #FFD218 !important;
 	color: #3E2723 !important;
-	line-height: 36px;
-	text-align: left;
-	font-size: 1.25rem;
-	font-weight: bold;
-	font-style: normal;
-	padding-left: 16px;
-	padding-right: 16px;
-	padding-top: 12px;
-	padding-bottom: 8px;
-/*	margin: 0 auto; */
-	margin-top: 8px;
-	margin-bottom: 8px;
-	max-width: calc(100% - 10px) !important;
-	min-width: 100px;
-	min-height: 40px;
-	height: auto !important;
-	border-radius: 6px;
-	opacity:1;
-	box-shadow: 1px 1px 2px 2px #ECECEC;
 }
 
 /* -- */
 
-div#operation_error {
+div#operation_error,
+div.operation_error {
 	background-color: #C62828 !important;
 	color: #FFFFFF !important;
-	line-height: 36px;
-	text-align: left;
-	font-size: 1.25rem;
-	font-weight: bold;
-	font-style: normal;
-	padding-left: 16px;
-	padding-right: 16px;
-	padding-top: 12px;
-	padding-bottom: 8px;
-/*	margin: 0 auto; */
-	margin-top: 8px;
-	margin-bottom: 8px;
-	max-width: calc(100% - 10px) !important;
-	min-width: 100px;
-	min-height: 40px;
-	height: auto !important;
-	border-radius: 6px;
-	opacity:1;
-	box-shadow: 1px 1px 2px 2px #ECECEC;
-	box-sizing: content-box;
 }
 
-/* -- */
+/* ----------------------------- */
 
 @media all and (max-width:1279px) {
-	div#operation_question, div#operation_notice, div#operation_info, div#operation_warn, div#operation_error {
+	div#operation_info,      div.operation_info,
+	div#operation_notice,    div.operation_notice,
+	div#operation_important, div.operation_important,
+	div#operation_question,  div.operation_question,
+	div#operation_success,   div.operation_success,
+	div#operation_warn,      div.operation_warn,
+	div#operation_error,     div.operation_error {
 		max-width: calc(99% - 10px) !important;
 	}
 }
 
 @media all and (max-width:959px) {
-	div#operation_question, div#operation_notice, div#operation_info, div#operation_warn, div#operation_error {
+	div#operation_info,      div.operation_info,
+	div#operation_notice,    div.operation_notice,
+	div#operation_important, div.operation_important,
+	div#operation_question,  div.operation_question,
+	div#operation_success,   div.operation_success,
+	div#operation_warn,      div.operation_warn,
+	div#operation_error,     div.operation_error {
 		max-width: calc(98% - 10px) !important;
 	}
 }
 
 @media all and (max-width:767px) {
-	div#operation_question, div#operation_notice, div#operation_info, div#operation_warn, div#operation_error {
+	div#operation_info,      div.operation_info,
+	div#operation_notice,    div.operation_notice,
+	div#operation_important, div.operation_important,
+	div#operation_question,  div.operation_question,
+	div#operation_success,   div.operation_success,
+	div#operation_warn,      div.operation_warn,
+	div#operation_error,     div.operation_error {
 		max-width: calc(97% - 10px) !important;
 	}
 }
 
 @media all and (max-width:639px) {
-	div#operation_question, div#operation_notice, div#operation_info, div#operation_warn, div#operation_error {
+	div#operation_info,      div.operation_info,
+	div#operation_notice,    div.operation_notice,
+	div#operation_important, div.operation_important,
+	div#operation_question,  div.operation_question,
+	div#operation_success,   div.operation_success,
+	div#operation_warn,      div.operation_warn,
+	div#operation_error,     div.operation_error {
 		max-width: calc(96% - 10px) !important;
 	}
 }

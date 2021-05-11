@@ -15,7 +15,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Smart-Framework - Redis Database Client
 // DEPENDS:
 //	* Smart::
-//	* SmartParser::
+//	* SmartComponents::
 // DEPENDS-EXT: PHP Sockets
 //======================================================
 
@@ -51,8 +51,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints 		for the rest of supported methods take a look at the SmartRedisDb class magic __call method ; Visit: http://redis.io/commands ; Most of the base methods are implemented.
  *
  * @access 		PUBLIC
- * @depends 	extensions: PHP Sockets ; classes: Smart
- * @version 	v.20210401
+ * @depends 	extensions: PHP Sockets ; classes: Smart, SmartComponents
+ * @version 	v.20210503
  * @package 	Plugins:Database:Redis
  *
  */
@@ -169,7 +169,7 @@ final class SmartRedisDb {
 			$this->password = '';
 		} //end if else
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			if($this->fatal_err === true) {
 				$txt_conn = 'FATAL ERRORS';
@@ -264,7 +264,7 @@ final class SmartRedisDb {
 	public function __call($method, array $args) {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				Smart::log_notice('#REDIS-DB# :: Method Call Aborted. Detected Previous Redis Error before calling the method: '.$method.'()');
 			} //end if
 			return null;
@@ -387,7 +387,7 @@ final class SmartRedisDb {
 			case 'QUIT': // always return OK ; ask the server to close the connection ; the connection is closed as soon as all pending replies have been written to the client
 				//--
 				if(!is_resource($this->connect())) { // this have it's own error raise mechanism
-					if(SmartFrameworkRuntime::ifDebug()) {
+					if(SmartFrameworkRegistry::ifDebug()) {
 						Smart::log_notice('#REDIS-DB# :: Redis connection FAILED just before calling the method: '.$method.'()');
 					} //end if
 					return null;
@@ -445,7 +445,7 @@ final class SmartRedisDb {
 			//--
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$time_start = microtime(true);
 			//--
@@ -455,7 +455,7 @@ final class SmartRedisDb {
 		//--
 		$response = $this->parse_response($method);
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'redis|total-queries', 1, '+');
 			//--
@@ -565,7 +565,7 @@ final class SmartRedisDb {
 				//--
 				$this->socket = SmartFrameworkRegistry::$Connections['redis'][(string)$this->server.'@'.$this->db]; // re-use conection (import)
 				//--
-				if(SmartFrameworkRuntime::ifDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
 					//--
 					SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
 						'type' => 'open-close',
@@ -581,7 +581,7 @@ final class SmartRedisDb {
 				//--
 				$this->socket = @stream_socket_client($this->server, $errno, $errstr, $this->timeout);
 				//--
-				if(SmartFrameworkRuntime::ifDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
 					//--
 					SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
 						'type' => 'metainfo',
@@ -613,7 +613,7 @@ final class SmartRedisDb {
 					//--
 					$this->run_command('SELECT', array($this->db)); // select database
 					//--
-					if(SmartFrameworkRuntime::ifDebug()) {
+					if(SmartFrameworkRegistry::ifDebug()) {
 						//--
 						SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
 							'type' => 'set',
@@ -653,7 +653,7 @@ final class SmartRedisDb {
 		//--
 		if($this->socket) {
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
 					'type' => 'open-close',
 					'data' => 'Redis DB :: Close Connection for: '.$this->server.'@'.$this->db.' :: '.$this->description.' @ Connection-Socket: '.$this->socket
@@ -692,7 +692,7 @@ final class SmartRedisDb {
 		$is_fatal = (bool) $this->fatal_err;
 		//--
 		if($is_fatal === false) { // NON-FATAL ERROR
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
 					'type' => 'metainfo',
 					'data' => 'Redis (`'.$this->description.'`) :: SILENT WARNING: '.$y_area."\n".'Command: '.$y_query."\n".'Error-Message: '.$y_error_message."\n".'The settings for this Redis instance allow just silent warnings on connection fail.'."\n".'All next method calls to this Redis instance will be discarded silently ...'
@@ -704,7 +704,7 @@ final class SmartRedisDb {
 		//--
 		$def_warn = 'Execution Halted !';
 		$y_warning = (string) trim((string)$y_warning);
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$width = 750;
 			$the_area = (string) $y_area;
 			if((string)$y_warning == '') {
@@ -724,17 +724,17 @@ final class SmartRedisDb {
 			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
 		} //end if else
 		//--
-		$out = SmartComponents::app_error_message(
+		$out = (string) SmartComponents::app_error_message(
 			'Redis Client',
 			'Redis',
 			'MemDB',
 			'Server',
 			'lib/core/img/db/redis-logo.svg',
-			$width, // width
-			$the_area, // area
-			$the_error_message, // err msg
-			$the_params, // title or params
-			$the_query_info // command
+			(int)    $width, // width
+			(string) $the_area, // area
+			(string) $the_error_message, // err msg
+			(string) $the_params, // title or params
+			(string) $the_query_info // command
 		);
 		//--
 		Smart::raise_error(

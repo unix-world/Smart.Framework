@@ -5,17 +5,8 @@
 <title>jQuery Tabs</title>
 <script src="../../jquery.js"></script>
 
-<script>
-const smartJ$Options = {
-	BrowserUtils: {
-		ModalBoxActive: 0,
-		LoaderImg: '../../../framework/img/loading.svg'
-	}
-}
-Object.freeze(smartJ$Options); // sec.
-window.smartJ$Options = smartJ$Options; // g-exp.
-</script>
-<script src="../../../framework/smart-framework.pak.js"></script>
+<script src="../../../framework/src/core_utils.js"></script>
+<script src="../../../framework/src/crypt_utils.js"></script>
 
 <link rel="stylesheet" href="../jquery.tabs.css" type="text/css">
 <script src="../jquery.tabs.js"></script>
@@ -27,6 +18,7 @@ window.smartJ$Options = smartJ$Options; // g-exp.
 			<li><a href="#tabs_1">Tab 1</a></li>
 			<li><a href="#tabs_2">Tab 2</a></li>
 			<li><a href="test-tab.inc.html">Tab 3</a></li>
+			<li><a href="NONEXISTING.inc.html">Tab 4 (Broken Link)</a></li>
 		</ul>
 	</div>
 	<div id="tabs_1">
@@ -41,7 +33,7 @@ window.smartJ$Options = smartJ$Options; // g-exp.
 	</div>
 </div>
 <script>
-SmartSimpleTabs.initTabs('tabs_draw');
+SmartSimpleTabs.initTabs('tabs_draw', 1, false);
 </script>
 </body>
 </html>

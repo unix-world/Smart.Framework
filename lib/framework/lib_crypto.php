@@ -41,8 +41,8 @@ if(!function_exists('hash_algos')) {
  * @usage       static object: Class::method() - This class provides only STATIC methods
  *
  * @access      PUBLIC
- * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version     v.20210330
+ * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartFrameworkRegistry
+ * @version     v.20210506
  * @package     @Core:Crypto
  *
  */
@@ -50,7 +50,7 @@ final class SmartHashCrypto {
 
 	// ::
 
-	private static $cache = array();
+	private static $cache = [];
 
 
 	//==============================================================
@@ -248,8 +248,8 @@ final class SmartHashCrypto {
 	 */
 	public static function registerInternalCacheToDebugLog() {
 		//--
-		if(SmartFrameworkRuntime::ifInternalDebug()) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifInternalDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
 					'title' => 'SmartHashCrypto // Internal Cache',
 					'data' => 'Dump:'."\n".print_r(self::$cache,1)

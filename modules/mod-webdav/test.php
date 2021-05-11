@@ -18,8 +18,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true); // do direct output
 
 //--
 if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
-	http_response_code(500);
-	echo SmartComponents::http_message_500_internalerror('ERROR: WebDAV requires the WebDAV Module ...');
+	SmartFrameworkRuntime::Raise500Error('ERROR: WebDAV Module is missing ...');
 	die('');
 } //end if
 //--
@@ -30,7 +29,7 @@ if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
  */
 class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs {
 
-	// v.20210307
+	// v.20210422
 
 	public function Run() {
 

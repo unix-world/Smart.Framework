@@ -14,14 +14,14 @@
 	<div>
 		<input id="mySuggest1" type="text" placeholder="Type a text for autosuggest" style="width:350px;">
 		<script>
-			SmartAutoSuggest.bindToInput('single', 'mySuggest1', 'This is a single "autosuggest" field', 'sample-answer.json?src=', true, 475, 0, (id, value, label, data) => { jQuery('#show-selection').text('Selected Value is: ' + value + '\n' + 'Selected ID is: ' + id + '\n' + 'Selected Label is: ' + label + '\n' + 'Selected Data is: ' + data); });
+			SmartAutoSuggest.bindToInput('single', 'mySuggest1', 'This is a single "autosuggest" field', 'sample-answer.json?src=', true, 475, 0, (id, value, label, data) => { jQuery('#show-selection').text('SINGLE' + '\n' + 'Selected Value is: ' + value + '\n' + 'Selected ID is: ' + id + '\n' + 'Selected Label is: ' + label + '\n' + 'Selected Data is: ' + data); });
 		</script>
 	</div>
 	<br>
 	<div>
 		<input id="mySuggest2" type="text" placeholder="Type a text for autosuggest" style="width:350px;">
 		<script>
-			SmartAutoSuggest.bindToInput('multilist', 'mySuggest2', 'This is a multi "autosuggest" field', 'sample-answer.json?src=', false, 475, 0, 'jQuery(\'#show-selection\').text(\'Selected Value is: \' + value + \'\\n\' + \'Selected ID is: \' + id);');
+			SmartAutoSuggest.bindToInput('multilist', 'mySuggest2', 'This is a multi "autosuggest" field', 'sample-answer.json?src=', false, 475, 0,  'jQuery(\'#show-selection\').text(\'MULTI\' + \'\\n\' + \'Selected Value is: \' + value + \'\\n\' + \'Selected ID is: \' + id + \'\\n\' + \' ... and the rest of parameters exactly as SINGLE ...\');');
 		</script>
 	</div>
 	<br>

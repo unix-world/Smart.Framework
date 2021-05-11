@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFileSystem {
 
 	// ::
-	// v.20210307
+	// v.20210428
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
 	public static function methodOptions() { // 200
@@ -426,7 +426,7 @@ final class DavFileSystem {
 			\http_response_code(415); // unsupported media type
 			return 415;
 		} //end if
-		if(\defined('\\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS')) {
+		if(\defined('\\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS') AND ((string)\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS != '')) {
 			if(\stripos((string)\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, '<'.$the_ext.'>') === false) {
 				\http_response_code(415); // unsupported media type
 				return 415;
@@ -835,7 +835,7 @@ final class DavFileSystem {
 					\http_response_code(412); // precondition failed
 					return 412;
 				} //end if
-				if(\defined('\\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS')) {
+				if(\defined('\\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS') AND ((string)\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS != '')) {
 					if(\stripos((string)\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, '<'.$tmp_fext.'>') === false) {
 						\http_response_code(412); // precondition failed
 						return 412;

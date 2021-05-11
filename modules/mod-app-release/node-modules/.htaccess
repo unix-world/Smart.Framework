@@ -1,0 +1,6 @@
+IndexIgnore *
+AuthType Basic
+AuthName "Forbidden Area"
+require valid-user
+Order allow,deny
+Deny from all

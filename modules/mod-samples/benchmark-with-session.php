@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/BenchMarkWithSession
 // Route: ?/page/samples.benchmark-with-session (?page=samples.benchmark-with-session)
 // (c) 2006-2020 unix-world.org - all rights reserved

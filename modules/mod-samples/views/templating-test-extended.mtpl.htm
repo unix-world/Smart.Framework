@@ -1,6 +1,6 @@
 <!-- start Marker-TPL extended syntax template -->
 [%%%COMMENT%%%]
-Template: templating-test-extended.mtpl.htm # v.20210418
+Template: templating-test-extended.mtpl.htm # v.20210501
 [%%%/COMMENT%%%]<!-- comments are removed -->
 <h1 style="display:inline-block;">[###TITLE###]</h1>
 <div>
@@ -10,7 +10,7 @@ Template: templating-test-extended.mtpl.htm # v.20210418
 	&nbsp;&nbsp;
 	<a href="?page=samples.templating-test-extended&op=viewpartialsource" target="tpl_m_view_source" data-smart="open.modal" class="ux-button ux-button-small ux-button-secondary"><i class="sfi sfi-embed2"></i> &nbsp; View Sub-TPL Source</a>
 </div>
-<h2 id="qunit-test-result">...</h2>
+<div id="qunit-test-result">...</div>
 <div id="tpl-test">
 <!-- Test for Marker-TPL -->
 <!-- Test BOOL ([###TEST-NUM|html###]) 							:  [###TEST-NUM|bool###] -->
@@ -216,9 +216,9 @@ var tpl_src = '[@@@SUB-TEMPLATE:partials/templating-test-extended.inc.htm|js-tpl
 	} //end if
 	//--
 	if(!errors) {
-		jQuery('#qunit-test-result').attr('style', 'color: #33CC33 !important;').text('Test OK: JS/PHP Render comparison for Marker-TPL.');
+		jQuery('#qunit-test-result').addClass('operation_success').text('Test OK: JS/PHP Render comparison for Marker-TPL.');
 	} else {
-		jQuery('#qunit-test-result').attr('style', 'background: #FF3300 !important; color: #FFFFFF !important;').text('Test FAILED: JS/PHP Render comparison for Marker-TPL !!!');
+		jQuery('#qunit-test-result').addClass('operation_error').text('Test FAILED: JS/PHP Render comparison for Marker-TPL !!! ... see the javasceipt console for more details ...');
 	} //end if
 	//--
 })();

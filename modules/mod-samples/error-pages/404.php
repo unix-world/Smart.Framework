@@ -14,7 +14,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 /**
  * Function: Custom 404 Answer (can be customized on your needs ...)
  *
- * @version		20200515
+ * @version		20210428
  *
  * @access 		private
  * @internal
@@ -22,7 +22,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  */
 function custom_http_message_404_notfound($y_message, $y_html_message='') {
 	//-- This is a basic implementation (used here just for admin.php)
-	if(\SmartFrameworkRuntime::isAdminArea() === true) {
+	if(\SmartFrameworkRegistry::isAdminArea() === true) {
 		return \SmartComponents::http_error_message('*Custom* 404 Not Found', $y_message, $y_html_message);
 	} //end if
 	//-- This is a more advanced implementation (can be used here for both: index.php and admin.php)
@@ -30,7 +30,7 @@ function custom_http_message_404_notfound($y_message, $y_html_message='') {
 		'modules/mod-samples/',
 		'samples.404',
 		(string) \SmartFrameworkRegistry::getRequestVar('page', 'samples.404', 'string'),
-		(string) ((\SmartFrameworkRuntime::isAdminArea() === true) ? 'admin' : 'index') // if not admin, hardcoded to index
+		(string) ((\SmartFrameworkRegistry::isAdminArea() === true) ? ((\SmartFrameworkRegistry::isTaskArea() === true) ? 'task' : 'admin') : 'index') // if not admin or task, hardcoded to index
 	);
 	//--
 	return $controller->outputErrorPage($y_message, $y_html_message);
@@ -41,7 +41,7 @@ function custom_http_message_404_notfound($y_message, $y_html_message='') {
 /**
  * Class: Custom 404 Answer (used for the advanced implementation)
  *
- * @version		20200515
+ * @version		20210428
  *
  * @access 		private
  * @internal

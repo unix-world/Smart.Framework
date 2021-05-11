@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true); 		// if set to TRUE requires auth always
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210421
+	// v.20210511
 
 	public function Run() { // (OUTPUTS: HTML)
 
@@ -49,7 +49,23 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 		switch((string)$action) {
 
-			case 'login-check':
+			case 'login-timeout': // {{{SYNC-ADM-AUTH-REDIRECT-ON-LOGIN}}}
+				//--
+				$url = $this->RequestVarGet('url', '', 'string');
+				$redirect = (string) SmartUtils::crypto_blowfish_decrypt((string)$url);
+				//--
+				if((string)$redirect == '') {
+					$redirect = 'admin.php';
+				} //end if
+				//--
+				$this->PageViewSetVars([
+					'title' => 'Redirecting Back',
+					'main' => (string) '<script>setTimeout(() => { self.location = \''.Smart::escape_js((string)$redirect).'\'; }, 750);</script>'
+				]);
+				//--
+				break;
+
+			case 'login-check': // {{{SYNC-ADM-AUTH-REDIRECT-ON-LOGIN}}}
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//--
@@ -80,7 +96,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				break;
 
-
 			case 'close-modal': // Closes the Modal and Refresh the Parent (OUTPUTS: HTML)
 				//--
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
@@ -93,7 +108,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				]);
 				//--
 				break;
-
 
 			case 'change-pass-form': // Change Pass Form
 				//--
@@ -208,8 +222,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				);
 				//--
 				break;
-				//--
-
 
 			case 'edit-form': // Edit form for User Edit (OUTPUTS: HTML)
 				//--
@@ -440,7 +452,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				break;
 
-
 			case 'new-form': // Form for Add new User (OUTPUTS: HTML)
 				//--
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
@@ -542,7 +553,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				break;
 
-
 			case 'list': // list data (RETURNS: JSON)
 				//--
 				$this->PageViewSetCfg('rawpage', true);
@@ -582,7 +592,6 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				);
 				//--
 				break;
-
 
 			default: // display the grid (OUTPUTS: HTML)
 				//--

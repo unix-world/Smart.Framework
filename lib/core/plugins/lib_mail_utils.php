@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20210322
+ * @version 	v.20210430
  * @package 	Plugins:Mailer
  *
  */
@@ -103,7 +103,7 @@ final class SmartMailerUtils {
 				//--
 				$msg .= $chk['message']."\n";
 				//--
-				if(!SmartFrameworkRuntime::ifDebug()) {
+				if(!SmartFrameworkRegistry::ifDebug()) {
 					$msg = ''; // hide the message if no debug
 				} //end if
 				//--
@@ -457,7 +457,7 @@ final class SmartMailerUtils {
 		//--
 		if((string)$server_name == '@mail') {
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', 'Send eMail Method Selected: [MAIL]');
 			} //end if
 			//-- mail method
@@ -465,11 +465,11 @@ final class SmartMailerUtils {
 			//--
 		} elseif((string)$server_name != '') {
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', 'Send eMail Method Selected: [SMTP]');
 			} //end if
 			//-- debug
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				$mail->debuglevel = 1; // default is 1
 			} else {
 				$mail->debuglevel = 0; // no debug
@@ -494,7 +494,7 @@ final class SmartMailerUtils {
 			//--
 		} else {
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', 'Send eMail Method Selected: [NONE] !!!');
 			} //end if
 			//--
@@ -694,14 +694,14 @@ final class SmartMailerUtils {
 						//-- real send
 						if(((string)$mail->method == 'mail') OR ((string)$mail->method == 'smtp')) {
 							$err = $mail->send('yes');
-							if(SmartFrameworkRuntime::ifDebug()) {
+							if(SmartFrameworkRegistry::ifDebug()) {
 								SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', '[----- Send eMail Log #'.($i+1).': '.date('Y-m-d H:i:s').' -----]');
 							} //end if
 						} else {
 							$err = 'WARNING: SMTP Server or Mail Method IS NOT SET in CONFIG. Send eMail - Operation ABORTED !';
 						} //end if else
 						//--
-						if(SmartFrameworkRuntime::ifDebug()) {
+						if(SmartFrameworkRegistry::ifDebug()) {
 							SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', '========== SEND TO: '.$arr_to[$i].' =========='."\n".'ERRORS: '.$err."\n".'=========='."\n".$mail->log."\n".'========== # ==========');
 						} //end if
 						//--
@@ -725,7 +725,7 @@ final class SmartMailerUtils {
 				} //end if
 				//--
 				$tmp_send_log .= str_repeat('-', 100)."\n\n";
-				if(SmartFrameworkRuntime::ifDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
 					SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', 'Send eMail Operations Log: '.$tmp_send_log);
 				} //end if
 				//--
@@ -818,7 +818,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20210322
+ * @version 	v.20210430
  * @package 	Plugins:Mailer
  *
  */
@@ -853,11 +853,11 @@ final class SmartMailerMimeParser {
 			Smart::log_warning('Mail-Utils / Encode Mime File URL: Empty Controller Key has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
-		if(SmartFrameworkRuntime::isAdminArea() === true) { // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
-			$y_ctrl_key = (string) 'AdminMailUtilArea/'.$y_ctrl_key;
-		} else {
-			$y_ctrl_key = (string) 'IndexMailUtilArea/'.$y_ctrl_key;
+		if(!defined('SMART_ERROR_AREA')) {
+			Smart::log_warning('Mail-Utils / Encode Mime File URL: Missing SMART_ERROR_AREA. This means the URL link will be unavaliable (empty) to assure security protection.');
+			return '';
 		} //end if
+		$y_ctrl_key = (string) SMART_ERROR_AREA.'/'.$y_ctrl_key; // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
 		//--
 		$crrtime = (int) time();
 		$access_key = sha1('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$y_msg_file.'>'.$y_ctrl_key);
@@ -904,11 +904,11 @@ final class SmartMailerMimeParser {
 			Smart::log_warning('Mail-Utils / Decode Mime File URL: Empty Controller Key has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
-		if(SmartFrameworkRuntime::isAdminArea() === true) { // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
-			$y_ctrl_key = (string) 'AdminMailUtilArea/'.$y_ctrl_key;
-		} else {
-			$y_ctrl_key = (string) 'IndexMailUtilArea/'.$y_ctrl_key;
+		if(!defined('SMART_ERROR_AREA')) {
+			Smart::log_warning('Mail-Utils / Decode Mime File URL: Missing SMART_ERROR_AREA. This means the URL link will be unavaliable (empty) to assure security protection.');
+			return '';
 		} //end if
+		$y_ctrl_key = (string) SMART_ERROR_AREA.'/'.$y_ctrl_key; // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
 		//--
 		$the_sep_arr = (array) self::mime_separe_part_link($y_enc_msg_file);
 		$y_enc_msg_file = (string) $the_sep_arr['msg'];

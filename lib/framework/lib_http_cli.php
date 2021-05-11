@@ -21,6 +21,8 @@ if(!function_exists('stream_context_create')) {
 	die('ERROR: The PHP stream_context_create is required for Smart.Framework / Lib HTTP Cli');
 } //end if
 //--
+array_map(function($const){ if(!defined((string)$const)) { @http_response_code(500); die('A required INIT constant has not been defined: '.$const); } }, ['SMART_FRAMEWORK_SSL_MODE', 'SMART_FRAMEWORK_SSL_CIPHERS', 'SMART_FRAMEWORK_SSL_VFY_HOST', 'SMART_FRAMEWORK_SSL_VFY_PEER', 'SMART_FRAMEWORK_SSL_VFY_PEER_NAME', 'SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED', 'SMART_FRAMEWORK_SSL_DISABLE_COMPRESS', 'SMART_FRAMEWORK_SSL_CA_FILE']);
+//--
 
 
 //=====================================================================================
@@ -81,8 +83,8 @@ if(!function_exists('stream_context_create')) {
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils
- * @version 	v.20210412
+ * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS, SMART_FRAMEWORK_SSL_CA_FILE
+ * @version 	v.20210506
  * @package 	@Core:Network
  *
  */
@@ -210,8 +212,8 @@ final class SmartHttpClient {
 	private $log;											// Operations Log (debug only)
 	//-- internals
 	private $socket = false;								// The Communication Socket
-	private $raw_headers = array();							// Raw-Headers (internals)
-	private $url_parts = array();							// URL Parts
+	private $raw_headers = [];								// Raw-Headers (internals)
+	private $url_parts = [];								// URL Parts
 	private $method = 'GET';								// method: GET / POST / HEAD + WebDAV methods (HTTP 1.1 is recommended): PUT / DELETE / MKCOL / OPTIONS / MOVE / COPY / PROPFIND ...
 	//--
 	private $cafile = '';									// Certificate Authority File (instead of using the global SMART_FRAMEWORK_SSL_CA_FILE can use a private cafile
@@ -1102,7 +1104,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20210412
+ * @version 	v.20210506
  * @package 	@Core:Network
  *
  */

@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20210421 -->
+<!-- AuthAdmins Login # v.20210511 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -28,13 +28,15 @@ a#special {
 <script>
 	const ovID = 'sf-adm-login-overlay';
 	const AuthAdminsRdr = () => {
-		const dtime = Date.now();
 		const url = $('#auth-admins-title-login option:selected').val();
+		const dtime = Date.now();
+		const params = '&url=' + smartJ$Utils.escape_url(url) + '&time=' + smartJ$Utils.escape_url(dtime);
 		if((url != undefined) && url) {
-			const chk = 'admin.php?page=auth-admins.manager&action=login-check&url=' + smartJ$Utils.escape_url(url) + '&time=' + smartJ$Utils.escape_url(dtime);
+			const uri = 'admin.php?page=auth-admins.manager&action=login-timeout' + params;
+			const chk = 'admin.php?page=auth-admins.manager&action=login-check' + params;
 			if(url) {
 				smartJ$Browser.OverlayShow(null, null, null, ovID);
-				smartJ$Browser.SubmitFormByAjax(null, chk, 'yes', null, null, () => { setTimeout(() => { smartJ$Browser.OverlayClear(ovID); setTimeout(() => { smartJ$Browser.OverlayHide(ovID); self.location = self.location; }, 750); }, 700); }, true);
+				smartJ$Browser.SubmitFormByAjax(null, chk, 'yes', () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeOK); }, () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeERR); }, (fid, u, msg) => { if(msg != undefined) { if(msg.status != undefined) { if(msg.status != 401) { setTimeout(() => { self.location = uri; }, 500); return; } } } setTimeout(() => { smartJ$Browser.OverlayClear(ovID); setTimeout(() => { smartJ$Browser.OverlayHide(ovID); self.location = self.location; }, 750); }, 700); }, true);
 			}
 		}
 	};
@@ -47,11 +49,11 @@ a#special {
 	<div><center>
 		<table cellpadding="0">
 			<tr>
-				<td><span style="cursor:help" title="This is a PRIVATE AREA and requires LOGIN with a valid UserName and Password"><img src="lib/framework/img/sign-notice.svg" style="opacity:0.7;"></span></td>
+				<td><span style="cursor:help" title="This is a PRIVATE AREA and requires LOGIN with a valid UserName and Password"><img src="lib/framework/img/sign-info.svg" style="opacity:0.7;"></span></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 				<td style="font-size:27px;"><span style="color:#778899;"><b>Private&nbsp;Area</b></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#CCCCCC;"><b>プライベートエリア</b></span></td>
 				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td><span style="cursor:help" title="Auth.Admins :: Authentication Plugin for Smart.Framework"><img src="lib/framework/img/sign-info.svg" style="opacity:0.7;"></span></td>
+				<td><span style="cursor:help" title="Auth.Admins :: Authentication Plugin for Smart.Framework"><img src="lib/framework/img/sign-notice.svg" style="opacity:0.7;"></span></td>
 			</tr>
 		</table>
 	</center></div>
@@ -77,7 +79,7 @@ a#special {
 						<a id="special" href="javascript:void(0)" onClick="AuthAdminsRdr();"><font color="#7BC043" size="5"><b>Login to :// <span id="login-ns">[NameSpace]</span></b></font></a>
 					</div>
 					<div style="cursor:help;">
-						<img border="0" width="128" height="128" src="[###MOD-IMG-PATH|html###]globe.svg" style="opacity:0.55;" alt="AuthAdmins module for Smart.Framework" title="AuthAdmins module for Smart.Framework">
+						<img border="0" width="128" height="128" src="lib/core/img/app/globe.svg" alt="AuthAdmins module for Smart.Framework" title="AuthAdmins module for Smart.Framework">
 					</div>
 					<div title="Click here to Logout ...">
 						<a id="special" href="[###LOGOUT-URL|html###]"><font color="#666699" size="4"><b>Logout from :// All NameSpaces</b></font></a>

@@ -1,0 +1,81 @@
+<?php
+// [@[#[!SF.DEV-ONLY!]#]@]
+// Controller: AppRelease/Cleanup
+// Route: ?/page/app-release.cleanup (?page=app-release.cleanup)
+// (c) 2013-2021 unix-world.org - all rights reserved
+// r.7.2.1 / smart.framework.v.7.2
+
+//----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
+if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
+	@http_response_code(500);
+	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
+} //end if
+//-----------------------------------------------------
+
+define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
+
+define('SMART_APP_MODULE_AREA', 'TASK');
+define('SMART_APP_MODULE_AUTH', true);
+define('SMART_APP_MODULE_AUTOLOAD', true);
+
+
+/**
+ * Task Controller
+ *
+ * @ignore
+ *
+ */
+final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
+
+	protected $title = 'Cleanup Code Optimizations';
+	protected $err = '';
+	protected $msg = '';
+
+	protected $working = true;
+	protected $modal = true;
+	protected $selfclose = 0;
+
+	public function Run() {
+
+		//--
+		sleep(5); // wait if the optimization was canceled and if there are still background processes running ...
+		//--
+
+		//--
+		$ok = false;
+		$appid = (string) $this->getAppId();
+		if((string)$appid != '') {
+			if(defined('TASK_APP_RELEASE_CODEPACK_APP_DIR')) {
+				$str_ofs = (int) strlen('/'.$appid.'/'); // mixed
+				if((int)$str_ofs > 12) { // min app id len is 10 + 2 slashes
+					if((string)substr((string)TASK_APP_RELEASE_CODEPACK_APP_DIR, -1 * (int)$str_ofs, (int)$str_ofs) == (string)'/'.$appid.'/') { // must end in it
+						if(SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
+							$ok = true;
+						} //end if
+					} //end if
+				} //end if
+			} //end if
+		} //end if
+		if($ok !== true) {
+			$this->err = (string) 'INVALID Cleanup Folder !';
+			return;
+		} //end if
+		//--
+		if(SmartFileSystem::is_type_dir((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
+			SmartFileSystem::dir_delete((string)TASK_APP_RELEASE_CODEPACK_APP_DIR);
+		} //end if
+		if(SmartFileSystem::is_type_dir((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
+			$this->err = (string) 'Cleanup Folder FAILED !';
+			return;
+		} //end if
+		//--
+		$this->msg = 'Cleanup DONE';
+		$this->selfclose = 3500;
+		//--
+
+	} //END FUNCTION
+
+
+} //END CLASS
+
+// end of php code

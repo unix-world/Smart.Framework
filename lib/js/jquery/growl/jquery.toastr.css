@@ -14,7 +14,7 @@
 
 /*
 // (c) 2021 unix-world.org
-// fixes by unixman r.20210331:
+// fixes by unixman r.20210503:
 // 	* Added renders: darknote, notice
 */
 
@@ -111,7 +111,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 	background-position: 15px center;
 	background-repeat: no-repeat;
 	box-shadow: 0 0 5px rgba(136,136,136,0.75);
-	opacity: 0.9;
+	opacity: 0.97;
 }
 @media all and (max-width:639px) {
 	#toast-container > div {
@@ -121,7 +121,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 }
 #toast-container > :hover {
 	box-shadow: 0 0 7px #888888;
-	opacity: 0.95;
+	opacity: 1;
 /*	cursor: pointer; */
 }
 #toast-container.toast-top-center > div,
@@ -171,7 +171,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 .toast-notice,
 .toast-notice * {
 	background-color: #FFFFFF;
-	opacity: 0.75;
+	opacity: 0.87;
 }
 .toast-notice > .toast-progress {
 	background-color: #ECECEC;
@@ -184,7 +184,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 .toast-light,
 .toast-light * {
 	background-color: #FEFF99;
-	opacity: 0.75;
+	opacity: 0.78;
 }
 .toast-light > .toast-progress {
 	background-color: #E0E0E0;
@@ -208,7 +208,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-success,
 .toast-success * {
-	background-color: #51A351;
+	background-color: #7CAE0A;
 }
 .toast-success > .toast-progress {
 	background-color: #FFFFFF;
@@ -220,7 +220,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-warning,
 .toast-warning * {
-	background-color: #F89406;
+	background-color: #FDC300;
 }
 .toast-warning > .toast-progress {
 	background-color: #FFFFFF;
@@ -232,7 +232,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-error,
 .toast-error * {
-	background-color: #BD362F;
+	background-color: #DC1728;
 }
 .toast-error > .toast-progress {
 	background-color: #FFFFFF;
@@ -244,7 +244,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-colored,
 .toast-colored * {
-	background-color: #FF4073;
+	background-color: #EE3062;
 }
 .toast-colored > .toast-progress {
 	background-color: #FFFFFF;

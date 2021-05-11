@@ -23,9 +23,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  */
 function autoload__SmartFrameworkPlugins($classname) {
 	//--
-	$classname = (string) $classname;
-	//--
-	if(substr($classname, 0, 5) !== 'Smart') { // must start with Smart
+	if((string)substr((string)$classname, 0, 5) !== 'Smart') { // must start with Smart
 		return;
 	} //end if
 	//--

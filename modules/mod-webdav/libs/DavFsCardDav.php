@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFsCardDav {
 
 	// ::
-	// v.20210307
+	// v.20210428
 
 	private static $carddav_ns = 'xmlns:card="urn:ietf:params:xml:ns:carddav"';
 	private static $carddav_urn = 'urn:ietf:params:xml:ns:carddav';
@@ -237,7 +237,7 @@ final class DavFsCardDav {
 			\http_response_code(415); // unsupported media type
 			return 415;
 		} //end if
-		if(\defined('\\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS')) {
+		if(\defined('\\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS') AND ((string)\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS != '')) {
 			if(\stripos((string)\SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, '<'.$the_ext.'>') === false) {
 				\http_response_code(415); // unsupported media type
 				return 415;

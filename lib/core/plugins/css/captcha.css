@@ -1,14 +1,13 @@
 
 /* -- CSS Start :: Smart.Framework / Captcha :: r.7.2.1 / smart.framework.v.7.2 -- */
 
-/* v.20210420 */
+/* v.20210511 */
 
 /* ----------------------------- */
 
 div.Smart-Captcha-Area {
 	display: table;
 	position: relative;
-	background-color: #FFFFFF;
 	padding: 0 !important;
 	margin-top: 10px;
 	margin-right: 20px;
@@ -31,6 +30,7 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container {
 	border-spacing: 1px;
 	border-style: dashed;
 	border-color: #CCCCCC;
+	background-color: #FFFFFF;
 	width: 100% !important;
 }
 
@@ -85,7 +85,7 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.Smart-Captcha-Check-Info div.Smart-Captcha-Check-Info-Symbols {
 	position: absolute;
 	left: 60px !important;
-	top: 42px !important;
+	top: 45px !important;
 	color: #777777;
 }
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.Smart-Captcha-Check-Info div.Smart-Captcha-Check-Info-Symbols * {
@@ -95,7 +95,7 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.
 }
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.Smart-Captcha-Check-Timer {
 	position: absolute;
-	top: 47px;
+	top: 49px;
 	left: 147px;
 	font-size:1.5rem !important;
 	width: 44px !important;
@@ -122,7 +122,7 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input {
 	display: inline-block;
 	vertical-align: top;
-	text-align: right !important;
+	text-align: right;
 	margin-top: 0;
 	margin-left: 5px;
 	margin-right: 5px;
@@ -152,7 +152,7 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.S
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Info {
 	margin-top: 5px;
 	margin-bottom: 5px;
-	width:100%;
+	width: 100%;
 }
 
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Accessibility-Context {
@@ -183,62 +183,47 @@ div.Smart-Captcha-Area img.Smart-Captcha-Logo {
 	opacity: 0.85;
 }
 
-@media all and (max-width:767px) {
+@media all and (max-width:525px) {
 
 	div.Smart-Captcha-Area {
 		width: calc(98% - 10px) !important;
 		max-width: calc(98% - 10px) !important;
-		min-width: calc(98% - 10px) !important;
+		min-width: 270px !important;
 		margin-bottom: 15px !important;
+	}
+
+	div.Smart-Captcha-Input {
+		display: block;
+		width: calc(98% - 10px) !important;
+		max-width: calc(98% - 10px) !important;
+		min-width: calc(98% - 10px) !important;
+		margin-top: 5px !important;
+		margin-bottom: 5px !important;
 		text-align: left !important;
 	}
-
-	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin,
-	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input {
-		width: calc(100% - 65px) !important;
-		display: block;
-		padding-left: 25px;
-		padding-right: 25px;
-		margin-top: 0;
-		text-align: left;
-	}
-
-	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.Smart-Captcha-Accessibility-Symbols {
-		left: 36px;
-	}
-
-	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input input {
-		display: inline-block;
-		width: 100% !important;
-		min-width: 100px !important;
-		max-width: 200px !important;
-		margin: 0;
-	}
-
-	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.Smart-Captcha-Check {
-		text-align: left;
-	}
-	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.Smart-Captcha-Motion {
-		text-align: center;
-		margin-left: auto;
-		margin-right: auto;
-		display: table;
-		width: calc(100% - 25px) !important;
-	}
-
-	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.Smart-Captcha-Check-Timer {
-		text-align: center !important;
-	}
-
-	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Info {
-		min-height: 50px;
+	div.Smart-Captcha-Input * {
+		text-align: left !important;
 	}
 
 	div.Smart-Captcha-Area img.Smart-Captcha-Logo {
 		position: absolute;
 		left: auto !important;
 		top: 7px !important;
-		right: 7px !important;
+		right: 5px !important;
+	}
+
+	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Info {
+		min-height: 35px;
+	}
+
+	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Success {
+		margin-top: -15px;
+	}
+
+	div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Accessibility-Context {
+		position: absolute;
+		top: 65px !important;
+		right: 5px !important;
 	}
 
 }

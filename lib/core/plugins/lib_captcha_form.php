@@ -58,8 +58,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints 		To render captcha, SmartCaptcha::drawCaptchaForm() and a captcha plugin is required. To verify, use SmartCaptcha::verifyCaptcha() ; SmartCaptcha::clearCaptcha() is optional to be call after verify, depending how SmartCaptcha::verifyCaptcha() is called
  *
  * @access 		PUBLIC
- * @depends 	classes: Smart, SmartUtils, SmartTextTranslations ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
- * @version 	v.20210421
+ * @depends 	classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
+ * @version 	v.20210507
  * @package 	development:Captcha
  *
  */
@@ -131,8 +131,8 @@ final class SmartCaptcha {
 		$translator_core_captcha = SmartTextTranslations::getTranslator('@core', 'captcha');
 		//--
 		$uuid = (string) strtoupper((string)Smart::uuid_10_num().'-'.Smart::uuid_10_str());
-		$js_exports = 'const u$ = smartJ$Utils; const b$ = smartJ$Browser; const e$ = smartJ$Base64; const c$ = smartJ$CryptoBlowfish; const h$ = smartJ$CryptoHash; const d$ = smartJ$Date;';
-		$js_solver = 'let SmartCaptchaChecksum = u$.addcslashes(u$.stringTrim(b$.getCookie('."'".Smart::escape_js(self::cookie_name_chk($y_form_name))."') || ''), '\\x00..\\x1F'); if(!!!SmartCaptchaChecksum) { SmartCaptchaChecksum = 'invalid-captcha'; alert('".Smart::escape_js($translator_core_captcha->text('error'))."'); } let smartCaptchaTimerCookie = new Date(); let smartCaptchaCookie = ".'u$.bin2hex('.'c$.encrypt('.'e$.encode('."smartCaptchaTimerCookie.getTime() + '!' + String(".'c$.decrypt('."fldVal,String(kZ))) + '!Smart.Framework'), ".'u$.stringTrim('."SmartCaptchaChecksum))); ".'b$.setCookie('."'".Smart::escape_js($js_cookie_name)."', smartCaptchaCookie);";
+		$js_exports = 'const u$ = smartJ$Utils; const d$ = smartJ$Date; const e$ = smartJ$Base64; const h$ = smartJ$CryptoHash; const c$ = smartJ$CryptoBlowfish; const b$ = smartJ$Browser; const subtle$CryptoDigest = (s,hash) => { return String(e$.encode(c$.encrypt(e$.decode(s),hash))) + \''.Smart::escape_js((string)'_'.Smart::create_jsvar((string)strtolower((string)$uuid))).'\'; }; const Mutation$Observer = c$.decrypt;';
+		$js_solver = 'let SmartCaptchaChecksum = u$.addcslashes(u$.stringTrim(b$.getCookie('."'".Smart::escape_js(self::cookie_name_chk($y_form_name))."') || ''), '\\x00..\\x1F'); if(!!!SmartCaptchaChecksum) { SmartCaptchaChecksum = 'invalid-captcha'; alert('".Smart::escape_js($translator_core_captcha->text('error'))."'); } let smartCaptchaTimerCookie = new Date(); let smartCaptchaCookie = ".'u$.bin2hex('.'c$.encrypt('.'e$.encode('."smartCaptchaTimerCookie.getTime() + '\\u0021' + (+[![]]) + '\\u0023' + String(".'c$.decrypt('."fldVal,String(kZ)))), ".'u$.stringTrim('."SmartCaptchaChecksum))); ".'b$.setCookie('."'".Smart::escape_js($js_cookie_name)."', smartCaptchaCookie);";
 		//--
 		if($y_use_absolute_url !== true) {
 			$the_abs_url = '';
@@ -162,11 +162,11 @@ final class SmartCaptcha {
 			if(!self::initCaptchaPlugin((string)$y_form_name, (string)$captcha_code, (string)$y_mode)) {
 				return 'Captcha Form Init ERROR ...';
 			} //end if
-			$captcha_url = (string) 'data:image/svg+xml,'.rawurlencode((string)$captcha_url);
-			$captcha_url = (string) SmartUtils::crypto_blowfish_encrypt('(() => { mFx = () => { if((typeof(jQuery) == \'undefined\') || (typeof(smartJ$Utils) == \'undefined\') || (typeof(u$) == \'undefined\') || (typeof(b$) == \'undefined\') || (typeof(e$) == \'undefined\') || (typeof(c$) == \'undefined\') || (typeof(sim) == \'undefined\') || (typeof(aTan) == \'undefined\') || (typeof(zSVG) == \'undefined\')) { return; } if((sim >= 850/1000) && (sim <= 950/1000)) { let mX = 0, mY = 0; try { mX = u$.format_number_float(event.clientX); mY = u$.format_number_float(event.clientY); } catch(fail){} aTan = u$.format_number_float(Math.abs(Math.atan(Math.PI + Math.E + Math.abs(sim) * (Math.pow(Math.abs(mX), 2) * Math.pow(Math.abs(mY), 2)))), false) + 1/100; let fldVal = \''.Smart::escape_js(SmartUtils::crypto_blowfish_encrypt((string)$captcha_code, (string)strtoupper((string)$uuid))).'\'; let kZ = String(jQuery(\'#Smart-Captcha-Container-'.Smart::escape_js(Smart::create_htmid((string)strtolower((string)$uuid))).'\').find(\'input\').data(\'id\')).toUpperCase(); '.$js_solver.' } else { zSVG = \''.Smart::escape_js($captcha_url).'\'; } }; })();', '('.$js_exports.')');
+			$captcha_url = (string) base64_encode((string)$captcha_url);
+			$captcha_url = (string) SmartUtils::crypto_blowfish_encrypt('(() => { mFx = () => { if((typeof(jQuery) == \'undefined\') || (typeof(smartJ$Utils) == \'undefined\') || (typeof(u$) == \'undefined\') || (typeof(b$) == \'undefined\') || (typeof(e$) == \'undefined\') || (typeof(c$) == \'undefined\') || (typeof(sim) == \'undefined\') || (typeof(aTan) == \'undefined\') || (typeof(zSVG) == \'undefined\')) { return; } if((sim >= 850/1000) && (sim <= 950/1000)) { let mX = 0, mY = 0; try { mX = u$.format_number_float(event.clientX); mY = u$.format_number_float(event.clientY); } catch(fail){} aTan = u$.format_number_float(Math.abs(Math.atan(Math.PI + Math.E + Math.abs(sim) * (Math.pow(Math.abs(mX), 2) * Math.pow(Math.abs(mY), 2)))), false) + 1/100; let fldVal = \''.Smart::escape_js(SmartUtils::crypto_blowfish_encrypt((string)$captcha_code, (string)strtoupper((string)$uuid))).'\'; let kZ = String(jQuery(\'#Smart-Captcha-Container-'.Smart::escape_js(Smart::create_htmid((string)strtolower((string)$uuid))).'\').find(\'input\').data(\'id\')).toUpperCase(); '.$js_solver.' } else { zSVG = \''.Smart::escape_js($captcha_url).'\'; } }; })();', 'setInterval(() => { '.$js_exports.' $entropy = h$.crc32b(subtle$CryptoDigest(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); }, 700);');
 			//-- the min sim is 0.75 (but too perfect is not human, so max is 0.95, but trusted is 0.85..0.95)
 			$qrcode_str = (string) (new SmartQR2DBarcode('L'))->renderAsSVG((string)$captcha_code, ['cm'=>'#888888','wq'=>0]);
-			$qrcode_str = (string) base64_encode('(() => { if((typeof(qSVG) == \'undefined\') || qSVG) { return; } qSVG = \''.Smart::escape_js('data:image/svg+xml;base64,'.base64_encode((string)$qrcode_str)).'\'; })();');
+			$qrcode_str = (string) SmartUtils::crypto_blowfish_encrypt('(() => { if((typeof(qSVG) == \'undefined\') || qSVG) { return; } qSVG = \''.Smart::escape_js((string)base64_encode((string)$qrcode_str)).'\'; })();', 'setInterval(() => { '.$js_exports.' $entropy = h$.crc32b(subtle$CryptoDigest(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); }, 800);');
 			//--
 			$input_style = 'display:none;';
 			//--
@@ -178,7 +178,7 @@ final class SmartCaptcha {
 			(string) $tpl,
 			[
 				'BASE-URL' 					=> (string) $the_abs_url,
-				'RELEASE-HASH' 				=> (string) SmartFrameworkRuntime::getAppReleaseHash(),
+				'RELEASE-HASH' 				=> (string) SmartUtils::get_app_release_hash(),
 				'RELEASE-UUID' 				=> (string) strtolower((string)$uuid),
 				'RELEASE-TIME' 				=> (int)    $release_time,
 				'CAPTCHA-RAND' 				=> (string) '0'.Smart::random_number(10,99), // must start with zero to avoid toFixed(0) roundUp
@@ -197,7 +197,7 @@ final class SmartCaptcha {
 				'CAPTCHA-JS-EXPORTS' 		=> (string) $js_exports,
 				'CAPTCHA-IMG-SRC' 			=> (string) $captcha_url,
 				'CAPTCHA-INPUT-STYLE' 		=> (string) $input_style,
-				'CAPTCHA-JS-FIELD-BLUR' 	=> (string) SmartUtils::crypto_blowfish_encrypt('(() => { '.$js_exports.' if((typeof(jQuery) == \'undefined\') || (typeof(fld) == \'undefined\')) { return; } '.'try { let kZ = String(fld.data(\'id\')).toUpperCase(); let fldVal = c$.encrypt('.'fld.val().toUpperCase(),String(kZ)); '.$js_solver.' } catch(err) { console.error(\'Captcha field ERROR\'); }'.' if(fld.val()) { fld.val(\'*******\'); } })();', strtolower('Object'.'_'.'ID').':'.((string)(int)$release_time).'infinity!=NaN'),
+				'CAPTCHA-JS-FIELD-BLUR' 	=> (string) SmartUtils::crypto_blowfish_encrypt('(() => { '.$js_exports.' if((typeof(jQuery) == \'undefined\') || (typeof(fld) == \'undefined\')) { return; } '.'try { let kZ = String(fld.data(\'id\')).toUpperCase(); let fldVal = c$.encrypt('.'fld.val().toUpperCase(),String(kZ)); '.$js_solver.' } catch(err) { console.error(\'Captcha field ERROR\'); }'.' if(fld.val()) { fld.val(\'*******\'); } })();', strtolower('Object'.'_'.'ID').':'.((string)(int)$release_time).'object!=NaN'),
 				'CAPTCHA-UA-BC' 			=> (string) SmartUtils::get_os_browser_ip('bc'), // browser class
 				'CAPTCHA-UA-BW' 			=> (string) SmartUtils::get_os_browser_ip('bw'), // browser type
 				'CAPTCHA-UA-MOBILE' 		=> (string) SmartUtils::get_os_browser_ip('mobile'), // browser is mobile
@@ -205,7 +205,7 @@ final class SmartCaptcha {
 			'yes' // export to cache
 		);
 		//--
-		if(SmartFrameworkRuntime::ifProdEnv()) {
+		if(SmartFrameworkRegistry::ifProdEnv()) {
 			$tpl = str_replace(["\r\n", "\r", "\n", "\t"], ' ', $tpl);
 		} //end if
 		//--
@@ -249,9 +249,18 @@ final class SmartCaptcha {
 		$var_name = (string) self::cookie_name_jsc($y_form_name);
 		$var_value = (string) trim((string)SmartUtils::get_cookie((string)$var_name));
 		//--
+		$float   = (string) 'e';
+		$factor  = (int) 2;
+		$prime   = (int) 3;
+		$prefix  = (int) (((int)$factor + (int)$prime) ** (int)$factor);
+		$middle  = (int) ((((int)$factor + (int)$factor) ** (int)$factor) * (int)$factor);
+		$suffix  = (int) ((int)$prime ** ((int)$prime - (int)$factor));
+		$control = (int) ((((int)$factor ** (int)$factor) + (int)$prime) * (int)$factor);
+		$shift   = (int) ((int)$suffix * (int)$factor);
+		//--
 		$arr_value = array();
 		if((string)$var_value != '') {
-			$arr_value = (array) explode('!', (string)base64_decode((string)SmartUtils::crypto_blowfish_decrypt(hex2bin((string)$var_value), sha1($y_form_name.SMART_FRAMEWORK_SECURITY_KEY)))); // explode by '!'
+			$arr_value = (array) explode((string)rawurldecode((string)hex2bin($prefix.$middle.$suffix.$control.$float.$shift.$control.$float.$prefix.$middle.$suffix.$suffix)), (string)base64_decode((string)SmartUtils::crypto_blowfish_decrypt(hex2bin((string)$var_value), sha1($y_form_name.SMART_FRAMEWORK_SECURITY_KEY))));
 		} //end if
 		//--
 		$ok = false; // error check by default

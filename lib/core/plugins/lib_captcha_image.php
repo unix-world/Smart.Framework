@@ -67,8 +67,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * Create a Form Captcha Validation Vector Image (SVG)
  *
  * @access 		PUBLIC
- * @depends 	classes: Smart, SmartSvgCaptchaPoint
- * @version 	v.20210421
+ * @depends 	classes: Smart, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY
+ * @version 	v.20210508
  * @package 	development:Captcha
  */
 final class SmartSVGCaptcha {
@@ -98,13 +98,13 @@ final class SmartSVGCaptcha {
 		'stroke_color' 				=> '#999999', 	// stroke hexa color ; default is #999999
 		'stroke_bg_color' 			=> '#FFFFFF', 	// stroke background color ; default is #FFFFFF
 		'stroke_bg_pattern_color' 	=> '#BBBBBB', 	// stroke background pattern color ; default is #BBBBBB
-		'glyph_offsetting' 			=> array('apply' => true,  'h' => 1, 				'v' => 0.5, 'mh' => 8), // Needs to be enabled by default
-		'glyph_fragments' 			=> array('apply' => false, 'r_num_frag' => null, 	'frag_factor' => 2),
-		'transformations' 			=> array('apply' => false, 'rotate' => false, 		'skew' => false, 'scale' => false, 'shear' => false, 'translate' => false),
-		'approx_shapes' 			=> array('apply' => false, 'p' => 3, 				'r_al_num_lines' => [0,1]),
-		'change_degree' 			=> array('apply' => false, 'p' => 5),
-		'split_curve'				=> array('apply' => false, 'p' => 5),
-		'shapeify' 					=> array('apply' => false, 'r_num_shapes' => [1,2], 'r_num_gp' => [0,1])
+		'glyph_offsetting' 			=> [ 'apply' => true,  'h' => 1, 				'v' => 0.5, 'mh' => 8 ], // Needs to be enabled by default
+		'glyph_fragments' 			=> [ 'apply' => false, 'r_num_frag' => null, 	'frag_factor' => 2 ],
+		'transformations' 			=> [ 'apply' => false, 'rotate' => false, 		'skew' => false, 'scale' => false, 'shear' => false, 'shear_factor' => 0.77, 'translate' => false ],
+		'approx_shapes' 			=> [ 'apply' => false, 'p' => 3, 				'r_al_num_lines' => [0,1] ],
+		'change_degree' 			=> [ 'apply' => false, 'p' => 5 ],
+		'split_curve'				=> [ 'apply' => false, 'p' => 5 ],
+		'shapeify' 					=> [ 'apply' => false, 'r_num_shapes' => [1,2], 'r_num_gp' => [0,1] ]
 	];
 	//--
 	/**
@@ -147,7 +147,6 @@ final class SmartSVGCaptcha {
 		$this->dsettings['transformations']['rotate'] = true;
 		$this->dsettings['transformations']['skew'] = true;
 		$this->dsettings['transformations']['scale'] = true;
-	//	$this->dsettings['transformations']['shear'] = true;
 		$this->dsettings['transformations']['translate'] = true;
 		$this->dsettings['shapeify']['apply'] = true;
 		$this->dsettings['shapeify']['r_num_shapes'] = [1,2];
@@ -156,72 +155,86 @@ final class SmartSVGCaptcha {
 		$this->dsettings['change_degree']['p'] = 2;
 		$this->dsettings['split_curve']['apply'] = true;
 		//--
-		if($difficulty == -1) { // extremely easy
+		if($difficulty < 0) { // extremely easy: -1
+			$this->dsettings['stroke_opacity'] = 0.57;
+			$this->dsettings['stroke_color'] = '#888888';
 			$this->dsettings['glyph_offsetting']['apply'] = true;
-			$this->dsettings['transformations']['apply'] = false;
-			$this->dsettings['transformations']['rotate'] = true;
+			$this->dsettings['transformations']['apply'] = true;
+			$this->dsettings['transformations']['rotate'] = false;
 			$this->dsettings['transformations']['skew'] = false;
-			$this->dsettings['transformations']['scale'] = true;
-			$this->dsettings['transformations']['shear'] = false;
-			$this->dsettings['transformations']['translate'] = false;
+			$this->dsettings['transformations']['scale'] = false;
+			$this->dsettings['transformations']['shear'] = true;
+			$this->dsettings['transformations']['shear_factor'] = 0.28;
+			$this->dsettings['transformations']['translate'] = true;
 			$this->dsettings['shapeify']['apply'] = false;
 			$this->dsettings['change_degree']['apply'] = false;
 			$this->dsettings['split_curve']['apply'] = false;
-			$this->dsettings['stroke_opacity'] = 0.7;
+		} elseif($difficulty == 0) { // easy
+			$this->dsettings['stroke_opacity'] = 0.55;
 			$this->dsettings['stroke_color'] = '#888888';
-		} elseif($difficulty == 1) { // easy
-			$this->dsettings['stroke_width'] = 2;
-			$this->dsettings['stroke_opacity'] = 0.95;
-			$this->dsettings['glyph_fragments']['apply'] = true;
-			$this->dsettings['glyph_fragments']['r_num_frag'] = range(2, 4);
 			$this->dsettings['glyph_offsetting']['apply'] = true;
-			$this->dsettings['glyph_offsetting']['h'] = 0.5;
 			$this->dsettings['transformations']['apply'] = true;
-			$this->dsettings['transformations']['rotate'] = true;
+			$this->dsettings['transformations']['rotate'] = false;
+			$this->dsettings['transformations']['skew'] = false;
+			$this->dsettings['transformations']['scale'] = true;
+			$this->dsettings['transformations']['shear'] = true;
+			$this->dsettings['transformations']['shear_factor'] = 0.5;
+			$this->dsettings['transformations']['translate'] = true;
+			$this->dsettings['shapeify']['apply'] = false;
+			$this->dsettings['change_degree']['apply'] = false;
+			$this->dsettings['split_curve']['apply'] = false;
+		} elseif($difficulty == 1) { // moderate
+			$this->dsettings['stroke_opacity'] = 0.52;
+			$this->dsettings['stroke_color'] = '#888888';
+			$this->dsettings['glyph_offsetting']['apply'] = true;
+			$this->dsettings['transformations']['apply'] = true;
+			$this->dsettings['transformations']['rotate'] = false;
 			$this->dsettings['transformations']['skew'] = false;
 			$this->dsettings['transformations']['scale'] = false;
+			$this->dsettings['transformations']['shear'] = true;
+			$this->dsettings['transformations']['shear_factor'] = 0.5;
+			$this->dsettings['transformations']['translate'] = true;
 			$this->dsettings['shapeify']['apply'] = false;
-			$this->dsettings['shapeify']['r_num_shapes'] = range(0, 4);
-			$this->dsettings['shapeify']['r_num_gp'] = range(2, 4);
-			$this->dsettings['approx_shapes']['apply'] = true;
-			$this->dsettings['approx_shapes']['p'] = 5;
-			$this->dsettings['approx_shapes']['r_al_num_lines'] = range(4, 20);
-			$this->dsettings['change_degree']['apply'] = true;
-			$this->dsettings['change_degree']['p'] = 5;
-			$this->dsettings['split_curve']['apply'] = true;
+			$this->dsettings['change_degree']['apply'] = false;
+			$this->dsettings['split_curve']['apply'] = false;
 		} elseif($difficulty == 2) { // medium
 			$this->dsettings['stroke_width'] = 2;
-			$this->dsettings['stroke_opacity'] = 0.95;
+			$this->dsettings['stroke_opacity'] = 0.7;
+			$this->dsettings['glyph_fragments']['apply'] = true;
+			$this->dsettings['glyph_fragments']['r_num_frag'] = range(1, 2);
+			$this->dsettings['glyph_offsetting']['apply'] = true;
 			$this->dsettings['transformations']['apply'] = true;
 			$this->dsettings['transformations']['rotate'] = true;
 			$this->dsettings['transformations']['skew'] = true;
-			$this->dsettings['transformations']['scale'] = true;
+			$this->dsettings['transformations']['scale'] = false;
 			$this->dsettings['shapeify']['apply'] = true;
-			$this->dsettings['shapeify']['r_num_shapes'] = range(4, 5);
-			$this->dsettings['shapeify']['r_num_gp'] = range(3, 4);
+			$this->dsettings['shapeify']['r_num_shapes'] = range(0, 2);
+			$this->dsettings['shapeify']['r_num_gp'] = range(1, 2);
 			$this->dsettings['approx_shapes']['apply'] = true;
-			$this->dsettings['approx_shapes']['p'] = 3;
-			$this->dsettings['approx_shapes']['r_al_num_lines'] = range(4, 16);
+			$this->dsettings['approx_shapes']['p'] = 5;
+			$this->dsettings['approx_shapes']['r_al_num_lines'] = range(2, 10);
 			$this->dsettings['change_degree']['apply'] = true;
 			$this->dsettings['change_degree']['p'] = 5;
 			$this->dsettings['split_curve']['apply'] = true;
 		} elseif($difficulty == 3) { // hard
-			$this->dsettings['stroke_width'] = 2;
-			$this->dsettings['stroke_opacity'] = 0.95;
+			$this->dsettings['stroke_width'] = 1;
+			$this->dsettings['stroke_opacity'] = 0.7;
+			$this->dsettings['glyph_fragments']['apply'] = true;
+			$this->dsettings['glyph_fragments']['r_num_frag'] = range(1, 2);
+			$this->dsettings['glyph_offsetting']['apply'] = true;
+		//	$this->dsettings['glyph_offsetting']['h'] = 0.5;
 			$this->dsettings['transformations']['apply'] = true;
 			$this->dsettings['transformations']['rotate'] = true;
 			$this->dsettings['transformations']['skew'] = true;
-			$this->dsettings['transformations']['scale'] = true;
-			$this->dsettings['transformations']['shear'] = true;
-			$this->dsettings['transformations']['translate'] = true;
+			$this->dsettings['transformations']['scale'] = false;
 			$this->dsettings['shapeify']['apply'] = true;
-			$this->dsettings['shapeify']['r_num_shapes'] = range(3, 8);
-			$this->dsettings['shapeify']['r_num_gp'] = range(3, 5);
+			$this->dsettings['shapeify']['r_num_shapes'] = range(0, 4);
+			$this->dsettings['shapeify']['r_num_gp'] = range(2, 4);
 			$this->dsettings['approx_shapes']['apply'] = true;
-			$this->dsettings['approx_shapes']['p'] = 2;
-			$this->dsettings['approx_shapes']['r_al_num_lines'] = range(6, 26);
+			$this->dsettings['approx_shapes']['p'] = 5;
+			$this->dsettings['approx_shapes']['r_al_num_lines'] = range(1, 5);
 			$this->dsettings['change_degree']['apply'] = true;
-			$this->dsettings['change_degree']['p'] = 3;
+			$this->dsettings['change_degree']['p'] = 5;
 			$this->dsettings['split_curve']['apply'] = true;
 		} elseif(is_array($difficulty) && !empty($difficulty)) {
 			foreach((array)$difficulty as $key => $val) {
@@ -256,7 +269,7 @@ final class SmartSVGCaptcha {
 	 */
 	public function get_code() {
 		//--
-		return (string) strtoupper((string)implode('', $this->captcha_answer));
+		return (string) strtoupper((string)implode('', (array)$this->captcha_answer));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -360,7 +373,7 @@ final class SmartSVGCaptcha {
 		foreach($shapearray as $key => &$shape) {
 			//-- Assign 'random' float precision.
 			array_map(function($p) {
-				$p->x = sprintf('%.'.Smart::random_number(3, 6).'f', $p->x);
+				$p->x = sprintf('%.'.Smart::random_number(5, 8).'f', $p->x);
 				$p->y = sprintf('%.'.Smart::random_number(4, 7).'f', $p->y);
 			}, $shape);
 			if($begin_path) {
@@ -387,18 +400,19 @@ final class SmartSVGCaptcha {
 	private function _write_SVG($path_str) {
 		//--
 		$path_str = (string) trim((string)$path_str);
+		$key = (string) (defined('SMART_FRAMEWORK_SECURITY_KEY') ? SMART_FRAMEWORK_SECURITY_KEY : '');
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			'lib/core/plugins/templates/captcha-plugin-svg-image.inc.htm',
 			[
 				'WIDTH' 					=> (int)    $this->width,
 				'HEIGHT' 					=> (int)    $this->height,
-				'ELEMENT-ID-HASH' 			=> (string) sha1('SVG-Element'.$path_str.SMART_FRAMEWORK_SECURITY_KEY.time()),
+				'ELEMENT-ID-HASH' 			=> (string) sha1('SVG-Element'.$path_str.$key.time()),
 				'ELEMENT-BORDER-COLOR' 		=> (string) $this->dsettings['stroke_border_color'],
 				'BACKGROUND-COLOR' 			=> (string) $this->dsettings['stroke_bg_color'],
-				'PATTERN-ID-HASH' 			=> (string) sha1('SVG-Pattern'.$path_str.SMART_FRAMEWORK_SECURITY_KEY.time()),
+				'PATTERN-ID-HASH' 			=> (string) sha1('SVG-Pattern'.$path_str.$key.time()),
 				'PATTERN-COLOR' 			=> (string) $this->dsettings['stroke_bg_pattern_color'],
-				'CAPTCHA-ID-HASH' 			=> (string) sha1('SVG-Path'.$path_str.SMART_FRAMEWORK_SECURITY_KEY.time()),
+				'CAPTCHA-ID-HASH' 			=> (string) sha1('SVG-Path'.$path_str.$key.time()),
 				'CAPTCHA-COLOR' 			=> (string) $this->dsettings['stroke_color'],
 				'CAPTHA-STROKE-WIDTH' 		=> (int) 	$this->dsettings['stroke_width'],
 				'CAPTHA-STROKE-FILL' 		=> (string) ((strpos((string)$this->dsettings['stroke_fill'], '#') === 0) ? $this->dsettings['stroke_fill'] : 'none'),
@@ -433,7 +447,7 @@ final class SmartSVGCaptcha {
 		//-- Choose a random range of glyph fragments.
 		$chosen_keys = $this->arr_rand_safe($glyphs, $ngf, true);
 		//--
-		$glyph_fragments = array();
+		$glyph_fragments = [];
 		foreach($chosen_keys as $kk => $key) {
 			//-- Get a key for the fragments
 			$ukey = uniqid($prefix = 'gf__');
@@ -449,8 +463,8 @@ final class SmartSVGCaptcha {
 				$a = $this->_ra(0.6);
 				foreach($shape_keys as $kk => $skey) {
 					$copy = $this->arr_copy($glyphs[$key]['glyph_data'][$skey]);
-					$this->on_points($copy, array($this, '_translate'), array($x_translate, $y_translate));
-					$this->on_points($copy, array($this, '_rotate'), array($a));
+					$this->on_points($copy, [$this, '_translate'], [$x_translate, $y_translate]);
+					$this->on_points($copy, [$this, '_rotate'], [$a]);
 					$glyph_fragments[$ukey]['glyph_data'][] = $copy;
 				} //end foreach
 			} //end if
@@ -485,7 +499,7 @@ final class SmartSVGCaptcha {
 	 */
 	private function _shapeify($shapearray) {
 		//--
-		$random_shapes = array();
+		$random_shapes = [];
 		//-- How many random shapes?
 		$ns = Smart::random_number(min($this->dsettings['shapeify']['r_num_shapes']), max($this->dsettings['shapeify']['r_num_shapes']));
 		//--
@@ -507,7 +521,7 @@ final class SmartSVGCaptcha {
 	 */
 	private function _random_shape() {
 		//--
-		$rshapes = array();
+		$rshapes = [];
 		//-- Bounding points that constrain the maximal shape expansion
 		$min = new SmartSvgCaptchaPoint(0, 0);
 		$max = new SmartSvgCaptchaPoint($this->width, $this->height);
@@ -531,12 +545,12 @@ final class SmartSVGCaptcha {
 			} //end if
 			//--
 			if($j == ($ngp - 1)) { // Close the shape. With a line
-				$rshapes[] = array($previous, $startp);
+				$rshapes[] = [ $previous, $startp ];
 				break;
-			} else if (Smart::random_number(0, 1) == 1) { // Add a line
-				$rshapes[] = array($previous, $rp);
+			} elseif(Smart::random_number(0, 1) == 1) { // Add a line
+				$rshapes[] = [ $previous, $rp ];
 			} else { // Add quadratic bezier curve
-				$rshapes[] = array($previous, new SmartSvgCaptchaPoint($previous->x, $rp->y), $rp);
+				$rshapes[] = [ $previous, new SmartSvgCaptchaPoint($previous->x, $rp->y), $rp ];
 			} //end if else
 			//--
 			$previous = $rp;
@@ -568,12 +582,12 @@ final class SmartSVGCaptcha {
 				 // Their degree is elevated to a cubic curvature.
 				 // We pick '1/3rd start + 2/3rd control' and '2/3rd control + 1/3rd end', and now we have exactly the same curve as before, except represented as a cubic curve, rather than a quadratic curve.
 				list($p1, $p2, $p3) = $shape;
-				$shape = array(
+				$shape = [
 					$p1,
 					new SmartSvgCaptchaPoint(1 / 3 * $p1->x + 2 / 3 * $p2->x, 1 / 3 * $p1->y + 2 / 3 * $p2->y),
 					new SmartSvgCaptchaPoint(1 / 3 * $p3->x + 2 / 3 * $p2->x, 1 / 3 * $p3->y + 2 / 3 * $p2->y),
 					$p3
-				);
+				];
 			} //end if
 		} //end foreach
 		//--
@@ -592,14 +606,14 @@ final class SmartSVGCaptcha {
 	 */
 	private function _maybe_split_curve($shapearray) {
 		//-- Holding a copy preserves messing up the argument array.
-		$newshapes = array();
+		$newshapes = [];
 		//--
 		foreach($shapearray as $key => $shape) {
 			$p = $this->dsettings['split_curve']['p'];
 			$do_change = (bool) (Smart::random_number(0, $p) == $p);
 			if($do_change && count($shape) >= 3) {
-				$left = array();
-				$right = array();
+				$left = [];
+				$right = [];
 				$this->_split_curve($shape, $this->_rt(), $left, $right);
 				$right = array_reverse($right);
 				//-- Now update the shapearray accordingly: Delete the old curve, append the two new ones :P
@@ -611,7 +625,7 @@ final class SmartSVGCaptcha {
 			} //end if
 		} //end foreach
 		//--
-		return array_merge($newshapes, $shapearray);
+		return (array) array_merge($newshapes, $shapearray);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -627,8 +641,8 @@ final class SmartSVGCaptcha {
 	 */
 	private function _maybe_approximate_xor_make_curvaceous($shapearray) {
 		//-- Holding a an array of keys to delete after the loop
-		$dk = array();
-		$merge = array(); // Accumulating the new shapes
+		$dk = [];
+		$merge = []; // Accumulating the new shapes
 		//--
 		foreach($shapearray as $key => $shape) {
 			$p = $this->dsettings['approx_shapes']['p'];
@@ -645,7 +659,7 @@ final class SmartSVGCaptcha {
 			} //end if
 		} //end foreach
 		//-- get rid of the duplicate shapes
-		return array_merge($merge, array_diff_key($shapearray, array_fill_keys($dk, 0)));
+		return (array) array_merge($merge, array_diff_key($shapearray, array_fill_keys($dk, 0)));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -662,6 +676,7 @@ final class SmartSVGCaptcha {
 	 * @return string The genearetd SVG command based on the arguments.
 	 */
 	private function _shape2_cmd($shape, $absolute = true, $explicit_moveto = false) {
+		//--
 		if($explicit_moveto) {
 			$prefix = 'M '.$shape[0]->x.' '.$shape[0]->y.' ';
 		} else {
@@ -699,10 +714,10 @@ final class SmartSVGCaptcha {
 		$my = max(array_column($glyphs, 'height'));
 		$scale_factor = ($this->height / 1.5) / $my;
 		$this->on_points(
-			$glyphs, array($this, '_scale'), array($scale_factor)
+			$glyphs, [$this, '_scale'], [$scale_factor]
 		);
 		//-- And change their height/widths attributes manually
-		foreach ($glyphs as $kk => &$value) {
+		foreach($glyphs as $kk => &$value) {
 			$value['width'] *= $scale_factor;
 			$value['height'] *= $scale_factor;
 		} //end foreach
@@ -730,18 +745,18 @@ final class SmartSVGCaptcha {
 		$overlapf_v = $this->dsettings['glyph_offsetting']['v']; // The maximal y-offset based on the current glyph height.
 		foreach($glyphs as $kk => &$glyph) {
 			//-- Get a random x-offset based on the width of the previous glyph divided by two.
-			$accumulated_hoffset += ($cnt == 0) ? $glyph['width'] / 3 : Smart::random_number($lastxo, ($glyph['width'] > $lastxo) ? $glyph['width'] : $lastxo);
+			$accumulated_hoffset += ($cnt == 0) ? ($glyph['width'] / 2) + 5 : Smart::random_number($lastxo, ($glyph['width'] > $lastxo) ? $glyph['width'] : $lastxo);
 			//-- Get a random y-offst based on the height of the current glyph.
 			$h = round($glyph['height'] * $overlapf_v);
 			$svo = $this->height / $this->dsettings['glyph_offsetting']['mh'];
 			$yoffset = Smart::random_number(($svo > $h ? 0 : $svo), $h);
 			// Translate all points by the calculated offset. Except the very firs glyph. It should start left aligned.
 			$this->on_points(
-				$glyph['glyph_data'], array($this, '_translate'), array($accumulated_hoffset, $yoffset)
+				$glyph['glyph_data'], [$this, '_translate'], [$accumulated_hoffset, $yoffset]
 			);
 			//--
 			$lastxo = round($glyph['width'] * $overlapf_h);
-			$lastyo = round($glyph['height'] * $overlapf_h);
+			$lastyo = round($glyph['height'] * $overlapf_v);
 			$cnt++;
 			//--
 		} //end foreach
@@ -784,25 +799,25 @@ final class SmartSVGCaptcha {
 	 */
 	private function _get_random_transformations() {
 		//-- Prepare some transformations with some random arguments.
-		$transformations = array();
+		$transformations = [];
 		if($this->dsettings['transformations']['rotate']) {
-			$transformations[] = array(array($this, '_rotate'), array($this->_ra()));
+			$transformations[] = [ [$this, '_rotate'], [$this->_ra()] ];
 		} //end if
 		if($this->dsettings['transformations']['skew']) {
-			$transformations[] = array(array($this, '_skew'), array($this->_ra()));
+			$transformations[] = [ [$this, '_skew'], [$this->_ra()] ];
 		} //end if
 		if($this->dsettings['transformations']['scale']) {
-			$transformations[] = array(array($this, '_scale'), array($this->_rs()));
+			$transformations[] = [ [$this, '_scale'], [$this->_rs()] ];
 		} //end if
 		if($this->dsettings['transformations']['shear']) {
-			$transformations[] = array(array($this, '_shear'), array(1, 0));
+			$transformations[] = [ [$this, '_shear'], [$this->dsettings['transformations']['shear_factor'], 0] ];
 		} //end if
 		if($this->dsettings['transformations']['translate']) {
-			$transformations[] = array(array($this, '_translate'), array(0, 0));
+			$transformations[] = [ [$this, '_translate'], [0, 0] ];
 		} //end if
 		if(empty($transformations)) {
 			//return (array) null;
-			return array(); // fix by unixman
+			return []; // fix by unixman
 		} //end if
 		//-- How many random transformations to delete?
 		$n = Smart::random_number(0, count($transformations) - 1);
@@ -834,7 +849,7 @@ final class SmartSVGCaptcha {
 		//-- Base step
 		if($data instanceof SmartSvgCaptchaPoint) { // Send me a letter for X-Mas!
 			if(is_callable($callback)) {
-				call_user_func_array($callback, array_merge(array($data), $args));
+				call_user_func_array($callback, array_merge([$data], $args));
 			} //end if
 		} //end if
 		//-- Recursive step
@@ -844,8 +859,6 @@ final class SmartSVGCaptcha {
 			} //end foreach
 			unset($value);
 		} //end if
-		//--
-		return; // Do nothing, return nothing, just return anything :P
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -859,11 +872,14 @@ final class SmartSVGCaptcha {
 	 * @return int
 	 */
 	private function _ra($ub=null) {
+		//--
 		$n = Smart::random_number(0, $ub != null ? $ub : 4) / 10;
 		if(Smart::random_number(0, 1) == 1) {
 			$n *= -1;
 		} //end if
-		return $n;
+		//--
+		return (float) $n;
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -875,8 +891,9 @@ final class SmartSVGCaptcha {
 	 * @return int
 	 */
 	private function _rs() {
-		$z = Smart::random_number(8, 13) / 10;
-		return $z;
+		//--
+		return (float) Smart::random_number(8, 12) / 10;
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -889,13 +906,16 @@ final class SmartSVGCaptcha {
 	 * @param bool $inclusive Description
 	 * @return int The value between 0-1
 	 */
-	private function _rt($inclusive = true) {
+	private function _rt($inclusive=true) {
+		//--
 		if($inclusive) {
-			$z = Smart::random_number(0, 1000) / 1000;
+			$max = 1000;
 		} else {
-			$z = Smart::random_number(1, 999) / 1000;
+			$max = 999;
 		} //end if
-		return $z;
+		//--
+		return (float) (Smart::random_number(0, (int)$max) / 1000);
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -909,10 +929,12 @@ final class SmartSVGCaptcha {
 	 * @param float $a The rotation angle.
 	 */
 	private function _rotate($p, $a) {
+		//--
 		$x = $p->x;
 		$y = $p->y;
 		$p->x = cos($a) * $x - sin($a) * $y;
 		$p->y = sin($a) * $x + cos($a) * $y;
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -926,9 +948,11 @@ final class SmartSVGCaptcha {
 	 * @param float $a The skew angle.
 	 */
 	private function _skew($p, $a) {
+		//--
 		$x = $p->x;
 		$y = $p->y;
 		$p->x = $x + sin($a) * $y;
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -942,10 +966,12 @@ final class SmartSVGCaptcha {
 	 * @param float $s The scale factor for the x/y-component.
 	 */
 	private function _scale($p, $s = 1) {
+		//--
 		$x = $p->x;
 		$y = $p->y;
 		$p->x = $x * $s;
 		$p->y = $y * $s;
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -967,14 +993,16 @@ final class SmartSVGCaptcha {
 	 * @param float $mv The shear factor for vertical shear.
 	 */
 	private function _shear($p, $mh = 1, $mv = 0) {
-		if($mh * $mv != 0) {
+		//--
+		if(($mh * $mv) != 0) {
 			return;
-			//throw new InvalidArgumentException(__FUNCTION__ . " _shear called with invalid arguments $p mh: $mh mv: $mv");
 		} //end if
+		//--
 		$x = $p->x;
 		$y = $p->y;
 		$p->x = $x + $y * $mh;
 		$p->y = $y + $x * $mv;
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -988,10 +1016,12 @@ final class SmartSVGCaptcha {
 	 * @param float $dy
 	 */
 	private function _translate($p, $dx, $dy) {
+		//--
 		$x = $p->x;
 		$y = $p->y;
 		$p->x = $x + $dx;
 		$p->y = $y + $dy;
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -1003,12 +1033,11 @@ final class SmartSVGCaptcha {
 	 * @return array An array of points constituting the approximated line.
 	 */
 	private function _approximate_line($line) {
+		//--
 		if(count($line) != 2 || !($line[0] instanceof SmartSvgCaptchaPoint) || !($line[1] instanceof SmartSvgCaptchaPoint)) {
-			//throw new InvalidArgumentException(__FUNCTION__ . ": Argument is not an array of two points");
-			return array();
-		//} elseif($line[0]->is_equal($line[1])) {
-			//throw new InvalidArgumentException(__FUNCTION__.": {$line[0]} and {$line[1]} are equal.");
+			return [];
 		} //end if else
+		//--
 		/*
 		  There are several ways to make a bezier curve look like a line. We need to have a threshold
 		  that determines how big the distance from a particular but arbitrarily chosen control point is
@@ -1019,30 +1048,31 @@ final class SmartSVGCaptcha {
 		 * This induces that also control points can represent the lines defining points and thus the resulting
 		 * bezier line overlaps (The control points become interpolate with the line points).
 		 */
-		// First choose the target curve
+		//-- First choose the target curve
 		$make_cubic = (intval(time()) & 1) ? true : false; // Who cares? There's enough randomness already ...
-		// A closure that gets a point somewhere near the line :P
-		// Somewhere near depends heavily on the length of the size itself. How do we get
-		// line lengths? Yep, I actually DO remember something for once from my maths courses :/
+		//-- A closure that gets a point somewhere near the line :P Somewhere near depends heavily on the length of the size itself. How do we get line lengths? Yep, I actually DO remember something for once from my maths courses :/
 		$d = sqrt(pow(abs($line[0]->x - $line[1]->x), 2) + pow(abs($line[0]->y - $line[1]->y), 2));
 		// The control points are allowed to be maximally a 10th of the line width apart from the line distance.
 		$md = $d / Smart::random_number(10, 50);
 		//--
 		$somewhere_near_the_line = function($line, $md) {
-			// Such a point must be within the bounding rectangle of the line.
+			//-- Such a point must be within the bounding rectangle of the line.
 			$maxx = max($line[0]->x, $line[1]->x);
 			$maxy = max($line[0]->y, $line[1]->y);
 			$minx = min($line[0]->x, $line[1]->x);
 			$miny = min($line[0]->y, $line[1]->y);
-			// Now get a point on the line.
-			// Remember: f(x) = mx + d
-			// But watch out! Lines parallel to the y-axis promise trouble! Just change these a bit :P
-			if(($line[1]->x - $line[0]->x) == 0) {
+			//-- Now get a point on the line. Remember: f(x) = mx + d ; But watch out! Lines parallel to the y-axis promise trouble! Just change these a bit :P
+			$divisor = ($line[1]->x - $line[0]->x);
+			if($divisor == 0) {
+				$divisor = 0.001;
 				$line[1]->x += 1;
 			} //end if
 			// Get the coefficient m and the (0, d)-y-intersection.
-			$m = ($line[1]->y - $line[0]->y) / ($line[1]->x - $line[0]->x);
-			$d = ($line[1]->x * $line[0]->y - $line[0]->x * $line[1]->y) / ($line[1]->x - $line[0]->x);
+			//-- # unixman: fix division by zero below
+		//	$m = ($line[1]->y - $line[0]->y) / ($line[1]->x - $line[0]->x);
+		//	$d = ($line[1]->x * $line[0]->y - $line[0]->x * $line[1]->y) / ($line[1]->x - $line[0]->x);
+			$m = ($line[1]->y - $line[0]->y) / $divisor;
+			$d = ($line[1]->x * $line[0]->y - $line[0]->x * $line[1]->y) / $divisor;
 			if($maxx < 0 || $minx < 0) { // Some strange cases oO
 				$ma = max(abs($maxx), abs($minx));
 				$mi = min(abs($maxx), abs($minx));
@@ -1052,17 +1082,17 @@ final class SmartSVGCaptcha {
 			} //end if else
 			$y = $m * $x + $d;
 			//-- And move it away by $md :P
-			return new SmartSvgCaptchaPoint($x + ((Smart::random_number(0, 1) == 1) ? $md : -$md), $y + ((Smart::random_number(0, 1) == 1) ? $md : -$md));
+			return (object) new SmartSvgCaptchaPoint($x + ((Smart::random_number(0, 1) == 1) ? $md : -$md), $y + ((Smart::random_number(0, 1) == 1) ? $md : -$md));
 			//--
 		}; //end anonymous function
 		//--
 		if($make_cubic) {
 			$p1 = $somewhere_near_the_line($line, $md);
 			$p2 = $somewhere_near_the_line($line, $md);
-			$curve = array($line[0], $p1, $p2, $line[1]);
+			$curve = [ $line[0], $p1, $p2, $line[1] ];
 		} else {
 			$p1 = $somewhere_near_the_line($line, $md);
-			$curve = array($line[0], $p1, $line[1]);
+			$curve = [ $line[0], $p1, $line[1] ];
 		} //end if else
 		//--
 		return (array) $curve;
@@ -1080,11 +1110,10 @@ final class SmartSVGCaptcha {
 	 * @return array Returns an array of lines (array of two points).
 	 */
 	private function _approximate_bezier($curve, $nlines = false) {
-		// Check that we deal with SmartSvgCaptchaPoint arrays only.
+		//-- Check that we deal with SmartSvgCaptchaPoint arrays only.
 		foreach($curve as $kk => $point) {
 			if(get_class($point) != 'SmartSvgCaptchaPoint') {
-				//throw new InvalidArgumentException('curve is not an array of points');
-				return array();
+				return [];
 			} //end if
 		} //end foreach
 		if(!$nlines || !isset($nlines)) {
@@ -1097,7 +1126,7 @@ final class SmartSVGCaptcha {
 			$approx_func = function($curve, $nlines) {
 				list($p1, $p2, $p3) = $curve;
 				$last = $p1;
-				$lines = array();
+				$lines = [];
 				for($i = 0; $i <= $nlines; $i++) {
 					$t = $i / $nlines;
 					$t2 = $t * $t;
@@ -1105,16 +1134,16 @@ final class SmartSVGCaptcha {
 					$mt2 = $mt * $mt;
 					$x = $p1->x * $mt2 + $p2->x * 2 * $mt * $t + $p3->x * $t2;
 					$y = $p1->y * $mt2 + $p2->y * 2 * $mt * $t + $p3->y * $t2;
-					$lines[] = array($last, new SmartSvgCaptchaPoint($x, $y));
+					$lines[] = [ $last, new SmartSvgCaptchaPoint($x, $y) ];
 					$last = new SmartSvgCaptchaPoint($x, $y);
 				} //end for
-				return $lines;
+				return (array) $lines;
 			}; //end anonymous function
 		} elseif(count($curve) == 4) { // Handle cubic curves.
 			$approx_func = function($curve, $nlines) {
 				list($p1, $p2, $p3, $p4) = $curve;
 				$last = $p1;
-				$lines = array();
+				$lines = [];
 				for($i = 0; $i <= $nlines; $i++) {
 					$t = $i / $nlines;
 					$t2 = $t * $t;
@@ -1124,17 +1153,16 @@ final class SmartSVGCaptcha {
 					$mt3 = $mt2 * $mt;
 					$x = $p1->x * $mt3 + 3 * $p2->x * $mt2 * $t + 3 * $p3->x * $mt * $t2 + $p4->x * $t3;
 					$y = $p1->y * $mt3 + 3 * $p2->y * $mt2 * $t + 3 * $p3->y * $mt * $t2 + $p4->y * $t3;
-					$lines[] = array($last, new SmartSvgCaptchaPoint($x, $y));
+					$lines[] = [ $last, new SmartSvgCaptchaPoint($x, $y) ];
 					$last = new SmartSvgCaptchaPoint($x, $y);
 				} //end for
-				return $lines;
+				return (array) $lines;
 			}; //end anonymous function
 		} else {
-			//throw new InvalidArgumentException('Can only approx. 3/4th degree curves.');
-			return array();
+			return [];
 		} //end if else
 		//--
-		return $approx_func($curve, $nlines);
+		return (array) $approx_func($curve, $nlines);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1149,13 +1177,11 @@ final class SmartSVGCaptcha {
 	 * @param float $t The parameter t where to split the curve.
 	 * @param array $left The left subcurve. Passed by reference.
 	 * @param  array The right subcurve. Passed by reference.
-	 * @throws InvalidArgumentException If an array other than full of points is given.
 	 */
 	private function _split_curve($curve, $t, &$left, &$right) {
 		//-- Check that we deal with SmartSvgCaptchaPoint arrays only.
 		foreach($curve as $kk => $point) {
 			if(get_class($point) != 'SmartSvgCaptchaPoint') {
-				throw new InvalidArgumentException('curve is not an array of points');
 				return;
 			} //end if
 		} //end foreach
@@ -1164,7 +1190,7 @@ final class SmartSVGCaptcha {
 			$left[] = $curve[0];
 			$right[] = $curve[0];
 		} else {
-			$newpoints = array();
+			$newpoints = [];
 			for($i = 0; $i < count($curve) - 1; $i++) {
 				if($i == 0) {
 					$left[] = $curve[$i];
@@ -1184,235 +1210,500 @@ final class SmartSVGCaptcha {
 
 
 	//================================================================
-	private function initAlphabetGlyphs() {
+	private function initAlphabetGlyphs() { // abefikny EGHQSWX
 		//--
 		if(is_array($this->alphabet) && (count($this->alphabet) > 0)) {
 			return (array) $this->alphabet;
 		} //end if
 		//--
 		$this->alphabet = [
-			'y' => array(
-				'width' => 347,
-				'height' => 381,
-				'glyph_data' => array(
-					'cubic_splines' => array(
-						array(new SmartSvgCaptchaPoint(178, 245), new SmartSvgCaptchaPoint(178, 245), new SmartSvgCaptchaPoint(148, 314), new SmartSvgCaptchaPoint(122, 339)), array(new SmartSvgCaptchaPoint(122, 339), new SmartSvgCaptchaPoint(109, 350), new SmartSvgCaptchaPoint(93, 361), new SmartSvgCaptchaPoint(76, 363)), array(new SmartSvgCaptchaPoint(76, 363), new SmartSvgCaptchaPoint(53, 366), new SmartSvgCaptchaPoint(6, 342), new SmartSvgCaptchaPoint(6, 342)), array(new SmartSvgCaptchaPoint(0, 359), new SmartSvgCaptchaPoint(0, 359), new SmartSvgCaptchaPoint(49, 381), new SmartSvgCaptchaPoint(73, 379)),
-						array(new SmartSvgCaptchaPoint(0, 359), new SmartSvgCaptchaPoint(0, 359), new SmartSvgCaptchaPoint(49, 381), new SmartSvgCaptchaPoint(73, 379)), array(new SmartSvgCaptchaPoint(73, 379), new SmartSvgCaptchaPoint(93, 377), new SmartSvgCaptchaPoint(112, 365), new SmartSvgCaptchaPoint(128, 352)), array(new SmartSvgCaptchaPoint(128, 352), new SmartSvgCaptchaPoint(158, 325), new SmartSvgCaptchaPoint(175, 286), new SmartSvgCaptchaPoint(195, 250)), array(new SmartSvgCaptchaPoint(195, 250), new SmartSvgCaptchaPoint(235, 178), new SmartSvgCaptchaPoint(296, 16), new SmartSvgCaptchaPoint(296, 16)),
-						array(new SmartSvgCaptchaPoint(195, 250), new SmartSvgCaptchaPoint(235, 178), new SmartSvgCaptchaPoint(296, 16), new SmartSvgCaptchaPoint(296, 16))
-					),
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(30, 19), new SmartSvgCaptchaPoint(65, 19)), array(new SmartSvgCaptchaPoint(65, 19), new SmartSvgCaptchaPoint(178, 245)), array(new SmartSvgCaptchaPoint(6, 342), new SmartSvgCaptchaPoint(0, 359)), array(new SmartSvgCaptchaPoint(296, 16), new SmartSvgCaptchaPoint(347, 16)),
-						array(new SmartSvgCaptchaPoint(296, 16), new SmartSvgCaptchaPoint(347, 16)), array(new SmartSvgCaptchaPoint(347, 16), new SmartSvgCaptchaPoint(347, 0)), array(new SmartSvgCaptchaPoint(347, 0), new SmartSvgCaptchaPoint(239, 0)), array(new SmartSvgCaptchaPoint(239, 0), new SmartSvgCaptchaPoint(239, 16)),
-						array(new SmartSvgCaptchaPoint(239, 0), new SmartSvgCaptchaPoint(239, 16)), array(new SmartSvgCaptchaPoint(239, 16), new SmartSvgCaptchaPoint(278, 16)), array(new SmartSvgCaptchaPoint(278, 16), new SmartSvgCaptchaPoint(189, 229)), array(new SmartSvgCaptchaPoint(189, 229), new SmartSvgCaptchaPoint(81, 19)),
-						array(new SmartSvgCaptchaPoint(189, 229), new SmartSvgCaptchaPoint(81, 19)), array(new SmartSvgCaptchaPoint(81, 19), new SmartSvgCaptchaPoint(135, 18)), array(new SmartSvgCaptchaPoint(135, 18), new SmartSvgCaptchaPoint(135, 0)), array(new SmartSvgCaptchaPoint(135, 0), new SmartSvgCaptchaPoint(30, 0)),
-						array(new SmartSvgCaptchaPoint(135, 0), new SmartSvgCaptchaPoint(30, 0)), array(new SmartSvgCaptchaPoint(30, 0), new SmartSvgCaptchaPoint(30, 19))
-				))
-			),
-			'W' => array(
-				'width' => 520,
-				'height' => 390,
-				'glyph_data' => array(
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(0, 0), new SmartSvgCaptchaPoint(130, 390)), array(new SmartSvgCaptchaPoint(130, 390), new SmartSvgCaptchaPoint(190, 390)), array(new SmartSvgCaptchaPoint(190, 390), new SmartSvgCaptchaPoint(270, 120)), array(new SmartSvgCaptchaPoint(270, 120), new SmartSvgCaptchaPoint(350, 390)),
-						array(new SmartSvgCaptchaPoint(270, 120), new SmartSvgCaptchaPoint(350, 390)), array(new SmartSvgCaptchaPoint(350, 390), new SmartSvgCaptchaPoint(410, 390)), array(new SmartSvgCaptchaPoint(410, 390), new SmartSvgCaptchaPoint(520, 0)), array(new SmartSvgCaptchaPoint(520, 0), new SmartSvgCaptchaPoint(430, 10)),
-						array(new SmartSvgCaptchaPoint(520, 0), new SmartSvgCaptchaPoint(430, 10)), array(new SmartSvgCaptchaPoint(430, 10), new SmartSvgCaptchaPoint(380, 290)), array(new SmartSvgCaptchaPoint(380, 290), new SmartSvgCaptchaPoint(300, 80)), array(new SmartSvgCaptchaPoint(300, 80), new SmartSvgCaptchaPoint(240, 80)),
-						array(new SmartSvgCaptchaPoint(300, 80), new SmartSvgCaptchaPoint(240, 80)), array(new SmartSvgCaptchaPoint(240, 80), new SmartSvgCaptchaPoint(160, 290)), array(new SmartSvgCaptchaPoint(160, 290), new SmartSvgCaptchaPoint(90, 10)), array(new SmartSvgCaptchaPoint(90, 10), new SmartSvgCaptchaPoint(0, 0)),
-						array(new SmartSvgCaptchaPoint(90, 10), new SmartSvgCaptchaPoint(0, 0))
-				))
-			),
-			'G' => array(
-				'width' => 248,
-				'height' => 353,
-				'glyph_data' => array(
-					'cubic_splines' => array(
-						array(new SmartSvgCaptchaPoint(248, 60), new SmartSvgCaptchaPoint(248, 60), new SmartSvgCaptchaPoint(211, 28), new SmartSvgCaptchaPoint(189, 17)), array(new SmartSvgCaptchaPoint(189, 17), new SmartSvgCaptchaPoint(169, 7), new SmartSvgCaptchaPoint(146, 0), new SmartSvgCaptchaPoint(124, 4)), array(new SmartSvgCaptchaPoint(124, 4), new SmartSvgCaptchaPoint(98, 8), new SmartSvgCaptchaPoint(74, 25), new SmartSvgCaptchaPoint(56, 45)), array(new SmartSvgCaptchaPoint(56, 45), new SmartSvgCaptchaPoint(33, 70), new SmartSvgCaptchaPoint(20, 103), new SmartSvgCaptchaPoint(12, 135)),
-						array(new SmartSvgCaptchaPoint(56, 45), new SmartSvgCaptchaPoint(33, 70), new SmartSvgCaptchaPoint(20, 103), new SmartSvgCaptchaPoint(12, 135)), array(new SmartSvgCaptchaPoint(12, 135), new SmartSvgCaptchaPoint(3, 175), new SmartSvgCaptchaPoint(0, 218), new SmartSvgCaptchaPoint(12, 257)), array(new SmartSvgCaptchaPoint(12, 257), new SmartSvgCaptchaPoint(21, 287), new SmartSvgCaptchaPoint(39, 315), new SmartSvgCaptchaPoint(64, 333)), array(new SmartSvgCaptchaPoint(64, 333), new SmartSvgCaptchaPoint(83, 347), new SmartSvgCaptchaPoint(108, 352), new SmartSvgCaptchaPoint(132, 352)),
-						array(new SmartSvgCaptchaPoint(64, 333), new SmartSvgCaptchaPoint(83, 347), new SmartSvgCaptchaPoint(108, 352), new SmartSvgCaptchaPoint(132, 352)), array(new SmartSvgCaptchaPoint(132, 352), new SmartSvgCaptchaPoint(167, 353), new SmartSvgCaptchaPoint(236, 344), new SmartSvgCaptchaPoint(236, 344)), array(new SmartSvgCaptchaPoint(207, 297), new SmartSvgCaptchaPoint(208, 326), new SmartSvgCaptchaPoint(181, 324), new SmartSvgCaptchaPoint(158, 321)), array(new SmartSvgCaptchaPoint(158, 321), new SmartSvgCaptchaPoint(130, 317), new SmartSvgCaptchaPoint(74, 301), new SmartSvgCaptchaPoint(58, 278)),
-						array(new SmartSvgCaptchaPoint(158, 321), new SmartSvgCaptchaPoint(130, 317), new SmartSvgCaptchaPoint(74, 301), new SmartSvgCaptchaPoint(58, 278)), array(new SmartSvgCaptchaPoint(58, 278), new SmartSvgCaptchaPoint(38, 248), new SmartSvgCaptchaPoint(39, 208), new SmartSvgCaptchaPoint(43, 174)), array(new SmartSvgCaptchaPoint(43, 174), new SmartSvgCaptchaPoint(46, 136), new SmartSvgCaptchaPoint(56, 95), new SmartSvgCaptchaPoint(80, 65)), array(new SmartSvgCaptchaPoint(80, 65), new SmartSvgCaptchaPoint(96, 47), new SmartSvgCaptchaPoint(119, 34), new SmartSvgCaptchaPoint(144, 36)),
-						array(new SmartSvgCaptchaPoint(80, 65), new SmartSvgCaptchaPoint(96, 47), new SmartSvgCaptchaPoint(119, 34), new SmartSvgCaptchaPoint(144, 36)), array(new SmartSvgCaptchaPoint(144, 36), new SmartSvgCaptchaPoint(177, 38), new SmartSvgCaptchaPoint(224, 84), new SmartSvgCaptchaPoint(224, 84)), array(new SmartSvgCaptchaPoint(224, 84), new SmartSvgCaptchaPoint(224, 84), new SmartSvgCaptchaPoint(218, 92), new SmartSvgCaptchaPoint(248, 60))
-					),
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(236, 344), new SmartSvgCaptchaPoint(238, 202)), array(new SmartSvgCaptchaPoint(238, 202), new SmartSvgCaptchaPoint(118, 200)), array(new SmartSvgCaptchaPoint(118, 200), new SmartSvgCaptchaPoint(116, 231)), array(new SmartSvgCaptchaPoint(116, 231), new SmartSvgCaptchaPoint(207, 231)),
-						array(new SmartSvgCaptchaPoint(116, 231), new SmartSvgCaptchaPoint(207, 231)), array(new SmartSvgCaptchaPoint(207, 231), new SmartSvgCaptchaPoint(207, 297)), array(new SmartSvgCaptchaPoint(248, 60), new SmartSvgCaptchaPoint(248, 60))
-				))
-			),
-			'e' => array(
-				'width' => 480,
-				'height' => 615,
-				'glyph_data' => array(
-					'cubic_splines' => array(
-						array(new SmartSvgCaptchaPoint(46, 207), new SmartSvgCaptchaPoint(0, 331), new SmartSvgCaptchaPoint(3, 525), new SmartSvgCaptchaPoint(204, 570)), array(new SmartSvgCaptchaPoint(204, 570), new SmartSvgCaptchaPoint(404, 615), new SmartSvgCaptchaPoint(454, 423), new SmartSvgCaptchaPoint(460, 406)), array(new SmartSvgCaptchaPoint(389, 406), new SmartSvgCaptchaPoint(389, 406), new SmartSvgCaptchaPoint(354, 498), new SmartSvgCaptchaPoint(313, 515)), array(new SmartSvgCaptchaPoint(313, 515), new SmartSvgCaptchaPoint(252, 539), new SmartSvgCaptchaPoint(166, 522), new SmartSvgCaptchaPoint(121, 474)),
-						array(new SmartSvgCaptchaPoint(313, 515), new SmartSvgCaptchaPoint(252, 539), new SmartSvgCaptchaPoint(166, 522), new SmartSvgCaptchaPoint(121, 474)), array(new SmartSvgCaptchaPoint(121, 474), new SmartSvgCaptchaPoint(82, 433), new SmartSvgCaptchaPoint(98, 306), new SmartSvgCaptchaPoint(98, 306)), array(new SmartSvgCaptchaPoint(461, 304), new SmartSvgCaptchaPoint(461, 304), new SmartSvgCaptchaPoint(480, 140), new SmartSvgCaptchaPoint(334, 70)), array(new SmartSvgCaptchaPoint(334, 70), new SmartSvgCaptchaPoint(188, 0), new SmartSvgCaptchaPoint(83, 108), new SmartSvgCaptchaPoint(46, 207)),
-						array(new SmartSvgCaptchaPoint(334, 70), new SmartSvgCaptchaPoint(188, 0), new SmartSvgCaptchaPoint(83, 108), new SmartSvgCaptchaPoint(46, 207)), array(new SmartSvgCaptchaPoint(387, 257), new SmartSvgCaptchaPoint(387, 257), new SmartSvgCaptchaPoint(379, 114), new SmartSvgCaptchaPoint(251, 112)), array(new SmartSvgCaptchaPoint(251, 112), new SmartSvgCaptchaPoint(123, 109), new SmartSvgCaptchaPoint(97, 257), new SmartSvgCaptchaPoint(97, 257))
-					),
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(460, 406), new SmartSvgCaptchaPoint(389, 406)), array(new SmartSvgCaptchaPoint(98, 306), new SmartSvgCaptchaPoint(461, 304)), array(new SmartSvgCaptchaPoint(46, 207), new SmartSvgCaptchaPoint(46, 207)), array(new SmartSvgCaptchaPoint(97, 257), new SmartSvgCaptchaPoint(387, 257)),
-						array(new SmartSvgCaptchaPoint(97, 257), new SmartSvgCaptchaPoint(387, 257)), array(new SmartSvgCaptchaPoint(97, 257), new SmartSvgCaptchaPoint(97, 257))
-				))
-			),
-			'a' => array(
+			'a' => [
 				'width' => 351,
 				'height' => 634,
-				'glyph_data' => array(
-					'cubic_splines' => array(
-						array(new SmartSvgCaptchaPoint(195, 0), new SmartSvgCaptchaPoint(163, 0), new SmartSvgCaptchaPoint(133, 9), new SmartSvgCaptchaPoint(107, 27)), array(new SmartSvgCaptchaPoint(107, 27), new SmartSvgCaptchaPoint(71, 53), new SmartSvgCaptchaPoint(60, 162), new SmartSvgCaptchaPoint(60, 162)), array(new SmartSvgCaptchaPoint(60, 162), new SmartSvgCaptchaPoint(73, 177), new SmartSvgCaptchaPoint(95, 212), new SmartSvgCaptchaPoint(95, 212)), array(new SmartSvgCaptchaPoint(95, 212), new SmartSvgCaptchaPoint(95, 212), new SmartSvgCaptchaPoint(104, 99), new SmartSvgCaptchaPoint(129, 72)),
-						array(new SmartSvgCaptchaPoint(95, 212), new SmartSvgCaptchaPoint(95, 212), new SmartSvgCaptchaPoint(104, 99), new SmartSvgCaptchaPoint(129, 72)), array(new SmartSvgCaptchaPoint(129, 72), new SmartSvgCaptchaPoint(161, 31), new SmartSvgCaptchaPoint(207, 26), new SmartSvgCaptchaPoint(262, 74)), array(new SmartSvgCaptchaPoint(262, 74), new SmartSvgCaptchaPoint(300, 130), new SmartSvgCaptchaPoint(277, 185), new SmartSvgCaptchaPoint(245, 228)), array(new SmartSvgCaptchaPoint(245, 228), new SmartSvgCaptchaPoint(209, 277), new SmartSvgCaptchaPoint(151, 274), new SmartSvgCaptchaPoint(105, 287)),
-						array(new SmartSvgCaptchaPoint(245, 228), new SmartSvgCaptchaPoint(209, 277), new SmartSvgCaptchaPoint(151, 274), new SmartSvgCaptchaPoint(105, 287)), array(new SmartSvgCaptchaPoint(105, 287), new SmartSvgCaptchaPoint(9, 326), new SmartSvgCaptchaPoint(0, 444), new SmartSvgCaptchaPoint(23, 521)), array(new SmartSvgCaptchaPoint(23, 521), new SmartSvgCaptchaPoint(32, 562), new SmartSvgCaptchaPoint(53, 590), new SmartSvgCaptchaPoint(90, 601)), array(new SmartSvgCaptchaPoint(90, 601), new SmartSvgCaptchaPoint(150, 618), new SmartSvgCaptchaPoint(193, 601), new SmartSvgCaptchaPoint(225, 563)),
-						array(new SmartSvgCaptchaPoint(90, 601), new SmartSvgCaptchaPoint(150, 618), new SmartSvgCaptchaPoint(193, 601), new SmartSvgCaptchaPoint(225, 563)), array(new SmartSvgCaptchaPoint(225, 563), new SmartSvgCaptchaPoint(231, 590), new SmartSvgCaptchaPoint(232, 620), new SmartSvgCaptchaPoint(258, 626)), array(new SmartSvgCaptchaPoint(258, 626), new SmartSvgCaptchaPoint(298, 634), new SmartSvgCaptchaPoint(351, 628), new SmartSvgCaptchaPoint(312, 589)), array(new SmartSvgCaptchaPoint(312, 589), new SmartSvgCaptchaPoint(273, 551), new SmartSvgCaptchaPoint(283, 535), new SmartSvgCaptchaPoint(281, 510)),
-						array(new SmartSvgCaptchaPoint(312, 589), new SmartSvgCaptchaPoint(273, 551), new SmartSvgCaptchaPoint(283, 535), new SmartSvgCaptchaPoint(281, 510)), array(new SmartSvgCaptchaPoint(335, 71), new SmartSvgCaptchaPoint(339, 43), new SmartSvgCaptchaPoint(291, 17), new SmartSvgCaptchaPoint(240, 5)), array(new SmartSvgCaptchaPoint(240, 5), new SmartSvgCaptchaPoint(224, 1), new SmartSvgCaptchaPoint(209, 0), new SmartSvgCaptchaPoint(195, 0)), array(new SmartSvgCaptchaPoint(252, 283), new SmartSvgCaptchaPoint(270, 367), new SmartSvgCaptchaPoint(251, 535), new SmartSvgCaptchaPoint(152, 571)),
-						array(new SmartSvgCaptchaPoint(252, 283), new SmartSvgCaptchaPoint(270, 367), new SmartSvgCaptchaPoint(251, 535), new SmartSvgCaptchaPoint(152, 571)), array(new SmartSvgCaptchaPoint(152, 571), new SmartSvgCaptchaPoint(54, 608), new SmartSvgCaptchaPoint(35, 434), new SmartSvgCaptchaPoint(72, 384)), array(new SmartSvgCaptchaPoint(72, 384), new SmartSvgCaptchaPoint(124, 313), new SmartSvgCaptchaPoint(178, 279), new SmartSvgCaptchaPoint(252, 283))
-					),
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(281, 510), new SmartSvgCaptchaPoint(335, 71)), array(new SmartSvgCaptchaPoint(195, 0), new SmartSvgCaptchaPoint(195, 0)), array(new SmartSvgCaptchaPoint(252, 283), new SmartSvgCaptchaPoint(252, 283))
-				))
-			),
-			'H' => array(
-				'width' => 420,
-				'height' => 550,
-				'glyph_data' => array(
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(0, 0), new SmartSvgCaptchaPoint(0, 35)), array(new SmartSvgCaptchaPoint(0, 35), new SmartSvgCaptchaPoint(55, 35)), array(new SmartSvgCaptchaPoint(55, 35), new SmartSvgCaptchaPoint(55, 520)), array(new SmartSvgCaptchaPoint(55, 520), new SmartSvgCaptchaPoint(0, 520)),
-						array(new SmartSvgCaptchaPoint(55, 520), new SmartSvgCaptchaPoint(0, 520)), array(new SmartSvgCaptchaPoint(0, 520), new SmartSvgCaptchaPoint(0, 550)), array(new SmartSvgCaptchaPoint(0, 550), new SmartSvgCaptchaPoint(150, 550)), array(new SmartSvgCaptchaPoint(150, 550), new SmartSvgCaptchaPoint(150, 520)),
-						array(new SmartSvgCaptchaPoint(150, 550), new SmartSvgCaptchaPoint(150, 520)), array(new SmartSvgCaptchaPoint(150, 520), new SmartSvgCaptchaPoint(95, 520)), array(new SmartSvgCaptchaPoint(95, 520), new SmartSvgCaptchaPoint(95, 270)), array(new SmartSvgCaptchaPoint(95, 270), new SmartSvgCaptchaPoint(325, 270)),
-						array(new SmartSvgCaptchaPoint(95, 270), new SmartSvgCaptchaPoint(325, 270)), array(new SmartSvgCaptchaPoint(325, 270), new SmartSvgCaptchaPoint(325, 520)), array(new SmartSvgCaptchaPoint(325, 520), new SmartSvgCaptchaPoint(265, 520)), array(new SmartSvgCaptchaPoint(265, 520), new SmartSvgCaptchaPoint(265, 550)),
-						array(new SmartSvgCaptchaPoint(265, 520), new SmartSvgCaptchaPoint(265, 550)), array(new SmartSvgCaptchaPoint(265, 550), new SmartSvgCaptchaPoint(420, 550)), array(new SmartSvgCaptchaPoint(420, 550), new SmartSvgCaptchaPoint(420, 520)), array(new SmartSvgCaptchaPoint(420, 520), new SmartSvgCaptchaPoint(370, 520)),
-						array(new SmartSvgCaptchaPoint(420, 520), new SmartSvgCaptchaPoint(370, 520)), array(new SmartSvgCaptchaPoint(370, 520), new SmartSvgCaptchaPoint(370, 35)), array(new SmartSvgCaptchaPoint(370, 35), new SmartSvgCaptchaPoint(420, 35)), array(new SmartSvgCaptchaPoint(420, 35), new SmartSvgCaptchaPoint(420, 0)),
-						array(new SmartSvgCaptchaPoint(420, 35), new SmartSvgCaptchaPoint(420, 0)), array(new SmartSvgCaptchaPoint(420, 0), new SmartSvgCaptchaPoint(265, 0)), array(new SmartSvgCaptchaPoint(265, 0), new SmartSvgCaptchaPoint(265, 35)), array(new SmartSvgCaptchaPoint(265, 35), new SmartSvgCaptchaPoint(325, 35)),
-						array(new SmartSvgCaptchaPoint(265, 35), new SmartSvgCaptchaPoint(325, 35)), array(new SmartSvgCaptchaPoint(325, 35), new SmartSvgCaptchaPoint(325, 230)), array(new SmartSvgCaptchaPoint(325, 230), new SmartSvgCaptchaPoint(95, 230)), array(new SmartSvgCaptchaPoint(95, 230), new SmartSvgCaptchaPoint(95, 35)),
-						array(new SmartSvgCaptchaPoint(95, 230), new SmartSvgCaptchaPoint(95, 35)), array(new SmartSvgCaptchaPoint(95, 35), new SmartSvgCaptchaPoint(150, 35)), array(new SmartSvgCaptchaPoint(150, 35), new SmartSvgCaptchaPoint(150, 0)), array(new SmartSvgCaptchaPoint(150, 0), new SmartSvgCaptchaPoint(0, 0)),
-						array(new SmartSvgCaptchaPoint(150, 0), new SmartSvgCaptchaPoint(0, 0))
-				))
-			),
-			'k' => array(
-				'width' => 420,
-				'height' => 680,
-				'glyph_data' => array(
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(0, 0), new SmartSvgCaptchaPoint(60, 0)), array(new SmartSvgCaptchaPoint(60, 0), new SmartSvgCaptchaPoint(60, 490)), array(new SmartSvgCaptchaPoint(60, 490), new SmartSvgCaptchaPoint(350, 280)), array(new SmartSvgCaptchaPoint(350, 280), new SmartSvgCaptchaPoint(420, 280)),
-						array(new SmartSvgCaptchaPoint(350, 280), new SmartSvgCaptchaPoint(420, 280)), array(new SmartSvgCaptchaPoint(420, 280), new SmartSvgCaptchaPoint(210, 440)), array(new SmartSvgCaptchaPoint(210, 440), new SmartSvgCaptchaPoint(420, 680)), array(new SmartSvgCaptchaPoint(420, 680), new SmartSvgCaptchaPoint(350, 680)),
-						array(new SmartSvgCaptchaPoint(420, 680), new SmartSvgCaptchaPoint(350, 680)), array(new SmartSvgCaptchaPoint(350, 680), new SmartSvgCaptchaPoint(170, 470)), array(new SmartSvgCaptchaPoint(170, 470), new SmartSvgCaptchaPoint(60, 550)), array(new SmartSvgCaptchaPoint(60, 550), new SmartSvgCaptchaPoint(60, 680)),
-						array(new SmartSvgCaptchaPoint(60, 550), new SmartSvgCaptchaPoint(60, 680)), array(new SmartSvgCaptchaPoint(60, 680), new SmartSvgCaptchaPoint(0, 680)), array(new SmartSvgCaptchaPoint(0, 680), new SmartSvgCaptchaPoint(0, 0))
-				))
-			),
-			'i' => array(
-				'width' => 122,
-				'height' => 687,
-				'glyph_data' => array(
-					'cubic_splines' => array(
-						array(new SmartSvgCaptchaPoint(67, 1), new SmartSvgCaptchaPoint(48, 0), new SmartSvgCaptchaPoint(28, 14), new SmartSvgCaptchaPoint(17, 29)), array(new SmartSvgCaptchaPoint(17, 29), new SmartSvgCaptchaPoint(6, 45), new SmartSvgCaptchaPoint(0, 67), new SmartSvgCaptchaPoint(7, 85)), array(new SmartSvgCaptchaPoint(7, 85), new SmartSvgCaptchaPoint(14, 107), new SmartSvgCaptchaPoint(37, 128), new SmartSvgCaptchaPoint(60, 130)), array(new SmartSvgCaptchaPoint(60, 130), new SmartSvgCaptchaPoint(79, 131), new SmartSvgCaptchaPoint(99, 117), new SmartSvgCaptchaPoint(109, 100)),
-						array(new SmartSvgCaptchaPoint(60, 130), new SmartSvgCaptchaPoint(79, 131), new SmartSvgCaptchaPoint(99, 117), new SmartSvgCaptchaPoint(109, 100)), array(new SmartSvgCaptchaPoint(109, 100), new SmartSvgCaptchaPoint(120, 82), new SmartSvgCaptchaPoint(122, 56), new SmartSvgCaptchaPoint(113, 37)), array(new SmartSvgCaptchaPoint(113, 37), new SmartSvgCaptchaPoint(105, 19), new SmartSvgCaptchaPoint(86, 3), new SmartSvgCaptchaPoint(67, 1))
-					),
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(23, 214), new SmartSvgCaptchaPoint(23, 687)), array(new SmartSvgCaptchaPoint(23, 687), new SmartSvgCaptchaPoint(96, 687)), array(new SmartSvgCaptchaPoint(96, 687), new SmartSvgCaptchaPoint(96, 214)), array(new SmartSvgCaptchaPoint(96, 214), new SmartSvgCaptchaPoint(23, 214)),
-						array(new SmartSvgCaptchaPoint(96, 214), new SmartSvgCaptchaPoint(23, 214)), array(new SmartSvgCaptchaPoint(67, 1), new SmartSvgCaptchaPoint(67, 1))
-				))
-			),
-			'f' => array(
-				'width' => 240,
-				'height' => 600,
-				'glyph_data' => array(
-					'cubic_splines' => array(
-						array(new SmartSvgCaptchaPoint(240, 0), new SmartSvgCaptchaPoint(240, 0), new SmartSvgCaptchaPoint(167, 0), new SmartSvgCaptchaPoint(138, 11)), array(new SmartSvgCaptchaPoint(138, 11), new SmartSvgCaptchaPoint(106, 24), new SmartSvgCaptchaPoint(84, 48), new SmartSvgCaptchaPoint(70, 80)), array(new SmartSvgCaptchaPoint(70, 80), new SmartSvgCaptchaPoint(57, 108), new SmartSvgCaptchaPoint(60, 170), new SmartSvgCaptchaPoint(60, 170)), array(new SmartSvgCaptchaPoint(90, 170), new SmartSvgCaptchaPoint(90, 170), new SmartSvgCaptchaPoint(87, 116), new SmartSvgCaptchaPoint(97, 91)),
-						array(new SmartSvgCaptchaPoint(90, 170), new SmartSvgCaptchaPoint(90, 170), new SmartSvgCaptchaPoint(87, 116), new SmartSvgCaptchaPoint(97, 91)), array(new SmartSvgCaptchaPoint(97, 91), new SmartSvgCaptchaPoint(106, 68), new SmartSvgCaptchaPoint(146, 48), new SmartSvgCaptchaPoint(170, 40)), array(new SmartSvgCaptchaPoint(170, 40), new SmartSvgCaptchaPoint(197, 31), new SmartSvgCaptchaPoint(240, 50), new SmartSvgCaptchaPoint(240, 50))
-					),
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(240, 50), new SmartSvgCaptchaPoint(240, 0)), array(new SmartSvgCaptchaPoint(60, 170), new SmartSvgCaptchaPoint(0, 170)), array(new SmartSvgCaptchaPoint(0, 170), new SmartSvgCaptchaPoint(0, 200)), array(new SmartSvgCaptchaPoint(0, 200), new SmartSvgCaptchaPoint(60, 200)),
-						array(new SmartSvgCaptchaPoint(0, 200), new SmartSvgCaptchaPoint(60, 200)), array(new SmartSvgCaptchaPoint(60, 200), new SmartSvgCaptchaPoint(60, 570)), array(new SmartSvgCaptchaPoint(60, 570), new SmartSvgCaptchaPoint(0, 570)), array(new SmartSvgCaptchaPoint(0, 570), new SmartSvgCaptchaPoint(0, 600)),
-						array(new SmartSvgCaptchaPoint(0, 570), new SmartSvgCaptchaPoint(0, 600)), array(new SmartSvgCaptchaPoint(0, 600), new SmartSvgCaptchaPoint(130, 600)), array(new SmartSvgCaptchaPoint(130, 600), new SmartSvgCaptchaPoint(150, 570)), array(new SmartSvgCaptchaPoint(150, 570), new SmartSvgCaptchaPoint(90, 570)),
-						array(new SmartSvgCaptchaPoint(150, 570), new SmartSvgCaptchaPoint(90, 570)), array(new SmartSvgCaptchaPoint(90, 570), new SmartSvgCaptchaPoint(90, 200)), array(new SmartSvgCaptchaPoint(90, 200), new SmartSvgCaptchaPoint(150, 200)), array(new SmartSvgCaptchaPoint(150, 200), new SmartSvgCaptchaPoint(150, 170)),
-						array(new SmartSvgCaptchaPoint(150, 200), new SmartSvgCaptchaPoint(150, 170)), array(new SmartSvgCaptchaPoint(150, 170), new SmartSvgCaptchaPoint(90, 170)), array(new SmartSvgCaptchaPoint(240, 50), new SmartSvgCaptchaPoint(240, 50))
-				))
-			),
-			'b' => array(
+				'glyph_data' => [
+					'cubic_splines' => [
+						[ new SmartSvgCaptchaPoint(195, 0), new SmartSvgCaptchaPoint(163, 0), new SmartSvgCaptchaPoint(133, 9), new SmartSvgCaptchaPoint(107, 27) ],
+						[ new SmartSvgCaptchaPoint(107, 27), new SmartSvgCaptchaPoint(71, 53), new SmartSvgCaptchaPoint(60, 162), new SmartSvgCaptchaPoint(60, 162) ],
+						[ new SmartSvgCaptchaPoint(60, 162), new SmartSvgCaptchaPoint(73, 177), new SmartSvgCaptchaPoint(95, 212), new SmartSvgCaptchaPoint(95, 212) ],
+						[ new SmartSvgCaptchaPoint(95, 212), new SmartSvgCaptchaPoint(95, 212), new SmartSvgCaptchaPoint(104, 99), new SmartSvgCaptchaPoint(129, 72) ],
+						[ new SmartSvgCaptchaPoint(95, 212), new SmartSvgCaptchaPoint(95, 212), new SmartSvgCaptchaPoint(104, 99), new SmartSvgCaptchaPoint(129, 72) ],
+						[ new SmartSvgCaptchaPoint(129, 72), new SmartSvgCaptchaPoint(161, 31), new SmartSvgCaptchaPoint(207, 26), new SmartSvgCaptchaPoint(262, 74) ],
+						[ new SmartSvgCaptchaPoint(262, 74), new SmartSvgCaptchaPoint(300, 130), new SmartSvgCaptchaPoint(277, 185), new SmartSvgCaptchaPoint(245, 228) ],
+						[ new SmartSvgCaptchaPoint(245, 228), new SmartSvgCaptchaPoint(209, 277), new SmartSvgCaptchaPoint(151, 274), new SmartSvgCaptchaPoint(105, 287) ],
+						[ new SmartSvgCaptchaPoint(245, 228), new SmartSvgCaptchaPoint(209, 277), new SmartSvgCaptchaPoint(151, 274), new SmartSvgCaptchaPoint(105, 287) ],
+						[ new SmartSvgCaptchaPoint(105, 287), new SmartSvgCaptchaPoint(9, 326), new SmartSvgCaptchaPoint(0, 444), new SmartSvgCaptchaPoint(23, 521) ],
+						[ new SmartSvgCaptchaPoint(23, 521), new SmartSvgCaptchaPoint(32, 562), new SmartSvgCaptchaPoint(53, 590), new SmartSvgCaptchaPoint(90, 601) ],
+						[ new SmartSvgCaptchaPoint(90, 601), new SmartSvgCaptchaPoint(150, 618), new SmartSvgCaptchaPoint(193, 601), new SmartSvgCaptchaPoint(225, 563) ],
+						[ new SmartSvgCaptchaPoint(90, 601), new SmartSvgCaptchaPoint(150, 618), new SmartSvgCaptchaPoint(193, 601), new SmartSvgCaptchaPoint(225, 563) ],
+						[ new SmartSvgCaptchaPoint(225, 563), new SmartSvgCaptchaPoint(231, 590), new SmartSvgCaptchaPoint(232, 620), new SmartSvgCaptchaPoint(258, 626) ],
+						[ new SmartSvgCaptchaPoint(258, 626), new SmartSvgCaptchaPoint(298, 634), new SmartSvgCaptchaPoint(351, 628), new SmartSvgCaptchaPoint(312, 589) ],
+						[ new SmartSvgCaptchaPoint(312, 589), new SmartSvgCaptchaPoint(273, 551), new SmartSvgCaptchaPoint(283, 535), new SmartSvgCaptchaPoint(281, 510) ],
+						[ new SmartSvgCaptchaPoint(312, 589), new SmartSvgCaptchaPoint(273, 551), new SmartSvgCaptchaPoint(283, 535), new SmartSvgCaptchaPoint(281, 510) ],
+						[ new SmartSvgCaptchaPoint(335, 71), new SmartSvgCaptchaPoint(339, 43), new SmartSvgCaptchaPoint(291, 17), new SmartSvgCaptchaPoint(240, 5) ],
+						[ new SmartSvgCaptchaPoint(240, 5), new SmartSvgCaptchaPoint(224, 1), new SmartSvgCaptchaPoint(209, 0), new SmartSvgCaptchaPoint(195, 0) ],
+						[ new SmartSvgCaptchaPoint(252, 283), new SmartSvgCaptchaPoint(270, 367), new SmartSvgCaptchaPoint(251, 535), new SmartSvgCaptchaPoint(152, 571) ],
+						[ new SmartSvgCaptchaPoint(252, 283), new SmartSvgCaptchaPoint(270, 367), new SmartSvgCaptchaPoint(251, 535), new SmartSvgCaptchaPoint(152, 571) ],
+						[ new SmartSvgCaptchaPoint(152, 571), new SmartSvgCaptchaPoint(54, 608), new SmartSvgCaptchaPoint(35, 434), new SmartSvgCaptchaPoint(72, 384) ],
+						[ new SmartSvgCaptchaPoint(72, 384), new SmartSvgCaptchaPoint(124, 313), new SmartSvgCaptchaPoint(178, 279), new SmartSvgCaptchaPoint(252, 283) ]
+					],
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(281, 510), new SmartSvgCaptchaPoint(335, 71) ],
+						[ new SmartSvgCaptchaPoint(195, 0), new SmartSvgCaptchaPoint(195, 0) ],
+						[ new SmartSvgCaptchaPoint(252, 283), new SmartSvgCaptchaPoint(252, 283) ]
+					]
+				]
+			],
+			'b' => [
 				'width' => 237,
 				'height' => 454,
-				'glyph_data' => array(
-					'cubic_splines' => array(
-						array(new SmartSvgCaptchaPoint(43, 0), new SmartSvgCaptchaPoint(39, 13), new SmartSvgCaptchaPoint(38, 20), new SmartSvgCaptchaPoint(37, 26)), array(new SmartSvgCaptchaPoint(37, 26), new SmartSvgCaptchaPoint(0, 302), new SmartSvgCaptchaPoint(5, 438), new SmartSvgCaptchaPoint(5, 438)), array(new SmartSvgCaptchaPoint(5, 438), new SmartSvgCaptchaPoint(5, 438), new SmartSvgCaptchaPoint(142, 454), new SmartSvgCaptchaPoint(188, 414)), array(new SmartSvgCaptchaPoint(188, 414), new SmartSvgCaptchaPoint(222, 385), new SmartSvgCaptchaPoint(237, 329), new SmartSvgCaptchaPoint(224, 287)),
-						array(new SmartSvgCaptchaPoint(188, 414), new SmartSvgCaptchaPoint(222, 385), new SmartSvgCaptchaPoint(237, 329), new SmartSvgCaptchaPoint(224, 287)), array(new SmartSvgCaptchaPoint(224, 287), new SmartSvgCaptchaPoint(213, 254), new SmartSvgCaptchaPoint(177, 221), new SmartSvgCaptchaPoint(141, 220)), array(new SmartSvgCaptchaPoint(141, 220), new SmartSvgCaptchaPoint(99, 220), new SmartSvgCaptchaPoint(40, 295), new SmartSvgCaptchaPoint(40, 295)), array(new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(18, 373), new SmartSvgCaptchaPoint(38, 398)),
-						array(new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(18, 373), new SmartSvgCaptchaPoint(38, 398)), array(new SmartSvgCaptchaPoint(38, 398), new SmartSvgCaptchaPoint(64, 431), new SmartSvgCaptchaPoint(131, 416), new SmartSvgCaptchaPoint(161, 388)), array(new SmartSvgCaptchaPoint(161, 388), new SmartSvgCaptchaPoint(186, 366), new SmartSvgCaptchaPoint(189, 321), new SmartSvgCaptchaPoint(178, 289)), array(new SmartSvgCaptchaPoint(178, 289), new SmartSvgCaptchaPoint(172, 272), new SmartSvgCaptchaPoint(156, 253), new SmartSvgCaptchaPoint(138, 253)),
-						array(new SmartSvgCaptchaPoint(178, 289), new SmartSvgCaptchaPoint(172, 272), new SmartSvgCaptchaPoint(156, 253), new SmartSvgCaptchaPoint(138, 253)), array(new SmartSvgCaptchaPoint(138, 253), new SmartSvgCaptchaPoint(109, 251), new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(69, 305))
-					),
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(40, 295), new SmartSvgCaptchaPoint(85, 4)), array(new SmartSvgCaptchaPoint(85, 4), new SmartSvgCaptchaPoint(43, 0)), array(new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(69, 305))
-				))
-			),
-			'n' => array(
+				'glyph_data' => [
+					'cubic_splines' => [
+						[ new SmartSvgCaptchaPoint(43, 0), new SmartSvgCaptchaPoint(39, 13), new SmartSvgCaptchaPoint(38, 20), new SmartSvgCaptchaPoint(37, 26) ],
+						[ new SmartSvgCaptchaPoint(37, 26), new SmartSvgCaptchaPoint(0, 302), new SmartSvgCaptchaPoint(5, 438), new SmartSvgCaptchaPoint(5, 438) ],
+						[ new SmartSvgCaptchaPoint(5, 438), new SmartSvgCaptchaPoint(5, 438), new SmartSvgCaptchaPoint(142, 454), new SmartSvgCaptchaPoint(188, 414) ],
+						[ new SmartSvgCaptchaPoint(188, 414), new SmartSvgCaptchaPoint(222, 385), new SmartSvgCaptchaPoint(237, 329), new SmartSvgCaptchaPoint(224, 287) ],
+						[ new SmartSvgCaptchaPoint(188, 414), new SmartSvgCaptchaPoint(222, 385), new SmartSvgCaptchaPoint(237, 329), new SmartSvgCaptchaPoint(224, 287) ],
+						[ new SmartSvgCaptchaPoint(224, 287), new SmartSvgCaptchaPoint(213, 254), new SmartSvgCaptchaPoint(177, 221), new SmartSvgCaptchaPoint(141, 220) ],
+						[ new SmartSvgCaptchaPoint(141, 220), new SmartSvgCaptchaPoint(99, 220), new SmartSvgCaptchaPoint(40, 295), new SmartSvgCaptchaPoint(40, 295) ],
+						[ new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(18, 373), new SmartSvgCaptchaPoint(38, 398) ],
+						[ new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(18, 373), new SmartSvgCaptchaPoint(38, 398) ],
+						[ new SmartSvgCaptchaPoint(38, 398), new SmartSvgCaptchaPoint(64, 431), new SmartSvgCaptchaPoint(131, 416), new SmartSvgCaptchaPoint(161, 388) ],
+						[ new SmartSvgCaptchaPoint(161, 388), new SmartSvgCaptchaPoint(186, 366), new SmartSvgCaptchaPoint(189, 321), new SmartSvgCaptchaPoint(178, 289) ],
+						[ new SmartSvgCaptchaPoint(178, 289), new SmartSvgCaptchaPoint(172, 272), new SmartSvgCaptchaPoint(156, 253), new SmartSvgCaptchaPoint(138, 253) ],
+						[ new SmartSvgCaptchaPoint(178, 289), new SmartSvgCaptchaPoint(172, 272), new SmartSvgCaptchaPoint(156, 253), new SmartSvgCaptchaPoint(138, 253) ],
+						[ new SmartSvgCaptchaPoint(138, 253), new SmartSvgCaptchaPoint(109, 251), new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(69, 305) ]
+					],
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(40, 295), new SmartSvgCaptchaPoint(85, 4) ],
+						[ new SmartSvgCaptchaPoint(85, 4), new SmartSvgCaptchaPoint(43, 0) ],
+						[ new SmartSvgCaptchaPoint(69, 305), new SmartSvgCaptchaPoint(69, 305) ]
+					]
+				]
+			],
+			'e' => [
+				'width' => 480,
+				'height' => 615,
+				'glyph_data' => [
+					'cubic_splines' => [
+						[ new SmartSvgCaptchaPoint(46, 207), new SmartSvgCaptchaPoint(0, 331), new SmartSvgCaptchaPoint(3, 525), new SmartSvgCaptchaPoint(204, 570) ],
+						[ new SmartSvgCaptchaPoint(204, 570), new SmartSvgCaptchaPoint(404, 615), new SmartSvgCaptchaPoint(454, 423), new SmartSvgCaptchaPoint(460, 406) ],
+						[ new SmartSvgCaptchaPoint(389, 406), new SmartSvgCaptchaPoint(389, 406), new SmartSvgCaptchaPoint(354, 498), new SmartSvgCaptchaPoint(313, 515) ],
+						[ new SmartSvgCaptchaPoint(313, 515), new SmartSvgCaptchaPoint(252, 539), new SmartSvgCaptchaPoint(166, 522), new SmartSvgCaptchaPoint(121, 474) ],
+						[ new SmartSvgCaptchaPoint(313, 515), new SmartSvgCaptchaPoint(252, 539), new SmartSvgCaptchaPoint(166, 522), new SmartSvgCaptchaPoint(121, 474) ],
+						[ new SmartSvgCaptchaPoint(121, 474), new SmartSvgCaptchaPoint(82, 433), new SmartSvgCaptchaPoint(98, 306), new SmartSvgCaptchaPoint(98, 306) ],
+						[ new SmartSvgCaptchaPoint(461, 304), new SmartSvgCaptchaPoint(461, 304), new SmartSvgCaptchaPoint(480, 140), new SmartSvgCaptchaPoint(334, 70) ],
+						[ new SmartSvgCaptchaPoint(334, 70), new SmartSvgCaptchaPoint(188, 0), new SmartSvgCaptchaPoint(83, 108), new SmartSvgCaptchaPoint(46, 207) ],
+						[ new SmartSvgCaptchaPoint(334, 70), new SmartSvgCaptchaPoint(188, 0), new SmartSvgCaptchaPoint(83, 108), new SmartSvgCaptchaPoint(46, 207) ],
+						[ new SmartSvgCaptchaPoint(387, 257), new SmartSvgCaptchaPoint(387, 257), new SmartSvgCaptchaPoint(379, 114), new SmartSvgCaptchaPoint(251, 112) ],
+						[ new SmartSvgCaptchaPoint(251, 112), new SmartSvgCaptchaPoint(123, 109), new SmartSvgCaptchaPoint(97, 257), new SmartSvgCaptchaPoint(97, 257) ]
+					],
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(460, 406), new SmartSvgCaptchaPoint(389, 406) ],
+						[ new SmartSvgCaptchaPoint(98, 306), new SmartSvgCaptchaPoint(461, 304) ],
+						[ new SmartSvgCaptchaPoint(46, 207), new SmartSvgCaptchaPoint(46, 207) ],
+						[ new SmartSvgCaptchaPoint(97, 257), new SmartSvgCaptchaPoint(387, 257) ],
+						[ new SmartSvgCaptchaPoint(97, 257), new SmartSvgCaptchaPoint(387, 257) ],
+						[ new SmartSvgCaptchaPoint(97, 257), new SmartSvgCaptchaPoint(97, 257) ]
+					]
+				]
+			],
+			'f' => [
+				'width' => 240,
+				'height' => 600,
+				'glyph_data' => [
+					'cubic_splines' => [
+						[ new SmartSvgCaptchaPoint(240, 0), new SmartSvgCaptchaPoint(240, 0), new SmartSvgCaptchaPoint(167, 0), new SmartSvgCaptchaPoint(138, 11) ],
+						[ new SmartSvgCaptchaPoint(138, 11), new SmartSvgCaptchaPoint(106, 24), new SmartSvgCaptchaPoint(84, 48), new SmartSvgCaptchaPoint(70, 80) ],
+						[ new SmartSvgCaptchaPoint(70, 80), new SmartSvgCaptchaPoint(57, 108), new SmartSvgCaptchaPoint(60, 170), new SmartSvgCaptchaPoint(60, 170) ],
+						[ new SmartSvgCaptchaPoint(90, 170), new SmartSvgCaptchaPoint(90, 170), new SmartSvgCaptchaPoint(87, 116), new SmartSvgCaptchaPoint(97, 91) ],
+						[ new SmartSvgCaptchaPoint(90, 170), new SmartSvgCaptchaPoint(90, 170), new SmartSvgCaptchaPoint(87, 116), new SmartSvgCaptchaPoint(97, 91) ],
+						[ new SmartSvgCaptchaPoint(97, 91), new SmartSvgCaptchaPoint(106, 68), new SmartSvgCaptchaPoint(146, 48), new SmartSvgCaptchaPoint(170, 40) ],
+						[ new SmartSvgCaptchaPoint(170, 40), new SmartSvgCaptchaPoint(197, 31), new SmartSvgCaptchaPoint(240, 50), new SmartSvgCaptchaPoint(240, 50) ]
+					],
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(240, 50), new SmartSvgCaptchaPoint(240, 0) ],
+						[ new SmartSvgCaptchaPoint(60, 170), new SmartSvgCaptchaPoint(0, 170) ],
+						[ new SmartSvgCaptchaPoint(0, 170), new SmartSvgCaptchaPoint(0, 200) ],
+						[ new SmartSvgCaptchaPoint(0, 200), new SmartSvgCaptchaPoint(60, 200) ],
+						[ new SmartSvgCaptchaPoint(0, 200), new SmartSvgCaptchaPoint(60, 200) ],
+						[ new SmartSvgCaptchaPoint(60, 200), new SmartSvgCaptchaPoint(60, 570) ],
+						[ new SmartSvgCaptchaPoint(60, 570), new SmartSvgCaptchaPoint(0, 570) ],
+						[ new SmartSvgCaptchaPoint(0, 570), new SmartSvgCaptchaPoint(0, 600) ],
+						[ new SmartSvgCaptchaPoint(0, 570), new SmartSvgCaptchaPoint(0, 600) ],
+						[ new SmartSvgCaptchaPoint(0, 600), new SmartSvgCaptchaPoint(130, 600) ],
+						[ new SmartSvgCaptchaPoint(130, 600), new SmartSvgCaptchaPoint(150, 570) ],
+						[ new SmartSvgCaptchaPoint(150, 570), new SmartSvgCaptchaPoint(90, 570) ],
+						[ new SmartSvgCaptchaPoint(150, 570), new SmartSvgCaptchaPoint(90, 570) ],
+						[ new SmartSvgCaptchaPoint(90, 570), new SmartSvgCaptchaPoint(90, 200) ],
+						[ new SmartSvgCaptchaPoint(90, 200), new SmartSvgCaptchaPoint(150, 200) ],
+						[ new SmartSvgCaptchaPoint(150, 200), new SmartSvgCaptchaPoint(150, 170) ],
+						[ new SmartSvgCaptchaPoint(150, 200), new SmartSvgCaptchaPoint(150, 170) ],
+						[ new SmartSvgCaptchaPoint(150, 170), new SmartSvgCaptchaPoint(90, 170) ],
+						[ new SmartSvgCaptchaPoint(240, 50), new SmartSvgCaptchaPoint(240, 50) ]
+					]
+				]
+			],
+			'i' => [
+				'width' => 122,
+				'height' => 687,
+				'glyph_data' => [
+					'cubic_splines' => [
+						[ new SmartSvgCaptchaPoint(67, 1), new SmartSvgCaptchaPoint(48, 0), new SmartSvgCaptchaPoint(28, 14), new SmartSvgCaptchaPoint(17, 29) ],
+						[ new SmartSvgCaptchaPoint(17, 29), new SmartSvgCaptchaPoint(6, 45), new SmartSvgCaptchaPoint(0, 67), new SmartSvgCaptchaPoint(7, 85) ],
+						[ new SmartSvgCaptchaPoint(7, 85), new SmartSvgCaptchaPoint(14, 107), new SmartSvgCaptchaPoint(37, 128), new SmartSvgCaptchaPoint(60, 130) ],
+						[ new SmartSvgCaptchaPoint(60, 130), new SmartSvgCaptchaPoint(79, 131), new SmartSvgCaptchaPoint(99, 117), new SmartSvgCaptchaPoint(109, 100) ],
+						[ new SmartSvgCaptchaPoint(60, 130), new SmartSvgCaptchaPoint(79, 131), new SmartSvgCaptchaPoint(99, 117), new SmartSvgCaptchaPoint(109, 100) ],
+						[ new SmartSvgCaptchaPoint(109, 100), new SmartSvgCaptchaPoint(120, 82), new SmartSvgCaptchaPoint(122, 56), new SmartSvgCaptchaPoint(113, 37) ],
+						[ new SmartSvgCaptchaPoint(113, 37), new SmartSvgCaptchaPoint(105, 19), new SmartSvgCaptchaPoint(86, 3), new SmartSvgCaptchaPoint(67, 1) ]
+					],
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(23, 214), new SmartSvgCaptchaPoint(23, 687) ],
+						[ new SmartSvgCaptchaPoint(23, 687), new SmartSvgCaptchaPoint(96, 687) ],
+						[ new SmartSvgCaptchaPoint(96, 687), new SmartSvgCaptchaPoint(96, 214) ],
+						[ new SmartSvgCaptchaPoint(96, 214), new SmartSvgCaptchaPoint(23, 214) ],
+						[ new SmartSvgCaptchaPoint(96, 214), new SmartSvgCaptchaPoint(23, 214) ],
+						[ new SmartSvgCaptchaPoint(67, 1), new SmartSvgCaptchaPoint(67, 1) ]
+					]
+				]
+			],
+			'k' => [
+				'width' => 420,
+				'height' => 680,
+				'glyph_data' => [
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(0, 0), new SmartSvgCaptchaPoint(60, 0) ],
+						[ new SmartSvgCaptchaPoint(60, 0), new SmartSvgCaptchaPoint(60, 490) ],
+						[ new SmartSvgCaptchaPoint(60, 490), new SmartSvgCaptchaPoint(350, 280) ],
+						[ new SmartSvgCaptchaPoint(350, 280), new SmartSvgCaptchaPoint(420, 280) ],
+						[ new SmartSvgCaptchaPoint(350, 280), new SmartSvgCaptchaPoint(420, 280) ],
+						[ new SmartSvgCaptchaPoint(420, 280), new SmartSvgCaptchaPoint(210, 440) ],
+						[ new SmartSvgCaptchaPoint(210, 440), new SmartSvgCaptchaPoint(420, 680) ],
+						[ new SmartSvgCaptchaPoint(420, 680), new SmartSvgCaptchaPoint(350, 680) ],
+						[ new SmartSvgCaptchaPoint(420, 680), new SmartSvgCaptchaPoint(350, 680) ],
+						[ new SmartSvgCaptchaPoint(350, 680), new SmartSvgCaptchaPoint(170, 470) ],
+						[ new SmartSvgCaptchaPoint(170, 470), new SmartSvgCaptchaPoint(60, 550) ],
+						[ new SmartSvgCaptchaPoint(60, 550), new SmartSvgCaptchaPoint(60, 680) ],
+						[ new SmartSvgCaptchaPoint(60, 550), new SmartSvgCaptchaPoint(60, 680) ],
+						[ new SmartSvgCaptchaPoint(60, 680), new SmartSvgCaptchaPoint(0, 680) ],
+						[ new SmartSvgCaptchaPoint(0, 680), new SmartSvgCaptchaPoint(0, 0) ]
+					]
+				]
+			],
+			'n' => [
 				'width' => 420,
 				'height' => 380,
-				'glyph_data' => array(
-					'cubic_splines' => array(
-						array(new SmartSvgCaptchaPoint(111, 50), new SmartSvgCaptchaPoint(111, 50), new SmartSvgCaptchaPoint(146, 38), new SmartSvgCaptchaPoint(206, 39)), array(new SmartSvgCaptchaPoint(206, 39), new SmartSvgCaptchaPoint(267, 41), new SmartSvgCaptchaPoint(287, 53), new SmartSvgCaptchaPoint(304, 67)), array(new SmartSvgCaptchaPoint(304, 67), new SmartSvgCaptchaPoint(318, 79), new SmartSvgCaptchaPoint(340, 110), new SmartSvgCaptchaPoint(340, 110)), array(new SmartSvgCaptchaPoint(370, 110), new SmartSvgCaptchaPoint(370, 110), new SmartSvgCaptchaPoint(361, 71), new SmartSvgCaptchaPoint(340, 50)),
-						array(new SmartSvgCaptchaPoint(370, 110), new SmartSvgCaptchaPoint(370, 110), new SmartSvgCaptchaPoint(361, 71), new SmartSvgCaptchaPoint(340, 50)), array(new SmartSvgCaptchaPoint(340, 50), new SmartSvgCaptchaPoint(310, 20), new SmartSvgCaptchaPoint(288, 15), new SmartSvgCaptchaPoint(220, 10)), array(new SmartSvgCaptchaPoint(220, 10), new SmartSvgCaptchaPoint(151, 5), new SmartSvgCaptchaPoint(110, 20), new SmartSvgCaptchaPoint(110, 20))
-					),
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(30, 0), new SmartSvgCaptchaPoint(30, 30)), array(new SmartSvgCaptchaPoint(30, 30), new SmartSvgCaptchaPoint(80, 30)), array(new SmartSvgCaptchaPoint(80, 30), new SmartSvgCaptchaPoint(80, 350)), array(new SmartSvgCaptchaPoint(80, 350), new SmartSvgCaptchaPoint(30, 350)),
-						array(new SmartSvgCaptchaPoint(80, 350), new SmartSvgCaptchaPoint(30, 350)), array(new SmartSvgCaptchaPoint(30, 350), new SmartSvgCaptchaPoint(0, 380)), array(new SmartSvgCaptchaPoint(0, 380), new SmartSvgCaptchaPoint(160, 380)), array(new SmartSvgCaptchaPoint(160, 380), new SmartSvgCaptchaPoint(160, 350)),
-						array(new SmartSvgCaptchaPoint(160, 380), new SmartSvgCaptchaPoint(160, 350)), array(new SmartSvgCaptchaPoint(160, 350), new SmartSvgCaptchaPoint(110, 350)), array(new SmartSvgCaptchaPoint(110, 350), new SmartSvgCaptchaPoint(111, 50)), array(new SmartSvgCaptchaPoint(340, 110), new SmartSvgCaptchaPoint(340, 350)),
-						array(new SmartSvgCaptchaPoint(340, 110), new SmartSvgCaptchaPoint(340, 350)), array(new SmartSvgCaptchaPoint(340, 350), new SmartSvgCaptchaPoint(290, 350)), array(new SmartSvgCaptchaPoint(290, 350), new SmartSvgCaptchaPoint(290, 380)), array(new SmartSvgCaptchaPoint(290, 380), new SmartSvgCaptchaPoint(420, 380)),
-						array(new SmartSvgCaptchaPoint(290, 380), new SmartSvgCaptchaPoint(420, 380)), array(new SmartSvgCaptchaPoint(420, 380), new SmartSvgCaptchaPoint(370, 350)), array(new SmartSvgCaptchaPoint(370, 350), new SmartSvgCaptchaPoint(370, 110)), array(new SmartSvgCaptchaPoint(110, 20), new SmartSvgCaptchaPoint(110, 0)),
-						array(new SmartSvgCaptchaPoint(110, 20), new SmartSvgCaptchaPoint(110, 0)), array(new SmartSvgCaptchaPoint(110, 0), new SmartSvgCaptchaPoint(30, 0))
-				))
-			),
-			'S' => array(
-				'width' => 354,
-				'height' => 745,
-				'glyph_data' => array(
-					'cubic_splines' => array(
-						array(new SmartSvgCaptchaPoint(287, 366), new SmartSvgCaptchaPoint(250, 289), new SmartSvgCaptchaPoint(141, 264), new SmartSvgCaptchaPoint(99, 189)), array(new SmartSvgCaptchaPoint(99, 189), new SmartSvgCaptchaPoint(88, 168), new SmartSvgCaptchaPoint(78, 141), new SmartSvgCaptchaPoint(85, 118)), array(new SmartSvgCaptchaPoint(85, 118), new SmartSvgCaptchaPoint(92, 96), new SmartSvgCaptchaPoint(116, 82), new SmartSvgCaptchaPoint(135, 71)), array(new SmartSvgCaptchaPoint(135, 71), new SmartSvgCaptchaPoint(157, 58), new SmartSvgCaptchaPoint(182, 50), new SmartSvgCaptchaPoint(207, 48)),
-						array(new SmartSvgCaptchaPoint(135, 71), new SmartSvgCaptchaPoint(157, 58), new SmartSvgCaptchaPoint(182, 50), new SmartSvgCaptchaPoint(207, 48)), array(new SmartSvgCaptchaPoint(207, 48), new SmartSvgCaptchaPoint(244, 44), new SmartSvgCaptchaPoint(288, 42), new SmartSvgCaptchaPoint(319, 63)), array(new SmartSvgCaptchaPoint(319, 63), new SmartSvgCaptchaPoint(335, 73), new SmartSvgCaptchaPoint(348, 128), new SmartSvgCaptchaPoint(347, 110)), array(new SmartSvgCaptchaPoint(346, 44), new SmartSvgCaptchaPoint(345, 21), new SmartSvgCaptchaPoint(354, 16), new SmartSvgCaptchaPoint(293, 15)),
-						array(new SmartSvgCaptchaPoint(346, 44), new SmartSvgCaptchaPoint(345, 21), new SmartSvgCaptchaPoint(354, 16), new SmartSvgCaptchaPoint(293, 15)), array(new SmartSvgCaptchaPoint(293, 15), new SmartSvgCaptchaPoint(293, 15), new SmartSvgCaptchaPoint(161, 0), new SmartSvgCaptchaPoint(88, 58)), array(new SmartSvgCaptchaPoint(88, 58), new SmartSvgCaptchaPoint(16, 116), new SmartSvgCaptchaPoint(27, 169), new SmartSvgCaptchaPoint(39, 196)), array(new SmartSvgCaptchaPoint(39, 196), new SmartSvgCaptchaPoint(74, 277), new SmartSvgCaptchaPoint(183, 304), new SmartSvgCaptchaPoint(233, 377)),
-						array(new SmartSvgCaptchaPoint(39, 196), new SmartSvgCaptchaPoint(74, 277), new SmartSvgCaptchaPoint(183, 304), new SmartSvgCaptchaPoint(233, 377)), array(new SmartSvgCaptchaPoint(233, 377), new SmartSvgCaptchaPoint(248, 400), new SmartSvgCaptchaPoint(256, 427), new SmartSvgCaptchaPoint(262, 454)), array(new SmartSvgCaptchaPoint(262, 454), new SmartSvgCaptchaPoint(270, 493), new SmartSvgCaptchaPoint(272, 533), new SmartSvgCaptchaPoint(267, 572)), array(new SmartSvgCaptchaPoint(267, 572), new SmartSvgCaptchaPoint(261, 609), new SmartSvgCaptchaPoint(265, 640), new SmartSvgCaptchaPoint(228, 679)),
-						array(new SmartSvgCaptchaPoint(267, 572), new SmartSvgCaptchaPoint(261, 609), new SmartSvgCaptchaPoint(265, 640), new SmartSvgCaptchaPoint(228, 679)), array(new SmartSvgCaptchaPoint(228, 679), new SmartSvgCaptchaPoint(182, 727), new SmartSvgCaptchaPoint(84, 731), new SmartSvgCaptchaPoint(28, 695)), array(new SmartSvgCaptchaPoint(28, 695), new SmartSvgCaptchaPoint(6, 681), new SmartSvgCaptchaPoint(0, 604), new SmartSvgCaptchaPoint(1, 623)), array(new SmartSvgCaptchaPoint(3, 691), new SmartSvgCaptchaPoint(6, 745), new SmartSvgCaptchaPoint(67, 742), new SmartSvgCaptchaPoint(94, 742)),
-						array(new SmartSvgCaptchaPoint(3, 691), new SmartSvgCaptchaPoint(6, 745), new SmartSvgCaptchaPoint(67, 742), new SmartSvgCaptchaPoint(94, 742)), array(new SmartSvgCaptchaPoint(94, 742), new SmartSvgCaptchaPoint(124, 741), new SmartSvgCaptchaPoint(153, 741), new SmartSvgCaptchaPoint(182, 741)), array(new SmartSvgCaptchaPoint(182, 741), new SmartSvgCaptchaPoint(235, 740), new SmartSvgCaptchaPoint(287, 664), new SmartSvgCaptchaPoint(307, 605)), array(new SmartSvgCaptchaPoint(307, 605), new SmartSvgCaptchaPoint(333, 530), new SmartSvgCaptchaPoint(322, 438), new SmartSvgCaptchaPoint(287, 366)),
-						array(new SmartSvgCaptchaPoint(307, 605), new SmartSvgCaptchaPoint(333, 530), new SmartSvgCaptchaPoint(322, 438), new SmartSvgCaptchaPoint(287, 366))
-					),
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(347, 110), new SmartSvgCaptchaPoint(346, 44)), array(new SmartSvgCaptchaPoint(1, 623), new SmartSvgCaptchaPoint(3, 691)), array(new SmartSvgCaptchaPoint(287, 366), new SmartSvgCaptchaPoint(287, 366))
-				))
-			),
-			'X' => array(
-				'width' => 300,
-				'height' => 400,
-				'glyph_data' => array(
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(10, 0), new SmartSvgCaptchaPoint(130, 200)), array(new SmartSvgCaptchaPoint(130, 200), new SmartSvgCaptchaPoint(0, 390)), array(new SmartSvgCaptchaPoint(0, 390), new SmartSvgCaptchaPoint(40, 390)), array(new SmartSvgCaptchaPoint(40, 390), new SmartSvgCaptchaPoint(150, 220)),
-						array(new SmartSvgCaptchaPoint(40, 390), new SmartSvgCaptchaPoint(150, 220)), array(new SmartSvgCaptchaPoint(150, 220), new SmartSvgCaptchaPoint(260, 400)), array(new SmartSvgCaptchaPoint(260, 400), new SmartSvgCaptchaPoint(300, 400)), array(new SmartSvgCaptchaPoint(300, 400), new SmartSvgCaptchaPoint(170, 190)),
-						array(new SmartSvgCaptchaPoint(300, 400), new SmartSvgCaptchaPoint(170, 190)), array(new SmartSvgCaptchaPoint(170, 190), new SmartSvgCaptchaPoint(296, 0)), array(new SmartSvgCaptchaPoint(296, 0), new SmartSvgCaptchaPoint(260, 0)), array(new SmartSvgCaptchaPoint(260, 0), new SmartSvgCaptchaPoint(150, 170)),
-						array(new SmartSvgCaptchaPoint(260, 0), new SmartSvgCaptchaPoint(150, 170)), array(new SmartSvgCaptchaPoint(150, 170), new SmartSvgCaptchaPoint(50, 0)), array(new SmartSvgCaptchaPoint(50, 0), new SmartSvgCaptchaPoint(10, 0))
-				))
-			),
-			'E' => array(
+				'glyph_data' => [
+					'cubic_splines' => [
+						[ new SmartSvgCaptchaPoint(111, 50), new SmartSvgCaptchaPoint(111, 50), new SmartSvgCaptchaPoint(146, 38), new SmartSvgCaptchaPoint(206, 39) ],
+						[ new SmartSvgCaptchaPoint(206, 39), new SmartSvgCaptchaPoint(267, 41), new SmartSvgCaptchaPoint(287, 53), new SmartSvgCaptchaPoint(304, 67) ],
+						[ new SmartSvgCaptchaPoint(304, 67), new SmartSvgCaptchaPoint(318, 79), new SmartSvgCaptchaPoint(340, 110), new SmartSvgCaptchaPoint(340, 110) ],
+						[ new SmartSvgCaptchaPoint(370, 110), new SmartSvgCaptchaPoint(370, 110), new SmartSvgCaptchaPoint(361, 71), new SmartSvgCaptchaPoint(340, 50) ],
+						[ new SmartSvgCaptchaPoint(370, 110), new SmartSvgCaptchaPoint(370, 110), new SmartSvgCaptchaPoint(361, 71), new SmartSvgCaptchaPoint(340, 50) ],
+						[ new SmartSvgCaptchaPoint(340, 50), new SmartSvgCaptchaPoint(310, 20), new SmartSvgCaptchaPoint(288, 15), new SmartSvgCaptchaPoint(220, 10) ],
+						[ new SmartSvgCaptchaPoint(220, 10), new SmartSvgCaptchaPoint(151, 5), new SmartSvgCaptchaPoint(110, 20), new SmartSvgCaptchaPoint(110, 20) ]
+					],
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(30, 0), new SmartSvgCaptchaPoint(30, 30) ],
+						[ new SmartSvgCaptchaPoint(30, 30), new SmartSvgCaptchaPoint(80, 30) ],
+						[ new SmartSvgCaptchaPoint(80, 30), new SmartSvgCaptchaPoint(80, 350) ],
+						[ new SmartSvgCaptchaPoint(80, 350), new SmartSvgCaptchaPoint(30, 350) ],
+						[ new SmartSvgCaptchaPoint(80, 350), new SmartSvgCaptchaPoint(30, 350) ],
+						[ new SmartSvgCaptchaPoint(30, 350), new SmartSvgCaptchaPoint(0, 380) ],
+						[ new SmartSvgCaptchaPoint(0, 380), new SmartSvgCaptchaPoint(160, 380) ],
+						[ new SmartSvgCaptchaPoint(160, 380), new SmartSvgCaptchaPoint(160, 350) ],
+						[ new SmartSvgCaptchaPoint(160, 380), new SmartSvgCaptchaPoint(160, 350) ],
+						[ new SmartSvgCaptchaPoint(160, 350), new SmartSvgCaptchaPoint(110, 350) ],
+						[ new SmartSvgCaptchaPoint(110, 350), new SmartSvgCaptchaPoint(111, 50) ],
+						[ new SmartSvgCaptchaPoint(340, 110), new SmartSvgCaptchaPoint(340, 350) ],
+						[ new SmartSvgCaptchaPoint(340, 110), new SmartSvgCaptchaPoint(340, 350) ],
+						[ new SmartSvgCaptchaPoint(340, 350), new SmartSvgCaptchaPoint(290, 350) ],
+						[ new SmartSvgCaptchaPoint(290, 350), new SmartSvgCaptchaPoint(290, 380) ],
+						[ new SmartSvgCaptchaPoint(290, 380), new SmartSvgCaptchaPoint(420, 380) ],
+						[ new SmartSvgCaptchaPoint(290, 380), new SmartSvgCaptchaPoint(420, 380) ],
+						[ new SmartSvgCaptchaPoint(420, 380), new SmartSvgCaptchaPoint(370, 350) ],
+						[ new SmartSvgCaptchaPoint(370, 350), new SmartSvgCaptchaPoint(370, 110) ],
+						[ new SmartSvgCaptchaPoint(110, 20), new SmartSvgCaptchaPoint(110, 0) ],
+						[ new SmartSvgCaptchaPoint(110, 20), new SmartSvgCaptchaPoint(110, 0) ],
+						[ new SmartSvgCaptchaPoint(110, 0), new SmartSvgCaptchaPoint(30, 0) ]
+					]
+				]
+			],
+			'y' => [
+				'width' => 347,
+				'height' => 381,
+				'glyph_data' => [
+					'cubic_splines' => [
+						[ new SmartSvgCaptchaPoint(178, 245), new SmartSvgCaptchaPoint(178, 245), new SmartSvgCaptchaPoint(148, 314), new SmartSvgCaptchaPoint(122, 339) ],
+						[ new SmartSvgCaptchaPoint(122, 339), new SmartSvgCaptchaPoint(109, 350), new SmartSvgCaptchaPoint(93, 361), new SmartSvgCaptchaPoint(76, 363) ],
+						[ new SmartSvgCaptchaPoint(76, 363), new SmartSvgCaptchaPoint(53, 366), new SmartSvgCaptchaPoint(6, 342), new SmartSvgCaptchaPoint(6, 342) ],
+						[ new SmartSvgCaptchaPoint(0, 359), new SmartSvgCaptchaPoint(0, 359), new SmartSvgCaptchaPoint(49, 381), new SmartSvgCaptchaPoint(73, 379) ],
+						[ new SmartSvgCaptchaPoint(0, 359), new SmartSvgCaptchaPoint(0, 359), new SmartSvgCaptchaPoint(49, 381), new SmartSvgCaptchaPoint(73, 379) ],
+						[ new SmartSvgCaptchaPoint(73, 379), new SmartSvgCaptchaPoint(93, 377), new SmartSvgCaptchaPoint(112, 365), new SmartSvgCaptchaPoint(128, 352) ],
+						[ new SmartSvgCaptchaPoint(128, 352), new SmartSvgCaptchaPoint(158, 325), new SmartSvgCaptchaPoint(175, 286), new SmartSvgCaptchaPoint(195, 250) ],
+						[ new SmartSvgCaptchaPoint(195, 250), new SmartSvgCaptchaPoint(235, 178), new SmartSvgCaptchaPoint(296, 16), new SmartSvgCaptchaPoint(296, 16) ],
+						[ new SmartSvgCaptchaPoint(195, 250), new SmartSvgCaptchaPoint(235, 178), new SmartSvgCaptchaPoint(296, 16), new SmartSvgCaptchaPoint(296, 16) ]
+					],
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(30, 19), new SmartSvgCaptchaPoint(65, 19) ],
+						[ new SmartSvgCaptchaPoint(65, 19), new SmartSvgCaptchaPoint(178, 245) ],
+						[ new SmartSvgCaptchaPoint(6, 342), new SmartSvgCaptchaPoint(0, 359) ],
+						[ new SmartSvgCaptchaPoint(296, 16), new SmartSvgCaptchaPoint(347, 16) ],
+						[ new SmartSvgCaptchaPoint(296, 16), new SmartSvgCaptchaPoint(347, 16) ],
+						[ new SmartSvgCaptchaPoint(347, 16), new SmartSvgCaptchaPoint(347, 0) ],
+						[ new SmartSvgCaptchaPoint(347, 0), new SmartSvgCaptchaPoint(239, 0) ],
+						[ new SmartSvgCaptchaPoint(239, 0), new SmartSvgCaptchaPoint(239, 16) ],
+						[ new SmartSvgCaptchaPoint(239, 0), new SmartSvgCaptchaPoint(239, 16) ],
+						[ new SmartSvgCaptchaPoint(239, 16), new SmartSvgCaptchaPoint(278, 16) ],
+						[ new SmartSvgCaptchaPoint(278, 16), new SmartSvgCaptchaPoint(189, 229) ],
+						[ new SmartSvgCaptchaPoint(189, 229), new SmartSvgCaptchaPoint(81, 19) ],
+						[ new SmartSvgCaptchaPoint(189, 229), new SmartSvgCaptchaPoint(81, 19) ],
+						[ new SmartSvgCaptchaPoint(81, 19), new SmartSvgCaptchaPoint(135, 18) ],
+						[ new SmartSvgCaptchaPoint(135, 18), new SmartSvgCaptchaPoint(135, 0) ],
+						[ new SmartSvgCaptchaPoint(135, 0), new SmartSvgCaptchaPoint(30, 0) ],
+						[ new SmartSvgCaptchaPoint(135, 0), new SmartSvgCaptchaPoint(30, 0) ],
+						[ new SmartSvgCaptchaPoint(30, 0), new SmartSvgCaptchaPoint(30, 19) ]
+					]
+				]
+			],
+			'E' => [
 				'width' => 370,
 				'height' => 680,
-				'glyph_data' => array(
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(0, 0), new SmartSvgCaptchaPoint(0, 50)), array(new SmartSvgCaptchaPoint(0, 50), new SmartSvgCaptchaPoint(50, 50)), array(new SmartSvgCaptchaPoint(50, 50), new SmartSvgCaptchaPoint(50, 630)), array(new SmartSvgCaptchaPoint(50, 630), new SmartSvgCaptchaPoint(0, 630)),
-						array(new SmartSvgCaptchaPoint(50, 630), new SmartSvgCaptchaPoint(0, 630)), array(new SmartSvgCaptchaPoint(0, 630), new SmartSvgCaptchaPoint(0, 680)), array(new SmartSvgCaptchaPoint(0, 680), new SmartSvgCaptchaPoint(370, 680)), array(new SmartSvgCaptchaPoint(370, 680), new SmartSvgCaptchaPoint(370, 550)),
-						array(new SmartSvgCaptchaPoint(370, 680), new SmartSvgCaptchaPoint(370, 550)), array(new SmartSvgCaptchaPoint(370, 550), new SmartSvgCaptchaPoint(320, 550)), array(new SmartSvgCaptchaPoint(320, 550), new SmartSvgCaptchaPoint(320, 630)), array(new SmartSvgCaptchaPoint(320, 630), new SmartSvgCaptchaPoint(100, 630)),
-						array(new SmartSvgCaptchaPoint(320, 630), new SmartSvgCaptchaPoint(100, 630)), array(new SmartSvgCaptchaPoint(100, 630), new SmartSvgCaptchaPoint(100, 360)), array(new SmartSvgCaptchaPoint(100, 360), new SmartSvgCaptchaPoint(280, 360)), array(new SmartSvgCaptchaPoint(280, 360), new SmartSvgCaptchaPoint(280, 310)),
-						array(new SmartSvgCaptchaPoint(280, 360), new SmartSvgCaptchaPoint(280, 310)), array(new SmartSvgCaptchaPoint(280, 310), new SmartSvgCaptchaPoint(100, 310)), array(new SmartSvgCaptchaPoint(100, 310), new SmartSvgCaptchaPoint(100, 50)), array(new SmartSvgCaptchaPoint(100, 50), new SmartSvgCaptchaPoint(320, 50)),
-						array(new SmartSvgCaptchaPoint(100, 50), new SmartSvgCaptchaPoint(320, 50)), array(new SmartSvgCaptchaPoint(320, 50), new SmartSvgCaptchaPoint(320, 130)), array(new SmartSvgCaptchaPoint(320, 130), new SmartSvgCaptchaPoint(370, 130)), array(new SmartSvgCaptchaPoint(370, 130), new SmartSvgCaptchaPoint(370, 0)),
-						array(new SmartSvgCaptchaPoint(370, 130), new SmartSvgCaptchaPoint(370, 0)), array(new SmartSvgCaptchaPoint(370, 0), new SmartSvgCaptchaPoint(0, 0))
-				))
-			),
-			'Q' => array(
+				'glyph_data' => [
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(0, 0), new SmartSvgCaptchaPoint(0, 50) ],
+						[ new SmartSvgCaptchaPoint(0, 50), new SmartSvgCaptchaPoint(50, 50) ],
+						[ new SmartSvgCaptchaPoint(50, 50), new SmartSvgCaptchaPoint(50, 630) ],
+						[ new SmartSvgCaptchaPoint(50, 630), new SmartSvgCaptchaPoint(0, 630) ],
+						[ new SmartSvgCaptchaPoint(50, 630), new SmartSvgCaptchaPoint(0, 630) ],
+						[ new SmartSvgCaptchaPoint(0, 630), new SmartSvgCaptchaPoint(0, 680) ],
+						[ new SmartSvgCaptchaPoint(0, 680), new SmartSvgCaptchaPoint(370, 680) ],
+						[ new SmartSvgCaptchaPoint(370, 680), new SmartSvgCaptchaPoint(370, 550) ],
+						[ new SmartSvgCaptchaPoint(370, 680), new SmartSvgCaptchaPoint(370, 550) ],
+						[ new SmartSvgCaptchaPoint(370, 550), new SmartSvgCaptchaPoint(320, 550) ],
+						[ new SmartSvgCaptchaPoint(320, 550), new SmartSvgCaptchaPoint(320, 630) ],
+						[ new SmartSvgCaptchaPoint(320, 630), new SmartSvgCaptchaPoint(100, 630) ],
+						[ new SmartSvgCaptchaPoint(320, 630), new SmartSvgCaptchaPoint(100, 630) ],
+						[ new SmartSvgCaptchaPoint(100, 630), new SmartSvgCaptchaPoint(100, 360) ],
+						[ new SmartSvgCaptchaPoint(100, 360), new SmartSvgCaptchaPoint(280, 360) ],
+						[ new SmartSvgCaptchaPoint(280, 360), new SmartSvgCaptchaPoint(280, 310) ],
+						[ new SmartSvgCaptchaPoint(280, 360), new SmartSvgCaptchaPoint(280, 310) ],
+						[ new SmartSvgCaptchaPoint(280, 310), new SmartSvgCaptchaPoint(100, 310) ],
+						[ new SmartSvgCaptchaPoint(100, 310), new SmartSvgCaptchaPoint(100, 50) ],
+						[ new SmartSvgCaptchaPoint(100, 50), new SmartSvgCaptchaPoint(320, 50) ],
+						[ new SmartSvgCaptchaPoint(100, 50), new SmartSvgCaptchaPoint(320, 50) ],
+						[ new SmartSvgCaptchaPoint(320, 50), new SmartSvgCaptchaPoint(320, 130) ],
+						[ new SmartSvgCaptchaPoint(320, 130), new SmartSvgCaptchaPoint(370, 130) ],
+						[ new SmartSvgCaptchaPoint(370, 130), new SmartSvgCaptchaPoint(370, 0) ],
+						[ new SmartSvgCaptchaPoint(370, 130), new SmartSvgCaptchaPoint(370, 0) ],
+						[ new SmartSvgCaptchaPoint(370, 0), new SmartSvgCaptchaPoint(0, 0) ]
+					]
+				]
+			],
+			'G' => [
+				'width' => 248,
+				'height' => 353,
+				'glyph_data' => [
+					'cubic_splines' => [
+						[ new SmartSvgCaptchaPoint(248, 60), new SmartSvgCaptchaPoint(248, 60), new SmartSvgCaptchaPoint(211, 28), new SmartSvgCaptchaPoint(189, 17) ],
+						[ new SmartSvgCaptchaPoint(189, 17), new SmartSvgCaptchaPoint(169, 7), new SmartSvgCaptchaPoint(146, 0), new SmartSvgCaptchaPoint(124, 4) ],
+						[ new SmartSvgCaptchaPoint(124, 4), new SmartSvgCaptchaPoint(98, 8), new SmartSvgCaptchaPoint(74, 25), new SmartSvgCaptchaPoint(56, 45) ],
+						[ new SmartSvgCaptchaPoint(56, 45), new SmartSvgCaptchaPoint(33, 70), new SmartSvgCaptchaPoint(20, 103), new SmartSvgCaptchaPoint(12, 135) ],
+						[ new SmartSvgCaptchaPoint(56, 45), new SmartSvgCaptchaPoint(33, 70), new SmartSvgCaptchaPoint(20, 103), new SmartSvgCaptchaPoint(12, 135) ],
+						[ new SmartSvgCaptchaPoint(12, 135), new SmartSvgCaptchaPoint(3, 175), new SmartSvgCaptchaPoint(0, 218), new SmartSvgCaptchaPoint(12, 257) ],
+						[ new SmartSvgCaptchaPoint(12, 257), new SmartSvgCaptchaPoint(21, 287), new SmartSvgCaptchaPoint(39, 315), new SmartSvgCaptchaPoint(64, 333) ],
+						[ new SmartSvgCaptchaPoint(64, 333), new SmartSvgCaptchaPoint(83, 347), new SmartSvgCaptchaPoint(108, 352), new SmartSvgCaptchaPoint(132, 352) ],
+						[ new SmartSvgCaptchaPoint(64, 333), new SmartSvgCaptchaPoint(83, 347), new SmartSvgCaptchaPoint(108, 352), new SmartSvgCaptchaPoint(132, 352) ],
+						[ new SmartSvgCaptchaPoint(132, 352), new SmartSvgCaptchaPoint(167, 353), new SmartSvgCaptchaPoint(236, 344), new SmartSvgCaptchaPoint(236, 344) ],
+						[ new SmartSvgCaptchaPoint(207, 297), new SmartSvgCaptchaPoint(208, 326), new SmartSvgCaptchaPoint(181, 324), new SmartSvgCaptchaPoint(158, 321) ],
+						[ new SmartSvgCaptchaPoint(158, 321), new SmartSvgCaptchaPoint(130, 317), new SmartSvgCaptchaPoint(74, 301), new SmartSvgCaptchaPoint(58, 278) ],
+						[ new SmartSvgCaptchaPoint(158, 321), new SmartSvgCaptchaPoint(130, 317), new SmartSvgCaptchaPoint(74, 301), new SmartSvgCaptchaPoint(58, 278) ],
+						[ new SmartSvgCaptchaPoint(58, 278), new SmartSvgCaptchaPoint(38, 248), new SmartSvgCaptchaPoint(39, 208), new SmartSvgCaptchaPoint(43, 174) ],
+						[ new SmartSvgCaptchaPoint(43, 174), new SmartSvgCaptchaPoint(46, 136), new SmartSvgCaptchaPoint(56, 95), new SmartSvgCaptchaPoint(80, 65) ],
+						[ new SmartSvgCaptchaPoint(80, 65), new SmartSvgCaptchaPoint(96, 47), new SmartSvgCaptchaPoint(119, 34), new SmartSvgCaptchaPoint(144, 36) ],
+						[ new SmartSvgCaptchaPoint(80, 65), new SmartSvgCaptchaPoint(96, 47), new SmartSvgCaptchaPoint(119, 34), new SmartSvgCaptchaPoint(144, 36) ],
+						[ new SmartSvgCaptchaPoint(144, 36), new SmartSvgCaptchaPoint(177, 38), new SmartSvgCaptchaPoint(224, 84), new SmartSvgCaptchaPoint(224, 84) ],
+						[ new SmartSvgCaptchaPoint(224, 84), new SmartSvgCaptchaPoint(224, 84), new SmartSvgCaptchaPoint(218, 92), new SmartSvgCaptchaPoint(248, 60) ]
+					],
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(236, 344), new SmartSvgCaptchaPoint(238, 202) ],
+						[ new SmartSvgCaptchaPoint(238, 202), new SmartSvgCaptchaPoint(118, 200) ],
+						[ new SmartSvgCaptchaPoint(118, 200), new SmartSvgCaptchaPoint(116, 231) ],
+						[ new SmartSvgCaptchaPoint(116, 231), new SmartSvgCaptchaPoint(207, 231) ],
+						[ new SmartSvgCaptchaPoint(116, 231), new SmartSvgCaptchaPoint(207, 231) ],
+						[ new SmartSvgCaptchaPoint(207, 231), new SmartSvgCaptchaPoint(207, 297) ],
+						[ new SmartSvgCaptchaPoint(248, 60), new SmartSvgCaptchaPoint(248, 60) ]
+					]
+				]
+			],
+			'H' => [
+				'width' => 420,
+				'height' => 550,
+				'glyph_data' => [
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(0, 0), new SmartSvgCaptchaPoint(0, 35) ],
+						[ new SmartSvgCaptchaPoint(0, 35), new SmartSvgCaptchaPoint(55, 35) ],
+						[ new SmartSvgCaptchaPoint(55, 35), new SmartSvgCaptchaPoint(55, 520) ],
+						[ new SmartSvgCaptchaPoint(55, 520), new SmartSvgCaptchaPoint(0, 520) ],
+						[ new SmartSvgCaptchaPoint(55, 520), new SmartSvgCaptchaPoint(0, 520) ],
+						[ new SmartSvgCaptchaPoint(0, 520), new SmartSvgCaptchaPoint(0, 550) ],
+						[ new SmartSvgCaptchaPoint(0, 550), new SmartSvgCaptchaPoint(150, 550) ],
+						[ new SmartSvgCaptchaPoint(150, 550), new SmartSvgCaptchaPoint(150, 520) ],
+						[ new SmartSvgCaptchaPoint(150, 550), new SmartSvgCaptchaPoint(150, 520) ],
+						[ new SmartSvgCaptchaPoint(150, 520), new SmartSvgCaptchaPoint(95, 520) ],
+						[ new SmartSvgCaptchaPoint(95, 520), new SmartSvgCaptchaPoint(95, 270) ],
+						[ new SmartSvgCaptchaPoint(95, 270), new SmartSvgCaptchaPoint(325, 270) ],
+						[ new SmartSvgCaptchaPoint(95, 270), new SmartSvgCaptchaPoint(325, 270) ],
+						[ new SmartSvgCaptchaPoint(325, 270), new SmartSvgCaptchaPoint(325, 520) ],
+						[ new SmartSvgCaptchaPoint(325, 520), new SmartSvgCaptchaPoint(265, 520) ],
+						[ new SmartSvgCaptchaPoint(265, 520), new SmartSvgCaptchaPoint(265, 550) ],
+						[ new SmartSvgCaptchaPoint(265, 520), new SmartSvgCaptchaPoint(265, 550) ],
+						[ new SmartSvgCaptchaPoint(265, 550), new SmartSvgCaptchaPoint(420, 550) ],
+						[ new SmartSvgCaptchaPoint(420, 550), new SmartSvgCaptchaPoint(420, 520) ],
+						[ new SmartSvgCaptchaPoint(420, 520), new SmartSvgCaptchaPoint(370, 520) ],
+						[ new SmartSvgCaptchaPoint(420, 520), new SmartSvgCaptchaPoint(370, 520) ],
+						[ new SmartSvgCaptchaPoint(370, 520), new SmartSvgCaptchaPoint(370, 35) ],
+						[ new SmartSvgCaptchaPoint(370, 35), new SmartSvgCaptchaPoint(420, 35) ],
+						[ new SmartSvgCaptchaPoint(420, 35), new SmartSvgCaptchaPoint(420, 0) ],
+						[ new SmartSvgCaptchaPoint(420, 35), new SmartSvgCaptchaPoint(420, 0) ],
+						[ new SmartSvgCaptchaPoint(420, 0), new SmartSvgCaptchaPoint(265, 0) ],
+						[ new SmartSvgCaptchaPoint(265, 0), new SmartSvgCaptchaPoint(265, 35) ],
+						[ new SmartSvgCaptchaPoint(265, 35), new SmartSvgCaptchaPoint(325, 35) ],
+						[ new SmartSvgCaptchaPoint(265, 35), new SmartSvgCaptchaPoint(325, 35) ],
+						[ new SmartSvgCaptchaPoint(325, 35), new SmartSvgCaptchaPoint(325, 230) ],
+						[ new SmartSvgCaptchaPoint(325, 230), new SmartSvgCaptchaPoint(95, 230) ],
+						[ new SmartSvgCaptchaPoint(95, 230), new SmartSvgCaptchaPoint(95, 35) ],
+						[ new SmartSvgCaptchaPoint(95, 230), new SmartSvgCaptchaPoint(95, 35) ],
+						[ new SmartSvgCaptchaPoint(95, 35), new SmartSvgCaptchaPoint(150, 35) ],
+						[ new SmartSvgCaptchaPoint(150, 35), new SmartSvgCaptchaPoint(150, 0) ],
+						[ new SmartSvgCaptchaPoint(150, 0), new SmartSvgCaptchaPoint(0, 0) ],
+						[ new SmartSvgCaptchaPoint(150, 0), new SmartSvgCaptchaPoint(0, 0) ]
+					]
+				]
+			],
+			'Q' => [
 				'width' => 510,
 				'height' => 600,
-				'glyph_data' => array(
-					'cubic_splines' => array(
-						array(new SmartSvgCaptchaPoint(70, 90), new SmartSvgCaptchaPoint(68, 202), new SmartSvgCaptchaPoint(71, 408), new SmartSvgCaptchaPoint(70, 440))
-					),
-					'lines' => array(
-						array(new SmartSvgCaptchaPoint(0, 450), new SmartSvgCaptchaPoint(70, 540)), array(new SmartSvgCaptchaPoint(70, 540), new SmartSvgCaptchaPoint(360, 540)), array(new SmartSvgCaptchaPoint(360, 540), new SmartSvgCaptchaPoint(410, 600)), array(new SmartSvgCaptchaPoint(410, 600), new SmartSvgCaptchaPoint(500, 600)),
-						array(new SmartSvgCaptchaPoint(410, 600), new SmartSvgCaptchaPoint(500, 600)), array(new SmartSvgCaptchaPoint(500, 600), new SmartSvgCaptchaPoint(440, 530)), array(new SmartSvgCaptchaPoint(440, 530), new SmartSvgCaptchaPoint(510, 460)), array(new SmartSvgCaptchaPoint(510, 460), new SmartSvgCaptchaPoint(510, 70)),
-						array(new SmartSvgCaptchaPoint(510, 460), new SmartSvgCaptchaPoint(510, 70)), array(new SmartSvgCaptchaPoint(510, 70), new SmartSvgCaptchaPoint(431, 2)), array(new SmartSvgCaptchaPoint(431, 2), new SmartSvgCaptchaPoint(70, 0)), array(new SmartSvgCaptchaPoint(70, 0), new SmartSvgCaptchaPoint(0, 70)),
-						array(new SmartSvgCaptchaPoint(70, 0), new SmartSvgCaptchaPoint(0, 70)), array(new SmartSvgCaptchaPoint(0, 70), new SmartSvgCaptchaPoint(0, 450)), array(new SmartSvgCaptchaPoint(70, 440), new SmartSvgCaptchaPoint(110, 480)), array(new SmartSvgCaptchaPoint(110, 480), new SmartSvgCaptchaPoint(310, 480)),
-						array(new SmartSvgCaptchaPoint(110, 480), new SmartSvgCaptchaPoint(310, 480)), array(new SmartSvgCaptchaPoint(310, 480), new SmartSvgCaptchaPoint(270, 420)), array(new SmartSvgCaptchaPoint(270, 420), new SmartSvgCaptchaPoint(360, 420)), array(new SmartSvgCaptchaPoint(360, 420), new SmartSvgCaptchaPoint(400, 480)),
-						array(new SmartSvgCaptchaPoint(360, 420), new SmartSvgCaptchaPoint(400, 480)), array(new SmartSvgCaptchaPoint(400, 480), new SmartSvgCaptchaPoint(440, 430)), array(new SmartSvgCaptchaPoint(440, 430), new SmartSvgCaptchaPoint(440, 90)), array(new SmartSvgCaptchaPoint(440, 90), new SmartSvgCaptchaPoint(390, 50)),
-						array(new SmartSvgCaptchaPoint(440, 90), new SmartSvgCaptchaPoint(390, 50)), array(new SmartSvgCaptchaPoint(390, 50), new SmartSvgCaptchaPoint(120, 50)), array(new SmartSvgCaptchaPoint(120, 50), new SmartSvgCaptchaPoint(70, 90))
-				))
-			),
+				'glyph_data' => [
+					'cubic_splines' => [
+						[ new SmartSvgCaptchaPoint(70, 90), new SmartSvgCaptchaPoint(68, 202), new SmartSvgCaptchaPoint(71, 408), new SmartSvgCaptchaPoint(70, 440) ]
+					],
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(0, 450), new SmartSvgCaptchaPoint(70, 540) ],
+						[ new SmartSvgCaptchaPoint(70, 540), new SmartSvgCaptchaPoint(360, 540) ],
+						[ new SmartSvgCaptchaPoint(360, 540), new SmartSvgCaptchaPoint(410, 600) ],
+						[ new SmartSvgCaptchaPoint(410, 600), new SmartSvgCaptchaPoint(500, 600) ],
+						[ new SmartSvgCaptchaPoint(410, 600), new SmartSvgCaptchaPoint(500, 600) ],
+						[ new SmartSvgCaptchaPoint(500, 600), new SmartSvgCaptchaPoint(440, 530) ],
+						[ new SmartSvgCaptchaPoint(440, 530), new SmartSvgCaptchaPoint(510, 460) ],
+						[ new SmartSvgCaptchaPoint(510, 460), new SmartSvgCaptchaPoint(510, 70) ],
+						[ new SmartSvgCaptchaPoint(510, 460), new SmartSvgCaptchaPoint(510, 70) ],
+						[ new SmartSvgCaptchaPoint(510, 70), new SmartSvgCaptchaPoint(431, 2) ],
+						[ new SmartSvgCaptchaPoint(431, 2), new SmartSvgCaptchaPoint(70, 0) ],
+						[ new SmartSvgCaptchaPoint(70, 0), new SmartSvgCaptchaPoint(0, 70) ],
+						[ new SmartSvgCaptchaPoint(70, 0), new SmartSvgCaptchaPoint(0, 70) ],
+						[ new SmartSvgCaptchaPoint(0, 70), new SmartSvgCaptchaPoint(0, 450) ],
+						[ new SmartSvgCaptchaPoint(70, 440), new SmartSvgCaptchaPoint(110, 480) ],
+						[ new SmartSvgCaptchaPoint(110, 480), new SmartSvgCaptchaPoint(310, 480) ],
+						[ new SmartSvgCaptchaPoint(110, 480), new SmartSvgCaptchaPoint(310, 480) ],
+						[ new SmartSvgCaptchaPoint(310, 480), new SmartSvgCaptchaPoint(270, 420) ],
+						[ new SmartSvgCaptchaPoint(270, 420), new SmartSvgCaptchaPoint(360, 420) ],
+						[ new SmartSvgCaptchaPoint(360, 420), new SmartSvgCaptchaPoint(400, 480) ],
+						[ new SmartSvgCaptchaPoint(360, 420), new SmartSvgCaptchaPoint(400, 480) ],
+						[ new SmartSvgCaptchaPoint(400, 480), new SmartSvgCaptchaPoint(440, 430) ],
+						[ new SmartSvgCaptchaPoint(440, 430), new SmartSvgCaptchaPoint(440, 90) ],
+						[ new SmartSvgCaptchaPoint(440, 90), new SmartSvgCaptchaPoint(390, 50) ],
+						[ new SmartSvgCaptchaPoint(440, 90), new SmartSvgCaptchaPoint(390, 50) ],
+						[ new SmartSvgCaptchaPoint(390, 50), new SmartSvgCaptchaPoint(120, 50) ],
+						[ new SmartSvgCaptchaPoint(120, 50), new SmartSvgCaptchaPoint(70, 90) ]
+					]
+				]
+			],
+			'S' => [
+				'width' => 354,
+				'height' => 745,
+				'glyph_data' => [
+					'cubic_splines' => [
+						[ new SmartSvgCaptchaPoint(287, 366), new SmartSvgCaptchaPoint(250, 289), new SmartSvgCaptchaPoint(141, 264), new SmartSvgCaptchaPoint(99, 189) ],
+						[ new SmartSvgCaptchaPoint(99, 189), new SmartSvgCaptchaPoint(88, 168), new SmartSvgCaptchaPoint(78, 141), new SmartSvgCaptchaPoint(85, 118) ],
+						[ new SmartSvgCaptchaPoint(85, 118), new SmartSvgCaptchaPoint(92, 96), new SmartSvgCaptchaPoint(116, 82), new SmartSvgCaptchaPoint(135, 71) ],
+						[ new SmartSvgCaptchaPoint(135, 71), new SmartSvgCaptchaPoint(157, 58), new SmartSvgCaptchaPoint(182, 50), new SmartSvgCaptchaPoint(207, 48) ],
+						[ new SmartSvgCaptchaPoint(135, 71), new SmartSvgCaptchaPoint(157, 58), new SmartSvgCaptchaPoint(182, 50), new SmartSvgCaptchaPoint(207, 48) ],
+						[ new SmartSvgCaptchaPoint(207, 48), new SmartSvgCaptchaPoint(244, 44), new SmartSvgCaptchaPoint(288, 42), new SmartSvgCaptchaPoint(319, 63) ],
+						[ new SmartSvgCaptchaPoint(319, 63), new SmartSvgCaptchaPoint(335, 73), new SmartSvgCaptchaPoint(348, 128), new SmartSvgCaptchaPoint(347, 110) ],
+						[ new SmartSvgCaptchaPoint(346, 44), new SmartSvgCaptchaPoint(345, 21), new SmartSvgCaptchaPoint(354, 16), new SmartSvgCaptchaPoint(293, 15) ],
+						[ new SmartSvgCaptchaPoint(346, 44), new SmartSvgCaptchaPoint(345, 21), new SmartSvgCaptchaPoint(354, 16), new SmartSvgCaptchaPoint(293, 15) ],
+						[ new SmartSvgCaptchaPoint(293, 15), new SmartSvgCaptchaPoint(293, 15), new SmartSvgCaptchaPoint(161, 0), new SmartSvgCaptchaPoint(88, 58) ],
+						[ new SmartSvgCaptchaPoint(88, 58), new SmartSvgCaptchaPoint(16, 116), new SmartSvgCaptchaPoint(27, 169), new SmartSvgCaptchaPoint(39, 196) ],
+						[ new SmartSvgCaptchaPoint(39, 196), new SmartSvgCaptchaPoint(74, 277), new SmartSvgCaptchaPoint(183, 304), new SmartSvgCaptchaPoint(233, 377) ],
+						[ new SmartSvgCaptchaPoint(39, 196), new SmartSvgCaptchaPoint(74, 277), new SmartSvgCaptchaPoint(183, 304), new SmartSvgCaptchaPoint(233, 377) ],
+						[ new SmartSvgCaptchaPoint(233, 377), new SmartSvgCaptchaPoint(248, 400), new SmartSvgCaptchaPoint(256, 427), new SmartSvgCaptchaPoint(262, 454) ],
+						[ new SmartSvgCaptchaPoint(262, 454), new SmartSvgCaptchaPoint(270, 493), new SmartSvgCaptchaPoint(272, 533), new SmartSvgCaptchaPoint(267, 572) ],
+						[ new SmartSvgCaptchaPoint(267, 572), new SmartSvgCaptchaPoint(261, 609), new SmartSvgCaptchaPoint(265, 640), new SmartSvgCaptchaPoint(228, 679) ],
+						[ new SmartSvgCaptchaPoint(267, 572), new SmartSvgCaptchaPoint(261, 609), new SmartSvgCaptchaPoint(265, 640), new SmartSvgCaptchaPoint(228, 679) ],
+						[ new SmartSvgCaptchaPoint(228, 679), new SmartSvgCaptchaPoint(182, 727), new SmartSvgCaptchaPoint(84, 731), new SmartSvgCaptchaPoint(28, 695) ],
+						[ new SmartSvgCaptchaPoint(28, 695), new SmartSvgCaptchaPoint(6, 681), new SmartSvgCaptchaPoint(0, 604), new SmartSvgCaptchaPoint(1, 623) ],
+						[ new SmartSvgCaptchaPoint(3, 691), new SmartSvgCaptchaPoint(6, 745), new SmartSvgCaptchaPoint(67, 742), new SmartSvgCaptchaPoint(94, 742) ],
+						[ new SmartSvgCaptchaPoint(3, 691), new SmartSvgCaptchaPoint(6, 745), new SmartSvgCaptchaPoint(67, 742), new SmartSvgCaptchaPoint(94, 742) ],
+						[ new SmartSvgCaptchaPoint(94, 742), new SmartSvgCaptchaPoint(124, 741), new SmartSvgCaptchaPoint(153, 741), new SmartSvgCaptchaPoint(182, 741) ],
+						[ new SmartSvgCaptchaPoint(182, 741), new SmartSvgCaptchaPoint(235, 740), new SmartSvgCaptchaPoint(287, 664), new SmartSvgCaptchaPoint(307, 605) ],
+						[ new SmartSvgCaptchaPoint(307, 605), new SmartSvgCaptchaPoint(333, 530), new SmartSvgCaptchaPoint(322, 438), new SmartSvgCaptchaPoint(287, 366) ],
+						[ new SmartSvgCaptchaPoint(307, 605), new SmartSvgCaptchaPoint(333, 530), new SmartSvgCaptchaPoint(322, 438), new SmartSvgCaptchaPoint(287, 366) ]
+					],
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(347, 110), new SmartSvgCaptchaPoint(346, 44) ],
+						[ new SmartSvgCaptchaPoint(1, 623), new SmartSvgCaptchaPoint(3, 691) ],
+						[ new SmartSvgCaptchaPoint(287, 366), new SmartSvgCaptchaPoint(287, 366) ]
+					]
+				]
+			],
+			'W' => [
+				'width' => 520,
+				'height' => 390,
+				'glyph_data' => [
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(0, 0), new SmartSvgCaptchaPoint(130, 390) ],
+						[ new SmartSvgCaptchaPoint(130, 390), new SmartSvgCaptchaPoint(190, 390) ],
+						[ new SmartSvgCaptchaPoint(190, 390), new SmartSvgCaptchaPoint(270, 120) ],
+						[ new SmartSvgCaptchaPoint(270, 120), new SmartSvgCaptchaPoint(350, 390) ],
+						[ new SmartSvgCaptchaPoint(270, 120), new SmartSvgCaptchaPoint(350, 390) ],
+						[ new SmartSvgCaptchaPoint(350, 390), new SmartSvgCaptchaPoint(410, 390) ],
+						[ new SmartSvgCaptchaPoint(410, 390), new SmartSvgCaptchaPoint(520, 0) ],
+						[ new SmartSvgCaptchaPoint(520, 0), new SmartSvgCaptchaPoint(430, 10) ],
+						[ new SmartSvgCaptchaPoint(520, 0), new SmartSvgCaptchaPoint(430, 10) ],
+						[ new SmartSvgCaptchaPoint(430, 10), new SmartSvgCaptchaPoint(380, 290) ],
+						[ new SmartSvgCaptchaPoint(380, 290), new SmartSvgCaptchaPoint(300, 80) ],
+						[ new SmartSvgCaptchaPoint(300, 80), new SmartSvgCaptchaPoint(240, 80) ],
+						[ new SmartSvgCaptchaPoint(300, 80), new SmartSvgCaptchaPoint(240, 80) ],
+						[ new SmartSvgCaptchaPoint(240, 80), new SmartSvgCaptchaPoint(160, 290) ],
+						[ new SmartSvgCaptchaPoint(160, 290), new SmartSvgCaptchaPoint(90, 10) ],
+						[ new SmartSvgCaptchaPoint(90, 10), new SmartSvgCaptchaPoint(0, 0) ],
+						[ new SmartSvgCaptchaPoint(90, 10), new SmartSvgCaptchaPoint(0, 0) ]
+					]
+				]
+			],
+			'X' => [
+				'width' => 300,
+				'height' => 400,
+				'glyph_data' => [
+					'lines' => [
+						[ new SmartSvgCaptchaPoint(10, 0), new SmartSvgCaptchaPoint(130, 200) ],
+						[ new SmartSvgCaptchaPoint(130, 200), new SmartSvgCaptchaPoint(0, 390) ],
+						[ new SmartSvgCaptchaPoint(0, 390), new SmartSvgCaptchaPoint(40, 390) ],
+						[ new SmartSvgCaptchaPoint(40, 390), new SmartSvgCaptchaPoint(150, 220) ],
+						[ new SmartSvgCaptchaPoint(40, 390), new SmartSvgCaptchaPoint(150, 220) ],
+						[ new SmartSvgCaptchaPoint(150, 220), new SmartSvgCaptchaPoint(260, 400) ],
+						[ new SmartSvgCaptchaPoint(260, 400), new SmartSvgCaptchaPoint(300, 400) ],
+						[ new SmartSvgCaptchaPoint(300, 400), new SmartSvgCaptchaPoint(170, 190) ],
+						[ new SmartSvgCaptchaPoint(300, 400), new SmartSvgCaptchaPoint(170, 190) ],
+						[ new SmartSvgCaptchaPoint(170, 190), new SmartSvgCaptchaPoint(296, 0) ],
+						[ new SmartSvgCaptchaPoint(296, 0), new SmartSvgCaptchaPoint(260, 0) ],
+						[ new SmartSvgCaptchaPoint(260, 0), new SmartSvgCaptchaPoint(150, 170) ],
+						[ new SmartSvgCaptchaPoint(260, 0), new SmartSvgCaptchaPoint(150, 170) ],
+						[ new SmartSvgCaptchaPoint(150, 170), new SmartSvgCaptchaPoint(50, 0) ],
+						[ new SmartSvgCaptchaPoint(50, 0), new SmartSvgCaptchaPoint(10, 0) ]
+					]
+				]
+			],
 		];
 		//--
 		return (array) $this->alphabet;
@@ -1429,14 +1720,14 @@ final class SmartSVGCaptcha {
 	 * @return boolean Whether the action was successful.
 	 */
 	private function _shuffle_assoc(&$array) {
+		//--
 		$keys = array_keys($array);
+		//--
 		shuffle($keys);
-		foreach ($keys as $kk => $key) {
+		foreach($keys as $kk => $key) {
 			$new[$key] = $array[$key];
 		} //end foreach
 		$array = $new;
-		//--
-		return true;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1453,18 +1744,20 @@ final class SmartSVGCaptcha {
 	 * @return array
 	 */
 	private function arr_copy($arr) {
-		$newArray = array();
-		foreach ($arr as $key => $value) {
+		//--
+		$newArray = [];
+		//--
+		foreach($arr as $key => $value) {
 			if(is_array($value)) {
 				$newArray[$key] = $this->arr_copy($value);
 			} elseif(is_object($value)) {
 				$newArray[$key] = clone $value;
 			} else {
 				$newArray[$key] = $value;
-			}
-		}
+			} //end if else
+		} //end foreach
 		//--
-		return $newArray;
+		return (array) $newArray;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1484,14 +1777,14 @@ final class SmartSVGCaptcha {
 		if($num_el > count($input)) {
 			$num_el = count($input);
 		} //end if
-		$keys = array_keys($input);
-		$chosen_keys = array();
+		$keys = (array) array_keys($input);
+		$chosen_keys = [];
 		if($allow_duplicates) {
 			for($i=0; $i<$num_el; $i++) {
 				$chosen_keys[] = $keys[Smart::random_number(0, count($input) - 1)];
 			} //end for
 		} else {
-			$already_used = array();
+			$already_used = [];
 			for($i=0; $i<$num_el; $i++) {
 				$key = $this->_pick_remaining($keys, $already_used);
 				$chosen_keys[] = $key;
@@ -1515,7 +1808,7 @@ final class SmartSVGCaptcha {
 		//--
 		$remaining = array_values(array_diff($key_pool, $already_picked));
 		//--
-		return $remaining[Smart::random_number(0, count($remaining) - 1)];
+		return $remaining[Smart::random_number(0, count($remaining) - 1)]; // mixed
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1540,7 +1833,7 @@ final class SmartSVGCaptcha {
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20210507
  *
  */
 final class SmartSvgCaptchaPoint {
@@ -1554,12 +1847,12 @@ final class SmartSvgCaptchaPoint {
 	} //END FUNCTION
 	//--
 	public function __toString() {
-		return 'Point(x='.$this->x.',y='.$this->y.')';
+		return (string) 'Point(x='.$this->x.',y='.$this->y.')';
 	} //END FUNCTION
 	//--
 	public function is_equal($p) {
 		if($p instanceof SmartSvgCaptchaPoint) {
-			return ($this->x == $p->x && $this->y == $p->y);
+			return (bool) (($this->x == $p->x) && ($this->y == $p->y));
 		} else {
 			return false;
 		} //end if else

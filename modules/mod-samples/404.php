@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/404
 // Route: ?/page/samples.404 (?page=samples.404)
 // (c) 2006-2020 unix-world.org - all rights reserved

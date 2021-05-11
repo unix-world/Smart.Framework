@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/TestImage
 // Route: ?/page/samples.test-image (?page=samples.test-image)
 // (c) 2006-2020 unix-world.org - all rights reserved
@@ -18,7 +17,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
 
-if(SmartFrameworkRuntime::isAdminArea() === true) {
+if(SmartFrameworkRegistry::isAdminArea() === true) {
 	define('SMART_APP_MODULE_DIRECT_OUTPUT', true); // for admin area do direct output
 } //end if
 
@@ -130,10 +129,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//-- dissalow run this sample if not test mode enabled
 		if(SMART_FRAMEWORK_TEST_MODE !== true) {
-			if(!headers_sent()) {
-				http_response_code(503);
-			} //end if
-			die(SmartComponents::http_message_503_serviceunavailable('ERROR: Test mode is disabled ...'));
+			SmartFrameworkRuntime::Raise503Error('ERROR: Test mode is disabled ...');
 			return;
 		} //end if
 		//--
@@ -144,10 +140,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		if((!function_exists('imagecreate')) AND (!function_exists('imagecreatetruecolor'))) {
-			if(!headers_sent()) {
-				http_response_code(500);
-			} //end if
-			die(SmartComponents::http_message_500_internalerror('ERROR: PHP GD Extension is missing ...'));
+			SmartFrameworkRuntime::Raise503Error('ERROR: PHP GD Extension is missing ...');
 			return;
 		} //end if
 		//--
@@ -163,13 +156,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if else
 		ob_end_clean();
 		if(!$im) {
-			if(!headers_sent()) {
-				http_response_code(500);
-			} else {
-				Smart::log_warning('Headers Already Sent before 500 in: '.__METHOD__);
-			} //end if
 			Smart::log_warning('Cannot create the image in: '.__METHOD__);
-			die(SmartComponents::http_message_500_internalerror('ERROR: Cannot create the sample image ...'));
+			SmartFrameworkRuntime::Raise500Error('ERROR: Cannot create the sample image ...');
 			return;
 		} //end if
 		//--

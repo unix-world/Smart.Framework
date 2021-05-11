@@ -153,8 +153,8 @@ if(mb_substitute_character() !== 63) {
  * @hints       You must make always a difference for what you are goint to do with a string. If you need bytes length, then use strlen() with all strings, includding unicode ! If you need instead the number of characters in a string, then use SmartUnicode::str_len() for all variables / strings you know (or you just suppose) that are unicode.
  *
  * @access      PUBLIC
- * @depends     extensions: PHP MBString, PHP XML
- * @version     v.20210331
+ * @depends     extensions: PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET
+ * @version     v.20210506
  * @package     @Core
  *
  */

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: Core.HTTP-MESSAGE-STATUS v.20210420 -->
+<!-- Template: Core.HTTP-MESSAGE-STATUS v.20210422 -->
 <html>
 <head>
 <meta charset="[###CHARSET|html###]">
@@ -14,8 +14,6 @@
 <link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/core/css/notifications-icons.css">
 <style>
 #server-logo {
-	width: 96px;
-	height: 96px;
 	position: absolute;
 	top: 50px;
 	right: 25px;
@@ -33,6 +31,7 @@
 <body>
 <h1 id="title">[###TITLE|html###]</h1>
 <hr size="1">
+[%%%IF:MESSAGE-HTML:!=;%%%]
 <div align="left">
 	<table width="98%">
 		<tr>
@@ -43,10 +42,13 @@
 	</table>
 </div>
 <hr size="1">
+[%%%ELSE:MESSAGE-HTML%%%]
+<!-- no html msg -->
+[%%%/IF:MESSAGE-HTML%%%]
 <small id="server-signature">[###SIGNATURE-HTML###]</small>
 <br>
 <br>
-<img id="server-logo" width="96" src="[###BASE-URL|html###]lib/core/img/app/server.svg">
+<img id="server-logo" alt="globe" width="96" height="96" src="[###BASE-URL|html###]lib/core/img/app/globe.svg">
 </body>
 </html>
 <!-- #END :: Template: Core.HTTP-MESSAGE-STATUS -->

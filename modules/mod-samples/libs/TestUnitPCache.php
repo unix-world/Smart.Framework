@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210401
+ * @version 	v.20210429
  *
  */
 final class TestUnitPCache {
@@ -397,7 +397,7 @@ final class TestUnitPCache {
 		} elseif(stripos((string)$thePcacheVersionInfo, 'sqlite:') === 0) {
 			$img_check = 'lib/core/img/db/sqlite-logo.svg';
 		} else {
-			$img_check = 'lib/core/img/app/session.svg';
+			$img_check = 'lib/core/img/app/server.svg';
 		} //end if else
 		if((string)$err == '') {
 			$img_sign = 'lib/framework/img/sign-info.svg';

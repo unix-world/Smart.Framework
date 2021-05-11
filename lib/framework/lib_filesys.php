@@ -13,7 +13,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - FileSystem Utils
-// the constant SMART_FRAMEWORK_RUNTIME_MODE can change the behaviour of this library ; if set to 'task' will override the allow access to protected folders and will always allow ...
+// {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}} :: the constant SMART_FRAMEWORK_RUNTIME_MODE can change the behaviour of this library ; if set to 'web.task' will override the allow access to protected folders and will always allow ...
 //======================================================
 
 // [REGEX-SAFE-OK] ; [PHP8]
@@ -85,7 +85,7 @@ if(
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210331
+ * @version 	v.20210506
  * @package 	@Core:FileSystem
  *
  */
@@ -178,14 +178,14 @@ final class SmartFileSysUtils {
 	 *
 	 * @param 	STRING 	$y_path 								:: The path (dir or file) to validate
 	 * @param 	YES/NO 	$y_deny_absolute_path 					:: *Optional* If YES will dissalow absolute paths
-	 * @param 	YES/NO 	$y_allow_protected_relative_paths 		:: *Optional* ! This is for very special case usage only so don't set it to YES except if you know what you are really doing ! If set to YES will allow access to special protected paths of this framework which may have impact on security ... ; this parameter is intended just for relative paths only (not absolute paths) as: #dir/.../file.ext ; #file.ext
+	 * @param 	YES/NO 	$y_allow_protected_relative_paths 		:: *Optional* ! This is for very special case usage only so don't set it to YES except if you know what you are really doing ! If set to YES will allow access to special protected paths of this framework which may have impact on security ... ; this parameter is intended just for relative paths only (not absolute paths) as: #dir/.../file.ext ; #file.ext ; for task area this is always hardcoded to 'yes' and cannot be overrided
 	 *
 	 * @return 	0/1												:: returns 1 if VALID ; 0 if INVALID
 	 */
 	public static function check_if_safe_path($y_path, $y_deny_absolute_path='yes', $y_allow_protected_relative_paths='no') { // {{{SYNC-FS-PATHS-CHECK}}}
 		//-- override
-		if(defined('SMART_FRAMEWORK_RUNTIME_MODE')) {
-			if((string)SMART_FRAMEWORK_RUNTIME_MODE == 'task') { // {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
+		if(SmartFrameworkRegistry::isAdminArea() === true) {
+			if(SmartFrameworkRegistry::isTaskArea() === true) {
 				$y_allow_protected_relative_paths = 'yes'; // this is required as default for various tasks that want to access #protected dirs
 			} //end if
 		} //end if
@@ -231,7 +231,7 @@ final class SmartFileSysUtils {
 	 *
 	 * @param 	STRING 	$y_path 								:: The path (dir or file) to validate
 	 * @param 	YES/NO 	$y_deny_absolute_path 					:: *Optional* If YES will dissalow absolute paths
-	 * @param 	YES/NO 	$y_allow_protected_relative_paths 		:: *Optional* ! This is for very special case usage only so don't set it to YES except if you know what you are really doing ! If set to YES will allow access to special protected paths of this framework which may have impact on security ... ; this parameter is intended just for relative paths only (not absolute paths) as: #dir/.../file.ext ; #file.ext
+	 * @param 	YES/NO 	$y_allow_protected_relative_paths 		:: *Optional* ! This is for very special case usage only so don't set it to YES except if you know what you are really doing ! If set to YES will allow access to special protected paths of this framework which may have impact on security ... ; this parameter is intended just for relative paths only (not absolute paths) as: #dir/.../file.ext ; #file.ext ; for task area this is always hardcoded to 'yes' and cannot be overrided
 	 *
 	 * @access 		private
 	 * @internal
@@ -239,8 +239,8 @@ final class SmartFileSysUtils {
 	 */
 	public static function raise_error_if_unsafe_path($y_path, $y_deny_absolute_path='yes', $y_allow_protected_relative_paths='no') { // {{{SYNC-FS-PATHS-CHECK}}}
 		//-- override
-		if(defined('SMART_FRAMEWORK_RUNTIME_MODE')) {
-			if((string)SMART_FRAMEWORK_RUNTIME_MODE == 'task') { // {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
+		if(SmartFrameworkRegistry::isAdminArea() === true) {
+			if(SmartFrameworkRegistry::isTaskArea() === true) {
 				$y_allow_protected_relative_paths = 'yes'; // this is required as default for various tasks that want to access #protected dirs
 			} //end if
 		} //end if
@@ -1463,8 +1463,8 @@ final class SmartFileSysUtils {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
- * @depends 	classes: Smart
- * @version 	v.20210331
+ * @depends 	classes: Smart ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES
+ * @version 	v.20210506
  * @package 	@Core:FileSystem
  *
  */
@@ -2716,14 +2716,14 @@ final class SmartFileSystem {
 	 *
 	 * @param 	STRING 		$dir_name 				:: The relative path of directory to be created (can be an existing symlink to a directory)
 	 * @param 	BOOLEAN 	$recursive 				:: DEFAULT is FALSE ; If TRUE will attempt to create the full directory (folder) structure if not exists and apply over each segment the standardized chmod, as set in SMART_FRAMEWORK_CHMOD_DIRS
-	 * @param 	BOOLEAN 	$allow_protected_paths 	:: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...)
+	 * @param 	BOOLEAN 	$allow_protected_paths 	:: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided
 	 *
 	 * @return 	INTEGER								:: 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)
 	 */
 	public static function dir_create($dir_name, $recursive=false, $allow_protected_paths=false) {
 		//-- override (this is actually done automatically in raise_error_if_unsafe_path and check_if_safe_path but reflect also here this as there are logs below ...
-		if(defined('SMART_FRAMEWORK_RUNTIME_MODE')) {
-			if((string)SMART_FRAMEWORK_RUNTIME_MODE == 'task') { // {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
+		if(SmartFrameworkRegistry::isAdminArea() === true) {
+			if(SmartFrameworkRegistry::isTaskArea() === true) {
 				$allow_protected_paths = true; // this is required as default for various tasks that want to access #protected dirs
 			} //end if
 		} //end if
@@ -3356,7 +3356,7 @@ final class SmartFileSystem {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be safe
  *
  * @depends 	classes: Smart
- * @version 	v.20210331
+ * @version 	v.20210506
  * @package 	@Core:FileSystem
  *
  */
@@ -3367,23 +3367,21 @@ final class SmartGetFileSystem {
 
 	//================================================================
 	//--
-	private $list_files_and_dirs	= false;
-	//--
-	private $num_size 				= 0;
-	private $num_dirs_size			= 0;
-	private $num_files_size			= 0;
-	private $num_links 				= 0;
-	private $num_dirs 				= 0;
-	private $num_files 				= 0;
-	private $pattern_file_matches 	= array();
-	private $pattern_dir_matches 	= array();
-	private $scanned_folders 		= array();
-	private $errors_arr 			= array();
-	//--
-	private $pattern_search_str		= '';
-	private $search_prevent_file	= '';
-	private $search_prevent_override = '';
-	private $limit_search_files		= 0;
+	private $list_files_and_dirs		= false;
+	private $num_size 					= 0;
+	private $num_dirs_size				= 0;
+	private $num_files_size				= 0;
+	private $num_links 					= 0;
+	private $num_dirs 					= 0;
+	private $num_files 					= 0;
+	private $errors_arr 				= [];
+	private $scanned_folders 			= [];
+	private $pattern_file_matches 		= [];
+	private $pattern_dir_matches 		= [];
+	private $pattern_search_str			= '';
+	private $search_prevent_file		= '';
+	private $search_prevent_override 	= '';
+	private $limit_search_files			= 0;
 	//--
 	//================================================================
 

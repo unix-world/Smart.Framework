@@ -17,7 +17,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 // [PHP8]
 
-
 //--
 // gzencode / gzdecode (rfc1952) is the gzip compatible algorithm which uses CRC32 minimal checksums (a bit safer and faster than ADLER32)
 //--
@@ -26,7 +25,11 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 	die('ERROR: The PHP ZLIB Extension (gzencode/gzdecode) is required for Smart.Framework / Lib Utils');
 } //end if
 //--
-
+if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER');
+} //end if
+//--
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -44,8 +47,8 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	classes: Smart, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version 	v.20210330
+ * @depends 	classes: Smart, SmartFrameworkRegistry
+ * @version 	v.20210506
  * @package 	@Core
  *
  */
@@ -53,7 +56,7 @@ final class SmartCache {
 
 	// ::
 
-	private static $CachedData = array(); // registry of cached data
+	private static $CachedData = []; // registry of cached data
 
 
 	/**
@@ -122,7 +125,7 @@ final class SmartCache {
 		//--
 		self::$CachedData[(string)$y_realm][(string)$y_key] = $y_value; // mixed
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-CACHE', [
 				'title' => '[SetKey]: '.$y_realm.' / '.$y_key,
 				'data' => Smart::text_cut_by_limit((string)print_r($y_value,1), 1024, true, '[...data-longer-than-1024-bytes-is-not-logged-all-here...]')
@@ -155,7 +158,7 @@ final class SmartCache {
 			unset(self::$CachedData[(string)$y_realm][(string)$y_key]);
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-CACHE', [
 				'title' => '[INFO] :: UnsetKey: '.$y_realm.' / '.$y_key,
 				'data' => ''
@@ -226,8 +229,8 @@ final class SmartCache {
  * @access 		private
  * @internal
  *
- * @depends 	classes: Smart, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version 	v.20210330
+ * @depends 	classes: Smart, SmartFrameworkRegistry
+ * @version 	v.20210506
  * @package 	development:Application
  *
  */
@@ -666,6 +669,63 @@ abstract class SmartAbstractPersistentCache {
 
 
 } //END CLASS
+
+
+//=====================================================================================
+//===================================================================================== CLASS END
+//=====================================================================================
+
+
+//=====================================================================================
+//===================================================================================== CLASS START
+//=====================================================================================
+
+if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') OR ((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER == '')) {
+
+/**
+ * Class: SmartPersistentCache (Default, Blackhole)
+ * Provides compatibility support for the Persistent Cache when not using any storage adapter (handler).
+ * This class is used just for ensuring code reliability when no other real adapter was set.
+ * If no real Persistent Cache adapter is set this class is used by default, automatically.
+ * It will function as a blackhole, meaning the Persistent Cache will be just emulated.
+ * Thus all variables set in this (blackhole) Persistent Cache will simply vanish ... and get will always return an empty result, because have no storage attached (emulated only)
+ *
+ * A real Persistent Cache adapter can be set in etc/init.php as SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER to use a real and functional Persistent Cache adapter (handler).
+ * By default there are 2 built-in options and a 3rd extra option for the Persistent Cache Adapter in Smart.Framework:
+ * 1) the built-in SQLite adapter, using small SQLITE DB files across the FileSystem (scale: very small)
+ * 2) the built-in DBA adapter, using small DBA files across the FileSystem (scale: medium)
+ * 3) the built-in Redis adapter using inMemory Persistent Cache (scale: medium or large)
+ * 4) the built-in MongoDB adapter using DB Based Persistent Cache (scale: large)
+ * 5) a custom implementation (that you must develop and set) to use your own custom Persistent Cache adapter (handler) by extending the SmartAbstractPersistentCache abstract class
+ * NOTICE: When developing a custom Persistent Cache adapter (handler) if the key expiration is not supported natively, then this functionality must be implemented in a custom way to expire and to delete expired keys.
+ * Also, if using by example Memcached assure that the max length of a string that can be stored in Memcached is large enough, by default is 1MB only.
+ *
+ * @hints The Persistent Cache will share the keys between both areas (INDEX and ADMIN) ; It is developer's choice and work to ensure realm separation if needed for the keys if required so (Ex: INDEX area may use separate realms than ADMIN area)
+ *
+ * @usage  		static object: Class::method() - This class provides only STATIC methods
+ *
+ * @access 		PUBLIC
+ * @depends 	-
+ * @version 	v.20210506
+ * @package 	Application:Caching
+ *
+ */
+final class SmartPersistentCache extends SmartAbstractPersistentCache {
+
+	// ::
+
+
+	public static function getVersionInfo() {
+		//--
+		return (string) 'BLACKHOLE: FAKE, EMULATED Persistent Cache ; THIS HAVE NO STORAGE ATTACHED ; Provides just compatibility support for the Persistent Cache when not using any real adapter to ensure the code requiring the class `'.__CLASS__.'` is functional ...';
+		//--
+	} //END FUNCTION
+
+
+} //END CLASS
+
+
+} //end if
 
 
 //=====================================================================================

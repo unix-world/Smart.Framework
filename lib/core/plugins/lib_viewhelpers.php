@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210420
+ * @version 	v.20210502
  * @package 	Plugins:ViewComponents
  *
  */
@@ -548,31 +548,32 @@ final class SmartViewHtmlHelpers {
 
 	//================================================================
 	/**
-	 * Manage a SINGLE Selection HTML List Element for Edit or Display data :: v.20141212
+	 * Manage a SINGLE Selection HTML List Element for Edit or Display data
 	 *
 	 * @param STRING			$y_id					the HTML element ID
-	 * @param STRING 			$y_selected_value		selected value of the list
+	 * @param STRING 			$y_selected_value		selected value of the list ; ex: 'id1'
 	 * @param ENUM				$y_mode					'form' = display form | 'list' = display list
-	 * @param ARRAY				$yarr_data				DATASET ROWS AS: ['id' => 'name', 'id2' => 'name2'] OR ['id', 'name', 'id2', 'name2']
+	 * @param ARRAY				$_yarr_data				DATASET ROWS AS: ['id' => 'name', 'id2' => 'name2'] OR ['id', 'name', 'id2', 'name2']
 	 * @param STRING 			$y_varname				as 'frm[test]'
 	 * @param INTEGER			$y_dimensions			dimensions in pixels (width or width / (list) height for '#JS-UI#' or '#JS-UI-FILTER#')
-	 * @param CODE				$y_custom_js			custom js code (Ex: submit on change)
+	 * @param CODE				$y_custom_js			custom js code (Ex: onsubmit="" or onchange="")
 	 * @param YES/NO			$y_raw					If Yes, the description values will not apply html special chars
 	 * @param YES/NO			$y_allowblank			If Yes, a blank value is allowed in list
-	 * @param CSS/#JS-UI#		$y_extrastyle			Extra CSS Style | 'class:a-css-class' | '#JS-UI#' or '#JS-UI-FILTER#'
+	 * @param STRING 			$y_blank_name 			The name of the blank value ; If none will use empty (nbsp) space
+	 * @param CSS/#JS-UI#		$y_extrastyle			Extra CSS Style | or Extra CSS Class 'class:a-css-class' | Visual UI Mode '#JS-UI#' or '#JS-UI-FILTER#'
 	 *
 	 * @return STRING 									[HTML Code]
 	 */
-	public static function html_select_list_single($y_id, $y_selected_value, $y_mode, $yarr_data, $y_varname='', $y_dimensions='150/0', $y_custom_js='', $y_raw='no', $y_allowblank='yes', $y_extrastyle='') {
+	public static function html_select_list_single($y_id, $y_selected_value, $y_mode, $_yarr_data, $y_varname='', $y_dimensions='150/0', $y_custom_js='', $y_raw='no', $y_allowblank='yes', $y_blank_name='', $y_extrastyle='') {
 
 		//-- fix associative array
-		$arr_type = Smart::array_type_test($yarr_data);
+		$arr_type = Smart::array_type_test($_yarr_data);
 		if($arr_type === 2) { // associative array detected
-			$arr_save = (array) $yarr_data;
-			$yarr_data = array();
+			$arr_save = (array) $_yarr_data;
+			$_yarr_data = array();
 			foreach((array)$arr_save as $key => $val) {
-				$yarr_data[] = (string) $key;
-				$yarr_data[] = (string) $val;
+				$_yarr_data[] = (string) $key;
+				$_yarr_data[] = (string) $val;
 			} //end foreach
 			$arr_save = array();
 		} //end if
@@ -583,19 +584,33 @@ final class SmartViewHtmlHelpers {
 		//--
 		$the_width = 0;
 		if(array_key_exists(0, $tmp_dimens)) {
-			$the_width = (int) $tmp_dimens[0];
+			$the_width = (int) isset($tmp_dimens[0]) ? $tmp_dimens[0] : 0;
 		} //end if
 		$the_height = 0;
 		if(array_key_exists(1, $tmp_dimens)) {
-			$the_height = (int) $tmp_dimens[1];
+			$the_height = (int) isset($tmp_dimens[1]) ? $tmp_dimens[1] : 0;
 		} //end if
 		//--
-		if($the_width <= 0) {
-			$the_width = 150;
+		if($the_width < 0) {
+			$the_width = 0;
 		} //end if
+		if($the_width > 0) {
+			if($the_width < 50) {
+				$the_width = 50;
+			} elseif($the_width > 1200) {
+				$the_width = 1200;
+			} //end if
+		} //end if
+		//--
 		if($the_height < 0) {
 			$the_height = 0;
 		} //end if
+		//--
+
+		//--
+		$y_varname = (string) trim((string)$y_varname);
+		$y_custom_js = (string) trim((string)$y_custom_js);
+		$y_blank_name = (string) trim((string)$y_blank_name);
 		//--
 
 		//--
@@ -613,6 +628,9 @@ final class SmartViewHtmlHelpers {
 			//--
 			if((string)$y_mode == 'form') {
 				//--
+				if($the_width <= 0) {
+					$the_width = 150;
+				} //end if
 				$the_width = $the_width + 20;
 				if($the_height > 0) {
 					if($the_height < 50) {
@@ -622,10 +640,7 @@ final class SmartViewHtmlHelpers {
 						$the_height = 200;
 					} //end if
 				} else {
-					$the_height = (int) ((Smart::array_size($yarr_data) + 1) * 20);
-					if($the_height > 200) {
-						$the_height = 200;
-					} //end if
+					$the_height = 200; // default
 				} //end if else
 				//--
 				if((string)$tmp_extra_style == '#JS-UI-FILTER#') {
@@ -674,23 +689,35 @@ final class SmartViewHtmlHelpers {
 		//--
 		if((string)$y_mode == 'form') {
 			//--
-			$out .= '<select name="'.$y_varname.'" id="'.$element_id.'" size="1" '.$css_class.' style="width:'.$the_width.'px;';
+			$out .= '<select '.($y_varname ? 'name="'.Smart::escape_html((string)$y_varname).'" ' : '').($element_id ? 'id="'.$element_id.'" ' : '').'size="1" '.$css_class;
 			//--
+			$style = [];
+			if((int)$the_width > 0) {
+				$style[] = 'width:'.(int)$the_width.'px;';
+			} //end if
 			$y_extrastyle = (string) trim((string)$y_extrastyle);
 			if((string)$y_extrastyle != '') {
-				$out .= ' '.Smart::escape_html($y_extrastyle);
+				$style[] = (string) Smart::escape_html($y_extrastyle);
 			} //end if
 			//--
-			$out .= '" '.$y_custom_js.'>'."\n";
+			if(Smart::array_size($style) > 0) {
+				$out .= ' style="'.implode(' ', $style).'"';
+			} //end if
+			//--
+			if((string)$y_custom_js != '') {
+				$out .= ' '.$y_custom_js;
+			} //end if
+			//--
+			$out .= '>'."\n";
 			//--
 			if((string)$y_allowblank == 'yes') {
-				$out .= '<option value="">&nbsp;</option>'."\n"; // we need a blank value to avoid wrong display of selected value
+				$out .= '<option value="">'.($y_blank_name ? Smart::escape_html($y_blank_name) : '&nbsp;').'</option>'."\n"; // we need a blank value to avoid wrong display of selected value
 			} //end if
 			//--
 		} //end if
 		//--
 		$found = 0;
-		for($i=0; $i<Smart::array_size($yarr_data); $i++) {
+		for($i=0; $i<Smart::array_size($_yarr_data); $i++) {
 			//--
 			$i_key = $i;
 			$i_val = $i+1;
@@ -700,30 +727,30 @@ final class SmartViewHtmlHelpers {
 				//--
 				$tmp_sel = '';
 				//--
-				if((strlen($y_selected_value) > 0) AND ((string)$y_selected_value == (string)$yarr_data[$i_key])) {
+				if((strlen($y_selected_value) > 0) AND ((string)$y_selected_value == (string)$_yarr_data[$i_key])) {
 					$tmp_sel = ' selected'; // single ID
 				} //end if
 				//--
 				if((string)$y_raw == 'yes') {
-					$tmp_desc_val = (string) $yarr_data[$i_val];
+					$tmp_desc_val = (string) $_yarr_data[$i_val];
 				} else {
-					$tmp_desc_val = (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($yarr_data[$i_val]));
+					$tmp_desc_val = (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($_yarr_data[$i_val]));
 				} //end if else
 				//--
-				if(strpos((string)$yarr_data[$i_key], '#OPTGROUP#') === 0) {
+				if(strpos((string)$_yarr_data[$i_key], '#OPTGROUP#') === 0) {
 					$out .= '<optgroup label="'.$tmp_desc_val.'">'."\n"; // the optgroup
 				} else {
-					$out .= '<option value="'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($yarr_data[$i_key])).'"'.$tmp_sel.'>'.$tmp_desc_val.'</option>'."\n";
+					$out .= '<option value="'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($_yarr_data[$i_key])).'"'.$tmp_sel.'>'.$tmp_desc_val.'</option>'."\n";
 				} //end if else
 				//--
 			} else {
 				//--
-				if(((string)$yarr_data[$i_val] != '') AND ((string)$y_selected_value == (string)$yarr_data[$i_key])) {
+				if(((string)$_yarr_data[$i_val] != '') AND ((string)$y_selected_value == (string)$_yarr_data[$i_key])) {
 					//-- single ID
 					if((string)$y_raw == 'yes') {
-						$out .= (string) $yarr_data[$i_val]."\n";
+						$out .= (string) $_yarr_data[$i_val]."\n";
 					} else {
-						$out .= (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($yarr_data[$i_val]))."\n";
+						$out .= (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($_yarr_data[$i_val]))."\n";
 					} //end if else
 					//--
 					$found += 1;
@@ -764,39 +791,46 @@ final class SmartViewHtmlHelpers {
 	 * Generate a MULTIPLE (many selections) View/Edit List to manage ID Selections
 	 *
 	 * @param STRING			$y_id					the HTML element ID
-	 * @param STRING 			$y_selected_value		selected value(s) data as ARRAY or STRING list as: '<id1>,<id2>'
+	 * @param STRING 			$y_selected_value		selected value(s) data as ARRAY [ 'id1', 'id2' ] or STRING LIST as: '<id1>,<id2>'
 	 * @param ENUM				$y_mode					'form' = display form | checkboxes | 'list' = display list
-	 * @param ARRAY				$yarr_data				DATASET ROWS AS: ['id' => 'name', 'id2' => 'name2'] OR ['id', 'name', 'id2', 'name2']
+	 * @param ARRAY				$_yarr_data				DATASET ROWS AS: ['id' => 'name', 'id2' => 'name2'] OR ['id', 'name', 'id2', 'name2']
 	 * @param STRING 			$y_varname				as 'frm[test][]'
 	 * @param ENUM				$y_draw 				list | checkboxes
 	 * @param YES/NO 			$y_sync_values			If Yes, sync select similar values used (curently works only for checkboxes)
 	 * @param INTEGER			$y_dimensions			dimensions in pixels (width or width / (list) height for '#JS-UI#' or '#JS-UI-FILTER#')
 	 * @param CODE				$y_custom_js			custom js code (Ex: submit on change)
-	 * @param SPECIAL			$y_extrastyle			Extra CSS Style | 'class:a-css-class' | '#JS-UI#' or '#JS-UI-FILTER#'
+	 * @param CSS/#JS-UI#		$y_extrastyle			Extra CSS Style | 'class:a-css-class' | '#JS-UI#' or '#JS-UI-FILTER#'
+	 * @param INTEGER 			$y_msize 				Multi List Size (if applicable) ; Default is 8 ; accept values between 2 and 32
 	 *
 	 * @return STRING 									[HTML Code]
 	 */
-	public static function html_select_list_multi($y_id, $y_selected_value, $y_mode, $yarr_data, $y_varname='', $y_draw='list', $y_sync_values='no', $y_dimensions='300/0', $y_custom_js='', $y_extrastyle='#JS-UI-FILTER#') {
+	public static function html_select_list_multi($y_id, $y_selected_value, $y_mode, $_yarr_data, $y_varname='', $y_draw='list', $y_sync_values='no', $y_dimensions='300/0', $y_custom_js='', $y_extrastyle='#JS-UI-FILTER#', $y_msize=8) {
 
 		//-- fix associative array
-		$arr_type = Smart::array_type_test($yarr_data);
+		$arr_type = Smart::array_type_test($_yarr_data);
 		if($arr_type === 2) { // associative array detected
-			$arr_save = (array) $yarr_data;
-			$yarr_data = array();
+			$arr_save = (array) $_yarr_data;
+			$_yarr_data = array();
 			foreach((array)$arr_save as $key => $val) {
-				$yarr_data[] = (string) $key;
-				$yarr_data[] = (string) $val;
+				$_yarr_data[] = (string) $key;
+				$_yarr_data[] = (string) $val;
 			} //end foreach
 			$arr_save = array();
 		} //end if
 		//--
 
-		//-- bug fix
-		if(Smart::array_size($yarr_data) > 2) {
-			$use_multi_list_jq = true;
-			$use_multi_list_htm = 'multiple size="8"';
+		//-- fix (if only one element show single list, will not apply if checkboxes ...)
+		$y_msize = (int) $y_msize;
+		if($y_msize < 2) {
+			$y_msize = 2;
+		} elseif($y_msize > 32) {
+			$y_msize = 32;
+		} //end if else
+		if(Smart::array_size($_yarr_data) > 2) { // to be multi list must have at least 2 values, else make non-sense
+			$use_multi_list_ok = true;
+			$use_multi_list_htm = 'multiple size="'.(int)$y_msize.'"';
 		} else {
-			$use_multi_list_jq = false;
+			$use_multi_list_ok = false;
 			$use_multi_list_htm = 'size="1"';
 		} //end if else
 		//--
@@ -806,19 +840,32 @@ final class SmartViewHtmlHelpers {
 		//--
 		$the_width = 0;
 		if(array_key_exists(0, $tmp_dimens)) {
-			$the_width = (int) $tmp_dimens[0];
+			$the_width = (int) isset($tmp_dimens[0]) ? $tmp_dimens[0] : 0;
 		} //end if
 		$the_height = 0;
 		if(array_key_exists(1, $tmp_dimens)) {
-			$the_height = (int) $tmp_dimens[1];
+			$the_height = (int) isset($tmp_dimens[1]) ? $tmp_dimens[1] : 0;
 		} //end if
 		//--
-		if($the_width <= 0) {
-			$the_width = 150;
+		if($the_width < 0) {
+			$the_width = 0;
 		} //end if
+		if($the_width > 0) {
+			if($the_width < 50) {
+				$the_width = 50;
+			} elseif($the_width > 1200) {
+				$the_width = 1200;
+			} //end if
+		} //end if
+		//--
 		if($the_height < 0) {
 			$the_height = 0;
 		} //end if
+		//--
+
+		//--
+		$y_varname = (string) trim((string)$y_varname);
+		$y_custom_js = (string) trim((string)$y_custom_js);
 		//--
 
 		//--
@@ -838,6 +885,9 @@ final class SmartViewHtmlHelpers {
 			//--
 			if((string)$y_mode == 'form') {
 				//--
+				if($the_width <= 0) {
+					$the_width = 150;
+				} //end if
 				if($the_height > 0) {
 					if($the_height < 50) {
 						$the_height = 50;
@@ -846,10 +896,7 @@ final class SmartViewHtmlHelpers {
 						$the_height = 200;
 					} //end if
 				} else {
-					$the_height = (int) ((Smart::array_size($yarr_data) + 1) * 20);
-					if($the_height > 200) {
-						$the_height = 200;
-					} //end if
+					$the_height = 90; // default (sync with jQuery Chosen Multi default)
 				} //end if else
 				//--
 				if((string)$tmp_extra_style == '#JS-UI-FILTER#') {
@@ -859,7 +906,7 @@ final class SmartViewHtmlHelpers {
 					$have_filter = false;
 				} //end if else
 				//--
-				if($use_multi_list_jq === false) {
+				if($use_multi_list_ok === false) {
 					$use_blank_value = 'yes';
 					$have_filter = false; // if multi will be enforced to single because of just 2 rows or less, disable filter !
 				} //end if
@@ -871,7 +918,7 @@ final class SmartViewHtmlHelpers {
 						'ID' => (string) $element_id,
 						'WIDTH' => (int) $the_width,
 						'HEIGHT' => (int) $the_height,
-						'USE-JQ' => (bool) $use_multi_list_jq,
+						'IS-MULTI' => (bool) $use_multi_list_ok,
 						'HAVE-FILTER' => (bool) $have_filter
 					],
 					'yes' // export to cache
@@ -882,6 +929,9 @@ final class SmartViewHtmlHelpers {
 		} else {
 			//--
 			$use_blank_value = 'no';
+			if($use_multi_list_ok === false) {
+				$use_blank_value = 'yes';
+			} //end if
 			//--
 			if((string)$y_mode == 'form') {
 				$css_class = 'class="ux-field';
@@ -908,18 +958,30 @@ final class SmartViewHtmlHelpers {
 			//--
 			if((string)$y_draw == 'checkboxes') { // checkboxes
 				//--
-				$out .= '<input type="hidden" name="'.$y_varname.'" value="">'."\n"; // we need a hidden value
+				$out .= '<input type="hidden" name="'.Smart::escape_html((string)$y_varname).'" value="">'."\n"; // we need a hidden value
 				//--
 			} else { // list
 				//--
-				$out .= '<select name="'.$y_varname.'" id="'.$element_id.'" '.$css_class.' style="width:'.$the_width.'px;';
+				$out .= '<select '.($y_varname ? 'name="'.Smart::escape_html((string)$y_varname).'" ' : '').($element_id ? 'id="'.Smart::escape_html((string)$element_id).'" ' : '').$css_class;
 				//--
+				$style = [];
+				if((int)$the_width > 0) {
+					$style[] = 'width:'.(int)$the_width.'px;';
+				} //end if
 				$y_extrastyle = (string) trim((string)$y_extrastyle);
 				if((string)$y_extrastyle != '') {
-					$out .= ' '.Smart::escape_html($y_extrastyle);
+					$style[] = (string) Smart::escape_html($y_extrastyle);
 				} //end if
 				//--
-				$out .= '" '.$use_multi_list_htm.' '.$y_custom_js.'>'."\n";
+				if(Smart::array_size($style) > 0) {
+					$out .= ' style="'.implode(' ', $style).'"';
+				} //end if
+				//--
+				if((string)$y_custom_js != '') {
+					$out .= ' '.$y_custom_js;
+				} //end if
+				//--
+				$out .= ' '.$use_multi_list_htm.'>'."\n";
 				//--
 				if((string)$use_blank_value == 'yes') {
 					$out .= '<option value="">&nbsp;</option>'."\n"; // we need a blank value to unselect
@@ -929,7 +991,7 @@ final class SmartViewHtmlHelpers {
 			//--
 		} //end if
 		//--
-		for($i=0; $i<Smart::array_size($yarr_data); $i++) {
+		for($i=0; $i<Smart::array_size($_yarr_data); $i++) {
 			//--
 			$i_key = $i;
 			$i_val = $i+1;
@@ -937,14 +999,14 @@ final class SmartViewHtmlHelpers {
 			//--
 			if((string)$y_mode == 'form') {
 				//--
-				$tmp_el_id = 'SmartFrameworkComponents_MultiSelect_ID__'.sha1($y_varname.$yarr_data[$i_key]);
+				$tmp_el_id = 'SmartFrameworkComponents_MultiSelect_ID__'.sha1((string)$y_varname.$_yarr_data[$i_key]);
 				//--
 				$tmp_sel = '';
 				$tmp_checked = '';
 				//--
 				if(is_array($y_selected_value)) {
 					//--
-					if(in_array($yarr_data[$i_key], $y_selected_value)) {
+					if(in_array($_yarr_data[$i_key], $y_selected_value)) {
 						//--
 						$tmp_sel = ' selected';
 						$tmp_checked = ' checked';
@@ -953,7 +1015,7 @@ final class SmartViewHtmlHelpers {
 					//--
 				} else {
 					//--
-					if(SmartUnicode::str_icontains($y_selected_value, '<'.$yarr_data[$i_key].'>')) { // multiple categs as <id1>,<id2>
+					if(SmartUnicode::str_icontains($y_selected_value, '<'.$_yarr_data[$i_key].'>')) { // multiple categs as <id1>,<id2>
 						//--
 						$tmp_sel = ' selected';
 						$tmp_checked = ' checked';
@@ -970,15 +1032,15 @@ final class SmartViewHtmlHelpers {
 						$tmp_onclick = '';
 					} //end if else
 					//--
-					$out .= '<input type="checkbox" name="'.$y_varname.'" id="'.Smart::escape_html($tmp_el_id).'" value="'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($yarr_data[$i_key])).'"'.$tmp_checked.$tmp_onclick.'>';
-					$out .= ' &nbsp; '.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($yarr_data[$i_val])).'<br>';
+					$out .= '<input type="checkbox" name="'.Smart::escape_html((string)$y_varname).'" id="'.Smart::escape_html($tmp_el_id).'" value="'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($_yarr_data[$i_key])).'"'.$tmp_checked.$tmp_onclick.'>';
+					$out .= ' &nbsp; '.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($_yarr_data[$i_val])).'<br>';
 					//--
 				} else { // list
 					//--
-					if(strpos((string)$yarr_data[$i_key], '#OPTGROUP#') === 0) {
-						$out .= '<optgroup label="'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($yarr_data[$i_val])).'">'."\n"; // the optgroup
+					if(strpos((string)$_yarr_data[$i_key], '#OPTGROUP#') === 0) {
+						$out .= '<optgroup label="'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($_yarr_data[$i_val])).'">'."\n"; // the optgroup
 					} else {
-						$out .= '<option value="'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($yarr_data[$i_key])).'"'.$tmp_sel.'>&nbsp;'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($yarr_data[$i_val])).'</option>'."\n";
+						$out .= '<option value="'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($_yarr_data[$i_key])).'"'.$tmp_sel.'>&nbsp;'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($_yarr_data[$i_val])).'</option>'."\n";
 					} //end if else
 					//--
 				} //end if else
@@ -987,17 +1049,17 @@ final class SmartViewHtmlHelpers {
 				//--
 				if(is_array($y_selected_value)) {
 					//--
-					if(in_array($yarr_data[$i_key], $y_selected_value)) {
+					if(in_array($_yarr_data[$i_key], $y_selected_value)) {
 						//--
-						$out .= '&middot;&nbsp;'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($yarr_data[$i_val])).'<br>'."\n";
+						$out .= '&middot;&nbsp;'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($_yarr_data[$i_val])).'<br>'."\n";
 						//--
 					} //end if
 					//--
 				} else {
 					//--
-					if(SmartUnicode::str_icontains($y_selected_value, '<'.$yarr_data[$i_key].'>')) {
+					if(SmartUnicode::str_icontains($y_selected_value, '<'.$_yarr_data[$i_key].'>')) {
 						//-- multiple categs as <id1>,<id2>
-						$out .= '&middot;&nbsp;'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($yarr_data[$i_val])).'<br>'."\n";
+						$out .= '&middot;&nbsp;'.SmartMarkersTemplating::prepare_nosyntax_html_template((string)Smart::escape_html($_yarr_data[$i_val])).'<br>'."\n";
 						//--
 					} // end if
 					//--
@@ -2158,7 +2220,7 @@ final class SmartViewHtmlHelpers {
 		//--
 		$js_post = 'smartJ$Browser.SubmitFormByAjax(\''.Smart::escape_js($y_form_id).'\', \''.Smart::escape_js($y_script_url).'\', \''.Smart::escape_js($tmp_use_growl).'\', \''.Smart::escape_js($y_js_evcode).'\', \''.Smart::escape_js($y_js_everrcode).'\', \''.Smart::escape_js($y_js_evfailcode).'\', '.($y_failalertable === true ? 'true' : 'false').');';
 		//--
-		if(strlen($y_confirm_question) > 0) {
+		if((string)$y_confirm_question != '') {
 			$js_post = (string) self::js_code_ui_confirm_dialog($y_confirm_question, (string)$js_post);
 		} else {
 			$js_post = (string) $js_post;
@@ -2190,7 +2252,7 @@ final class SmartViewHtmlHelpers {
 	 * @return STRING				[JSON data string]
 	 *
 	 */
-	public static function js_ajax_replyto_html_form($y_status, $y_title, $y_message, $y_redirect_url='', $y_replace_div='', $y_replace_html='', $y_js_evcode='') {
+	public static function js_ajax_replyto_html_form($y_status, $y_title, $y_message, $y_redirect_url='', $y_replace_div='', $y_replace_html='', $y_js_evcode='', $y_hide_form_on_success=false) {
 		//--
 		$translator_core_messages = SmartTextTranslations::getTranslator('@core', 'messages'); // OK.rev2
 		//--
@@ -2202,20 +2264,21 @@ final class SmartViewHtmlHelpers {
 			$button_text = $translator_core_messages->text('cancel');
 		} //end if else
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$y_redirect_url = ''; // avoid redirect if DEBUG IS ON to catch the debug messages ...
 		} //end if
 		//--
 		return (string) Smart::json_encode([
-			'completed'			=> 'DONE',
-			'status'			=> (string) $y_status,
-			'action'			=> (string) $button_text,
-			'title'				=> (string) $y_title,
-			'message'			=> (string) $y_message,
-			'js_evcode' 		=> (string) $y_js_evcode,
-			'redirect'			=> (string) $y_redirect_url,
-			'replace_div'		=> (string) $y_replace_div,
-			'replace_html'		=> (string) $y_replace_html
+			'completed'				=> 'DONE',
+			'status'				=> (string) $y_status,
+			'action'				=> (string) $button_text,
+			'title'					=> (string) $y_title,
+			'message'				=> (string) $y_message,
+			'js_evcode' 			=> (string) $y_js_evcode,
+			'redirect'				=> (string) $y_redirect_url,
+			'replace_div'			=> (string) $y_replace_div,
+			'replace_html'			=> (string) $y_replace_html,
+			'hide_form_on_success' 	=> (string) (($y_hide_form_on_success === true) ? 'hide' : ''),
 		]);
 		//--
 	} //END FUNCTION
@@ -2356,7 +2419,7 @@ final class SmartViewHtmlHelpers {
 	 * @internal
 	 *
 	 */
-	public static function js_code_uitabs_init($y_id_of_tabs, $y_selected=0, $y_prevent_reload=false) {
+	public static function js_code_uitabs_init($y_id_of_tabs, $y_selected=0, $y_prevent_reload=true) {
 		//--
 		$y_selected = Smart::format_number_int($y_selected, '+');
 		//--
@@ -2366,7 +2429,7 @@ final class SmartViewHtmlHelpers {
 			$prevreload = 'false';
 		} //end if else
 		//--
-		return 'try { smartJ$UI.TabsInit(\''.Smart::escape_js($y_id_of_tabs).'\', '.$y_selected.', '.$prevreload.'); } catch(e) { console.log(\'Failed to initialize JS-UI Tabs: \' + e); }';
+		return 'try { smartJ$UI.TabsInit(\''.Smart::escape_js($y_id_of_tabs).'\', '.$y_selected.', '.$prevreload.'); } catch(e) { console.warn(\'Failed to initialize JS-UI Tabs: \' + e); }';
 		//--
 	} //END FUNCTION
 	//================================================================

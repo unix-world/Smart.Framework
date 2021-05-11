@@ -1,39 +1,37 @@
 <?php
 // Smart.Framework / Runtime / Admin
-// (c) 2006-2020 unix-world.org - all rights reserved
+// (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
 //##### WARNING: #####
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //####################
 
-//== v.20210421
+//== v.20210511
 //--
 ini_set('display_errors', '1'); 											// temporary enable this to display bootstrap errors if any ; will be managed later by Smart Error Handler
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 			// on bootstrap show real-time errors (sync with Smart Error Handler)
 //--
-if(is_file('maintenance.html')) {
+if((is_file('.sf-unpack')) OR (is_file('maintenance.html'))) { // {{{SYNC-HTTP-NOCACHE-HEADERS}}}
 	@http_response_code(503); // 503 maintenance mode
+	@header('Cache-Control: no-cache, must-revalidate'); // HTTP 1.1 no-cache
+	@header('Pragma: no-cache'); // HTTP 1.0 no-cache
 	if(!@readfile('maintenance.html', false)) {
 		echo('<h1>503 Service under Maintenance ...</h1>');
 	} //end if
 	die('<!-- Smart.Framework [A] 503 Maintenance -->');
 } //end if
 //--
-define('SMART_FRAMEWORK_ADMIN_AREA', 		true); 							// run app in private/admin mode
+const SMART_FRAMEWORK_LIB_PATH =  			'lib/framework/'; 				// smart framework lib path
+const SMART_FRAMEWORK_RUNTIME_MODE =  		'web.app'; 						// runtime mode: 'web.app'
+const SMART_STANDALONE_APP =  				false; 							// must be set to false, except standalone scripts !
+const SMART_FRAMEWORK_ADMIN_AREA =  		true; 							// run app in private/admin mode
 //--
 define('SMART_FRAMEWORK_RUNTIME_READY', 	microtime(true)); 				// semaphore, runtime can execute scripts
-define('SMART_FRAMEWORK_RUNTIME_MODE', 		'web.app'); 					// runtime mode: 'web.app' or 'task' for externals
 //--
 require('etc/init.php'); 													// the PHP.INI local settings (they must be called first !!!)
 //--
-// Set Locales to Default: C
-// WARNING: NEVER CHANGE LOCALES in this framework ; THEY MUST BE 'C' (default) ; you should work with overall C and never mix locales as the results will be unpredictable
-// If you ever change locales with other values it may break many things like Example: 3.5 may become become 3,5 or dates may become uncompatible as format in the overall context
-// HINTS: if you need to display localised values never use setlocale() but instead write your own formatters to just format the displayed values in Views
-setlocale(LC_ALL, 'C'); // DON'T CHANGE THIS !!! THIS IS COMPATIBLE WILL ALL UTF-8 UNICODE CONTEXTS !!!
-//--
-require('lib/smart-error-handler.php'); 									// Smart Error Handler
+require(SMART_FRAMEWORK_LIB_PATH.'smart-error-handler.php'); 				// Smart Framework Error Handler
 require('lib/smart-runtime.php'); 											// Smart Runtime
 require('etc/config-admin.php'); 											// Admin Config
 require('lib/run/abstract-controller.php'); 								// Service Controller Definition
@@ -42,7 +40,7 @@ require('lib/run/middleware-admin.php'); 									// Admin Service Handler
 //--
 //==
 //--
-if((string)SMART_FRAMEWORK_RELEASE_MIDDLEWARE != '[A]@'.SMART_FRAMEWORK_RELEASE_TAGVERSION) {
+if((string)SMART_FRAMEWORK_RELEASE_MIDDLEWARE != '[A][T]@'.SMART_FRAMEWORK_RELEASE_TAGVERSION) {
 	@http_response_code(500);
 	die('Smart.Framework // App [A] Service: Middleware service validation Failed ... Invalid Version !');
 } //end if
@@ -53,7 +51,7 @@ if((string)get_parent_class('SmartAppAdminMiddleware') != 'SmartAbstractAppMiddl
 } //end if
 //--
 $run = SmartAppAdminMiddleware::Run(); // Handle the Admin service
-if(SmartFrameworkRuntime::ifDebug()) {
+if(SmartFrameworkRegistry::ifDebug()) {
 	if($run !== false) {
 		SmartAppAdminMiddleware::DebugInfoSet('adm', (bool)$run);
 	} //end if

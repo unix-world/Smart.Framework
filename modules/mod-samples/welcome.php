@@ -1,5 +1,4 @@
 <?php
-// [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Samples/Welcome
 // Route: ?/page/samples.welcome (?page=samples.welcome)
 // (c) 2006-2020 unix-world.org - all rights reserved
@@ -148,7 +147,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				'CamelCase' => 'Test'
 			)
 		); // will generate: index.php?page=samples.testunit OR admin.php?page=samples.testunit
-		$url_test_unit = (string) SmartUtils::create_semantic_url($url_test_unit); // convert the above to a pretty URL as: ?/page/(samples.)testunit (in this case index.php is ignored) OR admin.php?/page/samples.testunit
+		$url_test_unit = (string) SmartFrameworkRuntime::Create_Semantic_URL($url_test_unit); // convert the above to a pretty URL as: ?/page/(samples.)testunit (in this case index.php is ignored) OR admin.php?/page/samples.testunit
 		//--
 
 		//-- building a regular URL
@@ -165,7 +164,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 				'page' => (string) $page_benchmark
 			)
 		);
-		$url_benchmark = (string) SmartUtils::create_semantic_url($url_benchmark);
+		$url_benchmark = (string) SmartFrameworkRuntime::Create_Semantic_URL($url_benchmark);
 		//--
 
 		//--

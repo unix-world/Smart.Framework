@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20210307
+	// v.20210422
 
 
 	private static $db = null;
@@ -117,8 +117,8 @@ final class PageBuilderBackend {
 			//--
 		} else {
 			//--
-			@\http_response_code(500);
-			die(\SmartComponents::http_error_message('500 Internal Server Error / PageBuilder is Unavailable', 'DB Type not set in configs: SMART_PAGEBUILDER_DB_TYPE ! ...'));
+			\SmartFrameworkRuntime::Raise503Error('PageBuilder is Unavailable'."\n".'DB Type not set in configs: SMART_PAGEBUILDER_DB_TYPE ! ...');
+			die('PageBuilderBackend:NO-DB-TYPE');
 			//--
 		} //end if else
 		//--

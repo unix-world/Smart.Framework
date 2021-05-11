@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210322
+ * @version 	v.20210429
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -578,14 +578,14 @@ final class SmartHtmlParser {
 					//--
 					$max_err_level = 0; // 0: no errors ; 1: minimal ; 2: more
 					$enable_warns = false; // if set to true will output the HTML validation report to logs
-					if(SmartFrameworkRuntime::ifDebug()) {
+					if(SmartFrameworkRegistry::ifDebug()) {
 						$max_err_level = 2;
 						$enable_warns = true;
 					} elseif($this->dom_log_errors === true) {
 						$max_err_level = 1;
 					} //end if
 					//--
-					$etidy = (string) strtolower((string)SMART_FRAMEWORK_DBSQL_CHARSET); // tidy uses utf8 instead of UTF-8
+					$etidy = (string) strtolower((string)SMART_FRAMEWORK_SQL_CHARSET); // tidy uses utf8 instead of UTF-8
 					//--
 					$ctidy = [
 						'quiet' => true,
@@ -635,12 +635,12 @@ final class SmartHtmlParser {
 					$tidy->parseString((string)$this->compose_html_document((string)$this->html), (array)$ctidy, (string)$etidy); // fix: in some versions of tidy the first comment dissapear if not enclosed in a body container, so need this function: compose_html_document
 					$testClean = $tidy->cleanRepair();
 					//--
-					if((SmartFrameworkRuntime::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
+					if((SmartFrameworkRegistry::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
 						$notice_log = $tidy->errorBuffer;
 						if((string)$notice_log != '') {
 							Smart::log_notice(__CLASS__.' # Tidy [Result='.$testClean.'] Log:'."\n".$notice_log."\n".'#END'."\n");
 						} //end if
-						if(SmartFrameworkRuntime::ifDebug()) {
+						if(SmartFrameworkRegistry::ifDebug()) {
 							Smart::log_notice(__CLASS__.' # Debug Tidy [Result='.$testClean.'] Clean HTML-String:'."\n".$this->html."\n".'#END');
 						} //end if
 					} //end if
@@ -694,12 +694,12 @@ final class SmartHtmlParser {
 					//print_r($this->html); die();
 					$dom = null; // free mem
 					//--
-					if((SmartFrameworkRuntime::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
+					if((SmartFrameworkRegistry::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
 						$errors = (array) @libxml_get_errors();
 						if(Smart::array_size($errors) > 0) {
 							$notice_log = '';
 							$max_err_level = 1;
-							if(SmartFrameworkRuntime::ifDebug()) {
+							if(SmartFrameworkRegistry::ifDebug()) {
 								$max_err_level = 2;
 							} //end if
 							foreach($errors as $z => $error) {
@@ -712,7 +712,7 @@ final class SmartHtmlParser {
 							if((string)$notice_log != '') {
 								Smart::log_notice(__CLASS__.' # DOMDocument [Result='.$testClean.'] Log:'."\n".$notice_log."\n".'#END'."\n");
 							} //end if
-							if(SmartFrameworkRuntime::ifDebug()) {
+							if(SmartFrameworkRegistry::ifDebug()) {
 								Smart::log_notice(__CLASS__.' # Debug DomDocument [Result='.$testClean.'] Clean HTML-String:'."\n".$this->html."\n".'#END');
 							} //end if
 						} //end if

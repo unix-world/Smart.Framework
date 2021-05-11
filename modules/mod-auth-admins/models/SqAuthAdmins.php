@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20210421
+	// v.20210511
 
 	private $db;
 
@@ -79,7 +79,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function checkFailLoginData($id, $ip) {
+	public function checkFailLoginData($id, $hashpass, $ip) {
 		//--
 		// FAIL LOGINS LIMIT: 7
 		//--
@@ -101,6 +101,12 @@ final class SqAuthAdmins {
 		if((int)$arr['trytime'] <= 0) {
 			return 0;
 		} //end if
+		//--
+		$test_arr = $this->getLoginData($id, $hashpass);
+		if(\Smart::array_size($test_arr) > 0) { // successful login after a timeout
+			return 0;
+		} //end if
+		$test_arr = null;
 		//--
 		$nowtime 	= (int) \time();
 		$allowtime 	= (int) ((int)$arr['trytime'] + (((int)$arr['tries'] - 7) * 60));
@@ -641,14 +647,12 @@ final class SqAuthAdmins {
 				//--
 				$init_username = (string) \APP_AUTH_ADMIN_USERNAME;
 				if(\SmartUnicode::str_len($init_username) < 3) {
-					\http_response_code(203);
-					die(\SmartComponents::http_error_message('INVALID USERNAME set as APP_AUTH_ADMIN_USERNAME', 'The username is too short, must be minimum 3 characters. Manually REFRESH this page after by pressing F5 ...'));
+					\SmartFrameworkRuntime::Raise202Status('INVALID USERNAME set as APP_AUTH_ADMIN_USERNAME', \SmartComponents::operation_warn('The username is too short, must be minimum 3 characters. Manually REFRESH this page after by pressing F5 ...', '80%'));
 					return 0;
 				} //end if
 				$init_password = (string) \APP_AUTH_ADMIN_PASSWORD;
 				if(\SmartUnicode::str_len($init_password) < 7) {
-					\http_response_code(203);
-					die(\SmartComponents::http_error_message('INVALID PASSWORD set as APP_AUTH_ADMIN_PASSWORD', 'The password is too short, must be minimum 7 characters. Manually REFRESH this page after by pressing F5 ...'));
+					\SmartFrameworkRuntime::Raise203Status('INVALID PASSWORD set as APP_AUTH_ADMIN_PASSWORD', \SmartComponents::operation_warn('The password is too short, must be minimum 7 characters. Manually REFRESH this page after by pressing F5 ...', '80%'));
 					return 0;
 				} //end if
 				$init_hash_pass = \SmartHashCrypto::password($init_password, $init_username);
@@ -662,14 +666,12 @@ final class SqAuthAdmins {
 				$this->db->write_data("INSERT INTO `admins` VALUES ('".$this->db->escape_str((string)$init_username)."', '".$this->db->escape_str((string)$init_hash_pass)."', 1, 0, 'admin@localhost', 'Mr.', 'Super', 'Admin', '', '', '', '', '', '', '', 0, 0, 0, '".$this->db->escape_str((string)$init_privileges)."', '<modify>', '', '', 0, ".(int)\time().")");
 				$this->db->write_data('COMMIT');
 				//--
-				\http_response_code(202);
-				die(\SmartComponents::http_status_message('OK :: AUTH DB Initialized', \SmartComponents::operation_ok('Login Info: username={what is set into APP_AUTH_ADMIN_USERNAME} ; password={what is set into APP_AUTH_ADMIN_PASSWORD}.<br>Manually REFRESH this page after by pressing F5 ...', '98%')));
+				\SmartFrameworkRuntime::Raise208Status('OK :: AUTH DB Initialized', \SmartComponents::operation_ok('Login Info: username={what is set into APP_AUTH_ADMIN_USERNAME} ; password={what is set into APP_AUTH_ADMIN_PASSWORD}.<br>Manually REFRESH this page after by pressing F5 ...', '80%'));
 				return 0;
 				//--
 			} else {
 				//--
-				\http_response_code(208);
-				die(\SmartComponents::http_error_message('Cannot Initialize the AUTH DB !', 'Please Set the APP_AUTH_ADMIN_USERNAME / APP_AUTH_ADMIN_PASSWORD constants in config and Manually REFRESH this page after by pressing F5 ...'));
+				\SmartFrameworkRuntime::Raise500Error('Cannot Initialize the AUTH DB !'."\n".'Please Set the APP_AUTH_ADMIN_USERNAME / APP_AUTH_ADMIN_PASSWORD constants in config and Manually REFRESH this page after by pressing F5 ...');
 				return 0;
 				//--
 			} //end if

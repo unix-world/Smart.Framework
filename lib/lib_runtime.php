@@ -17,688 +17,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 // [REGEX-SAFE-OK] ; [PHP8]
 
-//==================================================================================
-//================================================================================== CLASS START
-//==================================================================================
-
-/**
- * Class Smart.Framework Security
- * It may be used anywhere inside Smart.Framework or by Plugins and Application Modules.
- *
- * <code>
- * // Usage example:
- * SmartFrameworkSecurity::some_method_of_this_class(...);
- * </code>
- *
- * @usage 		static object: Class::method() - This class provides only STATIC methods
- * @hints 		This is generally intended for advanced usage !
- *
- * @access 		private
- * @internal
- * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
- *
- * @depends 	-
- * @version 	v.20210421
- * @package 	Application
- *
- */
-final class SmartFrameworkSecurity {
-
-	// ::
-	// This class have to be able to run before loading the Smart.Framework and must not depend on it's classes.
-
-
-	//======================================================================
-	// Validate an URL variable name
-	public static function ValidateUrlVariableName($y_varname) {
-
-		// VALIDATE INPUT (REQUEST / COOKIES) VARIABLE NAMES .20210413
-
-		//--
-		$y_varname = (string) $y_varname; // force string
-		//--
-
-		//--
-		$regex_var_name = '/^[a-zA-Z0-9_\-]+$/'; // {{{SYNC-REGEX-URL-VARNAME}}}
-		//--
-
-		//-- init
-		$out = 0;
-		//-- validate characters (variable must not be empty, must not start with an underscore or a number
-		if(((string)$y_varname != '') AND (preg_match((string)$regex_var_name, (string)$y_varname))) {
-			$out = 1;
-		} //end if else
-		//-- corrections (variable name must be between 1 char and 128 chars)
-		if((int)strlen((string)$y_varname) < 1) {
-			$out = 0;
-		} elseif((int)strlen((string)$y_varname) > 128) {
-			$out = 0;
-		} //end if
-		//--
-
-		//--
-		return (int) $out;
-		//--
-
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	// Validate a PHP variable name
-	public static function ValidateVariableName($y_varname, $y_allow_upper_letters=true) {
-
-		// VALIDATE PHP VARIABLE NAMES v.20210413
-
-		//--
-		$y_varname = (string) $y_varname; // force string
-		//--
-
-		//--
-		$regex_only_number = '/^[0-9_]+$/'; 		// not allowed as first character, especially the _ because $_ have a very special purpose in PHP
-		//--
-		if($y_allow_upper_letters === true) {
-			$regex_var_name = '/^[a-zA-Z0-9_]+$/'; 	// allowed characters in a variable name (only small letters, upper letters, numbers and _ ; in PHP upper letters for variables are reserved)
-		} else {
-			$regex_var_name = '/^[a-z0-9_]+$/'; 	// allowed characters in a variable name (only small letters, numbers and _ ; in PHP upper letters for variables are reserved)
-		} //end if else
-		//--
-
-		//-- init
-		$out = 0;
-		//-- validate characters (variable must not be empty, must not start with an underscore or a number
-		if(((string)$y_varname != '') AND ((string)$y_varname != '_') AND (preg_match((string)$regex_var_name, (string)$y_varname)) AND (!preg_match((string)$regex_only_number, (string)substr((string)$y_varname, 0, 1)))) {
-			$out = 1;
-		} //end if else
-		//-- corrections (variable name must be between 1 char and 255 chars)
-		if((int)strlen((string)$y_varname) < 1) {
-			$out = 0;
-		} elseif((int)strlen((string)$y_varname) > 255) {
-			$out = 0;
-		} //end if
-		//--
-
-		//--
-		return (int) $out;
-		//--
-
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	/**
-	 * Return a filtered string value for untrusted string (or similar, scalar or null) variables.
-	 * It may be used for filtering insecure / untrusted variables.
-	 * Notice: For this to work correctly expects the filter to be provided by SMART_FRAMEWORK_SECURITY_FILTER_INPUT
-	 *
-	 * @param STRING/NUMERIC/BOOLEAN/NULL 	$y_value	the input variable value
-	 * @return STRING/NULL								the filtered value
-	 */
-	public static function FilterUnsafeString($y_value) {
-		//-- v.20210413
-		if(is_object($y_value) OR is_resource($y_value) OR is_array($y_value)) { // dissalow here, it always
-			return null;
-		} //end if
-		//--
-		$is_filtered = false;
-		if(defined('SMART_FRAMEWORK_SECURITY_FILTER_INPUT')) {
-			if((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT != '') {
-				$is_filtered = true;
-				if((string)$y_value != '') {
-					$y_value = (string) preg_replace((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT, '', (string)$y_value);
-				} //end if
-			} //end if
-		} //end if
-		//--
-		if(!$is_filtered) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() // Could Not Apply Filter, No Filter Defined !', E_USER_WARNING);
-		} //end if
-		//--
-		return (string) $y_value;
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	/**
-	 * Return the filtered values for GET/POST/REQUEST/COOKIE variables, using the FilterUnsafeString method
-	 * It may be used for filtering insecure / untrusted string or array variables
-	 * For array variables it also filters the keys
-	 * When using the raw values from $_GET, $_POST, $_REQUEST or $_COOKIE - all the values should be always filtered prior to be used in PHP to avoid insecure characters.
-	 * Notice: For this to work correctly expects the filter to be provided by SMART_FRAMEWORK_SECURITY_FILTER_INPUT
-	 * Important: All the REQUEST=GET+POST and COOKIE variables from SmartFrameworkRegistry are already filtered, no need to filter them again, but if you are using any raw value from $_GET, $_POST, $_REQUEST or $_COOKIE it must be filtered !
-	 *
-	 * @param STRING/NUMERIC/BOOLEAN/NULL/ARRAY 		$y_var	the input variable value
-	 * @return MIXED											the filtered value
-	 */
-	public static function FilterGetPostCookieVars($y_var) {
-		//-- v.20210413
-		if(!isset($y_var)) {
-			return $y_var; // fix for Illegal string offset
-		} //end if
-		//--
-		if(is_object($y_var) OR is_resource($y_var)) { // objects or resources are not allowed to com from GET/POST/REQUEST/COOKIE
-			//--
-			$y_var = null; // invalid !! it comes from request
-			//--
-		} elseif(is_array($y_var)) { // array
-			//--
-			$narr = [];
-			foreach($y_var as $key => $val) {
-				if(is_object($val) OR is_resource($val)) { // objects or resources are not allowed to com from GET/POST/REQUEST/COOKIE
-					$val = null;
-				} elseif(is_array($val)) { // array
-					$val = (array) self::FilterGetPostCookieVars((array)$val);
-				} else { // nScalar
-					$val = (string) self::FilterUnsafeString((string)$val);
-				} //end if else
-				$narr[self::FilterUnsafeString((string)$key)] = $val; // mixed
-			} //end foreach
-			$y_var = (array) $narr;
-			$narr = null;
-			//--
-		} else { // nScalar
-			//--
-			$y_var = (string) self::FilterUnsafeString((string)$y_var);
-			//--
-		} //end if
-		//--
-		return $y_var; // mixed
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	/**
-	 * Return the url decoded (+/- filtered) variable from RAWURLENCODE / URLENCODE
-	 * It may be used ONLY when working with RAW PATH INFO / RAW QUERY URLS !!!
-	 * IMPORTANT: the $_GET and $_REQUEST are already decoded. Using urldecode() on an element in $_GET or $_REQUEST could have unexpected and dangerous results.
-	 *
-	 * @param STRING 				$y_var		the input variable
-	 * @param BOOLEAN 				$y_filter 	*Optional* Default to TRUE ; if FALSE will only decode but not filter variable ; DO NOT DISABLE FILTERING EXCEPT WHEN YOU CALL IT LATER EXPLICIT !!!
-	 * @return STRING				the decoded +/- filtered value
-	 */
-	public static function urlVarDecodeStr($y_urlencoded_str_var, $y_filter=true) {
-		//--
-		$y_urlencoded_str_var = (string) urldecode((string)$y_urlencoded_str_var); // use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + !
-		//--
-		if($y_filter !== false) {
-			$y_urlencoded_str_var = (string) self::FilterUnsafeString((string)$y_urlencoded_str_var);
-		} //end if
-		//--
-		return (string) $y_urlencoded_str_var;
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-} //END CLASS
-
-//==================================================================================
-//================================================================================== CLASS END
-//==================================================================================
-
-
-
-//==================================================================================
-//================================================================================== CLASS START
-//==================================================================================
-
-/**
- * Class Smart.Framework Registry
- * It may be used anywhere inside Smart.Framework or by Plugins and Application Modules.
- * Normally there is no need to use this class as the controllers can access methods of this class directly.
- *
- * @access 		private
- * @internal
- * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
- *
- * @depends 	-
- * @version 	v.20210421
- * @package 	Application
- *
- */
-final class SmartFrameworkRegistry {
-
-	// ::
-	//  This class have to be able to run before loading the Smart.Framework and must not depend on it's classes.
-
-	/**
-	 * The Registry Connections Container
-	 * IMPORTANT: This can be used for very advanced development only to set a global connection here (ex: DB server)
-	 * @var Array
-	 */
-	public static $Connections = array(); // connections registry
-
-	private static $DebugMessages = array( // debug messages registry
-		'stats' 			=> [],
-		'optimizations' 	=> [],
-		'extra' 			=> [],
-		'db' 				=> [],
-		'mail' 				=> [],
-		'modules' 			=> []
-	);
-
-	private static $RequestLock = false; 	// request locking flag
-	private static $RequestPath = '';		// request path (from path-info)
-	private static $RequestVars = array(); 	// request registry
-	private static $CookieVars  = array();  // cookie registry
-
-
-	//===== Public Methods
-
-
-	public static function setRequestPath($value) {
-		//--
-		if(self::$RequestLock !== false) {
-			return false; // request registry is locked
-		} //end if
-		//--
-		self::$RequestPath = (string) $value;
-		//--
-		return true; // OK
-		//--
-	} //END FUNCTION
-
-
-	public static function getRequestPath() {
-		//--
-		return (string) self::$RequestPath;
-		//--
-	} //END FUNCTION
-
-
-	public static function setRequestVar($key, $value) {
-		//--
-		if(self::$RequestLock !== false) {
-			return false; // request registry is locked
-		} //end if
-		//--
-		$key = (string) trim((string)$key);
-		if(((string)$key == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
-			return false;
-		} //end if
-		//--
-		self::$RequestVars[(string)$key] = $value;
-		//--
-		return true; // OK
-		//--
-	} //END FUNCTION
-
-
-	public static function issetRequestVar($key) {
-		//--
-		$key = (string) trim((string)$key);
-		if((string)$key == '') {
-			return false;
-		} //end if
-		//--
-		if((array_key_exists((string)$key, self::$RequestVars)) AND (isset(self::$RequestVars[(string)$key])) AND ((is_array(self::$RequestVars[(string)$key])) OR ((string)self::$RequestVars[(string)$key] != ''))) { // if is set and (array or non-empty string) ; numbers from request comes as string too
-			return true;
-		} else {
-			return false;
-		} //end if else
-		//--
-	} //END FUNCTION
-
-
-	public static function getRequestVar($key, $defval=null, $type='') { // {{{SYNC-REQUEST-DEF-PARAMS}}}
-		//--
-		$key = (string) trim((string)$key);
-		if((string)$key == '') {
-			return null;
-		} //end if
-		//--
-		if(self::issetRequestVar((string)$key) === true) {
-			$val = self::$RequestVars[(string)$key]; // use the value from request :: mixed
-		} else {
-			$val = $defval; // init with the default value :: mixed
-		} //end if
-		//--
-		if(is_array($type)) { // # if $type is array, then cast is ENUM LIST, it must contain an array with all allowed values as strings #
-			//--
-			if(((string)$val != '') AND (in_array((string)$val, (array)$type))) {
-				$val = (string) $val; // force string
-			} else {
-				$val = ''; // set as empty string
-			} //end if else
-			//--
-		} else { // # else $type must be a string with one of the following cases #
-			//--
-			if(is_object($val) OR is_resource($val)) { // dissalow objects here !!!
-				$val = null;
-			} //end if
-			//--
-			if(!in_array((string)strtolower((string)$type), ['array', 'mixed', 'raw', ''])) {
-				if((!is_scalar($val)) AND (!is_null($val))) {
-					$val = null;
-				} //end if
-			} //end if
-			//--
-			switch((string)strtolower((string)$type)) {
-				case 'array':
-					if(!is_array($val)) {
-						$val = array(); // set as empty array
-					} else {
-						$val = (array) $val; // force array
-					} //end if else
-					break;
-				case 'string':
-					$val = (string) $val;
-					break;
-				case 'boolean':
-					$val = (string) strtolower((string)$val); // {{{SYNC-SMART-BOOL-GET-EXT}}}
-					if(((string)$val == 'true') OR ((string)$val == 't')) {
-						$val = true;
-					} elseif(((string)$val == 'false') OR ((string)$val == 'f')) {
-						$val = false;
-					} else {
-						$val = (bool) $val;
-					} //end if else
-					break;
-				case 'integer':
-					$val = (int) $val;
-					break;
-				case 'integer+':
-					$val = (int) $val;
-					if($val < 0) { // {{{SYNC-SMART-INT+}}}
-						$val = 0;
-					} //end if
-					break;
-				case 'integer-':
-					$val = (int) $val;
-					if($val > 0) { // {{{SYNC-SMART-INT-}}}
-						$val = 0;
-					} //end if
-					break;
-				case 'decimal1':
-					$val = (string) number_format(((float)$val), 1, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
-					break;
-				case 'decimal2':
-					$val = (string) number_format(((float)$val), 2, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
-					break;
-				case 'decimal3':
-					$val = (string) number_format(((float)$val), 3, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
-					break;
-				case 'decimal4':
-					$val = (string) number_format(((float)$val), 4, '.', ''); // {{{SYNC-SMART-DECIMAL}}}
-					break;
-				case 'numeric':
-					$val = (float) $val;
-					break;
-				case 'mixed': // mixed variable types, can vary by context, leave as is
-				case 'raw': // raw, alias for mixed, leave as is
-				case '': // no explicit format (take as raw / mixed)
-					// return as is ... (in this case extra validations have to be done explicit in the controller)
-					break;
-				default:
-					@trigger_error(__CLASS__.'::'.__FUNCTION__.'() // Invalid Request Variable ['.$key.'] Type: '.$type, E_USER_WARNING);
-					return null;
-			} //end switch
-			//--
-		} //end if else
-		//--
-		return $val; // mixed
-		//--
-	} //END FUNCTION
-
-
-	public static function getRequestVars() {
-		//--
-		return (array) self::$RequestVars; // array
-		//--
-	} //END FUNCTION
-
-
-	public static function setCookieVar($key, $value) {
-		//--
-		if(self::$RequestLock !== false) {
-			return false; // request registry is locked
-		} //end if
-		//--
-		$key = (string) trim((string)$key);
-		if(((string)$key == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
-			return false;
-		} //end if
-		//--
-		self::$CookieVars[(string)$key] = (string) $value; // cookie vars can be only string types (also numeric will be stored as string)
-		//--
-		return true; // OK
-		//--
-	} //END FUNCTION
-
-
-	public static function issetCookieVar($key) {
-		//--
-		$key = (string) trim((string)$key);
-		if((string)$key == '') {
-			return false;
-		} //end if
-		//--
-		if((array_key_exists((string)$key, self::$CookieVars)) AND (isset(self::$CookieVars[(string)$key]))) { // if is set and not null ; cookies are considered to be set if they exist and non-null
-			return true;
-		} else {
-			return false;
-		} //end if else
-		//--
-	} //END FUNCTION
-
-
-	public static function getCookieVar($key) {
-		//--
-		$key = (string) trim((string)$key);
-		if((string)$key == '') {
-			return null;
-		} //end if
-		//--
-		if(self::issetCookieVar((string)$key) === true) {
-			$val = (string) self::$CookieVars[(string)$key]; // use the value from cookies :: string
-		} else {
-			$val = null; // init with the default value :: null
-		} //end if
-		//--
-		return $val; // mixed
-		//--
-	} //END FUNCTION
-
-
-	public static function getCookieVars() {
-		//--
-		return (array) self::$CookieVars; // array
-		//--
-	} //END FUNCTION
-
-
-	//===== Internal Lock Control
-
-
-	/**
-	 * Locks the Request Object after parsing the $_REQUEST to avoid security injections in framework's runtime request after parsing
-	 *
-	 * @access 		private
-	 * @internal
-	 */
-	public static function lockRequestVar() {
-		//--
-		return self::$RequestLock = true;
-		//--
-	} //END FUNCTION
-
-
-	//===== Debugging
-
-
-	/**
-	 * Get Debug Message
-	 *
-	 * @access 		private
-	 * @internal
-	 */
-	public static function getDebugMsgs($area) {
-		//--
-		switch((string)$area) {
-			case 'stats':
-				return (array) self::$DebugMessages['stats'];
-				break;
-			case 'optimizations':
-				return (array) self::$DebugMessages['optimizations'];
-				break;
-			case 'extra':
-				return (array) self::$DebugMessages['extra'];
-				break;
-			case 'db':
-				return (array) self::$DebugMessages['db'];
-				break;
-			case 'mail':
-				return (array) self::$DebugMessages['mail'];
-				break;
-			case 'modules':
-				return (array) self::$DebugMessages['modules'];
-				break;
-			default:
-				// invalid area - register a notice to log
-				@trigger_error(__CLASS__.'::'.__FUNCTION__.'()'."\n".'INVALID DEBUG AREA: '.$area, E_USER_NOTICE);
-				return array();
-		} //end switch
-		//--
-	} //END FUNCTION
-
-
-	/**
-	 * Set Debug Message
-	 *
-	 * @access 		private
-	 * @internal
-	 */
-	public static function setDebugMsg($area, $context, $dbgmsg, $opmode='') {
-		//--
-		if(!SmartFrameworkRuntime::ifDebug()) {
-			return;
-		} //end if
-		//--
-		if(!$dbgmsg) {
-			return;
-		} //end if
-		//--
-		$subcontext = '';
-		if(strpos((string)$context, '|') !== false) {
-			$arr 		= (array)  explode('|', (string)$context, 3); // separe 1st and 2nd from the rest
-			$context 	= (string) trim((string)(isset($arr[0]) ? $arr[0] : ''));
-			$subcontext = (string) trim((string)(isset($arr[1]) ? $arr[1] : ''));
-			$arr = null;
-		} //end if
-		if((string)$context == '') {
-			$context = '-UNDEFINED-CONTEXT-';
-		} //end if
-		//--
-		switch((string)$area) {
-			case 'stats':
-				if((!array_key_exists('stats', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['stats']))) {
-					self::$DebugMessages['stats'] = [];
-				} //end if
-				self::$DebugMessages['stats'][(string)$context] = $dbgmsg; // stats will be always rewrite (as assign: =) to avoid duplicates
-				break;
-			case 'optimizations':
-				if((!array_key_exists('optimizations', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['optimizations']))) {
-					self::$DebugMessages['optimizations'] = [];
-				} //end if
-				if((!array_key_exists((string)$context, self::$DebugMessages['optimizations'])) OR (!is_array(self::$DebugMessages['optimizations'][(string)$context]))) {
-					self::$DebugMessages['optimizations'][(string)$context] = [];
-				} //end if
-				self::$DebugMessages['optimizations'][(string)$context][] = $dbgmsg;
-				break;
-			case 'extra':
-				if((!array_key_exists('extra', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['extra']))) {
-					self::$DebugMessages['extra'] = [];
-				} //end if
-				if((!array_key_exists((string)$context, self::$DebugMessages['extra'])) OR (!is_array(self::$DebugMessages['extra'][(string)$context]))) {
-					self::$DebugMessages['extra'][(string)$context] = [];
-				} //end if
-				self::$DebugMessages['extra'][(string)$context][] = $dbgmsg;
-				break;
-			case 'db': // can have sub-context
-				if((string)$subcontext == '') {
-					$subcontext = '-UNDEFINED-SUBCONTEXT-'; // db must have always a sub-context
-				} //end if
-				if((!array_key_exists('db', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['db']))) {
-					self::$DebugMessages['db'] = [];
-				} //end if
-				if((!array_key_exists((string)$context, self::$DebugMessages['db'])) OR (!is_array(self::$DebugMessages['db'][(string)$context]))) {
-					self::$DebugMessages['db'][(string)$context] = [];
-				} //end if
-				switch((string)$opmode) {
-					case '=': // assign
-						self::$DebugMessages['db'][(string)$context][(string)$subcontext] = $dbgmsg;
-						break;
-					case '+': // increment
-						if((!array_key_exists((string)$subcontext, self::$DebugMessages['db'][(string)$context])) OR (is_array(self::$DebugMessages['db'][(string)$context][(string)$subcontext]))) {
-							self::$DebugMessages['db'][(string)$context][(string)$subcontext] = 0;
-						} //end if
-						self::$DebugMessages['db'][(string)$context][(string)$subcontext] += (float) $dbgmsg;
-						break;
-					default: // default, add new entry []
-						if((!array_key_exists((string)$subcontext, self::$DebugMessages['db'][(string)$context])) OR (!is_array(self::$DebugMessages['db'][(string)$context][(string)$subcontext]))) {
-							self::$DebugMessages['db'][(string)$context][(string)$subcontext] = [];
-						} //end if
-						self::$DebugMessages['db'][(string)$context][(string)$subcontext][] = $dbgmsg;
-				} //end switch
-				break;
-			case 'mail':
-				if((!array_key_exists('mail', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['mail']))) {
-					self::$DebugMessages['mail'] = [];
-				} //end if
-				if((!array_key_exists((string)$context, self::$DebugMessages['mail'])) OR (!is_array(self::$DebugMessages['mail'][(string)$context]))) {
-					self::$DebugMessages['mail'][(string)$context] = [];
-				} //end if
-				self::$DebugMessages['mail'][(string)$context][] = $dbgmsg;
-				break;
-			case 'modules':
-				if((!array_key_exists('modules', self::$DebugMessages)) OR (!is_array(self::$DebugMessages['modules']))) {
-					self::$DebugMessages['modules'] = [];
-				} //end if
-				if((!array_key_exists((string)$context, self::$DebugMessages['modules'])) OR (!is_array(self::$DebugMessages['modules'][(string)$context]))) {
-					self::$DebugMessages['modules'][(string)$context] = [];
-				} //end if
-				self::$DebugMessages['modules'][(string)$context][] = $dbgmsg;
-				break;
-			default:
-				// drop message and register a notice to log
-				@trigger_error(__CLASS__.'::'.__FUNCTION__.'()'."\n".'INVALID DEBUG AREA: '.$area."\n".'Message Content: '.print_r($dbgmsg,1), E_USER_NOTICE);
-		} //end switch
-		//--
-	} //END FUNCTION
-
-
-	/**
-	 * Register to Internal Cache
-	 *
-	 * @access 		private
-	 * @internal
-	 */
-	public static function registerInternalCacheToDebugLog() {
-		//--
-		if(SmartFrameworkRuntime::ifInternalDebug()) {
-			if(SmartFrameworkRuntime::ifDebug()) {
-				self::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
-					'title' => 'SmartFrameworkRegistry // Internal Data',
-					'data' => 'Dump of Request Lock: ['.print_r(self::$RequestLock,1).']'."\n".'Dump of Request Vars Keys: '.print_r(array_keys((array)self::$RequestVars),1)."\n".'Dump of Connections:'."\n".print_r(self::$Connections,1)
-				]);
-			} //end if
-		} //end if
-		//--
-	} //END FUNCTION
-
-
-} //END CLASS
-
-
-//==================================================================================
-//================================================================================== CLASS END
-//==================================================================================
-
 
 //==================================================================================
 //================================================================================== CLASS START
@@ -711,8 +29,8 @@ final class SmartFrameworkRegistry {
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
- * @depends 	classes: Smart, SmartUtils
- * @version		v.20210421
+ * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
+ * @version		v.20210506
  * @package 	Application
  *
  */
@@ -721,36 +39,257 @@ final class SmartFrameworkRuntime {
 	// ::
 	// {{{SYNC-SMART-HTTP-STATUS-CODES}}}
 
-	private static $AppReleaseHash = '';
+	private static $NoCacheHeadersSent 		= false;
 
-	private static $isAdminArea = null;
-	private static $isProdEnv = null;
-	private static $isDebugOn = null;
-	private static $isInternalDebugOn = null;
+	private static $HttpStatusCodesOK  		= [200, 202, 203, 208, 304]; 						// list of framework available HTTP OK Status Codes (sync with middlewares)
+	private static $HttpStatusCodesRDR 		= [301, 302]; 										// list of framework available HTTP Redirect Status Codes (sync with middlewares)
+	private static $HttpStatusCodesERR 		= [400, 401, 403, 404, 429, 500, 502, 503, 504]; 	// list of framework available HTTP Error Status Codes (sync with middlewares)
 
-	private static $NoCacheHeadersSent = false;
+	private static $RequestProcessed 		= false; // after all request variables are processed this will be set to true to avoid re-process request variables which can be a huge security issue if re-process is called by mistake !
 
-	private static $HttpStatusCodesOK  = [200, 202, 203, 208, 304]; 						// list of framework available HTTP OK Status Codes (sync with middlewares)
-	private static $HttpStatusCodesRDR = [301, 302]; 										// list of framework available HTTP Redirect Status Codes (sync with middlewares)
-	private static $HttpStatusCodesERR = [400, 401, 403, 404, 429, 500, 502, 503, 504]; 	// list of framework available HTTP Error Status Codes (sync with middlewares)
-
-	private static $RequestProcessed 			= false; 	// after all request variables are processed this will be set to true to avoid re-process request variables which can be a huge security issue if re-process is called by mistake !
-	private static $RedirectionMonitorStarted 	= false; 	// after the redirection monitor have been started this will be set to true to avoid re-run it
-	private static $HighLoadMonitorStats 		= null; 	// register the high load monitor caches
+	private static $HighLoadMonitorStats 	= null;  // register the high load monitor caches
+	private static $RedirectionMonitorOn 	= false; // after the redirection monitor have been started this will be set to true to avoid re-run it
 
 
 	//======================================================================
-	public static function InstantFlush() {
+	public static function Raise202Status($y_msg, $y_htmlmsg='') {
 		//--
-		$output_buffering_status = @ob_get_status();
-		//-- type: 0 = PHP_OUTPUT_HANDLER_INTERNAL ; 1 = PHP_OUTPUT_HANDLER_USER
-		if(is_array($output_buffering_status) AND array_key_exists('type', $output_buffering_status) AND array_key_exists('chunk_size', $output_buffering_status)) {
-			if(((string)$output_buffering_status['type'] == '0') AND ((int)$output_buffering_status['chunk_size'] > 0)) { // avoid to break user level output buffering(s), so enable this just for level zero (internal, if set in php.ini)
-				@ob_flush();
-			} //end if
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(202);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 202 ...');
+		} //end if else
+		die(SmartComponents::http_status_message((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise203Status($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(203);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 203 ...');
+		} //end if else
+		die(SmartComponents::http_status_message((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise208Status($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(208);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 208 ...');
+		} //end if else
+		die(SmartComponents::http_status_message((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise3xxRedirect($y_code, $y_location) {
+		//--
+		if((string)$y_location == '') {
+			Smart::log_warning(__METHOD__.' # Empty 3xx Location ...');
+			return;
 		} //end if
 		//--
-		@flush();
+		$y_msg = '';
+		switch((int)$y_code) {
+			case 302:
+				$y_code = 302;
+				$y_msg = 'Found';
+				break;
+			case 301:
+				$y_code = 301;
+				$y_msg = 'Moved Permanently';
+				break;
+			default:
+				Smart::log_warning(__METHOD__.' # Invalid ('.$y_code.') as 3xx status ...');
+				return;
+		} //end switch
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(301); // permanent redirect
+			self::outputHttpSafeHeader('Location: '.$y_location); // force redirect
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 3xx ('.$y_code.') ...');
+		} //end if else
+		die(SmartComponents::http_status_message((string)$y_code.' '.$y_msg, (string)Smart::escape_html((string)$y_location)));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise400Error($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(400);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 400 ...');
+		} //end if else
+		die(SmartComponents::http_message_400_badrequest((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise401Prompt($y_msg, $y_htmlmsg, $y_realm) {
+		//--
+		$y_realm = (string) trim((string)$y_realm);
+		$y_realm = (string) str_replace(['"', "'", '`'], ' ', (string)$y_realm);
+		$y_realm = (string) trim((string)$y_realm);
+		if((string)$y_realm == '') {
+			$y_realm = 'Default (Private Area)';
+		} //end if
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			self::outputHttpSafeHeader('WWW-Authenticate: Basic realm="'.$y_realm.'"');
+			self::outputHttpSafeHeader('HTTP/1.0 401 Authorization Required');
+			http_response_code(401);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before prompt 401 ...');
+		} //end if else
+		//--
+		if((string)trim((string)$y_htmlmsg) != '') {
+			die((string)$y_htmlmsg."\n".'<!-- 401 Message: '.Smart::escape_html((string)$y_msg).' -->');
+		} //end if
+		die(SmartComponents::http_message_401_unauthorized((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise401Error($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(401);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 401 ...');
+		} //end if else
+		die(SmartComponents::http_message_401_unauthorized((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise403Error($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(403);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 403 ...');
+		} //end if else
+		die(SmartComponents::http_message_403_forbidden((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise404Error($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(404);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 404 ...');
+		} //end if else
+		die(SmartComponents::http_message_404_notfound((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise429Error($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(429);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 429 ...');
+		} //end if else
+		die(SmartComponents::http_message_429_toomanyrequests((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise500Error($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(500);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 500 ...');
+		} //end if else
+		die(SmartComponents::http_message_500_internalerror((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise502Error($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(502);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 502 ...');
+		} //end if else
+		die(SmartComponents::http_message_502_badgateway((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise503Error($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(503);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 503 ...');
+		} //end if else
+		die(SmartComponents::http_message_503_serviceunavailable((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise504Error($y_msg, $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersNoCache();
+			http_response_code(504);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 504 ...');
+		} //end if else
+		die(SmartComponents::http_message_504_gatewaytimeout((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -787,113 +326,23 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	// if is ADMIN area will return TRUE else will return FALSE
-	public static function isAdminArea() {
-		//--
-		if(self::$isAdminArea !== null) {
-			return (bool) self::$isAdminArea;
-		} //end if
-		//--
-		self::$isAdminArea = false;
-		if(defined('SMART_FRAMEWORK_ADMIN_AREA')) {
-			if(SMART_FRAMEWORK_ADMIN_AREA === true) {
-				self::$isAdminArea = true;
-			} //end if
-		} //end if
-		//--
-		return (bool) self::$isAdminArea;
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	// if Prod Environment is ON will return TRUE, else will return FALSE
-	public static function ifProdEnv() {
-		//--
-		if(self::$isProdEnv !== null) {
-			return (bool) self::$isProdEnv;
-		} //end if
-		//--
-		self::$isProdEnv = false;
-		if(defined('SMART_FRAMEWORK_ENV')) {
-			if((string)SMART_FRAMEWORK_ENV == 'prod') {
-				self::$isProdEnv = true;
-			} //end if
-		} //end if
-		//--
-		return (bool) self::$isProdEnv;
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	// if Debug is ON will return TRUE, else will return FALSE
-	public static function ifDebug() {
-		//--
-		if(self::$isDebugOn !== null) {
-			return (bool) self::$isDebugOn;
-		} //end if
-		//--
-		self::$isDebugOn = false;
-		if(defined('SMART_FRAMEWORK_DEBUG_MODE')) {
-			if(SMART_FRAMEWORK_DEBUG_MODE === true) {
-				self::$isDebugOn = true;
-			} //end if
-		} //end if
-		//--
-		return (bool) self::$isDebugOn;
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	// if Internal Debug (Advanced Debug) is ON will return TRUE, else will return FALSE
-	public static function ifInternalDebug() {
-		//--
-		if(self::$isInternalDebugOn !== null) {
-			return (bool) self::$isInternalDebugOn;
-		} //end if
-		//--
-		self::$isInternalDebugOn = false;
-		if(defined('SMART_FRAMEWORK_INTERNAL_DEBUG')) {
-			if(SMART_FRAMEWORK_INTERNAL_DEBUG === true) {
-				self::$isInternalDebugOn = true;
-			} //end if
-		} //end if
-		//--
-		return (bool) self::$isInternalDebugOn;
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	// security: use this instead of header() which cannot contain \r \n \t \x0B \0 \f
+	// security: use this instead of header() to filter out unsafe and dangerous header characters
 	public static function outputHttpSafeHeader($value) {
 		//--
-		$value = (string) trim((string)$value);
+		$original_value = (string) $value;
 		//--
-		if((string)$value != '') {
-			//--
-			$value = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$value); // variables from PathInfo are already URL Decoded, so must be ONLY Filtered !
-			$value = (string) Smart::normalize_spaces((string)$value); // security fix: avoid newline in header
-			$value = (string) trim((string)$value);
-			//--
-			if((string)$value != '') {
-				//--
-				if(headers_sent()) {
-					@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Trying to set header but Headers Already Sent with value of: '.$value, E_USER_WARNING);
-					return;
-				} //end if
-				//--
-				header((string)$value);
-				//--
-			} //end if
-			//--
+		$value = (string) SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$value);
+		//--
+		if((string)$value == '') {
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Trying to set an empty header (after filtering the value) with original value of: '.$original_value, E_USER_WARNING);
+			return;
 		} //end if
+		//--
+		if(headers_sent()) {
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Headers Already Sent while trying to set a header with value of: '.$value, E_USER_WARNING);
+			return;
+		} //end if
+		header((string)$value);
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -904,7 +353,7 @@ final class SmartFrameworkRuntime {
 	public static function outputHttpHeadersNoCache($expiration=-1, $modified=-1, $control='private') {
 		//--
 		if(self::$NoCacheHeadersSent !== false) {
-			return; // this function can run more than once ...
+			return; // this function can be called more than once per execution ; thus if so stop it here ; no log required ...
 		} //end if
 		//--
 		$expiration = (int) $expiration; // expire time, in seconds, since now
@@ -921,10 +370,10 @@ final class SmartFrameworkRuntime {
 		if(!headers_sent()) {
 			//--
 			if(($expiration < 0) AND ($modified < 0)) { // default
-				//--
-				header('Cache-Control: no-cache'); // HTTP 1.1
-				header('Pragma: no-cache'); // HTTP 1.0
-				header('Expires: '.gmdate('D, d M Y', @strtotime('-1 year')).' '.date('H:i:s').' GMT'); // HTTP 1.0
+				//-- {{{SYNC-HTTP-NOCACHE-HEADERS}}}
+				header('Cache-Control: no-cache, must-revalidate'); // HTTP 1.1 no-cache, not use their stale copy
+				header('Pragma: no-cache'); // HTTP 1.0 no-cache
+				header('Expires: '.gmdate('D, d M Y', @strtotime('-1 year')).' '.date('H:i:s').' GMT'); // HTTP 1.0 no-cache expires
 				header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 				//--
 			} else {
@@ -948,7 +397,7 @@ final class SmartFrameworkRuntime {
 			//--
 		} else {
 			//--
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Could not set No-Cache Headers (Expire='.$expiration.' ; Modified='.$modified.'), Headers Already Sent ...', E_USER_WARNING);
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Could not set No-Cache Headers (Expire='.$expiration.' ; Modified='.$modified.'), Headers Already Sent ...', E_USER_WARNING);
 			//--
 		} //end if else
 		//--
@@ -999,21 +448,10 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	// This will run before loading the Smart.Framework and must not depend on it's classes
-	// After all Request are processed this have to be called to lock and avoid re-processing the Request variables
-	public static function Lock_Request_Processing() {
-		//--
-		self::$RequestProcessed = true; // this will lock the Request processing
-		//--
-		SmartFrameworkRegistry::lockRequestVar(); // this will lock the request registry
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
 	// check if pathInfo is enabled (allowed)
 	public static function PathInfo_Enabled() {
+		//--
+		// this does not apply to standalone apps ; STANDALONE APPS MUST NOT USE THIS LIBRARY
 		//--
 		$status = false;
 		//--
@@ -1021,7 +459,7 @@ final class SmartFrameworkRuntime {
 			//--
 			switch((int)SMART_SOFTWARE_URL_ALLOW_PATHINFO) {
 				case 3: // only index enabled
-					if(!self::isAdminArea()) {
+					if(!SmartFrameworkRegistry::isAdminArea()) {
 						$status = true;
 					} //end if
 					break;
@@ -1029,7 +467,7 @@ final class SmartFrameworkRuntime {
 					$status = true;
 					break;
 				case 1: // only admin enabled
-					if(self::isAdminArea()) {
+					if(SmartFrameworkRegistry::isAdminArea()) {
 						$status = true;
 					} //end if
 					break;
@@ -1047,6 +485,345 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
+	// Avoid run this function before Smart.Framework was loaded, it depends on it
+	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
+	public static function Redirection_Monitor() {
+		//--
+		if(self::$RedirectionMonitorOn !== false) {
+			return; // avoid run after it was used by runtime
+		} //end if
+		self::$RedirectionMonitorOn = true;
+		//--
+		$url_redirect = '';
+		//--
+		$the_current_url = SmartUtils::get_server_current_url();
+		$the_current_script = SmartUtils::get_server_current_script();
+		//--
+		$is_disabled_frontent = (bool) ((defined('SMART_SOFTWARE_FRONTEND_DISABLED') && (SMART_SOFTWARE_FRONTEND_DISABLED === true)) ? true : false);
+		$is_disabled_backend  = (bool) ((defined('SMART_SOFTWARE_BACKEND_DISABLED')  && (SMART_SOFTWARE_BACKEND_DISABLED === true))  ? true : false);
+		$is_disabled_task 	  = (bool) ((defined('SMART_SOFTWARE_TASK_DISABLED')  && (SMART_SOFTWARE_TASK_DISABLED === true))  ? true : false);
+		//--
+		if(
+			($is_disabled_frontent === true) AND
+			($is_disabled_backend  === true) AND
+			($is_disabled_task === true)
+		) { // all frontend, backend and task services are disabled, avoid circular redirect from below
+			self::Raise500Error('App Config ERROR'."\n".'All services (FRONTEND, BACKEND, TASK) of this application are currently DISABLED in the config/init ...');
+			return;
+		} //end if
+		if(($is_disabled_frontent === true) AND ((string)$the_current_script == 'index.php')) {
+			$url_redirect = $the_current_url.'admin.php';
+		} //end if
+		if(($is_disabled_backend === true) AND ((string)$the_current_script == 'admin.php')) {
+			$url_redirect = $the_current_url.'index.php';
+		} //end if
+		if(($is_disabled_task === true) AND ((string)$the_current_script == 'task.php')) {
+			self::Raise503Error('The TASK Service is Not Available on this instance');
+			return;
+		} //end if
+		//--
+		if(((string)$url_redirect == '') AND (isset($_SERVER['PATH_INFO']))) {
+			if((string)SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']) != '') {
+				if(self::PathInfo_Enabled() === true) {
+					if(((string)SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']) != '/') AND (strpos((string)SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']), '/~') !== false)) { // avoid common mistake to use just a / after script.php + detect tilda path
+						return;
+					} //end if
+				} //end if
+				$url_redirect = (string) $the_current_url.$the_current_script.'?'.SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']);
+			} //end if
+		} //end if
+		//--
+		if((string)$url_redirect != '') {
+			//--
+			self::Raise3xxRedirect(302, (string)$url_redirect);
+			die('Redirect 302 to: '.$url_redirect);
+			return;
+		} //end if
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	// Create a Download Link for the Download Handler
+	public static function Decode_Download_Link(?string $y_encrypted_link) {
+		//--
+		return (string) trim((string)SmartUtils::crypto_decrypt(
+			(string) $y_encrypted_link,
+			'Smart.Framework//DownloadLink'.SMART_FRAMEWORK_SECURITY_KEY // {{{SYNC-DOWNLOAD-LINK-CRYPT-KEY}}}
+		));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	// Create a Download Link for the Download Handler
+	public static function Create_Download_Link(?string $y_file, ?string $y_ctrl_key) {
+		//--
+		$y_file = (string) trim((string)$y_file);
+		if((string)$y_file == '') {
+			Smart::log_warning('Utils / Create Download Link: Empty File Path has been provided. This means the download link will be unavaliable (empty) to assure security protection.');
+			return '';
+		} //end if
+		if(!SmartFileSysUtils::check_if_safe_path($y_file)) {
+			Smart::log_warning('Utils / Create Download Link: Invalid File Path has been provided. This means the download link will be unavaliable (empty) to assure security protection. File: '.$y_file);
+			return '';
+		} //end if
+		//--
+		$y_ctrl_key = (string) trim((string)$y_ctrl_key);
+		if((string)$y_ctrl_key == '') {
+			Smart::log_warning('Utils / Create Download Link: Empty Controller Key has been provided. This means the download link will be unavaliable (empty) to assure security protection.');
+			return '';
+		} //end if
+		if(!defined('SMART_ERROR_AREA')) {
+			Smart::log_warning('Utils / Create Download Link: Missing SMART_ERROR_AREA. This means the download link will be unavaliable (empty) to assure security protection.');
+			return '';
+		} //end if
+		$y_ctrl_key = (string) SMART_ERROR_AREA.'/'.$y_ctrl_key; // {{{SYNC-DWN-CTRL-PREFIX}}}
+		//--
+		$crrtime = (int) time();
+		$access_key = SmartHashCrypto::sha1('DownloadLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$y_file.'^'.$y_ctrl_key);
+		$unique_key = SmartHashCrypto::sha1('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$y_file.'+'.$y_ctrl_key);
+		//-- {{{SYNC-DOWNLOAD-ENCRYPT-ARR}}}
+		$safe_download_link = SmartUtils::crypto_encrypt(
+			trim((string)$crrtime)."\n". 									// set the current time
+			trim((string)$y_file)."\n". 									// the file path
+			trim((string)$access_key)."\n". 								// access key based on UniqueID cookie
+			trim((string)$unique_key)."\n".									// unique key based on: User-Agent and IP
+			'-'."\n",														// self robot browser UserAgentName/ID key (does not apply here)
+			'Smart.Framework//DownloadLink'.SMART_FRAMEWORK_SECURITY_KEY 	// {{{SYNC-DOWNLOAD-LINK-CRYPT-KEY}}}
+		);
+		//--
+		return (string) Smart::escape_url((string)trim((string)$safe_download_link));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	/**
+	 * Create a semantic URL like: (script.php)?/param1/value1/Param2/Value2
+	 *
+	 * @param 	STRING 	$y_url 				:: The standard URL in RFC3986 format as: (script.php)?page=my-module.my-page&param1=value1&Param2=Value2
+	 *
+	 * @return 	STRING						:: The semantic URL, depends on SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE ( '' | 'standard' | 'semantic' ) ; 'standard' and 'semantic' requires Apache Rewrite ; Examples: '' -> (script.php)?/page/(my-module.)my-page/param1/value1/Param2/Value2 ; 'standard' -> (my-module.)my-page.html?param1=value1&Param2=Value2 ; 'semantic' -> (my-module.)my-page.html?/param1/value1/Param2/Value2
+	 */
+	public static function Create_Semantic_URL($y_url) { // v.20210429
+		//--
+		$y_url = (string) trim((string)$y_url);
+		if((string)$y_url == '') {
+			return ''; // if URL is empty nothing to do ...
+		} //end if
+		//--
+		if(defined('SMART_FRAMEWORK_SEMANTIC_URL_DISABLE') AND (SMART_FRAMEWORK_SEMANTIC_URL_DISABLE === true)) {
+			return (string) $y_url;
+		} //end if
+		//--
+		$ignore_script = '';
+		$ignore_module = '';
+		if(SmartFrameworkRegistry::isAdminArea() !== true) { // not for admin !
+			//--
+			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT')) {
+				if(SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT === true) {
+					$ignore_script = (string) 'index.php';
+				} //end if
+			} //end if
+			//--
+			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE')) {
+				if(SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE === true) {
+					$ignore_module = (string) trim((string)Smart::get_from_config('app.index-default-module', 'string'));
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		$semantic_separator = '?/';
+		//--
+		if(strpos((string)$y_url, (string)$semantic_separator) !== false) {
+			return (string) $y_url; // it is already semantic or at least appear to be ...
+		} // end if
+		//--
+		$arr = (array) Smart::url_parse((string)$y_url);
+		//--
+		$arr['scheme'] 	= (string) trim((string)$arr['scheme']); 	// http / https
+		$arr['host'] 	= (string) trim((string)$arr['host']); 		// 127.0.0.1
+		$arr['port'] 	= (string) trim((string)$arr['port']); 		// 80 / 443 / 8088 ...
+		$arr['path'] 	= (string) trim((string)$arr['path']); 		// /some/path
+		$arr['query'] 	= (string) trim((string)$arr['query']);		// page=some&op=other
+		//--
+		if((string)$arr['query'] == '') {
+			return (string) $y_url; // there is no query string to format as semantic
+		} //end if
+		//--
+		$semantic_url = '';
+		//--
+		if((string)$arr['host'] != '') {
+			if((string)$arr['scheme'] != '') {
+				$semantic_url .= (string) $arr['scheme'].':';
+			} //end if
+			$semantic_url .= (string) '//'.$arr['host'];
+			if(((string)$arr['port'] != '') AND ((string)$arr['port'] != '80') AND ((string)$arr['port'] != '443')) {
+				$semantic_url .= (string) ':'.$arr['port'];
+			} //end if
+		} //end if
+		//--
+		if((string)$ignore_script != '') {
+			$len = (int) strlen((string)$ignore_script);
+			if((int)$len > 0) {
+				if((string)$arr['path'] == (string)$ignore_script) {
+					$arr['path'] = '';
+				} elseif((string)substr((string)$arr['path'], (-1*(int)$len), (int)$len) == (string)$ignore_script) {
+					$len = (int)strlen((string)$arr['path']) - (int)$len;
+					if($len > 0) {
+						$arr['path'] = (string) substr((string)$arr['path'], 0, (int)$len);
+					} //end if
+				} //end if
+			} //end if
+		} //end if
+		$semantic_url .= (string) $arr['path'];
+		//--
+		$use_rewrite = false;
+		$use_rfc_params = false;
+		if(SmartFrameworkRegistry::isAdminArea() !== true) { // not for admin !
+			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE')) {
+				if((string)SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE == 'semantic') {
+					$use_rewrite = true;
+				} elseif((string)SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE == 'standard') {
+					$use_rewrite = true;
+					$use_rfc_params = true;
+				} //end switch
+			} //end if
+		} //end if
+		//--
+		$vars = explode('&', $arr['query']);
+		$asvars = array(); // store params except page
+		$detected_page = ''; // store page if found
+		$parsing_ok = true;
+		for($i=0; $i<Smart::array_size($vars); $i++) {
+			//--
+			$pair = (array) explode('=', $vars[$i]);
+			if(!array_key_exists(0, $pair)) {
+				$pair[0] = null;
+			} //end if
+			if(!array_key_exists(1, $pair)) {
+				$pair[1] = null;
+			} //end if
+			//--
+			if(((string)trim((string)$pair[0]) == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$pair[0])) OR ((string)$pair[1] == '')) { // {{{SYNC-REQVARS-VALIDATION}}}
+				$parsing_ok = false;
+				break;
+			} //end if
+			//--
+			if((string)$pair[0] === 'page') {
+				$detected_page = (string) $pair[1];
+			} else {
+				$asvars[(string)$pair[0]] = (string) $pair[1];
+			} //end if else
+			//--
+		} //end for
+		$vars = array();
+		//--
+		if($parsing_ok !== true) {
+			return (string) $y_url; // there is something wrong with the URL
+		} //end if
+		//--
+		if(Smart::array_size($asvars) > 0) {
+			$have_params = true;
+		} else {
+			$have_params = false;
+		} //end if else
+		//--
+		$semantic_suffix = '';
+		$have_semantic_separator = false;
+		$page_rewrite_ok = false;
+		//--
+		if((string)$detected_page != '') {
+			//--
+			if(strpos((string)$detected_page, '.') !== false) {
+				$arr_pg = (array) explode('.', (string)$detected_page);
+				$the_pg_mod = '';
+				if(array_key_exists(0, $arr_pg)) {
+					$the_pg_mod = (string) trim((string)$arr_pg[0]); 	// no controller, use the default one
+				} //end if
+				$the_pg_ctrl = '';
+				if(array_key_exists(1, $arr_pg)) {
+					$the_pg_ctrl = (string) trim((string)$arr_pg[1]); 	// page controller
+				} //end if
+				$the_pg_ext = '';
+				if(array_key_exists(2, $arr_pg)) {
+					$the_pg_ext = (string) trim((string)$arr_pg[2]); 	// page extension **OPTIONAL**
+				} //end if
+				$arr_pg = array();
+			} else {
+				$the_pg_mod = ''; 						// no controller, use the default one
+				$the_pg_ctrl = (string) $detected_page; // page controller
+				$the_pg_ext = ''; 						// page extension
+			} //end if else
+			//--
+			$pg_link = '';
+			if(((string)$the_pg_mod == '') OR ((string)$the_pg_mod == (string)$ignore_module)) {
+				$pg_link .= (string) $the_pg_ctrl;
+			} else {
+				$pg_link .= (string) $the_pg_mod.'.'.$the_pg_ctrl;
+			} //end if
+			//--
+			if(($use_rewrite === true) AND (((string)$semantic_url == '') OR ((string)substr((string)$semantic_url, -1, 1) == '/'))) { // PAGE (with REWRITE)
+				//--
+				if((string)$the_pg_ext == '') {
+					$the_pg_ext = 'html';
+				} //end if
+				//--
+				$page_rewrite_ok = true;
+				$semantic_suffix .= (string) $pg_link.'.'.$the_pg_ext;
+				//--
+			} else {
+				//--
+				$semantic_suffix .= (string) $semantic_separator.'page'.'/'.$pg_link.'/';
+				$have_semantic_separator = true;
+				//--
+			} //end if else
+			//--
+		} //end if
+		//--
+		if($have_params === true) {
+			//--
+			foreach($asvars as $key => $val) {
+				//--
+				if(($page_rewrite_ok === true) AND ($use_rfc_params === true)) {
+					//--
+					$semantic_suffix = (string) Smart::url_add_suffix((string)$semantic_suffix, (string)$key.'='.$val);
+					//--
+				} else {
+					//--
+					$val = (string) str_replace('/', (string)Smart::escape_url('/'), (string)$val);
+					$val = (string) str_replace((string)Smart::escape_url('/'), (string)Smart::escape_url((string)Smart::escape_url('/')), (string)$val); // needs double encode the / character for semantic URLs to avoid conflict with param/value
+					//--
+					if($have_semantic_separator !== true) {
+						$semantic_suffix .= (string) $semantic_separator;
+						$have_semantic_separator = true;
+					} //end if
+					$semantic_suffix .= (string) $key.'/'.$val.'/';
+					//--
+				} //end if else
+				//--
+			} //end foreach
+			//--
+		} //end if
+		//--
+		if((string)$semantic_suffix == '') {
+			return (string) $y_url; // something get wrong with the conversion, maybe the URL query is formatted in a different way that could not be understood
+		} //end if
+		//--
+		$semantic_url .= (string) $semantic_suffix;
+		//--
+		return (string) $semantic_url;
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
 	// This will run before loading the Smart.Framework and must not depend on it's classes
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
 	public static function Parse_Semantic_URL() {
@@ -1056,7 +833,7 @@ final class SmartFrameworkRuntime {
 
 		//-- check if can run
 		if(self::$RequestProcessed !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Cannot Re-Parse the Semantic URLs, Registry is already locked !', E_USER_WARNING);
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Re-Parse the Semantic URLs, Registry is already locked !', E_USER_WARNING);
 			return; // avoid run after it was already processed
 		} //end if
 		//--
@@ -1068,19 +845,18 @@ final class SmartFrameworkRuntime {
 		//--
 
 		//--
-		if((self::PathInfo_Enabled() === true) AND (isset($_SERVER['PATH_INFO'])) AND ((string)$_SERVER['PATH_INFO'] != '')) {
+		if((self::PathInfo_Enabled() === true) AND (isset($_SERVER['PATH_INFO'])) AND ((string)SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']) != '')) {
 			$semantic_url = '';
-			$fix_pathinfo = (string) SmartFrameworkSecurity::FilterUnsafeString((string)trim((string)$_SERVER['PATH_INFO'])); // variables from PathInfo are already URL Decoded, so must be ONLY Filtered !
+			$fix_pathinfo = (string) SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']); // variables from PathInfo are already URL Decoded, so must be ONLY Filtered !
 			$sem_path_pos = strpos((string)$fix_pathinfo, '/~');
-			if($sem_path_pos !== false) {
-				$semantic_url = (string) '?'.substr((string)$fix_pathinfo, 0, $sem_path_pos);
-				$path_url = (string) substr((string)$fix_pathinfo, ($sem_path_pos + 2));
-				SmartFrameworkRegistry::setRequestPath(
-					(string) ($path_url ? (string)$path_url : '/')
-				) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register !path-info! variable', E_USER_WARNING);
+			if(($sem_path_pos !== false) AND ((int)$sem_path_pos >= 0)) {
+				$semantic_url = (string) '?'.substr((string)$fix_pathinfo, 0, (int)$sem_path_pos);
 			} //end if
+			SmartFrameworkRegistry::setRequestPath(
+				(string) (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '')
+			) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Failed to register !path-info! variable', E_USER_WARNING);
 		} else {
-			$semantic_url = (string) (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '');
+			$semantic_url = (string) (isset($_SERVER['REQUEST_URI']) ? SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['REQUEST_URI']) : '');
 		} //end if
 		//--
 		if(strlen($semantic_url) > 65535) { // limit according with Firefox standard which is 65535 ; Apache standard is much lower as 8192
@@ -1113,7 +889,7 @@ final class SmartFrameworkRuntime {
 			if(is_array($location_arx)) {
 				for($i=0; $i<$cnt_arx; $i++) {
 					if(((string)trim((string)$location_arx[$i]) != '') AND (array_key_exists($i+1, $location_arx)) AND ((string)trim((string)$location_arx[$i+1]) != '')) {
-						$location_arx[$i+1] = (string) SmartFrameworkSecurity::urlVarDecodeStr((string)$location_arx[$i+1], false); // do not filter here, will filter later when exracting to avoid double filtering !
+						$location_arx[$i+1] = (string) SmartFrameworkSecurity::DecodeAndFilterUrlVarString((string)$location_arx[$i+1], false); // do not filter here, will filter later when exracting to avoid double filtering !
 						$location_arx[$i+1] = (string) str_replace((string)rawurlencode('/'), '/', (string)$location_arx[$i+1]);
 						$location_arr[(string)$location_arx[$i]] = (string) $location_arx[$i+1];
 					} //end if
@@ -1121,7 +897,6 @@ final class SmartFrameworkRuntime {
 				} //end for
 			} //end if
 			//--
-			//print_r($location_arr);
 			if(is_array($location_arr)) {
 				if(count($location_arr) > 0) {
 					self::Extract_Filtered_Request_Get_Post_Vars($location_arr, 'SEMANTIC-URL');
@@ -1139,68 +914,14 @@ final class SmartFrameworkRuntime {
 	// This will run before loading the Smart.Framework and must not depend on it's classes
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
 	public static function Extract_Filtered_Request_Get_Post_Vars($arr, $info) {
-
-		// FILTER INPUT GET/POST VARIABLES v.20210412
-
 		//-- check if can run
 		if(self::$RequestProcessed !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Cannot Register Request/'.$info.' Vars, Registry is already locked !', E_USER_WARNING);
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Register Request/'.$info.' Vars, Registry is already locked !', E_USER_WARNING);
 			return; // avoid run after it was already processed
 		} //end if
 		//--
-
+		SmartFrameworkRegistry::registerFilteredRequestVars((array)$arr, (string)$info);
 		//--
-		if(self::ifDebug()) {
-			self::DebugRequestLog('========================= FILTER REQUEST:'."\n".date('Y-m-d H:i:s O')."\n".(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n\n".'===== RAW REQUEST VARS:'."\n".'['.$info.']'."\n".print_r($arr, 1)."\n");
-		} //end if
-		//--
-
-		//-- process
-		if(is_array($arr)) {
-			//--
-			foreach($arr as $key => $val) {
-				//--
-				$key = (string) $key; // force string
-				//--
-				if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
-					//--
-					if(is_array($val)) { // array
-						//--
-						if(self::ifDebug()) {
-							self::DebugRequestLog('#EXTRACT-FILTER-REQUEST-VAR-ARRAY:'."\n".$key.'='.print_r($val,1)."\n");
-						} //end if
-						//--
-						SmartFrameworkRegistry::setRequestVar(
-							(string) $key,
-							(array) SmartFrameworkSecurity::FilterGetPostCookieVars($val)
-						) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register an array request variable: '.$key.' @ '.$info, E_USER_WARNING);
-						//--
-					} else { // string
-						//--
-						if(self::ifDebug()) {
-							self::DebugRequestLog('#EXTRACT-FILTER-REQUEST-VAR-STRING:'."\n".$key.'='.$val."\n");
-						} //end if
-						//--
-						SmartFrameworkRegistry::setRequestVar(
-							(string) $key,
-							(string) SmartFrameworkSecurity::FilterGetPostCookieVars($val)
-						) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register a string request variable: '.$key.' @ '.$info, E_USER_WARNING);
-						//--
-					} //end if else
-					//--
-				} //end if
-				//--
-			} //end foreach
-			//--
-		} //end if
-		//--
-
-		//--
-		if(self::ifDebug()) {
-			self::DebugRequestLog('========== #END REQUEST FILTER =========='."\n\n");
-		} //end if
-		//--
-
 	} //END FUNCTION
 	//======================================================================
 
@@ -1208,73 +929,33 @@ final class SmartFrameworkRuntime {
 	//======================================================================
 	// This will run before loading the Smart.Framework and must not depend on it's classes
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
+	// FILTER AND REGISTER THE INPUT COOKIES VARIABLES
 	public static function Extract_Filtered_Cookie_Vars($arr) {
-
-		// FILTER INPUT COOKIES VARIABLES v.20210412
-
 		//-- check if can run
 		if(self::$RequestProcessed !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Cannot Register Cookie Vars, Registry is already locked !', E_USER_WARNING);
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Register Cookie Vars, Registry is already locked !', E_USER_WARNING);
 			return; // avoid run after it was already processed
 		} //end if
 		//--
-
+		SmartFrameworkRegistry::registerFilteredCookieVars((array)$arr);
 		//--
-		$info = 'COOKIES';
-		//--
-
-		//--
-		if(self::ifDebug()) {
-			self::DebugRequestLog('========================= FILTER COOKIES:'."\n".date('Y-m-d H:i:s O')."\n".(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n\n".'===== RAW COOKIE VARS:'."\n".'['.$info.']'."\n".print_r($arr, 1)."\n");
-		} //end if
-		//--
-
-		//-- process
-		if(is_array($arr)) {
-			//--
-			foreach($arr as $key => $val) {
-				//--
-				$key = (string) $key; // force string
-				//--
-				if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
-					//--
-					if(self::ifDebug()) {
-						self::DebugRequestLog('#EXTRACT-FILTER-COOKIE-VAR:'."\n".$key.'='.$val."\n");
-					} //end if
-					SmartFrameworkRegistry::setCookieVar(
-						(string) $key,
-						(string) SmartFrameworkSecurity::FilterGetPostCookieVars($val)
-					) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() :: '.'Failed to register a cookie variable: '.$key.' @ '.$info, E_USER_WARNING);
-					//--
-				} //end if
-				//--
-			} //end foreach
-			//--
-		} //end if
-		//--
-
-		//--
-		if(self::ifDebug()) {
-			self::DebugRequestLog('========== #END COOKIES FILTER =========='."\n\n");
-		} //end if
-		//--
-
 	} //END FUNCTION
 	//======================================================================
 
 
 	//======================================================================
-	// get the App Release Hash based on Framework Version.Release.ModulesRelease
-	// Avoid run this function before Smart.Framework was loaded, it depends on it
-	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
-	public static function getAppReleaseHash() {
+	// This will run before loading the Smart.Framework and must not depend on it's classes
+	// After all Request are processed this have to be called to lock and avoid re-processing the Request variables
+	public static function Lock_Request_Processing() {
 		//--
-		if((string)self::$AppReleaseHash == '') {
-			$hash = (string) SmartHashCrypto::crc32b((string)SMART_FRAMEWORK_RELEASE_TAGVERSION.(string)SMART_FRAMEWORK_RELEASE_VERSION.(string)SMART_APP_MODULES_RELEASE, true); // get as b36
-			self::$AppReleaseHash = (string) strtolower((string)$hash);
+		if(self::$RequestProcessed !== false) {
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Registry is already locked !', E_USER_WARNING);
+			return; // avoid run after it was already processed
 		} //end if
 		//--
-		return (string) self::$AppReleaseHash;
+		self::$RequestProcessed = true; // this will lock the Request processing
+		//--
+		SmartFrameworkRegistry::lockRequestRegistry(); // this will lock the request registry
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -1285,12 +966,121 @@ final class SmartFrameworkRuntime {
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
 	public static function SingleUser_Mode_Monitor() {
 		//--
-		if(is_file('.ht-sf-singleuser-mode')) { // here must be used the functions is_file() as the filesys lib is may yet initialized ...
-			if(!headers_sent()) {
-				http_response_code(503);
-			} //end if
-			die(SmartComponents::http_message_503_serviceunavailable('The Service is under Maintenance (SingleUser Mode), try again later ...'));
+		if(defined('SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE') OR defined('SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE') OR defined('SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID')) {
+			self::Raise500Error('Single User Monitor requires exclusive management of the following constants which should not be defined before: SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE, SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE, SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID');
+			die('SingleUserModeMonitor:Constants');
 		} //end if
+		//--
+		define('SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE', '.ht-sf-singleuser-mode');
+		//--
+		$have_valid_lockfile = false;
+		$is_lock = false;
+		$retry_seconds = 0;
+		$special_unlock_by_username = ''; // this must be managed later by the authentication system because if accidentally will log out when locked by specific account id will never can re-login again while locked !
+		$unlock_for_area = '';
+		$unlock_for_ip = '';
+		if(SmartFileSystem::is_type_file((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE)) { // here must be used the functions is_file() as the filesys lib is may yet initialized ...
+			//--
+			$arr = parse_ini_file((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE, true, INI_SCANNER_RAW);
+			/* Sample: .ht-sf-singleuser-mode
+			[SINGLE-USER-LOCK]
+			username=admin
+			area=tsk
+			ipaddr=127.0.0.1
+			lifetime=3600
+			time=1619216050
+			*/
+			//--
+			if(is_array($arr) AND isset($arr['SINGLE-USER-LOCK']) AND is_array($arr['SINGLE-USER-LOCK'])) {
+				if(
+					isset($arr['SINGLE-USER-LOCK']['username']) AND
+					isset($arr['SINGLE-USER-LOCK']['area']) AND
+					isset($arr['SINGLE-USER-LOCK']['ipaddr']) AND
+					isset($arr['SINGLE-USER-LOCK']['time']) AND
+					isset($arr['SINGLE-USER-LOCK']['lifetime'])
+				) {
+					//--
+					$have_valid_lockfile = true;
+					//--
+					$arr['SINGLE-USER-LOCK']['username'] = (string) trim((string)$arr['SINGLE-USER-LOCK']['username']);
+					$arr['SINGLE-USER-LOCK']['area'] = (string) trim((string)$arr['SINGLE-USER-LOCK']['area']);
+					$arr['SINGLE-USER-LOCK']['ipaddr'] = (string) trim((string)$arr['SINGLE-USER-LOCK']['ipaddr']);
+					$arr['SINGLE-USER-LOCK']['time'] = (int) $arr['SINGLE-USER-LOCK']['time'];
+					$arr['SINGLE-USER-LOCK']['lifetime'] = (int) $arr['SINGLE-USER-LOCK']['lifetime'];
+					//--
+					if((int)$arr['SINGLE-USER-LOCK']['time'] >= 0) { // reference time must be integer >= 0, for safety
+						//--
+						if((int)$arr['SINGLE-USER-LOCK']['lifetime'] > 0) {
+							$exp_time = (int) ((int)$arr['SINGLE-USER-LOCK']['time'] + $arr['SINGLE-USER-LOCK']['lifetime']);
+							$now_time = (int) time();
+							if((int)$now_time < (int)$exp_time) {
+								$retry_seconds = (int) ((int)$exp_time - (int)$now_time);
+								if($retry_seconds > 0) {
+									$is_lock = true; // lock with expire, lifetime is positive integer
+								} //end if
+							} //end if
+						} else {
+							$is_lock = true; // lock with no expire, lifetime is zero
+						} //end if
+						//--
+						if($is_lock === true) {
+							//--
+							$unlock_for_ip = (string) $arr['SINGLE-USER-LOCK']['ipaddr'];
+							$unlock_for_area = (string) $arr['SINGLE-USER-LOCK']['area'];
+							$special_unlock_by_username = (string) $arr['SINGLE-USER-LOCK']['username'];
+							//--
+							$can_unlock_by_ip = false;
+							$can_unlock_by_area = false;
+							//--
+							if(
+								(((string)$unlock_for_ip != '') AND ((string)SmartUtils::get_ip_client() === (string)$unlock_for_ip)) OR
+								((string)$unlock_for_ip == '')
+							) {
+								$can_unlock_by_ip = true;
+							} //end if
+							if(
+								(((string)$arr['SINGLE-USER-LOCK']['area'] === 'idx') AND (SmartFrameworkRegistry::isAdminArea() !== true)) OR
+								(((string)$arr['SINGLE-USER-LOCK']['area'] === 'adm') AND (SmartFrameworkRegistry::isAdminArea() === true) AND (SmartFrameworkRegistry::isTaskArea() !== true)) OR
+								(((string)$arr['SINGLE-USER-LOCK']['area'] === 'tsk') AND (SmartFrameworkRegistry::isAdminArea() === true) AND (SmartFrameworkRegistry::isTaskArea() === true)) OR
+								((string)$arr['SINGLE-USER-LOCK']['area'] == '')
+							) {
+								$can_unlock_by_area = true;
+							} //end if
+							//--
+							if(
+								($can_unlock_by_ip === true)  AND
+								($can_unlock_by_area === true)
+							) {
+								$is_lock = false; // unlocked for who match all 3 criterias
+							} //end if
+							//--
+						} //end if
+						//--
+					} //end if
+					//--
+				} //end if
+			} //end if
+			//--
+			$arr = null;
+			//--
+		} //end if
+		//--
+		define('SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE', (string)'The Service is under Maintenance (SingleUser Mode), try again later ...'.(($retry_seconds > 0) ? "\n".'Retry in: '.(int)$retry_seconds.' seconds' : ''));
+		define('SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID', (string)$special_unlock_by_username);
+		//--
+		if($have_valid_lockfile === true) {
+			if($retry_seconds > 0) {
+				self::outputHttpSafeHeader('Retry-After: '.(int)$retry_seconds);
+			} //end if
+			self::outputHttpSafeHeader('Y-Single-User-Id: '.SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID);
+			self::outputHttpSafeHeader('Y-Single-User-Ip: '.$unlock_for_ip);
+			self::outputHttpSafeHeader('Y-Single-User-Area: '.$unlock_for_area);
+		} //end if
+		//--
+		if($is_lock === true) {
+			self::Raise503Error((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE);
+			die('SingleUserModeMonitor:On');
+		} //end if else
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -1299,128 +1089,51 @@ final class SmartFrameworkRuntime {
 	//======================================================================
 	// Avoid run this function before Smart.Framework was loaded, it depends on it
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
+	// If RUN 1st time will handle OVERLOAD PROTECTION if the
+	// IF RUN 2nd time will return the values of load avgs
 	public static function High_Load_Monitor() {
 		//--
 		if(is_array(self::$HighLoadMonitorStats)) {
 			return (array) self::$HighLoadMonitorStats; // avoid re-run and serve from cache
 		} //end if
 		//--
-		$tmp_sysload_avg = array();
-		//--
-		if(defined('SMART_FRAMEWORK_NETSERVER_MAXLOAD')) {
-			$tmp_max_load = (int) SMART_FRAMEWORK_NETSERVER_MAXLOAD;
+		if(defined('SMART_FRAMEWORK_NETSERVER_MAXLOAD') AND (SMART_FRAMEWORK_NETSERVER_MAXLOAD !== false)) {
+			$tmp_max_load = (int) SMART_FRAMEWORK_NETSERVER_MAXLOAD; // ex: 90
+			if((int)$tmp_max_load > 0) {
+				$tmp_max_load = (float) ((int)$tmp_max_load / 100); // ex: real value is 0.9 from 90
+			} else {
+				$tmp_max_load = 0;
+			} //end if else
 		} else {
 			$tmp_max_load = 0;
 		} //end if
+		//--
+		$is_highload = false;
+		//--
+		$tmp_sysload_avg = [ 0, 0, 0 ]; // 1, 5, 15 : minutes
+		//--
 		if($tmp_max_load > 0) { // run only if set to a value > 0
 			if(function_exists('sys_getloadavg')) {
-				$tmp_sysload_avg = (array) @sys_getloadavg();
+				$tmp_sysload_avg = @sys_getloadavg(); // mixed: array or false
+				if(!is_array($tmp_sysload_avg)) {
+					$tmp_sysload_avg = array();
+				} //end if
+				if(!isset($tmp_sysload_avg[0])) {
+					$tmp_sysload_avg[0] = 0;
+				} //end if
 				$tmp_sysload_avg[0] = (float) $tmp_sysload_avg[0];
-				if($tmp_sysload_avg[0] > $tmp_max_load) { // protect against system overload over max
-					if(!headers_sent()) {
-						http_response_code(504); // gateway timeout
-					} //end if
-					Smart::log_warning('#SMART-FRAMEWORK-HIGH-LOAD-PROTECT#'."\n".'Smart.Framework // Web :: System Overload Protection: The System is Too Busy ... Try Again Later. The Load Averages reached the maximum allowed value by current settings ... ['.$tmp_sysload_avg[0].' of '.$tmp_max_load.']');
-					die(SmartComponents::http_message_503_serviceunavailable('The Service is Too busy, try again later ...', SmartComponents::operation_warn('<b>Smart.Framework // Web :: System Overload Protection</b><br>The Load Averages reached the maximum allowed value by current settings ...', '100%')));
-					return array();
+				if((float)$tmp_sysload_avg[0] > (float)$tmp_max_load) { // protect against system overload over max
+					$is_highload = true;
 				} //end if
 			} //end if
 		} //end if
 		//--
 		self::$HighLoadMonitorStats = (array) $tmp_sysload_avg;
 		//--
-		return (array) self::$HighLoadMonitorStats;
-		//--
-	} //END FUNCTION
-	//======================================================================
-
-
-	//======================================================================
-	// Avoid run this function before Smart.Framework was loaded, it depends on it
-	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
-	public static function Redirection_Monitor() {
-		//--
-		if(!defined('SMART_FRAMEWORK_VERSION')) {
-			if(!headers_sent()) {
-				http_response_code(500);
-			} //end if
-			die('Smart Runtime // Redirection Monitor :: Requires Smart.Framework to be loaded ...');
-			return;
-		} //end if
-		//--
-		if(self::$RedirectionMonitorStarted !== false) {
-			return; // avoid run after it was used by runtime
-		} //end if
-		self::$RedirectionMonitorStarted = true;
-		//--
-		$url_redirect = '';
-		//--
-		$the_current_url = SmartUtils::get_server_current_url();
-		$the_current_script = SmartUtils::get_server_current_script();
-		//--
-		$is_disabled_frontent = (bool) ((defined('SMART_SOFTWARE_FRONTEND_DISABLED') && (SMART_SOFTWARE_FRONTEND_DISABLED === true)) ? true : false);
-		$is_disabled_backend  = (bool) ((defined('SMART_SOFTWARE_BACKEND_DISABLED')  && (SMART_SOFTWARE_BACKEND_DISABLED === true))  ? true : false);
-		//--
-		if(
-			($is_disabled_frontent === true) AND
-			($is_disabled_backend  === true)
-		) { // both frontend and backend are disabled, avoid circular redirect from below
-			if(!headers_sent()) {
-				http_response_code(500);
-			} //end if
-			die((string)SmartComponents::http_error_message('App Config ERROR', 'The FRONTEND and the BACKEND of this application are both DISABLED in the config/init ! ...'));
-			return;
-		} //end if
-		if(($is_disabled_frontent === true) AND ((string)$the_current_script == 'index.php')) {
-			$url_redirect = $the_current_url.'admin.php';
-			if(isset($_SERVER['QUERY_STRING'])) {
-				if((string)$_SERVER['QUERY_STRING'] != '') {
-					$url_redirect .= (string) '?'.$_SERVER['QUERY_STRING'];
-				} //end if
-			} //end if
-		} //end if
-		if(($is_disabled_backend === true) AND ((string)$the_current_script == 'admin.php')) {
-			$url_redirect = $the_current_url.'index.php';
-			if(isset($_SERVER['QUERY_STRING'])) {
-				if((string)$_SERVER['QUERY_STRING'] != '') {
-					$url_redirect .= (string) '?'.$_SERVER['QUERY_STRING'];
-				} //end if
-			} //end if
-		} //end if
-		//--
-		if(((string)$url_redirect == '') AND (isset($_SERVER['PATH_INFO']))) {
-			//--
-			if((string)$_SERVER['PATH_INFO'] != '') {
-				//--
-				if((string)$the_current_script == 'index.php') {
-					if(self::PathInfo_Enabled() === true) {
-						if(((string)$_SERVER['PATH_INFO'] != '/') AND (strpos((string)$_SERVER['PATH_INFO'], '/~') !== false)) { // avoid common mistake to use just a / after script.php + detect tilda path
-							return;
-						} //end if
-					} //end if
-				//	$the_current_script = ''; // reset index.php part of URL
-				} elseif((string)$the_current_script == 'admin.php') {
-					if(self::PathInfo_Enabled() === true) {
-						if(((string)$_SERVER['PATH_INFO'] != '/') AND (strpos((string)$_SERVER['PATH_INFO'], '/~') !== false)) { // avoid common mistake to use just a / after script.php + detect tilda path
-							return;
-						} //end if
-					} //end if
-				} //end if
-				//--
-				$url_redirect = (string) $the_current_url.$the_current_script.'?'.$_SERVER['PATH_INFO'];
-				//--
-			} //end if
-			//--
-		} //end if
-		//--
-		if((string)$url_redirect != '') {
-			//--
-			if(!headers_sent()) {
-				http_response_code(301); // permanent redirect
-				self::outputHttpSafeHeader('Location: '.$url_redirect); // force redirect
-			} //end if
-			die('');
-			return;
+		if($is_highload === true) {
+			Smart::log_warning('#SMART-FRAMEWORK-HIGH-LOAD-PROTECT#'."\n".'Smart.Framework // Web :: Service Premature Stop :: System Overload Protection: The System is Too Busy ... Try Again Later. The Load Averages reached the maximum allowed value by current settings ... ['.(float)$tmp_sysload_avg[0].' of '.(float)$tmp_max_load.']');
+			self::Raise504Error('The Service is Too busy, try again later ...', SmartComponents::operation_warn('<b>Smart.Framework // Web :: System Overload Protection</b><br>The Load Averages reached the maximum allowed value by current settings ...', '100%'));
+			die('HighLoadMonitor:TooBusy');
 		} //end if
 		//--
 	} //END FUNCTION
@@ -1433,14 +1146,12 @@ final class SmartFrameworkRuntime {
 	public static function SetVisitorEntropyIDCookie() {
 		//--
 		if(!defined('SMART_FRAMEWORK_VERSION')) {
-			@http_response_code(500);
-			die('Smart Runtime // Set Visitor Entropy ID Cookie :: Requires Smart.Framework to be loaded ...');
+			self::Raise500Error('Smart Runtime // Set Visitor Entropy ID Cookie :: Requires Smart.Framework to be loaded ...');
 			return;
 		} //end if
 		//--
 		if(defined('SMART_APP_VISITOR_COOKIE')) {
-			@http_response_code(500);
-			die('SetVisitorEntropyIDCookie :: SMART_APP_VISITOR_COOKIE must not be re-defined ...');
+			self::Raise500Error('SetVisitorEntropyIDCookie :: SMART_APP_VISITOR_COOKIE must not be re-defined ...');
 			return;
 		} //end if
 		//--
@@ -1488,19 +1199,17 @@ final class SmartFrameworkRuntime {
 	//======================================================================
 	public static function DebugRequestLog($y_message) {
 		//--
-		if(!self::ifDebug()) {
+		if(!SmartFrameworkRegistry::ifDebug()) {
 			return;
 		} //end if
 		//--
-		if(self::isAdminArea()) {
-			$the_dir = 'tmp/logs/adm/';
-			$the_log = $the_dir.date('Y-m-d@H').'-debug-requests.log';
-		} else {
-			$the_dir = 'tmp/logs/idx/';
-			$the_log = $the_dir.date('Y-m-d@H').'-debug-requests.log';
-		} //end if else
+		if(!defined('SMART_FRAMEWORK_INFO_DIR_LOG')) {
+			return;
+		} //end if
 		//--
-		if(is_dir((string)$the_dir)) { // here must be is_dir() and file_put_contents() as the smart framework libs are not yet initialized in this phase ...
+		$the_log = SMART_FRAMEWORK_INFO_DIR_LOG.'debug-requests-'.date('Y-m-d@H').'.log';
+		//--
+		if(is_dir((string)SMART_FRAMEWORK_INFO_DIR_LOG)) { // here must be is_dir() and file_put_contents() as the smart framework libs are not yet initialized in this phase ...
 			@file_put_contents((string)$the_log, $y_message."\n", FILE_APPEND | LOCK_EX); // init
 		} //end if
 		//--
@@ -1513,110 +1222,6 @@ final class SmartFrameworkRuntime {
 
 //==================================================================================
 //================================================================================== CLASS END
-//==================================================================================
-
-
-//==================================================================================
-//================================================================================== INTERFACE START
-//==================================================================================
-
-
-/**
- * Abstract Inteface Smart App Bootstrap
- * The extended object MUST NOT CONTAIN OTHER FUNCTIONS BECAUSE MAY NOT WORK as Expected !!!
- *
- * @access 		private
- * @internal
- *
- * @version 	v.20210421
- *
- */
-interface SmartInterfaceAppBootstrap {
-
-	// :: INTERFACE
-
-
-	//=====
-	/**
-	 * App Bootstrap Init :: This function is automatically called when App bootstraps before Run(), by the smart runtime.
-	 * By example it can be used to create the required dirs and files on local file system.
-	 * THIS MUST BE EXTENDED TO HANDLE THE REQUIRED CODE EXECUTION AT THE BOOTSTRAP INIT SEQUENCE
-	 * RETURN: -
-	 */
-	public static function Initialize();
-
-	//=====
-	/**
-	 * App Bootstrap Run :: This function is automatically called when App bootstraps after Initialize(), by the smart runtime.
-	 * By example it can be used to connect to a database, install monitor or other operations.
-	 * THIS MUST BE EXTENDED TO HANDLE THE REQUIRED CODE EXECUTION AT THE BOOTSTRAP RUN SEQUENCE
-	 * RETURN: -
-	 */
-	public static function Run();
-	//=====
-
-
-	//=====
-	/**
-	 * App Bootstrap Authenticate :: This function is automatically called when App bootstraps after Initialize() and Run(), by the middleware service only when the bootstrap sequence completed.
-	 * By example it can be used to authenticate / login into any area: admin or index ... or as well not providing any authentication at all if not required so ...
-	 * THIS MUST BE EXTENDED TO HANDLE THE REQUIRED CODE EXECUTION AT THE BOOTSTRAP AUTHENTICATE SEQUENCE
-	 * RETURN: -
-	 */
-	public static function Authenticate(string $area);
-	//=====
-
-
-} //END INTERFACE
-
-
-//==================================================================================
-//================================================================================== INTERFACE END
-//==================================================================================
-
-
-//==================================================================================
-//================================================================================== INTERFACE START
-//==================================================================================
-
-
-/**
- * Abstract Inteface Smart App Info
- * The extended object MUST NOT CONTAIN OTHER FUNCTIONS BECAUSE MAY NOT WORK as Expected !!!
- *
- * @access 		private
- * @internal
- *
- * @version 	v.20210421
- *
- */
-interface SmartInterfaceAppInfo {
-
-	// :: INTERFACE
-
-
-	//=====
-	/**
-	 * Test if a specific App Template Exists
-	 * RETURN: true or false
-	 */
-	public static function TestIfTemplateExists($y_template_name);
-	//=====
-
-
-	//=====
-	/**
-	 * Test if a specific App Module Exists
-	 * RETURN: true or false
-	 */
-	public static function TestIfModuleExists($y_module_name);
-	//=====
-
-
-} //END INTERFACE
-
-//==================================================================================
-//================================================================================== INTERFACE END
 //==================================================================================
 
 

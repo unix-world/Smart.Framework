@@ -1,14 +1,38 @@
 
 /*
-jQuery Tabs 1.2.5
-(c) 2016-2019 unix-world.org
-v.20210420
+jQuery Tabs 2.0.1
+(c) 2016-2021 unix-world.org
+v.20210503
 */
 
 div.simple_tabs_container {
 	text-align: left;
 	margin-top: 1px;
 	margin-bottom: 5px;
+}
+
+div.simple_tabs_load_err {
+	line-height: 36px;
+	text-align: left;
+	font-size: 1.25rem;
+	font-weight: bold;
+	font-style: normal;
+	padding-left: 16px;
+	padding-right: 16px;
+	padding-top: 12px;
+	padding-bottom: 8px;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	max-width: calc(100% - 10px) !important;
+	min-width: 100px;
+	min-height: 40px;
+	height: auto !important;
+	border-radius: 5px;
+	box-shadow: 1px 1px 2px 2px #ECECEC;
+	box-sizing: content-box !important;
+	opacity: 1 !important;
+	background-color: #555555 !important;
+	color: #FAFAFA !important;
 }
 
 ul.simple_tabs_head {

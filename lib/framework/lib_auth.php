@@ -51,8 +51,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	Smart, SmartCipherCrypto, SmartFrameworkRuntime, SmartFrameworkRegistry
- * @version 	v.20210330
+ * @depends 	Smart, SmartCipherCrypto, SmartFrameworkRegistry
+ * @version 	v.20210506
  * @package 	@Core:Authentication
  *
  */
@@ -60,8 +60,8 @@ final class SmartAuth {
 
 	// ::
 
-	private static $AuthCompleted = false;		// prevent re-authentication, ... the results may be unpredictable !!
-	private static $AuthData = array(); 		// register Auth Data
+	private static $AuthCompleted 	= false;	// prevent re-authentication, ... the results may be unpredictable !!
+	private static $AuthData 		= []; 		// register Auth Data
 
 
 	//================================================================
@@ -567,8 +567,8 @@ final class SmartAuth {
 	 */
 	public static function registerInternalCacheToDebugLog() {
 		//--
-		if(SmartFrameworkRuntime::ifInternalDebug()) {
-			if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifInternalDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				$tmpAuthData = (array) self::$AuthData;
 				$tmpAuthData['KEY'] = '*****'; // protect the key !
 				SmartFrameworkRegistry::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [

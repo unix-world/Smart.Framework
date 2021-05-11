@@ -67,7 +67,7 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20210415
+ * @version 	v.20210428
  * @package 	Application:Session
  *
  */
@@ -454,7 +454,7 @@ final class SmartSession {
 				if(!isset($_SESSION['visit_UPDATE'])) {
 					Smart::log_warning('Session Reset: Session Expiration Time is not set ...');
 				} //end if
-				if(SmartFrameworkRuntime::ifDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
 					if((int)((int)$_SESSION['visit_UPDATE'] + (int)$sess_max_expire) < (int)$time_now) {
 						Smart::log_notice('Session Reset: Session Max HardCoded Expiration Time was Reach ; sessionUpdate='.(int)$_SESSION['visit_UPDATE'].' ; maxExpire='.(int)$sess_max_expire.' ; timeNow='.(int)$time_now);
 					} //end if
@@ -517,7 +517,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20210415
+ * @version 	v.20210428
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {

@@ -23,6 +23,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* Smart::
 //	* SmartUnicode::
 //	* SmartUtils::
+//	* SmartComponents::
 // DEPENDS-EXT: PHP MySQLi Extension
 //======================================================
 // NOTICE: For MySQLi driver all queries are using MYSQLI_STORE_RESULT (buffered queries) which is the best for data safety
@@ -72,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210401
+ * @version 	v.20210503
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -123,13 +124,13 @@ final class SmartMysqliDb {
 	public static function server_connect($yhost, $yport, $ydb, $yuser, $ypass, $ytimeout, $y_transact_mode='', $y_debug_sql_slowtime=0, $y_type='mysql') {
 
 		//--
-		if(defined('SMART_FRAMEWORK_DBSQL_CHARSET')) {
-			if((string)SMART_FRAMEWORK_DBSQL_CHARSET != 'UTF8') {
-				self::error('[PRE-CONNECT]', 'PHP-MySQLi', 'Check App Configuration', 'The SMART_FRAMEWORK_DBSQL_CHARSET must be set as: UTF8', 'Invalid INI Settings');
+		if(defined('SMART_FRAMEWORK_SQL_CHARSET')) {
+			if((string)SMART_FRAMEWORK_SQL_CHARSET != 'UTF8') {
+				self::error('[PRE-CONNECT]', 'PHP-MySQLi', 'Check App Configuration', 'The SMART_FRAMEWORK_SQL_CHARSET must be set as: UTF8', 'Invalid INI Settings');
 				return;
 			} //end if
 		} else {
-			self::error('[PRE-CONNECT]', 'PHP-MySQLi', 'Check App Configuration', 'The SMART_FRAMEWORK_DBSQL_CHARSET must be set', 'Invalid INI Settings');
+			self::error('[PRE-CONNECT]', 'PHP-MySQLi', 'Check App Configuration', 'The SMART_FRAMEWORK_SQL_CHARSET must be set', 'Invalid INI Settings');
 			return;
 		} //end if else
 		//--
@@ -153,7 +154,7 @@ final class SmartMysqliDb {
 		//--
 
 		//-- debug settings
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			$y_debug_sql_slowtime = (float) $y_debug_sql_slowtime;
 			if($y_debug_sql_slowtime <= 0) {
@@ -172,11 +173,11 @@ final class SmartMysqliDb {
 		//--
 
 		//-- debug inits
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|slow-time', number_format(self::$slow_time, 7, '.', ''), '=');
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'metainfo',
-				'data' => 'Database Server: MySQLi ('.$y_type.') / App Connector Version: '.SMART_FRAMEWORK_VERSION.' / Connection Charset: '.SMART_FRAMEWORK_DBSQL_CHARSET
+				'data' => 'Database Server: MySQLi ('.$y_type.') / App Connector Version: '.SMART_FRAMEWORK_VERSION.' / Connection Charset: '.SMART_FRAMEWORK_SQL_CHARSET
 			]);
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'metainfo',
@@ -220,7 +221,7 @@ final class SmartMysqliDb {
 			return;
 		} //end if
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'open-close',
 				'data' => 'Connected to Server: '.$the_conn_key,
@@ -230,14 +231,14 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if((string)SMART_FRAMEWORK_DBSQL_CHARSET == 'UTF8') {
+		if((string)SMART_FRAMEWORK_SQL_CHARSET == 'UTF8') {
 			//--
 			@mysqli_query($connection, "SET CHARACTER SET 'utf8mb4'", MYSQLI_STORE_RESULT);
 			if(@mysqli_errno($connection) !== 0) {
 				self::error(self::get_connection_id($connection), 'Encoding-Charset', 'Failed to set Encoding on Server', 'Error='.@mysqli_error($connection), 'Set=utf8mb4');
 				return;
 			} //end if else
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'set',
 					'data' => 'SET Character Set to: utf8mb4',
@@ -251,7 +252,7 @@ final class SmartMysqliDb {
 				self::error(self::get_connection_id($connection), 'Encoding-Collation', 'Failed to set Collation on Server', 'Error='.@mysqli_error($connection), 'Set=utf8mb4_bin');
 				return;
 			} //end if else
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'set',
 					'data' => 'SET Connection Collation to: utf8mb4_bin',
@@ -262,7 +263,7 @@ final class SmartMysqliDb {
 			//--
 		} else {
 			//--
-			self::error(self::get_connection_id($connection), 'Encoding-Charset', 'Wrong Client Encoding for Server', 'Server=UTF8.MB4', 'Client='.SMART_FRAMEWORK_DBSQL_CHARSET);
+			self::error(self::get_connection_id($connection), 'Encoding-Charset', 'Wrong Client Encoding for Server', 'Server=UTF8.MB4', 'Client='.SMART_FRAMEWORK_SQL_CHARSET);
 			return;
 			//--
 		} //end if
@@ -278,7 +279,7 @@ final class SmartMysqliDb {
 					self::error(self::get_connection_id($connection), 'Set-Session-Transaction-Level', 'Failed to Set Session Transaction Level as '.$transact, 'Error='.@mysqli_error($connection), 'DB='.$ydb);
 					return;
 				} //end if else
-				if(SmartFrameworkRuntime::ifDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
 					SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 						'type' => 'set',
 						'data' => 'SET Session Transaction Isolation Level to: '.$transact,
@@ -428,7 +429,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -466,7 +467,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -480,7 +481,7 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
 			//--
@@ -550,7 +551,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -588,7 +589,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -603,7 +604,7 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
 			//--
@@ -691,7 +692,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -729,7 +730,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -744,7 +745,7 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
 			//--
@@ -851,7 +852,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -889,7 +890,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -904,7 +905,7 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
 			//--
@@ -1006,7 +1007,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -1043,13 +1044,13 @@ final class SmartMysqliDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
 			//--
@@ -1510,7 +1511,7 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(SmartFrameworkRuntime::ifDebug()) {
+		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'metainfo',
 				'data' => 'Server Version: '.$mysql_num_version,
@@ -1649,7 +1650,7 @@ final class SmartMysqliDb {
 					//--
 					define('SMART_FRAMEWORK_DB_LINK_MySQL', (string)$the_conn_key);
 					//--
-					if(SmartFrameworkRuntime::ifDebug()) {
+					if(SmartFrameworkRegistry::ifDebug()) {
 						SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 							'type' => 'open-close',
 							'data' => 'Re-Using Connection to Server as DEFAULT: '.$the_conn_key,
@@ -1757,62 +1758,62 @@ final class SmartMysqliDb {
 	 *
 	 */
 	private static function error($y_connection_id, $y_area, $y_error_message, $y_query, $y_params_or_title, $y_warning='') {
-	//--
-	if(defined('SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
-		throw new Exception('#MYSQLi-DB@'.$y_connection_id.'# :: Q# // MySQLi Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
-		return;
-	} //end if
-	//--
-	$err_log = $y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params / Title:'."\n".print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query;
-	//--
-	$def_warn = 'Execution Halted !';
-	$y_warning = (string) trim((string)$y_warning);
-	if(SmartFrameworkRuntime::ifDebug()) {
-		$width = 750;
-		$the_area = (string) $y_area;
-		if((string)$y_warning == '') {
-			$y_warning = (string) $def_warn;
+		//--
+		if(defined('SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
+			throw new Exception('#MYSQLi-DB@'.$y_connection_id.'# :: Q# // MySQLi Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
+			return;
 		} //end if
-		$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
-		if(is_array($y_params_or_title)) {
-			$the_params = '*** Params ***'."\n".print_r($y_params_or_title, 1);
-		} elseif((string)$y_params_or_title != '') {
-			$the_params = '[ Reference Title ]: '.$y_params_or_title;
+		//--
+		$err_log = $y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params / Title:'."\n".print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query;
+		//--
+		$def_warn = 'Execution Halted !';
+		$y_warning = (string) trim((string)$y_warning);
+		if(SmartFrameworkRegistry::ifDebug()) {
+			$width = 750;
+			$the_area = (string) $y_area;
+			if((string)$y_warning == '') {
+				$y_warning = (string) $def_warn;
+			} //end if
+			$the_error_message = 'Operation FAILED: '.$def_warn."\n".$y_error_message;
+			if(is_array($y_params_or_title)) {
+				$the_params = '*** Params ***'."\n".print_r($y_params_or_title, 1);
+			} elseif((string)$y_params_or_title != '') {
+				$the_params = '[ Reference Title ]: '.$y_params_or_title;
+			} else {
+				$the_params = '- No Params or Reference Title -';
+			} //end if
+			$the_query_info = (string) trim((string)$y_query);
+			if((string)$the_query_info == '') {
+				$the_query_info = '-'; // query cannot e empty in this case (templating enforcement)
+			} //end if
 		} else {
-			$the_params = '- No Params or Reference Title -';
-		} //end if
-		$the_query_info = (string) trim((string)$y_query);
-		if((string)$the_query_info == '') {
-			$the_query_info = '-'; // query cannot e empty in this case (templating enforcement)
-		} //end if
-	} else {
-		$width = 550;
-		$the_area = '';
-		$the_error_message = 'Operation FAILED: '.$def_warn;
-		$the_params = '';
-		$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
-	} //end if else
-	//--
-	$out = SmartComponents::app_error_message(
-		'MySQLi Client',
-		'MariaDB / MySQL',
-		'SQL/DB',
-		'Server',
-		'lib/core/img/db/mysql-logo.svg',
-		$width, // width
-		$the_area, // area
-		$the_error_message, // err msg
-		$the_params, // title or params
-		$the_query_info // sql statement
-	);
-	//--
-	Smart::raise_error(
-		'#MYSQLi-DB@'.$y_connection_id.' :: Q# // MySQLi Client :: ERROR :: '.$err_log, // err to register
-		$out, // msg to display
-		true // is html
-	);
-	die(''); // just in case
-	//--
+			$width = 550;
+			$the_area = '';
+			$the_error_message = 'Operation FAILED: '.$def_warn;
+			$the_params = '';
+			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
+		} //end if else
+		//--
+		$out = (string) SmartComponents::app_error_message(
+			'MySQLi Client',
+			'MariaDB / MySQL',
+			'SQL/DB',
+			'Server',
+			'lib/core/img/db/mysql-logo.svg',
+			(int)    $width, // width
+			(string) $the_area, // area
+			(string) $the_error_message, // err msg
+			(string) $the_params, // title or params
+			(string) $the_query_info // sql statement
+		);
+		//--
+		Smart::raise_error(
+			'#MYSQLi-DB@'.$y_connection_id.' :: Q# // MySQLi Client :: ERROR :: '.$err_log, // err to register
+			$out, // msg to display
+			true // is html
+		);
+		die(''); // just in case
+		//--
 	} //END FUNCTION
 	//======================================================
 
@@ -1859,7 +1860,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210401
+ * @version 	v.20210503
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -1897,7 +1898,7 @@ final class SmartMysqliExtDb {
 			//-- try to reuse the connection :: only check if array key exists, not if it is a valid resource ; this should be as so to avoid mismatching connection mixings (if by example will re-use the connection of another server, and connection is broken in the middle of a transaction, it will fail ugly ;) and out of any control !
 			$this->connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)$the_conn_key];
 			//--
-			if(SmartFrameworkRuntime::ifDebug()) {
+			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'open-close',
 					'data' => 'Re-Using Connection to Server: '.$the_conn_key,
