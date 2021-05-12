@@ -44,7 +44,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210312
+ * @version 	v.20210512
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -60,20 +60,21 @@ final class SmartYamlConverter {
 	 */
 	public $setting_dump_force_quotes = false;
 	//--
-	private $REMPTY = "\0\0\0\0\0";
 	private $yaml_dump_indent;
 	private $yaml_contains_group_anchor = false;
 	private $yaml_contains_group_alias = false;
 	private $path;
 	private $result;
-	private $yaml_literal_placeholder = '___YAML_Literal_Block___';
-	private $yaml_arr_saved_groups = array();
+	private $yaml_arr_saved_groups = [];
 	private $indent;
 	//--
 	private $delayedPath = array(); // @var array :: Path modifier that should be applied after adding current element.
 	//--
 	private $logerr = true;
 	private $err = '';
+	//--
+	private const const_REMPTY = "\0\0\0\0\0";
+	private const const_YAML_LITERAL_PLACEHOLDER = '___YAML_Literal_Block___';
 	//================================================================
 
 
@@ -190,7 +191,7 @@ final class SmartYamlConverter {
 				return $this->_dumpNode($key, array(), $indent, $previous_key, $first_key, $source_array);
 			} //end if
 			//-- It has children.  What to do? Make it the right kind of item
-			$string = $this->_dumpNode($key, $this->REMPTY, $indent, $previous_key, $first_key, $source_array);
+			$string = $this->_dumpNode($key, self::const_REMPTY, $indent, $previous_key, $first_key, $source_array);
 			//-- Add the indent
 			$indent += $this->yaml_dump_indent;
 			//-- Yamlize the array
@@ -300,7 +301,7 @@ final class SmartYamlConverter {
 		if($value === null) {
 			$value = 'null';
 		} //end if
-		if($value === "'".$this->REMPTY."'") {
+		if($value === "'".self::const_REMPTY."'") {
 			$value = null;
 		} //end if
 		//--
@@ -373,7 +374,7 @@ final class SmartYamlConverter {
 	 */
 	private function _doFolding($value, $indent) {
 		//--
-		if($this->setting_dump_force_quotes && is_string($value) && $value !== $this->REMPTY) {
+		if($this->setting_dump_force_quotes && is_string($value) && $value !== self::const_REMPTY) {
 			//$value = '"'.$value.'"';
 			$value = "'".str_replace("'", "\\'", $value)."'"; // fix by unixman
 		} //end if
@@ -411,7 +412,7 @@ final class SmartYamlConverter {
 			if($literalBlockStyle) {
 				$line = rtrim($line, $literalBlockStyle." \n");
 				$literalBlock = '';
-				$line .= $this->yaml_literal_placeholder;
+				$line .= self::const_YAML_LITERAL_PLACEHOLDER;
 				$literal_block_indent = strlen($Source[$i+1]) - strlen(ltrim($Source[$i+1]));
 				while(++$i < $cnt && $this->literalBlockContinues($Source[$i], $this->indent)) {
 				  $literalBlock = $this->addLiteralLine($literalBlock, $Source[$i], $literalBlockStyle, $literal_block_indent);
@@ -1026,7 +1027,7 @@ final class SmartYamlConverter {
 		foreach($lineArray as $k => $v) {
 			if(is_array($v)) {
 				$lineArray[$k] = $this->revertLiteralYamlPlaceHolder($v, $literalBlock);
-			} elseif(substr($v, -1 * strlen($this->yaml_literal_placeholder)) == $this->yaml_literal_placeholder) {
+			} elseif(substr($v, -1 * strlen(self::const_YAML_LITERAL_PLACEHOLDER)) == self::const_YAML_LITERAL_PLACEHOLDER) {
 				$lineArray[$k] = rtrim($literalBlock, " \r\n");
 			} //end if else
 		} //end foreach

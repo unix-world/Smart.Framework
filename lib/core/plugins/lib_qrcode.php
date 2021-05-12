@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart
- * @version 	v.20210507
+ * @version 	v.20210512
  * @package 	Plugins:Barcodes
  */
 final class SmartQR2DBarcode {
@@ -377,9 +377,9 @@ final class SmartQR2DBarcode {
 		//--
 		$version = $this->qr_detect_version($data, $mode, $ecl);
 		$version_group = (($version < 10) ? 0 : (($version < 27) ? 1 : 2));
-		$ec_params = $this->qr_ec_params[($version - 1) * 4 + $ecl];
+		$ec_params = self::QR_EC_PARAMS[($version - 1) * 4 + $ecl];
 		//-- Don't cut off mid-character if exceeding capacity
-		$max_chars = $this->qr_capacity[$version - 1][$ecl][$mode];
+		$max_chars = self::QR_CAPACITY[$version - 1][$ecl][$mode];
 		if($mode == 3) {
 			$max_chars <<= 1;
 		} //end if
@@ -430,7 +430,7 @@ final class SmartQR2DBarcode {
 		$length = (int) strlen((string)$data);
 		//--
 		for($v = 0; $v < 40; $v++) {
-			if($length <= $this->qr_capacity[$v][$ecl][$mode]) {
+			if($length <= self::QR_CAPACITY[$v][$ecl][$mode]) {
 				return (int) ($v + 1);
 			} //end if
 		} //end for
@@ -518,7 +518,7 @@ final class SmartQR2DBarcode {
 			$code[] = $ch & 0x02;
 			$code[] = $ch & 0x01;
 		} //end foreach
-		for($n = (int)$this->qr_remainder_bits[$version - 1]; $n > 0; $n--) {
+		for($n = (int)self::QR_REMAINDER_BITS[$version - 1]; $n > 0; $n--) {
 			$code[] = 0;
 		} //end for
 		//--
@@ -551,17 +551,17 @@ final class SmartQR2DBarcode {
 		//--
 		$num_data = (int) count($data);
 		$num_error = $ec_params[1];
-		$generator = $this->qr_ec_polynomials[$num_error];
+		$generator = self::QR_EC_POLYNOMIALS[$num_error];
 		$message = $data;
 		for($i = 0; $i < $num_error; $i++) {
 			$message[] = 0;
 		} //end for
 		for($i = 0; $i < $num_data; $i++) {
 			if($message[$i]) {
-				$leadterm = $this->qr_log[$message[$i]];
+				$leadterm = self::QR_LOG[$message[$i]];
 				for($j = 0; $j <= $num_error; $j++) {
 					$term = ($generator[$j] + $leadterm) % 255;
-					$message[$i + $j] ^= $this->qr_exp[$term];
+					$message[$i + $j] ^= self::QR_EXP[$term];
 				} //end for
 			} //end if
 		} //end for
@@ -618,7 +618,7 @@ final class SmartQR2DBarcode {
 		} //end for
 		//-- Alignment patterns.
 		if($version >= 2) {
-			$alignment = $this->qr_alignment_patterns[$version - 2];
+			$alignment = self::QR_ALIGNMENT_PATTERNS[$version - 2];
 			foreach($alignment as $kk => $i) {
 				foreach($alignment as $zz => $j) {
 					if(!$matrix[$i][$j]) {
@@ -872,7 +872,7 @@ final class SmartQR2DBarcode {
 
 	private function qr_finalize_matrix($matrix, $size, $ecl, $mask, $version) {
 		//-- Format Info
-		$format = $this->qr_format_info[$ecl * 8 + $mask];
+		$format = self::QR_FORMAT_INFO[$ecl * 8 + $mask];
 		//--
 		$matrix[8][0] = $format[0];
 		$matrix[8][1] = $format[1];
@@ -906,7 +906,7 @@ final class SmartQR2DBarcode {
 		$matrix[8][$size - 1] = $format[14];
 		//-- Version Info
 		if($version >= 7) {
-			$version = $this->qr_version_info[$version - 7];
+			$version = self::QR_VERSION_INFO[$version - 7];
 			for($i = 0; $i < 18; $i++) {
 				$r = $size - 9 - ($i % 3);
 				$c = 5 - floor($i / 3);
@@ -926,13 +926,13 @@ final class SmartQR2DBarcode {
 	} //END FUNCTION
 
 
-	//=== PRIVATE VARS
+	//=== PRIVATE CONSTANTS
 
 
-	/*  maximum encodable characters = $qr_capacity [ (version - 1) ]  */
+	/*  maximum encodable characters = QR_CAPACITY [ (version - 1) ]  */
 	/*    [ (0 for L, 1 for M, 2 for Q, 3 for H)                    ]  */
 	/*    [ (0 for numeric, 1 for alpha, 2 for binary, 3 for kanji) ]  */
-	private $qr_capacity = [
+	private const QR_CAPACITY = [
 		[[  41,   25,   17,   10], [  34,   20,   14,    8],
 			[  27,   16,   11,    7], [  17,   10,    7,    4]],
 		[[  77,   47,   32,   20], [  63,   38,   26,   16],
@@ -1016,7 +1016,7 @@ final class SmartQR2DBarcode {
 	];
 
 
-	/*  $qr_ec_params[                                              */
+	/*  QR_EC_PARAMS[                                              */
 	/*    4 * (version - 1) + (0 for L, 1 for M, 2 for Q, 3 for H)  */
 	/*  ] = array(                                                  */
 	/*    total number of data codewords,                           */
@@ -1026,7 +1026,7 @@ final class SmartQR2DBarcode {
 	/*    number of blocks in second group,                         */
 	/*    number of data codewords per block in second group        */
 	/*  );                                                          */
-	private $qr_ec_params = [
+	private const QR_EC_PARAMS = [
 		[   19,  7,  1,  19,  0,   0 ],
 		[   16, 10,  1,  16,  0,   0 ],
 		[   13, 13,  1,  13,  0,   0 ],
@@ -1190,7 +1190,7 @@ final class SmartQR2DBarcode {
 	];
 
 
-	private $qr_ec_polynomials = [
+	private const QR_EC_POLYNOMIALS = [
 		7 => [
 			0, 87, 229, 146, 149, 238, 102, 21
 		],
@@ -1247,7 +1247,7 @@ final class SmartQR2DBarcode {
 	];
 
 
-	private $qr_log = [
+	private const QR_LOG = [
 		  0,   0,   1,  25,   2,  50,  26, 198,
 		  3, 223,  51, 238,  27, 104, 199,  75,
 		  4, 100, 224,  14,  52, 141, 239, 129,
@@ -1283,7 +1283,7 @@ final class SmartQR2DBarcode {
 	];
 
 
-	private $qr_exp = [
+	private const QR_EXP = [
 		  1,   2,   4,   8,  16,  32,  64, 128,
 		 29,  58, 116, 232, 205, 135,  19,  38,
 		 76, 152,  45,  90, 180, 117, 234, 201,
@@ -1319,13 +1319,13 @@ final class SmartQR2DBarcode {
 	];
 
 
-	private $qr_remainder_bits = [
+	private const QR_REMAINDER_BITS = [
 		0, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 3, 3, 3,
 		4, 4, 4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 0, 0, 0, 0, 0, 0,
 	];
 
 
-	private $qr_alignment_patterns = [
+	private const QR_ALIGNMENT_PATTERNS = [
 		[ 6, 18 ],
 		[ 6, 22 ],
 		[ 6, 26 ],
@@ -1368,10 +1368,10 @@ final class SmartQR2DBarcode {
 	];
 
 
-	/*  format info string = $qr_format_info[            */
+	/*  format info string = QR_FORMAT_INFO[            */
 	/*    (0 for L, 8 for M, 16 for Q, 24 for H) + mask  */
 	/*  ];                                               */
-	private $qr_format_info = [
+	private const QR_FORMAT_INFO = [
 		[ 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0 ],
 		[ 1, 1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1 ],
 		[ 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0 ],
@@ -1407,8 +1407,8 @@ final class SmartQR2DBarcode {
 	];
 
 
-	/*  version info string = $qr_version_info[ (version - 7) ]  */
-	private $qr_version_info = [
+	/*  version info string = QR_VERSION_INFO[ (version - 7) ]  */
+	private const QR_VERSION_INFO = [
 		[ 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0 ],
 		[ 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0 ],
 		[ 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1 ],

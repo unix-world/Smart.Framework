@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20210322
+ * @version 	v.20210512
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -51,11 +51,11 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	// based on v.1.5.1 with fixes from 1.5.4 -> 1.8.0
+	// based on v.1.5.1 with upstream fixes from 1.5.4 -> 1.8.0 + extra customizations and optimizations
 	// removed support for HTML markup (was unsafe and could lead to many XSS vulnerabilities ...)
 	// other fixes by unixman: fixed multiple security vulnerabilities, added optimizations, extend the syntax to support attributes, character encoding fixes, regex escaping, html escaping
 
-	private $mkdw_version = 'Smart.Markdown.parser@v.1.8.0-r.20210322';
+	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210512';
 
 	//===================================
 
@@ -69,7 +69,7 @@ final class SmartMarkdownToHTML {
 	private $DefinitionData;
 	//--
 
-	private $BlockTypes = [
+	private const BlockTypes = [
 		'#' => [ 'Header' ],
 		'*' => [ 'Rule', 'List' ],
 		'+' => [ 'List' ],
@@ -95,11 +95,11 @@ final class SmartMarkdownToHTML {
 		'~' => [ 'FencedPreformat' ], // fix by unixman, use 'FencedPreformat' instead of 'FencedCode'
 	];
 
-	private $unmarkedBlockTypes = [
+	private const unmarkedBlockTypes = [
 		'Code',
 	];
 
-	private $InlineTypes = [ // this one is from v.1.5.4 but is safer than the
+	private const InlineTypes = [ // this one is from v.1.5.4 but is safer than the
 		'"'  => [ 'SpecialCharacter'],
 		'!'  => [ 'Image'],
 		'&'  => [ 'SpecialCharacter' ],
@@ -115,37 +115,40 @@ final class SmartMarkdownToHTML {
 		'\\' => [ 'EscapeSequence' ],
 	];
 
-	private $inlineMarkerList = '!"*_&[:<>`~^\\'; // $inlineMarkerList = '!"*_&[:<>`~\\'; // this is from v.1.5.4 and extended syntax by unixman
+	/* old, from v.1.5.4
+	private const inlineMarkerList = '!"*_&[:<>`~\\';
+	*/
+	private const inlineMarkerList = '!"*_&[:<>`~^\\'; // extended syntax by unixman
 
 	/* old, from v.1.5.4
-	private $specialCharacters = [
+	private const specialCharacters = [
 		'\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '>', '#', '+', '-', '.', '!', '|',
 	];
 	*/
-	private $specialCharacters = [ // fix from 1.8.0, added ~
+	private const specialCharacters = [ // fix from 1.8.0, added ~
 		'\\', '`', '*', '_', '{', '}', '[', ']', '(', ')', '>', '#', '+', '-', '.', '!', '|', '~'
 	];
 
 	/* old, from v.1.5.4
-	private $StrongRegex = [
+	private const StrongRegex = [
 		'*' => '/^[*]{2}((?:\\\\\*|[^*]|[*][^*]*[*])+?)[*]{2}(?![*])/s',
 		'_' => '/^__((?:\\\\_|[^_]|_[^_]*_)+?)__(?!_)/us',
 	];
 	*/
-	private $StrongRegex = [ // fix from 1.8.0
+	private const StrongRegex = [ // fix from 1.8.0
 		'*' => '/^[*]{2}((?:\\\\\*|[^*]|[*][^*]*+[*])+?)[*]{2}(?![*])/s',
 		'_' => '/^__((?:\\\\_|[^_]|_[^_]*+_)+?)__(?!_)/us',
 	];
 
-	private $EmRegex = [
+	private const EmRegex = [
 		'*' => '/^[*]((?:\\\\\*|[^*]|[*][*][^*]+?[*][*])+?)[*](?![*])/s',
 		'_' => '/^_((?:\\\\_|[^_]|__[^_]*__)+?)_(?!_)\b/us',
 	];
 
 	//-- extra, by unixman: attributes can optional start with a type prefix to know which attributes to assign to nested elements (ex: image in a link, or link in a table cell, or image in a link in a table cell)
-	private $regexImgAttribute = '[ ]*{(I\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Images - optional starts with {I:
-	private $regexLnkAttribute = '[ ]*{(L\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Links  - optional starts with {L:
-	private $regexTblAttribute = '[ ]*{(T\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Tables - optional starts with {T:
+	private const regexImgAttribute = '[ ]*{(I\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Images - optional starts with {I:
+	private const regexLnkAttribute = '[ ]*{(L\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Links  - optional starts with {L:
+	private const regexTblAttribute = '[ ]*{(T\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Tables - optional starts with {T:
 	//--
 
 	//===================================
@@ -249,7 +252,7 @@ final class SmartMarkdownToHTML {
 			$info_validatehtml = 'V:0';
 		} //end if
 		//--
-		$markup = "\n".'<!--  HTML/Markdown :: ( '.Smart::escape_html($info_linebreaks.' '.$info_sbreaks.' '.$info_urls.' '.$info_entities.' '.$info_validatehtml.' T:'.date('YmdHi')).' ) -->'."\n".'<div id="markdown-'.sha1((string)$markup).'-'.Smart::uuid_10_num().'" class="markdown">'."\n".$markup."\n".'</div>'."\n".'<!--  # HTML/Markdown # '.Smart::escape_html((string)$this->mkdw_version).'  -->'."\n"; // if parsed and contain HTML Tags, add div and comments
+		$markup = "\n".'<!--  HTML/Markdown :: ( '.Smart::escape_html($info_linebreaks.' '.$info_sbreaks.' '.$info_urls.' '.$info_entities.' '.$info_validatehtml.' T:'.date('YmdHi')).' ) -->'."\n".'<div id="markdown-'.sha1((string)$markup).'-'.Smart::uuid_10_num().'" class="markdown">'."\n".$markup."\n".'</div>'."\n".'<!--  # HTML/Markdown # '.Smart::escape_html((string)self::MKDW_VERSION).'  -->'."\n"; // if parsed and contain HTML Tags, add div and comments
 		//--
 		if($this->validateHtml) {
 			$htmlparser = new SmartHtmlParser((string)$markup, true, true, false);
@@ -297,7 +300,7 @@ final class SmartMarkdownToHTML {
 		//--
 		$markup = '';
 		//--
-		while($excerpt = strpbrk($text, $this->inlineMarkerList)) { // $excerpt is based on the first occurrence of a marker
+		while($excerpt = strpbrk($text, self::inlineMarkerList)) { // $excerpt is based on the first occurrence of a marker
 			//--
 			$marker = $excerpt[0];
 			//--
@@ -305,7 +308,7 @@ final class SmartMarkdownToHTML {
 			//--
 			$Excerpt = array('text' => $excerpt, 'context' => $text);
 			//--
-			foreach($this->InlineTypes[$marker] as $z => $inlineType) {
+			foreach(self::InlineTypes[$marker] as $z => $inlineType) {
 				//--
 				$Inline = $this->{'inline'.$inlineType}($Excerpt);
 				//--
@@ -433,14 +436,12 @@ final class SmartMarkdownToHTML {
 			//--
 			$marker = $text[0];
 			//--
-			$blockTypes = $this->unmarkedBlockTypes;
+			$blockTypes = self::unmarkedBlockTypes;
 			//--
-			if(isset($this->BlockTypes[$marker])) {
-				//--
-				foreach($this->BlockTypes[$marker] as $z => $blockType) {
+			if(isset(self::BlockTypes[$marker])) {
+				foreach(self::BlockTypes[$marker] as $z => $blockType) {
 					$blockTypes[] = $blockType;
 				} //end foreach
-				//--
 			} //end if
 			//--
 			foreach($blockTypes as $z => $blockType) {
@@ -1184,7 +1185,7 @@ final class SmartMarkdownToHTML {
 				);
 				//-- unixman
 				$matches = array();
-				if(preg_match('/'.$this->regexTblAttribute.'/', $headerCell, $matches)) { // no need for preg_quote() here, $this->regexTblAttribute is a REGEX expr
+				if(preg_match('/'.self::regexTblAttribute.'/', $headerCell, $matches)) { // no need for preg_quote() here, self::regexTblAttribute is a REGEX expr
 					if((!array_key_exists('attributes', $HeaderElement)) OR (!is_array($HeaderElement['attributes']))) {
 						$HeaderElement['attributes'] = array();
 					} //end if
@@ -1278,7 +1279,7 @@ final class SmartMarkdownToHTML {
 					);
 					//-- unixman
 					$matches = array();
-					if(preg_match('/'.$this->regexTblAttribute.'/', $cell, $matches)) { // no need for preg_quote() here, $this->regexTblAttribute is a REGEX expr
+					if(preg_match('/'.self::regexTblAttribute.'/', $cell, $matches)) { // no need for preg_quote() here, self::regexTblAttribute is a REGEX expr
 						if((!array_key_exists('attributes', $Element)) OR (!is_array($Element['attributes']))) {
 							$Element['attributes'] = array();
 						} //end if
@@ -1387,11 +1388,11 @@ final class SmartMarkdownToHTML {
 		//--
 		$marker = (string) $Excerpt['text'][0];
 		//--
-	//	if($Excerpt['text'][1] === $marker AND preg_match($this->StrongRegex[$marker], $Excerpt['text'], $matches)) {
-		if(((string)$Excerpt['text'][1] === (string)$marker) AND isset($this->StrongRegex[$marker]) AND preg_match($this->StrongRegex[$marker], $Excerpt['text'], $matches)) { // fix by unixman ; no need for preg_quote() here, $this->StrongRegex[key] if isset() is a REGEX expr
+	//	if($Excerpt['text'][1] === $marker AND preg_match(self::StrongRegex[$marker], $Excerpt['text'], $matches)) {
+		if(((string)$Excerpt['text'][1] === (string)$marker) AND isset(self::StrongRegex[$marker]) AND preg_match(self::StrongRegex[$marker], $Excerpt['text'], $matches)) { // fix by unixman ; no need for preg_quote() here, self::StrongRegex[key] if isset() is a REGEX expr
 			$emphasis = 'b'; // 'strong';
-	//	} elseif(preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches)) {
-		} elseif(isset($this->EmRegex[$marker]) AND preg_match($this->EmRegex[$marker], $Excerpt['text'], $matches)) { // fix by unixman ; no need for preg_quote() here, $this->EmRegex[key] if isset() is a REGEX expr
+	//	} elseif(preg_match(self::EmRegex[$marker], $Excerpt['text'], $matches)) {
+		} elseif(isset(self::EmRegex[$marker]) AND preg_match(self::EmRegex[$marker], $Excerpt['text'], $matches)) { // fix by unixman ; no need for preg_quote() here, self::EmRegex[key] if isset() is a REGEX expr
 			$emphasis = 'i'; // 'em';
 		} else {
 			return;
@@ -1421,7 +1422,7 @@ final class SmartMarkdownToHTML {
 			return;
 		} //end if
 		//--
-		if(isset($Excerpt['text'][1]) AND in_array($Excerpt['text'][1], $this->specialCharacters)) {
+		if(isset($Excerpt['text'][1]) AND in_array($Excerpt['text'][1], self::specialCharacters)) {
 			return array(
 				'markup' => $Excerpt['text'][1],
 				'extent' => 2,
@@ -1685,9 +1686,9 @@ final class SmartMarkdownToHTML {
 		$remainder = (string) substr((string)$Excerpt['text'], (isset($Element['extent']) ? $Element['extent'] : 0));
 		$matches = array();
 		if($isImage === true) {
-			$theRegex = (string) $this->regexImgAttribute;
+			$theRegex = (string) self::regexImgAttribute;
 		} else {
-			$theRegex = (string) $this->regexLnkAttribute;
+			$theRegex = (string) self::regexLnkAttribute;
 		} //end if else
 		if(preg_match('/'.$theRegex.'/', $remainder, $matches)) { // no need for preg_quote() here, the $theRegex is always a REGEX expr
 			$Element['attributes'] += $this->parseAttributeData((string)(isset($matches[2]) ? $matches[2] : ''));

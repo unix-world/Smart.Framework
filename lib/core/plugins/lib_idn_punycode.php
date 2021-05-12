@@ -17,6 +17,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* SmartUnicode::
 //======================================================
 
+// PHP8
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -39,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: SmartUnicode
- * @version 	v.20210305
+ * @version 	v.20210512
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -54,15 +55,15 @@ final class SmartPunycode {
 	 * Bootstring parameter values
 	 *
 	 */
-	private $const_BASE         = 36;
-	private $const_TMIN         = 1;
-	private $const_TMAX         = 26;
-	private $const_SKEW         = 38;
-	private $const_DAMP         = 700;
-	private $const_INITIAL_BIAS = 72;
-	private $const_INITIAL_N    = 128;
-	private $const_PREFIX       = 'xn--';
-	private $const_DELIMITER    = '-';
+	private const const_BASE         = 36;
+	private const const_TMIN         = 1;
+	private const const_TMAX         = 26;
+	private const const_SKEW         = 38;
+	private const const_DAMP         = 700;
+	private const const_INITIAL_BIAS = 72;
+	private const const_INITIAL_N    = 128;
+	private const const_PREFIX       = 'xn--';
+	private const const_DELIMITER    = '-';
 
 
 	/**
@@ -70,7 +71,7 @@ final class SmartPunycode {
 	 *
 	 * @param array
 	 */
-	private $encodeTable = [
+	private const const_ENCODE_TABLE = [
 		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
 		'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
 		'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -81,7 +82,7 @@ final class SmartPunycode {
 	 *
 	 * @param array
 	 */
-	private $decodeTable = [
+	private const const_DECODE_TABLE = [
 		'a' =>  0, 'b' =>  1, 'c' =>  2, 'd' =>  3, 'e' =>  4, 'f' =>  5,
 		'g' =>  6, 'h' =>  7, 'i' =>  8, 'j' =>  9, 'k' => 10, 'l' => 11,
 		'm' => 12, 'n' => 13, 'o' => 14, 'p' => 15, 'q' => 16, 'r' => 17,
@@ -115,7 +116,7 @@ final class SmartPunycode {
 		foreach($parts as &$part) {
 			$part = $this->encodePart($part);
 		} //end for
-		return (string) implode('.', $parts);
+		return (string) implode('.', (array)$parts);
 	} //END FUNCTION
 
 
@@ -129,17 +130,17 @@ final class SmartPunycode {
 		$input = strtolower($input);
 		$parts = (array) explode('.', $input);
 		foreach($parts as &$part) {
-			if(strpos($part, $this->const_PREFIX) !== 0) {
+			if(strpos($part, self::const_PREFIX) !== 0) {
 				continue;
 			} //end if
-			$part = substr($part, strlen($this->const_PREFIX));
+			$part = (string) substr($part, strlen(self::const_PREFIX));
 			$part = $this->decodePart($part);
 		} //end foreach
-		return implode('.', $parts);
+		return implode('.', (array)$parts);
 	} //END FUNCTION
 
 
-	//##### PRIVATES
+	//======= [ PRIVATES ]
 
 
 	/**
@@ -150,8 +151,8 @@ final class SmartPunycode {
 	 */
 	private function encodePart($input) {
 		$codePoints = $this->listCodePoints($input);
-		$n = $this->const_INITIAL_N;
-		$bias = $this->const_INITIAL_BIAS;
+		$n = self::const_INITIAL_N;
+		$bias = self::const_INITIAL_BIAS;
 		$delta = 0;
 		$h = $b = count($codePoints['basic']);
 		$output = '';
@@ -162,7 +163,7 @@ final class SmartPunycode {
 			return $output;
 		} //end if
 		if ($b > 0) {
-			$output .= $this->const_DELIMITER;
+			$output .= self::const_DELIMITER;
 		} //end if
 		$codePoints['nonBasic'] = array_unique($codePoints['nonBasic']);
 		sort($codePoints['nonBasic']);
@@ -173,21 +174,21 @@ final class SmartPunycode {
 			$delta = $delta + ($m - $n) * ($h + 1);
 			$n = $m;
 			foreach ($codePoints['all'] as $c) {
-				if ($c < $n || $c < $this->const_INITIAL_N) {
+				if ($c < $n || $c < self::const_INITIAL_N) {
 					$delta++;
 				} //end if
 				if ($c === $n) {
 					$q = $delta;
-					for ($k = $this->const_BASE;; $k += $this->const_BASE) {
+					for ($k = self::const_BASE;; $k += self::const_BASE) {
 						$t = $this->calculateThreshold($k, $bias);
 						if ($q < $t) {
 							break;
 						} //end if
-						$code = $t + (($q - $t) % ($this->const_BASE - $t));
-						$output .= $this->encodeTable[$code];
-						$q = ($q - $t) / ($this->const_BASE - $t);
+						$code = $t + (($q - $t) % (self::const_BASE - $t));
+						$output .= self::const_ENCODE_TABLE[$code];
+						$q = ($q - $t) / (self::const_BASE - $t);
 					} //end for
-					$output .= $this->encodeTable[$q];
+					$output .= self::const_ENCODE_TABLE[$q];
 					$bias = $this->adapt($delta, $h + 1, ($h === $b));
 					$delta = 0;
 					$h++;
@@ -196,7 +197,7 @@ final class SmartPunycode {
 			$delta++;
 			$n++;
 		} //end while
-		return $this->const_PREFIX . $output;
+		return self::const_PREFIX . $output;
 	} //END FUNCTION
 
 
@@ -207,11 +208,11 @@ final class SmartPunycode {
 	 * @return string Unicode domain part
 	 */
 	private function decodePart($input) {
-		$n = $this->const_INITIAL_N;
+		$n = self::const_INITIAL_N;
 		$i = 0;
-		$bias = $this->const_INITIAL_BIAS;
+		$bias = self::const_INITIAL_BIAS;
 		$output = '';
-		$pos = strrpos($input, $this->const_DELIMITER);
+		$pos = strrpos($input, self::const_DELIMITER);
 		if ($pos !== false) {
 			$output = substr($input, 0, $pos++);
 		} else {
@@ -222,14 +223,14 @@ final class SmartPunycode {
 		while ($pos < $inputLength) {
 			$oldi = $i;
 			$w = 1;
-			for ($k = $this->const_BASE;; $k += $this->const_BASE) {
-				$digit = $this->decodeTable[$input[$pos++]];
+			for ($k = self::const_BASE;; $k += self::const_BASE) {
+				$digit = self::const_DECODE_TABLE[$input[$pos++]];
 				$i = $i + ($digit * $w);
 				$t = $this->calculateThreshold($k, $bias);
 				if ($digit < $t) {
 					break;
 				} //end if
-				$w = $w * ($this->const_BASE - $t);
+				$w = $w * (self::const_BASE - $t);
 			} //end for
 			$bias = $this->adapt($i - $oldi, ++$outputLength, ($oldi === 0));
 			$n = $n + (int) ($i / $outputLength);
@@ -249,10 +250,10 @@ final class SmartPunycode {
 	 * @return integer
 	 */
 	private function calculateThreshold($k, $bias) {
-		if ($k <= $bias + $this->const_TMIN) {
-			return $this->const_TMIN;
-		} elseif ($k >= $bias + $this->const_TMAX) {
-			return $this->const_TMAX;
+		if ($k <= $bias + self::const_TMIN) {
+			return self::const_TMIN;
+		} elseif ($k >= $bias + self::const_TMAX) {
+			return self::const_TMAX;
 		} //end if else
 		return $k - $bias;
 	} //END FUNCTION
@@ -269,16 +270,16 @@ final class SmartPunycode {
 	private function adapt($delta, $numPoints, $firstTime) {
 		$delta = (int) (
 			($firstTime)
-				? $delta / $this->const_DAMP
+				? $delta / self::const_DAMP
 				: $delta / 2
 			);
 		$delta += (int) ($delta / $numPoints);
 		$k = 0;
-		while ($delta > (($this->const_BASE - $this->const_TMIN) * $this->const_TMAX) / 2) {
-			$delta = (int) ($delta / ($this->const_BASE - $this->const_TMIN));
-			$k = $k + $this->const_BASE;
+		while ($delta > ((self::const_BASE - self::const_TMIN) * self::const_TMAX) / 2) {
+			$delta = (int) ($delta / (self::const_BASE - self::const_TMIN));
+			$k = $k + self::const_BASE;
 		} //end while
-		$k = $k + (int) ((($this->const_BASE - $this->const_TMIN + 1) * $delta) / ($delta + $this->const_SKEW));
+		$k = $k + (int) (((self::const_BASE - self::const_TMIN + 1) * $delta) / ($delta + self::const_SKEW));
 		return $k;
 	} //END FUNCTION
 
@@ -336,14 +337,14 @@ final class SmartPunycode {
 	 * @return string
 	 */
 	private function codePointToChar($code) {
-		if ($code <= 0x7F) {
+		if($code <= 0x7F) {
 			return chr($code);
-		} elseif ($code <= 0x7FF) {
-			return chr(($code >> 6) + 192) . chr(($code & 63) + 128);
-		} elseif ($code <= 0xFFFF) {
-			return chr(($code >> 12) + 224) . chr((($code >> 6) & 63) + 128) . chr(($code & 63) + 128);
+		} elseif($code <= 0x7FF) {
+			return chr(($code >> 6) + 192).chr(($code & 63) + 128);
+		} elseif($code <= 0xFFFF) {
+			return chr(($code >> 12) + 224).chr((($code >> 6) & 63) + 128).chr(($code & 63) + 128);
 		} else {
-			return chr(($code >> 18) + 240) . chr((($code >> 12) & 63) + 128) . chr((($code >> 6) & 63) + 128) . chr(($code & 63) + 128);
+			return chr(($code >> 18) + 240).chr((($code >> 12) & 63) + 128).chr((($code >> 6) & 63) + 128).chr(($code & 63) + 128);
 		} //end if else
 	} //END FUNCTION
 

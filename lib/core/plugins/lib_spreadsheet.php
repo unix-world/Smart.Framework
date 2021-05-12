@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210301
+ * @version 	v.20210512
  * @package 	Plugins:ExportAndImport
  *
  */
@@ -38,13 +38,13 @@ final class SmartSpreadSheetExport {
 
 	//->
 
-	private $version = 'excel.2003.xml.spreadsheet:20210301';
+	private $version = 'excel.2003.xml.spreadsheet:20210512';
 	private $cellWidth = 150;
 	private $cellHeight = 15;
 
 
 	//=====================================================================
-	public function __construct($y_cell_width=0, $y_cell_height=0) {
+	public function __construct(?int $y_cell_width=0, ?int $y_cell_height=0) {
 		//--
 		if(((int)$y_cell_width > 0) AND ((int)$y_cell_width <= 1000)) {
 			$this->cellWidth = (int) $y_cell_width;
@@ -68,7 +68,7 @@ final class SmartSpreadSheetExport {
 
 
 	//=====================================================================
-	public function getDispositionHeader($y_filename='file.xml') {
+	public function getDispositionHeader(?string $y_filename='file.xml') {
 		//--
 		return (string) 'attachment; filename="'.Smart::safe_filename((string)$y_filename).'"';
 		//--
@@ -78,10 +78,10 @@ final class SmartSpreadSheetExport {
 
 	//=====================================================================
 	// creates a Spreadsheet from Array
-	public function getFileContents($y_sheet_name, array $y_arr_fields, array $y_arr_data) {
+	public function getFileContents(?string $y_sheet_name, array $y_arr_fields, array $y_arr_data) {
 		//--
 		$y_sheet_name = (string) Smart::text_cut_by_limit((string)trim((string)$y_sheet_name), 31, false, '...');
-		if((string)$y_sheet_name == '') {
+		if((string)trim((string)$y_sheet_name) == '') {
 			$y_sheet_name = 'Spreadsheet';
 		} //end if
 		//--
@@ -92,7 +92,7 @@ final class SmartSpreadSheetExport {
 		$str .= "\t\t".'<Style ss:ID="Default" ss:Name="Default"/>'."\n";
 		$str .= "\t\t".'<Style ss:ID="Bold" ss:Name="Bold"><Font ss:Bold="1"/></Style>'."\n";
 		$str .= "\t".'</Styles>'."\n";
-		$str .= "\t".'<Worksheet ss:Name="'.$this->escapeStr($y_sheet_name, true).'">'."\n";
+		$str .= "\t".'<Worksheet ss:Name="'.trim((string)$this->escapeStr((string)$y_sheet_name, true)).'">'."\n";
 		$str .= "\t\t".'<Table>'."\n";
 		//--
 		if(Smart::array_size($y_arr_fields) > 0) {
@@ -126,7 +126,7 @@ final class SmartSpreadSheetExport {
 		$str .= "\t".'</Worksheet>'."\n";
 		$str .= '</Workbook>'."\n";
 		//--
-		$str .= '<!-- # SpreadSheet ('.$this->version.' / '.SMART_FRAMEWORK_VERSION.') # -->'."\n";
+		$str .= '<!-- # SpreadSheet ('.$this->escapeStr((string)$this->version.' / '.SMART_FRAMEWORK_VERSION, true).') # -->'."\n";
 		//--
 		return (string) $str;
 		//--
@@ -138,7 +138,7 @@ final class SmartSpreadSheetExport {
 
 
 	//=====================================================================
-	private function escapeStr($y_str, $is_head) {
+	private function escapeStr(?string $y_str, bool $is_head) {
 		//--
 		$y_str = (string) str_replace(["\r\n", "\r"], "\n", (string)$y_str);
 		$y_str = (string) Smart::escape_html((string)$y_str);
@@ -168,7 +168,7 @@ final class SmartSpreadSheetExport {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210301
+ * @version 	v.20210512
  * @package 	Plugins:ExportAndImport
  *
  */
@@ -179,14 +179,14 @@ final class SmartSpreadSheetImport {
 
 	//=====================================================================
 	// parse Spreadsheet to Array
-	public static function readFileContentsToArray($input_str, $first_line_is_header=true) {
+	public static function readFileContentsToArray(?string $input_str, bool $first_line_is_header=true) {
 		//--
 		$input_str = (string) trim((string)$input_str);
 		if((string)$input_str == '') {
 			return array();
 		} //end if
 		//--
-		if(stripos($input_str, '<?xml ') !== 0) {
+		if(stripos($input_str, '<'.'?xml ') !== 0) {
 			return array();
 		} //end if
 		//--
