@@ -35,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations, SmartFrameworkRegistry
- * @version 	v.20210430
+ * @version 	v.20210512
  * @package 	@Core:Translations
  *
  */
@@ -96,7 +96,7 @@ final class SmartTextTranslations {
 	 *
 	 * @return 	BOOLEAN						:: Returns TRUE if the Current Language is the Default Language for the current session / or parameter otherwise returns FALSE
 	 */
-	public static function isDefaultLanguage($y_language='') {
+	public static function isDefaultLanguage(?string $y_language='') {
 		//--
 		if((string)$y_language == '') {
 			$y_language = (string) self::getDefaultLanguage();
@@ -190,7 +190,7 @@ final class SmartTextTranslations {
 	 *
 	 * @return 	BOOLEAN						:: TRUE if successful, FALSE if not
 	 */
-	public static function setLanguage($y_language) {
+	public static function setLanguage(?string $y_language) {
 		//--
 		global $configs;
 		//--
@@ -258,7 +258,7 @@ final class SmartTextTranslations {
 	 * @return 	BOOLEAN						:: TRUE if language defined in configs, FALSE if not
 	 *
 	 */
-	public static function validateLanguage($y_language) {
+	public static function validateLanguage(?string $y_language) {
 		//--
 		if((string)trim((string)$y_language) == '') {
 			return false;
@@ -294,7 +294,7 @@ final class SmartTextTranslations {
 	 *
 	 * @return 	OBJECT							:: An Instance of SmartTextTranslator->
 	 */
-	public static function getTranslator($y_area, $y_subarea, $y_custom_language='') {
+	public static function getTranslator(?string $y_area, ?string $y_subarea, ?string $y_custom_language='') {
 		//--
 		$y_area 	= (string) self::validateArea($y_area);
 		$y_subarea 	= (string) self::validateSubArea($y_subarea);
@@ -343,7 +343,7 @@ final class SmartTextTranslations {
 	 *
 	 * @return 	STRING							:: The date format (ex: 'yy-mm-dd')
 	 */
-	public static function getDateFormatForJs($y_format) {
+	public static function getDateFormatForJs(?string $y_format) {
 		//-- yy = year with 4 digits, mm = month 01..12, dd = day 01..31
 		$format = 'yy-mm-dd'; // the default format
 		//--
@@ -382,7 +382,7 @@ final class SmartTextTranslations {
 	 *
 	 * @return 	STRING							:: The date format (ex: 'Y-m-d')
 	 */
-	public static function getDateFormatForPhp($y_format) {
+	public static function getDateFormatForPhp(?string $y_format) {
 		//-- Y = year with 4 digits, m = month 01..12, d = day 01..31
 		$format = 'Y-m-d'; // the default format
 		//--
@@ -478,8 +478,12 @@ final class SmartTextTranslations {
 	 *
 	 * @return 	STRING							:: Formatted Local Number
 	 */
-	public static function formatAsLocalNumber($y_number, $y_decimals=-1, $y_usethousandsep=true) {
+	public static function formatAsLocalNumber($y_number, ?int $y_decimals=-1, bool $y_usethousandsep=true) {
 		//--
+		if(!Smart::is_nscalar($y_number)) {
+			Smart::log_warning('Invalid Number to convert to local (invalid type): '.print_r($y_number,1));
+			return (string) '!'.'?'.'!';
+		} //end if
 		$y_number = (string) trim((string)$y_number);
 		//--
 		if(!preg_match('/^[0-9\-\.\, ]+$/', (string)$y_number)) {
@@ -578,7 +582,7 @@ final class SmartTextTranslations {
 	 *
 	 * @return 	STRING							:: Formatted Local Number
 	 */
-	public static function reverseSignOfLocalFormattedNumber($y_number) {
+	public static function reverseSignOfLocalFormattedNumber(?string $y_number) {
 		//--
 		$separator_dec = (string) Smart::get_from_config('regional.decimal-separator');
 		$separator_thd = (string) Smart::get_from_config('regional.thousands-separator');
@@ -621,7 +625,7 @@ final class SmartTextTranslations {
 	 * @internal
 	 *
 	 */
-	public static function getTranslationByKey($y_area, $y_subarea, $y_textkey, $y_custom_language='') {
+	public static function getTranslationByKey(?string $y_area, ?string $y_subarea, ?string $y_textkey, ?string $y_custom_language='') {
 		//--
 		$y_area 	= (string) self::validateArea($y_area);
 		$y_subarea 	= (string) self::validateSubArea($y_subarea);
@@ -662,7 +666,7 @@ final class SmartTextTranslations {
 	 * @internal
 	 *
 	 */
-	public static function getAllTranslations($y_area, $y_subarea, $y_custom_language='') {
+	public static function getAllTranslations(?string $y_area, ?string $y_subarea, ?string $y_custom_language='') {
 		//--
 		$y_area 	= (string) self::validateArea($y_area);
 		$y_subarea 	= (string) self::validateSubArea($y_subarea);
@@ -702,7 +706,7 @@ final class SmartTextTranslations {
 
 	//=====
 	// validates the area name
-	private static function validateArea($y_area) {
+	private static function validateArea(?string $y_area) {
 		//--
 		if(((string)$y_area != '') AND (preg_match('/^[a-z0-9_\-@]+$/', (string)$y_area))) {
 			return (string) $y_area;
@@ -716,7 +720,7 @@ final class SmartTextTranslations {
 
 	//=====
 	// validates the sub-area name
-	private static function validateSubArea($y_subarea) {
+	private static function validateSubArea(?string $y_subarea) {
 		//--
 		if((string)$y_subarea != '') {
 			return (string) $y_subarea;
@@ -746,7 +750,7 @@ final class SmartTextTranslations {
 
 	//=====
 	// This will handle the Text Translations Source Parsing and will return the parsed Array
-	private static function getFromSource($the_lang, $y_area, $y_subarea) {
+	private static function getFromSource(?string $the_lang, ?string $y_area, ?string $y_subarea) {
 		//--
 		if(self::checkSourceParser() === true) {
 			return (array) SmartAdapterTextTranslations::getTranslationsFromSource($the_lang, $y_area, $y_subarea);
@@ -793,7 +797,7 @@ final class SmartTextTranslations {
 
 	//=====
 	// try to get from (in this order): Internal (in-memory) cache ; Persistent Cache ; Source
-	private static function getFromOptimalPlace($y_language, $y_area, $y_subarea) {
+	private static function getFromOptimalPlace(?string $y_language, ?string $y_area, ?string $y_subarea) {
 		//-- normalize params
 		$y_language = (string) $y_language;
 		$y_area = (string) $y_area;
@@ -868,7 +872,7 @@ final class SmartTextTranslations {
 
 	//=====
 	// try to get from persistent cache if active and cached
-	private static function getFromPersistentCache($the_cache_key, $version_translations) {
+	private static function getFromPersistentCache(?string $the_cache_key, ?string $version_translations) {
 		//--
 		$arr = array();
 		//--
@@ -921,7 +925,7 @@ final class SmartTextTranslations {
 
 	//=====
 	// try to set to persistent cache if active and non-empty array
-	private static function setInPersistentCache($the_cache_key, $y_data_arr) {
+	private static function setInPersistentCache(?string $the_cache_key, ?array $y_data_arr) {
 		//--
 		if(SmartPersistentCache::isActive() AND (!SmartPersistentCache::isFileSystemBased()) AND (SmartPersistentCache::isMemoryBased() OR SmartPersistentCache::isDbBased())) {
 			if(Smart::array_size($y_data_arr) > 0) {
@@ -954,7 +958,7 @@ final class SmartTextTranslations {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartTextTranslations, SmartFrameworkRegistry
- * @version 	v.20210430
+ * @version 	v.20210512
  * @package 	@Core:Translations
  *
  */
@@ -971,7 +975,7 @@ final class SmartTextTranslator {
 	* @access 		private
 	* @internal
 	 */
-	public function __construct($y_language, $y_area, $y_subarea) {
+	public function __construct(?string $y_language, ?string $y_area, ?string $y_subarea) {
 		//--
 		if((string)$y_language != '') {
 			$this->language = (string) $y_language;
@@ -1016,7 +1020,7 @@ final class SmartTextTranslator {
 	* Get the Text Translation
 	* @return STRING the Translated Text or Fallback Text to Default Language
 	 */
-	public function text($y_textkey, $y_fallback_language='@default', $y_ignore_empty=false) {
+	public function text(?string $y_textkey, ?string $y_fallback_language='@default', bool $y_ignore_empty=false) {
 		//--
 		// texts are returned as raw, they must be escaped when used with HTML or JS
 		//--
@@ -1066,7 +1070,7 @@ final class SmartTextTranslator {
  * @access 		private
  * @internal
  *
- * @version 	v.20210430
+ * @version 	v.20210512
  * @package 	development:@Core
  *
  */
@@ -1074,16 +1078,6 @@ interface SmartInterfaceAdapterTextTranslations {
 
 	// :: INTERFACE
 	// The extended object MUST NOT CONTAIN OTHER FUNCTIONS BECAUSE MAY NOT WORK as Expected !!!
-
-	//=====
-	/**
-	 * Get Regional Text Translation from Source by: Language, Area, Subarea
-	 * This function must implement a Text Translations parser.
-	 * It can be implemented to read from one of the variety of sources: Arrays, INI, YAML, XML, JSON, SQLite, PostgreSQL, MySQL, MongoDB, GetText, ...
-	 * RETURN: an associative array as [key => value] for the specific translation set
-	 */
-	public static function getTranslationsFromSource($the_lang, $y_area, $y_subarea);
-	//=====
 
 
 	//=====
@@ -1100,13 +1094,24 @@ interface SmartInterfaceAdapterTextTranslations {
 
 	//=====
 	/**
+	 * Get Regional Text Translation from Source by: Language, Area, Subarea
+	 * This function must implement a Text Translations parser.
+	 * It can be implemented to read from one of the variety of sources: Arrays, INI, YAML, XML, JSON, SQLite, PostgreSQL, MySQL, MongoDB, GetText, ...
+	 * RETURN: an associative array as [key => value] for the specific translation set
+	 */
+	public static function getTranslationsFromSource(?string $the_lang, ?string $y_area, ?string $y_subarea);
+	//=====
+
+
+	//=====
+	/**
 	 * Register the usage (increment counter or register in logs) for a Regional Text Translation into Source or alternate source by: Language, Area, Subarea, Key
 	 * This function must implement a way to increment or register the usage of every used pair of Language/Area/Subarea/Key as it was used to help the cleanup of unused translations.
-	 * This function will operate only in DEV mode (SmartFrameworkRegistry::ifProdEnv() !== true) and add in init.php: const SMART_FRAMEWORK__DEBUG__TEXT_TRANSLATIONS = true;
+	 * This function will operate only in DEV mode only (SmartFrameworkRegistry::ifProdEnv() !== true) ; for filesystem based adapters must also set in init.php: const SMART_FRAMEWORK__DEBUG__TEXT_TRANSLATIONS = true;
 	 * It can be implemented to write into one of the variety of sources: Text/CSV, Database, ...
 	 * RETURN: N/A
 	 */
-	public static function setTranslationsKeyUsageCount($the_lang, $y_area, $y_subarea, $y_textkey);
+	public static function setTranslationsKeyUsageCount(?string $the_lang, ?string $y_area, ?string $y_subarea, ?string $y_textkey);
 	//=====
 
 

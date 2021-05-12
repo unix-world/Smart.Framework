@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20210511 # this should be loaded from app web root only
+// # r.20210513 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -346,6 +346,7 @@ if((string)SMART_ERROR_HANDLER == 'log') {
 	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT); // error reporting for display only, development (show deprecated)
 } //end if else
 //==
+$smart_____framework_____last__exception_html = ''; // initialize, empty
 $smart_____framework_____last__error = ''; // initialize, empty
 $smart_____framework_____is_html_last__error = false; // initialize, false
 //==
@@ -353,6 +354,7 @@ $smart_____framework_____is_html_last__error = false; // initialize, false
 //==
 set_error_handler(function($errno, $errstr, $errfile, $errline) {
 	//--
+	global $smart_____framework_____last__exception_html;
 	global $smart_____framework_____last__error;
 	global $smart_____framework_____is_html_last__error;
 	//--
@@ -362,7 +364,6 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 	} else {
 		if($smart_____framework_____is_html_last__error !== true) {
 			$smart_____framework_____last__error = (string) htmlspecialchars((string)$smart_____framework_____last__error, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true);
-			$smart_____framework_____is_html_last__error = true;
 		} //end if
 	} //end if
 	//-- The following error types cannot be handled with a user defined function: E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, and most of E_STRICT raised in the file where set_error_handler() is called : http://php.net/manual/en/function.set-error-handler.php
@@ -456,8 +457,10 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 			$message .= ':';
 			$script = (string) SMART_ERROR_LOGDIR.SMART_ERROR_LOGFILE;
 			$appenv = (string) SMART_FRAMEWORK_ENV;
-			$err_prepend = '<div style="text-align:left!important;"> &nbsp; <span style="font-size:3rem; color:#ED2839;"><img width="64" height="64" src="'.smart__framework__err__handler__get__safe_img_url('php-logo.svg').'" alt="[php]" title="[php]"> <b>Code Execution FAILED</b></span> <img align="right" width="48" height="48" src="'.smart__framework__err__handler__get__safe_img_url('sign-error.svg').'" alt="[ERR]" title="[ERR]"><div><hr size="1"><pre style="white-space:pre-wrap;overflow-x:auto;">';
-			$err_append = '</pre></div><br><div style="color:#888888; text-align:right;"><small>'.date('Y-m-d H:i:s O').'</small><hr size="1"></div><div title="Powered by Smart.Framework" style="cursor:help;"><center><img width="64" height="64" src="'.smart__framework__err__handler__get__safe_img_url('sf-logo.svg').'" alt="[S.F]" title="[S.F]"></center></div></div>';
+			if($smart_____framework_____is_html_last__error !== true) {
+				$err_prepend = '<div style="text-align:left!important;"> &nbsp; <span style="font-size:3rem; color:#ED2839;"><img width="64" height="64" src="'.smart__framework__err__handler__get__safe_img_url('php-logo.svg').'" alt="[php]" title="[php]"> <b>Code Execution FAILED</b></span> <img align="right" width="48" height="48" src="'.smart__framework__err__handler__get__safe_img_url('sign-error.svg').'" alt="[ERR]" title="[ERR]"><div><hr size="1"><pre style="white-space:pre-wrap;overflow-x:auto;">';
+				$err_append = '</pre></div><br><div style="color:#888888; text-align:right;"><small>'.date('Y-m-d H:i:s O').'</small><hr size="1"></div><div title="Powered by Smart.Framework" style="cursor:help;"><center><img width="64" height="64" src="'.smart__framework__err__handler__get__safe_img_url('sf-logo.svg').'" alt="[S.F]" title="[S.F]"></center></div></div>';
+			} //end if
 		} else {
 			$message .= '.';
 		} //end if
@@ -467,7 +470,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 		if(!headers_sent()) {
 			@http_response_code(500); // try, if not headers send
 		} //end if
-		die('<!DOCTYPE html>'."\n".'<!-- Smart.Framework @ Smart Error Reporting / Smart Error Handler :: '.date('Y-m-d H:i:s O').' -->'."\n".'<html>'."\n".'<head><meta charset="'.SMART_FRAMEWORK_CHARSET.'"><title>! ERROR !</title><link rel="icon" href="data:,"><style>* { font-family: \'IBM Plex Mono\',mono; font-smooth: always; } hr { border: none 0; border-top: 1px solid #ECECEC; height: 1px; }</style></head>'."\n".'<body>'."\n".'<br><div><center><div style="min-width:300px; max-width:'.(SMART_FRAMEWORK_ENV === 'dev' ? '75vw' : '57vw').'; border: 1px solid #ECECEC; margin-top:10px; margin-bottom:10px; color:#333333;"><table cellpadding="4" style="max-width:70vw;"><tr valign="top"><td width="32">'.$errlogo.'</td><td>&nbsp;</td><td><b><span style="font-size:1.75rem;">HTTP 500 Internal Server Error</span><br><span style="font-size:1.25rem">'.'App Critical Error'.($appenv ? ' ('.$appenv.')' : '').' @ '.SMART_ERROR_AREA.' [#'.$errno.']:</span><br>'.'</b><i>'.nl2br((string)htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true), false).($script ? '<br><span style="color:#778899;">'.htmlspecialchars((string)$script, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</span>' : '').'</i></td></tr></table></div><br>'.($smart_____framework_____last__error ? "\n".'<!-- START: Last ERR Message --><div style="max-width:70vw; padding:5px; border: 1px solid #F0F0F0; border-radius:3px;"><span style="color:#222222; font-style:italic; font-weight:bold; font-size:3rem;"><span style="color:#4e5a92;">PHP '.PHP_VERSION.'</span> Last ERROR:</span><br><br>'.$err_prepend.$smart_____framework_____last__error.$err_append.'<br></div><br><br><hr size="1">'."\n".'<!-- #END: Last ERR Message -->'."\n" : '').'</center></div>'."\n".'</body>'."\n".'</html>'."\n");
+		die('<!DOCTYPE html>'."\n".'<!-- Smart.Framework @ Smart Error Reporting / Smart Error Handler :: '.date('Y-m-d H:i:s O').' -->'."\n".'<html>'."\n".'<head><meta charset="'.SMART_FRAMEWORK_CHARSET.'"><title>! ERROR !</title><link rel="icon" href="data:,"><style>* { font-family: \'IBM Plex Mono\',mono; font-smooth: always; } hr { border: none 0; border-top: 1px solid #ECECEC; height: 1px; }</style></head>'."\n".'<body>'."\n".'<br><div><center><div style="min-width:300px; max-width:'.(SMART_FRAMEWORK_ENV === 'dev' ? '75vw' : '57vw').'; border: 1px solid #ECECEC; margin-top:10px; margin-bottom:10px; color:#333333;"><table cellpadding="4" style="max-width:70vw;"><tr valign="top"><td width="32">'.$errlogo.'</td><td>&nbsp;</td><td><b><span style="font-size:1.75rem;">HTTP 500 Internal Server Error</span><br><span style="font-size:1.25rem">'.'App Critical Error'.($appenv ? ' ('.$appenv.')' : '').' @ '.SMART_ERROR_AREA.' [#'.$errno.']:</span><br>'.'</b><i>'.nl2br((string)htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true), false).($script ? '<br><span style="color:#778899;">'.htmlspecialchars((string)$script, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</span>' : '').'</i></td></tr></table></div><br>'.(($smart_____framework_____last__error || $smart_____framework_____last__exception_html) ? "\n".'<!-- START: Last ERR Message --><div style="max-width:70vw; padding:5px; border: 1px solid #F0F0F0; border-radius:3px;"><span style="color:#222222; font-style:italic; font-weight:bold; font-size:3rem;"><span style="color:#4e5a92;">PHP '.PHP_VERSION.'</span> Last ERROR:</span><br><br>'.$err_prepend.$smart_____framework_____last__error.$smart_____framework_____last__exception_html.$err_append.'<br></div><br><br><hr size="1">'."\n".'<!-- #END: Last ERR Message -->'."\n" : '').'</center></div>'."\n".'</body>'."\n".'</html>'."\n");
 		//--
 	} //end if else
 	//--
@@ -475,11 +478,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 //==
 set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 7+ compatible
 	//--
-	global $smart_____framework_____last__error;
-	global $smart_____framework_____is_html_last__error;
-	//--
-	//print_r($exception);
-	//print_r($exception->getTrace());
+	global $smart_____framework_____last__exception_html;
 	//--
 	$code = (int) $exception->getCode();
 	$message = (string) $exception->getMessage();
@@ -495,11 +494,7 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 			$hide_last_err = true;
 		} //end if
 		if($hide_last_err !== false) {
-			if($smart_____framework_____is_html_last__error !== true) {
-				$smart_____framework_____last__error = (string) htmlspecialchars((string)$smart_____framework_____last__error, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true);
-				$smart_____framework_____is_html_last__error = true;
-			} //end if
-			$smart_____framework_____last__error .= (string) ini_get('error_prepend_string')."\n".'<b><span style="color:#C2203F;"><i>Exception [#'.$code.'] / '.$exid.'</i></span><br><br><div style="font-size:1.5rem;">Error-Message: '.htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</div></b><div style="color:#555555; padding:5px; margin:5px;">'.htmlspecialchars((string)$details, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</div>'.trim((string)ini_get('error_append_string'))."\n"; // fix for PHP 7+
+			$smart_____framework_____last__exception_html = (string) "\n".'<!-- Exception -->'.'<b><span style="color:#C2203F;"><i>Exception Throw [#'.$code.'] / '.$exid.'</i></span><br><br><div style="font-size:1.5rem; color:#222222;"><span style="color:#444444;">Exception&nbsp;Message:</span> '.htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</div></b><div style="color:#555555; padding:5px; margin:5px;">'.htmlspecialchars((string)$details, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</div>'.'<!-- # Exception -->'."\n"; // fix for PHP 7+
 		} //end if
 		//--
 		if(SMART_FRAMEWORK_DEBUG_MODE === true) { // if debug

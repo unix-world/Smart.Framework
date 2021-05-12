@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20210422
+	// v.20210512
 
 
 	private static $db = null;
@@ -1405,10 +1405,6 @@ final class PageBuilderBackend {
 		} else {
 			$arr = array();
 		} //end if else
-		//--
-		if(\Smart::array_size($arr) <= 0) {
-			return -4;
-		} //end if
 		//--
 		$upd = 0;
 		//--

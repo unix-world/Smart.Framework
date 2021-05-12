@@ -50,7 +50,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210502
+ * @version 	v.20210512
  * @package 	PageBuilder
  *
  */
@@ -2620,6 +2620,21 @@ final class Manager {
 		//--
 		$def_lang = (string) \SmartTextTranslations::getDefaultLanguage();
 		//--
+		$arr_conform = [ 'is_imported' => 'no' ];
+		$arr_conform = (array) \Smart::array_init_keys(
+			(array) $arr_conform,
+			[
+				'default',
+				'is_transl_empty',
+				'is_base_empty',
+				'is_base_diff_transl',
+				'is_imported',
+				'status',
+				'diffs',
+				'translate',
+			]
+		);
+		//--
 		$out_total = 0;
 		$real_imported = 0;
 		$arr_xdata = [];
@@ -2699,7 +2714,7 @@ final class Manager {
 						if($x_is_all_empty === false) {
 							//--
 							if(!\is_array($arr_xdata[(int)$x_iterator])) {
-								$arr_xdata[(int)$x_iterator] = [];
+								$arr_xdata[(int)$x_iterator] = (array) $arr_conform;
 							} //end if
 							$status = 'ok';
 							if($x_is_empty || $x_is_tempty) {
@@ -2735,7 +2750,7 @@ final class Manager {
 						if(((string)\trim((string)$data_arr[(string)$def_lang][$i]) != '') AND ((string)\trim((string)$val[$i]) != '')) { // skip all empty records
 							//--
 							if(!\is_array($arr_xdata[(int)$x_iterator])) {
-								$arr_xdata[(int)$x_iterator] = [];
+								$arr_xdata[(int)$x_iterator] = (array) $arr_conform;
 							} //end if
 							//--
 							$arr_xdata[(int)$x_iterator]['default'] = (string) $val[$i];
@@ -2758,7 +2773,7 @@ final class Manager {
 						if(((string)\trim((string)$data_arr[(string)$def_lang][$i]) != '') AND ((string)\trim((string)$val[$i]) != '')) { // skip all empty records
 							//--
 							if(!\is_array($arr_xdata[(int)$x_iterator])) {
-								$arr_xdata[(int)$x_iterator] = [];
+								$arr_xdata[(int)$x_iterator] = (array) $arr_conform;
 							} //end if
 							//--
 							$arr_xdata[(int)$x_iterator]['is_transl_empty'] = 'no';

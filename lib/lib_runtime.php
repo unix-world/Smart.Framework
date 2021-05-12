@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20210506
+ * @version		v.20210513
  * @package 	Application
  *
  */
@@ -298,6 +298,8 @@ final class SmartFrameworkRuntime {
 	//======================================================================
 	// Include with Require a PHP Script (script must end with .php, be a safe relative path and cannot be includded more than once) ; $area must be a description in case of error
 	public static function requirePhpScript($script, $area) {
+		//--
+		global $configs; // req. by transl custom adapters
 		//--
 		$script = (string) trim((string)$script);
 		$area = (string) $area;

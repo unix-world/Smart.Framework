@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR (((string)SMART_FRAMEWORK_RUNTI
 //-----------------------------------------------------
 
 
-//====================================================== r.20210506
+//====================================================== r.20210513
 // Smart-Framework - App Runtime (this should be loaded only from app web root)
 // DEPENDS: Smart.Framework + Smart.Framework/Components
 // DO NOT MODIFY THIS FILE OR ANY OTHER FILE(S) UNDER lib/* or index.php or admin.php or task.php [They will be all overwritten on any future framework updates or upgrades] !!!
@@ -121,16 +121,11 @@ if(!defined('SMART_APP_LANG_COOKIE')) {
 	define('SMART_APP_LANG_COOKIE', '');
 } //end if
 //--
-if(!defined('SMART_FRAMEWORK_LANGUAGES_CACHE_DIR')) {
-	define('SMART_FRAMEWORK_LANGUAGES_CACHE_DIR', 'modules/app/translations/'); // {{{SYNC-APP-TRANSLATIONS-DEFAULT-LOCATION}}}
+if(!defined('SMART_FRAMEWORK_TRANSLATIONS_BUILTIN_CUSTOM')) {
+	define('SMART_FRAMEWORK_TRANSLATIONS_BUILTIN_CUSTOM', false);
 } //end if
-if((strpos((string)SMART_FRAMEWORK_LANGUAGES_CACHE_DIR, '/') === 0) OR (!preg_match('/^[a-z\/]+$/', (string)SMART_FRAMEWORK_LANGUAGES_CACHE_DIR))) {
-	@http_response_code(500);
-	die('A required INIT constant contains invalid characters or start with a `/` (slash): SMART_FRAMEWORK_LANGUAGES_CACHE_DIR');
-} //end if
-//--
 if(!defined('SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM')) {
-	define('SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM', '');
+	define('SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM', false);
 } //end if
 //--
 

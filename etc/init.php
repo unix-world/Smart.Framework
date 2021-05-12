@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20210511
+// [Smart.Framework / INIT] v.20210513
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -99,9 +99,8 @@ const SMART_FRAMEWORK_SESSION_ROBOTS =  				false;										// Uncomment this to
 //---------------------------------------- CHARSET AND REGIONAL SETTINGS [ NEVER CHANGE THESE MUST BE UNICODE UTF-8 ; CHANGING IT YOU CAN BREAK THE UNICODE SUPPORT ]
 //const SMART_FRAMEWORK_DEFAULT_LANG =  				'en';										// The default language for translations (as language ID) :: Default is 'en' :: {{{SYNC-APP-DEFAULT-LANG}}} :: must be a valid language ID defined in config.php as regional.language-id
 //const SMART_FRAMEWORK_URL_PARAM_LANGUAGE =  			'lang';										// *Optional* (used only with multi languages) Language URL Param (if empty string, will not accept any language inputs by URL or Cookie) ; Default = 'lang' ; if not empty may contain only characters: [a-z] ; if defined and non empty must be between 1 and 10 characters long
-//const SMART_FRAMEWORK_LANGUAGES_CACHE_DIR =  			'modules/app/translations/';				// Languages Cache Dir for the Default Translations Adapter Handler which is YAML :: default is 'modules/app/translations/' :: {{{SYNC-APP-TRANSLATIONS-DEFAULT-LOCATION}}} ; must be a valid existing directory, will not be created and must contain the necessary YAML files
-//const SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM =  	'modules/app/custom-transl-adapter.php'; 	// Custom Translations Adapter Handler ; default is YAML (built-in) ; if using the default YAML adapter the translations are by default set to SMART_FRAMEWORK_LANGUAGES_CACHE_DIR
-//const SMART_FRAMEWORK__DEBUG__TEXT_TRANSLATIONS = 	true; 										// If this is set will register the use count of Translation for every usage as: Language, Area, Subarea, Key ; will operate only in DEV mode (SMART_FRAMEWORK_ENV == 'dev')
+//const SMART_FRAMEWORK_TRANSLATIONS_BUILTIN_CUSTOM = 	true; 										// This is used only with the built-in YAML Translations adapter ; The YAML @core translation files for EN language are located in `lib/app/translations/` which are hard to manage, if upgrading the lib folder will be rewritten ; the YAML @core translations for other languages are always located in `modules/app/translations/` ; to avoid modify the `lib/app/translations/` by defining this constant and set it to TRUE will look for the EN @core YAML translations in `modules/app/translations/` instead of `lib/app/translations/` which make them easier to maintain if need to modify them ; otherwise if not need to modify them make non-sense ; if this is enabled just make a copy of the YAML files from `lib/app/translations/` to `modules/app/translations/` and enable this constant by set it to TRUE
+//const SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM =  	'modules/app/custom-transl-adapter.php'; 	// Custom Translations Adapter Handler ; if using this will not use the default YAML files based translations which is built-in
 //---------------------------------------- SPECIAL .htaccess FILES CONTENT :: These are set for Apache web server. If you are using another web server you may adjust them.
 //-- .htaccess DENY EXECUTION OF SCRIPTS
 const SMART_FRAMEWORK_HTACCESS_NOEXECUTION = '
