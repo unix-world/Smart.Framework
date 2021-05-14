@@ -1,10 +1,16 @@
-<!-- Pagebuilder / Manage @ List / Records :: v.20210420 -->
+<!-- Pagebuilder / Manage @ List / Records :: v.20210513 -->
 <style>
 	.smartGrid_AlignCenter {
 		text-align: center;
 	}
 	.smartGrid_AlignRight {
 		text-align: right;
+	}
+	.smartGrid_ColumnId {
+		color: #666699;
+	}
+	.smartGrid_ColumnName {
+		color: #555555;
 	}
 	.smartGrid_Important {
 		font-weight: bold;
@@ -166,7 +172,7 @@ jQuery(function() {
 
 	var displayName = function(row, cell, value, columnDef, dataContext) {
 		value = String(value);
-		return '<span style="color:#555555;" title="' + smartJ$Utils.escape_html(dataContext['tags']) + '">&nbsp;' + smartJ$Utils.escape_html(value) + '</span>';
+		return '<span title="' + smartJ$Utils.escape_html(dataContext['tags']) + '">&nbsp;' + smartJ$Utils.escape_html(value) + '</span>';
 	}
 
 	var diffColSize = function(colName) {
@@ -203,10 +209,10 @@ jQuery(function() {
 		{id:'x-ops', 		field:'id', 			name:'@', 								sortable:false, 	width:50, 					formatter:displayOps},
 		{id:'special', 		field:'special',		name:'[###TXT-COL-SPECIAL|js###]', 		sortable:true, 		width:75, 					formatter:displaySpecial,editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_AlignRight'},
 		{id:'ctrl', 		field:'ctrl', 			name:'[###TXT-COL-CTRL|js###]', 		sortable:true, 		width:diffColSize('ctrl'), 	formatter:displayCtrl, editor:TextCellSelector, cssClass:'smartGrid_Important'},
-		{id:'id', 			field:'id', 			name:'[###TXT-COL-ID|js###]', 			sortable:true, 		width:diffColSize('id'), 	formatter:displayID, editor:TextCellSelector, cssClass:'smartGrid_Important'},
 		{id:'mode', 		field:'mode', 			name:'[###TXT-COL-SYNTAX|js###]', 		sortable:true, 		width:75, 					formatter:displayCodeType, editor:TextCellSelector},
-		{id:'name', 		field:'name', 			name:'[###TXT-COL-NAME|js###]', 		sortable:true, 		width:diffColSize('name'), 	formatter:displayName, editor:TextCellSelector, cssClass:'smartGrid_Important'},
+		{id:'id', 			field:'id', 			name:'[###TXT-COL-ID|js###]', 			sortable:true, 		width:diffColSize('id'), 	formatter:displayID, editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColumnId'},
 		{id:'active', 		field:'active', 		name:'[###TXT-COL-ACTIVE|js###]', 		sortable:true, 		width:75, 					formatter:displayActive, editor:TextCellSelector},
+		{id:'name', 		field:'name', 			name:'[###TXT-COL-NAME|js###]', 		sortable:true, 		width:diffColSize('name'), 	formatter:displayName, editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColumnName'},
 		{id:'auth', 		field:'auth', 			name:'[###TXT-COL-AUTH|js###]', 		sortable:true, 		width:75, 					formatter:displayAuth, editor:TextCellSelector},
 		{id:'translations', field:'translations', 	name:'[###TXT-COL-TRANSL|js###]', 		sortable:true, 		width:75, 					formatter:displayTransl, editor:TextCellSelector},
 		{id:'counter', 		field:'counter', 		name:'[###TXT-COL-COUNTER|js###]', 		sortable:true, 		width:75, 					editor:TextCellSelector, cssClass:'smartGrid_AlignRight'}
@@ -232,14 +238,21 @@ jQuery(function() {
 	var winH = jQuery(window).height();
 	var diffW = 15;
 	var diffH = 200;
+	var isColumnDelAvail = [###LIST-DELETE-URL|bool###];
 	jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - diffW), 'height': parseInt(winH - diffH) });
 	jQuery(window).resize(function() {
 		winW = jQuery(window).width();
 		winH = jQuery(window).height();
 		jQuery('#' + IdOfGrid).css({ 'width': parseInt(winW - diffW), 'height': parseInt(winH - diffH) });
 		TheGrid.grid.resizeCanvas();
-		columns[2].width = diffColSize('id'); // id column
-		columns[4].width = diffColSize('name'); // name column
+		var idxColIndex = 5;
+		var idxColName = 7;
+		if(!isColumnDelAvail) {
+			idxColIndex -= 1;
+			idxColName -= 1;
+		} //end if else
+		columns[idxColIndex].width = diffColSize('id'); // id column
+		columns[idxColName].width = diffColSize('name'); // name column
 		TheGrid.grid.autosizeColumns();
 	});
 

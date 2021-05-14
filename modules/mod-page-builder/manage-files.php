@@ -65,12 +65,12 @@ class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs 
 		define('SMART_WEBDAV_PROPFIND_ETAG_MAX_FSIZE', -1); // !!! etags on PROPFIND / HEAD :: set = -2 to disable etags ; set to -1 to show etags for all files ; if >= 0, will show the etag only if the file size is <= with this limit (etag on PROPFIND / HEAD is not mandatory for WebDAV and may impact performance if there are a large number of files in a directory or big size files ...) ; etags will always show on PUT method
 		//--
 		if((string)ltrim((string)$this->RequestPathGet(), '/') != '') {
-			$txt_lnk = 'PageBuilder.Files :: Home';
+			$txt_lnk = 'Return to PageBuilder.Files :: Home';
 			$url_lnk = (string) $url_base;
 			$img_lnk = 'modules/mod-page-builder/libs/views/manager/img/webdav-files.svg';
 		} else {
-			$txt_lnk = 'PageBuilder Objects :: Home';
-			$url_lnk = (string) SmartUtils::get_server_current_url().SmartUtils::get_server_current_script().'?/page/page-builder.manage';
+			$txt_lnk = 'PageBuilder.Files :: Home';
+			$url_lnk = (string) ''; // SmartUtils::get_server_current_url().SmartUtils::get_server_current_script().'?/page/page-builder.manage';
 			$img_lnk = 'modules/mod-page-builder/libs/views/manager/img/webdav-objects.svg';
 		} //end if else
 		//--

@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
- * @version 	v.20210507
+ * @version 	v.20210513
  * @package 	development:Captcha
  *
  */
@@ -71,14 +71,15 @@ final class SmartCaptcha {
 	//================================================================
 	/**
 	 * Inits a captha plugin by setting the required values in cookie or session depend how mode is set
-	 * This should be used for internal development only of new captcha Plugins (ex: image)
+	 * This should be used only with external captcha Plugins (ex: external captcha image by custom URL)
+	 * This must not be used if the drawCaptchaForm() is using internal captcha mode with no external URL
 	 *
 	 * @param $y_form_name 		STRING the name of the HTML form to bind to ; This must be unique on a page with multiple forms
 	 * @param $y_captcha_word 	The Captcha Word to be initialized (this must be supplied by the Captcha Plugin)
 	 * @param $y_mode 			ENUM the storage mode ; Can be set to 'cookie' or 'session' ; default is 'cookie'
 	 * @return BOOLEAN 			TRUE on success or FALSE on failure
 	 */
-	public static function initCaptchaPlugin($y_form_name, $y_captcha_word, $y_mode='cookie') {
+	public static function initCaptchaPlugin(?string $y_form_name, ?string $y_captcha_word, $y_mode='cookie') {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		if(self::validate_form_name($y_form_name) !== true) {
@@ -96,7 +97,7 @@ final class SmartCaptcha {
 		//--
 		if((string)$y_mode == 'session') {
 			$ok = (bool) SmartSession::set(self::cookie_name_frm($y_form_name), self::cksum_hash($y_captcha_word));
-		} else {
+		} else { // cookie
 			$ok = (bool) SmartUtils::set_cookie(self::cookie_name_frm($y_form_name), self::cksum_hash($y_captcha_word));
 		} //end if else
 		//--
@@ -109,15 +110,23 @@ final class SmartCaptcha {
 	//================================================================
 	/**
 	 * Draw the Captcha Form partial HTML
-	 * Requires a captcha plugin (ex: image)
+	 * By default if no external URL is specified will use the internal interractive captcha
+	 * IMPORTANT: When using the interractive internal captcha the method initCaptchaPlugin() is automatically called and must not be called prior to this method !
+	 *
+	 * Difficulty levels for the internal interractive captcha:
+	 * #very-easy
+	 * #easy
+	 * #moderate
+	 * #hard
+	 * #very-hard
 	 *
 	 * @param $y_form_name 			STRING 	The name of the HTML form to bind to ; This must be unique on a page with multiple forms
-	 * @param $y_captcha_image_url 	MIXED 	The URL to a Captcha Plugin ; Example STRING: 'index.php?page=mymodule.mycaptcha-image' ; If NULL will use the interractive captcha
+	 * @param $y_captcha_image_url 	MIXED 	Empty String / NULL or A Captcha difficulty level for internal interractive captcha ; The URL to a Captcha Plugin (ex: 'index.php?page=mymodule.mycaptcha-image')
 	 * @param $y_mode 				ENUM 	The storage mode ; Can be set to 'cookie' or 'session' ; default is 'cookie'
 	 * @param $y_use_absolute_url 	BOOL 	If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
 	 * @return 						STRING 	The partial captcha HTML to include in a form
 	 */
-	public static function drawCaptchaForm($y_form_name, $y_captcha_image_url=null, $y_mode='cookie', $y_use_absolute_url=false) {
+	public static function drawCaptchaForm(?string $y_form_name, ?string $y_captcha_image_url='', ?string $y_mode='cookie', bool $y_use_absolute_url=false) {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		if(self::validate_form_name($y_form_name) !== true) {
@@ -140,10 +149,11 @@ final class SmartCaptcha {
 			$the_abs_url = (string) SmartUtils::get_server_current_url();
 		} //end if else
 		//--
-		if($y_captcha_image_url) {
+		$y_captcha_image_url = (string) trim((string)$y_captcha_image_url);
+		if(((string)$y_captcha_image_url != '') AND (strpos((string)$y_captcha_image_url, '#') !== 0)) {
 			//--
 			$captcha_url = (string) $y_captcha_image_url;
-			$captcha_url = (string) Smart::url_add_suffix($captcha_url, 'captcha_form='.rawurlencode((string)$y_form_name));
+			$captcha_url = (string) Smart::url_add_suffix($captcha_url, 'captcha_form='.Smart::escape_url((string)$y_form_name));
 			$captcha_url = (string) Smart::url_add_suffix($captcha_url, 'captcha_mode=image');
 			$captcha_url = (string) Smart::url_add_suffix($captcha_url, 'new=');
 			//--
@@ -155,16 +165,47 @@ final class SmartCaptcha {
 			//--
 		} else {
 			//--
-			$captcha_obj = new SmartSVGCaptcha(5, 175, 50, -1);
-			$captcha_url = (string) $captcha_obj->draw_image();
-			$captcha_code = (string) $captcha_obj->get_code();
-			$captcha_obj = null; // free mem
+			$svg_difficulty_level = null;
+			switch((string)$y_captcha_image_url) {
+				case '#very-hard':
+					$svg_difficulty_level = 3;
+					break;
+				case '#hard':
+					$svg_difficulty_level = 2;
+					break;
+				case '#moderate':
+					$svg_difficulty_level = 1;
+					break;
+				case '#easy':
+					$svg_difficulty_level = 0;
+					break;
+				case '#very-easy':
+				case '':
+					$svg_difficulty_level = -1;
+					break;
+				default:
+					Smart::log_warning(__METHOD__.' # Invalid Captcha Difficulty Mode: `'.$y_captcha_image_url.'`');
+			} //end switch
+			//--
+			$captcha_url = null;
+			$captcha_code = null;
+			if(!((int)Smart::random_number(0, 100) % 2)) {
+				$captcha_obj = new SmartSVGCaptcha(5, 185, 55, (int)$svg_difficulty_level);
+				$captcha_url = (string) $captcha_obj->draw_image();
+				$captcha_code = (string) $captcha_obj->get_code();
+				$captcha_obj = null; // free mem
+			} else { // TODO: implement difficulty level also in ASCII Captcha
+				$captcha_arr = (array) SmartAsciiCaptcha::getCaptchaImageAndCode(5, 0.33, true); // sync size 0.33 with css size and line height !!!
+				$captcha_url = (string) $captcha_arr['html'];
+				$captcha_code = (string) $captcha_arr['code'];
+				$captcha_arr = null; // free mem
+			} //end if else
 			if(!self::initCaptchaPlugin((string)$y_form_name, (string)$captcha_code, (string)$y_mode)) {
-				return 'Captcha Form Init ERROR ...';
+				Smart::log_warning(__METHOD__.' # Failed to INIT SVG Captcha Plugin');
 			} //end if
 			$captcha_url = (string) base64_encode((string)$captcha_url);
-			$captcha_url = (string) SmartUtils::crypto_blowfish_encrypt('(() => { mFx = () => { if((typeof(jQuery) == \'undefined\') || (typeof(smartJ$Utils) == \'undefined\') || (typeof(u$) == \'undefined\') || (typeof(b$) == \'undefined\') || (typeof(e$) == \'undefined\') || (typeof(c$) == \'undefined\') || (typeof(sim) == \'undefined\') || (typeof(aTan) == \'undefined\') || (typeof(zSVG) == \'undefined\')) { return; } if((sim >= 850/1000) && (sim <= 950/1000)) { let mX = 0, mY = 0; try { mX = u$.format_number_float(event.clientX); mY = u$.format_number_float(event.clientY); } catch(fail){} aTan = u$.format_number_float(Math.abs(Math.atan(Math.PI + Math.E + Math.abs(sim) * (Math.pow(Math.abs(mX), 2) * Math.pow(Math.abs(mY), 2)))), false) + 1/100; let fldVal = \''.Smart::escape_js(SmartUtils::crypto_blowfish_encrypt((string)$captcha_code, (string)strtoupper((string)$uuid))).'\'; let kZ = String(jQuery(\'#Smart-Captcha-Container-'.Smart::escape_js(Smart::create_htmid((string)strtolower((string)$uuid))).'\').find(\'input\').data(\'id\')).toUpperCase(); '.$js_solver.' } else { zSVG = \''.Smart::escape_js($captcha_url).'\'; } }; })();', 'setInterval(() => { '.$js_exports.' $entropy = h$.crc32b(subtle$CryptoDigest(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); }, 700);');
-			//-- the min sim is 0.75 (but too perfect is not human, so max is 0.95, but trusted is 0.85..0.95)
+			$captcha_url = (string) SmartUtils::crypto_blowfish_encrypt('(() => { mFx = () => { if((typeof(jQuery) == \'undefined\') || (typeof(smartJ$Utils) == \'undefined\') || (typeof(u$) == \'undefined\') || (typeof(b$) == \'undefined\') || (typeof(e$) == \'undefined\') || (typeof(c$) == \'undefined\') || (typeof(mFy) == \'undefined\') || (typeof(sq) == \'undefined\') || (typeof(mTan) == \'undefined\') || (typeof(zSVG) == \'undefined\')) { return; } if((mFy >= -162) && (mFy <= -51)) { let mX = 0, mY = 0; try { mX = u$.format_number_float(event.clientX); mY = u$.format_number_float(event.clientY); } catch(fail){} mTan = u$.format_number_float(Math.abs(Math.atan(Math.PI + Math.E + Math.sin(Math.abs(sq)) * (Math.pow(Math.tan(mX), 2) * Math.pow(Math.tan(mY), 2)))), false) + 1/100; let fldVal = \''.Smart::escape_js(SmartUtils::crypto_blowfish_encrypt((string)$captcha_code, (string)strtoupper((string)$uuid))).'\'; let kZ = String(jQuery(\'#Smart-Captcha-Container-'.Smart::escape_js(Smart::create_htmid((string)strtolower((string)$uuid))).'\').find(\'input\').data(\'id\')).toUpperCase(); '.$js_solver.' } else { zSVG = \''.Smart::escape_js($captcha_url).'\'; } }; })();', 'setInterval(() => { '.$js_exports.' $entropy = h$.crc32b(subtle$CryptoDigest(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); }, 700);');
+			//-- perfect scores are not for humans, but neither too low scores ...
 			$qrcode_str = (string) (new SmartQR2DBarcode('L'))->renderAsSVG((string)$captcha_code, ['cm'=>'#888888','wq'=>0]);
 			$qrcode_str = (string) SmartUtils::crypto_blowfish_encrypt('(() => { if((typeof(qSVG) == \'undefined\') || qSVG) { return; } qSVG = \''.Smart::escape_js((string)base64_encode((string)$qrcode_str)).'\'; })();', 'setInterval(() => { '.$js_exports.' $entropy = h$.crc32b(subtle$CryptoDigest(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); }, 800);');
 			//--

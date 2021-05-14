@@ -72,13 +72,21 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20210506
+ * @version     v.20210513
  * @package     @Core
  *
  */
 final class Smart {
 
 	// ::
+
+	public const REGEX_SAFE_PATH_NAME 	= '/^[_a-zA-Z0-9\-\.@\#\/]+$/';
+	public const REGEX_SAFE_FILE_NAME 	= '/^[_a-zA-Z0-9\-\.@\#]+$/';
+
+	public const REGEX_SAFE_VAR_NAME 	= '/^[_a-zA-Z0-9]+$/';
+
+	public const REGEX_SAFE_VALID_NAME 	= '/^[_a-z0-9\-\.@]+$/';
+	public const REGEX_SAFE_USERNAME 	= '/^[a-z0-9\.]+$/';
 
 	private static $Cfgs = []; // registry of cached config data
 
@@ -1466,7 +1474,7 @@ final class Smart {
 			return '';
 		} //end if
 		//--
-		if(preg_match('/^[_a-zA-Z0-9\-\.@#\/]+$/', (string)$y_path)) { // {{{SYNC-CHK-SAFE-PATH}}}
+		if(preg_match((string)self::REGEX_SAFE_PATH_NAME, (string)$y_path)) { // {{{SYNC-CHK-SAFE-PATH}}}
 			return (string) self::safe_fix_invalid_filesys_names($y_path);
 		} //end if
 		//--
@@ -1484,7 +1492,7 @@ final class Smart {
 		$y_path = (string) stripslashes($y_path); // remove any possible back-slashes
 		$y_path = (string) self::normalize_spaces($y_path); // normalize spaces to catch null seq.
 		//$y_path = (string) str_replace('?', $ysupresschar, $y_path); // replace questionmark (that may come from utf8 decode) ; this is already done below
-		$y_path = (string) preg_replace('/[^_a-zA-Z0-9\-\.@#\/]/', $ysupresschar, $y_path); // {{{SYNC-SAFE-PATH-CHARS}}} suppress any other characters than these, no unicode modifier
+		$y_path = (string) preg_replace('/[^_a-zA-Z0-9\-\.@\#\/]/', $ysupresschar, $y_path); // {{{SYNC-SAFE-PATH-CHARS}}} suppress any other characters than these, no unicode modifier
 		$y_path = (string) preg_replace("/(\.)\\1+/", '.', $y_path); // suppress multiple . dots and replace with single dot
 		$y_path = (string) preg_replace("/(\/)\\1+/", '/', $y_path); // suppress multiple // slashes and replace with single slash
 		$y_path = (string) str_replace(array('../', './'), array('-', '-'), $y_path); // replace any unsafe path combinations (do not suppress but replace with a fixed character to avoid create security breaches)
@@ -1516,7 +1524,7 @@ final class Smart {
 			return '';
 		} //end if
 		//--
-		if(preg_match('/^[_a-zA-Z0-9\-\.@#]+$/', (string)$y_fname)) { // {{{SYNC-CHK-SAFE-FILENAME}}}
+		if(preg_match((string)self::REGEX_SAFE_FILE_NAME, (string)$y_fname)) { // {{{SYNC-CHK-SAFE-FILENAME}}}
 			return (string) self::safe_fix_invalid_filesys_names($y_fname);
 		} //end if
 		//--
@@ -1562,7 +1570,7 @@ final class Smart {
 			$y_name = (string) strtolower((string)$y_name);
 		} //end if
 		//--
-		if(preg_match('/^[_a-zA-Z0-9]+$/', (string)$y_name)) {
+		if(preg_match((string)self::REGEX_SAFE_VAR_NAME, (string)$y_name)) {
 			return (string) self::safe_fix_invalid_filesys_names($y_name);
 		} //end if
 		//--
@@ -1594,7 +1602,7 @@ final class Smart {
 			return '';
 		} //end if
 		//--
-		if(preg_match('/^[_a-z0-9\-\.@]+$/', (string)$y_name)) {
+		if(preg_match((string)self::REGEX_SAFE_VALID_NAME, (string)$y_name)) {
 			return (string) self::safe_fix_invalid_filesys_names($y_name);
 		} //end if
 		//--
@@ -1635,7 +1643,7 @@ final class Smart {
 			return '';
 		} //end if
 		//--
-		if(preg_match('/^[a-z0-9\.]+$/', (string)$y_name)) {
+		if(preg_match((string)self::REGEX_SAFE_USERNAME, (string)$y_name)) {
 			return (string) self::safe_fix_invalid_filesys_names($y_name);
 		} //end if
 		//--

@@ -2,7 +2,7 @@
 TRANSLATIONS:
   @language: EN
   @area: core
-  @version: 2021-04-16
+  @version: 2021-05-13
   captcha:
     error: |
       The Captcha expired ... Try to refresh the page.
@@ -15,8 +15,8 @@ TRANSLATIONS:
     enter: 'Enter the code from the image into the validation field.'
     easy: 'I am not a robot !'
     tick: 'Tick (check) the nearest checkbox after the timer to confirm you are not a robot.'
-    interractive: 'To validate this captcha: draw a fluent shape over the nearest drawing area similar with the one that you see in the background, starting from the dot.'
-    helper: 'Accessibility: As alternative you can scan the barcode and find the validation code that you have to fill in the validation input.'
+    interractive: 'To validate this captcha: draw a fluent shape over the nearest drawing area similar with the one that you see in the background, starting from the dot. Double click on the drawing area to change the shape.'
+    helper: 'Accessibility: As alternative you can scan the QR Code and find the validation code that you have to fill in the validation input.'
     accessibility: 'Accessibility: Click to step forward to the Accessibility Context for Captcha'
     passed: 'Validation Completed !'
 #END

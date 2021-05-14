@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-//--
+//-- r.20210513
 // #PLUGINS# :: they can be loaded always (require) or as dependency injection (require_once)
 //--
 require_once('lib/core/plugins/lib_idn_punycode.php'); 		// idn punnycode converter
@@ -47,8 +47,9 @@ require_once('lib/core/plugins/lib_session.php');			// session storage
 require_once('lib/core/plugins/lib_imgd.php');				// img (gd) process
 //--
 require_once('lib/core/plugins/lib_qrcode.php'); 			// qrcode integration for captcha
+require_once('lib/core/plugins/lib_captcha_svg.php'); 		// captcha svg plugin
+require_once('lib/core/plugins/lib_captcha_ascii.php'); 	// captcha ascii plugin
 require_once('lib/core/plugins/lib_captcha_form.php'); 		// captcha form manager
-require_once('lib/core/plugins/lib_captcha_image.php'); 	// captcha image
 //--
 require_once('lib/core/plugins/lib_viewhelpers.php'); 		// viewhelpers components
 //--

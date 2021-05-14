@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List # Filter :: v.20210420 -->
+<!-- Pagebuilder / Manage @ List # Filter :: v.20210513 -->
 <style>
 #pgbld-btn-reset-cnt:hover i.sfi,
 #pgbld-btn-alt-list:hover i.sfi {
@@ -9,6 +9,9 @@
 <form id="filtering" name="filtering" class="ux-form" action="[###LIST-FORM-URL|html###]" method="[###LIST-FORM-METHOD|html###]">
 	[%%%LOOP:LIST-FORM-VARS%%%]<input type="hidden" name="[###LIST-FORM-VARS.NAME|html###]" value="[###LIST-FORM-VARS.VALUE|html###]">[%%%/LOOP:LIST-FORM-VARS%%%]
 	<table style="width:99%;"><tr style="valign:top;">
+	<td style="width:64px;">
+		<div id="pgbld-btn-alt-list" style="color:#CCCCCC; cursor:pointer; margin-top:-16px;" onclick="self.location='admin.php';"><i class="sfi sfi-sphere sfi-3x"></i></div>
+	</td>
 	<td style="width:1px;">
 		<select name="srcby" id="filter-srcby" class="ux-input-def ux-input-1-4">
 			<option value="" title="[###HINT-0|html###]">* [###TXT-SEARCH-BY|html###] *:</option>
@@ -47,26 +50,40 @@
 		&nbsp;
 	</td>
 	<td style="width:32px;">
-		<div id="pgbld-btn-alt-list" style="color:#CCCCCC; cursor:pointer;" title="[###TXT-ALT-LINK|html###]" onclick="var ckVal = ''; [%%%IF:LIST-ALT-COOKIE:!=;%%%]try{ ckVal = smartJ$Browser.getCookie('[###LIST-ALT-COOKIE|js|html###]'); if(!ckVal){ ckVal = ''; } if(ckVal){ ckVal = ((ckVal.indexOf('?') == 0) || (ckVal.indexOf('&') == 0)) ? ckVal : '&' + ckVal; } } catch(err){} [%%%/IF:LIST-ALT-COOKIE%%%]self.location='[###LIST-ALT-LINK|js|html###]'+String(ckVal);"><i class="sfi sfi-tree sfi-3x"></i></div>
+		<div id="pgbld-btn-alt-list" style="color:#CCCCCC; cursor:pointer; margin-top:-8px;" title="[###TXT-ALT-LINK|html###]" onclick="var ckVal = ''; [%%%IF:LIST-ALT-COOKIE:!=;%%%]try{ ckVal = smartJ$Browser.getCookie('[###LIST-ALT-COOKIE|js|html###]'); if(!ckVal){ ckVal = ''; } if(ckVal){ ckVal = ((ckVal.indexOf('?') == 0) || (ckVal.indexOf('&') == 0)) ? ckVal : '&' + ckVal; } } catch(err){} [%%%/IF:LIST-ALT-COOKIE%%%]self.location='[###LIST-ALT-LINK|js|html###]'+String(ckVal);"><i class="sfi sfi-tree sfi-2x"></i></div>
 	</td>
 	<td style="width:16px;">
 		&nbsp;
 	</td>
 	<td style="width:32px;">
-		<div id="pgbld-btn-alt-list" style="color:#CCCCCC; cursor:pointer;" title="[###TXT-WEBDAV-LINK|html###]" onclick="self.location='[###LIST-WEBDAV-LINK|js|html###]';"><i class="sfi sfi-folder-open sfi-3x"></i></div>
+		<div id="pgbld-btn-alt-list" style="color:#CCCCCC; cursor:pointer; margin-top:-8px;" title="[###TXT-WEBDAV-LINK|html###]" onclick="smartJ$Browser.PopUpLink('[###LIST-WEBDAV-LINK|js|html###]', 'pagebuilder_webdav');"><i class="sfi sfi-folder-open sfi-2x"></i></div>
 	</td>
+	[%%%IF:SHOW-TRANSLATIONS:==yes;%%%]
+	<td style="width:16px;">
+		&nbsp;
+	</td>
+	<td style="width:32px;">
+		<div id="pgbld-btn-alt-list" style="color:#CCCCCC; cursor:pointer; margin-top:-8px;" title="[###TXT-EXPT-LINK|html###]" onclick="smartJ$Browser.PopUpLink('[###LIST-EXPT-LINK|js|html###]', 'pagebuilder_transl');"><i class="sfi sfi-download3 sfi-2x"></i></div>
+	</td>
+	<td style="width:16px;">
+		&nbsp;
+	</td>
+	<td style="width:32px;">
+		<div id="pgbld-btn-alt-list" style="color:#CCCCCC; cursor:pointer; margin-top:-8px;" title="[###TXT-IMPT-LINK|html###]" onclick="smartJ$Browser.PopUpLink('[###LIST-IMPT-LINK|js|html###]', 'pagebuilder_transl');"><i class="sfi sfi-upload3 sfi-2x"></i></div>
+	</td>
+	[%%%/IF:SHOW-TRANSLATIONS%%%]
 	<td style="width:16px;">
 		&nbsp;
 	</td>
 	<td style="width:32px;">
 		[%%%IF:IS-DEV-MODE:==yes;%%%]
-		<div id="pgbld-btn-reset-cnt" style="color:#CCCCCC; cursor:pointer;" title="[###TXT-RESET-COUNTER|html###]" onclick="smartJ$Browser.ConfirmDialog('<i class=&quot;sfi sfi-meter2&quot;></i> &nbsp; Do you want to Reset the Hit Counter on All PageBuilder Objects ?', function(){ smartJ$Browser.SubmitFormByAjax(false, 'admin.php?page=page-builder.manage&op=reset-counter&back=[###LIST-CRR-LINK|url|js###]', 'yes'); }, 'Reset the PageBuilder Objects Hit Counter', 550, 155); return false;"><i class="sfi sfi-meter2 sfi-3x"></i></div>
+		<div id="pgbld-btn-reset-cnt" style="color:#CCCCCC; cursor:pointer; margin-top:-8px;" title="[###TXT-RESET-COUNTER|html###]" onclick="smartJ$Browser.ConfirmDialog('<i class=&quot;sfi sfi-meter2&quot;></i> &nbsp; Do you want to Reset the Hit Counter on All PageBuilder Objects ?', function(){ smartJ$Browser.SubmitFormByAjax(false, 'admin.php?page=page-builder.manage&op=reset-counter&back=[###LIST-CRR-LINK|url|js###]', 'yes'); }, 'Reset the PageBuilder Objects Hit Counter', 550, 155); return false;"><i class="sfi sfi-meter2 sfi-2x"></i></div>
 		[%%%ELSE:IS-DEV-MODE%%%]
 		&nbsp;
 		[%%%/IF:IS-DEV-MODE%%%]
 	</td>
 	<td style="text-align:center;">
-		<span style="color:#333333; line-height:24px; font-size:24px; font-weight:bold;">[###LIST-TTL|html###]</span>
+		<span style="color:#777777; line-height:24px; font-size:24px; font-weight:bold;">[###LIST-TTL|html###]</span>
 	</td>
 	<td style="text-align:right; padding-right:10px;">
 		<span style="color:#CCCCCC; line-height:24px; font-size:24px; font-weight:bold;">[###LIST-RECORDS|html###]&nbsp;[###TXT-RECORDS|html###]<br><span id="infoTotalRows">[###FMT-LIST|html###]</span></span>

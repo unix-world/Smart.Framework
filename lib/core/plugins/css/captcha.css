@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Captcha :: r.7.2.1 / smart.framework.v.7.2 -- */
 
-/* v.20210511 */
+/* v.20210513 */
 
 /* ----------------------------- */
 
@@ -20,6 +20,13 @@ div.Smart-Captcha-Area {
 
 div.Smart-Captcha-Area * {
 	font-size: 0.75rem !important;
+}
+
+div.Smart-Captcha-AsciiArt * {
+	font-size: 0.33rem !important;
+	line-height: 0.33rem !important;
+	font-weight: bold !important;
+	font-family: 'IBM Plex Mono',mono !important;
 }
 
 div.Smart-Captcha-Area div.Smart-Captcha-Container {
@@ -95,13 +102,11 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.
 }
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.Smart-Captcha-Check-Timer {
 	position: absolute;
-	top: 49px;
+	top: 50px;
 	left: 147px;
 	font-size:1.5rem !important;
-	width: 44px !important;
-	height: 38px !important;
-	border: 1px solid #FFFFFF;
-	background: #FFFFFF;
+	width: 34px !important;
+	height: 34px !important;
 	color: #778899;
 }
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin canvas.Smart-Captcha-Check-Canvas {
@@ -111,7 +116,7 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin canv
 }
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Plugin div.Smart-Captcha-Accessibility-Symbols {
 	position: absolute;
-	top: 64px;
+	top: 67px;
 	left: 12px;
 	cursor: help;
 }
@@ -158,8 +163,8 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.S
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Accessibility-Context {
 	color: #111111;
 	position: absolute;
-	bottom: 5px;
-	right: 5px;
+	bottom: 3px;
+	right: 2px;
 	cursor: pointer;
 }
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Accessibility-Context * {

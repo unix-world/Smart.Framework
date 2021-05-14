@@ -48,7 +48,7 @@ if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER')) {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartFrameworkRegistry
- * @version 	v.20210506
+ * @version 	v.20210513
  * @package 	@Core
  *
  */
@@ -67,7 +67,7 @@ final class SmartCache {
 	 *
 	 * @return BOOLEAN	TRUE if Key Exists or FALSE if not
 	 */
-	public static function keyExists($y_realm, $y_key) {
+	public static function keyExists(?string $y_realm, ?string $y_key) {
 		//--
 		if(is_array(self::$CachedData)) {
 			if(is_array(self::$CachedData[(string)$y_realm])) {
@@ -94,7 +94,7 @@ final class SmartCache {
 	 *
 	 * @return MIXED	The value of the stored key or NULL if key not found in cache
 	 */
-	public static function getKey($y_realm, $y_key) {
+	public static function getKey(?string $y_realm, ?string $y_key) {
 		//--
 		if(self::keyExists($y_realm, $y_key) === true) {
 			return self::$CachedData[(string)$y_realm][(string)$y_key];
@@ -114,7 +114,7 @@ final class SmartCache {
 	 *
 	 * @return BOOLEAN	Always returns true
 	 */
-	public static function setKey($y_realm, $y_key, $y_value) {
+	public static function setKey(?string $y_realm, ?string $y_key, $y_value) {
 		//--
 		if(!is_array(self::$CachedData)) {
 			self::$CachedData = [];
@@ -145,7 +145,7 @@ final class SmartCache {
 	 *
 	 * @return BOOLEAN	Always returns true
 	 */
-	public static function unsetKey($y_realm, $y_key) {
+	public static function unsetKey(?string $y_realm, ?string $y_key) {
 		//--
 		if(!is_array(self::$CachedData)) {
 			self::$CachedData = [];
@@ -230,7 +230,7 @@ final class SmartCache {
  * @internal
  *
  * @depends 	classes: Smart, SmartFrameworkRegistry
- * @version 	v.20210506
+ * @version 	v.20210513
  * @package 	development:Application
  *
  */
@@ -328,7 +328,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	TRUE if Key Exists or FALSE if not
 	 */
-	public static function keyExists($y_realm, $y_key) {
+	public static function keyExists(?string $y_realm, ?string $y_key) {
 		//--
 		return false;
 		//--
@@ -343,7 +343,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return INTEGER	number of seconds the key will expire ; -1 if the key does not expire (is persistent) ; -2 if the key does not exists ; -3 if N/A or ERR
 	 */
-	public static function getTtl($y_realm, $y_key) {
+	public static function getTtl(?string $y_realm, ?string $y_key) {
 		//--
 		return -3;
 		//--
@@ -358,7 +358,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return MIXED	The value of the stored key or NULL if key not found in cache
 	 */
-	public static function getKey($y_realm, $y_key) {
+	public static function getKey(?string $y_realm, ?string $y_key) {
 		//--
 		return null;
 		//--
@@ -375,7 +375,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	Returns True if the key was set or false if not
 	 */
-	public static function setKey($y_realm, $y_key, $y_value, $y_expiration=0) {
+	public static function setKey(?string $y_realm, ?string $y_key, $y_value, ?int $y_expiration=0) {
 		//--
 		return false;
 		//--
@@ -390,7 +390,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	Returns True if the key(s) was/were unset or false if not
 	 */
-	public static function unsetKey($y_realm, $y_key) {
+	public static function unsetKey(?string $y_realm, ?string $y_key) {
 		//--
 		return false;
 		//--
@@ -410,7 +410,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return STRING	The 2..4 letters cache path prefix (contains: 0..9 a..z) expanded to a path ; Ex: `x/y` or `x/y/9` or `x/y/9/z`
 	 */
-	final public static function cachePathPrefix($y_len, $y_realm, $y_key='') {
+	final public static function cachePathPrefix(?int $y_len, ?string $y_realm, ?string $y_key='') {
 		//--
 		$y_len = (int) $y_len;
 		if((int)$y_len < 2) {
@@ -463,13 +463,17 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	Returns TRUE if the realm is valid or FALSE if not
 	 */
-	final public static function validateRealm($y_realm) {
+	final public static function validateRealm(?string $y_realm) {
 		//--
-		if(strlen((string)$y_realm) > 255) {
+		if((string)$y_realm == '') {
+			return true;
+		} //end if
+		//--
+		if((int)strlen((string)$y_realm) > 255) {
 			return false;
 		} //end if
 		//--
-		if(!preg_match('/^[_a-zA-Z0-9\-\.@#\/]*$/', (string)$y_realm)) { // {{{SYNC-PCACHE-SAFE-KEY-OR-REALM}}} + allow empty * instead of +
+		if(!preg_match((string)Smart::REGEX_SAFE_PATH_NAME, (string)$y_realm)) { // {{{SYNC-PCACHE-SAFE-KEY-OR-REALM}}} + allow empty * instead of +
 			return false;
 		} //end if else
 		//--
@@ -486,7 +490,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	Returns TRUE if the key is valid or FALSE if not
 	 */
-	final public static function validateKey($y_key) {
+	final public static function validateKey(?string $y_key) {
 		//--
 		if((string)$y_key == '') {
 			return false;
@@ -496,7 +500,7 @@ abstract class SmartAbstractPersistentCache {
 			return false;
 		} //end if
 		//--
-		if(!preg_match('/^[_a-zA-Z0-9\-\.@#\/]+$/', (string)$y_key)) { // {{{SYNC-PCACHE-SAFE-KEY-OR-REALM}}}
+		if(!preg_match((string)Smart::REGEX_SAFE_PATH_NAME, (string)$y_key)) { // {{{SYNC-PCACHE-SAFE-KEY-OR-REALM}}}
 			return false;
 		} //end if
 		//--
@@ -515,7 +519,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	Returns TRUE if the value is valid or FALSE if not
 	 */
-	final public static function validateValue($y_value) {
+	final public static function validateValue(?string $y_value) {
 		//--
 		$len = (int) strlen((string)$y_value);
 		//--
@@ -537,7 +541,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return STRING	Returns the safe prepared Key or Realm
 	 */
-	final public static function safeKey($y_key_or_realm) {
+	final public static function safeKey(?string $y_key_or_realm) {
 		//--
 		$key_or_realm = (string) Smart::safe_pathname((string)$y_key_or_realm); // {{{SYNC-PCACHE-SAFE-KEY-OR-REALM}}}
 		if((string)$key_or_realm == '') {
@@ -579,7 +583,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return MIXED	Returns the original restored type and value of that variable
 	 */
-	final public static function varDecode($y_encoded_var) {
+	final public static function varDecode(?string $y_encoded_var) {
 		//--
 		return Smart::unseryalize((string)$y_encoded_var); // mixed
 		//--
@@ -643,7 +647,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return MIXED	Returns the original restored type and value of that variable
 	 */
-	final public static function varUncompress($y_cache_arch_var) {
+	final public static function varUncompress(?string $y_cache_arch_var) {
 		//--
 		$y_cache_arch_var = (string) trim((string)$y_cache_arch_var);
 		//--
@@ -680,6 +684,7 @@ abstract class SmartAbstractPersistentCache {
 //===================================================================================== CLASS START
 //=====================================================================================
 
+
 if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') OR ((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER == '')) {
 
 /**
@@ -706,7 +711,7 @@ if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') OR ((string)SMART_FRAMEW
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210506
+ * @version 	v.20210513
  * @package 	Application:Caching
  *
  */

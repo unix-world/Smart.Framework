@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart
- * @version 	v.20210512
+ * @version 	v.20210513
  * @package 	Plugins:Barcodes
  */
 final class SmartQR2DBarcode {

@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / INIT] v.20210511 s.20210511.1820
+// [AppCodeUnpack / INIT] v.20210513 s.20210513.2358
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -229,7 +229,7 @@ const SMART_FRAMEWORK_INITS = 'SET'; // avoid reload inits again (if accidentaly
 
 //======= [standalone app]
 
-//== v.20210511
+//== v.20210513
 //--
 ini_set('display_errors', '1'); 											// temporary enable this to display bootstrap errors if any ; will be managed later by Smart Error Handler
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 			// on bootstrap show real-time errors (sync with Smart Error Handler)

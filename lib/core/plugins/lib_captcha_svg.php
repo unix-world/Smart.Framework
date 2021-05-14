@@ -1,5 +1,5 @@
 <?php
-// [LIB - Smart.Framework / Plugins / Captcha Image]
+// [LIB - Smart.Framework / Plugins / Captcha SVG Image]
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
@@ -12,7 +12,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Captcha Image
+// Captcha SVG (Vector) Image
 // DEPENDS:
 //	* Smart::
 // REQUIRED TEMPLATES:
@@ -22,14 +22,18 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //==================================================================
 /*
- * SVG Captcha - https://github.com/NikolaiT/SVG-Captcha
+ * SVG Captcha Plugin
  * Generate SVG (vector graphics) captchas.
- * @author Nikolai Tschacher <admin@incolumitas.com>
- * @copyright (c) 2013, Nikolai Tschacher, incolumitas.com
- * @license https://github.com/NikolaiT/SVG-Captcha/blob/master/LICENSE # GNU Public License
- * @version head.20191215
+ * This version contains many changes and optimizations from the original work.
+ * @author unixman
+ * @copyright (c) 2019-2021 unix-world.org
+ * @license: BSD
  *
- * This implementation will draw the captcha text with help of svg shapes emulated font, that consits of Bezier curvatures and straight lines.
+ * Original work: SVG Captcha, https://github.com/NikolaiT/SVG-Captcha # head.20191215
+ * @copyright (c) 2013, Nikolai Tschacher
+ * @license https://github.com/NikolaiT/SVG-Captcha/blob/master/LICENSE # GNU Public License
+ *
+ * It will draw the captcha text with help of svg shapes emulated font, that consits of Bezier curvatures and straight lines.
  * Then it will apply some mathematical functions on the raw curvature data such that parsing the SVG files and cracking the unerlying pattern becomes difficult (even hard) enough
  * The points that constitute the curves (that constitute the Glyphs) should be sheared/rotated/translated with affine transformations and random parameters.
  * This captcha will use a single path element to draw all glyphs. Thus it becomes almost impossible to differentiate between single glyphs, because all glyphs are drawn with one 'stroke'.
@@ -68,7 +72,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version 	v.20210508
+ * @version 	v.20210513
  * @package 	development:Captcha
  */
 final class SmartSVGCaptcha {
@@ -122,121 +126,132 @@ final class SmartSVGCaptcha {
 	 * @param INT $numchars The number of glyphs (characters) the captcha will contain
 	 * @param INT $width The width of the captcha
 	 * @param INT $height The height of the captcha
-	 * @param MIXED $difficulty The difficulty of the captcha to generate ; Valid values are: 0 = default difficulty ; 1 = easy difficulty ; 2 = medium difficulty ; 3 = hard difficulty ; alternate can be an array of settings
+	 * @param MIXED $difficulty The difficulty of the captcha to generate ; Valid values are: -1 = very easy ; 0 = easy (default) ; 1 = moderate ; 2 = hard ; 3 = very hard ; alternate can be an array of settings
 	 */
-	public function __construct($numchars, $width, $height, $difficulty=0) {
+	public function __construct(?int $numchars, ?int $width, ?int $height, $difficulty=null) {
 		//--
 		$this->time = (float) microtime(true);
 		//--
 		$this->initAlphabetGlyphs();
 		//--
-		$this->numchars = ($numchars > count($this->alphabet) ? count($this->alphabet) : $numchars);
+		$this->numchars = (int) $numchars;
+		if((int)$this->numchars < 3) {
+			$this->numchars = 3;
+		} elseif((int)$this->numchars > 7) {
+			$this->numchars = 7;
+		} //end if
 		//--
-		$this->width = $width;
-		$this->height = $height;
+		if((int)$this->numchars > (int)Smart::array_size($this->alphabet)) { // safety check
+			$this->numchars = (int) Smart::array_size($this->alphabet);
+		} //end if
+		//--
+		$this->width  = (int) $width;
+		$this->height = (int) $height;
 		//--
 		// Set the parameters for the algorithms according to the user supplied difficulty.
 		//--
-		$this->dsettings['stroke_width'] = 2;
-		$this->dsettings['stroke_opacity'] = 0.55;
-		$this->dsettings['glyph_offsetting']['apply'] = true;
-		$this->dsettings['glyph_offsetting']['h'] = 1.5;
-		$this->dsettings['glyph_offsetting']['v'] = 0.5;
-		$this->dsettings['glyph_offsetting']['mh'] = 7;
-		$this->dsettings['transformations']['apply'] = true;
-		$this->dsettings['transformations']['rotate'] = true;
-		$this->dsettings['transformations']['skew'] = true;
-		$this->dsettings['transformations']['scale'] = true;
-		$this->dsettings['transformations']['translate'] = true;
-		$this->dsettings['shapeify']['apply'] = true;
-		$this->dsettings['shapeify']['r_num_shapes'] = [1,2];
-		$this->dsettings['shapeify']['r_num_gp'] = [0,1];
-		$this->dsettings['change_degree']['apply'] = true;
-		$this->dsettings['change_degree']['p'] = 2;
-		$this->dsettings['split_curve']['apply'] = true;
+		$this->dsettings['stroke_width'] 					= 2;
+		$this->dsettings['stroke_opacity'] 					= 0.55;
+		$this->dsettings['glyph_offsetting']['apply'] 		= true;
+		$this->dsettings['glyph_offsetting']['h'] 			= 1.5;
+		$this->dsettings['glyph_offsetting']['v'] 			= 0.5;
+		$this->dsettings['glyph_offsetting']['mh'] 			= 7;
+		$this->dsettings['transformations']['apply'] 		= true;
+		$this->dsettings['transformations']['rotate'] 		= true;
+		$this->dsettings['transformations']['skew'] 		= true;
+		$this->dsettings['transformations']['scale'] 		= true;
+		$this->dsettings['transformations']['translate'] 	= true;
+		$this->dsettings['shapeify']['apply'] 				= true;
+		$this->dsettings['shapeify']['r_num_shapes'] 		= [1,2];
+		$this->dsettings['shapeify']['r_num_gp'] 			= [0,1];
+		$this->dsettings['change_degree']['apply'] 			= true;
+		$this->dsettings['change_degree']['p'] 				= 2;
+		$this->dsettings['split_curve']['apply'] 			= true;
 		//--
-		if($difficulty < 0) { // extremely easy: -1
-			$this->dsettings['stroke_opacity'] = 0.57;
-			$this->dsettings['stroke_color'] = '#888888';
-			$this->dsettings['glyph_offsetting']['apply'] = true;
-			$this->dsettings['transformations']['apply'] = true;
-			$this->dsettings['transformations']['rotate'] = false;
-			$this->dsettings['transformations']['skew'] = false;
-			$this->dsettings['transformations']['scale'] = false;
-			$this->dsettings['transformations']['shear'] = true;
-			$this->dsettings['transformations']['shear_factor'] = 0.28;
-			$this->dsettings['transformations']['translate'] = true;
-			$this->dsettings['shapeify']['apply'] = false;
-			$this->dsettings['change_degree']['apply'] = false;
-			$this->dsettings['split_curve']['apply'] = false;
-		} elseif($difficulty == 0) { // easy
-			$this->dsettings['stroke_opacity'] = 0.55;
-			$this->dsettings['stroke_color'] = '#888888';
-			$this->dsettings['glyph_offsetting']['apply'] = true;
-			$this->dsettings['transformations']['apply'] = true;
-			$this->dsettings['transformations']['rotate'] = false;
-			$this->dsettings['transformations']['skew'] = false;
-			$this->dsettings['transformations']['scale'] = true;
-			$this->dsettings['transformations']['shear'] = true;
-			$this->dsettings['transformations']['shear_factor'] = 0.5;
-			$this->dsettings['transformations']['translate'] = true;
-			$this->dsettings['shapeify']['apply'] = false;
-			$this->dsettings['change_degree']['apply'] = false;
-			$this->dsettings['split_curve']['apply'] = false;
-		} elseif($difficulty == 1) { // moderate
-			$this->dsettings['stroke_opacity'] = 0.52;
-			$this->dsettings['stroke_color'] = '#888888';
-			$this->dsettings['glyph_offsetting']['apply'] = true;
-			$this->dsettings['transformations']['apply'] = true;
-			$this->dsettings['transformations']['rotate'] = false;
-			$this->dsettings['transformations']['skew'] = false;
-			$this->dsettings['transformations']['scale'] = false;
-			$this->dsettings['transformations']['shear'] = true;
-			$this->dsettings['transformations']['shear_factor'] = 0.5;
-			$this->dsettings['transformations']['translate'] = true;
-			$this->dsettings['shapeify']['apply'] = false;
-			$this->dsettings['change_degree']['apply'] = false;
-			$this->dsettings['split_curve']['apply'] = false;
-		} elseif($difficulty == 2) { // medium
-			$this->dsettings['stroke_width'] = 2;
-			$this->dsettings['stroke_opacity'] = 0.7;
-			$this->dsettings['glyph_fragments']['apply'] = true;
-			$this->dsettings['glyph_fragments']['r_num_frag'] = range(1, 2);
-			$this->dsettings['glyph_offsetting']['apply'] = true;
-			$this->dsettings['transformations']['apply'] = true;
-			$this->dsettings['transformations']['rotate'] = true;
-			$this->dsettings['transformations']['skew'] = true;
-			$this->dsettings['transformations']['scale'] = false;
-			$this->dsettings['shapeify']['apply'] = true;
-			$this->dsettings['shapeify']['r_num_shapes'] = range(0, 2);
-			$this->dsettings['shapeify']['r_num_gp'] = range(1, 2);
-			$this->dsettings['approx_shapes']['apply'] = true;
-			$this->dsettings['approx_shapes']['p'] = 5;
-			$this->dsettings['approx_shapes']['r_al_num_lines'] = range(2, 10);
-			$this->dsettings['change_degree']['apply'] = true;
-			$this->dsettings['change_degree']['p'] = 5;
-			$this->dsettings['split_curve']['apply'] = true;
-		} elseif($difficulty == 3) { // hard
-			$this->dsettings['stroke_width'] = 1;
-			$this->dsettings['stroke_opacity'] = 0.7;
-			$this->dsettings['glyph_fragments']['apply'] = true;
-			$this->dsettings['glyph_fragments']['r_num_frag'] = range(1, 2);
-			$this->dsettings['glyph_offsetting']['apply'] = true;
-		//	$this->dsettings['glyph_offsetting']['h'] = 0.5;
-			$this->dsettings['transformations']['apply'] = true;
-			$this->dsettings['transformations']['rotate'] = true;
-			$this->dsettings['transformations']['skew'] = true;
-			$this->dsettings['transformations']['scale'] = false;
-			$this->dsettings['shapeify']['apply'] = true;
-			$this->dsettings['shapeify']['r_num_shapes'] = range(0, 4);
-			$this->dsettings['shapeify']['r_num_gp'] = range(2, 4);
-			$this->dsettings['approx_shapes']['apply'] = true;
-			$this->dsettings['approx_shapes']['p'] = 5;
-			$this->dsettings['approx_shapes']['r_al_num_lines'] = range(1, 5);
-			$this->dsettings['change_degree']['apply'] = true;
-			$this->dsettings['change_degree']['p'] = 5;
-			$this->dsettings['split_curve']['apply'] = true;
-		} elseif(is_array($difficulty) && !empty($difficulty)) {
+		if(Smart::is_nscalar($difficulty)) {
+			if((int)$difficulty < 0) { // very easy: -1
+				$this->dsettings['stroke_opacity'] 						= 0.57;
+				$this->dsettings['stroke_color'] 						= '#888888';
+				$this->dsettings['glyph_offsetting']['apply'] 			= true;
+				$this->dsettings['transformations']['apply'] 			= true;
+				$this->dsettings['transformations']['rotate'] 			= false;
+				$this->dsettings['transformations']['skew'] 			= false;
+				$this->dsettings['transformations']['scale'] 			= false;
+				$this->dsettings['transformations']['shear'] 			= true;
+				$this->dsettings['transformations']['shear_factor'] 	= 0.28;
+				$this->dsettings['transformations']['translate'] 		= true;
+				$this->dsettings['shapeify']['apply'] 					= false;
+				$this->dsettings['change_degree']['apply'] 				= false;
+				$this->dsettings['split_curve']['apply'] 				= false;
+			} elseif((int)$difficulty == 0) { // easy (default)
+				$this->dsettings['stroke_opacity'] 						= 0.55;
+				$this->dsettings['stroke_color'] 						= '#888888';
+				$this->dsettings['glyph_offsetting']['apply'] 			= true;
+				$this->dsettings['transformations']['apply'] 			= true;
+				$this->dsettings['transformations']['rotate'] 			= true;
+				$this->dsettings['transformations']['skew'] 			= false;
+				$this->dsettings['transformations']['scale'] 			= false;
+				$this->dsettings['transformations']['shear'] 			= true;
+				$this->dsettings['transformations']['shear_factor'] 	= 0.42;
+				$this->dsettings['transformations']['translate'] 		= true;
+				$this->dsettings['shapeify']['apply'] 					= false;
+				$this->dsettings['change_degree']['apply'] 				= false;
+				$this->dsettings['split_curve']['apply'] 				= true;
+			} elseif((int)$difficulty == 1) { // moderate
+				$this->dsettings['stroke_opacity'] 						= 0.65;
+				$this->dsettings['transformations']['apply'] 			= true;
+				$this->dsettings['transformations']['rotate'] 			= true;
+				$this->dsettings['transformations']['skew'] 			= true;
+				$this->dsettings['transformations']['scale'] 			= false;
+				$this->dsettings['shapeify']['apply'] 					= true;
+				$this->dsettings['shapeify']['r_num_shapes'] 			= range(0, 2);
+				$this->dsettings['shapeify']['r_num_gp'] 				= range(1, 2);
+				$this->dsettings['approx_shapes']['apply'] 				= true;
+				$this->dsettings['approx_shapes']['p'] 					= 5;
+				$this->dsettings['approx_shapes']['r_al_num_lines'] 	= range(2, 10);
+				$this->dsettings['change_degree']['apply'] 				= true;
+				$this->dsettings['change_degree']['p'] 					= 5;
+				$this->dsettings['split_curve']['apply'] 				= true;
+			} elseif((int)$difficulty == 2) { // hard
+				$this->dsettings['stroke_opacity'] 						= 0.7;
+				$this->dsettings['glyph_fragments']['apply'] 			= true;
+				$this->dsettings['glyph_fragments']['r_num_frag'] 		= range(1, 2);
+				$this->dsettings['glyph_offsetting']['apply'] 			= true;
+				$this->dsettings['transformations']['apply'] 			= true;
+				$this->dsettings['transformations']['rotate'] 			= true;
+				$this->dsettings['transformations']['skew'] 			= true;
+				$this->dsettings['transformations']['scale'] 			= false;
+				$this->dsettings['shapeify']['apply'] 					= true;
+				$this->dsettings['shapeify']['r_num_shapes'] 			= range(0, 2);
+				$this->dsettings['shapeify']['r_num_gp'] 				= range(1, 2);
+				$this->dsettings['approx_shapes']['apply'] 				= true;
+				$this->dsettings['approx_shapes']['p'] 					= 5;
+				$this->dsettings['approx_shapes']['r_al_num_lines'] 	= range(2, 10);
+				$this->dsettings['change_degree']['apply'] 				= true;
+				$this->dsettings['change_degree']['p'] 					= 5;
+				$this->dsettings['split_curve']['apply'] 				= true;
+			} elseif((int)$difficulty == 3) { // very hard
+				$this->dsettings['stroke_width'] 						= 1;
+				$this->dsettings['stroke_opacity'] 						= 0.7;
+				$this->dsettings['glyph_fragments']['apply'] 			= true;
+				$this->dsettings['glyph_fragments']['r_num_frag'] 		= range(1, 2);
+				$this->dsettings['glyph_offsetting']['apply'] 			= true;
+			//	$this->dsettings['glyph_offsetting']['h'] 				= 0.5;
+				$this->dsettings['transformations']['apply'] 			= true;
+				$this->dsettings['transformations']['rotate'] 			= true;
+				$this->dsettings['transformations']['skew'] 			= true;
+				$this->dsettings['transformations']['scale'] 			= false;
+				$this->dsettings['shapeify']['apply'] 					= true;
+				$this->dsettings['shapeify']['r_num_shapes'] 			= range(0, 4);
+				$this->dsettings['shapeify']['r_num_gp'] 				= range(2, 4);
+				$this->dsettings['approx_shapes']['apply'] 				= true;
+				$this->dsettings['approx_shapes']['p'] 					= 5;
+				$this->dsettings['approx_shapes']['r_al_num_lines'] 	= range(1, 5);
+				$this->dsettings['change_degree']['apply'] 				= true;
+				$this->dsettings['change_degree']['p'] 					= 5;
+				$this->dsettings['split_curve']['apply'] 				= true;
+			} //end if else
+		} elseif(is_array($difficulty) AND (Smart::array_size($difficulty) > 0)) {
 			foreach((array)$difficulty as $key => $val) {
 				if(array_key_exists($key, $this->dsettings)) {
 					$this->dsettings[$key] = $val;
@@ -436,13 +451,13 @@ final class SmartSVGCaptcha {
 	 * @return array The modified glyph array.
 	 */
 	private function _glyph_fragments($glyphs) {
-		//-- How many glyph fragments? If it is bigger than $glyph, just use count($glyphs)-1
+		//-- How many glyph fragments? If it is bigger than $glyph, just use: Smart::array_size($glyphs) - 1
 		if(!empty($this->dsettings['glyph_fragments']['r_num_frag'])) {
-			$ngf = max($this->dsettings['glyph_fragments']['r_num_frag']);
-			$ngf = $ngf >= count($glyphs) ? count($glyphs) - 1 : $ngf;
+			$ngf = (int) max($this->dsettings['glyph_fragments']['r_num_frag']);
+			$ngf = (int) ($ngf >= Smart::array_size($glyphs) ? (Smart::array_size($glyphs) - 1) : $ngf);
 		} else {
 			// If no range is specified in $dsettings
-			$ngf = Smart::random_number(0, count($glyphs) - 1);
+			$ngf = (int) Smart::random_number(0, Smart::array_size($glyphs) - 1);
 		} //end if else
 		//-- Choose a random range of glyph fragments.
 		$chosen_keys = $this->arr_rand_safe($glyphs, $ngf, true);
@@ -450,13 +465,13 @@ final class SmartSVGCaptcha {
 		$glyph_fragments = [];
 		foreach($chosen_keys as $kk => $key) {
 			//-- Get a key for the fragments
-			$ukey = uniqid($prefix = 'gf__');
+			$ukey = (string) uniqid($prefix = 'gf__');
 			//-- Choose maximally half of all shapes that constitute the glyph
 			$shape_keys = $this->arr_rand_safe(
-				$glyphs[$key]['glyph_data'], Smart::random_number(0, count($glyphs[$key]['glyph_data']) / $this->dsettings['glyph_fragments']['frag_factor'])
+				$glyphs[$key]['glyph_data'], Smart::random_number(0, Smart::array_size($glyphs[$key]['glyph_data']) / $this->dsettings['glyph_fragments']['frag_factor'])
 			);
 			//-- Determine translation and rotation parameters. In which x direction should the fragment be moved (Based on the very first shape in the fragment)
-			if(count($shape_keys) > 0 && !empty($shape_keys)) {
+			if((!empty($shape_keys)) && (Smart::array_size($shape_keys) > 0)) {
 				$pos = (($rel = $glyphs[$key]['glyph_data'][$shape_keys[0]][0]->x) > $this->width / 2) ? false : true;
 				$x_translate = ($pos) ? Smart::random_number(abs($rel), $this->width) : - Smart::random_number(0, abs($rel));
 				$y_translate = (microtime() & 1) ? (-1 * Smart::random_number(0, $this->width / 5)) : Smart::random_number(0, $this->width / 5);
@@ -577,7 +592,7 @@ final class SmartSVGCaptcha {
 		foreach($shapearray as $kk => &$shape) {
 			$p = $this->dsettings['change_degree']['p'];
 			$do_change = (bool) (Smart::random_number(0, $p) == $p);
-			if($do_change && count($shape) == 3) {
+			if($do_change && (Smart::array_size($shape) == 3)) {
 				 // We only deal with quadratic splines.
 				 // Their degree is elevated to a cubic curvature.
 				 // We pick '1/3rd start + 2/3rd control' and '2/3rd control + 1/3rd end', and now we have exactly the same curve as before, except represented as a cubic curve, rather than a quadratic curve.
@@ -611,7 +626,7 @@ final class SmartSVGCaptcha {
 		foreach($shapearray as $key => $shape) {
 			$p = $this->dsettings['split_curve']['p'];
 			$do_change = (bool) (Smart::random_number(0, $p) == $p);
-			if($do_change && count($shape) >= 3) {
+			if($do_change && (Smart::array_size($shape) >= 3)) {
 				$left = [];
 				$right = [];
 				$this->_split_curve($shape, $this->_rt(), $left, $right);
@@ -648,11 +663,11 @@ final class SmartSVGCaptcha {
 			$p = $this->dsettings['approx_shapes']['p'];
 			$do_change = (bool) (Smart::random_number(0, $p) == $p);
 			if($do_change) {
-				if((count($shape) == 3 || count($shape) == 4)) {
+				if(((Smart::array_size($shape) == 3) || (Smart::array_size($shape) == 4))) {
 					$lines = $this->_approximate_bezier($shape);
 					$dk[] = $key;
 					$merge = array_merge($merge, $lines);
-				} elseif(count($shape) == 2) {
+				} elseif(Smart::array_size($shape) == 2) {
 					 // This is FUN: Approximate lines with curves! There are no limits for imagination
 					$shapearray[$key] = $this->_approximate_line($shape);
 				} //end if else
@@ -682,13 +697,13 @@ final class SmartSVGCaptcha {
 		} else {
 			$prefix = '';
 		} //end if
-		if(count($shape) == 2) { // Handle lines
+		if(Smart::array_size($shape) == 2) { // Handle lines
 			list($p1, $p2) = $shape;
 			$cmd = 'L '.$p2->x.' '.$p2->y.' ';
-		} elseif(count($shape) == 3) { // Handle quadratic bezier splines
+		} elseif(Smart::array_size($shape) == 3) { // Handle quadratic bezier splines
 			list($p1, $p2, $p3) = $shape;
 			$cmd = 'Q '.$p2->x.' '.$p2->y.' '.$p3->x.' '.$p3->y.' ';
-		} elseif(count($shape) == 4) { // Handle cubic bezier splines
+		} elseif(Smart::array_size($shape) == 4) { // Handle cubic bezier splines
 			list($p1, $p2, $p3, $p4) = $shape;
 			$cmd = 'C '.$p2->x.' '.$p2->y.' '.$p3->x.' '.$p3->y.' '.$p4->x.' '.$p4->y.' ';
 		} //end if else
@@ -820,7 +835,7 @@ final class SmartSVGCaptcha {
 			return []; // fix by unixman
 		} //end if
 		//-- How many random transformations to delete?
-		$n = Smart::random_number(0, count($transformations) - 1);
+		$n = Smart::random_number(0, Smart::array_size($transformations) - 1);
 		//--
 		$this->_shuffle_assoc($transformations);
 		//-- Delete the (random) transformations we don't want
@@ -1034,7 +1049,7 @@ final class SmartSVGCaptcha {
 	 */
 	private function _approximate_line($line) {
 		//--
-		if(count($line) != 2 || !($line[0] instanceof SmartSvgCaptchaPoint) || !($line[1] instanceof SmartSvgCaptchaPoint)) {
+		if((Smart::array_size($line) != 2) || (!isset($line[0])) || !($line[0] instanceof SmartSvgCaptchaPoint) || (!isset($line[1])) || !($line[1] instanceof SmartSvgCaptchaPoint)) {
 			return [];
 		} //end if else
 		//--
@@ -1122,7 +1137,7 @@ final class SmartSVGCaptcha {
 		//--
 		$approx_func = null; // because PHP sucks!
 		//--
-		if(count($curve) == 3) { // Handle quadratic curves.
+		if(Smart::array_size($curve) == 3) { // Handle quadratic curves.
 			$approx_func = function($curve, $nlines) {
 				list($p1, $p2, $p3) = $curve;
 				$last = $p1;
@@ -1139,7 +1154,7 @@ final class SmartSVGCaptcha {
 				} //end for
 				return (array) $lines;
 			}; //end anonymous function
-		} elseif(count($curve) == 4) { // Handle cubic curves.
+		} elseif(Smart::array_size($curve) == 4) { // Handle cubic curves.
 			$approx_func = function($curve, $nlines) {
 				list($p1, $p2, $p3, $p4) = $curve;
 				$last = $p1;
@@ -1186,16 +1201,16 @@ final class SmartSVGCaptcha {
 			} //end if
 		} //end foreach
 		//--
-		if(count($curve) == 1) {
+		if(Smart::array_size($curve) == 1) {
 			$left[] = $curve[0];
 			$right[] = $curve[0];
 		} else {
 			$newpoints = [];
-			for($i = 0; $i < count($curve) - 1; $i++) {
+			for($i = 0; $i < (int)(Smart::array_size($curve) - 1); $i++) {
 				if($i == 0) {
 					$left[] = $curve[$i];
 				} //end if
-				if($i == count($curve) - 2) {
+				if($i == (int)(Smart::array_size($curve) - 2)) {
 					$right[] = $curve[$i + 1];
 				} //end if
 				$x = (1 - $t) * $curve[$i]->x + $t * $curve[$i + 1]->x;
@@ -1212,7 +1227,7 @@ final class SmartSVGCaptcha {
 	//================================================================
 	private function initAlphabetGlyphs() { // abefikny EGHQSWX
 		//--
-		if(is_array($this->alphabet) && (count($this->alphabet) > 0)) {
+		if(is_array($this->alphabet) && (Smart::array_size($this->alphabet) > 0)) {
 			return (array) $this->alphabet;
 		} //end if
 		//--
@@ -1774,14 +1789,14 @@ final class SmartSVGCaptcha {
 	 */
 	private function arr_rand_safe($input, $num_el=1, $allow_duplicates=false) {
 		//--
-		if($num_el > count($input)) {
-			$num_el = count($input);
+		if($num_el > Smart::array_size($input)) {
+			$num_el = Smart::array_size($input);
 		} //end if
 		$keys = (array) array_keys($input);
 		$chosen_keys = [];
 		if($allow_duplicates) {
 			for($i=0; $i<$num_el; $i++) {
-				$chosen_keys[] = $keys[Smart::random_number(0, count($input) - 1)];
+				$chosen_keys[] = $keys[Smart::random_number(0, Smart::array_size($input) - 1)];
 			} //end for
 		} else {
 			$already_used = [];
@@ -1808,7 +1823,7 @@ final class SmartSVGCaptcha {
 		//--
 		$remaining = array_values(array_diff($key_pool, $already_picked));
 		//--
-		return $remaining[Smart::random_number(0, count($remaining) - 1)]; // mixed
+		return $remaining[Smart::random_number(0, Smart::array_size($remaining) - 1)]; // mixed
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1833,7 +1848,7 @@ final class SmartSVGCaptcha {
  * @access 		private
  * @internal
  *
- * @version 	v.20210507
+ * @version 	v.20210513
  *
  */
 final class SmartSvgCaptchaPoint {

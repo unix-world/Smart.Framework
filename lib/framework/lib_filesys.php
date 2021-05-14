@@ -85,7 +85,7 @@ if(
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210506
+ * @version 	v.20210513
  * @package 	@Core:FileSystem
  *
  */
@@ -151,7 +151,7 @@ final class SmartFileSysUtils {
 			return 0;
 		} //end if else
 		//-- test valid characters in filename or dirname (must not contain / (slash), it is not a path)
-		if(!preg_match('/^[_a-zA-Z0-9\-\.@#]+$/', (string)$y_fname)) { // {{{SYNC-CHK-SAFE-FILENAME}}}
+		if(!preg_match((string)Smart::REGEX_SAFE_FILE_NAME, (string)$y_fname)) { // {{{SYNC-CHK-SAFE-FILENAME}}}
 			return 0;
 		} //end if
 		//-- test valid path (should pass all tests from valid, especially: must not be equal with: / or . or .. (and they are includded in valid path)
@@ -342,7 +342,7 @@ final class SmartFileSysUtils {
 		//--
 		$y_path = (string) $y_path;
 		//--
-		if(!preg_match('/^[_a-zA-Z0-9\-\.@#\/]+$/', (string)$y_path)) { // {{{SYNC-SAFE-PATH-CHARS}}} {{{SYNC-CHK-SAFE-PATH}}} only ISO-8859-1 characters are allowed in paths (unicode paths are unsafe for the network environments !!!)
+		if(!preg_match((string)Smart::REGEX_SAFE_PATH_NAME, (string)$y_path)) { // {{{SYNC-SAFE-PATH-CHARS}}} {{{SYNC-CHK-SAFE-PATH}}} only ISO-8859-1 characters are allowed in paths (unicode paths are unsafe for the network environments !!!)
 			return 0;
 		} //end if
 		//--
@@ -1464,7 +1464,7 @@ final class SmartFileSysUtils {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
  * @depends 	classes: Smart ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES
- * @version 	v.20210506
+ * @version 	v.20210513
  * @package 	@Core:FileSystem
  *
  */
@@ -3356,7 +3356,7 @@ final class SmartFileSystem {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be safe
  *
  * @depends 	classes: Smart
- * @version 	v.20210506
+ * @version 	v.20210513
  * @package 	@Core:FileSystem
  *
  */

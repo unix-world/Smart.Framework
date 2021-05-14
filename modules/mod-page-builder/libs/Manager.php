@@ -50,7 +50,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210512
+ * @version 	v.20210513
  * @package 	PageBuilder
  *
  */
@@ -92,6 +92,8 @@ final class Manager {
 		$text['ttl_clone'] 			= 'Clone this Object';
 		$text['ttl_ch_list'] 		= 'PageBuilder Objects - Change List Mode';
 		$text['ttl_webdav'] 		= 'PageBuilder Files - WebDAV';
+		$text['ttl_transl_export'] 	= 'PageBuilder Translations Export';
+		$text['ttl_transl_import'] 	= 'PageBuilder Translations Import';
 		$text['ttl_reset_hits'] 	= 'Reset Hit Counter on All PageBuilder Objects';
 		//-- buttons
 		$text['search']				= 'Filter';
@@ -2313,6 +2315,10 @@ final class Manager {
 				'LIST-CRR-LINK' 	=> (string) $the_link_list,
 				'LIST-ALT-LINK' 	=> (string) $the_alt_link_list,
 				'TXT-ALT-LINK' 		=> (string) self::text('ttl_ch_list', false),
+				'TXT-EXPT-LINK' 	=> (string) self::text('ttl_transl_export', false),
+				'LIST-EXPT-LINK' 	=> (string) self::composeUrl('op=export-translations'),
+				'TXT-IMPT-LINK' 	=> (string) self::text('ttl_transl_import', false),
+				'LIST-IMPT-LINK' 	=> (string) self::composeUrl('op=import-translations'),
 				'TXT-WEBDAV-LINK' 	=> (string) self::text('ttl_webdav', false),
 				'LIST-WEBDAV-LINK' 	=> (string) self::composeWebdavUrl(),
 				'TXT-RESET-COUNTER' => (string) self::text('ttl_reset_hits', false),
@@ -2406,6 +2412,10 @@ final class Manager {
 				'LIST-CRR-LINK' 	=> (string) $the_back_link_list,
 				'LIST-ALT-LINK' 	=> (string) $the_alt_link_list,
 				'TXT-ALT-LINK' 		=> (string) self::text('ttl_ch_list', false),
+				'TXT-EXPT-LINK' 	=> (string) self::text('ttl_transl_export', false),
+				'LIST-EXPT-LINK' 	=> (string) self::composeUrl('op=export-translations'),
+				'TXT-IMPT-LINK' 	=> (string) self::text('ttl_transl_import', false),
+				'LIST-IMPT-LINK' 	=> (string) self::composeUrl('op=import-translations'),
 				'TXT-WEBDAV-LINK' 	=> (string) self::text('ttl_webdav', false),
 				'LIST-WEBDAV-LINK' 	=> (string) self::composeWebdavUrl(),
 				'TXT-RESET-COUNTER' => (string) self::text('ttl_reset_hits', false),

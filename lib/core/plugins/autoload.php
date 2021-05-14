@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-//--
+//-- r.20210513
 // #PLUGINS# :: they are loaded via Dependency Injection
 //--
 /**
@@ -131,11 +131,14 @@ function autoload__SmartFrameworkPlugins($classname) {
 		case 'SmartQR2DBarcode':
 			require_once('lib/core/plugins/lib_qrcode.php'); 			// qrcode integration for captcha
 			break;
+		case 'SmartSVGCaptcha':
+			require_once('lib/core/plugins/lib_captcha_svg.php'); 		// captcha svg plugin
+			break;
+		case 'SmartAsciiCaptcha':
+			require_once('lib/core/plugins/lib_captcha_ascii.php'); 	// captcha ascii plugin
+			break;
 		case 'SmartCaptcha':
 			require_once('lib/core/plugins/lib_captcha_form.php'); 		// captcha form manager
-			break;
-		case 'SmartSVGCaptcha':
-			require_once('lib/core/plugins/lib_captcha_image.php'); 	// captcha image
 			break;
 		//-- viewhelpers
 		case 'SmartViewHtmlHelpers':

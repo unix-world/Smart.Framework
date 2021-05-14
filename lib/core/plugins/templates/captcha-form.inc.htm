@@ -1,4 +1,4 @@
-<!-- Partial Template: Plugins.CaptchaForm r.20210507 -->
+<!-- Partial Template: Plugins.CaptchaForm r.20210513 -->
 <link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.css?[###RELEASE-HASH|html###]">
 <script src="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.js?[###RELEASE-HASH|html###]"></script>
 <script>
@@ -13,6 +13,12 @@ jQuery(() => {
 		jQuery('#Smart-Captcha-Area-[###RELEASE-UUID|htmid|js###]').empty().text('ERR: jQuery.motionCaptcha is N/A ...');
 		return;
 	}
+
+	let currentMousePos = { x: -1, y: -1 };
+	jQuery(document).mousemove((evt) => {
+		currentMousePos.x = evt.pageX;
+		currentMousePos.y = evt.pageY;
+	});
 
 	[###CAPTCHA-JS-EXPORTS###]
 
@@ -36,16 +42,15 @@ jQuery(() => {
 
 	$('.Smart-Captcha-Logo').attr('title', 'Secure Captcha by Smart.Framework # E:' + $entropy).css({'cursor':'context-menu'});
 
-	b$.CountDown(u$.format_number_int($delay, false), 'Smart-Captcha-Check-Timer-[###RELEASE-UUID|htmid|js###]', (counter, elID) => {
-		jQuery('#' + elID).hide();
-		jQuery('#Smart-Captcha-Check-Info-[###RELEASE-UUID|htmid|js###] i#Smart-Captcha-Check-Helper').removeClass('sfi-clock2').addClass('sfi-arrow-right');
-	});
-
 	const $bclass = '[###CAPTCHA-UA-BC|js###]';
 	const $bsign = '[###CAPTCHA-UA-BW|js###]';
 	const $bmobile = '[###CAPTCHA-UA-MOBILE|js###]';
 
 	const $mc = jQuery('#Smart-Captcha-Motion-[###RELEASE-UUID|htmid|js###]');
+
+	const tHelper = '[###CAPTCHA-TXT-ENTER|js###]';
+	const tQHelper = '[###CAPTCHA-QR-HELPER|js###]';
+	const tImg = '[###CAPTCHA-TXT-IMG|js###]';
 
 	let e1_[###RELEASE-UUID|jsvar###] = Mutation$Observer(
 		'[###CAPTCHA-IMG-SRC|js###]',
@@ -56,30 +61,42 @@ jQuery(() => {
 		'setInterval(() => { [###CAPTCHA-JS-EXPORTS|js###] $entropy = h$.crc32b(subtle$CryptoDigest(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); }, 800);'
 	);
 
+	const negateValue = (v) => {
+		return !! Math.floor(v / 10);
+	};
+
 	const contextSupport_[###RELEASE-UUID|jsvar###] = () => {
 		if(($bclass === 'rb') || ($bclass === 'tx') || ($bclass === 'xy') || (($bmobile === 'no') && ($bsign === 'wkt')) || (($bmobile === 'yes') && ($bsign === 'iex'))) {
-			return ! 100;
+			return 100;
 		}
 		let cookies = null;
 		try {
 			cookies = document.cookie.split(';');
 		} catch(err){}
 		if((!cookies) || (!Array.isArray(cookies)) || (cookies.length < 3)) {
-			return ! -100;
+			return -100;
 		}
-		return !! 10;
+		if((currentMousePos.x <= 0) || (currentMousePos.y <= 0)) {
+			return -10;
+		}
+		return 10;
 	};
 
-	const accessibilityContext = (timeOut, sim=0, $canvas=null, ctx=null) => {
+	const shiftContext_[###RELEASE-UUID|jsvar###] = (timeOut, sq=null, $canvas=null, ctx=null) => {
 		jQuery('#Smart-Captcha-Accessibility-Context-[###RELEASE-UUID|htmid|js###]').hide();
 		timeOut = u$.format_number_int(timeOut, false);
 		if((timeOut <= 100) || (timeOut > 1000)) {
 			timeOut = 1000;
 		}
-		sim = u$.format_number_float(sim);
-		if(!!!contextSupport_[###RELEASE-UUID|jsvar###]()) {
-			sim += 100;
+		sq = u$.format_number_float(sq);
+		if(!negateValue(contextSupport_[###RELEASE-UUID|jsvar###]())) {
+			sq += timeOut;
 		}
+		let mFx = null;
+		let mFy = null;
+		let mTan = 0;
+		let zSVG = null;
+		let qSVG = null;
 		setTimeout(() => {
 			const _$out = console;
 			let $box;
@@ -92,89 +109,139 @@ jQuery(() => {
 			const $inf = $fld.find('div#Smart-Captcha-Info-[###RELEASE-UUID|htmid|js###]');
 			$box.width($box.width()).height($box.height());
 			$fld.width($fld.width()).height($fld.height());
-			let mFx = null;
-			let aTan = 0;
-			let zSVG = null;
-			let qSVG = null;
-			try {
-				if((typeof(mFx) !== 'function') && e1_[###RELEASE-UUID|jsvar###]) {
-					eval('(() => { ' + String(e1_[###RELEASE-UUID|jsvar###]) + ' })();');
-					e1_[###RELEASE-UUID|jsvar###] = null;
-					if(typeof(mFx) === 'function') {
-						Object.freeze(mFx);
-					}
+			const ajax = b$.AjaxRequestFromURL('lib/js/jscaptcha/jquery.motionCaptcha.svg' + '?c=' + u$.escape_url($box.attr('id')) + '&e=' + u$.escape_url($entropy) + '&m=' + u$.escape_url(Math.abs(mFy) + Math.random()) + '&s=' + u$.escape_url(Math.asin(Math.abs(sq)) + Math.random()) + '&t=' + u$.escape_url(d$.getIsoDate($time, true)), 'POST', 'xml', { mouseX: currentMousePos.x, mouseY: currentMousePos.y });
+			ajax.done((mSVG) => {
+				let isSvgErr = false;
+				let $id, $unistrokes;
+				if(!mSVG) {
+					isSvgErr = true;
 				}
-				if(typeof(mFx) === 'function') {
-					mFx();
-				} else {
-					_$out.error('Captcha is not a function');
-					return;
-				}
-			} catch(err){
-				_$out.error('ERR: Captcha not found');
-				return;
-			}
-			if((typeof(zSVG) === 'string') && zSVG) {
-				$fld.find('input').show();
-				$fld.find('div#Smart-Captcha-Info-[###RELEASE-UUID|htmid|js###]').empty().css({'height':'auto'}).html('[###CAPTCHA-TXT-ENTER|html|js###] [###CAPTCHA-QR-HELPER|html|js###]');
-				$box.empty().css({'height':'auto'}).addClass('strip-back').html('<div style="cursor:default;" title="[###CAPTCHA-TXT-IMG|html|js###]">' + $('<div></div>').html(e$.decode(zSVG)).html() + '</div>');
-				if((typeof(qSVG) !== 'string') && e2_[###RELEASE-UUID|jsvar###]) {
+				let $svg = null;
+				if(!isSvgErr) {
 					try {
-						eval('(() => { ' + String(e2_[###RELEASE-UUID|jsvar###]) + ' })();');
-						e2_[###RELEASE-UUID|jsvar###] = null;
-					} catch(err){
-						_$out.error('ERR: Captcha Helper not found');
+						$svg = $(mSVG);
+					} catch(xmlErr){
+						_$out.warn('Captcha XML SVG ERR:', xmlErr);
+						return;
+					}
+					$id = u$.stringPureVal($svg.find('svg').attr('id'), true);
+					if($id !== 'motionCaptcha-shapes') {
+						_$out.warn('Invalid Captcha SVG ID:', $id);
+						return;
+					}
+					$unistrokes = u$.stringPureVal($svg.find('svg>g>path').attr('d'), true);
+					if((!u$.stringIStartsWith($unistrokes, 'm ')) || (!u$.stringIContains($unistrokes, ' c '))) {
+						_$out.warn('Invalid Captcha SVG D Path:', $unistrokes.substr(0, 255), '...');
 						return;
 					}
 				}
-				if((typeof(qSVG) === 'string') && qSVG) {
-					$box.append('<br><div style="cursor:help; margin-top:7px;" title="[###CAPTCHA-QR-HELPER|html|js###]">' + $('<div></div>').html(e$.decode(qSVG)).html() + '</div><div class="Smart-Captcha-Accessibility-Symbols" title="Accessibility Context for Captcha"><i class="sfi sfi-headphones"></i>&nbsp;<i class="sfi sfi-accessibility"></i></div>');
+				try {
+					mFy = Math.trunc(Math.pow(10,3) * Math.log(sq));
+					if(!u$.isFiniteNumber(mFy)) {
+						mFy = -1;
+					}
+					if((typeof(mFy) != 'number') || (mFy >= 0)) {
+						return;
+					}
+					if((typeof(mFx) !== 'function') && e1_[###RELEASE-UUID|jsvar###]) {
+						eval('((id, Unistrokes) => { ' + String(e1_[###RELEASE-UUID|jsvar###]) + ' })($id, $unistrokes, isSvgErr);');
+						e1_[###RELEASE-UUID|jsvar###] = null;
+						if(typeof(mFx) === 'function') {
+							Object.freeze(mFx);
+						}
+					}
+					if(typeof(mFx) === 'function') {
+						mFx();
+					} else {
+						_$out.error('Captcha is not a function');
+						return;
+					}
+				} catch(err){
+					_$out.error('ERR: Captcha not found');
+					return;
 				}
-			} else if((typeof(aTan) == 'number') && u$.isFiniteNumber(aTan) && (aTan > 1)) {
-				$inf.empty().html('<div class="Smart-Captcha-Success"><br><img width="48" height="48" src="[###BASE-URL|html|js###]lib/framework/img/loading-spin.svg">');
-				setTimeout(() => {
-					$inf.empty().html('<div class="Smart-Captcha-Success"><br><img width="24" height="24" src="[###BASE-URL|html|js###]lib/framework/img/sign-ok.svg"><br><span><b>[###CAPTCHA-PASSED|html|js###]</b></span></div>');
-				}, 1500);
-			} else {
-				$box.empty().text('Captcha Error ...');
-			}
+				if((typeof(zSVG) === 'string') && zSVG) {
+					$fld.find('input').show();
+					$fld.find('div#Smart-Captcha-Info-[###RELEASE-UUID|htmid|js###]').empty().css({'height':'auto'}).html(u$.escape_html(tHelper + ' ' + tQHelper));
+					$box.empty().css({'height':'auto'}).addClass('strip-back').html('<div style="cursor:default;">' + $('<div></div>').html(e$.decode(zSVG)).html() + '</div>').attr('title', tImg);
+					if((typeof(qSVG) !== 'string') && e2_[###RELEASE-UUID|jsvar###]) {
+						try {
+							eval('(() => { ' + String(e2_[###RELEASE-UUID|jsvar###]) + ' })();');
+							e2_[###RELEASE-UUID|jsvar###] = null;
+						} catch(err){
+							_$out.error('ERR: Captcha Helper not found');
+							return;
+						}
+					}
+					if((typeof(qSVG) === 'string') && qSVG) {
+						$box.append('<br><div style="cursor:help; margin-top:7px;" title="' + u$.escape_html(tQHelper) + '">' + $('<div></div>').html(e$.decode(qSVG)).html() + '</div><div class="Smart-Captcha-Accessibility-Symbols" title="Accessibility Context for Captcha"><i class="sfi sfi-headphones"></i>&nbsp;<i class="sfi sfi-accessibility"></i></div>');
+					}
+				} else if((typeof(mTan) == 'number') && u$.isFiniteNumber(mTan) && (mTan > 1)) {
+					$inf.empty().html('<div class="Smart-Captcha-Success"><br><img width="48" height="48" src="[###BASE-URL|html|js###]lib/framework/img/loading-spin.svg">');
+					setTimeout(() => {
+						$inf.empty().html('<div class="Smart-Captcha-Success"><br><img width="24" height="24" src="[###BASE-URL|html|js###]lib/framework/img/sign-ok.svg"><br><span><b>[###CAPTCHA-PASSED|html|js###]</b></span></div>');
+					}, 1500);
+				} else {
+					$box.empty().text('Captcha Error ...');
+				}
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				_$out.warn('Captha ajax failed !');
+			});
 		}, timeOut);
 	};
 
 	$mc.motionCaptcha({
 		canvasId: '#Smart-Captcha-Motion-Canvas-[###RELEASE-UUID|htmid|js###]',
-		onSuccess: ($canvas, ctx, sim) => {
-			accessibilityContext(1000, sim, $canvas, ctx);
+		onCompletion: ($canvas, ctx, attainment) => {
+			shiftContext_[###RELEASE-UUID|jsvar###](1000, Math.atan(Math.tan(Math.abs(attainment))), $canvas, ctx);
 		}
 	}).hide();
 
 	jQuery('#Smart-Captcha-Accessibility-Context-[###RELEASE-UUID|htmid|js###]').on('click', () => {
-		accessibilityContext(250);
+		shiftContext_[###RELEASE-UUID|jsvar###](250);
 	});
 
+	const eShift = 5;
+	const sDefStroke = '#555555';
+	const sDefShadow = '#888888';
+	const sHiStroke = '#EF4755';
+	const sHiShadow = '#C2203F';
 	ectx.canvasWidth = u$.format_number_int(Number.parseInt($ecanvas.width()), false);
 	ectx.canvasHeight = u$.format_number_int(Number.parseInt($ecanvas.height()), false);
-	ectx.strokeStyle = '#888888';
-	ectx.shadowColor = '#AAAAAA';
-	ectx.shadowBlur = 2;
-	ectx.lineJoin = 'bevel';
-	ectx.lineWidth = 4;
-	ectx.beginPath();
-	ectx.rect(120, 8, 24, 24);
-	ectx.stroke();
-	$ecanvas.hover(() => {
-			ectx.strokeStyle = '#555555';
-			ectx.shadowColor = '#777777';
-			ectx.shadowBlur = 0;
-			ectx.stroke();
-		},
-		() => {
-			ectx.strokeStyle = '#888888';
-			ectx.shadowColor = '#AAAAAA';
-			ectx.shadowBlur = 0;
-			ectx.stroke();
+
+	let vTick = false;
+	const dTick = () => {
+		if(!!vTick) {
+			return;
 		}
-	);
+		vTick = true;
+		ectx.strokeStyle = sDefStroke;
+		ectx.shadowColor = sDefShadow;
+		ectx.shadowBlur = 2;
+		ectx.lineJoin = 'bevel';
+		ectx.lineWidth = 4;
+		$ecanvas.hover(() => {
+				ectx.clearRect(120-eShift, 8-eShift, 24+(2*eShift), 24+(2*eShift));
+				ectx.strokeStyle = sHiStroke;
+				ectx.shadowColor = sHiShadow;
+				ectx.shadowBlur = 0;
+				ectx.stroke();
+				ectx.fillStyle = sDefStroke;
+				ectx.fillRect(120+eShift, 8+eShift, 24-(2*eShift), 24-(2*eShift));
+			},
+			() => {
+				ectx.clearRect(120-eShift, 8-eShift, 24+(2*eShift), 24+(2*eShift));
+				ectx.strokeStyle = sDefStroke;
+				ectx.shadowColor = sDefShadow;
+				ectx.shadowBlur = 0;
+				ectx.stroke();
+				ectx.clearRect(120+eShift, 8+eShift, 24-(2*eShift), 24-(2*eShift));
+			}
+		);
+		ectx.beginPath();
+		ectx.rect(120, 8, 24, 24);
+		ectx.stroke();
+	};
 
 	const eTick = () => {
 		const $earea = $ecanvas.parent();
@@ -190,7 +257,7 @@ jQuery(() => {
 			isTick = ! -1000;
 		}
 		if(isTick) {
-			accessibilityContext(100, 87/Math.abs(-100) + (Math.floor(Math.random() * 10) / 100));
+			shiftContext_[###RELEASE-UUID|jsvar###](100, (Math.atan(1.185) + (Math.random() / 10)));
 		} else {
 			$ecanvas.hide();
 			jQuery('#Smart-Captcha-Check-Info-[###RELEASE-UUID|htmid|js###]').empty().html('<center><img width="48" height="48" src="[###BASE-URL|html###]lib/framework/img/loading-spin.svg"></center>');
@@ -202,24 +269,37 @@ jQuery(() => {
 		}
 	};
 
+	let cTick = false;
 	jQuery('#Smart-Captcha-Check-Canvas-[###RELEASE-UUID|htmid|js###]').on('click', (evt) => {
+		if(!!cTick) {
+			return;
+		}
+		dTick();
 		jQuery('#Smart-Captcha-Check-Timer-[###RELEASE-UUID|htmid|js###]').hide();
-		let ofs = jQuery(evt.currentTarget).offset();
+		const $obj = jQuery(evt.currentTarget);
+		$obj.trigger('mouseenter');
+		let ofs = $obj.offset();
 		let mouseX = evt.pageX - ofs.left;
 		let mouseY = evt.pageY - ofs.top;
 		if((mouseX < 120) || (mouseX > 144) || (mouseY < 8) || (mouseY > 32)) {
 			return;
 		}
+		cTick = true;
 		$ecanvas.hover().off();
-		ectx.strokeStyle = '#555555';
-		ectx.shadowColor = '#777777';
+		ectx.strokeStyle = '#778899';
+		ectx.shadowColor = '#AABBCC';
 		ectx.shadowBlur = 0;
 		ectx.stroke();
-		ectx.font = 'bold 24px mono';
-		ectx.fillStyle = '#333333';
-		ectx.fillText('\u2705', 118, 29);
+		ectx.fillStyle = sDefShadow;
+		ectx.fillRect(120+eShift, 8+eShift, 24-(2*eShift), 24-(2*eShift));
 		jQuery('#Smart-Captcha-Check-Info-[###RELEASE-UUID|htmid|js###] i#Smart-Captcha-Check-Helper').removeClass('sfi-clock2 sfi-arrow-right').addClass('sfi-radio-checked');
-		setTimeout(() => { eTick(); }, 750);
+		setTimeout(() => { eTick(); }, 1000);
+	});
+
+	b$.CountDown(u$.format_number_int($delay, false), 'Smart-Captcha-Check-Timer-[###RELEASE-UUID|htmid|js###]', (counter, elID) => {
+		dTick();
+		jQuery('#' + elID).hide();
+		jQuery('#Smart-Captcha-Check-Info-[###RELEASE-UUID|htmid|js###] i#Smart-Captcha-Check-Helper').removeClass('sfi-clock2').addClass('sfi-arrow-right');
 	});
 
 })();
