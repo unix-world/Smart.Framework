@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20210513
+// [Smart.Framework / INIT] v.20210514
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -22,7 +22,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //define('SMART_FRAMEWORK_PROFILING_HTML_PERF', 		true); 										// Uncomment this to enable the HTML Performance Profiler (it can be used also in production environments for HTML Metrics and Profiling purposes)
 //define('SMART_FRAMEWORK_DEBUG_MODE', 					true);										// Uncomment this to enable Debugging and the Web Profiler Toolbar (do not use in production environments but only for internal Debugging / Profiling purposes)
 //--------------------------------------- TASK RUNTIME ALLOWED IP LIST
-const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		'<127.0.0.1>,<::1>'; 						// APP Task service area allowed IPs ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
+const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		''; 										// APP Task service area allowed IPs ; ex: '<127.0.0.1>,<::1>' ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
 //--------------------------------------- APP NAMESPACE :: CHANGE IT !!
 const SMART_SOFTWARE_NAMESPACE =  						'smartframework.default';					// APP Namespace ID :: [a-z.], length 10..25 :: This should be used as a unique ID identifier for the application (aka application unique ID)
 //--------------------------------------- RUNTIME ENVIRONMENT :: CHANGE IT with 'prod' for a production environment !

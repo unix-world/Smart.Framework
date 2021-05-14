@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20210511
+ * @version 	v.20210514
  * @package 	Application:ViewComponents
  *
  */
@@ -832,7 +832,8 @@ final class SmartComponents {
 			(string) $tpl,				// tpl string
 			(array)  $arr_data, 		// tpl vars
 			(string) $template_path, 	// tpl base path (for sub-templates, if any)
-			'no'						// ignore if empty
+			'no',						// ignore if empty
+			'no'						// don't use caching
 		);
 		//--
 
