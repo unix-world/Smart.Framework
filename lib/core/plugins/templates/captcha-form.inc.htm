@@ -6,7 +6,26 @@
 <script src="[###BASE-URL|html###]lib/core/plugins/templates/captcha-form-input.js?[###RELEASE-HASH|html###]"></script>
 <script src="[###BASE-URL|html###]lib/core/plugins/templates/captcha-form.js?[###RELEASE-HASH|html###]"></script>
 <script>
-if(typeof(Smart$Captcha$Options) == 'undefined') {
+jQuery(() => {
+
+	if(!window) {
+		return;
+	}
+
+	if(typeof(window.smartCaptchaInputHandler) != 'object') {
+		console.error('Window Captha Input Handler is Undefined !');
+		return;
+	}
+	if(typeof(window.smartCaptchaFormHandler) != 'object') {
+		console.error('Window Captha Form Handler is Undefined !');
+		return;
+	}
+
+	[###CAPTCHA-JS-EXPORTS###]
+	const Mutation$Observer = (t, k) => c$d(e$.decode(t), k);
+	const Pointer$Observer = window.smartCaptchaInputHandler.pointerObserver;
+	const Covariance$Observer = window.smartCaptchaInputHandler.covarianceObserver;
+
 	const Smart$Captcha$Options = {
 		uuid: '[###RELEASE-UUID|htmid|js###]',
 		baseURL: '[###BASE-URL|js###]',
@@ -28,34 +47,20 @@ if(typeof(Smart$Captcha$Options) == 'undefined') {
 		qrCode: '[###CAPTCHA-QR-CODE|js###]',
 	};
 	Object.freeze(Smart$Captcha$Options);
-	window.Smart$Captcha$Options = Smart$Captcha$Options;
-}
-</script>
-<script>
-jQuery(() => {
-
-	if(!window) {
-		return;
-	}
-
-	if(typeof(window.Smart$Captcha$Options) != 'object') {
-		console.error('Window Captha Options are Undefined !');
-		return;
-	}
-	if(typeof(window.smartCaptchaInputHandler) != 'object') {
-		console.error('Window Captha Input Handler is Undefined !');
-		return;
-	}
-	if(typeof(window.smartCaptchaFormHandler) != 'object') {
-		console.error('Window Captha Form Handler is Undefined !');
-		return;
-	}
-
-	[###CAPTCHA-JS-EXPORTS###]
-	const Mutation$Observer = (t, k) => c$d(e$.decode(t), k);
-	const Pointer$Observer = window.smartCaptchaInputHandler.pointerObserver;
-	const Covariance$Observer = window.smartCaptchaInputHandler.covarianceObserver;
-	window.smartCaptchaFormHandler.handleForm('[###CAPTCHA-FORM|js###]', window.Smart$Captcha$Options, u$, d$, e$, h$, c$, b$, subtle$CryptoDigest, Mutation$Observer, Covariance$Observer, Pointer$Observer);
+	window.smartCaptchaFormHandler.handleForm(
+		'[###CAPTCHA-FORM|js###]',
+		Smart$Captcha$Options,
+		u$,
+		d$,
+		e$,
+		h$,
+		c$,
+		b$,
+		subtle$CryptoDigest,
+		Mutation$Observer,
+		Covariance$Observer,
+		Pointer$Observer
+	);
 
 });
 </script>
