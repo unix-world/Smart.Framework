@@ -2,7 +2,7 @@
 TRANSLATIONS:
   @language: RO
   @area: core
-  @version: 2021-05-13
+  @version: 2021-05-16
   captcha:
     error: |
       Captcha a expirat ... Încercați să re-încărcați pagina.
@@ -15,8 +15,10 @@ TRANSLATIONS:
     enter: 'Introduceți codul din imagine în câmpul de verificare.'
     easy: 'Nu sunt robot !'
     tick: 'Marcati checkbox-ul alăturat după cronometru pentru a confirma că nu sunteți robot.'
-    interractive: 'Pentru a valida acest captcha: desenați fluent peste zona de desen alăturată o formă cât mai asemănătoare cu cea din fundal, începând de la punct. Pentru a schimba forma folosiți dublu click peste zona de desen.'
-    helper: 'Accesibilitate: Ca alternativă scanați QR codul alăturat și aflați codul de verificare pe care trebuie să îl introduceți.'
+    icons: 'Selectați icon-ul care nu aparține seriei (e diferit de restul icon-urilor) listate în box-ul alăturat.'
+    interractive: 'Desenați fluent peste zona de desen alăturată o formă cât mai asemănătoare cu cea din fundal, începând de la punct. Pentru a schimba forma folosiți dublu click peste zona de desen.'
+    helper: 'Accesibilitate: Ca alternativă scanați QR Codul alăturat și aflați codul de verificare pe care trebuie să îl introduceți.'
+    qrcode: 'QR Codul este indisponibil ...'
     accessibility: 'Accesibilitate: Click pentru a accesa Contextul de Accessibilitate al verificării Captcha'
     passed: 'Verificare reușită !'
 #END
