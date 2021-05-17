@@ -100,7 +100,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.7.2.1'); 	// tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.05.14'); 	// tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.05.16'); 	// tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--

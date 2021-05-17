@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Captcha :: r.7.2.1 / smart.framework.v.7.2 -- */
 
-/* v.20210516 */
+/* v.20210517 */
 
 /* ----------------------------- */
 
@@ -191,6 +191,8 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.S
 	position: absolute;
 	bottom: 3px;
 	right: 2px;
+	width: 36px;
+	height: 36px;
 	cursor: pointer;
 }
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input div.Smart-Captcha-Accessibility-Context * {
