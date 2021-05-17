@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20210430
+ * @version 	v.20210517
  * @package 	Plugins:Mailer
  *
  */
@@ -102,10 +102,6 @@ final class SmartMailerUtils {
 				} //end if
 				//--
 				$msg .= $chk['message']."\n";
-				//--
-				if(!SmartFrameworkRegistry::ifDebug()) {
-					$msg = ''; // hide the message if no debug
-				} //end if
 				//--
 			} //end if
 			//--
@@ -185,7 +181,8 @@ final class SmartMailerUtils {
 			//--
 			$smtp = new SmartMailerSmtpClient();
 			$smtp->timeout = 10;
-			$smtp->debug = false;
+			$smtp->debug = true;
+			$smtp->dbglevel = 1;
 			$smtp->connect((string)$helo, (string)$domain_ip, (int)$y_smtp_port);
 			$vfy = $smtp->mail((string)$email);
 			if($vfy) {
@@ -196,7 +193,7 @@ final class SmartMailerUtils {
 			if((string)$vfy == '1') {
 				//--
 				$out = 'ok';
-				$msg .= '[done]'."\n";
+				$msg .= '[done]'."\n".'LOG: '."\n".$smtp->log."\n";
 				//--
 				break; //stop
 				//--
