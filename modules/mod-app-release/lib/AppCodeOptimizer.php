@@ -11,7 +11,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 } //end if
 //-----------------------------------------------------
 
-// AppPackUtils free
+// PHP8
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class AppCodeOptimizer {
 
 	// ->
-	// v.20210511
+	// v.20210522
 
 	private $debug;
 
@@ -239,7 +239,7 @@ final class AppCodeOptimizer {
 		//--
 		$mode = (string) strtolower((string)trim((string)TASK_APP_RELEASE_CODEPACK_MODE));
 		switch((string)$mode) {
-			case 'comments':
+			case 'strip':
 			case 'minify':
 				// OK
 				break;
@@ -334,15 +334,15 @@ final class AppCodeOptimizer {
 					$this->add_to_log('PHP Script: '.$path_original_file);
 				} //end if
 				//--
-				if((string)$mode == 'comments') { // remove comments
-					//--
-					$the_php_proc_mode = 'CS'; // {{{SYNC-SIGNATURE-STRIP-COMMENTS}}}
-					$tmp_content = PhpOptimizer::strip_code($path_original_file);
-					//--
-				} else { // minify code
+				if((string)$mode == 'minify') { // minify code
 					//--
 					$the_php_proc_mode = 'ZM'; // zend minify
-					$tmp_content = PhpOptimizer::minify_code($path_original_file);
+					$tmp_content = (string) PhpOptimizer::minify_code($path_original_file);
+					//--
+				} else { // strip code (remove comments and standardize)
+					//--
+					$the_php_proc_mode = 'CS'; // {{{SYNC-SIGNATURE-STRIP-COMMENTS}}}
+					$tmp_content = (string) PhpOptimizer::strip_code($path_original_file);
 					//--
 				} //end if else
 				//--
@@ -351,12 +351,13 @@ final class AppCodeOptimizer {
 					return (string) $err;
 				} //end if
 				//--
-				$tmp_content = '<'.'?php'."\n".'// PHP-Script ('.$the_php_proc_mode.'): '.$path_original_file.' @ '.date('Y-m-d H:i:s O')."\n".trim((string)substr((string)$tmp_content, 5));
-				$tmp_content = (string) trim((string)$tmp_content);
-				if((string)substr((string)$tmp_content, -2, 2) == '?'.'>') {
-					$tmp_content = (string) substr((string)$tmp_content, 0, -2);
+				$tmp_content = (string) PhpOptimizer::check_and_remove_start_end_tags((string)$tmp_content);
+				if((string)trim((string)$tmp_content) == '') {
+					$err = 'ERROR: EMPTY PHP FILE AFTER REMOVING START/END TAGS: '.$path_original_file.' @ '.$path_destination_file;
+					return (string) $err;
 				} //end if
-				$tmp_content .= "\n".'// #END'."\n"; // add this only after removing the php terminator
+				//--
+				$tmp_content = '<'.'?php'."\n".'// PHP-Script ('.$the_php_proc_mode.'): '.$path_original_file.' @ '.date('Y-m-d H:i:s O')."\n".$tmp_content."\n".'// #END'."\n"; // add this only after removing the php terminator, above
 				//--
 				$out = SmartFileSystem::write(
 					(string) $path_destination_file,
@@ -367,15 +368,13 @@ final class AppCodeOptimizer {
 				if(($out != 1) OR (!$chk)) {
 					$err = 'ERROR: A PHP FILE failed to be created: '.$path_original_file.' @ '.$path_destination_file;
 					return (string) $err;
-				} else {
-					if((string)$mode == 'comments') { // if remove comments, recheck syntax
-						$tmp_chksyntax = PhpOptimizer::minify_code($path_destination_file);
-						if((string)$tmp_chksyntax == '') {
-							$err = 'ERROR: A PHP FILE check syntax FAILED: '.$path_original_file.' @ '.$path_destination_file;
-							return (string) $err;
-						} //end if
-						$tmp_chksyntax = '';
+				} else { // re-check syntax, it was modified by this script by adding some comments ; test if OK
+					$tmp_chksyntax = (string) PhpOptimizer::minify_code($path_destination_file);
+					if((string)$tmp_chksyntax == '') {
+						$err = 'ERROR: A PHP FILE check syntax FAILED: '.$path_original_file.' @ '.$path_destination_file;
+						return (string) $err;
 					} //end if
+					$tmp_chksyntax = '';
 				} //end if else
 				//--
 			} elseif(((string)substr((string)$path_original_file, -3, 3) == '.js') AND ((string)substr((string)$path_original_file, -7, 7) != '.inc.js') AND ($tmp_is_a_file_and_needs_strip === true)) {
@@ -389,7 +388,15 @@ final class AppCodeOptimizer {
 					$this->add_to_log('JS-Script: '.$path_original_file);
 				} //end if
 				//--
-				if((string)$mode == 'comments') { // remove comments
+				if((string)$mode == 'minify') { // minify code
+					//--
+					$the_compressor_signature = (string) 'UM'; // node minify
+					$tmp_arr = (array) JsOptimizer::minify_code($path_original_file);
+					$tmp_content = (string) $tmp_arr['content'];
+					$tmp_error = (string) $tmp_arr['error'];
+					$tmp_arr = null;
+					//--
+				} else { // strip code (remove comments and standardize)
 					//--
 					$the_compressor_signature = 'CS'; // {{{SYNC-SIGNATURE-STRIP-COMMENTS}}}
 					$tmp_content = (string) JsOptimizer::strip_code($path_original_file);
@@ -397,15 +404,6 @@ final class AppCodeOptimizer {
 					if((string)$tmp_content == '') {
 						$tmp_error = 'ERROR: Empty Output from Js: '.$path_original_file;
 					} //end if
-					//--
-				} else { // minify code
-					//--
-					$the_compressor_signature = (string) 'UM';
-					$tmp_arr = (array) JsOptimizer::minify_code($path_original_file);
-					$tmp_content = (string) $tmp_arr['content'];
-					$tmp_error = (string) $tmp_arr['error'];
-					$tmp_arr = array();
-					unset($tmp_arr);
 					//--
 				} //end if else
 				//--
@@ -436,7 +434,15 @@ final class AppCodeOptimizer {
 					$this->add_to_log('Css-Stylesheet: '.$path_original_file);
 				} //end if
 				//--
-				if((string)$mode == 'comments') { // remove comments
+				if((string)$mode == 'minify') { // minify code
+					//--
+					$the_compressor_signature = (string) 'UM';
+					$tmp_arr = (array) CssOptimizer::minify_code($path_original_file);
+					$tmp_content = (string) $tmp_arr['content'];
+					$tmp_error = (string) $tmp_arr['error'];
+					$tmp_arr = null;
+					//--
+				} else { // strip code (remove comments and standardize)
 					//--
 					$the_compressor_signature = 'CS'; // {{{SYNC-SIGNATURE-STRIP-COMMENTS}}}
 					$tmp_content = (string) CssOptimizer::strip_code($path_original_file);
@@ -444,15 +450,6 @@ final class AppCodeOptimizer {
 					if((string)$tmp_content == '') {
 						$tmp_error = 'ERROR: Empty Output from Css: '.$path_original_file;
 					} //end if
-					//--
-				} else { // minify code
-					//--
-					$the_compressor_signature = (string) 'UM';
-					$tmp_arr = CssOptimizer::minify_code($path_original_file);
-					$tmp_content = (string) $tmp_arr['content'];
-					$tmp_error = (string) $tmp_arr['error'];
-					$tmp_arr = array();
-					unset($tmp_arr);
 					//--
 				} //end if else
 				//--
@@ -523,9 +520,9 @@ final class AppCodeOptimizer {
 					return (string) $err;
 				} //end if
 			} elseif((string)substr((string)$path_original_file, -4, 4) == '.css') {
-				$lint_chk = (string) CssOptimizer::lint_code(Smart::real_path($path_original_file)); // lint on original, it fails with minified css !
+				$lint_chk = (string) CssOptimizer::lint_code(Smart::real_path($path_destination_file));
 				if($lint_chk) {
-					$err = 'ERROR: A CSS FILE syntax check failed: '.$path_original_file.' @ ['.$lint_chk.']';
+					$err = 'ERROR: A CSS FILE syntax check failed: '.Smart::real_path($path_destination_file).' @ ['.$lint_chk.']';
 					return (string) $err;
 				} //end if
 			} //end if else

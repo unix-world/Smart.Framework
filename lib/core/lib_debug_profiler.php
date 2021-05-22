@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
- * @version 	v.20210430
+ * @version 	v.20210519
  * @package 	Application:Development
  *
  */
@@ -867,63 +867,7 @@ private static function print_log_headers($response_code, $response_heads_arr, $
 	//--
 	$log = '';
 	//--
-	$status_code_msg = '???';
-	switch((int)$response_code) {
-		//--
-		case 200:
-			$status_code_msg = 'OK';
-			break;
-		case 202:
-			$status_code_msg = 'Accepted';
-			break;
-		case 203:
-			$status_code_msg = 'Non-Authoritative Information';
-			break;
-		case 208:
-			$status_code_msg = 'Already Reported';
-			break;
-		//--
-		case 301:
-			$status_code_msg = 'Moved Permanently (Permanent Redirect)';
-			break;
-		case 302:
-			$status_code_msg = 'Found (Temporary Redirect)';
-			break;
-		case 304:
-			$status_code_msg = 'Not Modified';
-			break;
-		//--
-		case 400:
-			$status_code_msg = 'Bad Request';
-			break;
-		case 401:
-			$status_code_msg = 'Unauthorized';
-			break;
-		case 403:
-			$status_code_msg = 'Forbidden';
-			break;
-		case 404:
-			$status_code_msg = 'Not Found';
-			break;
-		case 429:
-			$status_code_msg = 'Too Many Requests';
-			break;
-		case 500:
-			$status_code_msg = 'Internal Server Error';
-			break;
-		case 502:
-			$status_code_msg = 'Bad Gateway';
-			break;
-		case 503:
-			$status_code_msg = 'Service Unavailable';
-			break;
-		case 504:
-			$status_code_msg = 'Gateway Timeout';
-			break;
-		default:
-			$status_code_msg = '(Other: See the HTTP Status Codes @ rfc7231)';
-		//--
-	} //end switch
+	$status_code_msg = (string) SmartFrameworkRuntime::GetStatusMessageByStatusCode((int)$response_code);
 	//--
 	if($response_code >= 400) {
 		$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_warn"><font size="4"><b>RESPONSE Headers: [ HTTP Status Code = '.Smart::escape_html($response_code).' / '.Smart::escape_html($status_code_msg).' ]</b></font></div>';

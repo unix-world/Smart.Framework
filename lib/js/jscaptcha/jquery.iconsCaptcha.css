@@ -3,7 +3,7 @@
 // Icons Captcha: v1.0
 // (c) 2021 unix-world.org
 // License: BSD
-// r.20210517
+// r.20210519
 // jquery.iconsCaptcha.css
 */
 
@@ -14,12 +14,26 @@
 	background: #FFFFFF;
 	border: 1px solid #EAEAEA;
 	padding: 4px;
+	opacity: 0.77 !important;
 	border-radius: 2px;
 	text-shadow: none;
 }
 
+.iCaptcha-container .iCaptcha-error {
+	padding: 10px !important;
+	background: #FFFFFF !important;
+	color: #EF4756 !important;
+	font-size: 10px !important;
+	font-weight: bold !important;
+	cursor: help !important;
+}
+.iCaptcha-container .iCaptcha-error img {
+	width: 64px !important;
+	height: 64px !important;
+}
+
 .iCaptcha-container.iCaptcha-overlay {
-	opacity: 0.7 !important;
+	opacity: 0.53 !important;
 }
 
 .iCaptcha-container .iCaptcha-ldr {

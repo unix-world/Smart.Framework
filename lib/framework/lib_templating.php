@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN
- * @version 	v.20210514
+ * @version 	v.20210520
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -202,7 +202,7 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 			return '';
 		} //end if
 		//--
-		if((!is_array($y_arr_vars)) OR ((Smart::array_size((string)$y_arr_vars) > 0) AND (Smart::array_type_test($y_arr_vars) != 2))) {
+		if((!is_array($y_arr_vars)) OR ((Smart::array_size($y_arr_vars) > 0) AND (Smart::array_type_test($y_arr_vars) != 2))) {
 			Smart::log_warning('Invalid Placeholder-TPL Data-Set for Template: '.$ptemplate.' # '.print_r($y_arr_vars,1));
 			return (string) $ptemplate; // no prepare syntax here, leave untouched
 		} //end if
@@ -252,7 +252,7 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 			return '';
 		} //end if
 		//--
-		if((!is_array($y_arr_vars)) OR ((Smart::array_size((string)$y_arr_vars) > 0) AND (Smart::array_type_test($y_arr_vars) != 2))) {
+		if((!is_array($y_arr_vars)) OR ((Smart::array_size($y_arr_vars) > 0) AND (Smart::array_type_test($y_arr_vars) != 2))) {
 			Smart::log_warning('Invalid Marker-TPL Data-Set for Template: '.$mtemplate.' # '.print_r($y_arr_vars,1));
 			return (string) self::prepare_nosyntax_content($mtemplate);
 		} //end if
@@ -354,7 +354,7 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 			]);
 		} //end if
 		//--
-		if((!is_array($y_arr_vars)) OR ((Smart::array_size((string)$y_arr_vars) > 0) AND (Smart::array_type_test($y_arr_vars) != 2))) {
+		if((!is_array($y_arr_vars)) OR ((Smart::array_size($y_arr_vars) > 0) AND (Smart::array_type_test($y_arr_vars) != 2))) {
 			Smart::log_warning('Invalid Marker-TPL Data-Set for Template file: '.$y_file_path);
 			return (string) self::prepare_nosyntax_content($mtemplate);
 		} //end if
@@ -419,7 +419,7 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 			return '';
 		} //end if
 		//--
-		if((!is_array($y_arr_vars)) OR ((Smart::array_size((string)$y_arr_vars) > 0) AND (Smart::array_type_test($y_arr_vars) != 2))) {
+		if((!is_array($y_arr_vars)) OR ((Smart::array_size($y_arr_vars) > 0) AND (Smart::array_type_test($y_arr_vars) != 2))) {
 			Smart::log_warning('Invalid Mixed Marker-TPL Data-Set for Template: '.$mtemplate.' # '.print_r($y_arr_vars,1));
 			return (string) self::prepare_nosyntax_content($mtemplate);
 		} //end if

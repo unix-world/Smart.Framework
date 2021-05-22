@@ -11,7 +11,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 } //end if
 //-----------------------------------------------------
 
-// AppPackUtils free
+// PHP8
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -19,7 +19,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 
 
 /**
- * PHP / Javascript / CSS :: Code Strip Comments for Software Releases
+ * PHP / Javascript / CSS :: Code Strip for Software Releases
  *
  * DEPENDS:
  * Smart::
@@ -27,7 +27,8 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
  * SmartFileSystem::
  * SmartUtils::
  *
- * StripCode::
+ * ShrinkCode->ShrinkJsCode->
+ * ShrinkCode->ShrinkCssCode->
  *
  * @access 		private
  * @internal
@@ -36,65 +37,10 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class StripCode {
 
 	// ::
-	// v.20210511
-
-	private static $vendor_loaded_classes = false;
+	// v.20210522
 
 
-	public static function strip_css_code(?string $filePath) {
-		//--
-		if(
-			(self::checkFilePath((string)$filePath) !== true) OR
-			((string)\substr((string)$filePath, -4, 4) != '.css') OR // expects: file.css or path/to/file.css
-			((int)\strlen((string)$filePath) < 5)
-		) {
-			return '';
-		} //end if
-		//--
-		$output = '';
-		try {
-			$cssMinifier = new \MatthiasMullie\Minify\CSS('/* CSS */');
-			$cssMinifier->setMaxImportSize(0);
-			$cssMinifier->setImportExtensions([]); // no extensions to import, this is a single file saved in place
-			$cssMinifier->add($filePath);
-			$output = (string) $cssMinifier->minify();
-			$cssMinifier = null;
-		} catch(Exception $e) {
-			Smart::log_notice('CSS Minify Failed: '.$e->getMessage());
-			return '';
-		} //end try catch
-		//--
-		return (string) trim((string)$output);
-		//--
-	} //END FUNCTION
-
-
-	public static function strip_js_code(?string $filePath) {
-		//--
-		if(
-			(self::checkFilePath((string)$filePath) !== true) OR
-			((string)\substr((string)$filePath, -3, 3) != '.js') OR // expects: file.js or path/to/file.js
-			((int)\strlen((string)$filePath) < 4)
-		) {
-			return '';
-		} //end if
-		//--
-		$output = '';
-		try {
-			$jsMinifier = new \MatthiasMullie\Minify\JS('/* Javascript */');
-			$jsMinifier->add($filePath);
-			$output = (string) $jsMinifier->minify();
-			$jsMinifier = null;
-		} catch (Exception $e) {
-			Smart::log_notice('JS Minify Failed: '.$e->getMessage());
-			return '';
-		} //end try catch
-		//--
-		return (string) trim((string)$output);
-		//--
-	} //END FUNCTION
-
-
+	//====================================================
 	public static function strip_php_code(?string $filePath) { // expects: file.php
 		//--
 		if(
@@ -114,51 +60,119 @@ final class StripCode {
 			T_COMMENT 		=> true,
 			T_DOC_COMMENT 	=> true
 		];
-		//--
 		$tokens = token_get_all($output);
 		$output = '';
 		if(is_array($tokens)) {
 			foreach($tokens as $key => $token) {
 				if(!is_array($token)) {
 					$output .= (string) $token;
-				} elseif(!isset($strip[(string)(isset($token[0]) ? $token[0] : '')])) { // skip strip tokens sa set above
+				} elseif(!isset($strip[(string)(isset($token[0]) ? $token[0] : '')])) { // skip strip tokens as set above
 					$output .= (string) (isset($token[1]) ? $token[1] : '');
 				} else {
-					$output .= "\n";
+					$output .= ''; // previous was "\n"
 				} //end if else
 			} // end foreach
 		} // end if
 		//--
+		$strip = [
+			T_WHITESPACE 	=> true,
+		];
+		$tokens = token_get_all($output);
+		$output = '';
+		if(is_array($tokens)) {
+			foreach($tokens as $key => $token) {
+				if(!is_array($token)) {
+					$output .= (string) $token;
+				} elseif(!isset($strip[(string)(isset($token[0]) ? $token[0] : '')])) { // skip strip tokens as set above
+					$output .= (string) (isset($token[1]) ? $token[1] : '');
+				} else {
+					if(isset($token[1])) {
+						$token[1] = (string) str_replace(["\r\n", "\r"], "\n", (string)$token[1]); // standardize line endings as LF
+						$token[1] = (string) str_replace(['    ',  '   '], "\t", (string)$token[1]); // replace 4 or 3 spaces with tab
+						$token[1] = (string) str_replace('  ', ' ', (string)$token[1]); // replace 2 spaces with one space
+						if(strpos($token[1], "\n") !== false) {
+							$tmp_arr = (array) explode("\n", (string)$token[1]);
+							$output .= "\n";
+							if(count($tmp_arr) > 0) {
+								if(isset($tmp_arr[count($tmp_arr)-1])) {
+									$output .= (string) $tmp_arr[count($tmp_arr)-1];
+								} //end if
+							} //end if
+							$tmp_arr = null;
+						} else {
+							$output .= (string) $token[1];
+						} //end if
+					} //end if
+				} //end if else
+			} // end foreach
+		} //end if
+		//--
 		return (string) trim((string)$output);
 		//--
 	} //END FUNCTION
+	//====================================================
+
+
+	//====================================================
+	public static function strip_js_code(?string $filePath) {
+		//--
+		if(
+			(self::checkFilePath((string)$filePath) !== true) OR
+			((string)\substr((string)$filePath, -3, 3) != '.js') OR // expects: file.js or path/to/file.js
+			((int)\strlen((string)$filePath) < 4)
+		) {
+			return '';
+		} //end if
+		//--
+		$output = '';
+		try {
+			$output = (new ShrinkJsCode((string)$filePath))->stripCode();
+		} catch (Exception $e) {
+			$output = '';
+			return '';
+		} //end try catch
+		//--
+		return (string) trim((string)$output);
+		//--
+	} //END FUNCTION
+	//====================================================
+
+
+	//====================================================
+	public static function strip_css_code(?string $filePath) {
+		//--
+		if(
+			(self::checkFilePath((string)$filePath) !== true) OR
+			((string)\substr((string)$filePath, -4, 4) != '.css') OR // expects: file.css or path/to/file.css
+			((int)\strlen((string)$filePath) < 5)
+		) {
+			return '';
+		} //end if
+		//--
+		$output = '';
+		try {
+			$output = (new ShrinkCssCode((string)$filePath))->stripCode();
+		} catch(Exception $e) {
+			$output = '';
+			return '';
+		} //end try catch
+		//--
+		return (string) trim((string)$output);
+		//--
+	} //END FUNCTION
+	//====================================================
 
 
 	//===== [PRIVATES]
 
 
+	//====================================================
 	private static function checkFilePath(?string $filePath) {
 		//--
 		return (bool) SmartFileSysUtils::check_if_safe_path($filePath, 'no'); // must allow absolute paths
 		//--
 	} //END FUNCTION
-
-
-	private static function loadVendorClasses() {
-		//--
-		if(self::$vendor_loaded_classes === true) {
-			return;
-		} //end if
-		//--
-		if(is_file('modules/vendor/MatthiasMullie/autoload.php')) { // smart framework structure
-			require_once('modules/vendor/MatthiasMullie/autoload.php');
-		} else {
-			die('A required PHP file not found: MatthiasMullie/autoload.php in: '.@basename(__FILE__));
-		} //end if else
-		//--
-		self::$vendor_loaded_classes = true;
-		//--
-	} //END FUNCTION
+	//====================================================
 
 
 } //END CLASS

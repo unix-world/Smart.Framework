@@ -11,7 +11,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 } //end if
 //-----------------------------------------------------
 
-// AppPackUtils free
+// PHP8
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class AppCodeUtils {
 
 	// ::
-	// v.20210511
+	// v.20210522
 
 	private const CODEPACK_INI = 'etc/appcodepack/appcodepack.ini';
 	private const CODEPACK_SETTINGS = 'etc/appcodepack/appcodepack.yaml';
@@ -105,7 +105,7 @@ final class AppCodeUtils {
 		$valid_arr_settings = [
 			'OPTIMIZATIONS_MAX_RUN_TIMEOUT' 		=> true,
 			'TASK_APP_RELEASE_CODEPACK_PHP_BIN' 	=> true,
-			'TASK_APP_RELEASE_CODEPACK_NODEJS_BIN' 	=> true,
+			'TASK_APP_RELEASE_CODEPACK_NODEJS_BIN' 	=> false,
 			'TASK_APP_RELEASE_CODEPACK_MOZJS_BIN' 	=> false, // optional
 		];
 		foreach($valid_arr_settings as $key => $val) {
@@ -130,22 +130,43 @@ final class AppCodeUtils {
 			} //end if else
 		} //end if
 		//--
+		if(defined('TASK_APP_RELEASE_CODEPACK_PHP_VERSION')) {
+			return 'TASK_APP_RELEASE_CODEPACK_PHP_VERSION # CONSTANT ALREADY DEFINED';
+		} //end if
 		if(defined('TASK_APP_RELEASE_CODEPACK_PHP_BIN')) {
-			if(defined('TASK_APP_RELEASE_CODEPACK_PHP_VERSION')) {
-				return 'TASK_APP_RELEASE_CODEPACK_PHP_VERSION # CONSTANT ALREADY DEFINED';
-			} //end if
 			if(self::checkIfExecutable((string)TASK_APP_RELEASE_CODEPACK_PHP_BIN)) {
 				define('TASK_APP_RELEASE_CODEPACK_PHP_VERSION', (string)shell_exec((string)TASK_APP_RELEASE_CODEPACK_PHP_BIN.' --version'));
+			} else {
+				define('TASK_APP_RELEASE_CODEPACK_PHP_VERSION', '');
 			} //end if
+		} else {
+			define('TASK_APP_RELEASE_CODEPACK_PHP_BIN', '');
 		} //end if
 		//--
+		if(defined('TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION')) {
+			return 'TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION # CONSTANT ALREADY DEFINED';
+		} //end if
 		if(defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN')) {
-			if(defined('TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION')) {
-				return 'TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION # CONSTANT ALREADY DEFINED';
-			} //end if
 			if(self::checkIfExecutable((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN)) {
 				define('TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION', (string)shell_exec((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN.' --version'));
+			} else {
+				define('TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION', '');
 			} //end if
+		} else {
+			define('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN', '');
+		} //end if
+		//--
+		if(defined('TASK_APP_RELEASE_CODEPACK_MOZJS_VERSION')) {
+			return 'TASK_APP_RELEASE_CODEPACK_MOZJS_VERSION # CONSTANT ALREADY DEFINED';
+		} //end if
+		if(defined('TASK_APP_RELEASE_CODEPACK_MOZJS_BIN')) {
+			if(self::checkIfExecutable((string)TASK_APP_RELEASE_CODEPACK_MOZJS_BIN)) {
+				define('TASK_APP_RELEASE_CODEPACK_MOZJS_VERSION', (string)shell_exec((string)TASK_APP_RELEASE_CODEPACK_MOZJS_BIN.' --version'));
+			} else {
+				define('TASK_APP_RELEASE_CODEPACK_MOZJS_VERSION', '');
+			} //end if
+		} else {
+			define('TASK_APP_RELEASE_CODEPACK_MOZJS_BIN', '');
 		} //end if
 		//--
 		if(defined('TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS')) {
@@ -163,6 +184,30 @@ final class AppCodeUtils {
 		} //end if
 		//--
 		return (int) $out;
+		//--
+	} //END FUNCTION
+	//====================================================
+
+
+	//====================================================
+	public static function getArrIniMetaInfo() {
+		//--
+		$arr = [
+			'PHP-SELF-VER' 	=> (string) phpversion(),
+			'PHP-BIN-VER' 	=> (string) ((defined('TASK_APP_RELEASE_CODEPACK_PHP_BIN') && ((string)TASK_APP_RELEASE_CODEPACK_PHP_BIN != '')) ? ' @ '.TASK_APP_RELEASE_CODEPACK_PHP_BIN : '').((defined('TASK_APP_RELEASE_CODEPACK_PHP_VERSION') && ((string)TASK_APP_RELEASE_CODEPACK_PHP_VERSION != '')) ? ' :: '.TASK_APP_RELEASE_CODEPACK_PHP_VERSION : ''),
+			'NODE-BIN-VER' 	=> (string) ((defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN') && ((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN != '')) ? ' @ '.TASK_APP_RELEASE_CODEPACK_NODEJS_BIN : '').((defined('TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION') && ((string)TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION != '')) ? ' :: '.TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION : ''),
+			'JS-MIN-VER' 	=> (string) ((defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN') && ((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN != '') && defined('TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS') && ((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS != '')) ? ' :: NodeJS + '.TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS : ''),
+			'JS-LINT-MODE' 	=> (string) ((defined('TASK_APP_RELEASE_CODEPACK_MOZJS_BIN') && ((string)TASK_APP_RELEASE_CODEPACK_MOZJS_BIN != '') && defined('TASK_APP_RELEASE_CODEPACK_MOZJS_VERSION')) ? ' :: MozJS @ '.TASK_APP_RELEASE_CODEPACK_MOZJS_BIN.' # '.TASK_APP_RELEASE_CODEPACK_MOZJS_VERSION : ((defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN') && ((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN != '') && defined('TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION')) ? ' :: NodeJS # '.TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION : '')),
+			'CSS-MIN-VER' 	=> (string) ((defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN') && ((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN != '') && defined('TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_CSS') && ((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_CSS != '')) ? ' :: NodeJS + '.TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_CSS : ''),
+			'CSS-LINT-MODE' => null, // must be null if empty as empty string does not pass checks !
+		];
+		//--
+		if(defined('TASK_APP_RELEASE_CODEPACK_MODE') && ((string)TASK_APP_RELEASE_CODEPACK_MODE != 'minify')) {
+			$arr['JS-MIN-VER'] = null;
+			$arr['CSS-MIN-VER'] = null;
+		} //end if
+		//--
+		return (array) $arr;
 		//--
 	} //END FUNCTION
 	//====================================================
@@ -291,7 +336,7 @@ final class AppCodeUtils {
 			return 'APP-RELEASE/APPID/DEPLOY-STRATEGY YAML SETTINGS ERROR';
 		} //end if
 		switch((string)trim((string)$arr['deploy-strategy'])) {
-			case 'comments':
+			case 'strip':
 			case 'minify':
 				// OK
 				break;

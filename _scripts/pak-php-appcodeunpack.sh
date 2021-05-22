@@ -2,7 +2,7 @@
 
 #####
 # build the appcode unpack
-# version: 20210510.1928
+# version: 20210521
 # (c) 2013-2021 unix-world.org
 #####
 
@@ -178,10 +178,16 @@ echo "const APPCODEUNPACK_HTML_WATCH = <<<'HTML'" >> ${THE_STANDALONE_PHP_FILE}
 add_plain_file_to_standalone_php "lib/core/templates/canvas-clock.inc.htm"
 echo "HTML;" >> ${THE_STANDALONE_PHP_FILE}
 
-echo "const APPCODEUNPACK_JS_APPCODEUNPACK = <<<'HTML'" >> ${THE_STANDALONE_PHP_FILE}
+echo "const APPCODEUNPACK_JS_LOCAL_FX = <<<'HTML'" >> ${THE_STANDALONE_PHP_FILE}
 echo "<script>" >> ${THE_STANDALONE_PHP_FILE}
 add_plain_file_to_standalone_php "modules/mod-app-release/appcodeunpack/appcodeunpack-functions.js"
 echo "</script>" >> ${THE_STANDALONE_PHP_FILE}
+echo "HTML;" >> ${THE_STANDALONE_PHP_FILE}
+
+echo "const APPCODEUNPACK_CSS_LOCAL_FX = <<<'HTML'" >> ${THE_STANDALONE_PHP_FILE}
+echo "<style>" >> ${THE_STANDALONE_PHP_FILE}
+add_plain_file_to_standalone_php "modules/mod-app-release/appcodeunpack/appcodeunpack-styles.css"
+echo "</style>" >> ${THE_STANDALONE_PHP_FILE}
 echo "HTML;" >> ${THE_STANDALONE_PHP_FILE}
 
 echo "const APPCODEUNPACK_HTML_DEPLOY = <<<'HTML'" >> ${THE_STANDALONE_PHP_FILE}

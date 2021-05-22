@@ -38,7 +38,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20210506
+ * @version 	v.20210519
  * @package 	@Core:Extra
  *
  */
@@ -1779,7 +1779,7 @@ final class SmartUtils {
 			//--
 			$current_script = '';
 			if((string)self::get_server_current_full_script() != '') {
-				$current_script = (string) basename(self::get_server_current_full_script());
+				$current_script = (string) basename((string)self::get_server_current_full_script());
 			} //end if
 			if((string)$current_script == '') {
 				Smart::raise_error('Cannot Determine Current WebServer Script', 'Invalid Current WebServer Script');

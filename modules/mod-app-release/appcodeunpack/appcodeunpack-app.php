@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20210514
+// [AppCodeUnpack / APP] v.20210522
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
@@ -33,6 +33,16 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 } //end if
 //-----------------------------------------------------
 
+//-----------------------------------------------------
+if(!defined('APP_CUSTOM_STANDALONE_DTIME')) {
+	@http_response_code(500);
+	die('The constant APP_CUSTOM_STANDALONE_DTIME is required by apcoddeunpack app and is undefined ...');
+} //end if
+//-----------------------------------------------------
+if(!defined('APP_CUSTOM_STANDALONE_RHASH')) {
+	@http_response_code(500);
+	die('The constant APP_CUSTOM_STANDALONE_RHASH is required by apcoddeunpack app and is undefined ...');
+} //end if
 //-----------------------------------------------------
 if(defined('APPCODEUNPACK_READY')) {
 	@http_response_code(500);
@@ -84,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20210514
+	// v.20210522
 
-	private const APPCODEUNPACK_VERSION = 's.20210514.1510';
+	private const APPCODEUNPACK_VERSION = 's.20210522.1636';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -119,6 +129,13 @@ final class AppCodeUnpack {
 				//--
 				$status = '?';
 				$msg = '??';
+				//--
+				$znetarch_att_safecheck = false;
+				$znetarch_att_fsize = 0;
+				$znetarch_att_fcsize = 0;
+				$znetarch_att_fname = '';
+				$znetarch_att_content = '';
+				$znetarch_att_sha512 = '';
 				//--
 				if(!$err) {
 					if(Smart::array_size($frm) <= 0) {
@@ -165,9 +182,6 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if
 				if(!$err) {
-					$znetarch_att_fsize = 0;
-					$znetarch_att_fname = '';
-					$znetarch_att_content = '';
 					$tmp_att = (array) SmartUtils::read_uploaded_file(
 						'znetarch',
 						-1,
@@ -175,15 +189,41 @@ final class AppCodeUnpack {
 						'<z-netarch>'
 					);
 					if(((string)$tmp_att['status'] == 'OK') AND ((string)$tmp_att['msg-code'] == '0')) {
-						$znetarch_att_fsize = (int) $tmp_att['filesize'];
+						//--
+						$znetarch_att_fsize = (int) $tmp_att['filesize']; // fsize reported from disk, not safe
 						$znetarch_att_fname = (string) trim((string)$tmp_att['filename']);
 						$znetarch_att_content = (string) trim((string)$tmp_att['filecontent']);
+						$znetarch_att_sha512 = (string) SmartHashCrypto::sha512((string)$tmp_att['filecontent']);
+						$znetarch_att_fcsize = (int) strlen((string)$tmp_att['filecontent']); // this is safe, does not depened on what OS reports !
+						//--
+						if(
+							isset($frm['packsha512']) AND Smart::is_nscalar($frm['packsha512']) AND ((string)trim((string)$frm['packsha512']) != '') AND ((int)strlen((string)$frm['packsha512']) == (int)128) AND
+							isset($frm['packsize']) AND Smart::is_nscalar($frm['packsize']) AND ((string)trim((string)$frm['packsize']) != '') AND ((int)$frm['packsize'] > 0)
+						) {
+							if((string)$frm['packsha512'] !== (string)$znetarch_att_sha512) {
+								$err = true;
+								$status = 'Uploaded Package Safety Checksum does not match !';
+								$msg = 'The uploaded content checksum: '.(string)$znetarch_att_sha512.' # the safety checksum: '.(string)$frm['packsha512'];
+							} elseif((int)$frm['packsize'] != (int)$znetarch_att_fcsize) {
+								$err = true;
+								$status = 'Uploaded Package Safety Size does not match !';
+								$msg = 'The uploaded content size: '.(int)$znetarch_att_fcsize.' # the safety checksum: '.(int)$frm['packsize'];
+							} //end if else
+							$znetarch_att_safecheck = true; // must be set also on err, to know it was checked
+						} //end if
+						//--
 					} //end if else
 					$tmp_att = null;
-					if((int)$znetarch_att_fsize <= 0) {
+					if($err) {
+						// stop here, there are errors from above
+					} elseif((int)$znetarch_att_fsize <= 0) {
 						$err = true;
 						$status = 'Empty File Uploaded';
 						$msg = 'The uploaded file size is: '.(int)$znetarch_att_fsize.' bytes';
+					} elseif((int)$znetarch_att_fcsize <= 0) {
+						$err = true;
+						$status = 'Empty File Uploaded Content';
+						$msg = 'The uploaded content size is: '.(int)$znetarch_att_fcsize.' bytes';
 					} elseif((string)$znetarch_att_content == '') {
 						$err = true;
 						$status = 'Empty File Content Uploaded';
@@ -250,16 +290,77 @@ final class AppCodeUnpack {
 				if(!$err) {
 					$status = 'OK';
 					$msg = 'Package Deploy Successful';
-					$msg .= "\n".'FileSize: '.SmartUtils::pretty_print_bytes((int)$znetarch_att_fsize, 2, '');
-					$msg .= "\n".'FileName: '.Smart::escape_html((string)$znetarch_att_fname);
 				} else {
 					$status = 'ERR: '.$status;
 				} //end if
+				$crr_url = (string) SmartUtils::get_server_current_url().SmartUtils::get_server_current_script();
+				$msg .= "\n".'FileSize: '.SmartUtils::pretty_print_bytes((int)$znetarch_att_fsize, 2, ' ');
+				if(isset($frm['client']) AND ((string)$frm['client'] == 'appcodepack')) {
+					$msg .= "\n".'FileSize-Bytes: `'.(int)$znetarch_att_fcsize.'`'; // safe size
+					$msg .= "\n".'FileContent-Checksum: `'.$znetarch_att_sha512.'`';
+				} //end if
+				$msg .= "\n".'FileName: `'.$znetarch_att_fname.'`';
+				$msg .= "\n".'AppID: `'.$frm['appid'].'`';
+				$msg .= "\n".'AppID-Hash: `'.$frm['appid-hash'].'`';
+				if(isset($frm['client']) AND ((string)$frm['client'] == 'appcodepack')) {
+					$msg .= "\n".'Deploy-URL: `'.$crr_url.'`';
+					$msg .= "\n".'Signature: `'.sha1('#'.$frm['appid'].'#'.$frm['appid-hash'].'#'.$znetarch_att_fname.'#'.$crr_url.'#').'`'; // {{{SYNC-APP-DEPLOY-SIGNATURE}}}
+					$msg .= "\n".'Safety-Checks: `'.(($znetarch_att_safecheck === true) ? 'yes' : 'no').'`';
+				} //end if
+				if(isset($frm['appcodeunpack']) AND (Smart::array_size($frm['appcodeunpack']) > 0)) { // {{{SYNC-APPCODEUNPACK-SELF-UPDATE}}}
+					$a_err = '';
+					if(
+						isset($frm['appcodeunpack']['#']) AND Smart::is_nscalar($frm['appcodeunpack']['#']) AND ((string)trim((string)$frm['appcodeunpack']['#']) != '') AND
+						isset($frm['appcodeunpack']['=']) AND Smart::is_nscalar($frm['appcodeunpack']['=']) AND ((string)trim((string)$frm['appcodeunpack']['=']) != '') AND
+						isset($frm['appcodeunpack']['@']) AND Smart::is_nscalar($frm['appcodeunpack']['@']) AND ((string)trim((string)$frm['appcodeunpack']['@']) != '') AND
+						isset($frm['appcodeunpack']['!']) AND Smart::is_nscalar($frm['appcodeunpack']['!']) AND ((string)trim((string)$frm['appcodeunpack']['!']) != '')
+					) {
+						$tmp_upd_ctx = (string) SmartHashCrypto::sha512((string)APPCODEPACK_DEPLOY_SECRET.'#'.$frm['appcodeunpack']['#'].'#'.$frm['appcodeunpack']['@'].'#'.((defined('SMART_FRAMEWORK_SECURITY_KEY') && ((string)SMART_FRAMEWORK_SECURITY_KEY != '')) ? SMART_FRAMEWORK_SECURITY_KEY : Smart::uuid_34()));
+						if((string)$tmp_upd_ctx !== (string)$frm['appcodeunpack']['!']) {
+							$a_err = 'AppCodeUnpack Update: Invalid Checksum';
+						} else {
+							$tmp_upd_ctx = null;
+							if((string)$frm['appcodeunpack']['@'] !== (string)SmartHashCrypto::sha256((string)$frm['appcodeunpack']['='])) {
+								$a_err = 'AppCodeUnpack Update: Invalid Data Checksum';
+							} else {
+								$tmp_upd_ctx = (string) SmartUtils::crypto_blowfish_decrypt((string)$frm['appcodeunpack']['=']);
+								if(
+									((string)trim((string)$tmp_upd_ctx) != '') AND
+									((string)$frm['appcodeunpack']['#'] === (string)SmartHashCrypto::sha384((string)$tmp_upd_ctx))
+								) {
+									SmartFileSystem::write((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php', (string)$tmp_upd_ctx);
+									if((string)SmartFileSystem::read((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php') === (string)$tmp_upd_ctx) {
+										$tmp_upd_ctx = null;
+										$tmp_upd_ctx = (string) php_strip_whitespace((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php');
+										if((string)$tmp_upd_ctx != '') {
+											if(!SmartFileSystem::rename((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php', 'appcodeunpack.php', true)) {
+												$a_err = 'AppCodeUnpack Update: Replace Failed !';
+											} //end if
+										} else {
+											$a_err = 'AppCodeUnpack Update: Saved content check Failed !';
+										} //end if else
+									} else {
+										$a_err = 'AppCodeUnpack Update: Saved content does not match !';
+									} //end if else
+								} else {
+									$a_err = 'AppCodeUnpack Update: Invalid Source Checksum';
+								} //end if else
+								$tmp_upd_ctx = null;
+							} //end if
+						} //end if else
+						$tmp_upd_ctx = null;
+					} //end if
+					$msg .= "\n".'AppCodeUnpack-Update: `'.(((string)$a_err == '') ? 'OK' : 'ERR: '.$a_err).'`';
+				} //end if
+				if(SmartFileSystem::is_type_file(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php')) {
+					SmartFileSystem::delete((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php'); // just in case
+				} //end if
+				$msg .= "\n".'AppCodeUnpack-Version: '.self::APPCODEUNPACK_VERSION;
 				$out = (string) self::jsAjaxReplyToHtmlForm((string)$status, (string)$status, (string)$msg);
 				break;
 			case '':
 				$loader = false;
-				$title = 'NEW SOFTWARE RELEASE: DEPLOY a new AppCodePack Archive on this App Server';
+				$title = 'RELEASE MANAGER: DEPLOY a new AppCodePack Archive on this App Server';
 				$main = (string) SmartMarkersTemplating::render_template(
 					(string) (defined('APPCODEUNPACK_HTML_DEPLOY') ? APPCODEUNPACK_HTML_DEPLOY : '{#EMPTY-APPCODEUNPACK-DEPLOYTPL#}'),
 					[
@@ -337,7 +438,7 @@ final class AppCodeUnpack {
 				'APPCODEUNPACK_HTML_WATCH',
 				'APPCODEUNPACK_LOGO_SVG', 'APPCODEUNPACK_LOGO_APACHE_SVG', 'APPCODEUNPACK_LOGO_PHP_SVG', 'APPCODEUNPACK_LOGO_NETARCH_SVG',
 				'APPCODEUNPACK_LOGO_SF_SVG', 'APPCODEUNPACK_LOADING_SVG',
-				'APPCODEUNPACK_JS_APPCODEUNPACK',
+				'APPCODEUNPACK_CSS_LOCAL_FX', 'APPCODEUNPACK_JS_LOCAL_FX',
 				'APPCODEUNPACK_HTML_DEPLOY',
 				'APP_AUTH_ADMIN_ENFORCE_HTTPS', 'APP_AUTH_ADMIN_USERNAME', 'APP_AUTH_ADMIN_PASSWORD',
 				'APPCODEPACK_DEPLOY_SECRET', 'APPCODEPACK_DEPLOY_APPLIST',
@@ -600,7 +701,8 @@ final class AppCodeUnpack {
 				'JS-GRITTER' 			=> (string) (defined('APPCODEUNPACK_JS_GRITTER') ? APPCODEUNPACK_JS_GRITTER : ''),
 				'CSS-ALERTABLE' 		=> (string) (defined('APPCODEUNPACK_CSS_ALERTABLE') ? APPCODEUNPACK_CSS_ALERTABLE : ''),
 				'JS-ALERTABLE' 			=> (string) (defined('APPCODEUNPACK_JS_ALERTABLE') ? APPCODEUNPACK_JS_ALERTABLE : ''),
-				'JS-APPCODEUNPACK' 		=> (string) (defined('APPCODEUNPACK_JS_APPCODEUNPACK') ? APPCODEUNPACK_JS_APPCODEUNPACK : ''),
+				'CSS-APPCODEUNPACK' 	=> (string) (defined('APPCODEUNPACK_CSS_LOCAL_FX') ? APPCODEUNPACK_CSS_LOCAL_FX : ''),
+				'JS-APPCODEUNPACK' 		=> (string) (defined('APPCODEUNPACK_JS_LOCAL_FX') ? APPCODEUNPACK_JS_LOCAL_FX : ''),
 				'APPCODEUNPACK-SVG' 	=> (string) (defined('APPCODEUNPACK_LOGO_SVG') ? APPCODEUNPACK_LOGO_SVG : ''),
 				'APACHE-SVG' 			=> (string) (defined('APPCODEUNPACK_LOGO_APACHE_SVG') ? APPCODEUNPACK_LOGO_APACHE_SVG : ''),
 				'PHP-SVG' 				=> (string) (defined('APPCODEUNPACK_LOGO_PHP_SVG') ? APPCODEUNPACK_LOGO_PHP_SVG : ''),
@@ -610,7 +712,7 @@ final class AppCodeUnpack {
 				'NAME' 					=> (string) $name_all,
 				'NAME-PREFIX' 			=> (string) $name_prefix,
 				'NAME-SUFFIX' 			=> (string) $name_suffix,
-				'VERSION' 				=> (string) (defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') ? SMART_FRAMEWORK_RELEASE_TAGVERSION : '').'-'.(defined('SMART_FRAMEWORK_RELEASE_VERSION') ? SMART_FRAMEWORK_RELEASE_VERSION : '').' # '.self::APPCODEUNPACK_VERSION,
+				'VERSION' 				=> (string) (defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') ? SMART_FRAMEWORK_RELEASE_TAGVERSION : '').'-'.(defined('SMART_FRAMEWORK_RELEASE_VERSION') ? SMART_FRAMEWORK_RELEASE_VERSION : '').' # '.self::APPCODEUNPACK_VERSION.' :: '.(defined('APP_CUSTOM_STANDALONE_RHASH') ? APP_CUSTOM_STANDALONE_RHASH : '').' @ '.(defined('APP_CUSTOM_STANDALONE_DTIME') ? APP_CUSTOM_STANDALONE_DTIME : ''),
 				'MAIN' 					=> (string) $main,
 				'YEAR' 					=> (string) date('Y'),
 				'SHOW-LOADER' 			=> (string) (($loader === true) ? 'yes' : 'no'),

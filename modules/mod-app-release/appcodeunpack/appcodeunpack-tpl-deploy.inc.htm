@@ -1,4 +1,4 @@
-<!-- deploy form v.20210514 -->
+<!-- deploy form v.20210522 -->
 <form name="unpack-form" id="unpack-form" method="post" enctype="multipart/form-data" action="#" onsubmit="return false;">
 <div class="boxTable greyTable">
 	<table width="width:100%;">
@@ -28,7 +28,7 @@
 [%%%/LOOP:APP-IDS-ARR%%%]
 </select> &nbsp; <input type="text" name="frm[appid-hash]" size="40" maxlength="40" class="ux-field ux-field-xl customInput" placeholder="AppID-Hash" title="Enter the AppID-Hash" autocomplete="off" required>
 <br>
-<input type="file" accept=".z-netarch" title="Browse a NetArchive (.z-netarch) AppPackCode Package" name="znetarch" id="file-znetarch" class="ux-field ux-field-xl customInput" autocomplete="off" required> &nbsp; <span style="color:#DCDCDC;">Max File Size support (php.ini): [###MAX-UPLD-SIZE|html###]</span>
+<input type="file" accept=".z-netarch" title="Browse a NetArchive (.z-netarch) AppPackCode Package" name="znetarch" id="file-znetarch" class="ux-field ux-field-xl customInput" autocomplete="off" required> &nbsp; <span style="color:#888888;">Max File Size support (php.ini): [###MAX-UPLD-SIZE|html###]</span>
 <br>
 <button id="unpack-bttn-form" type="button" class="ux-button ux-button-super ux-button-special" title="Click this button to proceed" onClick="return false;">Upload Package and Deploy the Code on this App Server for the selected AppID</button>
 </center>

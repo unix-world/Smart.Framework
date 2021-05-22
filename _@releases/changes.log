@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+May 22, 2021 :: :: Version 7.2.1 rev.20210522
+	* mod app release, STABLE
+	* bump to version 8
+
 May 14, 2021 :: :: Version 7.2.1 rev.20210514
 	* added TPL post-render placeholders
 	* added ASCII Art Captcha as alternative to SVG Captcha

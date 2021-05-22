@@ -11,7 +11,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 } //end if
 //-----------------------------------------------------
 
-// AppPackUtils free
+// PHP8
 
 //--
 // gzencode / gzdecode (rfc1952) is the gzip compatible algorithm which uses CRC32 minimal checksums (a bit safer and faster than ADLER32)
@@ -48,9 +48,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetPackager {
 
 	// ->
-	// v.20210511
+	// v.20210522
 
-	public const APP_NET_PACKAGER_VERSION = 'v.20210511';
+	public const APP_NET_PACKAGER_VERSION = 'v.20210522';
 
 	//--
 	private $error_log = '';
@@ -329,7 +329,9 @@ final class AppNetPackager {
 				return '';
 			} //end if
 		} //end if
-		echo '<b>[D]&nbsp;'.Smart::escape_html((string)(($base_dir == '.') ? '' : $base_dir.'/').$base_sdir).'/'.'</b><br>';
+		echo '<b>[D]&nbsp;'.Smart::escape_html((string)(($base_dir == '.') ? '' : $base_dir.'/').$base_sdir).'/'.'</b><br>'."\n";
+		echo (string) '<script>setTimeout(() => { smartJ$Browser.windwScrollDown(self, -1); }, 150);</script>'."\n";
+		Smart::InstantFlush();
 		//--
 		$this->arr_folders[] = $tmp_path;
 		//--
@@ -389,7 +391,8 @@ final class AppNetPackager {
 		//--
 		$base_dir = (string) Smart::dir_name((string)$fixed_path);
 		$base_file = (string) Smart::base_name((string)$fixed_path);
-		echo (string) '[F]&nbsp;'.Smart::escape_html((string)$base_dir.'/'.$base_file).'<br>';
+		echo (string) '[F]&nbsp;'.Smart::escape_html((string)$base_dir.'/'.$base_file).'<br>'."\n";
+		Smart::InstantFlush();
 		//--
 		$this->arr_files[] = $tmp_path;
 		//--

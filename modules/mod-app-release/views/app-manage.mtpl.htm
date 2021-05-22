@@ -4,12 +4,21 @@ const AppID = '[###APP-ID|js###]';
 const overlayID = 'app-release-task-OVERLAY';
 [%%%IF:APP-ID:!=;%%%]
 const runTask = () => {
-	const selTask = $('#task-run-sel').val();
+	const selIdTask = $('#task-run-sel').val();
+	const selTxtTask = $('#task-run-sel option:selected').text();
 	const modalPopId = 'AppCodePackOps';
+	let selTask = selIdTask;
 	if(selTask) {
-		if(selTask == 'code-netpack') {
+		let urlSuffix = '';
+		if(selTask == 'code-netxunpack') {
+			selTask = 'code-netunpack';
+			urlSuffix = '&cleanup=yes';
+		}
+		if((selTask == 'release-info') || (selTask == 'code-deploy')) {
+			self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID)) + urlSuffix;
+		} else if(selTask == 'code-netpack') {
 			smartJ$Browser.ConfirmDialog(
-				'<div class="operation_important">You are about to run this task: `' + smartJ$Utils.escape_html(smartJ$Utils.stringUcFirst(selTask)) + '`</div><div class="operation_question">Enter a Package Release Info</div><input type="text" maxlength="255" id="prompt-alertable-field" placeholder="Package Comment" style="width:96%"><h5>Press OK to Create the Release Package ...</h5>',
+				'<div class="operation_important">You are about to run this task: `' + smartJ$Utils.escape_html(selTxtTask) + '`</div><div class="operation_question">Enter a Package Release Info</div><input type="text" maxlength="255" id="prompt-alertable-field" placeholder="Package Comment" style="width:100%"><h5>Press OK to Create the Release Package ...</h5>',
 				() => {
 					smartJ$Browser.OverlayShow(null, null, null, overlayID, true);
 					setTimeout(() => {
@@ -18,17 +27,17 @@ const runTask = () => {
 							smartJ$Browser.OverlayHide(overlayID);
 							smartJ$Browser.GrowlNotificationAdd('No Package Comment', 'The Package Comment is Mandatory and must be between 10 and 255 characters.', 'lib/framework/img/sign-warn.svg', 15000, false, 'pink');
 						} else {
-							self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID) + '&comment=' + smartJ$Utils.escape_url(comment ? String(comment) : ''));
+							self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID) + '&comment=' + smartJ$Utils.escape_url(comment ? String(comment) : '')) + urlSuffix;
 						}
 					}, 250);
 				},
-				'Confirm: Create Release Package &nbsp; <i class="sfi sfi-box-remove sfi-xl"></i>',
-				null,
-				325
+				'Confirm: Create Release Package &nbsp; <i class="sfi sfi-box-add sfi-xl"></i>',
+				700,
+				355
 			);
 		} else {
 			smartJ$Browser.ConfirmDialog(
-				'<div class="operation_important">You are about to run this task: `' + smartJ$Utils.escape_html(smartJ$Utils.stringUcFirst(selTask)) + '`</div><h5>Press OK to Run the selected Task ...</h5>',
+				'<div class="operation_important">You are about to run this task: `' + smartJ$Utils.escape_html(selTxtTask) + '`</div><h5>Press OK to Run the selected Task ...</h5>',
 				() => {
 					smartJ$Browser.OverlayShow(null, null, null, overlayID, true);
 					if(selTask == 'code-cleanup') {
@@ -37,11 +46,11 @@ const runTask = () => {
 							smartJ$Browser.PopUpLink(smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID)), modalPopId, $(window).width() * 0.96, $(window).height() * 0.92, 0, 1);
 						}, 250);
 					} else {
-						self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID));
+						self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID)) + urlSuffix;
 					} //end if else
 				},
 				'Confirm: Run Task &nbsp; <i class="sfi sfi-cogs sfi-xl"></i>',
-				null,
+				700,
 				250
 			);
 		}
@@ -51,10 +60,11 @@ const runTask = () => {
 };
 const manageButtonSelTask = () => {
 	const selTask = $('#task-run-sel').val();
+	const $btn = $('#bttn-task-run');
 	if(selTask) {
-		$('#bttn-task-run').removeClass('ux-button-secondary').addClass('ux-button-special');
+		$btn.removeClass('ux-button-secondary').addClass('ux-button-special');
 	} else {
-		$('#bttn-task-run').removeClass('ux-button-special').addClass('ux-button-secondary');
+		$btn.removeClass('ux-button-special').addClass('ux-button-secondary');
 	}
 };
 [%%%ELSE:APP-ID%%%]
@@ -100,7 +110,7 @@ const manageButtonSelApp = () => {
 </div>
 <hr>
 [%%%IF:LAST-PACKAGE:!=;%%%]
-<div class="operation_notice"><center><i>Last Package</i>: `[%%%IF:LAST-PKG-DWN-URL:!=;%%%]<a class="underlink" href="[###LAST-PKG-DWN-URL|html###]">[%%%/IF:LAST-PKG-DWN-URL%%%][###LAST-PACKAGE|html###][%%%IF:LAST-PKG-DWN-URL:!=;%%%]</a>[%%%/IF:LAST-PKG-DWN-URL%%%]`</center></div>
+<div class="operation_notice"><center><i>Latest Release Package</i>: `[%%%IF:LAST-PKG-DWN-URL:!=;%%%]<a class="underlink" href="[###LAST-PKG-DWN-URL|html###]">[%%%/IF:LAST-PKG-DWN-URL%%%][###LAST-PACKAGE|html###][%%%IF:LAST-PKG-DWN-URL:!=;%%%]</a>[%%%/IF:LAST-PKG-DWN-URL%%%]` &nbsp;<i class="sfi sfi-box-add sfi-2x" style="color:#555555 !important;"></i></center></div>
 [%%%/IF:LAST-PACKAGE%%%]
 <br>
 <center>[###HTML-POWERED-INFO###]</center>

@@ -46,7 +46,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * 		$browser->browse_url('https://some-website.ext:443/some-path/', 'GET', 'tls')
  * );
  *
- * // Sample POST, with optional Files and Cookies
+ * // Sample POST, with optional Files and Cookies ; If Files, will send multipart form data
  * $browser = new SmartHttpClient();
  * $browser->postvars = [
  * 		'var1' => 'val1',
@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS, SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20210506
+ * @version 	v.20210520
  * @package 	@Core:Network
  *
  */
@@ -1104,7 +1104,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20210506
+ * @version 	v.20210520
  * @package 	@Core:Network
  *
  */
@@ -1188,26 +1188,28 @@ final class SmartHttpUtils {
 			//--
 			if(is_array($content)) {
 				//--
-				foreach($content as $key => $val) {
-					//--
-					$data .= '--'.$delimiter."\r\n";
-					//--
-					$data .= 'Content-Disposition: form-data; name="'.Smart::safe_varname($name).'['.str_replace('"', '\\"', (string)$key).']'.'"'."\r\n";
-					$data .= 'Content-Type: text/plain; charset=UTF-8'."\r\n";
-					$data .= 'Content-Length: '.(int)(strlen((string)$val))."\r\n";
-					//--
-					$data .= "\r\n".$val."\r\n";
-					//--
-				} //end foreach
+				$flatten_arr = (array) self::flatten_form_arr((string)$name, (array)$content);
+				if(Smart::array_size($flatten_arr) > 0) {
+					for($i=0; $i<Smart::array_size($flatten_arr); $i++) {
+						if(is_array($flatten_arr[$i])) {
+							if((array_key_exists('name', (array)$flatten_arr[$i])) AND (array_key_exists('content', (array)$flatten_arr[$i]))) {
+								$data .= '--'.$delimiter."\r\n";
+								$data .= 'Content-Disposition: form-data; name="'.Smart::normalize_spaces((string)str_replace('"', '\\"', (string)$flatten_arr[$i]['name'])).'"'."\r\n";
+								$data .= 'Content-Type: text/plain; charset=UTF-8'."\r\n";
+								$data .= 'Content-Length: '.(int)(strlen((string)$flatten_arr[$i]['content']))."\r\n";
+								$data .= "\r\n".$flatten_arr[$i]['content']."\r\n";
+							} //end if
+						} //end if
+					} //end for
+				} //end if
+				$flatten_arr = null; // free mem
 				//--
 			} else {
 				//--
 				$data .= '--'.$delimiter."\r\n";
-				//--
 				$data .= 'Content-Disposition: form-data; name="'.Smart::safe_varname($name).'"'."\r\n";
 				$data .= 'Content-Type: text/plain; charset=UTF-8'."\r\n";
 				$data .= 'Content-Length: '.(int)(strlen((string)$content))."\r\n";
-				//--
 				$data .= "\r\n".$content."\r\n";
 				//--
 			} //end if else
@@ -1293,6 +1295,25 @@ final class SmartHttpUtils {
 		} //end while
 		//--
 		return (string) $dechunk;
+		//--
+	} //END FUNCTION
+	//==============================================
+
+
+	//==============================================
+	// return non-associative array as [ 'name[key][0][skey]' => 'string-value' ]
+	private static function flatten_form_arr(string $key, array $data, array $result=[]) {
+		//--
+		foreach($data as $skey => $value) {
+			$skey = (string) $key.'['.$skey.']';
+			if(is_array($value)) {
+				$result = (array) self::flatten_form_arr((string)$skey, (array)$value, (array)$result);
+			} else {
+				$result[] = [ 'name' => (string) $skey, 'content' => (string) $value ];
+			} //end if else
+		} //end foreach
+		//--
+		return (array) $result;
 		//--
 	} //END FUNCTION
 	//==============================================

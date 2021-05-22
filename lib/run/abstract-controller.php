@@ -103,7 +103,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210506
+ * @version 	v.20210520
  * @package 	development:Application
  *
  */
@@ -272,7 +272,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		$this->urlbasedomain 	= (string) SmartUtils::get_server_current_basedomain_name();						// 127.0.0.1|localhost|dom.ext
 		$this->urldomain 		= (string) SmartUtils::get_server_current_domain_name(); 							// 127.0.0.1|localhost|sdom.dom.ext
 		$this->urlport 			= (string) SmartUtils::get_server_current_port(); 									// 80 | 443 | ...
-		$this->urlscript 		= (string) $param_url_script; 														// index.php | admin.php
+		$this->urlscript 		= (string) $param_url_script; 														// index.php | admin.php | task.php
 		$this->urlpath 			= (string) $param_url_path; 														// /frameworks/smart-framework/
 		$this->urladdr 			= (string) $param_url_addr; 														// http(s)://127.0.0.1|localhost:8008/frameworks/smart-framework/
 		$this->urlpage 			= (string) $y_url_page; 															// this may vary depending on semantic URL rule but can be equal with: something.someaction | someaction | something
@@ -489,7 +489,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 * 		url-domain 					:: 		ex: 127.0.0.1|localhost|sdom.dom.ext (the curent server domain, or IP)
 	 * 		url-port 					:: 		ex: 80 | 443 | 8080 ... (the current server port)
 	 * 		url-port-addr 				:: 		ex: '' | ''  | ':8080' ... (the current server port address ; empty for port 80 and 443 ; for the rest of ports will be :portnumber)
-	 * 		url-script 					:: 		ex: index.php / admin.php
+	 * 		url-script 					:: 		ex: index.php | admin.php | task.php
 	 * 		url-path 					:: 		ex: /sites/smart-framework/
 	 * 		url-addr 					:: 		ex: http(s)://127.0.0.1|localhost/sites/smart-framework/
 	 * 		url-page 					:: 		ex: samples.test | test  (if samples is the default module) ; this is returning the URL page variable as is in the URL (it can be the same as 'controller' or if rewrite is used inside framework can vary

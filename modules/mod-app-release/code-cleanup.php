@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: AppRelease/Cleanup
-// Route: ?/page/app-release.cleanup (?page=app-release.cleanup)
+// Controller: AppRelease/CodeCleanup
+// Route: ?/page/app-release.code-cleanup (?page=app-release.code-cleanup)
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
@@ -12,7 +12,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
+// SMART_APP_MODULE_DIRECT_OUTPUT :: TRUE :: # by parent class
 
 define('SMART_APP_MODULE_AREA', 'TASK');
 define('SMART_APP_MODULE_AUTH', true);
@@ -20,16 +20,21 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
 
 
 /**
- * Task Controller
+ * Task Controller: Custom Task
  *
- * @ignore
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20210522
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
 
-	protected $title = 'Cleanup Code Optimizations';
-	protected $err = '';
+	protected $title = 'Cleanup: Delete Optimizations Folder, Package and Release files';
+
+	protected $sficon = '';
 	protected $msg = '';
+	protected $err = '';
 
 	protected $working = true;
 	protected $modal = true;
@@ -69,6 +74,9 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			return;
 		} //end if
 		//--
+
+		//--
+		$this->sficon = 'bin';
 		$this->msg = 'Cleanup DONE';
 		$this->selfclose = 3500;
 		//--

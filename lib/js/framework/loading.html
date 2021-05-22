@@ -1,0 +1,43 @@
+<!-- loading.html -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="ROBOTS" content="NOINDEX, NOARCHIVE">
+<link rel="icon" href="data:,">
+<title></title>
+<style>
+.loader {
+	display: inline-block;
+	width: 64px;
+	height: 64px;
+	opacity: 0.37;
+}
+.loader:after {
+	content: " ";
+	display: block;
+	width: 48px;
+	height: 48px;
+	margin: 8px;
+	border-radius: 50%;
+	border: 6px solid #778877;
+	border-color: #778877 transparent #778877 transparent;
+	animation: loader 1.2s linear infinite;
+}
+@keyframes loader {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+</style>
+</head>
+<body>
+<div class="loader"></div>
+</body>
+</html>

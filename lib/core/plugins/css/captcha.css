@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Captcha :: r.7.2.1 / smart.framework.v.7.2 -- */
 
-/* v.20210517 */
+/* v.20210519 */
 
 /* ----------------------------- */
 
@@ -22,7 +22,17 @@ div.Smart-Captcha-Area * {
 	font-size: 0.75rem !important;
 }
 
-div.Smart-Captcha-AsciiArt * {
+div.Smart-Captcha-Area div.Smart-Captcha-Err {
+	padding: 8px !important;
+	background: #EF4756 !important;
+	color: #FFFFFF !important;
+	font-size: 1rem !important;
+	font-weight: bold !important;
+	text-align: center !important;
+	border-radius: 2px !important;
+}
+
+div.Smart-Captcha-Area div.Smart-Captcha-AsciiArt * {
 	font-size: 0.33rem !important;
 	line-height: 0.33rem !important;
 	font-weight: bold !important;

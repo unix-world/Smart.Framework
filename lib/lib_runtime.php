@@ -52,6 +52,74 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
+	public static function GetStatusMessageByStatusCode(int $y_http_status_code) {
+		//--
+		$status_code_msg = 'Unknown';
+		//--
+		switch((int)$y_http_status_code) {
+			//--
+			case 200:
+				$status_code_msg = 'OK';
+				break;
+			case 202:
+				$status_code_msg = 'Accepted';
+				break;
+			case 203:
+				$status_code_msg = 'Non-Authoritative Information';
+				break;
+			case 208:
+				$status_code_msg = 'Already Reported';
+				break;
+			//--
+			case 301:
+				$status_code_msg = 'Moved Permanently (Permanent Redirect)';
+				break;
+			case 302:
+				$status_code_msg = 'Found (Temporary Redirect)';
+				break;
+			case 304:
+				$status_code_msg = 'Not Modified';
+				break;
+			//--
+			case 400:
+				$status_code_msg = 'Bad Request';
+				break;
+			case 401:
+				$status_code_msg = 'Unauthorized';
+				break;
+			case 403:
+				$status_code_msg = 'Forbidden';
+				break;
+			case 404:
+				$status_code_msg = 'Not Found';
+				break;
+			case 429:
+				$status_code_msg = 'Too Many Requests';
+				break;
+			case 500:
+				$status_code_msg = 'Internal Server Error';
+				break;
+			case 502:
+				$status_code_msg = 'Bad Gateway';
+				break;
+			case 503:
+				$status_code_msg = 'Service Unavailable';
+				break;
+			case 504:
+				$status_code_msg = 'Gateway Timeout';
+				break;
+			default:
+				$status_code_msg = '(Other: See the HTTP Status Codes @ rfc7231)';
+			//--
+		} //end switch
+		//--
+		return (string) $status_code_msg;
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
 	public static function Raise202Status($y_msg, $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {

@@ -1,5 +1,5 @@
 <?php
-// [@[#[!NO-STRIP!]#]@]
+// [@[#[!SF.DEV-ONLY!]#]@]
 // App Net UnPackager
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
@@ -11,7 +11,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 } //end if
 //-----------------------------------------------------
 
-// AppPackUtils free
+// PHP8
 
 //--
 // gzencode / gzdecode (rfc1952) is the gzip compatible algorithm which uses CRC32 minimal checksums (a bit safer and faster than ADLER32)
@@ -45,9 +45,11 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetUnPackager {
 
 	// ::
-	// v.20210511
+	// v.20210522
 
-	public const APP_NET_UNPACKAGER_VERSION = 'v.20210511';
+	public const APP_NET_UNPACKAGER_VERSION = 'v.20210522';
+
+	public const APP_NET_UNPACKAGER_MIN_PACK_SIZE = 777; // min 777 bytes by the headers
 
 	public const APP_NET_UNPACKAGER_FOLDER = '#APPCODE-UNPACK#/'; // {{{SYNC-APPCODEUNPACK-FOLDER}}}
 
@@ -209,7 +211,7 @@ Options -Indexes
 
 
 	//================================================================
-	public static function unpack_netarchive($y_content, $testonly) {
+	public static function unpack_netarchive(?string $y_content, bool $testonly) {
 		//--
 		if(!$testonly) {
 			self::$unpack_app_log_file = ''; // clear, reset, but not in test only mode to avoid reset last real unpack log path
@@ -263,7 +265,7 @@ Options -Indexes
 			//--
 		} //end if
 		//--
-		$err = (string) self::unpack_operate_netarchive($y_content, $testonly, $the_tmp_netarch_folder);
+		$err = (string) self::unpack_operate_netarchive((string)$y_content, (bool)$testonly, (string)$the_tmp_netarch_folder);
 		//--
 		if(!$testonly) { // IF NOT TEST: CREATE NEW @ TMP NETARCH FOLDER
 			//--
@@ -519,13 +521,17 @@ Options -Indexes
 
 
 	//================================================================
-	private static function unpack_operate_netarchive($y_content, $testonly, $the_tmp_netarch_folder) {
+	private static function unpack_operate_netarchive(?string $y_content, bool $testonly, ?string $the_tmp_netarch_folder) {
 		//--
 		if(!$testonly) {
 			self::$unpack_app_log_file = ''; // clear, reset, but not in test only mode to avoid reset last real unpack log path
 		} //end if
 		//--
 		$y_content = (string) trim((string)$y_content);
+		$the_pack_size = (int) strlen((string)$y_content);
+		if((int)$the_pack_size < (int)self::APP_NET_UNPACKAGER_MIN_PACK_SIZE) {
+			return 'ERROR: The Package Size is invalid, must have at least '.(int)self::APP_NET_UNPACKAGER_MIN_PACK_SIZE.' bytes but have: '.(int)$the_pack_size;
+		} //end if
 		//-- CHECK RESTORE ROOT
 		if(!defined('APPCODEPACK_APP_ID')) {
 			return 'A required constant (APPCODEPACK_APP_ID) has not been defined and must be used as the restore root / validations';
@@ -570,7 +576,7 @@ Options -Indexes
 				$tmp_chk_last_data_hash = (string) trim((string)SmartFileSystem::read((string)$tmp_the_package_logfile_path));
 			} //end if
 			if((string)$tmp_chk_last_data_hash == (string)$the_tmp_netarch_data_hash) {
-				return 'ERROR: NetArchive Package already Deployed (the current package to be deployed is identical with the last deployed package) !';
+				return 'WARNING: NetArchive Package already Deployed. The current package to be deployed is identical with the previous deployed package ...';
 			} //end if
 			if(SmartFileSystem::write((string)$tmp_the_package_logfile_path, (string)$the_tmp_netarch_data_hash) != 1) {
 				return 'ERROR: NetArchive Saved Versions: EXTRACTION Folder '.$tmp_the_package_logfile_path.' failed to be (re)written !';

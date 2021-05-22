@@ -22,14 +22,16 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @internal
  *
  */
-function autoload__SmartFrameworkModulesAppRelease($classname) { // v.20210511
+function autoload__SmartFrameworkLibModulesAppRelease($classname) { // v.20210522
 	//--
 	switch((string)$classname) {
 		//--
 		case 'AppCodeUtils':
 		case 'AppCodeOptimizer':
+		case 'ShrinkCode':
+		case 'ShrinkJsCode':
+		case 'ShrinkCssCode':
 		case 'StripCode':
-		case 'CssLint':
 		case 'CssOptimizer':
 		case 'JsOptimizer':
 		case 'PhpOptimizer':
@@ -45,7 +47,7 @@ function autoload__SmartFrameworkModulesAppRelease($classname) { // v.20210511
 	//--
 } //END FUNCTION
 //--
-spl_autoload_register('autoload__SmartFrameworkModulesAppRelease', true, false); 	// throw / append
+spl_autoload_register('autoload__SmartFrameworkLibModulesAppRelease', true, false); 	// throw / append
 //--
 
 

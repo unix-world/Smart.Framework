@@ -13,29 +13,37 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 } //end if
 //-----------------------------------------------------
 
+define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
 
 /**
- * Abstract Task Controller
+ * Task Controller: Abstract Custom Task
  *
  * @access 		private
  * @internal
  *
- * @version 	v.20210511
+ * @version 	v.20210522
  *
  */
 abstract class AbstractTaskController extends \SmartAbstractAppController {
 
 	protected $title = 'App Release Task (Abstract)';
-	protected $err = '';
+
+	protected $sficon = '';
 	protected $msg = '';
+	protected $err = '';
+	protected $notice = '';
+	protected $notehtml = '';
+
+	protected $goback = '';
 
 	protected $details = false;
 
 	protected $modal = false;
+	protected $workvar = '';
 	protected $working = false;
 	protected $workstop = false;
 	protected $selfclose = 0;
@@ -76,8 +84,8 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 		} //end if
 		//--
 		$ini_settings = \AppCodeUtils::parseIniSettings(); // mixed
-		if(!\is_int($ini_settings) OR ($ini_settings !== 3)) { // there are 3 mandatory settings: MAX RUN TIMEOUT, PHP and NODE executables {{{SYNC-CHECK-APP-INI-SETTINGS}}}
-			\SmartFrameworkRuntime::Raise503Error('INI SETTINGS PARSE ERROR: '.$ini_settings);
+		if(!\is_int($ini_settings) OR ($ini_settings !== 2)) { // there are 2 mandatory settings: MAX RUN TIMEOUT and PHP executable {{{SYNC-CHECK-APP-INI-SETTINGS}}}
+			\SmartFrameworkRuntime::Raise503Error('INI SETTINGS PARSE ERROR: Num Req. is: #'.$ini_settings);
 			return;
 		} //end if
 		//--
@@ -91,7 +99,16 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 			return;
 		} //end if
 		//--
+		if((string)$this->workvar != '') { // conditional by workvar
+			if(\SmartFrameworkSecurity::ValidateUrlVariableName((string)$this->workvar)) {
+				if(!$this->RequestVarGet((string)$this->workvar)) {
+					$this->working = false;
+				} //end if
+			} //end if
+		} //end if
+		//--
 		\SmartFrameworkRuntime::outputHttpHeadersNoCache();
+		$arr_utils_metainfo = (array) \AppCodeUtils::getArrIniMetaInfo();
 		echo (string) \SmartMarkersTemplating::render_file_template(
 			$this->ControllerGetParam('module-tpl-path').'tpl-task-start.mtpl.htm',
 			\SmartComponents::set_app_template_conform_metavars([ // {{{SYNC-APP-RELEASE-TPL-VARS}}}
@@ -104,15 +121,19 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 				'NAME-PREFIX' 		=> (string) $name_prefix,
 				'NAME-SUFFIX' 		=> (string) $name_suffix,
 				'MOD-VIEW-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
-				'PHP-BIN-VER' 		=> (string) (defined('\\TASK_APP_RELEASE_CODEPACK_PHP_BIN') ? ' @ '.\TASK_APP_RELEASE_CODEPACK_PHP_BIN : '').(defined('\\TASK_APP_RELEASE_CODEPACK_PHP_VERSION') ? ' :: '.\TASK_APP_RELEASE_CODEPACK_PHP_VERSION : ''),
-				'NODE-BIN-VER' 		=> (string) (defined('\\TASK_APP_RELEASE_CODEPACK_NODEJS_BIN') ? ' @ '.\TASK_APP_RELEASE_CODEPACK_NODEJS_BIN : '').(defined('\\TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION') ? ' :: '.\TASK_APP_RELEASE_CODEPACK_NODEJS_VERSION : ''),
-				'JS-MIN-VER' 		=> (string) (defined('\\TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS') ? ' :: '.\TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS : ''),
-				'CSS-MIN-VER' 		=> (string) (defined('\\TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_CSS') ? ' :: '.\TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_CSS : ''),
+				'PHP-SELF-VER' 		=> (string) $arr_utils_metainfo['PHP-SELF-VER'],
+				'PHP-BIN-VER' 		=> (string) $arr_utils_metainfo['PHP-BIN-VER'],
+				'NODE-BIN-VER' 		=> (string) $arr_utils_metainfo['NODE-BIN-VER'],
+				'JS-MIN-VER' 		=> (string) $arr_utils_metainfo['JS-MIN-VER'],
+				'JS-LINT-MODE' 		=> (string) $arr_utils_metainfo['JS-LINT-MODE'],
+				'CSS-MIN-VER' 		=> (string) $arr_utils_metainfo['CSS-MIN-VER'],
+				'CSS-LINT-MODE' 	=> (string) $arr_utils_metainfo['CSS-LINT-MODE'],
 				'SF-VER' 			=> (string) ' :: '.\AppCodeUtils::getSfVersion(),
 				'APP-ID' 			=> (string) (\defined('\\APPCODEPACK_APP_ID') ? \APPCODEPACK_APP_ID : ''),
 				'APP-DEPLOY-HASH' 	=> (string) (\defined('\\APP_DEPLOY_HASH') ? \APP_DEPLOY_HASH : ''),
 				'APP-DEPLOY-USER' 	=> (string) (\defined('\\APP_DEPLOY_AUTH_USERNAME') ? \APP_DEPLOY_AUTH_USERNAME : ''),
 				'APP_DEPLOY_URLS' 	=> (string) (\defined('\\APP_DEPLOY_URLS') ? \APP_DEPLOY_URLS : ''),
+				'APP-STRATEGY' 		=> (string) (\defined('\\TASK_APP_RELEASE_CODEPACK_MODE') ? \TASK_APP_RELEASE_CODEPACK_MODE : ''),
 				'APP-FOLDERS' 		=> (string) 'Folders: '.(\defined('\\APP_DEPLOY_FOLDERS') ? \SmartUtils::pretty_print_var(\Smart::json_decode((string)\APP_DEPLOY_FOLDERS)) : ''),
 				'APP-FILES' 		=> (string) 'Files: '.(\defined('\\APP_DEPLOY_FILES') ? \SmartUtils::pretty_print_var(\Smart::json_decode((string)\APP_DEPLOY_FILES)) : ''),
 				'APP-DETAILS' 		=> (string) (($this->details !== false) ? 'yes' : 'no'),
@@ -126,11 +147,21 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 	final public function ShutDown() {
 		//--
 		$err = (string) \trim((string)$this->err);
+		$notice = (string) \trim((string)$this->notice);
+		//--
+		$icon = '';
+		if((string)$this->sficon != '') {
+			$icon = ' &nbsp;&nbsp; <i class="sfi sfi-2x sfi-'.\Smart::escape_html((string)$this->sficon).'"></i>';
+		} //end if
 		//--
 		if((string)$err != '') {
-			echo (string) \SmartComponents::operation_error((string)\Smart::escape_html((string)$err));
+			echo (string) \SmartComponents::operation_error((string)\Smart::nl_2_br((string)\Smart::escape_html((string)$err)).$icon);
+		} elseif((string)$notice != '') {
+			echo (string) \SmartComponents::operation_notice((string)\Smart::nl_2_br((string)\Smart::escape_html((string)$notice)).$icon);
+			echo "\n";
+			echo (string) $this->notehtml;
 		} else {
-			echo (string) \SmartComponents::operation_success('OK: Completed ... '.\Smart::escape_html((string)$this->msg));
+			echo (string) \SmartComponents::operation_success('OK: Completed ... '.\Smart::nl_2_br((string)\Smart::escape_html((string)$this->msg)).$icon);
 		} //end if
 		$this->InstantFlush();
 		//--
@@ -139,10 +170,13 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 			(array) \SmartComponents::set_app_template_conform_metavars([
 				'TITLE' 			=> (string) $this->title,
 				'YEAR' 				=> (string) \date('Y'),
+				'WORKING' 			=> (string) (($this->working === true) ? 'yes' : 'no'),
 				'HAVE-ERRORS' 		=> (string) (\strlen((string)$err) ? 'yes' : 'no'),
+				'HAVE_NOTICE' 		=> (string) (\strlen((string)$notice) ? 'yes' : 'no'),
 				'MODAL' 			=> (string) (($this->modal === true) ? 'yes' : 'no'),
 				'SELFCLOSE' 		=> (string) (((int)$this->selfclose > 0) ? (int)$this->selfclose : 0),
 				'ENDSCROLL' 		=> (string) (($this->endscroll === true) ? 'yes' : 'no'),
+				'GO-BACK-URL' 		=> (string) $this->goback,
 			])
 		);
 		$this->InstantFlush();

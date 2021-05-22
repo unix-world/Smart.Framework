@@ -1,8 +1,8 @@
 
-// AppCodeUnpack JS Functions
+// AppCodeUnpack JS Local Functions
 // (c) 2013-2021 unix-world.org
 // License: BSD
-// v.20210514
+// v.20210522
 
 // DEPENDS: smartJ$Utils, smartJ$Date, smartJ$CryptoHash, jQuery
 

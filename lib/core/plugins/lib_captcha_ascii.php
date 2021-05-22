@@ -47,7 +47,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart
- * @version 	v.20210516
+ * @version 	v.20210519
  * @package 	development:Captcha
  */
 final class SmartAsciiCaptcha {

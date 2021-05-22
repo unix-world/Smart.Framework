@@ -1,6 +1,6 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Javascript Optimizer
+// JS Code Optimizer
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
@@ -11,7 +11,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 } //end if
 //-----------------------------------------------------
 
-// AppPackUtils free
+// PHP8
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
  * AppCodeUtils::
  * StripCode::
  *
- * @depends external: node+uglifyJs ; constants: TASK_APP_RELEASE_CODEPACK_NODEJS_BIN, TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS
+ * @depends external: node+uglifyJs ; constants: TASK_APP_RELEASE_CODEPACK_NODEJS_BIN, TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS ; optional constants: TASK_APP_RELEASE_CODEPACK_MOZJS_BIN
  *
  * @access 		private
  * @internal
@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class JsOptimizer {
 
 	// ::
-	// v.20210511
+	// v.20210522
 
 
 	//====================================================
@@ -145,12 +145,14 @@ final class JsOptimizer {
 		//--
 		$err = '';
 		//--
+		$linter = (string) self::getLintBinary();
+		//--
 		if((string)$y_script_path == '') {
 			$err = 'ERROR: Js-Lint / Empty Script Path';
-		} elseif(defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN') AND ((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN != '')) {
-			if(AppCodeUtils::checkIfExecutable((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN) === true) {
+		} elseif((string)$linter != '') {
+			if(AppCodeUtils::checkIfExecutable((string)$linter) === true) {
 				$parr = (array) SmartUtils::run_proc_cmd(
-					(string) escapeshellcmd((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN).' -c '.escapeshellarg((string)$y_script_path),
+					(string) escapeshellcmd((string)$linter).' -c '.escapeshellarg((string)$y_script_path),
 					null,
 					null,
 					null
@@ -162,11 +164,28 @@ final class JsOptimizer {
 					$err = 'ERROR: Js-Lint Failed with ExitCode['.$exitcode.'] on this File: '.$y_script_path."\n".$lint_errors;
 				} //end if
 			} else {
-				$err = 'ERROR: Js-Lint / BINARY NOT Found or NOT Executable: '.TASK_APP_RELEASE_CODEPACK_NODEJS_BIN;
+				$err = 'ERROR: Js-Lint / BINARY NOT Found or NOT Executable: '.$linter;
 			} //end if
 		} //end if
 		//--
 		return (string) $err;
+		//--
+	} //END FUNCTION
+	//====================================================
+
+
+	//====================================================
+	private static function getLintBinary() {
+		//--
+		$linter = '';
+		//--
+		if(defined('TASK_APP_RELEASE_CODEPACK_MOZJS_BIN') AND ((string)TASK_APP_RELEASE_CODEPACK_MOZJS_BIN != '')) {
+			$linter = (string) TASK_APP_RELEASE_CODEPACK_MOZJS_BIN;
+		} elseif(defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN') AND ((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN != '')) {
+			$linter = (string) TASK_APP_RELEASE_CODEPACK_NODEJS_BIN;
+		} //end if else
+		//--
+		return (string) $linter;
 		//--
 	} //END FUNCTION
 	//====================================================

@@ -12,7 +12,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 
 //======================================================
-// Smart-Framework v.7.2 # r.20210514
+// Smart-Framework v.7.2 # r.20210522
 //======================================================
 // Requires PHP 7.3 or later
 //======================================================
@@ -24,6 +24,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //=====================================================================================
 // LOAD FRAMEWORK LIBS !!! DO NOT CHANGE THE ORDER OF THE LIBS !!! LIBS DEPEND IN THIS DEFINED ORDER ON THE LIBS LOADED ABOVE !!!
 //=====================================================================================
+// {{{SYNC-SMART-FRAMEWORK-LIBS-ORDER}}}
 //---------------------------------------------------- all these libs depend on lib runtime that need to be loaded via smart runtime before executing any function from these libs ...
 require('lib/framework/lib_unicode.php'); 		// smart unicode (support)
 require('lib/framework/lib_security.php'); 		// smart security (compliance)

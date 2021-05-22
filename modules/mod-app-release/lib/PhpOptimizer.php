@@ -1,6 +1,6 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// PHP Optimizer
+// PHP Code Optimizer
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
@@ -11,7 +11,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 } //end if
 //-----------------------------------------------------
 
-// AppPackUtils free
+// PHP8
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class PhpOptimizer {
 
 	// ::
-	// v.20210511
+	// v.20210522
 
 
 	//====================================================
@@ -121,9 +121,36 @@ final class PhpOptimizer {
 			} else {
 				$err = 'ERROR: PHP-Lint / BINARY NOT Found: '.TASK_APP_RELEASE_CODEPACK_PHP_BIN;
 			} //end if
+		} else {
+			$err = 'ERROR: PHP-Lint / NO BINARY Defined ... it is mandatory !'; // for PHP always a lint is required !!
 		} //end if
 		//--
 		return (string) $err;
+		//--
+	} //END FUNCTION
+	//====================================================
+
+
+	//====================================================
+	// php remove start and end tag
+	public static function check_and_remove_start_end_tags(?string $y_php_code) {
+		//--
+		$y_php_code = (string) trim((string)$y_php_code);
+		if((string)$y_php_code == '') {
+			return '';
+		} //end if
+		//--
+		if((string)substr((string)$y_php_code, 0, 5) != '<'.'?php') {
+			return ''; // invalid !
+		} //end if
+		$y_php_code = (string) trim((string)substr((string)$y_php_code, 5));
+		//--
+		$y_php_code = (string) trim((string)$y_php_code);
+		if((string)substr((string)$y_php_code, -2, 2) == '?'.'>') {
+			$y_php_code = (string) substr((string)$y_php_code, 0, -2);
+		} //end if
+		//--
+		return (string) trim((string)$y_php_code);
 		//--
 	} //END FUNCTION
 	//====================================================

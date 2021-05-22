@@ -1,6 +1,6 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// CSS Optimizer
+// CSS Code Optimizer
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
@@ -11,7 +11,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 } //end if
 //-----------------------------------------------------
 
-// AppPackUtils free
+// PHP8
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class CssOptimizer {
 
 	// ::
-	// v.20210511
+	// v.20210522
 
 
 	//====================================================
@@ -138,25 +138,17 @@ final class CssOptimizer {
 
 
 	//====================================================
-	// css lint
+	// css lint ; TODO: find a real css linter !!
 	public static function lint_code(?string $y_script_path) {
-		//--
-		return ''; // temporary fix, CSSLint fails in many places
-		//--
-		/*
-		$y_script_path = (string) trim((string)$y_script_path);
 		//--
 		$err = '';
 		//--
-		$css_lint = new CssLint();
-		$css_lint->lintString((string)file_get_contents((string)$y_script_path)); // path can be relative or absolute, but mostly absolute ... as it comes from app optimizer
-		$lint_errors = (string) trim((string)$css_lint->getErrors());
-		if((string)$lint_errors != '') {
-			$err = 'ERROR: Css-Lint Failed on this File: '.$y_script_path."\n".$lint_errors;
+		$test = (string) trim((string)self::strip_code((string)$y_script_path)); // just pass through strip code like a filter ... must not be empty
+		if((string)$test == '') {
+			$err = 'ERROR: CSS-Lint Failed with ExitCode[-1] on this File: '.$y_script_path."\n".'CSS Content is Empty, it was not valid ...';
 		} //end if
 		//--
 		return (string) $err;
-		*/
 		//--
 	} //END FUNCTION
 	//====================================================

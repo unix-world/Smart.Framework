@@ -1,4 +1,4 @@
-<!-- Partial Template: Plugins.CaptchaForm r.20210516 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
+<!-- Partial Template: Plugins.CaptchaForm r.20210519 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
 <link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jscaptcha/jquery.iconsCaptcha.css?[###RELEASE-HASH|html###]">
 <script src="[###BASE-URL|html###]lib/js/jscaptcha/jquery.iconsCaptcha.js?[###RELEASE-HASH|html###]"></script>
 <link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.css?[###RELEASE-HASH|html###]">
@@ -28,13 +28,17 @@ jQuery(() => {
 
 	const Smart$Captcha$Options = {
 		uuid: '[###RELEASE-UUID|htmid|js###]',
-		baseURL: '[###BASE-URL|js###]',
-		ldrImg: 'lib/framework/img/loading-spin.svg',
 		tHelper: '[###CAPTCHA-TXT-ENTER|js###]',
 		tQHelper: '[###CAPTCHA-QR-HELPER|js###]',
 		tQCode: '[###CAPTCHA-TXT-QRCODE|js###]',
+		ldrEImg: 'lib/framework/img/sign-crit-warn.svg',
 		iIcns: '[###CAPTCHA-TXT-ICONS|js###]',
-		tMotion: '[###CAPTCHA-TXT-INTERRACTIVE|js###]',
+		iIcnsDone: '[###CAPTCHA-TXT-ICONS-DONE|js###]',
+		iIcnsLst: 'lib/css/toolkit/sf-icons.txt',
+		tMotion: '[###CAPTCHA-TXT-MOTION|js###]',
+		tMotionErr: '[###CAPTCHA-TXT-MOTION-ERR|js###]',
+		tMotionWarn: '[###CAPTCHA-TXT-MOTION-WARN|js###]',
+		tMotionDone: '[###CAPTCHA-TXT-MOTION-DONE|js###]',
 		motionSvg: 'lib/js/jscaptcha/jquery.motionCaptcha.svg',
 		tImg: '[###CAPTCHA-TXT-IMG|js###]',
 		tPassed: '[###CAPTCHA-PASSED|js###]',
@@ -42,9 +46,11 @@ jQuery(() => {
 		bclass: '[###CAPTCHA-UA-BC|js###]',
 		bwid: '[###CAPTCHA-UA-BW|js###]',
 		bmobile: '[###CAPTCHA-UA-MOBILE|js###]',
+		ldrImg: 'lib/framework/img/loading-spin.svg',
 		exports: '[###CAPTCHA-JS-EXPORTS|js###]',
-		imgSrc: '[###CAPTCHA-IMG-SRC|js###]',
-		qrCode: '[###CAPTCHA-QR-CODE|js###]',
+		imUrl: '[###CAPTCHA-IM-URL|js###]',
+		iqURL: '[###CAPTCHA-IQ-URL|js###]',
+		baseURL: '[###BASE-URL|js###]',
 	};
 	Object.freeze(Smart$Captcha$Options);
 	window.smartCaptchaFormHandler.handleForm(
@@ -59,7 +65,8 @@ jQuery(() => {
 		subtle$CryptoDigest,
 		Mutation$Observer,
 		Covariance$Observer,
-		Pointer$Observer
+		Pointer$Observer,
+		'[###CAPTCHA-CHKSUM|js###]'
 	);
 
 });

@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: AppRelease/Optimize
-// Route: ?/page/app-release.optimize (?page=app-release.optimize)
+// Controller: AppRelease/CodeOptimize
+// Route: ?/page/app-release.code-optimize (?page=app-release.code-optimize)
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
@@ -12,7 +12,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
+// SMART_APP_MODULE_DIRECT_OUTPUT :: TRUE :: # by parent class
 
 define('SMART_APP_MODULE_AREA', 'TASK');
 define('SMART_APP_MODULE_AUTH', true);
@@ -20,15 +20,23 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
 
 
 /**
- * Task Controller
+ * Task Controller: Custom Task
  *
- * @ignore
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20210522
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
 
-	protected $title = 'Optimize Code';
+	protected $title = 'Optimize the source Code';
+
+	protected $sficon = '';
+	protected $msg = '';
 	protected $err = '';
+
+	protected $goback = '';
 
 	protected $details = true;
 
@@ -48,6 +56,10 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 
 		//--
+		$this->goback = (string) $this->ControllerGetParam('url-script').'?page=app-manage&appid='.Smart::escape_url((string)$appid);
+		//--
+
+		//--
 		if(!defined('OPTIMIZATIONS_MAX_RUN_TIMEOUT')) {
 			$this->err = 'A required constant is missing: OPTIMIZATIONS_MAX_RUN_TIMEOUT';
 			return;
@@ -63,6 +75,12 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		ini_set('max_execution_time', (int)OPTIMIZATIONS_MAX_RUN_TIMEOUT);
 		if((int)ini_get('max_execution_time') !== (int)OPTIMIZATIONS_MAX_RUN_TIMEOUT) {
 			$this->err = 'Failed to set PHP.INI max_execution_time as: '.(int)OPTIMIZATIONS_MAX_RUN_TIMEOUT;
+			return;
+		} //end if
+		//--
+		ini_set('ignore_user_abort', '0');
+		if((string)ini_get('ignore_user_abort') !== (string)'0') {
+			$this->err = 'Failed to set PHP.INI ignore_user_abort to: 0';
 			return;
 		} //end if
 		//--
@@ -94,6 +112,11 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		} //end if
 		if(!defined('APP_DEPLOY_FILES')) {
 			$this->err = 'A required constant is missing: APP_DEPLOY_FILES';
+			return;
+		} //end if
+		//--
+		if(!defined('TASK_APP_RELEASE_CODEPACK_MODE')) {
+			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_MODE';
 			return;
 		} //end if
 		//--
@@ -387,7 +410,10 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		SmartFileSysUtils::raise_error_if_unsafe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR);
 		SmartFileSystem::write((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'optimization-errors.log', (string)($this->err ? $this->err : '#NULL'));
 		//--
-		$this->msg = 'Optimizations DONE';
+
+		//--
+		$this->sficon = 'shrink';
+		$this->msg = 'Optimizations DONE: ['.TASK_APP_RELEASE_CODEPACK_MODE.']';
 		//--
 
 	} //END FUNCTION

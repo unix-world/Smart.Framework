@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20210514
+ * @version 	v.20210520
  * @package 	Application:ViewComponents
  *
  */
@@ -402,6 +402,7 @@ final class SmartComponents {
 	 */
 	private static function notifications_template(?string $y_html, ?string $y_idcss, ?string $y_width) {
 		//--
+		$style = '';
 		if((string)$y_width != '') {
 			$style = (string) 'width:'.self::fix_css_elem_dim((string)$y_width).';';
 		} //end if else

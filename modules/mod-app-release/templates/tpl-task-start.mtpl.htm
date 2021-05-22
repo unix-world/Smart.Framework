@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- TPL Task Start v.20210511 -->
+<!-- TPL Task Start v.20210522 -->
 <html>
 <head>
 <meta charset="[###CHARSET|html###]">
@@ -26,13 +26,15 @@
 [@@@SUB-TEMPLATE:!modules/mod-app-release/views/partials/app-release-info.inc.htm!@@@]
 <div class="sTaskTitle">
 <h2 id="title">TASK: [###TITLE|html###]</h2>
+</div>
 [%%%IF:APP-DETAILS:!=no;%%%]
-<div>
+<hr>
+<div class="sTaskDetails">
+<h4>Optimizations Strategy: [###APP-STRATEGY|html###]</h4>
 <pre>[###APP-FOLDERS|html###]</pre>
 <pre>[###APP-FILES|html###]</pre>
 </div>
 [%%%/IF:APP-DETAILS%%%]
-</div>
 <hr>
 [%%%IF:WORKING:==yes;%%%]
 <script>
@@ -42,7 +44,7 @@
 	[%%%ELSE:WORKSTOP%%%]
 	const workstop = '';
 	[%%%/IF:WORKSTOP%%%]
-	smartJ$Browser.GrowlNotificationAdd('[###TITLE|html|js###]', 'Status: <b><span style="background:#FFCC00; color:#333333;">&nbsp;working ...&nbsp;</span></b>' + '<br>' + 'AppID: <b>' + '[###APP-ID|html|js###]' + '</b><br>' + 'Started: <b>' + smartJ$Utils.escape_html(smartJ$Date.getIsoDate(new Date(), true)) + '</b>' + String(workstop), 'lib/framework/img/loading-cylon.svg', 0, true, 'dark');
+	smartJ$Browser.GrowlNotificationAdd('[###TITLE|html|js###]', 'Status: <b><span style="background:#FFCC00; color:#333333;">&nbsp;working in progress ...&nbsp;</span></b>' + '<br>' + 'AppID: <b>' + '[###APP-ID|html|js###]' + '</b><br>' + 'Started: <b>' + smartJ$Utils.escape_html(smartJ$Date.getIsoDate(new Date(), true)) + '</b>' + String(workstop), 'lib/framework/img/loading-cylon.svg', 0, true, 'dark');
 })();
 </script>
 [%%%/IF:WORKING%%%]

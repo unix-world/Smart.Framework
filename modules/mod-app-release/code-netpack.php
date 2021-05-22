@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
-// Controller: AppRelease/Netpack
-// Route: ?/page/app-release.netpack (?page=app-release.netpack)
+// Controller: AppRelease/CodeNetpack
+// Route: ?/page/app-release.code-netpack (?page=app-release.code-netpack)
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
@@ -12,7 +12,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
+// SMART_APP_MODULE_DIRECT_OUTPUT :: TRUE :: # by parent class
 
 define('SMART_APP_MODULE_AREA', 'TASK');
 define('SMART_APP_MODULE_AUTH', true);
@@ -20,15 +20,23 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
 
 
 /**
- * Task Controller
+ * Task Controller: Custom Task
  *
- * @ignore
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20210522
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
 
-	protected $title = 'Package Optimized Code';
+	protected $title = 'Package the Optimized Code';
+
+	protected $sficon = '';
+	protected $msg = '';
 	protected $err = '';
+
+	protected $goback = '';
 
 	protected $working = true;
 	protected $endscroll = true;
@@ -41,6 +49,10 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'App ID is Empty';
 			return;
 		} //end if
+		//--
+
+		//--
+		$this->goback = (string) $this->ControllerGetParam('url-script').'?page=app-manage&appid='.Smart::escape_url((string)$appid);
 		//--
 
 		//--
@@ -65,7 +77,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 
 		//--
 		if(SmartFileSystem::is_type_file((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'package-errors.log')) {
-			$archive = (array) (new \SmartGetFileSystem(true))->get_storage((string)TASK_APP_RELEASE_CODEPACK_APP_DIR, false, false, '.z-netarch');
+			$archive = (array) (new SmartGetFileSystem(true))->get_storage((string)TASK_APP_RELEASE_CODEPACK_APP_DIR, false, false, '.z-netarch');
 			if(Smart::array_size($archive['list-files']) > 0) {
 				$archive = (string) $archive['list-files'][0];
 			} else {
@@ -138,6 +150,9 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		SmartFileSysUtils::raise_error_if_unsafe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR);
 		SmartFileSystem::write((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'package-errors.log', (string)($this->err ? $this->err : '#NULL'));
 		//--
+
+		//--
+		$this->sficon = 'box-add';
 		$this->msg = 'Package archiving and check is SUCCESSFUL: `'.$the_archname.'`';
 		//--
 
