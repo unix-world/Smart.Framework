@@ -190,11 +190,11 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			} //end if
 		} //end for
 		$arr_urls = null;
-		$arr_urls = (array) array_keys((array)$arr_valid_urls);
-		if(Smart::array_size($arr_urls) <= 0) {
+		if((Smart::array_size($arr_valid_urls) <= 0) AND (Smart::array_size($arr_done_urls) <= 0)) {
 			$this->err = 'No Valid Deploy URLs Defined ...';
 			return;
 		} //end if
+		$arr_urls = (array) array_keys((array)$arr_valid_urls);
 		//--
 
 		//--

@@ -207,6 +207,8 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		$notice[] = 'Optimizations Strategy: '.TASK_APP_RELEASE_CODEPACK_MODE;
 		$notice[] = 'Optimizations Exist: '.$this->convertBoolToYesNo((bool)$optimizations_exists);
 		$notice[] = 'Optimizations Completed: '.$this->convertBoolToYesNo((bool)$optimizations_completed);
+		$notice[] = 'Optimizations Max Run Timeout: '.(defined('OPTIMIZATIONS_MAX_RUN_TIMEOUT') ? ((int)OPTIMIZATIONS_MAX_RUN_TIMEOUT).' seconds' : 'N/A');
+		$notice[] = 'NetArchive Max Memory Size: '.(defined('NETPACK_MAX_MEMORY_SIZE') ? NETPACK_MAX_MEMORY_SIZE : 'N/A');
 		$notice[] = 'Release Package: '.($last_package ? $last_package : '-');
 		if((string)$last_package != '') {
 			$notice[] = 'Release Package Size (bytes): '.$packsize;

@@ -217,7 +217,7 @@ final class ShrinkJsCode extends ShrinkCode {
 		'{',
 	];
 
-	private const OPERATORSAFTER = [
+	private const OPERATORSAFTER = [ // 43
 		'+',
 		'-',
 		'*',

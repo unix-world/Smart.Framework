@@ -102,8 +102,9 @@ final class AppCodeUtils {
 			return 'Invalid INI Settings File: '.self::CODEPACK_INI.' # INI Parse Errors';
 		} //end if
 		//--
-		$valid_arr_settings = [
+		$valid_arr_settings = [ // {{{SYNC-CHECK-APP-INI-SETTINGS}}}
 			'OPTIMIZATIONS_MAX_RUN_TIMEOUT' 		=> true,
+			'NETPACK_MAX_MEMORY_SIZE' 				=> true,
 			'TASK_APP_RELEASE_CODEPACK_PHP_BIN' 	=> true,
 			'TASK_APP_RELEASE_CODEPACK_NODEJS_BIN' 	=> false,
 			'TASK_APP_RELEASE_CODEPACK_MOZJS_BIN' 	=> false, // optional

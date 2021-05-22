@@ -56,6 +56,26 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 
 		//--
+		if(!defined('NETPACK_MAX_MEMORY_SIZE')) {
+			$this->err = 'A required constant is missing: NETPACK_MAX_MEMORY_SIZE';
+			return;
+		} //end if
+		if((string)trim((string)NETPACK_MAX_MEMORY_SIZE) == '') {
+			$this->err = 'Value is empty for: NETPACK_MAX_MEMORY_SIZE';
+			return;
+		} elseif(!preg_match('/^[a-zA-Z0-9]+$/', (string)NETPACK_MAX_MEMORY_SIZE)) {
+			$this->err = 'Value set is invalid: NETPACK_MAX_MEMORY_SIZE='.(string)NETPACK_MAX_MEMORY_SIZE;
+			return;
+		} //end if
+		//--
+		ini_set('memory_limit', (string)NETPACK_MAX_MEMORY_SIZE);
+		if((string)ini_get('memory_limit') !== (string)NETPACK_MAX_MEMORY_SIZE) {
+			$this->err = 'Failed to set PHP.INI memory_limit as: '.(string)NETPACK_MAX_MEMORY_SIZE;
+			return;
+		} //end if
+		//--
+
+		//--
 		if(!defined('TASK_APP_RELEASE_CODEPACK_APP_DIR')) {
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_APP_DIR';
 			return;
@@ -83,7 +103,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			} else {
 				$archive = 'UNKNOWN';
 			} //end if
-			$this->err = 'The release package has been already done: `'.$archive.'`';
+			$this->err = 'The release package appears that have been already done: `'.$archive.'` ... perhaps it was deleted manually and the package errors log was not !';
 			return;
 		} //end if
 		//--
@@ -134,7 +154,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		$the_archname = (string) $arch->get_archive_file_name();
 		$the_archpath = (string) $arch->get_archive_file_path();
 		//--
-		echo '<div class="operation_info">Creating the Release Package: `'.Smart::escape_html((string)$the_archname).'`</div>';
+		echo '<div class="operation_info">Creating the Release Package: `'.Smart::escape_html((string)$the_archname).'`<br>'.'NetArchive Max Memory Size: '.Smart::escape_html((string)(defined('NETPACK_MAX_MEMORY_SIZE') ? NETPACK_MAX_MEMORY_SIZE : 'N/A')).'</div>';
 		echo '<div style="font-size:0.75rem!important">';
 		$arch->pack_dir((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR);
 		echo '</div>';

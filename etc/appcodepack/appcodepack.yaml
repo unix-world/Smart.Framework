@@ -39,4 +39,20 @@ APP-RELEASE:
 			- README.md ; = readme.md
 			- modules/mod-app-release/appcodeunpack/samples/maintenance-503.html ; =maintenance.html
 			- modules/mod-app-release/appcodeunpack/samples/appcode-upgrade.php ; =appcode-upgrade.php
+	smart-framework.test:
+		deploy-strategy: minify
+		deploy-urls:
+			- https://127.0.0.1/sites/RELEASE/test-unpack/appcodeunpack.php
+		deploy-secret: set-here-a-private-key-that-must-not-be-disclosed
+		deploy-auth-user: superadmin
+		deploy-auth-pass: 5A05719BCAF965E8DC3C412EC83D69A1D3D1BF9BB587A1D3A3CBF7D1D9EAD13D300B70D1EEFBDC03C57487D66B6D045A4CFE7279519B6F93E08B9B54CBA42A1700DFC901949CFE36
+		folders:
+			- etc
+			- lib
+			- modules
+		files:
+			- .htaccess
+			- index.php
+			- admin.php
+			- task.php
 # END

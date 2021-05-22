@@ -74,7 +74,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 			} //end if
 			//--
 			$ini_settings = AppCodeUtils::parseIniSettings(); // mixed
-			if(!is_int($ini_settings) OR ($ini_settings !== 2)) { // there are 2 mandatory settings: MAX RUN TIMEOUT and PHP executable {{{SYNC-CHECK-APP-INI-SETTINGS}}}
+			if(!is_int($ini_settings) OR ($ini_settings !== 3)) { // there are 3 mandatory settings: MAX RUN TIMEOUT and PHP executable {{{SYNC-CHECK-APP-INI-SETTINGS}}}
 				$this->PageViewSetErrorStatus(503, 'INI SETTINGS PARSE ERROR: Num Req. is: #'.$ini_settings);
 				return;
 			} //end if

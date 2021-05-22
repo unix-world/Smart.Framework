@@ -135,6 +135,10 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 
 		//--
+		echo '<div class="operation_info">Optimizing the source code: `'.Smart::escape_html((string)TASK_APP_RELEASE_CODEPACK_MODE).'`<br>'.'Optimizations Max Run Timeout: '.Smart::escape_html((string)(defined('OPTIMIZATIONS_MAX_RUN_TIMEOUT') ? ((int)OPTIMIZATIONS_MAX_RUN_TIMEOUT).' seconds' : 'N/A')).'</div>';
+		//--
+
+		//--
 		$arr_folders = Smart::json_decode((string)APP_DEPLOY_FOLDERS); // mixed
 		if(!is_array($arr_folders)) {
 			$arr_folders = array();

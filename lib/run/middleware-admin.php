@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A][T]@v.7.2.1');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210510
+ * @version		20210522
  *
  */
 final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
@@ -83,11 +83,11 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 			$the_area = 'task';
 			if(defined('SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS') AND ((string)trim((string)SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS) != '')) {
 				if(stripos((string)SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS, '<'.SmartUtils::get_ip_client().'>') === false) {
-					SmartFrameworkRuntime::Raise403Error('Tasks: Allowed IP Address list does not contain this IP ...');
+					SmartFrameworkRuntime::Raise403Error('Tasks: The access to this service is restricted by an IP Address list. The IP: `'.SmartUtils::get_ip_client().'` is not in that list ...');
 					return;
 				} //end if
 			} else {
-				SmartFrameworkRuntime::Raise503Error('Tasks: Allowed IP Address list is empty, Access to this area is disabled by configs ...');
+				SmartFrameworkRuntime::Raise503Error('Tasks: The access to this service is disabled. The IP: `'.SmartUtils::get_ip_client().'` is not allowed by current IP Address list ...');
 				return;
 			} //end if else
 		} else {
