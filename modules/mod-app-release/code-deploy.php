@@ -284,7 +284,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		$arr_appcodeunpack = [];
 		if((string)$content_appcodeunpack != '') {
 			$signature_appcodeunpack = (string) SmartHashCrypto::sha384((string)$content_appcodeunpack);
-			$content_appcodeunpack = (string) SmartUtils::crypto_blowfish_encrypt((string)$content_appcodeunpack);
+			$content_appcodeunpack = (string) SmartUtils::crypto_blowfish_encrypt((string)$content_appcodeunpack, (string)APP_DEPLOY_SECRET);
 			$signature_eappcodeunpack = (string) SmartHashCrypto::sha256((string)$content_appcodeunpack);
 			$arr_appcodeunpack = [ // {{{SYNC-APPCODEUNPACK-SELF-UPDATE}}}
 				'#' => (string) $signature_appcodeunpack,

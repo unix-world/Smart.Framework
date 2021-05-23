@@ -96,7 +96,7 @@ final class AppCodeUnpack {
 	// ::
 	// v.20210522
 
-	private const APPCODEUNPACK_VERSION = 's.20210523.0038';
+	private const APPCODEUNPACK_VERSION = 's.20210523.2359';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -323,7 +323,7 @@ final class AppCodeUnpack {
 							if((string)$frm['appcodeunpack']['@'] !== (string)SmartHashCrypto::sha256((string)$frm['appcodeunpack']['='])) {
 								$a_err = 'AppCodeUnpack Update: Invalid Data Checksum';
 							} else {
-								$tmp_upd_ctx = (string) SmartUtils::crypto_blowfish_decrypt((string)$frm['appcodeunpack']['=']);
+								$tmp_upd_ctx = (string) SmartUtils::crypto_blowfish_decrypt((string)$frm['appcodeunpack']['='], (string)APPCODEPACK_DEPLOY_SECRET);
 								if(
 									((string)trim((string)$tmp_upd_ctx) != '') AND
 									((string)$frm['appcodeunpack']['#'] === (string)SmartHashCrypto::sha384((string)$tmp_upd_ctx))
