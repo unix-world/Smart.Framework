@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR (((string)SMART_FRAMEWORK_RUNTI
 //-----------------------------------------------------
 
 
-//====================================================== r.20210522
+//====================================================== r.20210523
 // Smart-Framework - App Runtime (this should be loaded only from app web root)
 // DEPENDS: Smart.Framework + Smart.Framework/Components
 // DO NOT MODIFY THIS FILE OR ANY OTHER FILE(S) UNDER lib/* or index.php or admin.php or task.php [They will be all overwritten on any future framework updates or upgrades] !!!
@@ -56,9 +56,9 @@ array_map(function($const){
 },
 [
 	'SMART_FRAMEWORK_HTACCESS_NOEXECUTION', 'SMART_FRAMEWORK_HTACCESS_FORBIDDEN', 'SMART_FRAMEWORK_HTACCESS_NOINDEXING',
-	'SMART_FRAMEWORK_DOWNLOAD_FOLDERS', 'SMART_FRAMEWORK_UPLOAD_PICTS', 'SMART_FRAMEWORK_UPLOAD_MOVIES', 'SMART_FRAMEWORK_UPLOAD_DOCS',
+	'SMART_FRAMEWORK_DOWNLOAD_FOLDERS',
 	'SMART_FRAMEWORK_RESERVED_CONTROLLER_NAMES', 'SMART_FRAMEWORK_NETSERVER_MAXLOAD',
-	'SMART_FRAMEWORK_INFO_DIR_LOG',
+	'SMART_FRAMEWORK_INFO_DIR_LOG', 'SMART_FRAMEWORK_UUID_COOKIE_NAME',
 	'SMART_SOFTWARE_URL_ALLOW_PATHINFO', 'SMART_SOFTWARE_FRONTEND_DISABLED', 'SMART_SOFTWARE_BACKEND_DISABLED', 'SMART_SOFTWARE_TASK_DISABLED',
 	'SMART_FRAMEWORK_SEMANTIC_URL_DISABLE', 'SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT', 'SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE', 'SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE',
 	'SMART_FRAMEWORK_SESSION_HANDLER', 'SMART_FRAMEWORK_SESSION_NAME',
@@ -67,6 +67,14 @@ array_map(function($const){
 ]);
 //--
 
+//--
+if(!preg_match('/^[_a-z0-9A-Z]+$/', (string)SMART_FRAMEWORK_UUID_COOKIE_NAME)) { // {{{SYNC-REGEX-COOKIE-NAME}}}
+	@http_response_code(500);
+	die('A required INIT constant contains invalid characters: SMART_SOFTWARE_NAMESPACE');
+} //end if
+if(!defined('SMART_FRAMEWORK_UUID_COOKIE_SKIP')) {
+	define('SMART_FRAMEWORK_UUID_COOKIE_SKIP', false); // avoid change it later
+} //end if
 //--
 if(!preg_match('/^[_a-z0-9A-Z]+$/', (string)SMART_FRAMEWORK_SESSION_NAME)) { // {{{SYNC-REGEX-COOKIE-NAME}}}
 	@http_response_code(500);
@@ -237,7 +245,7 @@ SmartFrameworkRuntime::SingleUser_Mode_Monitor(); // detect Maintenance SingleUs
 SmartFrameworkRuntime::High_Load_Monitor(); // detect and handle High Loads ; if detected Return 503 Too Busy
 SmartFrameworkRuntime::Redirection_Monitor(); // controller redirection monitor: detect path info allowed, detect frontend or backend disabled
 //========================= REGISTER UNIQUE ID COOKIE (required before run)
-SmartFrameworkRuntime::SetVisitorEntropyIDCookie(); // will define the constant SMART_APP_VISITOR_COOKIE ; cookie will be set only if SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME is non empty
+SmartFrameworkRuntime::SetVisitorEntropyIDCookie(); // will define the constant SMART_APP_VISITOR_COOKIE ; cookie will be set only if SMART_FRAMEWORK_UUID_COOKIE_NAME is non empty
 SmartCache::setKey('smart-app-runtime', 'visitor-cookie', (string)SMART_APP_VISITOR_COOKIE);
 //========================= APP.BOOTSTRAP: RUN
 SmartAppBootstrap::Run(); // MUST load the modules/app/app-custom-bootstrap.inc.php

@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210428
+ * @version 	v.20210523
  * @package 	Plugins:Network
  *
  */
@@ -387,22 +387,16 @@ final class SmartRobot {
 						} //end if
 						//--
 						$browser->useragent = (string) SmartUtils::get_selfrobot_useragent_name(); // this must be set just when detected the same path and script ; it is a requirement to detect it as the self-robot [ @s# ] in order to send the credentials or the current
-						//-- {{{SYNC-SMART-UNIQUE-COOKIE}}}
-						if((defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME')) AND (!defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP'))) {
-							if((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME != '') {
-								if(SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME)) { // {{{SYNC-VALIDATE-UID-COOKIE-NAME}}}
-									//--
-									if((string)SMART_APP_VISITOR_COOKIE != '') { // if set, then forward
-										if(SmartFrameworkRegistry::ifDebug()) {
-											$tmp_extra_log .= '[EXTRA]: OK, I will send my current Visitor Unique Cookie ID as it is set and not empty ...'."\n";
-										} //end if
-										$cookies[(string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME] = (string) SMART_APP_VISITOR_COOKIE; // this is a requirement
-									} //end if
-									//--
+						//--
+						if(SmartFrameworkRuntime::IsVisitorEntropyIDCookieAvaliable() === true) { // {{{SYNC-SMART-UNIQUE-COOKIE}}}
+							if(defined('SMART_APP_VISITOR_COOKIE') AND ((string)trim((string)SMART_APP_VISITOR_COOKIE) != '')) { // {{{SYNC-SMART-UNIQUE-VAL-COOKIE}}}
+								if(SmartFrameworkRegistry::ifDebug()) {
+									$tmp_extra_log .= '[EXTRA]: OK, I will send the current UUID Cookie ID as it is set and not empty ...'."\n";
 								} //end if
+								$cookies[(string)SMART_FRAMEWORK_UUID_COOKIE_NAME] = (string) SMART_APP_VISITOR_COOKIE; // this is a requirement
 							} //end if
 						} //end if
-						//-- #end# sync
+						//--
 						if(
 							((string)SmartAuth::get_login_method() == 'HTTP-BASIC') AND
 							((string)$auth_name == '') AND

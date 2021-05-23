@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / INIT] v.20210522 s.20210522.1954
+// [AppCodeUnpack / INIT] v.20210523 s.20210523.0038
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -28,13 +28,15 @@ const APPCODEPACK_DEPLOY_SECRET = 'set-here-a-private-key-that-must-not-be-discl
 const APPCODEPACK_DEPLOY_APPLIST = '<smart-framework.local>,<smart-framework.test>'; // the list of App-IDs to allow under this instance ; example: <app-id-1> ; example with multiple: <app-id-1>,<app-id-2>
 //---------------------------------------
 
+//============================================================ ALWAYS CHANGE !
+//--------------------------------------- TIMEZONE
+const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP (Example: Europe/London) ; default is: UTC
 //--------------------------------------- TASK RUNTIME ALLOWED IP LIST
 const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		'<127.0.0.1>,<::1>'; 						// APP Task service area allowed IPs ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
-//--------------------------------------- TIMEZONE :: CHANGE IT to match your own !
-const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP (Example: Europe/London) ; default is: UTC
 //--------------------------------------- SECURITY
 const SMART_FRAMEWORK_SECURITY_KEY =  					'private-key#0987654321'; 					// *** YOU HAVE TO CHANGE IT *** Sync this with the etc/init.php of the app that will be released ; This is the Security Key that will be used to generate secure hashes
 //---------------------------------------
+//============================================================
 
 //#################################################
 //#################################################
@@ -46,15 +48,15 @@ const SMART_FRAMEWORK_SECURITY_KEY =  					'private-key#0987654321'; 					// ***
 
 //======= ####### app task init values (standalone) ####### =======
 
-//--------------------------------------- APP NAMESPACE :: DO NOT CHANGE THIS FOR APPCODEUNPACK !!!
+//============================================================ REVIEW AND CHANGE IF PRODUCTION MODE
+//--------------------------------------- APP NAMESPACE :: DO NOT CHANGE THIS FOR APPCODEUNPACK, IT SHOULD REMAIN LIKE THIS !!!
 const SMART_SOFTWARE_NAMESPACE =  						'appcodeunpack.standalone';					// APP Namespace ID :: [a-z.], length 10..25 :: This should be used as a unique ID identifier for the application (aka application unique ID)
-//--------------------------------------- RUNTIME ENVIRONMENT :: MUST BE 'prod' for a production environment !
+//--------------------------------------- RUNTIME ENVIRONMENT :: MUST BE 'prod' for appcodeunpack
 const SMART_FRAMEWORK_ENV =  							'prod'; 									// APP Environment: can be set to 'dev' or 'prod' ; id set to 'prod' (production environment) will not log E_USER_NOTICE and E_DEPRECATED and will not display in-page error details but just log them ; for development mode set this to 'dev'
 //--------------------------------------- COOKIES
-const SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME = 	 		'AppCodeUnpack__UID';						// The UniqueID Cookie Name (it is recommended to be customized) ; (If the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP is defined and set to true will not set the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, which will drop some functionalities that depend on it ...)
-const SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE = 	 	'Lax'; 										// The UniqueID Cookie SameSite Policy ; if not defined will not use any policy (old compatibility) ; If set must be one of these values: Lax / Strict or None ; set to None works only with a https secured connection because new browsers require this !
-const SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME =  		0;											// The UniqueID Cookie LifeTime in seconds ; set to 0 for expire on browser close
-const SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN =  		'';											// The UniqueID Cookie domain: set it (empty) `` for the current subdomain as `sdom.domain.tld` ; set it as `*` or explicit `domain.tld` for all sub-domains of domain.tld ; default is `` (empty) if not defined at all ; this is for advanced use of cookies management in sensitive production environments where you need per sub-domain encapsulated cookies
+const SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE = 	 	'Lax'; 										// The UniqueID Cookie SameSite Policy ; if not defined will not use any policy (old compatibility) ; If set must be one of these values: Lax / Strict or None ; set to None works only with a https secured connection because new browsers require this !
+const SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME =  		0;											// The UniqueID Cookie LifeTime in seconds ; set to 0 for expire on browser close
+const SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN =  		'';											// The UniqueID Cookie domain: set it (empty) `` for the current subdomain as `sdom.domain.tld` ; set it as `*` or explicit `domain.tld` for all sub-domains of domain.tld ; default is `` (empty) if not defined at all ; this is for advanced use of cookies management in sensitive production environments where you need per sub-domain encapsulated cookies
 //--------------------------------------- PERSISTENT-CACHE HANDLER
 const SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER =  		false; 										// Persistent Cache Handler ; If set to FALSE will use no handler ; If set otherwise can use Built-In: 'redis' or 'mongodb' or 'dba' or 'sqlite' ; or a Custom handler can be set as (example): 'modules/app/persistent-cache-custom-adapter.php'
 //--------------------------------------- EXECUTION / RUNTIME LIMITS :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
@@ -63,7 +65,7 @@ const SMART_FRAMEWORK_EXECUTION_TIMEOUT =  				610;										// Script Max Execu
 const SMART_FRAMEWORK_NETSOCKET_TIMEOUT =  				120; 										// Network Socket (Stream) TimeOut in Seconds
 const SMART_FRAMEWORK_NETSERVER_ID =  					0; 											// Load Balancing: Unique ID, integer+ (min=0 ; max=1295) ; this is used for the main purpose to be able to generate very unique UUIDS in a cluster of apps ; every server in the cluster running the same app must have a different ID
 const SMART_FRAMEWORK_NETSERVER_MAXLOAD =  				false;										// Load Balancing and DDOS Protection against High Loads :: if set to FALSE will be ignored ; if set to a value > 0 if server load go over this value the server will enter in BUSY state (503 Too busy) ; by example a value of 90 means 90% load over 1 CPU core ; on multi cpus/cores value must be this value * number of cpus/cores ; a good and realistic setting is 100 * number of CPU/cores
-//--------------------------------------- SSL CRYPTO OVERALL TUNNINGS :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
+//--------------------------------------- SSL CRYPTO OVERALL SETTINGS :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
 const SMART_FRAMEWORK_SSL_MODE =  						'tls';										// SSL/TLS Mode: tls | sslv3
 const SMART_FRAMEWORK_SSL_CIPHERS = 					'HIGH';										// SSL/TLS Context Ciphers: ciphers ; default: 'HIGH' ; generally allow only high ciphers
 const SMART_FRAMEWORK_SSL_VFY_HOST = 					true;										// SSL/TLS Context Verify Host: verify_host ; default: true
@@ -93,11 +95,13 @@ const SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS =  		''; 										// The List of D
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //====================
 
+//============================================================
 //----------------------------------------
 const SMART_FRAMEWORK_SECURITY_FILTER_INPUT =  		'/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/';	// !!! DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU ARE DOING !!! This is a Safe Unicode Filter Input (GET/POST/COOKIE) Variables (Strings) as it will remove all lower dangerous characters: x00 - x1F and x7F except: \t = x09 \n = x0A \r = x0D
 const SMART_FRAMEWORK_CHARSET =  					'UTF-8';								// This must be `UTF-8` 	:: Default Character Set for PHP
 const SMART_FRAMEWORK_SQL_CHARSET =  				'UTF8';									// This must be `UTF8` 		:: Default Character Set for DB SQL Servers
 //----------------------------------------
+//============================================================
 
 //---------------------------------------- Set TimeZone in Global Mode per Application
 if(defined('SMART_FRAMEWORK_TIMEZONE')) {

@@ -12,7 +12,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 
 //======================================================
-// Smart-Framework v.7.2 # r.20210522
+// Smart-Framework v.7.2 # r.20210523
 //======================================================
 // Requires PHP 7.3 or later
 //======================================================

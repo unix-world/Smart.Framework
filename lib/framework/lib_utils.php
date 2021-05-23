@@ -37,8 +37,8 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20210519
+ * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
+ * @version 	v.20210523
  * @package 	@Core:Extra
  *
  */
@@ -96,8 +96,8 @@ final class SmartUtils {
 	public static function cookie_default_expire() {
 		//--
 		$expire = 0;
-		if(defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME')) {
-			$expire = (int) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME;
+		if(defined('SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME')) {
+			$expire = (int) SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME;
 			if($expire <= 0) {
 				$expire = 0;
 			} //end if
@@ -114,11 +114,11 @@ final class SmartUtils {
 	public static function cookie_default_domain() {
 		//--
 		$cookie_domain = '';
-		if((defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN')) AND ((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN != '')) {
-			if((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN == '*') {
+		if((defined('SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN')) AND ((string)SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN != '')) {
+			if((string)SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN == '*') {
 				$cookie_domain = (string) self::get_server_current_basedomain_name();
 			} else {
-				$cookie_domain = (string) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN;
+				$cookie_domain = (string) SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN;
 			} //end if
 		} //end if
 		//--
@@ -133,12 +133,12 @@ final class SmartUtils {
 	public static function cookie_default_samesite_policy() {
 		//--
 		$cookie_samesite_policy = '';
-		if((defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE')) AND ((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE != '')) {
-			switch((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE) {
+		if((defined('SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE')) AND ((string)SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE != '')) {
+			switch((string)SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE) {
 				case 'None':
 				case 'Lax':
 				case 'Strict':
-					$cookie_samesite_policy = (string) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE;
+					$cookie_samesite_policy = (string) SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE;
 					break;
 				default:
 					$cookie_samesite_policy = ''; // invalid, fall back to empty string
@@ -1482,10 +1482,15 @@ final class SmartUtils {
 
 	//================================================================
 	// This is the visitor UID calculated using the visitor private key and visitor public key
-	// This should be used just for tracking purposes and can be trusted as ~ 99% ONLY if the SMART_APP_VISITOR_COOKIE is defined ; if SMART_APP_VISITOR_COOKIE is not used then it may be trusted ~ 90%
+	// This should be used just for tracking purposes and can be really trusted if the SMART_APP_VISITOR_COOKIE is defined as it came from internal as the value of the SMART_FRAMEWORK_UUID_COOKIE_NAME which is optional
 	public static function get_visitor_tracking_uid() {
 		//--
-		return (string) SmartHashCrypto::sha1('>'.SMART_SOFTWARE_NAMESPACE.'['.SMART_FRAMEWORK_SECURITY_KEY.']'.self::client_ident_private_key().'>'.(defined('SMART_APP_VISITOR_COOKIE') ? SMART_APP_VISITOR_COOKIE : '#'));
+		$uuid = '#';
+		if(defined('SMART_APP_VISITOR_COOKIE') AND ((string)trim((string)SMART_APP_VISITOR_COOKIE) != '')) { // {{{SYNC-SMART-UNIQUE-VAL-COOKIE}}}
+			$uuid = (string) SMART_APP_VISITOR_COOKIE;
+		} //end if
+		//--
+		return (string) SmartHashCrypto::sha1('>'.SMART_SOFTWARE_NAMESPACE.'['.SMART_FRAMEWORK_SECURITY_KEY.']'.self::client_ident_private_key().'>'.$uuid);
 		//--
 	} //END FUNCTION
 	//================================================================

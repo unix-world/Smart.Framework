@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20210522
+// [Smart.Framework / INIT] v.20210523
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -18,26 +18,32 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //	* IF .htaccess PHP settings will be used, be sure to sync them with this file too for ini sets at the bottom of this file !
 // ==================
 
+//============================================================
 //--------------------------------------- DEBUG AND PROFILING :: these must use define constants not using compile time const, to be able to use in conditional contexts
 //define('SMART_FRAMEWORK_PROFILING_HTML_PERF', 		true); 										// Uncomment this to enable the HTML Performance Profiler (it can be used also in production environments for HTML Metrics and Profiling purposes)
 //define('SMART_FRAMEWORK_DEBUG_MODE', 					true);										// Uncomment this to enable Debugging and the Web Profiler Toolbar (do not use in production environments but only for internal Debugging / Profiling purposes)
+//---------------------------------------
+//============================================================ ALWAYS CHANGE !
+//--------------------------------------- TIMEZONE
+const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP (Example: Europe/London) ; default is: UTC
 //--------------------------------------- TASK RUNTIME ALLOWED IP LIST
 const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		''; 										// APP Task service area allowed IPs ; ex: '<127.0.0.1>,<::1>' ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
-//--------------------------------------- APP NAMESPACE :: CHANGE IT !!
-const SMART_SOFTWARE_NAMESPACE =  						'smartframework.default';					// APP Namespace ID :: [a-z.], length 10..25 :: This should be used as a unique ID identifier for the application (aka application unique ID)
-//--------------------------------------- RUNTIME ENVIRONMENT :: CHANGE IT with 'prod' for a production environment !
-const SMART_FRAMEWORK_ENV =  							'dev'; 										// APP Environment: can be set to 'dev' or 'prod' ; id set to 'prod' (production environment) will not log E_USER_NOTICE and E_DEPRECATED and will not display in-page error details but just log them ; for development mode set this to 'dev'
-//--------------------------------------- TIMEZONE :: CHANGE IT to match your own !
-const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP (Example: Europe/London) ; default is: UTC
 //--------------------------------------- SECURITY
 const SMART_FRAMEWORK_SECURITY_KEY =  					'private-key#0987654321'; 					// *** YOU HAVE TO CHANGE IT *** ; This is the Security Key that will be used to generate secure hashes
 //const SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO =  	true; 										// *Optional: if defined and set to TRUE will use the OpenSSL cipher openssl/blowfish/CBC (faster) instead of internal one blowfish.cbc (more compatible across platforms)
 //const SMART_FRAMEWORK_SECURITY_CRYPTO = 	 			'openssl/aes256/CBC'; 						// *Optional: the crypto algo for general purpose encryption to be used ; default is hash/sha256 ; other modes: hash/sha1, hash/sha384, hash/sha512, openssl/{algo}/{mode} where mode can be: CBC, CFB, OFB ; algo can be: blowfish, aes256, camellia256
+//---------------------------------------
+//============================================================ REVIEW AND CHANGE IF PRODUCTION MODE
+//--------------------------------------- APP NAMESPACE
+const SMART_SOFTWARE_NAMESPACE =  						'smart-framework.default';					// APP Namespace ID :: [ _ a-z 0-9 - . ], length 10..25 :: This should be used as a unique ID identifier for the application (aka application unique ID)
+//--------------------------------------- RUNTIME ENVIRONMENT :: CHANGE IT with 'prod' for a production environment !
+const SMART_FRAMEWORK_ENV =  							'dev'; 										// APP Environment: can be set to 'dev' or 'prod' ; id set to 'prod' (production environment) will not log E_USER_NOTICE and E_DEPRECATED and will not display in-page error details but just log them ; for development mode set this to 'dev'
 //--------------------------------------- COOKIES
-const SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME = 	 		'SmartFramework__UID';						// The UniqueID Cookie Name (it is recommended to be customized) ; (If the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP is defined and set to true will not set the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, which will drop some functionalities that depend on it ...)
-const SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE = 	 	'Lax'; 										// The UniqueID Cookie SameSite Policy ; if not defined will not use any policy (old compatibility) ; If set must be one of these values: Lax / Strict or None ; set to None works only with a https secured connection because new browsers require this !
-const SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME =  		0;											// The UniqueID Cookie LifeTime in seconds ; set to 0 for expire on browser close
-const SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN =  		'';											// The UniqueID Cookie domain: set it (empty) `` for the current subdomain as `sdom.domain.tld` ; set it as `*` or explicit `domain.tld` for all sub-domains of domain.tld ; default is `` (empty) if not defined at all ; this is for advanced use of cookies management in sensitive production environments where you need per sub-domain encapsulated cookies
+const SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE = 	 	'Lax'; 										// The UniqueID Cookie SameSite Policy ; if not defined will not use any policy (old compatibility) ; If set must be one of these values: Lax / Strict or None ; set to None works only with a https secured connection because new browsers require this !
+const SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME =  		0;											// The UniqueID Cookie LifeTime in seconds ; set to 0 for expire on browser close
+const SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN =  		'';											// The UniqueID Cookie domain: set it (empty) `` for the current subdomain as `sdom.domain.tld` ; set it as `*` or explicit `domain.tld` for all sub-domains of domain.tld ; default is `` (empty) if not defined at all ; this is for advanced use of cookies management in sensitive production environments where you need per sub-domain encapsulated cookies
+//---------------------------------------
+//============================================================
 //--------------------------------------- PERSISTENT-CACHE HANDLER
 const SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER =  		false; 										// Persistent Cache Handler ; If set to FALSE will use no handler ; If set otherwise can use Built-In: 'redis' or 'mongodb' or 'dba' or 'sqlite' ; or a Custom handler can be set as (example): 'modules/app/persistent-cache-custom-adapter.php'
 //--------------------------------------- EXECUTION / RUNTIME LIMITS :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
@@ -46,7 +52,7 @@ const SMART_FRAMEWORK_EXECUTION_TIMEOUT =  				610;										// Script Max Execu
 const SMART_FRAMEWORK_NETSOCKET_TIMEOUT =  				120; 										// Network Socket (Stream) TimeOut in Seconds
 const SMART_FRAMEWORK_NETSERVER_ID =  					1; 											// Load Balancing: Unique ID, integer+ (min=0 ; max=1295) ; this is used for the main purpose to be able to generate very unique UUIDS in a cluster of apps ; every server in the cluster running the same app must have a different ID
 const SMART_FRAMEWORK_NETSERVER_MAXLOAD =  				false;										// Load Balancing and DDOS Protection against High Loads :: if set to FALSE will be ignored ; if set to a value > 0 if server load go over this value the server will enter in BUSY state (503 Too busy) ; by example a value of 90 means 90% load over 1 CPU core ; on multi cpus/cores value must be this value * number of cpus/cores ; a good and realistic setting is 100 * number of CPU/cores
-//--------------------------------------- SSL CRYPTO OVERALL TUNNINGS :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
+//--------------------------------------- SSL CRYPTO OVERALL SETTINGS :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
 const SMART_FRAMEWORK_SSL_MODE =  						'tls';										// SSL/TLS Mode: tls | sslv3
 const SMART_FRAMEWORK_SSL_CIPHERS = 					'HIGH';										// SSL/TLS Context Ciphers: ciphers ; default: 'HIGH' ; generally allow only high ciphers
 const SMART_FRAMEWORK_SSL_VFY_HOST = 					true;										// SSL/TLS Context Verify Host: verify_host ; default: true
@@ -66,13 +72,11 @@ const SMART_FRAMEWORK_IPDETECT_CUSTOM =  				false; 										// only change thi
 //const SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT =  		'<HTTP_X_REAL_IP>,<HTTP_X_FORWARDED_FOR>'; 	// when using a server proxy behind apache, php and smart framework (ex: haproxy or varnish) here must be set the header keys (or empty string if n/a) that may return the real client proxy IP ; these may or may not be available when using a server proxy, but be careful to avoid colisions with the trusted IP defined above
 //---------------------------------------- ROBOTS IDENTIFY :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING :: Sample (spaces between <> counts): '<bot signature 1>,<bot signature 2 >,< another-bot >'
 const SMART_FRAMEWORK_IDENT_ROBOTS =  					'<robot>,<apache>,<httperf>,<benchmark>,<scanner>,<googlebot>,<google adsbot>,<google toolbar>,<google web preview>,<google feed fetcher>,<yahoo! slurp>,<webcrawler>,<domaincrawler>,<catchbot>,<webalta crawler>,<superbot>,<msnbot>,<ms url control>,<winhttp>,<roku dvp>,<linkwalker>,<aihitbot>,<ia_archiver>,<sanszbot>,<linguee bot>,<swish-e>,<tarantula>,<fast-webcrawler>,<jeeves>,<teoma>,<baiduspider>,<bing bot>,<yandex>,<exabot>,<everyfeed spider>,<gregarius>,<facebook scraper>,<email wolf>,<gaisbot>,<gulperbot>,<grub-client>,<peach >,<htmlparser>,<w3c css validator>,<w3c (x)html validator>,<w3c p3p validator>,<download demon>,<offline explorer>,<webcopier>,<web downloader>,<webzip>,<htmldoc>,<wget >,<curl/>,<php >,<libwww-perl>,<python-urllib>,<java >'; // robots identification by user agent portions of signature
-//--------------------------------------- UPLOAD DEFINITIONS :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
-const SMART_FRAMEWORK_UPLOAD_PICTS =  					'<svg>,<png>,<gif>,<jpg>,<jpeg>,<webp>'; 	// Uploads images type ALLOWED extensions list
-const SMART_FRAMEWORK_UPLOAD_MOVIES =  					'<webm>,<ogv>,<ogg>,<mp4>,<mov>'; 			// Uploads video type ALLOWED extensions list
-const SMART_FRAMEWORK_UPLOAD_DOCS =  					'<txt>,<md>,<pdf>,<odt>,<ods>,<odp>,<csv>,<doc>,<rtf>,<xls>,<ppt>'; // Uploads document type ALLOWED extensions list
 //--------------------------------------- UPLOADS SECURITY :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
-const SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS = 		SMART_FRAMEWORK_UPLOAD_PICTS.','.SMART_FRAMEWORK_UPLOAD_MOVIES.','.SMART_FRAMEWORK_UPLOAD_DOCS.',<json>,<yaml>,<xml>,<eml>,<ics>,<vcf>,<7z>,<zip>,<rar>,<tar>,<tgz>,<tbz>,<gz>,<bz2>,<xz>,<ps>,<eps>,<tif>,<tiff>,<wmf>,<bmp>,<swf>,<webp>'; // *OPTIONAL* The List of Allowed file extensions for Uploads ; if set and empty, will dissalow any upload by default ; if set and non-empty will only allow files with these extensions to be uploaded (if this is set the SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS will not count at all)
+const SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS = 		'<svg>,<png>,<gif>,<jpg>,<jpeg>,<webp>'.','.'<webm>,<ogv>,<ogg>,<mp4>,<mov>'.','.'<txt>,<md>,<pdf>,<odt>,<ods>,<odp>,<csv>,<doc>,<rtf>,<xls>,<ppt>'.','.'<json>,<yaml>,<xml>,<eml>,<ics>,<vcf>'.','.'<7z>,<zip>,<rar>,<tar>,<tgz>,<tbz>,<gz>,<bz2>,<xz>'.','.'<ps>,<eps>,<tif>,<tiff>,<wmf>,<bmp>,<swf>'; // *OPTIONAL* The List of Allowed file extensions for Uploads ; if set and empty, will dissalow any upload by default ; if set and non-empty will only allow files with these extensions to be uploaded (if this is set the SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS will not count at all)
 const SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS =  		'<htm>,<html>,<js>,<sass>,<scss>,<css>,<shtml>,<phtml>,<php>,<sql>,<inc>,<tpl>,<mtpl>,<twig>,<dust>,<t3fluid>,<pl>,<py>,<pyc>,<pyo>,<rb>,<go>,<asp>,<jsp>,<sh>,<bash>,<bat>,<cmd>,<cgi>,<fcgi>,<fastcgi>,<scgi>,<wsgi>,<exe>,<msi>,<dll>,<dylib>,<bin>,<so>'; // The List of DENIED file extensions for Uploads ; files with these extensions will not be allowed to be uploaded by default
+//---------------------------------------
+//============================================================ # BELOW ARE APP SPECIFIC SETTINGS
 //--------------------------------------- DOWNLOADS SECURITY :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
 //const SMART_FRAMEWORK_DOWNLOAD_SKIP_LOG = 			true;										// If defined will disable logging for Downloads
 const SMART_FRAMEWORK_DOWNLOAD_FOLDERS =  				'<wpub>';									// Allow downloads ONLY from these folders: <folder1>,<folder2> (relative to the app root)
@@ -83,19 +87,20 @@ const SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT =  		true;										// Semantic U
 const SMART_FRAMEWORK_SEMANTIC_URL_SKIP_MODULE = 		false;										// Semantic URL Rewriter Skip Default Module for Shortening the semantic URLs ; just for index area ; if set to TRUE will skip the default module defined in configs as app.index-default-module
 const SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE = 	 	'';											// Default is `` (do not use rewrite) ; URL Rewrite Mode (requires Apache Rewrite): `standard` | `semantic` :: Apache like rewrite rules (must be enabled in .htaccess) and the SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT must be set to TRUE ; semantic URLS must be not disabled ; this works just for index.php (declared as directory index under apache)
 //---------------------------------------- SPECIAL FEATURES
-const SMART_FRAMEWORK_RESERVED_CONTROLLER_NAMES =  		'<php>,<html>,<shtml>,<phtml>,<stml>,<css>,<js>,<json>,<xml>,<rss>,<txt>,<md>,<csv>,<sql>,<png>,<gif>,<jpg>,<webp>,<svg>,<webm>,<pdf>,<zip>,<tar>,<bz2>,<gz>,<tgz>,<xz>,<7z>,<netarch>,<z-netarch>'; // OPTIONAL: The list with reserved controller names to avoid confusion between controller names and URL page reserved extensions that can lead to wrong browser behaviour if serving a page with such extension without an explicit mime type ; a controller name must avoid having any name from this list
+const SMART_FRAMEWORK_RESERVED_CONTROLLER_NAMES =  		'<php>,<html>,<shtml>,<phtml>,<stml>,<css>,<js>,<json>,<xml>,<rss>,<txt>,<md>,<csv>,<sql>,<svg>,<png>,<gif>,<jpg>,<webp>,<webm>,<pdf>,<zip>,<tar>,<bz2>,<gz>,<tgz>,<xz>,<7z>,<netarch>,<z-netarch>'; // OPTIONAL: The list with reserved controller names to avoid confusion between controller names and URL page reserved extensions that can lead to wrong browser behaviour if serving a page with such extension without an explicit mime type ; a controller name must avoid having any name from this list
 const SMART_SOFTWARE_URL_ALLOW_PATHINFO = 				1;											// Default is set to 1 ; Set to: 0 = no area ; 1 = only admin area ; 2 = both: index area & admin area ; 3 = only index area :: Sample PathInfo (index.php|task.php|admin.php/path/to/something/~)
 const SMART_SOFTWARE_FRONTEND_DISABLED = 				false;										// To Disable Frontend service (index.php) set this to TRUE
 const SMART_SOFTWARE_BACKEND_DISABLED = 				false;										// To Disable Backend service (admin.php) set this to TRUE
 const SMART_SOFTWARE_TASK_DISABLED = 					false; 										// To Disable Task service (task.php) set this to TRUE
 const SMART_SOFTWARE_DISABLE_STATUS_POWERED = 			false;										// If set to FALSE will disable the status powered info accesible via ?/smartframeworkservice/status
 const SMART_SOFTWARE_SQLDB_FATAL_ERR = 					true;										// If set to false will throw \EXCEPTION which can be catched instead of raise a fatal error on all SQL DB adapters such as PostgreSQL / SQLite / MySQL (NOSQL adapters, ex: MongoDB or Redis can be set per instance and are not affected by this setting) ; WARNING: disabling SQL Fatal Errors is not safe, especially when using SQL transactions ... ; DO NOT modify this parameter unless you know what you are doing !!!
-//--------------------------------------- SESSION
-const SMART_FRAMEWORK_SESSION_HANDLER =  				'files';									// Session Handler: 'files' (default / file storage: lightweight but in high concurencies may have locking issues) ; this can be set as 'redis' (DB / in-memory, very fast) or as 'mongodb' (DB / big-data) or as 'dba' or 'sqlite' ; or use your own custom adapter for the session in Smart.Framework you have to build it by extending the SmartAbstractCustomSession abstract class and define here as (example): 'modules/app/session-custom-adapter.php'
-const SMART_FRAMEWORK_SESSION_NAME =  					'SmartFramework__SESSION'; 					// Session Name ; *** YOU HAVE TO CHANGE IT *** this must be static and must contain only Letters and _
-const SMART_FRAMEWORK_SESSION_LIFETIME =  				0;											// Session Lifetime in seconds (0 by default) ; set to 0 for expire on browser close ; must be not higher than SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME
-const SMART_FRAMEWORK_SESSION_DOMAIN =  				'';											// Session (cookie) Domain: set it (empty) `` for the current subdomain as `sdom.domain.tld` ; set it as `*` or explicit `domain.tld` for all sub-domains of domain.tld ; default is `` (empty) if not defined at all ; this is for advanced use of the PHP session cookie management in sensitive production environments where you need per sub-domain encapsulated cookies
+//--------------------------------------- SESSION AND CLIENT UUID ; SESSION REQUIRES THE: SMART_FRAMEWORK_UUID_COOKIE_NAME for UUID ENTROPY ; IF the SMART_FRAMEWORK_UUID_COOKIE_SKIP is set to TRUE, Session will not start at all (security check) !!
+const SMART_FRAMEWORK_UUID_COOKIE_NAME = 	 			'SmartFramework__UUID';						// The UniqueID Cookie Name (it is recommended to be customized) ; (If the SMART_FRAMEWORK_UUID_COOKIE_SKIP is defined and set to true will not set the SMART_FRAMEWORK_UUID_COOKIE_NAME, which will drop some functionalities that depend on it ...)
+const SMART_FRAMEWORK_SESSION_NAME =  					'SmartFramework__SESS'; 					// Session Name ; *** YOU HAVE TO CHANGE IT *** this must be static and must contain only Letters and _
 const SMART_FRAMEWORK_SESSION_ROBOTS =  				false;										// Uncomment this to enable session also for robots (robot identified user agents)
+const SMART_FRAMEWORK_SESSION_LIFETIME =  				0;											// Session Lifetime in seconds (0 by default) ; set to 0 for expire on browser close ; must be not higher than SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME
+const SMART_FRAMEWORK_SESSION_DOMAIN =  				'';											// Session (cookie) Domain: set it (empty) `` for the current subdomain as `sdom.domain.tld` ; set it as `*` or explicit `domain.tld` for all sub-domains of domain.tld ; default is `` (empty) if not defined at all ; this is for advanced use of the PHP session cookie management in sensitive production environments where you need per sub-domain encapsulated cookies
+const SMART_FRAMEWORK_SESSION_HANDLER =  				'files';									// Session Handler: 'files' (default / file storage: lightweight but in high concurencies may have locking issues) ; this can be set as 'redis' (DB / in-memory, very fast) or as 'mongodb' (DB / big-data) or as 'dba' or 'sqlite' ; or use your own custom adapter for the session in Smart.Framework you have to build it by extending the SmartAbstractCustomSession abstract class and define here as (example): 'modules/app/session-custom-adapter.php'
 //---------------------------------------- CHARSET AND REGIONAL SETTINGS [ NEVER CHANGE THESE MUST BE UNICODE UTF-8 ; CHANGING IT YOU CAN BREAK THE UNICODE SUPPORT ]
 //const SMART_FRAMEWORK_DEFAULT_LANG =  				'en';										// The default language for translations (as language ID) :: Default is 'en' :: {{{SYNC-APP-DEFAULT-LANG}}} :: must be a valid language ID defined in config.php as regional.language-id
 //const SMART_FRAMEWORK_URL_PARAM_LANGUAGE =  			'lang';										// *Optional* (used only with multi languages) Language URL Param (if empty string, will not accept any language inputs by URL or Cookie) ; Default = 'lang' ; if not empty may contain only characters: [a-z] ; if defined and non empty must be between 1 and 10 characters long
@@ -139,11 +144,17 @@ Options -Indexes
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //====================
 
+//============================================================
 //----------------------------------------
 const SMART_FRAMEWORK_SECURITY_FILTER_INPUT =  		'/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/';	// !!! DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU ARE DOING !!! This is a Safe Unicode Filter Input (GET/POST/COOKIE) Variables (Strings) as it will remove all lower dangerous characters: x00 - x1F and x7F except: \t = x09 \n = x0A \r = x0D
 const SMART_FRAMEWORK_CHARSET =  					'UTF-8';								// This must be `UTF-8` 	:: Default Character Set for PHP
 const SMART_FRAMEWORK_SQL_CHARSET =  				'UTF8';									// This must be `UTF8` 		:: Default Character Set for DB SQL Servers
 //----------------------------------------
+//============================================================
+
+//============================================================
+//============================================================ INIT PHP RUNTIME
+//============================================================
 
 //---------------------------------------- Set TimeZone in Global Mode per Application
 if(defined('SMART_FRAMEWORK_TIMEZONE')) {
@@ -273,6 +284,10 @@ ini_set('session.serialize_handler', 'php');								// use php (default) ; wddx 
 // suhoshin must be not enabled :: no more necessary to check as since PHP 5.4 was no more includded by default on popular distros :: suhoshin patch breaks a lot of functionality in latest PHP version, thus is not supported ... use it on your own risk !! ; example: it may break this app when working with large data packets or even corrupt session data or unicode strings
 //----------------------------------------
 
+//============================================================
+//============================================================ FREEZE
+//============================================================
+
 //---------------------------------------- security: avoid load this multiple times
 if(defined('SMART_FRAMEWORK_INITS')) {
 	@http_response_code(500);
@@ -280,5 +295,9 @@ if(defined('SMART_FRAMEWORK_INITS')) {
 } //end if
 const SMART_FRAMEWORK_INITS = 'SET'; // avoid reload inits again (if accidentaly you do)
 //----------------------------------------
+
+//============================================================
+//============================================================ #END
+//============================================================
 
 // end of php code

@@ -29,37 +29,41 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-------------------------------------------
 
 //-------------------------------------------
-// SIMPLE AUTHENTICATION FOR ADMIN AREA, SINGLE ACCOUNT (admin.php)
+// SIMPLE AUTHENTICATION SYSTEM FOR ADMIN AND TASK AREAS, SINGLE ACCOUNT (admin.php / task.php)
 // modules/mod-auth-admins/libs/SimpleAuthAdminsHandler.php
 //-------------------------------------------
 // NOTICE: As this is just a simple (very basic) authentication for admin area, it uses a basic authentication with just a single account, with username / password as set in: config-admin.php
-// The default credentials as set in confir are (you can change them):
+// The default credentials as set in config are (you can change them):
 // 		username = admin 	(APP_AUTH_ADMIN_USERNAME 	as constant, set in config-admin.php)
-// 		password = pass 	(APP_AUTH_ADMIN_PASSWORD 	as constant, set in config-admin.php)
+// 		password = the-pass (APP_AUTH_ADMIN_PASSWORD 	as constant, set in config-admin.php)
 // This is the best way to integrate with framework's authentication system by using SmartAuth:: object.
 //-------------------------------------------
 if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\SmartModExtLib\\AuthAdmins\\SimpleAuthAdminsHandler'))) {
-	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` ...');
+	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` # SimpleAuth ...');
 	die('AppAuthAdmin:ModuleMissing:AuthAdmins');
 } //end if
 \SmartModExtLib\AuthAdmins\SimpleAuthAdminsHandler::Authenticate(
-	false // enforce SSL: TRUE/FALSE
+	false // enforce HTTPS: TRUE/FALSE
 );
 //-------------------------------------------
 
 //-------------------------------------------
-// ADVANCED AUTHENTICATION FOR ADMIN AREA, MULTI-ACCOUNT (admin.php)
+// UNICORN AUTHENTICATION SYSTEM FOR ADMIN AND TASK AREAS, MULTI-ACCOUNT (admin.php / task.php)
 // modules/mod-auth-admins/libs/AuthAdminsHandler.php
 //-------------------------------------------
-// NOTICE: instead of using the above Simple Authentication you can use a multi-user account Advanced Authentication system with multiple login areas by uncomment the following code and comment out the simple authentication from above:
+// NOTICE: This authentication system is more secure than the Simple Authentication system from above ; Features:
+// 	* multi-user accounts
+// 	* secure passwords hashing, SHA512
+// 	* fail login timeouts, IP based (DDOS protection after 10 fail logins ...)
+// INFO: see the modules/mod-auth-admins/doc/README.md on how to setup this in configs ...
 //-------------------------------------------
 /*
 if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\SmartModExtLib\\AuthAdmins\\AuthAdminsHandler'))) {
-	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` ...');
+	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` # Unicorn Auth ...');
 	die('AppAuthAdmin:ModuleMissing:AuthAdmins');
 } //end if
 \SmartModExtLib\AuthAdmins\AuthAdminsHandler::Authenticate(
-	false // enforce SSL: TRUE/FALSE
+	false // enforce HTTPS: TRUE/FALSE
 );
 */
 //-------------------------------------------

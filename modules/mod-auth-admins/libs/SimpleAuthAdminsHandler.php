@@ -32,7 +32,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD and *optional* the APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY ; they must be set in set in config-admin.php
  * Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)
  *
- * @version 	v.20210511
+ * @version 	v.20210523
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -41,7 +41,7 @@ final class SimpleAuthAdminsHandler {
 	// ::
 
 	//================================================================
-	public static function Authenticate($enforce_https=false) {
+	public static function Authenticate(bool $enforce_https=false) {
 		//--
 		if(\headers_sent()) {
 			\SmartFrameworkRuntime::Raise500Error('Authentication Failed, Headers Already Sent ...');
@@ -143,7 +143,7 @@ final class SimpleAuthAdminsHandler {
 			//-- log unsuccessful login
 			if(isset($_SERVER['PHP_AUTH_USER']) AND ((string)$_SERVER['PHP_AUTH_USER'] != '')) {
 				\SmartFileSystem::write(
-					'tmp/logs/adm/'.'simple-auth-fail-'.\date('Y-m-d@H').'.log',
+					'tmp/logs/adm/'.\Smart::safe_filename('simple-auth-fail-'.\date('Y-m-d@H').'.log'),
 					'[FAIL]'."\t".\Smart::normalize_spaces((string)\date('Y-m-d H:i:s O'))."\t".\Smart::normalize_spaces((string)$_SERVER['PHP_AUTH_USER'])."\t".\Smart::normalize_spaces((string)\SmartUtils::get_ip_client())."\t".\Smart::normalize_spaces((string)\SmartUtils::get_visitor_useragent())."\n",
 					'a'
 				);

@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20210513
+ * @version     v.20210523
  * @package     @Core
  *
  */
@@ -555,7 +555,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The escaped URL variable using the RFC3986 standard format (this variable can be appended to URL, by example: ?variable={escaped-value-returned-by-this-method}
 	 */
-	public static function escape_url(?string $y_string) { // do not make strongtype as NULL will break it
+	public static function escape_url(?string $y_string) {
 		//--
 		return (string) rawurlencode((string)$y_string);
 		//--
@@ -572,7 +572,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The escaped string using htmlspecialchars() standards with Unicode-Safe control
 	 */
-	public static function escape_html(?string $y_string) { // do not make strongtype as NULL will break it
+	public static function escape_html(?string $y_string) {
 		//-- v.181203
 		// Default is: ENT_HTML401 | ENT_COMPAT
 		// keep the ENT_HTML401 instead of ENT_HTML5 to avoid troubles with misc. HTML Parsers (robots, htmldoc, ...)
@@ -594,7 +594,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The escaped string using the WD-CSS21-20060411 standard
 	 */
-	public static function escape_css(?string $y_string) { // do not make strongtype as NULL will break it
+	public static function escape_css(?string $y_string) {
 		//-- http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q6
 		return (string) addcslashes((string)$y_string, "\x00..\x1F!\"#$%&'()*+,./:;<=>?@[\\]^`{|}~"); // inspired from Latte Templating
 		//--
@@ -610,7 +610,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The escaped string using a json_encode() standard to be injected between single quotes '' or double quotes ""
 	 */
-	public static function escape_js(?string $str) { // do not make strongtype as NULL will break it
+	public static function escape_js(?string $str) {
 		//-- v.20200605
 		// Prepare a string to pass in JavaScript Single or Double Quotes
 		// By The Situation:
@@ -727,7 +727,7 @@ final class Smart {
 	 *
 	 * @return 	MIXED						:: The PHP native Variable
 	 */
-	public static function unseryalize(?string $y_json) { // do not make strongtype as NULL will break it
+	public static function unseryalize(?string $y_json) {
 		//-- unseryalize json v.170503
 		return self::json_decode((string)$y_json, true);
 		//--
@@ -744,7 +744,7 @@ final class Smart {
 	 *
 	 * @return 	FLOAT						:: An float number
 	 */
-	public static function format_number_float($y_number, ?string $y_signed='') { // do not make strongtype as NULL will break it
+	public static function format_number_float($y_number, ?string $y_signed='') { // do not make strongtype on number, it may come as string
 		//--
 		if((string)$y_signed == '+') { // unsigned integer
 			if((float)$y_number < 0) { // {{{SYNC-SMART-FLOAT+}}}
@@ -767,7 +767,7 @@ final class Smart {
 	 *
 	 * @return 	INTEGER						:: An integer number
 	 */
-	public static function format_number_int($y_number, ?string $y_signed='') { // do not make strongtype as NULL will break it
+	public static function format_number_int($y_number, ?string $y_signed='') { // do not make strongtype on number, it may come as string
 		//--
 		if((string)$y_signed == '+') { // unsigned integer
 			if((int)$y_number < 0) { // {{{SYNC-SMART-INT+}}}
@@ -793,7 +793,7 @@ final class Smart {
 	 *
 	 * @return 	DECIMAL							:: A decimal number
 	 */
-	public static function format_number_dec($y_number, $y_decimals=2, ?string $y_sep_decimals='.', ?string $y_sep_thousands='') { // do not make strongtype as NULL will break it
+	public static function format_number_dec($y_number, $y_decimals=2, ?string $y_sep_decimals='.', ?string $y_sep_thousands='') { // do not make strongtype on number or decimals, it may come as string
 		//-- fix decimals
 		$y_decimals = (int) self::format_number_int($y_decimals,'+');
 		if($y_decimals < 1) {
@@ -837,7 +837,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 						:: The sorted array
 	 */
-	public static function array_sort(array $y_arr, ?string $y_mode) {
+	public static function array_sort(?array $y_arr, ?string $y_mode) {
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return array();
@@ -887,7 +887,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 						:: The sorted array
 	 */
-	public static function array_shuffle(array $y_arr) {
+	public static function array_shuffle(?array $y_arr) {
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return array();
@@ -911,7 +911,7 @@ final class Smart {
 	 *
 	 * @return MIXED 		:: The value from the specified array by the specific key path or NULL if the value does not exists
 	 */
-	public static function array_get_by_key_path(array $y_arr, ?string $y_key_path, ?string $y_path_separator) {
+	public static function array_get_by_key_path(?array $y_arr, ?string $y_key_path, ?string $y_path_separator) {
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return null;
@@ -965,7 +965,7 @@ final class Smart {
 	 *
 	 * @return BOOL 								:: TRUE if Key Exist / FALSE if NOT
 	 */
-	public static function array_test_key_by_path_exists(array $y_arr, ?string $y_key_path, ?string $y_path_separator) {
+	public static function array_test_key_by_path_exists(?array $y_arr, ?string $y_key_path, ?string $y_path_separator) {
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return false;
@@ -1013,7 +1013,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 								:: The modified array
 	 */
-	public static function array_change_key_case_recursive(array $y_arr, ?string $y_mode) {
+	public static function array_change_key_case_recursive(?array $y_arr, ?string $y_mode) {
 		//--
 		if(self::array_size($y_arr) <= 0) { // fix bug if empty array / max nested level
 			return array();
@@ -1053,7 +1053,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 								:: The modified array
 	 */
-	public static function array_init_keys($y_arr, $y_keys) {
+	public static function array_init_keys($y_arr, $y_keys) { // do not enforce parameters type, it have a wide usage and detects !
 		//--
 		if(!is_array($y_arr)) {
 			$y_arr = array();
@@ -1239,7 +1239,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The formatted string
 	 */
-	public static function nl_2_br(?string $y_code) { // do not make strongtype as NULL will break it
+	public static function nl_2_br(?string $y_code) {
 		//--
 		return nl2br((string)trim((string)$y_code), false); // 2nd param is false for not xhtml tags, since PHP 5.3 !!
 		//--
@@ -1256,7 +1256,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The processed HTML Code
 	 */
-	public static function striptags(?string $yhtmlcode, string $ynewline='yes') {
+	public static function striptags(?string $yhtmlcode, ?string $ynewline='yes') {
 		//--
 		$yhtmlcode = (string) $yhtmlcode;
 		$ynewline = (string) $ynewline;
@@ -1731,7 +1731,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The normalized text
 	 */
-	public static function normalize_spaces(?string $y_txt) { // do not make strongtype as NULL will break it
+	public static function normalize_spaces(?string $y_txt) {
 		//-- {{{SYNC-NORMALIZE-SPACES}}}
 		return (string) str_replace(["\r\n", "\r", "\n", "\t", "\x0B", "\0", "\f"], ' ', (string)$y_txt);
 		//--
@@ -1746,19 +1746,30 @@ final class Smart {
 	 * On 32-bit platforms the INTEGER is between 		   -2147483648 		to 				 2147483647
 	 * On 64-bit platforms the INTEGER is between -9223372036854775808 		to		9223372036854775807
 	 *
-	 * @param INTEGER NUMBER 	$y_number	:: The integer number to be checked
+	 * @param INTEGER NUMBER AS STRING 		$y_number	:: The integer number to be checked
 	 *
-	 * @return BOOLEAN 						:: TRUE if overflows the max safe integer ; FALSE if is OK (not overflow maximum)
+	 * @return BOOLEAN 									:: TRUE if overflows the max safe integer ; FALSE if is OK (not overflow maximum)
 	 */
-	public static function check_int_number_overflow_max($y_number) { // do not make strongtype as NULL will break it
+	public static function check_int_number_overflow_max($y_number) { // do not enforce a type, will check to be nscalar and numeric !
 		//--
-		if(abs((int)$y_number) > (int)PHP_INT_MAX) {
-			$out = true;
-		} else {
-			$out = false;
-		} //end if else
+		if(!self::is_nscalar($y_number)) {
+			return true;
+		} //end if
+		if(is_null($y_number)) {
+			return false;
+		} //end if
+		if(is_nan((float)$y_number)) {
+			return true; // NAN is considered overflow
+		} //end if
+		if(!is_numeric($y_number)) { // must check after check for null and nan ; it returns true also for number as strings
+			return true;
+		} //end if
 		//--
-		return (bool) $out;
+		if((float)abs((float)$y_number) > (int)PHP_INT_MAX) {
+			return true;
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1770,15 +1781,27 @@ final class Smart {
 	 * All numbers over this must use special operators from BCMath to avoid floating point precision issues
 	 * This is more intended for decimal numbers like financial operations where the significant decimal digits are important
 	 *
-	 * @param DECIMAL NUMBER 	$y_number	:: The decimal number to be checked
+	 * @param DECIMAL NUMBER AS STRING 		$y_number	:: The decimal number to be checked
 	 *
-	 * @return BOOLEAN 						:: TRUE if overflows the max safe decimal ; FALSE if is OK (not overflow maximum)
+	 * @return BOOLEAN 									:: TRUE if overflows the max safe decimal ; FALSE if is OK (not overflow maximum)
 	 */
-	public static function check_dec_number_overflow_max($y_number) { // do not make strongtype as NULL will break it
+	public static function check_dec_number_overflow_max($y_number) { // do not enforce a type, will check to be nscalar and numeric !
+		//--
+		if(!self::is_nscalar($y_number)) {
+			return true;
+		} //end if
+		if(is_null($y_number)) {
+			return false;
+		} //end if
+		if(is_nan((float)$y_number)) {
+			return true; // NAN is considered overflow
+		} //end if
+		if(!is_numeric($y_number)) { // must check after check for null and nan ; it returns true also for number as strings
+			return true;
+		} //end if
 		//--
 		$max_number = '999999999999.9900'; // DECIMAL [12].[4] (no higher decimal numbers than this are safe using a precision like 14, the max in PHP)
-		//--
-		if(abs((float)$y_number) > (float)$max_number) {
+		if((float)abs((float)$y_number) > (float)$max_number) {
 			$out = true;
 		} else {
 			$out = false;
@@ -2399,7 +2422,7 @@ final class Smart {
 	 *
 	 * @return -						:: This function does not return anything
 	 */
-	public static function log_info(?string $title, ?string $message) { // do not make strongtype as NULL will break it
+	public static function log_info(?string $title, ?string $message) {
 		//--
 		if((defined('SMART_FRAMEWORK_INFO_LOG')) AND (is_dir(self::dir_name((string)SMART_FRAMEWORK_INFO_LOG)))) { // must use is_dir here to avoid dependency with smart file system lib
 			@file_put_contents((string)SMART_FRAMEWORK_INFO_LOG, '[INF]'."\t".date('Y-m-d H:i:s O')."\t".self::normalize_spaces($title)."\t".self::normalize_spaces($message)."\n", FILE_APPEND | LOCK_EX);
@@ -2422,7 +2445,7 @@ final class Smart {
 	 *
 	 * @return -						:: This function does not return anything
 	 */
-	public static function log_notice(?string $message) { // do not make strongtype as NULL will break it
+	public static function log_notice(?string $message) {
 		//--
 		if(SmartFrameworkRegistry::ifProdEnv() === true) {
 			return; // use this only in DEV mode
@@ -2444,7 +2467,7 @@ final class Smart {
 	 *
 	 * @return -						:: This function does not return anything
 	 */
-	public static function log_warning(?string $message) { // do not make strongtype as NULL will break it
+	public static function log_warning(?string $message) {
 		//--
 		@trigger_error('#SMART-FRAMEWORK.WARNING# '.$message, E_USER_WARNING);
 		//--
@@ -2463,7 +2486,7 @@ final class Smart {
 	 *
 	 * @return -								:: This function does not return anything
 	 */
-	public static function raise_error(?string $message_to_log, ?string $message_to_display='', bool $is_html_message_to_display=false) { // do not make strongtype as NULL will break it
+	public static function raise_error(?string $message_to_log, ?string $message_to_display='', bool $is_html_message_to_display=false) {
 		//--
 		global $smart_____framework_____last__error;
 		global $smart_____framework_____is_html_last__error;

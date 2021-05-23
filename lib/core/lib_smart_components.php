@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20210520
+ * @version 	v.20210523
  * @package 	Application:ViewComponents
  *
  */
@@ -691,7 +691,7 @@ final class SmartComponents {
 		//--
 		$charset = (string) (defined('SMART_FRAMEWORK_CHARSET') ? SMART_FRAMEWORK_CHARSET : '');
 		$timezone = (string) (defined('SMART_FRAMEWORK_TIMEZONE') ? SMART_FRAMEWORK_TIMEZONE : '');
-		$cookiename = (string) (defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME') ? SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME : '');
+		$cookiename = (string) (defined('SMART_FRAMEWORK_UUID_COOKIE_NAME') ? SMART_FRAMEWORK_UUID_COOKIE_NAME : '');
 		$namespace = (string) (defined('SMART_SOFTWARE_NAMESPACE') ? SMART_SOFTWARE_NAMESPACE : '');
 		$timeout_execution = (int) (defined('SMART_FRAMEWORK_EXECUTION_TIMEOUT') ? SMART_FRAMEWORK_EXECUTION_TIMEOUT : 0);
 		$timeout_netsocket = (int) (defined('SMART_FRAMEWORK_NETSOCKET_TIMEOUT') ? SMART_FRAMEWORK_NETSOCKET_TIMEOUT : 0);

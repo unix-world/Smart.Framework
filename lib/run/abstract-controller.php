@@ -103,7 +103,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210522
+ * @version 	v.20210523
  * @package 	development:Application
  *
  */
@@ -727,8 +727,8 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 * @param 	STRING 		$data		:: The cookie data
 	 * @param 	STRING 		$expire		:: The cookie expire time in seconds since now (zero for session cookies) ; default is zero to set as session cookie (expires with browser session, will be unset after browser is closed)
 	 * @param 	STRING 		$path		:: The cookie path ; default is /
-	 * @param 	STRING 		$domain		:: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN if defined or '') ; can be explicit set
-	 * @param 	ENUM 		$samesite 	:: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections
+	 * @param 	STRING 		$domain		:: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN if defined or '') ; can be explicit set
+	 * @param 	ENUM 		$samesite 	:: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections
 	 * @param 	BOOL 		$secure 	:: The cookie secure policy ; if set to TRUE will send cookies only via https secure connections ; default is FALSE ; if the SameSite is set to 'None' this parameter is enforced to be TRUE
 	 * @param 	BOOL 		$httponly 	:: The cookie httponly policy ; if set to TRUE this cookies will not be available to Javascript (or any other client-side access) but only to server-side scripts
 	 *
@@ -748,8 +748,8 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @param 	STRING 		$name		:: The cookie name
 	 * @param 	STRING 		$path		:: The cookie path ; default is /
-	 * @param 	STRING 		$domain		:: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN if defined or '') ; can be explicit set
-	 * @param 	ENUM 		$samesite 	:: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections
+	 * @param 	STRING 		$domain		:: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN if defined or '') ; can be explicit set
+	 * @param 	ENUM 		$samesite 	:: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections
 	 *
 	 * @return 	BOOLEAN					:: TRUE if Set, FALSE if Not
 	 */

@@ -223,7 +223,7 @@ final class SmartSession {
 		//--
 		//=====
 		//-- no log as the cookies can be dissalowed by the browser
-		if(!defined('SMART_APP_VISITOR_COOKIE') OR ((string)SMART_APP_VISITOR_COOKIE == '') OR ((string)SMART_APP_VISITOR_COOKIE == '')) {
+		if(!defined('SMART_APP_VISITOR_COOKIE') OR ((string)trim((string)SMART_APP_VISITOR_COOKIE) == '')) { // {{{SYNC-SMART-UNIQUE-VAL-COOKIE}}}
 			return; // session need cookies
 		} //end if
 		//--

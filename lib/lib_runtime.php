@@ -29,8 +29,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
- * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20210522
+ * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
+ * @version		v.20210523
  * @package 	Application
  *
  */
@@ -1211,6 +1211,38 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
+	public static function IsVisitorEntropyIDCookieAvaliable() {
+		//--
+		$is_available = false;
+		//--
+		if(defined('SMART_FRAMEWORK_UUID_COOKIE_NAME')) {
+			if((string)SMART_FRAMEWORK_UUID_COOKIE_NAME != '') {
+				if(SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_UUID_COOKIE_NAME)) { // {{{SYNC-VALIDATE-UID-COOKIE-NAME}}}
+					if(
+						(!defined('SMART_FRAMEWORK_UUID_COOKIE_SKIP')) OR
+						(
+							defined('SMART_FRAMEWORK_UUID_COOKIE_SKIP')
+							AND
+							(SMART_FRAMEWORK_UUID_COOKIE_SKIP !== true)
+						)
+					) {
+						$is_available = true;
+					} //end if
+				} else {
+					Smart::log_warning(__METHOD__.' # SMART_FRAMEWORK_UUID_COOKIE_NAME value is Invalid: '.SMART_FRAMEWORK_UUID_COOKIE_NAME);
+				} //end if else
+			} else {
+				Smart::log_warning(__METHOD__.' # SMART_FRAMEWORK_UUID_COOKIE_NAME value is Empty');
+			} //end if
+		} //end if
+		//--
+		return (bool) $is_available;
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
 	// Avoid run this function before Smart.Framework was loaded, it depends on it
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
 	public static function SetVisitorEntropyIDCookie() {
@@ -1226,37 +1258,32 @@ final class SmartFrameworkRuntime {
 		} //end if
 		//--
 		$cookie = '';
-		$wasset = false;
-		//-- {{{SYNC-SMART-UNIQUE-COOKIE}}}
-		$expire = 0;
-		if(defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME')) {
-			$expire = (int) SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME;
-			if($expire <= 0) {
-				$expire = 0;
-			} //end if
-		} //end if
-		if((defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME')) AND (!defined('SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SKIP'))) {
-			if((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME != '') {
-				if(SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME)) { // {{{SYNC-VALIDATE-UID-COOKIE-NAME}}}
-					$cookie = (string) trim((string)strtolower((string)SmartFrameworkRegistry::getCookieVar((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME)));
-					if(((string)$cookie == '') OR (strlen((string)$cookie) != 40) OR (!preg_match('/^[a-f0-9]+$/', (string)$cookie))) {
-						$entropy = (string) sha1((string)Smart::unique_entropy('uuid-cookie')); // generate a random unique key ; cookie was not yet set or is invalid
-						SmartUtils::set_cookie((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, (string)$entropy, (int)$expire);
-						$cookie = (string) $entropy;
-						$wasset = true;
-					} //end if
-				} else {
-					Smart::raise_error(
-						'#SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME#'."\n".'Invalid Value for constant: '.SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME,
-						'App Init ERROR :: (See Error Log for More Details)'
-					);
+		//--
+		if(self::IsVisitorEntropyIDCookieAvaliable() === true) { // {{{SYNC-SMART-UNIQUE-COOKIE}}}
+			//--
+			$wasset = false;
+			//--
+			$expire = 0;
+			if(defined('SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME')) {
+				$expire = (int) SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME;
+				if($expire <= 0) {
+					$expire = 0;
 				} //end if
 			} //end if
+			//--
+			$cookie = (string) trim((string)strtolower((string)SmartFrameworkRegistry::getCookieVar((string)SMART_FRAMEWORK_UUID_COOKIE_NAME)));
+			if(((string)$cookie == '') OR (strlen((string)$cookie) != 40) OR (!preg_match('/^[a-f0-9]+$/', (string)$cookie))) {
+				$entropy = (string) sha1((string)Smart::unique_entropy('uuid-cookie')); // generate a random unique key ; cookie was not yet set or is invalid
+				SmartUtils::set_cookie((string)SMART_FRAMEWORK_UUID_COOKIE_NAME, (string)$entropy, (int)$expire);
+				$cookie = (string) $entropy;
+				$wasset = true;
+			} //end if
+			if($wasset !== true) {
+				SmartUtils::set_cookie((string)SMART_FRAMEWORK_UUID_COOKIE_NAME, (string)$cookie, (int)$expire);
+			} //end if
+			//--
 		} //end if
 		//-- #end# sync
-		if($wasset !== true) {
-			SmartUtils::set_cookie((string)SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME, (string)$cookie, (int)$expire);
-		} //end if
 		define('SMART_APP_VISITOR_COOKIE', (string)$cookie); // empty or cookie ID
 		//--
 	} //END FUNCTION

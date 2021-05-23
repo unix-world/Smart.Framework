@@ -2,15 +2,24 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
-May 22, 2021 :: :: Version 7.2.1 rev.20210522
+May 23, 2021 :: Version 7.2.1 rev.20210523
+	* renamed init constant SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME as SMART_FRAMEWORK_UUID_COOKIE_NAME
+	* renamed the resy of init constants starting with SMART_FRAMEWORK_UNIQUE_ID_COOKIE_* as SMART_FRAMEWORK_COOKIES_DEFAULT_*
+	* removed unused constants SMART_FRAMEWORK_UPLOAD_* as they were a garbage from v.5 only ...
+	* added a method: SmartFrameworkRuntime::IsVisitorEntropyIDCookieAvaliable() and replaced the detection by constant in all places ...
+	* captcha mode session will warn if no UUID cookie is available since the session needs the UUID cookie to run !
+	* optimize and fix Smart check_int_number_overflow_max and check_dec_number_overflow_max
+	* improve the fail by ip timeout algorithm for unicorn authentication - admins.auth module ; raised to 10 the min limit
+
+May 22, 2021 :: Version 7.2.1 rev.20210522
 	* mod app release, STABLE
 	* bump to version 8
 
-May 14, 2021 :: :: Version 7.2.1 rev.20210514
+May 14, 2021 :: Version 7.2.1 rev.20210514
 	* added TPL post-render placeholders
 	* added ASCII Art Captcha as alternative to SVG Captcha
 
-May 11, 2021 :: :: Version 7.2.1 rev.20210511
+May 11, 2021 :: Version 7.2.1 rev.20210511
 	* major refactoring
 	* replaced define() with const wherever possible to speedup the code
 	* methods refactoring to avoid circular dependencies between the framework libs:
@@ -25,20 +34,20 @@ May 11, 2021 :: :: Version 7.2.1 rev.20210511
 	* implemented standalone app
 	* refactoring the appcodepack/unpack as a new module: mod app release
 
-April 21, 2021 :: :: Version 7.2.1 rev.20210421
+April 21, 2021 :: Version 7.2.1 rev.20210421
 	* bug fixes and optimizations
 
-April 20, 2021 :: :: Version 7.2.1 rev.20210420
+April 20, 2021 :: Version 7.2.1 rev.20210420
 	* Smart.Captcha bug fix: it was never entering the stage 2 by internal algorithm but only 1 or 3
 	* add entropy for Smart.Captcha
 	* garbage cleaning inside code: php, js, html, ..., comments
 	* fix datepicker to allow re-select the same date
 
-April 19, 2021 :: :: Version 7.2.1 rev.20210419
+April 19, 2021 :: Version 7.2.1 rev.20210419
 	* Optimizations for the new Javascript ES6, incl. SmartGrid and UIUtils
 	* MAJOR RELEASE (see below backward incompatible changes for Smart.Framework Javascript which was migrated from ES5 to ES6)
 
-April 18, 2021 :: :: Version 7.2.1 rev.20210418
+April 18, 2021 :: Version 7.2.1 rev.20210418
 	* smart framework Javascript migrated to ES6 (classes ans some functions have been renamed ... for compatibility mode with old projects look at the mod-xtra-vanilla/views/js/smart-framework.fix.js and load this after loading the lib/js/framework/smart-framework.pak.js, most of the features should still work, they have been aliased ...)
 	* update compatibility with new class names from smart framework Javascript ES6 in all modules
 	* controller Initialize() now support also HTTP Status codes
@@ -46,10 +55,10 @@ April 18, 2021 :: :: Version 7.2.1 rev.20210418
 	* translations for captcha (en / ro) have been slighly changes and new keys have been added
 	* documentation updated
 
-April 03, 2021 :: :: Version 7.2.1 rev.20210403
+April 03, 2021 :: Version 7.2.1 rev.20210403
 	* fix some form submit return false
 
-April 02, 2021 :: :: Version 7.2.1 rev.20210402
+April 02, 2021 :: Version 7.2.1 rev.20210402
 	* Fix signature for HTTP Status and Error Messages
 	* Fix HTTP Message Error and Status Templates ; The Message error should not contain any loadable sub-resource to avoid infinite cycles with 404 if sub-resource is also not found
 	* Return HTTP 202 for servicestatus
@@ -59,45 +68,45 @@ April 02, 2021 :: :: Version 7.2.1 rev.20210402
 	* Various Works arround better IP detection (Client and Proxy)
 	* Refactoring: App Bootstrap, Smart Error Handler, Lib Runtime
 
-March 31, 2021 :: :: Version 7.2.1 rev.20210331
+March 31, 2021 :: Version 7.2.1 rev.20210331
 	* refactoring and optimizations for the framework libs
 	* refactored the error handler and register_shutdown_function in error handler
 
-March 30, 2021 :: :: Version 7.2.1 rev.20210330
+March 30, 2021 :: Version 7.2.1 rev.20210330
 	* Added alternative js growl (toastr)
 	* Rework for Growl and Toastr + optimizations
 	* refactoring and optimizations for PHP code
 	* updated documentation for PHP / JS
 
-March 27, 2021 :: :: Version 7.2.1 rev.20210327
+March 27, 2021 :: Version 7.2.1 rev.20210327
 	* HighlightJs ViewHelpers - new features
 	* mime type better detection
 
-March 25, 2021 :: :: Version 7.2.1 rev.20210325
+March 25, 2021 :: Version 7.2.1 rev.20210325
 	* PHP: Marker-TPL supports 12 sub-levels instead of 3
 
-March 22, 2021 :: :: Version 7.2.1 rev.20210322
+March 22, 2021 :: Version 7.2.1 rev.20210322
 	* PHP: Smart Markdown parser security improvements and optimizations ; can integrate with Smart Html Cleanup
 	* PHP: Smart Html Cleanup now supports also tidy not only DomDocument ; many fixes
 	* Javascript: Bug Fixes to Core to detect if a number is finite
 	* Javascript: fixes for cookie set / delete
 
-March 16, 2021 :: :: Version 7.2.1 rev.20210316
+March 16, 2021 :: Version 7.2.1 rev.20210316
 	* stable on PHP 8, pass all tests
 	* Markdown new features: alternate image (webp) and support for jQuery.unveil
 	* jQuery.unveil will unveil also hidden images (ex: some carousel images may be hidden)
 
-March 14, 2021 :: :: Version 7.2.1 rev.20210314
+March 14, 2021 :: Version 7.2.1 rev.20210314
 	* new feature: HTML Performance Metrics Profiler (Javascript)
 
-March 12, 2021 :: :: Version 7.2.1 rev.20210312
+March 12, 2021 :: Version 7.2.1 rev.20210312
 	* fix deprecated <div> align=center in favor of <center> tag for includded HTML
 	* jQuery unveil js can now handle also srcset on picture/source but also img img[src] and picture[source[srcset]]
 
-March 10, 2021 :: :: Version 7.2.1 rev.20210310
+March 10, 2021 :: Version 7.2.1 rev.20210310
 	* req. PHP 7.3 or later (removed support for PHP 7.2 because of setcookie option missing SameSite)
 
-March 07, 2021 :: :: Version 7.2.1 rev.20210307
+March 07, 2021 :: Version 7.2.1 rev.20210307
 	* PHP8 Compatible
 	* Removed support for NetteLatte Templating
 

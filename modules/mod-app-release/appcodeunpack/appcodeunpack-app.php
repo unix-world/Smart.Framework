@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20210522
+// [AppCodeUnpack / APP] v.20210523
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.7.2.1 / smart.framework.v.7.2
 
@@ -96,7 +96,7 @@ final class AppCodeUnpack {
 	// ::
 	// v.20210522
 
-	private const APPCODEUNPACK_VERSION = 's.20210522.1636';
+	private const APPCODEUNPACK_VERSION = 's.20210523.0038';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 

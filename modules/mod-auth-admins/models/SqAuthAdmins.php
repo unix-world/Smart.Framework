@@ -25,9 +25,11 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20210511
+	// v.20210523
 
 	private $db;
+
+	public const FAIL_LOGIN_LIMITS = 10;
 
 
 	public function __construct() {
@@ -71,9 +73,19 @@ final class SqAuthAdmins {
 			return array();
 		} //end if
 		//--
+		if((\strlen((string)$auth_user_name) < 3) OR (\strlen((string)$auth_user_name) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$auth_user_name))) { // SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
+			return array();
+		} //end if
+		if(\strlen((string)$auth_user_hash_pass) != 128) { // SHA512
+			return array();
+		} //end if
+		//--
 		return (array) $this->db->read_asdata(
 			'SELECT * FROM `admins` WHERE ((`id` = ?) AND (`pass` = ?) AND (`active` = 1)) LIMIT 1 OFFSET 0',
-			array($auth_user_name, $auth_user_hash_pass)
+			[
+				(string) $auth_user_name,
+				(string) $auth_user_hash_pass
+			]
 		);
 		//--
 	} //END FUNCTION
@@ -81,12 +93,12 @@ final class SqAuthAdmins {
 
 	public function checkFailLoginData($id, $hashpass, $ip) {
 		//--
-		// FAIL LOGINS LIMIT: 7
+		$ip = (string) \trim((string)$ip);
+		$id = (string) \trim((string)$id);
 		//--
 		$arr = (array) $this->db->read_asdata(
-			'SELECT * FROM `authfail` WHERE ((`id` = ?) AND (`ip_addr` = ?)) LIMIT 1 OFFSET 0',
+			'SELECT SUM(`tries`) AS `tot_tries`, MAX(`trytime`) AS `max_trytime` FROM `authfail` WHERE (`ip_addr` = ?) LIMIT 1 OFFSET 0',
 			[
-				(string) $id,
 				(string) $ip
 			]
 		);
@@ -95,10 +107,10 @@ final class SqAuthAdmins {
 			return 0;
 		} //end if
 		//--
-		if((int)$arr['tries'] <= 7) {
+		if((int)$arr['tot_tries'] <= (int)self::FAIL_LOGIN_LIMITS) {
 			return 0;
 		} //end if
-		if((int)$arr['trytime'] <= 0) {
+		if((int)$arr['max_trytime'] <= 0) {
 			return 0;
 		} //end if
 		//--
@@ -109,7 +121,7 @@ final class SqAuthAdmins {
 		$test_arr = null;
 		//--
 		$nowtime 	= (int) \time();
-		$allowtime 	= (int) ((int)$arr['trytime'] + (((int)$arr['tries'] - 7) * 60));
+		$allowtime 	= (int) ((int)$arr['max_trytime'] + (((int)$arr['tot_tries'] - (int)self::FAIL_LOGIN_LIMITS) * 60));
 		if((int)$nowtime >= (int)$allowtime) {
 			return 0;
 		} //end if
@@ -121,25 +133,28 @@ final class SqAuthAdmins {
 
 	public function logSuccessfulLoginData($id, $ip) {
 		//--
+		$ip = (string) \trim((string)$ip);
+		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::raise_error('Invalid AUTH DB Connection !');
 			return false;
 		} //end if
-		//--
+		//-- get by id
 		$arr = (array) $this->db->read_asdata(
-			'SELECT SUM(`tries`) AS `tot_tries`, MAX(`trytime`) AS `tot_trytime` FROM `authfail` WHERE (`id` = ?) LIMIT 1 OFFSET 0',
+			'SELECT SUM(`tries`) AS `tot_tries`, MAX(`trytime`) AS `max_trytime` FROM `authfail` WHERE (`id` = ?) LIMIT 1 OFFSET 0',
 			[
 				(string) $id
 			]
 		);
-		//--
+		//-- delete by ip
 		$del = (array) $this->db->write_data(
-			'DELETE FROM `authfail` WHERE (`id` = ?)',
+			'DELETE FROM `authfail` WHERE ((`ip_addr` = ?) OR (`trytime` <= ?))',
 			[
-				(string) $id
+				(string) $ip,
+				(int)    ((int)\time() - (int)(60 * 60 * 24)), // cleanup old entries, older than 24 hours
 			]
 		);
-		//--
+		//-- upd by id
 		$upd = [];
 		if((int)$arr['tot_tries'] > 0) {
 			$upd = (array) $this->db->write_data(
@@ -148,7 +163,7 @@ final class SqAuthAdmins {
 					(string) $ip,
 					(int)    \time(),
 					(int)    $arr['tot_tries'],
-					(int)    $arr['tot_trytime'],
+					(int)    $arr['max_trytime'],
 					(string) $id
 				]
 			);
@@ -171,20 +186,29 @@ final class SqAuthAdmins {
 
 	public function logUnsuccessfulLoginData($id, $ip, $ua) {
 		//--
+		$ip = (string) \trim((string)$ip);
+		$ua = (string) \trim((string)$ua);
+		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::raise_error('Invalid AUTH DB Connection !');
 			return false;
 		} //end if
 		//--
-		$arr = (array) $this->getById($id);
-		if(\Smart::array_size($arr) <= 0) {
-			return false;
+		$id = (string) \trim((string)$id);
+		if((\strlen((string)$id) < 3) OR (\strlen((string)$id) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$id))) { // SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
+			$id = '';
+		} else {
+			$arr = (array) $this->getById($id);
+			if(\Smart::array_size($arr) <= 0) {
+				$id = '';
+			} //end if
+			$arr = null;
 		} //end if
 		//--
-		@\file_put_contents(
-			'tmp/logs/adm/'.'auth-fail-'.\date('Y-m-d@H').'.log',
-			'[ERR]'."\t".\Smart::normalize_spaces((string)\date('Y-m-d H:i:s O'))."\t".\Smart::normalize_spaces((string)$id)."\t".\Smart::normalize_spaces((string)$ip)."\t".\Smart::normalize_spaces((string)$ua)."\n",
-			\FILE_APPEND | \LOCK_EX
+		\SmartFileSystem::write(
+			'tmp/logs/adm/'.\Smart::safe_filename('auth-fail-'.\date('Y-m-d@H').'.log'),
+			'[FAIL]'."\t".\Smart::normalize_spaces((string)\date('Y-m-d H:i:s O'))."\t".\Smart::normalize_spaces((string)$id)."\t".\Smart::normalize_spaces((string)$ip)."\t".\Smart::normalize_spaces((string)$ua)."\n",
+			'a'
 		);
 		//--
 		$this->db->write_data('INSERT OR IGNORE INTO `authfail`'.$this->db->prepare_statement(
@@ -224,7 +248,9 @@ final class SqAuthAdmins {
 		//--
 		return (array) $this->db->read_asdata(
 			'SELECT * FROM `admins` WHERE (`id` = ?) LIMIT 1 OFFSET 0',
-			array((string)$id)
+			[
+				(string) $id
+			]
 		);
 		//--
 	} //END FUNCTION
@@ -646,16 +672,16 @@ final class SqAuthAdmins {
 			if((\defined('\\APP_AUTH_ADMIN_USERNAME')) AND (\defined('\\APP_AUTH_ADMIN_PASSWORD'))) {
 				//--
 				$init_username = (string) \APP_AUTH_ADMIN_USERNAME;
-				if(\SmartUnicode::str_len($init_username) < 3) {
-					\SmartFrameworkRuntime::Raise202Status('INVALID USERNAME set as APP_AUTH_ADMIN_USERNAME', \SmartComponents::operation_warn('The username is too short, must be minimum 3 characters. Manually REFRESH this page after by pressing F5 ...', '80%'));
+				if((\strlen((string)$init_username) < 3) OR (\strlen((string)$init_username) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$init_username))) { // SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
+					\SmartFrameworkRuntime::Raise202Status('INVALID USERNAME set as APP_AUTH_ADMIN_USERNAME', \SmartComponents::operation_warn('The username is too short, must be minimum 3 chars and max 25 chars. Can contain only [ a-z 0-9 . ] ... Manually REFRESH this page after by pressing F5 ...', '80%'));
 					return 0;
 				} //end if
 				$init_password = (string) \APP_AUTH_ADMIN_PASSWORD;
-				if(\SmartUnicode::str_len($init_password) < 7) {
-					\SmartFrameworkRuntime::Raise203Status('INVALID PASSWORD set as APP_AUTH_ADMIN_PASSWORD', \SmartComponents::operation_warn('The password is too short, must be minimum 7 characters. Manually REFRESH this page after by pressing F5 ...', '80%'));
+				if((\SmartUnicode::str_len((string)$init_password) < 7) OR (\SmartUnicode::str_len((string)$init_password) > 30)) { // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+					\SmartFrameworkRuntime::Raise203Status('INVALID PASSWORD set as APP_AUTH_ADMIN_PASSWORD', \SmartComponents::operation_warn('The password is too short, must be min 7 chars and max 30 chars. Manually REFRESH this page after by pressing F5 ...', '80%'));
 					return 0;
 				} //end if
-				$init_hash_pass = \SmartHashCrypto::password($init_password, $init_username);
+				$init_hash_pass = (string) \SmartHashCrypto::password((string)$init_password, (string)$init_username);
 				//--
 				$init_privileges = (string) '<superadmin>,<admin>,'.\APP_AUTH_PRIVILEGES;
 				$init_privileges = \Smart::list_to_array((string)$init_privileges, true);
@@ -685,7 +711,7 @@ final class SqAuthAdmins {
 				"-- #START: table schema: authfail
 				`id` character varying(25) NOT NULL,
 				`ip_addr` character varying(39) NOT NULL,
-				`tries` smallint NOT NULL,
+				`tries` bigint NOT NULL,
 				`trytime` bigint NOT NULL,
 				`ua` text NOT NULL,
 				PRIMARY KEY (`id`, `ip_addr`)

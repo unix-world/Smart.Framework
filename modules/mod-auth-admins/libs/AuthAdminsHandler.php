@@ -37,7 +37,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20210511
+ * @version 	v.20210523
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -48,13 +48,14 @@ final class AuthAdminsHandler {
 	private static $template_path = 'etc/templates/default/';
 	private static $template_file = 'template.htm';
 
-	private static $tpl_inc_path  = 'modules/mod-auth-admins/libs/templates/auth-admins-handler/';
-
-	private static $img_loader    = 'lib/framework/img/loading-spokes.svg';
+	private const TPL_INC_PATH = 'modules/mod-auth-admins/libs/templates/auth-admins-handler/';
+	private const IMG_LOADER   = 'lib/framework/img/loading-spokes.svg';
+	private const IMG_UNICORN  = 'lib/framework/img/unicorn-auth-logo.svg';
+	private const TXT_UNICORN  = 'Unicorn Secure Authentication';
 
 
 	//================================================================
-	public static function Authenticate($enforce_https=false, $tpl_path='', $tpl_file='') {
+	public static function Authenticate(bool $enforce_https=false, ?string $tpl_path='', ?string $tpl_file='') {
 
 		//--
 		if(\headers_sent()) {
@@ -166,14 +167,14 @@ final class AuthAdminsHandler {
 
 		//-- validate username
 		$auth_user_name = (string) \SmartUnicode::str_tolower(\trim((string)\SmartFrameworkSecurity::FilterUnsafeString((string)(isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : ''))));
-		if((\strlen((string)$auth_user_name) < 3) OR (\strlen((string)$auth_user_name) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$auth_user_name))) {
+		if((\strlen((string)$auth_user_name) < 3) OR (\strlen((string)$auth_user_name) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$auth_user_name))) { // SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
 			$auth_user_name = ''; // unset invalid user names
 		} //end if
 		//-- validate password
 		$auth_user_pass = '';
 		if((string)$auth_user_name != '') {
 			$auth_user_pass = (string) \SmartFrameworkSecurity::FilterUnsafeString((string)(isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : ''));
-			if((\strlen($auth_user_pass) < 7) OR (\strlen($auth_user_pass) > 30)) { // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+			if((\SmartUnicode::str_len((string)$auth_user_pass) < 7) OR (\SmartUnicode::str_len((string)$auth_user_pass) > 30)) { // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
 				$auth_user_pass = '';
 			} //end if
 		} //end if
@@ -181,7 +182,7 @@ final class AuthAdminsHandler {
 
 		//-- manage login or logout
 		$logged_in = 'no'; // user is not logged in (unsuccessful username or password)
-		$login_or_logout_form = (string) \SmartComponents::http_message_401_unauthorized('Authorization Required', \SmartComponents::operation_notice('Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.<script>setTimeout(() => { self.location = \''.\Smart::escape_js(\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3500);</script>').'<img src="'.\SmartUtils::get_server_current_url().self::$img_loader.'">');
+		$login_or_logout_form = (string) \SmartComponents::http_message_401_unauthorized('Authorization Required', \SmartComponents::operation_notice('Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.<script>setTimeout(() => { self.location = \''.\Smart::escape_js(\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3500);</script>').'<img src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_LOADER).'">'.'&nbsp;&nbsp;'.'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="32" height="32" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">');
 		//--
 		if(isset($_REQUEST['logout']) AND ((string)$_REQUEST['logout'] != '')) { // do logout
 			//--
@@ -191,9 +192,9 @@ final class AuthAdminsHandler {
 				[
 					'TITLE' => 'Logout from Admins Area',
 					'MAIN'  => (string) \SmartMarkersTemplating::render_file_template(
-						(string) self::$tpl_inc_path.'logout.htm',
+						(string) self::TPL_INC_PATH.'logout.htm',
 						[
-							'IMG-LOADER' 	=> (string) self::$img_loader,
+							'IMG-LOADER' 	=> (string) self::IMG_LOADER,
 							'URL-LOGOUT' 	=> (string) \SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script(),
 							'TIME-REDIR' 	=> 1500 // 1.5 sec.
 						]
@@ -211,7 +212,7 @@ final class AuthAdminsHandler {
 				//--
 				if($check_fail > 0) {
 					\SmartFrameworkRuntime::outputHttpSafeHeader('Retry-After: '.(int)$retry_seconds);
-					\SmartFrameworkRuntime::Raise429Error('429 TOO MANY FAILED LOGIN REQUESTS :: LOGIN TIMEOUT: '.(int)$retry_seconds.'sec.'."\n".'Next Allowed Login Time is: '.\Smart::escape_html(\date('Y-m-d H:i:s O'), (int)$check_fail).' / Current Server Time is: '.\Smart::escape_html(\date('Y-m-d H:i:s O')), '<script>setTimeout(() => { self.location = self.location; }, 15000);</script>'.'<img src="'.\SmartUtils::get_server_current_url().self::$img_loader.'">');
+					\SmartFrameworkRuntime::Raise429Error('429 TOO MANY FAILED LOGIN REQUESTS FOR IP :: ['.\SmartUtils::get_ip_client().'] :: LOGIN TIMEOUT: '.(int)$retry_seconds.'sec.'."\n".'Next Allowed Login Time is: '.\Smart::escape_html((string)\date('Y-m-d H:i:s O'), (int)$check_fail).' / Current Server Time is: '.\Smart::escape_html((string)\date('Y-m-d H:i:s O')), '<script>setTimeout(() => { self.location = self.location; }, 15000);</script>'.'<img src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_LOADER).'">'.'&nbsp;&nbsp;'.'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="32" height="32" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">');
 					die('AuthAdminsHandler:TOO-MANY-ATTEMPTS');
 					return;
 				} //end if
@@ -309,17 +310,17 @@ final class AuthAdminsHandler {
 				[
 					'TITLE' => 'Login to Admins Area',
 					'MAIN'  => (string) \SmartMarkersTemplating::render_file_template(
-						(string) self::$tpl_inc_path.'login.htm',
+						(string) self::TPL_INC_PATH.'login.htm',
 						[
-							'LOGIN-NSPACES' => (array) $arr_login_namespaces,
+							'LOGIN-NSPACES' => (array)  $arr_login_namespaces,
 							'POWERED-HTML' 	=> (string) \SmartComponents::app_powered_info(
 								'no',
 								[
 									[],
 									[
 										'type' => 'sside',
-										'name' => (string) 'Unicorn Secure Authentication Concept',
-										'logo' => (string) \SmartUtils::get_server_current_url().'lib/framework/img/unicorn-concept-logo.svg',
+										'name' => (string) self::TXT_UNICORN,
+										'logo' => (string) \SmartUtils::get_server_current_url().self::IMG_UNICORN,
 										'url' => ''
 									],
 									[
@@ -333,8 +334,9 @@ final class AuthAdminsHandler {
 								true, // watch
 								true // show logo
 							),
+							'AREA-ID' 		=> (string) (defined('SMART_SOFTWARE_NAMESPACE') ? SMART_SOFTWARE_NAMESPACE : 'N/A'),
 							'CRR-YEAR' 		=> (string) \date('Y'),
-							'LOGOUT-URL' 	=> (string) \SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script().'?logout=yes'
+							'LOGOUT-URL' 	=> (string) \SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script().'?logout=yes',
 						]
 					)
 				]

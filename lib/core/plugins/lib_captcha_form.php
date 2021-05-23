@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
- * @version 	v.20210519
+ * @version 	v.20210523
  * @package 	development:Captcha
  *
  */
@@ -98,7 +98,12 @@ final class SmartCaptcha {
 		} //end if
 		//--
 		if((string)$y_mode == 'session') {
-			$ok = (bool) SmartSession::set(self::cookie_name_frm($y_form_name), self::cksum_hash($y_captcha_word));
+			if(SmartFrameworkRuntime::IsVisitorEntropyIDCookieAvaliable() === true) { // {{{SYNC-SMART-UNIQUE-COOKIE}}}
+				$ok = (bool) SmartSession::set(self::cookie_name_frm($y_form_name), self::cksum_hash($y_captcha_word));
+			} else {
+				$ok = false; // session can't run without the UUID Cookie
+				Smart::log_warning(__METHOD__.' # Captcha Session Mode: requires the UUID Cookie to be enabled as the session can\'t run without the UUID Cookie ...');
+			} //end if else
 		} else { // cookie
 			$ok = (bool) SmartUtils::set_cookie(self::cookie_name_frm($y_form_name), self::cksum_hash($y_captcha_word));
 		} //end if else
