@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20210523 # this should be loaded from app web root only
+// # r.20210524 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -418,7 +418,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 			'PHP '.PHP_VERSION.' [SMART-ERR-HANDLER:'.strtoupper((string)SMART_FRAMEWORK_ENV).'] #'.$errno.' ['.$ferr.']'.$app_halted.' @ '.date('Y-m-d H:i:s O')."\n".
 			'-----------------'."\n".
 			'HTTP-METHOD: '.(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '').' # '.'CLIENT: '.trim((string)(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '').' ; '.(isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : '').' ; '.(isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR']: ''), '; ').' @ '.(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '')."\n".
-			'URI: ['.SMART_ERROR_AREA.'] @ '.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n".
+			'URI: ['.SMART_ERROR_AREA.'] @ '.(isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '').':'.(isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '').(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n".
 			'-----------------'."\n".
 			'Script: '.$errfile."\n".
 			'Line number: '.$errline."\n".
@@ -552,7 +552,7 @@ register_shutdown_function(function(){
 					'PHP '.PHP_VERSION.' [SMART-ERR-HANDLER:'.strtoupper((string)SMART_FRAMEWORK_ENV).'] #0 [APP-SHUTDOWN-ERROR] :: Execution COMPLETED ! @ '.date('Y-m-d H:i:s O')."\n".
 					'-----------------'."\n".
 					'HTTP-METHOD: '.(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '').' # '.'CLIENT: '.trim((string)(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '').' ; '.(isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : '').' ; '.(isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR']: ''), '; ').' @ '.(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '')."\n".
-					'URI: ['.SMART_ERROR_AREA.'] @ '.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n".
+					'URI: ['.SMART_ERROR_AREA.'] @ '.(isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '').':'.(isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '').(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n".
 					'-----------------'."\n".
 					'Script: '.$error['file']."\n".
 					'Line number: '.$error['line']."\n".
