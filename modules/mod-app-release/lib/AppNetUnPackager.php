@@ -45,9 +45,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetUnPackager {
 
 	// ::
-	// v.20210526
+	// v.20210527
 
-	public const APP_NET_UNPACKAGER_VERSION = 'v.20210526';
+	public const APP_NET_UNPACKAGER_VERSION = 'v.20210527';
 
 	public const APP_NET_UNPACKAGER_MIN_PACK_SIZE = 777; // min 777 bytes by the headers
 

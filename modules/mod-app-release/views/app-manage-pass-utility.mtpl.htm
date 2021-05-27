@@ -1,4 +1,4 @@
-<!-- v.20210525 -->
+<!-- v.20210527 -->
 [@@@SUB-TEMPLATE:partials/app-release-styles.inc.htm@@@]
 <script>
 const passphraseComplexityCheck = (pass) => {
@@ -37,7 +37,7 @@ const generateEncryptedPass = () => {
 <hr>
 <br>
 <div><center>
-<input type="text" id="secret" size="40" max-length="255" autocomplete="off" class="ux-field ux-field-xl customInput" placeholder="Enter the App Deploy Secret here ..."><br>
-<input type="text" id="pass" size="32" max-length="32" autocomplete="off" class="ux-field ux-field-xl customInput" placeholder="Enter a complex password between 7 and 30 characters"><br>
+<input type="text" id="secret" size="40" maxlength="255" autocomplete="off" class="ux-field ux-field-xl customInput" placeholder="Enter the App Deploy Secret here ..."><br>
+<input type="text" id="pass" size="32" maxlength="32" autocomplete="off" class="ux-field ux-field-xl customInput" placeholder="Enter a complex password between 7 and 30 characters"><br>
 <button id="bttn-url-sel" class="ux-button ux-button-regular" onClick="generateEncryptedPass(); return false;" title="Click this button to generate an encrypted password to be used with AppCodeUnPack Manager"><i class="sfi sfi-key"></i> &nbsp; Generate an encrypted password for AppCodeUnPack Manager</button>
 </center></div>

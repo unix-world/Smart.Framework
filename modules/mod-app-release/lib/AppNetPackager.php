@@ -48,9 +48,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetPackager {
 
 	// ->
-	// v.20210526
+	// v.20210527
 
-	public const APP_NET_PACKAGER_VERSION = 'v.20210526';
+	public const APP_NET_PACKAGER_VERSION = 'v.20210527';
 
 	//--
 	private $error_log = '';

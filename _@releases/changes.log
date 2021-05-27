@@ -2,6 +2,13 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+May 27, 2021 :: Version 8.7 rev.20210527
+	* icons captcha optimizations, add support for trigger
+	* improved cleanup algorithm for custom session and persistent cache for all: sqlite, dba, mongo, redis
+	* improved debug info for all DB libs (drivers): sqlite, dba, mongo, redis, pgsql, mysqli
+	* minor fixes to mod app release
+	* minor fix to mod samples
+
 May 26, 2021 :: Version 8.7 rev.20210526
 	* v.8 release (version numbering is now different ; 8.7 shows that runs on both PHP 8 and PHP 7 with primary target on PHP 8 and continue to support PHP 7 ...) ; next version will be perhaps 9.8 when PHP 9 will be released and will support PHP 8 or event 9.8.7 if will supports all PHP 9, 8 and 7 :-)
 	* minor fixes and optimizations ; QUnit tests javascript migrated to ES6

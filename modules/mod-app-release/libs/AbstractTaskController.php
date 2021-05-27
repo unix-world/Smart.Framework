@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20210527
  *
  */
 abstract class AbstractTaskController extends \SmartAbstractAppController {
@@ -108,7 +108,7 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 		} //end if
 		//--
 		\SmartFrameworkRuntime::outputHttpHeadersNoCache();
-		$arr_utils_metainfo = (array) \AppCodeUtils::getArrIniMetaInfo();
+		$arr_utils_metainfo = (array) \AppCodeUtils::getArrIniMetaInfo(); // requires \AppCodeUtils::parseIniSettings() !!
 		echo (string) \SmartMarkersTemplating::render_file_template(
 			$this->ControllerGetParam('module-tpl-path').'tpl-task-start.mtpl.htm',
 			\SmartComponents::set_app_template_conform_metavars([ // {{{SYNC-APP-RELEASE-TPL-VARS}}}
@@ -140,6 +140,8 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 			])
 		);
 		$this->InstantFlush();
+		//--
+		$arr_utils_metainfo = null;
 		//--
 	} //END FUNCTION
 

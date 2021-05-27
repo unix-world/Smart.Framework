@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20210527
  *
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
@@ -62,7 +62,13 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		//--
 		$appid = (string) trim((string)$this->RequestVarGet('appid', '', 'string'));
 		//--
-		$arr_utils_metainfo = (array) AppCodeUtils::getArrIniMetaInfo();
+		$ini_settings = AppCodeUtils::parseIniSettings(); // mixed
+		if(!is_int($ini_settings) OR ((int)$ini_settings !== 3)) { // there are 3 mandatory settings: MAX RUN TIMEOUT and PHP executable {{{SYNC-CHECK-APP-INI-SETTINGS}}}
+			$this->PageViewSetErrorStatus(503, 'INI SETTINGS PARSE ERROR: Num Req. is: #'.$ini_settings);
+			return;
+		} //end if
+		//--
+		$arr_utils_metainfo = (array) AppCodeUtils::getArrIniMetaInfo(); // requires AppCodeUtils::parseIniSettings() !!
 		if((string)$appid != '') {
 			if(defined('TASK_APP_RELEASE_CODEPACK_MODE') AND ((string)TASK_APP_RELEASE_CODEPACK_MODE == 'minify')) {
 				foreach($arr_utils_metainfo as $key => $val) {
@@ -120,12 +126,6 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 			$yaml_settings = AppCodeUtils::parseYamlSettings((string)$appid); // mixed
 			if(!is_int($yaml_settings) OR ($yaml_settings !== 8)) { // there are 7 mandatory settings + 1 (app id) ... see the YAML file
 				$this->PageViewSetErrorStatus(503, 'YAML SETTINGS PARSE ERROR: #'.$yaml_settings);
-				return;
-			} //end if
-			//--
-			$ini_settings = AppCodeUtils::parseIniSettings(); // mixed
-			if(!is_int($ini_settings) OR ((int)$ini_settings !== 3)) { // there are 3 mandatory settings: MAX RUN TIMEOUT and PHP executable {{{SYNC-CHECK-APP-INI-SETTINGS}}}
-				$this->PageViewSetErrorStatus(503, 'INI SETTINGS PARSE ERROR: Num Req. is: #'.$ini_settings);
 				return;
 			} //end if
 			//--

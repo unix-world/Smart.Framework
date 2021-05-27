@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 abstract class ShrinkCode {
 
 	// ->
-	// v.20210526
+	// v.20210527
 
 	protected $isClean = true;
 	protected $sourceCode = '';
