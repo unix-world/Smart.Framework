@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Debug Profiler]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
- * @version 	v.20210519
+ * @version 	v.20210527
  * @package 	Application:Development
  *
  */
@@ -443,47 +443,47 @@ public static function print_debug_info($y_area, $y_debug_token) {
 			$txt_main = '<div class="smartframework_debugbar_status smartframework_debugbar_status_title"><font size="3"><b># DEBUG Data :: SUB-REQUEST #</b></font></div>';
 		} //end if else
 		$txt_token = '<div class="smartframework_debugbar_status smartframework_debugbar_status_token" style="width: 50%;"><font size="2"><b>Debug Token: '.Smart::escape_html($arr[$i]['debug-token']).'</b></font></div>';
-		$txt_url = '<div class="smartframework_debugbar_status smartframework_debugbar_status_url"><font size="2"><b>'.'<span class="'.Smart::escape_html($status_style).'">'.(int)$arr[$i]['response-code'].'</span>'.'&nbsp;URL: '.Smart::escape_html($arr[$i]['request-uri']).'</b></font></div>';
+		$txt_url = '<div class="smartframework_debugbar_status smartframework_debugbar_status_url"><font size="2"><b>'.'<span class="'.Smart::escape_html((string)$status_style).'">'.(int)$arr[$i]['response-code'].'</span>'.'&nbsp;URL: '.Smart::escape_html((string)(isset($arr[$i]['request-uri']) ? $arr[$i]['request-uri'] : '')).'</b></font></div>';
 		//--
-		$debug_response .= $txt_main.$txt_url.$txt_token.self::print_log_headers($arr[$i]['response-code'], Smart::unseryalize(base64_decode($arr[$i]['response-headers'])), Smart::unseryalize(base64_decode($arr[$i]['request-headers']))).'<hr>';
+		$debug_response .= $txt_main.$txt_url.$txt_token.self::print_log_headers($arr[$i]['response-code'], Smart::unseryalize((string)base64_decode((string)$arr[$i]['response-headers'])), Smart::unseryalize((string)base64_decode((string)$arr[$i]['request-headers']))).'<hr>';
 		//--
 		$debug_resources .= $txt_main.$txt_url.$txt_token.self::print_log_resources($arr[$i]['resources-time'], $arr[$i]['resources-memory']);
 		//--
-		$debug_environment .= $txt_main.$txt_url.$txt_token.self::print_log_environment(Smart::unseryalize(base64_decode($arr[$i]['env-req-filtered'])), Smart::unseryalize(base64_decode($arr[$i]['env-cookies'])), Smart::unseryalize(base64_decode($arr[$i]['env-get'])), Smart::unseryalize(base64_decode($arr[$i]['env-post'])), Smart::unseryalize(base64_decode($arr[$i]['env-server']))).'<hr>';
+		$debug_environment .= $txt_main.$txt_url.$txt_token.self::print_log_environment(Smart::unseryalize((string)base64_decode((string)$arr[$i]['env-req-filtered'])), Smart::unseryalize((string)base64_decode((string)$arr[$i]['env-cookies'])), Smart::unseryalize((string)base64_decode((string)$arr[$i]['env-get'])), Smart::unseryalize((string)base64_decode((string)$arr[$i]['env-post'])), Smart::unseryalize((string)base64_decode((string)$arr[$i]['env-server']))).'<hr>';
 		//--
-		$debug_session .= $txt_main.$txt_url.$txt_token.self::print_log_session(Smart::unseryalize(base64_decode($arr[$i]['php-session']))).'<hr>';
+		$debug_session .= $txt_main.$txt_url.$txt_token.self::print_log_session(Smart::unseryalize((string)base64_decode((string)$arr[$i]['php-session']))).'<hr>';
 		//--
 		$debug_auth .= $txt_main.$txt_url.$txt_token.self::print_log_auth($arr[$i]['auth-data']).'<hr>';
 		//--
 		if(isset($arr[$i]['log-optimizations']) AND is_array($arr[$i]['log-optimizations'])) {
 			$debug_optimizations .= $txt_main.$txt_url.$txt_token;
 			foreach($arr[$i]['log-optimizations'] as $key => $val) {
-				$debug_optimizations .= self::print_log_optimizations(strtoupper((string)$key), Smart::unseryalize(base64_decode($val))).'<hr>';
+				$debug_optimizations .= self::print_log_optimizations((string)strtoupper((string)$key), Smart::unseryalize((string)base64_decode((string)$val))).'<hr>';
 			} //end foreach
 		} //end if
 		//--
 		if(isset($arr[$i]['log-mail']) AND Smart::is_nscalar($arr[$i]['log-mail']) AND ((string)$arr[$i]['log-mail'] != '')) {
-			$debug_mail .= $txt_main.$txt_url.$txt_token.self::print_log_mail(Smart::unseryalize(base64_decode($arr[$i]['log-mail']))).'<hr>';
+			$debug_mail .= $txt_main.$txt_url.$txt_token.self::print_log_mail(Smart::unseryalize((string)base64_decode((string)$arr[$i]['log-mail']))).'<hr>';
 		} //end if
 		//--
 		if(isset($arr[$i]['log-db']) AND is_array($arr[$i]['log-db'])) {
 			$debug_dbqueries .= $txt_main.$txt_url.$txt_token;
 			foreach($arr[$i]['log-db'] as $key => $val) {
-				$debug_dbqueries .= self::print_log_database(strtoupper((string)$key), Smart::unseryalize(base64_decode($val))).'<hr>';
+				$debug_dbqueries .= self::print_log_database((string)strtoupper((string)$key), Smart::unseryalize((string)base64_decode((string)$val))).'<hr>';
 			} //end foreach
 		} //end if
 		//--
 		if(isset($arr[$i]['log-extra']) AND is_array($arr[$i]['log-extra'])) {
 			$debug_extra .= $txt_main.$txt_url.$txt_token;
 			foreach($arr[$i]['log-extra'] as $key => $val) {
-				$debug_extra .= self::print_log_extra(strtoupper((string)$key), Smart::unseryalize(base64_decode($val))).'<hr>';
+				$debug_extra .= self::print_log_extra((string)strtoupper((string)$key), Smart::unseryalize((string)base64_decode((string)$val))).'<hr>';
 			} //end foreach
 		} //end if
 		//--
 		if(isset($arr[$i]['log-modules']) AND is_array($arr[$i]['log-modules'])) {
 			$debug_modules .= $txt_main.$txt_url.$txt_token;
 			foreach($arr[$i]['log-modules'] as $key => $val) {
-				$debug_modules .= self::print_log_modules(strtoupper((string)$key), Smart::unseryalize(base64_decode($val))).'<hr>';
+				$debug_modules .= self::print_log_modules((string)strtoupper((string)$key), Smart::unseryalize((string)base64_decode((string)$val))).'<hr>';
 			} //end foreach
 		} //end if
 		//--
@@ -597,6 +597,10 @@ private static function url_tpl_encrypt($y_tpl_file) {
 //==================================================================
 private static function print_log_mail($log_mail_arr) {
 	//--
+	if(!is_array($log_mail_arr)) {
+		return '';
+	} //end if
+	//--
 	$log = '';
 	//--
 	$max = Smart::array_size($log_mail_arr);
@@ -625,7 +629,7 @@ private static function print_log_mail($log_mail_arr) {
 		//--
 	} //end if
 	//--
-	return $log;
+	return (string) $log;
 	//--
 } //END FUNCTION
 //==================================================================
@@ -1027,8 +1031,12 @@ private static function print_log_session($session_arr) {
 //==================================================================
 private static function print_log_auth($auth_arr) {
 	//--
-	$is_auth = (bool) $auth_arr['is_auth'];
-	$login_data = (array) $auth_arr['login_data'];
+	if(!is_array($auth_arr)) {
+		$auth_arr = [];
+	} //end if
+	//--
+	$is_auth = (bool) (isset($auth_arr['is_auth']) ? $auth_arr['is_auth'] : null);
+	$login_data = (array) (is_array($auth_arr['login_data']) ? $auth_arr['login_data'] : []);
 	//--
 	$log = '';
 	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>Authentication Info</b></font></div>';
@@ -1046,7 +1054,7 @@ private static function print_log_auth($auth_arr) {
 				} elseif((string)$debug_key == 'login-privkey') {
 					$debug_val = '['.(int)strlen((string)$debug_val).']'.'+++++++ (keys are not revealed)'; // avoid display pass as clear text
 				} //end if
-				$log .= SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($debug_val), true);
+				$log .= SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html((string)$debug_val), true);
 			} //end if else
 			$log .= '</font></div></td></tr>';
 		} //end for
@@ -1055,27 +1063,37 @@ private static function print_log_auth($auth_arr) {
 		$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_warn" style="width: 250px; text-align: center;"><font size="2"><b>Not Authenticated</b></font></div>';
 	} //end if
 	//--
-	return $log;
+	return (string) $log;
 	//--
 } //END FUNCTION
 //==================================================================
 
 
 //==================================================================
-private static function print_log_database($title, $db_log) {
+private static function print_log_database(?string $title, $db_log) {
+	//--
+	if(!is_array($db_log)) {
+		$db_log = [];
+	} //end if
+	if((!isset($db_log['log'])) OR (!is_array($db_log['log']))) {
+		$db_log['log'] = [];
+	} //end if
 	//--
 	$log = '';
 	//--
-	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>'.Smart::escape_html($title).' :: DATABASE Queries</b></font></div>';
+	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>'.Smart::escape_html((string)$title).' :: DATABASE Queries</b></font></div>';
 	//--
-	$max = Smart::array_size($db_log['log']);
-	if(is_array($db_log) AND ($max > 0)) {
-		$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;">Total Queries Number: <b>'.Smart::escape_html(Smart::format_number_int($db_log['total-queries'], '+')).'</b></div>';
-		$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;">Total Queries Time: <b>'.Smart::escape_html(Smart::format_number_dec($db_log['total-time'], 9, '.', '')).' sec.'.'</b></div>';
+	$max = (int) Smart::array_size($db_log['log']);
+	if(is_array($db_log) AND ((int)$max > 0)) {
+		$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;">Total Queries Number: <b>'.Smart::escape_html(Smart::format_number_int((array_key_exists('total-queries', $db_log) ? $db_log['total-queries'] : 0), '+')).'</b></div>';
+		$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;">Total Queries Time: <b>'.Smart::escape_html(Smart::format_number_dec((array_key_exists('total-time', $db_log) ? $db_log['total-time'] : 0), 9, '.', '')).' sec.'.'</b></div>';
 		$num = 0;
 		for($i=0; $i<$max; $i++) {
 			//--
 			$tmp_arr = (array) $db_log['log'][$i];
+			if(!array_key_exists('type', (array)$tmp_arr)) {
+				$tmp_arr['type'] = null;
+			} //end if
 			//--
 			switch((string)$tmp_arr['type']) {
 				case 'transaction':
@@ -1085,19 +1103,20 @@ private static function print_log_database($title, $db_log) {
 					$tmp_color = '#339900';
 					//--
 					$log .= '<div class="smartframework_debugbar_inforow" style="font-size:12px; color:'.$tmp_color.';">';
-					$log .= $num.'. '.'<b>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($tmp_arr['data']), true).'</b>';
-					if((string)$tmp_arr['connection'] != '') {
+					$log .= $num.'. '.(array_key_exists('data', (array)$tmp_arr) ? '<b>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html((string)$tmp_arr['data']), true).'</b>' : '');
+					if(array_key_exists('connection', (array)$tmp_arr) AND ((string)$tmp_arr['connection'] != '')) {
 						$log .= ' @ '.Smart::escape_html($tmp_arr['connection']);
 					} //end if
-					if($tmp_arr['time'] > 0) {
+					if(array_key_exists('time', (array)$tmp_arr) AND ((float)$tmp_arr['time'] > 0)) {
 						$log .= '<br><span style="padding:1px;"><b>@Time: '.Smart::format_number_dec($tmp_arr['time'], 9, '.', '').' sec.</b></span>';
 					} //end if
-					if((string)$tmp_arr['query'] != '') {
+					if(array_key_exists('query', (array)$tmp_arr) AND ((string)$tmp_arr['query'] != '')) {
 						$log .= '<br><span class="smartframework_debugbar_status_highlight" style="padding:1px;"><b>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($tmp_arr['query']), true).'</b></span>';
 					} //end if
 					$log .= '</div>';
 					//--
 					break;
+				case 'special':
 				case 'set':
 				case 'count':
 				case 'read':
@@ -1141,7 +1160,9 @@ private static function print_log_database($title, $db_log) {
 					} elseif((string)$tmp_arr['type'] == 'write') {
 						$tmp_color = '#113377';
 					} elseif((string)$tmp_arr['type'] == 'set') {
-						$tmp_color = '#333333';
+						$tmp_color = '#444444';
+					} elseif((string)$tmp_arr['type'] == 'special') {
+						$tmp_color = '#FF7700';
 					} else { // nosql
 						$tmp_color = '#111111';
 					} //end if else
@@ -1162,10 +1183,13 @@ private static function print_log_database($title, $db_log) {
 							$log .= '<span class="smartframework_debugbar_status_warn" style="padding:1px;" title="Slow-Time: '.Smart::escape_html($db_log['slow-time']).'"><b>@Time: '.Smart::format_number_dec($tmp_arr['time'], 9, '.', '').' sec.'.'</b></span>';
 						} //end if else
 					} //end if
+					$is_command_mode = false;
 					if(is_array($tmp_arr['command'])) {
 						$datmod = 'DATA-SETS';
+						$is_command_mode = true;
 					} elseif((string)$tmp_arr['command'] != '') {
 						$datmod = 'DATA-SIZE';
+						$is_command_mode = true;
 					} else {
 						$datmod = 'ROWS';
 					} //end if else
@@ -1178,7 +1202,7 @@ private static function print_log_database($title, $db_log) {
 						} elseif((string)$tmp_arr['type'] == 'read') {
 							$log .= '<i>'.'RETURNED '.$datmod.': '.(int)$tmp_arr['rows'].'</i>';
 						} elseif((string)$tmp_arr['type'] == 'write') {
-							$log .= '<i>'.'AFFECTED '.$datmod.': '.(int)$tmp_arr['rows'].'</i>';
+							$log .= '<i>'.((isset($tmp_arr['wsize']) && ($tmp_arr['wsize'] === true)) ? 'LENGTH' : (($is_command_mode === true) ? 'MODIFIED' : 'AFFECTED')).' '.$datmod.': '.(int)$tmp_arr['rows'].'</i>';
 						} else {
 							$log .= '<i>'.'#'.$datmod.': '.(int)$tmp_arr['rows'].'</i>';
 						} //end if
@@ -1206,25 +1230,20 @@ private static function print_log_database($title, $db_log) {
 					//--
 					break;
 				case 'open-close':
-					//--
-					$tmp_color = '#4285F4';
-					//--
-					$log .= '<div class="smartframework_debugbar_inforow" style="font-size:12px; color:'.$tmp_color.';">';
-					$log .= '<b>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($tmp_arr['data']), true).'</b>';
-					if(isset($tmp_arr['connection']) AND ((string)$tmp_arr['connection'] != '')) {
-						$log .= ' @ '.Smart::escape_html($tmp_arr['connection']);
-					} //end if
-					$log .= '</div>';
-					//--
-					break;
 				case 'metainfo':
 				default:
 					//--
-					$tmp_color = '#CCCCCC';
+					if((string)$tmp_arr['type'] == 'open-close') {
+						$tmp_color = '#4285F4';
+					} elseif((string)$tmp_arr['type'] == 'metainfo') {
+						$tmp_color = '#CCCCCC';
+					} else {
+						$tmp_color = '#000000';
+					} //end if else
 					//--
 					$log .= '<div class="smartframework_debugbar_inforow" style="font-size:12px; color:'.$tmp_color.';">';
 					$log .= '<b>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($tmp_arr['data']), true).'</b>';
-					if(isset($tmp_arr['connection']) AND ((string)$tmp_arr['connection'] != '')) {
+					if(array_key_exists('connection', (array)$tmp_arr) AND ((string)$tmp_arr['connection'] != '')) {
 						$log .= ' @ '.Smart::escape_html($tmp_arr['connection']);
 					} //end if
 					$log .= '</div>';
@@ -1239,21 +1258,25 @@ private static function print_log_database($title, $db_log) {
 		//--
 	} //end if
 	//--
-	return $log;
+	return (string) $log;
 	//--
 } //END FUNCTION
 //==================================================================
 
 
 //==================================================================
-private static function print_log_optimizations($title, $optimizations_log) {
+private static function print_log_optimizations(?string $title, $optimizations_log) {
+	//--
+	if(!is_array($optimizations_log)) {
+		$optimizations_log = [];
+	} //end if
 	//--
 	$log = '';
 	//--
-	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>'.Smart::escape_html($title).' :: OPTIMIZATIONS Log</b></font></div>';
+	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>'.Smart::escape_html((string)$title).' :: OPTIMIZATIONS Log</b></font></div>';
 	//--
-	$max = Smart::array_size($optimizations_log);
-	if(is_array($optimizations_log) AND ($max > 0)) {
+	$max = (int) Smart::array_size($optimizations_log);
+	if((int)$max > 0) {
 		//--
 		$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;">Total Entries: <b>'.Smart::escape_html($max).'</b></div>';
 		//--
@@ -1264,25 +1287,28 @@ private static function print_log_optimizations($title, $optimizations_log) {
 			//--
 			$log .= '<div class="smartframework_debugbar_inforow" style="font-size:11px; color:#000000;">';
 			$log .= '<b>'.Smart::escape_html((string)$tmp_arr['title']).'</b><br>';
-			if(Smart::array_size($tmp_arr['data']) > 0) {
+			if(isset($tmp_arr['data']) AND (Smart::array_size($tmp_arr['data']) > 0)) {
 				for($j=0; $j<Smart::array_size($tmp_arr['data']); $j++) {
 					$tmp_item = $tmp_arr['data'][$j];
 					if(is_array($tmp_item)) {
-						$tmp_line = '# '.$tmp_item['value'].' # '.$tmp_item['key'].' # '.$tmp_item['msg'];
-						if($tmp_item['optimal'] === false) {
-							$color = '#F5926C';
-						} elseif($tmp_item['optimal'] === true) {
-							$color = '#3FA325';
-						} else {
-							$color = '#555555';
-						} //end if else
+						$tmp_line = '# '.(isset($tmp_item['value']) ? $tmp_item['value'] : null).' # '.(isset($tmp_item['key']) ? $tmp_item['key'] : null).' # '.(isset($tmp_item['msg']) ? $tmp_item['msg'] : null);
+						$color = '#555555';
+						if(isset($tmp_item['optimal'])) {
+							if($tmp_item['optimal'] === false) {
+								$color = '#F5926C';
+							} elseif($tmp_item['optimal'] === true) {
+								$color = '#3FA325';
+							} //end if else
+						} //end if
 						$have_link = false;
-						if((string)$tmp_item['action'] == 'debug-tpl') {
-							$have_link = true;
-							$log .= '<a title="Click to View the Marker-TPL Template Debug Profiling" href="'.Smart::escape_html(SmartUtils::get_server_current_script()).'?smartframeworkservice=debug-tpl&tpl='.Smart::escape_url(self::url_tpl_encrypt(trim((string)$tmp_item['key']))).'" target="_blank" style="text-decoration-style:dotted; text-decoration-color:'.$color.';">';
-						} elseif((string)trim((string)$tmp_item['action']) != '') {
-							$have_link = true;
-							$log .= '<a title="Click to View the Extended Debug Profiling" href="'.Smart::escape_html((string)trim((string)$tmp_item['action']).Smart::escape_url(self::url_tpl_encrypt(trim((string)$tmp_item['key'])))).'" target="_blank" style="text-decoration-style:dashed; text-decoration-color:'.$color.';">';
+						if(isset($tmp_item['action'])) {
+							if((string)$tmp_item['action'] == 'debug-tpl') {
+								$have_link = true;
+								$log .= '<a title="Click to View the Marker-TPL Template Debug Profiling" href="'.Smart::escape_html(SmartUtils::get_server_current_script()).'?smartframeworkservice=debug-tpl&tpl='.Smart::escape_url(self::url_tpl_encrypt(trim((string)$tmp_item['key']))).'" target="_blank" style="text-decoration-style:dotted; text-decoration-color:'.$color.';">';
+							} elseif((string)trim((string)$tmp_item['action']) != '') {
+								$have_link = true;
+								$log .= '<a title="Click to View the Extended Debug Profiling" href="'.Smart::escape_html((string)trim((string)$tmp_item['action']).Smart::escape_url(self::url_tpl_encrypt(trim((string)$tmp_item['key'])))).'" target="_blank" style="text-decoration-style:dashed; text-decoration-color:'.$color.';">';
+							} //end if
 						} //end if
 						$log .= '<span style="font-size:11px; color:'.$color.';">'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html(str_replace(array("\r\n", "\r", "\t"), array("\n", "\n", ' '), $tmp_line)), true).'</span><br>';
 						if($have_link) {
@@ -1303,21 +1329,25 @@ private static function print_log_optimizations($title, $optimizations_log) {
 		//--
 	} //end if
 	//--
-	return $log;
+	return (string) $log;
 	//--
 } //END FUNCTION
 //==================================================================
 
 
 //==================================================================
-private static function print_log_extra($title, $extra_log) {
+private static function print_log_extra(?string $title, $extra_log) {
+	//--
+	if(!is_array($extra_log)) {
+		$extra_log = [];
+	} //end if
 	//--
 	$log = '';
 	//--
-	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>'.Smart::escape_html($title).' :: EXTRA Log</b></font></div>';
+	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>'.Smart::escape_html((string)$title).' :: EXTRA Log</b></font></div>';
 	//--
-	$max = Smart::array_size($extra_log);
-	if(is_array($extra_log) AND ($max > 0)) {
+	$max = (int) Smart::array_size($extra_log);
+	if((int)$max > 0) {
 		//--
 		$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;">Total Entries: <b>'.Smart::escape_html($max).'</b></div>';
 		//--
@@ -1327,7 +1357,7 @@ private static function print_log_extra($title, $extra_log) {
 			//--
 			$log .= '<div class="smartframework_debugbar_inforow" style="font-size:11px; color:#000000;">';
 			$log .= '<b>'.Smart::escape_html((string)$tmp_arr['title']).'</b><br>';
-			$log .= '<pre>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html(str_replace(array("\r\n", "\r", "\t"), array("\n", "\n", ' '), trim((string)$tmp_arr['data']))), true).'</pre>';
+			$log .= '<pre>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html(str_replace(array("\r\n", "\r", "\t"), array("\n", "\n", ' '), (string)trim((string)$tmp_arr['data']))), true).'</pre>';
 			$log .= '</div>';
 			//--
 		} //end for
@@ -1338,21 +1368,25 @@ private static function print_log_extra($title, $extra_log) {
 		//--
 	} //end if
 	//--
-	return $log;
+	return (string) $log;
 	//--
 } //END FUNCTION
 //==================================================================
 
 
 //==================================================================
-private static function print_log_modules($title, $modules_log) {
+private static function print_log_modules(?string $title, $modules_log) {
+	//--
+	if(!is_array($modules_log)) {
+		$modules_log = [];
+	} //end if
 	//--
 	$log = '';
 	//--
-	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>'.Smart::escape_html($title).' :: MODULE Log</b></font></div>';
+	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>'.Smart::escape_html((string)$title).' :: MODULE Log</b></font></div>';
 	//--
-	$max = Smart::array_size($modules_log);
-	if(is_array($modules_log) AND ($max > 0)) {
+	$max = (int) Smart::array_size($modules_log);
+	if((int)$max > 0) {
 		//--
 		$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_highlight" style="width:450px;">Total Entries: <b>'.Smart::escape_html($max).'</b></div>';
 		//--
@@ -1373,7 +1407,7 @@ private static function print_log_modules($title, $modules_log) {
 		//--
 	} //end if
 	//--
-	return $log;
+	return (string) $log;
 	//--
 } //END FUNCTION
 //==================================================================

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartPgsqlExtDb        final class \ SmartPgsqlExtDb    {   } -&gt;    Class: SmartPgsqlExtDb - provides a Dynamic (Extended) PostgreSQL DB Server Client">
-	<meta name="keywords" content="smartpgsqlextdb, final, class, provides, a, dynamic, extended, postgresql, db, server, client, that, can, be, used, with, custom, made, connections, tested, and, stable, on, versions, 9.0.x, 9.1.x, 9.2.x, 9.3.x, 9.4.x, 9.5.x, 9.6.x, 10.x, 11.x, pgpool-ii, 3.0.x, 3.1.x, 3.2.x, 3.3.x, 3.4.x, 3.5.x, 3.6.x, 3.7.x, 4.0.x, pgbouncer, all, this, is, to, other, servers, than, default, language, php, located, at, lib core plugins lib db pgsql.php, package, plugins:database:postgresql, namespace, name, version, v.20210401, depends, extensions, classes, smart, smartunicode, smartutils, hints, have, no, catcheable, exception, because, the, only, errors, will, raise, are, when, returns, an, error, regarding, malformed, sql, statement, which, not, acceptable, just, so, fatal, usage, object">
+	<meta name="keywords" content="smartpgsqlextdb, final, class, provides, a, dynamic, extended, postgresql, db, server, client, that, can, be, used, with, custom, made, connections, tested, and, stable, on, versions, 9.0.x, 9.1.x, 9.2.x, 9.3.x, 9.4.x, 9.5.x, 9.6.x, 10.x, 11.x, pgpool-ii, 3.0.x, 3.1.x, 3.2.x, 3.3.x, 3.4.x, 3.5.x, 3.6.x, 3.7.x, 4.0.x, pgbouncer, all, this, is, to, other, servers, than, default, language, php, located, at, lib core plugins lib db pgsql.php, package, plugins:database:postgresql, namespace, name, version, v.20210527, depends, extensions, classes, smart, smartunicode, smartutils, smartcomponents, hints, have, no, catcheable, exception, because, the, only, errors, will, raise, are, when, returns, an, error, regarding, malformed, sql, statement, which, not, acceptable, just, so, fatal, usage">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartPgsqlExtDb">
 	<title>PHP Documentation for: \SmartPgsqlExtDb</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -710,8 +710,8 @@ This class is made to be used with custom made PostgreSQL connections (other ser
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartPgsqlExtDb</span></li>
 		
-		<li><b>Version:</b> v.20210401</li>
-		<li><b>Depends:</b> extensions:  PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils</li>
+		<li><b>Version:</b> v.20210527</li>
+		<li><b>Depends:</b> extensions:  PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents</li>
 		<li><b>Hints:</b> This  class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -993,7 +993,7 @@ This function is intended to be used for write type queries: BEGIN (TRANSACTION)
 @param: {STRING} $queryval: the query<br>
 @param: {STRING} $params_or_title: *optional* array of parameters ($1, $2, ... $n) or query title for easy debugging</div>
 	
-			<div class="doc-method-comments">PgSQL Query :: Write Ignore - Catch Duplicate Key Violation or Foreign Key Violation Errors (This is the equivalent of MySQL's INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE, but it can catch UNIQUE violations on both: INSERT / UPDATE / DELETE statements and also can catch FOREIGN KEY violations).<br>
+			<div class="doc-method-comments">PgSQL Query :: Write Ignore - Catch Duplicate Key Violation or Foreign Key Violation Errors (This is the equivalent of MySQL's INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE, but it can catch UNIQUE violations on any of: INSERT / UPDATE / DELETE statements and also can catch FOREIGN KEY violations).<br>
 This function is intended to be used only for write type queries like: INSERT / UPDATE / DELETE which can be ignored if unique violations or foreign key violations and will return the # of affected rows or zero if an exception raised.<br>
 The catch of PostgreSQL exceptions is handled completely by this function so there is no need for a catch errors outside.<br>
 IMPORTANT:<br>
@@ -1087,23 +1087,24 @@ The statement must not contain any Single Quotes to prevent SQL injections which
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">//&nbsp;Sample&nbsp;config&nbsp;array&nbsp;for&nbsp;this&nbsp;class&nbsp;constructor:<br>
-&nbsp;</span><span class="c1">$custom_pgsql&nbsp;</span><span class="c3">=&nbsp;array();<br>
-&nbsp;</span><span class="c1">$custom_pgsql</span><span class="c3">[</span><span class="c4">&#39;type&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;postgresql&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;postgresql&nbsp;/&nbsp;pgpool2<br>
-&nbsp;</span><span class="c1">$custom_pgsql</span><span class="c3">[</span><span class="c4">&#39;server-host&#39;</span><span class="c3">]&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;127.0.0.1&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;database&nbsp;host&nbsp;(default&nbsp;is&nbsp;127.0.0.1)<br>
-&nbsp;</span><span class="c1">$custom_pgsql</span><span class="c3">[</span><span class="c4">&#39;server-port&#39;</span><span class="c3">]&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;5432&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;database&nbsp;port&nbsp;(default&nbsp;is&nbsp;5432)<br>
-&nbsp;</span><span class="c1">$custom_pgsql</span><span class="c3">[</span><span class="c4">&#39;dbname&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;smart_framework&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;database&nbsp;name<br>
-&nbsp;</span><span class="c1">$custom_pgsql</span><span class="c3">[</span><span class="c4">&#39;username&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;pgsql&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;sql&nbsp;server&nbsp;user&nbsp;name<br>
-&nbsp;</span><span class="c1">$custom_pgsql</span><span class="c3">[</span><span class="c4">&#39;password&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c1">base64_encode</span><span class="c3">(</span><span class="c4">&#39;pgsql&#39;</span><span class="c3">);&nbsp;&nbsp;</span><span class="c2">//&nbsp;sql&nbsp;server&nbsp;Base64-Encoded&nbsp;password&nbsp;for&nbsp;that&nbsp;user&nbsp;name&nbsp;B64<br>
-&nbsp;</span><span class="c1">$custom_pgsql</span><span class="c3">[</span><span class="c4">&#39;timeout&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c1">30</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;connection&nbsp;timeout&nbsp;(how&nbsp;many&nbsp;seconds&nbsp;to&nbsp;wait&nbsp;for&nbsp;a&nbsp;valid&nbsp;PgSQL&nbsp;Connection)<br>
-&nbsp;</span><span class="c1">$custom_pgsql</span><span class="c3">[</span><span class="c4">&#39;slowtime&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c1">0.0050</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;0.0025&nbsp;..&nbsp;0.0090&nbsp;slow&nbsp;query&nbsp;time&nbsp;(for&nbsp;debugging)<br>
-&nbsp;</span><span class="c1">$custom_pgsql</span><span class="c3">[</span><span class="c4">&#39;transact&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;READ&nbsp;COMMITTED&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;Default&nbsp;Transaction&nbsp;Level:&nbsp;&#39;READ&nbsp;COMMITTED&#39;&nbsp;|&nbsp;&#39;REPEATABLE&nbsp;READ&#39;&nbsp;|&nbsp;&#39;SERIALIZABLE&#39;&nbsp;|&nbsp;&#39;&#39;&nbsp;to&nbsp;leave&nbsp;it&nbsp;as&nbsp;default<br>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #999999">//&nbsp;Sample&nbsp;config&nbsp;array&nbsp;for&nbsp;this&nbsp;class&nbsp;constructor:<br>
+&nbsp;</span><span style="color: #FFFFFF">$custom_pgsql&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;array();<br>
+&nbsp;</span><span style="color: #FFFFFF">$custom_pgsql</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;type&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;postgresql&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;postgresql&nbsp;/&nbsp;pgpool2<br>
+&nbsp;</span><span style="color: #FFFFFF">$custom_pgsql</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;server-host&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;127.0.0.1&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;database&nbsp;host&nbsp;(default&nbsp;is&nbsp;127.0.0.1)<br>
+&nbsp;</span><span style="color: #FFFFFF">$custom_pgsql</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;server-port&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;5432&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;database&nbsp;port&nbsp;(default&nbsp;is&nbsp;5432)<br>
+&nbsp;</span><span style="color: #FFFFFF">$custom_pgsql</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;dbname&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;smart_framework&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;database&nbsp;name<br>
+&nbsp;</span><span style="color: #FFFFFF">$custom_pgsql</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;username&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;pgsql&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;sql&nbsp;server&nbsp;user&nbsp;name<br>
+&nbsp;</span><span style="color: #FFFFFF">$custom_pgsql</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;password&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #FFFFFF">base64_encode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;pgsql&#39;</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;sql&nbsp;server&nbsp;Base64-Encoded&nbsp;password&nbsp;for&nbsp;that&nbsp;user&nbsp;name&nbsp;B64<br>
+&nbsp;</span><span style="color: #FFFFFF">$custom_pgsql</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;timeout&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #FFFFFF">30</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;connection&nbsp;timeout&nbsp;(how&nbsp;many&nbsp;seconds&nbsp;to&nbsp;wait&nbsp;for&nbsp;a&nbsp;valid&nbsp;PgSQL&nbsp;Connection)<br>
+&nbsp;</span><span style="color: #FFFFFF">$custom_pgsql</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;slowtime&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #FFFFFF">0.0050</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;0.0025&nbsp;..&nbsp;0.0090&nbsp;slow&nbsp;query&nbsp;time&nbsp;(for&nbsp;debugging)<br>
+&nbsp;</span><span style="color: #FFFFFF">$custom_pgsql</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;transact&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;READ&nbsp;COMMITTED&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;Default&nbsp;Transaction&nbsp;Level:&nbsp;&#39;READ&nbsp;COMMITTED&#39;&nbsp;|&nbsp;&#39;REPEATABLE&nbsp;READ&#39;&nbsp;|&nbsp;&#39;SERIALIZABLE&#39;&nbsp;|&nbsp;&#39;&#39;&nbsp;to&nbsp;leave&nbsp;it&nbsp;as&nbsp;default<br>
 &nbsp;//&nbsp;sample&nbsp;usage:<br>
-&nbsp;</span><span class="c1">$pgsql&nbsp;</span><span class="c3">=&nbsp;new&nbsp;</span><span class="c1">SmartPgsqlExtDb</span><span class="c3">(</span><span class="c1">$custom_pgsql</span><span class="c3">);<br>
-&nbsp;</span><span class="c1">$pgsql</span><span class="c3">-&gt;</span><span class="c1">read_adata</span><span class="c3">(</span><span class="c4">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;&quot;my_table&quot;&nbsp;LIMIT&nbsp;100&nbsp;OFFSET&nbsp;0&#39;</span><span class="c3">);<br>
-&nbsp;</span><span class="c2">//...&nbsp;for&nbsp;other&nbsp;hints&nbsp;look&nbsp;to&nbsp;the&nbsp;samples&nbsp;of&nbsp;the&nbsp;class:&nbsp;SmartPgsqlDb::*<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+&nbsp;</span><span style="color: #FFFFFF">$pgsql&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartPgsqlExtDb</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$custom_pgsql</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">$pgsql</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">read_adata</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;&quot;my_table&quot;&nbsp;LIMIT&nbsp;100&nbsp;OFFSET&nbsp;0&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #999999">//...&nbsp;for&nbsp;other&nbsp;hints&nbsp;look&nbsp;to&nbsp;the&nbsp;samples&nbsp;of&nbsp;the&nbsp;class:&nbsp;SmartPgsqlDb::*<br>
+<br>
+//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1218,7 +1219,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:52 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:39 +0000</small>
 <hr>
 <br>
 <!-- # -->

@@ -3,7 +3,7 @@
 // Controller: AppRelease/CodeNetUnpack
 // Route: ?/page/app-release.code-netunpack (?page=app-release.code-netunpack)
 // (c) 2013-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -25,12 +25,12 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210522
+ * @version 	v.20210526
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
 
-	protected $title = 'Generate the AppCodeUnPack Standalone Script';
+	protected $title = 'Generate the AppCodeUnPack Manager Standalone Script';
 
 	protected $sficon = '';
 	protected $msg = '';
@@ -125,8 +125,11 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 					return;
 				} //end if
 			} //end if
-			$this->sficon = 'bin2';
-			$this->msg = 'AppCodeUnPack Standalone Script Cleanup DONE: `appcodeunpack.php`';
+			$this->sficon = [
+				'bin2',
+				'codepen',
+			];
+			$this->msg = 'AppCodeUnPack Manager Standalone Script Cleanup DONE: `appcodeunpack.php`';
 			return;
 		} //end if
 		//--
@@ -145,19 +148,19 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 		if(SmartFileSystem::path_exists((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'appcodeunpack.php')) {
 			$this->sficon = 'codepen';
-			$this->notice = 'The `appcodeunpack.php` already generated in the Optimizations Folder';
+			$this->notice = 'The AppCodeUnPack Manager Standalone Script already generated: `appcodeunpack.php`';
 			return;
 		} //end if
 		//--
 
 		//--
 		if(!SmartFileSystem::is_type_dir((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.'etc')) {
-			$this->err = 'Cannot generate the AppCodeUnPack Standalone Script, optimizations folder `etc/` is missing !';
+			$this->err = 'Cannot generate the AppCodeUnPack Manager Standalone Script, optimizations folder `etc/` is missing !';
 			return;
 		} //end if
 		//--
 		if(!SmartFileSystem::is_type_dir((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.'lib')) {
-			$this->err = 'Cannot generate the AppCodeUnPack Standalone Script, optimizations folder `lib/` is missing !';
+			$this->err = 'Cannot generate the AppCodeUnPack Manager Standalone Script, optimizations folder `lib/` is missing !';
 			return;
 		} //end if
 		//--
@@ -175,12 +178,14 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 
 		//--
 		$arr_tpls = [
-			'APPCODEUNPACK_BASE_STYLES' 		=> 'lib/core/templates/base-html-styles.inc.htm',
-			'APPCODEUNPACK_HTML_WATCH' 			=> 'lib/core/templates/canvas-clock.inc.htm',
-			'APPCODEUNPACK_HTML_ERRTPL' 		=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-tpl-err.htm',
-			'APPCODEUNPACK_HTML_TPL' 			=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-tpl.htm',
-			'APPCODEUNPACK_LOCAL_STYLES' 		=> 'modules/mod-app-release/views/partials/app-release-styles.inc.htm',
-			'APPCODEUNPACK_HTML_DEPLOY' 		=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-tpl-deploy.inc.htm',
+			'APPCODEUNPACK_BASE_STYLES' 			=> 'lib/core/templates/base-html-styles.inc.htm',
+			'APPCODEUNPACK_HTML_WATCH' 				=> 'lib/core/templates/canvas-clock.inc.htm',
+			'APPCODEUNPACK_HTML_ERRTPL' 			=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-tpl-err.htm',
+			'APPCODEUNPACK_HTML_TPL' 				=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-tpl.htm',
+			'APPCODEUNPACK_LOCAL_STYLES' 			=> 'modules/mod-app-release/views/partials/app-release-styles.inc.htm',
+			'APPCODEUNPACK_HTML_DEPLOY' 			=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-tpl-deploy.inc.htm',
+			'APPCODEUNPACK_HTML_LIST_DEPLOYS_TPL' 	=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-tpl-deploys-list.inc.htm',
+			'APPCODEUNPACK_HTML_LIST_LOGS_TPL' 		=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-tpl-logs-list.inc.htm',
 		];
 		//--
 		$arr_css = [
@@ -615,7 +620,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 
 		//--
 		$this->sficon = 'codepen';
-		$this->msg = 'AppCodeUnPack Standalone Script generated OK: `appcodeunpack.php`';
+		$this->msg = 'AppCodeUnPack Manager Standalone Script generated OK: `appcodeunpack.php`';
 		//--
 
 	} //END FUNCTION

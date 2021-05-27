@@ -1,20 +1,25 @@
 <?php
-// [LIB - Smart.Framework]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// [LIB - Smart.Framework :: Loader]
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
 	@http_response_code(500);
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
+//----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
+	@http_response_code(500);
+	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
+} //end if
 //-----------------------------------------------------
 
 
 //======================================================
-// Smart-Framework v.7.2 # r.20210523
+// Smart-Framework v.8.7 # r.20210526
 //======================================================
-// Requires PHP 7.3 or later
+// Requires PHP 7.3 / 7.4 / 8.0 or later
 //======================================================
 // this library should be loaded from app web root only
 //======================================================

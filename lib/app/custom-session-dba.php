@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / DBA Custom Session]
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -27,7 +27,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'DBA: DB file based');
  *
  * @access 		PUBLIC
  * @depends 	SmartDbaDb, Smart, SmartPersistentCache, PHP DBA Extension
- * @version 	v.20210402
+ * @version 	v.20210527
  * @package 	Application
  *
  */
@@ -71,6 +71,8 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 			(string) __CLASS__, 	// desc
 			(bool)   $is_fatal_err // fatal err
 		); // use the rest of values from configs
+		//--
+		$this->gc((int)time()); // this runs probabilistic ; no need to check if init, DBA is iterating keys to do the cleanup so at init there are no keys ...
 		//--
 		return true;
 		//--
@@ -155,7 +157,7 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 	//==================================================
 	public function gc($lifetime) {
 		//--
-		if(Smart::random_number(0, 10) == 5) {
+		if(Smart::random_number(0, 100) == 10) { // 1% chance to cleanup ; PHP is calling session gc with a very small chance ... so call it randomly in 1% of cases on opening the session
 			$this->dba->clearExpiredKeys(250); // session.gc_probability = 1 ; session.gc_divisor = 100 ; run this just on 10% of Garbage Collections ...
 		} //end if
 		//--

@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // App Net Packager
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION [T]
 if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIME_MODE != 'web.task')) { // this must be defined in the first line of the application :: {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
@@ -48,9 +48,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetPackager {
 
 	// ->
-	// v.20210522
+	// v.20210526
 
-	public const APP_NET_PACKAGER_VERSION = 'v.20210522';
+	public const APP_NET_PACKAGER_VERSION = 'v.20210526';
 
 	//--
 	private $error_log = '';

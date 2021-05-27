@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // App Code Utils
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION [T]
 if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIME_MODE != 'web.task')) { // this must be defined in the first line of the application :: {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class AppCodeUtils {
 
 	// ::
-	// v.20210522
+	// v.20210526
 
 	private const CODEPACK_INI = 'etc/appcodepack/appcodepack.ini';
 	private const CODEPACK_SETTINGS = 'etc/appcodepack/appcodepack.yaml';
@@ -276,47 +276,44 @@ final class AppCodeUtils {
 		} //end if
 		$out += (int) define('APP_DEPLOY_FOLDERS', (string)Smart::json_encode((array)$arr['folders']));
 		//--
+		if((!isset($arr['deploy-secret'])) OR (!Smart::is_nscalar($arr['deploy-secret'])) OR ((string)trim((string)$arr['deploy-secret']) == '') OR ((int)strlen((string)trim((string)$arr['deploy-secret'])) < 28) OR ((int)strlen((string)trim((string)$arr['deploy-secret'])) > 98)) { // {{{SYNC-APPCODE-CONDITION-VALIDATE-SECRET}}}
+			return 'APP-RELEASE/APPID/DEPLOY-SECRET YAML SETTINGS ERROR # must be non-empty and at least 28 characters long';
+		} //end if
+		if(defined('APP_DEPLOY_SECRET')) {
+			return 'APP_DEPLOY_SECRET # CONSTANT ALREADY DEFINED';
+		} //end if
+		$out += (int) define('APP_DEPLOY_SECRET', (string)trim((string)$arr['deploy-secret']));
+		if(defined('APP_DEPLOY_HASH')) {
+			return 'APP_DEPLOY_HASH # CONSTANT ALREADY DEFINED';
+		} //end if
+		define('APP_DEPLOY_HASH', (string)AppNetUnPackager::unpack_app_hash((string)APP_DEPLOY_SECRET));
+		//--
 		if((!isset($arr['deploy-auth-pass'])) OR (!Smart::is_nscalar($arr['deploy-auth-pass'])) OR ((string)trim((string)$arr['deploy-auth-pass']) == '')) {
 			return 'APP-RELEASE/APPID/DEPLOY-AUTH-PASS YAML SETTINGS ERROR';
 		} //end if
-		$password = (string) trim((string)SmartUtils::crypto_blowfish_decrypt((string)$arr['deploy-auth-pass']));
-		if((string)$password == '') {
+		$password = (string) SmartUtils::crypto_blowfish_decrypt((string)$arr['deploy-auth-pass'], (string)APP_DEPLOY_SECRET);
+		if((string)trim((string)$password) == '') {
 			return 'APP-RELEASE/APPID/DEPLOY-AUTH-PASS YAML SETTINGS ERROR # decode failed';
+		} //end if
+		if(((string)trim((string)$password) == '') OR ((int)SmartUnicode::str_len((string)$password) < 7) OR ((int)SmartUnicode::str_len((string)$password) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
+			return 'APP-RELEASE/APPID/DEPLOY-AUTH-PASS YAML SETTINGS ERROR # must be between 7 and 30 characters long';
 		} //end if
 		if(defined('APP_DEPLOY_AUTH_PASSWORD')) {
 			return 'APP_DEPLOY_AUTH_PASSWORD # CONSTANT ALREADY DEFINED';
 		} //end if
 		$out += (int) define('APP_DEPLOY_AUTH_PASSWORD', (string)$password);
+		$password = null;
 		//--
-		if((!isset($arr['deploy-auth-user'])) OR (!Smart::is_nscalar($arr['deploy-auth-user'])) OR ((string)trim((string)$arr['deploy-auth-user']) == '')) {
+		if((!isset($arr['deploy-auth-user'])) OR (!Smart::is_nscalar($arr['deploy-auth-user']))) {
 			return 'APP-RELEASE/APPID/DEPLOY-AUTH-USER YAML SETTINGS ERROR';
 		} //end if
-		if((strlen((string)$arr['deploy-auth-user']) < 3) OR (strlen((string)$arr['deploy-auth-user']) > 25)) { // sync with mod auth admins, model
-			return 'APP-RELEASE/APPID/DEPLOY-AUTH-USER YAML SETTINGS ERROR # must be between 3 and 25 characters long';
-		} //end if
-		if(!\preg_match('/^[a-z0-9\.]+$/', (string)$arr['deploy-auth-user'])) { // sync with mod auth admins, model
-			return 'APP-RELEASE/APPID/DEPLOY-AUTH-USER YAML SETTINGS ERROR # contains invalid characters ; can contain only: a-z 0-9 .';
+		if(((string)trim((string)$arr['deploy-auth-user']) == '') OR ((int)strlen((string)$arr['deploy-auth-user']) < 3) OR ((int)strlen((string)$arr['deploy-auth-user']) > 25) OR (!preg_match('/^[a-z0-9\.]+$/', (string)$arr['deploy-auth-user']))) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
+			return 'APP-RELEASE/APPID/DEPLOY-AUTH-USER YAML SETTINGS ERROR # must be between 3 and 25 characters long ; can contain only: a-z 0-9 .';
 		} //end if
 		if(defined('APP_DEPLOY_AUTH_USERNAME')) {
 			return 'APP_DEPLOY_AUTH_USERNAME # CONSTANT ALREADY DEFINED';
 		} //end if
 		$out += (int) define('APP_DEPLOY_AUTH_USERNAME', (string)trim((string)$arr['deploy-auth-user']));
-		//--
-		if((!isset($arr['deploy-secret'])) OR (!Smart::is_nscalar($arr['deploy-secret'])) OR ((string)trim((string)$arr['deploy-secret']) == '')) {
-			return 'APP-RELEASE/APPID/DEPLOY-SECRET YAML SETTINGS ERROR';
-		} //end if
-		$secret = (string) trim((string)$arr['deploy-secret']);
-		if((string)$secret == '') {
-			return 'APP-RELEASE/APPID/DEPLOY-SECRET YAML SETTINGS ERROR # decode failed';
-		} //end if
-		if(defined('APP_DEPLOY_SECRET')) {
-			return 'APP_DEPLOY_SECRET # CONSTANT ALREADY DEFINED';
-		} //end if
-		$out += (int) define('APP_DEPLOY_SECRET', (string)$secret);
-		if(defined('APP_DEPLOY_HASH')) {
-			return 'APP_DEPLOY_HASH # CONSTANT ALREADY DEFINED';
-		} //end if
-		define('APP_DEPLOY_HASH', (string)AppNetUnPackager::unpack_app_hash((string)APP_DEPLOY_SECRET));
 		//--
 		if((!isset($arr['deploy-urls'])) OR (Smart::array_size($arr['deploy-urls']) <= 0) OR (Smart::array_type_test($arr['deploy-urls']) != 1)) {
 			return 'APP-RELEASE/APPID/DEPLOY-URLS YAML SETTINGS ERROR # must be array: non-empty, non-associative';
@@ -351,6 +348,57 @@ final class AppCodeUtils {
 		//--
 		define('TASK_APP_RELEASE_CODEPACK_APP_DIR', (string)self::APPCODEPACK_DESTINATION_DIR.APPCODEPACK_APP_ID.'/');
 		define('TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR', (string)TASK_APP_RELEASE_CODEPACK_APP_DIR.self::APPCODEPACK_SUFFIX_OPTIMIZATIONS);
+		//--
+		if(defined('TASK_APP_RELEASE_EXTRA_ARR_TASKS')) {
+			return 'TASK_APP_RELEASE_EXTRA_ARR_TASKS # CONSTANT ALREADY DEFINED';
+		} //end if
+		$arr_extra_tasks = [];
+		$num_extra_optgroups = 0;
+		$num_extra_tasks = 0;
+		if(isset($arr['tasks']) AND Smart::array_size($arr['tasks']) > 0) {
+			if(Smart::array_type_test((array)$arr['tasks']) == 2) { // associative
+				foreach((array)$arr['tasks'] as $key => $val) {
+					$key = (string) trim((string)Smart::create_htmid((string)trim((string)$key)));
+					if(
+						((string)$key != '') AND
+						(strpos((string)$key, '#') === false) AND // this is an optgroup !
+						(strpos((string)$key, '*') === false) AND
+						(strpos((string)$key, '::') === false) AND
+						(stripos((string)$key, 'AppRelease') === false)
+					) {
+						if(Smart::array_size($val) > 0) {
+							if(Smart::array_type_test((array)$val) == 1) { // non-associative
+								$num_extra_optgroups++;
+								$arr_extra_tasks['#OPTGROUP#'.ucfirst((string)$key).'#'] = (string) '* '.strtoupper((string)$key).' @ TASKS';
+								for($i=0; $i<Smart::array_size($val); $i++) {
+									$val[$i] = (string) trim((string)$val[$i]);
+									$tmp_arr = (array) explode(' ; ', (string)$val[$i]);
+									$tmp_arr[0] = (string) (isset($tmp_arr[0]) ? trim((string)$tmp_arr[0]) : '');
+									$tmp_arr[1] = (string) (isset($tmp_arr[1]) ? trim((string)$tmp_arr[1]) : '');
+									$tmp_arr[2] = (string) (isset($tmp_arr[2]) ? trim((string)$tmp_arr[2]) : '');
+									if(
+										((string)$tmp_arr[0] != '') AND
+										((string)$tmp_arr[1] != '') AND
+										(strpos((string)$tmp_arr[1], '*') === false) AND
+										(strpos((string)$tmp_arr[1], '::') === false) AND
+										(stripos((string)$tmp_arr[1], 'AppRelease') === false)
+									) {
+										$num_extra_tasks++;
+										$arr_extra_tasks[(string)'#external'.(((string)strtolower((string)$tmp_arr[2]) === '!modal') ? '' : '-modal').'# ; '.$tmp_arr[1]] = (string) '* '.$tmp_arr[0];
+									} //end if
+									$tmp_arr = null;
+								} //end for
+							} //end if
+						} //end if
+					} //end if
+					if(((int)$num_extra_optgroups >= 10) OR ((int)$num_extra_tasks >= 100)) {
+						break;
+					} //end if
+				} //end foreach
+			} //end if
+		} //end if
+		//--
+		define('TASK_APP_RELEASE_EXTRA_ARR_TASKS', (array)$arr_extra_tasks); // max 10 extra optgroups ; max 100 extra tasks
 		//--
 		return (int) $out;
 		//--

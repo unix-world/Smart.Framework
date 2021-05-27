@@ -1,7 +1,7 @@
 <?php
 // [Smart.Framework / App Runtime]
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR (((string)SMART_FRAMEWORK_RUNTI
 //-----------------------------------------------------
 
 
-//====================================================== r.20210523
+//====================================================== r.20210526
 // Smart-Framework - App Runtime (this should be loaded only from app web root)
 // DEPENDS: Smart.Framework + Smart.Framework/Components
 // DO NOT MODIFY THIS FILE OR ANY OTHER FILE(S) UNDER lib/* or index.php or admin.php or task.php [They will be all overwritten on any future framework updates or upgrades] !!!
@@ -86,8 +86,8 @@ if(defined('SMART_FRAMEWORK_SESSION_PREFIX')) {
 	die('A Reserved Constant have been already defined: SMART_FRAMEWORK_SESSION_PREFIX');
 } //end if
 //--
-if(SMART_FRAMEWORK_ADMIN_AREA === true) {
-	if((string)SMART_FRAMEWORK_RUNTIME_MODE == 'web.task') { // {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
+if(defined('SMART_FRAMEWORK_ADMIN_AREA') AND (SMART_FRAMEWORK_ADMIN_AREA === true)) {
+	if(defined('SMART_FRAMEWORK_RUNTIME_MODE') AND ((string)SMART_FRAMEWORK_RUNTIME_MODE == 'web.task')) { // {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
 		define('SMART_FRAMEWORK_SESSION_PREFIX', 'tsk-sess');
 	} else {
 		define('SMART_FRAMEWORK_SESSION_PREFIX', 'adm-sess');
@@ -114,8 +114,8 @@ if(defined('SMART_APP_LANG_COOKIE')) {
 	@http_response_code(500);
 	die('A Reserved Constant have been already defined: SMART_APP_LANG_COOKIE');
 } //end if
-if(SMART_FRAMEWORK_URL_PARAM_LANGUAGE) {
-	if(SMART_FRAMEWORK_ADMIN_AREA === true) {
+if(defined('SMART_FRAMEWORK_URL_PARAM_LANGUAGE') AND ((string)SMART_FRAMEWORK_URL_PARAM_LANGUAGE != '')) {
+	if(defined('SMART_FRAMEWORK_ADMIN_AREA') AND (SMART_FRAMEWORK_ADMIN_AREA === true)) {
 		if((string)SMART_FRAMEWORK_RUNTIME_MODE == 'web.task') { // {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}
 			define('SMART_APP_LANG_COOKIE', 'SmartApp_TSK__SetLanguage__'.SMART_FRAMEWORK_URL_PARAM_LANGUAGE);
 		} else {
@@ -164,7 +164,7 @@ $languages = array();
 require('etc/config.php'); // load the main configuration, after GET/POST registration
 //--------------------------------------- LOAD SMART-FRAMEWORK
 require('lib/framework/smart-framework.php');
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if

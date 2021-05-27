@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / SQLite Persistent Cache]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -50,7 +50,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, PHP SQLite3 Extension, SmartSQliteDb
- * @version 	v.20200121
+ * @version 	v.20210527
  * @package 	Plugins:PersistentCache:SQlite
  *
  */
@@ -61,8 +61,8 @@ class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 	// !!! THIS CLASS MUST NOT BE MARKED AS FINAL to allow the class SmartPersistentCache@SQlite to be extended from this !!!
 	// But this class have all PUBLIC Methods marked as FINAL to avoid being rewritten ...
 
-	const SQLITE_FOLDER 		= 'tmp/cache/pcache#sqlite/'; 	// base cached folder
-	const SQLITE_FILE   		= 'p-cache.sqlite';				// base name for sqlite cache file
+	private const SQLITE_FOLDER 	= 'tmp/cache/pcache#sqlite/'; 	// base cached folder
+	private const SQLITE_FILE   	= 'p-cache.sqlite';				// base name for sqlite cache file
 
 	private static $is_active 	= null; // Cache Active State ; by default is null ; on 1st check must set to TRUE or FALSE
 
@@ -432,7 +432,9 @@ class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 		//--
 		$obj->open();
 		//--
+		$is_init = false;
 		if(!$obj->check_if_table_exists('smart_framework_pcache')) { // better check here and make create table in a transaction if does not exists ; if not check here the create_table() will anyway check
+			$is_init = true;
 			$obj->write_data('BEGIN'); // start transaction ; avoid transaction run each time on pcache table ...
 			$obj->create_table(
 				'smart_framework_pcache',
@@ -448,6 +450,20 @@ class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 				]
 			);
 			$obj->write_data('COMMIT'); // commit transaction
+		} //end if
+		//--
+		if($is_init !== true) { // avoid run on init, mostly the locking issues comes from here
+			if(Smart::random_number(0, 500) == 50) { // 1% chance to cleanup, but 5x numbers ... sqlite is not too efficient as pcache, avoid locks
+				$obj->write_data(
+					'DELETE FROM `smart_framework_pcache` WHERE ((`expire` > 0) AND (`expire_at` >= 0) AND (`expire_at` < ?))',
+					[
+						(int) time()
+					]
+				);
+				if(Smart::random_number(0, 100) == 51) { // run vacuum just in 1% (with higher numbers) of 1% of cases, aka 0.1% ... the cost is significant !
+					$obj->write_data('VACUUM');
+				} //end if
+			} //end if
 		} //end if
 		//--
 		return (object) $obj;

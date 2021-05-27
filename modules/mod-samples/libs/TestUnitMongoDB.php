@@ -1,7 +1,7 @@
 <?php
 // [LIB - Smart.Framework / Samples / Test MongoDB Server]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModExtLib\Samples\TestUnitMongoDB
 // Type: Module Library
@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200720
+ * @version 	v.20210526
  *
  */
 final class TestUnitMongoDB {
@@ -47,11 +47,16 @@ final class TestUnitMongoDB {
 		//--
 
 		//--
-		$cfg_mongo = (array) \Smart::get_from_config('mongodb');
+		$cfg_mongo = (array) \Smart::get_from_config('mongodb', 'array');
 		//--
 
 		//--
-		if(((string)$cfg_mongo['server-host'] == '') OR ((string)$cfg_mongo['server-port'] == '') OR ((string)$cfg_mongo['dbname'] == '')) {
+		if(
+			(\Smart::array_size($cfg_mongo) <= 0) OR
+			(!isset($cfg_mongo['server-host'])) OR ((string)$cfg_mongo['server-host'] == '') OR
+			(!isset($cfg_mongo['server-port'])) OR ((string)$cfg_mongo['server-port'] == '') OR
+			(!isset($cfg_mongo['dbname'])) OR ((string)$cfg_mongo['dbname'] == '')
+		) {
 			//--
 			return (string) \SmartComponents::operation_warn('Test Unit for Mongo Server: INVALID MongoDB server configuration available in configs ...');
 			//--

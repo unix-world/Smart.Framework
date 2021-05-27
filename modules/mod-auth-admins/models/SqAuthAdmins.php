@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModDataModel\AuthAdmins\SqAuthAdmins
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 namespace SmartModDataModel\AuthAdmins;
 
@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20210523
+	// v.20210526
 
 	private $db;
 
@@ -672,12 +672,12 @@ final class SqAuthAdmins {
 			if((\defined('\\APP_AUTH_ADMIN_USERNAME')) AND (\defined('\\APP_AUTH_ADMIN_PASSWORD'))) {
 				//--
 				$init_username = (string) \APP_AUTH_ADMIN_USERNAME;
-				if((\strlen((string)$init_username) < 3) OR (\strlen((string)$init_username) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$init_username))) { // SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
+				if(((string)\trim((string)$init_username) == '') OR ((int)\strlen((string)$init_username) < 3) OR ((int)\strlen((string)$init_username) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$init_username))) { // SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
 					\SmartFrameworkRuntime::Raise202Status('INVALID USERNAME set as APP_AUTH_ADMIN_USERNAME', \SmartComponents::operation_warn('The username is too short, must be minimum 3 chars and max 25 chars. Can contain only [ a-z 0-9 . ] ... Manually REFRESH this page after by pressing F5 ...', '80%'));
 					return 0;
 				} //end if
 				$init_password = (string) \APP_AUTH_ADMIN_PASSWORD;
-				if((\SmartUnicode::str_len((string)$init_password) < 7) OR (\SmartUnicode::str_len((string)$init_password) > 30)) { // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+				if(((string)\trim((string)$init_password) == '') OR ((int)\SmartUnicode::str_len((string)$init_password) < 7) OR ((int)\SmartUnicode::str_len((string)$init_password) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
 					\SmartFrameworkRuntime::Raise203Status('INVALID PASSWORD set as APP_AUTH_ADMIN_PASSWORD', \SmartComponents::operation_warn('The password is too short, must be min 7 chars and max 30 chars. Manually REFRESH this page after by pressing F5 ...', '80%'));
 					return 0;
 				} //end if

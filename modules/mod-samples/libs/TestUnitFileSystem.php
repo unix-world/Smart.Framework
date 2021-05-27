@@ -1,7 +1,7 @@
 <?php
 // [LIB - Smart.Framework / Samples / Test FileSystem]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModExtLib\Samples\TestUnitFileSystem
 // Type: Module Library
@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210331
+ * @version 	v.20210526
  *
  */
 final class TestUnitFileSystem {
@@ -171,14 +171,18 @@ final class TestUnitFileSystem {
 			} //end if
 		} //end if
 		//--
-		if((string)$err == '') {
-			$the_test = 'CHECK TEST VARIOUS PROTECTED PATHS ...';
-			$tests[] = $the_test;
-			if(
-				(\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'yes', 'no')) OR
-				(!\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'yes', 'yes'))
-			) {
-				$err = 'ERROR: CHECK TEST PROTECTED PATHS ... FAILED !!!';
+		if(\SmartFrameworkRegistry::isTaskArea() !== true) { // skip if task area, tasks have access to protected paths !
+			if((string)$err == '') {
+				$the_test = 'CHECK TEST VARIOUS PROTECTED PATHS ...';
+				$tests[] = $the_test;
+				if(
+					(\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'yes', 'no')) OR
+					(!\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'yes', 'yes')) OR
+					(\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'no')) OR
+					(\SmartFileSysUtils::check_if_safe_path('#this/is/protected'))
+				) {
+					$err = 'ERROR: CHECK TEST PROTECTED PATHS ... FAILED !!!';
+				} //end if
 			} //end if
 		} //end if
 		//--
@@ -192,8 +196,7 @@ final class TestUnitFileSystem {
 				(\SmartFileSysUtils::check_if_safe_path(':/this/is/absolute', 'no')) OR
 				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso|lute', 'no')) OR
 				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso lute', 'no')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso:lute', 'no')) OR
-				(\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'no'))
+				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso:lute', 'no'))
 			) {
 				$err = 'ERROR: CHECK TEST ABSOLUTE : INVALID / PROTECTED PATHS ... FAILED !!!';
 			} //end if
@@ -210,7 +213,6 @@ final class TestUnitFileSystem {
 				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso|lute')) OR
 				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso lute')) OR
 				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso:lute')) OR
-				(\SmartFileSysUtils::check_if_safe_path('#this/is/protected')) OR
 				(\SmartFileSysUtils::check_if_safe_file_or_dir_name('')) OR
 				(\SmartFileSysUtils::check_if_safe_path('')) OR
 				(\SmartFileSysUtils::check_if_safe_file_or_dir_name(' ')) OR

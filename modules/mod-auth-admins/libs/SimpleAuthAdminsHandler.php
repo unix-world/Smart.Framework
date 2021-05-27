@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\AuthAdmins\SimpleAuthAdminsHandler
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\AuthAdmins;
 
@@ -32,7 +32,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD and *optional* the APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY ; they must be set in set in config-admin.php
  * Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)
  *
- * @version 	v.20210523
+ * @version 	v.20210526
  * @package 	development:modules:AuthAdmins
  *
  */

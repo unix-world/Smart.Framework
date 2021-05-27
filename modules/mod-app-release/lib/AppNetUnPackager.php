@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // App Net UnPackager
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION [T]
 if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIME_MODE != 'web.task')) { // this must be defined in the first line of the application :: {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
@@ -45,13 +45,14 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetUnPackager {
 
 	// ::
-	// v.20210522
+	// v.20210526
 
-	public const APP_NET_UNPACKAGER_VERSION = 'v.20210522';
+	public const APP_NET_UNPACKAGER_VERSION = 'v.20210526';
 
 	public const APP_NET_UNPACKAGER_MIN_PACK_SIZE = 777; // min 777 bytes by the headers
 
-	public const APP_NET_UNPACKAGER_FOLDER = '#APPCODE-UNPACK#/'; // {{{SYNC-APPCODEUNPACK-FOLDER}}}
+	public const APP_NET_UNPACKAGER_FOLDER 			= '#APPCODE-UNPACK#/'; // {{{SYNC-APPCODEUNPACK-FOLDER}}}
+	public const APP_NET_UNPACKAGER_DEPLOYS_FOLDER 	= '#DEPLOY-VERSIONS/'; // {{{SYNC-APPCODEUNPACK-DEPLOYS-FOLDER}}}
 
 	public const APP_NET_UNPACKAGER_HTACCESS_PROTECT = '
 # Deny Access: Apache 2.2
@@ -236,7 +237,7 @@ Options -Indexes
 		//--
 		$tmp_ppfx = (string) self::APP_NET_UNPACKAGER_FOLDER.'#TMP-UNPACK-@'.Smart::safe_filename((string)APPCODEPACK_APP_ID);
 		//--
-		$the_tmp_netarch_lock = (string) rtrim($tmp_ppfx, '/').'.LOCK'; // the lock file ; {{{SYNC-NETARCH-DENIED-PATHS}}}
+		$the_tmp_netarch_lock = (string) rtrim((string)$tmp_ppfx, '/').'.LOCK'; // the lock file ; {{{SYNC-NETARCH-DENIED-PATHS}}}
 		if(SmartFileSysUtils::check_if_safe_path((string)$the_tmp_netarch_lock) != 1) {
 			return 'ERROR: Invalid TMP Package Lock File Path: '.$the_tmp_netarch_lock;
 		} //end if
@@ -248,7 +249,7 @@ Options -Indexes
 		if(!$testonly) { // IF NOT TEST: CREATE NEW @ TMP NETARCH FOLDER
 			//--
 			if(SmartFileSystem::path_exists((string)$the_tmp_netarch_lock)) {
-				return 'ERROR: TMP Package Lock File must be manually cleared first !';
+				return 'ERROR: A NetArchive Package Lock Exists. Perhaps another instance is running a deploy right now. If the problem persist it may be a dead lock and this Lock File must be manually cleared: `'.$the_tmp_netarch_lock.'` ...';
 			} //end if
 			//--
 			$test_fxop = SmartFileSystem::write((string)$the_tmp_netarch_lock, 'NetArchive Unpack Lock File @ '.date('Y-m-d H:i:s O'));
@@ -539,7 +540,7 @@ Options -Indexes
 		$restoreroot = (string) Smart::safe_filename((string)APPCODEPACK_APP_ID);
 		SmartFileSysUtils::raise_error_if_unsafe_path((string)$restoreroot);
 		//-- DEFINE @ TMP NETARCH FOLDERS
-		$unpack_versionsfolder = (string) self::APP_NET_UNPACKAGER_FOLDER.'#DEPLOY-VERSIONS/'; // must have trailing slash
+		$unpack_versionsfolder = (string) self::APP_NET_UNPACKAGER_FOLDER.self::APP_NET_UNPACKAGER_DEPLOYS_FOLDER; // must have trailing slash
 		$the_tmp_netarch_data_hash = (string) SmartHashCrypto::sha512((string)$y_content);
 		//-- CHECK SAFE NAME @ TMP NETARCH FOLDER
 		SmartFileSysUtils::raise_error_if_unsafe_path((string)$the_tmp_netarch_folder);

@@ -3,7 +3,7 @@
 // Controller: AppRelease/CodeDeploy
 // Route: ?/page/app-release.code-deploy (?page=app-release.code-deploy)
 // (c) 2013-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210522
+ * @version 	v.20210526
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -203,9 +203,14 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		if((string)$url == '') {
 			$this->notice = 'Select the deploy URL from the list for this Release Package: `'.$last_package.'`';
 			if(SmartFileSystem::is_type_file((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'appcodeunpack.php')) {
-				$this->notice .= "\n".'The AppCodeUnpack Manager will be updated with the current generated version ...';
-				$this->sficon = 'codepen';
-			} //end if
+				$this->notice .= "\n".'The AppCodeUnpack Manager Standalone Script will be updated with the current generated version ...';
+				$this->sficon = [
+					'codepen',
+					'box-remove',
+				];
+			} else {
+				$this->sficon = 'box-remove';
+			} //end if else
 			$this->notehtml = (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'app-deploy.mtpl.htm',
 				[
@@ -419,6 +424,8 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			return;
 		} //end if
 		//--
+		$icon_appcodeunpack_upd = !! (strpos((string)$json_arr['message'], "\n".'AppCodeUnpack-Update: `OK`'."\n") !== false);
+		//--
 		if(
 			((string)$json_arr['completed'] !== 'DONE') OR
 			((string)$json_arr['status'] !== 'OK') OR
@@ -446,7 +453,14 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 
 		//--
-		$this->sficon = 'box-remove';
+		if($icon_appcodeunpack_upd === true) {
+			$this->sficon = [
+				'box-remove',
+				'codepen',
+			];
+		} else {
+			$this->sficon = 'box-remove';
+		} //end if else
 		$this->msg = 'Package Deploy SUCCESSFUL: '.$display_msg;
 		//--
 

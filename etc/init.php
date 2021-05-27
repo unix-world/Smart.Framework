@@ -1,8 +1,8 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20210523
+// [Smart.Framework / INIT] v.20210526
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -27,7 +27,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //--------------------------------------- TIMEZONE
 const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP (Example: Europe/London) ; default is: UTC
 //--------------------------------------- TASK RUNTIME ALLOWED IP LIST
-const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		''; 										// APP Task service area allowed IPs ; ex: '<127.0.0.1>,<::1>' ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
+const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		'<127.0.0.1>'; 										// APP Task service area allowed IPs ; ex: '<127.0.0.1>,<::1>' ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
 //--------------------------------------- SECURITY
 const SMART_FRAMEWORK_SECURITY_KEY =  					'private-key#0987654321'; 					// *** YOU HAVE TO CHANGE IT *** ; This is the Security Key that will be used to generate secure hashes
 //const SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO =  	true; 										// *Optional: if defined and set to TRUE will use the OpenSSL cipher openssl/blowfish/CBC (faster) instead of internal one blowfish.cbc (more compatible across platforms)

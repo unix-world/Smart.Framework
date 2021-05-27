@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartMarkersTemplating        final class \ SmartMarkersTemplating    {   } ::    Class: SmartMarkersTemplating - provides a very fast and low footprint">
-	<meta name="keywords" content="smartmarkerstemplating, final, class, provides, a, very, fast, and, low, footprint, templating, system, marker-tpl, language, php, located, at, lib framework lib templating.php, package, core:templatingengine, namespace, name, version, v.20210412, depends, classes, smart, smartunicode, smartfilesystem, smartfilesysutils, smartpersistentcache, smartframeworkruntime, smartframeworkregistry, usage, static, object, class::method, this, only, methods, public, function, analyze debug template, string, mtemplate, return, the, analyze, info, html js, param, marker, template, no, sub-templates, are, loaded, is, intended, for, development, debug, never, use, in, production, environments, render template, array, y arr vars, y ignore if empty, parsed, partial, text html, markers, ex, span, marker1, br, marker2, associative, with, variables, mapping, keys, to, case, insensitive, value1, value2, markern, enum, yes, will, ignore, if, empty">
+	<meta name="keywords" content="smartmarkerstemplating, final, class, provides, a, very, fast, and, low, footprint, templating, system, marker-tpl, language, php, located, at, lib framework lib templating.php, package, core:templatingengine, namespace, name, version, v.20210520, depends, classes, smart, smartunicode, smartfilesystem, smartfilesysutils, smartframeworkregistry, optional-constants, smart software mktpl debug len, usage, static, object, class::method, this, only, methods, public, function, analyze debug template, string, mtemplate, return, the, analyze, info, html js, param, marker, template, no, sub-templates, are, loaded, is, intended, for, development, debug, never, use, in, production, environments, render placeholder tpl, ptemplate, array, y arr vars, y ignore if empty, parsed, placeholder-tpl, partial, text html, placeholders, ex, span  :::placeholder, span, associative, with, variables, mapping, keys, to, case, insensitive, placeholder1, value1, placeholder2, value2, placeholdern, enum, yes, will, ignore">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMarkersTemplating">
 	<title>PHP Documentation for: \SmartMarkersTemplating</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -706,8 +706,8 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartMarkersTemplating</span></li>
 		
-		<li><b>Version:</b> v.20210412</li>
-		<li><b>Depends:</b> classes:  Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartPersistentCache, SmartFrameworkRuntime, SmartFrameworkRegistry</li>
+		<li><b>Version:</b> v.20210520</li>
+		<li><b>Depends:</b> classes:  Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -736,7 +736,27 @@ This is intended for DEVELOPMENT / DEBUG ONLY (never use this in production envi
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `analyze_debug_file_template()` --><!-- Skip Internal-Priv Method: `escape_template()` --><div class="doc-container" id="Method--render_template">
+</div><!-- Skip Internal-Priv Method: `analyze_debug_file_template()` --><!-- Skip Internal-Priv Method: `escape_template()` --><div class="doc-container" id="Method--render_placeholder_tpl">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>render_placeholder_tpl</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$ptemplate` Parameter is REQUIRED">$ptemplate</span></b></span>, 
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_vars` Parameter is REQUIRED">$y_arr_vars</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ignore_if_empty` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_ignore_if_empty</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The parsed template<br>
+@param: {STRING} $ptemplate: The Placeholder-TPL string (partial text/html + placeholders) ; Ex: '&lt;span&gt;[:::PLACEHOLDER:::], ...&lt;/span&gt;'<br>
+@param: {ARRAY} $y_arr_vars: The associative array with the template variables ; mapping the array keys to template placeholders is case insensitive ; Ex: [ 'PLACEHOLDER1' =&gt; 'Value1', 'placeholder2' =&gt; 'Value2', ..., 'PlaceholderN' =&gt; 100 ]<br>
+@param: {ENUM} $y_ignore_if_empty: 'yes' will ignore if Placeholder-TPL is empty ; 'no' will add a warning (default)</div>
+	
+			<div class="doc-method-comments">Render Placeholder Template (String Template ; no marker syntax is parsed ; only placeholders are strict replaced<br>
+This method adds a new feature to the Marker-TPL Templating system to allow add post-render variable areas to an already rendered Marker-TPL ; for example, a rendered Marker-TPL can be exported to cache but some areas perhaps need to be changed later so those areas can be replaced later by using placeholders</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--render_template">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>render_template</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$mtemplate` Parameter is REQUIRED">$mtemplate</span></b></span>, 
 			<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_vars` Parameter is REQUIRED">$y_arr_vars</span></b></span>, 
@@ -806,7 +826,7 @@ This is intended for DEVELOPMENT / DEBUG ONLY (never use this in production envi
  		]
  );
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><!-- Skip Internal-Priv Method: `render_mixed_template()` --><!-- Skip Internal-Priv Method: `read_template_file()` --><!-- Skip Internal-Priv Method: `prepare_nosyntax_content()` --><!-- Skip Internal-Priv Method: `prepare_nosyntax_html_template()` --><!-- Skip Internal-Priv Method: `registerOptimizationHintsToDebugLog()` --><!-- Skip Internal-Priv Method: `registerInternalCacheToDebugLog()` -->
@@ -863,6 +883,9 @@ function smartHandleDocSelector(obj) {
 			
 						
 			
+									<option value="Method--render_placeholder_tpl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;render_placeholder_tpl()</option>
+			
+			
 									<option value="Method--render_template"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;render_template()</option>
 			
 			
@@ -898,7 +921,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:46 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:34 +0000</small>
 <hr>
 <br>
 <!-- # -->

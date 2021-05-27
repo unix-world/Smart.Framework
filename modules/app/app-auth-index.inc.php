@@ -1,14 +1,14 @@
 <?php
 // [Smart.Framework / App - Authenticate / Index]
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
 	@http_response_code(500);
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
-//-----------------------------------------------------
+//----------------------------------------------------- v.20210526
 
 //======================================================
 // App Authenticate Middleware / Index Area Overall Authentication (index.php)

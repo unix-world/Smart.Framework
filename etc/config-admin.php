@@ -1,7 +1,8 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
 // [Smart.Framework / CFG - SETTINGS / ADMIN]
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -16,6 +17,12 @@ $configs['app']['admin-home'] 						= 'samples.welcome';		// admin home page act
 $configs['app']['admin-default-module'] 			= 'samples';				// admin default module
 $configs['app']['admin-template-path'] 				= 'default';				// default admin template folder from etc/templates/
 $configs['app']['admin-template-file'] 				= 'template.htm';			// default admin template file
+//--------------------------------------- Templates and Home Page (task)
+$configs['app']['task-domain'] 						= 'localhost.local'; 		// task domain as yourdomain.ext
+$configs['app']['task-home'] 						= 'samples.welcome';		// task home page action
+$configs['app']['task-default-module'] 				= 'samples';				// task default module
+$configs['app']['task-template-path'] 				= 'default';				// default task template folder from etc/templates/
+$configs['app']['task-template-file'] 				= 'template-simple.htm';	// default task template file
 //---------------------------------------
 
 //-- sample auth credentials for the admin area (admin.php / task.php) ; change them !!!
@@ -30,15 +37,5 @@ $configs['app-auth']['adm-namespaces'] = [
 ];
 */
 //--
-
-//===== TASK
-
-//--------------------------------------- Templates and Home Page (task)
-$configs['app']['task-domain'] 						= 'localhost.local'; 		// task domain as yourdomain.ext
-$configs['app']['task-home'] 						= 'app-release.app-manage';	// task home page action
-$configs['app']['task-default-module'] 				= 'app-release';			// task default module
-$configs['app']['task-template-path'] 				= 'default';				// default task template folder from etc/templates/
-$configs['app']['task-template-file'] 				= 'template-simple.htm';	// default task template file
-//---------------------------------------
 
 // end of php code

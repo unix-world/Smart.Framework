@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / MySQLi (MariaDB) Database Client]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -1062,7 +1062,12 @@ final class SmartMysqliDb {
 				$dbg_query_params = '';
 			} //end if else
 			//--
-			if((strtoupper(substr(trim($queryval), 0, 5)) == 'BEGIN') OR (strtoupper(substr(trim($queryval), 0, 6)) == 'COMMIT') OR (strtoupper(substr(trim($queryval), 0, 8)) == 'ROLLBACK')) {
+			if(
+				(stripos((string)trim((string)$queryval), 'BEGIN') === 0) OR
+				(stripos((string)trim((string)$queryval), 'START TRANSACTION') === 0) OR
+				(stripos((string)trim((string)$queryval), 'COMMIT') === 0) OR
+				(stripos((string)trim((string)$queryval), 'ROLLBACK') === 0)
+			) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'transaction',
 					'data' => 'TRANSACTION :: '.$the_query_title,
@@ -1071,12 +1076,30 @@ final class SmartMysqliDb {
 					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 					'connection' => (string) self::get_connection_id($y_connection)
 				]);
-			} elseif(strtoupper(substr(trim($queryval), 0, 4)) == 'SET ') {
+			} elseif(stripos((string)trim((string)$queryval), 'SET ') === 0) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'set',
 					'data' => 'SET :: '.$the_query_title,
 					'query' => $queryval,
 					'params' => $dbg_query_params,
+					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
+					'connection' => (string) self::get_connection_id($y_connection)
+				]);
+			} elseif(
+				(stripos((string)trim((string)$queryval), 'TRUNCATE ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'DROP ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'CREATE ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'ALTER ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'ANALYZE ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'OPTIMIZE ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'EXPLAIN ') === 0)
+			) {
+				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+					'type' => 'special',
+					'data' => 'COMMAND :: '.$the_query_title,
+					'query' => $queryval,
+					'params' => $dbg_query_params,
+					'rows' => $affected,
 					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 					'connection' => (string) self::get_connection_id($y_connection)
 				]);
@@ -1860,7 +1883,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:MySQL
  *
  */

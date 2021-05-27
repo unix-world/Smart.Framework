@@ -1,5 +1,5 @@
 
--- FTS Init: English (EN), No-Stop-Words :: r.20190103
+-- FTS Init: English (EN), No-Stop-Words :: r.20210526 # smart.framework.v.8.7 ###
 
 CREATE TEXT SEARCH DICTIONARY public.english_stem_nostop(Template = snowball, Language = english);
 CREATE TEXT SEARCH CONFIGURATION public.english_nostop ( COPY = pg_catalog.english );

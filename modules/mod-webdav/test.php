@@ -2,8 +2,8 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: Webdav/Test (WebDAV:FileSystem)
 // Route: admin.php/page/webdav.test/~
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -29,7 +29,7 @@ if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
  */
 class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs {
 
-	// v.20210422
+	// v.20210526
 
 	public function Run() {
 

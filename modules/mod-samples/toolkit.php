@@ -1,8 +1,8 @@
 <?php
 // Controller: Samples/Toolkit
 // Route: ?/page/samples.toolkit (?page=samples.toolkit)
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -11,11 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
-
-// This is a Sample Controller of Smart.Framework / Samples Module
-// The controller classes: SmartAppIndexController and SmartAppAdminController can be complete separated in different files, they can be extended from SmartAbstractAppController or one from each other.
-// The SMART_APP_MODULE_AREA constant must be adjusted as necessary: INDEX (allow just SmartAppIndexController) ; ADMIN (allow just SmartAppAdminController) ; SHARED (allow both: SmartAppIndexController and SmartAppAdminController) - in the same controller
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
 
 /**
  * Index Controller
@@ -59,6 +55,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 } //END CLASS
 
+
 /**
  * Admin Controller (optional)
  *
@@ -71,5 +68,20 @@ class SmartAppAdminController extends SmartAppIndexController {
 	// or this can implement a completely different controller if it is accessed via admin.php
 
 } //END CLASS
+
+
+/**
+ * Task Controller (optional)
+ *
+ * @ignore
+ *
+ */
+class SmartAppTaskController extends SmartAppAdminController {
+
+	// this will clone the SmartAppIndexController to run exactly the same action in task.php
+	// or this can implement a completely different controller if it is accessed via task.php
+
+} //END CLASS
+
 
 // end of php code

@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -714,8 +714,8 @@ Actually you should not use this parameter at all as it is optional ... This par
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartPgsqlDb</span></li>
 		
-		<li><b>Version:</b> v.20210401</li>
-		<li><b>Depends:</b> extensions:  PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils</li>
+		<li><b>Version:</b> v.20210527</li>
+		<li><b>Depends:</b> extensions:  PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents</li>
 		<li><b>Hints:</b> This  class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -1004,7 +1004,7 @@ This function is intended to be used for write type queries: BEGIN (TRANSACTION)
 @param: {STRING} $params_or_title: *optional* array of parameters ($1, $2, ... $n) or query title for easy debugging<br>
 @param: {RESOURCE} $y_connection: the connection</div>
 	
-			<div class="doc-method-comments">PgSQL Query :: Write Ignore - Catch Duplicate Key Violation or Foreign Key Violation Errors (This is the equivalent of MySQL's INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE, but it can catch UNIQUE violations on both: INSERT / UPDATE / DELETE statements and also can catch FOREIGN KEY violations).<br>
+			<div class="doc-method-comments">PgSQL Query :: Write Ignore - Catch Duplicate Key Violation or Foreign Key Violation Errors (This is the equivalent of MySQL's INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE, but it can catch UNIQUE violations on any of: INSERT / UPDATE / DELETE statements and also can catch FOREIGN KEY violations).<br>
 This function is intended to be used only for write type queries like: INSERT / UPDATE / DELETE which can be ignored if unique violations or foreign key violations and will return the # of affected rows or zero if an exception raised.<br>
 The catch of PostgreSQL exceptions is handled completely by this function so there is no need for a catch errors outside.<br>
 IMPORTANT:<br>
@@ -1104,21 +1104,21 @@ The statement must not contain any Single Quotes to prevent SQL injections which
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">//&nbsp;The&nbsp;connection&nbsp;to&nbsp;the&nbsp;DEFAULT&nbsp;PostgreSQL&nbsp;Server&nbsp;will&nbsp;be&nbsp;done&nbsp;automatically,&nbsp;when&nbsp;needed,&nbsp;using&nbsp;the&nbsp;config&nbsp;parameters&nbsp;;&nbsp;but&nbsp;if&nbsp;you&nbsp;want&nbsp;to&nbsp;pre-connect,&nbsp;use&nbsp;SmartPgsqlDb::default_connect()&nbsp;...<br>
-&nbsp;</span><span class="c1">$count&nbsp;</span><span class="c3">=&nbsp;(int)&nbsp;</span><span class="c1">SmartPgsqlDb</span><span class="c3">::</span><span class="c1">count_data</span><span class="c3">(</span><span class="c4">&#39;SELECT&nbsp;COUNT(&quot;id&quot;)&nbsp;FROM&nbsp;&quot;table&quot;&nbsp;WHERE&nbsp;(&quot;active&quot;&nbsp;=&nbsp;\&#39;&#39;</span><span class="c3">.</span><span class="c1">SmartPgsqlDb</span><span class="c3">::</span><span class="c1">escape_str</span><span class="c3">(</span><span class="c4">&#39;some-id&#39;</span><span class="c3">).</span><span class="c4">&#39;\&#39;)&#39;</span><span class="c3">);<br>
-&nbsp;</span><span class="c1">$non_associative_read_multi_records&nbsp;</span><span class="c3">=&nbsp;(array)&nbsp;</span><span class="c1">SmartPgsqlDb</span><span class="c3">::</span><span class="c1">read_data</span><span class="c3">(</span><span class="c4">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;&quot;table&quot;&nbsp;WHERE&nbsp;&quot;id&quot;&nbsp;=&nbsp;&#39;</span><span class="c3">.</span><span class="c1">SmartPgsqlDb</span><span class="c3">::</span><span class="c1">escape_literal</span><span class="c3">(</span><span class="c1">3</span><span class="c3">));<br>
-&nbsp;</span><span class="c1">$associative_read_multi_records&nbsp;</span><span class="c3">=&nbsp;(array)&nbsp;</span><span class="c1">SmartPgsqlDb</span><span class="c3">::</span><span class="c1">read_adata</span><span class="c3">(</span><span class="c4">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;&quot;table&quot;&nbsp;WHERE&nbsp;&quot;id&quot;&nbsp;=&nbsp;$1&#39;</span><span class="c3">,&nbsp;array(</span><span class="c4">&#39;other-id&#39;</span><span class="c3">));<br>
-&nbsp;</span><span class="c1">$associative_read_for_just_one_record&nbsp;</span><span class="c3">=&nbsp;(array)&nbsp;</span><span class="c1">SmartPgsqlDb</span><span class="c3">::</span><span class="c1">read_asdata</span><span class="c3">(</span><span class="c4">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;&quot;table&quot;&nbsp;WHERE&nbsp;&quot;id&quot;&nbsp;=&nbsp;$1&nbsp;LIMIT&nbsp;1&nbsp;OFFSET&nbsp;0&#39;</span><span class="c3">,&nbsp;array(</span><span class="c1">99</span><span class="c3">));&nbsp;</span><span class="c2">//&nbsp;NOTICE:&nbsp;this&nbsp;function&nbsp;will&nbsp;return&nbsp;just&nbsp;one&nbsp;record,&nbsp;so&nbsp;always&nbsp;use&nbsp;LIMIT&nbsp;1&nbsp;OFFSET&nbsp;0&nbsp;(or&nbsp;LIMIT&nbsp;0,1)&nbsp;;&nbsp;if&nbsp;the&nbsp;query&nbsp;will&nbsp;return&nbsp;more&nbsp;records&nbsp;will&nbsp;raise&nbsp;an&nbsp;error<br>
-&nbsp;</span><span class="c1">$update&nbsp;</span><span class="c3">=&nbsp;(array)&nbsp;</span><span class="c1">SmartPgsqlDb</span><span class="c3">::</span><span class="c1">write_data</span><span class="c3">(</span><span class="c4">&#39;UPDATE&nbsp;&quot;table&quot;&nbsp;SET&nbsp;&quot;active&quot;&nbsp;=&nbsp;1&nbsp;WHERE&nbsp;&quot;id&quot;&nbsp;=&nbsp;$1&#39;</span><span class="c3">,&nbsp;array(</span><span class="c1">55</span><span class="c3">));&nbsp;</span><span class="c2">//&nbsp;will&nbsp;return&nbsp;an&nbsp;array[&nbsp;0&nbsp;=&gt;&nbsp;message,&nbsp;1&nbsp;=&gt;&nbsp;(integer)&nbsp;affected&nbsp;rows&nbsp;]<br>
-&nbsp;</span><span class="c1">$arr_insert&nbsp;</span><span class="c3">=&nbsp;array(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;id&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c1">100</span><span class="c3">,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;active&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c1">1</span><span class="c3">,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;name&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c4">&#39;Test&nbsp;Record&#39;<br>
-&nbsp;</span><span class="c3">);<br>
-&nbsp;</span><span class="c1">$insert&nbsp;</span><span class="c3">=&nbsp;(array)&nbsp;</span><span class="c1">SmartPgsqlDb</span><span class="c3">::</span><span class="c1">write_data</span><span class="c3">(</span><span class="c4">&#39;INSERT&nbsp;INTO&nbsp;&quot;table&quot;&nbsp;&#39;</span><span class="c3">.</span><span class="c1">SmartPgsqlDb</span><span class="c3">::</span><span class="c1">prepare_statement</span><span class="c3">(</span><span class="c1">$arr_insert</span><span class="c3">,&nbsp;</span><span class="c4">&#39;insert&#39;</span><span class="c3">));<br>
-&nbsp;</span><span class="c1">$prepared_sql&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">SmartPgsqlDb</span><span class="c3">::</span><span class="c1">prepare_param_query</span><span class="c3">(</span><span class="c4">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;&quot;table&quot;&nbsp;WHERE&nbsp;&quot;id&quot;&nbsp;=&nbsp;$1&#39;</span><span class="c3">,&nbsp;[</span><span class="c1">99</span><span class="c3">]);<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #999999">//&nbsp;The&nbsp;connection&nbsp;to&nbsp;the&nbsp;DEFAULT&nbsp;PostgreSQL&nbsp;Server&nbsp;will&nbsp;be&nbsp;done&nbsp;automatically,&nbsp;when&nbsp;needed,&nbsp;using&nbsp;the&nbsp;config&nbsp;parameters&nbsp;;&nbsp;but&nbsp;if&nbsp;you&nbsp;want&nbsp;to&nbsp;pre-connect,&nbsp;use&nbsp;SmartPgsqlDb::default_connect()&nbsp;...<br>
+&nbsp;</span><span style="color: #FFFFFF">$count&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(int)&nbsp;</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">count_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;SELECT&nbsp;COUNT(&quot;id&quot;)&nbsp;FROM&nbsp;&quot;table&quot;&nbsp;WHERE&nbsp;(&quot;active&quot;&nbsp;=&nbsp;\&#39;&#39;</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">escape_str</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;some-id&#39;</span><span style="color: #FFCC00; font-weight: bold">).</span><span style="color: #5F9CCE">&#39;\&#39;)&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">$non_associative_read_multi_records&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">read_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;&quot;table&quot;&nbsp;WHERE&nbsp;&quot;id&quot;&nbsp;=&nbsp;&#39;</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">escape_literal</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">3</span><span style="color: #FFCC00; font-weight: bold">));<br>
+&nbsp;</span><span style="color: #FFFFFF">$associative_read_multi_records&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">read_adata</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;&quot;table&quot;&nbsp;WHERE&nbsp;&quot;id&quot;&nbsp;=&nbsp;$1&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;array(</span><span style="color: #5F9CCE">&#39;other-id&#39;</span><span style="color: #FFCC00; font-weight: bold">));<br>
+&nbsp;</span><span style="color: #FFFFFF">$associative_read_for_just_one_record&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">read_asdata</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;&quot;table&quot;&nbsp;WHERE&nbsp;&quot;id&quot;&nbsp;=&nbsp;$1&nbsp;LIMIT&nbsp;1&nbsp;OFFSET&nbsp;0&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;array(</span><span style="color: #FFFFFF">99</span><span style="color: #FFCC00; font-weight: bold">));&nbsp;</span><span style="color: #999999">//&nbsp;NOTICE:&nbsp;this&nbsp;function&nbsp;will&nbsp;return&nbsp;just&nbsp;one&nbsp;record,&nbsp;so&nbsp;always&nbsp;use&nbsp;LIMIT&nbsp;1&nbsp;OFFSET&nbsp;0&nbsp;(or&nbsp;LIMIT&nbsp;0,1)&nbsp;;&nbsp;if&nbsp;the&nbsp;query&nbsp;will&nbsp;return&nbsp;more&nbsp;records&nbsp;will&nbsp;raise&nbsp;an&nbsp;error<br>
+&nbsp;</span><span style="color: #FFFFFF">$update&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;UPDATE&nbsp;&quot;table&quot;&nbsp;SET&nbsp;&quot;active&quot;&nbsp;=&nbsp;1&nbsp;WHERE&nbsp;&quot;id&quot;&nbsp;=&nbsp;$1&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;array(</span><span style="color: #FFFFFF">55</span><span style="color: #FFCC00; font-weight: bold">));&nbsp;</span><span style="color: #999999">//&nbsp;will&nbsp;return&nbsp;an&nbsp;array[&nbsp;0&nbsp;=&gt;&nbsp;message,&nbsp;1&nbsp;=&gt;&nbsp;(integer)&nbsp;affected&nbsp;rows&nbsp;]<br>
+&nbsp;</span><span style="color: #FFFFFF">$arr_insert&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;array(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;id&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">100</span><span style="color: #FFCC00; font-weight: bold">,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;active&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">1</span><span style="color: #FFCC00; font-weight: bold">,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;name&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">&#39;Test&nbsp;Record&#39;<br>
+&nbsp;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">$insert&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;INSERT&nbsp;INTO&nbsp;&quot;table&quot;&nbsp;&#39;</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">prepare_statement</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$arr_insert</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;insert&#39;</span><span style="color: #FFCC00; font-weight: bold">));<br>
+&nbsp;</span><span style="color: #FFFFFF">$prepared_sql&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">SmartPgsqlDb</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">prepare_param_query</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;&quot;table&quot;&nbsp;WHERE&nbsp;&quot;id&quot;&nbsp;=&nbsp;$1&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;[</span><span style="color: #FFFFFF">99</span><span style="color: #FFCC00; font-weight: bold">]);<br>
+<br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1234,7 +1234,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:52 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:39 +0000</small>
 <hr>
 <br>
 <!-- # -->

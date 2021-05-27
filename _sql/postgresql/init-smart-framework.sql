@@ -1,5 +1,5 @@
 
--- START :: PostgreSQL Functions and Tables for Smart.Framework :: r.20190107 #####
+-- START :: PostgreSQL Functions and Tables for Smart.Framework :: r.20210526 # smart.framework.v.8.7 ###
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';

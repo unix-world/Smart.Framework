@@ -1,7 +1,7 @@
 <?php
 // [LIB - Smart.Framework / Samples / Test MariaDB Server / MySQL]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModExtLib\Samples\TestUnitMySQLi
 // Type: Module Library
@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210401
+ * @version 	v.20210526
  *
  */
 final class TestUnitMySQLi {
@@ -52,7 +52,13 @@ final class TestUnitMySQLi {
 		//--
 
 		//--
-		if(((string)$cfg_mysqli['server-host'] == '') OR ((string)$cfg_mysqli['server-port'] == '') OR ((string)$cfg_mysqli['dbname'] == '') OR ((string)$cfg_mysqli['username'] == '')) {
+		if(
+			(\Smart::array_size($cfg_mysqli) <= 0) OR
+			(!isset($cfg_mysqli['server-host'])) OR ((string)$cfg_mysqli['server-host'] == '') OR
+			(!isset($cfg_mysqli['server-port'])) OR ((string)$cfg_mysqli['server-port'] == '') OR
+			(!isset($cfg_mysqli['dbname'])) OR ((string)$cfg_mysqli['dbname'] == '') OR
+			(!isset($cfg_mysqli['username'])) OR ((string)$cfg_mysqli['username'] == '')
+		) {
 			//--
 			return (string) \SmartComponents::operation_warn('Test Unit for MySQLi: INVALID MariaDB Server / MySQL configuration available in configs ...');
 			//--

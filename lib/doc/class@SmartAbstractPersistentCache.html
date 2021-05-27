@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartAbstractPersistentCache        abstract class \ SmartAbstractPersistentCache    {   } @::    Class: Smart.Framework Abstract Persistent Cache. The">
-	<meta name="keywords" content="smartabstractpersistentcache, abstract, class, smart.framework, persistent, cache, the, backends, used, for, must, be, very, fast, support, large, keys, and, supply, key, expiration, by, time, if, is, not, supported, natively, then, a, custom, function, created, to, delete, expired, it, contain, only, public, functions, avoid, late, state, binding, self, vs, static, language, php, located, at, lib framework lib caching.php, package, development:application, namespace, name, version, v.20210330, depends, classes, smart, smartframeworkruntime, smartframeworkregistry, internal-private, yes, methods, getversioninfo, string, return, get, info, about, isactive, boolean, true, active, or, false, check, ismemorybased, memory, based, ex, redis, memcached, this, always, in, conjunction, with, as, will, just, backend, one, backed">
+	<meta name="keywords" content="smartabstractpersistentcache, abstract, class, smart.framework, persistent, cache, the, backends, used, for, must, be, very, fast, support, large, keys, and, supply, key, expiration, by, time, if, is, not, supported, natively, then, a, custom, function, created, to, delete, expired, it, contain, only, public, functions, avoid, late, state, binding, self, vs, static, language, php, located, at, lib framework lib caching.php, package, development:application, namespace, name, version, v.20210513, depends, classes, smart, smartframeworkregistry, internal-private, yes, methods, getversioninfo, string, return, get, info, about, isactive, boolean, true, active, or, false, check, ismemorybased, memory, based, ex, redis, memcached, this, always, in, conjunction, with, as, will, just, backend, one, backed, should">
 	<meta name="summary" content="Smart.Framework : PHP Documentation:">
 	<title>PHP Documentation for: \SmartAbstractPersistentCache</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -709,8 +709,8 @@ It must contain ONLY public functions to avoid late state binding (self:: vs sta
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartAbstractPersistentCache</span></li>
 		
-		<li><b>Version:</b> v.20210330</li>
-		<li><b>Depends:</b> classes:  Smart, SmartFrameworkRuntime, SmartFrameworkRegistry</li>
+		<li><b>Version:</b> v.20210513</li>
+		<li><b>Depends:</b> classes:  Smart, SmartFrameworkRegistry</li>
 		
 		
 		<li><span class="doc-modifiers"><b>Internal-Private:</b> YES</span></li>
@@ -812,8 +812,8 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--keyExists">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>keyExists</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -829,8 +829,8 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--getTtl">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getTtl</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
@@ -846,8 +846,8 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--getKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
@@ -863,10 +863,10 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--setKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>, 
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>, 
 			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_value` Parameter is REQUIRED">$y_value</span></b></span>, 
-			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_expiration` Parameter is OPTIONAL, with the Default Value: 0">$y_expiration</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_expiration` Parameter is OPTIONAL, with the Default Value: 0">$y_expiration</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -884,8 +884,8 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--unsetKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>unsetKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -901,9 +901,9 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--cachePathPrefix">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cachePathPrefix</b></span>&nbsp;(
-				<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_len` Parameter is REQUIRED">$y_len</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+				<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_len` Parameter is REQUIRED">$y_len</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -921,7 +921,7 @@ This is mainly designed to be used by the FileSystem based persistent cache impl
 	
 </div><div class="doc-container" id="Method--validateRealm">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validateRealm</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -938,7 +938,7 @@ Must be between 0 (min) and 255 (max) characters long</div>
 	
 </div><div class="doc-container" id="Method--validateKey">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validateKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -954,7 +954,7 @@ Cannot be empty and must comply with self::safeKey() restricted charset: _ a-z A
 	
 </div><div class="doc-container" id="Method--validateValue">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validateValue</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_value` Parameter is REQUIRED">$y_value</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_value` Parameter is REQUIRED">$y_value</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -971,7 +971,7 @@ Should not be not empty and not oversized (max ~16MB minus 65KB reserved for met
 	
 </div><div class="doc-container" id="Method--safeKey">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>safeKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key_or_realm` Parameter is REQUIRED">$y_key_or_realm</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key_or_realm` Parameter is REQUIRED">$y_key_or_realm</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -1006,7 +1006,7 @@ To store complex variables like Arrays, use this function before setKey() which 
 	
 </div><div class="doc-container" id="Method--varDecode">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>varDecode</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_encoded_var` Parameter is REQUIRED">$y_encoded_var</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_encoded_var` Parameter is REQUIRED">$y_encoded_var</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
@@ -1042,7 +1042,7 @@ By default the variable will be: encoded (serialized as Json), compressed (gzenc
 	
 </div><div class="doc-container" id="Method--varUncompress">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>varUncompress</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_cache_arch_var` Parameter is REQUIRED">$y_cache_arch_var</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_cache_arch_var` Parameter is REQUIRED">$y_cache_arch_var</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
@@ -1181,7 +1181,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:44 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:34 +0000</small>
 <hr>
 <br>
 <!-- # -->

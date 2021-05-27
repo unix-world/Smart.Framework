@@ -1,5 +1,5 @@
 # [@[#[!SF.DEV-ONLY!]#]@] ; do not remove this line, it is for safety to dissalow this file to be send in a release package
-# appcodepack.yaml s.20210522 ; sample: MINIFY
+# appcodepack.yaml s.20210526.1410 ; sample: MINIFY ; (c) 2013-2021 unix-world.org
 APP-RELEASE:
 	# the app ID
 	smart-framework.local:
@@ -10,11 +10,11 @@ APP-RELEASE:
 			- https://127.0.0.1/sites/RELEASE/test-unpack/appcodeunpack.php
 			- http://localhost/sites/RELEASE/test-unpack/appcodeunpack.php
 		# the app deploy secret ; used to calculate the AppID-Hash for Deploy ; must be between 40 and 128 characters ; can contain only ASCII characters, except spaces ; default is: `set-here-a-private-key-that-must-not-be-disclosed`
-		deploy-secret: set-here-a-private-key-that-must-not-be-disclosed
-		# the app deploy auth username ; default is: `superadmin`
-		deploy-auth-user: superadmin
-		# the app unpack auth password, blowfish CBC encrypted, using SmartUtils::crypto_blowfish_encrypt('choose-another-password...') which by default encrypts it using the SMART_FRAMEWORK_SECURITY_KEY ; if you ever change the SMART_FRAMEWORK_SECURITY_KEY this need to be re-generated ; default is: `the-pass`
-		deploy-auth-pass: 5A05719BCAF965E8DC3C412EC83D69A1D3D1BF9BB587A1D3A3CBF7D1D9EAD13D300B70D1EEFBDC03C57487D66B6D045A4CFE7279519B6F93E08B9B54CBA42A1700DFC901949CFE36
+		deploy-secret: "set-here-a-private-key-that-must-not-be-disclosed"
+		# the app deploy auth username ; default is: `super.admin`
+		deploy-auth-user: super.admin
+		# the app unpack auth password ; default is: `the-pass` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
+		deploy-auth-pass: B24826285CE79EB45534432E3021C07217C07D775CD920944E3FD799A16AC93FBFAD33D1A7792A6895C46CC0F960E490F2DEF6E6119823880B0A7AABAE1209D79D4CE1CDF5F980E1
 		# list of folders to include or exclude
 		folders:
 			- _sql ; =sql
@@ -43,9 +43,9 @@ APP-RELEASE:
 		deploy-strategy: minify
 		deploy-urls:
 			- https://127.0.0.1/sites/RELEASE/test-unpack/appcodeunpack.php
-		deploy-secret: set-here-a-private-key-that-must-not-be-disclosed
-		deploy-auth-user: superadmin
-		deploy-auth-pass: 5A05719BCAF965E8DC3C412EC83D69A1D3D1BF9BB587A1D3A3CBF7D1D9EAD13D300B70D1EEFBDC03C57487D66B6D045A4CFE7279519B6F93E08B9B54CBA42A1700DFC901949CFE36
+		deploy-secret: "set-here-a-private-key-that-must-not-be-disclosed"
+		deploy-auth-user: super.admin
+		deploy-auth-pass: B24826285CE79EB45534432E3021C07217C07D775CD920944E3FD799A16AC93FBFAD33D1A7792A6895C46CC0F960E490F2DEF6E6119823880B0A7AABAE1209D79D4CE1CDF5F980E1
 		folders:
 			- etc
 			- lib
@@ -55,4 +55,16 @@ APP-RELEASE:
 			- index.php
 			- admin.php
 			- task.php
+		tasks:
+			pre-release:
+				- QUnit Tests ; admin.php?page=samples.qunit-run-tests
+				- "Task Sample #1 ; task.php?page=samples.task-sample-1 ; !modal"
+			post-release:
+				- "Test #Markdown ; admin.php?page=samples.testunit&op=test.markdown"
+				- "Task Sample #2 ; task.php?page=samples.task-sample-2 ; !modal"
+			maintenance:
+				- Test Download ; admin.php?page=samples.test-download
+				- "Task Sample #3 ; task.php?page=samples.task-sample-3 ; !modal"
+				- Unix-World.org HTTP ; http://unix-world.org
+				- Unix-World.org HTTPS ; https://unix-world.org
 # END

@@ -1,8 +1,8 @@
 <?php
 // Controller: Samples/TestImage
 // Route: ?/page/samples.test-image (?page=samples.test-image)
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -13,11 +13,11 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 // This sample controller contains 2 different methods for the same thing: generate an image
 // for INDEX area it works with the framework output buffering (more simple and can control the output in details ...) ; see below sample in SmartAppIndexController
-// for ADMIN area it does direct output (more complicated, needs to implement all the events, status codes, output headers) ; see below sample in SmartAppAdminController
+// for ADMIN and TASK areas it does direct output (more complicated, needs to implement all the events, status codes, output headers) ; see below sample in SmartAppAdminController or SmartAppTaskController
 
-define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
 
-if(SmartFrameworkRegistry::isAdminArea() === true) {
+if((SmartFrameworkRegistry::isAdminArea() === true) OR (SmartFrameworkRegistry::isTaskArea() === true)) {
 	define('SMART_APP_MODULE_DIRECT_OUTPUT', true); // for admin area do direct output
 } //end if
 
@@ -128,7 +128,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		// as you can see above we can control even the output of the image: if is empty (which is not possible here ...)
 
 		//-- dissalow run this sample if not test mode enabled
-		if(SMART_FRAMEWORK_TEST_MODE !== true) {
+		if(!defined('SMART_FRAMEWORK_TEST_MODE') OR (SMART_FRAMEWORK_TEST_MODE !== true)) {
 			SmartFrameworkRuntime::Raise503Error('ERROR: Test mode is disabled ...');
 			return;
 		} //end if
@@ -187,5 +187,20 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 } //END CLASS
+
+
+/**
+ * Task Controller (optional)
+ *
+ * @ignore
+ *
+ */
+class SmartAppTaskController extends SmartAppAdminController {
+
+	// this will clone the SmartAppAdminController to run exactly the same action in task.php
+	// or this can implement a completely different controller if it is accessed via task.php
+
+} //END CLASS
+
 
 // end of php code

@@ -1,45 +1,60 @@
 
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 /*
- * SmartQUnit 1.2.2
- * @version 20210415
+ * SmartQUnit 1.3.1 [ES6]
+ * @version 20210526
  *
  * (c) 2018-2021 unix-world.org
  * Released under the BSD license
  */
 
-var SmartQUnit = new function() { // START CLASS
+const SmartQUnit = new class{constructor(){ // STATIC CLASS
+	const _N$ = 'SmartQUnit';
 
-	//--
 	// :: static
-	//--
+	const _C$ = this; // self referencing
 
-	this.runAjaxTest = function(url, method, dataType, assert, testOK, fxDone) {
+	const _p$ = console;
+
+	let SECURED = false;
+	_C$.secureClass = () => { // implements class security
+		if(SECURED === true) {
+			_p$.warn(_N$, 'Class is already SECURED');
+		} else {
+			SECURED = true;
+			Object.freeze(_C$);
+		} //end if
+	}; //END
+
+	const $ = jQuery; // jQuery referencing
+
+
+	const runAjaxTest = function(url, method, dataType, assert, testOK, fxDone) {
 		//--
-		var QAsyncTestDone = assert.async(); // qunit async promise
-		var testHtmlDiv = elHtmlDynDiv;
+		const QAsyncTestDone = assert.async(); // qunit async promise
+		const testHtmlDiv = elHtmlDynDiv;
 		//--
-		jQuery.ajax({
+		$.ajax({
 			async: true,
 			url: String(url),
 			method: String(method),
 			dataType: String(dataType),
 			timeout: parseInt(QUnit.config.testTimeout) * 1000, // ajax timeout in sec
 			cache: false // no cache at all for any ajax request !!!
-		}).done(function(msg) {
+		}).done((msg) => {
 			if(typeof(fxDone) == 'function') {
 				fxDone(QAsyncTestDone, testOK, msg, testHtmlDiv);
 			} else {
-				var value = 'Test Implementation ERROR: INVALID AJAX TEST DONE FUNCTION !';
+				const value = 'Test Implementation ERROR: INVALID AJAX TEST DONE FUNCTION !';
 				assert.equal(
 					value, testOK,
 					testOK
 				);
 				QAsyncTestDone();
 			} //end if else
-		}).fail(function(msg) {
-			var value = 'Ajax REQUEST FAILED with HTTP Status: ' + String(msg.status) + ' ' + String(msg.statusText);
+		}).fail((msg) => {
+			const value = 'Ajax REQUEST FAILED with HTTP Status: ' + String(msg.status) + ' ' + String(msg.statusText);
 			assert.equal(
 				value, testOK,
 				testOK
@@ -47,27 +62,27 @@ var SmartQUnit = new function() { // START CLASS
 			QAsyncTestDone();
 		});
 		//--
-	} //END FUNCTION
+	}; //END
+	_C$.runAjaxTest = runAjaxTest; // export
 
-	//--
 
-	this.runiFrameTest = function(url, timeoutMs, assert, testOK, elID) {
+	const runiFrameTest = function(url, timeoutMs, assert, testOK, elID) {
 		//--
-		var QAsyncTestDone = assert.async(); // qunit async promise
+		const QAsyncTestDone = assert.async(); // qunit async promise
 		//--
 		elHtmlDynIFrame(url, timeoutMs, assert, QAsyncTestDone, testOK, elID);
 		//--
-	} //END FUNCTION
+	}; //END
+	_C$.runiFrameTest = runiFrameTest; // export
 
-	//--
 
-	var elHtmlDynDiv = function(assert, QAsyncTestDone, testOK, value, content, timeoutMs) {
+	const elHtmlDynDiv = (assert, QAsyncTestDone, testOK, invalidValue, content, timeoutMs) => {
 		//--
-		jQuery('<div id="qu-smart-div-sandbox" style="position:fixed; bottom:1px; right:1px; width:1px; height:1px; visibility:hidden;"></div>').html(String(content)).appendTo('body'); // create a temporary div, make it hidden, and attach to the DOM
+		$('<div id="qu-smart-div-sandbox" style="position:fixed; bottom:1px; right:1px; width:1px; height:1px; visibility:hidden;"></div>').html(String(content)).appendTo('body'); // create a temporary div, make it hidden, and attach to the DOM
 		//--
-		setTimeout(function() {
-			var value = jQuery('#qunit-test-result').text();
-			jQuery('#qu-smart-div-sandbox').empty().html('').remove();
+		setTimeout(() => {
+			const value = $('#qunit-test-result').text();
+			$('#qu-smart-div-sandbox').empty().html('').remove();
 			assert.equal(
 				value, testOK,
 				testOK
@@ -75,56 +90,52 @@ var SmartQUnit = new function() { // START CLASS
 			QAsyncTestDone();
 		}, parseInt(timeoutMs));
 		//--
-	} //END FUNCTION
+	}; //END
 
-	//--
 
-	var elHtmlDynIFrame = function(url, timeoutMs, assert, QAsyncTestDone, testOK, elID) {
+	const elHtmlDynIFrame = function(url, timeoutMs, assert, QAsyncTestDone, testOK, elID) {
 		//--
 		if(!elID) {
 			elID = 'qunit-test-result';
 		} //end if
 		//--
-		var frame = jQuery('<iframe id="qu-smart-ifrm-sandbox" src="' + htmlspecialchars(url) + '" style="position:fixed; bottom:1px; right:1px; width:1px; height:1px; visibility:hidden;"></iframe>').appendTo('body'); // create a temporary iframe, make it hidden, and attach to the DOM # iFrame display:none loading jquery will throw since jquery >= 3.4.0
-		jQuery(frame).on('load', function(){ // // proceed after the iframe has loaded content
-			var html = jQuery(this).contents();
-			//console.log(html);
-			setTimeout(function() {
-				var value = html.find('#' + elID).text();
+		const frame = $('<iframe id="qu-smart-ifrm-sandbox" src="' + htmlspecialchars(url) + '" style="position:fixed; bottom:1px; right:1px; width:1px; height:1px; visibility:hidden;"></iframe>').appendTo('body'); // create a temporary iframe, make it hidden, and attach to the DOM # iFrame display:none loading jquery will throw since jquery >= 3.4.0
+		$(frame).on('load', (evt) => { // proceed after the iframe has loaded content
+			let html = $(evt.currentTarget).contents();
+			// _p$.log('elHtmlDynIFrame', html);
+			setTimeout(() => {
+				const value = html.find('#' + elID).text();
 				html = null;
 				assert.equal(
 					value, testOK,
 					testOK
 				);
-				jQuery('#qu-smart-ifrm-sandbox').attr('src', '').remove(); // remove the temporary iframe
+				$('#qu-smart-ifrm-sandbox').attr('src', '').remove(); // remove the temporary iframe
 				QAsyncTestDone();
 			}, parseInt(timeoutMs));
 		});
 		//--
-	} //END FUNCTION
+	}; //END
 
-	//--
 
-	var htmlspecialchars = function(str) {
-		//--
-		if(str == undefined) {
-			str = '';
+	const htmlspecialchars = function(text) { // it performs better, particularly on large blocks of text
+		if(text == undefined) {
+			return '';
 		} //end if
-		//--
-		str = String(str); // force string
-		//-- replace basics
-		str = str.replace(/&/g, '&amp;');
-		str = str.replace(/</g, '&lt;');
-		str = str.replace(/>/g, '&gt;');
-		str = str.replace(/"/g, '&quot;');
-		//--
-		return String(str); // fix to return empty string instead of null
-		//--
-	} //END FUNCTION
+		const map = {
+			'&': '&amp;',
+			'<': '&lt;',
+			'>': '&gt;',
+			'"': '&quot;'
+		};
+		return String(text || '').replace(/[&\<\>"]/g, (m) => map[m]);
+	}; //END
 
-	//--
 
-} //END CLASS
+}}; //END CLASS
 
+SmartQUnit.secureClass(); // implements class security
+
+window.SmartQUnit = SmartQUnit; // global export
 
 // #END

@@ -1,8 +1,8 @@
 <?php
 // Controller: AuthAdmins/Manager
 // Route: admin.php?page=auth-admins.manager.stml
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true); 		// if set to TRUE requires auth always
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210511
+	// v.20210526
 
 	public function Run() { // (OUTPUTS: HTML)
 
@@ -162,14 +162,14 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$frm['pass'] 	= (string) trim((string)$frm['pass']);
 				$frm['repass'] 	= (string) trim((string)$frm['repass']);
 				//--
-				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+				$message = '';
 				if(SmartAuth::test_login_privilege('admin') !== true) { // PRIVILEGES
 					$message = 'You are not authorized to use this area !';
-				} elseif((string)$frm['id'] == '') {
+				} elseif((string)trim((string)$frm['id']) == '') {
 					$message = 'INVALID ID (empty)';
-				} elseif((SmartUnicode::str_len($frm['pass']) < 7) OR (SmartUnicode::str_len($frm['pass']) > 30)) {
+				} elseif(((string)trim((string)$frm['pass']) == '') OR ((int)SmartUnicode::str_len((string)$frm['pass']) < 7) OR ((int)SmartUnicode::str_len((string)$frm['pass']) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
 					$message = 'Invalid Password Length: must be between 7 and 30 characters';
-				} elseif(((string)$frm['repass'] !== (string)$frm['pass']) OR (sha1((string)$frm['repass']) !== sha1((string)$frm['pass']))) {
+				} elseif(((string)$frm['repass'] !== (string)$frm['pass']) OR ((string)sha1((string)$frm['repass']) !== (string)sha1((string)$frm['pass']))) {
 					$message = 'Invalid Password: Password and Retype of Password does not match';
 				} //end if else
 				//--
@@ -322,17 +322,17 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$frm['keys'] 	= (string) trim((string)(isset($frm['keys']) 	? $frm['keys'] 		: ''));
 				$frm['priv'] 	= (array)  ((isset($frm['priv']) && is_array($frm['priv'])) ? $frm['priv'] : []);
 				//--
-				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+				$message = '';
 				if(SmartAuth::test_login_privilege('admin') !== true) { // PRIVILEGES
 					$message = 'You are not authorized to use this area !';
 				} elseif((string)$frm['id'] == '') {
 					$message = 'INVALID ID (empty)';
-				} elseif((SmartUnicode::str_len((string)$frm['name_f']) < 1) OR (SmartUnicode::str_len((string)$frm['name_f']) > 64)) {
+				} elseif(((int)SmartUnicode::str_len((string)$frm['name_f']) < 1) OR ((int)SmartUnicode::str_len((string)$frm['name_f']) > 64)) {
 					$message = 'Invalid First Name Length: must be between 1 and 64 characters';
-				} elseif((SmartUnicode::str_len((string)$frm['name_l']) < 1) OR (SmartUnicode::str_len((string)$frm['name_l']) > 64)) {
+				} elseif(((int)SmartUnicode::str_len((string)$frm['name_l']) < 1) OR ((int)SmartUnicode::str_len((string)$frm['name_l']) > 64)) {
 					$message = 'Invalid Last Name Length: must be between 1 and 64 characters';
 				} elseif((string)$frm['email'] != '') {
-					if((strlen((string)$frm['email']) < 6) OR (strlen((string)$frm['email']) > 96)) {
+					if(((int)strlen((string)$frm['email']) < 6) OR ((int)strlen((string)$frm['email']) > 96)) {
 						$message = 'Invalid Email Length: must be between 6 and 96 characters';
 					} elseif(!preg_match((string)SmartValidator::regex_stringvalidation_expression('email'), (string)$frm['email'])) {
 						$message = 'Invalid Email Format: must use the standard format a-b.c_d@dom.ext';
@@ -488,23 +488,23 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$frm['name_l'] 	= (string) trim((string)(isset($frm['name_l']) 	? $frm['name_l'] 	: ''));
 				$frm['email'] 	= (string) trim((string)(isset($frm['email']) 	? $frm['email'] 	: ''));
 				//--
-				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+				$message = '';
 				if(SmartAuth::test_login_privilege('admin') !== true) { // PRIVILEGES
 					$message = 'You are not authorized to use this area !';
-				} elseif((strlen((string)$frm['id']) < 3) OR (strlen((string)$frm['id']) > 25)) {
+				} elseif(((string)trim((string)$frm['id']) == '') OR ((int)strlen((string)$frm['id']) < 3) OR ((int)strlen((string)$frm['id']) > 25)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
 					$message = 'Invalid ID: must be between 3 and 25 characters';
-				} elseif(!preg_match('/^[a-z0-9\.]+$/', (string)$frm['id'])) {
+				} elseif(!preg_match('/^[a-z0-9\.]+$/', (string)$frm['id'])) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
 					$message = 'Invalid ID: must use only this pattern: a-z 0-9 .';
-				} elseif((SmartUnicode::str_len($frm['pass']) < 7) OR (SmartUnicode::str_len($frm['pass']) > 30)) {
+				} elseif(((string)trim((string)$frm['pass']) == '') OR ((int)SmartUnicode::str_len((string)$frm['pass']) < 7) OR ((int)SmartUnicode::str_len((string)$frm['pass']) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
 					$message = 'Invalid Password Length: must be between 7 and 30 characters';
-				} elseif(((string)$frm['repass'] !== (string)$frm['pass']) OR (sha1((string)$frm['repass']) !== sha1((string)$frm['pass']))) {
+				} elseif(((string)$frm['repass'] !== (string)$frm['pass']) OR ((string)sha1((string)$frm['repass']) !== (string)sha1((string)$frm['pass']))) {
 					$message = 'Invalid Password: Password and Retype of Password does not match';
-				} elseif((SmartUnicode::str_len((string)$frm['name_f']) < 1) OR (SmartUnicode::str_len((string)$frm['name_f']) > 64)) {
+				} elseif(((int)SmartUnicode::str_len((string)$frm['name_f']) < 1) OR ((int)SmartUnicode::str_len((string)$frm['name_f']) > 64)) {
 					$message = 'Invalid First Name Length: must be between 1 and 64 characters';
-				} elseif((SmartUnicode::str_len((string)$frm['name_l']) < 1) OR (SmartUnicode::str_len((string)$frm['name_l']) > 64)) {
+				} elseif(((int)SmartUnicode::str_len((string)$frm['name_l']) < 1) OR ((int)SmartUnicode::str_len((string)$frm['name_l']) > 64)) {
 					$message = 'Invalid Last Name Length: must be between 1 and 64 characters';
 				} elseif((string)$frm['email'] != '') {
-					if((strlen((string)$frm['email']) < 6) OR (strlen((string)$frm['email']) > 96)) {
+					if(((int)strlen((string)$frm['email']) < 6) OR ((int)strlen((string)$frm['email']) > 96)) {
 						$message = 'Invalid Email Length: must be between 6 and 96 characters';
 					} elseif(!preg_match((string)SmartValidator::regex_stringvalidation_expression('email'), (string)$frm['email'])) {
 						$message = 'Invalid Email Format: must use the standard format a-b.c_d@dom.ext';

@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20210523 -->
+<!-- AuthAdmins Login # v.20210526 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -26,24 +26,24 @@ a#special {
 }
 </style>
 <script>
-	const ovID = 'sf-adm-login-overlay';
-	const AuthAdminsRdr = () => {
-		const url = $('#auth-admins-title-login option:selected').val();
-		const dtime = Date.now();
-		const params = '&url=' + smartJ$Utils.escape_url(url) + '&time=' + smartJ$Utils.escape_url(dtime);
-		if((url != undefined) && url) {
-			const uri = 'admin.php?page=auth-admins.manager&action=login-timeout' + params;
-			const chk = 'admin.php?page=auth-admins.manager&action=login-check' + params;
-			if(url) {
-				smartJ$Browser.OverlayShow(null, null, null, ovID);
-				smartJ$Browser.SubmitFormByAjax(null, chk, 'yes', () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeOK); }, () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeERR); }, (fid, u, msg) => { if(msg != undefined) { if(msg.status != undefined) { if(msg.status != 401) { setTimeout(() => { self.location = uri; }, 500); return; } } } setTimeout(() => { smartJ$Browser.OverlayClear(ovID); setTimeout(() => { smartJ$Browser.OverlayHide(ovID); self.location = self.location; }, 750); }, 700); }, true);
-			}
+const ovID = 'sf-adm-login-overlay';
+const AuthAdminsRdr = () => {
+	const url = $('#auth-admins-title-login option:selected').val();
+	const dtime = Date.now();
+	const params = '&url=' + smartJ$Utils.escape_url(url) + '&time=' + smartJ$Utils.escape_url(dtime);
+	if((url != undefined) && url) {
+		const uri = 'admin.php?page=auth-admins.manager&action=login-timeout' + params;
+		const chk = 'admin.php?page=auth-admins.manager&action=login-check' + params;
+		if(url) {
+			smartJ$Browser.OverlayShow(null, null, null, ovID);
+			smartJ$Browser.SubmitFormByAjax(null, chk, 'yes', () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeOK); }, () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeERR); }, (fid, u, msg) => { if(msg != undefined) { if(msg.status != undefined) { if(msg.status != 401) { setTimeout(() => { self.location = uri; }, 500); return; } } } setTimeout(() => { smartJ$Browser.OverlayClear(ovID); setTimeout(() => { smartJ$Browser.OverlayHide(ovID); self.location = self.location; }, 750); }, 700); }, true);
 		}
-	};
-	const AuthAdminsAreaSelector = () => {
-		const lV = $('#auth-admins-title-login option:selected').text();
-		$('#login-ns').text(lV);
-	};
+	}
+};
+const AuthAdminsAreaSelector = () => {
+	const lV = $('#auth-admins-title-login option:selected').text();
+	$('#login-ns').text(lV);
+};
 </script>
 <div style="text-align:center; padding:8px;">
 	<div><center>

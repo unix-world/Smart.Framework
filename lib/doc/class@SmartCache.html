@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartCache        final class \ SmartCache    {   } ::    Class: SmartCache - Provides per Execution, Volatille Cache (in-PHP-Memory). This cache type is">
-	<meta name="keywords" content="smartcache, final, class, provides, per, execution, volatille, cache, in-php-memory, this, type, is, not, persistent, and, will, reset, after, each, php, because, kind, of, per-execution, the, key, values, be, shared, between, executions, it, intended, to, used, on, optimizations, avoid, repetitive, complex, high-cost, methods, that, would, output, same, result, under, conditions, as, environment, parameters, client, language, located, at, lib framework lib caching.php, package, core, namespace, name, version, v.20210330, depends, classes, smart, smartframeworkruntime, smartframeworkregistry, usage, static, object, class::method, only, public, function, keyexists, string, y realm, y key, boolean, return, true, if, exists, or, false, param, realm, check, a, in, non-persistent, getkey, mixed, value, stored, null">
+	<meta name="keywords" content="smartcache, final, class, provides, per, execution, volatille, cache, in-php-memory, this, type, is, not, persistent, and, will, reset, after, each, php, because, kind, of, per-execution, the, key, values, be, shared, between, executions, it, intended, to, used, on, optimizations, avoid, repetitive, complex, high-cost, methods, that, would, output, same, result, under, conditions, as, environment, parameters, client, language, located, at, lib framework lib caching.php, package, core, namespace, name, version, v.20210513, depends, classes, smart, smartframeworkregistry, usage, static, object, class::method, only, public, function, keyexists, string, y realm, y key, boolean, return, true, if, exists, or, false, param, realm, check, a, in, non-persistent, getkey, mixed, value, stored, null, found">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartCache">
 	<title>PHP Documentation for: \SmartCache</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -711,8 +711,8 @@ the same execution conditions as: same environment / same parameters / same clie
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartCache</span></li>
 		
-		<li><b>Version:</b> v.20210330</li>
-		<li><b>Depends:</b> classes:  Smart, SmartFrameworkRuntime, SmartFrameworkRegistry</li>
+		<li><b>Version:</b> v.20210513</li>
+		<li><b>Depends:</b> classes:  Smart, SmartFrameworkRegistry</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -727,8 +727,8 @@ the same execution conditions as: same environment / same parameters / same clie
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--keyExists">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>keyExists</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -744,8 +744,8 @@ the same execution conditions as: same environment / same parameters / same clie
 	
 </div><div class="doc-container" id="Method--getKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
@@ -761,8 +761,8 @@ the same execution conditions as: same environment / same parameters / same clie
 	
 </div><div class="doc-container" id="Method--setKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>, 
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>, 
 			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_value` Parameter is REQUIRED">$y_value</span></b></span>
 	
 	
@@ -780,8 +780,8 @@ the same execution conditions as: same environment / same parameters / same clie
 	
 </div><div class="doc-container" id="Method--unsetKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>unsetKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -875,7 +875,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:44 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:34 +0000</small>
 <hr>
 <br>
 <!-- # -->

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartInterfaceAdapterTextTranslations        interface \ SmartInterfaceAdapterTextTranslations    {   } ^::    Abstract Inteface Smart Adapter Text">
-	<meta name="keywords" content="smartinterfaceadaptertexttranslations, interface, abstract, inteface, smart, adapter, text, translations, language, php, located, at, lib app lib translations.php, package, development: core, namespace, name, version, v.20210331, internal-private, yes, methods, public, static, function, gettranslationsfromsource, the lang, y area, y subarea, get, regional, translation, from, source, by, area, subarea, this, must, implement, a, parser, it, can, be, implemented, to, read, one, of, the, variety, sources, arrays, ini, yaml, xml, json, sqlite, postgresql, mysql, mongodb, gettext, return, an, associative, array, as, key, value, for, specific, set, gettranslationsversion, containing, latest, way, last, string, validate, if, cannot, provided, date  y-m-d, and, texts, persistent, cache, will, re-validated, daily, real, is, best, so, would, just">
+	<meta name="keywords" content="smartinterfaceadaptertexttranslations, interface, abstract, inteface, smart, adapter, text, translations, language, php, located, at, lib core lib translations.php, package, development: core, namespace, name, version, v.20210512, internal-private, yes, methods, public, static, function, gettranslationsversion, get, regional, containing, the, latest, of, this, must, implement, a, way, to, last, string, validate, if, cannot, be, provided, return, date  y-m-d, and, texts, persistent, cache, will, re-validated, daily, real, can, it, is, best, so, would, just, upon, changes, non-empty, provides, current, gettranslationsfromsource, the lang, y area, y subarea, translation, from, source, by, area, subarea, parser, implemented, read, one, variety, sources, arrays, ini, yaml, xml, json, sqlite, postgresql, mysql, mongodb, gettext, an, associative, array, as">
 	<meta name="summary" content="Smart.Framework : PHP Documentation:">
 	<title>PHP Documentation for: \SmartInterfaceAdapterTextTranslations</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -701,12 +701,12 @@ select#select-summary {
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/app/lib_translations.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/core/lib_translations.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> development:@Core</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Interface Name:</b> SmartInterfaceAdapterTextTranslations</span></li>
 		
-		<li><b>Version:</b> v.20210331</li>
+		<li><b>Version:</b> v.20210512</li>
 		
 		
 		
@@ -720,25 +720,7 @@ select#select-summary {
 	<h2 class="doc-header">interface Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<div class="doc-container" id="Method--getTranslationsFromSource">
-	<span class="doc-modifiers">abstract public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-abstract-name"><b>getTranslationsFromSource</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$the_lang` Parameter is REQUIRED">$the_lang</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$y_area` Parameter is REQUIRED">$y_area</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$y_subarea` Parameter is REQUIRED">$y_subarea</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
-			<div class="doc-method-comments">Get Regional Text Translation from Source by: Language, Area, Subarea<br>
-This function must implement a Text Translations parser.<br>
-It can be implemented to read from one of the variety of sources: Arrays, INI, YAML, XML, JSON, SQLite, PostgreSQL, MySQL, MongoDB, GetText, ...<br>
-RETURN: an associative array as [key =&gt; value] for the specific translation set</div>
-	
-	
-	
-</div><div class="doc-container" id="Method--getTranslationsVersion">
+<div class="doc-container" id="Method--getTranslationsVersion">
 	<span class="doc-modifiers">abstract public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-abstract-name"><b>getTranslationsVersion</b></span>&nbsp;(
 		
 	
@@ -754,12 +736,30 @@ RETURN: a non-empty string the provides the latest version string of the current
 	
 	
 	
+</div><div class="doc-container" id="Method--getTranslationsFromSource">
+	<span class="doc-modifiers">abstract public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-abstract-name"><b>getTranslationsFromSource</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$the_lang` Parameter is REQUIRED">$the_lang</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_area` Parameter is REQUIRED">$y_area</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_subarea` Parameter is REQUIRED">$y_subarea</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+	
+			<div class="doc-method-comments">Get Regional Text Translation from Source by: Language, Area, Subarea<br>
+This function must implement a Text Translations parser.<br>
+It can be implemented to read from one of the variety of sources: Arrays, INI, YAML, XML, JSON, SQLite, PostgreSQL, MySQL, MongoDB, GetText, ...<br>
+RETURN: an associative array as [key =&gt; value] for the specific translation set</div>
+	
+	
+	
 </div><div class="doc-container" id="Method--setTranslationsKeyUsageCount">
 	<span class="doc-modifiers">abstract public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-abstract-name"><b>setTranslationsKeyUsageCount</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$the_lang` Parameter is REQUIRED">$the_lang</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$y_area` Parameter is REQUIRED">$y_area</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$y_subarea` Parameter is REQUIRED">$y_subarea</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$y_textkey` Parameter is REQUIRED">$y_textkey</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$the_lang` Parameter is REQUIRED">$the_lang</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_area` Parameter is REQUIRED">$y_area</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_subarea` Parameter is REQUIRED">$y_subarea</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_textkey` Parameter is REQUIRED">$y_textkey</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -768,7 +768,7 @@ RETURN: a non-empty string the provides the latest version string of the current
 	
 			<div class="doc-method-comments">Register the usage (increment counter or register in logs) for a Regional Text Translation into Source or alternate source by: Language, Area, Subarea, Key<br>
 This function must implement a way to increment or register the usage of every used pair of Language/Area/Subarea/Key as it was used to help the cleanup of unused translations.<br>
-This function will operate only in DEV mode (SmartFrameworkRuntime::ifProdEnv() !== true) and add in init.php: define('SMART_FRAMEWORK__DEBUG__TEXT_TRANSLATIONS', true);<br>
+This function will operate only in DEV mode only (SmartFrameworkRegistry::ifProdEnv() !== true) ; for filesystem based adapters must also set in init.php: const SMART_FRAMEWORK__DEBUG__TEXT_TRANSLATIONS = true;<br>
 It can be implemented to write into one of the variety of sources: Text/CSV, Database, ...<br>
 RETURN: N/A</div>
 	
@@ -821,10 +821,10 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Interface Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--getTranslationsFromSource"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getTranslationsFromSource()</option>
-			
-			
 									<option value="Method--getTranslationsVersion"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getTranslationsVersion()</option>
+			
+			
+									<option value="Method--getTranslationsFromSource"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getTranslationsFromSource()</option>
 			
 			
 									<option value="Method--setTranslationsKeyUsageCount"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setTranslationsKeyUsageCount()</option>
@@ -847,7 +847,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:45 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:34 +0000</small>
 <hr>
 <br>
 <!-- # -->

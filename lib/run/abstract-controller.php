@@ -1,7 +1,7 @@
 <?php
 // Smart.Framework / Abstract Controller
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -9,7 +9,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * define('SMART_APP_MODULE_AREA', 'INDEX'); // this controller will run ONLY in index.php
  *
- * class SmartAppIndexController extends SmartAbstractAppController {
+ * class SmartAppIndexController extends SmartAbstractAppController { // or it can extend from any of SmartAppAdminController or SmartAppTaskController if define('SMART_APP_MODULE_AREA', 'SHARED');
  *
  *     public function Run() {
  *
@@ -70,7 +70,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * define('SMART_APP_MODULE_AREA', 'ADMIN'); // this controller will run ONLY in admin.php
  *
- * class SmartAppAdminController extends SmartAbstractAppController {
+ * class SmartAppAdminController extends SmartAbstractAppController { // or it can extend from any of SmartAppIndexController or SmartAppTaskController if define('SMART_APP_MODULE_AREA', 'SHARED');
  *
  *     public function Run() {
  *
@@ -87,7 +87,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  *     public function ShutDown() {
  *
- *         // This function is OPTIONAL in controllers and must be used only when needed as a destructor for both: SmartAppAdminController or SmartAppIndexController.
+ *         // This function is OPTIONAL in controllers and must be used only when needed as a destructor for any of: SmartAppTaskController, SmartAppAdminController or SmartAppIndexController.
  *         // NOTICE: The PHP class destructor __destruct() have some bugs, is not always 100% safe.
  *         // See the PHP Bug #31570 for example (which is very old and not yet fixed ...).
  *         // thus, use always ShutDown() instead of __destruct() in all controllers when you need a destructor
@@ -96,14 +96,34 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * } //END CLASS
  *
+ * //========================================================================================================
+ *
+ * // Another usage example: Create a new Task Controller (modules/my-module/my-task-controller.php)
+ * // Will be accessible via: task.php?/page/my-module.my-task-controller (task.php?page=my-module.my-task-controller)
+ * // This example shows a special example with direct output enabled ; by default Smart.Framework disabled the direct output in controllers ... it is very inefficient, but it can be enabled in any of index / admin / task just like this example ...
+ *
+ * define('SMART_APP_MODULE_AREA', 'TASK'); // this controller will run ONLY in task.php
+ * define('SMART_APP_MODULE_DIRECT_OUTPUT', true); // enable direct output
+ *
+ * class SmartAppTaskController extends SmartAbstractAppController { // or it can extend from any of SmartAppIndexController or SmartAppAdminController if define('SMART_APP_MODULE_AREA', 'SHARED');
+ *
+ *     public function Run() {
+ *
+ *         echo 'Hello world, I am a task';
+ *         $this->InstantFlush();
+ *
+ *     } //END FUNCTION
+ *
+ * } //END CLASS
+ *
  * </code>
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
- * @hints		needs to be extended as: SmartAppIndexController (as a controller of index.php) or SmartAppAdminController (as a controller of admin.php)
+ * @hints		needs to be extended as: SmartAppIndexController (as a controller of index.php) or SmartAppAdminController (as a controller of admin.php) or SmartAppTaskController (as a controller of task.php)
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210523
+ * @version 	v.20210526
  * @package 	development:Application
  *
  */

@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Base]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20210523
+ * @version     v.20210526
  * @package     @Core
  *
  */
@@ -87,6 +87,8 @@ final class Smart {
 
 	public const REGEX_SAFE_VALID_NAME 	= '/^[_a-z0-9\-\.@]+$/';
 	public const REGEX_SAFE_USERNAME 	= '/^[a-z0-9\.]+$/';
+
+	public const DECIMAL_NUM_PRECISION 	= '9999999999999.9'; // DECIMAL I[13].D[1] ; if I + D > 14 looses some decimal precision ; by example: 99999999999999.9900 becomes 99999999999999.98 with 2 decimals and 100000000000000.0 with one decimal on number format ! ; no higher decimal numbers than this are safe using a precision like 14, the max in PHP
 
 	private static $Cfgs = []; // registry of cached config data
 
@@ -172,7 +174,7 @@ final class Smart {
 				// return as is (raw, unformatted) ...
 				break;
 			default:
-				self::log_warning(__CLASS__.'::'.__FUNCTION__.'() // Invalid Type to get from Config for Parameter ['.$param.'] Type: '.$type);
+				self::log_warning(__METHOD__.' # Invalid Type to get from Config for Parameter ['.$param.'] Type: '.$type);
 		} //end switch
 		//--
 		return $value; // mixed
@@ -674,7 +676,7 @@ final class Smart {
 		//--
 		$json = (string) @json_encode($data, $options); // Fix: must return a string ; mixed data ; depth was added in PHP 5.5 only !
 		if((string)$json == '') { // fix if json encode returns FALSE
-			self::log_warning('Invalid Encoded Json in '.__METHOD__.'() for input: '.print_r($data,1));
+			self::log_warning('Invalid Encoded Json in '.__METHOD__.' for input: '.print_r($data,1));
 			$json = 'null';
 		} //end if
 		//--
@@ -737,20 +739,121 @@ final class Smart {
 
 	//================================================================
 	/**
+	 * Check if an integer number overflows the minimum or maximum safe int
+	 * All numbers over this must use special operators from BCMath to avoid floating point precision issues
+	 * On 32-bit platforms the INTEGER is between 		   -2147483648 		to 				 2147483647
+	 * On 64-bit platforms the INTEGER is between -9223372036854775808 		to		9223372036854775807
+	 *
+	 * @param INTEGER NUMBER AS STRING 		$y_number	:: The integer number to be checked
+	 *
+	 * @return BOOLEAN 									:: TRUE if overflows the max safe integer ; FALSE if is OK (not overflow maximum)
+	 */
+	public static function check_int_number_overflow($y_number) { // do not enforce a type, will check to be nscalar and numeric !
+		//--
+		if(!self::is_nscalar($y_number)) {
+			return false; // like a string which will be zero if cast to float
+		} //end if
+		//--
+		$overflow = false;
+		if( // IMPORTANT: do not cast or pre-format the number to anything before this comparison, by ex if format as float will loose some precision and comparing min float with min int is ... tricky as it will return FALSE ;-)
+			((float)abs((float)$y_number) > (int)PHP_INT_MAX)
+			OR
+			((float)(-1 * abs((float)$y_number)) < (int)PHP_INT_MIN)
+		) { // must do both comparisons as this as float min/max is non-symetric
+			$overflow = true;
+		} //end if
+		//--
+		return (bool) $overflow;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Check if a decimal number overflows the minimum or maximum safe decimal as precision = 14 (PHP default)
+	 * Thus decimal numbers must be between -999999999999.9900 and 999999999999.9900
+	 * All numbers over this must use special operators from BCMath to avoid floating point precision issues
+	 * This is more intended for decimal numbers like financial operations where the significant decimal digits are important
+	 *
+	 * @param DECIMAL NUMBER AS STRING 		$y_number	:: The decimal number to be checked
+	 *
+	 * @return BOOLEAN 									:: TRUE if overflows the max safe decimal ; FALSE if is OK (not overflow maximum)
+	 */
+	public static function check_dec_number_overflow($y_number) { // do not enforce a type, will check to be nscalar and numeric !
+		//--
+		if(!self::is_nscalar($y_number)) {
+			return false; // like a string which will be zero if cast to float
+		} //end if
+		//--
+		$overflow = false;
+		if((float)abs((float)$y_number) > (float)self::DECIMAL_NUM_PRECISION) {
+			$overflow = true;
+		} //end if else
+		//--
+		return (bool) $overflow;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * Format a number as FLOAT
 	 *
 	 * @param 	NUMERIC 	$y_number		:: A numeric value
-	 * @param 	ENUM		$y_signed		:: Default to '' ; If set to '+' will return (enforce) an UNSIGNED/POSITIVE Number, Otherwise if set to '' will return just a regular SIGNED Number wich can be negative or positive
+	 * @param 	ENUM		$y_signed		:: Default to '' ; If set to '+' will return (enforce) an UNSIGNED/POSITIVE Number ; If set to '-' will return (enforce) an NEGATIVE Number ; Otherwise if set to NULL or '' will return just a regular SIGNED Number wich can be negative or positive
 	 *
 	 * @return 	FLOAT						:: An float number
 	 */
-	public static function format_number_float($y_number, ?string $y_signed='') { // do not make strongtype on number, it may come as string
+	public static function format_number_float($y_number, ?string $y_signed=null) { // do not make strongtype on number, it may come as string
 		//--
-		if((string)$y_signed == '+') { // unsigned integer
+		// must be notice not warning ; in production environments cannot control values that come from request ...
+		//--
+		if(!self::is_nscalar($y_number)) { // array, object or resource
+			self::log_notice(__METHOD__.' # A value that should be numeric is not nScalar ; fixed as ZERO [0] : '.print_r($y_number,1));
+			$y_number = 0;
+		} //end if
+		if(is_null($y_number)) { // NULL
+			$y_number = 0;
+		} //end if
+		if(is_bool($y_number)) { //  FALSE/TRUE
+			$y_number = (int) $y_number; // cast to 0/1
+		} //end if
+		if((string)trim((string)$y_number) == '') { // empty string ; must check after bool and null !
+			$y_number = 0; // cast to 0
+		} //end if
+		if(is_nan((float)$y_number)) { // must cast to float ; ex: 0/0
+			self::log_notice(__METHOD__.' # A value that should be numeric is NAN ; fixed as ZERO [0] : '.$y_number);
+			$y_number = 0; // NAN is considered overflow
+		} //end if
+		if(!is_numeric($y_number)) { // must check after check for null and nan ; it returns true also for number as strings ; ex: a non-numeric string
+			$y_number = (float) floatval((string)trim((string)$y_number)); // don't log, extract what can, there are many cases when request variables comes malformed, out of control !
+		} //end if
+		if(is_infinite((float)$y_number)) { // must cast to float ; ex: log(0) = -INF ; -1 * log(0) = INF
+			if((float)$y_number < 0) {
+				self::log_notice(__METHOD__.' # A float number is not finite ; fixed as ['.(float)PHP_FLOAT_MIN.'] : '.$y_number);
+				$y_number = (float) PHP_FLOAT_MIN;
+			} elseif((float)$y_number > 0) {
+				self::log_notice(__METHOD__.' # A float number is not finite ; fixed as ['.(float)PHP_FLOAT_MAX.'] : '.$y_number);
+				$y_number = (float) PHP_FLOAT_MAX;
+			} else {
+				self::log_notice(__METHOD__.' # A float number is not finite ; fixed as ZERO [0] : '.$y_number);
+				$y_number = 0;
+			} //end if else
+		} //end if
+		//--
+		// there is no way to check in PHP if a float overflows ... the PHP_FLOAT_MIN and PHP_FLOAT_MAX are just informative ...
+		//--
+		if((string)$y_signed == '+') { // positive (unsigned) float
 			if((float)$y_number < 0) { // {{{SYNC-SMART-FLOAT+}}}
 				$y_number = 0; // it must be zero if negative for the all logic in this framework
 			} //end if
-		} //end if
+		} elseif((string)$y_signed == '-') { // negative float
+			if((float)$y_number > 0) { // {{{SYNC-SMART-FLOAT-}}}
+				$y_number = 0; // it must be zero if positive for the all logic in this framework
+			} //end if
+		} //end if else
 		//--
 		return (float) $y_number;
 		//--
@@ -760,18 +863,70 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Format a number as INTEGER (NOTICE: On 64-bit systems PHP_INT_MAX is: 9223372036854775807 ; On 32-bit old systems the PHP_INT_MAX is just 2147483647)
+	 * Format a number as INTEGER
+	 * On 64-bit platforms the INTEGER is between -9223372036854775808 		to		9223372036854775807
 	 *
 	 * @param 	NUMERIC 	$y_number		:: A numeric value
-	 * @param 	ENUM		$y_signed		:: Default to '' ; If set to '+' will return (enforce) an UNSIGNED/POSITIVE Integer, Otherwise if set to '' will return just a regular SIGNED INTEGER wich can be negative or positive
+	 * @param 	ENUM		$y_signed		:: Default to '' ; If set to '+' will return (enforce) an UNSIGNED/POSITIVE Number ; If set to '-' will return (enforce) an NEGATIVE Number ; Otherwise if set to NULL or '' will return just a regular SIGNED Number wich can be negative or positive
 	 *
 	 * @return 	INTEGER						:: An integer number
 	 */
-	public static function format_number_int($y_number, ?string $y_signed='') { // do not make strongtype on number, it may come as string
+	public static function format_number_int($y_number, ?string $y_signed=null) { // do not make strongtype on number, it may come as string
 		//--
-		if((string)$y_signed == '+') { // unsigned integer
+		// must be notice not warning ; in production environments cannot control values that come from request ...
+		//--
+		if(!self::is_nscalar($y_number)) { // array, object or resource
+			self::log_notice(__METHOD__.' # A value that should be numeric is not nScalar ; fixed as ZERO [0] : '.print_r($y_number,1));
+			$y_number = 0;
+		} //end if
+		if(is_null($y_number)) { // NULL
+			$y_number = 0;
+		} //end if
+		if(is_bool($y_number)) { //  FALSE/TRUE
+			$y_number = (int) $y_number; // cast to 0/1
+		} //end if
+		if((string)trim((string)$y_number) == '') { // empty string ; must check after bool and null !
+			$y_number = 0; // cast to 0
+		} //end if
+		if(is_nan((float)$y_number)) { // must cast to float ; ex 0/0 = NAN
+			self::log_notice(__METHOD__.' # A value that should be numeric is NAN ; fixed as ZERO [0] : '.$y_number);
+			$y_number = 0; // NAN is considered overflow
+		} //end if
+		if(!is_numeric($y_number)) { // must check after check for null and nan ; it returns true also for number as strings ; ex: a non-numeric string
+			$y_number = (float) floatval((string)trim((string)$y_number)); // AS FLOAT !! ; don't log, extract what can, there are many cases when request variables comes malformed, out of control !
+		} //end if
+		if(is_infinite((float)$y_number)) { // must cast to float ; ex: log(0) = -INF ; -1 * log(0) = INF
+			if((float)$y_number < 0) {
+				self::log_notice(__METHOD__.' # An integer number is not finite ; fixed as ['.(int)PHP_INT_MIN.'] : '.$y_number);
+				$y_number = (int) PHP_INT_MIN;
+			} elseif((float)$y_number > 0) {
+				self::log_notice(__METHOD__.' # An integer number is not finite ; fixed as ['.(int)PHP_INT_MAX.'] : '.$y_number);
+				$y_number = (int) PHP_INT_MAX;
+			} else {
+				self::log_notice(__METHOD__.' # An integer number is not finite ; fixed as ZERO [0] : '.$y_number);
+				$y_number = 0;
+			} //end if else
+		} //end if
+		if(self::check_int_number_overflow($y_number) === true) { // must bind to be in limits
+			if((float)$y_number < 0) {
+				self::log_notice(__METHOD__.' # An integer number overflows the limits ; fixed as ['.(int)PHP_INT_MIN.'] : '.$y_number);
+				$y_number = (int) PHP_INT_MIN;
+			} elseif((float)$y_number > 0) {
+				self::log_notice(__METHOD__.' # An integer number overflows the limits ; fixed as ['.(int)PHP_INT_MAX.'] : '.$y_number);
+				$y_number = (int) PHP_INT_MAX;
+			} else {
+				self::log_notice(__METHOD__.' # An integer number overflows the limits ; fixed as ZERO [0] : '.$y_number);
+				$y_number = 0;
+			} //end if else
+		} //end if
+		//--
+		if((string)$y_signed == '+') { // positive (unsigned) integer
 			if((int)$y_number < 0) { // {{{SYNC-SMART-INT+}}}
 				$y_number = 0; // it must be zero if negative for the all logic in this framework
+			} //end if
+		} elseif((string)$y_signed == '-') { // negative integer
+			if((int)$y_number > 0) { // {{{SYNC-SMART-INT-}}}
+				$y_number = 0; // it must be zero if positive for the all logic in this framework
 			} //end if
 		} //end if
 		//--
@@ -784,6 +939,7 @@ final class Smart {
 	//================================================================
 	/**
 	 * Format a number as DECIMAL (NOTICE: The maximum PHP.INI precision is 14, includding decimals).
+	 * Because of the precision, it supports values between -999999999999.9900 and 999999999999.9900 ; If a value overflows limits will return -limit / +limit depends if value is negative or positive
 	 * This is a better replacement for the PHP's number_format() which throws a warning if first argument passed is a string since PHP 5.3
 	 *
 	 * @param 	NUMERIC 	$y_number			:: A numeric value
@@ -794,15 +950,31 @@ final class Smart {
 	 * @return 	DECIMAL							:: A decimal number
 	 */
 	public static function format_number_dec($y_number, $y_decimals=2, ?string $y_sep_decimals='.', ?string $y_sep_thousands='') { // do not make strongtype on number or decimals, it may come as string
-		//-- fix decimals
-		$y_decimals = (int) self::format_number_int($y_decimals,'+');
-		if($y_decimals < 1) {
+		//--
+		// must be notice not warning ; in production environments cannot control values that come from request ...
+		//--
+		$y_decimals = (int) self::format_number_int($y_decimals, '+'); // fix decimals
+		if($y_decimals < 1) { // 9999999999999.9
 			$y_decimals = 1;
-		} elseif($y_decimals > 13) {
+		} elseif($y_decimals > 13) { // 0.0000000000001
 			$y_decimals = 13;
 		} //end if
+		//-- fix float
+		if(!self::is_nscalar($y_number)) {
+			$y_number = 0;
+		} //end if
+		if(self::check_dec_number_overflow($y_number) === true) {
+			if((float)$y_number < 0) {
+				self::log_notice(__METHOD__.' # A decimal number overflows the limits ; fixed as [-'.self::DECIMAL_NUM_PRECISION.'] : '.$y_number); // must be notice not warning ; in production environments cannot control values that come from request ...
+				$y_number = (float) (-1 * (float)self::DECIMAL_NUM_PRECISION);
+			} elseif((float)$y_number > 0) {
+				self::log_notice(__METHOD__.' # A decimal number overflows the limits ; fixed as ['.self::DECIMAL_NUM_PRECISION.'] : '.$y_number); // must be notice not warning ; in production environments cannot control values that come from request ...
+				$y_number = (float) self::DECIMAL_NUM_PRECISION;
+			} //end if
+		} //end if
+		$y_number = (float) self::format_number_float($y_number);
 		//-- by default number_format() returns string, so enforce string as output to keep decimals
-		return (string) number_format(((float)$y_number), (int)$y_decimals, (string)$y_sep_decimals, (string)$y_sep_thousands); // {{{SYNC-SMART-DECIMAL}}}
+		return (string) number_format((float)$y_number, (int)$y_decimals, (string)$y_sep_decimals, (string)$y_sep_thousands); // {{{SYNC-SMART-DECIMAL}}}
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -869,7 +1041,7 @@ final class Smart {
 				@krsort($y_arr);
 				break;
 			default:
-				self::log_warning('WARNING: Invalid Sort Mode in '.__CLASS__.'::'.__FUNCTION__.'()'.' : '.$y_mode);
+				self::log_warning('WARNING: Invalid Sort Mode in '.__METHOD__.' # '.$y_mode);
 				return (array) $y_arr;
 		} //end switch
 		//--
@@ -1068,12 +1240,12 @@ final class Smart {
 							$y_arr[(string)$y_keys[$i]] = null;
 						} //end if
 					} else {
-						self::log_warning('WARNING: '.__CLASS__.'::'.__FUNCTION__.'()'.' array key is not nScalar: '.print_r($y_keys[$i]));
+						self::log_warning('WARNING: '.__METHOD__.' # array key is not nScalar: '.print_r($y_keys[$i]));
 					} //end if else
 				} //end for
 			} //end if
 		} else {
-			self::log_warning('WARNING: '.__CLASS__.'::'.__FUNCTION__.'()'.' array keys is not compliant ... must be non-associative array: '.print_r($y_keys[$i]));
+			self::log_warning('WARNING: '.__METHOD__.' # array keys is not compliant ... must be non-associative array: '.print_r($y_keys[$i]));
 		} //end if
 		//--
 		return (array) $y_arr;
@@ -1124,11 +1296,11 @@ final class Smart {
 	public static function array_diff_assoc_recursive(array $array1, array $array2) {
 		//--
 		if(!is_array($array1)) {
-			self::log_warning('WARNING: '.__CLASS__.'::'.__FUNCTION__.'()'.' array#1 is not array !');
+			self::log_warning('WARNING: '.__METHOD__.' # array1 is not array !');
 			return array();
 		} //end if
 		if(!is_array($array2)) {
-			self::log_warning('WARNING: '.__CLASS__.'::'.__FUNCTION__.'()'.' array#2 is not array !');
+			self::log_warning('WARNING: '.__METHOD__.' # array2 is not array !');
 			return array();
 		} //end if
 		//--
@@ -1153,11 +1325,11 @@ final class Smart {
 	public static function array_diff_assoc_oneway_recursive(array $array1, array $array2) {
 		//--
 		if(!is_array($array1)) {
-			self::log_warning('WARNING: '.__CLASS__.'::'.__FUNCTION__.'()'.' array#1 is not array !');
+			self::log_warning('WARNING: '.__METHOD__.' # array1 is not array !');
 			return array();
 		} //end if
 		if(!is_array($array2)) {
-			self::log_warning('WARNING: '.__CLASS__.'::'.__FUNCTION__.'()'.' array#2 is not array !');
+			self::log_warning('WARNING: '.__METHOD__.' # array2 is not array !');
 			return array();
 		} //end if
 		//--
@@ -1734,80 +1906,6 @@ final class Smart {
 	public static function normalize_spaces(?string $y_txt) {
 		//-- {{{SYNC-NORMALIZE-SPACES}}}
 		return (string) str_replace(["\r\n", "\r", "\n", "\t", "\x0B", "\0", "\f"], ' ', (string)$y_txt);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Check if an integer number overflows the maximum safe int
-	 * All numbers over this must use special operators from BCMath to avoid floating point precision issues
-	 * On 32-bit platforms the INTEGER is between 		   -2147483648 		to 				 2147483647
-	 * On 64-bit platforms the INTEGER is between -9223372036854775808 		to		9223372036854775807
-	 *
-	 * @param INTEGER NUMBER AS STRING 		$y_number	:: The integer number to be checked
-	 *
-	 * @return BOOLEAN 									:: TRUE if overflows the max safe integer ; FALSE if is OK (not overflow maximum)
-	 */
-	public static function check_int_number_overflow_max($y_number) { // do not enforce a type, will check to be nscalar and numeric !
-		//--
-		if(!self::is_nscalar($y_number)) {
-			return true;
-		} //end if
-		if(is_null($y_number)) {
-			return false;
-		} //end if
-		if(is_nan((float)$y_number)) {
-			return true; // NAN is considered overflow
-		} //end if
-		if(!is_numeric($y_number)) { // must check after check for null and nan ; it returns true also for number as strings
-			return true;
-		} //end if
-		//--
-		if((float)abs((float)$y_number) > (int)PHP_INT_MAX) {
-			return true;
-		} //end if
-		//--
-		return false;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Check if a decimal number overflows the maximum safe of 14 precision
-	 * All numbers over this must use special operators from BCMath to avoid floating point precision issues
-	 * This is more intended for decimal numbers like financial operations where the significant decimal digits are important
-	 *
-	 * @param DECIMAL NUMBER AS STRING 		$y_number	:: The decimal number to be checked
-	 *
-	 * @return BOOLEAN 									:: TRUE if overflows the max safe decimal ; FALSE if is OK (not overflow maximum)
-	 */
-	public static function check_dec_number_overflow_max($y_number) { // do not enforce a type, will check to be nscalar and numeric !
-		//--
-		if(!self::is_nscalar($y_number)) {
-			return true;
-		} //end if
-		if(is_null($y_number)) {
-			return false;
-		} //end if
-		if(is_nan((float)$y_number)) {
-			return true; // NAN is considered overflow
-		} //end if
-		if(!is_numeric($y_number)) { // must check after check for null and nan ; it returns true also for number as strings
-			return true;
-		} //end if
-		//--
-		$max_number = '999999999999.9900'; // DECIMAL [12].[4] (no higher decimal numbers than this are safe using a precision like 14, the max in PHP)
-		if((float)abs((float)$y_number) > (float)$max_number) {
-			$out = true;
-		} else {
-			$out = false;
-		} //end if else
-		//--
-		return (bool) $out;
 		//--
 	} //END FUNCTION
 	//================================================================

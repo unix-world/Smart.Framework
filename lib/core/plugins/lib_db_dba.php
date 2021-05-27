@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / DBA Database Client]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartComponents
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:Dba
  *
  */
@@ -471,6 +471,7 @@ final class SmartDbaDb {
 				'command' => 'Key='.$key.' ; Expire='.$expire.' ; Value='.Smart::text_cut_by_limit((string)$value, 1024, true, '[...data-longer-than-1024-bytes-is-not-logged-all-here...]'),
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 				'rows' => ($op === true) ? strlen((string)$value) : 0,
+				'wsize' => true,
 				'connection' => (string) $this->dba
 			]);
 			//--
@@ -649,7 +650,7 @@ final class SmartDbaDb {
 		//--
 		if($randomly === true) {
 			if(Smart::random_number(0, 1000) != 501) {
-				return false; // was not running
+				return false; // stop running optimize ... probabilistic !
 			} //end if
 		} //end if
 		//--
@@ -670,7 +671,7 @@ final class SmartDbaDb {
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-time', $time_end, '+');
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|log', [
-				'type' => 'nosql',
+				'type' => 'special',
 				'data' => __FUNCTION__.' :: '.$this->description,
 				'command' => 'Optimize DB',
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
@@ -781,7 +782,7 @@ final class SmartDbaDb {
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-time', $time_end, '+');
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|log', [
-				'type' => 'nosql',
+				'type' => 'special',
 				'data' => __FUNCTION__.' :: '.$this->description,
 				'command' => 'Clear Expired Keys from DB',
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
@@ -836,7 +837,7 @@ final class SmartDbaDb {
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|total-time', $time_end, '+');
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'dba|log', [
-				'type' => 'nosql',
+				'type' => 'special',
 				'data' => __FUNCTION__.' :: '.$this->description,
 				'command' => 'Clear all Data (will re-init the connection if any): '.$this->file,
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
@@ -1305,7 +1306,7 @@ final class SmartDbaDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP DBA Extension ; classes: Smart
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:Dba
  *
  */

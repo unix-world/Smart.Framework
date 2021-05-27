@@ -52,16 +52,15 @@ The benchmark was running using *Apache Benchmark* suite with the following comm
 
 **Hardware platform**: one physical server (Supermicro):
 * **2 x Intel(R) Xeon(R) CPU E5-2699 v4** @ 2.20GHz 64-bit (Total: 44 cores / 88 threads)
-* **256 GB RAM**, DDR4 ECC @ 2133 MHz
+* **512 GB RAM**, DDR4 ECC @ 2133 MHz
 * **HDD 2 x 1TB** SSD/NVME
 
 **Software**:
-* OS: **Debian 10 Linux 64-bit**, up-to-date 2021-01-05
-* Apps: **Apache 2.4.43**, **PHP 7.3.25 with Opcache enabled**
+* OS: **Debian 10 Linux 64-bit**, up-to-date 2021-05-26
+* Apps: **Apache 2.4.48**, **PHP 7.4.19 with Opcache enabled**
 
 #### Benchmark Results of tested PHP Frameworks:
-* **Smart.Framework v.7.2.1 head@2021.01.05** with MarkersTPL Templating: ~ **_8.97K_** (8977) *requests per second*
-* **CodeIgniter v.4.0** with PHP Templating: ~ **_5.38K_** (5378) *requests per second* ( **1.3x slower than Smart.Framework** )
-* **Symfony 4.4.2** with Twig Templating: ~ **_1.54K_** (1532) *requests per second* ( **5x slower than Smart.Framework** )
-* **Laravel 6** with Blade Templating ~ **_1.33K_** (1323) *requests per second* ( **6x slower than Smart.Framework** )
-* **Zend Framework 3** with PHP Templating: ~ **_1.16K_** (1175) *requests per second* ( **7x slower than Smart.Framework** )
+* **Smart.Framework v.8.7 head@2021.05.26** with MarkersTPL Templating: ~ **_8.878K_** (8878) *requests per second*
+* **CodeIgniter v.4.1** with PHP Templating: ~ **_5.37K_** (5344) *requests per second* ( **1.3x slower than Smart.Framework** )
+* **Laravel 8.5** with Blade Templating ~ **_1.83K_** (1835) *requests per second* ( **5x slower than Smart.Framework** )
+* **Symfony 5.2** with Twig Templating: ~ **_1.71K_** (1532) *requests per second* ( **5x slower than Smart.Framework** )

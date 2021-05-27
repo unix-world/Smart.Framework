@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartSQliteDb        final class \ SmartSQliteDb    {   } -&gt;    Class: SmartSQliteDb - provides a Dynamic SQLite Database Client. Tested and Stable on">
-	<meta name="keywords" content="smartsqlitedb, final, class, provides, a, dynamic, sqlite, database, client, tested, and, stable, on, versions, 3.x, language, php, located, at, lib core plugins lib db sqlite.php, package, plugins:database:sqlite, namespace, name, version, v.20210401, depends, extensions, classes, smart, smartunicode, smartutils, smartfilesystem, usage, object, new, class method, this, only, methods, public, function, construct, string, sqlite db file, integer, timeout busy sec, boolean, register extra functions, true, param, the, path, to, file, example, tmp test.sqlite, if, db, does, not, exist, will, create, it, busy, timeout, in, seconds, set, false, register, default, extra, sql, functions, is, can, be, later, with, register sql function, constructor, destruct, destructor, automatically, close, current, of, closed, explicit, before, open, opens, similar, server, connect">
+	<meta name="keywords" content="smartsqlitedb, final, class, provides, a, dynamic, sqlite, database, client, tested, and, stable, on, versions, 3.x, language, php, located, at, lib core plugins lib db sqlite.php, package, plugins:database:sqlite, namespace, name, version, v.20210527, depends, extensions, classes, smart, smartunicode, smartutils, smartfilesystem, smartcomponents, usage, object, new, class method, this, only, methods, public, function, construct, string, sqlite db file, integer, timeout busy sec, boolean, register extra functions, true, param, the, path, to, file, example, tmp test.sqlite, if, db, does, not, exist, will, create, it, busy, timeout, in, seconds, set, false, register, default, extra, sql, functions, is, can, be, later, with, register sql function, constructor, destruct, destructor, automatically, close, current, of, closed, explicit, before, open, opens, similar, server">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartSQliteDb">
 	<title>PHP Documentation for: \SmartSQliteDb</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -707,8 +707,8 @@ Tested and Stable on SQLite versions: 3.x</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartSQliteDb</span></li>
 		
-		<li><b>Version:</b> v.20210401</li>
-		<li><b>Depends:</b> extensions:  PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem</li>
+		<li><b>Version:</b> v.20210527</li>
+		<li><b>Depends:</b> extensions:  PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -1043,29 +1043,30 @@ The statement must not contain any Single Quotes to prevent SQL injections which
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">//&nbsp;IMPORTANT:&nbsp;https://sqlite.org/lang_keywords.html<br>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #999999">//&nbsp;IMPORTANT:&nbsp;https://sqlite.org/lang_keywords.html<br>
 &nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;SQLIte3&nbsp;uses&nbsp;by&nbsp;default&nbsp;&#39;&nbsp;(single&nbsp;quotes)&nbsp;to&nbsp;quote&nbsp;strings&nbsp;and&nbsp;`&nbsp;(backticks)&nbsp;or&nbsp;nothing&nbsp;to&nbsp;quote&nbsp;identifiers&nbsp;(table&nbsp;names&nbsp;/&nbsp;field&nbsp;names)<br>
 &nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;It&nbsp;is&nbsp;recommended&nbsp;to&nbsp;quote&nbsp;identifiers&nbsp;(table&nbsp;names&nbsp;/&nbsp;field&nbsp;names)&nbsp;using&nbsp;`&nbsp;(backtick)&nbsp;instead&nbsp;of&nbsp;not&nbsp;quoting&nbsp;at&nbsp;all&nbsp;to&nbsp;avoid&nbsp;confusion&nbsp;with&nbsp;SQL&nbsp;reserved&nbsp;syntax<br>
 &nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Using&nbsp;`&nbsp;(backticks)&nbsp;is&nbsp;prefered&nbsp;as&nbsp;SELECT&nbsp;`field1`&nbsp;FROM&nbsp;`table1`&nbsp;is&nbsp;a&nbsp;strict&nbsp;syntax&nbsp;in&nbsp;SQLite3&nbsp;and&nbsp;will&nbsp;throw&nbsp;error&nbsp;if&nbsp;either&nbsp;table1&nbsp;or&nbsp;field1&nbsp;do&nbsp;not&nbsp;exists<br>
 &nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;Using&nbsp;&quot;&nbsp;(double&nbsp;quote)&nbsp;for&nbsp;quoting&nbsp;identifiers&nbsp;may&nbsp;result&nbsp;in&nbsp;unexpected&nbsp;results&nbsp;as&nbsp;SELECT&nbsp;&quot;field1&quot;&nbsp;FROM&nbsp;&quot;table1&quot;&nbsp;will&nbsp;not&nbsp;throw&nbsp;exception&nbsp;if&nbsp;field1&nbsp;/&nbsp;table1&nbsp;do&nbsp;not&nbsp;exists<br>
 <br>
 &nbsp;//Sample&nbsp;Usage<br>
-&nbsp;</span><span class="c1">$db&nbsp;</span><span class="c3">=&nbsp;new&nbsp;</span><span class="c1">SmartSQliteDb</span><span class="c3">(</span><span class="c4">&#39;tmp/testunit.sqlite&#39;</span><span class="c3">);<br>
-&nbsp;</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">open</span><span class="c3">();<br>
-&nbsp;</span><span class="c1">$sq_rd&nbsp;</span><span class="c3">=&nbsp;(array)&nbsp;</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">read_asdata</span><span class="c3">(</span><span class="c4">&quot;SELECT&nbsp;`description`&nbsp;FROM&nbsp;`mytable`&nbsp;WHERE&nbsp;(`id`&nbsp;=&nbsp;&#39;&quot;</span><span class="c3">.</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">escape_str</span><span class="c3">(</span><span class="c1">$my_id</span><span class="c3">).</span><span class="c4">&quot;&#39;)&nbsp;LIMIT&nbsp;1&nbsp;OFFSET&nbsp;0&quot;</span><span class="c3">);<br>
-&nbsp;</span><span class="c1">$sq_cnt&nbsp;</span><span class="c3">=&nbsp;(int)&nbsp;</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">count_data</span><span class="c3">(</span><span class="c4">&quot;SELECT&nbsp;COUNT(1)&nbsp;FROM&nbsp;mytable&nbsp;WHERE&nbsp;(score&nbsp;&gt;&nbsp;?)&quot;</span><span class="c3">,&nbsp;array(</span><span class="c1">100</span><span class="c3">));<br>
-&nbsp;</span><span class="c1">$arr_insert&nbsp;</span><span class="c3">=&nbsp;array(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;id&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c1">100</span><span class="c3">,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;active&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c1">1</span><span class="c3">,<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c4">&#39;name&#39;&nbsp;</span><span class="c3">=&gt;&nbsp;</span><span class="c4">&#39;Test&nbsp;Record&#39;<br>
-&nbsp;</span><span class="c3">);<br>
-&nbsp;</span><span class="c1">$sq_ins&nbsp;</span><span class="c3">=&nbsp;(array)&nbsp;</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">write_data</span><span class="c3">(</span><span class="c4">&#39;INSERT&nbsp;INTO&nbsp;other_table&nbsp;&#39;</span><span class="c3">.</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">prepare_statement</span><span class="c3">(</span><span class="c1">$arr_insert</span><span class="c3">,&nbsp;</span><span class="c4">&#39;insert&#39;</span><span class="c3">));<br>
-&nbsp;</span><span class="c1">$sq_ins&nbsp;</span><span class="c3">=&nbsp;(array)&nbsp;</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">write_data</span><span class="c3">(</span><span class="c4">&#39;INSERT&nbsp;OR&nbsp;REPLACE&nbsp;INTO&nbsp;other_table&nbsp;&#39;</span><span class="c3">.</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">prepare_statement</span><span class="c3">(</span><span class="c1">$arr_insert</span><span class="c3">,&nbsp;</span><span class="c4">&#39;insert&#39;</span><span class="c3">));&nbsp;</span><span class="c2">//&nbsp;upsert<br>
-&nbsp;</span><span class="c1">$sq_upd&nbsp;</span><span class="c3">=&nbsp;(array)&nbsp;</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">write_data</span><span class="c3">(</span><span class="c4">&#39;UPDATE&nbsp;other_table&nbsp;SET&nbsp;active&nbsp;=&nbsp;0&nbsp;WHERE&nbsp;(id&nbsp;=&nbsp;?)&#39;</span><span class="c3">,&nbsp;array(</span><span class="c1">100</span><span class="c3">));<br>
-&nbsp;</span><span class="c1">$prepared_sql&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">prepare_param_query</span><span class="c3">(</span><span class="c4">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;table&nbsp;WHERE&nbsp;id&nbsp;=&nbsp;?&#39;</span><span class="c3">,&nbsp;[</span><span class="c1">99</span><span class="c3">]);<br>
-&nbsp;</span><span class="c1">$db</span><span class="c3">-&gt;</span><span class="c1">close</span><span class="c3">();&nbsp;</span><span class="c2">//&nbsp;optional,&nbsp;but&nbsp;safe<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+&nbsp;</span><span style="color: #FFFFFF">$db&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartSQliteDb</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;tmp/testunit.sqlite&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">open</span><span style="color: #FFCC00; font-weight: bold">();<br>
+&nbsp;</span><span style="color: #FFFFFF">$sq_rd&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">read_asdata</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&quot;SELECT&nbsp;`description`&nbsp;FROM&nbsp;`mytable`&nbsp;WHERE&nbsp;(`id`&nbsp;=&nbsp;&#39;&quot;</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">escape_str</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$my_id</span><span style="color: #FFCC00; font-weight: bold">).</span><span style="color: #5F9CCE">&quot;&#39;)&nbsp;LIMIT&nbsp;1&nbsp;OFFSET&nbsp;0&quot;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">$sq_cnt&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(int)&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">count_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&quot;SELECT&nbsp;COUNT(1)&nbsp;FROM&nbsp;mytable&nbsp;WHERE&nbsp;(score&nbsp;&gt;&nbsp;?)&quot;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;array(</span><span style="color: #FFFFFF">100</span><span style="color: #FFCC00; font-weight: bold">));<br>
+&nbsp;</span><span style="color: #FFFFFF">$arr_insert&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;array(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;id&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">100</span><span style="color: #FFCC00; font-weight: bold">,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;active&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">1</span><span style="color: #FFCC00; font-weight: bold">,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">&#39;name&#39;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">&#39;Test&nbsp;Record&#39;<br>
+&nbsp;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">$sq_ins&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;INSERT&nbsp;INTO&nbsp;other_table&nbsp;&#39;</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">prepare_statement</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$arr_insert</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;insert&#39;</span><span style="color: #FFCC00; font-weight: bold">));<br>
+&nbsp;</span><span style="color: #FFFFFF">$sq_ins&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;INSERT&nbsp;OR&nbsp;REPLACE&nbsp;INTO&nbsp;other_table&nbsp;&#39;</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">prepare_statement</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$arr_insert</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;insert&#39;</span><span style="color: #FFCC00; font-weight: bold">));&nbsp;</span><span style="color: #999999">//&nbsp;upsert<br>
+&nbsp;</span><span style="color: #FFFFFF">$sq_upd&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(array)&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">write_data</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;UPDATE&nbsp;other_table&nbsp;SET&nbsp;active&nbsp;=&nbsp;0&nbsp;WHERE&nbsp;(id&nbsp;=&nbsp;?)&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;array(</span><span style="color: #FFFFFF">100</span><span style="color: #FFCC00; font-weight: bold">));<br>
+&nbsp;</span><span style="color: #FFFFFF">$prepared_sql&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">prepare_param_query</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;SELECT&nbsp;*&nbsp;FROM&nbsp;table&nbsp;WHERE&nbsp;id&nbsp;=&nbsp;?&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;[</span><span style="color: #FFFFFF">99</span><span style="color: #FFCC00; font-weight: bold">]);<br>
+&nbsp;</span><span style="color: #FFFFFF">$db</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">close</span><span style="color: #FFCC00; font-weight: bold">();&nbsp;</span><span style="color: #999999">//&nbsp;optional,&nbsp;but&nbsp;safe<br>
+<br>
+//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1172,7 +1173,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:51 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:38 +0000</small>
 <hr>
 <br>
 <!-- # -->

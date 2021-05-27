@@ -1,8 +1,8 @@
 <?php
 // Controller: Samples/BenchMarkWithSession
 // Route: ?/page/samples.benchmark-with-session (?page=samples.benchmark-with-session)
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'ADMIN'); 						// INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); 						// ADMIN, TASK, SHARED
 define('SMART_APP_MODULE_AUTH', true); 							// if set to TRUE requires auth always
 define('SMART_APP_MODULE_REALM_AUTH', 'ADMINS-AREA-SIMPLE'); 	// if set will check the login realm
 
@@ -62,5 +62,15 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 } //END CLASS
+
+
+/**
+ * Task Controller
+ *
+ * @ignore
+ *
+ */
+class SmartAppTaskController extends SmartAppAdminController {} //END CLASS
+
 
 // end of php code

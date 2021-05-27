@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartSVGCaptcha        final class \ SmartSVGCaptcha    {   } -&gt;    Class: SVG Captcha - A SVG Image Plugin for SmartCaptcha Create a Form Captcha">
-	<meta name="keywords" content="smartsvgcaptcha, final, class, svg, captcha, a, image, plugin, for, smartcaptcha, create, form, validation, vector, language, php, located, at, lib core plugins lib captcha image.php, package, development:captcha, namespace, name, version, v.20210421, depends, classes, smart, smartsvgcaptchapoint, methods, public, function, construct, int, numchars, width, height, mixed, difficulty, param, the, number, of, glyphs, characters, will, contain, to, generate, valid, values, are, default, easy, medium, hard, alternate, can, be, an, array, settings, constructor, draw image, string, return, code, and, get code, generated, get, must, call, only, after, properties, constants, documentation, index, definition, list, on">
+	<meta name="keywords" content="smartsvgcaptcha, final, class, svg, captcha, a, image, plugin, for, smartcaptcha, create, form, validation, vector, language, php, located, at, lib core plugins lib captcha svg.php, package, development:captcha, namespace, name, version, v.20210527, depends, classes, smart, smartsvgcaptchapoint, constants, smart framework security key, methods, public, function, construct, int, numchars, width, height, mixed, difficulty, null, param, the, number, of, glyphs, characters, will, contain, to, generate, valid, values, are, very, easy, default, moderate, hard, alternate, can, be, an, array, settings, constructor, draw image, string, return, code, and, get code, generated, get, must, call, only, after, properties, documentation, index, definition, list, on">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartSVGCaptcha">
 	<title>PHP Documentation for: \SmartSVGCaptcha</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -702,13 +702,13 @@ Create a Form Captcha Validation Vector Image (SVG)</div><br>
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_captcha_image.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_captcha_svg.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> development:Captcha</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartSVGCaptcha</span></li>
 		
-		<li><b>Version:</b> v.20210421</li>
-		<li><b>Depends:</b> classes:  Smart, SmartSvgCaptchaPoint</li>
+		<li><b>Version:</b> v.20210527</li>
+		<li><b>Depends:</b> classes:  Smart, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY</li>
 		
 		
 		
@@ -723,10 +723,10 @@ Create a Form Captcha Validation Vector Image (SVG)</div><br>
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>INT</i>&nbsp;<span class="doc-param-name"><b><span title="`$numchars` Parameter is REQUIRED">$numchars</span></b></span>, 
-			<i>INT</i>&nbsp;<span class="doc-param-name"><b><span title="`$width` Parameter is REQUIRED">$width</span></b></span>, 
-			<i>INT</i>&nbsp;<span class="doc-param-name"><b><span title="`$height` Parameter is REQUIRED">$height</span></b></span>, 
-			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$difficulty` Parameter is OPTIONAL, with the Default Value: 0">$difficulty</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+				<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$numchars` Parameter is REQUIRED">$numchars</span></b></span>, 
+			<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$width` Parameter is REQUIRED">$width</span></b></span>, 
+			<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$height` Parameter is REQUIRED">$height</span></b></span>, 
+			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$difficulty` Parameter is OPTIONAL, with the Default Value: null">$difficulty</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -735,7 +735,7 @@ Create a Form Captcha Validation Vector Image (SVG)</div><br>
 			<div class="doc-method-ret-params">@param: {INT} $numchars: The number of glyphs (characters) the captcha will contain<br>
 @param: {INT} $width: The width of the captcha<br>
 @param: {INT} $height: The height of the captcha<br>
-@param: {MIXED} $difficulty: The difficulty of the captcha to generate ; Valid values are: 0 = default difficulty ; 1 = easy difficulty ; 2 = medium difficulty ; 3 = hard difficulty ; alternate can be an array of settings</div>
+@param: {MIXED} $difficulty: The difficulty of the captcha to generate ; Valid values are: -1 = very easy ; 0 = easy (default) ; 1 = moderate ; 2 = hard ; 3 = very hard ; alternate can be an array of settings</div>
 	
 			<div class="doc-method-comments">Class constructor</div>
 	
@@ -841,7 +841,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:50 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:37 +0000</small>
 <hr>
 <br>
 <!-- # -->

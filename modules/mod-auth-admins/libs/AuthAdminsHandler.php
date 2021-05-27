@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\AuthAdmins\AuthAdminsHandler
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\AuthAdmins;
 
@@ -37,7 +37,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20210523
+ * @version 	v.20210526
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -121,7 +121,7 @@ final class AuthAdminsHandler {
 				die('AuthAdminsHandler:CHECK-CREDENTIALS:1');
 				return;
 			} //end if
-			if(\SmartUnicode::str_len(\APP_AUTH_ADMIN_USERNAME) < 3) {
+			if(((string)\trim((string)\APP_AUTH_ADMIN_USERNAME) == '') OR ((int)\strlen((string)\APP_AUTH_ADMIN_USERNAME) < 3) OR ((int)\strlen((string)\APP_AUTH_ADMIN_USERNAME) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)\APP_AUTH_ADMIN_USERNAME))) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
 				\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: APP_AUTH_ADMIN_USERNAME !'."\n".'The APP_AUTH_ADMIN_USERNAME set in config must be at least 3 characters long ! Manually REFRESH this page after by pressing F5 ...');
 				die('AuthAdminsHandler:CHECK-CREDENTIALS:2');
 				return;
@@ -132,7 +132,7 @@ final class AuthAdminsHandler {
 				die('AuthAdminsHandler:CHECK-CREDENTIALS:3');
 				return;
 			} //end if
-			if(\SmartUnicode::str_len(\APP_AUTH_ADMIN_PASSWORD) < 7) {
+			if(((string)\trim((string)\APP_AUTH_ADMIN_PASSWORD) == '') OR ((int)\SmartUnicode::str_len((string)\APP_AUTH_ADMIN_PASSWORD) < 7) OR ((int)\SmartUnicode::str_len((string)\APP_AUTH_ADMIN_PASSWORD) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
 				\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: APP_AUTH_ADMIN_PASSWORD !'."\n".'The APP_AUTH_ADMIN_PASSWORD set in config must be at least 7 characters long ! Manually REFRESH this page after by pressing F5 ...');
 				die('AuthAdminsHandler:CHECK-CREDENTIALS:4');
 				return;
@@ -166,15 +166,15 @@ final class AuthAdminsHandler {
 		//--
 
 		//-- validate username
-		$auth_user_name = (string) \SmartUnicode::str_tolower(\trim((string)\SmartFrameworkSecurity::FilterUnsafeString((string)(isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : ''))));
-		if((\strlen((string)$auth_user_name) < 3) OR (\strlen((string)$auth_user_name) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$auth_user_name))) { // SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
+		$auth_user_name = (string) \SmartUnicode::str_tolower((string)\trim((string)\SmartFrameworkSecurity::FilterUnsafeString((string)(isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : ''))));
+		if(((string)\trim((string)$auth_user_name) == '') OR ((int)\strlen((string)$auth_user_name) < 3) OR ((int)\strlen((string)$auth_user_name) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$auth_user_name))) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
 			$auth_user_name = ''; // unset invalid user names
 		} //end if
 		//-- validate password
 		$auth_user_pass = '';
 		if((string)$auth_user_name != '') {
 			$auth_user_pass = (string) \SmartFrameworkSecurity::FilterUnsafeString((string)(isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : ''));
-			if((\SmartUnicode::str_len((string)$auth_user_pass) < 7) OR (\SmartUnicode::str_len((string)$auth_user_pass) > 30)) { // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+			if(((string)\trim((string)$auth_user_pass) == '') OR ((int)\SmartUnicode::str_len((string)$auth_user_pass) < 7) OR ((int)\SmartUnicode::str_len((string)$auth_user_pass) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
 				$auth_user_pass = '';
 			} //end if
 		} //end if

@@ -3,7 +3,7 @@
 // Controller: AppRelease/AppManage
 // Route: ?/page/app-release.app-manage (?page=app-release.app-manage)
 // (c) 2013-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -23,10 +23,18 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210522
+ * @version 	v.20210526
  *
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
+
+
+	public function Initialize() {
+		//--
+		$this->PageViewSetCfg('template-path', 'default');
+		$this->PageViewSetCfg('template-file', 'template-simple.htm');
+		//--
+	} //END FUNCTION
 
 
 	public function Run() {
@@ -54,18 +62,60 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		//--
 		$appid = (string) trim((string)$this->RequestVarGet('appid', '', 'string'));
 		//--
+		$arr_utils_metainfo = (array) AppCodeUtils::getArrIniMetaInfo();
 		if((string)$appid != '') {
-			//--
-			$download_key = (string) sha1((string)$this->ControllerGetParam('controller').'#'.$appid.'#'.SMART_FRAMEWORK_SECURITY_KEY); // generate a unique download key that will expire shortly
-			//--
-			$pkg = (string) trim((string)$this->RequestVarGet('pkg', '', 'string'));
-			if((string)$pkg != '') {
-				$this->PageViewSetCfgs([
-					'download-key' 		=> (string) $download_key,
-					'download-packet' 	=> (string) $pkg
-				]);
-				return;
+			if(defined('TASK_APP_RELEASE_CODEPACK_MODE') AND ((string)TASK_APP_RELEASE_CODEPACK_MODE == 'minify')) {
+				foreach($arr_utils_metainfo as $key => $val) {
+					if($val !== null) {
+						if((string)$val == '') {
+							$this->PageViewSetErrorStatus(503, 'Optimizer Minify Strategy requires: '.$key);
+							return;
+						} //end if
+					} //end if
+				} //end foreach
 			} //end if
+		} //end if
+		$arr_markers = [
+			'MODAL' 			=> (string) 'no',
+			'YEAR' 				=> (string) date('Y'),
+			'VERSION' 			=> (string) AppCodeUtils::getVersion(),
+			'NAME' 				=> (string) $name_all,
+			'NAME-PREFIX' 		=> (string) $name_prefix,
+			'NAME-SUFFIX' 		=> (string) $name_suffix,
+			'MOD-VIEW-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
+			'PHP-SELF-VER' 		=> (string) $arr_utils_metainfo['PHP-SELF-VER'],
+			'PHP-BIN-VER' 		=> (string) $arr_utils_metainfo['PHP-BIN-VER'],
+			'NODE-BIN-VER' 		=> (string) $arr_utils_metainfo['NODE-BIN-VER'],
+			'JS-MIN-VER' 		=> (string) $arr_utils_metainfo['JS-MIN-VER'],
+			'JS-LINT-MODE' 		=> (string) $arr_utils_metainfo['JS-LINT-MODE'],
+			'CSS-MIN-VER' 		=> (string) $arr_utils_metainfo['CSS-MIN-VER'],
+			'CSS-LINT-MODE' 	=> (string) $arr_utils_metainfo['CSS-LINT-MODE'],
+			'SF-VER' 			=> (string) ' :: '.AppCodeUtils::getSfVersion(),
+			'MOD-SELF-URL' 		=> (string) 'task.php?page='.Smart::escape_url($this->ControllerGetParam('module')).'.',
+			'CTRL-SELF-NAME' 	=> (string) $this->ControllerGetParam('action'),
+			'APP-ID' 			=> '',
+		];
+		$arr_utils_metainfo = null;
+		//--
+		$action = (string) $this->RequestVarGet('action', '', 'string');
+		if((string)$action == 'pass-utility') {
+			$this->PageViewSetVars([
+				'semaphore' => (string) Smart::array_to_list($semaphores),
+				'title' 	=> (string) $name_all,
+				'main' 		=> (string) SmartMarkersTemplating::render_file_template(
+					(string) $this->ControllerGetParam('module-view-path').'app-manage-pass-utility.mtpl.htm', // {{{SYNC-APP-RELEASE-TPL-VARS}}}
+					(array)$arr_markers
+				)
+			]);
+			return;
+		} //end if
+		//--
+		$last_package = '';
+		$last_pack_dwn_url = '';
+		$appcodeunpack_script = '';
+		$appcodeunpack_dwn_url = '';
+		//--
+		if((string)$appid != '') {
 			//--
 			$yaml_settings = AppCodeUtils::parseYamlSettings((string)$appid); // mixed
 			if(!is_int($yaml_settings) OR ($yaml_settings !== 8)) { // there are 7 mandatory settings + 1 (app id) ... see the YAML file
@@ -74,7 +124,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 			} //end if
 			//--
 			$ini_settings = AppCodeUtils::parseIniSettings(); // mixed
-			if(!is_int($ini_settings) OR ($ini_settings !== 3)) { // there are 3 mandatory settings: MAX RUN TIMEOUT and PHP executable {{{SYNC-CHECK-APP-INI-SETTINGS}}}
+			if(!is_int($ini_settings) OR ((int)$ini_settings !== 3)) { // there are 3 mandatory settings: MAX RUN TIMEOUT and PHP executable {{{SYNC-CHECK-APP-INI-SETTINGS}}}
 				$this->PageViewSetErrorStatus(503, 'INI SETTINGS PARSE ERROR: Num Req. is: #'.$ini_settings);
 				return;
 			} //end if
@@ -101,9 +151,21 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 				$this->PageViewSetErrorStatus(500, 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR');
 				return;
 			} //end if
+			if(!defined('APP_DEPLOY_SECRET')) {
+				$this->PageViewSetErrorStatus(500, 'A required constant is missing: APP_DEPLOY_SECRET');
+				return;
+			} //end if
 			//--
-			$last_package = '';
-			$last_pack_dwn_url = '';
+			$download_key = (string) sha1((string)$this->ControllerGetParam('controller').'#'.$appid.'#'.SMART_FRAMEWORK_SECURITY_KEY); // generate a unique download key that will expire shortly
+			$dwn = (string) trim((string)$this->RequestVarGet('dwn', '', 'string'));
+			if((string)$dwn != '') {
+				$this->PageViewSetCfgs([
+					'download-key' 		=> (string) $download_key,
+					'download-packet' 	=> (string) $dwn
+				]);
+				return;
+			} //end if
+			//--
 			if(SmartFileSystem::is_type_file((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'package-errors.log')) {
 				$archives = (array) (new SmartGetFileSystem(true))->get_storage((string)TASK_APP_RELEASE_CODEPACK_APP_DIR, false, false, '.z-netarch');
 				if(Smart::array_size($archives['list-files']) > 0) {
@@ -116,14 +178,16 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 			} //end if
 			//--
 			$arr_actions = [
-				'#OPTGROUP#Default' => (string) $name_all.' @ TASKS.RELEASE :: DEFAULT',
-				'release-info' 		=> (string) 'RELEASE.INFO :: Display Release Info and Settings'
+				'#OPTGROUP#Default#Tasks#' 	=> (string) $name_all.' :: RELEASE @ TASKS',
+				'release-info' 				=> (string) 'RELEASE.INFO :: Display Release Info and Settings'
 			];
 			if(!SmartFileSystem::path_exists((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) { // if no optimizations dir
 				$arr_actions['code-optimize'] = 'RELEASE.OPTIMIZE :: Optimize ['.TASK_APP_RELEASE_CODEPACK_MODE.'] Source Code: PHP / Javascript / CSS';
 			} else {
 				if(SmartFileSystem::is_type_file((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'optimization-errors.log')) { // if optimize completed
 					if(SmartFileSystem::is_type_file((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'appcodeunpack.php')) {
+						$appcodeunpack_script = (string) 'appcodeunpack.php';
+						$appcodeunpack_dwn_url = (string) SmartFrameworkRuntime::Create_Download_Link((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'appcodeunpack.php', (string)$download_key); // generate an encrypted internal download link to serve that file once
 						$arr_actions['code-netxunpack'] = 'RELEASE.MANAGER :: Remove the AppCodeUnPack Standalone Script';
 					} else {
 						$arr_actions['code-netunpack'] = 'RELEASE.MANAGER :: Generate the AppCodeUnPack Standalone Script';
@@ -136,6 +200,26 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 				} //end if else
 				$arr_actions['code-cleanup'] = 'RELEASE.CLEANUP :: Delete Optimizations Folder, Package and Release files';
 			} //end if else
+			//--
+			if(defined('TASK_APP_RELEASE_EXTRA_ARR_TASKS')) {
+				if(Smart::array_size(TASK_APP_RELEASE_EXTRA_ARR_TASKS) > 0) {
+					if(Smart::array_type_test((array)TASK_APP_RELEASE_EXTRA_ARR_TASKS) == 2) { // associative
+						foreach((array)TASK_APP_RELEASE_EXTRA_ARR_TASKS as $key => $val) {
+							$key = (string) trim((string)$key);
+							if((string)$key != '') {
+								if(!array_key_exists((string)$key, (array)$arr_actions)) {
+									if(Smart::is_nscalar($val)) {
+										$val = (string) trim((string)$val);
+										if((string)$val != '') {
+											$arr_actions[(string)$key] = (string) $val;
+										} //end if
+									} //end if
+								} //end if
+							} //end if
+						} //end foreach
+					} //end if
+				} //end if
+			} //end if
 			//--
 			$html_select = (string) SmartViewHtmlHelpers::html_select_list_single(
 				'task-run-sel',
@@ -173,50 +257,18 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 				'class:ux-field-xl customList'
 			);
 			//--
-			$last_package = '';
-			$last_pack_dwn_url = '';
-			//--
 		} //end if else
-		//--
-
-		//--
-		$arr_utils_metainfo = (array) AppCodeUtils::getArrIniMetaInfo();
-		if((string)$appid != '') {
-			if((string)TASK_APP_RELEASE_CODEPACK_MODE == 'minify') {
-				foreach($arr_utils_metainfo as $key => $val) {
-					if($val !== null) {
-						if((string)$val == '') {
-							$this->PageViewSetErrorStatus(503, 'Optimizer Minify Strategy requires: '.$key);
-							return;
-						} //end if
-					} //end if
-				} //end foreach
-			} //end if
-		} //end if
 		//--
 		$this->PageViewSetVars([
 			'semaphore' => (string) Smart::array_to_list($semaphores),
 			'title' 	=> (string) $name_all,
 			'main' 		=> (string) SmartMarkersTemplating::render_file_template(
 				(string) $this->ControllerGetParam('module-view-path').'app-manage.mtpl.htm', // {{{SYNC-APP-RELEASE-TPL-VARS}}}
-				[
-					'MODAL' 			=> (string) 'no',
-					'YEAR' 				=> (string) date('Y'),
-					'VERSION' 			=> (string) AppCodeUtils::getVersion(),
-					'NAME' 				=> (string) $name_all,
-					'NAME-PREFIX' 		=> (string) $name_prefix,
-					'NAME-SUFFIX' 		=> (string) $name_suffix,
-					'MOD-VIEW-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
-					'PHP-SELF-VER' 		=> (string) $arr_utils_metainfo['PHP-SELF-VER'],
-					'PHP-BIN-VER' 		=> (string) $arr_utils_metainfo['PHP-BIN-VER'],
-					'NODE-BIN-VER' 		=> (string) $arr_utils_metainfo['NODE-BIN-VER'],
-					'JS-MIN-VER' 		=> (string) $arr_utils_metainfo['JS-MIN-VER'],
-					'JS-LINT-MODE' 		=> (string) $arr_utils_metainfo['JS-LINT-MODE'],
-					'CSS-MIN-VER' 		=> (string) $arr_utils_metainfo['CSS-MIN-VER'],
-					'CSS-LINT-MODE' 	=> (string) $arr_utils_metainfo['CSS-LINT-MODE'],
-					'SF-VER' 			=> (string) ' :: '.AppCodeUtils::getSfVersion(),
-					'MOD-SELF-URL' 		=> (string) 'task.php?page='.Smart::escape_url($this->ControllerGetParam('module')).'.',
-					'CTRL-SELF-NAME' 	=> (string) $this->ControllerGetParam('action'),
+				(array) array_merge((array)$arr_markers, [
+					'APP-ID' 			=> (string) (defined('APPCODEPACK_APP_ID') ? APPCODEPACK_APP_ID : ''),
+					'APP-DEPLOY-HASH' 	=> (string) (defined('APP_DEPLOY_HASH') ? APP_DEPLOY_HASH : ''),
+					'APP-DEPLOY-USER' 	=> (string) (defined('APP_DEPLOY_AUTH_USERNAME') ? APP_DEPLOY_AUTH_USERNAME : ''),
+					'APP_DEPLOY_URLS' 	=> (string) (defined('APP_DEPLOY_URLS') ? APP_DEPLOY_URLS : ''),
 					'HTML-POWERED-INFO' => (string) SmartComponents::app_powered_info(
 						'yes',
 						[
@@ -238,19 +290,18 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 						true, // watch
 						false // hide logo
 					),
-					'HTML-LIST-SEL' 	=> (string) $html_select,
-					'APP-ID' 			=> (string) (defined('APPCODEPACK_APP_ID') ? APPCODEPACK_APP_ID : ''),
-					'APP-DEPLOY-HASH' 	=> (string) (defined('APP_DEPLOY_HASH') ? APP_DEPLOY_HASH : ''),
-					'APP-DEPLOY-USER' 	=> (string) (defined('APP_DEPLOY_AUTH_USERNAME') ? APP_DEPLOY_AUTH_USERNAME : ''),
-					'APP_DEPLOY_URLS' 	=> (string) (defined('APP_DEPLOY_URLS') ? APP_DEPLOY_URLS : ''),
-					'LAST-PACKAGE' 		=> (string) $last_package,
-					'LAST-PKG-DWN-URL' 	=> (string) ($last_pack_dwn_url ? 'task.php?page='.Smart::escape_url($this->ControllerGetParam('controller')).'&appid='.Smart::escape_url((string)$appid).'&pkg='.Smart::escape_url((string)$last_pack_dwn_url) : ''),
-				]
+					'HTML-LIST-SEL' 		=> (string) $html_select,
+					'LAST-PACKAGE' 			=> (string) $last_package,
+					'LAST-PKG-DWN-URL' 		=> (string) ($last_pack_dwn_url ? 'task.php?page='.Smart::escape_url($this->ControllerGetParam('controller')).'&appid='.Smart::escape_url((string)$appid).'&dwn='.Smart::escape_url((string)$last_pack_dwn_url) : ''),
+					'APP-UNPACK-STD' 		=> (string) $appcodeunpack_script,
+					'APP-UNPACK-DWN-URL' 	=> (string) ($appcodeunpack_dwn_url ? 'task.php?page='.Smart::escape_url($this->ControllerGetParam('controller')).'&appid='.Smart::escape_url((string)$appid).'&dwn='.Smart::escape_url((string)$appcodeunpack_dwn_url) : ''),
+				])
 			)
 		]);
 		//--
 
 	} //END FUNCTION
+
 
 } //END CLASS
 

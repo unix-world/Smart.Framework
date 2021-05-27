@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\PageBuilder\AbstractFrontendController
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\PageBuilder;
 
@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210407
+ * @version 	v.20210526
  * @package 	development:modules:PageBuilder
  *
  */

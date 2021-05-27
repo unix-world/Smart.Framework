@@ -1,11 +1,13 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%/COMMENT%%%]
-//===== QUnit Tests.DataBase: START :: r.20200610
+//===== QUnit Tests.DataBase: START :: r.20210526
 
-(function() {
+(() => {
 
-	var localTests = {};
+	const theTimeOutAjax = 250;
+
+	let localTests = {};
 
 	localTests.SQLite 		= [###TEST-DB-SQLITE|bool###];
 	localTests.Dba 			= '[###TEST-DB-DBA|js###]';
@@ -14,8 +16,8 @@
 	localTests.PostgreSQL 	= [###TEST-DB-PGSQL|bool###];
 	localTests.MySQL 		= [###TEST-DB-MYSQL|bool###];
 
-	var testsDisabled = 0;
-	for(var val in localTests) {
+	let testsDisabled = 0;
+	for(let val in localTests) {
 		if(localTests[val] !== true) {
 			testsDisabled++;
 		} //end if
@@ -23,7 +25,7 @@
 	smartQUnitDisabledTests += testsDisabled;
 
 	localTests.module = false;
-	for(var val in localTests) {
+	for(let val in localTests) {
 		if(localTests[val] === true) {
 			localTests.module = true;
 			break;
@@ -32,18 +34,18 @@
 
 	if(localTests.module) {
 
-		QUnit.module('DataBase', function(){
+		QUnit.module('DataBase', () => {
 
 			if(localTests.SQLite) {
-				QUnit.test('SQLite Test: PHP :: ajax', function(assert) {
+				QUnit.test('SQLite Test: PHP :: ajax', (assert) => {
 					SmartQUnit.runAjaxTest(
-						baseScript + '?page=testunit&op=testunit.json-sqlite3-smartgrid',
+						String(baseScript) + '?page=testunit&op=testunit.json-sqlite3-smartgrid',
 						'GET',
 						'json', // data type
 						assert,
 						'Test OK: PHP SQLite.',
-						function(QAsyncTestDone, testOK, msg) {
-							var value;
+						(QAsyncTestDone, testOK, msg) => {
+							let value;
 							if((typeof msg == 'object') && (msg.status) && (typeof msg.status == 'string') && (msg.status = 'OK') && (msg.itemsPerPage) && (msg.itemsPerPage === 25) && (msg.totalRows) && (msg.totalRows >= 25) && (msg.rowsList) && (typeof msg.rowsList == 'object') && (msg.rowsList.length = 25)) {
 								value = 'Test OK: PHP SQLite.';
 							} else {
@@ -54,7 +56,7 @@
 								testOK
 							);
 							QAsyncTestDone();
-						} //end function
+						} //end
 					);
 				});
 			} else {
@@ -62,25 +64,25 @@
 			} //end if else
 
 			if(localTests.Dba) {
-				QUnit.test('Dba [' + localTests.Dba + '] Test: PHP :: ajax', function(assert) {
+				QUnit.test('Dba [' + localTests.Dba + '] Test: PHP :: ajax', (assert) => {
 					SmartQUnit.runAjaxTest(
-						baseScript + '?page=samples.testunit&op=testunit.dbadb-test',
+						String(baseScript) + '?page=samples.testunit&op=testunit.dbadb-test',
 						'GET',
 						'html', // data type
 						assert,
 						'Test OK: PHP Dba DB [' + localTests.Dba + '].',
-						function(QAsyncTestDone, testOK, msg, testHtmlDiv) {
+						(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+							const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 							if(typeof msg == 'string') {
-								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, 250);
+								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
 							} else {
-								var value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 								assert.equal(
 									value, testOK,
 									testOK
 								);
 								QAsyncTestDone();
 							} //end if else
-						} //end function
+						} //end
 					);
 				});
 			} else {
@@ -88,25 +90,25 @@
 			} //end if else
 
 			if(localTests.PCache) {
-				QUnit.test('Persistent Cache ([###NAME-DB-PCACHE|js###]) Test: PHP :: ajax', function(assert) {
+				QUnit.test('Persistent Cache ([###NAME-DB-PCACHE|js###]) Test: PHP :: ajax', (assert) => {
 					SmartQUnit.runAjaxTest(
-						baseScript + '?page=samples.testunit&op=testunit.pcache-test',
+						String(baseScript) + '?page=samples.testunit&op=testunit.pcache-test',
 						'GET',
 						'html', // data type
 						assert,
 						'Test OK: PHP PersistentCache.',
-						function(QAsyncTestDone, testOK, msg, testHtmlDiv) {
+						(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+							const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 							if(typeof msg == 'string') {
-								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, 250);
+								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
 							} else {
-								var value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 								assert.equal(
 									value, testOK,
 									testOK
 								);
 								QAsyncTestDone();
 							} //end if else
-						} //end function
+						} //end
 					);
 				});
 			} else {
@@ -114,25 +116,25 @@
 			} //end if else
 
 			if(localTests.MongoDB) {
-				QUnit.test('MongoDB Test: PHP :: ajax', function(assert) {
+				QUnit.test('MongoDB Test: PHP :: ajax', (assert) => {
 					SmartQUnit.runAjaxTest(
-						baseScript + '?page=samples.testunit&op=testunit.mongodb-server-test',
+						String(baseScript) + '?page=samples.testunit&op=testunit.mongodb-server-test',
 						'GET',
 						'html', // data type
 						assert,
 						'Test OK: PHP MongoDB.',
-						function(QAsyncTestDone, testOK, msg, testHtmlDiv) {
+						(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+							const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 							if(typeof msg == 'string') {
-								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, 250);
+								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
 							} else {
-								var value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 								assert.equal(
 									value, testOK,
 									testOK
 								);
 								QAsyncTestDone();
 							} //end if else
-						} //end function
+						} //end
 					);
 				});
 			} else {
@@ -140,25 +142,25 @@
 			} //end if else
 
 			if(localTests.PostgreSQL) {
-				QUnit.test('PostgreSQL Test: PHP :: ajax', function(assert) {
+				QUnit.test('PostgreSQL Test: PHP :: ajax', (assert) => {
 					SmartQUnit.runAjaxTest(
-						baseScript + '?page=samples.testunit&op=testunit.pgsql-server-test',
+						String(baseScript) + '?page=samples.testunit&op=testunit.pgsql-server-test',
 						'GET',
 						'html', // data type
 						assert,
 						'Test OK: PHP PostgreSQL.',
-						function(QAsyncTestDone, testOK, msg, testHtmlDiv) {
+						(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+							const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 							if(typeof msg == 'string') {
-								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, 250);
+								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
 							} else {
-								var value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 								assert.equal(
 									value, testOK,
 									testOK
 								);
 								QAsyncTestDone();
 							} //end if else
-						} //end function
+						} //end
 					);
 				});
 			} else {
@@ -166,25 +168,25 @@
 			} //end if else
 
 			if(localTests.MySQL) {
-				QUnit.test('MySQLi Test: PHP :: ajax', function(assert) {
+				QUnit.test('MySQLi Test: PHP :: ajax', (assert) => {
 					SmartQUnit.runAjaxTest(
-						baseScript + '?page=samples.testunit&op=testunit.mysql-server-test',
+						String(baseScript) + '?page=samples.testunit&op=testunit.mysql-server-test',
 						'GET',
 						'html', // data type
 						assert,
 						'Test OK: PHP MySQLi.',
-						function(QAsyncTestDone, testOK, msg, testHtmlDiv) {
+						(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
+							const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 							if(typeof msg == 'string') {
-								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, 250);
+								testHtmlDiv(assert, QAsyncTestDone, testOK, value, msg, theTimeOutAjax);
 							} else {
-								var value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 								assert.equal(
 									value, testOK,
 									testOK
 								);
 								QAsyncTestDone();
 							} //end if else
-						} //end function
+						} //end
 					);
 				});
 			} else {

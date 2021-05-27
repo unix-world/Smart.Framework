@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartPersistentCache        final class \ SmartPersistentCache  extends \SmartAbstractPersistentCache   {   } ::    Class: SmartPersistentCache (Default,">
-	<meta name="keywords" content="smartpersistentcache, final, class, extends, smartabstractpersistentcache, default, blackhole, provides, compatibility, support, for, the, persistent, cache, when, not, using, any, storage, adapter, handler, this, is, used, just, ensuring, code, reliability, no, other, real, was, set, if, by, automatically, it, will, function, as, a, meaning, be, emulated, thus, all, variables, in, simply, vanish, and, get, always, return, an, empty, result, because, have, attached, only, can, etc init.php, smart framework persistent cache handler, to, use, functional, there, are, built-in, options, 3rd, extra, option, smart.framework, dba, small, files, across, filesystem, redis, inmemory, custom, implementation, that, you, must, develop, your, own, extending, abstract, notice, developing, key, expiration, supported">
+	<meta name="keywords" content="smartpersistentcache, final, class, extends, smartabstractpersistentcache, default, blackhole, provides, compatibility, support, for, the, persistent, cache, when, not, using, any, storage, adapter, handler, this, is, used, just, ensuring, code, reliability, no, other, real, was, set, if, by, automatically, it, will, function, as, a, meaning, be, emulated, thus, all, variables, in, simply, vanish, and, get, always, return, an, empty, result, because, have, attached, only, can, etc init.php, smart framework persistent cache handler, to, use, functional, there, are, built-in, options, 3rd, extra, option, smart.framework, sqlite, small, db, files, across, filesystem, scale, very, dba, medium, redis, inmemory, or, large, mongodb, based, custom, implementation, that, you, must, develop">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartPersistentCache">
 	<title>PHP Documentation for: \SmartPersistentCache</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -704,22 +704,23 @@ It will function as a blackhole, meaning the Persistent Cache will be just emula
 Thus all variables set in this (blackhole) Persistent Cache will simply vanish ... and get will always return an empty result, because have no storage attached (emulated only)<br>
 A real Persistent Cache adapter can be set in etc/init.php as SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER to use a real and functional Persistent Cache adapter (handler).<br>
 By default there are 2 built-in options and a 3rd extra option for the Persistent Cache Adapter in Smart.Framework:<br>
-1) the built-in DBA adapter, using small DBA files across the FileSystem<br>
-2) the built-in Redis adapter using inMemory Persistent Cache<br>
-3) a custom implementation (that you must develop and set) to use your own custom Persistent Cache adapter (handler) by extending the SmartAbstractPersistentCache abstract class<br>
+1) the built-in SQLite adapter, using small SQLITE DB files across the FileSystem (scale: very small)<br>
+2) the built-in DBA adapter, using small DBA files across the FileSystem (scale: medium)<br>
+3) the built-in Redis adapter using inMemory Persistent Cache (scale: medium or large)<br>
+4) the built-in MongoDB adapter using DB Based Persistent Cache (scale: large)<br>
+5) a custom implementation (that you must develop and set) to use your own custom Persistent Cache adapter (handler) by extending the SmartAbstractPersistentCache abstract class<br>
 NOTICE: When developing a custom Persistent Cache adapter (handler) if the key expiration is not supported natively, then this functionality must be implemented in a custom way to expire and to delete expired keys.<br>
-By example Memcached is not a good choice for a Persistent Cache storage because the max length of a string that can be stored in Memcached is 1MB.<br>
-This is why Smart.Framework supply only the Redis and DBA adapters (and not a Memcached adapter) because another requirement of the Persistent Cache implementation is to have no limit on the key/value that can be stored. And Redis does not have such limit. Also DBA does not have any limit.</div><br>
+Also, if using by example Memcached assure that the max length of a string that can be stored in Memcached is large enough, by default is 1MB only.</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/app/persistent-cache-x-blackhole.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/lib_caching.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Application:Caching</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartPersistentCache</span></li>
 		
-		<li><b>Version:</b> v.20210331</li>
+		<li><b>Version:</b> v.20210513</li>
 		<li><b>Depends:</b> -</li>
 		<li><b>Hints:</b> The  Persistent Cache will share the keys between both areas (INDEX and ADMIN) ; It is developer's choice and work to ensure realm separation if needed for the keys if required so (Ex: INDEX area may use separate realms than ADMIN area)</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -829,8 +830,8 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--keyExists">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>keyExists</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -846,8 +847,8 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--getTtl">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getTtl</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
@@ -863,8 +864,8 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--getKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
@@ -880,10 +881,10 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--setKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>, 
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>, 
 			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_value` Parameter is REQUIRED">$y_value</span></b></span>, 
-			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_expiration` Parameter is OPTIONAL, with the Default Value: 0">$y_expiration</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_expiration` Parameter is OPTIONAL, with the Default Value: 0">$y_expiration</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -901,8 +902,8 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--unsetKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>unsetKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -918,9 +919,9 @@ This function should be used in some caching scenarios to check if make sense to
 	
 </div><div class="doc-container" id="Method--cachePathPrefix">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>cachePathPrefix</b></span>&nbsp;(
-				<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_len` Parameter is REQUIRED">$y_len</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+				<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_len` Parameter is REQUIRED">$y_len</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -938,7 +939,7 @@ This is mainly designed to be used by the FileSystem based persistent cache impl
 	
 </div><div class="doc-container" id="Method--validateRealm">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validateRealm</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -955,7 +956,7 @@ Must be between 0 (min) and 255 (max) characters long</div>
 	
 </div><div class="doc-container" id="Method--validateKey">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validateKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -971,7 +972,7 @@ Cannot be empty and must comply with self::safeKey() restricted charset: _ a-z A
 	
 </div><div class="doc-container" id="Method--validateValue">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validateValue</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_value` Parameter is REQUIRED">$y_value</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_value` Parameter is REQUIRED">$y_value</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -988,7 +989,7 @@ Should not be not empty and not oversized (max ~16MB minus 65KB reserved for met
 	
 </div><div class="doc-container" id="Method--safeKey">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>safeKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key_or_realm` Parameter is REQUIRED">$y_key_or_realm</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key_or_realm` Parameter is REQUIRED">$y_key_or_realm</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -1023,7 +1024,7 @@ To store complex variables like Arrays, use this function before setKey() which 
 	
 </div><div class="doc-container" id="Method--varDecode">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>varDecode</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_encoded_var` Parameter is REQUIRED">$y_encoded_var</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_encoded_var` Parameter is REQUIRED">$y_encoded_var</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
@@ -1059,7 +1060,7 @@ By default the variable will be: encoded (serialized as Json), compressed (gzenc
 	
 </div><div class="doc-container" id="Method--varUncompress">
 	<span class="doc-modifiers">final public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>varUncompress</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_cache_arch_var` Parameter is REQUIRED">$y_cache_arch_var</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_cache_arch_var` Parameter is REQUIRED">$y_cache_arch_var</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
@@ -1198,7 +1199,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:45 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:34 +0000</small>
 <hr>
 <br>
 <!-- # -->

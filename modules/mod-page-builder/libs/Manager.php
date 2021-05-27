@@ -1,7 +1,7 @@
 <?php
 // Class: \SmartModExtLib\PageBuilder\Manager
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\PageBuilder;
 
@@ -50,7 +50,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210513
+ * @version 	v.20210526
  * @package 	PageBuilder
  *
  */
@@ -2597,8 +2597,7 @@ final class Manager {
 		} //end if
 		//--
 		$input_str = (string) \SmartFileSystem::read_uploaded((string)$_FILES['import_file']['tmp_name']);
-		//--
-		$input_str = (array) \SmartSpreadSheetImport::readFileContentsToArray($input_str);
+		$input_str = (array) \SmartSpreadSheetImport::parseContentAsArr((string)$input_str);
 		if(\Smart::array_size($input_str) <= 0) {
 			return \SmartComponents::operation_error('Invalid XL03/Xml File Format to Import');
 		} //end if

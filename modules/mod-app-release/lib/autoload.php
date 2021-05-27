@@ -1,8 +1,8 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // [LIB - Smart.Framework / Modules / AppRelease / AutoLoad]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -22,7 +22,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @internal
  *
  */
-function autoload__SmartFrameworkLibModulesAppRelease($classname) { // v.20210522
+function autoload__SmartFrameworkLibModulesAppRelease($classname) { // v.20210526
 	//--
 	switch((string)$classname) {
 		//--

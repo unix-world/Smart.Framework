@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / DBA Persistent Cache]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -49,7 +49,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, PHP DBA Extension, SmartDbaUtilDb, SmartDbaDb
- * @version 	v.20200121
+ * @version 	v.20210527
  * @package 	Plugins:PersistentCache:Dba
  *
  */
@@ -60,8 +60,8 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 	// !!! THIS CLASS MUST NOT BE MARKED AS FINAL to allow the class SmartPersistentCache@DBA to be extended from this !!!
 	// But this class have all PUBLIC Methods marked as FINAL to avoid being rewritten ...
 
-	const DBA_FOLDER 			= 'tmp/cache/pcache#dba/'; 	// base cached folder
-	const DBA_FILE   			= 'p-cache.dba';			// base name for dba cache file
+	private const DBA_FOLDER 	= 'tmp/cache/pcache#dba/'; 	// base cached folder
+	private const DBA_FILE   	= 'p-cache.dba';			// base name for dba cache file
 
 	private static $is_active 	= null;						// Cache Active State ; by default is null ; on 1st check must set to TRUE or FALSE
 
@@ -340,6 +340,10 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 			(string) get_called_class(), 	// desc (late state binding to get this class or class that extends this)
 			(bool)   $is_fatal_err 			// fatal err
 		); // use the connection values from configs
+		//--
+		if(Smart::random_number(0, 100) == 10) { // 1% chance to cleanup ; no need to check if init, DBA is iterating keys to do the cleanup so at init there are no keys ...
+			$obj->clearExpiredKeys(25); // limit to 10% of 250 = 25 vs sessions ... have to be very fast, it is a pcache manager ; also the cache keys are bigger in size than sessions !
+		} //end if
 		//--
 		return (object) $obj;
 		//--

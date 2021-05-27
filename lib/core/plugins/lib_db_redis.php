@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / Redis Database Client]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Sockets ; classes: Smart, SmartComponents
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:Redis
  *
  */
@@ -270,7 +270,7 @@ final class SmartRedisDb {
 			return null;
 		} //end if
 		//--
-		$method = strtoupper((string)$method);
+		$method = (string) strtoupper((string)$method);
 		$args = (array) $args;
 		//--
 		switch((string)$method) {
@@ -309,7 +309,7 @@ final class SmartRedisDb {
 			case 'SORT': // sort key by pattern ; SORT mylist DESC ; SORT mylist ALPHA ; for UTF-8 the !LC_COLLATE environment must be set
 			case 'SCAN': // available since Redis 2.8 ; incrementally iterate over a collection of keys
 			//--
-			case 'HSET': // sets field in the hash stored at key to value
+			case 'HSET': // sets field in the hash stored at key to value ; if key does not exist, a new key holding a hash is created. If field already exists in the hash, it is overwritten
 			case 'HDEL': // removes the specified fields from the hash stored at key
 			case 'HEXISTS': // returns if field is an existing field in the hash stored at key
 			case 'HGET': // returns the value associated with field in the hash stored at key
@@ -321,7 +321,6 @@ final class SmartRedisDb {
 			case 'HMGET': // returns the values associated with the specified fields in the hash stored at key
 			case 'HMSET': // sets the specified fields to their respective values in the hash stored at key
 			case 'HSCAN': // available since 2.8.0 ; iterates fields of Hash types and their associated values
-			case 'HSET': // sets field in the hash stored at key to value ; if key does not exist, a new key holding a hash is created. If field already exists in the hash, it is overwritten
 			case 'HSETNX': // sets field in the hash stored at key to value, only if field does not yet exist
 			case 'HSTRLEN': // returns the string length of the value associated with field in the hash stored at key
 			case 'HVALS': // returns all values in the hash stored at key
@@ -374,7 +373,7 @@ final class SmartRedisDb {
 			case 'ZUNIONSTORE': // computes the union of numkeys sorted sets given by the specified keys, and stores the result in destination
 			case 'ZSCAN': // available since 2.8.0 ; iterates elements of Sorted Set types and their associated scores
 			//--
-		//	case 'FLUSHALL': // remove all keys from all databases !!! this is unsafe because operates on many databases !!!
+		//	case 'FLUSHALL': // remove all keys from all databases !!! this is unsafe because operates on many databases, don't allow in this context !!!
 			case 'FLUSHDB': // remove all keys from the selected database
 			case 'DBSIZE': // return the number of keys in the currently-selected database
 			case 'SAVE': // synchronous save the DB to disk ; returns OK on success
@@ -393,7 +392,7 @@ final class SmartRedisDb {
 					return null;
 				} //end if
 				//--
-				return $this->run_command($method, $args);
+				return $this->run_command((string)$method, (array)$args);
 				//--
 				break;
 			case 'AUTH': // password ; returns OK
@@ -421,7 +420,7 @@ final class SmartRedisDb {
 	 * @internal
 	 *
 	 */
-	private function run_command($method, array $args) {
+	private function run_command(string $method, array $args) {
 		//--
 		if(!$this->socket) {
 			$this->error('Redis Connection / Run', 'Connection Failed', 'Method: '.$method); // fatal error
@@ -462,13 +461,103 @@ final class SmartRedisDb {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 			SmartFrameworkRegistry::setDebugMsg('db', 'redis|total-time', $time_end, '+');
 			//--
+			$dtype = 'nosql';
+			if(in_array(
+				(string) strtoupper((string)$method),
+				[
+					'TYPE',
+					'STRLEN',
+					'TTL',
+					'GET',
+					'KEYS',
+					'RANDOMKEY',
+				]
+			)) {
+				$dtype = 'read';
+			} elseif(in_array(
+				(string) strtoupper((string)$method),
+				[
+					'EXISTS',
+				]
+			)) {
+				$dtype = 'count';
+			} elseif(in_array(
+				(string) strtoupper((string)$method),
+				[
+					'SET',
+					'APPEND',
+					'DEL',
+					'EXPIRE',
+					'EXPIREAT',
+					'PERSIST',
+					'INCR',
+					'INCRBY',
+					'DECR',
+					'DECRBY',
+					'RENAME',
+				]
+			)) {
+				$dtype = 'write';
+			} elseif(in_array(
+				(string) strtoupper((string)$method),
+				[
+					'MULTI',
+					'EXEC',
+					'DISCARD',
+				]
+			)) {
+				$dtype = 'transaction';
+			} elseif(in_array(
+				(string) strtoupper((string)$method),
+				[
+					'PING',
+					'AUTH',
+					'SELECT',
+					'WATCH',
+					'UNWATCH',
+				]
+			)) {
+				$dtype = 'set';
+			} elseif(in_array(
+				(string) strtoupper((string)$method),
+				[
+					'FLUSHDB',
+					'SAVE',
+					'QUIT',
+				]
+			)) {
+				$dtype = 'special';
+			} //end if else
+			//--
+			$datasize = null;
+			$isdatalensize = false;
+			if(in_array(
+				(string) strtoupper((string)$method),
+				[
+					'SET',
+					'APPEND',
+					'HSET',
+					'HMSET',
+					'HSETNX',
+					'LINSERT',
+					'LSET',
+					'SADD',
+					'ZADD',
+					'ECHO',
+				]
+			)) {
+				$datasize = (int) strlen((string)implode(' ', (array)$args));
+				$isdatalensize = true;
+			} //end if
+			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
-				'type' => 'nosql',
-				'data' => strtoupper($method).' :: '.$this->description,
-				'command' => Smart::text_cut_by_limit((string)implode(' ', (array)$args), 1024, true, '[...data-longer-than-1024-bytes-is-not-logged-all-here...]'),
-				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-				'rows' => is_array($response) ? count($response) : strlen((string)$response),
-				'connection' => (string) $this->socket
+				'type' 			=> (string) $dtype,
+				'data' 			=> (string) strtoupper($method).' :: '.$this->description,
+				'command' 		=> (string) Smart::text_cut_by_limit((string)implode(' ', (array)$args), 1024, true, '[...data-longer-than-1024-bytes-is-not-logged-all-here...]'),
+				'time' 			=> (string) Smart::format_number_dec($time_end, 9, '.', ''),
+				'rows' 			=> (int)   (($datasize === null) ? (is_array($response) ? count($response) : (int)((bool)strlen((string)$response))) : $datasize),
+				'wsize' 		=> (bool) 	$isdatalensize,
+				'connection' 	=> (string) $this->socket
 			]);
 			//--
 		} //end if
@@ -495,8 +584,8 @@ final class SmartRedisDb {
 			return null;
 		} //end if
 		//--
-		$type = (string) substr($line, 0, 1);
-		$result = (string) substr($line, 1, (strlen($line) - 3));
+		$type = (string) substr((string)$line, 0, 1);
+		$result = (string) substr((string)$line, 1, ((int)strlen((string)$line) - 3));
 		//--
 		if((string)$type == '-') { // error message
 			//--

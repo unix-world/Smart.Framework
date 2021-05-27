@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- AppCodeUnpack v.20210522 -->
+<!-- AppCodeUnpack v.20210526 -->
 <!-- (c) 2013-2021 unix-world.org - all rights reserved -->
 <html>
 <head>
@@ -40,6 +40,8 @@
 const disableHomeLinks = () => {
 	$('#appcodepack-img').off('click').removeClass('pointerCursor');
 	$('#appcodepack-txt').off('click').removeClass('pointerCursor');
+	$('#netarchive-logo').off('click').removeClass('pointerCursor');
+	$('#php-logo').off('click').removeClass('pointerCursor');
 };
 const enableHomeLinks = () => {
 	$('#appcodepack-img').on('click', () => {
@@ -48,7 +50,9 @@ const enableHomeLinks = () => {
 			self.location='[###SCRIPT|js###]?logout=yes';
 		}
 	}).addClass('pointerCursor');
-	$('#appcodepack-txt').on('click', () => { self.location='[###SCRIPT|js###]'; }).addClass('pointerCursor');
+	$('#appcodepack-txt').on('click', () => { self.location = '[###SCRIPT|js###]'; }).addClass('pointerCursor');
+	$('#netarchive-logo').on('click', () => { self.location = AppCodeUnpackJs.url_add_suffix('[###SCRIPT|js###]', 'action=deploys-list'); }).addClass('pointerCursor');
+	$('#php-logo').on('click', () => { self.location = AppCodeUnpackJs.url_add_suffix('[###SCRIPT|js###]', 'action=logs-list'); }).addClass('pointerCursor');
 };
 const hideLoader = () => {
 	$('#Loader-Img').hide();
@@ -92,6 +96,39 @@ const showForm = (the_form_id) => {
 		});
 	}, 2000);
 };
+const filterList = (isFiltering) => {
+	isFiltering = !! isFiltering;
+	let expr = '';
+	const $fld = $('input#filter-list');
+	if(isFiltering === true) {
+		expr = AppCodeUnpackJs.stringPureVal($fld.val(), true);
+	}
+	let rowsShown = 0;
+	$('div.filter-search-container').each((idx, el) => {
+		const $el = $(el);
+		const txt = $el.find('span.filter-search-value').text();
+		if(expr != '') {
+			if(txt.indexOf(expr) === -1) {
+				$el.hide();
+			} else {
+				$el.show();
+				rowsShown++;
+			}
+		} else {
+			$el.show();
+		}
+	});
+	$filterInfo = $('#filter-info');
+	if(expr) {
+		if(rowsShown > 0) {
+			$filterInfo.empty().text('Displaying FILTERED Results: Found: #' + rowsShown + ' result(s)');
+		} else {
+			$filterInfo.empty().text('Displaying FILTERED Results: NO Results Found');
+		}
+	} else {
+		$filterInfo.empty().text('Displaying ALL Results');
+	}
+};
 </script>
 <!-- #.# -->
 </head>
@@ -109,16 +146,16 @@ const showForm = (the_form_id) => {
 		</td>
 		<td> &nbsp; &nbsp; &nbsp; </td>
 		<td align="right">
-			<img width="48" height="48" alt="NetArchive-Logo" title="NetArchive Packager by Smart.Framework, deploy dir: [%%%|N%%%]`[###REALPATH-CRR|html###]`" src="data:image/svg+xml,[###NETARCH-SVG|url|html###]" class="helpCursor">
+			<img width="48" height="48" alt="NetArchive-Logo" title="Deployments List" src="data:image/svg+xml,[###NETARCH-SVG|url|html###]" class="helpCursor" id="netarchive-logo">
 			&nbsp;
-			<img width="48" height="48" alt="PHP-Logo" title="PHP App Deploy Management" src="data:image/svg+xml,[###PHP-SVG|url|html###]" class="helpCursor">
+			<img width="48" height="48" alt="PHP-Logo" title="PHP [[###PHP-VER|html###]] App Error Logs" src="data:image/svg+xml,[###PHP-SVG|url|html###]" class="helpCursor" id="php-logo">
 			&nbsp;
-			<img width="48" height="48" alt="Apache-Logo" title="Security by Apache HTTP/S Server" src="data:image/svg+xml,[###APACHE-SVG|url|html###]" class="helpCursor">
+			<img width="48" height="48" alt="Apache-Logo" title="Apache HTTP/S Server [[###APACHE-VER|html###]] :: deploy system path: [%%%|N%%%]`[###REALPATH-CRR|html###]`" src="data:image/svg+xml,[###APACHE-SVG|url|html###]" class="helpCursor">
 			&nbsp;
 		</td>
 		<td align="right">
 			&nbsp;
-			<img width="48" height="48" alt="Smart.Framework-Logo" title="Smart.Framework-Logo" src="data:image/svg+xml,[###SF-SVG|url|html###]" class="helpCursor">
+			<img width="48" height="48" alt="Smart.Framework-Logo" title="Standalone App powered by Smart.Framework # [###SF-VER|html###]" src="data:image/svg+xml,[###SF-SVG|url|html###]" class="helpCursor">
 			&nbsp;
 		</td>
 	</tr>

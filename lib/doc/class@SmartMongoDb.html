@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartMongoDb        final class \ SmartMongoDb    {   } -&gt;    Class Smart MongoDB Client (for PHP MongoDB extension v.1.1.0 or later) Tested and Stable">
-	<meta name="keywords" content="smartmongodb, final, class, smart, mongodb, client, for, php, extension, v.1.1.0, or, later, tested, and, stable, on, server, versions, language, located, at, lib core plugins lib db mongodb.php, package, plugins:database:mongodb, namespace, name, throws, exception, depending, how, this, it, is, constructed, may, throw, raise, fatal, error, version, v.20210401, depends, extensions, classes, hints, important, database, specifies, that, max, bson, document, size, megabytes, supports, no, more, than, levels, of, nesting, thus, limit, cannot, be, exceeded, from, side, when, creating, new, documents, https:  docs.mongodb.com manual reference limits, to, store, larger, the, maximum, provides, gridfs, api, usage, dynamic, object, class method, only, methods, public, function, construct, array, y configs arr, bool, y fatal err, true, param, optional">
+	<meta name="keywords" content="smartmongodb, final, class, smart, mongodb, client, for, php, extension, v.1.1.0, or, later, tested, and, stable, on, server, versions, language, located, at, lib core plugins lib db mongodb.php, package, plugins:database:mongodb, namespace, name, throws, exception, depending, how, this, it, is, constructed, may, throw, raise, fatal, error, version, v.20210527, depends, extensions, classes, smartcomponents, hints, important, database, specifies, that, max, bson, document, size, megabytes, supports, no, more, than, levels, of, nesting, thus, limit, cannot, be, exceeded, from, side, when, creating, new, documents, https:  docs.mongodb.com manual reference limits, to, store, larger, the, maximum, provides, gridfs, api, usage, dynamic, object, class method, only, methods, public, function, construct, array, y configs arr, bool, y fatal err, true, param">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMongoDb">
 	<title>PHP Documentation for: \SmartMongoDb</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -706,9 +706,9 @@ Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 
 		<li><span class="doc-package"><b>Package:</b> Plugins:Database:MongoDB</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartMongoDb</span></li>
-		<li><span class="doc-throws"><b>Throws:</b> \Exception  : Depending how this class it is constructed it may throw Exception or Raise Fatal Error</span></li>
-		<li><b>Version:</b> v.20210401</li>
-		<li><b>Depends:</b> extensions:  PHP MongoDB ; classes: Smart</li>
+		<li><span class="doc-throws"><b>Throws:</b> Exception  : Depending how this class it is constructed it may throw Exception or Raise Fatal Error</span></li>
+		<li><b>Version:</b> v.20210527</li>
+		<li><b>Depends:</b> extensions:  PHP MongoDB ; classes: Smart, SmartComponents</li>
 		<li><b>Hints:</b> Important:  MongoDB database specifies that max BSON document size is 16 megabytes and supports no more than 100 levels of nesting, thus this limit cannot be exceeded from PHP side when creating new mongodb documents: https://docs.mongodb.com/manual/reference/limits/ ; To store documents larger than the maximum size, MongoDB provides the GridFS API</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -957,7 +957,7 @@ It have variadic parameters mapped to MongoDB sub-calls.</div>
 
 <span class="hljs-comment">// ... see more usage samples: modules/mod-samples/libs/TestUnitMongoDB.php</span>
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 			<br>
 					<div class="doc-container" id="Method-Sub--count">
@@ -1176,21 +1176,21 @@ It have variadic parameters mapped to MongoDB sub-calls.</div>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">//&nbsp;sample&nbsp;mongo&nbsp;config<br>
-&nbsp;</span><span class="c1">$cfg_mongo&nbsp;</span><span class="c3">=&nbsp;array();<br>
-&nbsp;</span><span class="c1">$cfg_mongo</span><span class="c3">[</span><span class="c4">&#39;type&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;mongo-standalone&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;mongodb&nbsp;server(s)&nbsp;type:&nbsp;&#39;mongo-standalone&#39;&nbsp;|&nbsp;&#39;mongo-cluster&#39;&nbsp;(sharding)&nbsp;|&nbsp;&#39;mongo-replica-set:My-Replica&#39;&nbsp;(replica&nbsp;set)<br>
-&nbsp;</span><span class="c1">$cfg_mongo</span><span class="c3">[</span><span class="c4">&#39;server-host&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;127.0.0.1&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;mongodb&nbsp;host&nbsp;or&nbsp;comma&nbsp;separed&nbsp;list&nbsp;of&nbsp;multiple&nbsp;hosts<br>
-&nbsp;</span><span class="c1">$cfg_mongo</span><span class="c3">[</span><span class="c4">&#39;server-port&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;27017&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;mongodb&nbsp;port<br>
-&nbsp;</span><span class="c1">$cfg_mongo</span><span class="c3">[</span><span class="c4">&#39;dbname&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;smart_framework&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;mongodb&nbsp;database<br>
-&nbsp;</span><span class="c1">$cfg_mongo</span><span class="c3">[</span><span class="c4">&#39;username&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;mongodb&nbsp;username<br>
-&nbsp;</span><span class="c1">$cfg_mongo</span><span class="c3">[</span><span class="c4">&#39;password&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c4">&#39;&#39;</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;mongodb&nbsp;Base64-Encoded&nbsp;password<br>
-&nbsp;</span><span class="c1">$cfg_mongo</span><span class="c3">[</span><span class="c4">&#39;timeout&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c1">5</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;mongodb&nbsp;connect&nbsp;timeout&nbsp;in&nbsp;seconds<br>
-&nbsp;</span><span class="c1">$cfg_mongo</span><span class="c3">[</span><span class="c4">&#39;slowtime&#39;</span><span class="c3">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span class="c1">0.0035</span><span class="c3">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c2">//&nbsp;0.0025&nbsp;..&nbsp;0.0090&nbsp;slow&nbsp;query&nbsp;time&nbsp;(for&nbsp;debugging)<br>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #999999">//&nbsp;sample&nbsp;mongo&nbsp;config<br>
+&nbsp;</span><span style="color: #FFFFFF">$cfg_mongo&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;array();<br>
+&nbsp;</span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;type&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;mongo-standalone&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;mongodb&nbsp;server(s)&nbsp;type:&nbsp;&#39;mongo-standalone&#39;&nbsp;|&nbsp;&#39;mongo-cluster&#39;&nbsp;(sharding)&nbsp;|&nbsp;&#39;mongo-replica-set:My-Replica&#39;&nbsp;(replica&nbsp;set)<br>
+&nbsp;</span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;server-host&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;127.0.0.1&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;mongodb&nbsp;host&nbsp;or&nbsp;comma&nbsp;separed&nbsp;list&nbsp;of&nbsp;multiple&nbsp;hosts<br>
+&nbsp;</span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;server-port&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;27017&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;mongodb&nbsp;port<br>
+&nbsp;</span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;dbname&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;smart_framework&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;mongodb&nbsp;database<br>
+&nbsp;</span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;username&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;mongodb&nbsp;username<br>
+&nbsp;</span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;password&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;&#39;</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;mongodb&nbsp;Base64-Encoded&nbsp;password<br>
+&nbsp;</span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;timeout&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #FFFFFF">5</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;mongodb&nbsp;connect&nbsp;timeout&nbsp;in&nbsp;seconds<br>
+&nbsp;</span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;slowtime&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;</span><span style="color: #FFFFFF">0.0035</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;0.0025&nbsp;..&nbsp;0.0090&nbsp;slow&nbsp;query&nbsp;time&nbsp;(for&nbsp;debugging)<br>
 <br>
 &nbsp;//&nbsp;sample&nbsp;mongo&nbsp;connect<br>
-&nbsp;</span><span class="c1">$mongo&nbsp;</span><span class="c3">=&nbsp;new&nbsp;</span><span class="c1">\SmartMongoDb</span><span class="c3">(</span><span class="c1">$cfg_mongo</span><span class="c3">);<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+&nbsp;</span><span style="color: #FFFFFF">$mongo&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartMongoDb</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$cfg_mongo</span><span style="color: #FFCC00; font-weight: bold">);<br>
+<br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1279,7 +1279,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:52 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:39 +0000</small>
 <hr>
 <br>
 <!-- # -->

@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -713,7 +713,7 @@ To handle this in an easy and safe manner, use the function SmartFileSysUtils::a
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartFileSysUtils</span></li>
 		
-		<li><b>Version:</b> v.20210331</li>
+		<li><b>Version:</b> v.20210513</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -769,7 +769,7 @@ Security: provides check if unsafe filenames or dirnames are accessed.</div>
 			<div class="doc-method-ret-params">@return: {0/1} returns 1 if VALID ; 0 if INVALID<br>
 @param: {STRING} $y_path: The path (dir or file) to validate<br>
 @param: {YES/NO} $y_deny_absolute_path: *Optional* If YES will dissalow absolute paths<br>
-@param: {YES/NO} $y_allow_protected_relative_paths: *Optional* ! This is for very special case usage only so don't set it to YES except if you know what you are really doing ! If set to YES will allow access to special protected paths of this framework which may have impact on security ... ; this parameter is intended just for relative paths only (not absolute paths) as: #dir/.../file.ext ; #file.ext</div>
+@param: {YES/NO} $y_allow_protected_relative_paths: *Optional* ! This is for very special case usage only so don't set it to YES except if you know what you are really doing ! If set to YES will allow access to special protected paths of this framework which may have impact on security ... ; this parameter is intended just for relative paths only (not absolute paths) as: #dir/.../file.ext ; #file.ext ; for task area this is always hardcoded to 'yes' and cannot be overrided</div>
 	
 			<div class="doc-method-comments">Check a Path (to a Directory or to a File) if contain valid characters (to avoid filesystem path security injections)<br>
 Security: provides check if unsafe paths are accessed.</div>
@@ -1014,11 +1014,11 @@ If a higher length than 40 chars or an invalid ID is provided will reset the ID 
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c4"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">//&nbsp;Usage&nbsp;example:<br>
-&nbsp;</span><span class="c1">SmartFileSysUtils</span><span class="c3">::</span><span class="c1">some_method_of_this_class</span><span class="c3">(...);<br>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>
+&nbsp;</span><span style="color: #FFFFFF">SmartFileSysUtils</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br>
 <br>
-&nbsp;&nbsp;</span><span class="c2">//-----------------------------------------------------------------------------------------------------<br>
+&nbsp;&nbsp;</span><span style="color: #999999">//-----------------------------------------------------------------------------------------------------<br>
 &nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>
 &nbsp;&nbsp;//&nbsp;SAFE&nbsp;REPLACEMENTS:<br>
 &nbsp;&nbsp;//&nbsp;In&nbsp;order&nbsp;to&nbsp;supply&nbsp;a&nbsp;common&nbsp;framework&nbsp;for&nbsp;Unix&nbsp;/&nbsp;Linux&nbsp;but&nbsp;also&nbsp;on&nbsp;Windows,<br>
@@ -1031,7 +1031,8 @@ If a higher length than 40 chars or an invalid ID is provided will reset the ID 
 &nbsp;&nbsp;//&nbsp;Also,&nbsp;when&nbsp;folders&nbsp;are&nbsp;get&nbsp;from&nbsp;external&nbsp;environments&nbsp;and&nbsp;are&nbsp;not&nbsp;certified&nbsp;if&nbsp;they&nbsp;have<br>
 &nbsp;&nbsp;//&nbsp;been&nbsp;converted&nbsp;from&nbsp;\&nbsp;to&nbsp;/&nbsp;on&nbsp;Windows,&nbsp;those&nbsp;paths&nbsp;have&nbsp;to&nbsp;be&nbsp;fixed&nbsp;using:&nbsp;Smart::fix_path_separator()<br>
 &nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+<br>
+//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1133,7 +1134,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:45 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:33 +0000</small>
 <hr>
 <br>
 <!-- # -->

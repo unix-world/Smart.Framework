@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -702,7 +702,7 @@ The JavaScript class provides methods to simplify implementation of several basi
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:UI</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$UI</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20210421</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210526</span></li>
 		<li><b>Usage:</b> smartJ$UI.method();</li>
 		
 		
@@ -991,7 +991,7 @@ The selected time will be in ISO format as hh:ii</div>
 	
 			@param: {String} tabs_id :: The HTML Element ID to bind to<br>
 			@param: {Integer+} tab_selected :: The selected tab number ; Default is zero<br>
-			@param: {Boolean} prevent_reload :: *Optional* ; Default is FALSE ; If TRUE the tab content will not be reloaded after the first load<br>
+			@param: {Boolean} prevent_reload :: *Optional* ; Default is TRUE ; If TRUE the tab content will not be reloaded after the first load<br>
 	
 			@requires: jQuery<br>
 			@requires: lib/js/jquery/tabs/jquery.tabs.css<br>
@@ -1047,7 +1047,7 @@ It can be useful for using by example with edit operations to prevent switch tab
 	
 </div><div class="doc-container" id="Method--AutoCompleteField">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>AutoCompleteField</b></span>&nbsp;(
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`selector` Parameter">selector</span></b></span>, 
+			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`single_or_multi` Parameter">single_or_multi</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elem_id` Parameter">elem_id</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`data_url` Parameter">data_url</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`param_src` Parameter">param_src</span></b></span>, 
@@ -1062,7 +1062,7 @@ It can be useful for using by example with edit operations to prevent switch tab
 	
 	
 	
-			@param: {Enum} selector :: Type: can be: 'single' or 'multilist'<br>
+			@param: {Enum} single_or_multi :: Type: can be: 'single' or 'multilist'<br>
 			@param: {String} elem_id :: The HTML Element ID to bind to ; must be a text input or a text area<br>
 			@param: {String} data_url :: The Data URL Prefix ; Ex: '?op=list&amp;type=autosuggest'<br>
 			@param: {String} param_src :: The Data URL Parameter to be appended as suffix to the above Data URL ; Ex: 'searchTerm' (will use: '?op=list&amp;type=autosuggest&amp;searchTerm=')<br>
@@ -1105,6 +1105,7 @@ It can be useful for using by example with edit operations to prevent switch tab
 			@requires: jQuery<br>
 			@requires: lib/js/jquery/datatables/datatables-responsive.css<br>
 			@requires: lib/js/jquery/datatables/datatables-responsive.js<br>
+			@requires: lib/js/jquery/datatables/smart-datatables.js<br>
 	
 	</div>
 			<div class="doc-method-comments">Creates a DataTable from a regular HTML Table ; UI Component<br>
@@ -1188,6 +1189,7 @@ adding sorting, paging and filtering abilities to plain HTML tables.</div>
 			@requires: jQuery<br>
 			@requires: lib/js/jquery/datatables/datatables-responsive.css<br>
 			@requires: lib/js/jquery/datatables/datatables-responsive.js<br>
+			@requires: lib/js/jquery/datatables/smart-datatables.js<br>
 	
 	</div>
 			<div class="doc-method-comments">Apply a Filter over DataTable using a regular expression ; UI Component<br>
@@ -1294,7 +1296,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:36:55 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:43:21 +0000</small>
 <hr>
 <br>
 <!-- # -->

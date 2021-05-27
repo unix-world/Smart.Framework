@@ -1,8 +1,8 @@
 <?php
 // Controller: Samples/TestDownload
 // Route: ?/page/samples.test-download (?page=samples.test-download)
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -15,10 +15,10 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 // It is recommended to use the framework security mechanisms to serve files for download whenever possible.
 // See the code below and enjoy ;)
 
-define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
 
 /**
- * Index Controller r.20210430
+ * Index Controller
  *
  * @ignore
  *
@@ -97,6 +97,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 
 } //END CLASS
 
+
 /**
  * Admin Controller (optional)
  *
@@ -109,5 +110,20 @@ class SmartAppAdminController extends SmartAppIndexController {
 	// or this can implement a completely different controller if it is accessed via admin.php
 
 } //END CLASS
+
+
+/**
+ * Task Controller (optional)
+ *
+ * @ignore
+ *
+ */
+class SmartAppTaskController extends SmartAppAdminController {
+
+	// this will clone the SmartAppIndexController to run exactly the same action in task.php
+	// or this can implement a completely different controller if it is accessed via task.php
+
+} //END CLASS
+
 
 // end of php code

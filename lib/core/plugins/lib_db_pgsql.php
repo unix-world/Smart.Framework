@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / PostgreSQL Database Client]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -69,7 +69,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -1239,7 +1239,13 @@ final class SmartPgsqlDb {
 				$dbg_query_params = '';
 			} //end if else
 			//--
-			if((strtoupper(substr(trim($queryval), 0, 5)) == 'BEGIN') OR (strtoupper(substr(trim($queryval), 0, 17)) == 'START TRANSACTION') OR (strtoupper(substr(trim($queryval), 0, 6)) == 'COMMIT') OR (strtoupper(substr(trim($queryval), 0, 8)) == 'ROLLBACK')) {
+			if( // {{{SYNC-PGSQL-STATEMENTS-TRANSACTION}}}
+				(stripos((string)trim((string)$queryval), 'BEGIN') === 0) OR
+				(stripos((string)trim((string)$queryval), 'START TRANSACTION') === 0) OR
+				(stripos((string)trim((string)$queryval), 'COMMIT') === 0) OR
+				(stripos((string)trim((string)$queryval), 'ROLLBACK') === 0) OR
+				(stripos((string)trim((string)$queryval), 'ABORT') === 0)
+			) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 					'type' => 'transaction',
 					'data' => 'TRANSACTION :: '.$the_query_title,
@@ -1248,12 +1254,32 @@ final class SmartPgsqlDb {
 					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 					'connection' => (string) $y_connection
 				]);
-			} elseif(strtoupper(substr(trim($queryval), 0, 4)) == 'SET ') {
+			} elseif(stripos((string)trim((string)$queryval), 'SET ') === 0) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 					'type' => 'set',
 					'data' => 'SET :: '.$the_query_title,
 					'query' => $queryval,
 					'params' => $dbg_query_params,
+					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
+					'connection' => (string) $y_connection
+				]);
+			} elseif( // {{{SYNC-PGSQL-STATEMENTS-SPECIAL}}}
+				(stripos((string)trim((string)$queryval), 'COPY ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'TRUNCATE ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'DROP ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'CREATE ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'ALTER ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'COMMENT ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'ANALYZE ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'VACUUM ') === 0) OR
+				(stripos((string)trim((string)$queryval), 'EXPLAIN ') === 0)
+			) {
+				SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
+					'type' => 'special',
+					'data' => 'COMMAND :: '.$the_query_title,
+					'query' => $queryval,
+					'params' => $dbg_query_params,
+					'rows' => $affected,
 					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 					'connection' => (string) $y_connection
 				]);
@@ -1305,7 +1331,7 @@ final class SmartPgsqlDb {
 
 	//======================================================
 	/**
-	 * PgSQL Query :: Write Ignore - Catch Duplicate Key Violation or Foreign Key Violation Errors (This is the equivalent of MySQL's INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE, but it can catch UNIQUE violations on both: INSERT / UPDATE / DELETE statements and also can catch FOREIGN KEY violations).
+	 * PgSQL Query :: Write Ignore - Catch Duplicate Key Violation or Foreign Key Violation Errors (This is the equivalent of MySQL's INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE, but it can catch UNIQUE violations on any of: INSERT / UPDATE / DELETE statements and also can catch FOREIGN KEY violations).
 	 * This function is intended to be used only for write type queries like: INSERT / UPDATE / DELETE which can be ignored if unique violations or foreign key violations and will return the # of affected rows or zero if an exception raised.
 	 * The catch of PostgreSQL exceptions is handled completely by this function so there is no need for a catch errors outside.
 	 *
@@ -1454,6 +1480,36 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
+		if( // {{{SYNC-PGSQL-STATEMENTS-TRANSACTION}}}
+			(stripos((string)trim((string)$queryval), 'BEGIN') === 0) OR
+			(stripos((string)trim((string)$queryval), 'START TRANSACTION') === 0) OR
+			(stripos((string)trim((string)$queryval), 'COMMIT') === 0) OR
+			(stripos((string)trim((string)$queryval), 'ROLLBACK') === 0) OR
+			(stripos((string)trim((string)$queryval), 'ABORT') === 0)
+		) {
+			// ERROR
+			self::error($y_connection, 'WRITE-IG-DATA '.$vmode, 'ERROR: This function cannot handle TRANSACTION Specific Statements ...', $queryval, $the_query_title);
+			return array('errorsqlstatement: '.'This function cannot handle TRANSACTION Specific Statements', 0);
+		} elseif(stripos((string)trim((string)$queryval), 'SET ') === 0) {
+			// ERROR
+			self::error($y_connection, 'WRITE-IG-DATA '.$vmode, 'ERROR: This function cannot handle SET Statements ...', $queryval, $the_query_title);
+			return array('errorsqlstatement: '.'This function cannot handle SET Statements', 0);
+		} elseif( // {{{SYNC-PGSQL-STATEMENTS-SPECIAL}}}
+			(stripos((string)trim((string)$queryval), 'COPY ') === 0) OR
+			(stripos((string)trim((string)$queryval), 'TRUNCATE ') === 0) OR
+			(stripos((string)trim((string)$queryval), 'DROP ') === 0) OR
+			(stripos((string)trim((string)$queryval), 'CREATE ') === 0) OR
+			(stripos((string)trim((string)$queryval), 'ALTER ') === 0) OR
+			(stripos((string)trim((string)$queryval), 'COMMENT ') === 0) OR
+			(stripos((string)trim((string)$queryval), 'ANALYZE ') === 0) OR
+			(stripos((string)trim((string)$queryval), 'VACUUM ') === 0) OR
+			(stripos((string)trim((string)$queryval), 'EXPLAIN ') === 0)
+		) {
+			// ERROR
+			self::error($y_connection, 'WRITE-IG-DATA '.$vmode, 'ERROR: This function cannot handle SPECIAL Statements ...', $queryval, $the_query_title);
+			return array('errorsqlstatement: '.'This function cannot handle SPECIAL Statements', 0);
+		} //end if else
+		//--
 		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|total-queries', 1, '+');
@@ -1462,25 +1518,15 @@ final class SmartPgsqlDb {
 			//--
 			$dbg_query_params = '';
 			//--
-			if((strtoupper(substr(trim($queryval), 0, 5)) == 'BEGIN') OR (strtoupper(substr(trim($queryval), 0, 17)) == 'START TRANSACTION') OR (strtoupper(substr(trim($queryval), 0, 6)) == 'COMMIT') OR (strtoupper(substr(trim($queryval), 0, 8)) == 'ROLLBACK')) {
-				// ERROR
-				self::error($y_connection, 'WRITE-IG-DATA '.$vmode, 'ERROR: This function cannot handle TRANSACTION Specific Statements ...', $queryval, $the_query_title);
-				return array('errorsqlstatement: '.'This function cannot handle TRANSACTION Specific Statements', 0);
-			} elseif(strtoupper(substr(trim($queryval), 0, 4)) == 'SET ') {
-				// ERROR
-				self::error($y_connection, 'WRITE-IG-DATA '.$vmode, 'ERROR: This function cannot handle SET Statements ...', $queryval, $the_query_title);
-				return array('errorsqlstatement: '.'This function cannot handle SET Statements', 0);
-			} else {
-				SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
-					'type' => 'write',
-					'data' => 'WRITE / IGNORE '.$vmode.' :: '.$the_query_title,
-					'query' => $queryval,
-					'params' => $dbg_query_params,
-					'rows' => $affected,
-					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-					'connection' => (string) $y_connection
-				]);
-			} //end if else
+			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
+				'type' => 'write',
+				'data' => 'WRITE / IGNORE '.$vmode.' :: '.$the_query_title,
+				'query' => $queryval,
+				'params' => $dbg_query_params,
+				'rows' => $affected,
+				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
+				'connection' => (string) $y_connection
+			]);
 			//--
 		} //end if
 		//--
@@ -2427,7 +2473,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -2715,7 +2761,7 @@ final class SmartPgsqlExtDb {
 
 
 	/**
-	 * PgSQL Query :: Write Ignore - Catch Duplicate Key Violation or Foreign Key Violation Errors (This is the equivalent of MySQL's INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE, but it can catch UNIQUE violations on both: INSERT / UPDATE / DELETE statements and also can catch FOREIGN KEY violations).
+	 * PgSQL Query :: Write Ignore - Catch Duplicate Key Violation or Foreign Key Violation Errors (This is the equivalent of MySQL's INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE, but it can catch UNIQUE violations on any of: INSERT / UPDATE / DELETE statements and also can catch FOREIGN KEY violations).
 	 * This function is intended to be used only for write type queries like: INSERT / UPDATE / DELETE which can be ignored if unique violations or foreign key violations and will return the # of affected rows or zero if an exception raised.
 	 * The catch of PostgreSQL exceptions is handled completely by this function so there is no need for a catch errors outside.
 	 *

@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Strip Code - Abstract Provider
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION [T]
 if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIME_MODE != 'web.task')) { // this must be defined in the first line of the application :: {{{SYNC-RUNTIME-MODE-OVERRIDE-TASK}}}
@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 abstract class ShrinkCode {
 
 	// ->
-	// v.20210522
+	// v.20210526
 
 	protected $isClean = true;
 	protected $sourceCode = '';

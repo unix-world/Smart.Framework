@@ -1,7 +1,7 @@
 <?php
 // [LIB - Smart.Framework / Samples / Test PostgreSQL Server]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModExtLib\Samples\TestUnitPgSQL
 // Type: Module Library
@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210401
+ * @version 	v.20210526
  *
  */
 final class TestUnitPgSQL {
@@ -48,11 +48,17 @@ final class TestUnitPgSQL {
 
 		//--
 		$cfg_pgsql = (array) \Smart::get_from_config('pgsql', 'array');
-		$cfg_pgsql = (array) \SmartMysqliDb::conform_config_array((array)$cfg_pgsql);
+		$cfg_pgsql = (array) \SmartPgsqlDb::conform_config_array((array)$cfg_pgsql);
 		//--
 
 		//--
-		if(((string)$cfg_pgsql['server-host'] == '') OR ((string)$cfg_pgsql['server-port'] == '') OR ((string)$cfg_pgsql['dbname'] == '') OR ((string)$cfg_pgsql['username'] == '')) {
+		if(
+			(\Smart::array_size($cfg_pgsql) <= 0) OR
+			(!isset($cfg_pgsql['server-host'])) OR ((string)$cfg_pgsql['server-host'] == '') OR
+			(!isset($cfg_pgsql['server-port'])) OR ((string)$cfg_pgsql['server-port'] == '') OR
+			(!isset($cfg_pgsql['dbname'])) OR ((string)$cfg_pgsql['dbname'] == '') OR
+			(!isset($cfg_pgsql['username'])) OR ((string)$cfg_pgsql['username'] == '')
+		) {
 			//--
 			return (string) \SmartComponents::operation_warn('Test Unit for PgSQL Server: INVALID PostgreSQL server configuration available in configs ...');
 			//--

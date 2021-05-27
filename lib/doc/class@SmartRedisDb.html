@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartRedisDb        final class \ SmartRedisDb    {   } -&gt;    Class: SmartRedisDb - provides a Client for Redis MemDB Server. By default this class will">
-	<meta name="keywords" content="smartredisdb, final, class, provides, a, client, for, redis, memdb, server, by, default, this, will, just, log, the, errors, tested, and, stable, on, versions, 2.6.x, 2.8.x, 3.0.x, 3.2.x, 4.x, 5.x, language, php, located, at, lib core plugins lib db redis.php, package, plugins:database:redis, namespace, name, version, v.20210401, depends, extensions, sockets, classes, smart, hints, rest, of, supported, methods, take, look, magic, call, method, visit, http:  redis.io commands, most, base, are, implemented, usage, dynamic, object, new, class method, only, public, function, construct, string, y description, boolean, y fatal err, false, host, integer, port, db, password, timeout, float, y debug exch slowtime, param, optional, is, description, connection, to, make, easy, debug, if, fatal, or, not, set">
+	<meta name="keywords" content="smartredisdb, final, class, provides, a, client, for, redis, memdb, server, by, default, this, will, just, log, the, errors, tested, and, stable, on, versions, 2.6.x, 2.8.x, 3.0.x, 3.2.x, 4.x, 5.x, language, php, located, at, lib core plugins lib db redis.php, package, plugins:database:redis, namespace, name, version, v.20210527, depends, extensions, sockets, classes, smart, smartcomponents, hints, rest, of, supported, methods, take, look, magic, call, method, visit, http:  redis.io commands, most, base, are, implemented, usage, dynamic, object, new, class method, only, public, function, construct, string, y description, boolean, y fatal err, false, host, integer, port, db, password, timeout, float, y debug exch slowtime, param, optional, is, description, connection, to, make, easy, debug, if, fatal, or, not">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartRedisDb">
 	<title>PHP Documentation for: \SmartRedisDb</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -708,8 +708,8 @@ Tested and Stable on Redis versions: 2.6.x / 2.8.x / 3.0.x / 3.2.x / 4.x / 5.x</
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartRedisDb</span></li>
 		
-		<li><b>Version:</b> v.20210401</li>
-		<li><b>Depends:</b> extensions:  PHP Sockets ; classes: Smart</li>
+		<li><b>Version:</b> v.20210527</li>
+		<li><b>Depends:</b> extensions:  PHP Sockets ; classes: Smart, SmartComponents</li>
 		<li><b>Hints:</b> for  the rest of supported methods take a look at the SmartRedisDb class magic __call method ; Visit: http://redis.io/commands ; Most of the base methods are implemented.</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -759,7 +759,7 @@ If no value is provided for Host, Port and DbNum it will use the values from the
  $configs[<span class="hljs-string">'redis'</span>][<span class="hljs-string">'timeout'</span>]		= <span class="hljs-number">5</span>;									<span class="hljs-comment">// redis connect timeout in seconds</span>
  $configs[<span class="hljs-string">'redis'</span>][<span class="hljs-string">'slowtime'</span>]	= <span class="hljs-number">0.0005</span>;								<span class="hljs-comment">// redis slow query time (for debugging) 0.0010 .. 0.0001</span>
 
-<span class="hljs-meta">?&gt;</span></code></pre>
+<span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
 </div><!-- Skip Internal-Priv Method: `setRecvBuf()` --><div class="doc-container" id="Method--__call">
@@ -1229,16 +1229,17 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">//&nbsp;Redis&nbsp;Client&nbsp;usage&nbsp;example,&nbsp;with&nbsp;custom&nbsp;connection&nbsp;parameters:<br>
-&nbsp;</span><span class="c1">$redis&nbsp;</span><span class="c3">=&nbsp;new&nbsp;</span><span class="c1">SmartRedisDb</span><span class="c3">(</span><span class="c4">&#39;SampleInstance&#39;</span><span class="c3">,&nbsp;</span><span class="c1">false</span><span class="c3">,&nbsp;</span><span class="c4">&#39;localhost&#39;</span><span class="c3">,&nbsp;</span><span class="c4">&#39;6379&#39;</span><span class="c3">,&nbsp;</span><span class="c1">3</span><span class="c3">);&nbsp;</span><span class="c2">//&nbsp;connects&nbsp;at&nbsp;the&nbsp;database&nbsp;no.&nbsp;3&nbsp;;&nbsp;for&nbsp;debug&nbsp;and&nbsp;log&nbsp;will&nbsp;identify&nbsp;by&nbsp;&#39;SampleInstance&#39;&nbsp;(1st&nbsp;param)&nbsp;;&nbsp;2nd&nbsp;param&nbsp;set&nbsp;the&nbsp;fatal&nbsp;errors&nbsp;to&nbsp;false&nbsp;and&nbsp;just&nbsp;log&nbsp;errors&nbsp;not&nbsp;raise&nbsp;fatal&nbsp;errors&nbsp;...&nbsp;(this&nbsp;is&nbsp;default&nbsp;behaviour)<br>
-&nbsp;</span><span class="c1">$redis</span><span class="c3">-&gt;</span><span class="c1">set</span><span class="c3">(</span><span class="c4">&#39;key1&#39;</span><span class="c3">,&nbsp;</span><span class="c4">&#39;value1&#39;</span><span class="c3">);<br>
-&nbsp;</span><span class="c1">$redis</span><span class="c3">-&gt;</span><span class="c1">set</span><span class="c3">(</span><span class="c4">&#39;list1:key1&#39;</span><span class="c3">,&nbsp;</span><span class="c4">&#39;value2&#39;</span><span class="c3">);<br>
-&nbsp;</span><span class="c1">$value1&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">$redis</span><span class="c3">-&gt;</span><span class="c1">get</span><span class="c3">(</span><span class="c4">&#39;key1&#39;</span><span class="c3">);<br>
-&nbsp;if(</span><span class="c1">$redis</span><span class="c3">-&gt;</span><span class="c1">exists</span><span class="c3">(</span><span class="c4">&#39;key1&#39;</span><span class="c3">))&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c1">$value2&nbsp;</span><span class="c3">=&nbsp;</span><span class="c1">$redis</span><span class="c3">-&gt;</span><span class="c1">get</span><span class="c3">(</span><span class="c4">&#39;list5:key7&#39;</span><span class="c3">);<br>
-&nbsp;}&nbsp;</span><span class="c2">//end&nbsp;if<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #999999">//&nbsp;Redis&nbsp;Client&nbsp;usage&nbsp;example,&nbsp;with&nbsp;custom&nbsp;connection&nbsp;parameters:<br>
+&nbsp;</span><span style="color: #FFFFFF">$redis&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartRedisDb</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;SampleInstance&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">false</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;localhost&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;6379&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">3</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;connects&nbsp;at&nbsp;the&nbsp;database&nbsp;no.&nbsp;3&nbsp;;&nbsp;for&nbsp;debug&nbsp;and&nbsp;log&nbsp;will&nbsp;identify&nbsp;by&nbsp;&#39;SampleInstance&#39;&nbsp;(1st&nbsp;param)&nbsp;;&nbsp;2nd&nbsp;param&nbsp;set&nbsp;the&nbsp;fatal&nbsp;errors&nbsp;to&nbsp;false&nbsp;and&nbsp;just&nbsp;log&nbsp;errors&nbsp;not&nbsp;raise&nbsp;fatal&nbsp;errors&nbsp;...&nbsp;(this&nbsp;is&nbsp;default&nbsp;behaviour)<br>
+&nbsp;</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;key1&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;value1&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;list1:key1&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;value2&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">$value1&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;key1&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;if(</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">exists</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;key1&#39;</span><span style="color: #FFCC00; font-weight: bold">))&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$value2&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;list5:key7&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;}&nbsp;</span><span style="color: #999999">//end&nbsp;if<br>
+<br>
+//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1329,7 +1330,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:51 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:38 +0000</small>
 <hr>
 <br>
 <!-- # -->

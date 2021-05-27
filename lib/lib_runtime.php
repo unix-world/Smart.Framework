@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Lib Runtime]
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20210523
+ * @version		v.20210526
  * @package 	Application
  *
  */

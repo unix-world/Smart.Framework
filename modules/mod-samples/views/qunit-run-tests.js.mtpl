@@ -1,29 +1,29 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%/COMMENT%%%]
-//===== QUnit Tests: START :: r.20210224
+//===== QUnit Tests: START :: r.20210526
 
-(function() {
+(() => {
 
 	// Global Settings
 	QUnit.config.uxmAllowRerun = false; // hide re-run
 
 	// Settings
 
-	var charSet 				= '[###CHARSET|js###]';
-	var phpVersion 				= '[###PHP-VERSION|js###]';
-	var smartFrameworkVersion 	= '[###SF-VERSION|js###]';
-	var appRealm 				= '[###APP-REALM|js###]';
-	var debugMode 				= '[###DEBUG-MODE|js###]';
-	var currentLanguage 		= '[###LANG|js###]';
-	var modulePath 				= '[###MODULE-PATH|js###]';
-	var baseScript  			= '[###SRV-SCRIPT|js###]';
+	const charSet 				= '[###CHARSET|js###]';
+	const phpVersion 			= '[###PHP-VERSION|js###]';
+	const smartFrameworkVersion = '[###SF-VERSION|js###]';
+	const appRealm 				= '[###APP-REALM|js###]';
+	const debugMode 			= '[###DEBUG-MODE|js###]';
+	const currentLanguage 		= '[###LANG|js###]';
+	const modulePath 			= '[###MODULE-PATH|js###]';
+	const baseScript  			= '[###SRV-SCRIPT|js###]';
 
 	// @Self Tests
 
-	QUnit.module('@App-Environment', function(){
-		QUnit.test('Server Side Tests: PHP / Framework', function(assert) {
-			var expected;
+	QUnit.module('@App-Environment', () => {
+		QUnit.test('Server Side Tests: PHP / Framework', (assert) => {
+			let expected;
 			expected = 'charSet: UTF-8';
 			assert.equal('charSet: ' + charSet, expected, expected);
 			expected = 'phpVersion: [###PHP-VERSION|js###]';

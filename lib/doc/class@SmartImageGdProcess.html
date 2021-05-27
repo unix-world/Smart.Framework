@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -1037,36 +1037,36 @@ Possible errors when detecting an image type:<br>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
 <br>
-$imgd&nbsp;</span><span class="c2">=&nbsp;new&nbsp;</span><span class="c1">SmartImageGdProcess</span><span class="c2">(<br>
-&nbsp;&nbsp;&nbsp;&nbsp;(string)&nbsp;</span><span class="c1">file_get_contents</span><span class="c2">(</span><span class="c3">&#39;img/sample-2.jpg&#39;</span><span class="c2">)<br>
+$imgd&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartImageGdProcess</span><span style="color: #FFCC00; font-weight: bold">(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(string)&nbsp;</span><span style="color: #FFFFFF">file_get_contents</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;img/sample-2.jpg&#39;</span><span style="color: #FFCC00; font-weight: bold">)<br>
 &nbsp;);<br>
 <br>
-&nbsp;</span><span class="c1">$resize&nbsp;</span><span class="c2">=&nbsp;</span><span class="c1">$imgd</span><span class="c2">-&gt;</span><span class="c1">resizeImage</span><span class="c2">(</span><span class="c1">160</span><span class="c2">,&nbsp;</span><span class="c1">160</span><span class="c2">,&nbsp;</span><span class="c1">true</span><span class="c2">,&nbsp;</span><span class="c1">0</span><span class="c2">);&nbsp;</span><span class="c4">//&nbsp;create&nbsp;preview&nbsp;(with&nbsp;crop)<br>
+&nbsp;</span><span style="color: #FFFFFF">$resize&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$imgd</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">resizeImage</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">160</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">160</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">0</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;create&nbsp;preview&nbsp;(with&nbsp;crop)<br>
 &nbsp;//$resize&nbsp;=&nbsp;$imgd-&gt;resizeImage(1280,&nbsp;1280,&nbsp;false,&nbsp;2);&nbsp;//&nbsp;create&nbsp;resample&nbsp;with:&nbsp;preserve&nbsp;if&nbsp;lower&nbsp;+&nbsp;relative&nbsp;dimensions<br>
-&nbsp;</span><span class="c2">if(!</span><span class="c1">$resize</span><span class="c2">)&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;</span><span class="c1">Exception</span><span class="c2">(</span><span class="c3">&#39;R!&nbsp;&#39;</span><span class="c2">.(string)</span><span class="c1">$imgd</span><span class="c2">-&gt;</span><span class="c1">getLastMessage</span><span class="c2">());<br>
-&nbsp;}&nbsp;</span><span class="c4">//end&nbsp;if<br>
+&nbsp;</span><span style="color: #FFCC00; font-weight: bold">if(!</span><span style="color: #FFFFFF">$resize</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;</span><span style="color: #FFFFFF">Exception</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;R!&nbsp;&#39;</span><span style="color: #FFCC00; font-weight: bold">.(string)</span><span style="color: #FFFFFF">$imgd</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getLastMessage</span><span style="color: #FFCC00; font-weight: bold">());<br>
+&nbsp;}&nbsp;</span><span style="color: #999999">//end&nbsp;if<br>
 <br>
-&nbsp;</span><span class="c1">$wtistr&nbsp;</span><span class="c2">=&nbsp;</span><span class="c1">file_get_contents</span><span class="c2">(</span><span class="c3">&#39;img/watermark.gif&#39;</span><span class="c2">);<br>
-&nbsp;</span><span class="c1">$watermark&nbsp;</span><span class="c2">=&nbsp;</span><span class="c1">$imgd</span><span class="c2">-&gt;</span><span class="c1">applyWatermark</span><span class="c2">(</span><span class="c1">$wtistr</span><span class="c2">,&nbsp;</span><span class="c3">&#39;c&#39;</span><span class="c2">,&nbsp;</span><span class="c1">0</span><span class="c2">,&nbsp;</span><span class="c1">0</span><span class="c2">);<br>
-&nbsp;if(!</span><span class="c1">$watermark</span><span class="c2">)&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;</span><span class="c1">Exception</span><span class="c2">(</span><span class="c3">&#39;W!&nbsp;&#39;</span><span class="c2">.(string)</span><span class="c1">$imgd</span><span class="c2">-&gt;</span><span class="c1">getLastMessage</span><span class="c2">());<br>
-&nbsp;}&nbsp;</span><span class="c4">//end&nbsp;if<br>
+&nbsp;</span><span style="color: #FFFFFF">$wtistr&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">file_get_contents</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;img/watermark.gif&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">$watermark&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$imgd</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">applyWatermark</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$wtistr</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;c&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">0</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">0</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;if(!</span><span style="color: #FFFFFF">$watermark</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;</span><span style="color: #FFFFFF">Exception</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;W!&nbsp;&#39;</span><span style="color: #FFCC00; font-weight: bold">.(string)</span><span style="color: #FFFFFF">$imgd</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getLastMessage</span><span style="color: #FFCC00; font-weight: bold">());<br>
+&nbsp;}&nbsp;</span><span style="color: #999999">//end&nbsp;if<br>
 <br>
-&nbsp;</span><span class="c1">$png&nbsp;</span><span class="c2">=&nbsp;</span><span class="c3">&#39;&#39;</span><span class="c2">;<br>
-&nbsp;if(</span><span class="c1">$imgd</span><span class="c2">-&gt;</span><span class="c1">getStatusOk</span><span class="c2">()&nbsp;===&nbsp;</span><span class="c1">true</span><span class="c2">)&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c1">$png&nbsp;</span><span class="c2">=&nbsp;(string)&nbsp;</span><span class="c1">$imgd</span><span class="c2">-&gt;</span><span class="c1">getImageData</span><span class="c2">(</span><span class="c3">&#39;png&#39;</span><span class="c2">,&nbsp;</span><span class="c1">100</span><span class="c2">,&nbsp;</span><span class="c1">9</span><span class="c2">);<br>
-&nbsp;}&nbsp;</span><span class="c4">//end&nbsp;if<br>
-&nbsp;</span><span class="c2">if((string)</span><span class="c1">$png&nbsp;</span><span class="c2">==&nbsp;</span><span class="c3">&#39;&#39;</span><span class="c2">)&nbsp;{<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;</span><span class="c1">Exception</span><span class="c2">(</span><span class="c3">&#39;S!&nbsp;&#39;</span><span class="c2">.(string)</span><span class="c1">$imgd</span><span class="c2">-&gt;</span><span class="c1">getLastMessage</span><span class="c2">());<br>
-&nbsp;}&nbsp;</span><span class="c4">//end&nbsp;if<br>
+&nbsp;</span><span style="color: #FFFFFF">$png&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">&#39;&#39;</span><span style="color: #FFCC00; font-weight: bold">;<br>
+&nbsp;if(</span><span style="color: #FFFFFF">$imgd</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getStatusOk</span><span style="color: #FFCC00; font-weight: bold">()&nbsp;===&nbsp;</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$png&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;</span><span style="color: #FFFFFF">$imgd</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getImageData</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;png&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">100</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">9</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;}&nbsp;</span><span style="color: #999999">//end&nbsp;if<br>
+&nbsp;</span><span style="color: #FFCC00; font-weight: bold">if((string)</span><span style="color: #FFFFFF">$png&nbsp;</span><span style="color: #FFCC00; font-weight: bold">==&nbsp;</span><span style="color: #5F9CCE">&#39;&#39;</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;</span><span style="color: #FFFFFF">Exception</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;S!&nbsp;&#39;</span><span style="color: #FFCC00; font-weight: bold">.(string)</span><span style="color: #FFFFFF">$imgd</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">getLastMessage</span><span style="color: #FFCC00; font-weight: bold">());<br>
+&nbsp;}&nbsp;</span><span style="color: #999999">//end&nbsp;if<br>
 <br>
-&nbsp;</span><span class="c1">header</span><span class="c2">(</span><span class="c3">&#39;Content-Type:&nbsp;image/png&#39;</span><span class="c2">);<br>
-&nbsp;</span><span class="c1">header</span><span class="c2">(</span><span class="c3">&#39;Content-Disposition:&nbsp;inline;&nbsp;filename=&quot;sample-image-&#39;</span><span class="c2">.</span><span class="c1">time</span><span class="c2">().</span><span class="c3">&#39;.png&quot;&#39;</span><span class="c2">);<br>
-&nbsp;echo&nbsp;</span><span class="c1">$png</span><span class="c2">;<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+&nbsp;</span><span style="color: #FFFFFF">header</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;Content-Type:&nbsp;image/png&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;</span><span style="color: #FFFFFF">header</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;Content-Disposition:&nbsp;inline;&nbsp;filename=&quot;sample-image-&#39;</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">time</span><span style="color: #FFCC00; font-weight: bold">().</span><span style="color: #5F9CCE">&#39;.png&quot;&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
+&nbsp;echo&nbsp;</span><span style="color: #FFFFFF">$png</span><span style="color: #FFCC00; font-weight: bold">;<br>
+<br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1163,7 +1163,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:50 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:37 +0000</small>
 <hr>
 <br>
 <!-- # -->

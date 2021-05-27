@@ -2,8 +2,8 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: PageBuilder/TestFrontend
 // Route: ?page=page-builder.test-frontend&section=test-page
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -29,7 +29,7 @@ if(!SmartAppInfo::TestIfModuleExists('mod-page-builder')) {
  */
 final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\AbstractFrontendController {
 
-	// r.20210422
+	// r.20210526
 
 	public function Run() {
 

@@ -1,8 +1,8 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20210523
+// [AppCodeUnpack / APP] v.20210526
 // (c) 2013-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('APP_CUSTOM_LOG_PATH')) { // for standalone apps this must be defined in the first line of the application
@@ -15,7 +15,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20210522
+	// v.20210526
 
-	private const APPCODEUNPACK_VERSION = 's.20210523.2359';
+	private const APPCODEUNPACK_VERSION = 's.20210526.1410';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -122,7 +122,404 @@ final class AppCodeUnpack {
 		$action = (string) trim((string)SmartFrameworkRegistry::getRequestVar('action', '', 'string'));
 		$err = false;
 		$out = '';
+		//--
 		switch((string)$action) {
+			//--
+			case 'logs-list':
+				//--
+				$appid = (string) trim((string)SmartFrameworkRegistry::getRequestVar('appid', '', 'string'));
+				//--
+				$logs = array();
+				$apps_arr = array();
+				$the_app_log_dir = '';
+				$url_log_display = '#';
+				//--
+				if(
+					((string)trim((string)$appid) == '') OR
+					(strlen((string)$appid) > 25) OR
+					((string)AppNetUnPackager::unpack_valid_app_id((string)$appid) != '') OR
+					(strpos((string)APPCODEPACK_DEPLOY_APPLIST, '<'.(string)$appid.'>') === false) OR
+					(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$appid))
+				) {
+					$appid = ''; // reset !
+					$apps_arr = (array) Smart::list_to_array((string)(defined('APPCODEPACK_DEPLOY_APPLIST') ? APPCODEPACK_DEPLOY_APPLIST : ''));
+				} else {
+					$the_app_log_dir = (string) SmartFileSysUtils::add_dir_last_slash((string)$appid).'tmp/logs/';
+					if(
+						SmartFileSysUtils::check_if_safe_path($the_app_log_dir)
+						AND
+						SmartFileSystem::is_type_dir($the_app_log_dir)
+					) {
+						$logs = (array) (new SmartGetFileSystem(true))->get_storage((string)$the_app_log_dir, false, false, '.log');
+						$tmp_logs = (array) $logs['list-files'];
+						$logs = array();
+						for($i=0; $i<Smart::array_size($tmp_logs); $i++) {
+							if(
+								SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$tmp_logs[$i])
+								AND
+								SmartFileSysUtils::check_if_safe_path((string)$the_app_log_dir.$tmp_logs[$i])
+							) {
+								$logs[] = [
+									'id' 	=> (string) $tmp_logs[$i],
+									'size' 	=> (string) SmartUtils::pretty_print_bytes(SmartFileSystem::get_file_size((string)$the_app_log_dir.$tmp_logs[$i]), 2)
+								];
+							} //end if
+						} //end for
+						$url_log_display = (string) self::APPCODEUNPACK_SCRIPT.'?action=log-display';
+					} //end if
+				} //end if else
+				//--
+				$title = 'RELEASE MANAGER: LOGS List on this App Server';
+				$main = (string) SmartMarkersTemplating::render_template(
+					(string) (defined('APPCODEUNPACK_HTML_LIST_LOGS_TPL') ? APPCODEUNPACK_HTML_LIST_LOGS_TPL : '{#EMPTY-APPCODEUNPACK-LIST-LOGS-TPL#}'),
+					[
+						'SCRIPT' 		=> (string) self::APPCODEUNPACK_SCRIPT,
+						'URL-LOG-VIEW' 	=> (string) $url_log_display,
+						'APP-ID' 		=> (string) $appid,
+						'LOGS-ARR' 		=> (array)  Smart::array_sort($logs, 'rsort'),
+						'APP-IDS-ARR' 	=> (array)  $apps_arr,
+						'APP-LOG-DIR' 	=> (string) $the_app_log_dir,
+					]
+				);
+				//--
+				$out = (string) self::renderTPL(
+					(string) $title,
+					(string) $main
+				);
+				//--
+				break;
+				//--
+			case 'log-display':
+				//--
+				$appid = (string) trim((string)SmartFrameworkRegistry::getRequestVar('appid', '', 'string'));
+				$logfile = (string) trim((string)SmartFrameworkRegistry::getRequestVar('log', '', 'string'));
+				//--
+				if(
+					((string)trim((string)$appid) == '') OR
+					(strlen((string)$appid) > 25) OR
+					((string)AppNetUnPackager::unpack_valid_app_id((string)$appid) != '') OR
+					(strpos((string)APPCODEPACK_DEPLOY_APPLIST, '<'.(string)$appid.'>') === false) OR
+					(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$appid))
+				) {
+					self::raiseXXXError(400, ' # Invalid AppID: '.$appid);
+					die(__METHOD__.' # Invalid AppID: '.$appid);
+					return;
+				} //end if
+				//--
+				if(
+					((string)trim((string)$logfile) == '') OR
+					(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$logfile)) OR
+					((string)substr((string)$logfile, -4, 4) != '.log')
+				) {
+					self::raiseXXXError(400, ' # Invalid Log File: '.$logfile);
+					die(__METHOD__.' # Invalid Log File: '.$logfile);
+					return;
+				} //end if
+				//--
+				$the_app_log_dir = (string) SmartFileSysUtils::add_dir_last_slash((string)$appid).'tmp/logs/';
+				$the_app_log_file = (string) $the_app_log_dir.$logfile;
+				$log_found = false;
+				if(
+					SmartFileSysUtils::check_if_safe_path($the_app_log_dir)
+					AND
+					SmartFileSystem::is_type_dir($the_app_log_dir)
+					AND
+					SmartFileSysUtils::check_if_safe_path($the_app_log_file)
+					AND
+					SmartFileSystem::is_type_file($the_app_log_file)
+					AND
+					SmartFileSystem::have_access_read($the_app_log_file)
+				) {
+					$log_found = true;
+				} //end if else
+				//--
+				if($log_found === true) {
+					$fsize = (int) SmartFileSystem::get_file_size((string)$the_app_log_file);
+					header('Content-Type: text/plain');
+					header('Content-Disposition: inline; filename="'.Smart::safe_filename((string)$logfile).'"');
+					header('Content-Length: '.(int)$fsize);
+					echo '####### [ LogFile: `'.$the_app_log_file.'` # Size: '.(int)$fsize.' bytes @ '.date('Y-M-D H:i:s O').' # '.SmartUtils::get_server_current_url().' ] #######'."\n\n";
+					readfile((string)$the_app_log_file);
+					echo "\n".'####### [ #END: LogFile: `'.$the_app_log_file.'` ] #######'."\n";
+					die(''); // stop here !
+					return;
+				} else {
+					self::raiseXXXError(400, ' # Log File Not Found: `'.$the_app_log_file.'`');
+					die(__METHOD__.' # Log File Not Found: `'.$the_app_log_file.'`');
+					return;
+				} //end if else
+				//--
+				break;
+				//--
+			case 'logs-cleanup':
+				//--
+				$frm = (array) SmartFrameworkRegistry::getRequestVar('frm', [], 'array');
+				//--
+				$status = 'ERROR';
+				$msg = '?';
+				if(Smart::array_size($frm) != 4) {
+					$err = true;
+					$status = 'Invalid Post Data';
+					$msg = 'Data is empty or invalid !';
+				} //end if
+				if(!$err) {
+					if(
+						(!isset($frm['appid'])) OR (!Smart::is_nscalar($frm['appid'])) OR
+						(!isset($frm['uuid'])) OR (!Smart::is_nscalar($frm['uuid'])) OR
+						(!isset($frm['list'])) OR (!Smart::is_nscalar($frm['list'])) OR
+						(!isset($frm['checksum'])) OR (!Smart::is_nscalar($frm['checksum']))
+					) {
+						$err = true;
+						$status = 'Invalid Post Data';
+						$msg = 'Data format is not valid !';
+					} //end if
+				} //end if
+				if(!$err) {
+					if(((string)trim((string)$frm['appid']) == '') OR (strlen((string)$frm['appid']) > 25)) {
+						$err = true;
+						$status = 'AppID is mandatory';
+						$msg = 'AppID is empty or invalid';
+					} //end if
+				} //end if
+				if(!$err) {
+					if((string)AppNetUnPackager::unpack_valid_app_id((string)$frm['appid']) != '') {
+						$err = true;
+						$status = 'AppID must be valid';
+						$msg = 'AppID is not valid';
+					} //end if
+				} //end if
+				if(!$err) {
+					if(strpos((string)APPCODEPACK_DEPLOY_APPLIST, '<'.(string)$frm['appid'].'>') === false) {
+						$err = true;
+						$status = 'AppID must be allowed';
+						$msg = 'AppID is not allowed by current settings';
+					} //end if
+				} //end if
+				if(!$err) {
+					if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$frm['appid'])) {
+						$err = true;
+						$status = 'AppID must be allowed';
+						$msg = 'AppID is not allowed by current settings';
+					} //end if
+				} //end if
+				if(!$err) {
+					if((string)SmartHashCrypto::sha512((string)$frm['list'].'#'.$frm['uuid']) !== (string)$frm['checksum']) {
+						$err = true;
+						$status = 'Data Checksum Error';
+						$msg = 'Data checksum is wrong !';
+					} //end if
+				} //end if
+				//--
+				$fdata = null;
+				if(!$err) {
+					$fdata = (string) trim((string)base64_decode((string)$frm['list']));
+					if((string)$fdata == '') {
+						$err = true;
+						$status = 'Empty Data';
+						$msg = 'Data is Empty after unpack !';
+					} //end if
+				} //end if
+				if(!$err) {
+					$fdata = (string) trim((string)SmartUtils::crypto_blowfish_decrypt((string)$fdata, (string)$frm['uuid']));
+					if((string)$fdata == '') {
+						$err = true;
+						$status = 'Empty Data';
+						$msg = 'Data is Empty after decrypt !';
+					} //end if
+				} //end if
+				if(!$err) {
+					$fdata = Smart::json_decode((string)$fdata);
+					if((Smart::array_size($fdata) <= 0) OR (Smart::array_type_test($fdata) != 1)) {
+						$err = true;
+						$status = 'Empty Data';
+						$msg = 'Data is Empty after expand !';
+					} //end if
+				} //end if
+				//--
+				$arr_del_files = [];
+				if(!$err) {
+					$the_app_log_dir = (string) SmartFileSysUtils::add_dir_last_slash((string)$frm['appid']).'tmp/logs/';
+					if((is_array($fdata)) AND (SmartFileSysUtils::check_if_safe_path((string)$the_app_log_dir))) {
+						foreach($fdata as $key => $val) {
+							if(Smart::is_nscalar($val)) {
+								$val = (string) trim((string)$val);
+								if((string)$val != '') {
+									if(SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$val)) {
+										if(
+											((string)substr($val, -4, 4) == '.log')
+											AND
+											(strpos((string)$the_app_log_dir, '/tmp/logs/') !== false)
+											AND
+											SmartFileSysUtils::check_if_safe_path((string)$the_app_log_dir.$val)
+											AND
+											SmartFileSystem::is_type_file((string)$the_app_log_dir.$val)
+										) {
+											if(SmartFileSystem::delete((string)$the_app_log_dir.$val)) {
+												$arr_del_files[] = (string) $the_app_log_dir.$val;
+											} //end if
+										} //end if
+									} //end if
+								} //end if
+							} //end if
+						} //end foreach
+					} //end if
+				} //end if
+				//--
+				if(!$err) {
+					$msg = 'DEPLOYMENTS Cleanup: Removed #'.(int)Smart::array_size($arr_del_files).' log file(s) ...';
+					$status = 'OK';
+				} //end if
+				//--
+				$out = (string) self::jsAjaxReplyToHtmlForm((string)$status, (string)$status, (string)$msg);
+				//--
+				break;
+				//--
+			case 'deploys-list':
+				//--
+				$deploys = array();
+				//--
+				if(
+					SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
+					AND
+					SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
+				) {
+					if(
+						SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER)
+						AND
+						SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER)
+					) {
+						$deploys = (array) (new SmartGetFileSystem(true))->get_storage((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER, false);
+						$deploys = (array) $deploys['list-dirs'];
+					} //end if
+				} //end if
+				//--
+				$title = 'RELEASE MANAGER: DEPLOYMENTS List on this App Server';
+				$main = (string) SmartMarkersTemplating::render_template(
+					(string) (defined('APPCODEUNPACK_HTML_LIST_DEPLOYS_TPL') ? APPCODEUNPACK_HTML_LIST_DEPLOYS_TPL : '{#EMPTY-APPCODEUNPACK-LIST-DEPLOYS-TPL#}'),
+					[
+						'SCRIPT' 		=> (string) self::APPCODEUNPACK_SCRIPT,
+						'DEPLOYS-ARR' 	=> (array)  Smart::array_sort($deploys, 'rsort'),
+					]
+				);
+				//--
+				$out = (string) self::renderTPL(
+					(string) $title,
+					(string) $main
+				);
+				//--
+				break;
+				//--
+			case 'deploys-cleanup':
+				//--
+				$frm = (array) SmartFrameworkRegistry::getRequestVar('frm', [], 'array');
+				//--
+				$status = 'ERROR';
+				$msg = '?';
+				if(Smart::array_size($frm) != 3) {
+					$err = true;
+					$status = 'Invalid Post Data';
+					$msg = 'Data is empty or invalid !';
+				} //end if
+				if(!$err) {
+					if(
+						(!isset($frm['uuid'])) OR (!Smart::is_nscalar($frm['uuid'])) OR
+						(!isset($frm['list'])) OR (!Smart::is_nscalar($frm['list'])) OR
+						(!isset($frm['checksum'])) OR (!Smart::is_nscalar($frm['checksum']))
+					) {
+						$err = true;
+						$status = 'Invalid Post Data';
+						$msg = 'Data format is not valid !';
+					} //end if
+				} //end if
+				if(!$err) {
+					if((string)SmartHashCrypto::sha512((string)$frm['list'].'#'.$frm['uuid']) !== (string)$frm['checksum']) {
+						$err = true;
+						$status = 'Data Checksum Error';
+						$msg = 'Data checksum is wrong !';
+					} //end if
+				} //end if
+				//--
+				$fdata = null;
+				if(!$err) {
+					$fdata = (string) trim((string)base64_decode((string)$frm['list']));
+					if((string)$fdata == '') {
+						$err = true;
+						$status = 'Empty Data';
+						$msg = 'Data is Empty after unpack !';
+					} //end if
+				} //end if
+				if(!$err) {
+					$fdata = (string) trim((string)SmartUtils::crypto_blowfish_decrypt((string)$fdata, (string)$frm['uuid']));
+					if((string)$fdata == '') {
+						$err = true;
+						$status = 'Empty Data';
+						$msg = 'Data is Empty after decrypt !';
+					} //end if
+				} //end if
+				if(!$err) {
+					$fdata = Smart::json_decode((string)$fdata);
+					if((Smart::array_size($fdata) <= 0) OR (Smart::array_type_test($fdata) != 1)) {
+						$err = true;
+						$status = 'Empty Data';
+						$msg = 'Data is Empty after expand !';
+					} //end if
+				} //end if
+				//--
+				$arr_del_dirs = [];
+				$arr_del_files = [];
+				if(!$err) {
+					if(is_array($fdata)) {
+						foreach($fdata as $key => $val) {
+							if(Smart::is_nscalar($val)) {
+								$val = (string) trim((string)$val);
+								if((string)$val != '') {
+									if(SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$val)) {
+										if(
+											SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
+											AND
+											SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
+										) {
+											if(
+												SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER)
+												AND
+												SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER)
+											) {
+												if(
+													SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val)
+													AND
+													SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val)
+												) {
+													if(SmartFileSystem::dir_delete((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val)) {
+														$arr_del_dirs[] = (string) (string) AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val;
+													} //end if
+												} //end if
+												if(
+													SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val.'.log')
+													AND
+													SmartFileSystem::is_type_file(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val.'.log')
+												) {
+													if(SmartFileSystem::delete((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val.'.log')) {
+														$arr_del_files[] = (string) AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val.'.log';
+													} //end if
+												} //end if
+											} //end if
+										} //end if
+									} //end if
+								} //end if
+							} //end if
+						} //end foreach
+					} //end if
+				} //end if
+				//--
+				if(!$err) {
+					$msg = 'DEPLOYMENTS Cleanup: Removed #'.(int)Smart::array_size($arr_del_dirs).' dir(s) and #'.(int)Smart::array_size($arr_del_files).' file(s) ...';
+					$status = 'OK';
+				} //end if
+				//--
+				$out = (string) self::jsAjaxReplyToHtmlForm((string)$status, (string)$status, (string)$msg);
+				//--
+				break;
+				//--
 			case 'deploy':
 				//--
 				$frm = (array) SmartFrameworkRegistry::getRequestVar('frm', [], 'array');
@@ -136,6 +533,12 @@ final class AppCodeUnpack {
 				$znetarch_att_fname = '';
 				$znetarch_att_content = '';
 				$znetarch_att_sha512 = '';
+				//--
+				if(defined('APPCODEPACK_APP_ID')) {
+					$err = true;
+					$status = 'AppID Define';
+					$msg = 'AppID must not be pre-defined !';
+				} //end if
 				//--
 				if(!$err) {
 					if(Smart::array_size($frm) <= 0) {
@@ -155,7 +558,7 @@ final class AppCodeUnpack {
 					if((string)AppNetUnPackager::unpack_valid_app_id((string)$frm['appid']) != '') {
 						$err = true;
 						$status = 'AppID must be valid';
-						$msg = 'AppID is not valid: `'.$frm['appid'].'`';
+						$msg = 'AppID is not valid';
 					} //end if
 				} //end if
 				if(!$err) {
@@ -164,7 +567,7 @@ final class AppCodeUnpack {
 					} else {
 						$err = true;
 						$status = 'AppID must be allowed';
-						$msg = 'AppID is not allowed by current settings: `'.$frm['appid'].'`';
+						$msg = 'AppID is not allowed by current settings';
 					} //end if
 				} //end if
 				if(!$err) {
@@ -178,9 +581,10 @@ final class AppCodeUnpack {
 					if((string)$frm['appid-hash'] !== (string)AppNetUnPackager::unpack_app_hash((string)APPCODEPACK_DEPLOY_SECRET)) {
 						$err = true;
 						$status = 'AppID-Hash must be valid';
-						$msg = 'AppID-Hash is not valid: `'.$frm['appid-hash'].'`';
+						$msg = 'AppID-Hash is not valid';
 					} //end if
 				} //end if
+				//--
 				if(!$err) {
 					$tmp_att = (array) SmartUtils::read_uploaded_file(
 						'znetarch',
@@ -287,13 +691,16 @@ final class AppCodeUnpack {
 						} //end if else
 					} //end if else
 				} //end if
+				//--
 				if(!$err) {
 					$status = 'OK';
 					$msg = 'Package Deploy Successful';
 				} else {
 					$status = 'ERR: '.$status;
 				} //end if
+				//--
 				$crr_url = (string) SmartUtils::get_server_current_url().SmartUtils::get_server_current_script();
+				//--
 				$msg .= "\n".'FileSize: '.SmartUtils::pretty_print_bytes((int)$znetarch_att_fsize, 2, ' ');
 				if(isset($frm['client']) AND ((string)$frm['client'] == 'appcodepack')) {
 					$msg .= "\n".'FileSize-Bytes: `'.(int)$znetarch_att_fcsize.'`'; // safe size
@@ -307,8 +714,11 @@ final class AppCodeUnpack {
 					$msg .= "\n".'Signature: `'.sha1('#'.$frm['appid'].'#'.$frm['appid-hash'].'#'.$znetarch_att_fname.'#'.$crr_url.'#').'`'; // {{{SYNC-APP-DEPLOY-SIGNATURE}}}
 					$msg .= "\n".'Safety-Checks: `'.(($znetarch_att_safecheck === true) ? 'yes' : 'no').'`';
 				} //end if
+				//--
 				if(isset($frm['appcodeunpack']) AND (Smart::array_size($frm['appcodeunpack']) > 0)) { // {{{SYNC-APPCODEUNPACK-SELF-UPDATE}}}
+					//--
 					$a_err = '';
+					//--
 					if(
 						isset($frm['appcodeunpack']['#']) AND Smart::is_nscalar($frm['appcodeunpack']['#']) AND ((string)trim((string)$frm['appcodeunpack']['#']) != '') AND
 						isset($frm['appcodeunpack']['=']) AND Smart::is_nscalar($frm['appcodeunpack']['=']) AND ((string)trim((string)$frm['appcodeunpack']['=']) != '') AND
@@ -350,31 +760,44 @@ final class AppCodeUnpack {
 						} //end if else
 						$tmp_upd_ctx = null;
 					} //end if
+					//--
 					$msg .= "\n".'AppCodeUnpack-Update: `'.(((string)$a_err == '') ? 'OK' : 'ERR: '.$a_err).'`';
+					//--
 				} //end if
 				if(SmartFileSystem::is_type_file(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php')) {
 					SmartFileSystem::delete((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php'); // just in case
 				} //end if
+				//--
 				$msg .= "\n".'AppCodeUnpack-Version: '.self::APPCODEUNPACK_VERSION;
+				//--
 				$out = (string) self::jsAjaxReplyToHtmlForm((string)$status, (string)$status, (string)$msg);
+				//--
 				break;
+				//--
 			case '':
+				//--
 				$loader = false;
 				$title = 'RELEASE MANAGER: DEPLOY a new AppCodePack Archive on this App Server';
 				$main = (string) SmartMarkersTemplating::render_template(
-					(string) (defined('APPCODEUNPACK_HTML_DEPLOY') ? APPCODEUNPACK_HTML_DEPLOY : '{#EMPTY-APPCODEUNPACK-DEPLOYTPL#}'),
+					(string) (defined('APPCODEUNPACK_HTML_DEPLOY') ? APPCODEUNPACK_HTML_DEPLOY : '{#EMPTY-APPCODEUNPACK-DEPLOY-TPL#}'),
 					[
 						'SCRIPT' 			=> (string) self::APPCODEUNPACK_SCRIPT,
-						'APP-IDS-ARR' 		=> (array)  (array) Smart::list_to_array((string)(defined('APPCODEPACK_DEPLOY_APPLIST') ? APPCODEPACK_DEPLOY_APPLIST : '')),
+						'APP-IDS-ARR' 		=> (array)  Smart::list_to_array((string)(defined('APPCODEPACK_DEPLOY_APPLIST') ? APPCODEPACK_DEPLOY_APPLIST : '')),
 						'MAX-UPLD-SIZE' 	=> (string) ini_get('upload_max_filesize'),
 						'HTML-WATCH' 		=> (string) (defined('APPCODEUNPACK_HTML_WATCH') ? APPCODEUNPACK_HTML_WATCH : ''),
 					]
 				);
+				//--
 				$out = (string) self::renderTPL((string)$title, (string)$main, (bool)$loader);
+				//--
 				break;
+				//--
 			default:
+				//--
 				self::raiseXXXError(404, 'Action not implemented: `'.$action.'`');
+				//--
 				return;
+				//--
 		} //end if
 		//--
 		return (string) $out;
@@ -423,10 +846,14 @@ final class AppCodeUnpack {
 					(
 						(constant((string)$const) !== null) AND
 						(constant((string)$const) !== false) AND
-						((string)trim((string)constant((string)$const)) == '')
+						(
+							(!Smart::is_nscalar(constant((string)$const)))
+							OR
+							((string)trim((string)constant((string)$const)) == '')
+						)
 					)
 				) {
-					self::raiseXXXError(500, 'An AppCodeUnpack constant has not been defined or have an empty value: '.$const);
+					self::raiseXXXError(500, 'An AppCodeUnpack constant has not been defined or have an empty or non-scalar value: '.$const);
 					die('ERR:Undefined:'.$const);
 				}
 			},
@@ -444,6 +871,11 @@ final class AppCodeUnpack {
 				'APPCODEPACK_DEPLOY_SECRET', 'APPCODEPACK_DEPLOY_APPLIST',
 			]
 		);
+		//--
+		if(((string)trim((string)APPCODEPACK_DEPLOY_SECRET) == '') OR ((int)strlen((string)trim((string)APPCODEPACK_DEPLOY_SECRET)) < 28) OR ((int)strlen((string)trim((string)APPCODEPACK_DEPLOY_SECRET)) > 98)) { // {{{SYNC-APPCODE-CONDITION-VALIDATE-SECRET}}}
+			Smart::raise_error(__METHOD__.' # Invalid AppCodeUnpack Deploy Secret ! Must be between 28 and 98 characters ...');
+			die('ERR:'.__METHOD__.': Invalid AppCodeUnpack Deploy Secret');
+		} //end if
 		//--
 		if(!SmartFileSysUtils::check_if_safe_path((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)) {
 			Smart::raise_error(__METHOD__.' # Invalid AppCodeUnpack Dir: `'.AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'`');
@@ -477,7 +909,7 @@ final class AppCodeUnpack {
 			} //end if
 		} //end if
 		//--
-		if((strlen((string)trim((string)APP_AUTH_ADMIN_USERNAME)) < 3) OR (strlen((string)trim((string)APP_AUTH_ADMIN_USERNAME)) > 25) OR (!preg_match('/^[a-z0-9\.]+$/', (string)APP_AUTH_ADMIN_USERNAME))) {
+		if(((string)trim((string)APP_AUTH_ADMIN_USERNAME) == '') OR ((int)strlen((string)APP_AUTH_ADMIN_USERNAME) < 3) OR ((int)strlen((string)APP_AUTH_ADMIN_USERNAME) > 25) OR (!preg_match('/^[a-z0-9\.]+$/', (string)APP_AUTH_ADMIN_USERNAME))) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
 			self::raiseXXXError(403, 'Init Settings ERROR: Invalid UserName');
 			die('ERR:'.__METHOD__.':403#InitAuthUserError');
 		} //end if
@@ -485,10 +917,15 @@ final class AppCodeUnpack {
 			Smart::raise_error(__METHOD__.' # The constant `APP_AUTH_ADMIN_PLAIN_PASSWORD` was already defined and should not !');
 			die('ERR:'.__METHOD__.': APP_AUTH_ADMIN_PLAIN_PASSWORD already defined');
 		} //end if
-		define('APP_AUTH_ADMIN_PLAIN_PASSWORD', (string)SmartUtils::crypto_blowfish_decrypt((string)APP_AUTH_ADMIN_PASSWORD));
-		if((strlen((string)APP_AUTH_ADMIN_PLAIN_PASSWORD) < 7) OR (strlen((string)APP_AUTH_ADMIN_PLAIN_PASSWORD) > 30)) { // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
+		define('APP_AUTH_ADMIN_PLAIN_PASSWORD', (string)SmartUtils::crypto_blowfish_decrypt((string)APP_AUTH_ADMIN_PASSWORD, (string)APPCODEPACK_DEPLOY_SECRET));
+		if(((string)trim((string)APP_AUTH_ADMIN_PLAIN_PASSWORD) == '') OR ((int)SmartUnicode::str_len((string)APP_AUTH_ADMIN_PLAIN_PASSWORD) < 7) OR ((int)SmartUnicode::str_len((string)APP_AUTH_ADMIN_PLAIN_PASSWORD) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
 			self::raiseXXXError(403, 'Init Settings ERROR: Invalid Password');
 			die('ERR:'.__METHOD__.':403#InitAuthPassError');
+		} //end if
+		//--
+		if(!function_exists('apache_get_version')) {
+			self::raiseXXXError(500, ' # This script requires PHP and Apache HTTP/S Server');
+			die(__METHOD__.' # No Apache HTTPD Environment Detected ...');
 		} //end if
 		//--
 		SmartFrameworkRegistry::setRequestPath((string)(isset($_SERVER['PATH_INFO'])  ? $_SERVER['PATH_INFO'] : '')); 			// extract the Special PathInfo handled by Smart.Framework using $_SERVER['PATH_INFO'] (the path after the first occurence of `/~` if any, and register it to registry)
@@ -680,7 +1117,7 @@ final class AppCodeUnpack {
 		$out = (string) SmartMarkersTemplating::render_template(
 			(string) (defined('APPCODEUNPACK_HTML_TPL') ? APPCODEUNPACK_HTML_TPL : '{#EMPTY-APPCODEUNPACK-TPL#}'),
 			[
-				'REALPATH-CRR' 			=> (string) rtrim((string)realpath('./'), '/').'/{%AppID%}/',
+				'REALPATH-CRR' 			=> (string) rtrim((string)realpath('./'), '/').'/{%-APP-ID-%}/',
 				'SCRIPT' 				=> (string) self::APPCODEUNPACK_SCRIPT,
 				'AUTH-USER-ID' 			=> (string) SmartAuth::get_login_id(),
 				'AUTH-ENF-HTTPS' 		=> (string) (((!defined('APP_AUTH_ADMIN_ENFORCE_HTTPS')) OR (APP_AUTH_ADMIN_ENFORCE_HTTPS !== false)) ? 'yes' : 'no'),
@@ -705,14 +1142,17 @@ final class AppCodeUnpack {
 				'JS-APPCODEUNPACK' 		=> (string) (defined('APPCODEUNPACK_JS_LOCAL_FX') ? APPCODEUNPACK_JS_LOCAL_FX : ''),
 				'APPCODEUNPACK-SVG' 	=> (string) (defined('APPCODEUNPACK_LOGO_SVG') ? APPCODEUNPACK_LOGO_SVG : ''),
 				'APACHE-SVG' 			=> (string) (defined('APPCODEUNPACK_LOGO_APACHE_SVG') ? APPCODEUNPACK_LOGO_APACHE_SVG : ''),
+				'APACHE-VER' 			=> (string) apache_get_version(),
 				'PHP-SVG' 				=> (string) (defined('APPCODEUNPACK_LOGO_PHP_SVG') ? APPCODEUNPACK_LOGO_PHP_SVG : ''),
+				'PHP-VER' 				=> (string) phpversion(),
 				'NETARCH-SVG' 			=> (string) (defined('APPCODEUNPACK_LOGO_NETARCH_SVG') ? APPCODEUNPACK_LOGO_NETARCH_SVG : ''),
 				'SF-SVG' 				=> (string) (defined('APPCODEUNPACK_LOGO_SF_SVG') ? APPCODEUNPACK_LOGO_SF_SVG : ''),
+				'SF-VER' 				=> (string) (defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') ? SMART_FRAMEWORK_RELEASE_TAGVERSION : '').'-'.(defined('SMART_FRAMEWORK_RELEASE_VERSION') ? SMART_FRAMEWORK_RELEASE_VERSION : ''),
 				'LOADING-SVG' 			=> (string) (defined('APPCODEUNPACK_LOADING_SVG') ? APPCODEUNPACK_LOADING_SVG : ''),
 				'NAME' 					=> (string) $name_all,
 				'NAME-PREFIX' 			=> (string) $name_prefix,
 				'NAME-SUFFIX' 			=> (string) $name_suffix,
-				'VERSION' 				=> (string) (defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') ? SMART_FRAMEWORK_RELEASE_TAGVERSION : '').'-'.(defined('SMART_FRAMEWORK_RELEASE_VERSION') ? SMART_FRAMEWORK_RELEASE_VERSION : '').' # '.self::APPCODEUNPACK_VERSION.' :: '.(defined('APP_CUSTOM_STANDALONE_RHASH') ? APP_CUSTOM_STANDALONE_RHASH : '').' @ '.(defined('APP_CUSTOM_STANDALONE_DTIME') ? APP_CUSTOM_STANDALONE_DTIME : ''),
+				'VERSION' 				=> (string) self::APPCODEUNPACK_VERSION.' :: '.(defined('APP_CUSTOM_STANDALONE_RHASH') ? APP_CUSTOM_STANDALONE_RHASH : '').' @ '.(defined('APP_CUSTOM_STANDALONE_DTIME') ? APP_CUSTOM_STANDALONE_DTIME : ''),
 				'MAIN' 					=> (string) $main,
 				'YEAR' 					=> (string) date('Y'),
 				'SHOW-LOADER' 			=> (string) (($loader === true) ? 'yes' : 'no'),

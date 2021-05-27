@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="smartJ$Browser        static class smartJ$Browser  {  } .    CLASS :: Smart BrowserUtils (ES6) The JavaScript class provides methods to simplify the">
-	<meta name="keywords" content="smartj browser, static, class, smart, browserutils, es6, the, javascript, provides, methods, to, simplify, interraction, with, browser, ajax, forms, and, provide, basic, implementation, of, several, ui, util, components, language, located, at, lib js framework smart-framework.pak.js, browser utils.js, package, sf.javascript:browser, name, frozen, yes, version, usage, smartj browser.method, depends, smartj utils, smartj base64, smartj cryptohash, jquery, smartj modalbox, jquery.gritter, jquery.toastr, jquery.alertable, smartsimpledialog, smartj ui, public, setflag, string, flag, mixed, value, boolean, return, true, if, success, false, not, param, set, that, an, internal, available, flags, are, pageunloadconfirm, pageaway, refreshstate, refreshurl, getflag, get, getrefpopup, null, or, object, popup, window, reference, any, striptags, html, plain, text, code, be, processed, strip, tags, from, function, parsecurrenturlgetparams">
+	<meta name="keywords" content="smartj browser, static, class, smart, browserutils, es6, the, javascript, provides, methods, to, simplify, interraction, with, browser, ajax, xhr, requests, forms, message, alerts, and, dialogs, growl, provide, many, useful, for, language, located, at, lib js framework smart-framework.pak.js, browser utils.js, package, sf.javascript:browser, name, frozen, yes, version, usage, smartj browser.method, depends, smartj utils, smartj date, smartj base64, smartj cryptohash, smartj cryptoblowfish, smartj testbrowser, jquery, smartj modalbox, jquery.gritter, jquery.toastr, jquery.alertable, smartsimpledialog, smartj ui, public, setflag, string, flag, mixed, value, boolean, return, true, if, success, false, not, param, set, of, that, an, internal, available, flags, are, pageunloadconfirm, pageaway, refreshstate, refreshurl, getflag, get, getrefpopup, null, or, object, popup, window, reference, any, getcurrentisodatetime, current, iso, date, time, as">
 	<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$Browser">
 	<title>JS Documentation for: smartJ$Browser</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -694,7 +694,7 @@ select#select-summary {
 </h1>
 <!-- Description -->
 <div class="doc-comments">CLASS :: Smart BrowserUtils (ES6)<br>
-The JavaScript class provides methods to simplify the interraction with the Browser, Ajax, Forms and provide basic implementation of several UI and Util components.</div><br>
+The JavaScript class provides methods to simplify the interraction with the Browser, Ajax XHR Requests, Forms, Message Alerts and Message Dialogs, Growl and provide many useful methods for browser interraction.</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
@@ -703,12 +703,12 @@ The JavaScript class provides methods to simplify the interraction with the Brow
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Browser</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$Browser</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20210421</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210526</span></li>
 		<li><b>Usage:</b> smartJ$Browser.method();</li>
 		
 		
 		
-		<li><b>Depends:</b> smartJ$Utils, smartJ$Base64, smartJ$CryptoHash, jQuery, *smartJ$ModalBox, *jQuery.gritter, *jQuery.toastr, *jQuery.alertable, *SmartSimpleDialog, *smartJ$UI</li>
+		<li><b>Depends:</b> smartJ$Utils, smartJ$Date, smartJ$Base64, smartJ$CryptoHash, smartJ$CryptoBlowfish, smartJ$TestBrowser, jQuery, *smartJ$ModalBox, *jQuery.gritter, *jQuery.toastr, *jQuery.alertable, *SmartSimpleDialog, *smartJ$UI</li>
 		
 	</ul>
 </div>
@@ -783,6 +783,61 @@ RefreshURL 			{String} || ''</div>
 	
 	</div>
 			<div class="doc-method-comments">Get the popUp Window Object Reference if any</div>
+	
+	
+</div><div class="doc-container" id="Method--getCurrentIsoDateTime">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>getCurrentIsoDateTime</b></span>&nbsp;=&nbsp;(
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The Current ISO Date and Time as YYYY-MM-DD HH:II:SS<br>
+	
+	
+	
+	
+	
+	</div>
+			<div class="doc-method-comments">Get the Current ISO Date and Time</div>
+	
+	
+</div><div class="doc-container" id="Method--blowfishEncrypt">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>blowfishEncrypt</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The Blowfish Encrypted string<br>
+	
+	
+	
+			@param: {String} str The plain string to be encoded<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Blowfish (CBC) Encrypt</div>
+	
+	
+</div><div class="doc-container" id="Method--blowfishDecrypt">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>blowfishDecrypt</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`enc` Parameter">enc</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The plain decoded string<br>
+	
+	
+	
+			@param: {String} enc The Blowfish Encrypted string<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Blowfish (CBC) Decrypt</div>
 	
 	
 </div><div class="doc-container" id="Method--stripTags">
@@ -1059,6 +1114,31 @@ If a parent refresh is pending will execute it after.</div>
 If a parent refresh is pending will execute it after.</div>
 	
 	
+</div><div class="doc-container" id="Method--getCurrentPointerEventXY">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getCurrentPointerEventXY</b></span>&nbsp;(
+			<i>{Event}</i>&nbsp;<span class="doc-param-name"><b><span title="`evt` Parameter">evt</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`viwePortOnly` Parameter">viwePortOnly</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Object} An object with x and y coordinates as: { x: 123, y: 234, t: 'mousemove' } or { x: 123, y: 234, t: 'touchmove' } ; t (type) can be also other event type ... any of supported by browser ; if can't detect will return by default: { x: -1, y: -1 }<br>
+	
+	
+	
+			@param: {Event} evt The EVENT Object Reference (must be a pointer event: mouse or touch)<br>
+			@param: {Boolean} viwePortOnly Default is FALSE ; if TRUE will return clientX / clientY instead of pageX / pageY<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Get the Pointer Event pageX / pageY or clientX / clientY coordinates, depending how viwePortOnly is set.<br>
+It works on both: mouse or touch devices.<br>
+On touch devices will look after: event.touches[0]<br>
+On mouse devices directly to: event<br>
+The pageX/Y coordinates are relative to the top left corner of the whole rendered page (including parts hidden by scrolling), while clientX/Y coordinates are relative to the top left corner of the visible part of the page (aka ViewPort)</div>
+	
+	
 </div><div class="doc-container" id="Method--getHighestZIndex">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getHighestZIndex</b></span>&nbsp;(
 	
@@ -1104,7 +1184,8 @@ It will add a maximize / un-maximize button and the handler for it to be able to
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`text` Parameter">text</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`title` Parameter">title</span></b></span>, 
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`css_class` Parameter">css_class</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`overlay_id` Parameter">overlay_id</span></b></span>
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`overlay_id` Parameter">overlay_id</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`clear` Parameter">clear</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
@@ -1119,6 +1200,7 @@ It will add a maximize / un-maximize button and the handler for it to be able to
 			@param: {String} title *Optional* a title to display for overlay as notification<br>
 			@param: {String} css_class *Optional* a CSS class name for the notification (if any)<br>
 			@param: {String} overlay_id *Optional* the overlay ID ; default is null and will use a hard-coded ID<br>
+			@param: {Boolean} clear *Optional* clear the overlay from loading img<br>
 	
 	
 	</div>
@@ -1510,7 +1592,7 @@ The function must be called by a form button onClick followed by 'return false;'
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
-			@hint: The input needs the html attribute: onKeyDown=&quot;smartJ$Browser.catchKeyENTER(event);&quot;<br>
+			@hint: Usage: onKeyDown =&quot;smartJ$Browser.catchKeyENTER(event);&quot;<br>
 	
 	
 	
@@ -1532,7 +1614,7 @@ The function must be called by a form button onClick followed by 'return false;'
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
-			@hint: The input needs the html attribute: onKeyDown=&quot;smartJ$Browser.catchKeyTAB(event);&quot;<br>
+			@hint: Usage: onKeyDown =&quot;smartJ$Browser.catchKeyTAB(event);&quot;<br>
 	
 	
 	
@@ -1544,7 +1626,8 @@ The function must be called by a form button onClick followed by 'return false;'
 	
 	
 	</div>
-			<div class="doc-method-comments">Catch TAB Key in a TextArea or other compatible input field</div>
+			<div class="doc-method-comments">Catch TAB Key and insert a TAB character (\t) at the cursor instead to switch to next input field as default in html<br>
+It works on TextArea or other compatible input fields ...</div>
 	
 			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> &lt;textarea id=<span class="hljs-string">&quot;txt&quot;</span> onKeyDown=<span class="hljs-string">&quot;smartJ$Browser.catchKeyTAB(event);&quot;</span>&gt;</code></pre>
 	
@@ -1624,9 +1707,9 @@ The function must be called by a form button onClick followed by 'return false;'
 			@param: {String} the_form_id The form ID ; Set it to FALSE/NULL/'' (to use without a real form by emulating a form like XHR request from URL)<br>
 			@param: {String} url The destination URL where form or XHR request will be sent to<br>
 			@param: {Yes/No} growl *Optional* If 'yes' will use the Growl notifications otherwise (if 'no') will use Dialog notifications ; default is set to 'auto'<br>
-			@param: {JS-Code} evcode *Optional* the JS Code to execute on SUCCESS answer (before anything else)<br>
-			@param: {JS-Code} everrcode *Optional* the JS Code to execute on ERROR answer (before anything else)<br>
-			@param: {JS-Code} evfailcode *Optional* the JS Code to execute on REQUEST FAIL answer<br>
+			@param: {JS-Code} evcode *Optional* the JS Code to execute on SUCCESS answer (before anything else) ; params: the_form_id, url, msg<br>
+			@param: {JS-Code} everrcode *Optional* the JS Code to execute on ERROR answer (before anything else) ; params: the_form_id, url, msg<br>
+			@param: {JS-Code} evfailcode *Optional* the JS Code to execute on REQUEST FAIL answer ; params: the_form_id, url, msg<br>
 			@param: {Boolean} failalertable *Optional* if set to TRUE will set the fail dialog to 'alertable' instead of 'auto' if alertable is available<br>
 	
 	
@@ -1640,8 +1723,8 @@ The function expects a json answer with the following structure: see more in fra
  			<span class="hljs-string">'status'</span>: 		<span class="hljs-string">'OK|ERROR'</span>,
  			<span class="hljs-string">'action'</span>: 		<span class="hljs-string">'Notification Button Text: Ok/Cancel'</span>,
  			<span class="hljs-string">'title'</span>: 		<span class="hljs-string">'Notification Title'</span>,
- 			<span class="hljs-string">'message'</span>: 		<span class="hljs-string">'Notification Message HTML Content'</span>,
- 			<span class="hljs-string">'js_evcode'</span>: 	<span class="hljs-string">'If non-empty, the JS Code to execute on either SUCCESS or ERROR (before redirect or Div Replace)'</span>
+ 			<span class="hljs-string">'message'</span>: 		<span class="hljs-string">'Notification Message HTML Content'</span>, <span class="hljs-comment">// if empty, on success will not show any notification</span>
+ 			<span class="hljs-string">'js_evcode'</span>: 	<span class="hljs-string">'If non-empty, the JS Code to execute on either SUCCESS or ERROR (before redirect or Div Replace) ; params: the_form_id, url, msg'</span>
  			<span class="hljs-string">'redirect'</span>: 	<span class="hljs-string">'If non-empty, a redirect URL on either SUCCESS or ERROR ; on SUCCESS if message is Empty will redirect without confirmation: Growl / Dialog'</span>,
  			<span class="hljs-string">'replace_div'</span>: 	<span class="hljs-string">'If non-empty, an ID for a div to be replaced with content from [replace_html] on Success'</span>,
  			<span class="hljs-string">'replace_html'</span>: <span class="hljs-string">'If non-empty, a HTML code to populate / replace the current Content for the [replace_div] on Success'</span>
@@ -1766,7 +1849,7 @@ smartJ$Browser.SubmitFormByAjax(); 	// advanced, will handle the XHR form reques
 	
 	
 			@param: {Object} wnd The window (reference) object<br>
-			@param: {Integer} offset The offset in pixels to scroll down<br>
+			@param: {Integer} offset The offset in pixels to scroll down ; use -1 to scroll to the end of document<br>
 	
 	
 	</div>
@@ -1924,7 +2007,7 @@ Allowed Values: 'auto' | 'native' | 'alertable' | 'dialog' | 'ui' ; auto=autosel
 Allowed Values: 'auto' | 'gritter' | 'toastr' ; If Explicit set on 'gritter' and gritter is n/a will fallback to alert ; If Explicit set on 'toastr' and toastr is n/a will fallback to alert</div>
 	
 </div><div class="doc-container" id="Property--param_NotificationTimeOK">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_NotificationTimeOK</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>1500</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Integer}</i>
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_NotificationTimeOK</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>1000</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Integer}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.NotificationTimeOK</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_NotificationTimeOK</span></div>
 			<div class="doc-method-comments">Growl Notification Time when OK (in microseconds)</div>
@@ -1956,7 +2039,7 @@ Allowed Values: 2=true (includding mobile) | 1=true (except on mobile) | 0=false
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.ModalBoxNoCascade</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_ModalBoxNoCascade</span></div>
 			<div class="doc-method-comments">Enable or Disable the ModalBox Cascading<br>
-If set to FALSE will enable the modal iframe cascading (very inefficient) ; otherwise will use PopUp every next level starting from the ModalBox iframe level, but inside PopUp can open another ModalBox ... and so on<br>
+If set to FALSE will enable the ModalBox (iframe) cascading (inefficient) ; otherwise will use PopUp every next level starting from the ModalBox iframe level, but inside PopUp can open another ModalBox ... and so on<br>
 Allowed Values: true | false</div>
 	
 </div><div class="doc-container" id="Property--param_ModalBoxProtected">
@@ -1974,7 +2057,7 @@ Allowed Values: true | false</div>
 			<div class="doc-method-comments">Loader Image used to display in various contexts when loading ...</div>
 	
 </div><!-- Skip Internal-Priv Property: `param_LoaderBlank` --><div class="doc-container" id="Property--param_ImgOK">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_ImgOK</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'lib/framework/img/sign-info.svg'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_ImgOK</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'lib/framework/img/sign-ok.svg'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.ImgOK</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_ImgOK</span></div>
 			<div class="doc-method-comments">OK sign image, used in various contexts</div>
@@ -1986,7 +2069,7 @@ Allowed Values: true | false</div>
 			<div class="doc-method-comments">Not OK sign image, used in various contexts</div>
 	
 </div><!-- Skip Internal-Priv Property: `param_ImgCloneInsert` --><!-- Skip Internal-Priv Property: `param_ImgCloneRemove` --><!-- Skip Internal-Priv Property: `param_IconImgFullScreen` --><div class="doc-container" id="Property--param_CssOverlayBgColor">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CssOverlayBgColor</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'#777777'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CssOverlayBgColor</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'#FFFFFF'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.CssOverlayBgColor</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_CssOverlayBgColor</span></div>
 			<div class="doc-method-comments">Overlay Customization - Background Color<br>
@@ -1999,7 +2082,7 @@ Allowed Values: hexa color between #000000 - #FFFFFF</div>
 			<div class="doc-method-comments">Overlay Customization - Opacity<br>
 Allowed Values: between 0.1 and 1</div>
 	
-</div><!-- Skip Internal-Priv Property: `param_TimeDelayCloseWnd` --><!-- Skip Internal-Priv Property: `param_TimeDelayRedirect` -->
+</div><!-- Skip Internal-Priv Property: `param_TimeDelayCloseWnd` -->
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
@@ -2045,6 +2128,12 @@ function smartHandleDocSelector(obj) {
 			
 									<option value="Method--getRefPopup"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;getRefPopup()</option>
 			
+									<option value="Method--getCurrentIsoDateTime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;getCurrentIsoDateTime()</option>
+			
+									<option value="Method--blowfishEncrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;blowfishEncrypt()</option>
+			
+									<option value="Method--blowfishDecrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;blowfishDecrypt()</option>
+			
 									<option value="Method--stripTags"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stripTags()</option>
 			
 									<option value="Method--parseCurrentUrlGetParams"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parseCurrentUrlGetParams()</option>
@@ -2072,6 +2161,8 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--CloseModalPopUp"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CloseModalPopUp()</option>
 			
 									<option value="Method--CloseDelayedModalPopUp"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CloseDelayedModalPopUp()</option>
+			
+									<option value="Method--getCurrentPointerEventXY"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getCurrentPointerEventXY()</option>
 			
 									<option value="Method--getHighestZIndex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getHighestZIndex()</option>
 			
@@ -2179,7 +2270,6 @@ function smartHandleDocSelector(obj) {
 									<option value="Property--param_CssOverlayOpacity"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CssOverlayOpacity</option>
 			
 						
-						
 			
 		</optgroup>
 		<optgroup label="Class Constants">
@@ -2193,7 +2283,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:58 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:48 +0000</small>
 <hr>
 <br>
 <!-- # -->

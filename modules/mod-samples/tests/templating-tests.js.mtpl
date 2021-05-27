@@ -1,25 +1,27 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%/COMMENT%%%]
-//===== QUnit Tests.Templating: START :: r.20200610
+//===== QUnit Tests.Templating: START :: r.20210526
 
-(function() {
+(() => {
 
-	QUnit.module('Templating', function(){
+	const theTimeOutIframe = 500;
 
-		QUnit.test('Marker-TPL Extended Test: PHP / Javascript :: iFrame', function(assert) {
+	QUnit.module('Templating', () => {
+
+		QUnit.test('Marker-TPL Extended Test: PHP / Javascript :: iFrame', (assert) => {
 			SmartQUnit.runiFrameTest(
-				baseScript + '?page=samples.templating-test-extended',
-				500,
+				String(baseScript) + '?page=samples.templating-test-extended',
+				theTimeOutIframe,
 				assert,
 				'Test OK: JS/PHP Render comparison for Marker-TPL.'
 			);
 		});
 
-		QUnit.test('Marker-TPL Demo Test: PHP :: iFrame', function(assert) {
+		QUnit.test('Marker-TPL Demo Test: PHP :: iFrame', (assert) => {
 			SmartQUnit.runiFrameTest(
-				baseScript + '?page=samples.templating-test',
-				500,
+				String(baseScript) + '?page=samples.templating-test',
+				theTimeOutIframe,
 				assert,
 				'Marker-TPL w. Sub-Template Render (Table with #3 columns):'
 			);

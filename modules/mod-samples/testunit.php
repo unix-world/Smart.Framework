@@ -1,8 +1,8 @@
 <?php
 // Controller: Samples/Testunit
 // Route: ?/page/samples.testunit (?page=samples.testunit)
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -18,10 +18,10 @@ if(SmartFileSystem::is_type_file('modules/smart-extra-libs/staticload.php')) {
 } //end if
 //--
 
-define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
 
 define('SMART_FRAMEWORK_TESTUNIT_BASE_URL', '?/page/samples.testunit/op/');
-if(SmartFrameworkRegistry::isAdminArea() === true) {
+if((SmartFrameworkRegistry::isAdminArea() === true) OR (SmartFrameworkRegistry::isTaskArea() === true)) {
 	define('SMART_FRAMEWORK_TESTUNIT_CAPTCHA_MODE', 'session');
 } else {
 	define('SMART_FRAMEWORK_TESTUNIT_CAPTCHA_MODE', 'cookie');
@@ -57,7 +57,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if(SmartFrameworkRegistry::isAdminArea() === true) {
+		if((SmartFrameworkRegistry::isAdminArea() === true) OR (SmartFrameworkRegistry::isTaskArea() === true)) {
 			SmartSession::start(); // start the session
 		} //end if
 		//--
@@ -487,7 +487,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		$semaphores = [];
-		if(SmartFrameworkRegistry::isAdminArea() === true) {
+		if((SmartFrameworkRegistry::isAdminArea() === true) OR (SmartFrameworkRegistry::isTaskArea() === true)) {
 			if(rand(0,1) == 1) {
 				$semaphores[] = 'skip:growl';
 			} //end if
@@ -498,7 +498,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		if(rand(0,1) == 1) {
 			$semaphores[] = 'load:code-highlight-js';
 		} //end if
-		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SmartFrameworkRegistry::isAdminArea() === true)) {
+		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SmartFrameworkRegistry::isAdminArea() === true) && (SmartFrameworkRegistry::isTaskArea() === false)) {
 			//-- skip load the default JS-UI and load jQueryUI if is available and is admin area
 			$semaphores[] = 'skip:js-ui';
 			$semaphores[] = 'load:jqueryui';
@@ -529,6 +529,20 @@ class SmartAppIndexController extends SmartAppAdminController {
 
 	// this will clone the SmartAppIndexController to run exactly the same action in admin.php
 	// or this can implement a completely different controller if it is accessed via admin.php
+
+} //END CLASS
+
+
+/**
+ * Task Controller (optional)
+ *
+ * @ignore
+ *
+ */
+class SmartAppTaskController extends SmartAppAdminController {
+
+	// this will clone the SmartAppIndexController to run exactly the same action in task.php
+	// or this can implement a completely different controller if it is accessed via task.php
 
 } //END CLASS
 

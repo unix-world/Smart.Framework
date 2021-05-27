@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / SpreadSheet Import/Export]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -168,7 +168,7 @@ final class SmartSpreadSheetExport {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210512
+ * @version 	v.20210526
  * @package 	Plugins:ExportAndImport
  *
  */
@@ -179,7 +179,7 @@ final class SmartSpreadSheetImport {
 
 	//=====================================================================
 	// parse Spreadsheet to Array
-	public static function readFileContentsToArray(?string $input_str, bool $first_line_is_header=true) {
+	public static function parseContentAsArr(?string $input_str, bool $first_line_is_header=true) {
 		//--
 		$input_str = (string) trim((string)$input_str);
 		if((string)$input_str == '') {

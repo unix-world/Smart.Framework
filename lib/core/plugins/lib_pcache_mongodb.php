@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / MongoDB Persistent Cache]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartMongoDb
- * @version 	v.20200511
+ * @version 	v.20210527
  * @package 	Plugins:PersistentCache:MongoDB
  *
  */
@@ -47,8 +47,9 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 	// !!! THIS CLASS MUST NOT BE MARKED AS FINAL to allow the class SmartPersistentCache@DBA to be extended from this !!!
 	// But this class have all PUBLIC Methods marked as FINAL to avoid being rewritten ...
 
+	public const COLLECTION 	= 'SmartFrameworkPersistentCache'; 	// The MongoDB Collection ; have to be public, if need to access for other purposes like administration
+
 	private static $mongo 		= null; 							// MongoDB Object ; by default is null ; will be set to false on connect errors to avoid trying to re-connect on each statement ...
-	private static $collection 	= 'SmartFrameworkPersistentCache'; 	// The MongoDB Collection
 	private static $is_active 	= null;								// Cache Active State ; by default is null ; on 1st check must set to TRUE or FALSE
 
 
@@ -116,7 +117,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 		//--
 		try {
 			$delete = self::$mongo->delete(
-				(string) self::$collection,
+				(string) self::COLLECTION,
 				[] // find filter (all)
 			);
 		} catch(Exception $err) { // don't throw if MongoDB error !
@@ -154,7 +155,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 		$rd = array();
 		try {
 			$rd = self::$mongo->findone(
-				(string) self::$collection,
+				(string) self::COLLECTION,
 				[ // find filter (by Unique)
 					'id' 		=> (string) $id,
 					'key' 		=> (string) $y_key,
@@ -224,7 +225,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 		$rd = array();
 		try {
 			$rd = self::$mongo->findone(
-				(string) self::$collection,
+				(string) self::COLLECTION,
 				[ // find filter (by Unique)
 					'id' 		=> (string) $id,
 					'key' 		=> (string) $y_key,
@@ -305,7 +306,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 		$rd = array();
 		try {
 			$rd = self::$mongo->findone(
-				(string) self::$collection,
+				(string) self::COLLECTION,
 				[ // find filter (by Unique)
 					'id' 		=> (string) $id,
 					'key' 		=> (string) $y_key,
@@ -402,7 +403,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 		$upsert = array();
 		try {
 			$upsert = (array) self::$mongo->upsert(
-				(string) self::$collection,
+				(string) self::COLLECTION,
 				[ // filter by Unique
 					'id' 		=> (string) $id,
 					'key' 		=> (string) $y_key,
@@ -465,7 +466,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 		if((string)$y_key == '*') {
 			try {
 				$delete = self::$mongo->delete(
-					(string) self::$collection,
+					(string) self::COLLECTION,
 					[ // find filter (all in realm)
 						'realm' 	=> (string) $y_realm
 					]
@@ -479,7 +480,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 			$id = (string) SmartHashCrypto::sha512($y_realm.':'.$y_key);
 			try {
 				$delete = self::$mongo->delete(
-					(string) self::$collection,
+					(string) self::COLLECTION,
 					[ // find filter (by Unique)
 						'id' 		=> (string) $id,
 						'key' 		=> (string) $y_key,
@@ -544,14 +545,14 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 			//--
 			$create_collection = self::$mongo->igcommand(
 				[
-					'create' => (string) self::$collection
+					'create' => (string) self::COLLECTION
 				]
 			);
 			if(self::$mongo->is_command_ok($create_collection)) { // cmd is OK just when creates
 				//--
 				$create_indexes = self::$mongo->igcommand(
 					[
-						'createIndexes' => (string) self::$collection,
+						'createIndexes' => (string) self::COLLECTION,
 						'indexes' 		=> [
 							[
 								'name' 				=> 'id',
@@ -593,7 +594,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 				if(!self::$mongo->is_command_ok($create_indexes)) {
 					$drop_collection = self::$mongo->igcommand(
 						[
-							'drop' => (string) self::$collection
+							'drop' => (string) self::COLLECTION
 						]
 					);
 					Smart::log_warning(__METHOD__.' # Failed to create collection indexes, dropping collection: '.(int)self::$mongo->is_command_ok($drop_collection));
@@ -603,10 +604,10 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 				//--
 			} //end if
 			//--
-			if(Smart::random_number(0, 10) == 1) { // 10% chance to delete
+			if(Smart::random_number(0, 100) == 10) { // 1% chance to cleanup
 				try {
 					$clear_expired = self::$mongo->delete(
-						(string) self::$collection,
+						(string) self::COLLECTION,
 						[ // find filter: all expired
 							'$and' => [
 								[ 'expire' 		=> [ '$gt' 	=> 0 ] ], 				// expire > 0
@@ -616,7 +617,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 						]
 					);
 				} catch(Exception $err) { // don't throw if MongoDB error !
-					Smart::log_warning(__METHOD__.' # Failed to delete expired sessions: '.$err->getMessage());
+					Smart::log_warning(__METHOD__.' # Failed to delete expired keys: '.$err->getMessage());
 					return false;
 				} //end try catch
 			} //end if

@@ -5,8 +5,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
-	<meta name="description" content="smartJ$Utils        static class smartJ$Utils  {  } .    CLASS :: Smart CoreUtils (ES6) The class provides the core methods for JavaScript API of">
-	<meta name="keywords" content="smartj utils, static, class, smart, coreutils, es6, the, provides, core, methods, for, javascript, api, of, smart.framework, language, located, at, lib js framework smart-framework.pak.js, core utils.js, package, sf.javascript:core, name, frozen, yes, version, usage, smartj utils.method, public, isfinitenumber, number, num, boolean, return, true, is, finite, and, nan, false, otherwise, param, to, be, tested, check, if, a, valid, must, stringpureval, mixed, input, trim, string, value, converted, using, rules, from, above, will, output, result, pure, an, undefined, null, or, casted, empty, as, in, php, not, object, function, safety, numerioc, values, they, are, stringtrim, str, trimmed, begining, end, by, any, whitespace, space, n, r, t, stringucfirst, hint, implementation">
+	<meta name="description" content="smartJ$Utils        static class smartJ$Utils  {  } .    CLASS :: Smart CoreUtils (ES6, Strict Mode) The class provides the core methods for JavaScript">
+	<meta name="keywords" content="smartj utils, static, class, smart, coreutils, es6, strict, mode, the, provides, core, methods, for, javascript, api, of, smart.framework, language, located, at, lib js framework smart-framework.pak.js, core utils.js, package, sf.javascript:core, name, frozen, yes, version, usage, smartj utils.method, public, evaljsfxcode, string, fxcontext, js-code, jscode, boolean, alerterr, return, true, if, successful, false, otherwise, param, fx, context, where, is, executed, used, just, logging, fails, to, know, which, js, callable, method, or, plain, code, optional, default, set, eval, will, display, an, alert, message, evaluate, mixed, evalute, and, execute, within, a, try catch, log, errors, console, so, it, can, isfinitenumber, number, num, finite, nan, be, tested, check, valid, must, stringpureval">
 	<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$Utils">
 	<title>JS Documentation for: smartJ$Utils</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -693,7 +693,7 @@ select#select-summary {
 	}&nbsp;.
 </h1>
 <!-- Description -->
-<div class="doc-comments">CLASS :: Smart CoreUtils (ES6)<br>
+<div class="doc-comments">CLASS :: Smart CoreUtils (ES6, Strict Mode)<br>
 The class provides the core methods for JavaScript API of Smart.Framework</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
@@ -703,7 +703,7 @@ The class provides the core methods for JavaScript API of Smart.Framework</div><
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Core</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$Utils</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20210421</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210526</span></li>
 		<li><b>Usage:</b> smartJ$Utils.method();</li>
 		
 		
@@ -718,7 +718,32 @@ The class provides the core methods for JavaScript API of Smart.Framework</div><
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20210414 -->
-<div class="doc-container" id="Method--isFiniteNumber">
+<div class="doc-container" id="Method--evalJsFxCode">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>evalJsFxCode</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`fxContext` Parameter">fxContext</span></b></span>, 
+			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`jsCode` Parameter">jsCode</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`alertErr` Parameter">alertErr</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if successful, FALSE otherwise<br>
+	
+	
+	
+			@param: {String} fxContext The Fx context where is executed, used just for logging if fails to know which context is<br>
+			@param: {JS-Code} jsCode Js callable method or Js plain code<br>
+			@param: {Boolean} alertErr *Optional* Default is FALSE ; If set to TRUE if eval fails will display an alert message<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Evaluate Mixed Js Code<br>
+Will evalute and execute mixed Js Code (Js callable method or Js plain code) within a try/catch context<br>
+If fails, will log errors to the console and optional if set so it can display an alert message</div>
+	
+	
+</div><div class="doc-container" id="Method--isFiniteNumber">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>isFiniteNumber</b></span>&nbsp;=&nbsp;(
 			<i>{Number}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>
 	
@@ -1479,6 +1504,27 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 			<div class="doc-method-comments">Sort a stack (array / object / property) using Numeric Sort algorithm</div>
 	
 	
+</div><div class="doc-container" id="Method--url_add_suffix">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>url_add_suffix</b></span>&nbsp;=&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`url` Parameter">url</span></b></span>, 
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`suffix` Parameter">suffix</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The prepared URL in the standard RFC3986 format (all values are escaped using escape_url() to be Unicode full compliant<br>
+	
+	
+	
+			@param: {String} url The base URL to use as prefix like: script.php or script.php?a=b&amp;c=d or empty<br>
+			@param: {String} suffix A RFC3986 URL segment like: a=b or E=%20d (without ? or not starting with &amp; as they will be detected if need append ? or &amp;; variable values must be encoded using escape_url() RFC3986)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Add URL Suffix (to a standard RFC3986 URL) as: script.php?a=b&amp;C=D&amp;e=%20d</div>
+	
+	
 </div><div class="doc-container" id="Method--create_slug">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>create_slug</b></span>&nbsp;=&nbsp;(
 			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
@@ -1623,6 +1669,8 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
+									<option value="Method--evalJsFxCode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;evalJsFxCode()</option>
+			
 									<option value="Method--isFiniteNumber"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;isFiniteNumber()</option>
 			
 									<option value="Method--stringPureVal"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringPureVal()</option>
@@ -1697,6 +1745,8 @@ function smartHandleDocSelector(obj) {
 			
 									<option value="Method--numericSort"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;numericSort()</option>
 			
+									<option value="Method--url_add_suffix"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;url_add_suffix()</option>
+			
 									<option value="Method--create_slug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_slug()</option>
 			
 									<option value="Method--create_htmid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_htmid()</option>
@@ -1722,7 +1772,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:57 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:47 +0000</small>
 <hr>
 <br>
 <!-- # -->

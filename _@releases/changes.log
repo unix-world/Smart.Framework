@@ -2,6 +2,14 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+May 26, 2021 :: Version 8.7 rev.20210526
+	* v.8 release (version numbering is now different ; 8.7 shows that runs on both PHP 8 and PHP 7 with primary target on PHP 8 and continue to support PHP 7 ...) ; next version will be perhaps 9.8 when PHP 9 will be released and will support PHP 8 or event 9.8.7 if will supports all PHP 9, 8 and 7 :-)
+	* minor fixes and optimizations ; QUnit tests javascript migrated to ES6
+
+May 25, 2021 :: Version 7.2.1 rev.20210525
+	* many improvements to the appcode release module
+	* this is the last v.7 release ; next release will be v.8
+
 May 23, 2021 :: Version 7.2.1 rev.20210523
 	* renamed init constant SMART_FRAMEWORK_UNIQUE_ID_COOKIE_NAME as SMART_FRAMEWORK_UUID_COOKIE_NAME
 	* renamed the resy of init constants starting with SMART_FRAMEWORK_UNIQUE_ID_COOKIE_* as SMART_FRAMEWORK_COOKIES_DEFAULT_*

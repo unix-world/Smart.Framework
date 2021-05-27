@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Redis Custom Session]
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -27,7 +27,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'Redis: Memory based');
  *
  * @access 		PUBLIC
  * @depends 	SmartRedisDb, Smart
- * @version 	v.20210402
+ * @version 	v.20210527
  * @package 	Application
  *
  */
@@ -67,6 +67,8 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 			(bool)   $is_fatal_err // fatal err
 		); // use the connection values from configs
 		//--
+		// no need to call gc ... redis is expiring the keys through it's internal expire mechanism !
+		//--
 		return true;
 		//--
 	} //END FUNCTION
@@ -101,7 +103,7 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 		} else {
 			$expire = (int) ini_get('session.gc_maxlifetime');
 			if($expire <= 0) {
-				$expire = (int) 3600 * 24; // {{{SYNC-SESS-MAX-HARDCODED-VAL}}} max 1 hour from the last access if browser session, there is a security risk if SMART_FRAMEWORK_SESSION_LIFETIME is zero
+				$expire = (int) 3600 * 24; // {{{SYNC-SESS-MAX-HARDCODED-VAL}}} max 24 hours from the last access if browser session, there is a security risk if SMART_FRAMEWORK_SESSION_LIFETIME is zero
 			} //end if
 		} //end if
 		//--

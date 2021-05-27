@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartViewHtmlHelpers        final class \ SmartViewHtmlHelpers    {   } ::    Class: SmartViewHelpers - Easy to use HTML ViewHelper Components.">
-	<meta name="keywords" content="smartviewhtmlhelpers, final, class, smartviewhelpers, easy, to, use, html, viewhelper, components, language, php, located, at, lib core plugins lib viewhelpers.php, package, plugins:viewcomponents, namespace, name, version, v.20210420, depends, classes, smart, usage, static, object, class::method, this, provides, only, methods, public, function, html jsload highlightsyntax, string, dom selector, mixed, plugins, array, web, enum, theme, github, bool, loadpacks, true, use absolute url, false, ext jshtml, return, code, param, a, valid, jquery, html-dom, selector, as, container s, for, pre code, see, can, be, body, id-element, null, load, all, or, with, of, packages, available, tpl, lnx, srv, net, lang, default, is, set, the, visual, css, themes, atom-one-light, github-gist, googlecode, grayscale, ocean, tomorrow-night-blue, xcode, zenburn, if, will">
+	<meta name="keywords" content="smartviewhtmlhelpers, final, class, smartviewhelpers, easy, to, use, html, viewhelper, components, language, php, located, at, lib core plugins lib viewhelpers.php, package, plugins:viewcomponents, namespace, name, version, v.20210502, depends, classes, smart, usage, static, object, class::method, this, provides, only, methods, public, function, html jsload highlightsyntax, string, dom selector, mixed, plugins, array, web, enum, theme, github, bool, loadpacks, true, use absolute url, false, ext jshtml, return, code, param, a, valid, jquery, html-dom, selector, as, container s, for, pre code, see, can, be, body, id-element, null, load, all, or, with, of, packages, available, tpl, lnx, srv, net, lang, default, is, set, the, visual, css, themes, atom-one-light, github-gist, googlecode, grayscale, ocean, tomorrow-night-blue, xcode, zenburn, if, will">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartViewHtmlHelpers">
 	<title>PHP Documentation for: \SmartViewHtmlHelpers</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartViewHtmlHelpers</span></li>
 		
-		<li><b>Version:</b> v.20210420</li>
+		<li><b>Version:</b> v.20210502</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -833,12 +833,13 @@ This function should not be rendered more than once in a HTML page</div>
 				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_selected_value` Parameter is REQUIRED">$y_selected_value</span></b></span>, 
 			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mode` Parameter is REQUIRED">$y_mode</span></b></span>, 
-			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$yarr_data` Parameter is REQUIRED">$yarr_data</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$_yarr_data` Parameter is REQUIRED">$_yarr_data</span></b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_varname` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_varname</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_dimensions` Parameter is OPTIONAL, with the Default Value: &quot;150/0&quot;">$y_dimensions</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;150/0&quot;</b></span>, 
 			<i>CODE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_custom_js` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_custom_js</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<i>YES/NO</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_raw` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_raw</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>, 
 			<i>YES/NO</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allowblank` Parameter is OPTIONAL, with the Default Value: &quot;yes&quot;">$y_allowblank</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;yes&quot;</b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_blank_name` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_blank_name</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<i>CSS/#JS-UI#</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_extrastyle` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_extrastyle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
@@ -847,17 +848,18 @@ This function should not be rendered more than once in a HTML page</div>
 	
 			<div class="doc-method-ret-params">@return: {STRING} [HTML Code]<br>
 @param: {STRING} $y_id: the HTML element ID<br>
-@param: {STRING} $y_selected_value: selected value of the list<br>
+@param: {STRING} $y_selected_value: selected value of the list ; ex: 'id1'<br>
 @param: {ENUM} $y_mode: 'form' = display form | 'list' = display list<br>
-@param: {ARRAY} $yarr_data: DATASET ROWS AS: ['id' =&gt; 'name', 'id2' =&gt; 'name2'] OR ['id', 'name', 'id2', 'name2']<br>
+@param: {ARRAY} $_yarr_data: DATASET ROWS AS: ['id' =&gt; 'name', 'id2' =&gt; 'name2'] OR ['id', 'name', 'id2', 'name2']<br>
 @param: {STRING} $y_varname: as 'frm[test]'<br>
 @param: {INTEGER} $y_dimensions: dimensions in pixels (width or width / (list) height for '#JS-UI#' or '#JS-UI-FILTER#')<br>
-@param: {CODE} $y_custom_js: custom js code (Ex: submit on change)<br>
+@param: {CODE} $y_custom_js: custom js code (Ex: onsubmit=&quot;&quot; or onchange=&quot;&quot;)<br>
 @param: {YES/NO} $y_raw: If Yes, the description values will not apply html special chars<br>
 @param: {YES/NO} $y_allowblank: If Yes, a blank value is allowed in list<br>
-@param: {CSS/#JS-UI#} $y_extrastyle: Extra CSS Style | 'class:a-css-class' | '#JS-UI#' or '#JS-UI-FILTER#'</div>
+@param: {STRING} $y_blank_name: The name of the blank value ; If none will use empty (nbsp) space<br>
+@param: {CSS/#JS-UI#} $y_extrastyle: Extra CSS Style | or Extra CSS Class 'class:a-css-class' | Visual UI Mode '#JS-UI#' or '#JS-UI-FILTER#'</div>
 	
-			<div class="doc-method-comments">Manage a SINGLE Selection HTML List Element for Edit or Display data :: v.20141212</div>
+			<div class="doc-method-comments">Manage a SINGLE Selection HTML List Element for Edit or Display data</div>
 	
 	
 	
@@ -866,13 +868,14 @@ This function should not be rendered more than once in a HTML page</div>
 				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_id` Parameter is REQUIRED">$y_id</span></b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_selected_value` Parameter is REQUIRED">$y_selected_value</span></b></span>, 
 			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mode` Parameter is REQUIRED">$y_mode</span></b></span>, 
-			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$yarr_data` Parameter is REQUIRED">$yarr_data</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$_yarr_data` Parameter is REQUIRED">$_yarr_data</span></b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_varname` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_varname</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_draw` Parameter is OPTIONAL, with the Default Value: &quot;list&quot;">$y_draw</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;list&quot;</b></span>, 
 			<i>YES/NO</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sync_values` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_sync_values</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>, 
 			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_dimensions` Parameter is OPTIONAL, with the Default Value: &quot;300/0&quot;">$y_dimensions</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;300/0&quot;</b></span>, 
 			<i>CODE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_custom_js` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_custom_js</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>SPECIAL</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_extrastyle` Parameter is OPTIONAL, with the Default Value: &quot;#JS-UI-FILTER#&quot;">$y_extrastyle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;#JS-UI-FILTER#&quot;</b></span>
+			<i>CSS/#JS-UI#</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_extrastyle` Parameter is OPTIONAL, with the Default Value: &quot;#JS-UI-FILTER#&quot;">$y_extrastyle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;#JS-UI-FILTER#&quot;</b></span>, 
+			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_msize` Parameter is OPTIONAL, with the Default Value: 8">$y_msize</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>8</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -880,15 +883,16 @@ This function should not be rendered more than once in a HTML page</div>
 	
 			<div class="doc-method-ret-params">@return: {STRING} [HTML Code]<br>
 @param: {STRING} $y_id: the HTML element ID<br>
-@param: {STRING} $y_selected_value: selected value(s) data as ARRAY or STRING list as: '&lt;id1&gt;,&lt;id2&gt;'<br>
+@param: {STRING} $y_selected_value: selected value(s) data as ARRAY [ 'id1', 'id2' ] or STRING LIST as: '&lt;id1&gt;,&lt;id2&gt;'<br>
 @param: {ENUM} $y_mode: 'form' = display form | checkboxes | 'list' = display list<br>
-@param: {ARRAY} $yarr_data: DATASET ROWS AS: ['id' =&gt; 'name', 'id2' =&gt; 'name2'] OR ['id', 'name', 'id2', 'name2']<br>
+@param: {ARRAY} $_yarr_data: DATASET ROWS AS: ['id' =&gt; 'name', 'id2' =&gt; 'name2'] OR ['id', 'name', 'id2', 'name2']<br>
 @param: {STRING} $y_varname: as 'frm[test][]'<br>
 @param: {ENUM} $y_draw: list | checkboxes<br>
 @param: {YES/NO} $y_sync_values: If Yes, sync select similar values used (curently works only for checkboxes)<br>
 @param: {INTEGER} $y_dimensions: dimensions in pixels (width or width / (list) height for '#JS-UI#' or '#JS-UI-FILTER#')<br>
 @param: {CODE} $y_custom_js: custom js code (Ex: submit on change)<br>
-@param: {SPECIAL} $y_extrastyle: Extra CSS Style | 'class:a-css-class' | '#JS-UI#' or '#JS-UI-FILTER#'</div>
+@param: {CSS/#JS-UI#} $y_extrastyle: Extra CSS Style | 'class:a-css-class' | '#JS-UI#' or '#JS-UI-FILTER#'<br>
+@param: {INTEGER} $y_msize: Multi List Size (if applicable) ; Default is 8 ; accept values between 2 and 32</div>
 	
 			<div class="doc-method-comments">Generate a MULTIPLE (many selections) View/Edit List to manage ID Selections</div>
 	
@@ -1237,7 +1241,8 @@ Must be enclosed in a &lt;script&gt;...&lt;/script&gt; html tag or can be used f
 			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_redirect_url` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_redirect_url</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_replace_div` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_replace_div</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_replace_html` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_replace_html</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_js_evcode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_js_evcode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_js_evcode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_js_evcode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_hide_form_on_success` Parameter is OPTIONAL, with the Default Value: false">$y_hide_form_on_success</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -1407,7 +1412,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:50 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:37 +0000</small>
 <hr>
 <br>
 <!-- # -->

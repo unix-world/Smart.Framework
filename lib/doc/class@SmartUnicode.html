@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartUnicode        final class \ SmartUnicode    {   } ::    Class: SmartUnicode - provides the string util functions to work safe with Unicode">
-	<meta name="keywords" content="smartunicode, final, class, provides, the, string, util, functions, to, work, safe, with, unicode, multibyte, strings, characters, compatbile, utf-8, all, latin, based, character, sets, iso-8859-1, base, usa, uk, irish, italian, sweden, norway, denmark, spanish, portugal, dutch, iso-8859, extended, german, austrian, finland, czech, slovak, poland, hungary, romania, slovenia, croatia, serbia, bosnia, albania, take, a, look, at, replacement, table, below, language, php, located, lib framework lib unicode.php, package, core, namespace, name, version, v.20210331, depends, extensions, mbstring, xml, hints, you, must, make, always, difference, for, what, are, goint, do, if, need, bytes, length, then, use, strlen, includding, instead, number, of, in, smartunicode::str len, variables, know">
+	<meta name="keywords" content="smartunicode, final, class, provides, the, string, util, functions, to, work, safe, with, unicode, multibyte, strings, characters, compatbile, utf-8, all, latin, based, character, sets, iso-8859-1, base, usa, uk, irish, italian, sweden, norway, denmark, spanish, portugal, dutch, iso-8859, extended, german, austrian, finland, czech, slovak, poland, hungary, romania, slovenia, croatia, serbia, bosnia, albania, take, a, look, at, replacement, table, below, language, php, located, lib framework lib unicode.php, package, core, namespace, name, version, v.20210506, depends, extensions, mbstring, xml, constants, smart framework charset, hints, you, must, make, always, difference, for, what, are, goint, do, if, need, bytes, length, then, use, strlen, includding, instead, number, of, in, smartunicode::str len">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartUnicode">
 	<title>PHP Documentation for: \SmartUnicode</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -708,8 +708,8 @@ Take a look at the replacement table below.</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartUnicode</span></li>
 		
-		<li><b>Version:</b> v.20210331</li>
-		<li><b>Depends:</b> extensions:  PHP MBString, PHP XML</li>
+		<li><b>Version:</b> v.20210506</li>
+		<li><b>Depends:</b> extensions:  PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET</li>
 		<li><b>Hints:</b> You  must make always a difference for what you are goint to do with a string. If you need bytes length, then use strlen() with all strings, includding unicode ! If you need instead the number of characters in a string, then use SmartUnicode::str_len() for all variables / strings you know (or you just suppose) that are unicode.</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -1151,11 +1151,11 @@ Never use just single utf8_decode() when the framework is in UTF-8 mode, else th
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c4"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">//&nbsp;Usage&nbsp;example:<br>
-&nbsp;</span><span class="c1">SmartUnicode</span><span class="c3">::</span><span class="c1">some_method_of_this_class</span><span class="c3">(...);<br>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>
+&nbsp;</span><span style="color: #FFFFFF">SmartUnicode</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br>
 <br>
-&nbsp;&nbsp;</span><span class="c2">//-----------------------------------------------------------------------------------------------------<br>
+&nbsp;&nbsp;</span><span style="color: #999999">//-----------------------------------------------------------------------------------------------------<br>
 &nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>
 &nbsp;&nbsp;//&nbsp;SAFE&nbsp;/&nbsp;MultiByte&nbsp;functions&nbsp;Reference&nbsp;with&nbsp;Replacements&nbsp;(Smart.Framework&nbsp;UTF-8)<br>
 &nbsp;&nbsp;//&nbsp;MORE&nbsp;INFO&nbsp;AT:&nbsp;http://www.phpwact.org/php/i18n/utf-8<br>
@@ -1217,7 +1217,8 @@ Never use just single utf8_decode() when the framework is in UTF-8 mode, else th
 &nbsp;&nbsp;//eregi_replace()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preg_replace*()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[ok]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Will&nbsp;work&nbsp;after&nbsp;regex&nbsp;pattern&nbsp;conversion&nbsp;;&nbsp;If&nbsp;String&nbsp;is&nbsp;unicode,&nbsp;then&nbsp;using&nbsp;\u&nbsp;regex&nbsp;modifier&nbsp;is&nbsp;required<br>
 &nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>
 &nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+<br>
+//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1346,7 +1347,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:44 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:32 +0000</small>
 <hr>
 <br>
 <!-- # -->

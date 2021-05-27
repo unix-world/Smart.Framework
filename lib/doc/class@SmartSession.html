@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartSession        final class \ SmartSession    {   } ::    Class: SmartSession - provides an Application Session Container. Depending on the">
-	<meta name="keywords" content="smartsession, final, class, provides, an, application, session, container, depending, on, the, smart.framework, init, settings, it, can, use, files, based, or, user, custom, example, redis, language, php, located, at, lib core plugins lib session.php, package, application:session, namespace, name, version, v.20210415, depends, extensions, module, classes, smart, smartutils, usage, dynamic, object, new, class method, this, only, methods, public, static, function, active, check, if, is, returns, boolean, true, false, not, get, mixed, yvariable, null, return, session  yvariable, found, empty, string, param, variable, to, a, specific, all, data, set, yvalue, successful, unsets, unset, start, already, started, called, automatically, when, used, for, thus, mandatory, be, should, just, special, circumstances">
+	<meta name="keywords" content="smartsession, final, class, provides, an, application, session, container, depending, on, the, smart.framework, init, settings, it, can, use, files, based, or, user, custom, example, redis, language, php, located, at, lib core plugins lib session.php, package, application:session, namespace, name, version, v.20210428, depends, extensions, module, classes, smart, smartutils, usage, dynamic, object, new, class method, this, only, methods, public, static, function, active, check, if, is, returns, boolean, true, false, not, get, mixed, yvariable, null, return, session  yvariable, found, empty, string, param, variable, to, a, specific, all, data, set, yvalue, successful, unsets, unset, start, already, started, called, automatically, when, used, for, thus, mandatory, be, should, just, special, circumstances">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartSession">
 	<title>PHP Documentation for: \SmartSession</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -466,7 +466,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -707,7 +707,7 @@ Depending on the Smart.Framework INIT settings, it can use [files] based session
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartSession</span></li>
 		
-		<li><b>Version:</b> v.20210415</li>
+		<li><b>Version:</b> v.20210428</li>
 		<li><b>Depends:</b> extensions:  PHP Session Module ; classes: Smart, SmartUtils</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -815,16 +815,17 @@ It should be called just on special circumstances (Ex: force start session witho
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<pre><code><!-- Smart/HTML.Cleaner [T] --><code><span class="c5"><span class="c1">&lt;?php<br>
-<br></span><span class="c2">//&nbsp;##&nbsp;DO&nbsp;NOT&nbsp;USE&nbsp;directly&nbsp;the&nbsp;$_SESSION&nbsp;because&nbsp;session&nbsp;may&nbsp;not&nbsp;be&nbsp;started&nbsp;automatically&nbsp;!!!&nbsp;It&nbsp;starts&nbsp;on&nbsp;first&nbsp;use&nbsp;only&nbsp;...&nbsp;##<br>
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
+<br></span><span style="color: #999999">//&nbsp;##&nbsp;DO&nbsp;NOT&nbsp;USE&nbsp;directly&nbsp;the&nbsp;$_SESSION&nbsp;because&nbsp;session&nbsp;may&nbsp;not&nbsp;be&nbsp;started&nbsp;automatically&nbsp;!!!&nbsp;It&nbsp;starts&nbsp;on&nbsp;first&nbsp;use&nbsp;only&nbsp;...&nbsp;##<br>
 &nbsp;//&nbsp;#&nbsp;SAMPLE&nbsp;USAGE&nbsp;#<br>
 &nbsp;//--<br>
-&nbsp;</span><span class="c1">SmartSession</span><span class="c3">::</span><span class="c1">set</span><span class="c3">(</span><span class="c4">&#39;MyVariable&#39;</span><span class="c3">,&nbsp;</span><span class="c4">&#39;test&#39;</span><span class="c3">);&nbsp;</span><span class="c2">//&nbsp;register&nbsp;a&nbsp;variable&nbsp;to&nbsp;session<br>
-&nbsp;</span><span class="c3">echo&nbsp;</span><span class="c1">SmartSession</span><span class="c3">::</span><span class="c1">get</span><span class="c3">(</span><span class="c4">&#39;MyVariable&#39;</span><span class="c3">);&nbsp;</span><span class="c2">//&nbsp;will&nbsp;get&nbsp;and&nbsp;echo&nbsp;just&nbsp;the&nbsp;$_SESSION[&#39;MyVariable&#39;]<br>
-&nbsp;</span><span class="c1">print_r</span><span class="c3">(</span><span class="c1">SmartSession</span><span class="c3">::</span><span class="c1">get</span><span class="c3">());&nbsp;</span><span class="c2">//&nbsp;will&nbsp;get&nbsp;and&nbsp;prin_r&nbsp;all&nbsp;$_SESSION<br>
-&nbsp;</span><span class="c1">SmartSession</span><span class="c3">::</span><span class="c1">set</span><span class="c3">(</span><span class="c4">&#39;MyVariable&#39;</span><span class="c3">,&nbsp;</span><span class="c1">null</span><span class="c3">);&nbsp;</span><span class="c2">//&nbsp;unregister&nbsp;(unset)&nbsp;a&nbsp;variable&nbsp;from&nbsp;session<br>
+&nbsp;</span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;MyVariable&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;test&#39;</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;register&nbsp;a&nbsp;variable&nbsp;to&nbsp;session<br>
+&nbsp;</span><span style="color: #FFCC00; font-weight: bold">echo&nbsp;</span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;MyVariable&#39;</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;will&nbsp;get&nbsp;and&nbsp;echo&nbsp;just&nbsp;the&nbsp;$_SESSION[&#39;MyVariable&#39;]<br>
+&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">());&nbsp;</span><span style="color: #999999">//&nbsp;will&nbsp;get&nbsp;and&nbsp;prin_r&nbsp;all&nbsp;$_SESSION<br>
+&nbsp;</span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;MyVariable&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">null</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;unregister&nbsp;(unset)&nbsp;a&nbsp;variable&nbsp;from&nbsp;session<br>
 &nbsp;//--<br>
-<br></span><span class="c1">?&gt;</span></span></code><!-- [/T] Smart/HTML.Cleaner --></code></pre>
+<br>
+//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -891,7 +892,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:53 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:39 +0000</small>
 <hr>
 <br>
 <!-- # -->

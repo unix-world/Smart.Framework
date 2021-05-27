@@ -1,7 +1,7 @@
 <?php
 // [Smart.Framework / Smart ERROR Handler]
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20210524 # this should be loaded from app web root only
+// # r.20210526 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -90,8 +90,8 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 	die('Reserved Constants names have been already defined: SMART_FRAMEWORK_RELEASE_* is reserved');
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
-define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.7.2.1'); 	// tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.05.23'); 	// tag release-date
+define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.05.27'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -99,7 +99,7 @@ if(defined('SMART_FRAMEWORK_VERSION')) {
 	@http_response_code(500);
 	die('A Reserved Constant have been already defined: SMART_FRAMEWORK_VERSION');
 } //end if
-define('SMART_FRAMEWORK_VERSION', 'smart.framework.v.7.2'); // major version ; required for the framework libs
+define('SMART_FRAMEWORK_VERSION', 'smart.framework.v.8.7'); // major version ; required for the framework libs
 //--
 
 //--

@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -463,7 +463,7 @@
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20200121 -->
+<!-- class r.20210525 -->
 <!-- Styles -->
 <!-- styles r.20210417 -->
 <style type="text/css">
@@ -705,7 +705,7 @@ It does a direct output so it needs to set in controller: SMART_APP_MODULE_DIREC
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\Webdav\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> ControllerAdmDavFs</span></li>
 		
-		<li><b>Version:</b> 20210307</li>
+		<li><b>Version:</b> 20210526</li>
 		
 		
 		
@@ -870,7 +870,7 @@ If Debug is turned on, this area of Debug messages will be displayed in Modules 
 	
 			<div class="doc-method-comments">Get the value for a Controller parameter<br>
 The valid param values are:<br>
-app-env 					:: 		ex: dev | prod ; based on: SmartFrameworkRuntime::ifProdEnv()<br>
+app-env 					:: 		ex: dev | prod ; based on: SmartFrameworkRegistry::ifProdEnv()<br>
 app-namespace 				:: 		ex: smartframework.default (the app namespace as defined in etc/init.php)<br>
 app-domain 					:: 		ex: 127.0.0.1|localhost|sdom.dom.ext|dom.ext (the domain set in configs, that may differ by area: $configs['app']['index-domain'] | $configs['app']['admin-domain'])<br>
 release-hash 				:: 		ex: 29bp3w (the release hash based on app framework version, framework release and modules version)<br>
@@ -892,7 +892,7 @@ url-basedomain 				:: 		ex: 127.0.0.1|localhost|dom.ext (the curent server base 
 url-domain 					:: 		ex: 127.0.0.1|localhost|sdom.dom.ext (the curent server domain, or IP)<br>
 url-port 					:: 		ex: 80 | 443 | 8080 ... (the current server port)<br>
 url-port-addr 				:: 		ex: '' | ''  | ':8080' ... (the current server port address ; empty for port 80 and 443 ; for the rest of ports will be :portnumber)<br>
-url-script 					:: 		ex: index.php / admin.php<br>
+url-script 					:: 		ex: index.php | admin.php | task.php<br>
 url-path 					:: 		ex: /sites/smart-framework/<br>
 url-addr 					:: 		ex: http(s)://127.0.0.1|localhost/sites/smart-framework/<br>
 url-page 					:: 		ex: samples.test | test  (if samples is the default module) ; this is returning the URL page variable as is in the URL (it can be the same as 'controller' or if rewrite is used inside framework can vary<br>
@@ -1013,8 +1013,8 @@ timezone 					:: 		ex: UTC</div>
 @param: {STRING} $data: The cookie data<br>
 @param: {STRING} $expire: The cookie expire time in seconds since now (zero for session cookies) ; default is zero to set as session cookie (expires with browser session, will be unset after browser is closed)<br>
 @param: {STRING} $path: The cookie path ; default is /<br>
-@param: {STRING} $domain: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN if defined or '') ; can be explicit set<br>
-@param: {ENUM} $samesite: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections<br>
+@param: {STRING} $domain: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN if defined or '') ; can be explicit set<br>
+@param: {ENUM} $samesite: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections<br>
 @param: {BOOL} $secure: The cookie secure policy ; if set to TRUE will send cookies only via https secure connections ; default is FALSE ; if the SameSite is set to 'None' this parameter is enforced to be TRUE<br>
 @param: {BOOL} $httponly: The cookie httponly policy ; if set to TRUE this cookies will not be available to Javascript (or any other client-side access) but only to server-side scripts</div>
 	
@@ -1036,8 +1036,8 @@ timezone 					:: 		ex: UTC</div>
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if Set, FALSE if Not<br>
 @param: {STRING} $name: The cookie name<br>
 @param: {STRING} $path: The cookie path ; default is /<br>
-@param: {STRING} $domain: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN if defined or '') ; can be explicit set<br>
-@param: {ENUM} $samesite: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections</div>
+@param: {STRING} $domain: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN if defined or '') ; can be explicit set<br>
+@param: {ENUM} $samesite: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections</div>
 	
 			<div class="doc-method-comments">Unset a Cookie Variable (COOKIES) in a controller</div>
 	
@@ -1757,7 +1757,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:36:39 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:43:10 +0000</small>
 <hr>
 <br>
 <!-- # -->

@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="smartJ$TestBrowser        static class smartJ$TestBrowser  {  } .    CLASS :: Smart BrowserTest (ES6) The class provide a Browser Compliance Check for">
-	<meta name="keywords" content="smartj testbrowser, static, class, smart, browsertest, es6, the, provide, a, browser, compliance, check, for, javascript, language, located, at, lib js framework smart-framework.pak.js, browser check.js, package, sf.javascript:browser, name, frozen, yes, version, usage, smartj testbrowser.method, methods, public, function, checkismobiledevice, boolean, hint, it, is, very, basic, but, effective, and, quick, detection, return, will, true, if, seems, to, be, mobile, devices, false, not, detect, on, device, checkcookies, show, that, does, supports, cookies, may, situation, like, user, disabled, in, or, really, unusual, old, are, enabled, support, have, sample, code, smartj testbrowser.checkcookies, alert, notice, your, checkjsruntime, standard, smartj testbrowser.checkjsversionrequired, properties, constants, const, param ismobile, auto, string, set, before, smartj options, browsertest.ismobile, get, n a">
+	<meta name="keywords" content="smartj testbrowser, static, class, smart, browsertest, es6, the, provide, a, browser, compliance, check, for, javascript, language, located, at, lib js framework smart-framework.pak.js, browser check.js, package, sf.javascript:browser, name, frozen, yes, version, usage, smartj testbrowser.method, methods, public, function, checkismobiledevice, boolean, skipfallbackonscreensize, hint, it, is, very, basic, but, effective, and, quick, detection, return, will, true, if, seems, to, be, mobile, devices, false, not, param, optional, default, set, skip, fallback, on, screensize, which, may, innacurate, detect, device, checkcookies, show, that, does, supports, cookies, situation, like, user, disabled, in, or, really, unusual, old, are, enabled, support, have, even, sample, code, smartj testbrowser.checkcookies, alert, notice, your, properties, constants, const, param ismobile">
 	<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$TestBrowser">
 	<title>JS Documentation for: smartJ$TestBrowser</title>
 	<!-- CSS and Fonts -->
@@ -418,11 +418,11 @@
 	</style>
 	<style type="text/css">
 		
-/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.7.2.1 / smart.framework.v.7.2 -- */
+/* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
 
-/* TPL Highlight r.20200121 */
+/* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
 	background: #DDEEFF !important;
@@ -703,7 +703,7 @@ The class provide a Browser Compliance Check for JavaScript</div><br>
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Browser</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$TestBrowser</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20210421</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210526</span></li>
 		<li><b>Usage:</b> smartJ$TestBrowser.method();</li>
 		
 		
@@ -720,6 +720,7 @@ The class provide a Browser Compliance Check for JavaScript</div><br>
 <!-- methods r.20210414 -->
 <div class="doc-container" id="Method--checkIsMobileDevice">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>checkIsMobileDevice</b></span>&nbsp;(
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`skipFallbackOnscreenSize` Parameter">skipFallbackOnscreenSize</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
@@ -730,6 +731,7 @@ The class provide a Browser Compliance Check for JavaScript</div><br>
 	
 	
 	
+			@param: {Boolean} skipFallbackOnscreenSize *Optional* Default is FALSE ; If set to TRUE will skip the fallback on screensize which may be innacurate<br>
 	
 	
 	</div>
@@ -751,30 +753,10 @@ The class provide a Browser Compliance Check for JavaScript</div><br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Detect if a Browser support Cookies or does not have the Cookies disabled.</div>
+			<div class="doc-method-comments">Detect if a Browser support Cookies or does not have the Cookies disabled or even may not support cookies.</div>
 	
 			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> <span class="hljs-keyword">if</span>(!smartJ$TestBrowser.checkCookies()) {
  		alert(<span class="hljs-string">'NOTICE: Your browser does not support Cookies !'</span>);
- }</code></pre>
-	
-</div><div class="doc-container" id="Method--checkJsRuntime">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>checkJsRuntime</b></span>&nbsp;=&nbsp;(
-	
-	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
-	<div class="doc-method-ret-params">
-	
-	
-			@return: {Boolean} will return TRUE if Browser supports Cookies and cookies are enabled, FALSE if not or cookies are disabled<br>
-	
-	
-	
-	
-	
-	</div>
-			<div class="doc-method-comments">Detect if a Browser support ES6 standard for javascript.</div>
-	
-			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> <span class="hljs-keyword">if</span>(!smartJ$TestBrowser.checkJsVersionRequired()) {
- 		alert(<span class="hljs-string">'NOTICE: Your browser does not support Javascript ES6 !'</span>);
  }</code></pre>
 	
 </div>
@@ -835,8 +817,6 @@ function smartHandleDocSelector(obj) {
 			
 									<option value="Method--checkCookies"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;checkCookies()</option>
 			
-									<option value="Method--checkJsRuntime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;checkJsRuntime()</option>
-			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
@@ -856,7 +836,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-04-20 19:32:58 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:48 +0000</small>
 <hr>
 <br>
 <!-- # -->

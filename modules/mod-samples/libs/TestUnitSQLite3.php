@@ -1,7 +1,7 @@
 <?php
 // [LIB - Smart.Framework / Samples / Test SQLite3]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModExtLib\Samples\TestUnitSQLite3
 // Type: Module Library
@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20210526
  *
  */
 final class TestUnitSQLite3 {
@@ -48,7 +48,7 @@ final class TestUnitSQLite3 {
 			$arr[] = [
 				'id' => '',
 				'value' => (string)$rd[$i]['iso'],
-				'label' => $rd[$i]['name']
+				'label' => $rd[$i]['name'] // don't cast
 			];
 		} //end for
 		//--

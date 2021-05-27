@@ -1,5 +1,5 @@
 
-# AuthAdmins: a general API for implement multi-account authentication in Smart.Framework admin area (admin.php)
+# AuthAdmins: a general API for implement multi-account authentication in Smart.Framework admin areas (admin.php / task.php)
 
 
 # Implementing a secure multi-account (unicorn) Admin Auth System (admin.php / task.php areas authentication) for Smart.Framework

@@ -1,7 +1,7 @@
 <?php
 // [LIB - Smart.Framework / Samples / ErrorXxx - a sample helper for custom 4xx and 5xx status pages]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModExtLib\Samples\ErrorXxx
 // Type: Module Library
@@ -33,7 +33,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210428
+ * @version 	v.20210526
  *
  */
 abstract class ErrorXxx extends \SmartAbstractAppController {

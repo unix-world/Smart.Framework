@@ -1,6 +1,6 @@
 #!/bin/sh
 
-### r.20190103
+### r.r.20210526
 # INFO: this script will backup the selected DB: schema only from PostgreSQL
 # To restore this dump a blank new PostgreSQL DB must be initialized and then: psql -U postgres -W -d postgres -f ${THE_FILE}
 ###

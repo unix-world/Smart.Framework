@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / MongoDB Custom Session]
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -27,7 +27,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'MongoDB: DB NoSQL based
  *
  * @access 		PUBLIC
  * @depends 	SmartMongoDb, Smart
- * @version 	v.20210402
+ * @version 	v.20210527
  * @package 	Application
  *
  */
@@ -139,6 +139,8 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 			} //end if
 			//--
 		} //end if
+		//--
+		$this->gc((int)time()); // this runs probabilistic
 		//--
 		return true;
 		//--
@@ -295,19 +297,21 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 	//==================================================
 	public function gc($lifetime) {
 		//--
-		try {
-			$this->mongo->delete(
-				(string) $this->collection,
-				[ // find filter: all expired
-					'expire_at' => [
-						'$lt' => (int) time() // session.gc_probability = 1 ; session.gc_divisor = 100 ; run this just on 10% of Garbage Collections ...
+		if(Smart::random_number(0, 100) == 10) { // 1% chance to cleanup ; PHP is calling session gc with a very small chance ... so call it randomly in 1% of cases on opening the session
+			try {
+				$this->mongo->delete(
+					(string) $this->collection,
+					[ // find filter: all expired
+						'expire_at' => [
+							'$lt' => (int) time() // session.gc_probability = 1 ; session.gc_divisor = 100 ; run this just on 10% of Garbage Collections ...
+						]
 					]
-				]
-			);
-		} catch(Exception $err) { // don't throw if MongoDB error !
-			Smart::log_warning('MongoDB Custom Session: GC Error: '.$err->getMessage());
-			return false;
-		} //end try catch
+				);
+			} catch(Exception $err) { // don't throw if MongoDB error !
+				Smart::log_warning('MongoDB Custom Session: GC Error: '.$err->getMessage());
+				return false;
+			} //end try catch
+		} //end if
 		//--
 		return true; // for MongoDB the Keys are Expiring from it's internal mechanism, so GC will not be used here ...
 		//--

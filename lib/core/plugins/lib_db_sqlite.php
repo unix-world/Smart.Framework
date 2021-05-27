@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / SQLite 3 Database Client]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -63,7 +63,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -477,7 +477,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -668,6 +668,7 @@ final class SmartSQliteUtilDb {
 				'md5' 						=>  1,
 				'sha1' 						=>  1,
 				'sha256' 					=>  1,
+				'sha384' 					=>  1,
 				'sha512' 					=>  1,
 				'strlen' 					=>  1,
 				'charlen' 					=>  1, // mbstring
@@ -848,7 +849,7 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if else
 		//--
-		if(strlen($sqlite_error) > 0) { // if test failed means table is not available
+		if((string)$sqlite_error != '') { // if test failed means table is not available
 			$out = 0;
 		} else {
 			$out = 1;
@@ -927,7 +928,7 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if
 		//--
-		if(strlen($sqlite_error) > 0) {
+		if((string)$sqlite_error != '') {
 			self::error($db, 'COUNT-DATA', $sqlite_error, $query, $qparams);
 			return 0;
 		} //end if
@@ -1023,7 +1024,7 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if
 		//--
-		if(strlen($sqlite_error) > 0) {
+		if((string)$sqlite_error != '') {
 			self::error($db, 'READ-DATA', $sqlite_error, $query, $qparams);
 			return array();
 		} //end if
@@ -1123,7 +1124,7 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if
 		//--
-		if(strlen($sqlite_error) > 0) {
+		if((string)$sqlite_error != '') {
 			self::error($db, 'READ-aDATA', $sqlite_error, $query, $qparams);
 			return array();
 		} //end if
@@ -1228,7 +1229,7 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if
 		//--
-		if(strlen($sqlite_error) > 0) {
+		if((string)$sqlite_error != '') {
 			self::error($db, 'READ-asDATA', $sqlite_error, $query, $qparams);
 			return array();
 		} //end if
@@ -1272,11 +1273,31 @@ final class SmartSQliteUtilDb {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
 			//--
-			if((strtoupper(substr(trim($query), 0, 5)) == 'BEGIN') OR (strtoupper(substr(trim($query), 0, 6)) == 'COMMIT') OR (strtoupper(substr(trim($query), 0, 8)) == 'ROLLBACK')) {
+			if(
+				(stripos((string)trim((string)$query), 'BEGIN') === 0) OR
+				(stripos((string)trim((string)$query), 'COMMIT') === 0) OR
+				(stripos((string)trim((string)$query), 'ROLLBACK') === 0)
+			) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
 					'type' => 'transaction',
 					'data' => 'TRANSACTION :: '.$qtitle,
 					'query' => $query,
+					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
+					'connection' => (string) self::get_connection_id($db)
+				]);
+			} elseif(
+				(stripos((string)trim((string)$query), 'TRUNCATE ') === 0) OR
+				(stripos((string)trim((string)$query), 'DROP ') === 0) OR
+				(stripos((string)trim((string)$query), 'CREATE ') === 0) OR
+				(stripos((string)trim((string)$query), 'ALTER ') === 0) OR
+				(stripos((string)trim((string)$query), 'EXPLAIN ') === 0) OR
+				(stripos((string)trim((string)$query), 'VACUUM') === 0)
+			) {
+				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+					'type' => 'special',
+					'data' => 'COMMAND :: '.$qtitle,
+					'query' => $query,
+					'rows' => $affected_rows,
 					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 					'connection' => (string) self::get_connection_id($db)
 				]);
@@ -1295,7 +1316,7 @@ final class SmartSQliteUtilDb {
 		//--
 		$last_insert_id = null;
 		//--
-		if(strlen($sqlite_error) > 0) {
+		if((string)$sqlite_error != '') {
 			$message = 'errorsqlwriteoperation: '.$sqlite_error;
 			self::error($db, 'WRITE-DATA', $sqlite_error, $query, $qparams);
 			return array($message, 0);
@@ -1819,7 +1840,7 @@ final class SmartSQliteUtilDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -1973,6 +1994,13 @@ final class SmartSQliteFunctions {
 	public static function sha256($str) {
 		//--
 		return (string) SmartHashCrypto::sha256((string)$str);
+		//--
+	} //END FUNCTION
+
+
+	public static function sha384($str) {
+		//--
+		return (string) SmartHashCrypto::sha384((string)$str);
 		//--
 	} //END FUNCTION
 

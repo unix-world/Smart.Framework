@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / MongoDB Database Client]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartComponents
- * @version 	v.20210503
+ * @version 	v.20210527
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -1084,17 +1084,21 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			//--
 			case 'command': 	// ARGS [ arrCmd ]
 			case 'igcommand': 	// ARGS [ arrCmd ]
-				//-- dbg types: 'count', 'read', 'write', 'transaction', 'set', 'metainfo'
+				//-- dbg types: 'count', 'read', 'write', 'special', 'transaction', 'set', 'metainfo'
 				$qry = (array) $args[0]; // arrQuery
 				foreach($qry as $kk => $vv) {
 					if((string)strtolower((string)$kk) == 'buildinfo') {
 						$dcmd = (string) 'metainfo';
 					} elseif((string)strtolower((string)$kk) == 'count') {
 						$dcmd = (string) 'count';
-					} elseif(in_array((string)strtolower((string)$kk), ['find', 'aggregate', 'distinct', 'mapreduce', 'geosearch'])) {
+					} elseif(in_array((string)strtolower((string)$kk), ['find', 'findone', 'aggregate', 'distinct', 'mapreduce', 'geosearch'])) {
 						$dcmd = (string) 'read';
-					} elseif(in_array((string)strtolower((string)$kk), ['delete', 'insert', 'update'])) {
+					} elseif(in_array((string)strtolower((string)$kk), ['delete', 'insert', 'update', 'upsert', 'bulkinsert'])) {
 						$dcmd = (string) 'write';
+					} elseif(in_array((string)strtolower((string)$kk), ['create', 'createindexes', 'drop', 'dropindexes'])) {
+						$dcmd = (string) 'special';
+					} elseif((string)strtolower((string)$kk) == 'ping') {
+						$dcmd = (string) 'set';
 					} //end if
 					$dmethod = (string) str_replace(':', '-', (string)$kk).'::'.$method; // subname
 					break;

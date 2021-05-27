@@ -1,7 +1,7 @@
 <?php
 // [MODEL - Smart.Framework / Samples / SQLite3 Model]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModDataModel\Samples\TestUnitSQLite3Model
 // Type: Module Data Model
@@ -37,7 +37,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20200121
+ * @version 	v.20210526
  *
  */
 final class TestUnitSQLite3Model {

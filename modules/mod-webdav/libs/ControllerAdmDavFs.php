@@ -1,7 +1,7 @@
 <?php
 // [LIB - Smart.Framework / Webdav / AbstractController Admin Dav:Fs]
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 // Module Lib: \SmartModExtLib\Webdav\ControllerAdmDavFs
 // Type: Module Library
@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @hint This abstract controller can be used to build a DAV Service / WebDAV over the Admin Middleware service
  *
- * @version		20210422
+ * @version		20210526
  * @package 	development:modules:Webdav
  *
  */

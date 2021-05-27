@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Class: \SmartModExtLib\AppRelease\AbstractTaskController
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\AppRelease;
 
@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210522
+ * @version 	v.20210526
  *
  */
 abstract class AbstractTaskController extends \SmartAbstractAppController {
@@ -84,7 +84,7 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 		} //end if
 		//--
 		$ini_settings = \AppCodeUtils::parseIniSettings(); // mixed
-		if(!\is_int($ini_settings) OR ($ini_settings !== 3)) { // there are 3 mandatory settings: MAX RUN TIMEOUT and PHP executable {{{SYNC-CHECK-APP-INI-SETTINGS}}}
+		if(!\is_int($ini_settings) OR ((int)$ini_settings !== 3)) { // there are 3 mandatory settings: MAX RUN TIMEOUT and PHP executable {{{SYNC-CHECK-APP-INI-SETTINGS}}}
 			\SmartFrameworkRuntime::Raise503Error('INI SETTINGS PARSE ERROR: Num Req. is: #'.$ini_settings);
 			return;
 		} //end if
@@ -150,7 +150,15 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 		$notice = (string) \trim((string)$this->notice);
 		//--
 		$icon = '';
-		if((string)$this->sficon != '') {
+		if(\is_array($this->sficon) AND (\Smart::array_size($this->sficon) > 0)) {
+			foreach($this->sficon as $key => $val) {
+				if(\Smart::is_nscalar($val)) {
+					if((string)\trim((string)$val) != '') {
+						$icon .= ' &nbsp;&nbsp; <i class="sfi sfi-2x sfi-'.\Smart::escape_html((string)$val).'"></i>';
+					} //end if
+				} //end if
+			} //end foreach
+		} elseif((string)trim((string)$this->sficon) != '') {
 			$icon = ' &nbsp;&nbsp; <i class="sfi sfi-2x sfi-'.\Smart::escape_html((string)$this->sficon).'"></i>';
 		} //end if
 		//--

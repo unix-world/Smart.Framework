@@ -1,7 +1,7 @@
 <?php
 // Smart.Framework / Middleware / Index
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -9,7 +9,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -24,7 +24,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_MIDDLEWARE')) {
 	@http_response_code(500);
 	die('SMART_FRAMEWORK_RELEASE_MIDDLEWARE cannot be defined outside MIDDLEWARE [I]');
 } //end if
-define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.7.2.1');
+define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.8.7');
 
 //==================================================================================
 //================================================================================== CLASS START
@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.7.2.1');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210522
+ * @version		20210526
  *
  */
 final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
@@ -283,7 +283,11 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		} //end if
 		//--
 		if(!class_exists('SmartAppIndexController')) {
-			SmartFrameworkRuntime::Raise500Error('Invalid Module Class Runtime for INDEX Page: '.$page);
+			if((string)SMART_APP_MODULE_AREA === 'SHARED') {
+				SmartFrameworkRuntime::Raise403Error('Page Access Not Allowed for Index Area: '.$page);
+			} else {
+				SmartFrameworkRuntime::Raise500Error('Invalid Module Class Runtime for INDEX Page: '.$page);
+			} //end if
 			return;
 		} //end if
 		if(!is_subclass_of('SmartAppIndexController', 'SmartAbstractAppController')) {

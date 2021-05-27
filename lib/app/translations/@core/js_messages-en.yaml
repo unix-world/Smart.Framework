@@ -1,8 +1,8 @@
-# Language File: EN / CORE / JsMessages :: r.7.2.1 / smart.framework.v.7.2
+# Language File: EN / CORE / JsMessages :: r.8.7 / smart.framework.v.8.7
 TRANSLATIONS:
   @language: EN
   @area: core
-  @version: 2020-01-21
+  @version: 2021-05-26
   js_messages:
     btn_reset: 'Reset'
     btn_select: 'Select'

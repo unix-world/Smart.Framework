@@ -1,6 +1,6 @@
 #!/bin/sh
 
-### r.20190103
+### r.20210526
 # INFO: this script will backup the selected DB: schema and data from PostgreSQL ; will compress to gzip
 # To restore this dump a blank new PostgreSQL DB must be initialized and then: gunzip -c ${THE_FILE} | psql -U postgres -W -d postgres
 ###

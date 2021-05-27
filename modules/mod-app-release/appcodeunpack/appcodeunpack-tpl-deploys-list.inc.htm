@@ -1,0 +1,94 @@
+<!-- deploys list v.20210526 -->
+<style>
+div.deploysRow {
+	background: #ECECEC;
+	color: #555555;
+	padding: 5px;
+	margin: 2px;
+	margin-left: 12px;
+	margin-right: 12px;
+	font-weight: bold;
+	font-size: 1.125rem;
+}
+div.deploysRow:hover {
+	background: #DDEEFF;
+}
+div.deploysRow:focus {
+	background: #FFFF88;
+}
+span.filterInfo {
+	font-size: 0.875rem !important;
+}
+span.filter-search-value {
+	color: #333333;
+}
+</style>
+<script>
+const getSelectedList = (name) => {
+	let arr = [];
+	name = AppCodeUnpackJs.stringPureVal(name, true);
+	if(name == '') {
+		console.warn('getSelectedList', 'Empty Name');
+		return arr;
+	}
+	$('input:checkbox[name=' + name + ']:checked').each((idx, el) => {
+		arr.push($(el).val());
+	});
+	if(arr.length <= 0) {
+		AppCodeUnpackJs.displayAlertDialog('<div class="operation_notice">Nothing selected</div>', null, 'Selection', 550, 200);
+	}
+	return arr;
+};
+const submitSelectedList = (name) => {
+	const arr = getSelectedList(name);
+	if(arr.length > 0) {
+		AppCodeUnpackJs.displayConfirmDialog(
+			'<div class="operation_important">Remove selected Deployments from the Server ? Press OK to Confirm.</div><div class="operation_info">This operation cannot be undone ...</div>',
+			() => {
+				const dTime = new Date();
+				const uuid = AppCodeUnpackJs.sha1(dTime) + '-' + AppCodeUnpackJs.md5(dTime);
+				const theList = AppCodeUnpackJs.b64enc(AppCodeUnpackJs.bfenc(JSON.stringify(arr), uuid));
+				const theData = {
+					frm: {
+						uuid: uuid,
+						list: theList,
+						checksum: AppCodeUnpackJs.sha512(theList + '#' + uuid),
+					}
+				};
+				showLoader();
+				AppCodeUnpackJs.removeAllGrowls();
+				setTimeout(() => {
+					AppCodeUnpackJs.SubmitAjaxRequest(AppCodeUnpackJs.url_add_suffix('[###SCRIPT|js###]', 'action=deploys-cleanup'), theData, () => { hideLoader(); setTimeout(() => { self.location=self.location; }, 2500); }, () => { hideLoader(); }, () => { hideLoader(); });
+				}, 750);
+			},
+			'DEPLOYMENTS Cleanup Confirmation',
+			700,
+			300
+		);
+	} else {
+		AppCodeUnpackJs.displayAlertDialog('<div class="operation_notice">Nothing selected</div>', null, 'Selection', 550, 200);
+	}
+};
+</script>
+[%%%IF:DEPLOYS-ARR:@>0;%%%]
+<div class="operation_info">
+	List of Deployments:
+	&nbsp;&nbsp;&nbsp;
+	<button class="ux-button ux-button-super ux-button-highlight" onClick="submitSelectedList('deploys'); return false;">Cleanup: Delete Selected Deployments</button>
+</div>
+<div>
+<div class="deploysRow">
+	<input type="checkbox" onClick="(() => { const isSelected = AppCodeUnpackJs.selectAllCheckBoxes('deploys'); $(this).prop('checked', isSelected); })();"> &nbsp;
+	&nbsp;&nbsp;&nbsp;
+	<input type="text" class="ux-field" id="filter-list" maxlength="255"> <button class="ux-button ux-button-info ux-button-small" onClick="filterList(true);">Display by Filter</button> <button class="ux-button ux-button-secondary ux-button-small" onClick="filterList(false);">Display All</button> <span id="filter-info" class="filterInfo">Displaying ALL Results</span><span class="filterInfo"> ; Reverse Order (newest first)</span>
+</div>
+[%%%LOOP:DEPLOYS-ARR%%%]
+<div class="deploysRow filter-search-container" tabindex="[###DEPLOYS-ARR.-_INDEX_-|int###]">
+	<input type="checkbox" name="deploys" value="[###DEPLOYS-ARR._-VAL-_|html###]"> &nbsp;
+	[###DEPLOYS-ARR.-_INDEX_-|html###]. &nbsp; <span class="filter-search-value">[###DEPLOYS-ARR._-VAL-_|html###]</span>
+</div>
+[%%%/LOOP:DEPLOYS-ARR%%%]
+</div>
+[%%%ELSE:DEPLOYS-ARR%%%]
+<div class="operation_notice">There are no deployments on this App Server ...</div>
+[%%%/IF:DEPLOYS-ARR%%%]

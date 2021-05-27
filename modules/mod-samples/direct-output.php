@@ -1,8 +1,8 @@
 <?php
 // Controller: Samples/DirectOutput
 // Route: ?/page/samples.direct-output (?page=direct-output)
-// (c) 2006-2020 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// (c) 2006-2021 unix-world.org - all rights reserved
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, SHARED
+define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
 define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
 
 // NOTICE: For this type of controllers you must echo everything and build manually the output from the scratch ...
@@ -70,6 +70,20 @@ class SmartAppAdminController extends SmartAppIndexController {
 
 	// this will clone the SmartAppIndexController to run exactly the same action in admin.php
 	// or this can implement a completely different controller if it is accessed via admin.php
+
+} //END CLASS
+
+
+/**
+ * Task Controller (optional)
+ *
+ * @ignore
+ *
+ */
+class SmartAppTaskController extends SmartAppAdminController {
+
+	// this will clone the SmartAppIndexController to run exactly the same action in task.php
+	// or this can implement a completely different controller if it is accessed via task.php
 
 } //END CLASS
 

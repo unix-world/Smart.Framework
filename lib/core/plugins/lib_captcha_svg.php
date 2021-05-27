@@ -1,10 +1,10 @@
 <?php
 // [LIB - Smart.Framework / Plugins / Captcha SVG Image]
 // (c) 2006-2021 unix-world.org - all rights reserved
-// r.7.2.1 / smart.framework.v.7.2
+// r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
-if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.7.2')) {
+if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 'smart.framework.v.8.7')) {
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
@@ -72,7 +72,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version 	v.20210519
+ * @version 	v.20210527
  * @package 	development:Captcha
  */
 final class SmartSVGCaptcha {
@@ -153,7 +153,7 @@ final class SmartSVGCaptcha {
 		$this->dsettings['stroke_width'] 					= 2;
 		$this->dsettings['stroke_opacity'] 					= 0.55;
 		$this->dsettings['glyph_offsetting']['apply'] 		= true;
-		$this->dsettings['glyph_offsetting']['h'] 			= 1.5;
+		$this->dsettings['glyph_offsetting']['h'] 			= 1.32;
 		$this->dsettings['glyph_offsetting']['v'] 			= 0.5;
 		$this->dsettings['glyph_offsetting']['mh'] 			= 7;
 		$this->dsettings['transformations']['apply'] 		= true;
@@ -236,7 +236,7 @@ final class SmartSVGCaptcha {
 				$this->dsettings['glyph_fragments']['apply'] 			= true;
 				$this->dsettings['glyph_fragments']['r_num_frag'] 		= range(1, 2);
 				$this->dsettings['glyph_offsetting']['apply'] 			= true;
-			//	$this->dsettings['glyph_offsetting']['h'] 				= 0.5;
+			//	$this->dsettings['glyph_offsetting']['h'] 				= 0.78;
 				$this->dsettings['transformations']['apply'] 			= true;
 				$this->dsettings['transformations']['rotate'] 			= true;
 				$this->dsettings['transformations']['skew'] 			= true;
@@ -1848,7 +1848,7 @@ final class SmartSVGCaptcha {
  * @access 		private
  * @internal
  *
- * @version 	v.20210519
+ * @version 	v.20210527
  *
  */
 final class SmartSvgCaptchaPoint {
