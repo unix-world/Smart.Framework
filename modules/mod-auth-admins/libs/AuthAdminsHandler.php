@@ -37,7 +37,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20210526
+ * @version 	v.20210530
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -97,8 +97,8 @@ final class AuthAdminsHandler {
 		//--
 
 		//--
-		if(defined('APP_AUTH_ADMIN_ENFORCE_HTTPS')) {
-			if(APP_AUTH_ADMIN_ENFORCE_HTTPS !== false) {
+		if(\defined('\\APP_AUTH_ADMIN_ENFORCE_HTTPS')) {
+			if(\APP_AUTH_ADMIN_ENFORCE_HTTPS !== false) {
 				$enforce_https = true;
 			} else {
 				$enforce_https = false;
@@ -114,26 +114,32 @@ final class AuthAdminsHandler {
 		//--
 
 		//--
-		if(!\SmartFileSystem::is_type_file(\APP_AUTH_DB_SQLITE)) {
+		if(!\SmartFileSystem::is_type_file((string)\APP_AUTH_DB_SQLITE)) {
 			//--
 			if(!\defined('\\APP_AUTH_ADMIN_USERNAME')) {
-				\SmartFrameworkRuntime::Raise503Error('Set in config: APP_AUTH_ADMIN_USERNAME !'."\n".'You must set the APP_AUTH_ADMIN_USERNAME constant in config before installation. Manually REFRESH this page after by pressing F5 ...');
+				\SmartFrameworkRuntime::Raise503Error('Set in config: `APP_AUTH_ADMIN_USERNAME` !'."\n".'You must set the `APP_AUTH_ADMIN_USERNAME` constant in config before installation. Manually REFRESH this page after by pressing F5 ...');
 				die('AuthAdminsHandler:CHECK-CREDENTIALS:1');
 				return;
 			} //end if
-			if(((string)\trim((string)\APP_AUTH_ADMIN_USERNAME) == '') OR ((int)\strlen((string)\APP_AUTH_ADMIN_USERNAME) < 3) OR ((int)\strlen((string)\APP_AUTH_ADMIN_USERNAME) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)\APP_AUTH_ADMIN_USERNAME))) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
-				\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: APP_AUTH_ADMIN_USERNAME !'."\n".'The APP_AUTH_ADMIN_USERNAME set in config must be at least 3 characters long ! Manually REFRESH this page after by pressing F5 ...');
+			if(\SmartAuth::validate_auth_username(
+				(string) \APP_AUTH_ADMIN_USERNAME,
+				true // check for reasonable length, as 5 chars
+			) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+				\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: `APP_AUTH_ADMIN_USERNAME` !'."\n".'The `APP_AUTH_ADMIN_USERNAME` set in config must be at least 5 characters long ! Manually REFRESH this page after by pressing F5 ...');
 				die('AuthAdminsHandler:CHECK-CREDENTIALS:2');
 				return;
 			} //end if
 			//--
 			if(!\defined('\\APP_AUTH_ADMIN_PASSWORD')) {
-				\SmartFrameworkRuntime::Raise503Error('Set in config: APP_AUTH_ADMIN_PASSWORD !'."\n".'You must set the APP_AUTH_ADMIN_PASSWORD constant into config before installation. Manually REFRESH this page after by pressing F5 ...');
+				\SmartFrameworkRuntime::Raise503Error('Set in config: `APP_AUTH_ADMIN_PASSWORD` !'."\n".'You must set the `APP_AUTH_ADMIN_PASSWORD` constant into config before installation. Manually REFRESH this page after by pressing F5 ...');
 				die('AuthAdminsHandler:CHECK-CREDENTIALS:3');
 				return;
 			} //end if
-			if(((string)\trim((string)\APP_AUTH_ADMIN_PASSWORD) == '') OR ((int)\SmartUnicode::str_len((string)\APP_AUTH_ADMIN_PASSWORD) < 7) OR ((int)\SmartUnicode::str_len((string)\APP_AUTH_ADMIN_PASSWORD) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
-				\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: APP_AUTH_ADMIN_PASSWORD !'."\n".'The APP_AUTH_ADMIN_PASSWORD set in config must be at least 7 characters long ! Manually REFRESH this page after by pressing F5 ...');
+			if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+				(string) \APP_AUTH_ADMIN_PASSWORD,
+				true
+			) !== true) {
+				\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: `APP_AUTH_ADMIN_PASSWORD` ... need to be changed !'."\n".'THE PASSWORD IS TOO SHORT OR DOES NOT MEET THE REQUIRED COMPLEXITY CRITERIA.'."\n".'Must be min 8 chars and max 30 chars.'."\n".'Must contain at least 1 character A-Z, 1 character a-z, one digit 0-9, one special character such as: ! @ # $ % ^ & * ( ) _ - + = [ { } ] / | . , ; ? ...'."\n".'Manually REFRESH this page after by pressing F5 ...');
 				die('AuthAdminsHandler:CHECK-CREDENTIALS:4');
 				return;
 			} //end if
@@ -141,14 +147,10 @@ final class AuthAdminsHandler {
 		} //end if
 		//--
 		if(!\defined('\\APP_AUTH_PRIVILEGES')) {
-			\SmartFrameworkRuntime::Raise503Error('Set in config: APP_AUTH_PRIVILEGES !'."\n".'You must set the APP_AUTH_PRIVILEGES constant into config to run this Authentication plugin ...');
+			\SmartFrameworkRuntime::Raise503Error('Set in config the `APP_AUTH_PRIVILEGES` constant !'."\n".'The `APP_AUTH_PRIVILEGES` constant is required to run this Authentication plugin ...');
 			die('AuthAdminsHandler:CHECK-PRIVS');
 			return;
 		} //end if
-		//--
-
-		//--
-		$db = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection (and create + initialize DB if not found)
 		//--
 
 		//-- do auth except of login page
@@ -165,24 +167,35 @@ final class AuthAdminsHandler {
 		} //end if
 		//--
 
+		//--
+		$auth_data = (array) \SmartModExtLib\AuthAdmins\AuthProviderHttpBasic::GetCredentials((bool)$enforce_https);
+		$auth_method = (string) $auth_data['auth-mode'];
+		$auth_safe = (int) $auth_data['auth-safe'];
 		//-- validate username
-		$auth_user_name = (string) \SmartUnicode::str_tolower((string)\trim((string)\SmartFrameworkSecurity::FilterUnsafeString((string)(isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : ''))));
-		if(((string)\trim((string)$auth_user_name) == '') OR ((int)\strlen((string)$auth_user_name) < 3) OR ((int)\strlen((string)$auth_user_name) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$auth_user_name))) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
-			$auth_user_name = ''; // unset invalid user names
+		$auth_user_name = (string) \strtolower((string)$auth_data['auth-user']); // can contain only a-z 0-9 .
+		if(\SmartAuth::validate_auth_username(
+			(string) $auth_user_name
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+			$auth_user_name = ''; // unset invalid user name
 		} //end if
 		//-- validate password
 		$auth_user_pass = '';
 		if((string)$auth_user_name != '') {
-			$auth_user_pass = (string) \SmartFrameworkSecurity::FilterUnsafeString((string)(isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : ''));
-			if(((string)\trim((string)$auth_user_pass) == '') OR ((int)\SmartUnicode::str_len((string)$auth_user_pass) < 7) OR ((int)\SmartUnicode::str_len((string)$auth_user_pass) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
-				$auth_user_pass = '';
+			$auth_user_pass = (string) $auth_data['auth-pass'];
+			if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+				(string) $auth_user_pass,
+				(bool) ((\defined('\\APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (\APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false) // check for complexity just on login ! ... for the rest do not check because if this constant changes ... cannot re-update everything !
+			) !== true) {
+				$auth_user_pass = ''; // unset invalid password
 			} //end if
 		} //end if
+		//--
+		$auth_data = null;
 		//--
 
 		//-- manage login or logout
 		$logged_in = 'no'; // user is not logged in (unsuccessful username or password)
-		$login_or_logout_form = (string) \SmartComponents::http_message_401_unauthorized('Authorization Required', \SmartComponents::operation_notice('Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.<script>setTimeout(() => { self.location = \''.\Smart::escape_js(\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3500);</script>').'<img src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_LOADER).'">'.'&nbsp;&nbsp;'.'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="32" height="32" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">');
+		$login_or_logout_form = (string) \SmartComponents::http_message_401_unauthorized('Authorization Required', \SmartComponents::operation_notice('Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.<script>setTimeout(() => { self.location = \''.\Smart::escape_js(\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3500);</script>').'<img width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_LOADER).'">'.'&nbsp;&nbsp;'.'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">');
 		//--
 		if(isset($_REQUEST['logout']) AND ((string)$_REQUEST['logout'] != '')) { // do logout
 			//--
@@ -203,6 +216,16 @@ final class AuthAdminsHandler {
 			);
 			//--
 		} elseif((string)$try_auth != 'no') { // requires login ; check login
+			//-- open connection
+			$db = null;
+			try {
+				$db = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // will create + initialize DB if not found
+			} catch(\Exception $e) {
+				$db = null;
+				\SmartFrameworkRuntime::Raise500Error('AUTH DB Failed to Initialize: `'.$e->getMessage().'`');
+				die('AuthAdminsHandler:AUTH-DB-INIT-FAILED');
+				return;
+			} //end try catch
 			//-- try to check the failed logins
 			$hash_pass = (string) \SmartHashCrypto::password((string)$auth_user_pass, $auth_user_name);
 			if((string)$auth_user_name != '') {
@@ -212,7 +235,7 @@ final class AuthAdminsHandler {
 				//--
 				if($check_fail > 0) {
 					\SmartFrameworkRuntime::outputHttpSafeHeader('Retry-After: '.(int)$retry_seconds);
-					\SmartFrameworkRuntime::Raise429Error('429 TOO MANY FAILED LOGIN REQUESTS FOR IP :: ['.\SmartUtils::get_ip_client().'] :: LOGIN TIMEOUT: '.(int)$retry_seconds.'sec.'."\n".'Next Allowed Login Time is: '.\Smart::escape_html((string)\date('Y-m-d H:i:s O'), (int)$check_fail).' / Current Server Time is: '.\Smart::escape_html((string)\date('Y-m-d H:i:s O')), '<script>setTimeout(() => { self.location = self.location; }, 15000);</script>'.'<img src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_LOADER).'">'.'&nbsp;&nbsp;'.'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="32" height="32" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">');
+					\SmartFrameworkRuntime::Raise429Error('429 TOO MANY FAILED LOGIN REQUESTS FOR IP :: ['.\SmartUtils::get_ip_client().'] :: LOGIN TIMEOUT: '.(int)$retry_seconds.'sec.'."\n".'Next Allowed Login Time is: '.\Smart::escape_html((string)\date('Y-m-d H:i:s O'), (int)$check_fail).' / Current Server Time is: '.\Smart::escape_html((string)\date('Y-m-d H:i:s O')), '<script>setTimeout(() => { self.location = self.location; }, 15000);</script>'.'<img width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_LOADER).'">'.'&nbsp;&nbsp;'.'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">');
 					die('AuthAdminsHandler:TOO-MANY-ATTEMPTS');
 					return;
 				} //end if
@@ -235,12 +258,13 @@ final class AuthAdminsHandler {
 				//--
 				\SmartAuth::set_login_data(
 					(string) $admin_login['id'], // login user id
-					(string) $admin_login['id'], // alias (for admins this is the same as login ID)
+					(string) \ucwords((string)\str_replace('.', ' ', (string)$admin_login['id'])), // alias, make a nice alias from the login ID
 					(string) $admin_login['email'], // email
-					(string) \trim((string)$admin_login['name_f'].' '.$admin_login['name_l']), // login full user name
+					(string) \trim((string)\trim((string)$admin_login['name_f']).' '.\trim((string)$admin_login['name_l'])), // login full user name
 					(string) $admin_login['priv'], // login privileges
 					(int)    \Smart::format_number_int($admin_login['quota'],'+'), // quota in MB
 					[ // metadata (array)
+						'auth-safe' => (int)    $auth_safe,
 						'title' 	=> (string) $admin_login['title'],
 						'name_f' 	=> (string) $admin_login['name_f'],
 						'name_l' 	=> (string) $admin_login['name_l'],
@@ -251,29 +275,15 @@ final class AuthAdminsHandler {
 						'zip' 		=> (string) $admin_login['zip'],
 						'phone' 	=> (string) $admin_login['phone'],
 						'restrict' 	=> (string) $admin_login['restrict'],
-						'settings' 	=> (string) $admin_login['settings']
+						'settings' 	=> (string) $admin_login['settings'],
 					],
 					'ADMINS-AREA', // realm
-					'HTTP-BASIC', // method
+					(string) $auth_method, // method
 					(string) $auth_user_pass, 		// safe store password
 					(string) $admin_login['keys'] 	// safe store privacy-keys as encrypted (will be decrypted in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
 				);
 				//--
-				if( // single user login hook by user account {{{SYNC-SINGLE-USER-LOGIN-HOOK}}}
-					\defined('\\SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE') AND
-					\defined('\\SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE') AND
-					\defined('\\SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID')
-				) {
-					if((string)\SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID != '') {
-						if((string)\SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID !== (string)\SmartAuth::get_login_id()) {
-							\SmartFrameworkRuntime::Raise503Error(
-								(string) \SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE,
-								(string) \SmartComponents::operation_ok('Single User Lock File: '.\Smart::escape_html((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE), '80%').\SmartComponents::operation_notice((string)\Smart::nl_2_br((string)\Smart::escape_html((string)\SmartFileSystem::read((string)\SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE))), '80%')
-							);
-							die('SimpleAuthAdminsHandler:SingleUserAccountIdHook');
-						} //end if
-					} //end if
-				} //end if
+				\SmartFrameworkRuntime::SingleUser_Mode_AuthBreakPoint();
 				//--
 				$db->logSuccessfulLoginData(
 					(string) $admin_login['id'], 			// successful auth account ID
@@ -289,6 +299,8 @@ final class AuthAdminsHandler {
 				);
 				//--
 			} //end if else
+			//--
+			$db = null; // close connection
 			//--
 		} else { // display login form
 			//--
@@ -346,23 +358,18 @@ final class AuthAdminsHandler {
 		//--
 
 		//--
-		$db = null; // close connection
-		//--
-
-		//--
-		if(\defined('\\APP_AUTH_ADMIN_USERNAME')) {
-			\SmartFrameworkRuntime::Raise503Error('Unset from config: APP_AUTH_ADMIN_USERNAME.'."\n".'You must finally unset the APP_AUTH_ADMIN_USERNAME constant from config after Auth Initialization. Manually REFRESH this page after by pressing F5 ...');
+		if(
+			\defined('\\APP_AUTH_ADMIN_USERNAME') OR
+			\defined('\\APP_AUTH_ADMIN_PASSWORD') OR
+			\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')
+		) {
+			\SmartFrameworkRuntime::Raise202Status(
+				'UNSET FROM CONFIG the following constants: `APP_AUTH_ADMIN_USERNAME`, `APP_AUTH_ADMIN_PASSWORD`, `APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY`.'."\n".
+				'AFTER THE AUTH INITIALIZATION these constants have to be unset because it is a security risk to keep them as unencrypted strings in a config file.'."\n".
+				'Manually REFRESH this page after that by pressing F5 ...',
+				'DB Initialization Completed ...'
+			);
 			die('AuthAdminsHandler:SAFETY-CHECK-USER-SET');
-			return;
-		} //end if
-		if(\defined('\\APP_AUTH_ADMIN_PASSWORD')) {
-			\SmartFrameworkRuntime::Raise503Error('Unset from config: APP_AUTH_ADMIN_PASSWORD.'."\n".'You must finally unset the APP_AUTH_ADMIN_PASSWORD constant from config after Auth Initialization. Manually REFRESH this page after by pressing F5 ...');
-			die('AuthAdminsHandler:SAFETY-CHECK-PASSWORD-SET');
-			return;
-		} //end if
-		if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) {
-			\SmartFrameworkRuntime::Raise503Error('Unset from config: APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY.'."\n".'The APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY is not used for this type of authentication ... Manually REFRESH this page after by pressing F5 ...');
-			die('AuthAdminsHandler:SAFETY-CHECK-PRIVKEY');
 			return;
 		} //end if
 		//--

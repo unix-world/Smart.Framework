@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS, SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20210520
+ * @version 	v.20210528
  * @package 	@Core:Network
  *
  */
@@ -314,9 +314,9 @@ final class SmartHttpClient {
 					if(strpos((string)$this->header, 'Location:') !== false) {
 						$redirect_url = (string) $this->header;
 						$redirect_url = (array) explode('Location:', (string)$redirect_url);
-						$redirect_url = (string) (isset($redirect_url[1]) ? $redirect_url[1] : '');
+						$redirect_url = (string) ($redirect_url[1] ?? '');
 						$redirect_url = (array) explode("\n", (string)$redirect_url);
-						$redirect_url = (string) (isset($redirect_url[0]) ? $redirect_url[0] : '');
+						$redirect_url = (string) ($redirect_url[0] ?? '');
 						$redirect_url = (string) trim((string)$redirect_url);
 						if((string)$redirect_url != '') {
 							if(((string)substr((string)$redirect_url, 0, 7) == 'http://') OR ((string)substr((string)$redirect_url, 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
@@ -1104,7 +1104,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20210520
+ * @version 	v.20210528
  * @package 	@Core:Network
  *
  */

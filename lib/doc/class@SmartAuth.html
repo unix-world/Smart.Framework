@@ -721,7 +721,7 @@ IP address and the browser signature of the client. The Smart Session provides a
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartAuth</span></li>
 		
-		<li><b>Version:</b> v.20210506</li>
+		<li><b>Version:</b> v.20210528</li>
 		<li><b>Depends:</b> Smart,  SmartCipherCrypto, SmartFrameworkRegistry</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -735,15 +735,45 @@ IP address and the browser signature of the client. The Smart Session provides a
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<div class="doc-container" id="Method--set_login_data">
+<div class="doc-container" id="Method--validate_auth_username">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_auth_username</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_user_name` Parameter is REQUIRED">$auth_user_name</span></b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$check_reasonable` Parameter is OPTIONAL, with the Default Value: false">$check_reasonable</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if the username is valid or false if not</div>
+	
+			<div class="doc-method-comments">Validate the Auth username</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--validate_auth_password">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_auth_password</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_user_pass` Parameter is REQUIRED">$auth_user_pass</span></b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$check_complexity` Parameter is OPTIONAL, with the Default Value: false">$check_complexity</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if the password is valid or false if not</div>
+	
+			<div class="doc-method-comments">Validate the Auth password</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--set_login_data">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>set_login_data</b></span>&nbsp;(
 				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_user_id` Parameter is REQUIRED">$y_user_id</span></b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_user_alias` Parameter is REQUIRED">$y_user_alias</span></b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_email` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_user_email</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_fullname` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_user_fullname</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>ARRAY/STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_privileges_list` Parameter is OPTIONAL, with the Default Value: array(0 =&gt; &quot;none&quot;, 1 =&gt; &quot;no-privilege&quot;)">$y_user_privileges_list</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array(0 =&gt; &quot;none&quot;, 1 =&gt; &quot;no-privilege&quot;)</b></span>, 
+			<i>ARRAY/STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_privileges_list` Parameter is OPTIONAL, with the Default Value: [0 =&gt; &quot;none&quot;, 1 =&gt; &quot;no-privilege&quot;]">$y_user_privileges_list</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; &quot;none&quot;, 1 =&gt; &quot;no-privilege&quot;]</b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_quota` Parameter is OPTIONAL, with the Default Value: -1">$y_user_quota</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>-1</b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_metadata` Parameter is OPTIONAL, with the Default Value: array()">$y_user_metadata</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array()</b></span>, 
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_user_metadata` Parameter is OPTIONAL, with the Default Value: []">$y_user_metadata</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_realm` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_realm</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>, 
 			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_method` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_method</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_pass` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_pass</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
@@ -760,9 +790,9 @@ IP address and the browser signature of the client. The Smart Session provides a
 @param: {STRING} $y_user_fullname: *OPTIONAL* The user Full Name (First Name + Last Name)<br>
 @param: {ARRAY/STRING} $y_user_privileges_list: *OPTIONAL* The user Privileges List as string '&lt;priv1&gt;&lt;priv2&gt;,...' or array ['priv1','priv2'] that list all the current user privileges<br>
 @param: {STRING} $y_user_quota: *OPTIONAL* The user (storage) Quota<br>
-@param: {ARRAY} $y_user_metadata: *OPTIONAL* The user metainfo, associative array key =&gt; value<br>
+@param: {ARRAY} $y_user_metadata: *OPTIONAL* The user metainfo, associative array key =&gt; value ; Ex: [ 'auth-safe' =&gt; 101 ]<br>
 @param: {STRING} $y_realm: *OPTIONAL* The user Authentication Realm(s)<br>
-@param: {ENUM} $y_method: *OPTIONAL* The authentication method used: HTTP-BASIC / HTTP-DIGEST / OTHER<br>
+@param: {ENUM} $y_method: *OPTIONAL* The authentication method used, as description only: HTTP-BASIC / OTHER / ...<br>
 @param: {STRING} $y_pass: *OPTIONAL* The user login password (will be stored in memory as encrypted to avoid exposure)<br>
 @param: {STRING} $y_keys: *OPTIONAL* The encrypted user privacy-keys (will be stored in memory as encrypted to avoid exposure)</div>
 	
@@ -1035,7 +1065,10 @@ This is completely safe as long as the users login passwords are supposed to be 
 	<h2 class="doc-header">class Constants</h2>
 </div>
 <!-- constants r.20200121 -->
-
+<div class="doc-container" id="Constant--REGEX_VALID_USER_NAME">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>REGEX_VALID_USER_NAME</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;/^[a-z0-9\\.]+$/&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
 <!-- Sample Code -->
 <br>
 <div class="doc-container" id="SAMPLE--Code-">
@@ -1077,6 +1110,12 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
+									<option value="Method--validate_auth_username"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_auth_username()</option>
+			
+			
+									<option value="Method--validate_auth_password"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_auth_password()</option>
+			
+			
 									<option value="Method--set_login_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set_login_data()</option>
 			
 			
@@ -1144,6 +1183,8 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
+									<option value="Constant--REGEX_VALID_USER_NAME">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;REGEX_VALID_USER_NAME</option>
+			
 			
 		</optgroup>
 				<optgroup label="Class Sample usage">
@@ -1156,7 +1197,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:33 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-30 23:02:30 +0000</small>
 <hr>
 <br>
 <!-- # -->

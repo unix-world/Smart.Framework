@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / INIT] v.20210527 s.20210527.2359
+// [AppCodeUnpack / INIT] v.20210530 s.20210530.2008
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -22,9 +22,9 @@ if(!defined('APP_CUSTOM_LOG_PATH')) { // for standalone apps this must be define
 //--------------------------------------- APPCODEUNPACK AUTH VALUES
 const APP_AUTH_ADMIN_ENFORCE_HTTPS = false;
 const APP_AUTH_ADMIN_USERNAME = 'super.admin';
-const APP_AUTH_ADMIN_PASSWORD = 'B24826285CE79EB45534432E3021C07217C07D775CD920944E3FD799A16AC93FBFAD33D1A7792A6895C46CC0F960E490F2DEF6E6119823880B0A7AABAE1209D79D4CE1CDF5F980E1'; // should be the same as set in appcodepack.yaml ; the app unpack auth password ; default is: `the-pass` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
+const APP_AUTH_ADMIN_PASSWORD = 'FCEB3D00DE28538B9B9311C10A6B003FBE491D64980F5CA63AD004CDCE47D900B22DD9B6D075C07D260306156A4EAB2D4767948AF722C5A924F6F3944DF5FF4013A6998FF2C9D142'; // should be the same as set in appcodepack.yaml ; the app unpack auth password ; default is: `The1pass!` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
 //--------------------------------------- APPCODEUNPACK DEPLOY SETTINGS
-const APPCODEPACK_DEPLOY_SECRET = 'set-here-a-private-key-that-must-not-be-disclosed'; // should be the same as set in appcodepack.yaml
+const APPCODEPACK_DEPLOY_SECRET = 'Set-here-1-private-key-that-must-not-be-disclosed!'; // should be the same as set in appcodepack.yaml
 const APPCODEPACK_DEPLOY_APPLIST = '<smart-framework.local>,<smart-framework.test>'; // the list of App-IDs to allow under this instance ; example: <app-id-1> ; example with multiple: <app-id-1>,<app-id-2>
 //---------------------------------------
 
@@ -233,7 +233,7 @@ const SMART_FRAMEWORK_INITS = 'SET'; // avoid reload inits again (if accidentaly
 
 //======= [standalone app]
 
-//== v.20210527
+//== v.20210530
 //--
 ini_set('display_errors', '1'); 											// temporary enable this to display bootstrap errors if any ; will be managed later by Smart Error Handler
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 			// on bootstrap show real-time errors (sync with Smart Error Handler)

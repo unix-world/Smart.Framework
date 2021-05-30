@@ -291,6 +291,8 @@ interface SmartInterfaceAppBootstrap {
 	 * RETURN: -
 	 */
 	public static function Initialize();
+	//=====
+
 
 	//=====
 	/**

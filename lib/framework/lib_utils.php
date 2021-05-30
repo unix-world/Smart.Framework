@@ -38,7 +38,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20210523
+ * @version 	v.20210528
  * @package 	@Core:Extra
  *
  */
@@ -450,21 +450,21 @@ final class SmartUtils {
 	public static function comment_php_code(?string $y_code, array $y_repl=['tag-start' => '<!--? ', 'tag-end' => ' ?-->']) {
 		//--
 		$y_code = (string) $y_code;
-		$y_repl = (array) $y_repl;
+		$y_repl = (array)  $y_repl;
 		//--
-		$tag_start 	= (string) (isset($y_repl['tag-start']) ? $y_repl['tag-start'] : '');
-		$tag_end 	= (string) (isset($y_repl['tag-end'])   ? $y_repl['tag-end']   : '');
+		$tag_start 	= (string) ($y_repl['tag-start'] ?? '');
+		$tag_end 	= (string) ($y_repl['tag-end']   ?? '');
 		//--
-		$tmp_regex_php = array(
+		$tmp_regex_php = [
 			'<'.'?php',
 			'<'.'?',
 			'?'.'>'
-		);
-		$tmp_regex_htm = array(
-			$tag_start,
-			$tag_start,
-			$tag_end
-		);
+		];
+		$tmp_regex_htm = [
+			(string) $tag_start,
+			(string) $tag_start,
+			(string) $tag_end
+		];
 		//--
 		return (string) str_ireplace((array)$tmp_regex_php, (array)$tmp_regex_htm, (string)$y_code);
 		//--
@@ -1835,27 +1835,20 @@ final class SmartUtils {
 		//--
 		if(Smart::array_size($xout) <= 0) {
 			//--
-			if(!array_key_exists('SERVER_SOFTWARE', $_SERVER)) {
-				$tmp_srv_software = ''; // fix for PHP8
-			} else {
+			$tmp_srv_software = ''; // fix for PHP8
+			if(array_key_exists('SERVER_SOFTWARE', $_SERVER)) {
 				$tmp_srv_software = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_SOFTWARE']);
 			} //end if else
 			$tmp_version_arr = (array) explode('/', (string)$tmp_srv_software);
-			if(!array_key_exists(0, $tmp_version_arr)) {
-				$tmp_version_arr[0] = null;
-			} //end if
-			if(!array_key_exists(1, $tmp_version_arr)) {
-				$tmp_version_arr[1] = null;
-			} //end if
-			$tmp_name_str = (string) trim((string)$tmp_version_arr[0]);
-			$tmp_out = (string) trim((string)$tmp_version_arr[1]);
+			$tmp_name_str = (string) trim((string)$tmp_version_arr[0] ?? '');
+			$tmp_out = (string) trim((string)$tmp_version_arr[1] ?? '');
 			$tmp_version_arr = (array) explode(' ', (string)$tmp_out);
-			$tmp_version_str = (string) trim((string)(isset($tmp_version_arr[0]) ? $tmp_version_arr[0] : ''));
+			$tmp_version_str = (string) trim((string)($tmp_version_arr[0] ?? ''));
 			//--
-			$xout = array(
+			$xout = [
 				'name' => (string) $tmp_name_str,
 				'version' => (string) $tmp_version_str
-			);
+			];
 			//--
 			self::$cache['get_webserver_version'] = (array) $xout;
 			//--

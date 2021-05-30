@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Template: Core.HTTP-MESSAGE-STATUS v.20210526 -->
+<!-- Template: Core.HTTP-MESSAGE-STATUS v.20210528 -->
 <html>
 <head>
 <meta charset="[###CHARSET|html###]">
@@ -15,40 +15,42 @@
 <style>
 #server-logo {
 	position: absolute;
-	top: 50px;
+	top: 15px;
 	right: 25px;
 }
 #server-signature {
 	color: #333333;
 }
 #title {
-	font-size: 3rem;
+	font-size: 4rem;
 	padding-right: 150px;
+	padding-left: 25px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin: 0px;
 	color: #333333;
 }
 </style>
 </head>
 <body>
 <h1 id="title">[###TITLE|html###]</h1>
+<br>
 <hr size="1">
-[%%%IF:MESSAGE-HTML:!=;%%%]
 <div align="left">
 	<table width="98%">
 		<tr>
 			<td>
 			[###MESSAGE-HTML###]
+			[###EXTMSG-HTML###]
 			</td>
 		</tr>
 	</table>
 </div>
 <hr size="1">
-[%%%ELSE:MESSAGE-HTML%%%]
-<!-- no html msg -->
-[%%%/IF:MESSAGE-HTML%%%]
 <small id="server-signature">[###SIGNATURE-HTML###]</small>
 <br>
 <br>
-<img id="server-logo" alt="globe" width="96" height="96" src="[###BASE-URL|html###]lib/core/img/app/globe.svg">
+<img id="server-logo" alt="logo" width="96" height="96" src="[###BASE-URL|html###]lib/core/img/app/globe.svg">
 </body>
 </html>
 <!-- #END :: Template: Core.HTTP-MESSAGE-STATUS -->

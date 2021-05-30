@@ -27,7 +27,8 @@ $configs['app']['task-template-file'] 				= 'template-simple.htm';	// default ta
 
 //-- sample auth credentials for the admin area (admin.php / task.php) ; change them !!!
 define('APP_AUTH_ADMIN_USERNAME', 'admin');
-define('APP_AUTH_ADMIN_PASSWORD', 'the-pass');
+define('APP_AUTH_ADMIN_PASSWORD', 'the-pass'); // req. at least 7 characters, no more than 30 ; complex password sample: 'The1pass!'
+//define('APP_AUTH_ADMIN_COMPLEX_PASSWORDS', true); // if enabled req. at least 8 characters, no more than 30, must contain at least 1 character A-Z, 1 character a-z, one digit 0-9, one special character such as: ! @ # $ % ^ & * ( ) _ - + = [ { } ] / | . , ; ? ...
 //define('APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY', ''); // this is *optional* and used just by the Simple Admin Auth (hardcoded account) and may be required just for some extra modules
 /* uncomment these for advanced authentication (must switch from simple to advanced authentication in modules/app/app-auth-admin.inc.php)
 define('APP_AUTH_PRIVILEGES', '<admin>,<custom-priv1>,<custom-priv...>,<custom-privN>');

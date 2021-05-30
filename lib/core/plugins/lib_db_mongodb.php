@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartComponents
- * @version 	v.20210527
+ * @version 	v.20210528
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -139,15 +139,15 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		} //end if
 		//--
 		if(Smart::array_size($y_configs_arr) > 0) {
-			$type 		= (string) (isset($y_configs_arr['type'])        ? $y_configs_arr['type']        : null);
-			$db 		= (string) (isset($y_configs_arr['dbname'])      ? $y_configs_arr['dbname']      : null);
-			$host 		= (string) (isset($y_configs_arr['server-host']) ? $y_configs_arr['server-host'] : null);
-			$port 		= (string) (isset($y_configs_arr['server-port']) ? $y_configs_arr['server-port'] : null);
-			$timeout 	= (string) (isset($y_configs_arr['timeout'])     ? $y_configs_arr['timeout']     : null);
-			$username 	= (string) (isset($y_configs_arr['username'])    ? $y_configs_arr['username']    : null);
-			$password 	= (string) (isset($y_configs_arr['password'])    ? $y_configs_arr['password']    : null);
-			$timeslow 	= (float)  (isset($y_configs_arr['slowtime'])    ? $y_configs_arr['slowtime']    : null);
-		//	$transact 	= (string) (isset($y_configs_arr['transact'])    ? $y_configs_arr['transact']    : null); // reserved for future usage (only MongoDB v.4+ supports transactions ...)
+			$type 		= (string) ($y_configs_arr['type']        ?? null);
+			$db 		= (string) ($y_configs_arr['dbname']      ?? null);
+			$host 		= (string) ($y_configs_arr['server-host'] ?? null);
+			$port 		= (string) ($y_configs_arr['server-port'] ?? null);
+			$timeout 	= (string) ($y_configs_arr['timeout']     ?? null);
+			$username 	= (string) ($y_configs_arr['username']    ?? null);
+			$password 	= (string) ($y_configs_arr['password']    ?? null);
+			$timeslow 	= (float)  ($y_configs_arr['slowtime']    ?? null);
+		//	$transact 	= (string) ($y_configs_arr['transact']    ?? null); // reserved for future usage (only MongoDB v.4+ supports transactions ...)
 		} else {
 			$this->error('[CHECK-CONFIGS]', 'MongoDB Configuration Init', 'CHECK Connection Config', 'Empty Configuration');
 			return;
@@ -1232,7 +1232,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$concern_wr = 'majority'; // make sense if with a sharding cluster
 		} elseif(strpos((string)$type, 'mongo-replica-set:') !== false) { // replica set
 			$replica = (array) explode('mongo-replica-set:', (string)$type);
-			$replica = (string) trim((string)(isset($replica[1]) ? $replica[1] : ''));
+			$replica = (string) trim((string)($replica[1] ?? ''));
 			$concern_rd = 'available';
 			$concern_wr = 'majority';
 		} else { // mongo-standalone

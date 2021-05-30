@@ -32,7 +32,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD and *optional* the APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY ; they must be set in set in config-admin.php
  * Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)
  *
- * @version 	v.20210526
+ * @version 	v.20210530
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -55,8 +55,8 @@ final class SimpleAuthAdminsHandler {
 			return;
 		} //end if
 		//--
-		if(defined('APP_AUTH_ADMIN_ENFORCE_HTTPS')) {
-			if(APP_AUTH_ADMIN_ENFORCE_HTTPS !== false) {
+		if(\defined('\\APP_AUTH_ADMIN_ENFORCE_HTTPS')) {
+			if(\APP_AUTH_ADMIN_ENFORCE_HTTPS !== false) {
 				$enforce_https = true;
 			} else {
 				$enforce_https = false;
@@ -84,10 +84,37 @@ final class SimpleAuthAdminsHandler {
 			return;
 		} //end if
 		//--
+		if(\SmartAuth::validate_auth_username(
+			(string) \APP_AUTH_ADMIN_USERNAME,
+			true // check for reasonable length, as 5 chars
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+			\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: `APP_AUTH_ADMIN_USERNAME` !'."\n".'The `APP_AUTH_ADMIN_USERNAME` set in config must be at least 5 characters long ! Manually REFRESH this page after by pressing F5 ...');
+			die('SimpleAuthAdminsHandler:CHECK-CREDENTIALS:UserName');
+			return;
+		} //end if
+		if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+			(string) \APP_AUTH_ADMIN_PASSWORD,
+			(bool) ((\defined('\\APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (\APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false)
+		) !== true) {
+			\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: `APP_AUTH_ADMIN_PASSWORD` ... need to be changed !'."\n".'THE PASSWORD IS TOO SHORT OR DOES NOT MEET THE REQUIRED COMPLEXITY CRITERIA.'."\n".'Must be min 7 or 8 chars and max 30 chars.'."\n".'Must contain at least 1 character A-Z, 1 character a-z, one digit 0-9, one special character such as: ! @ # $ % ^ & * ( ) _ - + = [ { } ] / | . , ; ? ...'."\n".'Manually REFRESH this page after by pressing F5 ...');
+			die('SimpleAuthAdminsHandler:CHECK-CREDENTIALS:Password');
+			return;
+		} //end if
+		//--
+		$auth_data = (array) \SmartModExtLib\AuthAdmins\AuthProviderHttpBasic::GetCredentials((bool)$enforce_https);
+		$auth_method = (string) $auth_data['auth-mode'];
+		$auth_safe = (int) $auth_data['auth-safe'];
+		//--
+		$auth_user_name = (string) \strtolower((string)$auth_data['auth-user']);
+		$auth_user_pass = (string) $auth_data['auth-pass'];
+		//--
+		$auth_data = null;
+		//--
 		if(
-			isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']) AND
-			((string)trim((string)$_SERVER['PHP_AUTH_USER']) != '') AND ((string)trim((string)$_SERVER['PHP_AUTH_PW']) != '') AND
-			((string)$_SERVER['PHP_AUTH_USER'] === (string)\APP_AUTH_ADMIN_USERNAME) AND ((string)$_SERVER['PHP_AUTH_PW'] === (string)\APP_AUTH_ADMIN_PASSWORD)
+			((string)trim((string)$auth_user_name) != '') AND
+			((string)trim((string)$auth_user_pass) != '') AND
+			((string)$auth_user_name === (string)\APP_AUTH_ADMIN_USERNAME) AND
+			((string)$auth_user_pass === (string)\APP_AUTH_ADMIN_PASSWORD)
 		) {
 			//-- OK, logged in
 			$privileges = '<superadmin>,<admin>';
@@ -106,45 +133,31 @@ final class SimpleAuthAdminsHandler {
 			} //end if
 			//--
 			\SmartAuth::set_login_data(
-				(string) $_SERVER['PHP_AUTH_USER'], 	// this should be always the user login ID (login user name)
-				(string) $_SERVER['PHP_AUTH_USER'], 	// username alias (in this case is the same as the login ID, but may be different)
-				'admin@smart.framework', 				// user email * Optional * (this may be also redundant if the login ID is actually the user email)
-				'Super Admin', 							// user full name (Title + ' ' + First Name + ' ' + Last name) * Optional *
-				(array) $privileges, 					// login privileges * Optional *
-				0, 										// quota * Optional *
+				(string) $auth_user_name, 														// this should be always the user login ID (login user name)
+				(string) \ucwords((string)\str_replace('.', ' ', (string)$auth_user_name)), 	// alias, make a nice alias from the login ID
+				'admin@smart.framework', 														// user email * Optional * (this may be also redundant if the login ID is actually the user email)
+				'Default Admin', 																// user full name (First Name + ' ' + Last name) * Optional *
+				(array) $privileges, 															// login privileges * Optional *
+				0, 																				// quota * Optional * ... zero, aka unlimited
 				[ // metadata
-					'title' => 'Mr.',
-					'name_f' => 'Super',
-					'name_l' => 'Admin'
+					'auth-safe' => (int) $auth_safe,
+					'name_f' 	=> 'Default',
+					'name_l' 	=> 'Admin',
 				],
 				'ADMINS-AREA-SIMPLE', // realm
-				'HTTP-BASIC', // method
-				(string) $_SERVER['PHP_AUTH_PW'], 		// safe store password
+				(string) $auth_method, // method
+				(string) $auth_user_pass, 				// safe store password
 				(string) $priv_keys 					// safe store privacy-keys as encrypted (will be decrypted in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
 			);
 			//--
-			if( // single user login hook by user account {{{SYNC-SINGLE-USER-LOGIN-HOOK}}}
-				\defined('\\SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE') AND
-				\defined('\\SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE') AND
-				\defined('\\SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID')
-			) {
-				if((string)\SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID != '') {
-					if((string)\SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID !== (string)\SmartAuth::get_login_id()) {
-						\SmartFrameworkRuntime::Raise503Error(
-							(string) \SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE,
-							(string) \SmartComponents::operation_ok('Single User Lock File: '.\Smart::escape_html((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE), '80%').\SmartComponents::operation_notice((string)\Smart::nl_2_br((string)\Smart::escape_html((string)\SmartFileSystem::read((string)\SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE))), '80%')
-						);
-						die('SimpleAuthAdminsHandler:SingleUserAccountIdHook');
-					} //end if
-				} //end if
-			} //end if
+			\SmartFrameworkRuntime::SingleUser_Mode_AuthBreakPoint();
 			//--
 		} else {
 			//-- log unsuccessful login
-			if(isset($_SERVER['PHP_AUTH_USER']) AND ((string)$_SERVER['PHP_AUTH_USER'] != '')) {
+			if((string)$auth_user_name != '') {
 				\SmartFileSystem::write(
 					'tmp/logs/adm/'.\Smart::safe_filename('simple-auth-fail-'.\date('Y-m-d@H').'.log'),
-					'[FAIL]'."\t".\Smart::normalize_spaces((string)\date('Y-m-d H:i:s O'))."\t".\Smart::normalize_spaces((string)$_SERVER['PHP_AUTH_USER'])."\t".\Smart::normalize_spaces((string)\SmartUtils::get_ip_client())."\t".\Smart::normalize_spaces((string)\SmartUtils::get_visitor_useragent())."\n",
+					'[FAIL]'."\t".\Smart::normalize_spaces((string)\date('Y-m-d H:i:s O'))."\t".\Smart::normalize_spaces((string)$auth_user_name)."\t".\Smart::normalize_spaces((string)\SmartUtils::get_ip_client())."\t".\Smart::normalize_spaces((string)\SmartUtils::get_visitor_useragent())."\n",
 					'a'
 				);
 			} //end if

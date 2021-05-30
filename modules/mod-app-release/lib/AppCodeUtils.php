@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class AppCodeUtils {
 
 	// ::
-	// v.20210527
+	// v.20210528
 
 	private const CODEPACK_INI = 'etc/appcodepack/appcodepack.ini';
 	private const CODEPACK_SETTINGS = 'etc/appcodepack/appcodepack.yaml';
@@ -295,8 +295,11 @@ final class AppCodeUtils {
 		if((string)trim((string)$password) == '') {
 			return 'APP-RELEASE/APPID/DEPLOY-AUTH-PASS YAML SETTINGS ERROR # decode failed';
 		} //end if
-		if(((string)trim((string)$password) == '') OR ((int)SmartUnicode::str_len((string)$password) < 7) OR ((int)SmartUnicode::str_len((string)$password) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
-			return 'APP-RELEASE/APPID/DEPLOY-AUTH-PASS YAML SETTINGS ERROR # must be between 7 and 30 characters long';
+		if(SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+			(string) $password,
+			true // check for complexity
+		) !== true) {
+			return 'APP-RELEASE/APPID/DEPLOY-AUTH-PASS YAML SETTINGS ERROR # must be between 8 and 30 characters long';
 		} //end if
 		if(defined('APP_DEPLOY_AUTH_PASSWORD')) {
 			return 'APP_DEPLOY_AUTH_PASSWORD # CONSTANT ALREADY DEFINED';
@@ -307,8 +310,11 @@ final class AppCodeUtils {
 		if((!isset($arr['deploy-auth-user'])) OR (!Smart::is_nscalar($arr['deploy-auth-user']))) {
 			return 'APP-RELEASE/APPID/DEPLOY-AUTH-USER YAML SETTINGS ERROR';
 		} //end if
-		if(((string)trim((string)$arr['deploy-auth-user']) == '') OR ((int)strlen((string)$arr['deploy-auth-user']) < 3) OR ((int)strlen((string)$arr['deploy-auth-user']) > 25) OR (!preg_match('/^[a-z0-9\.]+$/', (string)$arr['deploy-auth-user']))) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
-			return 'APP-RELEASE/APPID/DEPLOY-AUTH-USER YAML SETTINGS ERROR # must be between 3 and 25 characters long ; can contain only: a-z 0-9 .';
+		if(SmartAuth::validate_auth_username(
+			(string) $arr['deploy-auth-user'],
+			true // check for reasonable length, as 5 chars
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+			return 'APP-RELEASE/APPID/DEPLOY-AUTH-USER YAML SETTINGS ERROR # must be between 5 and 25 characters long ; can contain only: a-z 0-9 .';
 		} //end if
 		if(defined('APP_DEPLOY_AUTH_USERNAME')) {
 			return 'APP_DEPLOY_AUTH_USERNAME # CONSTANT ALREADY DEFINED';

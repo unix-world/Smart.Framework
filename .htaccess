@@ -1,7 +1,7 @@
 
 #####
 ### Smart.Framework .htaccess sample for Apache 2.2 / 2.4
-### r.8.7 / smart.framework.v.8.7 @ 20210526
+### r.8.7 / smart.framework.v.8.7 @ 20210528
 ### (c) 2015-2021 unix-world.org
 #####
 
@@ -54,6 +54,11 @@ php_flag zend.multibyte					Off
 	##RewriteCond %{REMOTE_ADDR} !=127.0.0.1
 	##RewriteCond %{ENV:REDIRECT_STATUS} !=503
 	##RewriteRule .* - [R=503,L]
+	###
+
+	### Redirect to https
+	##RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+	##RewriteRule ^.*$ https://%{SERVER_NAME}%{REQUEST_URI} [L,R]
 	###
 
 	### Security Fixes

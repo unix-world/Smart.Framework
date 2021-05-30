@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring
- * @version 	v.20210307
+ * @version 	v.20210528
  * @package 	Plugins:Image
  *
  */
@@ -126,8 +126,8 @@ final class SmartImageGdProcess {
 		if(is_array($imgdata)) {
 			//--
 			$this->type   = (string) 'png';
-			$this->width  = (int)    (isset($imgdata['width']) ? $imgdata['width'] : null);
-			$this->height = (int)    (isset($imgdata['height']) ? $imgdata['height'] : null);
+			$this->width  = (int)    ($imgdata['width'] ?? null);
+			$this->height = (int)    ($imgdata['height'] ?? null);
 			//--
 			if($this->width < 1) {
 				$this->width = 1;

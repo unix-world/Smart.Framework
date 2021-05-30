@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="unix-world.org">
 	<meta name="description" content="\SmartImageGdProcess        final class \ SmartImageGdProcess    {   } -&gt;    Class: Smart Image GD Process - provide a class for GD image processing for:">
-	<meta name="keywords" content="smartimagegdprocess, final, class, smart, image, gd, process, provide, a, for, processing, safe, filter, convert, format, resize, resample, apply, watermark, gif, png, jpg, webp, just, construct, this, and, then, getimagedata, an, use, resizeimage, over, applywatermark, language, php, located, at, lib core plugins lib imgd.php, package, plugins:image, namespace, name, version, v.20210307, depends, extension, with, support, imagecreatetruecolor, imagecreatefromstring, getimagesizefromstring, usage, dynamic, object, new, class method, provides, only, methods, public, function, imgdata, string, imginfo, param, mixed, imgstr, the, data, of, or, array, definition, width, height, bgcolor, optional, identifier, ex, used, error, log, debug, messages, constructor, destruct, destructor, setdebug, bool, if, true, set, on, else, off, by">
+	<meta name="keywords" content="smartimagegdprocess, final, class, smart, image, gd, process, provide, a, for, processing, safe, filter, convert, format, resize, resample, apply, watermark, gif, png, jpg, webp, just, construct, this, and, then, getimagedata, an, use, resizeimage, over, applywatermark, language, php, located, at, lib core plugins lib imgd.php, package, plugins:image, namespace, name, version, v.20210528, depends, extension, with, support, imagecreatetruecolor, imagecreatefromstring, getimagesizefromstring, usage, dynamic, object, new, class method, provides, only, methods, public, function, imgdata, string, imginfo, param, mixed, imgstr, the, data, of, or, array, definition, width, height, bgcolor, optional, identifier, ex, used, error, log, debug, messages, constructor, destruct, destructor, setdebug, bool, if, true, set, on, else, off, by">
 	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartImageGdProcess">
 	<title>PHP Documentation for: \SmartImageGdProcess</title>
 	<!-- CSS and Fonts -->
@@ -710,7 +710,7 @@ For Apply an image watermark over an image use: -&gt;applyWatermark()</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartImageGdProcess</span></li>
 		
-		<li><b>Version:</b> v.20210307</li>
+		<li><b>Version:</b> v.20210528</li>
 		<li><b>Depends:</b> PHP  GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -868,7 +868,7 @@ Possible errors when detecting an image type:<br>
 			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$resize_height` Parameter is REQUIRED">$resize_height</span></b></span>, 
 			<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$crop` Parameter is OPTIONAL, with the Default Value: 0">$crop</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
 			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: 0">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bg_color_rgb` Parameter is OPTIONAL, with the Default Value: array(0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0)">$bg_color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array(0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0)</b></span>
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bg_color_rgb` Parameter is OPTIONAL, with the Default Value: [0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0]">$bg_color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -966,7 +966,7 @@ Possible errors when detecting an image type:<br>
 			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$angle` Parameter is OPTIONAL, with the Default Value: 0">$angle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
 			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$size` Parameter is OPTIONAL, with the Default Value: 10">$size</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>10</b></span>, 
 			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$font` Parameter is OPTIONAL, with the Default Value: &quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;">$font</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;</b></span>, 
-			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$color_rgb` Parameter is OPTIONAL, with the Default Value: array(0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0)">$color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array(0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0)</b></span>
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$color_rgb` Parameter is OPTIONAL, with the Default Value: [0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]">$color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -996,7 +996,7 @@ Possible errors when detecting an image type:<br>
 			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$angle` Parameter is OPTIONAL, with the Default Value: 0">$angle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
 			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$size` Parameter is OPTIONAL, with the Default Value: 10">$size</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>10</b></span>, 
 			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$font` Parameter is OPTIONAL, with the Default Value: &quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;">$font</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;</b></span>, 
-			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$color_rgb` Parameter is OPTIONAL, with the Default Value: array(0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0)">$color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>array(0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0)</b></span>
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$color_rgb` Parameter is OPTIONAL, with the Default Value: [0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]">$color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -1163,7 +1163,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-05-27 19:41:37 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-05-30 23:02:35 +0000</small>
 <hr>
 <br>
 <!-- # -->

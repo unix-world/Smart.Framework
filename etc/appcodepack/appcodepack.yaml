@@ -1,5 +1,5 @@
 # [@[#[!SF.DEV-ONLY!]#]@] ; do not remove this line, it is for safety to dissalow this file to be send in a release package
-# appcodepack.yaml s.20210527.2359 ; sample: MINIFY ; (c) 2013-2021 unix-world.org
+# appcodepack.yaml s.20210530.2008 ; sample: MINIFY ; (c) 2013-2021 unix-world.org
 APP-RELEASE:
 	# the app ID
 	smart-framework.local:
@@ -10,11 +10,11 @@ APP-RELEASE:
 			- https://127.0.0.1/sites/RELEASE/test-unpack/appcodeunpack.php
 			- http://localhost/sites/RELEASE/test-unpack/appcodeunpack.php
 		# the app deploy secret ; used to calculate the AppID-Hash for Deploy ; must be between 40 and 128 characters ; can contain only ASCII characters, except spaces ; default is: `set-here-a-private-key-that-must-not-be-disclosed`
-		deploy-secret: "set-here-a-private-key-that-must-not-be-disclosed"
+		deploy-secret: "Set-here-1-private-key-that-must-not-be-disclosed!"
 		# the app deploy auth username ; default is: `super.admin`
 		deploy-auth-user: super.admin
-		# the app unpack auth password ; default is: `the-pass` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
-		deploy-auth-pass: B24826285CE79EB45534432E3021C07217C07D775CD920944E3FD799A16AC93FBFAD33D1A7792A6895C46CC0F960E490F2DEF6E6119823880B0A7AABAE1209D79D4CE1CDF5F980E1
+		# the app unpack auth password ; default is: `The1pass!` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
+		deploy-auth-pass: FCEB3D00DE28538B9B9311C10A6B003FBE491D64980F5CA63AD004CDCE47D900B22DD9B6D075C07D260306156A4EAB2D4767948AF722C5A924F6F3944DF5FF4013A6998FF2C9D142
 		# list of folders to include or exclude
 		folders:
 			- _sql ; =sql
@@ -36,16 +36,16 @@ APP-RELEASE:
 			- index.php
 			- admin.php
 			- task.php
-			- README.md ; = readme.md
+			- README.md ; = read.md
 			- modules/mod-app-release/appcodeunpack/samples/maintenance-503.html ; =maintenance.html
 			- modules/mod-app-release/appcodeunpack/samples/appcode-upgrade.php ; =appcode-upgrade.php
 	smart-framework.test:
 		deploy-strategy: minify
 		deploy-urls:
 			- https://127.0.0.1/sites/RELEASE/test-unpack/appcodeunpack.php
-		deploy-secret: "set-here-a-private-key-that-must-not-be-disclosed"
+		deploy-secret: "Set-here-1-private-key-that-must-not-be-disclosed!"
 		deploy-auth-user: super.admin
-		deploy-auth-pass: B24826285CE79EB45534432E3021C07217C07D775CD920944E3FD799A16AC93FBFAD33D1A7792A6895C46CC0F960E490F2DEF6E6119823880B0A7AABAE1209D79D4CE1CDF5F980E1
+		deploy-auth-pass: FCEB3D00DE28538B9B9311C10A6B003FBE491D64980F5CA63AD004CDCE47D900B22DD9B6D075C07D260306156A4EAB2D4767948AF722C5A924F6F3944DF5FF4013A6998FF2C9D142
 		folders:
 			- etc
 			- lib

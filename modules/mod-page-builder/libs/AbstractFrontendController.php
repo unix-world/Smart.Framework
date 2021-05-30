@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210526
+ * @version 	v.20210530
  * @package 	development:modules:PageBuilder
  *
  */
@@ -1816,7 +1816,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			$author_id = '???';
 		} //end if
 		//--
-		$author_id = (string) \str_replace(['-', '_'], ' ', (string)$author_id);
+		$author_id = (string) \str_replace(['.', '-', '_'], ' ', (string)$author_id);
 		//--
 		$author_id = (string) \ucwords((string)$author_id);
 		//--

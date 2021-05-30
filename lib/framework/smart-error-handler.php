@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20210526 # this should be loaded from app web root only
+// # r.20210530 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.05.27'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2021.05.30'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -417,8 +417,8 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 			'==================================='."\n".
 			'PHP '.PHP_VERSION.' [SMART-ERR-HANDLER:'.strtoupper((string)SMART_FRAMEWORK_ENV).'] #'.$errno.' ['.$ferr.']'.$app_halted.' @ '.date('Y-m-d H:i:s O')."\n".
 			'-----------------'."\n".
-			'HTTP-METHOD: '.(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '').' # '.'CLIENT: '.trim((string)(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '').' ; '.(isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : '').' ; '.(isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR']: ''), '; ').' @ '.(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '')."\n".
-			'URI: ['.SMART_ERROR_AREA.'] @ '.(isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '').':'.(isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '').(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n".
+			'HTTP-METHOD: '.($_SERVER['REQUEST_METHOD'] ?? '').' # '.'CLIENT: '.trim((string)($_SERVER['REMOTE_ADDR'] ?? '').' ; '.($_SERVER['HTTP_CLIENT_IP'] ?? '').' ; '.($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''), '; ').' @ '.($_SERVER['HTTP_USER_AGENT'] ?? '')."\n".
+			'URI: ['.SMART_ERROR_AREA.'] @ '.($_SERVER['SERVER_NAME'] ?? '').':'.($_SERVER['SERVER_PORT'] ?? '').($_SERVER['REQUEST_URI'] ?? '')."\n".
 			'-----------------'."\n".
 			'Script: '.$errfile."\n".
 			'Line number: '.$errline."\n".
@@ -499,7 +499,7 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 		} else {
 			//--
 			for($i=0; $i<2; $i++) { // trace just 2 levels
-				$details .= "\n".'  ----- Line #'.(isset($arr[$i]['line']) ? $arr[$i]['line'] : '').' @ Class: ['.(isset($arr[$i]['class']) ? $arr[$i]['class'] : '').'] '.(isset($arr[$i]['type']) ? $arr[$i]['type'] : '').' Function: ['.(isset($arr[$i]['function']) ? $arr[$i]['function'] : '').'] | File: '.(isset($arr[$i]['file']) ? $arr[$i]['file'] : '');
+				$details .= "\n".'  ----- Line #'.($arr[$i]['line'] ?? '').' @ Class: ['.($arr[$i]['class'] ?? '').'] '.($arr[$i]['type'] ?? '').' Function: ['.($arr[$i]['function'] ?? '').'] | File: '.($arr[$i]['file'] ?? '');
 				$details .= "\n".'    ----- Args * '.(isset($arr[$i]['args']) ? print_r($arr[$i]['args'],1) : '');
 			} //end for
 			//--
@@ -532,7 +532,7 @@ ini_set('error_log', (string)SMART_ERROR_LOGDIR.SMART_ERROR_LOGFILE); // error l
 register_shutdown_function(function(){
 	//--
 	$error = error_get_last();
-	if(is_array($error) && isset($error['type'])) {
+	if(is_array($error) && array_key_exists('type', (array)$error)) {
 		if(!isset($error['message'])) {
 			$error['message'] = 'Unknown ERROR ...';
 		} //end if
@@ -551,8 +551,8 @@ register_shutdown_function(function(){
 					'==================================='."\n".
 					'PHP '.PHP_VERSION.' [SMART-ERR-HANDLER:'.strtoupper((string)SMART_FRAMEWORK_ENV).'] #0 [APP-SHUTDOWN-ERROR] :: Execution COMPLETED ! @ '.date('Y-m-d H:i:s O')."\n".
 					'-----------------'."\n".
-					'HTTP-METHOD: '.(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '').' # '.'CLIENT: '.trim((string)(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '').' ; '.(isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : '').' ; '.(isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR']: ''), '; ').' @ '.(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '')."\n".
-					'URI: ['.SMART_ERROR_AREA.'] @ '.(isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '').':'.(isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '').(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '')."\n".
+					'HTTP-METHOD: '.($_SERVER['REQUEST_METHOD'] ?? '').' # '.'CLIENT: '.trim((string)($_SERVER['REMOTE_ADDR'] ?? '').' ; '.($_SERVER['HTTP_CLIENT_IP'] ?? '').' ; '.($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''), '; ').' @ '.($_SERVER['HTTP_USER_AGENT'] ?? '')."\n".
+					'URI: ['.SMART_ERROR_AREA.'] @ '.($_SERVER['SERVER_NAME'] ?? '').':'.($_SERVER['SERVER_PORT'] ?? '').($_SERVER['REQUEST_URI'] ?? '')."\n".
 					'-----------------'."\n".
 					'Script: '.$error['file']."\n".
 					'Line number: '.$error['line']."\n".
@@ -601,7 +601,7 @@ function smart__framework__err__handler__get__safe_img_url($img) {
 			$img = '';
 	} //end switch
 	//--
-	$prefix = (string) trim((string)dirname((string)(isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : '')));
+	$prefix = (string) trim((string)dirname((string)($_SERVER['SCRIPT_NAME'] ?? '')));
 	//--
 	if(((string)$prefix == '') || ((string)$prefix == '/') || ((string)$prefix == '\\') || ((string)$prefix == '.') || ((string)$prefix == '..')) {
 		$prefix = ''; // no prefix

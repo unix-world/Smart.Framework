@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210526
+ * @version		20210530
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -345,9 +345,11 @@ abstract class SmartAbstractAppMiddleware {
 	//======================================================================
 	final public static function ServiceStatus($the_midmark) {
 		//--
+		$show_versions = 'no';
 		if(SmartFrameworkRegistry::isAdminArea() === true) {
 			if(SmartFrameworkRegistry::isTaskArea() === true) {
 				$txt_area = 'Task';
+				$show_versions = 'yes'; // trusted by custom IP !
 			} else {
 				$txt_area = 'Admin';
 			} //end if else
@@ -358,10 +360,10 @@ abstract class SmartAbstractAppMiddleware {
 		if(defined('SMART_SOFTWARE_DISABLE_STATUS_POWERED') AND (SMART_SOFTWARE_DISABLE_STATUS_POWERED === true)) {
 			$html_status_powered_info = '';
 		} else {
-			$html_status_powered_info = (string) SmartComponents::app_powered_info('no');
+			$html_status_powered_info = (string) SmartComponents::app_powered_info((string)$show_versions);
 		} //end if else
 		//--
-		return (string) SmartComponents::http_status_message('OK :: '.Smart::escape_html($txt_area).' / Service Available', '<script>setTimeout(function(){ self.location = self.location; }, 60000);</script><img height="32" src="lib/framework/img/loading-bars.svg"><div><h2 style="display:inline;">'.date('Y-m-d H:i:s O').' // Smart.Framework :: '.Smart::escape_html($the_midmark).'</h2></div><br>'.$html_status_powered_info.'<br>');
+		return (string) SmartComponents::http_status_message('Smart.Framework :: '.Smart::escape_html($the_midmark), 'Service Available', '<script>setTimeout(function(){ self.location = self.location; }, 60000);</script><img height="32" src="lib/framework/img/loading-bars.svg"><div><h2 style="display:inline;">'.date('Y-m-d H:i:s O').' // '.Smart::escape_html((string)$txt_area).' Area</h2></div><br>'.$html_status_powered_info.'<br>');
 		//--
 	} //END FUNCTION
 	//======================================================================

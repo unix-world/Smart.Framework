@@ -14,7 +14,7 @@ if(!defined('APPCODEPACK_APP_ID')) { // this must be defined in the first line o
 //-----------------------------------------------------
 
 //=====
-// AppCodePack Upgrade Script, v.20210527
+// AppCodePack Upgrade Script, v.20210530
 //=====
 
 //--
@@ -53,7 +53,7 @@ AppCodePackUpgrade::RunCmd('date'); // throws if unsuccessful
 final class AppCodePackUpgrade {
 
 	// ::
-	// v.20210527
+	// v.20210528
 
 
 	public static function GetWebsiteInstanceId() {

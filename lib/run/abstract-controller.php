@@ -123,7 +123,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210526
+ * @version 	v.20210530
  * @package 	development:Application
  *
  */
@@ -285,8 +285,8 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		$this->modulearea 		= (string) $param_area; 															// index | admin
 		$this->modulepath 		= (string) $y_module_path; 															// modules/mod-something/
 		$this->modulename 		= (string) Smart::base_name($y_module_path); 										// mod-something
-		$this->module 			= (string) (isset($ctrl_arr[0]) ? $ctrl_arr[0] : ''); 								// something (module name part of the controller)
-		$this->action 			= (string) (isset($ctrl_arr[1]) ? $ctrl_arr[1] : ''); 								// someaction (controller name part of the controller)
+		$this->module 			= (string) ($ctrl_arr[0] ?? ''); 													// something (module name part of the controller)
+		$this->action 			= (string) ($ctrl_arr[1] ?? ''); 													// someaction (controller name part of the controller)
 		$this->controller 		= (string) $y_controller; 															// something.someaction (the controller)
 		$this->urlproto 		= (string) SmartUtils::get_server_current_protocol(); 								// http:// | https://
 		$this->urlbasedomain 	= (string) SmartUtils::get_server_current_basedomain_name();						// 127.0.0.1|localhost|dom.ext
@@ -1216,8 +1216,8 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		} //end if
 		//--
 		if(is_array($msg)) {
-			$message = (string) (isset($msg[0]) ? $msg[0] : '');
-			$htmlmsg = (string) (isset($msg[1]) ? $msg[1] : '');
+			$message = (string) ($msg[0] ?? '');
+			$htmlmsg = (string) ($msg[1] ?? '');
 		} else {
 			$message = (string) $msg;
 			$htmlmsg = '';
@@ -1742,7 +1742,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
  *
  * @access 		private
  * @internal
- * @version		v.20210428
+ * @version		v.20210526
  *
  */
 function autoload__SmartFrameworkModClasses($classname) {

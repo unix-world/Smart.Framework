@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartCipherCrypto, SmartFrameworkRegistry
- * @version 	v.20210506
+ * @version 	v.20210528
  * @package 	@Core:Authentication
  *
  */
@@ -60,8 +60,84 @@ final class SmartAuth {
 
 	// ::
 
+	public const REGEX_VALID_USER_NAME = '/^[a-z0-9\.]+$/';
+
 	private static $AuthCompleted 	= false;	// prevent re-authentication, ... the results may be unpredictable !!
 	private static $AuthData 		= []; 		// register Auth Data
+
+
+	//================================================================
+	/**
+	 * Validate the Auth username
+	 *
+	 * @return 	BOOLEAN		:: TRUE if the username is valid or false if not
+	 */
+	public static function validate_auth_username(?string $auth_user_name, bool $check_reasonable=false) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+		//--
+		$auth_user_name = (string) $auth_user_name;
+		//--
+		if(
+			((string)trim((string)$auth_user_name) == '') OR // must not be empty
+			((int)strlen((string)$auth_user_name) < 3) OR // min length is 3 characters
+			((int)strlen((string)$auth_user_name) > 25) OR // max length is 25 characters
+			(!preg_match((string)self::REGEX_VALID_USER_NAME, (string)$auth_user_name)) OR // can contain only a-z 0-9 .
+			((string)substr((string)$auth_user_name, 0, 1) == '.') OR // cannot start with a . (dot)
+			((string)substr((string)$auth_user_name, -1, 1) == '.') OR // cannot end with a . (dot)
+			((int)substr_count((string)$auth_user_name, '.') > (int)(floor((int)strlen((string)$auth_user_name) / 3))) // cannot contain more dots (.) than 33% from all characters
+		) {
+			return false;
+		} //end if
+		//--
+		if($check_reasonable !== false) {
+			if((int)strlen((string)$auth_user_name) < 5) { // check for a reasonable length
+				return false;
+			} //end if
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Validate the Auth password
+	 *
+	 * @return 	BOOLEAN		:: TRUE if the password is valid or false if not
+	 */
+	public static function validate_auth_password(?string $auth_user_pass, bool $check_complexity=false) { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+		//--
+		$check_pass = (string) SmartUnicode::deaccent_str((string)$auth_user_pass);
+		$check_pass = (string) Smart::normalize_spaces((string)$auth_user_pass);
+		//--
+		if(
+			((string)trim((string)$auth_user_pass) == '') OR // cannot be empty
+			((int)SmartUnicode::str_len((string)$auth_user_pass) < 7) OR ((int)strlen((string)trim((string)$check_pass)) < 7) OR // min length is 7, checked twice against unicode or non-unicode version
+			((int)SmartUnicode::str_len((string)$auth_user_pass) > 30) OR ((int)strlen((string)$check_pass) > 30) OR // don't trim the max check
+			((string)substr((string)$check_pass, 0, 1) == ' ') OR // cannot start with a space (after space normalizations)
+			((string)substr((string)$check_pass, -1, 1) == ' ') OR // cannot end with a space (after space normalizations)
+			((int)substr_count((string)$check_pass, ' ') > (int)(floor((int)SmartUnicode::str_len((string)$auth_user_pass) / 3))) // cannot contain more dots than 33% from all characters
+		) {
+			return false;
+		} //end if
+		//--
+		if($check_complexity !== false) {
+			if(
+				((int)SmartUnicode::str_len((string)$auth_user_pass) < 8) OR ((int)strlen((string)trim((string)$check_pass)) < 8) OR // min length is 8 for complex passwords, checked twice against unicode or non-unicode version
+				(!preg_match('/[A-Z]/', (string)$check_pass)) OR // must have at least one caps letter
+				(!preg_match('/[a-z]/', (string)$check_pass)) OR // must have at least one small letter
+				(!preg_match('/[0-9]/', (string)$check_pass)) OR // must have at least one digit
+				(!preg_match('/[^A-Za-z0-9]/', (string)$check_pass)) // must have at least one special character
+			) {
+				return false;
+			} //end if
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//================================================================
 
 
 	//================================================================
@@ -76,9 +152,9 @@ final class SmartAuth {
 	 * @param 	STRING 			$y_user_fullname 		:: *OPTIONAL* The user Full Name (First Name + Last Name)
 	 * @param 	ARRAY/STRING 	$y_user_privileges_list :: *OPTIONAL* The user Privileges List as string '<priv1><priv2>,...' or array ['priv1','priv2'] that list all the current user privileges
 	 * @param 	STRING 			$y_user_quota 			:: *OPTIONAL* The user (storage) Quota
-	 * @param 	ARRAY 			$y_user_metadata 		:: *OPTIONAL* The user metainfo, associative array key => value
+	 * @param 	ARRAY 			$y_user_metadata 		:: *OPTIONAL* The user metainfo, associative array key => value ; Ex: [ 'auth-safe' => 101 ]
 	 * @param 	STRING 			$y_realm 				:: *OPTIONAL* The user Authentication Realm(s)
-	 * @param 	ENUM 			$y_method 				:: *OPTIONAL* The authentication method used: HTTP-BASIC / HTTP-DIGEST / OTHER
+	 * @param 	ENUM 			$y_method 				:: *OPTIONAL* The authentication method used, as description only: HTTP-BASIC / OTHER / ...
 	 * @param 	STRING 			$y_pass					:: *OPTIONAL* The user login password (will be stored in memory as encrypted to avoid exposure)
 	 * @param 	STRING 			$y_keys 				:: *OPTIONAL* The encrypted user privacy-keys (will be stored in memory as encrypted to avoid exposure)
 	 *
@@ -106,18 +182,6 @@ final class SmartAuth {
 		} //end if else
 		//--
 		$y_user_quota = Smart::format_number_int($y_user_quota); // can be also negative
-		//--
-		switch((string)strtoupper((string)$y_method)) {
-			case 'HTTP-BASIC':
-				$y_method = 'HTTP-BASIC';
-				break;
-			case 'HTTP-DIGEST':
-				$y_method = 'HTTP-DIGEST';
-				break;
-			case 'OTHER':
-			default:
-				$y_method = 'OTHER';
-		} //end switch
 		//--
 		$the_key = '#'.Smart::random_number(10000,99999).'#';
 		//--

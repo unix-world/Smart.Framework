@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Sockets ; classes: Smart, SmartComponents
- * @version 	v.20210527
+ * @version 	v.20210528
  * @package 	Plugins:Database:Redis
  *
  */
@@ -131,12 +131,12 @@ final class SmartRedisDb {
 			//-- use values from configs
 			$redis_cfg 				= (array)  Smart::get_from_config('redis', 'array');
 			//--
-			$host 					= (string) (isset($redis_cfg['server-host']) ? $redis_cfg['server-host'] : null);
-			$port 					= (string) (isset($redis_cfg['server-port']) ? $redis_cfg['server-port'] : null);
-			$db   					= (string) (isset($redis_cfg['dbnum'])       ? $redis_cfg['dbnum']       : null);
-			$password 				= (string) (isset($redis_cfg['password'])    ? $redis_cfg['password']    : null);
-			$timeout 				= (int)    (isset($redis_cfg['timeout'])     ? $redis_cfg['timeout']     : null);
-			$y_debug_exch_slowtime 	= (float)  (isset($redis_cfg['slowtime'])    ? $redis_cfg['slowtime']    : null);
+			$host 					= (string) ($redis_cfg['server-host'] ?? null);
+			$port 					= (string) ($redis_cfg['server-port'] ?? null);
+			$db   					= (string) ($redis_cfg['dbnum']       ?? null);
+			$password 				= (string) ($redis_cfg['password']    ?? null);
+			$timeout 				= (int)    ($redis_cfg['timeout']     ?? null);
+			$y_debug_exch_slowtime 	= (float)  ($redis_cfg['slowtime']    ?? null);
 			//--
 		} //end if
 		//--

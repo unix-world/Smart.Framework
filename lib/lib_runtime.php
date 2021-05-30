@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20210526
+ * @version		v.20210528
  * @package 	Application
  *
  */
@@ -77,6 +77,7 @@ final class SmartFrameworkRuntime {
 			case 302:
 				$status_code_msg = 'Found (Temporary Redirect)';
 				break;
+			//--
 			case 304:
 				$status_code_msg = 'Not Modified';
 				break;
@@ -96,6 +97,7 @@ final class SmartFrameworkRuntime {
 			case 429:
 				$status_code_msg = 'Too Many Requests';
 				break;
+			//--
 			case 500:
 				$status_code_msg = 'Internal Server Error';
 				break;
@@ -120,7 +122,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise202Status($y_msg, $y_htmlmsg='') {
+	public static function Raise202Status(?string $y_msg, ?string $y_title='', ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -128,14 +130,14 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 202 ...');
 		} //end if else
-		die(SmartComponents::http_status_message((string)$y_msg, (string)$y_htmlmsg));
+		die(SmartComponents::http_status_message((string)($y_title ?? '202 '.self::GetStatusMessageByStatusCode(202)), (string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
 
 
 	//======================================================================
-	public static function Raise203Status($y_msg, $y_htmlmsg='') {
+	public static function Raise203Status(?string $y_msg, ?string $y_title='', ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -143,14 +145,14 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 203 ...');
 		} //end if else
-		die(SmartComponents::http_status_message((string)$y_msg, (string)$y_htmlmsg));
+		die(SmartComponents::http_status_message((string)($y_title ?? '203 '.self::GetStatusMessageByStatusCode(203)), (string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
 
 
 	//======================================================================
-	public static function Raise208Status($y_msg, $y_htmlmsg='') {
+	public static function Raise208Status(?string $y_msg, ?string $y_title='', ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -158,29 +160,26 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 208 ...');
 		} //end if else
-		die(SmartComponents::http_status_message((string)$y_msg, (string)$y_htmlmsg));
+		die(SmartComponents::http_status_message((string)($y_title ?? '208 '.self::GetStatusMessageByStatusCode(208)), (string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
 
 
 	//======================================================================
-	public static function Raise3xxRedirect($y_code, $y_location) {
+	public static function Raise3xxRedirect(int $y_code, string $y_location) {
 		//--
 		if((string)$y_location == '') {
 			Smart::log_warning(__METHOD__.' # Empty 3xx Location ...');
 			return;
 		} //end if
 		//--
-		$y_msg = '';
 		switch((int)$y_code) {
 			case 302:
 				$y_code = 302;
-				$y_msg = 'Found';
 				break;
 			case 301:
 				$y_code = 301;
-				$y_msg = 'Moved Permanently';
 				break;
 			default:
 				Smart::log_warning(__METHOD__.' # Invalid ('.$y_code.') as 3xx status ...');
@@ -189,19 +188,19 @@ final class SmartFrameworkRuntime {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
-			http_response_code(301); // permanent redirect
+			http_response_code((int)$y_code); // redirect
 			self::outputHttpSafeHeader('Location: '.$y_location); // force redirect
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 3xx ('.$y_code.') ...');
 		} //end if else
-		die(SmartComponents::http_status_message((string)$y_code.' '.$y_msg, (string)Smart::escape_html((string)$y_location)));
+		die(SmartComponents::http_status_message((string)$y_code.' '.self::GetStatusMessageByStatusCode((int)$y_code), (string)$y_location));
 		//--
 	} //END FUNCTION
 	//======================================================================
 
 
 	//======================================================================
-	public static function Raise400Error($y_msg, $y_htmlmsg='') {
+	public static function Raise400Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -216,7 +215,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise401Prompt($y_msg, $y_htmlmsg, $y_realm) {
+	public static function Raise401Prompt(?string $y_msg, ?string $y_htmlmsg, ?string $y_realm) {
 		//--
 		$y_realm = (string) trim((string)$y_realm);
 		$y_realm = (string) str_replace(['"', "'", '`'], ' ', (string)$y_realm);
@@ -244,7 +243,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise401Error($y_msg, $y_htmlmsg='') {
+	public static function Raise401Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -259,7 +258,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise403Error($y_msg, $y_htmlmsg='') {
+	public static function Raise403Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -274,7 +273,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise404Error($y_msg, $y_htmlmsg='') {
+	public static function Raise404Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -289,7 +288,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise429Error($y_msg, $y_htmlmsg='') {
+	public static function Raise429Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -304,7 +303,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise500Error($y_msg, $y_htmlmsg='') {
+	public static function Raise500Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -319,7 +318,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise502Error($y_msg, $y_htmlmsg='') {
+	public static function Raise502Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -334,7 +333,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise503Error($y_msg, $y_htmlmsg='') {
+	public static function Raise503Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -349,7 +348,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise504Error($y_msg, $y_htmlmsg='') {
+	public static function Raise504Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersNoCache();
@@ -365,12 +364,12 @@ final class SmartFrameworkRuntime {
 
 	//======================================================================
 	// Include with Require a PHP Script (script must end with .php, be a safe relative path and cannot be includded more than once) ; $area must be a description in case of error
-	public static function requirePhpScript($script, $area) {
+	public static function requirePhpScript(string $script, ?string $area) {
 		//--
 		global $configs; // req. by transl custom adapters
 		//--
 		$script = (string) trim((string)$script);
-		$area = (string) $area;
+		$area = (string) trim((string)$area);
 		//--
 		$err = '';
 		//--
@@ -923,7 +922,7 @@ final class SmartFrameworkRuntime {
 				$semantic_url = (string) '?'.substr((string)$fix_pathinfo, 0, (int)$sem_path_pos);
 			} //end if
 			SmartFrameworkRegistry::setRequestPath(
-				(string) (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '')
+				(string) ($_SERVER['PATH_INFO'] ?? '')
 			) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Failed to register !path-info! variable', E_USER_WARNING);
 		} else {
 			$semantic_url = (string) (isset($_SERVER['REQUEST_URI']) ? SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['REQUEST_URI']) : '');
@@ -940,9 +939,9 @@ final class SmartFrameworkRuntime {
 
 		//--
 		$get_arr = (array) explode('?/', $semantic_url, 2); // separe 1st from 2nd by ?/ if set
-		$location_str = (string) trim((string)(isset($get_arr[1]) ? $get_arr[1] : ''));
+		$location_str = (string) trim((string)($get_arr[1] ?? ''));
 		$get_arr = (array) explode('&', $location_str, 2); // separe 1st from 2nd by & if set
-		$location_str = (string) trim((string)(isset($get_arr[0]) ? $get_arr[0] : ''));
+		$location_str = (string) trim((string)($get_arr[0] ?? ''));
 		$get_arr = array(); // cleanup
 		//--
 
@@ -1026,6 +1025,31 @@ final class SmartFrameworkRuntime {
 		self::$RequestProcessed = true; // this will lock the Request processing
 		//--
 		SmartFrameworkRegistry::lockRequestRegistry(); // this will lock the request registry
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	// Avoid run this function before Smart.Framework was loaded, it depends on it
+	// THIS FUNCTION MUST RUN AFTER AUTHENTICATION COMPLETED TO BE ABLE TO CHECK ALSO THE LOGIN ID ; IF SINGLE USER MODE IS ENABLED WILL CHECK IF CAN BYPASS IT OR IF NOT WILL STOP HERE !
+	public static function SingleUser_Mode_AuthBreakPoint() {
+		//--
+		if( // single user login hook by user account {{{SYNC-SINGLE-USER-LOGIN-HOOK}}}
+			defined('SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE') AND
+			defined('SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE') AND
+			defined('SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID')
+		) {
+			if((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID != '') {
+				if((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID !== (string)SmartAuth::get_login_id()) {
+					self::Raise503Error(
+						(string) SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE,
+						(string) SmartComponents::operation_ok('Single User Lock File: '.Smart::escape_html((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE), '80%').SmartComponents::operation_notice((string)Smart::nl_2_br((string)Smart::escape_html((string)SmartFileSystem::read((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE))), '80%')
+					);
+					die(__CLASS__.':SingleUserAccountIdHook');
+				} //end if
+			} //end if
+		} //end if
 		//--
 	} //END FUNCTION
 	//======================================================================

@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //-----------------------------------------------------
 
 //======================================================
-// Smart-Framework - App Bootstrap :: r.20210526
+// Smart-Framework - App Bootstrap :: r.20210530
 // DEPENDS: SmartFramework, SmartFrameworkRuntime
 //======================================================
 // This file can be customized per App ...
@@ -155,7 +155,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 	// 1st param: 'www' will be used for the default language ; must not contain dots
 	// 2nd param: if TRUE will redirect the 'en' subdomain (because matches the default language as set in SMART_FRAMEWORK_DEFAULT_LANG) to the subdomain to 'www' (1st parameter)
 	// 3rd param: if TRUE will redirect all other subdomains (except 'www' and the 'en' subdomains), to 'www' (1st parameter)
-	public static function AppSetLanguageBySubdomain(string $default_subdomain='www', bool $redirect_default_language_to_default_subdomain=true, bool $redirect_other_subdomains=false) { // r.20210401
+	public static function AppSetLanguageBySubdomain(string $default_subdomain='www', bool $redirect_default_language_to_default_subdomain=true, bool $redirect_other_subdomains=false) {
 		//--
 		if(self::$isSetLanguageBySubdomain !== false) {
 			return; // avoid run after it was used by runtime

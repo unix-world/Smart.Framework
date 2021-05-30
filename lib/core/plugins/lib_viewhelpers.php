@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210502
+ * @version 	v.20210529
  * @package 	Plugins:ViewComponents
  *
  */
@@ -2241,13 +2241,14 @@ final class SmartViewHtmlHelpers {
 	 * - if OK: and redirect URL have been provided, the replace div is not handled
 	 * - if ERROR: no replace div or redirect is handled
 	 *
-	 * @param 	$y_status 			OK / ERROR
-	 * @param 	$y_title 			Dialog Title
-	 * @param 	$y_message 			Dialog Message (Optional in the case of Success)
-	 * @param 	$y_redirect_url 	**OPTIONAL** URL to redirect on either Success or Error
-	 * @param 	$y_replace_div 		**OPTIONAL** The ID of the DIV to Replace on Success
-	 * @param 	$y_replace_html 	**OPTIONAL** the HTML Code to replace in DIV on Success
-	 * @param 	$y_js_evcode 		**OPTIONAL** the JS EvCode to be executed on either Success or Error (before redirect or Div Replace)
+	 * @param 	$y_status 					OK / ERROR
+	 * @param 	$y_title 					Dialog Title
+	 * @param 	$y_message 					Dialog Message (Optional in the case of Success)
+	 * @param 	$y_redirect_url 			**OPTIONAL** URL to redirect on either Success or Error
+	 * @param 	$y_replace_div 				**OPTIONAL** The ID of the DIV to Replace on Success
+	 * @param 	$y_replace_html 			**OPTIONAL** the HTML Code to replace in DIV on Success
+	 * @param 	$y_js_evcode 				**OPTIONAL** the JS EvCode to be executed on either Success or Error (before redirect or Div Replace)
+	 * @param 	$y_hide_form_on_success 	**OPTIONAL** if set to TRUE will set the flag to Javascript to hide form on success
 	 *
 	 * @return STRING				[JSON data string]
 	 *
@@ -2263,10 +2264,6 @@ final class SmartViewHtmlHelpers {
 			$y_status = 'ERROR';
 			$button_text = $translator_core_messages->text('cancel');
 		} //end if else
-		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			$y_redirect_url = ''; // avoid redirect if DEBUG IS ON to catch the debug messages ...
-		} //end if
 		//--
 		return (string) Smart::json_encode([
 			'completed'				=> 'DONE',

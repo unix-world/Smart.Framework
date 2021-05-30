@@ -25,17 +25,17 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20210526
+	// v.20210530
 
 	private $db;
 
 	public const FAIL_LOGIN_LIMITS = 10;
 
 
-	public function __construct() {
+	public function __construct() { // THIS SHOULD BE THE ONLY METHOD IN THIS CLASS THAT THROW EXCEPTIONS !!!
 		//--
 		if(!\defined('\\APP_AUTH_DB_SQLITE')) {
-			\Smart::raise_error('AUTH DB SQLITE is NOT Defined !');
+			throw new \Exception('AUTH DB SQLITE is NOT Defined !');
 			return;
 		} //end if
 		//--
@@ -46,11 +46,14 @@ final class SqAuthAdmins {
 			if($this->db instanceof \SmartSQliteDb) {
 				$this->db->close();
 			} //end if
-			\Smart::raise_error('AUTH DB SQLITE File does NOT Exists !');
+			throw new \Exception('AUTH DB SQLITE File does NOT Exists !');
 			return;
 		} //end if
 		//--
-		$this->initDBSchema(); // create default schema if not exists (and a default account)
+		$init_schema = $this->initDBSchema(); // mixed
+		if($init_schema !== true) { // create default schema if not exists (and a default account)
+			throw new \Exception('DB Init Schema Failed with Message: '.$init_schema);
+		} //end if
 		//--
 	} //END FUNCTION
 
@@ -69,11 +72,13 @@ final class SqAuthAdmins {
 	public function getLoginData($auth_user_name, $auth_user_hash_pass) {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
+			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
 			return array();
 		} //end if
 		//--
-		if((\strlen((string)$auth_user_name) < 3) OR (\strlen((string)$auth_user_name) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$auth_user_name))) { // SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
+		if(\SmartAuth::validate_auth_username(
+			(string) $auth_user_name
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
 			return array();
 		} //end if
 		if(\strlen((string)$auth_user_hash_pass) != 128) { // SHA512
@@ -136,7 +141,7 @@ final class SqAuthAdmins {
 		$ip = (string) \trim((string)$ip);
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
+			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
 			return false;
 		} //end if
 		//-- get by id
@@ -190,12 +195,14 @@ final class SqAuthAdmins {
 		$ua = (string) \trim((string)$ua);
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
+			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
 			return false;
 		} //end if
 		//--
 		$id = (string) \trim((string)$id);
-		if((\strlen((string)$id) < 3) OR (\strlen((string)$id) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$id))) { // SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
+		if(\SmartAuth::validate_auth_username(
+			(string) $id
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
 			$id = '';
 		} else {
 			$arr = (array) $this->getById($id);
@@ -242,7 +249,7 @@ final class SqAuthAdmins {
 	public function getById($id) {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
+			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
 			return array();
 		} //end if
 		//--
@@ -259,7 +266,7 @@ final class SqAuthAdmins {
 	public function countByFilter($id='') {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
+			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
 			return 0;
 		} //end if
 		//--
@@ -282,7 +289,7 @@ final class SqAuthAdmins {
 	public function getListByFilter($fields=array(), $limit=10, $ofs=0, $sortby='id', $sortdir='ASC', $id='') {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
+			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
 			return array();
 		} //end if
 		//--
@@ -345,7 +352,7 @@ final class SqAuthAdmins {
 	public function insertAccount($data) {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
+			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
 			return -100;
 		} //end if
 		//--
@@ -421,7 +428,7 @@ final class SqAuthAdmins {
 	public function updateStatus($id, $status) {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
+			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
 			return -100;
 		} //end if
 		//--
@@ -495,7 +502,7 @@ final class SqAuthAdmins {
 	public function updatePassword($id, $hash, $pass) {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
+			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
 			return -100;
 		} //end if
 		//--
@@ -567,7 +574,7 @@ final class SqAuthAdmins {
 	public function updateAccount($id, $data) {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
+			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
 			return -100;
 		} //end if
 		//--
@@ -657,14 +664,13 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	//@@@@@
+	//======= [ PRIVATES ]
 
 
 	private function initDBSchema() {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::raise_error('Invalid AUTH DB Connection !');
-			return 0;
+			return 'Invalid AUTH DB Connection !';
 		} //end if
 		//--
 		if($this->db->check_if_table_exists('admins') != 1) { // create auth DB if not exists
@@ -672,14 +678,18 @@ final class SqAuthAdmins {
 			if((\defined('\\APP_AUTH_ADMIN_USERNAME')) AND (\defined('\\APP_AUTH_ADMIN_PASSWORD'))) {
 				//--
 				$init_username = (string) \APP_AUTH_ADMIN_USERNAME;
-				if(((string)\trim((string)$init_username) == '') OR ((int)\strlen((string)$init_username) < 3) OR ((int)\strlen((string)$init_username) > 25) OR (!\preg_match('/^[a-z0-9\.]+$/', (string)$init_username))) { // SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
-					\SmartFrameworkRuntime::Raise202Status('INVALID USERNAME set as APP_AUTH_ADMIN_USERNAME', \SmartComponents::operation_warn('The username is too short, must be minimum 3 chars and max 25 chars. Can contain only [ a-z 0-9 . ] ... Manually REFRESH this page after by pressing F5 ...', '80%'));
-					return 0;
+				if(\SmartAuth::validate_auth_username(
+					(string) $init_username,
+					true // check for reasonable length, as 5 chars
+				) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+					return 'Initialize DB: Invalid AUTH UserName';
 				} //end if
 				$init_password = (string) \APP_AUTH_ADMIN_PASSWORD;
-				if(((string)\trim((string)$init_password) == '') OR ((int)\SmartUnicode::str_len((string)$init_password) < 7) OR ((int)\SmartUnicode::str_len((string)$init_password) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
-					\SmartFrameworkRuntime::Raise203Status('INVALID PASSWORD set as APP_AUTH_ADMIN_PASSWORD', \SmartComponents::operation_warn('The password is too short, must be min 7 chars and max 30 chars. Manually REFRESH this page after by pressing F5 ...', '80%'));
-					return 0;
+				if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+					(string) $init_password,
+					(bool) ((\defined('\\APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (\APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false) // check for complexity just on login ! ... for the rest do not check because if this constant changes ... cannot re-update everything !
+				) !== true) {
+					return 'Initialize DB: Invalid AUTH Password';
 				} //end if
 				$init_hash_pass = (string) \SmartHashCrypto::password((string)$init_password, (string)$init_username);
 				//--
@@ -692,13 +702,9 @@ final class SqAuthAdmins {
 				$this->db->write_data("INSERT INTO `admins` VALUES ('".$this->db->escape_str((string)$init_username)."', '".$this->db->escape_str((string)$init_hash_pass)."', 1, 0, 'admin@localhost', 'Mr.', 'Super', 'Admin', '', '', '', '', '', '', '', 0, 0, 0, '".$this->db->escape_str((string)$init_privileges)."', '<modify>', '', '', 0, ".(int)\time().")");
 				$this->db->write_data('COMMIT');
 				//--
-				\SmartFrameworkRuntime::Raise208Status('OK :: AUTH DB Initialized', \SmartComponents::operation_ok('Login Info: username={what is set into APP_AUTH_ADMIN_USERNAME} ; password={what is set into APP_AUTH_ADMIN_PASSWORD}.<br>Manually REFRESH this page after by pressing F5 ...', '80%'));
-				return 0;
-				//--
 			} else {
 				//--
-				\SmartFrameworkRuntime::Raise500Error('Cannot Initialize the AUTH DB !'."\n".'Please Set the APP_AUTH_ADMIN_USERNAME / APP_AUTH_ADMIN_PASSWORD constants in config and Manually REFRESH this page after by pressing F5 ...');
-				return 0;
+				return 'Initialize DB: AUTH UserName or Password not defined (constants) ...';
 				//--
 			} //end if
 			//--
@@ -725,7 +731,7 @@ final class SqAuthAdmins {
 			$this->db->write_data('COMMIT');
 		} //end if
 		//--
-		return 1;
+		return true;
 		//--
 	} //END FUNCTION
 

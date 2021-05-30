@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210428
+ * @version 	v.20210528
  * @package 	Plugins:Image
  *
  */
@@ -69,9 +69,9 @@ final class SmartDetectImages {
 		} //end if
 		//--
 		$arr_info = (array) @getimagesizefromstring((string)$pict);
-		//$width 	= (int) (isset($arr_info[0]) ? $arr_info[0] : null); // not used here
-		//$height 	= (int) (isset($arr_info[1]) ? $arr_info[1] : null); // not used here
-		$imgtyp 	= (int) (isset($arr_info[2]) ? $arr_info[2] : null); // image type constant
+		//$width 	= (int) ($arr_info[0] ?? null); // not used here
+		//$height 	= (int) ($arr_info[1] ?? null); // not used here
+		$imgtyp 	= (int) ($arr_info[2] ?? null); // image type constant
 		if($imgtyp <= 0) {
 			return ''; // invalid type detected
 		} //end if
@@ -133,11 +133,11 @@ final class SmartDetectImages {
 				//-- try to get file extension by the content (strategy 1)
 				$temp_guess_ext_tmp = array();
 				preg_match('/^content\-disposition:(.*)$/mi', (string)$y_headers, $temp_guess_ext_tmp);
-				$temp_guess_extension = (string) trim((string)(isset($temp_guess_ext_tmp[1]) ? $temp_guess_ext_tmp[1] : ''));
+				$temp_guess_extension = (string) trim((string)($temp_guess_ext_tmp[1] ?? ''));
 				$temp_guess_extension = (array)  explode(' filename=', (string)$temp_guess_extension);
-				$temp_guess_extension = (string) trim((string)(isset($temp_guess_extension[1]) ? $temp_guess_extension[1] : ''));
+				$temp_guess_extension = (string) trim((string)($temp_guess_extension[1] ?? ''));
 				$temp_guess_extension = (array)  explode('"', (string)$temp_guess_extension);
-				$temp_guess_extension = (string) trim((string)(isset($temp_guess_extension[1]) ? $temp_guess_extension[1] : ''));
+				$temp_guess_extension = (string) trim((string)($temp_guess_extension[1] ?? ''));
 				$temp_guess_extension = (string) trim(strtolower(SmartFileSysUtils::get_file_extension_from_path((string)$temp_guess_extension))); // [OK]
 				$temp_guess_ext_tmp = array();
 				//-- test
@@ -155,11 +155,11 @@ final class SmartDetectImages {
 					//-- try to guess by the content type (strategy 2)
 					$temp_guess_ext_tmp = array();
 					preg_match('/^content\-type:(.*)$/mi', (string)$y_headers, $temp_guess_ext_tmp);
-					$temp_guess_extension = (string) trim((string)(isset($temp_guess_ext_tmp[1]) ? $temp_guess_ext_tmp[1] : ''));
+					$temp_guess_extension = (string) trim((string)($temp_guess_ext_tmp[1] ?? ''));
 					$temp_guess_extension = (array) explode('/', (string)$temp_guess_extension);
-					$temp_guess_extension = (string) trim((string)(isset($temp_guess_extension[1]) ? $temp_guess_extension[1] : ''));
+					$temp_guess_extension = (string) trim((string)($temp_guess_extension[1] ?? ''));
 					$temp_guess_extension = (array) explode(';', (string)$temp_guess_extension);
-					$temp_guess_extension = (string) trim((string)(isset($temp_guess_extension[0]) ? $temp_guess_extension[0] : ''));
+					$temp_guess_extension = (string) trim((string)($temp_guess_extension[0] ?? ''));
 					//--
 					switch((string)$temp_guess_extension) {
 						case 'svg':

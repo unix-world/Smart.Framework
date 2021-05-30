@@ -33,7 +33,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  *
  * @depends 	classes: SmartFrameworkSecurity
  *
- * @version 	v.20210506
+ * @version 	v.20210528
  * @package 	Application
  *
  */
@@ -764,8 +764,8 @@ final class SmartFrameworkRegistry {
 		$subcontext = '';
 		if(strpos((string)$context, '|') !== false) {
 			$arr 		= (array)  explode('|', (string)$context, 3); // separe 1st and 2nd from the rest
-			$context 	= (string) trim((string)(isset($arr[0]) ? $arr[0] : ''));
-			$subcontext = (string) trim((string)(isset($arr[1]) ? $arr[1] : ''));
+			$context 	= (string) trim((string)($arr[0] ?? ''));
+			$subcontext = (string) trim((string)($arr[1] ?? ''));
 			$arr = null;
 		} //end if
 		if((string)$context == '') {

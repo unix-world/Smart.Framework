@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20210527
+// [AppCodeUnpack / APP] v.20210530
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20210527
+	// v.20210530
 
-	private const APPCODEUNPACK_VERSION = 's.20210527.2359';
+	private const APPCODEUNPACK_VERSION = 's.20210530.2008';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -909,7 +909,10 @@ final class AppCodeUnpack {
 			} //end if
 		} //end if
 		//--
-		if(((string)trim((string)APP_AUTH_ADMIN_USERNAME) == '') OR ((int)strlen((string)APP_AUTH_ADMIN_USERNAME) < 3) OR ((int)strlen((string)APP_AUTH_ADMIN_USERNAME) > 25) OR (!preg_match('/^[a-z0-9\.]+$/', (string)APP_AUTH_ADMIN_USERNAME))) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
+		if(SmartAuth::validate_auth_username(
+			(string) APP_AUTH_ADMIN_USERNAME,
+			true // check for reasonable length, as 5 chars
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
 			self::raiseXXXError(403, 'Init Settings ERROR: Invalid UserName');
 			die('ERR:'.__METHOD__.':403#InitAuthUserError');
 		} //end if
@@ -918,7 +921,10 @@ final class AppCodeUnpack {
 			die('ERR:'.__METHOD__.': APP_AUTH_ADMIN_PLAIN_PASSWORD already defined');
 		} //end if
 		define('APP_AUTH_ADMIN_PLAIN_PASSWORD', (string)SmartUtils::crypto_blowfish_decrypt((string)APP_AUTH_ADMIN_PASSWORD, (string)APPCODEPACK_DEPLOY_SECRET));
-		if(((string)trim((string)APP_AUTH_ADMIN_PLAIN_PASSWORD) == '') OR ((int)SmartUnicode::str_len((string)APP_AUTH_ADMIN_PLAIN_PASSWORD) < 7) OR ((int)SmartUnicode::str_len((string)APP_AUTH_ADMIN_PLAIN_PASSWORD) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
+		if(SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+			(string) \APP_AUTH_ADMIN_PLAIN_PASSWORD,
+			true // check for complexity
+		) !== true) {
 			self::raiseXXXError(403, 'Init Settings ERROR: Invalid Password');
 			die('ERR:'.__METHOD__.':403#InitAuthPassError');
 		} //end if

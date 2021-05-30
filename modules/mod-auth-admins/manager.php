@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true); 		// if set to TRUE requires auth always
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210526
+	// v.20210530
 
 	public function Run() { // (OUTPUTS: HTML)
 
@@ -33,7 +33,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		//--
 		if(SmartAuth::get_login_realm() !== 'ADMINS-AREA') {
-			$this->PageViewSetCfg('error', 'This Area Requires the ADMINS-AREA Auth Realm ! ...');
+			$this->PageViewSetCfg('error', 'This Area Requires the `ADMINS-AREA` Auth Realm !'."\n".'The current Auth Realm is: `'.SmartAuth::get_login_realm().'` ...');
 			return 403;
 		} //end if
 		//--
@@ -167,8 +167,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					$message = 'You are not authorized to use this area !';
 				} elseif((string)trim((string)$frm['id']) == '') {
 					$message = 'INVALID ID (empty)';
-				} elseif(((string)trim((string)$frm['pass']) == '') OR ((int)SmartUnicode::str_len((string)$frm['pass']) < 7) OR ((int)SmartUnicode::str_len((string)$frm['pass']) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
-					$message = 'Invalid Password Length: must be between 7 and 30 characters';
+				} elseif(SmartAuth::validate_auth_password((string)$frm['pass'], (bool)((defined('APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false)) !== true) { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+					$message = 'Invalid Password: Too short or too long. Must match a minimal complexity level ...';
 				} elseif(((string)$frm['repass'] !== (string)$frm['pass']) OR ((string)sha1((string)$frm['repass']) !== (string)sha1((string)$frm['pass']))) {
 					$message = 'Invalid Password: Password and Retype of Password does not match';
 				} //end if else
@@ -491,14 +491,12 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$message = '';
 				if(SmartAuth::test_login_privilege('admin') !== true) { // PRIVILEGES
 					$message = 'You are not authorized to use this area !';
-				} elseif(((string)trim((string)$frm['id']) == '') OR ((int)strlen((string)$frm['id']) < 3) OR ((int)strlen((string)$frm['id']) > 25)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
-					$message = 'Invalid ID: must be between 3 and 25 characters';
-				} elseif(!preg_match('/^[a-z0-9\.]+$/', (string)$frm['id'])) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-USERNAME}}}
-					$message = 'Invalid ID: must use only this pattern: a-z 0-9 .';
-				} elseif(((string)trim((string)$frm['pass']) == '') OR ((int)SmartUnicode::str_len((string)$frm['pass']) < 7) OR ((int)SmartUnicode::str_len((string)$frm['pass']) > 30)) { // {{{SYNC-AUTH-ADMINS-CONDITION-VALIDATE-PASSWORD}}}
-					$message = 'Invalid Password Length: must be between 7 and 30 characters';
+				} elseif(SmartAuth::validate_auth_username((string)$frm['id']) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+					$message = 'Invalid Username ID: Too short or too long. Must use only this pattern: a-z 0-9 .';
+				} elseif(SmartAuth::validate_auth_password((string)$frm['pass'], (bool)((defined('APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false)) !== true) { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+					$message = 'Invalid Password: Too short or too long. Must match a minimal complexity level ...';
 				} elseif(((string)$frm['repass'] !== (string)$frm['pass']) OR ((string)sha1((string)$frm['repass']) !== (string)sha1((string)$frm['pass']))) {
-					$message = 'Invalid Password: Password and Retype of Password does not match';
+					$message = 'Invalid Password Retype: does not match the Password';
 				} elseif(((int)SmartUnicode::str_len((string)$frm['name_f']) < 1) OR ((int)SmartUnicode::str_len((string)$frm['name_f']) > 64)) {
 					$message = 'Invalid First Name Length: must be between 1 and 64 characters';
 				} elseif(((int)SmartUnicode::str_len((string)$frm['name_l']) < 1) OR ((int)SmartUnicode::str_len((string)$frm['name_l']) > 64)) {

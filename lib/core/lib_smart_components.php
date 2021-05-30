@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20210526
+ * @version 	v.20210528
  * @package 	Application:ViewComponents
  *
  */
@@ -99,7 +99,7 @@ final class SmartComponents {
 	 * @internal
 	 *
 	 */
-	public static function http_status_message(?string $y_title, ?string $y_html_message) {
+	public static function http_status_message(?string $y_title, ?string $y_message='', ?string $y_html_message='') {
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			'lib/core/templates/http-message-status.htm',
@@ -108,7 +108,8 @@ final class SmartComponents {
 				'BASE-URL' 			=> SmartUtils::get_server_current_url(),
 				'TITLE' 			=> (string) $y_title,
 				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp</b><br>'.Smart::escape_html(SmartUtils::get_server_current_protocol().SmartUtils::get_server_current_domain_name().':'.SmartUtils::get_server_current_port().SmartUtils::get_server_current_path()),
-				'MESSAGE-HTML' 		=> (string) $y_html_message
+				'MESSAGE-HTML' 		=> ((string)trim((string)$y_message) != '') ? self::operation_important(Smart::nl_2_br(Smart::escape_html((string)$y_message)), '100%') : '',
+				'EXTMSG-HTML' 		=> (string) $y_html_message
 			],
 			'no'
 		);
@@ -125,7 +126,7 @@ final class SmartComponents {
 	 * @internal
 	 *
 	 */
-	public static function http_error_message(?string $y_title, ?string $y_message, ?string $y_html_message='') {
+	public static function http_error_message(?string $y_title, ?string $y_message='', ?string $y_html_message='') {
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			'lib/core/templates/http-message-error.htm',
@@ -427,7 +428,7 @@ final class SmartComponents {
 		$css_w_or_h = (string) trim((string)$css_w_or_h);
 		//--
 		$css_w_or_h = (array) explode(';', (string)$css_w_or_h);
-		$css_w_or_h = (string) trim((string)(isset($css_w_or_h[0]) ? $css_w_or_h[0] : ''));
+		$css_w_or_h = (string) trim((string)($css_w_or_h[0] ?? ''));
 		$matches = array();
 		$found = preg_match('/^([0-9]+)(%|[a-z]{1,2})?$/', (string)$css_w_or_h, $matches);
 		if($found === false) {
