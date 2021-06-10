@@ -48,11 +48,11 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN
- * @version 	v.20210520
+ * @version 	v.20210608
  * @package 	@Core:TemplatingEngine
  *
  */
-final class SmartMarkersTemplating { // syntax: r.20210412
+final class SmartMarkersTemplating { // syntax: r.20210604
 
 	// ::
 
@@ -112,7 +112,7 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 		$original_mtemplate = (string) $mtemplate;
 		//-- add TPL START/END to see where it starts load
 		$matches = array();
-		$pcre = preg_match_all('{\[@@@SUB\-TEMPLATE:([a-zA-Z0-9_\-\.\/\!\?\|%]+)@@@\]}', (string)$mtemplate, $matches, PREG_SET_ORDER, 0); // FIX: add an extra % to parse also SUB-TPL %vars% # {{{SYNC-TPL-EXPR-SUBTPL}}} :: + %
+		$pcre = preg_match_all('{\[@@@SUB\-TEMPLATE\:([a-zA-Z0-9_\-\.\/\!\?\|%]+)@@@\]}', (string)$mtemplate, $matches, PREG_SET_ORDER, 0); // FIX: add an extra % to parse also SUB-TPL %vars% # {{{SYNC-TPL-EXPR-SUBTPL}}} :: + %
 		if($pcre === false) {
 			return '<h1>{### ERROR: '.Smart::escape_html((string)SMART_FRAMEWORK_ERR_PCRE_SETTINGS).'] ###}</h1>';
 		} //end if
@@ -360,14 +360,30 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 		} //end if
 		$y_arr_vars = (array) array_change_key_case((array)$y_arr_vars, CASE_UPPER); // make all keys upper (only 1st level, not nested)
 		//--
-		$arr_sub_templates = array();
-		if(array_key_exists('@SUB-TEMPLATES@', $y_arr_vars) AND (is_array($y_arr_vars['@SUB-TEMPLATES@']))) { // if supplied then use it (preffered), never mix supplied with detection else results would be unpredictable ...
-			$arr_sub_templates = (array) $y_arr_vars['@SUB-TEMPLATES@'];
-		} else { // if not supplied, try to detect
-			$arr_sub_templates = (array) self::detect_subtemplates($mtemplate);
+		$arr_sub_templates = (array) self::detect_subtemplates($mtemplate);
+		if(array_key_exists('@SUB-TEMPLATES@', $y_arr_vars) AND (Smart::array_size($y_arr_vars['@SUB-TEMPLATES@']) > 0) AND (Smart::array_type_test($y_arr_vars['@SUB-TEMPLATES@']) == 2)) {
+			foreach($y_arr_vars['@SUB-TEMPLATES@'] as $key => $val) {
+				if((string)trim((string)$key) != '') {
+					if(Smart::is_nscalar($val)) {
+						if( // add only variable sub-tpls + rewrite the existing sub-tpls paths, no new keys should be added
+							(
+								((string)substr((string)$key, 0, 1) == '%') // {{{SYNC-TPLS-VARIABLE-SUB-TPL-CONDITION}}} // must not test here for ending % as the key might be as: %the-tpl%|html-no-subtpls
+								AND
+								(strpos((string)$mtemplate, '[@@@SUB-TEMPLATE:'.(string)$key.'@@@]') !== false)
+							)
+							OR
+							array_key_exists((string)$key, (array)$arr_sub_templates)
+						) {
+							$arr_sub_templates[(string)$key] = (string) $val;
+						} else {
+							Smart::log_notice('Invalid Marker-TPL @SUB-TEMPLATES@ Key `'.$key.'` for Template file: '.$y_file_path);
+						} //end if
+					} //end if
+				} //end if
+			} //end foreach
 		} //end if else
 		if(Smart::array_size($arr_sub_templates) > 0) {
-			$tpl_basepath = (string) SmartFileSysUtils::add_dir_last_slash(SmartFileSysUtils::get_dir_from_path($y_file_path));
+			$tpl_basepath = (string) SmartFileSysUtils::add_dir_last_slash((string)SmartFileSysUtils::get_dir_from_path((string)$y_file_path));
 			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
 					'title' => '[TPL-Render.LOAD-SUBTEMPLATES] :: Marker-TPL / File-Render: '.$y_file_path.' ; Sub-Templates Load Base Path: '.$tpl_basepath,
@@ -518,6 +534,11 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 				$arr_fix_safe['@@@]'] = '@@@］';
 				$arr_fix_dbg[] = 'Marker Sub-Templates';
 			} //end if
+			if(self::have_placeholder((string)$val)) {
+				$arr_fix_safe['[:::'] = '［:::';
+				$arr_fix_safe[':::]'] = ':::］';
+				$arr_fix_dbg[] = 'Marker Placeholders';
+			} //end if
 			//--
 			if(Smart::array_size($arr_fix_safe) > 0) {
 				if(SmartFrameworkRegistry::ifDebug()) {
@@ -568,6 +589,8 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 					'',
 					'',
 					'',
+					'',
+					'',
 				];
 			} else {
 				$arr_repls = [
@@ -576,7 +599,9 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 					' class="sf__tpl__highlight__syntax" title="TPL Syntax: Start"',
 					' class="sf__tpl__highlight__syntax" title="TPL Syntax: End"',
 					' class="sf__tpl__highlight__subtpl" title="TPL SubTemplate: Start"',
-					' class="sf__tpl__highlight__subtpl" title="TPL SubTemplate: End"'
+					' class="sf__tpl__highlight__subtpl" title="TPL SubTemplate: End"',
+					' class="sf__tpl__highlight__subtpl" title="TPL Placeholder: Start"',
+					' class="sf__tpl__highlight__subtpl" title="TPL Placeholder: End"',
 				];
 			} //end if else
 			//--
@@ -586,7 +611,9 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 				'[%%%',
 				'%%%]',
 				'[@@@',
-				'@@@]'
+				'@@@]',
+				'[:::',
+				':::]',
 			];
 			//--
 			$arr_fix_back_src = [
@@ -595,7 +622,9 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 				'［%%%',
 				'%%%］',
 				'［@@@',
-				'@@@］'
+				'@@@］',
+				'［:::',
+				':::］',
 			];
 			//--
 			if($titlecomments === false) {
@@ -605,7 +634,9 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 					'&lbrack;%%%',
 					'%%%&rbrack;',
 					'&lbrack;@@@',
-					'@@@&rbrack;'
+					'@@@&rbrack;',
+					'&lbrack;:::',
+					':::&rbrack;',
 				];
 			} else {
 				$arr_fix_dst = [
@@ -614,7 +645,9 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 					'<span'.$arr_repls[2].'>&lbrack;%%%</span>',
 					'<span'.$arr_repls[3].'>%%%&rbrack;</span>',
 					'<span'.$arr_repls[4].'>&lbrack;@@@</span>',
-					'<span'.$arr_repls[5].'>@@@&rbrack;</span>'
+					'<span'.$arr_repls[5].'>@@@&rbrack;</span>',
+					'<span'.$arr_repls[6].'>&lbrack;:::</span>',
+					'<span'.$arr_repls[7].'>:::&rbrack;</span>',
 				];
 			} //end if else
 			//--
@@ -634,11 +667,11 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 				$mtemplate = (string) str_replace(
 					[
 						'⁅***¦',
-						'¦***⁆'
+						'¦***⁆',
 					],
 					[
 						'<span'.$arr_repls[4].'>&lbrack;@@@</span>',
-						'<span'.$arr_repls[5].'>@@@&rbrack;</span>'
+						'<span'.$arr_repls[5].'>@@@&rbrack;</span>',
 					],
 					(string) $mtemplate
 				);
@@ -788,7 +821,7 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 	 */
 	private static function analize_extract_subtpls(string $mtemplate) {
 		//--
-		return (array) self::analize_parts_extract('{\[@@@SUB\-TEMPLATE:([a-zA-Z0-9_\-\.\/\!\?\|%]+)@@@\]}', (string)$mtemplate, false); // FIX: add an extra % to parse also SUB-TPL %vars% # {{{SYNC-TPL-EXPR-SUBTPL}}} :: + % ; preserve case
+		return (array) self::analize_parts_extract('{\[@@@SUB\-TEMPLATE\:([a-zA-Z0-9_\-\.\/\!\?\|%]+)@@@\]}', (string)$mtemplate, false); // FIX: add an extra % to parse also SUB-TPL %vars% # {{{SYNC-TPL-EXPR-SUBTPL}}} :: + % ; preserve case
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -819,7 +852,7 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 		//-- inits
 		$html = '<!-- START: Marker-TPL Debug Analysis @ '.Smart::escape_html($hash).' # -->'."\n";
 		$html .= '<div align="left">';
-		$html .= '<h2 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Marker-TPL Debug Analysis</h2>';
+		$html .= '<h2 style="display:inline;background:#777788;color:#FFFFFF;padding:3px;">Marker-TPL Debug Analysis</h2>';
 		if((string)$y_info != '') {
 			$html .= '<br><h3 style="display:inline;">'.Smart::escape_html($y_info).'</h3>';
 		} //end if
@@ -912,7 +945,7 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 		//-- end main table
 		$html .= '</tr></table><hr>';
 		//-- ending
-		$html .= '</div><h2 style="display:inline;background:#003366;color:#FFFFFF;padding:3px;">Marker-TPL Source - with ALL:[Level 1..n] Sub-Templates Includded (if any)</h2><div id="tpl-display-for-highlight"><pre id="'.'__marker__template__analyzer-tpl_'.Smart::escape_html($hash).'"><code class="markerstpl">'.Smart::escape_html($mtemplate).'</code></pre></div><hr>'."\n".'<!-- #END: Marker-TPL Analysis @ '.Smart::escape_html($hash).' -->';
+		$html .= '</div><h2 style="display:inline;background:#777788;color:#FFFFFF;padding:3px;">Marker-TPL Source - with ALL:[Level 1..n] Sub-Templates Includded (if any)</h2><div id="tpl-display-for-highlight"><pre id="'.'__marker__template__analyzer-tpl_'.Smart::escape_html($hash).'"><code class="debug-tpl" data-syntax="markertpl">'.Smart::escape_html($mtemplate).'</code></pre></div><hr>'."\n".'<!-- #END: Marker-TPL Analysis @ '.Smart::escape_html($hash).' -->';
 		//-- return
 		return (string) self::prepare_nosyntax_html_template($html, true, true);
 		//--
@@ -1008,6 +1041,20 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 
 
 	//================================================================
+	// test if the template have at least one placeholder
+	private static function have_placeholder(string $mtemplate) {
+		//--
+		if(strpos((string)$mtemplate, '[:::') !== false) {
+			return true;
+		} else {
+			return false;
+		} //end if else
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	// do replacements (and escapings) for one marker ; a marker can contain: A-Z 0-9 _ - (and the dot . which is reserved as array level separator)
 	/* {{{SYNC-MARKER-ALL-TEST-SEQUENCES}}}
 	<!-- INFO: The VALID Escaping and Transformers for a Marker are all below ; If other escaping sequences are used the Marker will not be detected and replaced ... -->
@@ -1024,9 +1071,13 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 	[###MARKER|slug###]
 	[###MARKER|htmid###]
 	[###MARKER|jsvar###]
+	[###MARKER|js###]
+	[###MARKER|js|js###]
+	[###MARKER|js|html###]
+	[###MARKER|html|js###]
 	[###MARKER|json###]
 		[###MARKER|json|url###]
-		[###MARKER|json|js###] 			** not necessary unless special purpose **
+		[###MARKER|json|js###]
 		[###MARKER|json|html###]
 		[###MARKER|json|url|js###]
 		[###MARKER|json|url|html###]
@@ -1232,6 +1283,12 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 						$val = (string) str_replace(['<', '>'], ['‹', '›'], (string)$val); // {{{SYNC-SMARTLIST-BRACKET-REPLACEMENTS}}}
 					} elseif((string)$escexpr == '|syntaxhtml') {
 						$val = (string) self::prepare_nosyntax_html_template((string)$val); // Prepare a HTML template for display in no-conflict mode: no syntax or markers will be parsed
+					//--
+					} elseif((string)$escexpr == '|hex') {
+						$val = (string) bin2hex((string)$val); // Apply Bin2Hex Encode
+					//--
+					} elseif((string)$escexpr == '|b64') { // !! this should not be exported to JS, it a bit heavyweight for a light templating engine like js ..., and if needed it can build the syntax using concatenation with a b64 encoded string that can be done in js, using smart crypt utils / b64
+						$val = (string) base64_encode((string)$val); // Apply Base64 Encode
 					//--
 					} else {
 						Smart::log_warning('Invalid or Undefined Marker-TPL Escaping: '.$escexpr.' - detected in Replacement Key: '.$crr_match[0].' -> [Val: '.$val.']');
@@ -1974,9 +2031,9 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 			} //end if
 			//--
 			if(self::$MkTplAnalyzeLdDbg === true) {
-				$regex = '{\[@@@SUB\-TEMPLATE:([a-zA-Z0-9_\-\.\/\!\?\|%]+)@@@\]}'; // this is a special case for debug where % must be includded
+				$regex = '{\[@@@SUB\-TEMPLATE\:([a-zA-Z0-9_\-\.\/\!\?\|%]+)@@@\]}'; // this is a special case for debug where % must be includded
 			} else {
-				$regex = '{\[@@@SUB\-TEMPLATE:([a-zA-Z0-9_\-\.\/\!\?\|]+)@@@\]}'; // here the % is missing as must not be detected as it is reserved only for special purpose if SUB-TPLS are pre-defined
+				$regex = '{\[@@@SUB\-TEMPLATE\:([a-zA-Z0-9_\-\.\/\!\?\|]+)@@@\]}'; // here the % is missing as must not be detected as it is reserved only for special purpose if SUB-TPLS are pre-defined
 			} //end if else
 			//--
 			$matches = array();
@@ -2036,7 +2093,7 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 	 * @param ARRAY 	$y_arr_vars_sub_templates 	:: Empty Array or Mappings Array [ '%sub-tpl1%' => '@/tpl1.htm', 'tpl2.htm' => '@', 'tpl3.htm' => 'path/to/this/tpl/' ]
 	 * @return STRING 								:: the prepared marker template contents
 	 */
-	private static function load_subtemplates(string $y_use_caching, string $y_base_path, string $mtemplate, array $y_arr_vars_sub_templates, int $sub_tpls_loaded=0, int $sub_levels=0) {
+	private static function load_subtemplates(string $y_use_caching, string $y_base_path, string $mtemplate, array $y_arr_vars_sub_templates, int $sub_tpls_loaded=0, int $sub_levels=0, bool $load_subtpls=true) {
 		//--
 		$y_use_caching = (string) $y_use_caching;
 		$y_base_path = (string) $y_base_path;
@@ -2113,6 +2170,11 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 						} elseif((string)substr($key, -11, 11) == '|syntaxhtml') {
 							$key = (string) substr($key, 0, -11);
 							$sfx = '|syntaxhtml';
+						} elseif((string)substr($key, -16, 16) == '|html-no-subtpls') {
+							$key = (string) substr($key, 0, -16);
+							$sfx = '|html-no-subtpls';
+							$load_subtpls = false;
+							$y_use_caching = 'no'; // IMPORTANT: DO NOT USE CACHE IN THIS SITUATION, WILL NOT LOAD SUB-TPLS !!!
 						} elseif((string)substr($key, -5, 5) == '|html') {
 							$key = (string) substr($key, 0, -5);
 							$sfx = '|html';
@@ -2130,7 +2192,7 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 							$sfx = '|tpl-b64-encode';
 						} //end if
 						//--
-						if(((string)substr($key, 0, 1) == '%') AND ((string)substr($key, -1, 1) == '%')) { // variable, only can be set programatically, full path to the template file is specified
+						if(((string)substr($key, 0, 1) == '%') AND ((string)substr($key, -1, 1) == '%')) { // {{{SYNC-TPLS-VARIABLE-SUB-TPL-CONDITION}}} variable, only can be set programatically, full path to the template file is specified
 							if(SmartFileSysUtils::check_if_safe_path($val) != 1) {
 								Smart::raise_error('Invalid Marker-TPL Sub-Template Path [%] as: `'.$key.'` # `'.$val.'` '.'['.$y_base_path.']'.' detected in Template:'."\n".self::log_template($mtemplate));
 								return (string) 'ERROR: (704) in '.__CLASS__;
@@ -2186,32 +2248,39 @@ final class SmartMarkersTemplating { // syntax: r.20210412
 							$arr_sub_sub_templates = (array) self::detect_subtemplates((string)$stemplate); // detect sub-sub templates
 							$num_sub_sub_templates = Smart::array_size($arr_sub_sub_templates);
 							if($num_sub_sub_templates > 0) {
-								$stemplate = (string) self::load_subtemplates((string)$y_use_caching, (string)$y_base_path, (string)$stemplate, (array)$arr_sub_sub_templates, (int)$sub_tpls_loaded, (int)$sub_levels);
+								$stemplate = (string) self::load_subtemplates((string)$y_use_caching, (string)$y_base_path, (string)$stemplate, (array)$arr_sub_sub_templates, (int)$sub_tpls_loaded, (int)$sub_levels, (bool)$load_subtpls);
 								$sub_tpls_loaded += $num_sub_sub_templates;
 							} //end if
 						} //end if
 						//-- DO NOT MODIFY ORDER ! escapings must be before detecting and fixing unattended syntax ; any sequence from below must escape at least with prepare_nosyntax_content() or prepare_nosyntax_html_template() to avoid reparsing syntax
-						if((string)$sfx == '|syntax') {
-							$stemplate = (string) self::prepare_nosyntax_content((string)$stemplate); // fix here
-						} elseif((string)$sfx == '|syntaxhtml') {
-							$stemplate = (string) self::prepare_nosyntax_html_template((string)$stemplate); // fix here
-						} elseif((string)$sfx == '|html') {
-							$stemplate = (string) Smart::escape_html((string)$stemplate);
-							$stemplate = (string) self::prepare_nosyntax_html_template((string)$stemplate); // fix after
-						} elseif((string)$sfx == '|js') { // this is used to pass a tpl to a javascript string
-							$stemplate = (string) self::prepare_nosyntax_content((string)$stemplate); // fix before
-							$stemplate = (string) Smart::escape_js((string)$stemplate);
-						} elseif((string)$sfx == '|js-tpl-encode') { // this is used to pass a tpl to js for render in js
-							$stemplate = (string) self::escape_template((string)$stemplate, 'yes'); // fix here ; no need to fix before or after as encode (url escape) will escape all sequences to avoid conflicts
-							$stemplate = (string) Smart::escape_js((string)$stemplate);
-						} elseif((string)$sfx == '|tpl-uri-encode') { // this is used for inline uri encoded svgs
-							$stemplate = (string) self::prepare_nosyntax_content((string)$stemplate); // fix before
-							$stemplate = (string) Smart::escape_url((string)$stemplate); // not use the escape template here because may modify the contents (trim)
-							$stemplate = (string) Smart::escape_html((string)$stemplate);
-						} elseif((string)$sfx == '|tpl-b64-encode') { // this is used for inline images
-							$stemplate = (string) base64_encode((string)$stemplate);
-							$stemplate = (string) Smart::escape_html((string)$stemplate);
-						} //end if
+						if(($load_subtpls === false) AND ((int)$sub_levels > 1)) { // this situation can occur ONLY if base template have the `'|html-no-subtpls'` escaping
+							$stemplate = '［@@@SUB-TEMPLATE:'.$pfx.$key.$sfx.'@@@］'; // no escape html ; will be done later by level zero '|html-no-subtpls' ; also these brackets will be converted back by '|html-no-subtpls' level zero by using: prepare_nosyntax_html_template()
+						} else {
+							if((string)$sfx == '|syntax') {
+								$stemplate = (string) self::prepare_nosyntax_content((string)$stemplate); // fix here
+							} elseif((string)$sfx == '|syntaxhtml') {
+								$stemplate = (string) self::prepare_nosyntax_html_template((string)$stemplate); // fix here
+							} elseif((string)$sfx == '|html-no-subtpls') { // on level 1 will do as |html ; on levels > 1 will skip load sub-templates
+								$stemplate = (string) Smart::escape_html((string)$stemplate);
+								$stemplate = (string) self::prepare_nosyntax_html_template((string)$stemplate); // fix after
+							} elseif((string)$sfx == '|html') {
+								$stemplate = (string) Smart::escape_html((string)$stemplate);
+								$stemplate = (string) self::prepare_nosyntax_html_template((string)$stemplate); // fix after
+							} elseif((string)$sfx == '|js') { // this is used to pass a tpl to a javascript string
+								$stemplate = (string) self::prepare_nosyntax_content((string)$stemplate); // fix before
+								$stemplate = (string) Smart::escape_js((string)$stemplate);
+							} elseif((string)$sfx == '|js-tpl-encode') { // this is used to pass a tpl to js for render in js
+								$stemplate = (string) self::escape_template((string)$stemplate, 'yes'); // fix here ; no need to fix before or after as encode (url escape) will escape all sequences to avoid conflicts
+								$stemplate = (string) Smart::escape_js((string)$stemplate);
+							} elseif((string)$sfx == '|tpl-uri-encode') { // this is used for inline uri encoded svgs
+								$stemplate = (string) self::prepare_nosyntax_content((string)$stemplate); // fix before
+								$stemplate = (string) Smart::escape_url((string)$stemplate); // not use the escape template here because may modify the contents (trim)
+								$stemplate = (string) Smart::escape_html((string)$stemplate);
+							} elseif((string)$sfx == '|tpl-b64-encode') { // this is used for inline images
+								$stemplate = (string) base64_encode((string)$stemplate);
+								$stemplate = (string) Smart::escape_html((string)$stemplate);
+							} //end if
+						} //end if else
 						//-- fix unattended syntax
 						if(self::have_subtemplate((string)$stemplate) === true) {
 							if(self::$MkTplAnalyzeLdDbg !== true) { // if analyze TPL don't log to notice (because the [@@@SUB-TEMPLATE:%variable@@@] may not load always the variable replacements !!!

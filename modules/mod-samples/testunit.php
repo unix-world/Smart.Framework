@@ -57,6 +57,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
+		$semaphores = [];
+		//--
+
+		//--
 		if((SmartFrameworkRegistry::isAdminArea() === true) OR (SmartFrameworkRegistry::isTaskArea() === true)) {
 			SmartSession::start(); // start the session
 		} //end if
@@ -327,12 +331,18 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'test.markdown':
 				//--
-				$main = SmartViewHtmlHelpers::html_jsload_highlightsyntax('body'); // highlight js
+				$main = '';
+				if(rand(0,1) == 1) {
+					$main .= SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body');
+				} else {
+					$semaphores[] = 'load:code-highlight-js';
+				} //end if else
+				$validate = rand(0,1);
 				$main .= '<h1>Markdown Syntax Render Test</h1><hr>';
 				$main .= SmartMarkersTemplating::render_template(
-					(string) (new SmartMarkdownToHTML())->text((string)SmartFileSystem::read($this->ControllerGetParam('module-view-path').'markdown-test.md')),
+					(string) (new SmartMarkdownToHTML(true, true, true, false, (bool)$validate))->text((string)SmartFileSystem::read($this->ControllerGetParam('module-view-path').'markdown-test.md')),
 					[
-						'TITLE' => 'This is a <test> title that comes from TPL variables'
+						'TITLE' => 'This is a <test> title that comes from TPL variables [Validate='.(int)$validate.']'
 					]
 				);
 				$main .= '<hr>';
@@ -486,7 +496,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$semaphores = [];
 		if((SmartFrameworkRegistry::isAdminArea() === true) OR (SmartFrameworkRegistry::isTaskArea() === true)) {
 			if(rand(0,1) == 1) {
 				$semaphores[] = 'skip:growl';
@@ -496,7 +505,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			} //end if
 		} //end if
 		if(rand(0,1) == 1) {
-			$semaphores[] = 'load:code-highlight-js';
+			if(!in_array('load:code-highlight-js', $semaphores)) {
+				$semaphores[] = 'load:code-highlight-js';
+			} //end if
 		} //end if
 		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SmartFrameworkRegistry::isAdminArea() === true) && (SmartFrameworkRegistry::isTaskArea() === false)) {
 			//-- skip load the default JS-UI and load jQueryUI if is available and is admin area

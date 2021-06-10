@@ -1,6 +1,6 @@
 /*
 // theme/elegant.css
-// codemirror: v.5.42.0
+// codemirror: v.5.61.1
 */
 
 .cm-s-elegant span.cm-number, .cm-s-elegant span.cm-string, .cm-s-elegant span.cm-atom {color: #762;}
@@ -18,5 +18,7 @@
 
 .cm-s-elegant .CodeMirror-activeline-background {background: #e8f2ff !important;}
 .cm-s-elegant .CodeMirror-matchingbracket {outline:1px solid grey; color:black !important;}
+
+.cm-s-elegant .CodeMirror-matchingtag { background: #91b150 !important; color: #FFFFFF !important; }
 
 /* END */

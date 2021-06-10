@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210523
+ * @version 	v.20210605
  * @package 	Plugins:Network
  *
  */
@@ -42,7 +42,7 @@ final class SmartRobot {
 
 	//================================================================
 	/**
-	 * Load URL IMG (svg / png / gif / jpg) Content (if relative path to a file will be prefixed with current URL for security reasons)
+	 * Load URL IMG (svg / png / gif / jpg / webp) Content (if relative path to a file will be prefixed with current URL for security reasons)
 	 *
 	 * @param STRING 	$y_img_link					:: relative/path/to/image (assumes current URL as prefix) | http(s)://some.url:port/path/to/image (port is optional) ; works also with Data-URL (Data-Image only)
 	 * @param YES/NO	$y_allow_set_credentials	:: DEFAULT IS SET to NO ; if YES must be set just for internal URLs ; if set to AUTO will try to detect if can trust based on task.php / admin.php / index.php local framework scripts ; if the $y_url_or_path to get is detected to be under current URL will send also the Unique / session IDs ; more if detected that is from task.php / admin.php and if this is set to YES will send the HTTP-BASIC Auth credentials if detected (using YES with other URLs than Smart.Framework's current URL can be a serious SECURITY ISSUE, so don't !)
@@ -133,7 +133,7 @@ final class SmartRobot {
 				if(!array_key_exists('log', $out_arr)) {
 					$out_arr['log'] = '';
 				} //end if
-				$out_arr['log'] .= (string) $tmp_browse_arr['log'];
+				$out_arr['log'] .= (string) trim((string)$tmp_browse_arr['log'])."\n";
 				//--
 				if($tmp_browse_arr['result'] == 1) {
 					if(((string)$tmp_browse_arr['mode'] == 'file') OR ((string)$tmp_browse_arr['mode'] == 'embedded')) {
@@ -143,18 +143,12 @@ final class SmartRobot {
 				//Smart::log_notice(print_r($tmp_browse_arr,1));
 				//--
 				$guess_arr = (array) SmartDetectImages::guess_image_extension_by_url_head((string)$tmp_browse_arr['headers']);
-				$tmp_img_ext = (string) $guess_arr['extension'];
-				$tmp_where_we_guess = (string) $guess_arr['where-was-detected'];
+				$out_arr['log'] .= 'IMG Detected as: '.trim((string)$guess_arr['extension']).' ; in: '.trim((string)$guess_arr['where-was-detected'])."\n";
 				//Smart::log_notice('Guess Ext by URL Head: '.$tmp_browse_arr['headers']."\n".'### '.print_r($guess_arr,1)."\n".'#');
-				if((string)$tmp_trust_headers != 'yes') {
-					$tmp_img_ext = ''; // not trusted, try re-detect !
-				} //end if
-				//--
-				if((string)$tmp_img_ext == '') {
-					$tmp_img_ext = (string) SmartDetectImages::guess_image_extension_by_img_content((string)$tmp_browse_arr['content'], true);
-					if((string)$tmp_img_ext != '') {
-						$tmp_where_we_guess = ' Img Content ...';
-					} //end if
+				//-- always re-validate if an image !
+				$tmp_img_ext = (string) SmartDetectImages::guess_image_extension_by_img_content((string)$tmp_browse_arr['content'], true);
+				if((string)$tmp_img_ext != '') {
+					$out_arr['log'] .= 'IMG Validated as: '.trim((string)$tmp_img_ext)."\n";
 				} //end if
 				//Smart::log_notice('Guess Ext by Img Content: '.$tmp_img_ext."\n".'#');
 				if((string)$tmp_img_ext != '') {
@@ -163,7 +157,13 @@ final class SmartRobot {
 				//--
 				if(((string)$tmp_browse_arr['result'] == '1') AND ((string)$tmp_browse_arr['code'] == '200')) {
 					if((string)$tmp_fake_fname != '') {
-						if(((string)$tmp_img_ext == '.svg') OR ((string)$tmp_img_ext == '.png') OR ((string)$tmp_img_ext == '.gif') OR ((string)$tmp_img_ext == '.jpg')) { // using a deep detection above and is not safe unknown image extension
+						if( // {{{SYNC-DETECT-IMG-TYPES}}}
+							((string)$tmp_img_ext == '.svg') OR
+							((string)$tmp_img_ext == '.png') OR
+							((string)$tmp_img_ext == '.gif') OR
+							((string)$tmp_img_ext == '.jpg') OR
+							((string)$tmp_img_ext == '.webp')
+						) { // using a deep detection above and is not safe unknown image extension
 							$tmp_fcontent = (string) $tmp_browse_arr['content'];
 						} //end if
 					} //end if else
@@ -286,18 +286,43 @@ final class SmartRobot {
 		//--
 		if((string)$tmp_url_or_path_type == 'data-url') { // DATA-URL
 			//-- try to detect if data:image/ :: {{{SYNC-DATA-IMAGE}}}
-			if(((string)strtolower((string)substr((string)$y_url_or_path, 0, 11)) == 'data:image/') AND (stripos((string)$y_url_or_path, ';base64,') !== false)) {
+			if(
+				((string)strtolower((string)substr((string)$y_url_or_path, 0, 11)) == 'data:image/')
+				AND
+				(
+					(stripos((string)$y_url_or_path, ';base64,') !== false)
+					OR
+					(stripos((string)$y_url_or_path, 'data:image/svg+xml,') === 0) // {{{SYNC-DATA-IMG-SVG-URLENCODED}}} ; svg url encoded
+				)
+			) { // DATA-URL
 				//--
-				$eimg = (array) explode(';base64,', (string)$y_url_or_path);
+				if(stripos((string)$y_url_or_path, 'data:image/svg+xml,') === 0) { // {{{SYNC-DATA-IMG-SVG-URLENCODED}}} ; svg url encode
+					$eimg = (string) substr((string)$y_url_or_path, 19);
+					$eimg = (string) trim((string)urldecode((string)$eimg)); // use url decode instead of rawurldecode ; will do the job of rawurldecode + will decode also + as spaces
+				} else { // svg + b64 / png|gif|jpg|webp +b64
+					$eimg = (array) explode(';base64,', (string)$y_url_or_path);
+					$eimg = (string) isset($eimg[1]) ? base64_decode((string)trim((string)($eimg[1]))) : '';
+				} //end if
+				//--
+				if( // if svg, validate
+					(stripos((string)$y_url_or_path, 'data:image/svg+xml,') === 0) OR
+					(stripos((string)$y_url_or_path, 'data:image/svg+xml;') === 0)
+				) {
+					if((stripos((string)$eimg, '<svg') !== false) AND (stripos((string)$eimg, '</svg>') !== false)) { // {{{SYNC VALIDATE SVG}}}
+						$eimg = (new SmartXmlParser())->format((string)$eimg, false, false, false, true); // avoid injection of other content than XML, remove the XML header
+					} else {
+						$eimg = ''; // not a SVG !
+					} //end if else
+				} //end if
 				//--
 				return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
 					'client' => (string) __METHOD__,
-					'log' => 'OK ? Not sure, decoded from embedded B64 image !',
+					'log' => 'OK: Content decoded from embedded data-url image !',
 					'mode' => 'embedded', // DO NOT CHANGE !!
 					'result' => '1',
 					'code' => '200', // HTTP 200 OK
-					'headers' => (string) SmartUnicode::sub_str($y_url_or_path, 0, 50).'...', // try to get the 1st 50 chars for trying to guess the extension
-					'content' => (string) @base64_decode((string)trim((string)(isset($eimg[1]) ? $eimg[1] : ''))),
+					'headers' => (string) SmartUnicode::sub_str((string)$y_url_or_path, 0, 50).'...', // try to get the 1st 50 chars for trying to guess the extension
+					'content' => (string) $eimg,
 					'browse-url-info' => [],
 					'debuglog' => ''
 				);
@@ -555,7 +580,16 @@ final class SmartRobot {
 			} //end if
 			//--
 			$the_url_or_path_type = '!unknown!';
-			if(((string)strtolower((string)substr((string)$y_url_or_path, 0, 11)) == 'data:image/') AND (stripos((string)$y_url_or_path, ';base64,') !== false)) { // {{{SYNC-DATA-IMAGE}}}
+			//-- {{{SYNC-DATA-IMAGE}}}
+			if(
+				((string)strtolower((string)substr((string)$y_url_or_path, 0, 11)) == 'data:image/')
+				AND
+				(
+					(stripos((string)$y_url_or_path, ';base64,') !== false)
+					OR
+					(stripos((string)$y_url_or_path, 'data:image/svg+xml,') === 0) // {{{SYNC-DATA-IMG-SVG-URLENCODED}}} ; svg url encoded
+				)
+			) { // DATA-URL
 				$the_url_or_path_type = 'data-url'; // it is a data-url
 				$trust_headers = 'yes';
 			} elseif(((string)substr((string)$y_url_or_path, 0, 7) == 'http://') OR ((string)substr((string)$y_url_or_path, 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}

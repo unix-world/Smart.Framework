@@ -1,0 +1,10 @@
+<!-- Partial Template: JsHiliteCode.SyntaxHighlightProcess r.20210608 -->
+<script>
+// var SmartViewHelpersSyntaxHighlightAreas = 'selector';  // required
+jQuery(() => {
+	if((typeof(SmartJS_Custom_Syntax_Highlight) == 'function') && (typeof(SmartViewHelpersSyntaxHighlightAreas) == 'string') && (SmartViewHelpersSyntaxHighlightAreas)) {
+		SmartJS_Custom_Syntax_Highlight(String(SmartViewHelpersSyntaxHighlightAreas)); } else { console.warn('Missing Syntax Highlight Smart Helper');
+	}
+});
+</script>
+<!-- #END :: Partial Template: JsHiliteCode.SyntaxHighlightProcess -->

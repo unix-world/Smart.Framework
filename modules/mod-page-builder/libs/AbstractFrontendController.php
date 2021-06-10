@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210530
+ * @version 	v.20210609
  * @package 	development:modules:PageBuilder
  *
  */
@@ -589,7 +589,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			$lang = (string) \SmartTextTranslations::getDefaultLanguage(); // fix
 		} //end if
 		//--
-		$escape = (string) $arr_cfg['escape'];
+		$escape = (string) ($arr_cfg['escape'] ?? '');
 		//--
 		switch((string)$escape) {
 			case 'js':
@@ -657,8 +657,8 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			$arr_cfg = array();
 		} //end if
 		//--
-		$syntax = (string) \trim((string)(isset($arr_cfg['syntax']) ? $arr_cfg['syntax'] : ''));
-		$escape = (string) \trim((string)(isset($arr_cfg['escape']) ? $arr_cfg['escape'] : ''));
+		$syntax = (string) \trim((string)($arr_cfg['syntax'] ?? ''));
+		$escape = (string) \trim((string)($arr_cfg['escape'] ?? ''));
 		//--
 
 		//--
@@ -984,7 +984,16 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 					foreach((array)$val as $k => $v) {
 						$k = (string) \trim((string)$k);
 						if((\strpos((string)$k, 'content') === 0) AND (\Smart::array_size($v) > 0)) { // can be: 'content', 'content-1', ..., 'content-n'
-							if(((string)$v['type'] === 'field') OR ((string)$v['type'] === 'value') OR ((string)$v['type'] === 'translation') OR ((string)$v['type'] === 'segment') OR ((string)$v['type'] === 'plugin')) {
+							if(
+								(isset($v['type']) AND \Smart::is_nscalar($v['type'])) AND
+								(
+									((string)$v['type'] === 'field') OR
+									((string)$v['type'] === 'value') OR
+									((string)$v['type'] === 'translation') OR
+									((string)$v['type'] === 'segment') OR
+									((string)$v['type'] === 'plugin')
+								)
+							) {
 								$preparse_arr[(string)$key][] = [(string)$k => $v];
 							} else {
 								$this->fatalError(
@@ -1026,6 +1035,15 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			if(\is_array($yaml['PROPS'])) { // PROPS [ FileName, Disposition ]
 				//--
 				$tmp_arr_props = (array) \array_change_key_case((array)$yaml['PROPS'], \CASE_LOWER);
+				//--
+				$tmp_arr_props['filename'] = ($tmp_arr_props['filename'] ?? null);
+				if(!\Smart::is_nscalar($tmp_arr_props['filename'])) {
+					$tmp_arr_props['filename'] = null;
+				} //end if
+				$tmp_arr_props['disposition'] = ($tmp_arr_props['disposition'] ?? null);
+				if(!\Smart::is_nscalar($tmp_arr_props['disposition'])) {
+					$tmp_arr_props['disposition'] = null;
+				} //end if
 				//--
 				if((string)$tmp_arr_props['filename'] != '') {
 					//--
@@ -1098,6 +1116,15 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 						foreach($val[$i] as $k => $v) {
 							//--
 							if(\Smart::array_size($v) > 0) {
+								//-- PHP8 fixes
+								$v['id'] = ($v['id'] ?? null);
+								if(!\Smart::is_nscalar($v['id'])) {
+									$v['id'] = null;
+								} //end if
+								$v['type'] = ($v['type'] ?? null);
+								if(!\Smart::is_nscalar($v['type'])) {
+									$v['type'] = null;
+								} //end if
 								//-- bugfix: when ID is used for `type: value` and is false or null, it will break the code
 								if($v['id'] === null) {
 									$v['id'] = 'NULL';
@@ -1195,6 +1222,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 										//--
 									} elseif((string)$v['type'] == 'plugin') {
 										//-- config is available just for plugin
+										$v['config'] = ($v['config'] ?? null);
 										if(\is_array($v['config'])) {
 											$arr_tmp_item['config'] = (array) $v['config'];
 										} elseif((string)$v['config'] != '') {

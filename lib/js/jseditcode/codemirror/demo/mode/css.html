@@ -2,7 +2,6 @@
 
 <title>CodeMirror: CSS / SCSS / Less modes</title>
 <meta charset="utf-8"/>
-<link rel=stylesheet href="../../doc/docs.css">
 
 <link rel="stylesheet" href="../../lib/codemirror.css">
 <link rel="stylesheet" href="../../addon/hint/show-hint.css">
@@ -12,7 +11,7 @@
 <script src="../../addon/hint/css-hint.js"></script>
 <style>.CodeMirror {background: #f8f8f8;}</style>
 <div id=nav>
-  <a href="https://codemirror.net"><h1>CodeMirror</h1><img id=logo src="../../doc/logo.png"></a>
+  <a href="https://codemirror.net"><h1>CodeMirror</h1><img id=logo src="../../doc/logo.svg"></a>
 
   <ul>
     <li><a href="../../index.html">Home</a>
@@ -64,6 +63,8 @@ code {
 </textarea>
     <script>
       var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+        matchBrackets: true,
         extraKeys: {"Ctrl-Space": "autocomplete"}
       });
     </script>
@@ -71,264 +72,6 @@ code {
     <p><strong>MIME types defined:</strong> <code>text/css</code>, <code>text/x-scss</code> (<a href="scss.html">demo</a>), <code>text/x-less</code> (<a href="less.html">demo</a>).
     <br>
     <strong>Parsing/Highlighting Tests:</strong> <a href="../../test/index.html#css_*">normal</a>,  <a href="../../test/index.html#verbose,css_*">verbose</a>.</p>
-
-<br>
-<h2>LESS mode</h2>
-<textarea id="code2" name="code2">@media screen and (device-aspect-ratio: 16/9) { … }
-@media screen and (device-aspect-ratio: 1280/720) { … }
-@media screen and (device-aspect-ratio: 2560/1440) { … }
-
-html:lang(fr-be)
-
-tr:nth-child(2n+1) /* represents every odd row of an HTML table */
-
-img:nth-of-type(2n+1) { float: right; }
-img:nth-of-type(2n) { float: left; }
-
-body > h2:not(:first-of-type):not(:last-of-type)
-
-html|*:not(:link):not(:visited)
-*|*:not(:hover)
-p::first-line { text-transform: uppercase }
-
-@namespace foo url(http://www.example.com);
-foo|h1 { color: blue }  /* first rule */
-
-span[hello="Ocean"][goodbye="Land"]
-
-E[foo]{
-  padding:65px;
-}
-
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-cancel-button {
-  -webkit-appearance: none; // Inner-padding issues in Chrome OSX, Safari 5
-}
-button::-moz-focus-inner,
-input::-moz-focus-inner { // Inner padding and border oddities in FF3/4
-  padding: 0;
-  border: 0;
-}
-.btn {
-  // reset here as of 2.0.3 due to Recess property order
-  border-color: #ccc;
-  border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.25);
-}
-fieldset span button, fieldset span input[type="file"] {
-  font-size:12px;
-	font-family:Arial, Helvetica, sans-serif;
-}
-
-.rounded-corners (@radius: 5px) {
-  border-radius: @radius;
-  -webkit-border-radius: @radius;
-  -moz-border-radius: @radius;
-}
-
-@import url("something.css");
-
-@light-blue:   hsl(190, 50%, 65%);
-
-#menu {
-  position: absolute;
-  width: 100%;
-  z-index: 3;
-  clear: both;
-  display: block;
-  background-color: @blue;
-  height: 42px;
-  border-top: 2px solid lighten(@alpha-blue, 20%);
-  border-bottom: 2px solid darken(@alpha-blue, 25%);
-  .box-shadow(0, 1px, 8px, 0.6);
-  -moz-box-shadow: 0 0 0 #000; // Because firefox sucks.
-
-  &.docked {
-    background-color: hsla(210, 60%, 40%, 0.4);
-  }
-  &:hover {
-    background-color: @blue;
-  }
-
-  #dropdown {
-    margin: 0 0 0 117px;
-    padding: 0;
-    padding-top: 5px;
-    display: none;
-    width: 190px;
-    border-top: 2px solid @medium;
-    color: @highlight;
-    border: 2px solid darken(@medium, 25%);
-    border-left-color: darken(@medium, 15%);
-    border-right-color: darken(@medium, 15%);
-    border-top-width: 0;
-    background-color: darken(@medium, 10%);
-    ul {
-      padding: 0px;
-    }
-    li {
-      font-size: 14px;
-      display: block;
-      text-align: left;
-      padding: 0;
-      border: 0;
-      a {
-        display: block;
-        padding: 0px 15px;
-        text-decoration: none;
-        color: white;
-        &:hover {
-          background-color: darken(@medium, 15%);
-          text-decoration: none;
-        }
-      }
-    }
-    .border-radius(5px, bottom);
-    .box-shadow(0, 6px, 8px, 0.5);
-  }
-}
-</textarea>
-    <script>
-      var editor = CodeMirror.fromTextArea(document.getElementById("code2"), {
-        lineNumbers: true,
-        matchBrackets: true,
-        mode: "text/x-less"
-      });
-    </script>
-    <br>
-    <p>The LESS mode is a sub-mode of the <a href="index.html">CSS mode</a> (defined in <code>css.js</code>).
-    <br>
-    <strong>Parsing/Highlighting Tests:</strong> <a href="../../test/index.html#less_*">normal</a>,  <a href="../../test/index.html#verbose,less_*">verbose</a>.</p>
-
-<br>
-<h2>SCSS mode</h2>
-<textarea id="code3" name="code3">
-/* Some example SCSS */
-
-@import "compass/css3";
-$variable: #333;
-
-$blue: #3bbfce;
-$margin: 16px;
-
-.content-navigation {
-  #nested {
-    background-color: black;
-  }
-  border-color: $blue;
-  color:
-    darken($blue, 9%);
-}
-
-.border {
-  padding: $margin / 2;
-  margin: $margin / 2;
-  border-color: $blue;
-}
-
-@mixin table-base {
-  th {
-    text-align: center;
-    font-weight: bold;
-  }
-  td, th {padding: 2px}
-}
-
-table.hl {
-  margin: 2em 0;
-  td.ln {
-    text-align: right;
-  }
-}
-
-li {
-  font: {
-    family: serif;
-    weight: bold;
-    size: 1.2em;
-  }
-}
-
-@mixin left($dist) {
-  float: left;
-  margin-left: $dist;
-}
-
-#data {
-  @include left(10px);
-  @include table-base;
-}
-
-.source {
-  @include flow-into(target);
-  border: 10px solid green;
-  margin: 20px;
-  width: 200px; }
-
-.new-container {
-  @include flow-from(target);
-  border: 10px solid red;
-  margin: 20px;
-  width: 200px; }
-
-body {
-  margin: 0;
-  padding: 3em 6em;
-  font-family: tahoma, arial, sans-serif;
-  color: #000;
-}
-
-@mixin yellow() {
-  background: yellow;
-}
-
-.big {
-  font-size: 14px;
-}
-
-.nested {
-  @include border-radius(3px);
-  @extend .big;
-  p {
-    background: whitesmoke;
-    a {
-      color: red;
-    }
-  }
-}
-
-#navigation a {
-  font-weight: bold;
-  text-decoration: none !important;
-}
-
-h1 {
-  font-size: 2.5em;
-}
-
-h2 {
-  font-size: 1.7em;
-}
-
-h1:before, h2:before {
-  content: "::";
-}
-
-code {
-  font-family: courier, monospace;
-  font-size: 80%;
-  color: #418A8A;
-}
-</textarea>
-    <script>
-      var editor = CodeMirror.fromTextArea(document.getElementById("code3"), {
-        lineNumbers: true,
-        matchBrackets: true,
-        mode: "text/x-scss"
-      });
-    </script>
-    <br>
-    <p>The SCSS mode is a sub-mode of the <a href="index.html">CSS mode</a> (defined in <code>css.js</code>).
-    <strong>Parsing/Highlighting Tests:</strong> <a href="../../test/index.html#scss_*">normal</a>,  <a href="../../test/index.html#verbose,scss_*">verbose</a>.</p>
 
 </article>
 

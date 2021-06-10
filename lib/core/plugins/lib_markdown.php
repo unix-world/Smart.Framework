@@ -36,8 +36,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20210512
+ * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
+ * @version 	v.20210609
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,9 +53,11 @@ final class SmartMarkdownToHTML {
 
 	// based on v.1.5.1 with upstream fixes from 1.5.4 -> 1.8.0 + extra customizations and optimizations
 	// removed support for HTML markup (was unsafe and could lead to many XSS vulnerabilities ...)
-	// other fixes by unixman: fixed multiple security vulnerabilities, added optimizations, extend the syntax to support attributes, character encoding fixes, regex escaping, html escaping
+	// other fixes by unixman:
+	// 	* fixed multiple security vulnerabilities: character encoding fixes, fixed regex escapings, fixed html escapings, code and regex optimizations
+	// 	* extend the syntax to support attributes, added pandoc style block divs
 
-	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210512';
+	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210609';
 
 	//===================================
 
@@ -65,6 +67,7 @@ final class SmartMarkdownToHTML {
 	private $urlsLinked = true; 			// parse URLs from texts
 	private $htmlEntitiesDisabled = false; 	// if TRUE will Disable the HTML Entities such as &nbsp; (this is useful and normally should not be disabled)
 	private $validateHtml = false; 			// Validate the HTML Code using the SmartHtmlParser with DOM
+	private $relative_url_prefix = ''; 		// if an url prefix is given here all relative URLs will be prefixed with this
 	//--
 	private $DefinitionData;
 	//--
@@ -84,7 +87,7 @@ final class SmartMarkdownToHTML {
 		'7' => [ 'List' ],
 		'8' => [ 'List' ],
 		'9' => [ 'List' ],
-		':' => [ 'Table' ],
+		':' => [ 'FencedDiv', 'Table' ], // 'FencedDiv' by unixman
 		'<' => [ 'Validate' ],
 		'=' => [ 'SetextHeader' ],
 		'>' => [ 'Quote' ],
@@ -157,14 +160,16 @@ final class SmartMarkdownToHTML {
 	/**
 	 * Class constructor with many options
 	 */
-	public function __construct(bool $y_breaksEnabled=true, bool $y_sBreakEnabled=true, bool $y_urlsLinked=true, bool $y_htmlEntitiesDisabled=false, bool $y_validateHtml=false) {
+	public function __construct(bool $y_breaksEnabled=true, bool $y_sBreakEnabled=true, bool $y_urlsLinked=true, bool $y_htmlEntitiesDisabled=false, $y_validateHtml=false, ?string $y_relative_url_prefix=null) {
 		//--
 		$this->breaksEnabled 			= (bool) $y_breaksEnabled; // add <br> for text on multiple lines
 		$this->sBreakEnabled 			= (bool) $y_sBreakEnabled; // enable ``` ``` \S \s
 		$this->urlsLinked 				= (bool) $y_urlsLinked; // parse URLs from texts
 		$this->htmlEntitiesDisabled 	= (bool) $y_htmlEntitiesDisabled; // if disabled the Markdown parser will disallow all html entities (ex: &reg; &copy) and will escape them as regular text
 		//--
-		$this->validateHtml 			= (bool) $y_validateHtml; // validate the HTML via Cleaner, (if Tidy or DOM is available will be used) ; this is slow ... but adds extra safety ; this is normally needed only with untrusted markdown that can come from untrusted users, normally should not be enabled
+		$this->validateHtml 			= (int)  (Smart::is_nscalar($y_validateHtml) ? $y_validateHtml : false); // validate the HTML via Cleaner, (if Tidy or DOM is available will be used) ; this is slow ... but adds extra safety ; this is normally needed only with untrusted markdown that can come from untrusted users, normally should not be enabled
+		//--
+		$this->relative_url_prefix 		= (string) trim((string)$y_relative_url_prefix); // if provided use this prefix for all relative urls
 		//--
 	} //END FUNCTION
 
@@ -182,19 +187,17 @@ final class SmartMarkdownToHTML {
 		} //end if
 		//-- make sure no definitions are set
 		$this->DefinitionData = array(); // init
+		//-- pre trim
+		$text = (string) trim((string)$text)."\n"; // ensure the last new line if having a backslash
 		//-- Fix broking curly quotes: ‘ = &lsquo; [0145] ; ’ = &rsquo; [0146] ; “ = &ldquo; [0147] ; ” = &rdquo; [0148]
 		$text = (string) str_replace(['‘', '’', '“', '”'], ['\'', '\'', '"', '"'], $text); // bug fix (special apostrophes will break the UTF-8 markdown ... don't know why !? but need fixing ; perhaps they are interpreted different in UTF-16 context !!!)
 		//-- standardize line breaks
 		$text = (string) str_replace(["\r\n", "\r"], "\n", $text);
-		//-- special breaks: ``` ``` is a replacement syntax for \S, which both renders as &nbsp; ; \s will render as \n&nbsp;\n ; if html entities are enabled the use of &nbsp; can supply the same functionality but if the html entities are disabled there is no way to use directly &nbsp; thus these will make the job
+		//-- special breaks ; use `\` + `\n` as a new line enforcer
 		if($this->sBreakEnabled) {
-			$text = (string) str_replace('``` ```', '&nbsp;', $text); // this acts like \S {{{SYNC-MARKDOWN-S-BREAK-CAPITAL}}}
-			$text = (string) str_replace(['\\S'."\n", '\\S'], '&nbsp;', $text); // this acts like ``` ``` as when sBreaks Enabled will have both \s \S
-			$text = (string) str_replace(['\\s'."\n", '\\s'], '&nbsp;'."\n".'&nbsp;'."\n", $text); // fix: replace \\s\n with a new line
-		} else {
-			$text = (string) str_replace('``` ```', '', $text);
-			$text = (string) str_replace(['\\S'."\n", '\\S'], '', $text);
-			$text = (string) str_replace(['\\s'."\n", '\\s'], "\n", $text);
+			$text = (string) str_replace(['\\'."\n"], "\n".'&nbsp;'."\n", $text);
+		} else { // IMPORTANT: \ must be enclosed by newlines, otherwise may behave unpredictable on replace ...
+			$text = (string) str_replace(['\\'."\n"], "\n", $text);
 		} //end if else
 		//-- remove surrounding line breaks
 		$text = (string) trim($text, "\n");
@@ -255,7 +258,7 @@ final class SmartMarkdownToHTML {
 		$markup = "\n".'<!--  HTML/Markdown :: ( '.Smart::escape_html($info_linebreaks.' '.$info_sbreaks.' '.$info_urls.' '.$info_entities.' '.$info_validatehtml.' T:'.date('YmdHi')).' ) -->'."\n".'<div id="markdown-'.sha1((string)$markup).'-'.Smart::uuid_10_num().'" class="markdown">'."\n".$markup."\n".'</div>'."\n".'<!--  # HTML/Markdown # '.Smart::escape_html((string)self::MKDW_VERSION).'  -->'."\n"; // if parsed and contain HTML Tags, add div and comments
 		//--
 		if($this->validateHtml) {
-			$htmlparser = new SmartHtmlParser((string)$markup, true, true, false);
+			$htmlparser = new SmartHtmlParser((string)$markup, true, (int)$this->validateHtml, false);
 			$markup = (string) $htmlparser->get_clean_html();
 			$htmlparser = null;
 		} //end if
@@ -266,6 +269,7 @@ final class SmartMarkdownToHTML {
 
 
 	//-- # unmarked Text
+
 
 	private function unmarkedText($text) {
 		//--
@@ -346,12 +350,14 @@ final class SmartMarkdownToHTML {
 		//--
 		$markup .= $this->unmarkedText($text);
 		//--
+		$markup = (string) $this->fixEscapings((string)$markup); // unixman: this fixes the escapings for inline text ... if break anything else this line must be disabled !
+		//--
 		return (string) $markup;
 		//--
 	} //END FUNCTION
 
 
-	private function lines($lines) {
+	private function lines($lines, $render_mode='p') {
 		//--
 		if(!is_array($lines)) {
 			return '';
@@ -477,7 +483,17 @@ final class SmartMarkdownToHTML {
 				//--
 				$Blocks[] = $CurrentBlock;
 				//--
-				$CurrentBlock = $this->paragraph($Line);
+				switch((string)$render_mode) {
+					case 'span':
+						$CurrentBlock = $this->span($Line);
+						break;
+					case 'div':
+						$CurrentBlock = $this->div($Line);
+						break;
+					case 'p':
+					default:
+						$CurrentBlock = $this->paragraph($Line);
+				} //end switch
 				$CurrentBlock['identified'] = true;
 				//--
 			} //end if else
@@ -531,6 +547,40 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	private function span($Line) {
+		//--
+		if(!is_array($Line)) {
+			return;
+		} //end if
+		//--
+		return array( // Block
+			'element' => array(
+				'name' => 'span',
+				'text' => $Line['text'],
+				'handler' => 'line',
+			),
+		);
+		//--
+	} //END FUNCTION
+
+
+	private function div($Line) {
+		//--
+		if(!is_array($Line)) {
+			return;
+		} //end if
+		//--
+		return array( // Block
+			'element' => array(
+				'name' => 'div',
+				'text' => $Line['text'],
+				'handler' => 'line',
+			),
+		);
+		//--
+	} //END FUNCTION
+
+
 	//-- # Code
 
 
@@ -551,6 +601,9 @@ final class SmartMarkdownToHTML {
 			return array(
 				'extent' => strlen($matches[0]),
 				'element' => array(
+					'attributes' => [
+						'class' => 'mkdw-i-code',
+					],
 					'name' => 'code',
 					'text' => $text,
 				),
@@ -628,6 +681,144 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	//-- # Fenced Div
+
+	// no need for inlineFencedDiv
+
+
+	private function blockFencedDiv($Line) { // by unixman
+		//--
+		if(!is_array($Line)) {
+			return;
+		} //end if
+		//--
+		if(preg_match('/^['.preg_quote((string)$Line['text'][0]).']{3}[ ]*([_a-zA-Z0-9\-\.\#@ ]+)?[ ]*$/', $Line['text'], $matches)) {
+			//--
+			$class = '';
+			$id = '';
+			$eltype = 'div';
+			$handler = 'divs_span'; // by default render div with spans ; if using 'lines' will render div with p (paragraphs)
+			if(isset($matches[1])) { // fix from 1.5.4
+				//--
+				$classes = (array) explode(' ', (string)trim((string)$matches[1]));
+				for($i=0; $i<count($classes); $i++) {
+					$classes[$i] = (string) trim((string)$classes[$i]);
+					if((string)$classes[$i] != '') {
+						if(strpos((string)$classes[$i], '.') === 0) {
+							$class .= (string) ltrim((string)$classes[$i], '.').' ';
+						} elseif(strpos((string)$classes[$i], '#') === 0) {
+							$id = (string) ltrim((string)$classes[$i], '#');
+						} elseif(strpos((string)$classes[$i], '@') === 0) {
+							switch((string)strtolower((string)trim((string)substr((string)$classes[$i], 1)))) {
+								//--
+								case 'section-div':
+									$eltype = 'section';
+									$handler = 'divs_div';
+									break;
+								case 'article-div':
+									$eltype = 'article';
+									$handler = 'divs_div';
+									break;
+								case 'header-div':
+									$eltype = 'header';
+									$handler = 'divs_div';
+									break;
+								case 'footer-div':
+									$eltype = 'footer';
+									$handler = 'divs_div';
+									break;
+								case 'main-div':
+									$eltype = 'main';
+									$handler = 'divs_div';
+									break;
+								case 'aside-div':
+									$eltype = 'aside';
+									$handler = 'divs_div';
+									break;
+								case 'nav-div':
+									$eltype = 'nav';
+									$handler = 'divs_div';
+									break;
+								case 'summary-div':
+									$eltype = 'summary';
+									$handler = 'divs_div';
+									break;
+								case 'details-div':
+									$eltype = 'details';
+									$handler = 'divs_div';
+									break;
+								//--
+								case 'div-divs':
+									$handler = 'divs_div';
+									break;
+								case 'div-paragraphs':
+									$handler = 'lines';
+									break;
+								//--
+									default:
+										// as default :-)
+							} //end switch
+						} //end if
+					} //end if
+				} //end for
+				//--
+			} //end if
+			//--
+			$Block = array(
+				'char' => $Line['text'][0],
+				'element' => array(
+					'attributes' => [
+						'class' => (string) trim((string)$class),
+						'id' 	=> (string) trim((string)$id),
+					],
+					'name' => (string) $eltype,
+					'handler' => (string) $handler,
+					'text' => [],
+				),
+			);
+			//--
+			return $Block;
+			//--
+		} //end if
+		//--
+	} //END FUNCTION
+
+
+	private function blockFencedDivContinue($Line, $Block=null) { // by unixman
+		//--
+		if((!is_array($Line)) OR (!is_array($Block))) {
+			return;
+		} //end if
+		//--
+		if(!isset($Block['char']) OR ((string)$Block['char'] !== ':')) {
+			return;
+		} //end if
+		//--
+		if(isset($Block['complete'])) {
+			return;
+		} //end if
+		//--
+		if(strpos((string)$Line['text'], ':::') === 0) {
+			$Block['complete'] = true;
+			return $Block;
+		} //end if
+		//--
+		$Block['element']['text'][]= $Line['text'];
+		//--
+		return $Block;
+		//--
+	} //END FUNCTION
+
+
+	private function blockFencedDivComplete($Block) { // by unixman
+		//--
+		// all escapings are centralized now ; test ok
+		//--
+		return $Block;
+		//--
+	} //END FUNCTION
+
+
 	//-- # Fenced Code
 
 
@@ -656,19 +847,16 @@ final class SmartMarkdownToHTML {
 				//$class = 'language-'.$matches[1]; // fix from 1.5.4
 				$class = (string) $matches[1]; // fix from 1.5.4 :: modified by unixman to be compliant with highlight.js
 				//--
-				$Element['attributes'] = array(
-					'class' => $class,
-				);
-				//--
 			} else {
 				//--
 				$class = 'plaintext'; // fix by unixman to be compliant with highlight.js (plaintext)
 				//--
-				$Element['attributes'] = array(
-					'class' => $class,
-				);
-				//--
 			} //end if
+			//--
+			$Element['attributes'] = array(
+				'class' => (string) 'mkdw-code syntax', // req. prefix: mkdw-code (to differentiate from others for main css)
+				'data-syntax' => (string) trim((string)$class), // req. prefix: mkdw-code (to differentiate from others for main css)
+			);
 			//--
 			$Block = array(
 				'char' => $Line['text'][0],
@@ -713,7 +901,7 @@ final class SmartMarkdownToHTML {
 			//--
 		} //end if
 		//--
-		$Block['element']['text']['text'] .= "\n".$Line['body'];;
+		$Block['element']['text']['text'] .= "\n".$Line['body'];
 		//--
 		return $Block;
 		//--
@@ -794,7 +982,7 @@ final class SmartMarkdownToHTML {
 			//--
 		} //end if
 		//--
-		$Block['element']['text']['text'] .= "\n".$Line['body'];;
+		$Block['element']['text']['text'] .= "\n".$Line['body'];
 		//--
 		return $Block;
 		//--
@@ -1129,10 +1317,30 @@ final class SmartMarkdownToHTML {
 			return;
 		} //end if
 		//--
+		$table_defs = [];
+		//--
 		if((strpos((string)$Block['element']['text'], '|') !== false) AND ((string)rtrim((string)$Line['text'], ' -:|') === '')) {
 			//-- unixman
 			if($Block['element']['text'][0] === '|') {
+				//--
+				$defs_matches = array();
+				if(preg_match('/^\|(\{\!DEF\!\=([_A-Za-z0-9\.\-\#]+;?)*\}( )){1}/', (string)$Block['element']['text'], $defs_matches)) {
+					if(isset($defs_matches[0]) AND isset($defs_matches[1])) {
+						$Block['element']['text'] = (string) '|'.substr((string)$Block['element']['text'], (int)strlen((string)rtrim((string)$defs_matches[0])));
+						$defs_matches[1] = (string) trim((string)$defs_matches[1]);
+						$defs_matches[1] = (string) trim((string)$defs_matches[1], '{}');
+						$defs_matches[1] = (string) trim((string)$defs_matches[1]);
+						$defs_matches[1] = (string) substr((string)$defs_matches[1], 6); // take out prefix: `!DEF!=`
+						$table_defs = (array) explode(';', $defs_matches[1]);
+					} //end if
+				} //end if
+				$defs_matches = null;
+				//--
 				$is_full_width = true;
+				if(in_array('AUTO-WIDTH', (array)$table_defs)) {
+					$is_full_width = false;
+				} //end if else
+				//--
 			} else {
 				$is_full_width = false;
 			} //end if
@@ -1158,7 +1366,6 @@ final class SmartMarkdownToHTML {
 				if(isset($dividerCell[0]) AND ((string)$dividerCell[0] === ':')) {
 					$alignment = 'left';
 				} //end if
-				//--
 				if((string)substr((string)$dividerCell, - 1) === ':') {
 					$alignment = $alignment === 'left' ? 'center' : 'right';
 				} //end if
@@ -1195,30 +1402,85 @@ final class SmartMarkdownToHTML {
 				//-- # end unixman
 				$HeaderElement['text'] = (string) $headerCell;
 				//--
-				if(isset($alignments[$index])) {
-					//--
-					$alignment = (string) $alignments[$index];
-					//--
-					if((!array_key_exists('attributes', $HeaderElement)) OR (!is_array($HeaderElement['attributes']))) {
-						$HeaderElement['attributes'] = array();
-					} //end if
+				$alignment = (string) (isset($alignments[$index]) ? $alignments[$index] : '');
+				if(
+					(in_array('ALIGN-HEAD-LEFT', (array)$table_defs)) OR
+					(in_array('ALIGN-HEAD-CENTER', (array)$table_defs)) OR
+					(in_array('ALIGN-HEAD-RIGHT', (array)$table_defs)) OR
+					(in_array('ALIGN-HEAD-AUTO', (array)$table_defs))
+				) {
+					if(in_array('ALIGN-HEAD-LEFT', (array)$table_defs)) {
+						$alignment = 'left';
+					} elseif(in_array('ALIGN-HEAD-CENTER', (array)$table_defs)) {
+						$alignment = 'center';
+					} elseif(in_array('ALIGN-HEAD-RIGHT', (array)$table_defs)) {
+						$alignment = 'right';
+					} elseif(in_array('ALIGN-HEAD-AUTO', (array)$table_defs)) {
+						if(is_numeric((string)trim((string)$HeaderElement['text']))) {
+							$alignment = 'right';
+						} else {
+							$alignment = 'center';
+						} //end if else
+					} //end if else
+				} else {
+					if(in_array('ALIGN-LEFT', (array)$table_defs)) {
+						$alignment = 'left';
+					} elseif(in_array('ALIGN-CENTER', (array)$table_defs)) {
+						$alignment = 'center';
+					} elseif(in_array('ALIGN-RIGHT', (array)$table_defs)) {
+						$alignment = 'right';
+					} elseif(in_array('ALIGN-AUTO', (array)$table_defs)) {
+						if(is_numeric((string)trim((string)$HeaderElement['text']))) {
+							$alignment = 'right';
+						} else {
+							$alignment = 'center';
+						} //end if else
+					} //end if else
+				} //end if else
+				//--
+				if((!array_key_exists('attributes', $HeaderElement)) OR (!is_array($HeaderElement['attributes']))) {
+					$HeaderElement['attributes'] = array();
+				} //end if
+				if((string)$alignment != '') {
 					$HeaderElement['attributes']['style'] = 'text-align: '.$alignment.';';
-					//--
 				} //end if
 				//--
 				$HeaderElements[] = (array) $HeaderElement;
 				//--
 			} //end foreach
 			//--
+			$table_id = '';
+			$table_classes = [];
+			if($is_full_width) {
+				$table_classes['full-width-table'] = true;
+			} //end if
+			for($i=0; $i<Smart::array_size($table_defs); $i++) {
+				if(strpos((string)$table_defs[$i], '#') === 0) {
+					if((string)trim((string)$table_id) == '') { // find the first table ID if any
+						$table_id = (string) trim((string)str_replace(['#', '.'], '', (string)$table_defs[$i]));
+					} //end if
+				} elseif(strpos((string)$table_defs[$i], '.') === 0) {
+					$table_classes[(string)trim((string)str_replace(['#', '.'], '', (string)$table_defs[$i]))] = true;
+				} //end if
+			} //end for
+			$table_classes = (string) trim((string)implode(' ', array_keys((array)$table_classes)));
+			//--
 			$Block = array(
+				'@table-defs@' 	=> (array) $table_defs,
 				'alignments' 	=> (array) $alignments,
 				'identified' 	=> true,
 				'element' 		=> [
 					'name' 			=> 'table',
 					'handler' 		=> 'elements',
-					'attributes' 	=> (array) ($is_full_width ? ['class' => 'full-width-table'] : [])
+					'attributes' 	=> [],
 				],
 			);
+			if((string)trim((string)$table_classes) != '') {
+				$Block['element']['attributes']['class'] = (string) $table_classes;
+			} //end if
+			if((string)trim((string)$table_id) != '') {
+				$Block['element']['attributes']['id'] = (string) $table_id;
+			} //end if
 			//--
 			$Block['element']['text'][]= array(
 				'name' => 'thead',
@@ -1231,8 +1493,28 @@ final class SmartMarkdownToHTML {
 				'text' => array()
 			);
 			//--
+			$valign = 'top';
+			if(
+				(in_array('VALIGN-HEAD-CENTER', (array)$table_defs)) OR
+				(in_array('VALIGN-HEAD-MIDDLE', (array)$table_defs)) OR
+				(in_array('VALIGN-CENTER', (array)$table_defs)) OR
+				(in_array('VALIGN-MIDDLE', (array)$table_defs))
+			) {
+				$valign = 'middle';
+			} elseif (
+				(in_array('VALIGN-HEAD-BOTTOM', (array)$table_defs)) OR
+				(in_array('VALIGN-HEAD-DOWN', (array)$table_defs)) OR
+				(in_array('VALIGN-BOTTOM', (array)$table_defs)) OR
+				(in_array('VALIGN-DOWN', (array)$table_defs))
+			) {
+				$valign = 'bottom';
+			} //end if else
+			//--
 			$Block['element']['text'][0]['text'][]= array(
 				'name' => 'tr',
+				'attributes' => [
+					'valign' => (string) $valign,
+				],
 				'handler' => 'elements',
 				'text' => $HeaderElements
 			);
@@ -1268,6 +1550,8 @@ final class SmartMarkdownToHTML {
 				return $Block;
 			} //end if
 			//--
+			$table_defs = (array) $Block['@table-defs@'];
+			//--
 			if(is_array($matches[0])) {
 				foreach($matches[0] as $index => $cell) {
 					//--
@@ -1289,21 +1573,50 @@ final class SmartMarkdownToHTML {
 					//-- # end unixman
 					$Element['text'] = $cell;
 					//--
-					if(isset($Block['alignments'][$index])) {
-						if((!isset($Element['attributes'])) OR (!is_array($Element['attributes']))) {
-							$Element['attributes'] = array();
-						} //end if
-						//$Element['attributes']['style'] = 'text-align: '.$Block['alignments'][$index].';';
-						$Element['attributes']['style'] = 'text-align: '.$Block['alignments'][$index].'; '.(isset($Element['attributes']['style']) ? $Element['attributes']['style'] : ''); // fix by unixman
+					if((!isset($Element['attributes'])) OR (!is_array($Element['attributes']))) {
+						$Element['attributes'] = array();
 					} //end if
+					//--
+					$alignment = (string) (isset($Block['alignments'][$index]) ? $Block['alignments'][$index] : '');
+					if(in_array('ALIGN-LEFT', (array)$table_defs)) {
+						$alignment = 'left';
+					} elseif(in_array('ALIGN-CENTER', (array)$table_defs)) {
+						$alignment = 'center';
+					} elseif(in_array('ALIGN-RIGHT', (array)$table_defs)) {
+						$alignment = 'right';
+					} elseif(in_array('ALIGN-AUTO', (array)$table_defs)) {
+						if(is_numeric((string)trim((string)$Element['text']))) {
+							$alignment = 'right';
+						} else {
+							$alignment = 'left';
+						} //end if else
+					} //end if else
+					//--
+					$Element['attributes']['style'] = ($alignment ? 'text-align: '.$alignment.'; ' : '').(isset($Element['attributes']['style']) ? $Element['attributes']['style'] : ''); // fix by unixman
 					//--
 					$Elements[] = $Element;
 					//--
 				} //end foreach
 			} //end if
 			//--
+			$valign = 'top';
+			if(
+				(in_array('VALIGN-CENTER', (array)$table_defs)) OR
+				(in_array('VALIGN-MIDDLE', (array)$table_defs))
+			) {
+				$valign = 'middle';
+			} elseif (
+				(in_array('VALIGN-BOTTOM', (array)$table_defs)) OR
+				(in_array('VALIGN-DOWN', (array)$table_defs))
+			) {
+				$valign = 'bottom';
+			} //end if else
+			//--
 			$Element = array(
 				'name' => 'tr',
+				'attributes' => [
+					'valign' => (string) $valign,
+				],
 				'handler' => 'elements',
 				'text' => $Elements,
 			);
@@ -1347,20 +1660,35 @@ final class SmartMarkdownToHTML {
 		} //end if
 		//--
 		if((strpos((string)$Excerpt['text'], '>') !== false) AND preg_match('/^<((mailto:)?\S+?@\S+?)>/i', (string)$Excerpt['text'], $matches)) {
+			//-- the email can be as <mailto:addr@eml> or <[addr at eml](mailto:addr@eml)> or can be just like <addr@eml>
+			$email = (string) ($matches[1] ?? '');
+			$emails = (array) SmartParser::get_arr_emails((string)$email);
+			$emails = (array) array_values((array)array_unique((array)$emails));
+			$email = (string) trim((string)implode(', ', (array)$emails));
+			$emails = null;
+			$name = (string) trim((string)($matches[1] ?? ''));
+			if((strpos($name, '[') === 0) AND (strpos($name, ']') !== false)) {
+				$name = (array) explode(']', (string)substr((string)$name, 1), 2);
+				$name = (string) trim((string)($name[0] ?? ''));
+				if((string)$name == '') {
+					$name = (string) $email;
+				} //end if
+			} else {
+				$name = (string) $email;
+			} //end if else
 			//--
-			$url = (string) (isset($matches[1]) ? $matches[1] : '');
-			//--
-			if(!isset($matches[2])) {
-				$url = (string) 'mailto:'.$url;
+		//	if(!isset($matches[2])) {
+			if((string)$email != '') {
+				$url = (string) 'mailto:'.$email;
 			} //end if
 			//--
 			return array(
 				'extent' => (int) strlen(isset($matches[0]) ? $matches[0] : 0),
 				'element' => [
 					'name' => 'a',
-					'text' => (string) (isset($matches[1]) ? $matches[1] : ''),
+					'text' => (string) $name,
 					'attributes' => [
-						'href' => (string) $url,
+						'href' => (string) $url, // email urls should not be relative fixed !
 					],
 				],
 			);
@@ -1454,6 +1782,16 @@ final class SmartMarkdownToHTML {
 		//--
 		if($Link === null) {
 			return;
+		} //end if
+		//--
+		if( // unixman: support for SFI Icons
+			((string)$Link['element']['attributes']['href'] == 'SFI-ICON') AND
+			((string)$Link['element']['text'] == 'ICON')
+		) {
+			return array(
+				'extent' => $Link['extent'] + 1,
+				'markup' => (string) ' &nbsp;<i class="'.Smart::escape_html((string)trim((string)$Link['element']['attributes']['title'])).'"></i>&nbsp; ',
+			);
 		} //end if
 		//--
 		$Inline = array(
@@ -1681,14 +2019,16 @@ final class SmartMarkdownToHTML {
 			//--
 		} //end if else
 		//--
-		$Element['attributes']['href'] = str_replace(array('&', '<'), array('&amp;', '&lt;'), $Element['attributes']['href']);
+		$Element['attributes']['href'] = (string) str_replace(['&', '<'], ['&amp;', '&lt;'], (string)$Element['attributes']['href']);
 		//-- unixman (extra)
 		$remainder = (string) substr((string)$Excerpt['text'], (isset($Element['extent']) ? $Element['extent'] : 0));
 		$matches = array();
 		if($isImage === true) {
 			$theRegex = (string) self::regexImgAttribute;
+			// do not escape image urls !!!
 		} else {
 			$theRegex = (string) self::regexLnkAttribute;
+			$Element['attributes']['href'] = $this->fixRelativeURL((string)$Element['attributes']['href']);
 		} //end if else
 		if(preg_match('/'.$theRegex.'/', $remainder, $matches)) { // no need for preg_quote() here, the $theRegex is always a REGEX expr
 			$Element['attributes'] += $this->parseAttributeData((string)(isset($matches[2]) ? $matches[2] : ''));
@@ -1863,13 +2203,13 @@ final class SmartMarkdownToHTML {
 			} //end if
 			//--
 			$Inline = array(
-				'extent' => (int) strlen(isset($matches[0][0]) ? (string)$matches[0][0] : ''),
-				'position' => (isset($matches[0][1]) ? $matches[0][1] : null), // here must be null if not isset()
+				'extent' => (int) strlen((string)($matches[0][0] ?? '')),
+				'position' => ($matches[0][1] ?? null), // here must be null if not isset()
 				'element' => [
 					'name' => 'a',
-					'text' => (string) (isset($matches[0][0]) ? $matches[0][0] : ''),
+					'text' => (string) ($matches[0][0] ?? ''),
 					'attributes' => [
-						'href' => (string) (isset($matches[0][0]) ? $matches[0][0] : ''),
+						'href' => (string) $this->fixRelativeURL((string)($matches[0][0] ?? '')),
 					],
 				],
 			);
@@ -1907,7 +2247,7 @@ final class SmartMarkdownToHTML {
 					'name' => 'a',
 					'text' => (string) $url,
 					'attributes' => [
-						'href' => (string) $url,
+						'href' => (string) $this->fixRelativeURL((string)$url),
 					],
 				],
 			);
@@ -1918,6 +2258,82 @@ final class SmartMarkdownToHTML {
 
 
 	// no need for blocUrlTag
+
+
+	//-- # fixCodeEscapings (by unixman)
+
+
+	private function fixCodeEscapings($code) {
+		//--
+		return (string) preg_replace(
+			'/^\\\\```/m', // will replace just \``` and if starts a line ... but actually the string internally in PHP is \\``` ... regex tested !
+			'```',
+			(string) $code
+		);
+		//--
+	} //END FUNCTION
+
+
+	//-- # fixEscapings (by unixman)
+
+
+	private function fixEscapings($text) { // this is an extra feature, inspired from turndown.js ; some character sequences cannot be used without being escaped in markdown ... revert them here (except the code which has a special revert only ...)
+		//--
+		return (string) strtr((string)$text, [
+			'\\\\' 	=> '\\',
+			'\\*' 	=> '*',
+			'\\-' 	=> '-',
+			'\\+ ' 	=> '+ ', // with a space !
+			'\\+' 	=> '+',
+			'\\=' 	=> '=',
+			'\\#' 	=> '#',
+			'\\`' 	=> '`',
+			'\\~' 	=> '~',
+			'\\(' 	=> '(',
+			'\\)' 	=> ')',
+			'\\[' 	=> '[',
+			'\\]' 	=> ']',
+			'\\{' 	=> '{',
+			'\\}' 	=> '}',
+			'\\>' 	=> '>',
+			'\\<' 	=> '<', // extra
+			'\\_' 	=> '_',
+			'\\. ' 	=> '. ', // with a space
+			'\\:' 	=> ':',
+			'\\|' 	=> '|',
+		]);
+		//--
+	} //END FUNCTION
+
+
+	//-- # fixRelativeURL (by unixman)
+
+
+	private function fixRelativeURL($url) {
+		//--
+		if((string)$this->relative_url_prefix == '') {
+			return (string) $url;
+		} //end if
+		//--
+		if(
+			(strpos((string)trim((string)$url), '#') === 0) OR
+			(strpos((string)trim((string)$url), 'mailto:') === 0) OR
+			((string)$url === 'SFI-ICON')
+		) {
+			return (string) $url;
+		} //end if
+		//--
+		if(
+			(stripos((string)trim((string)$url), 'http://') !== 0) AND
+			(stripos((string)trim((string)$url), 'https://') !== 0) AND
+			(stripos((string)trim((string)$url), '//') !== 0)
+		) {
+			$url = (string) $this->relative_url_prefix.$url;
+		} //end if
+		//--
+		return (string) $url;
+		//--
+	} //END FUNCTION
 
 
 	//-- # Handlers
@@ -1963,8 +2379,14 @@ final class SmartMarkdownToHTML {
 			//--
 			if(isset($Element['handler'])) {
 				$markup .= (string) $this->{$Element['handler']}($Element['text']);
-			} else {
-				$markup .= (string) Smart::escape_html((string)$Element['text']); // fix by unixman: all escapings for texts are centralized now HERE !!
+			} else { // fix by unixman: fix back all escapings ; code should be treated differently !!
+				$markup .= (string) Smart::escape_html((string)(
+					((string)$el_name == 'code')
+						?
+						(string) $this->fixCodeEscapings((string)$Element['text']) // code should not be altered, turndown does not escape it which is just perfect ; but adding just a revert of \``` if starting a new line as ``` cannot be used to start a line inside code fence without this hack ...
+						:
+						(string) $this->fixEscapings((string)$Element['text'])) // for all the rest of elements, except code ...
+					); // fix by unixman: all escapings for texts are centralized now HERE !!
 			} //end if else
 			//--
 			$markup .= '</'.Smart::escape_html($el_name).'>';
@@ -1999,36 +2421,39 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	private function divs_span($lines) {
+		//--
+		if(!is_array($lines)) {
+			return '';
+		} //end if
+		//--
+		return (string) $this->lines($lines, 'span'); // render with span not paragraphs !
+		//--
+	} //END FUNCTION
+
+
+	private function divs_div($lines) {
+		//--
+		if(!is_array($lines)) {
+			return '';
+		} //end if
+		//--
+		return (string) $this->lines($lines, 'div'); // render with div not paragraphs !
+		//--
+	} //END FUNCTION
+
+
 	private function li($lines) { // Fixed: No Unicode String Functions here !!!
 		//--
 		if(!is_array($lines)) {
 			return '';
 		} //end if
 		//--
-		$markup = (string) $this->lines($lines);
-		//--
-		$trimmedMarkup = (string) trim((string)$markup);
+		$markup = (string) $this->lines($lines, 'span'); // render with span not paragraphs !
 		//--
 		/*
-	//	if(!in_array('', $lines) AND substr($trimmedMarkup, 0, 3) === '<p>') {
-		if(
-			(!in_array('', $lines)) AND
-			((string)substr((string)$trimmedMarkup, 0, 3) === '<p>') AND
-			(strpos((string)$markup, '</p>') !== false) // fix by unixman: make sure there is also the end of p tag
-		) {
-			//--
-			$markup = (string) $trimmedMarkup;
-			$markup = (string) substr((string)$markup, 3);
-			//--
-			$position = (int) strpos((string)$markup, '</p>');
-			//--
-			$markup = (string) substr_replace($markup, '', $position, 4);
-			//--
-		} //end if
-		*/
-		if( // a better fix for the above code by unixman, if p tag have attributes, the above code will not match (but this one fixes)
+		if( // a fix for the above code if rendered with paragraphs, by unixman, if p tag have attributes, the above code will not match (but this one fixes)
 			(
-			//	(!in_array('', $lines)) AND // this is intended with replacing all occurences of <p> and </p> in the below code
 				(
 					(strpos((string)$markup, '<p>') !== false) OR
 					(strpos((string)$markup, '</p>') !== false)
@@ -2040,11 +2465,12 @@ final class SmartMarkdownToHTML {
 			$markup = (string) preg_replace('#<p[^>]*?'.'>#si', '', (string)$markup, 1); // replace first ocurence only
 			$markup = (string) preg_replace('#</p[^>]*?'.'>(?!.*</p[^>]*?'.'>)#mi', '', (string)$markup, 1); // replace last ocurence only
 			// but the conclusion is that is better to replace all occurences of <p> and </p> in ul/ol li ... the lists will display better
-			/* this was tested to replace ALL <p> and </p>
+			//-- this was tested to replace ALL <p> and </p>
 		//	$markup = (string) preg_replace('#<p[^>]*?'.'>#si', '', (string)$markup); // replace all ocurences
 		//	$markup = (string) preg_replace('#</p[^>]*?'.'>#si', '', (string)$markup); // replace all ocurences
-			*/
+			//--
 		} //end if
+		*/
 		//--
 		return (string) $markup;
 		//--

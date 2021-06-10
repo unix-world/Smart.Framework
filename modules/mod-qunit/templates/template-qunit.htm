@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version:          r.20210526 -->
+<!-- Version:          r.20210604 -->
 <!-- Template:         [###TEMPLATE-PATH|html###][###TEMPLATE-FILE|html###] -->
 <!-- Charset:          [###CHARSET|html###] -->
 <!-- Srv Script:       [###SRV-SCRIPT|html###] -->
@@ -32,19 +32,16 @@ hr {
 <!-- jQuery -->
 <script src="lib/js/jquery/jquery.js?[###RELEASE-HASH|html###]"></script>
 <script>jQuery.ajaxSetup({ timeout: [###TIMEOUT-NETSOCKET|int###] * 1000, cache: false });</script>
+<!-- Notifications Growl (toastr) --><link rel="stylesheet" type="text/css" href="lib/js/jquery/growl/jquery.toastr.css?[###RELEASE-HASH|url|html###]"><script src="lib/js/jquery/growl/jquery.toastr.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Notifications Dialog --><link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.alertable.css?[###RELEASE-HASH|url|html###]"><script src="lib/js/jquery/jquery.alertable.js?[###RELEASE-HASH|url|html###]"></script>
 <!-- QUnit -->
 <link href="modules/mod-qunit/views/js/qunit/qunit.css?[###RELEASE-HASH|html###]" rel="stylesheet">
 <script src="modules/mod-qunit/views/js/qunit/qunit.js?[###RELEASE-HASH|html###]"></script>
 <!-- SmartQUnit -->
 <script src="modules/mod-qunit/views/js/smart-qunit.js?[###RELEASE-HASH|html###]"></script>
 <!-- Smart.Framework -->
-<script src="lib/js/framework/src/core_utils.js?[###RELEASE-HASH|html###]"></script>
-<script src="lib/js/framework/src/date_utils.js?[###RELEASE-HASH|html###]"></script>
-<script src="lib/js/framework/src/crypt_utils.js?[###RELEASE-HASH|html###]"></script>
-<script src="lib/js/framework/src/ifmodalbox.js?[###RELEASE-HASH|html###]"></script>
-<script src="lib/js/framework/src/browser_check.js?[###RELEASE-HASH|html###]"></script>
-<script src="lib/js/framework/src/browser_utils.js?[###RELEASE-HASH|html###]"></script>
-<script src="lib/js/framework/src/ifmodalbox_scanner.js?[###RELEASE-HASH|url|html###]"></script>
+[@@@SUB-TEMPLATE:!etc/templates/default/js-framework.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!etc/templates/default/js-settings.inc.htm!@@@]
 </head>
 <body>
 <div id="qunit"></div>

@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A][T]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210530
+ * @version		20210604
  *
  */
 final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
@@ -302,6 +302,10 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 			} //end if
 		} //end if else
 		if(defined('SMART_APP_MODULE_AUTOLOAD')) {
+			if((!SmartFileSystem::is_type_file((string)$the_path_to_module.'lib/autoload.php')) OR (!SmartFileSystem::have_access_read((string)$the_path_to_module.'lib/autoload.php'))) {
+				SmartFrameworkRuntime::Raise500Error('FAILED to load the lib autoloader for module: '.$arr[0]);
+				return;
+			} //end if
 			require_once((string)$the_path_to_module.'lib/autoload.php');
 		} //end if
 		if(defined('SMART_APP_MODULE_AUTH')) {
@@ -381,6 +385,9 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 			$appStatusCode = $appModule->Run(); // mixed: null (void) / FALSE / TRUE / INT Status-Code
 			$appSettings = (array) $appModule->PageViewGetCfgs();
 		} //end if
+		//--
+		$appReturnedCode = $appStatusCode; // mixed, preserve as original, used below
+		//--
 		if($appStatusCode === false) {
 			$appStatusCode = 500;
 		} elseif($appStatusCode === true) {
@@ -389,10 +396,11 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware {
 			$appStatusCode = intval($appStatusCode);
 		} //end if
 		$appStatusCode = (int) $appStatusCode; // ensure int
+		//--
 		$appModule->ShutDown();
 		if((isset($appSettings['status-code'])) AND ((int)$appSettings['status-code'] != 0)) { // {{{SYNC-SMART-FRAMEWORK-HANDLE-HTTP-STATUS-CODE}}}
-			if(((int)$appStatusCode != 0) AND ((int)$appStatusCode != (int)$appSettings['status-code'])) {
-				Smart::log_warning('The middleware service '.$the_midmark.' detected different status codes in controller: '.$page.' ; Run='.(int)$appStatusCode.' ; Status-Code='.(int)$appSettings['status-code']);
+			if(((int)$appReturnedCode != 0) AND ((int)$appStatusCode != (int)$appSettings['status-code'])) {
+				Smart::log_warning('The middleware service '.$the_midmark.' detected a different status codes in controller: '.$page.' ; '.($appSkipRun === true ? 'Initialize' : 'Run').'='.(int)$appStatusCode.' ; Status-Code='.(int)$appSettings['status-code']);
 			} //end if
 			$appStatusCode = (int) $appSettings['status-code']; // this rewrites what the Run() function returns, which is very OK as this is authoritative !
 		} //end if

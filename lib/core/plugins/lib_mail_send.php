@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210305
+ * @version 	v.20210605
  * @package 	Plugins:Mailer
  *
  */
@@ -456,7 +456,7 @@ final class SmartMailerSend {
 					$this->log = 'SendMail :: DEBUG :: MAIL';
 				} //end if
 				//--
-				if(SmartUnicode::mailsend((string)$this->to, (string)$this->prepare_subject($this->subject), '', (string)$this->mime_message) != true) {
+				if(SmartUnicode::mailsend((string)$this->to, (string)$this->prepare_subject((string)$this->subject), '', (string)$this->mime_message) != true) {
 					$err = 'Mail Method Failed !';
 					if($this->debuglevel > 0) {
 						$this->log .= ' :: '.$err;

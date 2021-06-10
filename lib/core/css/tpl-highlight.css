@@ -6,15 +6,15 @@
 /* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
-	background: #DDEEFF !important;
+	background: #CBDA8C !important;
 	color: #333333 !important;
 }
 .sf__tpl__highlight__syntax {
-	background: #B3FF80 !important;
+	background: #CBDA8C !important;
 	color: #222222 !important;
 }
 .sf__tpl__highlight__subtpl {
-	background: #FDE223 !important;
+	background: #CBDA8C !important;
 	color: #111111 !important;
 }
 

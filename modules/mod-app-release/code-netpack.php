@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210527
+ * @version 	v.20210605
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -154,10 +154,10 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		$the_archname = (string) $arch->get_archive_file_name();
 		$the_archpath = (string) $arch->get_archive_file_path();
 		//--
-		echo '<div class="operation_info">Creating the Release Package: `'.Smart::escape_html((string)$the_archname).'`<br>'.'NetArchive Max Memory Size: '.Smart::escape_html((string)(defined('NETPACK_MAX_MEMORY_SIZE') ? NETPACK_MAX_MEMORY_SIZE : 'N/A')).'</div>';
-		echo '<div style="font-size:0.75rem!important">';
+		$this->EchoHtmlMessage('<div class="operation_info">Creating the Release Package: `'.Smart::escape_html((string)$the_archname).'`<br>'.'NetArchive Max Memory Size: '.Smart::escape_html((string)(defined('NETPACK_MAX_MEMORY_SIZE') ? NETPACK_MAX_MEMORY_SIZE : 'N/A')).'</div>');
+		$this->EchoHtmlMessage('<div style="font-size:0.75rem!important">');
 		$arch->pack_dir((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR);
-		echo '</div>';
+		$this->EchoHtmlMessage('</div>');
 		$this->err = (string) $arch->save();
 		$this->err = (string) trim((string)$this->err);
 		if((string)$this->err != '') {

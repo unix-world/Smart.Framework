@@ -44,7 +44,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210512
+ * @version 	v.20210609
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -697,12 +697,12 @@ final class SmartYamlConverter {
 			// Check for sequences
 			while(preg_match($regex_seq, $inline, $matchseqs)) {
 				$seqs[] = $matchseqs[0];
-				$inline = preg_replace($regex_seq, ('YAMLSeq'.(Smart::array_size($seqs) - 1).'s'), $inline, 1);
+				$inline = preg_replace($regex_seq, ('YAMLSeq'.(Smart::array_size($seqs) - 1).'s'), $inline, 1); // safe
 			} //end while
 			// Check for mappings
 			while(preg_match($regex_map, $inline, $matchmaps)) {
 				$maps[] = $matchmaps[0];
-				$inline = preg_replace($regex_map, ('YAMLMap'.(Smart::array_size($maps) - 1).'s'), $inline, 1);
+				$inline = preg_replace($regex_map, ('YAMLMap'.(Smart::array_size($maps) - 1).'s'), $inline, 1); // safe
 			} //end while
 			if($i++ >= 10) {
 				break;
@@ -742,7 +742,17 @@ final class SmartYamlConverter {
 			if(!empty($saved_strings)) {
 				foreach ($explode as $key => $value) {
 					while(strpos($value, 'YAMLString') !== false) {
-						$explode[$key] = preg_replace('/YAMLString/', $saved_strings[$stringi], $value, 1);
+						//-- fix by unixman (security issue, unsafe preg_replace may lead to unpredictable results if a string inside YAML syntax like [ 'a', 'b', '$1', '\\1', "xYz", ... ] contains a regex backtrace like in the example ...)
+					//	$explode[$key] = (string) preg_replace('/YAMLString/', $saved_strings[$stringi], $value, 1); // unsafe, if the $saved_strings[$stringi] contains any regex back reference such as $1 or \\1 ... the results are unpredictable !
+						$explode[$key] = (string) preg_replace_callback( // this is safe !
+							'/YAMLString/',
+							function($matches) use ($saved_strings, $stringi) {
+								return (string) ($saved_strings[$stringi] ?? '');
+							},
+							(string) $value,
+							1
+						);
+						//-- #end fix by unixman
 						unset($saved_strings[$stringi]);
 						++$stringi;
 						$value = $explode[$key];

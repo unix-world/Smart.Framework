@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210527
+ * @version 	v.20210605
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -135,7 +135,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 
 		//--
-		echo '<div class="operation_info">Optimizing the source code: `'.Smart::escape_html((string)TASK_APP_RELEASE_CODEPACK_MODE).'`<br>'.'Optimizations Max Run Timeout: '.Smart::escape_html((string)(defined('OPTIMIZATIONS_MAX_RUN_TIMEOUT') ? ((int)OPTIMIZATIONS_MAX_RUN_TIMEOUT).' seconds' : 'N/A')).'</div>';
+		$this->EchoHtmlMessage('<div class="operation_info">Optimizing the source code: `'.Smart::escape_html((string)TASK_APP_RELEASE_CODEPACK_MODE).'`<br>'.'Optimizations Max Run Timeout: '.Smart::escape_html((string)(defined('OPTIMIZATIONS_MAX_RUN_TIMEOUT') ? ((int)OPTIMIZATIONS_MAX_RUN_TIMEOUT).' seconds' : 'N/A')).'</div>');
 		//--
 
 		//--
@@ -329,7 +329,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			} //end foreach
 		} //end if
 		//--
-		echo (string) SmartMarkersTemplating::render_file_template(
+		$this->EchoHtmlMessage((string)SmartMarkersTemplating::render_file_template(
 			$this->ControllerGetParam('module-view-path').'partials/app-optimize-result.inc.htm',
 			[
 				'TYPE' 		=> 'POST-OPTIMIZATIONS',
@@ -337,8 +337,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				'DETAILS' 	=> (string) implode("\n", $post_optimizations_rename),
 			],
 			'yes' // cache
-		);
-		Smart::InstantFlush();
+		));
 		//--
 
 		//--
@@ -398,7 +397,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			} //end foreach
 		} //end if
 		//--
-		echo (string) SmartMarkersTemplating::render_file_template(
+		$this->EchoHtmlMessage((string)SmartMarkersTemplating::render_file_template(
 			$this->ControllerGetParam('module-view-path').'partials/app-optimize-result.inc.htm',
 			[
 				'TYPE' 		=> 'POST-OPTIMIZATIONS',
@@ -406,8 +405,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				'DETAILS' 	=> (string) implode("\n", $post_optimizations_skip),
 			],
 			'yes' // cache
-		);
-		Smart::InstantFlush();
+		));
 		//--
 
 		//--
@@ -488,7 +486,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			return;
 		} //end if
 		//--
-		echo (string) SmartMarkersTemplating::render_file_template(
+		$this->EchoHtmlMessage((string)SmartMarkersTemplating::render_file_template(
 			$this->ControllerGetParam('module-view-path').'partials/app-optimize-result.inc.htm',
 			[
 				'TYPE' 		=> 'DIR',
@@ -496,8 +494,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				'DETAILS' 	=> (string) $appcodeoptimizer->get_log(),
 			],
 			'yes' // cache
-		);
-		Smart::InstantFlush();
+		));
 		//--
 	} //END FUNCTION
 
@@ -526,7 +523,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			return;
 		} //end if
 		//--
-		echo (string) SmartMarkersTemplating::render_file_template(
+		$this->EchoHtmlMessage((string)SmartMarkersTemplating::render_file_template(
 			$this->ControllerGetParam('module-view-path').'partials/app-optimize-result.inc.htm',
 			[
 				'TYPE' 		=> 'FILE',
@@ -534,8 +531,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				'DETAILS' 	=> (string) $appcodeoptimizer->get_log(),
 			],
 			'yes' // cache
-		);
-		Smart::InstantFlush();
+		));
 		//--
 	} //END FUNCTION
 

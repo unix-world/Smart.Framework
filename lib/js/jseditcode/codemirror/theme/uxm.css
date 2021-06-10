@@ -1,13 +1,13 @@
 /*
 // theme/uxm.css
-// codemirror: v.5.42.0
+// codemirror: v.5.61.1
 */
 
 /*
 	UXM Write theme, inspired from MDN-LIKE Theme - Mozilla
 	Ported to CodeMirror by Peter Kroon <plakroon@gmail.com>, Report bugs/issues here: https://github.com/codemirror/CodeMirror/issues, GitHub: @peterkroon
 	The mdn-like theme is inspired on the displayed code examples at: https://developer.mozilla.org/en-US/docs/Web/CSS/animation
-	Inspired by mdn-like theme, modified by unixman, (c) 2016-2019 unix-world.org
+	Inspired by mdn-like theme, modified by unixman, (c) 2016-2021 unix-world.org
 */
 
 .cm-s-uxm.CodeMirror { color: #333333; background-color: #FFFFFF; }
@@ -22,7 +22,7 @@
 .cm-s-uxm .CodeMirror-matchingbracket { color: #FF9900 !important; }
 .cm-s-uxm .CodeMirror-nonmatchingbracket { color: #FF0000 !important; }
 
-.cm-s-uxm .CodeMirror-matchingtag { background: #679904 !important; color: #FFFFFF !important; }
+.cm-s-uxm .CodeMirror-matchingtag { background: #91b150 !important; color: #FFFFFF !important; }
 
 .cm-s-uxm .cm-keyword { color: #6262FF; }
 .cm-s-uxm .cm-atom { color: #FF9900; }
@@ -49,5 +49,10 @@
 .cm-s-uxm .cm-error { border-bottom: 1px solid red; }
 
 div.cm-s-uxm .CodeMirror-activeline-background { background: #EFEFFF; }
+
+.cm-s-uxm.CodeMirror {
+	background: linear-gradient(to bottom, #FCFCFC, #FCFCFC 50%, #FFFFFF 50%, #FFFFFF);
+	background-size: 100% 10px;
+}
 
 /* END */

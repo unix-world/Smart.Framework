@@ -69,9 +69,9 @@ class SmartAppIndexController extends SmartAbstractAppController {
 					(string) $stpl,
 					[
 						'@SUB-TEMPLATES@' => [
-							'%the-tpl%|html' => '@/'.SmartFileSysUtils::get_file_name_from_path($tpl)
+							'%the-tpl%|html-no-subtpls' => '@/'.SmartFileSysUtils::get_file_name_from_path($tpl)
 						],
-						'HTML-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web','tpl']),
+						'HTML-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', ''),
 						'TPL-PATH' 			=> (string) $tpl,
 						'TPL-TYPE' 			=> 'Template'
 					]
@@ -87,9 +87,9 @@ class SmartAppIndexController extends SmartAbstractAppController {
 					(string) $stpl,
 					[
 						'@SUB-TEMPLATES@' => [
-							'%the-tpl%|html' => '@/'.SmartFileSysUtils::get_file_name_from_path($ptpl)
+							'%the-tpl%|html-no-subtpls' => '@/'.SmartFileSysUtils::get_file_name_from_path($ptpl)
 						],
-						'HTML-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_highlightsyntax('body', ['web','tpl']),
+						'HTML-HIGHLIGHT' 	=> (string) SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', ''),
 						'TPL-PATH' 			=> (string) $ptpl,
 						'TPL-TYPE' 			=> 'Sub-Template'
 					]
@@ -101,7 +101,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$data = [ // v.20200121
+		$data = [ // v.20210603
 			//-- ### ALL VARIABLE KEYS ARE CASE INSENSITIVE IN CONTROLLERS ; IN TEMPLATES ALL VARIABLE NAME / KEYS ARE UPPERCASE ; variable names will allow also - (. is reserved for separator as arr[key] is ARR.KEY)
 			'Version' => (string) SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.SMART_FRAMEWORK_RELEASE_VERSION,
 			'heLLo__World' => '<h1>Demo: Marker-TPL Templating built-into Smart.Framework</h1>',

@@ -1,23 +1,6 @@
-<!-- TPL Foot r.20210530 -->
+<!-- TPL Foot r.20210609 -->
 [%%%IF:SEMAPHORE:&*<load:searchterm-highlight-js>;%%%]
-<!-- Highlight SearchTerm -->
-<style>
-.searchterm_highlight {
-	background-color: #FFCC00 !important;
-	color: #222222 !important;
-	padding: 0 !important;
-	border-radius: 3px !important;
-}
-</style>
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.highlight.css?[###RELEASE-HASH|url|html###]">
-<script src="lib/js/jquery/jquery.highlight.js?[###RELEASE-HASH|url|html###]"></script>
-<script>
-jQuery(() => {
-	if((typeof(searchTerm) != 'undefined') && (searchTerm != null) && (searchTerm != '')) {
-		jQuery('.search-highlight').removeHighlight('searchterm_highlight').highlight(String(searchTerm), 'searchterm_highlight');
-	} //end if
-});
-</script>
+[@@@SUB-TEMPLATE:!etc/templates/default/js-search-term-highlight.inc.htm!@@@]
 [%%%ELSE:SEMAPHORE%%%]
 <!-- Highlight SearchTerm: skip by Semaphore -->
 [%%%/IF:SEMAPHORE%%%]
@@ -29,14 +12,6 @@ jQuery(() => {
 [%%%IF:SEMAPHORE:&*<skip:unveil-js>;%%%]
 <!-- Unveil: skip by Semaphore -->
 [%%%ELSE:SEMAPHORE%%%]
-<!-- Unveil -->
-<script src="lib/js/jquery/jquery.unveil.js?[###RELEASE-HASH|url|html###]"></script>
-<script>
-jQuery(() => {
-	jQuery(window).on('refreshunveil', () => { jQuery('.unveil').off('unveil').unveil(); });
-	setTimeout(() => { jQuery(window).trigger('refreshunveil'); }, 250); // call for init or dom changes that include unveil elements (can include also unhide unveil elements)
-	//jQuery(window).trigger('lookup'); // call after unhide unveil elements
-});
-</script>
+[@@@SUB-TEMPLATE:!etc/templates/default/js-unveil.inc.htm!@@@]
 [%%%/IF:SEMAPHORE%%%]
 <!-- #.# -->

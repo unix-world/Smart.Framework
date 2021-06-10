@@ -38,7 +38,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20210528
+ * @version 	v.20210609
  * @package 	@Core:Extra
  *
  */
@@ -1840,8 +1840,8 @@ final class SmartUtils {
 				$tmp_srv_software = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_SOFTWARE']);
 			} //end if else
 			$tmp_version_arr = (array) explode('/', (string)$tmp_srv_software);
-			$tmp_name_str = (string) trim((string)$tmp_version_arr[0] ?? '');
-			$tmp_out = (string) trim((string)$tmp_version_arr[1] ?? '');
+			$tmp_name_str = (string) trim((string)($tmp_version_arr[0] ?? ''));
+			$tmp_out = (string) trim((string)($tmp_version_arr[1] ?? ''));
 			$tmp_version_arr = (array) explode(' ', (string)$tmp_out);
 			$tmp_version_str = (string) trim((string)($tmp_version_arr[0] ?? ''));
 			//--

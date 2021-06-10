@@ -1,13 +1,13 @@
 /*
 // theme/uxw.css
-// codemirror: v.5.42.0
+// codemirror: v.5.61.1
 */
 
 /*
 	UXW Write theme, inspired from MDN-LIKE Theme - Mozilla
 	Ported to CodeMirror by Peter Kroon <plakroon@gmail.com>, Report bugs/issues here: https://github.com/codemirror/CodeMirror/issues, GitHub: @peterkroon
 	The mdn-like theme is inspired on the displayed code examples at: https://developer.mozilla.org/en-US/docs/Web/CSS/animation
-	Inspired by mdn-like theme, modified by unixman, (c) 2016-2019 unix-world.org
+	Inspired by mdn-like theme, modified by unixman, (c) 2016-2021 unix-world.org
 */
 
 .cm-s-uxw.CodeMirror { color: #333333; background-color: #FFFFFF; }
@@ -15,14 +15,14 @@
 .cm-s-uxw .CodeMirror-line::selection, .cm-s-uxw .CodeMirror-line > span::selection, .cm-s-uxw .CodeMirror-line > span > span::selection { background: #FEFD53; }
 .cm-s-uxw .CodeMirror-line::-moz-selection, .cm-s-uxw .CodeMirror-line > span::-moz-selection, .cm-s-uxw .CodeMirror-line > span > span::-moz-selection { background: #FEFD53; }
 
-.cm-s-uxw .CodeMirror-gutters { border-left: 2px solid #5BC0DE; background: #FFFFFF; color: #333333; }
+.cm-s-uxw .CodeMirror-gutters { border-left: 2px solid #DDEEFF; background: #FFFFFF; color: #333333; }
 .cm-s-uxw .CodeMirror-linenumber { color: #AAAAAA; padding-left: 8px; }
 .cm-s-uxw .CodeMirror-cursor { border-left: 2px solid #222222; }
 
 .cm-s-uxw .CodeMirror-matchingbracket { color: #FF9900 !important; }
 .cm-s-uxw .CodeMirror-nonmatchingbracket { color: #FF0000 !important; }
 
-.cm-s-uxw .CodeMirror-matchingtag { background: #679904 !important; color: #FFFFFF !important; }
+.cm-s-uxw .CodeMirror-matchingtag { background: #91b150 !important; color: #FFFFFF !important; }
 
 .cm-s-uxw .cm-keyword { color: #6262FF; }
 .cm-s-uxw .cm-atom { color: #FF9900; }

@@ -33,6 +33,25 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		$this->PageViewSetCfg('template-path', 'default'); 		// set the template path (must be inside etc/templates/)
 		$this->PageViewSetCfg('template-file', 'template.htm');	// set the template file
 		//--
+		$rand = (int) rand(0,2);
+		//--
+		$semaphores = [];
+	//	$semaphores[] = 'skip:js-ui';
+		if((int)$rand == 1) {
+			$semaphores[] = 'load:searchterm-highlight-js';
+		} //end if
+		//--
+		$semaphores[] = 'load:code-highlight-js';
+		if((int)$rand == 1) {
+			$semaphores[] = 'theme:dark';
+		} elseif((int)$rand == 2) {
+			$semaphores[] = 'theme:light';
+		} //end if
+		//--
+	//	$semaphores[] = 'skip:unveil-js';
+		//--
+		$this->PageViewSetVar('semaphore', (string) Smart::array_to_list($semaphores));
+		//--
 	} //END FUNCTION
 
 

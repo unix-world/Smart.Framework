@@ -1,7 +1,7 @@
 # '[###TITLE|html###]' (<H1> "Heading 1" &reg; &#169; &#169a;)
 
 &copy;&nbsp;&nbsp;2015-2021&nbsp;unix-world.org
-Extended Markdown Test :: v.20210512
+Extended Markdown Test :: v.20210602
 
 ## H2 (Unicode <Test>) ăĂîÎâÂşŞţŢ &quot;&nbsp;&quot; &lt;&quot;&gt;
 
@@ -15,6 +15,30 @@ Extended Markdown Test :: v.20210512
 
 Alternatively, for H1 and H2, an underline-ish style:
 
+::: .operation_info
+```javascript
+var test = true;
+```
+:::
+
+::: .operation_notice .test_class_notice #test-div-notice
+This is a
+notice <a>bc
+with an icon ![ICON](SFI-ICON "sfi sfi-leaf sfi-2x")
+:::
+
+::: .operation_important .test_class_important #test-div-important
+This is important
+:::
+
+::: @article-div
+This is an article DIV
+:::
+
+::: @section-div
+This is a section DIV
+:::
+
 Alt-<H1>
 ======
 
@@ -22,10 +46,12 @@ Alt-<H2>
 ------
 
 <Line1 <i>> 1
-&Line2 &copy; <i>& 2\s
+&Line2 &copy; <i>& 2\
 `Line3 <i>` 3 <a>
-\S
+\
 <Line4> 4
+\
+\
 "Line5 <i> 5" <a>
  &Line6
 
@@ -72,7 +98,7 @@ test('<a href="#">Test</a>');
 	test('<a href="#">Test</a>');
 	?>
 
-``` ```
+\
 
 Strong emphasis, aka bold, with **asterisks** or __underscores__.
 
@@ -100,17 +126,29 @@ some text aligned on left (default)
 - - -
 
 1. First ordered <list> "item"
+```
+This is some code
+```
+~~~
+	This is preformat inside li
+~~~
+		And this is another preformat
+	::: @div-paragraphs
+		This is a div with paragraphs ...
+	:::
+::: @div-divs
+This is a div with divs ...
+:::\
 
-	This is a paragraph inside list
-		And a preformat
 2. Another <"item">
 	* Unordered sub-list.
 	- Another
-3. Actual numbers don't matter, just that it's a number
+3. Actual numbers don't matter, just that it's a number ```li with code ...```
 	1. Ordered sub-list
 	1. Another
 4. And another item.
 Continuation on next line
+New Line
 	And another new line here
 		You can have "properly" <indented> preformat within list items. Notice the blank line above, and the leading spaces (at least one, but we'll use three here to also align the raw Markdown).
 
@@ -226,10 +264,10 @@ First Header  | Second Header
 Content Cell  | Content Cell
 Content Cell  | Content Cell
 
-| Name {T: @class=pbordered}         | Description {T: @class=pbordered}              |
-| ------------- | ----------------------- |
-| Help {T: @class=pbordered}         | Display the help window. {T: @class=pbordered} |
-| Close {T: @class=pbordered}        | Closes a window {T: @class=pbordered}          |
+|{!DEF!=AUTO-WIDTH;.dbordered;.stripped;#tbl-one} Name   | Description     |
+| ------------- | -----------------------  |
+| Help          | Display the help window. |
+| Close         | Closes a window          |
 
 | Name | Description |
 | ----- | ----- |
@@ -251,6 +289,15 @@ Markdown {T: @class=dbordered} | Less {T: @class=dbordered} | Pretty {T: @class=
 
 > Blockquotes are very handy in email to emulate reply text.
 > This line is part of the same quote.
+> ``` javascript
+> let a = 2;
+> const b = 3;
+> var a = 4;
+> class A {
+>   constructor() {
+>   }
+> }
+> ```
 
 Quote break.
 

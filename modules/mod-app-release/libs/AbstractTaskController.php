@@ -13,7 +13,12 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
+if(!\SmartAppInfo::TestIfModuleExists('mod-qunit')) {
+	\SmartFrameworkRuntime::Raise500Error('Mod QUnit is missing !');
+	die('Mod QUnit is missing !');
+} //end if
+
+// SMART_APP_MODULE_DIRECT_OUTPUT :: TRUE :: # by parent class
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -25,31 +30,20 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210527
+ * @version 	v.20210605
  *
  */
-abstract class AbstractTaskController extends \SmartAbstractAppController {
+abstract class AbstractTaskController extends \SmartModExtLib\Qunit\AbstractTaskController {
 
 	protected $title = 'App Release Task (Abstract)';
 
-	protected $sficon = '';
-	protected $msg = '';
-	protected $err = '';
-	protected $notice = '';
-	protected $notehtml = '';
-
-	protected $goback = '';
-
-	protected $details = false;
-
-	protected $modal = false;
-	protected $workvar = '';
-	protected $working = false;
-	protected $workstop = false;
-	protected $selfclose = 0;
-	protected $endscroll = false;
+	protected $name_prefix = 'App';
+	protected $name_suffix = 'Task';
+	protected $app_tpl = ''; // path/to/some.mtpl.htm
+	protected $app_main_url = '';
 
 	private $appid = '';
+	protected $details = false;
 
 
 	final public function getAppId() {
@@ -59,44 +53,38 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 	} //END FUNCTION
 
 
-	final public function Initialize() {
+	protected function InitTask() {
 		//--
-		$name_prefix = 'AppRelease';
-		$name_suffix = 'CodePack';
-		$name_all = (string) $name_prefix.'.'.$name_suffix;
-		//--
-		if((!\defined('\\SMART_APP_MODULE_DIRECT_OUTPUT')) OR (\SMART_APP_MODULE_DIRECT_OUTPUT !== true)) {
-			\SmartFrameworkRuntime::Raise500Error(__METHOD__.' # Invalid Controller Mode. Must be with: SMART_APP_MODULE_DIRECT_OUTPUT=true !');
-			return;
+		if(!$this->TestDirectOutput()) {
+			return 'ERROR: Direct Output is not enabled ...';
 		} //end if
 		//--
 		$this->appid = (string) \trim((string)$this->RequestVarGet('appid', '', 'string'));
-		//--
 		if((string)$this->appid == '') {
 			\SmartFrameworkRuntime::Raise400Error('App ID is Empty');
-			return;
+			return false;
 		} //end if
 		//--
 		$yaml_settings = \AppCodeUtils::parseYamlSettings((string)$this->appid); // mixed
 		if(!\is_int($yaml_settings) OR ($yaml_settings !== 8)) { // there are 7 mandatory settings + 1 (app id) ... see the YAML file
 			\SmartFrameworkRuntime::Raise503Error('YAML SETTINGS PARSE ERROR: '.$yaml_settings);
-			return;
+			return false;
 		} //end if
 		//--
 		$ini_settings = \AppCodeUtils::parseIniSettings(); // mixed
 		if(!\is_int($ini_settings) OR ((int)$ini_settings !== 3)) { // there are 3 mandatory settings: MAX RUN TIMEOUT and PHP executable {{{SYNC-CHECK-APP-INI-SETTINGS}}}
 			\SmartFrameworkRuntime::Raise503Error('INI SETTINGS PARSE ERROR: Num Req. is: #'.$ini_settings);
-			return;
+			return false;
 		} //end if
 		//--
 		$applist = \AppCodeUtils::getAppsFromYamlSettings(); // mixed
 		if(!\is_array($applist)) {
 			\SmartFrameworkRuntime::Raise503Error('APP LIST PARSE ERROR: #'.$applist);
-			return;
+			return false;
 		} //end if
 		if(!\in_array((string)$this->appid, (array)\array_keys((array)$applist))) {
 			\SmartFrameworkRuntime::Raise400Error('Invalid App ID Selected: '.$this->appid);
-			return;
+			return false;
 		} //end if
 		//--
 		if((string)$this->workvar != '') { // conditional by workvar
@@ -107,89 +95,33 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 			} //end if
 		} //end if
 		//--
-		\SmartFrameworkRuntime::outputHttpHeadersNoCache();
+		$this->name_prefix = 'AppRelease';
+		$this->name_suffix = 'CodePack';
+		//--
+		$this->app_tpl = 'modules/mod-app-release/views/app-task.mtpl.htm';
+		$this->app_main_url = $this->ControllerGetParam('url-script').'?page='.\Smart::escape_url((string)$this->ControllerGetParam('module').'.app-manage').'&appid='.\Smart::escape_url((string)$this->appid);
+		//--
 		$arr_utils_metainfo = (array) \AppCodeUtils::getArrIniMetaInfo(); // requires \AppCodeUtils::parseIniSettings() !!
-		echo (string) \SmartMarkersTemplating::render_file_template(
-			$this->ControllerGetParam('module-tpl-path').'tpl-task-start.mtpl.htm',
-			\SmartComponents::set_app_template_conform_metavars([ // {{{SYNC-APP-RELEASE-TPL-VARS}}}
-				'WORKING' 			=> (string) (($this->working === true) ? 'yes' : 'no'),
-				'WORKSTOP' 			=> (string) (($this->workstop === true) ? 'yes' : 'no'),
-				'MODAL' 			=> (string) (($this->modal === true) ? 'yes' : 'no'),
-				'TITLE' 			=> (string) $this->title,
-				'VERSION' 			=> (string) \AppCodeUtils::getVersion(),
-				'NAME' 				=> (string) $name_all,
-				'NAME-PREFIX' 		=> (string) $name_prefix,
-				'NAME-SUFFIX' 		=> (string) $name_suffix,
-				'MOD-VIEW-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
-				'PHP-SELF-VER' 		=> (string) $arr_utils_metainfo['PHP-SELF-VER'],
-				'PHP-BIN-VER' 		=> (string) $arr_utils_metainfo['PHP-BIN-VER'],
-				'NODE-BIN-VER' 		=> (string) $arr_utils_metainfo['NODE-BIN-VER'],
-				'JS-MIN-VER' 		=> (string) $arr_utils_metainfo['JS-MIN-VER'],
-				'JS-LINT-MODE' 		=> (string) $arr_utils_metainfo['JS-LINT-MODE'],
-				'CSS-MIN-VER' 		=> (string) $arr_utils_metainfo['CSS-MIN-VER'],
-				'CSS-LINT-MODE' 	=> (string) $arr_utils_metainfo['CSS-LINT-MODE'],
-				'SF-VER' 			=> (string) ' :: '.\AppCodeUtils::getSfVersion(),
-				'APP-ID' 			=> (string) (\defined('\\APPCODEPACK_APP_ID') ? \APPCODEPACK_APP_ID : ''),
-				'APP-DEPLOY-HASH' 	=> (string) (\defined('\\APP_DEPLOY_HASH') ? \APP_DEPLOY_HASH : ''),
-				'APP-DEPLOY-USER' 	=> (string) (\defined('\\APP_DEPLOY_AUTH_USERNAME') ? \APP_DEPLOY_AUTH_USERNAME : ''),
-				'APP_DEPLOY_URLS' 	=> (string) (\defined('\\APP_DEPLOY_URLS') ? \APP_DEPLOY_URLS : ''),
-				'APP-STRATEGY' 		=> (string) (\defined('\\TASK_APP_RELEASE_CODEPACK_MODE') ? \TASK_APP_RELEASE_CODEPACK_MODE : ''),
-				'APP-FOLDERS' 		=> (string) 'Folders: '.(\defined('\\APP_DEPLOY_FOLDERS') ? \SmartUtils::pretty_print_var(\Smart::json_decode((string)\APP_DEPLOY_FOLDERS)) : ''),
-				'APP-FILES' 		=> (string) 'Files: '.(\defined('\\APP_DEPLOY_FILES') ? \SmartUtils::pretty_print_var(\Smart::json_decode((string)\APP_DEPLOY_FILES)) : ''),
-				'APP-DETAILS' 		=> (string) (($this->details !== false) ? 'yes' : 'no'),
-			])
+		//--
+		return array(
+			'VERSION' 			=> (string) \AppCodeUtils::getVersion(),
+			'PHP-SELF-VER' 		=> (string) $arr_utils_metainfo['PHP-SELF-VER'],
+			'PHP-BIN-VER' 		=> (string) $arr_utils_metainfo['PHP-BIN-VER'],
+			'NODE-BIN-VER' 		=> (string) $arr_utils_metainfo['NODE-BIN-VER'],
+			'JS-MIN-VER' 		=> (string) $arr_utils_metainfo['JS-MIN-VER'],
+			'JS-LINT-MODE' 		=> (string) $arr_utils_metainfo['JS-LINT-MODE'],
+			'CSS-MIN-VER' 		=> (string) $arr_utils_metainfo['CSS-MIN-VER'],
+			'CSS-LINT-MODE' 	=> (string) $arr_utils_metainfo['CSS-LINT-MODE'],
+			'SF-VER' 			=> (string) ' :: '.\AppCodeUtils::getSfVersion(),
+			'APP-ID' 			=> (string) (\defined('\\APPCODEPACK_APP_ID') ? \APPCODEPACK_APP_ID : ''),
+			'APP-DEPLOY-HASH' 	=> (string) (\defined('\\APP_DEPLOY_HASH') ? \APP_DEPLOY_HASH : ''),
+			'APP-DEPLOY-USER' 	=> (string) (\defined('\\APP_DEPLOY_AUTH_USERNAME') ? \APP_DEPLOY_AUTH_USERNAME : ''),
+			'APP_DEPLOY_URLS' 	=> (string) (\defined('\\APP_DEPLOY_URLS') ? \APP_DEPLOY_URLS : ''),
+			'APP-STRATEGY' 		=> (string) (\defined('\\TASK_APP_RELEASE_CODEPACK_MODE') ? \TASK_APP_RELEASE_CODEPACK_MODE : ''),
+			'APP-FOLDERS' 		=> (string) 'Folders: '.(\defined('\\APP_DEPLOY_FOLDERS') ? \SmartUtils::pretty_print_var(\Smart::json_decode((string)\APP_DEPLOY_FOLDERS)) : ''),
+			'APP-FILES' 		=> (string) 'Files: '.(\defined('\\APP_DEPLOY_FILES') ? \SmartUtils::pretty_print_var(\Smart::json_decode((string)\APP_DEPLOY_FILES)) : ''),
+			'APP-DETAILS' 		=> (string) (($this->details !== false) ? 'yes' : 'no'),
 		);
-		$this->InstantFlush();
-		//--
-		$arr_utils_metainfo = null;
-		//--
-	} //END FUNCTION
-
-
-	final public function ShutDown() {
-		//--
-		$err = (string) \trim((string)$this->err);
-		$notice = (string) \trim((string)$this->notice);
-		//--
-		$icon = '';
-		if(\is_array($this->sficon) AND (\Smart::array_size($this->sficon) > 0)) {
-			foreach($this->sficon as $key => $val) {
-				if(\Smart::is_nscalar($val)) {
-					if((string)\trim((string)$val) != '') {
-						$icon .= ' &nbsp;&nbsp; <i class="sfi sfi-2x sfi-'.\Smart::escape_html((string)$val).'"></i>';
-					} //end if
-				} //end if
-			} //end foreach
-		} elseif((string)trim((string)$this->sficon) != '') {
-			$icon = ' &nbsp;&nbsp; <i class="sfi sfi-2x sfi-'.\Smart::escape_html((string)$this->sficon).'"></i>';
-		} //end if
-		//--
-		if((string)$err != '') {
-			echo (string) \SmartComponents::operation_error((string)\Smart::nl_2_br((string)\Smart::escape_html((string)$err)).$icon);
-		} elseif((string)$notice != '') {
-			echo (string) \SmartComponents::operation_notice((string)\Smart::nl_2_br((string)\Smart::escape_html((string)$notice)).$icon);
-			echo "\n";
-			echo (string) $this->notehtml;
-		} else {
-			echo (string) \SmartComponents::operation_success('OK: Completed ... '.\Smart::nl_2_br((string)\Smart::escape_html((string)$this->msg)).$icon);
-		} //end if
-		$this->InstantFlush();
-		//--
-		echo (string) \SmartMarkersTemplating::render_file_template(
-			$this->ControllerGetParam('module-tpl-path').'tpl-task-end.mtpl.htm',
-			(array) \SmartComponents::set_app_template_conform_metavars([
-				'TITLE' 			=> (string) $this->title,
-				'YEAR' 				=> (string) \date('Y'),
-				'WORKING' 			=> (string) (($this->working === true) ? 'yes' : 'no'),
-				'HAVE-ERRORS' 		=> (string) (\strlen((string)$err) ? 'yes' : 'no'),
-				'HAVE_NOTICE' 		=> (string) (\strlen((string)$notice) ? 'yes' : 'no'),
-				'MODAL' 			=> (string) (($this->modal === true) ? 'yes' : 'no'),
-				'SELFCLOSE' 		=> (string) (((int)$this->selfclose > 0) ? (int)$this->selfclose : 0),
-				'ENDSCROLL' 		=> (string) (($this->endscroll === true) ? 'yes' : 'no'),
-				'GO-BACK-URL' 		=> (string) $this->goback,
-			])
-		);
-		$this->InstantFlush();
 		//--
 	} //END FUNCTION
 

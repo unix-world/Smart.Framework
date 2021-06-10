@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20210517
+ * @version 	v.20210605
  * @package 	Plugins:Mailer
  *
  */
@@ -541,7 +541,7 @@ final class SmartMailerUtils {
 		//--
 
 		//-- subject
-		$mail->subject = $subj;
+		$mail->subject = (string) $subj;
 		//--
 
 		//-- if message is html, include CID imgs as attachments (except if mode is 'return' which needs original data !!)
@@ -549,7 +549,7 @@ final class SmartMailerUtils {
 			//-- init
 			$arr_links = array();
 			//-- embed all images
-			$htmlparser = new SmartHtmlParser($message);
+			$htmlparser = new SmartHtmlParser((string)$message);
 			$htmlparser->get_clean_html(); // clean html before ; don't care of html comments
 			$arr_links = $htmlparser->get_tags('img'); // {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
 			$htmlparser = null;
@@ -815,7 +815,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20210430
+ * @version 	v.20210609
  * @package 	Plugins:Mailer
  *
  */
@@ -1335,7 +1335,7 @@ final class SmartMailerMimeParser {
 								if((string)$y_msg_type == 'apple-note') {
 									$val['content'] = (string) SmartMailerNotes::mime_fix_apple_notes_objects_in_html($val['content']); // must be done before cleanup
 								} //end if
-								$val['content'] = (string) self::mime_fix_clean_html($val['content']);
+								$val['content'] = (string) self::mime_fix_clean_html((string)$val['content']);
 								//-- {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}} :: fix back unsafe images replaced by mime_fix_clean_html() if default or print mode (not for 'data-reply' or 'data-full' or other modes)
 								if(((string)$y_process_mode == 'default') OR ((string)$y_process_mode == 'print')) {
 									$val['content'] = (string) str_replace('data-title="WebMail :: Disabled UNSAFE Image" src="#smart-framework-webmail-unsafe-image"', 'title="Smart.Framework.WebMail :: Disabled UNSAFE Image @ '.date('Y-m-d H:i:s O').'" src="lib/core/plugins/img/email/unsafe-image.svg"', (string)$val['content']);
@@ -1365,9 +1365,9 @@ final class SmartMailerMimeParser {
 						} else { // SECURITY NOTICE: for all the rest of cases fall back to text to avoid injections of non-html code as html
 					//	} elseif(((string)$val['mode'] == 'text/plain') OR ((string)$val['mode'] == 'application/pgp-encrypted')) { // Plain TEXT ; {{{SYNC-EMAIL-DECODE-SMIME}}}
 							//-- sanitize text
-							$val['content'] = '<!-- MIMEREAD:PART:TEXT -->'.Smart::escape_html($val['content']);
-							$val['content'] = str_replace(array("\r\n", "\r", "\n"), array("\n", "\n", '<br>'), $val['content']);
-							$val['content'] = SmartParser::text_urls($val['content']);
+							$val['content'] = '<!-- MIMEREAD:PART:TEXT -->'.Smart::escape_html((string)$val['content']);
+							$val['content'] = (string) str_replace(["\r\n", "\r", "\n"], ["\n", "\n", '<br>'], (string)$val['content']);
+							$val['content'] = (string) SmartParser::text_urls((string)$val['content']);
 							//--
 							if((string)$val['mode'] == 'application/pgp-encrypted') { // {{{SYNC-EMAIL-DECODE-SMIME}}}
 								$val['content'] = '<img src="lib/core/plugins/img/email/mime-encrypted.svg" align="right" alt="S.MIME" title="S.MIME">'.$val['content'];
@@ -1522,7 +1522,7 @@ final class SmartMailerMimeParser {
 
 	//==================================================================
 	// [PRIVATE]
-	private static function mime_fix_clean_html($y_mime_part) {
+	private static function mime_fix_clean_html(?string $y_mime_part) {
 		//--
 		// 1. clean HTML and strip comments
 		// 2. extract all image tags to be checked and deactivate unsafe img links, since robot re-composes a message and only embed img tags {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}

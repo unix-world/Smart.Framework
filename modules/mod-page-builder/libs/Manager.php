@@ -32,10 +32,11 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
 */
 //==================================================================
 
-//define('SMART_PAGEBUILDER_DB_TYPE', 'sqlite'); // this must be set in etc/config.php to activate the PageBuilder module ; possible values for the DB Type: 'sqlite' to use with SQLite DB or 'pgsql' to use with PostgreSQL DB
-//define('SMART_PAGEBUILDER_DISABLE_PAGES', true); // this can be set in etc/config.php to disable the use of pages and allow only segments
-//define('SMART_PAGEBUILDER_DISABLE_DELETE', true); // this can be set in etc/config-admin.php to disable page deletions in PageBuilder Manager (optional)
-//define('SMART_PAGEBUILDER_ALLOW_FULLTREE', true); // allow display full tree (this should be enabled just for small projects)
+//define('SMART_PAGEBUILDER_DB_TYPE', 'sqlite'); 		// this must be set in etc/config.php to activate the PageBuilder module ; possible values for the DB Type: 'sqlite' to use with SQLite DB or 'pgsql' to use with PostgreSQL DB
+//define('SMART_PAGEBUILDER_DISABLE_PAGES', true); 		// this can be set in etc/config.php to disable the use of pages and allow only segments
+//define('SMART_PAGEBUILDER_DISABLE_DELETE', true); 	// this can be set in etc/config-admin.php to disable page deletions in PageBuilder Manager (optional)
+//define('SMART_PAGEBUILDER_ALLOW_FULLTREE', true); 	// allow display full tree (this should be enabled just for small projects)
+//define('SMART_PAGEBUILDER_THEME_DARK', true); 		// if set to TRUE will enable the dark theme for the page builder editors
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -50,7 +51,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20210609
  * @package 	PageBuilder
  *
  */
@@ -226,10 +227,10 @@ final class Manager {
 		} //end if else
 		//--
 		$out = \SmartViewHtmlHelpers::html_jsload_editarea();
-		$out .= \SmartViewHtmlHelpers::html_jsload_highlightsyntax('body');
+		$out .= \SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Code Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
-		$out .= '<pre style="background:#ebe9e9;"><code class="'.\Smart::escape_html($type).'" id="code-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['code'])).'</code></pre>';
+		$out .= '<pre><code data-syntax="'.\Smart::escape_html($type).'" id="code-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['code'])).'</code></pre>';
 		$out .= '</div>';
 		//--
 		return (string) $out;
@@ -250,10 +251,10 @@ final class Manager {
 		$type = 'yaml';
 		//--
 		$out = \SmartViewHtmlHelpers::html_jsload_editarea();
-		$out .= \SmartViewHtmlHelpers::html_jsload_highlightsyntax('body');
+		$out .= \SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Data Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
-		$out .= '<pre style="background:#ebe9e9;"><code class="'.\Smart::escape_html($type).'" id="data-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['data'])).'</code></pre>';
+		$out .= '<pre><code data-syntax="'.\Smart::escape_html($type).'" id="data-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['data'])).'</code></pre>';
 		$out .= '</div>';
 		//--
 		return (string) $out;
@@ -625,6 +626,14 @@ final class Manager {
 		//--
 		$query['code'] = (string) $query['code'];
 		//--
+		if(\defined('\\SMART_PAGEBUILDER_THEME_DARK') AND (\SMART_PAGEBUILDER_THEME_DARK === true)) {
+			$theme_readonly = 'oceanic-next';
+			$theme_editable = 'zenburn';
+		} else {
+			$theme_readonly = 'uxm';
+			$theme_editable = 'uxw';
+		} //end if
+		//--
 		if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-edit') === true)) {
 			//--
 			if((string)$y_mode == 'form') {
@@ -663,14 +672,14 @@ final class Manager {
 						$out .= '<input type="hidden" name="frm[language]" value="'.\Smart::escape_html((string)$y_lang).'">';
 					} //end if
 					if((string)$query['mode'] == 'raw') {
-						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '885px', '70vh');
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '885px', '70vh', true, (string)$theme_editable);
 					} elseif((string)$query['mode'] == 'text') {
-						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '885px', '70vh');
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '885px', '70vh', true, (string)$theme_editable);
 					} elseif((string)$query['mode'] == 'markdown') {
-						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'markdown', true, '885px', '70vh');
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'markdown', true, '885px', '70vh', true, (string)$theme_editable);
 					} else {
 					//	$out .= \SmartViewHtmlHelpers::html_js_htmlarea('pbld_code_htmleditor', 'frm[code]', $query['code'], '885px', '70vh', true); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
-						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'html', true, '885px', '70vh');
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'html', true, '885px', '70vh', true, (string)$theme_editable);
 					} //end if else
 					$out .= '<div align="left">';
 					if((string)$query['mode'] == 'raw') {
@@ -776,10 +785,10 @@ final class Manager {
 						//--
 						if((string)$query['mode'] == 'raw') {
 							$out .= '</div>'."\n";
-							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh');
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh', true, (string)$theme_readonly);
 						} elseif((string)$query['mode'] == 'text') {
 							$out .= '</div>'."\n";
-							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh');
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh', true, (string)$theme_readonly);
 						} elseif((string)$query['mode'] == 'markdown') {
 							$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 							$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-preview.svg'.'" alt="'.self::text('record_sytx_html').'" title="'.self::text('record_sytx_html').'" style="cursor:pointer;" onClick="'.'smartJ$Browser.LoadElementContentByAjax('."jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-preview-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
@@ -789,12 +798,12 @@ final class Manager {
 								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code']); // render on the fly
 							} //end if
 							$out .= '</div>'."\n";
-							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'markdown', false, '885px', '70vh');
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'markdown', false, '885px', '70vh', true, (string)$theme_readonly);
 						} else { // html
 							$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 							$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-preview.svg'.'" alt="'.self::text('record_sytx_html').' Preview" title="'.self::text('record_sytx_html').' Preview" style="cursor:pointer;" onClick="'.'smartJ$Browser.LoadElementContentByAjax('."jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-preview-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
 							$out .= '</div>'."\n";
-							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'html', false, '885px', '70vh');
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'html', false, '885px', '70vh', true, (string)$theme_readonly);
 						} //end if else
 						//--
 					} else { // view
@@ -810,6 +819,7 @@ final class Manager {
 							$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 							$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-view-code.svg'.'" alt="'.self::text('record_sytx_html').' Code" title="'.self::text('record_sytx_html').' Source" style="cursor:pointer;" onClick="'.'smartJ$Browser.LoadElementContentByAjax('."jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-code&mode=codesrcview&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
 							$out .= '</div>'."\n";
+							$the_editor_styles = '';
 							if((string)$query['mode'] == 'markdown') {
 								$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/markdown.css">';
 								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code']); // render on the fly
@@ -874,6 +884,14 @@ final class Manager {
 		$query['code'] = (string) \base64_decode((string)$query['code']);
 		$query['data'] = (string) \base64_decode((string)$query['data']);
 		//--
+		if(\defined('\\SMART_PAGEBUILDER_THEME_DARK') AND (\SMART_PAGEBUILDER_THEME_DARK === true)) {
+			$theme_readonly = 'oceanic-next';
+			$theme_editable = 'zenburn';
+		} else {
+			$theme_readonly = 'uxm';
+			$theme_editable = 'uxw';
+		} //end if
+		//--
 		if((\SmartAuth::test_login_privilege('superadmin') === true) OR ((\SmartAuth::test_login_privilege('pagebuilder-edit') === true) AND (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true))) {
 			//--
 			if((string)$y_mode == 'form') {
@@ -888,7 +906,7 @@ final class Manager {
 				$out .= (string) self::getPreviewButtons((string)$query['id']);
 				$out .= '</div>'."\n";
 				$out .= '<input type="hidden" name="frm[form_mode]" value="yaml">';
-				$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', 'frm[data]', $query['data'], 'yaml', true, '885px', '70vh'); // OK.new
+				$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', 'frm[data]', $query['data'], 'yaml', true, '885px', '70vh', true, (string)$theme_editable); // OK.new
 				$out .= '<div align="left"><font size="4" color="#003399"><b>&lt;/<i>yaml</i>&gt;</b></font></div>'."\n";
 				$out .= "\n".'</form>'."\n";
 				$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', false);</script>';
@@ -1004,7 +1022,7 @@ final class Manager {
 				if((string)$y_mode == 'preview') {
 					$out .= '<div id="yaml-json-renderer" style="width:835px; height: 70vh; border: 1px solid #ECECEC; padding: 0.5em 1.5em; overflow:auto;"></div><script>(function(){ var yamlData = \''.\Smart::escape_js(\Smart::json_encode($yaml, false, false, true)).'\'; var yamlJsonData = null; try { yamlJsonData = JSON.parse(yamlData); } catch(err){ jQuery(\'#yaml-json-renderer\').html(\'<div id="operation_error">\' + \'ERROR Parsing YAML to JSON Data: \' + err + \'</div>\'); return; } jQuery(\'#yaml-json-renderer\').css({\'white-space\':\'pre\'}).jsonViewer(yamlJsonData, {collapsed:false, withQuotes:false}); })();</script>';
 				} else { // view
-					$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', '', $query['data'], 'yaml', false, '885px', '70vh'); // OK.new
+					$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', '', $query['data'], 'yaml', false, '885px', '70vh', true, (string)$theme_readonly); // OK.new
 				} //end if else
 				$out .= '<div align="left"><font size="4"><b>&lt;/yaml&gt;</b></font></div>'."\n";
 				$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', true); smartJ$UI.TabsActivate(\'tabs\', true);</script>';
@@ -1191,8 +1209,12 @@ final class Manager {
 		//--
 		if(!$err) {
 			switch((string)$y_type) {
-				case 'image/svg+xml':
-					$y_content = (new \SmartXmlParser())->format((string)$y_content, false, false, false, true); // avoid injection of other content than XML, remove the XML header
+				case 'image/svg+xml': // here SVGs can be only base64 encoded as canvas will send them !
+					if((\stripos((string)$y_content, '<svg') !== false) AND (\stripos((string)$y_content, '</svg>') !== false)) { // {{{SYNC VALIDATE SVG}}}
+						$y_content = (new \SmartXmlParser())->format((string)$y_content, false, false, false, true); // avoid injection of other content than XML, remove the XML header
+					} else {
+						$y_content = ''; // not a SVG !
+					} //end if else
 					if((string)$y_content == '') {
 						$err = 'Invalid SVG Content';
 					} else {
@@ -1773,7 +1795,7 @@ final class Manager {
 								$data['data'] = (string) \trim((string)$y_frm['data']);
 								if((string)$data['data'] != '') {
 									//--
-									$data['data'] = (string) \SmartModExtLib\PageBuilder\Utils::prepareCodeData((string)$data['data'], false);
+									$data['data'] = (string) \SmartModExtLib\PageBuilder\Utils::prepareCodeData((string)$data['data'], false, true); // for yaml re-indent spaces as tabs ...
 									//--
 									$data['data'] = (string) \base64_encode((string)$data['data']); // encode data b64 (encode must be here because will be transmitted later as B64 encode and must cover all error situations)
 									//--

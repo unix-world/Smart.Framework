@@ -1,7 +1,7 @@
 /*
 // Smart Code Mirror JS
-// (c) 2016-2020 unix-world.org
-// r.20210106
+// (c) 2016-2021 unix-world.org
+// r.20210609
 */
 
 .CodeMirror-SmartMenu-default {
@@ -20,13 +20,5 @@
 	border-bottom: 1px solid #DDDDDD !important;
 	z-index: 99999;
 }
-
-
-/* Trailing Spaces */
-.cm-trailingspace {
-	border-bottom: 1px dotted #b8b8b8;
-}
-
-/* Todo: LineFeed: '↵' and Indentation Space: '·' */
 
 /* END */

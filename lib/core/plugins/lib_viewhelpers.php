@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210529
+ * @version 	v.20210608
  * @package 	Plugins:ViewComponents
  *
  */
@@ -52,25 +52,38 @@ final class SmartViewHtmlHelpers {
 
 
 	//================================================================
+	public static function html_js_preview_iframe($yid, $y_contents, $y_width='720px', $y_height='300px', $y_maximized=false, $y_sandbox='allow-popups allow-same-origin') {
+		//--
+		return (string) SmartMarkersTemplating::render_file_template(
+			'lib/core/plugins/templates/preview-iframe-draw.inc.htm',
+			[
+				'IFRM-ID' 		=> (string) $yid,
+				'WIDTH' 		=> (string) $y_width,
+				'HEIGHT' 		=> (string) $y_height,
+				'SANDBOX' 		=> (string) $y_sandbox,
+				'MAXIMIZED' 	=> (bool)   $y_maximized,
+				'CONTENT' 		=> (string) $y_contents
+			],
+			'yes' // export to cache
+		);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	/**
-	 * Return the HTML / CSS / Javascript code to Load the required Javascripts for the Highlight.Js
+	 * Return the HTML / CSS / Javascript code to Load the required Javascripts for the prism.js
 	 * If a valid DOM Selector is specified all code areas in that dom selector will be highlighted
 	 * This function should not be rendered more than once in a HTML page
 	 *
 	 * @param STRING 	$dom_selector			A valid jQuery HTML-DOM Selector as container(s) for Pre>Code (see jQuery ...) ; Can be: 'body', '#id-element', ...
-	 * @param MIXED 	$plugins 				NULL to load all or ARRAY with enum of packages to load (available Plugins: 'web', 'tpl', 'lnx', 'lnx', 'srv', 'net', 'lang') ; Default is set to load only 'web'
-	 * @param ENUM 		$theme 					The Visual CSS Theme to Load ; Available Themes: 'default', 'atom-one-light', 'github-gist', 'github', 'googlecode', 'grayscale', 'ocean', 'tomorrow-night-blue', 'xcode', 'zenburn' ; Default is set to: 'default'
-	 * @param BOOL 		$loadpacks 				If TRUE will load syntax packed files instead of syntax single files which are many ; Default is TRUE
+	 * @param ENUM 		$theme 					The Visual CSS Theme to Load ; By default is set to '' which loads the default theme ; List of Available Themes: 'light', 'dark'
 	 * @param BOOL 		$use_absolute_url 		If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
-	 * @param STRING 	$ext_jshtml 			Extra Js/HTML Code ; Default is '' ; Here can be loaded ext syntax packs ; ex: '<script src="modules/mod-highlight-syntax/views/js/highlightjs-extra/syntax/tpl/twig.js"></script>'
 	 *
 	 * @return STRING							[HTML Code]
 	 */
-	public static function html_jsload_highlightsyntax($dom_selector, $plugins=['web'], $theme='github', $loadpacks=true, $use_absolute_url=false, $ext_jshtml='') {
-		//--
-		if(!is_array($plugins)) {
-			$plugins = [ 'web', 'tpl', 'lnx', 'lnx', 'srv', 'net', 'lang' ];
-		} //end if
+	public static function html_jsload_hilitecodesyntax($dom_selector, $theme='', $use_absolute_url=false) {
 		//--
 		if($use_absolute_url !== true) {
 			$the_abs_url = '';
@@ -78,82 +91,23 @@ final class SmartViewHtmlHelpers {
 			$the_abs_url = (string) SmartUtils::get_server_current_url();
 		} //end if else
 		//--
-		$ext_jshtml = (string) $ext_jshtml;
-		//--
 		$theme = (string) strtolower((string)$theme);
 		switch((string)$theme) {
-			case 'atom-one-light':
-			case 'github-gist':
-			case 'github':
-			case 'googlecode':
-			case 'grayscale':
-			case 'ocean':
-			case 'tomorrow-night-blue':
-			case 'xcode':
-			case 'zenburn':
+			case 'light':
+			case 'dark':
 				$theme = (string) $theme;
 				break;
-			case 'default':
+			case '':
 			default:
-				$theme = 'default';
+				$theme = '';
 		} //end switch
-		//--
-		$arr_packs = [ // {{{SYNC-HIGHLIGHT-FTYPE-PACK}}}
-			'web'  => 'css, diff, ini, javascript, json, less, markdown, php, scss, sql, pgsql, xml, yaml',
-			'tpl'  => 'markertpl, tex',
-			'lnx'  => 'awk, bash, perl, shell',
-			'srv'  => 'accesslog, apache, dns, nginx, pf',
-			'net'  => 'csp, http',
-			'lang' => 'cmake, coffeescript, cpp, go, lua, makefile, python, ruby, rust, tcl, vala'
-		];
-		//--
-		$arr_stx_plugs = [];
-		$arr_check_keys = [];
-		foreach($arr_packs as $key => $val) {
-			$key = (string) strtolower((string)trim((string)$key));
-			if((Smart::array_size($plugins) <= 0) OR (in_array((string)$key, (array)$plugins))) {
-				if((string)$key != '') {
-					if($loadpacks === false) { // load single files
-						//--
-						$tmp_arr = (array) explode(',', (string)$val);
-						for($i=0; $i<Smart::array_size($tmp_arr); $i++) {
-							$tmp_arr[$i] = (string) trim((string)$tmp_arr[$i]);
-							if((string)$tmp_arr[$i] != '') {
-								$arr_stx_plugs[] = (string) 'syntax/'.$key.'/'.strtolower((string)$tmp_arr[$i]);
-							} //end if
-						} //end if
-						$tmp_arr = [];
-						//--
-					} else { // load packs
-						//--
-						$arr_stx_plugs[] = (string) 'syntax-'.$key.'.pak';
-						$arr_check_keys[] = (string) $key;
-						//--
-					} //end if else
-				} //end if
-			} //end if
-		} //end foreach
-		//--
-		if($loadpacks === false) { // load single files
-			$syntax_packs = 'src';
-		} else { // load packs
-			$syntax_packs = 'pak';
-			if(Smart::array_size($arr_check_keys) > 0) {
-				if(array_keys($arr_packs) === $arr_check_keys) {
-					$arr_stx_plugs = [ 'syntax.pak' ]; // if all packs need to be loaded, replace with this one
-				} //end if
-			} //end if
-		} //end if
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			'lib/core/plugins/templates/syntax-highlight-init-and-process.inc.htm',
 			[
 				'HLJS-PREFIX-URL' 	=> (string) $the_abs_url,
-				'CSS-THEME' 		=> (string) $theme,
-				'SYNTAX-PLUGINS' 	=> (array)  $arr_stx_plugs,
-				'SYNTAX-PACKS' 		=> (string) $syntax_packs,
+				'CSS-THEME' 		=> (string) ($theme ? '-'.$theme : ''),
 				'AREAS-SELECTOR' 	=> (string) $dom_selector,
-				'EXT-JSHTML' 		=> (string) $ext_jshtml
 			]
 		);
 		//--
@@ -163,227 +117,264 @@ final class SmartViewHtmlHelpers {
 
 	//================================================================
 	/**
-	 * Get the HighlightJs Syntax type for a file type
+	 * Return the HTML / Javascript code to Load the required Javascripts for the Code Editor (Edit Area).
+	 * Should be called just once, before calling one or many ::html_js_editarea()
 	 *
-	 * @param STRING 	$path				The file path or file name (includding file extension)
+	 * @param BOOL 		$y_use_absolute_url 	If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
+	 * @param ARRAY 	$custom_themes 		 	An array with custom themes to load from available themes like [ 'theme1', 'theme2', ... ]
 	 *
-	 * @return ARRAY						[ type, pack ]
+	 * @return STRING							[HTML Code]
 	 */
-	public static function get_highlightsyntax_by_filetype($path) {
+	public static function html_jsload_editarea(bool $y_use_absolute_url=false, ?array $custom_themes=[]) {
 		//--
-		$path = (string) $path;
+		if($y_use_absolute_url !== true) {
+			$the_abs_url = '';
+		} else {
+			$the_abs_url = (string) SmartUtils::get_server_current_url();
+		} //end if else
 		//--
-		$fname = (string) SmartFileSysUtils::get_file_name_from_path((string)$path);
-		$fext = (string) SmartFileSysUtils::get_file_extension_from_path((string)$fname);
-		$fext = (string) strtolower((string)trim((string)$fext));
-		//--
-		$fpack = 'unknown'; // avoid return empty string on pack as this will load all packs
-		$ftype = '';
-		switch((string)$fext) { // {{{SYNC-HIGHLIGHT-FTYPE-PACK}}}
-			//-- web
-			case 'css':
-				$fpack = 'web';
-				$ftype = 'css';
-				break;
-			case 'diff':
-			case 'patch':
-				$fpack = 'web';
-				$ftype = 'diff';
-				break;
-			case 'ini':
-			case 'toml': // rust cargo def
-				$fpack = 'web';
-				$ftype = 'ini';
-				break;
-			case 'js':
-			case 'gjs':
-				$fpack = 'web';
-				$ftype = 'javascript';
-				break;
-			case 'json':
-				$fpack = 'web';
-				$ftype = 'json';
-				break;
-			case 'less':
-				$fpack = 'web';
-				$ftype = 'less';
-				break;
-			case 'rst': // similar with markdown
-			case 'md':
-			case 'markdown':
-				$fpack = 'web';
-				$ftype = 'markdown';
-				break;
-			case 'sql':
-				$fpack = 'web';
-				$ftype = 'sql';
-				break;
-			case 'pgsql':
-				$fpack = 'web';
-				$ftype = 'pgsql';
-				break;
-			case 'php':
-			case 'phps':
-			case 'php3':
-			case 'php4':
-			case 'php5':
-			case 'php6': // n/a
-			case 'php7':
-			case 'php8':
-			case 'php9':
-			case 'hh': // hip hop, a kind of static PHP
-				$fpack = 'web';
-				$ftype = 'php';
-				break;
-			case 'scss':
-				$fpack = 'web';
-				$ftype = 'scss';
-				break;
-			case 'yaml':
-			case 'yml':
-				$fpack = 'web';
-				$ftype = 'yaml';
-				break;
-				break;
-			case 'xml':
-			case 'svg':
-			case 'html':
-			case 'glade': // gnome glade xml
-			case 'ui': // qt ui xml
-			case 'jsp': // java server page
-			case 'asp': // active server page
-				$fpack = 'web';
-				$ftype = 'xml';
-				break;
-			//-- tpl (depends on web)
-			case 'mtpl':
-			case 'htm':
-				$fpack = 'web,tpl';
-				$ftype = 'markertpl';
-				break;
-			//-- lnx
-			case 'awk':
-				$fpack = 'lnx';
-				$ftype = 'awk';
-				break;
-			case 'pl':
-			case 'pm':
-				$fpack = 'lnx';
-				$ftype = 'perl';
-				break;
-			case 'bash':
-				$fpack = 'lnx';
-				$ftype = 'bash';
-				break;
-			case 'sh':
-				$fpack = 'lnx';
-				$ftype = 'shell';
-				break;
-			//-- srv
-			case 'dns':
-				$fpack = 'srv';
-				$ftype = 'dns';
-				break;
-			//-- net
-			case 'csp':
-				$fpack = 'net';
-				$ftype = 'csp';
-				break;
-			case 'httph':
-				$fpack = 'net';
-				$ftype = 'http';
-				break;
-			//-- lang
-			case 'coffee':
-			case 'cson':
-				$fpack = 'lang';
-				$ftype = 'coffeescript';
-				break;
-			case 'c':
-			case 'h':
-			case 'cpp':
-			case 'hpp':
-			case 'cxx':
-			case 'hxx':
-				$fpack = 'lang';
-				$ftype = 'cpp';
-				break;
-			case 'go':
-				$fpack = 'lang';
-				$ftype = 'go';
-				break;
-			case 'lua':
-				$fpack = 'lang';
-				$ftype = 'lua';
-				break;
-			case 'py':
-				$fpack = 'lang';
-				$ftype = 'python';
-				break;
-			case 'rb':
-				$fpack = 'lang';
-				$ftype = 'ruby';
-				break;
-			case 'rs':
-				$fpack = 'lang';
-				$ftype = 'rust';
-				break;
-			case 'tcl':
-			case 'tk':
-				$fpack = 'lang';
-				$ftype = 'tcl';
-				break;
-			case 'vala':
-			case 'vapi':
-				$fpack = 'lang';
-				$ftype = 'vala';
-				break;
-			//--
-			default:
-				// no handler
-		} //end switch
-		//--
-		if(stripos((string)$fname, '.mtpl.') !== false) {
-			$fpack = 'web,tpl';
-			$ftype = 'markertpl';
-		} elseif(
-			(in_array((string)$ftype, ['html', 'htm', 'js', 'json', 'css', 'xml', 'markdown', 'md', 'txt', 'log', 'yaml', 'yml'])) AND
-			((stripos((string)$fname, '.inc.') !== false) OR (stripos((string)$fname, '.tpl.') !== false))
-		) {
-			$fpack = 'web,tpl';
-			$ftype = 'markertpl';
-		} elseif(stripos((string)$fname, '.t3fluid.') !== false) {
-			$fpack = 'web';
-			$ftype = 'xml';
-		} elseif((string)strtolower((string)$fname) == 'cmake') {
-			$fpack = 'lang';
-			$ftype = 'cmake';
-		} elseif((string)strtolower((string)$fname) == 'makefile') {
-			$fpack = 'lang';
-			$ftype = 'makefile';
-		} elseif((string)$fname == 'pf.conf') {
-			$fpack = 'srv';
-			$ftype = 'pf';
-		} elseif(
-			((string)$fname == 'httpd.conf') OR
-			((string)$fname == 'httpd2.conf') OR
-			((string)$fname == 'apache.conf') OR
-			((string)$fname == 'apache2.conf') OR
-			((string)$fname == 'hosts.conf') OR
-			((string)$fname == 'svn.conf') OR // apache svn conf
-			((string)$fname == '.htaccess') OR // apache .htaccess (.htpasswd is plain text only)
-			((strpos((string)$fname, 'php-') === 0) AND ((string)substr((string)$fname, -5, 5) == '.conf')) OR // apache php conf
-			((strpos((string)$fname, 'mod-') === 0) AND ((string)substr((string)$fname, -5, 5) == '.conf')) OR // apache module conf
-			(((strpos((string)$fname, 'httpd-') === 0) OR (strpos((string)$fname, 'httpd_') === 0)) AND ((string)substr((string)$fname, -5, 5) == '.conf'))
-		) {
-			$fpack = 'srv';
-			$ftype = 'apache';
+		if(!is_array($custom_themes)) {
+			$custom_themes = array();
+		} //end if
+		if(Smart::array_size($custom_themes) > 0) {
+			if(Smart::array_type_test($custom_themes) != 1) {
+				$custom_themes = array();
+			} //end if
 		} //end if
 		//--
-		return array(
-			'type' => (string) $ftype,
-			'pack' => (array)  explode(',', (string)$fpack)
+		$arr_available_themes = [ 'ambiance', 'elegant', 'mdn-like', 'neo' ]; // already loaded: [ 'uxm', 'uxw', 'oceanic-next', 'zenburn' ]
+		$arr_load_themes = [];
+		for($i=0; $i<Smart::array_size($custom_themes); $i++) {
+			if(in_array('', (array)$arr_available_themes)) {
+				$arr_load_themes[] = (string) $custom_themes[$i];
+			} //end if
+		} //end if
+		//--
+		return (string) SmartMarkersTemplating::render_file_template(
+			'lib/core/plugins/templates/code-editor-init.inc.htm',
+			[
+				'LANG' 				=> (string) SmartTextTranslations::getLanguage(),
+				'CODEED-PREFIX-URL' => (string) $the_abs_url,
+				'CODEED-THEMES' 	=> (array)  $arr_load_themes,
+			],
+			'yes' // export to cache
 		);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Return the HTML / Javascript code with a special TextArea with a built-in javascript Code Editor (Edit Area).
+	 * Supported syntax parsers: CSS, Javascript, Json, HTML, XML, YAML, Markdown, SQL, PHP, Text (default).
+	 *
+	 * @param STRING $yid					[Unique HTML Page Element ID]
+	 * @param STRING $yvarname				[HTML Form Variable Name]
+	 * @param STRING $yvalue				[HTML Data]
+	 * @param ENUM $y_mode 					[Parser mode: css, javascript, json, json-ld, html, xml, yaml, markdown, sql, php, ini, shell, go, text, gpg]
+	 * @param BOOLEAN $y_editable 			[Editable: true / Not Editable: false]
+	 * @param INTEGER+ $ywidth				[Area Width: (Example) 720px or 75%]
+	 * @param INTEGER+ $yheight				[Area Height (Example) 480px or 50%]
+	 * @param BOOLEAN $y_line_numbers		[Display line numbers: true ; Hide line numbersL false]
+	 * @param STRING $custom_theme 			A custom theme to load from the available themes
+	 *
+	 * @return STRING						[HTML Code]
+	 *
+	 */
+	public static function html_js_editarea(?string $yid, ?string $yvarname, ?string $yvalue='', ?string $y_mode='text', bool $y_editable=true, ?string $y_width='720px', ?string $y_height='300px', bool $y_line_numbers=true, ?string $custom_theme='') {
+		//--
+		$the_lang = SmartTextTranslations::getLanguage();
+		//--
+		switch((string)$y_mode) { // {{{SYNC-SMART-CODEMIRROR-MODES}}}
+			case 'json-ld':
+				$the_mode = 'application/ld+json';
+				break;
+			case 'json':
+				$the_mode = 'application/json';
+				break;
+			case 'javascript':
+				$the_mode = 'text/javascript';
+				break;
+			case 'css':
+				$the_mode = 'text/css';
+				break;
+			case 'html':
+				$the_mode = 'text/html';
+				break;
+			case 'xml':
+				$the_mode = 'text/xml';
+				break;
+			case 'markdown':
+				$the_mode = 'text/x-markdown';
+				break;
+			case 'yaml':
+				$the_mode = 'text/x-yaml';
+				break;
+			case 'sql':
+				$the_mode = 'text/x-sql';
+				break;
+			case 'php':
+				$the_mode = 'application/x-php';
+				break;
+			case 'ini': // php ini
+				$the_mode = 'text/x-toml';
+				break;
+			case 'shell':
+				$the_mode = 'text/x-sh';
+				break;
+			case 'go':
+				$the_mode = 'text/x-go';
+				break;
+			case 'gpg':
+				$the_mode = 'application/gpg';
+				break;
+			case 'text':
+			default:
+				$the_mode = 'text/plain';
+		} //end switch
+		//--
+		if(!$y_editable) {
+			$is_readonly = true;
+			$attrib_readonly = ' readonly';
+			$cursor_blinking = 0;
+			$theme = 'uxm';
+		} else {
+			$is_readonly = false;
+			$attrib_readonly = '';
+			$cursor_blinking = 530;
+			$theme = 'uxw';
+		} //end switch
+		//--
+		$arr_available_themes = [ 'ambiance', 'elegant', 'mdn-like', 'neo', 'uxm', 'uxw', 'oceanic-next', 'zenburn' ];
+		//--
+		if((string)$custom_theme != '') {
+			if(in_array((string)$custom_theme, (array)$arr_available_themes)) {
+				$theme = (string) $custom_theme;
+			} //end if
+		} //end if
+		//--
+		return (string) SmartMarkersTemplating::render_file_template(
+			'lib/core/plugins/templates/code-editor-draw.inc.htm',
+			[
+				'TXT-AREA-ID' 		=> (string) $yid,
+				'WIDTH' 			=> (string) $y_width,
+				'HEIGHT' 			=> (string) $y_height,
+				'SHOW-LINE-NUM' 	=> (bool)   $y_line_numbers,
+				'READ-ONLY' 		=> (bool)   $is_readonly,
+				'BLINK-CURSOR' 		=> (int)    Smart::format_number_int($cursor_blinking, '+'),
+				'CODE-TYPE' 		=> (string) $the_mode,
+				'THEME' 			=> (string) $theme,
+				'TXT-AREA-VAR-NAME' => (string) $yvarname,
+				'TXT-AREA-CONTENT' 	=> (string) $yvalue,
+				'TXT-AREA-READONLY'	=> (string) $attrib_readonly,
+			],
+			'yes' // export to cache
+		);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Outputs the HTML Code to init the HTML (wysiwyg) Editor
+	 *
+	 * @param $y_filebrowser_link 	STRING 		URL to Image Browser (Example: script.php?op=image-gallery&type=images)
+	 * @param $y_styles 			ENUM 		Can be '' or 'a/path/to/styles.css'
+	 * @param $y_use_absolute_url 	BOOL 		If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
+	 *
+	 * @return STRING							[HTML Code]
+	 */
+	public static function html_jsload_htmlarea($y_filebrowser_link='', $y_stylesheet='', $y_use_absolute_url=false) {
+		//--
+		if($y_use_absolute_url !== true) {
+			$the_abs_url = '';
+		} else {
+			$the_abs_url = (string) SmartUtils::get_server_current_url();
+		} //end if else
+		//--
+		return (string) SmartMarkersTemplating::render_file_template(
+			'lib/core/plugins/templates/html-editor-init.inc.htm',
+			[
+				'LANG' 						=> (string) SmartTextTranslations::getLanguage(),
+				'HTMED-PREFIX-URL' 			=> (string) $the_abs_url,
+				'STYLESHEET' 				=> (string) $y_stylesheet,
+				'FILE-BROWSER-CALLBACK-URL' => (string) $y_filebrowser_link
+			],
+			'yes' // export to cache
+		);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Draw a TextArea with a built-in javascript HTML (wysiwyg) Editor
+	 *
+	 * @param STRING $yid					[Unique HTML Page Element ID]
+	 * @param STRING $yvarname				[HTML Form Variable Name]
+	 * @param STRING $yvalue				[HTML Data]
+	 * @param INTEGER+ $ywidth				[Area Width: (Example) 720px or 75%]
+	 * @param INTEGER+ $yheight				[Area Height (Example) 480px or 50%]
+	 * @param BOOLEAN $y_allow_scripts		[Allow JavaScripts]
+	 * @param BOOLEAN $y_allow_script_src	[Allow JavaScript SRC attribute]
+	 * @param MIXED $y_cleaner_deftags 		['' or array of HTML Tags to be allowed / dissalowed by the cleaner ... see HTML Cleaner Documentation]
+	 * @param ENUM $y_cleaner_mode 			[HTML Cleaner mode for defined tags: ALLOW / DISALLOW]
+	 * @param STRING $y_toolbar_ctrls		[Toolbar Controls: ... see CLEditor Documentation]
+	 *
+	 * @return STRING						[HTML Code]
+	 *
+	 */
+	public static function html_js_htmlarea($yid, $yvarname, $yvalue='', $ywidth='720px', $yheight='480px', $y_allow_scripts=false, $y_allow_script_src=false, $y_cleaner_deftags='', $y_cleaner_mode='', $y_toolbar_ctrls='') {
+		//--
+		if((string)$y_cleaner_mode != '') {
+			if((string)$y_cleaner_mode !== 'DISALLOW') {
+				$y_cleaner_mode = 'ALLOW';
+			} //end if
+		} //end if
+		//--
+		return (string) SmartMarkersTemplating::render_file_template(
+			'lib/core/plugins/templates/html-editor-draw.inc.htm',
+			[
+				'TXT-AREA-ID' 					=> (string) $yid, // HTML or JS ID
+				'TXT-AREA-VAR-NAME' 			=> (string) $yvarname, // HTML variable name
+				'TXT-AREA-WIDTH' 				=> (string) $ywidth, // 100px or 100%
+				'TXT-AREA-HEIGHT' 				=> (string) $yheight, // 100px or 100%
+				'TXT-AREA-CONTENT' 				=> (string) $yvalue,
+				'TXT-AREA-ALLOW-SCRIPTS' 		=> (bool)   $y_allow_scripts, // boolean
+				'TXT-AREA-ALLOW-SCRIPT-SRC' 	=> (bool)   $y_allow_script_src, // boolean
+				'CLEANER-REMOVE-TAGS' 			=> (string) Smart::json_encode($y_cleaner_deftags), // mixed, will be json encoded in tpl
+				'CLEANER-MODE-TAGS' 			=> (string) $y_cleaner_mode,
+				'TXT-AREA-TOOLBAR' 				=> (string) $y_toolbar_ctrls
+			],
+			'yes' // export to cache
+		);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns HTML / JS code for CallBack Mapping for HTML (wysiwyg) Editor - FileBrowser Integration
+	 *
+	 * @param STRING $yurl					The Callback URL
+	 * @param BOOLEAN $is_popup 			Set to True if Popup (incl. Modal)
+	 *
+	 * @return STRING						[JS Code]
+	 */
+	public static function html_js_htmlarea_fm_callback($yurl, $is_popup=false) {
+		//--
+		return (string) str_replace(array("\r\n", "\r", "\n", "\t"), array(' ', ' ', ' ', ' '), (string)SmartMarkersTemplating::render_file_template(
+			'lib/core/plugins/templates/html-editor-fm-callback.inc.js',
+			[
+				'IS_POPUP' 	=> (bool)   $is_popup,
+				'URL' 		=> (string) $yurl
+			],
+			'yes' // export to cache
+		));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1723,294 +1714,6 @@ final class SmartViewHtmlHelpers {
 		} //end if
 		//--
 		return (string) $out;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	public static function html_js_preview_iframe($yid, $y_contents, $y_width='720px', $y_height='300px', $y_maximized=false, $y_sandbox='allow-popups allow-same-origin') {
-		//--
-		return (string) SmartMarkersTemplating::render_file_template(
-			'lib/core/plugins/templates/preview-iframe-draw.inc.htm',
-			[
-				'IFRM-ID' 		=> (string) $yid,
-				'WIDTH' 		=> (string) $y_width,
-				'HEIGHT' 		=> (string) $y_height,
-				'SANDBOX' 		=> (string) $y_sandbox,
-				'MAXIMIZED' 	=> (bool)   $y_maximized,
-				'CONTENT' 		=> (string) $y_contents
-			],
-			'yes' // export to cache
-		);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Return the HTML / Javascript code to Load the required Javascripts for the Code Editor (Edit Area).
-	 * Should be called just once, before calling one or many ::html_js_editarea()
-	 *
-	 * @param $y_use_absolute_url 	BOOL 		If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
-	 *
-	 * @return STRING							[HTML Code]
-	 */
-	public static function html_jsload_editarea($y_use_absolute_url=false) {
-		//--
-		if($y_use_absolute_url !== true) {
-			$the_abs_url = '';
-		} else {
-			$the_abs_url = (string) SmartUtils::get_server_current_url();
-		} //end if else
-		//--
-		return (string) SmartMarkersTemplating::render_file_template(
-			'lib/core/plugins/templates/code-editor-init.inc.htm',
-			[
-				'LANG' 				=> (string) SmartTextTranslations::getLanguage(),
-				'CODEED-PREFIX-URL' => (string) $the_abs_url
-			],
-			'yes' // export to cache
-		);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Return the HTML / Javascript code with a special TextArea with a built-in javascript Code Editor (Edit Area).
-	 * Supported syntax parsers: CSS, Javascript, Json, HTML, XML, YAML, Markdown, SQL, PHP, Text (default).
-	 *
-	 * @param STRING $yid					[Unique HTML Page Element ID]
-	 * @param STRING $yvarname				[HTML Form Variable Name]
-	 * @param STRING $yvalue				[HTML Data]
-	 * @param ENUM $y_mode 					[Parser mode: css, javascript, json, html, xml, yaml, markdown, sql, php, text]
-	 * @param BOOLEAN $y_editable 			[Editable: true / Not Editable: false]
-	 * @param INTEGER+ $ywidth				[Area Width: (Example) 720px or 75%]
-	 * @param INTEGER+ $yheight				[Area Height (Example) 480px or 50%]
-	 * @param BOOLEAN $y_line_numbers		[Display line numbers: true ; Hide line numbersL false]
-	 *
-	 * @return STRING						[HTML Code]
-	 *
-	 */
-	public static function html_js_editarea($yid, $yvarname, $yvalue='', $y_mode='text', $y_editable=true, $y_width='720px', $y_height='300px', $y_line_numbers=true) {
-		//--
-		$the_lang = SmartTextTranslations::getLanguage();
-		//--
-		switch((string)$y_mode) {
-			case 'json-ld':
-				$the_mode = 'application/ld+json';
-				break;
-			case 'json':
-				$the_mode = 'application/json';
-				break;
-			case 'javascript':
-				$the_mode = 'text/javascript';
-				break;
-			case 'css':
-				$the_mode = 'text/css';
-				break;
-			case 'scss':
-				$the_mode = 'text/x-scss';
-				break;
-			case 'less':
-				$the_mode = 'text/x-less';
-				break;
-			case 'sass':
-				$the_mode = 'text/x-sass';
-				break;
-			case 'html':
-				$the_mode = 'text/html';
-				break;
-			case 'xml':
-				$the_mode = 'text/xml';
-				break;
-			case 'markdown':
-				$the_mode = 'text/x-markdown';
-				break;
-			case 'yaml':
-				$the_mode = 'text/x-yaml';
-				break;
-			case 'sql':
-				$the_mode = 'text/x-sql';
-				break;
-			case 'php':
-				$the_mode = 'application/x-php';
-				break;
-			case 'ini': // php ini
-			case 'toml': // rust ini
-				$the_mode = 'text/x-toml';
-				break;
-			case 'rust':
-				$the_mode = 'text/x-rustsrc';
-				break;
-			case 'go':
-				$the_mode = 'text/x-go';
-				break;
-			case 'c':
-				$the_mode = 'text/x-csrc';
-				break;
-			case 'cpp':
-				$the_mode = 'text/x-c++src';
-				break;
-			case 'lua':
-				$the_mode = 'text/x-lua';
-				break;
-			case 'ruby':
-				$the_mode = 'text/x-ruby';
-				break;
-			case 'perl':
-				$the_mode = 'text/x-perl';
-				break;
-			case 'python':
-				$the_mode = 'text/x-python';
-				break;
-			case 'shell':
-				$the_mode = 'text/x-sh';
-				break;
-			case 'spreadsheet':
-				$the_mode = 'text/x-spreadsheet';
-				break;
-			case 'text':
-			default:
-				$the_mode = 'text/plain';
-		} //end switch
-		//--
-		if(!$y_editable) {
-			$is_readonly = true;
-			$attrib_readonly = ' readonly';
-			$cursor_blinking = 0;
-			$theme = 'uxm';
-		} else {
-			$is_readonly = false;
-			$attrib_readonly = '';
-			$cursor_blinking = 530;
-			$theme = 'uxw';
-		} //end switch
-		//--
-		return (string) SmartMarkersTemplating::render_file_template(
-			'lib/core/plugins/templates/code-editor-draw.inc.htm',
-			[
-				'TXT-AREA-ID' 		=> (string) $yid,
-				'WIDTH' 			=> (string) $y_width,
-				'HEIGHT' 			=> (string) $y_height,
-				'SHOW-LINE-NUM' 	=> (bool)   $y_line_numbers,
-				'READ-ONLY' 		=> (bool)   $is_readonly,
-				'BLINK-CURSOR' 		=> (int)    Smart::format_number_int($cursor_blinking, '+'),
-				'CODE-TYPE' 		=> (string) $the_mode,
-				'THEME' 			=> (string) $theme,
-				'TXT-AREA-VAR-NAME' => (string) $yvarname,
-				'TXT-AREA-CONTENT' 	=> (string) $yvalue,
-				'TXT-AREA-READONLY'	=> (string) $attrib_readonly
-			],
-			'yes' // export to cache
-		);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Outputs the HTML Code to init the HTML (wysiwyg) Editor
-	 *
-	 * @param $y_filebrowser_link 	STRING 		URL to Image Browser (Example: script.php?op=image-gallery&type=images)
-	 * @param $y_styles 			ENUM 		Can be '' or 'a/path/to/styles.css'
-	 * @param $y_use_absolute_url 	BOOL 		If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
-	 *
-	 * @return STRING							[HTML Code]
-	 */
-	public static function html_jsload_htmlarea($y_filebrowser_link='', $y_stylesheet='', $y_use_absolute_url=false) {
-		//--
-		if($y_use_absolute_url !== true) {
-			$the_abs_url = '';
-		} else {
-			$the_abs_url = (string) SmartUtils::get_server_current_url();
-		} //end if else
-		//--
-		return (string) SmartMarkersTemplating::render_file_template(
-			'lib/core/plugins/templates/html-editor-init.inc.htm',
-			[
-				'LANG' 						=> (string) SmartTextTranslations::getLanguage(),
-				'HTMED-PREFIX-URL' 			=> (string) $the_abs_url,
-				'STYLESHEET' 				=> (string) $y_stylesheet,
-				'FILE-BROWSER-CALLBACK-URL' => (string) $y_filebrowser_link
-			],
-			'yes' // export to cache
-		);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Draw a TextArea with a built-in javascript HTML (wysiwyg) Editor
-	 *
-	 * @param STRING $yid					[Unique HTML Page Element ID]
-	 * @param STRING $yvarname				[HTML Form Variable Name]
-	 * @param STRING $yvalue				[HTML Data]
-	 * @param INTEGER+ $ywidth				[Area Width: (Example) 720px or 75%]
-	 * @param INTEGER+ $yheight				[Area Height (Example) 480px or 50%]
-	 * @param BOOLEAN $y_allow_scripts		[Allow JavaScripts]
-	 * @param BOOLEAN $y_allow_script_src	[Allow JavaScript SRC attribute]
-	 * @param MIXED $y_cleaner_deftags 		['' or array of HTML Tags to be allowed / dissalowed by the cleaner ... see HTML Cleaner Documentation]
-	 * @param ENUM $y_cleaner_mode 			[HTML Cleaner mode for defined tags: ALLOW / DISALLOW]
-	 * @param STRING $y_toolbar_ctrls		[Toolbar Controls: ... see CLEditor Documentation]
-	 *
-	 * @return STRING						[HTML Code]
-	 *
-	 */
-	public static function html_js_htmlarea($yid, $yvarname, $yvalue='', $ywidth='720px', $yheight='480px', $y_allow_scripts=false, $y_allow_script_src=false, $y_cleaner_deftags='', $y_cleaner_mode='', $y_toolbar_ctrls='') {
-		//--
-		if((string)$y_cleaner_mode != '') {
-			if((string)$y_cleaner_mode !== 'DISALLOW') {
-				$y_cleaner_mode = 'ALLOW';
-			} //end if
-		} //end if
-		//--
-		return (string) SmartMarkersTemplating::render_file_template(
-			'lib/core/plugins/templates/html-editor-draw.inc.htm',
-			[
-				'TXT-AREA-ID' 					=> (string) $yid, // HTML or JS ID
-				'TXT-AREA-VAR-NAME' 			=> (string) $yvarname, // HTML variable name
-				'TXT-AREA-WIDTH' 				=> (string) $ywidth, // 100px or 100%
-				'TXT-AREA-HEIGHT' 				=> (string) $yheight, // 100px or 100%
-				'TXT-AREA-CONTENT' 				=> (string) $yvalue,
-				'TXT-AREA-ALLOW-SCRIPTS' 		=> (bool)   $y_allow_scripts, // boolean
-				'TXT-AREA-ALLOW-SCRIPT-SRC' 	=> (bool)   $y_allow_script_src, // boolean
-				'CLEANER-REMOVE-TAGS' 			=> (string) Smart::json_encode($y_cleaner_deftags), // mixed, will be json encoded in tpl
-				'CLEANER-MODE-TAGS' 			=> (string) $y_cleaner_mode,
-				'TXT-AREA-TOOLBAR' 				=> (string) $y_toolbar_ctrls
-			],
-			'yes' // export to cache
-		);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Returns HTML / JS code for CallBack Mapping for HTML (wysiwyg) Editor - FileBrowser Integration
-	 *
-	 * @param STRING $yurl					The Callback URL
-	 * @param BOOLEAN $is_popup 			Set to True if Popup (incl. Modal)
-	 *
-	 * @return STRING						[JS Code]
-	 */
-	public static function html_js_htmlarea_fm_callback($yurl, $is_popup=false) {
-		//--
-		return (string) str_replace(array("\r\n", "\r", "\n", "\t"), array(' ', ' ', ' ', ' '), (string)SmartMarkersTemplating::render_file_template(
-			'lib/core/plugins/templates/html-editor-fm-callback.inc.js',
-			[
-				'IS_POPUP' 	=> (bool)   $is_popup,
-				'URL' 		=> (string) $yurl
-			],
-			'yes' // export to cache
-		));
 		//--
 	} //END FUNCTION
 	//================================================================

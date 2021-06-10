@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20210526
+	// v.20210609
 
 
 	private static $db = null;
@@ -698,7 +698,7 @@ final class PageBuilderBackend {
 				} //end if
 				$tmp_ymp = null;
 				if(\Smart::array_size($tmp_yaml) > 0) {
-					if(\Smart::array_size($tmp_yaml['RENDER']) > 0) {
+					if(isset($tmp_yaml['RENDER']) AND (\Smart::array_size($tmp_yaml['RENDER']) > 0)) {
 						$test_create_sub_segments = (int) self::updateCreateChilds((string)$y_id, (string)$rd['name'], (array)$y_arr_data, (array)$tmp_yaml['RENDER']);
 						if((int)$test_create_sub_segments !== 1) {
 							self::rollbackTransaction();
@@ -709,8 +709,8 @@ final class PageBuilderBackend {
 							if((string)$key != '') {
 								if(\Smart::array_size($val) > 0) {
 									foreach($val as $k => $v) {
-										if(((string)\trim((string)$k) != '') AND (\Smart::array_size($val[(string)$k]) > 0) AND (\Smart::array_size($v) > 0) AND ((string)$v['type'] == 'segment')) {
-											if(\Smart::array_size($v['render']) > 0) {
+										if(((string)\trim((string)$k) != '') AND (\Smart::array_size($val[(string)$k]) > 0) AND (\Smart::array_size($v) > 0) AND isset($v['type']) AND \Smart::is_nscalar($v['type']) AND ((string)$v['type'] == 'segment')) {
+											if(isset($v['render']) AND (\Smart::array_size($v['render']) > 0)) {
 												$test_create_sub_segments = (int) self::updateCreateChilds((string)$y_id, (string)$rd['name'].': ['.$key.']', (array)$y_arr_data, (array)$v['render']);
 												if((int)$test_create_sub_segments !== 1) {
 													self::rollbackTransaction();
@@ -1269,8 +1269,8 @@ final class PageBuilderBackend {
 			if((string)$key != '') {
 				if(\Smart::array_size($val) > 0) {
 					foreach($val as $k => $v) {
-						if(((string)\trim((string)$k) != '') AND (\Smart::array_size($val[(string)$k]) > 0) AND (\Smart::array_size($v) > 0) AND ((string)$v['type'] == 'segment')) {
-							$v['id'] = (string) \trim((string)$v['id']);
+						if(((string)\trim((string)$k) != '') AND (\Smart::array_size($val[(string)$k]) > 0) AND (\Smart::array_size($v) > 0) AND isset($v['type']) AND \Smart::is_nscalar($v['type']) AND ((string)$v['type'] == 'segment')) {
+							$v['id'] = (string) \trim((string)($v['id'] ?? ''));
 							if((\strlen((string)$v['id']) >= 2) AND (\strlen((string)$v['id']) <= 63)) {
 								$v['id'] = (string) \Smart::safe_validname($v['id'], ''); // allow: [a-z0-9] _ - . @
 								if((string)$v['id'] != '') {
@@ -1281,7 +1281,7 @@ final class PageBuilderBackend {
 										if((string)$test_exists['id'] == '') { // segment does not exists
 											$tmp_new_arr = [
 												'id' 		=> (string) $v['id'],
-												'ref' 		=> \Smart::json_encode((array)$tmp_arr_refs),
+												'ref' 		=> (string) \Smart::json_encode((array)$tmp_arr_refs),
 												'name' 		=> (string) \SmartUnicode::sub_str($y_name.': ['.$key.']', 0, 255),
 												'mode' 		=> 'text', // default to text segment
 												'admin' 	=> (string) $y_arr_data['admin'],

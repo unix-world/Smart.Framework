@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20210609
  * @package 	PageBuilder
  *
  */
@@ -166,9 +166,9 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function renderMarkdown($markdown_code) {
+	public static function renderMarkdown($markdown_code, $validate=false, $relative_url_prefix='') {
 		//--
-		return (string) \SmartMarkersTemplating::prepare_nosyntax_html_template(self::fixSafeCode((new \SmartMarkdownToHTML(true, true, true, false, false))->text((string)$markdown_code))); // B:1 S:1 L:1 E:1 V:0
+		return (string) \SmartMarkersTemplating::prepare_nosyntax_html_template(self::fixSafeCode((new \SmartMarkdownToHTML(true, true, true, false, (int)$validate, (string)$relative_url_prefix))->text((string)$markdown_code))); // B:1 S:1 L:1 E:1 V:0/1
 		//--
 	} //END FUNCTION
 
@@ -274,7 +274,7 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function prepareCodeData($str, $remove_trailing_spaces) {
+	public static function prepareCodeData(?string $str, bool $remove_trailing_spaces, bool $indent_with_tabs=false) {
 		//--
 		$str = (string) \trim((string)$str);
 		if((string)$str == '') {
@@ -287,6 +287,14 @@ final class Utils {
 		$str = (string) \str_replace(["\x0B", "\0", "\f"], ' ', (string)$str); 	// fix weird characters
 		if($remove_trailing_spaces !== false) {
 			$str = (string) \preg_replace('/[ ]+[\\n]/', "\n", (string)$str); 	// remove trailing line spaces (not for YAML code)
+		} //end if
+		if($indent_with_tabs === true) {
+			$str = (string) \preg_replace_callback('/^([ ]|\t)+/m', function($matches) {
+				$matches[0] = (string) ($matches[0] ?? '');
+				$matches[0] = (string) \str_replace("\t", '    ', (string)$matches[0]); // replace all tabs with a group of 4 spaces, to have all as spaces ...
+				$matches[0] = (string) \str_replace('    ', "\t", (string)$matches[0]); // replace each group of 4 spaces with a tab
+				return (string) $matches[0];
+			}, (string)$str); // replace all indentation spaces (grouped as 4) with a tab for each group
 		} //end if
 		//--
 		return (string) \trim((string)$str);

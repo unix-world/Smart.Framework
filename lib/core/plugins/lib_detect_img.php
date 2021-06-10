@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210528
+ * @version 	v.20210605
  * @package 	Plugins:Image
  *
  */
@@ -49,7 +49,7 @@ final class SmartDetectImages {
 			return '';
 		} //end if
 		//--
-		if((stripos((string)$pict, '</svg>') !== false) OR (stripos((string)$pict, '<svg') !== false)) { // use OR as it may be partial content
+		if((stripos((string)$pict, '<svg') !== false) OR (stripos((string)$pict, '</svg>') !== false)) { // use OR here not AND ! it may be only partial content for guess ... {{{SYNC VALIDATE SVG}}}
 			return '.svg'; // {{{SYNC-IMG-DETECT-SVG}}}
 		} //end if
 		//--
@@ -112,20 +112,40 @@ final class SmartDetectImages {
 		//--
 		if((string)$y_headers != '') {
 			//-- {{{SYNC-DATA-IMAGE}}}
-			if(((string)strtolower((string)substr((string)$y_headers, 0, 11)) == 'data:image/') AND (stripos((string)$y_headers, ';base64,') !== false)) { // DATA-URL
+			if(
+				((string)strtolower((string)substr((string)$y_headers, 0, 11)) == 'data:image/')
+				AND
+				(
+					(stripos((string)$y_headers, ';base64,') !== false)
+					OR
+					(stripos((string)$y_headers, 'data:image/svg+xml,') === 0) // {{{SYNC-DATA-IMG-SVG-URLENCODED}}} ; svg url encoded
+				)
+			) { // DATA-URL
 				//--
 				$temp_where_was_detected = '??? Try to guess by Data-URL as data:image/ ...';
 				//--
-				$y_headers = (string) substr($y_headers, 11);
-				$eimg = (array) explode(';base64,', $y_headers);
-				$eimg[0] = (string) strtolower((string)trim((string)(isset($eimg[0]) ? $eimg[0] : '')));
-				if((string)$eimg[0] == 'jpeg') {
-					$eimg[0] = 'jpg'; // correction
-				} //end if
-				if(((string)$eimg[0] == 'svg') OR ((string)$eimg[0] == 'png') OR ((string)$eimg[0] == 'gif') OR ((string)$eimg[0] == 'jpg') OR ((string)$eimg[0] == 'webp')) {
-					$temp_image_extension = '.'.$eimg[0]; // add the point
-					$temp_where_was_detected = ' * Data-URL as # data:image/ + ;base64, = '.$eimg[0];
-				} //end if
+				if(stripos((string)$y_headers, 'data:image/svg+xml,') === 0) { // {{{SYNC-DATA-IMG-SVG-URLENCODED}}} ; svg url encoded
+					$y_headers = (string) substr((string)$y_headers, 19);
+					$y_headers = (string) trim((string)urldecode((string)$y_headers)); // use url decode instead of rawurldecode ; will do the job of rawurldecode + will decode also + as spaces
+					if((string)$y_headers != '') {
+						$temp_image_extension = '.svg'; // add the point
+						$temp_where_was_detected = ' * Data-URL as # data:image/, (urlencoded) = '.'svg+xml';
+					} //end if
+				} else { // base64
+					$y_headers = (string) substr($y_headers, 11);
+					$eimg = (array) explode(';base64,', $y_headers);
+					$eimg[0] = (string) strtolower((string)trim((string)(isset($eimg[0]) ? $eimg[0] : '')));
+					if( // {{{SYNC-DETECT-IMG-TYPES}}}
+						((string)$eimg[0] == 'svg+xml') OR ((string)$eimg[0] == 'svg') OR
+						((string)$eimg[0] == 'png') OR
+						((string)$eimg[0] == 'gif') OR
+						((string)$eimg[0] == 'jpeg') OR ((string)$eimg[0] == 'jpg') OR
+						((string)$eimg[0] == 'webp')
+					) {
+						$temp_image_extension = '.'.$eimg[0]; // add the point
+						$temp_where_was_detected = ' * Data-URL as # data:image/ + ;base64, = '.$eimg[0];
+					} //end if
+				} //end if else
 				//--
 			} else { // HTTP-HEADERS
 				//--
@@ -162,6 +182,7 @@ final class SmartDetectImages {
 					$temp_guess_extension = (string) trim((string)($temp_guess_extension[0] ?? ''));
 					//--
 					switch((string)$temp_guess_extension) {
+						case 'svg+xml':
 						case 'svg':
 							$temp_image_extension = '.svg';
 							$temp_where_was_detected = '[content-type]: \''.$temp_image_extension.'\'';

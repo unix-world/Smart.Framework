@@ -2,6 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+June 10, 2021 :: Version 8.7 rev.20210610
+	* replaced highlight.js with prism.js
+	* rework of prism css themes to achieve a better color balance
+	* moved highlight.js to modules, mod highlight + upgraded to the latest v.9.x (highlight js base code of v.10 and v.11 are too big in size, ... replaced with prism ...)
+	* removed SmartViewHtmlHelpers::html_jsload_highlightsyntax()
+
 May 27, 2021 :: Version 8.7 rev.20210527
 	* icons captcha optimizations, add support for trigger
 	* improved cleanup algorithm for custom session and persistent cache for all: sqlite, dba, mongo, redis

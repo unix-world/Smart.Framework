@@ -1,6 +1,6 @@
+
 /*
-// addon/scroll/simplecrollbars.css
-// codemirror: v.5.42.0
+// codemirror: v.5.61.1
 */
 
 .CodeMirror-simplescroll-horizontal div, .CodeMirror-simplescroll-vertical div {
@@ -35,6 +35,7 @@
 	right: 0;
 	width: 100%;
 }
+
 
 .CodeMirror-overlayscroll .CodeMirror-scrollbar-filler, .CodeMirror-overlayscroll .CodeMirror-gutter-filler {
 	display: none;

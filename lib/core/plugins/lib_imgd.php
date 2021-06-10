@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring
- * @version 	v.20210528
+ * @version 	v.20210605
  * @package 	Plugins:Image
  *
  */
@@ -537,6 +537,15 @@ final class SmartImageGdProcess {
 		} //end if
 		//--
 
+		//-- this situation can come from calculations from above ... having zero width or height, actually should be 1 !
+		if((int)$newImgW <= 0) {
+			$newImgW = 1; // correction, avoid zero width, PHP raise errro if so ...
+		} //end if
+		if((int)$newImgH <= 0) {
+			$newImgH = 1; // correction, avoid zero width, PHP raise errro if so ...
+		} //end if
+		//--
+
 		//-- create the new img
 		$imgnew = @imagecreatetruecolor($newImgW, $newImgH);
 		if(!$this->testIfValidImg($imgnew)) {
@@ -583,7 +592,16 @@ final class SmartImageGdProcess {
 			$this->status = false;
 			return false;
 		} //end if
-
+		//--
+		//-- this situation can come from calculations from above ... having zero width or height, actually should be 1 !
+		if((int)$resize_width <= 0) {
+			$resize_width = 1; // correction, avoid zero width, PHP raise errro if so ...
+		} //end if
+		if((int)$resize_height <= 0) {
+			$resize_height = 1; // correction, avoid zero width, PHP raise errro if so ...
+		} //end if
+		//--
+		//--
 		$this->img = @imagecreatetruecolor($resize_width, $resize_height);
 		if(!$this->testIfValidImg($this->img)) {
 			@imagedestroy($imgnew);

@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode
- * @version     v.20210506
+ * @version     v.20210609
  * @package     @Core:Extra
  *
  */
@@ -50,7 +50,8 @@ final class SmartParser {
 	 *
 	 * @return 	ARRAY						:: A non-associative array with the URL links detected in the string
 	 */
-	public static function get_arr_urls($string) {
+	public static function get_arr_urls(?string $string) {
+		//--
 		$string = (string) $string;
 		$expr = SmartValidator::regex_stringvalidation_expression('url', 'partial');
 		$regex = $expr.'iu'; // insensitive, with /u modifier for unicode strings
@@ -60,7 +61,9 @@ final class SmartParser {
 			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
 			return array();
 		} //end if
-		return (array) $arr[0];
+		//--
+		return (array) (is_array($arr[0]) ? $arr[0] : []);
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -76,16 +79,24 @@ final class SmartParser {
 	 *
 	 * @return 	STRING						:: The HTML processed text with URLs replaced with real tags
 	 */
-	public static function text_urls($string, $ytarget='_blank', $ypict='', $y_lentrim='100') {
+	public static function text_urls(?string $string, ?string $ytarget='_blank', ?string $ypict='', ?int $y_lentrim=100) {
+		//--
 		$string = (string) $string;
-		$expr = SmartValidator::regex_stringvalidation_expression('url', 'partial');
-		$regex = $expr.'iu'; //insensitive, with /u modifier for unicode strings
-		if((string)$ypict == '') {
-			$string = preg_replace_callback($regex, function($matches) use ($ytarget, $y_lentrim) { return '<a title="@URL@" id="url_recognition" href="'.Smart::escape_html($matches[0]).'" target="'.$ytarget.'">'.Smart::escape_html(Smart::text_cut_by_limit($matches[0], $y_lentrim)).'</a>'; }, $string);
-		} else {
-			$string = preg_replace_callback($regex, function($matches) use ($ytarget, $ypict, $y_lentrim) { return '<a title="@URL@" id="url_recognition" href="'.Smart::escape_html($matches[0]).'" target="'.$ytarget.'"><img border="0" src="'.$ypict.'" width="32" height="32" align="absmiddle" alt="'.Smart::escape_html($matches[0]).'" title="'.Smart::escape_html($matches[0]).'"></a>&nbsp;'.Smart::escape_html(Smart::text_cut_by_limit($matches[0], $y_lentrim)).'<br>'; }, $string);
-		} //end if else
-		return (string) $string;
+		$expr = (string) SmartValidator::regex_stringvalidation_expression('url', 'partial');
+		$regex = (string) $expr.'iu'; //insensitive, with /u modifier for unicode strings
+		//--
+		return (string) preg_replace_callback(
+			(string) $regex,
+			function($matches) use ($ytarget, $ypict, $y_lentrim) {
+				if((string)trim((string)$ypict) == '') {
+					return '<a title="URL" data-parse-type="url" href="'.Smart::escape_html((string)$matches[0]).'" target="'.Smart::escape_html((string)$ytarget).'">'.Smart::escape_html((string)Smart::text_cut_by_limit((string)$matches[0], (int)$y_lentrim)).'</a>';
+				} else {
+					return '<a title="URL" data-parse-type="url" href="'.Smart::escape_html((string)$matches[0]).'" target="'.Smart::escape_html((string)$ytarget).'"><img class="url-recognition" src="'.Smart::escape_html((string)trim((string)$ypict)).'" alt="'.Smart::escape_html((string)$matches[0]).'"></a>&nbsp;'.Smart::escape_html((string)Smart::text_cut_by_limit((string)$matches[0], (int)$y_lentrim)).'<br>';
+				} //end if else
+			},
+			(string) $string
+		);
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -98,7 +109,8 @@ final class SmartParser {
 	 *
 	 * @return 	ARRAY						:: A non-associative array with the EMAIL addresses detected in the string
 	 */
-	public static function get_arr_emails($string) {
+	public static function get_arr_emails(?string $string) {
+		//--
 		$string = (string) $string;
 		$expr = SmartValidator::regex_stringvalidation_expression('email', 'partial');
 		$regex = $expr.'iu'; //insensitive, with /u modifier for unicode strings
@@ -108,7 +120,9 @@ final class SmartParser {
 			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
 			return array();
 		} //end if
-		return (array) $arr[0];
+		//--
+		return (array) (is_array($arr[0]) ? $arr[0] : []);
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -120,15 +134,25 @@ final class SmartParser {
 	 * @param 	STRING 	$string 			:: The text string to be processed
 	 * @param 	STRING 	$yaction			:: Action to append the email link to ; Default is: 'mailto:' but can be for example: 'script.php?action=email&addr='
 	 * @param 	STRING	$ytarget			:: URL target ; default is '_blank' ; can be: '_self' or a specific window name: 'myWindow' ...
+	 * @param	INTEGER $y_lentrim			:: The length of the URL to be displayed into [DetectedURL] (used only if no image has been provided)
 	 *
 	 * @return 	STRING						:: The HTML processed text with EMAIL addresses replaced with real tags as links
 	 */
-	public static function text_emails($string, $yaction='mailto:', $ytarget='') {
+	public static function text_emails(?string $string, ?string $yaction='mailto:', ?string $ytarget='', ?int $y_lentrim=100) {
+		//--
 		$string = (string) $string;
-		$expr = SmartValidator::regex_stringvalidation_expression('email', 'partial');
-		$regex = $expr.'iu'; //insensitive, with /u modifier for unicode strings
-		$string = preg_replace_callback($regex, function($matches) use ($yaction, $ytarget) { return '<a title="@eMail@" id="url_recognition" href="'.Smart::escape_html($yaction.rawurlencode(trim($matches[0]))).'" target="'.$ytarget.'">'.Smart::escape_html(Smart::text_cut_by_limit($matches[0], 100)).'</a>'; }, $string);
+		$expr = (string) SmartValidator::regex_stringvalidation_expression('email', 'partial');
+		$regex = (string) $expr.'iu'; //insensitive, with /u modifier for unicode strings
+		$string = (string) preg_replace_callback(
+			(string) $regex,
+			function($matches) use ($yaction, $ytarget, $y_lentrim) {
+				return '<a title="eMail" data-parse-type="email" href="'.Smart::escape_html((string)$yaction.Smart::escape_url((string)trim((string)$matches[0]))).'" target="'.Smart::escape_html((string)$ytarget).'">'.Smart::escape_html((string)Smart::text_cut_by_limit((string)$matches[0], (int)$y_lentrim)).'</a>';
+			},
+			(string) $string
+		);
+		//--
 		return (string) $string;
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -141,7 +165,8 @@ final class SmartParser {
 	 *
 	 * @return 	ARRAY						:: A non-associative array with the FAX numbers detected in the string
 	 */
-	public static function get_arr_faxnums($string) {
+	public static function get_arr_faxnums(?string $string) {
+		//--
 		$string = (string) $string;
 		$expr = SmartValidator::regex_stringvalidation_expression('fax', 'partial');
 		$regex = $expr.'iu'; //insensitive, with /u modifier for unicode strings
@@ -151,7 +176,9 @@ final class SmartParser {
 			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
 			return array();
 		} //end if
-		return (array) $arr[0];
+		//--
+		return (array) (is_array($arr[0]) ? $arr[0] : []);
+		//--
 	} //END FUNCTION
 	//================================================================
 
@@ -163,15 +190,25 @@ final class SmartParser {
 	 * @param 	STRING 	$string 			:: The text string to be processed
 	 * @param 	STRING 	$yaction			:: Action to append the fax-num link to ; Default is: 'efax:' but can be for example: 'script.php?action=fax&number='
 	 * @param 	STRING	$ytarget			:: URL target ; default is '_blank' ; can be: '_self' or a specific window name: 'myWindow' ...
+	 * @param	INTEGER $y_lentrim			:: The length of the URL to be displayed into [DetectedURL] (used only if no image has been provided)
 	 *
 	 * @return 	STRING						:: The HTML processed text with FAX numbers replaced with real tags as links
 	 */
-	public static function text_faxnums($string, $yaction='efax:', $ytarget='_blank') {
+	public static function text_faxnums(?string $string, ?string $yaction='efax:', ?string $ytarget='_blank', ?int $y_lentrim=100) {
+		//--
 		$string = (string) $string;
-		$expr = SmartValidator::regex_stringvalidation_expression('fax', 'partial');
-		$regex = $expr.'iu'; //insensitive, with /u modifier for unicode strings
-		$string = preg_replace_callback($regex, function($matches) use ($yaction, $ytarget) { return '<a title="@eFax@" id="url_recognition" href="'.Smart::escape_html($yaction.rawurlencode(trim($matches[2]))).'" target="'.$ytarget.'">'.Smart::escape_html(Smart::text_cut_by_limit($matches[2], 75)).'</a>'; }, $string);
+		$expr = (string) SmartValidator::regex_stringvalidation_expression('fax', 'partial');
+		$regex = (string) $expr.'iu'; //insensitive, with /u modifier for unicode strings
+		$string = (string) preg_replace_callback(
+			(string) $regex,
+			function($matches) use ($yaction, $ytarget, $y_lentrim) {
+				return '<a title="eFax" data-parse-type="faxnum" href="'.Smart::escape_html((string)$yaction.Smart::escape_url((string)trim((string)$matches[2]))).'" target="'.Smart::escape_html((string)$ytarget).'">'.Smart::escape_html((string)Smart::text_cut_by_limit((string)$matches[2], (int)$y_lentrim)).'</a>';
+			},
+			(string) $string
+		);
+		//--
 		return (string) $string;
+		//--
 	} //END FUNCTION
 	//================================================================
 

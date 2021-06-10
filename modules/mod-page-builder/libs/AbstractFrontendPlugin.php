@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210526
+ * @version 	v.20210609
  * @package 	development:modules:PageBuilder
  *
  */
@@ -77,7 +77,7 @@ abstract class AbstractFrontendPlugin extends \SmartModExtLib\PageBuilder\Abstra
 			'TYPE' 			=> (string) $plugin_caller_data['type'],
 			'MODE' 			=> (string) $plugin_caller_data['mode'],
 			'CTRL-AREA' 	=> (string) $plugin_caller_data['ctrl-area'],
-			'LAYOUT' 		=> (string) (isset($plugin_caller_data['layout']) ? $plugin_caller_data['layout'] : ''), // this is unset for segments or raw pages
+			'LAYOUT' 		=> (string) ($plugin_caller_data['layout'] ?? ''), // this is unset for segments or raw pages
 			'DATE-CREATED' 	=> (string) $plugin_caller_data['publisher-date-created'],
 			'DATE-MODIFIED' => (string) $plugin_caller_data['publisher-date-modified'],
 			'AUTHOR-ID' 	=> (string) $plugin_caller_data['publisher-id'],
@@ -92,7 +92,7 @@ abstract class AbstractFrontendPlugin extends \SmartModExtLib\PageBuilder\Abstra
 			'TYPE' 			=> (string) $plugin_data['type'],
 			'MODE' 			=> (string) $plugin_data['mode'],
 			'CTRL-AREA' 	=> (string) $plugin_data['ctrl-area'],
-			'LAYOUT' 		=> (string) (isset($plugin_data['layout']) ? $plugin_data['layout'] : ''), // this is unset for segments or raw pages
+			'LAYOUT' 		=> (string) ($plugin_data['layout'] ?? ''), // this is unset for segments or raw pages
 			'DATE-CREATED' 	=> (string) $plugin_data['publisher-date-created'],
 			'DATE-MODIFIED' => (string) $plugin_data['publisher-date-modified'],
 			'AUTHOR-ID' 	=> (string) $plugin_data['publisher-id'],

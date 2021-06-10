@@ -1,30 +1,14 @@
-<!-- HLjs, Smart HLjs :: r.20210530 -->
-[%%%IF:SEMAPHORE:&*<load:font:mono>;(77)%%%]
-<!-- skip ibm plex mono css, semaphore loaded before -->
-[%%%ELSE:SEMAPHORE(77)%%%]
-<link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css?[###RELEASE-HASH|url|html###]">
-[%%%/IF:SEMAPHORE(77)%%%]
+<!-- Prism, SmartHighlight.Code :: r.20210609 -->
 <style>
-code.hljs {
-	border: 1px solid #ECECEC;
-}
-code.hljs, code.hljs * {
-	font-family: 'IBM Plex Mono',mono;
-	font-smooth: always;
-}
-:not(pre) > code {
-	background: #3F3F3F;
-	color: #DCDCDC;
-	padding-left: 2px;
-	padding-right: 2px;
+code:not(.syntax) {
+	background: #DDDDFF !important;
+	color: #111111 !important;
+	padding-left: 4px !important;
+	padding-right: 4px !important;
 }
 </style>
-<link rel="stylesheet" href="lib/js/jshighlight/css/[%%%IF:SEMAPHORE:&*<theme:dark>;(78)%%%]zenburn[%%%ELSE:SEMAPHORE(78)%%%]github[%%%/IF:SEMAPHORE(78)%%%].css?[###RELEASE-HASH|url|html###]">
-<script src="lib/js/jshighlight/highlight.js?[###RELEASE-HASH|url|html###]"></script>
-<script src="lib/js/jshighlight/syntax/plaintext.js?[###RELEASE-HASH|url|html###]"></script>
-<script src="lib/js/jshighlight/syntax.pak.js?[###RELEASE-HASH|url|html###]"></script>
-[%%%IF:SEMAPHORE:&*<load:code-highlight-ext-js>;(78)%%%]
-[@@@SUB-TEMPLATE:?!modules/mod-highlight-syntax/libs/templates/tpl-foot-hljs-ext.inc.htm!@@@]
-[%%%/IF:SEMAPHORE(78)%%%]
-<script src="lib/js/jshighlight/smart-highlight.js?[###RELEASE-HASH|url|html###]"></script>
+<link rel="stylesheet" href="lib/js/jshilitecode/prism/fonts.css?[###RELEASE-HASH|url|html###]">
+<link rel="stylesheet" href="lib/js/jshilitecode/prism/[%%%IF:SEMAPHORE:&*<theme:dark>;(77)%%%]prism-dark[%%%ELSE:SEMAPHORE(77)%%%][%%%IF:SEMAPHORE:&*<theme:light>;(78)%%%]prism-light[%%%ELSE:SEMAPHORE(78)%%%]prism[%%%/IF:SEMAPHORE(78)%%%][%%%/IF:SEMAPHORE(77)%%%].css?[###RELEASE-HASH|url|html###]">
+<script src="lib/js/jshilitecode/prism/prism.js?[###RELEASE-HASH|url|html###]"></script>
+<script src="lib/js/jshilitecode/smart-highlight.js?[###RELEASE-HASH|url|html###]"></script>
 <script>jQuery(() => { if(typeof(SmartJS_Custom_Syntax_Highlight) == 'function') { SmartJS_Custom_Syntax_Highlight('body'); } });</script>

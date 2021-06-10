@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20210526
+ * @version     v.20210609
  * @package     @Core
  *
  */
@@ -1411,9 +1411,13 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The formatted string
 	 */
-	public static function nl_2_br(?string $y_code) {
+	public static function nl_2_br(?string $y_code, bool $y_trim=true) {
 		//--
-		return nl2br((string)trim((string)$y_code), false); // 2nd param is false for not xhtml tags, since PHP 5.3 !!
+		if($y_trim !== false) {
+			$y_code = (string) trim((string)$y_code);
+		} //end if
+		//--
+		return nl2br((string)$y_code, false); // 2nd param is false for not xhtml tags, since PHP 5.3 !!
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1651,7 +1655,7 @@ final class Smart {
 		} //end if
 		//--
 		$ysupresschar = (string) $ysupresschar; // force string and be sure is lower
-		switch((string)$ysupresschar) {
+		switch((string)$ysupresschar) { // strict control: must not contain any regex backreferences such as: $ as $1.. or \\1
 			case '-':
 			case '_':
 				break;
@@ -1664,7 +1668,7 @@ final class Smart {
 		$y_path = (string) stripslashes($y_path); // remove any possible back-slashes
 		$y_path = (string) self::normalize_spaces($y_path); // normalize spaces to catch null seq.
 		//$y_path = (string) str_replace('?', $ysupresschar, $y_path); // replace questionmark (that may come from utf8 decode) ; this is already done below
-		$y_path = (string) preg_replace('/[^_a-zA-Z0-9\-\.@\#\/]/', $ysupresschar, $y_path); // {{{SYNC-SAFE-PATH-CHARS}}} suppress any other characters than these, no unicode modifier
+		$y_path = (string) preg_replace('/[^_a-zA-Z0-9\-\.@\#\/]/', (string)$ysupresschar, $y_path); // {{{SYNC-SAFE-PATH-CHARS}}} suppress any other characters than these, no unicode modifier
 		$y_path = (string) preg_replace("/(\.)\\1+/", '.', $y_path); // suppress multiple . dots and replace with single dot
 		$y_path = (string) preg_replace("/(\/)\\1+/", '/', $y_path); // suppress multiple // slashes and replace with single slash
 		$y_path = (string) str_replace(array('../', './'), array('-', '-'), $y_path); // replace any unsafe path combinations (do not suppress but replace with a fixed character to avoid create security breaches)

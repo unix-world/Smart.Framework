@@ -1,27 +1,10 @@
-<!-- Partial Template: Plugins.SyntaxHighlightInitAndProcess r.20210526 -->
-<link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/core/css/tpl-highlight.css">
-<link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
-<style>
-code.hljs, code.hljs * {
-	font-family: 'IBM Plex Mono', mono;
-	font-smooth: always;
-}
-</style>
-<!-- HLjs Base -->
-<link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/css/[###CSS-THEME|html###].css">
-<script src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/highlight.js"></script>
-<script src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/syntax/plaintext.js"></script>
-<!-- HLjs Plugins [[###SYNTAX-PACKS|html###]] -->
-[%%%LOOP:SYNTAX-PLUGINS%%%]
-<script src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/[###SYNTAX-PLUGINS._-VAL-_|html###].js"></script>[%%%IF:SYNTAX-PLUGINS._-ITERATOR-_:<###SYNTAX-PLUGINS._-MAXCOUNT-_###;%%%][%%%|N%%%][%%%/IF:SYNTAX-PLUGINS._-ITERATOR-_%%%]
-[%%%/LOOP:SYNTAX-PLUGINS%%%]
-<!-- HLjs Extra Html -->
-[###EXT-JSHTML###]
-<!-- HLjs Smart -->
-<script src="[###HLJS-PREFIX-URL|html###]lib/js/jshighlight/smart-highlight.js"></script>
-<!-- HLjs Async Render -->
+<!-- Partial Template: Plugins.SyntaxHighlightInitAndProcess r.20210609 -->
+<link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/js/jshilitecode/prism/fonts.css">
+<link rel="stylesheet" href="[###HLJS-PREFIX-URL|html###]lib/js/jshilitecode/prism/prism[###CSS-THEME|html###].css">
+<script src="[###HLJS-PREFIX-URL|html###]lib/js/jshilitecode/prism/prism.js"></script>
+<script src="[###HLJS-PREFIX-URL|html###]lib/js/jshilitecode/smart-highlight.js"></script>
 <script>
 var SmartViewHelpersSyntaxHighlightAreas = '[###AREAS-SELECTOR|js###]';
 </script>
-[@@@SUB-TEMPLATE:!lib/core/plugins/templates/syntax-highlight-process-static.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!lib/js/jshilitecode/templates/syntax-hilitecode-process.inc.htm!@@@]
 <!-- #END :: Partial Template: Plugins.SyntaxHighlightInitAndProcess -->

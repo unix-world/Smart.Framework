@@ -1,7 +1,16 @@
 <!-- start Marker-TPL extended syntax template -->
 [%%%COMMENT%%%]
-Template: templating-test-extended.mtpl.htm # v.20210501
+Template: templating-test-extended.mtpl.htm # v.20210608
 [%%%/COMMENT%%%]<!-- comments are removed -->
+<script>
+/*
+[%%%|SPACE%%%]@SPACE
+[%%%|T%%%]@TAB
+[%%%|R%%%]@NEW-LINE(CR+LF)
+[%%%|N%%%]@NEW-LINE(LF)
+# virtual marker [%%%|SB-L%%%]###FAKE-MARKER###[%%%|SB-R%%%]
+*/
+</script>
 <h1 style="display:inline-block;">[###TITLE###]</h1>
 <div>
 	<a href="?page=samples.templating-test-extended" class="ux-button ux-button-small ux-button-info"><i class="sfi sfi-loop2"></i> &nbsp; Reload TPL Extended Render Test</a>
@@ -19,18 +28,19 @@ Template: templating-test-extended.mtpl.htm # v.20210501
 <!-- Test HTML-ID ([###TEST-STR|html###]) 						: '[###TEST-STR|htmid###]' -->
 <!-- Test JS-VAR ([###TEST-STR|html###]) 						: '[###TEST-STR|jsvar###]' -->
 <!-- Test JSON ([###TEST-STR|html###]) 							: '[###TEST-STR|json###]' -->
-<!-- Test URL ([###TEST-URL|html###][###TEST-STR|html###]) 				: '[###TEST-URL|html###][###TEST-STR|url|html###]' -->
+<!-- Test URL ([###TEST-URL|html###][###TEST-STR|html###]) 		: '[###TEST-URL|html###][###TEST-STR|url|html###]' -->
 <!-- Test JS ([###TEST-STR|html###]) 							: '[###TEST-STR|js###]' -->
 <!-- Test SLUG ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|slug###]' -->
 <!-- Test LOWER ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|lower|html###]' -->
 <!-- Test UPPER ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|upper|html###]' -->
-<!-- Test UCFIRST ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|ucfirst|html###]' -->
-<!-- Test UCWORDS ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|ucwords|html###]' -->
-<!-- Test TRIM ([###TEST-STRTOTRIM|html###]) 						: '[###TEST-STRTOTRIM|trim|html###]' -->
-<!-- Test SUBSTR10 ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|substr10|html###]' -->
-<!-- Test SUBTXT13 w. space after 10 ([###TEST-UNISTR|html###]) 			: '[###TEST-UNISTR|subtxt13|html###]' -->
+<!-- Test UCFIRST ([###TEST-UNISTR|html###]) 					: '[###TEST-UNISTR|ucfirst|html###]' -->
+<!-- Test UCWORDS ([###TEST-UNISTR|html###]) 					: '[###TEST-UNISTR|ucwords|html###]' -->
+<!-- Test TRIM ([###TEST-STRTOTRIM|html###]) 					: '[###TEST-STRTOTRIM|trim|html###]' -->
+<!-- Test SUBSTR10 ([###TEST-UNISTR|html###]) 					: '[###TEST-UNISTR|substr10|html###]' -->
+<!-- Test SUBTXT13 w. space after 10 ([###TEST-UNISTR|html###]) : '[###TEST-UNISTR|subtxt13|html###]' -->
 <!-- Test NL2BR ([###TEST-TXT|html###]) 						: '[###TEST-TXT|html|nl2br###]' -->
 <!-- Test CSS ([###TEST-UNISTR|html###]) 						: '[###TEST-UNISTR|css|html###]' -->
+<!-- Test B64 ([###TEST-UNISTR|b64###]) 						: '[###TEST-UNISTR|b64|html###]' -->
 <hr>
 <div>
 	[%%%IF:TEXTIFSTR:!=1234567890 . コアテスト·スイート . / \ abcdefghijklmniopqrstuvwxyz : ; <###END###> ;(1)%%%]

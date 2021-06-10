@@ -7,7 +7,7 @@
 /* ===== fold/foldgutter.css */
 /*
 // addon/fold/foldgutter.css
-// codemirror: v.5.42.0
+// codemirror: v.5.61.1
 // modified by unixman
 */
 
@@ -38,9 +38,9 @@
 /* END */
 
 /* ===== dialog/dialog.css */
+
 /*
-// addon/dialog/dialog.css
-// codemirror: v.5.42.0
+// codemirror: v.5.61.1
 */
 
 .CodeMirror-dialog {
@@ -79,9 +79,9 @@
 /* END */
 
 /* ===== display/fullscreen.css */
+
 /*
-// addon/display/fullscreen.css
-// codemirror: v.5.42.0
+// codemirror: v.5.61.1
 */
 
 .CodeMirror-fullscreen {
