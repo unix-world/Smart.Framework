@@ -32,12 +32,12 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 /**
  * Multi-Account Auth Admins Handler
- * This class provide a complex authentication for admin area (admin.php) using multi-accounts system with SQLite DB
+ * This class provide a complex authentication for admin area (admin.php|task.php) using multi-accounts system with SQLite DB
  *
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20210530
+ * @version 	v.20210611
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -45,7 +45,7 @@ final class AuthAdminsHandler {
 
 	// ::
 
-	private static $template_path = 'etc/templates/default/';
+	private static $template_path = 'modules/mod-auth-admins/templates/';
 	private static $template_file = 'template.htm';
 
 	private const TPL_INC_PATH = 'modules/mod-auth-admins/libs/templates/auth-admins-handler/';
@@ -304,27 +304,19 @@ final class AuthAdminsHandler {
 			//--
 		} else { // display login form
 			//--
-			$arr_login_namespaces = \Smart::get_from_config('app-auth.adm-namespaces');
-			if(\Smart::array_size($arr_login_namespaces) <= 0) {
-				\SmartFrameworkRuntime::Raise503Error('App Auth Namespaces not set in config !'."\n".'You must set the App Auth Namespaces in config as array (app-auth.adm-namespaces) with pairs of [key=namespace title / val=namespace url] of all login namespaces. Manually REFRESH this page after by pressing F5 ...');
-				die('AuthAdminsHandler:NO-LOGIN-NAMESPACES');
-				return;
-			} //end if
-			foreach((array)$arr_login_namespaces as $key => $val) {
-				$arr_login_namespaces[(string)$key] = (string) \SmartUtils::crypto_blowfish_encrypt((string)$val);
-			} //end foreach
-			//--
 			$arr_bw = (array) \SmartComponents::get_imgdesc_by_bw_id((string)\SmartUtils::get_os_browser_ip('bw'));
 			//--
 			$login_or_logout_form = (string) \SmartComponents::render_app_template(
 				(string) self::$template_path,
 				(string) self::$template_file,
 				[
-					'TITLE' => 'Login to Admins Area',
+					'TITLE' => 'Login to '.((\SmartFrameworkRegistry::isTaskArea() === true) ? 'Task' : 'Admin').' Area',
 					'MAIN'  => (string) \SmartMarkersTemplating::render_file_template(
 						(string) self::TPL_INC_PATH.'login.htm',
 						[
-							'LOGIN-NSPACES' => (array)  $arr_login_namespaces,
+							'LOGIN-SCRIPT' 	=> (string) ((\SmartFrameworkRegistry::isTaskArea() === true) ? 'task.php' : 'admin.php'),
+							'LOGIN-URL' 	=> (string)  \SmartUtils::crypto_blowfish_encrypt((string)'#!'.((\SmartFrameworkRegistry::isTaskArea() === true) ? 'tsk' : 'adm').'/DISPLAY-REALMS'), // {{{SYNC-AUTH-ADMINS-LOGIN-SCRIPT}}}
+							'LOGIN-AREA' 	=> (string) ((\SmartFrameworkRegistry::isTaskArea() === true) ? 'Task' : 'Admin'),
 							'POWERED-HTML' 	=> (string) \SmartComponents::app_powered_info(
 								'no',
 								[

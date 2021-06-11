@@ -1,9 +1,9 @@
 <?php
-// Class: \SmartModExtLib\Qunit\AbstractTaskController
+// Class: \SmartModExtLib\AuthAdmins\AbstractTaskController
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
-namespace SmartModExtLib\Qunit;
+namespace SmartModExtLib\AuthAdmins;
 
 //----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
 if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -29,7 +29,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
  */
 abstract class AbstractTaskController extends \SmartAbstractAppController {
 
-	public const MODULE_TPL_PATH = 'modules/mod-qunit/templates/';
+	public const MODULE_TPL_PATH = 'modules/mod-auth-admins/templates/';
 
 	protected $title = 'Task (Abstract)';
 
@@ -153,7 +153,7 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 				return false;
 			} //end if
 		} else {
-			$this->app_tpl = 'modules/mod-qunit/views/app-tpl.mtpl.htm'; // this can also an empty string ... but is better to display someething in header
+			$this->app_tpl = 'modules/mod-auth-admins/views/task.mtpl.htm'; // this can also an empty string ... but is better to display someething in header
 			$arr_vars = array(); // make sure is quite empty in this case ...
 		} //end if
 		//--
@@ -167,9 +167,14 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 			} //end if
 		} //end if
 		//--
+		$this->app_main_url = (string) \trim((string)$this->app_main_url);
+		if((string)$this->app_main_url == '') {
+			$this->app_main_url = (string) $this->ControllerGetParam('url-script').'?page=auth-admins.tasks';
+		} //end if
+		//--
 		\SmartFrameworkRuntime::outputHttpHeadersNoCache();
 		echo (string) \SmartMarkersTemplating::render_file_template(
-			self::MODULE_TPL_PATH.'tpl-task-start.mtpl.htm',
+			self::MODULE_TPL_PATH.'template-task-start.mtpl.htm',
 			(array) array_merge((array)$arr_vars, (array)\SmartComponents::set_app_template_conform_metavars([
 				'@SUB-TEMPLATES@' => [
 					'%app-tpl%' => (string) $this->app_tpl,
@@ -222,7 +227,7 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 		$this->InstantFlush();
 		//--
 		echo (string) \SmartMarkersTemplating::render_file_template(
-			self::MODULE_TPL_PATH.'tpl-task-end.mtpl.htm',
+			self::MODULE_TPL_PATH.'template-task-end.mtpl.htm',
 			(array) \SmartComponents::set_app_template_conform_metavars([
 				'TITLE' 			=> (string) $this->title,
 				'YEAR' 				=> (string) \date('Y'),

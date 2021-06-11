@@ -13,9 +13,9 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 } //end if
 //-----------------------------------------------------
 
-if(!\SmartAppInfo::TestIfModuleExists('mod-qunit')) {
-	\SmartFrameworkRuntime::Raise500Error('Mod QUnit is missing !');
-	die('Mod QUnit is missing !');
+if(!\SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+	\SmartFrameworkRuntime::Raise500Error('Mod AuthAdmins is missing !');
+	die('Mod AuthAdmins is missing !');
 } //end if
 
 // SMART_APP_MODULE_DIRECT_OUTPUT :: TRUE :: # by parent class
@@ -30,10 +30,10 @@ if(!\SmartAppInfo::TestIfModuleExists('mod-qunit')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20210605
+ * @version 	v.20210611
  *
  */
-abstract class AbstractTaskController extends \SmartModExtLib\Qunit\AbstractTaskController {
+abstract class AbstractTaskController extends \SmartModExtLib\AuthAdmins\AbstractTaskController {
 
 	protected $title = 'App Release Task (Abstract)';
 
@@ -99,7 +99,7 @@ abstract class AbstractTaskController extends \SmartModExtLib\Qunit\AbstractTask
 		$this->name_suffix = 'CodePack';
 		//--
 		$this->app_tpl = 'modules/mod-app-release/views/app-task.mtpl.htm';
-		$this->app_main_url = $this->ControllerGetParam('url-script').'?page='.\Smart::escape_url((string)$this->ControllerGetParam('module').'.app-manage').'&appid='.\Smart::escape_url((string)$this->appid);
+		$this->app_main_url = (string) $this->ControllerGetParam('url-script').'?page='.\Smart::escape_url((string)$this->ControllerGetParam('module').'.app-manage').'&appid='.\Smart::escape_url((string)$this->appid);
 		//--
 		$arr_utils_metainfo = (array) \AppCodeUtils::getArrIniMetaInfo(); // requires \AppCodeUtils::parseIniSettings() !!
 		//--

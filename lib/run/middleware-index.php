@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210604
+ * @version		20210610
  *
  */
 final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
@@ -275,7 +275,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		} //end if
 		if(defined('SMART_APP_MODULE_AUTH')) {
 			if(SmartAuth::check_login() !== true) {
-				SmartFrameworkRuntime::Raise403Error('Page Access Denied ! No Authentication: '.$page);
+				SmartFrameworkRuntime::Raise403Error('Page Access Denied ! No Authentication Provided for: '.$page);
 				return;
 			} //end if
 			if(defined('SMART_APP_MODULE_REALM_AUTH')) {

@@ -38,7 +38,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20210609
+ * @version 	v.20210611
  * @package 	@Core:Extra
  *
  */
@@ -163,7 +163,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to set cookies as it takes care to set them according with the cookie domain if set or not per app ; use zero expire time for cookies that will expire with browser session
-	public static function set_cookie(?string $cookie_name, $cookie_data, ?int $expire_seconds=0, ?string $cookie_path='/', ?string $cookie_domain='@', ?string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) {
+	public static function set_cookie(?string $cookie_name, ?string $cookie_data, ?int $expire_seconds=0, ?string $cookie_path='/', ?string $cookie_domain='@', ?string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) {
 		//--
 		if(headers_sent()) {
 			return false;
@@ -175,13 +175,6 @@ final class SmartUtils {
 			return false;
 		} //end if
 		//--
-		if(!Smart::is_nscalar($cookie_data)) { // have no type string to allow also null
-			$cookie_data = null;
-		} //end if
-		//--
-		if(!Smart::is_nscalar($expire_seconds)) { // have no type int to allow also null or number as string
-			$expire_seconds = 0;
-		} //end if
 		$expire_seconds = (int) $expire_seconds;
 		if((int)$expire_seconds > 0) { // set with an expire date in the future
 			$expire_seconds = (int) ((int)time() + (int)$expire_seconds); // now + (seconds)
@@ -242,7 +235,7 @@ final class SmartUtils {
 	// use this function to unset cookies as it takes care to set them according with the cookie domain if set or not per app
 	public static function unset_cookie(?string $cookie_name, ?string $cookie_path='/', ?string $cookie_domain='@', ?string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) {
 		//--
-		return (bool) self::set_cookie($cookie_name, null, -1, $cookie_path, $cookie_domain, $cookie_samesite, $cookie_secure, $cookie_httponly);
+		return (bool) self::set_cookie((string)$cookie_name, null, -1, (string)$cookie_path, (string)$cookie_domain, (string)$cookie_samesite, (bool)$cookie_secure, (bool)$cookie_httponly);
 		//--
 	} //END FUNCTION
 	//================================================================

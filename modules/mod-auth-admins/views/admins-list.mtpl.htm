@@ -1,23 +1,28 @@
-<!-- View: admins-list v.20210530 -->
+<!-- View: admins-list v.20210610 -->
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css?[###RELEASE-HASH|url|html###]">
 <script src="lib/js/jquery/pager/jquery.simplePagination.js?[###RELEASE-HASH|url|html###]"></script>
 <script src="lib/js/jquery/jquery.event.drag.js?[###RELEASE-HASH|url|html###]"></script>
 <script src="lib/js/jquery/jquery.event.drop.js?[###RELEASE-HASH|url|html###]"></script>
 <script src="lib/js/jquery/jquery.simulate.js?[###RELEASE-HASH|url|html###]"></script>
 <style>
-	.smartGrid_AlignCenter {
-		text-align: center;
-	}
-	.smartGrid_AlignRight {
-		text-align: right;
-	}
-	.smartGrid_Highlight {
-		color: #44619D;
-		font-weight: bold;
-	}
-	.smartGrid_Important {
-		font-weight: bold;
-	}
+.smartGrid_AlignCenter {
+	text-align: center;
+}
+.smartGrid_AlignRight {
+	text-align: right;
+}
+.smartGrid_Highlight {
+	color: #44619D;
+	font-weight: bold;
+}
+.smartGrid_Important {
+	font-weight: bold;
+}
+a#nolink {
+	cursor: pointer !important;
+	text-decoration: none !important;
+	border-bottom: none !important;
+}
 </style>
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid.css?[###RELEASE-HASH|url|html###]">
 <link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid-fixes.css?[###RELEASE-HASH|url|html###]">
@@ -31,7 +36,18 @@
 	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', itemURL+'list', 'auth_admins_list_tbl', 'id', 'ASC', '', 'filtering');
 	//--
 </script>
-<div style="color:#778899; line-height:24px; font-size:24px; font-weight:bold; display:flex; align-items:center;"><a href="admin.php"><img width="48" height="48" src="lib/core/img/app/globe.svg" style="vertical-align:middle; margin-right:10px;"></a> Auth.Admins Management :: <span id="infoTotalRows"># / # @</span></div>
+<div>
+	<table style="width:calc(100vw - 25px);"><tr>
+	<td><a id="nolink" href="[###CURRENT-SCRIPT|html###]" class=""><i class="sfi sfi-users sfi-2x" style="color:#778899;"></i> &nbsp; </a> <span style="color:#778899; font-size:2rem; font-weight:bold;">Auth.Admins Management :: <span id="infoTotalRows"># / # @</span></span></td>
+	<td>&nbsp;</td>
+	<td align="right">
+	<select title="Available Namespaces" id="areas-list" size="1" class="ux-field" style="min-width:300px !important; max-width:70vw;" onChange="((list) => { if(typeof(list) == undefined) { return; } const url = list.val(); if(url != undefined) { self.location = String(url); } })($(this));">
+	<option value=""> --- Select a NameSpace --- </option>
+	[%%%LOOP:AREAS%%%]<option value="[###AREAS._-VAL-_|html###]">[###AREAS._-KEY-_|html###]</option>[%%%|N%%%][%%%/LOOP:AREAS%%%]
+	</select>
+	</td>
+	</tr></table>
+</div>
 <br>
 <form id="filtering" name="filtering" class="ux-form" onSubmit="return false;">
 	<span style="display:inline-block;">
@@ -54,7 +70,7 @@ $(function() {
 		var fname = dataContext['name_f'];
 		var lname = dataContext['name_l'];
 		var active = dataContext['active'];
-		$(cellNode).empty().html('').append('<button class="ux-button ux-button-xsmall" onClick="smartJ$Browser.PopUpLink(\'' + smartJ$Utils.escape_js(itemURL + 'edit-form' +'&id=' + smartJ$Utils.escape_url(id_user)) +'\', \'auth_admins_list_mod\'); return false;" title="Edit (Click to Open the Editor)"><i class="sfi sfi-user-check"></i></button>&nbsp;');
+		$(cellNode).empty().html('').append('<button class="ux-button ux-button-xsmall" onClick="smartJ$Browser.PopUpLink(\'' + smartJ$Utils.escape_js(itemURL + 'edit-form' +'&id=' + smartJ$Utils.escape_url(id_user)) +'\', \'auth_admins_list_mod\'); return false;" title="Edit (Click to Open the Editor)"><i class="sfi sfi-user"></i></button>&nbsp;');
 	}
 	function formatter_Keys(row, cell, value, columnDef, dataContext) {
 		if(value > 0) {

@@ -123,7 +123,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210530
+ * @version 	v.20210611
  * @package 	development:Application
  *
  */
@@ -282,7 +282,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		//--
 		$this->appenv 			= (string) (SmartFrameworkRegistry::ifProdEnv() === true) ? 'prod' : 'dev'; 		// app environment: dev | prod :: {{{SYNC-APP-ENV-SETT}}}
 		$this->releasehash 		= (string) SmartUtils::get_app_release_hash(); 										// the release hash based on app framework version, framework release and modules version
-		$this->modulearea 		= (string) $param_area; 															// index | admin
+		$this->modulearea 		= (string) $param_area; 															// index | admin | task
 		$this->modulepath 		= (string) $y_module_path; 															// modules/mod-something/
 		$this->modulename 		= (string) Smart::base_name($y_module_path); 										// mod-something
 		$this->module 			= (string) ($ctrl_arr[0] ?? ''); 													// something (module name part of the controller)
@@ -386,7 +386,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 * @param BOOLEAN $show_output 		:: *Optional* ; Default is FALSE ; If set to TRUE will try to output the contents as HTML ; BEWARE, if the content is binary it should not ...
 	 * @return 	BOOLEAN					:: TRUE if Debug is ON, FALSE if not
 	 */
-	final public function forceRawDebug($show_output=false) {
+	final public function forceRawDebug(bool $show_output=false) {
 		//--
 		if($this->IfDebug() !== true) {
 			Smart::log_warning('ERROR: Page Controller: '.$this->controller.' # '.__FUNCTION__.'(): Method should be called only when Debug Mode is ON ...');
@@ -457,7 +457,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOLEAN					:: TRUE if successful, FALSE if not
 	 */
-	final public function SetDebugData($title, $debug_msg) {
+	final public function SetDebugData(?string $title, $debug_msg) {
 		//--
 		if(!$this->IfDebug()) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # NOTICE: Modules/SetDebugData must be set only if Modules/IfDebug() is TRUE ... else will slow down the execution. Consider to Add SetDebugData() in a context as if($this->IfDebug()){ $this->SetDebugData(\'Debug title\', \'A debug message ...\'); } ...');
@@ -522,7 +522,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	STRING					:: The value for the selected parameter
 	 */
-	final public function ControllerGetParam($param) {
+	final public function ControllerGetParam(?string $param) {
 		//--
 		$param = (string) strtolower((string)$param);
 		//--
@@ -533,13 +533,13 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 				$out = $this->appenv;
 				break;
 			case 'app-domain':
-				$out = Smart::get_from_config('app.'.$this->modulearea.'-domain');
+				$out = $this->ConfigParamGet('app.'.$this->modulearea.'-domain', 'string');
 				break;
 			case 'app-namespace':
 				$out = SMART_SOFTWARE_NAMESPACE;
 				break;
 			case 'app-realm':
-				$out = ($this->modulearea === 'admin') ? 'ADM' : 'IDX';
+				$out = (($this->modulearea === 'task') ? 'TSK' : (($this->modulearea === 'admin') ? 'ADM' : 'IDX'));
 				break;
 			case 'release-hash':
 				$out = $this->releasehash;
@@ -652,12 +652,13 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 * Get the value for a Config parameter from the app $configs array
 	 *
 	 * @param 	ENUM 		$param 		:: The selected configuration parameter ; Examples: 'app.info-url' will get value from $configs['app']['info-url'] ; 'regional.decimal-separator' will get the value (string) from $configs['regional']['decimal-separator'] ; 'regional' will get the value (array) from $configs['regional']
+	 * @param 	ENUM 		$type 			:: The type to pre-format the value: 'array', 'string', 'boolean', 'integer', 'numeric' OR '' to leave the value as is (raw)
 	 *
 	 * @return 	MIXED					:: The value for the selected parameter. If the Config parameter does not exists, will return an empty string
 	 */
-	final public function ConfigParamGet($param) {
+	final public function ConfigParamGet(?string $param, ?string $type='') {
 		//--
-		return Smart::get_from_config($param); // mixed
+		return Smart::get_from_config((string)$param, (string)$type); // mixed
 		//--
 	} //END FUNCTION
 	//=====
@@ -715,9 +716,9 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	MIXED					:: The value of the choosen Request (GET/POST) variable
 	 */
-	final public function RequestVarGet($key, $defval=null, $type='') { // {{{SYNC-REQUEST-DEF-PARAMS}}}
+	final public function RequestVarGet(?string $key, $defval=null, $type='') { // {{{SYNC-REQUEST-DEF-PARAMS}}}
 		//--
-		return SmartFrameworkRegistry::getRequestVar($key, $defval, $type); // mixed
+		return SmartFrameworkRegistry::getRequestVar((string)$key, $defval, $type); // mixed
 		//--
 	} //END FUNCTION
 	//=====
@@ -731,9 +732,9 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	MIXED					:: The value of the choosen Cookie variable or null if not set
 	 */
-	final public function CookieVarGet($name) {
+	final public function CookieVarGet(?string $name) {
 		//--
-		return SmartUtils::get_cookie($name); // mixed: null / string
+		return SmartUtils::get_cookie((string)$name); // mixed: null / string
 		//--
 	} //END FUNCTION
 	//=====
@@ -754,9 +755,9 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOLEAN					:: TRUE if Set, FALSE if Not
 	 */
-	final public function CookieVarSet($name, $data, $expire=0, $path='/', $domain='@', $samesite='@', $secure=false, $httponly=false) {
+	final public function CookieVarSet(?string $name, ?string $data, ?int $expire=0, ?string $path='/', ?string $domain='@', ?string $samesite='@', bool $secure=false, bool $httponly=false) {
 		//--
-		return (bool) SmartUtils::set_cookie($name, $data, $expire, $path, $domain, $samesite, $secure, $httponly);
+		return (bool) SmartUtils::set_cookie((string)$name, (string)$data, (int)$expire, (string)$path, (string)$domain, (string)$samesite, (bool)$secure, (bool)$httponly);
 		//--
 	} //END FUNCTION
 	//=====
@@ -770,12 +771,14 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 * @param 	STRING 		$path		:: The cookie path ; default is /
 	 * @param 	STRING 		$domain		:: The cookie domain ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN if defined or '') ; can be explicit set
 	 * @param 	ENUM 		$samesite 	:: The cookie SameSite policy ; default is @ (will get as it is set in SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE if defined or '') ; valid values: '', 'Lax', 'Strict', 'None' ; if '' will use the old behaviour ; if 'None' will enforce $secure=true as the new browsers are requiring and will work only over https secure connections
+	 * @param 	BOOL 		$secure 	:: The cookie secure policy ; if set to TRUE will send cookies only via https secure connections ; default is FALSE ; if the SameSite is set to 'None' this parameter is enforced to be TRUE
+	 * @param 	BOOL 		$httponly 	:: The cookie httponly policy ; if set to TRUE this cookies will not be available to Javascript (or any other client-side access) but only to server-side scripts
 	 *
 	 * @return 	BOOLEAN					:: TRUE if Set, FALSE if Not
 	 */
-	final public function CookieVarUnset($name, $path='/', $domain='@', $samesite='@') {
+	final public function CookieVarUnset(?string $name, ?string $path='/', ?string $domain='@', ?string $samesite='@', bool $secure=false, bool $httponly=false) {
 		//--
-		return (bool) SmartUtils::unset_cookie($name, $path, $domain, $samesite);
+		return (bool) SmartUtils::unset_cookie((string)$name, (string)$path, (string)$domain, (string)$samesite, (bool)$secure, (bool)$httponly);
 		//--
 	} //END FUNCTION
 	//=====

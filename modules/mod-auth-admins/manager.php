@@ -1,6 +1,6 @@
 <?php
 // Controller: AuthAdmins/Manager
-// Route: admin.php?page=auth-admins.manager.stml
+// Route: task|admin.php?page=auth-admins.manager.stml
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -11,18 +11,18 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'ADMIN');
-define('SMART_APP_MODULE_AUTH', true); 		// if set to TRUE requires auth always
+define('SMART_APP_MODULE_AREA', 'SHARED');
+define('SMART_APP_MODULE_AUTH', true); 	// if set to TRUE because is shared
 
 // [PHP8]
 
 /**
- * Admin Controller (direct output)
+ * Admin Controller
  * @ignore
  */
-final class SmartAppAdminController extends SmartAbstractAppController {
+class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210530
+	// v.20210610
 
 	public function Run() { // (OUTPUTS: HTML)
 
@@ -55,7 +55,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$redirect = (string) SmartUtils::crypto_blowfish_decrypt((string)$url);
 				//--
 				if((string)$redirect == '') {
-					$redirect = 'admin.php';
+					$redirect = (string) $this->ControllerGetParam('url-script');
 				} //end if
 				//--
 				$this->PageViewSetVars([
@@ -70,16 +70,31 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$this->PageViewSetCfg('rawpage', true);
 				//--
 				$url = $this->RequestVarGet('url', '', 'string');
-				$redirect = (string) SmartUtils::crypto_blowfish_decrypt((string)$url);
+				$url = (string) SmartUtils::crypto_blowfish_decrypt((string)$url);
 				//--
-				if((string)$redirect != '') {
+				$area = (string) strtolower((string)$this->ControllerGetParam('app-realm'));
+				//--
+				if((string)$url == '#!'.$area.'/DISPLAY-REALMS') {
+					//--
+					$arr_login_namespaces = (array) \SmartModExtLib\AuthAdmins\AuthNameSpaces::GetNameSpaces();
+					//--
 					$this->PageViewSetVar(
 						'main',
 						SmartViewHtmlHelpers::js_ajax_replyto_html_form(
 							'OK',
-							'You are logged in',
-							'Login Check Successful ...<br>'.Smart::escape_html((string)date('Y-m-d H:i:s O')),
-							(string) $redirect
+							'Login Check Successful ...',
+							(string) Smart::escape_html((string)date('Y-m-d H:i:s O')),
+							'',
+							'auth-admins-area-login',
+							(string) SmartMarkersTemplating::render_file_template(
+								'modules/mod-auth-admins/libs/templates/auth-admins-handler/realms.inc.htm',
+								[
+									'AUTH-ID' 		=> (string) SmartAuth::get_login_id(),
+									'LOGIN-AREA' 	=> (string) $this->ControllerGetParam('module-area'),
+									'AREA' 			=> (string) $area,
+									'LOGIN-NSPACES' => (array)  $arr_login_namespaces,
+								]
+							)
 						)
 					);
 				} else {
@@ -88,8 +103,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						SmartViewHtmlHelpers::js_ajax_replyto_html_form(
 							'WARNING',
 							'You are logged in',
-							'NO Redirect URL Provided for Login !<br>Login Check Successful ...<br>'.Smart::escape_html((string)date('Y-m-d H:i:s O')),
-							'admin.php'
+							'<b>Invalid Login URL Provided !</b><br>Login Check Successful ...<br>'.Smart::escape_html((string)date('Y-m-d H:i:s O')),
+							(string) $this->ControllerGetParam('url-script')
 						)
 					);
 				} //end if else
@@ -142,7 +157,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'admins-change-pass.mtpl.htm',
 						[
-							'ACTIONS-URL' 		=> 'admin.php?page='.$this->ControllerGetParam('controller').'&action=',
+							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=',
 							'ID' 				=> (string) $select_user['id']
 						]
 					)
@@ -197,7 +212,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if else
 				//--
 				if($status == 'OK') {
-					$redirect = 'admin.php?page='.$this->ControllerGetParam('controller').'&action=close-modal'; // redirect URL (just on success)
+					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=close-modal'; // redirect URL (just on success)
 				} else {
 					$redirect = '';
 				} //end if else
@@ -293,7 +308,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'admins-form-edit.mtpl.htm',
 						[
-							'ACTIONS-URL' 		=> 'admin.php?page='.$this->ControllerGetParam('controller').'&action=',
+							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=',
 							'ID' 				=> (string) $select_user['id'],
 							'EMAIL' 			=> (string) $select_user['email'],
 							'FIRST-NAME' 		=> (string) $select_user['name_f'],
@@ -371,7 +386,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if else
 				//--
 				if($status == 'OK') {
-					$redirect = 'admin.php?page='.$this->ControllerGetParam('controller').'&action=close-modal'; // redirect URL (just on success)
+					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=close-modal'; // redirect URL (just on success)
 				} else {
 					$redirect = '';
 				} //end if else
@@ -463,7 +478,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 						'main' => SmartMarkersTemplating::render_file_template(
 							$this->ControllerGetParam('module-view-path').'admins-form-add.mtpl.htm',
 							[
-								'ACTIONS-URL' => 'admin.php?page='.$this->ControllerGetParam('controller').'&action=new-add'
+								'ACTIONS-URL' => (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=new-add'
 							]
 						)
 					]);
@@ -534,7 +549,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if else
 				//--
 				if($status == 'OK') {
-					$redirect = 'admin.php?page='.$this->ControllerGetParam('controller').'&action=close-modal'; // redirect URL (just on success)
+					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=close-modal'; // redirect URL (just on success)
 				} else {
 					$redirect = '';
 				} //end if else
@@ -597,11 +612,15 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				if(SmartAuth::test_login_privilege('admin') === true) { // PRIVILEGES
 					//--
+					$areas = (array) \SmartModExtLib\AuthAdmins\AuthNameSpaces::GetNameSpaces();
+					//--
 					$main = SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'admins-list.mtpl.htm',
 						[
-							'ACTIONS-URL' => 'admin.php?page='.$this->ControllerGetParam('controller').'&action=',
-							'RELEASE-HASH' => (string) $this->ControllerGetParam('release-hash')
+							'CURRENT-SCRIPT' 	=> (string) $this->ControllerGetParam('url-script'),
+							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=',
+							'RELEASE-HASH' 		=> (string) $this->ControllerGetParam('release-hash'),
+							'AREAS' 			=> (array)  $areas,
 						]
 					);
 					//--
@@ -622,6 +641,15 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 	} //END FUNCTION
 
+
+} //END CLASS
+
+
+/**
+ * Task Controller
+ * @ignore
+ */
+class SmartAppTaskController extends SmartAppAdminController {
 
 } //END CLASS
 

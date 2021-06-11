@@ -33,7 +33,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  *
  * @depends 	classes: SmartFrameworkSecurity
  *
- * @version 	v.20210528
+ * @version 	v.20210611
  * @package 	Application
  *
  */
@@ -341,7 +341,7 @@ final class SmartFrameworkRegistry {
 	 *
 	 * @return 	MIXED					:: The value of the choosen Request (GET/POST) variable
 	 */
-	public static function getRequestVar($key, $defval=null, $type='') { // {{{SYNC-REQUEST-DEF-PARAMS}}}
+	public static function getRequestVar(?string $key, $defval=null, $type='') { // {{{SYNC-REQUEST-DEF-PARAMS}}}
 		//--
 		$key = (string) trim((string)$key);
 		if((string)$key == '') {

@@ -1,4 +1,4 @@
-<!-- Js Framework :: r.20210530 -->
+<!-- Js Framework :: r.20210610 -->
 <script src="lib/js/check-es-runtime.js?[###RELEASE-HASH|url|html###]"></script>
 <script>
 (function(){
@@ -28,8 +28,8 @@ const smartJ$Options = {
 		ModalBoxProtected: [%%%IF:APP-REALM:!=IDX;(87)%%%]true[%%%ELSE:APP-REALM(87)%%%]false[%%%/IF:APP-REALM(87)%%%],
 		NotifyLoadError: [%%%IF:APP-REALM:!=IDX;(87)%%%]true[%%%ELSE:APP-REALM(87)%%%]false[%%%/IF:APP-REALM(87)%%%],
 		CssOverlayOpacity: 0.8,
-	}
-}
+	},
+};
 Object.freeze(smartJ$Options); // sec.
 window.smartJ$Options = smartJ$Options; // g-exp.
 </script>

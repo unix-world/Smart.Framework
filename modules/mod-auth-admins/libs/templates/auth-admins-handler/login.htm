@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20210530 -->
+<!-- AuthAdmins Login # v.20210611 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -9,88 +9,122 @@ hr {
 	height: 1px;
 }
 a#copyright, a#copyright:hover {
-	font-size: 10px !important;
+	font-size: 0.625rem !important;
 	font-weight: bold;
-	color: #999999;
+	color: #888888;
 	text-decoration: none;
-	border-bottom: dotted 1px #999999;
-}
-a#nolink {
-	cursor: pointer;
-	text-decoration: none;
+	border-bottom: dotted 1px #888888;
 }
 a#special {
-	cursor: pointer;
-	text-decoration: none;
-	border-bottom: dotted 1px #CCCCCC;
+	cursor: pointer !important;
+	text-decoration: none !important;
+	border-bottom: dotted 1px #CCCCCC !important;
+}
+span.help {
+	cursor: help !important;
+}
+span.info {
+	font-size: 27px !important;
+	font-weight: bold !important;
+	line-height: 48px !important;
 }
 </style>
 <script>
 const ovID = 'sf-adm-login-overlay';
-const AuthAdminsRdr = () => {
-	const url = $('#auth-admins-title-login option:selected').val();
+const AuthAdminsCheck = () => {
+	const url = '[###LOGIN-URL|js###]';
 	const dtime = Date.now();
 	const params = '&url=' + smartJ$Utils.escape_url(url) + '&time=' + smartJ$Utils.escape_url(dtime);
 	if((url != undefined) && url) {
-		const uri = 'admin.php?page=auth-admins.manager&action=login-timeout' + params;
-		const chk = 'admin.php?page=auth-admins.manager&action=login-check' + params;
+		const uri = '[###LOGIN-SCRIPT|js###]?page=auth-admins.manager&action=login-timeout' + params;
+		const chk = '[###LOGIN-SCRIPT|js###]?page=auth-admins.manager&action=login-check' + params;
 		if(url) {
 			smartJ$Browser.OverlayShow(null, null, null, ovID);
 			smartJ$Browser.SubmitFormByAjax(null, chk, 'yes', () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeOK); }, () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeERR); }, (fid, u, msg) => { if(msg != undefined) { if(msg.status != undefined) { if(msg.status != 401) { setTimeout(() => { self.location = uri; }, 500); return; } } } setTimeout(() => { smartJ$Browser.OverlayClear(ovID); setTimeout(() => { smartJ$Browser.OverlayHide(ovID); self.location = self.location; }, 750); }, 700); }, true);
 		}
 	}
 };
-const AuthAdminsAreaSelector = () => {
-	const lV = $('#auth-admins-title-login option:selected').text();
-	$('#login-ns').text(lV);
-};
 </script>
 <div style="text-align:center; padding:8px;">
 	<div><center>
-		<table cellpadding="0">
-			<tr>
-				<td><span style="cursor:help" title="This is a PRIVATE AREA and requires LOGIN with a valid UserName and Password"><img src="lib/framework/img/sign-info.svg" style="opacity:0.7;"></span></td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td style="font-size:27px;"><span style="color:#778899;"><b>Private&nbsp;Area</b></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#CCCCCC;"><b>プライベートエリア</b></span></td>
-				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-				<td><span style="cursor:help" title="Auth Area ID: `[###AREA-ID|html###]`"><img src="lib/framework/img/sign-notice.svg" style="opacity:0.7;"></span></td>
-			</tr>
-		</table>
+		<div id="info-area">
+			<div class="ux-grid-row">
+				<div class="ux-grid-col c1"><span style="cursor:not-allowed;" title="This is a PRIVATE AREA and requires LOGIN with a valid UserName and Password ... Auth Area ID: `[###AREA-ID|html###]`"><img src="lib/framework/img/sign-info.svg" style="opacity:0.7;"></span></div>
+				<div class="ux-grid-col c4"><span class="info" style="color:#778899!important;">Private&nbsp;Area</span></div>
+				<div class="ux-grid-col c2"><i class="sfi sfi-xxl sfi-lock" style="color:#EFEFEF;"></i></div>
+				<div class="ux-grid-col c4"><span style="font-size:27px; font-weight:bold; line-height:48px; color:#DDDDDD;" id="info-alt-text"></span></div>
+				<div class="ux-grid-col c1"><span style="cursor:help;" title="UNAUTHORIZED OR IMPROPER USE OF THIS PRIVATE COMPUTER AREA may result in administrative disciplinary actions, civil charges/criminal penalties, and/or other sanctions by the law ! DO NOT TRY to login without having an account on this area. Any attempt to enforce this authentication system will be recorded and logged (actions and the IP address) for security reasons." onClick="smartJ$Browser.AlertDialog('<b>' + smartJ$Utils.escape_html($(this).attr('title')) + '</b>', null, 'WARNING', 575, 250);"><img src="lib/framework/img/sign-question.svg" style="opacity:0.7;"></span></div>
+			</div>
+		</div>
 	</center></div>
 	<hr>
 	<div><center>
-		<table border="0">
-			<tr>
-				<td align="center">
-					<div title="Select here the Login NameSpace and Click the Login link below ...">
-						<font size="4"><b>Select the Login NameSpace:</b>&nbsp;&nbsp;&nbsp;</font>
-						<select title="Available Login Namespaces" id="auth-admins-title-login" size="1" style="max-width:300px!important; " onChange="AuthAdminsAreaSelector();">
-							[%%%LOOP:LOGIN-NSPACES%%%]
-							<option value="[###LOGIN-NSPACES._-VAL-_|html###]">[###LOGIN-NSPACES._-KEY-_|html###]</option>
-							[%%%/LOOP:LOGIN-NSPACES%%%]
-						</select>
-						<script>(() => { if(typeof(smartJ$UI) != 'undefined') { try { smartJ$UI.SelectList('auth-admins-title-login', 300, null, false, false); } catch(err){} } })();</script>
+		<div>
+			<div class="ux-grid-row">
+				<div class="ux-grid-col c12 ux-center">
+					<div id="auth-admins-area-login">
+						<a id="special" title="Click here to Login ..." href="javascript:void(0)" onClick="AuthAdminsCheck();"><span style="color:#7BC043; font-size: 2rem;"><b>Login to :// [###LOGIN-AREA|html###] Area</b></span></a>
 					</div>
-				</td>
-			</tr>
-			<tr>
-				<td align="center">
-					<div title="Click here to Login to the selected Namespace ...">
-						<a id="special" href="javascript:void(0)" onClick="AuthAdminsRdr();"><font color="#7BC043" size="5"><b>Login to :// <span id="login-ns">[NameSpace]</span></b></font></a>
-					</div>
+				</div>
+				<div class="ux-grid-col c12 ux-center">
 					<div style="cursor:help;">
 						<img border="0" width="128" height="128" src="lib/core/img/app/globe.svg" alt="" title="Auth.Admins :: Authentication Module for Smart.Framework">
 					</div>
+				</div>
+				<div class="ux-grid-col c12 ux-center">
 					<div title="Click here to Logout ...">
-						<a id="special" href="[###LOGOUT-URL|html###]"><font color="#666699" size="4"><b>Logout from :// All NameSpaces</b></font></a>
+						<a id="special" href="[###LOGOUT-URL|html###]"><span style="color:#666699; font-size: 1.25rem;"><b>Logout from :// All NameSpaces</b></span></a>
 					</div>
-				</td>
-			</tr>
-		</table>
+				</div>
+			</div>
+		</div>
 	</center></div>
 	<br>
 	<div><center>[###POWERED-HTML###]</center></div>
 	<a data-smart="open.modal" href="http://www.unix-world.org" target="unix_world_org" id="copyright"><b>&copy;&nbsp;2006-[###CRR-YEAR|html###]&nbsp;unix-world.org</b></a>
 </div>
-<script>AuthAdminsAreaSelector();</script>
+<script>
+(() => {
+	const privateAreaText = [ // [21 langs] :: EN + 20
+		'Privater Bereich', 						// de
+		'Zonă Privată', 							// ro
+		'Ιδιωτικός χώρος', 							// el
+		'Zone privée', 								// fr
+		'Área privada', 							// es, po
+		'Частная зона', 							// ru, bg
+		'Area privata', 							// it
+		'Prive-gebied', 							// nl
+		'プライベートエリア', 							// ja
+		'私人区域', 									// zh
+		'Aladani agbegbe', 							// yo
+		'Privat område', 							// da, no, sv
+		'منطقة خاصة', 								// ar
+		'निजी क्षेत्र', 									// hi, ne
+		'Yksityisalue Asiaton oleskelu kielletty', 	// fi
+		'Einkasvæði', 								// is
+	];
+	let i = Math.floor(Math.random() * (privateAreaText.length));
+	const displayInfoText = () => {
+		if(privateAreaText.length <= 0) {
+			return;
+		}
+		if((i < 0) || (i >= privateAreaText.length)) {
+			i = 0;
+		}
+		const text = String(privateAreaText[i] || '');
+		if(text) {
+			$('#info-alt-text').empty().hide().text(text).fadeIn('slow');
+		}
+		i++;
+	};
+	const delay = 2;
+	const animate = () => {
+		displayInfoText();
+		setTimeout(() => {
+			window.requestAnimationFrame(animate);
+		}, 1000 * delay);
+	};
+	animate();
+})();
+</script>
 <!-- # AuthAdmins Login -->

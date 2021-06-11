@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20210528
+ * @version		v.20210610
  * @package 	Application
  *
  */
@@ -565,12 +565,12 @@ final class SmartFrameworkRuntime {
 		//--
 		$url_redirect = '';
 		//--
-		$the_current_url = SmartUtils::get_server_current_url();
-		$the_current_script = SmartUtils::get_server_current_script();
+		$the_current_url = (string) SmartUtils::get_server_current_url();
+		$the_current_script = (string) SmartUtils::get_server_current_script();
 		//--
 		$is_disabled_frontent = (bool) ((defined('SMART_SOFTWARE_FRONTEND_DISABLED') && (SMART_SOFTWARE_FRONTEND_DISABLED === true)) ? true : false);
 		$is_disabled_backend  = (bool) ((defined('SMART_SOFTWARE_BACKEND_DISABLED')  && (SMART_SOFTWARE_BACKEND_DISABLED === true))  ? true : false);
-		$is_disabled_task 	  = (bool) ((defined('SMART_SOFTWARE_TASK_DISABLED')  && (SMART_SOFTWARE_TASK_DISABLED === true))  ? true : false);
+		$is_disabled_task 	  = (bool) ((defined('SMART_SOFTWARE_TASK_DISABLED')     && (SMART_SOFTWARE_TASK_DISABLED === true))     ? true : false);
 		//--
 		if(
 			($is_disabled_frontent === true) AND
@@ -580,16 +580,26 @@ final class SmartFrameworkRuntime {
 			self::Raise500Error('App Config ERROR'."\n".'All services (FRONTEND, BACKEND, TASK) of this application are currently DISABLED in the config/init ...');
 			return;
 		} //end if
+
 		if(($is_disabled_frontent === true) AND ((string)$the_current_script == 'index.php')) {
-			$url_redirect = $the_current_url.'admin.php';
-		} //end if
-		if(($is_disabled_backend === true) AND ((string)$the_current_script == 'admin.php')) {
-			$url_redirect = $the_current_url.'index.php';
-		} //end if
-		if(($is_disabled_task === true) AND ((string)$the_current_script == 'task.php')) {
-			self::Raise503Error('The TASK Service is Not Available on this instance');
-			return;
-		} //end if
+			if($is_disabled_backend === true) {
+				$url_redirect = $the_current_url.'task.php';
+			} else {
+				$url_redirect = $the_current_url.'admin.php';
+			} //end if else
+		} elseif(($is_disabled_backend === true) AND ((string)$the_current_script == 'admin.php')) {
+			if($is_disabled_frontent === true) {
+				$url_redirect = $the_current_url.'task.php';
+			} else {
+				$url_redirect = $the_current_url.'index.php';
+			} //end if else
+		} elseif(($is_disabled_task === true) AND ((string)$the_current_script == 'task.php')) {
+			if($is_disabled_backend === true) {
+				$url_redirect = $the_current_url.'index.php';
+			} else {
+				$url_redirect = $the_current_url.'admin.php';
+			} //end if else
+		} //end if else
 		//--
 		if(((string)$url_redirect == '') AND (isset($_SERVER['PATH_INFO']))) {
 			if((string)SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']) != '') {

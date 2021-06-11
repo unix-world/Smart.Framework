@@ -27,12 +27,12 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 /**
  * Simple Auth Admins Handler
- * This class provide a very simple authentication for admin area (admin.php) using a single account with username/password set in config-admin.php
+ * This class provide a very simple authentication for admin area (admin.php|task.php) using a single account with username/password set in config-admin.php
  *
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD and *optional* the APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY ; they must be set in set in config-admin.php
  * Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)
  *
- * @version 	v.20210530
+ * @version 	v.20210610
  * @package 	development:modules:AuthAdmins
  *
  */

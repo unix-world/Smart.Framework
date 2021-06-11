@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @ignore
  *
- * @version 	v.20210530
+ * @version 	v.20210610
  * @package 	development:modules:AuthAdmins
  *
  */

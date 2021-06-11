@@ -1,5 +1,5 @@
 
-/* ------------------------------------------------ CSS3, Base Styles START :: r.20210530 */
+/* ------------------------------------------------ CSS3, Base Styles START :: r.20210610 */
 
 /* IMPORTANT: !! FOR A VERY CLEAR READABILITY OF PAGE FONTS !!
  * except the main body and main elements sizes (sized in pixels),
@@ -29,10 +29,7 @@ html, body {
 
 body {
 	background: #FFFFFF;
-	color: #111111;
-}
-
-body {
+	color: #222222;
 	font-size: 16px;
 	line-height: 1.5;
 }

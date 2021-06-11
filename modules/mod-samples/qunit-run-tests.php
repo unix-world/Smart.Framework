@@ -76,9 +76,9 @@ class SmartAppTaskController extends SmartAbstractAppController {
 					'TEST-DB-DBA' 			=> (string) ($tests_db_enabled && (SmartDbaUtilDb::isDbaAndHandlerAvailable() === true) && SmartDbaUtilDb::getDbaHandler()) ? (string)SmartDbaUtilDb::getDbaHandler() : '',
 					'NAME-DB-PCACHE' 		=> (string) SmartPersistentCache::getVersionInfo(),
 					'TEST-DB-PCACHE' 		=> (string) ((defined('SMART_FRAMEWORK_TESTUNIT_ALLOW_PCACHE_TESTS') AND (SMART_FRAMEWORK_TESTUNIT_ALLOW_PCACHE_TESTS === true) AND (SmartPersistentCache::isActive() === true)) ? true : false),
-					'TEST-DB-MONGO' 		=> (string) (($tests_db_enabled === true) AND (Smart::array_size(Smart::get_from_config('mongodb')) > 0) ? true : false),
-					'TEST-DB-PGSQL' 		=> (string) (($tests_db_enabled === true) AND (Smart::array_size(Smart::get_from_config('pgsql')) > 0) ? true : false),
-					'TEST-DB-MYSQL' 		=> (string) (($tests_db_enabled === true) AND (Smart::array_size(Smart::get_from_config('mysqli')) > 0) ? true : false),
+					'TEST-DB-MONGO' 		=> (string) (($tests_db_enabled === true) AND (Smart::array_size($this->ConfigParamGet('mongodb', 'array')) > 0) ? true : false),
+					'TEST-DB-PGSQL' 		=> (string) (($tests_db_enabled === true) AND (Smart::array_size($this->ConfigParamGet('pgsql',   'array')) > 0) ? true : false),
+					'TEST-DB-MYSQL' 		=> (string) (($tests_db_enabled === true) AND (Smart::array_size($this->ConfigParamGet('mysqli',  'array')) > 0) ? true : false),
 					//--
 					'TEST-MOD-DB' 			=> (string) (($tests_db_enabled === true) ? true : false),
 					//--

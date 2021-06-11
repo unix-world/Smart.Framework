@@ -1,4 +1,4 @@
-<!-- v.20210527 -->
+<!-- v.20210610 -->
 <table style="width:98vw;">
 	<tr>
 		<td width="64">
@@ -31,12 +31,14 @@
 </table>
 [%%%IF:MODAL:!=yes;%%%]
 <script>
+const managedAppId = '[###APP-ID|js###]';
+const rootURL = 'task.php?page=auth-admins.tasks';
 const homeURL = 'task.php?page=app-release.app-manage';
 const homeSelRun = () => {
-	setTimeout(() => { self.location = String(homeURL); }, 250);
+	setTimeout(() => { self.location = (managedAppId ? String(homeURL) : rootURL); }, 250);
 };
 const homeAppRun = () => {
-	setTimeout(() => { self.location = smartJ$Utils.url_add_suffix(String(homeURL), '&appid=' + '[###APP-ID|url|js###]'); }, 250);
+	setTimeout(() => { self.location = (managedAppId ? smartJ$Utils.url_add_suffix(String(homeURL), '&appid=' + smartJ$Utils.escape_url(managedAppId)) : String(homeURL)); }, 250);
 };
 </script>
 <script>

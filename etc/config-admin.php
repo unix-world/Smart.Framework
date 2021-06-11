@@ -19,8 +19,8 @@ $configs['app']['admin-template-path'] 				= 'default';				// default admin temp
 $configs['app']['admin-template-file'] 				= 'template.htm';			// default admin template file
 //--------------------------------------- Templates and Home Page (task)
 $configs['app']['task-domain'] 						= 'localhost.local'; 		// task domain as yourdomain.ext
-$configs['app']['task-home'] 						= 'samples.welcome';		// task home page action
-$configs['app']['task-default-module'] 				= 'samples';				// task default module
+$configs['app']['task-home'] 						= 'auth-admins.tasks';		// task home page action
+$configs['app']['task-default-module'] 				= 'auth-admins';			// task default module
 $configs['app']['task-template-path'] 				= 'default';				// default task template folder from etc/templates/
 $configs['app']['task-template-file'] 				= 'template-simple.htm';	// default task template file
 //---------------------------------------
@@ -37,6 +37,10 @@ $configs['app-auth']['adm-namespaces'] = [
 	// ...
 ];
 */
+$configs['app-auth']['tsk-namespaces'] = [
+	'AppRelease.CodePack' => 'task.php?page=app-release.app-manage',
+	// ...
+];
 //--
 
 // end of php code

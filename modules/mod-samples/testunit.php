@@ -57,6 +57,14 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
+		if($this->CookieVarGet('SmartFrameworkTestUnit')) {
+			$this->CookieVarUnset('SmartFrameworkTestUnit');
+		} else {
+			$this->CookieVarSet('SmartFrameworkTestUnit', (string)date('Y-m-d H:i:s'));
+		} //end if else
+		//--
+
+		//--
 		$semaphores = [];
 		//--
 
