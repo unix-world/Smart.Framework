@@ -2,6 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+June 12, 2021 :: Version 8.7 rev.20210612
+	* refactoring auth admins module, after login can select namespace to avoid expose namespaces to non-auth users
+	* major refactoring of default, admin and task templates
+	* fix markdown redundant render of some urls
+	* re-generate documentation: PHP and JS
+
 June 10, 2021 :: Version 8.7 rev.20210610
 	* replaced highlight.js with prism.js
 	* rework of prism css themes to achieve a better color balance

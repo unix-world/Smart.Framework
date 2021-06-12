@@ -1,7 +1,7 @@
 # '[###TITLE|html###]' (<H1> "Heading 1" &reg; &#169; &#169a;)
 
 &copy;&nbsp;&nbsp;2015-2021&nbsp;unix-world.org
-Extended Markdown Test :: v.20210602
+Extended Markdown Test :: v.20210612
 
 ## H2 (Unicode <Test>) ăĂîÎâÂşŞţŢ &quot;&nbsp;&quot; &lt;&quot;&gt;
 
@@ -81,6 +81,7 @@ test();
 ##### Test code injection:
 ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png?#time123456&now98765&a=<"> "Logo Title Text 1")
 <http://#inline.url.tag?#time123456&now98765&c="&a=<">>
+<http://#inline.url.tag2>
 <">
 
 ---

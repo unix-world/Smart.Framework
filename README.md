@@ -6,7 +6,7 @@
 
  &nbsp; | &nbsp;
 ------------- | -------------
- **Demo URL:** | [http://demo.unix-world.org/smart-framework/](http://demo.unix-world.org/smart-framework/)
+ **Demo URL:** | <http://demo.unix-world.org/smart-framework/>
  **Download URL:** | [https://github.com/unix-world/Smart.Framework](https://github.com/unix-world/Smart.Framework)
  **Download Modules URL:** | [https://github.com/unix-world/Smart.Framework.Modules](https://github.com/unix-world/Smart.Framework.Modules)
 
@@ -41,7 +41,7 @@ The original software architecture of this web framework allows it to deliver a 
 	- caching policies can be controlled to expire based on content / GET or POST variables INPUT even with changing COOKIES
 
 
-#### This software framework is compatible, stable and actively tested with PHP 7.3 / 7.4 / 8.0 versions.
+#### This software framework is compatible, stable and actively tested with PHP 7.3 / 7.4 / 8.0 / 8.1 versions.
 **Prefered PHP version** is: **7.4** (LTS).
 
 &nbsp;

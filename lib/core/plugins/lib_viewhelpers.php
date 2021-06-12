@@ -24,8 +24,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // REQUIRED JS LIBS:
 //	* js-base.inc.htm
 //	* js-ui.inc.htm [smartJ$UI] or an extension
-//	* js/jsedithtml [cleditor]
-//	* js/jseditcode [codemirror]
+//	* js/jsedithtml 	[cleditor]
+//	* js/jseditcode 	[codemirror]
+//	* js/jshilitecode 	[prism]
 //======================================================
 
 // [PHP8]
@@ -42,7 +43,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210608
+ * @version 	v.20210612
  * @package 	Plugins:ViewComponents
  *
  */

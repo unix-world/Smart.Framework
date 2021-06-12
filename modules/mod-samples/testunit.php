@@ -340,17 +340,19 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			case 'test.markdown':
 				//--
 				$main = '';
+				$semaphores[] = 'load:code-highlight-js';
 				if(rand(0,1) == 1) {
-					$main .= SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body');
+					$semaphores[] = 'theme:dark'; // {{{SYNC-DEMO-UI-THEME}}}
 				} else {
-					$semaphores[] = 'load:code-highlight-js';
+					$semaphores[] = 'theme:light'; // {{{SYNC-DEMO-UI-THEME}}}
 				} //end if else
 				$validate = rand(0,1);
 				$main .= '<h1>Markdown Syntax Render Test</h1><hr>';
 				$main .= SmartMarkersTemplating::render_template(
 					(string) (new SmartMarkdownToHTML(true, true, true, false, (bool)$validate))->text((string)SmartFileSystem::read($this->ControllerGetParam('module-view-path').'markdown-test.md')),
 					[
-						'TITLE' => 'This is a <test> title that comes from TPL variables [Validate='.(int)$validate.']'
+						'semaphore' => (string) Smart::array_to_list($semaphores),
+						'TITLE' 	=> 'This is a <test> title that comes from TPL variables [Validate='.(int)$validate.']'
 					]
 				);
 				$main .= '<hr>';

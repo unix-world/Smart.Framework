@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20210528
+ * @version 	v.20210612
  * @package 	Application:ViewComponents
  *
  */
@@ -736,7 +736,7 @@ final class SmartComponents {
 		$arr_data['auth-login-privileges'] 		= (string) SmartAuth::get_login_privileges(); 								// Auth Login Privileges
 		$arr_data['debug-mode'] 				= (string) (SmartFrameworkRegistry::ifDebug() ? 'yes' : 'no'); 				// yes | no
 		//-- PHP8 fixes (initialize all missing array keys)
-		$arr_def_keys = [ 'semaphore', 'title', 'head-meta', 'head-css', 'head-js', 'header', 'main', 'aside', 'footer' ]; 	// {{{SYNC-INIT-MTPL-DEFVARS}}}
+		$arr_def_keys = [ 'template-path', 'template-file', 'semaphore', 'title', 'head-meta', 'head-css', 'head-js', 'header', 'main', 'aside', 'footer' ]; 	// {{{SYNC-INIT-MTPL-DEFVARS}}}
 		for($i=0; $i<count($arr_def_keys); $i++) {
 			if(!array_key_exists((string)$arr_def_keys[$i], $arr_data)) {
 				$arr_data[(string)$arr_def_keys[$i]] = '';

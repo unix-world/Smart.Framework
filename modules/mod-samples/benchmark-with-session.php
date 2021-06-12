@@ -23,6 +23,20 @@ define('SMART_APP_MODULE_REALM_AUTH', 'ADMINS-AREA-SIMPLE'); 	// if set will che
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
+	public function Initialize() {
+		//--
+		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+			$this->PageViewSetErrorStatus(500, ' # Mod AuthAdmins is missing !');
+			return false;
+		} //end if
+		//--
+		$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
+		$this->PageViewSetCfg('template-file', 'template-simple.htm');
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
 	public function Run() {
 
 		//-- dissalow run this sample if not test mode enabled
@@ -39,11 +53,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			SmartSession::set($sess_key, date('Y-m-d H:i:s'));
 			$sess_test = (string) SmartSession::get($sess_key);
 		} //end if
-		//--
-
-		//--
-		$this->PageViewSetCfg('template-path', 'default'); 				// set template path to this module
-		$this->PageViewSetCfg('template-file', 'template-simple.htm'); 	// the default template
 		//--
 
 		//--

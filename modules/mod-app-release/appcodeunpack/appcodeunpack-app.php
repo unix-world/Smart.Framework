@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20210530
+// [AppCodeUnpack / APP] v.20210612
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20210530
+	// v.20210612
 
-	private const APPCODEUNPACK_VERSION = 's.20210530.2008';
+	private const APPCODEUNPACK_VERSION = 's.20210612.2358';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -859,7 +859,7 @@ final class AppCodeUnpack {
 			},
 			[
 				'APPCODEUNPACK_HTML_ERRTPL', 'APPCODEUNPACK_HTML_TPL',
-				'APPCODEUNPACK_BASE_STYLES', 'APPCODEUNPACK_TOOLKIT_STYLES', 'APPCODEUNPACK_DEFAULT_STYLES', 'APPCODEUNPACK_NOTIFICATION_STYLES', 'APPCODEUNPACK_LOCAL_STYLES',
+				'APPCODEUNPACK_BASE_STYLES', 'APPCODEUNPACK_TOOLKIT_STYLES', 'APPCODEUNPACK_NOTIFICATION_STYLES', 'APPCODEUNPACK_LOCAL_STYLES',
 				'APPCODEUNPACK_JS_JQUERY', 'APPCODEUNPACK_JS_SMART_UTILS', 'APPCODEUNPACK_JS_SMART_DATE', 'APPCODEUNPACK_JS_SMART_CRYPTO',
 				'APPCODEUNPACK_CSS_GRITTER', 'APPCODEUNPACK_JS_GRITTER', 'APPCODEUNPACK_CSS_ALERTABLE', 'APPCODEUNPACK_JS_ALERTABLE',
 				'APPCODEUNPACK_HTML_WATCH',
@@ -1005,9 +1005,9 @@ final class AppCodeUnpack {
 			} //end if else
 			//--
 			die((string)self::renderErrorTPL(
-				'401 Authorization Required',
-				'Login Failed',
-				'Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.',
+				'401 Unauthorized',
+				'Authorization Required',
+				'Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.',
 				(string) (((string)$logout != '') ? '<script>self.location=\''.Smart::escape_js(self::APPCODEUNPACK_SCRIPT).'\'</script>' : '')
 			));
 			//--
@@ -1133,7 +1133,7 @@ final class AppCodeUnpack {
 				'TITLE' 				=> (string) self::APPCODEUNPACK_TITLE.($title ? ' :: '.$title : ''),
 				'OP-TITLE' 				=> (string) ($title ? $title : self::APPCODEUNPACK_TITLE),
 				'CSS-TOOLKIT-STYLES' 	=> (string) (defined('APPCODEUNPACK_TOOLKIT_STYLES') ? APPCODEUNPACK_TOOLKIT_STYLES : ''),
-				'CSS-DEFAULT-STYLES' 	=> (string) (defined('APPCODEUNPACK_DEFAULT_STYLES') ? APPCODEUNPACK_DEFAULT_STYLES : ''),
+				'CSS-BASE-STYLES' 		=> (string) (defined('APPCODEUNPACK_BASE_STYLES') ? APPCODEUNPACK_BASE_STYLES : ''),
 				'CSS-NOTIF-STYLES' 		=> (string) (defined('APPCODEUNPACK_NOTIFICATION_STYLES') ? APPCODEUNPACK_NOTIFICATION_STYLES : ''),
 				'CSS-LOCAL-STYLES' 		=> (string) (defined('APPCODEUNPACK_LOCAL_STYLES') ? APPCODEUNPACK_LOCAL_STYLES : ''),
 				'JS-JQUERY' 			=> (string) (defined('APPCODEUNPACK_JS_JQUERY') ? APPCODEUNPACK_JS_JQUERY : ''),

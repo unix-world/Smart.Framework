@@ -50,7 +50,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			case 'records-list': // HTML: list view
 				$tpl = $this->RequestVarGet('tpl', '', 'string');
 				if((string)$tpl != 'custom') {
-					$this->PageViewSetCfg('template-path', 'default');
+					$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 					$this->PageViewSetCfg('template-file', 'template.htm');
 				} //end if
 				$this->PageViewSetVars([
@@ -77,7 +77,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$ctrl = $this->RequestVarGet('ctrl', '', 'string');
 				$tpl = $this->RequestVarGet('tpl', '', 'string');
 				if((string)$tpl != 'custom') {
-					$this->PageViewSetCfg('template-path', 'default');
+					$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 					$this->PageViewSetCfg('template-file', 'template.htm');
 				} //end if
 				$this->PageViewSetVars([
@@ -85,7 +85,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				]);
 				break;
 			case 'record-add-form':
-				$this->PageViewSetCfg('template-path', 'default');
+				$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				$this->PageViewSetVar(
 					'main',
@@ -106,7 +106,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				$id = $this->RequestVarGet('id', '', 'string');
 				$sop = $this->RequestVarGet('sop', '', 'string');
 				$translate = $this->RequestVarGet('translate', '', 'string');
-				$this->PageViewSetCfg('template-path', 'default');
+				$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				$this->PageViewSetVar(
 					'main',
@@ -229,7 +229,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'record-view-highlight-code': // HTML: preview code
 				$id = $this->RequestVarGet('id', '', 'string');
-				$this->PageViewSetCfg('template-path', 'default');
+				$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				$this->PageViewSetVar(
 					'main',
@@ -238,7 +238,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'record-view-highlight-data': // HTML: preview data
 				$id = $this->RequestVarGet('id', '', 'string');
-				$this->PageViewSetCfg('template-path', 'default');
+				$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				$this->PageViewSetVar(
 					'main',
@@ -247,7 +247,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'record-view-media': // HTML: preview media
 				$id = $this->RequestVarGet('id', '', 'string');
-				$this->PageViewSetCfg('template-path', 'default');
+				$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				$this->PageViewSetVar(
 					'main',
@@ -266,7 +266,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			case 'record-delete':
 				$id = $this->RequestVarGet('id', '', 'string');
 				$delete = $this->RequestVarGet('delete', '', 'string');
-				$this->PageViewSetCfg('template-path', 'default');
+				$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				$this->PageViewSetVar(
 					'main',
@@ -275,7 +275,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'record-clone':
 				$id = $this->RequestVarGet('id', '', 'string');
-				$this->PageViewSetCfg('template-path', 'default');
+				$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				$this->PageViewSetVar(
 					'main',
@@ -304,7 +304,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			case 'export-translations': // HTML
 				$tpl = $this->RequestVarGet('tpl', '', 'string');
 				if((string)$tpl != 'custom') {
-					$this->PageViewSetCfg('template-path', 'default');
+					$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 					$this->PageViewSetCfg('template-file', 'template.htm');
 				} //end if
 				$this->PageViewSetVar(
@@ -352,7 +352,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			case 'import-translations': // HTML
 				$tpl = $this->RequestVarGet('tpl', '', 'string');
 				if((string)$tpl != 'custom') {
-					$this->PageViewSetCfg('template-path', 'default');
+					$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 					$this->PageViewSetCfg('template-file', 'template.htm');
 				} //end if
 				$this->PageViewSetVar(
@@ -363,7 +363,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 			case 'import-translations-do': // HTML
 				$tpl = $this->RequestVarGet('tpl', '', 'string');
 				if((string)$tpl != 'custom') {
-					$this->PageViewSetCfg('template-path', 'default');
+					$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 					$this->PageViewSetCfg('template-file', 'template.htm');
 				} //end if
 				$this->PageViewSetVar(

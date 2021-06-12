@@ -1,5 +1,5 @@
 
-/* -- CSS Start :: Smart.Framework / App :: r.20210610 -- */
+/* -- CSS Start :: Smart.Framework / App :: r.20210612 -- */
 
 /* ----------------------------- */
 
@@ -32,9 +32,9 @@
 
 @import url("../../../lib/core/plugins/css/markdown.css");
 
-@import url("../../../lib/core/plugins/css/date-time.css");
-
 @import url("../../../lib/core/plugins/css/navpager.css");
+
+/* -- extra -- */
 
 @import url("../../../lib/core/plugins/css/captcha.css");
 

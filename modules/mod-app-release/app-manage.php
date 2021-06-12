@@ -31,12 +31,12 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 
 	public function Initialize() {
 		//--
-		if(!\SmartAppInfo::TestIfModuleExists('mod-qunit')) {
-			$this->PageViewSetErrorStatus(500, ' # Mod QUnit is missing !');
+		if(!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
+			$this->PageViewSetErrorStatus(500, ' # Mod AuthAdmins is missing !');
 			return false;
 		} //end if
 		//--
-		$this->PageViewSetCfg('template-path', 'default');
+		$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 		$this->PageViewSetCfg('template-file', 'template-simple.htm');
 		//--
 		return true;
@@ -55,11 +55,8 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		//--
 		$semaphores = [];
 		$semaphores[] = 'load:ui-toolkit';
-		$semaphores[] = 'load:jquery';
-		$semaphores[] = 'load:growl';
-		$semaphores[] = 'load:alertable';
-		$semaphores[] = 'load:sf-js';
-		$semaphores[] = 'load:utils-js';
+		$semaphores[] = 'load:base-js';
+	//	$semaphores[] = 'load:utils-js';
 		//--
 
 		//--

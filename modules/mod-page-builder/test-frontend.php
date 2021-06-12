@@ -49,6 +49,9 @@ final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\Abstract
 			} //end if
 		} //end if
 
+		$this->PageViewSetCfg('template-path', '@');
+		$this->PageViewSetCfg('template-file', 'template-test-frontend.htm');
+
 		$this->renderBuilderPage( // it does not output but set all the vars directly in the controller
 			(string)$section,				// page ID
 			'@',							// TPL Path

@@ -1,17 +1,17 @@
-<!-- TPL Foot r.20210610 -->
+<!-- TPL Foot (Custom) r.20210612 -->
 [%%%IF:SEMAPHORE:&*<load:searchterm-highlight-js>;%%%]
-[@@@SUB-TEMPLATE:!etc/templates/default/js-search-term-highlight.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-search-term-highlight.inc.htm!@@@]
 [%%%ELSE:SEMAPHORE%%%]
-<!-- Highlight SearchTerm: skip by Semaphore -->
+<!-- Highlight SearchTerm: skip -->
 [%%%/IF:SEMAPHORE%%%]
 [%%%IF:SEMAPHORE:&*<load:code-highlight-js>;%%%]
-[@@@SUB-TEMPLATE:!etc/templates/default/js-hljs.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-hljs.inc.htm!@@@]
 [%%%ELSE:SEMAPHORE%%%]
-<!-- HLjs, Smart HLjs: skip by Semaphore -->
+<!-- HLjs, Smart HLjs: skip -->
 [%%%/IF:SEMAPHORE%%%]
 [%%%IF:SEMAPHORE:&*<skip:unveil-js>;%%%]
-<!-- Unveil: skip by Semaphore -->
+<!-- Unveil: skip -->
 [%%%ELSE:SEMAPHORE%%%]
-[@@@SUB-TEMPLATE:!etc/templates/default/js-unveil.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-unveil.inc.htm!@@@]
 [%%%/IF:SEMAPHORE%%%]
 <!-- #.# -->

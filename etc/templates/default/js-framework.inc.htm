@@ -1,14 +1,5 @@
-<!-- Js Framework :: r.20210610 -->
-<script src="lib/js/check-es-runtime.js?[###RELEASE-HASH|url|html###]"></script>
-<script>
-(function(){
-	var testES6 = checkJsRuntime();
-	if(testES6 !== true) {
-		console.warn('Javascript ES6 Test Not Passed:', testES6);
-		alert('NOTICE: Your browser does not support Javascript ES6 !');
-	}
-})();
-</script>
+<!-- Js Framework (Custom) :: r.20210612 -->
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-check.inc.htm!@@@]
 <script>
 const smartJ$Options = {
 	BrowserTest: {
@@ -33,19 +24,13 @@ const smartJ$Options = {
 Object.freeze(smartJ$Options); // sec.
 window.smartJ$Options = smartJ$Options; // g-exp.
 </script>
-[%%%IF:SEMAPHORE:&*<load:smart-framework-js-dev-src>;(88)%%%]
-<!-- Framework (dev.src) -->
-<script src="lib/js/framework/src/core_utils.js?[###RELEASE-HASH|url|html###]"></script>
-<script src="lib/js/framework/src/date_utils.js?[###RELEASE-HASH|url|html###]"></script>
-<script src="lib/js/framework/src/crypt_utils.js?[###RELEASE-HASH|url|html###]"></script>
-<script src="lib/js/framework/src/ifmodalbox.js?[###RELEASE-HASH|url|html###]"></script>
-<script src="lib/js/framework/src/browser_check.js?[###RELEASE-HASH|url|html###]"></script>
-<script src="lib/js/framework/src/browser_utils.js?[###RELEASE-HASH|url|html###]"></script>
-<script src="lib/js/framework/src/ifmodalbox_scanner.js?[###RELEASE-HASH|url|html###]"></script>
-[%%%ELSE:SEMAPHORE(88)%%%]
 <script src="lib/js/framework/smart-framework.pak.js?[###RELEASE-HASH|url|html###]"></script>
-[%%%/IF:SEMAPHORE(88)%%%]
-[%%%IF:DEBUG-MODE:==yes;%%%]
-<script>smartJ$Browser.setFlag('DebugEnabled', true);</script><!-- DEBUG IS ON -->
-[%%%/IF:DEBUG-MODE%%%]
+[%%%IF:DEBUG-MODE:==yes;%%%]<script>smartJ$Browser.setFlag('DebugEnabled', true);</script><!-- DEBUG IS ON -->[%%%/IF:DEBUG-MODE%%%]
+<script>
+(() => {
+	if(!smartJ$TestBrowser.checkCookies()) {
+		alert('NOTICE: Your browser does not support Cookies !');
+	} //end if
+})();
+</script>
 <!-- # -->

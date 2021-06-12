@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
- * @version 	v.20210609
+ * @version 	v.20210612
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -57,7 +57,7 @@ final class SmartMarkdownToHTML {
 	// 	* fixed multiple security vulnerabilities: character encoding fixes, fixed regex escapings, fixed html escapings, code and regex optimizations
 	// 	* extend the syntax to support attributes, added pandoc style block divs
 
-	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210609';
+	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210612';
 
 	//===================================
 
@@ -107,7 +107,7 @@ final class SmartMarkdownToHTML {
 		'!'  => [ 'Image'],
 		'&'  => [ 'SpecialCharacter' ],
 		'*'  => [ 'Emphasis' ],
-		':'  => [ 'Url' ],
+	//	':'  => [ 'Url' ], // {{{SYNC-DISABLE-INLINE-DIRECT-URL}}} fix by unixman: this is redundant with 'Link' which already solves the URL Link ...
 		'<'  => [ 'UrlTag', 'EmailTag', 'SpecialCharacter', 'Validate' ],
 		'>'  => [ 'SpecialCharacter' ],
 		'['  => [ 'Link' ],
@@ -121,7 +121,8 @@ final class SmartMarkdownToHTML {
 	/* old, from v.1.5.4
 	private const inlineMarkerList = '!"*_&[:<>`~\\';
 	*/
-	private const inlineMarkerList = '!"*_&[:<>`~^\\'; // extended syntax by unixman
+//	private const inlineMarkerList = '!"*_&[:<>`~^\\'; // extended syntax by unixman
+	private const inlineMarkerList = '!"*_&[<>`~^\\'; // extended syntax by unixman  + fix: {{{SYNC-DISABLE-INLINE-DIRECT-URL}}} :: taken out the : required in order to disable: 'Url'
 
 	/* old, from v.1.5.4
 	private const specialCharacters = [
@@ -2180,45 +2181,45 @@ final class SmartMarkdownToHTML {
 	// no need for blockStrikethrough
 
 
-	//-- # Url
-
-
-	private function inlineUrl($Excerpt) {
-		//--
-		if($this->urlsLinked !== true) {
-			return;
-		} //end if
-		if(!is_array($Excerpt)) {
-			return;
-		} //end if
-		if((!isset($Excerpt['text'][2])) OR ($Excerpt['text'][2] !== '/')) {
-			return;
-		} //end if
-		//--
-	//	if(preg_match('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)) {
-		if((strpos($Excerpt['context'], 'http') !== false) AND (preg_match('/\bhttps?+:[\/]{2}[^\s<]+\b\/*+/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE))) { // fix from 1.8.0
-			//--
-			if(!array_key_exists(0, $matches)) {
-				$matches[0] = array();
-			} //end if
-			//--
-			$Inline = array(
-				'extent' => (int) strlen((string)($matches[0][0] ?? '')),
-				'position' => ($matches[0][1] ?? null), // here must be null if not isset()
-				'element' => [
-					'name' => 'a',
-					'text' => (string) ($matches[0][0] ?? ''),
-					'attributes' => [
-						'href' => (string) $this->fixRelativeURL((string)($matches[0][0] ?? '')),
-					],
-				],
-			);
-			//--
-			return $Inline;
-			//--
-		} //end if
-		//--
-	} //END FUNCTION
+//	//-- # Url # {{{SYNC-DISABLE-INLINE-DIRECT-URL}}} see the comments above
+//
+//
+//	private function inlineUrl($Excerpt) {
+//		//--
+//		if($this->urlsLinked !== true) {
+//			return;
+//		} //end if
+//		if(!is_array($Excerpt)) {
+//			return;
+//		} //end if
+//		if((!isset($Excerpt['text'][2])) OR ($Excerpt['text'][2] !== '/')) {
+//			return;
+//		} //end if
+//		//--
+//	//	if(preg_match('/\bhttps?:[\/]{2}[^\s<]+\b\/*/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE)) {
+//		if((strpos($Excerpt['context'], 'http') !== false) AND (preg_match('/\bhttps?+:[\/]{2}[^\s<]+\b\/*+/ui', $Excerpt['context'], $matches, PREG_OFFSET_CAPTURE))) { // fix from 1.8.0
+//			//--
+//			if(!array_key_exists(0, $matches)) {
+//				$matches[0] = array();
+//			} //end if
+//			//--
+//			$Inline = array(
+//				'extent' => (int) strlen((string)($matches[0][0] ?? '')),
+//				'position' => ($matches[0][1] ?? null), // here must be null if not isset()
+//				'element' => [
+//					'name' => 'a',
+//					'text' => (string) ($matches[0][0] ?? ''),
+//					'attributes' => [
+//						'href' => (string) $this->fixRelativeURL((string)($matches[0][0] ?? '')),
+//					],
+//				],
+//			);
+//			//--
+//			return $Inline;
+//			//--
+//		} //end if
+//		//--
+//	} //END FUNCTION
 
 
 	// no need for blockUrl

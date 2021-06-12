@@ -3,24 +3,24 @@
 <!-- Base URL is: [###BASE-URL###] -->
 <!-- Base Path is: [###BASE-PATH###] -->
 <!-- [###TEMPLATE-FILE###] -->
-<!-- Version: 20210526 -->
+<!-- Version: 20210612 -->
 <html>
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta http-equiv="Expires" content="-1">
-<meta http-equiv="Cache-Control" content="no-cache">
-<meta http-equiv="Pragma" content="no-cache">
-<meta name="viewport" content="initial-scale=0.75">
-<meta name="description" content="[###META-DESCRIPTION###]">
-<meta name="keywords" content="[###META-KEYWORDS###]">
+<meta charset="[###CHARSET|html###]">
+<meta http-equiv="Content-Type" content="text/html; charset=[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Smart.Framework">
 <link rel="icon" href="data:,">
 <title>[###TITLE###]</title>
+<!-- Meta Extra -->
+<meta name="description" content="[###META-DESCRIPTION###]">
+<meta name="keywords" content="[###META-KEYWORDS###]">
 <!-- Styles -->
-[@@@SUB-TEMPLATE:!etc/templates/default/css-app.inc.htm!@@@]
-<link rel="stylesheet" type="text/css" href="etc/templates/default/styles.css?[###RELEASE-HASH|url|html###]">
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/css-app.inc.htm!@@@]
 <!-- Scripts -->
-[@@@SUB-TEMPLATE:!etc/templates/default/js-base.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-base.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-ui.inc.htm!@@@]
 </head>
 <body>
 [###AREA.TOP###]
@@ -28,5 +28,8 @@
 [###MAIN###]
 </div>
 [###AREA.FOOTER###]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-search-term-highlight.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-hljs.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-unveil.inc.htm!@@@]
 </body>
 </html>

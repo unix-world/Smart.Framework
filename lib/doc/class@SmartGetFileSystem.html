@@ -1,423 +1,423 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20200121 -->
+<!-- Template: Smart.Framework@Documentor v.20210612 -->
 <html>
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta name="author" content="unix-world.org">
-	<meta name="description" content="\SmartGetFileSystem        final class \ SmartGetFileSystem    {   } -&gt;    Class: SmartGetFileSystem - provides the File System Get/Scan functions. This">
-	<meta name="keywords" content="smartgetfilesystem, final, class, provides, the, file, system, get scan, functions, this, requires, use, of, relative, paths, to, force, using, correct, path, access, in, a, web, environment, application, must, be, folder, as, some-folder, or, some-folder my-file.txt, absolute, are, denied, by, internal, checks, they, not, safe, from, security, point, view, also, backward, like, some-file-or-folder, is, above, exposed, reasons, files, and, folders, contain, only, characters, a-z, can, slashes, separators, no, spaces, allowed, language, php, located, at, lib framework lib filesys.php, package, core:filesystem, namespace, name, version, v.20210513, depends, classes, smart, hints, handle, thread, concurency, filesystem, way, lock ex, lock, exclusive, feature, on, each, written, appended, thus, making">
-	<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartGetFileSystem">
-	<title>PHP Documentation for: \SmartGetFileSystem</title>
-	<!-- CSS and Fonts -->
-		<!-- skip fonts -->
-	
-	<style type="text/css">
-	* {
-		font-family: sans-serif;
-		font-smooth: always;
-	}
-	/* ----- #start ----- */
-	html, body{
-		width: 96% auto;
-		/*height: 96% auto;*/
-		margin: 0px;
-		padding: 10px;
-		padding-top: 5px;
-	}
-	body {
-		background: #FFFFFF;
-		font-size: 16px;
-		line-height: 1.5;
-	}
-	div, p, ol, ul, form, fieldset, blockquote, address, dl {
-		font-size: 1rem; /* 16px */
-		line-height: 1.5;
-	}
-	li {
-		list-style-position: inside; /* bugfix for chrome */
-	}
-	table, pre, code, code * {
-		font-size: 0.9375rem; /* 15px */
-		line-height: 1.25;
-	}
-	/* ----- headings ----- */
-	h1 {
-		font-size: 2.25rem; /* 36px */
-		margin-top: 0.625rem; /* 10px */
-		margin-bottom: 0.625rem; /* 10px */
-	}
-	h2 {
-		font-size: 2rem; /* 32px */
-		margin-top: 0.5rem; /* 8px */
-		margin-bottom: 0.5rem; /* 8px */
-	}
-	h3 {
-		font-size: 1.75rem; /* 28px */
-		margin-top: 0.375rem; /* 6px */
-		margin-bottom: 0.375rem; /* 6px */
-	}
-	h4 {
-		font-size: 1.5rem; /* 24px */
-		margin-top: 0.3125rem; /* 5px */
-		margin-bottom: 0.3125rem; /* 5px */
-	}
-	h5 {
-		font-size: 1.25rem; /* 20px */
-		margin-top: 0.25rem; /* 4px */
-		margin-bottom: 0.25rem; /* 4px */
-	}
-	h6 {
-		font-size: 1.125rem; /* 18px */
-		margin-top: 0.1875rem; /* 3px */
-		margin-bottom: 0.1875rem; /* 3px */
-	}
-	/* ----- misc ----- */
-	img {
-		border: 0;
-	}
-	hr {
-		border: none 0;
-		border-top: 1px solid #BBCCDD;
-		height: 1px;
-	}
-	/* ----- tables ----- */
-	table {
-		font-weight: normal;
-		text-align:left;
-	}
-	th {
-		font-weight: bold;
-	}
-	td {
-		font-weight: normal;
-	}
-	/* ----- links ----- */
-	a, a:link, a:visited, a:hover {
-		color: #000000;
-		text-decoration: none;
-		border-bottom: 1px dotted #BBBBBB;
-	}
-	a:hover {
-		border-bottom: 1px dotted #555555;
-	}
-	/* ----- forms ----- */
-	input[type="text"],
-	input[type="password"],
-	input[type="email"],
-	input[type="url"],
-	input[type="date"],
-	input[type="month"],
-	input[type="time"],
-	input[type="datetime"],
-	input[type="datetime-local"],
-	input[type="week"],
-	input[type="number"],
-	input[type="search"],
-	input[type="tel"],
-	input[type="color"],
-	textarea,
-	select {
-		background-color: #FFFFFF;
-		color: #222222;
-		font-weight: normal;
-		font-size: 1rem;
-		padding: 3px;
-		padding: 0.5rem 0.6rem;
-		display: inline-block;
-		border: 1px solid #ccc;
-		margin-bottom: 5px;
-		margin-right: 5px;
-		border-radius: 3px;
-		vertical-align: middle;
-		box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		-webkit-box-sizing: border-box;
-	}
-	input[type="text"][disabled],
-	input[type="password"][disabled],
-	input[type="email"][disabled],
-	input[type="url"][disabled],
-	input[type="date"][disabled],
-	input[type="month"][disabled],
-	input[type="time"][disabled],
-	input[type="datetime"][disabled],
-	input[type="datetime-local"][disabled],
-	input[type="week"][disabled],
-	input[type="number"][disabled],
-	input[type="search"][disabled],
-	input[type="tel"][disabled],
-	input[type="color"][disabled],
-	textarea[disabled],
-	select[disabled] {
-		cursor: not-allowed;
-		background-color: #ECECEC;
-		color: #999999;
-	}
-	input:not([type])[disabled] {
-		cursor: not-allowed;
-		background-color: #ECECEC;
-		color: #999999;
-	}
-	input[readonly],
-	select[readonly],
-	textarea[readonly] {
-		cursor: pointer;
-		background-color: #FAFAFA; /* menu hover bg color */
-		color: #777; /* menu text color */
-		border-color: #ccc;
-	}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="unix-world.org">
+<meta name="description" content="\SmartGetFileSystem        final class \ SmartGetFileSystem    {   } -&gt;    Class: SmartGetFileSystem - provides the File System Get/Scan functions. This">
+<meta name="keywords" content="smartgetfilesystem, final, class, provides, the, file, system, get scan, functions, this, requires, use, of, relative, paths, to, force, using, correct, path, access, in, a, web, environment, application, must, be, folder, as, some-folder, or, some-folder my-file.txt, absolute, are, denied, by, internal, checks, they, not, safe, from, security, point, view, also, backward, like, some-file-or-folder, is, above, exposed, reasons, files, and, folders, contain, only, characters, a-z, can, slashes, separators, no, spaces, allowed, language, php, located, at, lib framework lib filesys.php, package, core:filesystem, namespace, name, version, v.20210513, depends, classes, smart, hints, handle, thread, concurency, filesystem, way, lock ex, lock, exclusive, feature, on, each, written, appended, thus, making">
+<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartGetFileSystem">
+<link rel="icon" href="data:,">
+<title>PHP Documentation for: \SmartGetFileSystem</title>
+<!-- CSS and Fonts -->
+<!-- skip fonts -->
+<style type="text/css">
+* {
+	font-family: sans-serif;
+	font-smooth: always;
+}
+/* ----- #start ----- */
+html, body{
+	width: 96% auto;
+	/*height: 96% auto;*/
+	margin: 0px;
+	padding: 10px;
+	padding-top: 5px;
+}
+body {
+	background: #FFFFFF;
+	font-size: 16px;
+	line-height: 1.5;
+}
+div, p, ol, ul, form, fieldset, blockquote, address, dl {
+	font-size: 1rem; /* 16px */
+	line-height: 1.5;
+}
+li {
+	list-style-position: inside; /* bugfix for chrome */
+}
+table, pre, code, code * {
+	font-size: 0.9375rem; /* 15px */
+	line-height: 1.25;
+}
+/* ----- headings ----- */
+h1 {
+	font-size: 2.25rem; /* 36px */
+	margin-top: 0.625rem; /* 10px */
+	margin-bottom: 0.625rem; /* 10px */
+}
+h2 {
+	font-size: 2rem; /* 32px */
+	margin-top: 0.5rem; /* 8px */
+	margin-bottom: 0.5rem; /* 8px */
+}
+h3 {
+	font-size: 1.75rem; /* 28px */
+	margin-top: 0.375rem; /* 6px */
+	margin-bottom: 0.375rem; /* 6px */
+}
+h4 {
+	font-size: 1.5rem; /* 24px */
+	margin-top: 0.3125rem; /* 5px */
+	margin-bottom: 0.3125rem; /* 5px */
+}
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.25rem; /* 4px */
+	margin-bottom: 0.25rem; /* 4px */
+}
+h6 {
+	font-size: 1.125rem; /* 18px */
+	margin-top: 0.1875rem; /* 3px */
+	margin-bottom: 0.1875rem; /* 3px */
+}
+/* ----- misc ----- */
+img {
+	border: 0;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #BBCCDD;
+	height: 1px;
+}
+/* ----- tables ----- */
+table {
+	font-weight: normal;
+	text-align:left;
+}
+th {
+	font-weight: bold;
+}
+td {
+	font-weight: normal;
+}
+/* ----- links ----- */
+a, a:link, a:visited, a:hover {
+	color: #000000;
+	text-decoration: none;
+	border-bottom: 1px dotted #BBBBBB;
+}
+a:hover {
+	border-bottom: 1px dotted #555555;
+}
+/* ----- forms ----- */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="week"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+textarea,
+select {
+	background-color: #FFFFFF;
+	color: #222222;
+	font-weight: normal;
+	font-size: 1rem;
+	padding: 3px;
+	padding: 0.5rem 0.6rem;
+	display: inline-block;
+	border: 1px solid #ccc;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	border-radius: 3px;
+	vertical-align: middle;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+input[type="text"][disabled],
+input[type="password"][disabled],
+input[type="email"][disabled],
+input[type="url"][disabled],
+input[type="date"][disabled],
+input[type="month"][disabled],
+input[type="time"][disabled],
+input[type="datetime"][disabled],
+input[type="datetime-local"][disabled],
+input[type="week"][disabled],
+input[type="number"][disabled],
+input[type="search"][disabled],
+input[type="tel"][disabled],
+input[type="color"][disabled],
+textarea[disabled],
+select[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input:not([type])[disabled] {
+	cursor: not-allowed;
+	background-color: #ECECEC;
+	color: #999999;
+}
+input[readonly],
+select[readonly],
+textarea[readonly] {
+	cursor: pointer;
+	background-color: #FAFAFA; /* menu hover bg color */
+	color: #777; /* menu text color */
+	border-color: #ccc;
+}
 
-	input:focus:invalid,
-	textarea:focus:invalid,
-	select:focus:invalid {
-		color: #b94a48;
-		border-color: #e9322d;
-	}
-	input[type="file"]:focus:invalid:focus,
-	input[type="radio"]:focus:invalid:focus,
-	input[type="checkbox"]:focus:invalid:focus {
-		outline-color: #e9322d;
-	}
-	select {
-		border: 1px solid #ccc;
-		background-color: white;
-	}
-	select[multiple] {
-		height: auto;
-	}
-	label {
-		margin: 0.5rem 0 0.2rem;
-	}
-	fieldset {
-		margin: 0;
-		padding: 0.35rem 0 0.75rem;
-		border: 0;
-	}
-	legend {
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
+	color: #b94a48;
+	border-color: #e9322d;
+}
+input[type="file"]:focus:invalid:focus,
+input[type="radio"]:focus:invalid:focus,
+input[type="checkbox"]:focus:invalid:focus {
+	outline-color: #e9322d;
+}
+select {
+	border: 1px solid #ccc;
+	background-color: white;
+}
+select[multiple] {
+	height: auto;
+}
+label {
+	margin: 0.5rem 0 0.2rem;
+}
+fieldset {
+	margin: 0;
+	padding: 0.35rem 0 0.75rem;
+	border: 0;
+}
+legend {
+	display: block;
+	width: 100%;
+	padding: 0.3rem 0;
+	margin-bottom: 0.3rem;
+	color: #333;
+	border-bottom: 1px solid #e5e5e5;
+}
+.hidden,
+[hidden] {
+	display: none !important;
+}
+button, a.ux-button {
+	/* Structure */
+	display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
+	padding: 7px 15px 7px 15px !important;
+	line-height: normal !important;
+	white-space: nowrap !important;
+	vertical-align: middle !important;
+	text-align: center !important;
+	font-family: inherit !important;
+	font-size: 0.9375rem !important; /* 15px */
+	font-weight: bold !important;
+	text-decoration: none !important;
+	border-radius: 3px !important;
+	border: 1px solid #DDDDDD !important;
+	background-color: #FCFCFC !important;
+	color: #317AB9 !important;
+	cursor: pointer !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin-bottom: 5px;
+	margin-right: 5px;
+	box-sizing: border-box !important;
+	-moz-box-sizing: border-box !important;
+	-webkit-box-sizing: border-box !important;
+	appearance: none !important;
+	-moz-appearance: none !important;
+	-webkit-appearance: none !important;
+	user-select: none !important;
+	zoom: 1 !important;
+}
+button *, a.ux-button * {
+	font-weight: bold !important;
+}
+button:hover, a.ux-button:hover,
+button:focus, a.ux-button:focus {
+	border: 1px solid #CCCCCC !important;
+	background-color: #F3F3F3 !important;
+	color: #2069A9 !important;
+}
+button:focus, a.ux-button:focus {
+	outline: 0 !important;
+}
+button[disabled],
+button-disabled,
+button-disabled:hover,
+button-disabled:focus,
+button-disabled:active {
+	background-image: none !important;
+	opacity: 0.40 !important;
+	cursor: not-allowed !important;
+	box-shadow: none !important;
+}
+/* ----- navbar ----- */
+nav.ux-navbar label.toggle,
+nav.ux-navbar input[id^=drop] {
+	display: none;
+}
+nav.ux-navbar {
+	margin: 0;
+	padding: 0;
+	background-color: #3c4663;
+}
+nav.ux-navbar div#logo {
+	display: block;
+	padding: 0 25px;
+	float: left;
+	font-size: 20px;
+	line-height: 50px;
+	color: #FFFFFF;
+}
+nav::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+nav.ux-navbar ul {
+	float: right;
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	position: relative;
+}
+nav.ux-navbar ul li {
+	margin: 0px;
+	display: inline-block;
+	float: left;
+	background-color: #3c4663;
+}
+nav.ux-navbar a {
+	display: block;
+	padding: 0 20px;
+	color: #FFFFFF;
+	font-size: 20px;
+	line-height: 50px;
+	text-decoration: none;
+}
+nav.ux-navbar ul li ul li:hover {
+	background-color: #2b3a57;
+}
+nav.ux-navbar a:hover {
+	color: #FFFFFF;
+	background-color: #1a2946;
+}
+nav.ux-navbar ul ul {
+	display: none;
+	position: absolute;
+	top: 50px;
+	z-index: 5555;
+}
+nav.ux-navbar ul li:hover > ul {
+	display: inherit;
+}
+nav.ux-navbar ul ul li {
+	width: 170px;
+	float: none;
+	display: list-item;
+	position: relative;
+}
+nav.ux-navbar ul ul ul li {
+	position: relative;
+	top: -50px;
+	left: 170px;
+}
+nav.ux-navbar li > a::after {
+	content: ' ▾';
+}
+nav.ux-navbar li > a:only-child::after {
+	content: '';
+}
+/* ----- navbar responsive ----- */
+@media all and (max-width:767px) {
+	nav.ux-navbar div#logo {
 		display: block;
+		padding: 0;
 		width: 100%;
-		padding: 0.3rem 0;
-		margin-bottom: 0.3rem;
-		color: #333;
-		border-bottom: 1px solid #e5e5e5;
-	}
-	.hidden,
-	[hidden] {
-		display: none !important;
-	}
-	button, a.ux-button {
-		/* Structure */
-		display: inline-block; /* do not mark as important as it can't hide using jquery hide() */
-		padding: 7px 15px 7px 15px !important;
-		line-height: normal !important;
-		white-space: nowrap !important;
-		vertical-align: middle !important;
-		text-align: center !important;
-		font-family: inherit !important;
-		font-size: 0.9375rem !important; /* 15px */
-		font-weight: bold !important;
-		text-decoration: none !important;
-		border-radius: 3px !important;
-		border: 1px solid #DDDDDD !important;
-		background-color: #FCFCFC !important;
-		color: #317AB9 !important;
-		cursor: pointer !important;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		margin-bottom: 5px;
-		margin-right: 5px;
-		box-sizing: border-box !important;
-		-moz-box-sizing: border-box !important;
-		-webkit-box-sizing: border-box !important;
-		appearance: none !important;
-		-moz-appearance: none !important;
-		-webkit-appearance: none !important;
-		user-select: none !important;
-		zoom: 1 !important;
-	}
-	button *, a.ux-button * {
-		font-weight: bold !important;
-	}
-	button:hover, a.ux-button:hover,
-	button:focus, a.ux-button:focus {
-		border: 1px solid #CCCCCC !important;
-		background-color: #F3F3F3 !important;
-		color: #2069A9 !important;
-	}
-	button:focus, a.ux-button:focus {
-		outline: 0 !important;
-	}
-	button[disabled],
-	button-disabled,
-	button-disabled:hover,
-	button-disabled:focus,
-	button-disabled:active {
-		background-image: none !important;
-		opacity: 0.40 !important;
-		cursor: not-allowed !important;
-		box-shadow: none !important;
-	}
-	/* ----- navbar ----- */
-	nav.ux-navbar label.toggle,
-	nav.ux-navbar input[id^=drop] {
-		display: none;
+		text-align: center;
+		float: none;
 	}
 	nav.ux-navbar {
 		margin: 0;
-		padding: 0;
-		background-color: #3c4663;
 	}
-	nav.ux-navbar div#logo {
+	nav.ux-navbar label.toggle + a,
+	nav.ux-navbar ul.menu {
+		display: none;
+	}
+	nav.ux-navbar label.toggle {
 		display: block;
-		padding: 0 25px;
-		float: left;
-		font-size: 20px;
-		line-height: 50px;
-		color: #FFFFFF;
-	}
-	nav::after {
-		content: "";
-		display: table;
-		clear: both;
-	}
-	nav.ux-navbar ul {
-		float: right;
-		padding: 0;
-		margin: 0;
-		list-style: none;
-		position: relative;
-	}
-	nav.ux-navbar ul li {
-		margin: 0px;
-		display: inline-block;
-		float: left;
 		background-color: #3c4663;
-	}
-	nav.ux-navbar a {
-		display: block;
 		padding: 0 20px;
 		color: #FFFFFF;
 		font-size: 20px;
 		line-height: 50px;
 		text-decoration: none;
+		border: none;
 	}
-	nav.ux-navbar ul li ul li:hover {
-		background-color: #2b3a57;
+	nav.ux-navbar label.toggle::after {
+		content: ' ▾';
+	}
+	nav.ux-navbar label.toggle:hover {
+		color: #FFFFFF;
+		background-color: #1a2946;
+	}
+	nav.ux-navbar input[id^=drop]:checked + ul {
+		display: block;
+	}
+	nav.ux-navbar ul {
+		width: 100%;
+	}
+	nav.ux-navbar ul li {
+		display: block;
+		width: 100%;
+	}
+	nav.ux-navbar ul ul .toggle,
+	nav.ux-navbar ul ul a {
+		padding: 0 40px;
+	}
+	nav.ux-navbar ul ul ul a {
+		padding: 0 80px;
 	}
 	nav.ux-navbar a:hover {
 		color: #FFFFFF;
 		background-color: #1a2946;
 	}
-	nav.ux-navbar ul ul {
-		display: none;
-		position: absolute;
-		top: 50px;
-		z-index: 5555;
+	nav.ux-navbar ul ul ul a {
+		color: #FFFFFF;
+		background-color: #2b3a57;
 	}
+	nav.ux-navbar ul li ul li .toggle,
+	nav.ux-navbar ul ul a {
+		background-color: #2b3a57;
+	}
+	nav.ux-navbar ul ul {
+		float: none;
+		position: static;
+		color: #ffffff;
+	}
+	nav.ux-navbar ul ul li:hover > ul,
 	nav.ux-navbar ul li:hover > ul {
-		display: inherit;
+		display: none;
 	}
 	nav.ux-navbar ul ul li {
-		width: 170px;
-		float: none;
-		display: list-item;
-		position: relative;
+		display: block;
+		width: 100%;
 	}
 	nav.ux-navbar ul ul ul li {
-		position: relative;
-		top: -50px;
-		left: 170px;
+		position: static;
 	}
-	nav.ux-navbar li > a::after {
-		content: ' ▾';
-	}
-	nav.ux-navbar li > a:only-child::after {
-		content: '';
-	}
-	/* ----- navbar responsive ----- */
-	@media all and (max-width:767px) {
-		nav.ux-navbar div#logo {
-			display: block;
-			padding: 0;
-			width: 100%;
-			text-align: center;
-			float: none;
-		}
-		nav.ux-navbar {
-			margin: 0;
-		}
-		nav.ux-navbar label.toggle + a,
-		nav.ux-navbar ul.menu {
-			display: none;
-		}
-		nav.ux-navbar label.toggle {
-			display: block;
-			background-color: #3c4663;
-			padding: 0 20px;
-			color: #FFFFFF;
-			font-size: 20px;
-			line-height: 50px;
-			text-decoration: none;
-			border: none;
-		}
-		nav.ux-navbar label.toggle::after {
-			content: ' ▾';
-		}
-		nav.ux-navbar label.toggle:hover {
-			color: #FFFFFF;
-			background-color: #1a2946;
-		}
-		nav.ux-navbar input[id^=drop]:checked + ul {
-			display: block;
-		}
-		nav.ux-navbar ul {
-			width: 100%;
-		}
-		nav.ux-navbar ul li {
-			display: block;
-			width: 100%;
-		}
-		nav.ux-navbar ul ul .toggle,
-		nav.ux-navbar ul ul a {
-			padding: 0 40px;
-		}
-		nav.ux-navbar ul ul ul a {
-			padding: 0 80px;
-		}
-		nav.ux-navbar a:hover {
-			color: #FFFFFF;
-			background-color: #1a2946;
-		}
-		nav.ux-navbar ul ul ul a {
-			color: #FFFFFF;
-			background-color: #2b3a57;
-		}
-		nav.ux-navbar ul li ul li .toggle,
-		nav.ux-navbar ul ul a {
-			background-color: #2b3a57;
-		}
-		nav.ux-navbar ul ul {
-			float: none;
-			position: static;
-			color: #ffffff;
-		}
-		nav.ux-navbar ul ul li:hover > ul,
-		nav.ux-navbar ul li:hover > ul {
-			display: none;
-		}
-		nav.ux-navbar ul ul li {
-			display: block;
-			width: 100%;
-		}
-		nav.ux-navbar ul ul ul li {
-			position: static;
-		}
-	}
-	/* ----- #end navbar ----- */
-	</style>
-	<style type="text/css">
-		
+}
+/* ----- #end navbar ----- */
+</style>
+<style type="text/css">
+
 /* -- CSS Start :: Smart.Framework / Debug / TPL Highlight :: r.8.7 / smart.framework.v.8.7 -- */
 
 /* ----------------------------- */
@@ -425,15 +425,15 @@
 /* TPL Highlight r.20210526 */
 
 .sf__tpl__highlight__marker {
-	background: #DDEEFF !important;
+	background: #CBDA8C !important;
 	color: #333333 !important;
 }
 .sf__tpl__highlight__syntax {
-	background: #B3FF80 !important;
+	background: #CBDA8C !important;
 	color: #222222 !important;
 }
 .sf__tpl__highlight__subtpl {
-	background: #FDE223 !important;
+	background: #CBDA8C !important;
 	color: #111111 !important;
 }
 
@@ -447,7 +447,7 @@
 
 /* -- CSS End -- */
 
-	</style>
+</style>
 </head>
 <body>
 <nav class="ux-navbar">
@@ -862,7 +862,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-05-30 23:02:30 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:43:50 +0000</small>
 <hr>
 <br>
 <!-- # -->

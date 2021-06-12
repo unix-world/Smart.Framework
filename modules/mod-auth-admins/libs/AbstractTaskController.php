@@ -179,6 +179,8 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 				'@SUB-TEMPLATES@' => [
 					'%app-tpl%' => (string) $this->app_tpl,
 				],
+				'TEMPLATE-PATH' 	=> (string) self::MODULE_TPL_PATH,
+				'TEMPLATE-FILE' 	=> (string) 'template-task-start.mtpl.htm',
 				'MOD-VIEW-PATH' 	=> (string) $this->ControllerGetParam('module-view-path'),
 				'TITLE' 			=> (string) $this->title,
 				'NAME' 				=> (string) $this->name_prefix.'.'.$this->name_suffix,
@@ -229,6 +231,8 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 		echo (string) \SmartMarkersTemplating::render_file_template(
 			self::MODULE_TPL_PATH.'template-task-end.mtpl.htm',
 			(array) \SmartComponents::set_app_template_conform_metavars([
+				'TEMPLATE-PATH' 	=> (string) self::MODULE_TPL_PATH,
+				'TEMPLATE-FILE' 	=> (string) 'template-task-end.mtpl.htm',
 				'TITLE' 			=> (string) $this->title,
 				'YEAR' 				=> (string) \date('Y'),
 				'WORKING' 			=> (string) (($this->working === true) ? 'yes' : 'no'),

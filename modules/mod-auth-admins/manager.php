@@ -22,7 +22,16 @@ define('SMART_APP_MODULE_AUTH', true); 	// if set to TRUE because is shared
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210610
+	// v.20210612
+
+	public function Initialize() {
+		//--
+		$this->PageViewSetCfg('template-path', '@'); // set template path to this module
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
 
 	public function Run() { // (OUTPUTS: HTML)
 
@@ -39,8 +48,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//-- use defaults
-	//	$this->PageViewSetCfg('template-path', 'default');
-	//	$this->PageViewSetCfg('template-file', 'template.htm');
+		$this->PageViewSetCfg('template-file', 'template.htm');
 		//--
 
 		//--

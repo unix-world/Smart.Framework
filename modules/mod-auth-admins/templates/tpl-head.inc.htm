@@ -1,51 +1,35 @@
+<!-- TPL Head r.20210612 :: [###SEMAPHORE|smartlist|html###] -->
+<!-- Template Path: [###TEMPLATE-PATH|html###] -->
+<!-- Template File: [###TEMPLATE-FILE|html###] -->
+<!-- Timezone:      [###TIMEZONE|html###] -->
+<!-- Language:      [###LANG|html###] -->
+<!-- Realm:         [###APP-REALM|html###] -->
+[%%%IF:AUTH-LOGIN-OK:==yes;%%%]
+<!-- Auth-Login-OK:         [###AUTH-LOGIN-OK|html###] -->
+<!-- Auth-Login-ID:         [###AUTH-LOGIN-ID|html###] -->
+<!-- Auth-Login-Alias:      [###AUTH-LOGIN-ALIAS|html###] -->
+<!-- Auth-Login-FullName:   [###AUTH-LOGIN-FULLNAME|html###] -->
+<!-- Auth-Login-Privileges: [###AUTH-LOGIN-PRIVILEGES|smartlist|html###] -->
+[%%%ELSE:AUTH-LOGIN-OK%%%]
+<!-- Auth: N/A -->
+[%%%/IF:AUTH-LOGIN-OK%%%]
+<meta charset="[###CHARSET|html###]">
+<meta http-equiv="Content-Type" content="text/html; charset=[###CHARSET|html###]">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Smart.Framework">
+<link rel="icon" href="data:,">
+<title>[###TITLE|html###]</title>
 <!-- Meta -->
-[%%%IF:HEAD-META:==;%%%]
-<!-- no head meta -->
-[%%%ELSE:HEAD-META%%%]
-[###HEAD-META###]
-[%%%/IF:HEAD-META%%%]
+[%%%IF:HEAD-META:==;%%%]<!-- no head meta -->[%%%ELSE:HEAD-META%%%][###HEAD-META###][%%%/IF:HEAD-META%%%]
 <!-- Base Styles -->
-<link rel="stylesheet" type="text/css" href="lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css?[###RELEASE-HASH|url|html###]">
-<link rel="stylesheet" type="text/css" href="lib/css/toolkit/sf-icons.css?[###RELEASE-HASH|url|html###]">
-<link rel="stylesheet" type="text/css" href="lib/css/toolkit/ux-toolkit.css?[###RELEASE-HASH|url|html###]">
-<link rel="stylesheet" type="text/css" href="lib/core/css/notifications.css?[###RELEASE-HASH|url|html###]">
-<link rel="stylesheet" type="text/css" href="lib/core/css/notifications-icons.css?[###RELEASE-HASH|url|html###]">
-<link rel="stylesheet" type="text/css" href="lib/core/css/tpl-highlight.css?[###RELEASE-HASH|url|html###]">
-<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/markdown.css?[###RELEASE-HASH|url|html###]">
-[@@@SUB-TEMPLATE:!lib/core/templates/base-html-styles.inc.htm!@@@]
-<!-- CSS -->
-[%%%IF:HEAD-CSS:==;%%%]
-<!-- no head css -->
-[%%%ELSE:HEAD-CSS%%%]
-[###HEAD-CSS###]
-[%%%/IF:HEAD-CSS%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/css-app.inc.htm!@@@]
 <!-- Scripts -->
-<!-- jQuery --><script src="lib/js/jquery/jquery.js?[###RELEASE-HASH|url|html###]"></script><script>jQuery.ajaxSetup({ timeout: 0, cache: false });</script><script src="lib/js/jquery/jquery.smart.compat.js?[###RELEASE-HASH|url|html###]"></script>
-<!-- Notifications Growl (toastr) --><link rel="stylesheet" type="text/css" href="lib/js/jquery/growl/jquery.toastr.css?[###RELEASE-HASH|url|html###]"><script src="lib/js/jquery/growl/jquery.toastr.js?[###RELEASE-HASH|url|html###]"></script>
-<!-- Notifications Dialog --><link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.alertable.css?[###RELEASE-HASH|url|html###]"><script src="lib/js/jquery/jquery.alertable.js?[###RELEASE-HASH|url|html###]"></script>
-<!-- Js Framework -->
-<script>
-const smartJ$Options = {
-	BrowserUtils: {
-		LanguageId: '[###LANG|js###]',
-		Charset: '[###CHARSET|js###]',
-		CookieLifeTime: [###CLIENT-UID-COOKIE-LIFETIME|int###],
-		CookieDomain: '[###CLIENT-UID-COOKIE-DOMAIN|js###]',
-		CookieSameSitePolicy: '[###CLIENT-UID-COOKIE-SAMESITE|js###]',
-		Notifications: 'growl',
-		NotificationDialogType: 'alertable',
-		ModalBoxProtected: true,
-		NotifyLoadError: true,
-	}
-};
-Object.freeze(smartJ$Options); // sec.
-window.smartJ$Options = smartJ$Options; // g-exp.
-</script>
-<script src="lib/js/framework/smart-framework.pak.js?[###RELEASE-HASH|url|html###]"></script>
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-base.inc.htm!@@@]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@]
+[%%%IF:SEMAPHORE:&*<load:utils-js>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-utils.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- Utils: skip -->[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<skip:js-ui>;%%%]<!-- LightJS: skip -->[%%%ELSE:SEMAPHORE%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-ui.inc.htm!@@@][%%%/IF:SEMAPHORE%%%]
+<!-- CSS -->
+[%%%IF:HEAD-CSS:==;%%%]<!-- no head css -->[%%%ELSE:HEAD-CSS%%%][###HEAD-CSS###][%%%/IF:HEAD-CSS%%%]
 <!-- JS -->
-[%%%IF:HEAD-JS:==;%%%]
-<!-- no head js -->
-[%%%ELSE:HEAD-JS%%%]
-[###HEAD-JS###]
-[%%%/IF:HEAD-JS%%%]
-<!-- # -->
+[%%%IF:HEAD-JS:==;%%%]<!-- no head js -->[%%%ELSE:HEAD-JS%%%][###HEAD-JS###][%%%/IF:HEAD-JS%%%]
+<!-- #.# -->

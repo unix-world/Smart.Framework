@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210527
+ * @version 	v.20210612
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -154,11 +154,6 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 
 		//--
-		if(!SmartFileSystem::is_type_dir((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.'etc')) {
-			$this->err = 'Cannot generate the AppCodeUnPack Manager Standalone Script, optimizations folder `etc/` is missing !';
-			return;
-		} //end if
-		//--
 		if(!SmartFileSystem::is_type_dir((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.'lib')) {
 			$this->err = 'Cannot generate the AppCodeUnPack Manager Standalone Script, optimizations folder `lib/` is missing !';
 			return;
@@ -178,7 +173,6 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 
 		//--
 		$arr_tpls = [
-			'APPCODEUNPACK_BASE_STYLES' 			=> 'lib/core/templates/base-html-styles.inc.htm',
 			'APPCODEUNPACK_HTML_WATCH' 				=> 'lib/core/templates/canvas-clock.inc.htm',
 			'APPCODEUNPACK_HTML_ERRTPL' 			=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-tpl-err.htm',
 			'APPCODEUNPACK_HTML_TPL' 				=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-tpl.htm',
@@ -190,7 +184,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 		$arr_css = [
 			'APPCODEUNPACK_TOOLKIT_STYLES' 		=> [ 'lib/css/toolkit/ux-toolkit.css', 'lib/css/toolkit/ux-toolkit-responsive.css' ],
-			'APPCODEUNPACK_DEFAULT_STYLES' 		=> 'etc/templates/default/styles.css',
+			'APPCODEUNPACK_BASE_STYLES' 		=> 'lib/core/css/base.css',
 			'APPCODEUNPACK_NOTIFICATION_STYLES' => 'lib/core/css/notifications.css',
 			'APPCODEUNPACK_CSS_GRITTER' 		=> 'lib/js/jquery/growl/jquery.gritter.css',
 			'APPCODEUNPACK_CSS_ALERTABLE' 		=> 'lib/js/jquery/jquery.alertable.css',

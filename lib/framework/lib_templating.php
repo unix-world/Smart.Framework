@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN
- * @version 	v.20210608
+ * @version 	v.20210612
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -2205,7 +2205,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 						} elseif(strpos($key, '%') !== false) { // % is not valid in other circumstances
 							Smart::raise_error('Invalid Marker-TPL Sub-Template Syntax [%] as: `'.$key.'` # `'.$val.'` '.'['.$y_base_path.']'.' detected in Template:'."\n".self::log_template($mtemplate));
 							return (string) 'ERROR: (705) in '.__CLASS__;
-						} elseif(((string)substr($key, 0, 1) == '!') AND ((string)substr($key, -1, 1) == '!')) { // path override: use this relative path instead of parent relative referenced path ; Ex: [@@@SUB-TEMPLATE:!etc/templates/default/js-base.inc.htm!@@@]
+						} elseif(((string)substr($key, 0, 1) == '!') AND ((string)substr($key, -1, 1) == '!')) { // path override: use this relative path instead of parent relative referenced path ; Ex: [@@@SUB-TEMPLATE:!path/to/sub-tpl.inc.htm!@@@]
 							$stpl_path = (string) substr($key, 1, -1);
 						} elseif(strpos($key, '!') !== false) { // ! is not valid in other circumstances
 							Smart::raise_error('Invalid Marker-TPL Sub-Template Syntax [!] as: `'.$key.'` # `'.$val.'` '.'['.$y_base_path.']'.' detected in Template:'."\n".self::log_template($mtemplate));

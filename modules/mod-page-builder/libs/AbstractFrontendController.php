@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210609
+ * @version 	v.20210612
  * @package 	development:modules:PageBuilder
  *
  */
@@ -766,7 +766,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			'id' 		=> (string) $uid.'.'.$id,
 			'type' 		=> 'value', // preserve type
 			'auth' 		=> 0, // n/a
-			'mode' 		=> (string) $arr['mode'].($escape ? ':'.$escape : ''),
+			'mode' 		=> (string) ($arr['mode'] ?? '').($escape ? ':'.$escape : ''),
 			'name' 		=> (string) $id.' :: '.\strtoupper((string)$syntax).' :: '.$uid,
 			'code' 		=> (string) $arr['id'],
 			'syntax'	=> (string) $syntax
@@ -834,7 +834,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			//--
 			$arr = (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getSegment((string)$id, (string)$this->crr_lang);
 			//--
-			if((string)$arr['id'] == '') {
+			if(\Smart::array_size($arr) <= 0) {
 				$this->PageViewSetErrorStatus(500, 'A PageBuilder Page Segment does not exists');
 				\Smart::log_warning('PageBuilder: WARNING: (500) @ '.'Invalid Segment: '.$id.' in Page: '.\implode(';', $this->current_page)); // log warning, this is internal, by page settings
 				return (array) $data_arr;
@@ -850,7 +850,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			//--
 			$arr = (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getPage((string)$id, (string)$this->crr_lang);
 			//--
-			if((string)\trim((string)$arr['id']) == '') {
+			if(\Smart::array_size($arr) <= 0) {
 				$this->PageViewSetErrorStatus(404, 'This PageBuilder Page does not exists');
 				// log no warning as this is external, by request
 				return (array) $data_arr;

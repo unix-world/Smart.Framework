@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- Version:          r.20210604 -->
+<!-- Version:          r.20210612 -->
 <!-- Template:         [###TEMPLATE-PATH|html###][###TEMPLATE-FILE|html###] -->
 <!-- Charset:          [###CHARSET|html###] -->
 <!-- Srv Script:       [###SRV-SCRIPT|html###] -->
@@ -28,26 +28,37 @@ hr {
 	border-top: 1px solid #CCCCCC;
 	height: 1px;
 }
+#smart-qunit-results {
+	position: fixed;
+	top: 10px;
+	right: 11px;
+	width: 360px;
+	height: 33px;
+	line-height: 15px;
+	padding: 3px;
+	border: 3px solid #2B81AF;
+	border-radius: 5px; opacity:0.75;
+	background: #C6E746;
+	color: #0D3349;
+	font-size: 10px;
+	font-weight: bold;
+	white-space: pre;
+	text-align: center;
+}
 </style>
-<!-- jQuery -->
-<script src="lib/js/jquery/jquery.js?[###RELEASE-HASH|html###]"></script>
-<script>jQuery.ajaxSetup({ timeout: [###TIMEOUT-NETSOCKET|int###] * 1000, cache: false });</script>
-<script src="lib/js/jquery/jquery.smart.compat.js?[###RELEASE-HASH|url|html###]"></script>
-<!-- Notifications Growl (toastr) --><link rel="stylesheet" type="text/css" href="lib/js/jquery/growl/jquery.toastr.css?[###RELEASE-HASH|url|html###]"><script src="lib/js/jquery/growl/jquery.toastr.js?[###RELEASE-HASH|url|html###]"></script>
-<!-- Notifications Dialog --><link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.alertable.css?[###RELEASE-HASH|url|html###]"><script src="lib/js/jquery/jquery.alertable.js?[###RELEASE-HASH|url|html###]"></script>
-<!-- QUnit -->
+<!-- Scripts -->
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-base.inc.htm!@@@]
+<!-- Custom Ajax Settings --><script>jQuery.ajaxSetup({ timeout: [###TIMEOUT-NETSOCKET|int###] * 1000, cache: false });</script>
+<!-- QUnit Js -->
 <link href="modules/mod-qunit/views/js/qunit/qunit.css?[###RELEASE-HASH|html###]" rel="stylesheet">
 <script src="modules/mod-qunit/views/js/qunit/qunit.js?[###RELEASE-HASH|html###]"></script>
 <!-- SmartQUnit -->
 <script src="modules/mod-qunit/views/js/smart-qunit.js?[###RELEASE-HASH|html###]"></script>
-<!-- Smart.Framework -->
-[@@@SUB-TEMPLATE:!etc/templates/default/js-framework.inc.htm!@@@]
-[@@@SUB-TEMPLATE:!etc/templates/default/js-settings.inc.htm!@@@]
 </head>
 <body>
 <div id="qunit"></div>
 <div id="qunit-fixture"></div>
-<div id="smart-qunit-results" style="position:fixed; top:10px; right:11px; width:360px; height:33px; line-height:15px; padding:3px; border:3px solid #2b81af; border-radius:5px; opacity:0.75; background:#c6e746; color:#0d3349; font-size:10px; font-weight:bold; white-space:pre; text-align:center;">[[###APP-REALM|html###]] // QUnit Running: [###TIME-DATE-START|html###]<br><img src="lib/framework/img/loading-cylon.svg" width="24" height="24"></div>
+<div id="smart-qunit-results">[[###APP-REALM|html###]] // QUnit Running: [###TIME-DATE-START|html###]<br><img src="lib/framework/img/loading-cylon.svg" width="24" height="24"></div>
 <script>
 var smartQUnitStartDelay = 500; // qunit start delay (if many tests are loader async by ajax calls this time should be increased, ex: 2500)
 var smartQUnitDisabledTests = 0; // init (use it later to register the number of disabled tests)

@@ -53,31 +53,31 @@ final class AuthNameSpaces {
 			} //end if else
 			//--
 			if((\Smart::array_size($available_areas) > 0) AND (\Smart::array_type_test($available_areas) == 2)) {
-					//--
-					foreach((array)$available_areas as $key => $val) {
-						$key = (string) \trim((string)$key);
-						if((string)$key != '') {
-							if(\Smart::is_nscalar($val)) {
-								$val = (string) \trim((string)$val);
-								if((string)$val != '') {
-									$areas[(string)$key] = (string) $val;
-								} //end if
+				//--
+				foreach((array)$available_areas as $key => $val) {
+					$key = (string) \trim((string)$key);
+					if((string)$key != '') {
+						if(\Smart::is_nscalar($val)) {
+							$val = (string) \trim((string)$val);
+							if((string)$val != '') {
+								$areas[(string)$key] = (string) $val;
 							} //end if
 						} //end if
-					} //end foreach
-					//--
-					if(\Smart::array_size($areas) <= 0) {
-						if(\SmartFrameworkRegistry::isTaskArea() === true) {
-							$areas = [
-								'Tasks' => 'task.php?page=auth-admins.tasks'
-							];
-						} else {
-							$areas = [
-								'Admins Manager' => 'admin.php?page=auth-admins.manager'
-							];
-						} //end if else
 					} //end if
-					//--
+				} //end foreach
+				//--
+			} //end if
+			//--
+			if(\Smart::array_size($areas) <= 0) {
+				if(\SmartFrameworkRegistry::isTaskArea() === true) {
+					$areas = [
+						'Tasks' => 'task.php?page=auth-admins.tasks'
+					];
+				} else {
+					$areas = [
+						'Admins Manager' => 'admin.php?page=auth-admins.manager'
+					];
+				} //end if else
 			} //end if
 			//--
 		} //end if

@@ -1,8 +1,14 @@
-<style type="text/css">
-/* v.20210610 */
+
+/* -- CSS Start :: Smart.Framework / Base :: r.20210612 -- */
+
 * {
 	font-family: 'IBM Plex Sans', 'Noto Sans', arial, sans-serif;
 	font-smooth: always;
+}
+
+html, body {
+	margin: 0px;
+	padding: 0px;
 }
 
 /* base styles */
@@ -12,6 +18,8 @@ body {
 	color: #222222;
 	font-size: 16px;
 	line-height: 1.5;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 div, p, ol, ul, form, fieldset, blockquote, address, dl {
@@ -87,4 +95,5 @@ td {
 a, a:link, a:visited, a:hover {
 	color: #000000;
 }
-</style>
+
+/* -- CSS End -- */

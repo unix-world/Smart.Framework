@@ -1,0 +1,17 @@
+<!-- TPL Foot r.20210612 -->
+[%%%IF:SEMAPHORE:&*<load:searchterm-highlight-js>;%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-search-term-highlight.inc.htm!@@@]
+[%%%ELSE:SEMAPHORE%%%]
+<!-- Highlight SearchTerm: skip -->
+[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<load:code-highlight-js>;%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-hljs.inc.htm!@@@]
+[%%%ELSE:SEMAPHORE%%%]
+<!-- HLjs, Smart HLjs: skip -->
+[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<skip:unveil-js>;%%%]
+<!-- Unveil: skip -->
+[%%%ELSE:SEMAPHORE%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-unveil.inc.htm!@@@]
+[%%%/IF:SEMAPHORE%%%]
+<!-- #.# -->
