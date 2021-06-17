@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS, SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20210528
+ * @version 	v.20210613
  * @package 	@Core:Network
  *
  */
@@ -305,7 +305,20 @@ final class SmartHttpClient {
 	 */
 	public function browse_url($url, $method='GET', $ssl_version='', $user='', $pwd='') {
 		//--
-		$result = $this->get_answer($url, $user, $pwd, $method, $ssl_version);
+		$url = (string) trim((string)$url);
+		//--
+		$errmsg = '';
+		if((int)strlen($url) <= 4096) {
+			if(((string)substr((string)$url, 0, 7) == 'http://') OR ((string)substr((string)$url, 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
+				$result = $this->get_answer((string)$url, (string)$user, (string)$pwd, (string)$method, (string)$ssl_version);
+			} else {
+				$errmsg = 'URL must start with a `http://` or `https://` prefix';
+				$result = -1;
+			} //end if else
+		} else {
+			$errmsg = 'URL is too long, more than 4096 characters';
+			$result = -2;
+		} //end if else
 		//--
 		$redirect_url = '';
 		if((int)$result == 1) {
@@ -346,7 +359,8 @@ final class SmartHttpClient {
 			'put-resource' 		=> (string) substr($this->putbodyres, 0, 255).' ...',
 			'put-res-mode' 		=> (string) $this->putbodymode,
 			'put-body-len' 		=> (int)    $this->put_body_len,
-			'mode' 				=> (string) trim((string)$this->url_parts['protocol']),
+			'mode' 				=> (string) trim((string)($this->url_parts['protocol'] ?? '')),
+			'errmsg' 			=> (string) $errmsg,
 			'result' 			=> (int)    $result,
 			'pre-code' 			=> (string) $this->pre_status, // if 100-continue, this is the HTTP 1.1 Pre-Status
 			'pre-headers' 		=> (string) $this->pre_header, // if 100-continue, this is the HTTP 1.1 Pre-Header
@@ -355,7 +369,7 @@ final class SmartHttpClient {
 			'headers' 			=> (string) $this->header,
 			'content' 			=> (string) $this->body,
 			'log' 				=> (string) 'User-Agent: '.$this->useragent."\n", // this is reserved for calltime functions
-			'debuglog' 			=> (string) $this->log // this is for internal use
+			'debuglog' 			=> (string) $this->log, // this is for internal use
 		);
 		//--
 	} //END FUNCTION

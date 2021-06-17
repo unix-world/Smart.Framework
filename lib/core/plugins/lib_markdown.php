@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
- * @version 	v.20210612
+ * @version 	v.20210617
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -57,7 +57,7 @@ final class SmartMarkdownToHTML {
 	// 	* fixed multiple security vulnerabilities: character encoding fixes, fixed regex escapings, fixed html escapings, code and regex optimizations
 	// 	* extend the syntax to support attributes, added pandoc style block divs
 
-	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210612';
+	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210617';
 
 	//===================================
 
@@ -68,6 +68,7 @@ final class SmartMarkdownToHTML {
 	private $htmlEntitiesDisabled = false; 	// if TRUE will Disable the HTML Entities such as &nbsp; (this is useful and normally should not be disabled)
 	private $validateHtml = false; 			// Validate the HTML Code using the SmartHtmlParser with DOM
 	private $relative_url_prefix = ''; 		// if an url prefix is given here all relative URLs will be prefixed with this
+	private $use_all_unveil = false; 		// if set to TRUE will use unveil for all images
 	//--
 	private $DefinitionData;
 	//--
@@ -150,9 +151,10 @@ final class SmartMarkdownToHTML {
 	];
 
 	//-- extra, by unixman: attributes can optional start with a type prefix to know which attributes to assign to nested elements (ex: image in a link, or link in a table cell, or image in a link in a table cell)
-	private const regexImgAttribute = '[ ]*{(I\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Images - optional starts with {I:
-	private const regexLnkAttribute = '[ ]*{(L\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Links  - optional starts with {L:
-	private const regexTblAttribute = '[ ]*{(T\:[ ]*)?((?:[#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)}'; // Tables - optional starts with {T:
+	private const regexHdrAttribute = '[ ]*\{(H\:[ ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)\}'; // Header - optional starts with {H:
+	private const regexImgAttribute = '[ ]*\{(I\:[ ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)\}'; // Images - optional starts with {I:
+	private const regexLnkAttribute = '[ ]*\{(L\:[ ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)\}'; // Links  - optional starts with {L:
+	private const regexTblAttribute = '[ ]*\{(T\:[ ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[ ]*)+)\}'; // Tables - optional starts with {T:
 	//--
 
 	//===================================
@@ -161,7 +163,7 @@ final class SmartMarkdownToHTML {
 	/**
 	 * Class constructor with many options
 	 */
-	public function __construct(bool $y_breaksEnabled=true, bool $y_sBreakEnabled=true, bool $y_urlsLinked=true, bool $y_htmlEntitiesDisabled=false, $y_validateHtml=false, ?string $y_relative_url_prefix=null) {
+	public function __construct(bool $y_breaksEnabled=true, bool $y_sBreakEnabled=true, bool $y_urlsLinked=true, bool $y_htmlEntitiesDisabled=false, $y_validateHtml=false, ?string $y_relative_url_prefix=null, bool $y_use_all_unveil=false) {
 		//--
 		$this->breaksEnabled 			= (bool) $y_breaksEnabled; // add <br> for text on multiple lines
 		$this->sBreakEnabled 			= (bool) $y_sBreakEnabled; // enable ``` ``` \S \s
@@ -171,6 +173,7 @@ final class SmartMarkdownToHTML {
 		$this->validateHtml 			= (int)  (Smart::is_nscalar($y_validateHtml) ? $y_validateHtml : false); // validate the HTML via Cleaner, (if Tidy or DOM is available will be used) ; this is slow ... but adds extra safety ; this is normally needed only with untrusted markdown that can come from untrusted users, normally should not be enabled
 		//--
 		$this->relative_url_prefix 		= (string) trim((string)$y_relative_url_prefix); // if provided use this prefix for all relative urls
+		$this->use_all_unveil 			= (bool) $y_use_all_unveil;
 		//--
 	} //END FUNCTION
 
@@ -191,17 +194,29 @@ final class SmartMarkdownToHTML {
 		//-- pre trim
 		$text = (string) trim((string)$text)."\n"; // ensure the last new line if having a backslash
 		//-- Fix broking curly quotes: ‘ = &lsquo; [0145] ; ’ = &rsquo; [0146] ; “ = &ldquo; [0147] ; ” = &rdquo; [0148]
-		$text = (string) str_replace(['‘', '’', '“', '”'], ['\'', '\'', '"', '"'], $text); // bug fix (special apostrophes will break the UTF-8 markdown ... don't know why !? but need fixing ; perhaps they are interpreted different in UTF-16 context !!!)
+		$text = (string) str_replace(['‘', '’', '“', '”', '″', '″'], ['\'', '\'', '"', '"', '"', '"'], $text); // bug fix (special apostrophes will break the UTF-8 markdown ... don't know why !? but need fixing ; perhaps they are interpreted different in UTF-16 context !!!)
 		//-- standardize line breaks
 		$text = (string) str_replace(["\r\n", "\r"], "\n", $text);
 		//-- special breaks ; use `\` + `\n` as a new line enforcer
 		if($this->sBreakEnabled) {
-			$text = (string) str_replace(['\\'."\n"], "\n".'&nbsp;'."\n", $text);
+			$text = (string) str_replace(['\\'."\n"], "\n".' '."\n", $text); // don;t use &nbsp;, can occur in code tags and is rendered as html escaped
 		} else { // IMPORTANT: \ must be enclosed by newlines, otherwise may behave unpredictable on replace ...
 			$text = (string) str_replace(['\\'."\n"], "\n", $text);
 		} //end if else
 		//-- remove surrounding line breaks
 		$text = (string) trim($text, "\n");
+		//-- fix for tables, escaped | must not be converted (by unixman) {{{SYNC-FIX-ESCAPED-|-}}}
+		$text = (string) str_replace( // save existing '┆' as the html entity '┆' to preserve originals ; replace all escaped | with ┆, they will be converted back below
+			[
+				'\\|',
+				'\\`'
+			],
+			[
+				'┆',
+				'‛' // this is utf-8 8219, a special backtick
+			],
+			(string) $text
+		);
 		//-- split text into lines
 		$lines = (array) explode("\n", $text);
 		$text = ''; // free mem
@@ -210,6 +225,22 @@ final class SmartMarkdownToHTML {
 		$lines = null; // free mem
 		//-- trim line breaks
 		$markup = (string) trim($markup, "\n");
+		//-- fix back for tables (by unixman), must be before prepare HTML because it may convert ┆
+		$markup = (string) str_replace(
+			[
+				'┆',
+				'‛', // this is utf-8 8219, a special backtick
+				'∖`', // this is utf-8, 8726, a special backslash
+				'∖' // this is utf-8, 8726, a special backslash ; if need a backslash character use this
+			],
+			[
+				'|',
+				'`',
+				'`',
+				'\\'
+			],
+			(string) $markup
+		);
 		//-- prepare the HTML
 		$markup = (string) $this->prepareHTML((string)$markup);
 		//-- fix charset
@@ -1013,25 +1044,39 @@ final class SmartMarkdownToHTML {
 		//--
 		if(isset($Line['text'][1])) {
 			//--
+			/*
 			$level = 1;
-			//--
 			while(isset($Line['text'][$level]) AND $Line['text'][$level] === '#') {
 				$level ++;
 			} //end while
+			*/
+			$level = (int) strspn((string)$Line['text'], '#', 0, 7); // fix by unixman
 			//--
-			if($level > 6) {
+		//	if($level > 6) {
+			if(($level <= 0) OR ($level > 6)) { // fix by unixman
 				return;
 			} //end if
 			//--
-			$text = trim($Line['text'], '# ');
+		//	$text = trim($Line['text'], '# ');
+			$text = ltrim($Line['text'], '# '); // fix by unixman
+			//--
+			$attributes = array();
+			if(preg_match('/'.self::regexHdrAttribute.'/', $text, $matches)) { // no need for preg_quote() here, self::regexTblAttribute is a REGEX expr
+				$attributes = $this->parseAttributeData((string)(isset($matches[2]) ? $matches[2] : ''));
+				$text = (string) trim((string)substr((string)$text, 0, (strlen((string)$text) - strlen((string)(isset($matches[0]) ? $matches[0] : '')))));
+			} //end if
 			//--
 			$Block = array(
 				'element' => array(
-					'name' => 'h' . min(6, $level),
+					'name' => 'h'.min(6, $level),
 					'text' => $text,
 					'handler' => 'line',
 				),
 			);
+			//--
+			if(Smart::array_size($attributes) > 0) {
+				$Block['element']['attributes'] = (array) $attributes;
+			} //end if
 			//--
 			return $Block;
 			//--
@@ -1388,7 +1433,7 @@ final class SmartMarkdownToHTML {
 				$headerCell = (string) trim((string)$headerCell);
 				//--
 				$HeaderElement = array(
-					'name' => 'th',
+					'name' => (string) (in_array('NO-TABLE-HEAD', (array)$table_defs) ? 'td' : 'th'),
 					'handler' => 'line',
 				);
 				//-- unixman
@@ -1679,6 +1724,7 @@ final class SmartMarkdownToHTML {
 			} //end if else
 			//--
 		//	if(!isset($matches[2])) {
+			$url = '';
 			if((string)$email != '') {
 				$url = (string) 'mailto:'.$email;
 			} //end if
@@ -1810,6 +1856,10 @@ final class SmartMarkdownToHTML {
 		//--
 		if(array_key_exists('href', $Inline['element']['attributes'])) {
 			unset($Inline['element']['attributes']['href']);
+		} //end if
+		//--
+		if($this->use_all_unveil === true) {
+			$Inline['element']['attributes']['unveil'] = true;
 		} //end if
 		//--
 		if(
@@ -2133,7 +2183,8 @@ final class SmartMarkdownToHTML {
 			return;
 		} //end if
 		//--
-		if($Excerpt['text'][0] === '~' AND $Excerpt['text'][1] !== '~' AND preg_match('/^~(?=\S)(.+?)(?<=\S)~/', $Excerpt['text'], $matches)) {
+		$txt1 = (string) ($Excerpt['text'][1] ?? null);
+		if($Excerpt['text'][0] === '~' AND $txt1 !== '~' AND preg_match('/^~(?=\S)(.+?)(?<=\S)~/', $Excerpt['text'], $matches)) {
 			return array(
 				'extent' => (int) strlen((isset($matches[0]) ? $matches[0] : 0)),
 				'element' => [
@@ -2301,7 +2352,7 @@ final class SmartMarkdownToHTML {
 			'\\_' 	=> '_',
 			'\\. ' 	=> '. ', // with a space
 			'\\:' 	=> ':',
-			'\\|' 	=> '|',
+		//	'\\|' 	=> '|', // {{{SYNC-FIX-ESCAPED-|-}}} ; this is done above by using a circular replacement (before vs after rendering ...)
 		]);
 		//--
 	} //END FUNCTION
@@ -2524,15 +2575,15 @@ final class SmartMarkdownToHTML {
 							$tmp_attr[0] = (string) $tmp_altimg;
 							$Data['alternate'] = (array) $tmp_attr;
 						} else {
-							Smart::log_notice(__CLASS__.' # Parser Notice: Wrong Attribute (2): `'.$attribute.'` in: `'.$attributeString.'`');
+						//	Smart::log_notice(__CLASS__.' # Parser Notice: Wrong Attribute (2): `'.$attribute.'` in: `'.$attributeString.'`'); // this can occur with converted markdown ... (Ex: perl docs)
 						} //end if else
 						$tmp_altimg = null;
 						$tmp_attr = null;
 					} else {
-						Smart::log_notice(__CLASS__.' # Parser Notice: Wrong Attribute (1): `'.$attribute.'` in: `'.$attributeString.'`');
+					//	Smart::log_notice(__CLASS__.' # Parser Notice: Wrong Attribute (1): `'.$attribute.'` in: `'.$attributeString.'`'); // this can occur with converted markdown ... (Ex: perl docs)
 					} //end if else
 				} else { // invalid attribute
-					Smart::log_notice(__CLASS__.' # Parser Notice: Invalid Attribute: `'.$attribute.'` in: `'.$attributeString.'`');
+				//	Smart::log_notice(__CLASS__.' # Parser Notice: Invalid Attribute: `'.$attribute.'` in: `'.$attributeString.'`'); // this can occur with converted markdown ... (Ex: perl docs)
 				} //end if else
 				//--
 			} //end foreach

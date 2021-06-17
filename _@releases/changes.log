@@ -2,6 +2,18 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+June 17, 2021 :: Version 8.7 rev.20210617
+	* many improvements, optimizations and security fixes for the markdown rendering as html, includding better regex escaping
+	* fix SmartCodeMirror to indent with tabs just on selected syntax types
+	* add Bootstrap 5 Icon Fonts to lib/core/plugins/fonts/icons
+	* some PHP8 fixes for some warnings regarding the access of array keys that were not existing
+	* add mongodb escape FTS and escape Regex
+	* Fix prism PHP parsing og HEREDOC with backslash + single quote inside
+	* Add some missing html entities for strip tags in lib Smart
+	* new class: SmartDomUtils (in Lib XML)
+	* Fix Smart Strip Tags to use case insensitive for replacement of entities
+	* Fix HTTP Cli and Smart Robot to stop accessing too long or invalid URLs
+
 June 12, 2021 :: Version 8.7 rev.20210612
 	* refactoring auth admins module, after login can select namespace to avoid expose namespaces to non-auth users
 	* major refactoring of default, admin and task templates

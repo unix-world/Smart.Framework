@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210609
+ * @version 	v.20210616
  * @package 	PageBuilder
  *
  */
@@ -166,9 +166,9 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function renderMarkdown($markdown_code, $validate=false, $relative_url_prefix='') {
+	public static function renderMarkdown($markdown_code, $validate=false, $relative_url_prefix='', $use_all_unveil=false) {
 		//--
-		return (string) \SmartMarkersTemplating::prepare_nosyntax_html_template(self::fixSafeCode((new \SmartMarkdownToHTML(true, true, true, false, (int)$validate, (string)$relative_url_prefix))->text((string)$markdown_code))); // B:1 S:1 L:1 E:1 V:0/1
+		return (string) \SmartMarkersTemplating::prepare_nosyntax_html_template((string)self::fixSafeCode((string)(new \SmartMarkdownToHTML(true, true, true, false, (int)$validate, (string)$relative_url_prefix, (bool)$use_all_unveil))->text((string)$markdown_code))); // B:1 S:1 L:1 E:1 V:0/1
 		//--
 	} //END FUNCTION
 

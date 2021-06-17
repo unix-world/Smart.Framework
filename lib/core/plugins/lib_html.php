@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210609
+ * @version 	v.20210615
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -695,8 +695,8 @@ final class SmartHtmlParser {
 					//--
 					@libxml_use_internal_errors(true);
 					@libxml_clear_errors();
-					//--
-					$dom = new DOMDocument(5, (string)SMART_FRAMEWORK_CHARSET);
+					//-- {{{SYNC-DOM-HTML-OPTIONS}}}
+					$dom = new DOMDocument('5', (string)SMART_FRAMEWORK_CHARSET);
 					//--
 					$dom->encoding = (string) SMART_FRAMEWORK_CHARSET;
 					$dom->strictErrorChecking = false; 	// do not throw errors

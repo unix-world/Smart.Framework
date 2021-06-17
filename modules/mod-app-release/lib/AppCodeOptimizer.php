@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class AppCodeOptimizer {
 
 	// ->
-	// v.20210527
+	// v.20210612
 
 	private $debug;
 
@@ -288,7 +288,7 @@ final class AppCodeOptimizer {
 		$tmp_is_a_file_and_needs_strip = false;
 		if(
 			((string)substr((string)$path_original_file, -4, 4) == '.php') OR
-			((string)substr((string)$path_original_file, -3, 3) == '.js') OR // .inc.js will be tested below
+			((string)substr((string)$path_original_file, -3, 3) == '.js') OR // .mtpl.js and .inc.js will be tested below
 			((string)substr((string)$path_original_file, -4, 4) == '.css') OR
 			((string)substr((string)$path_original_file, -4, 4) == '.ini') OR
 			((string)substr((string)$path_original_file, -5, 5) == '.yaml')
@@ -296,7 +296,19 @@ final class AppCodeOptimizer {
 			$tmp_read_file_head = (string) SmartFileSystem::read($path_original_file, 1024, 'no', 'no'); // read the first 1024 bytes of file to search for skip strip comment ; don't deny absolute path
 			if(stripos((string)$tmp_read_file_head, '[@[#[!SF.DEV-ONLY!]#]@]') !== false) {
 				$tmp_is_a_file_and_is_devonly = true;
-			} elseif(((string)substr((string)$path_original_file, -4, 4) == '.php') OR (((string)substr((string)$path_original_file, -3, 3) == '.js') AND ((string)substr((string)$path_original_file, -7, 7) != '.inc.js')) OR ((string)substr((string)$path_original_file, -4, 4) == '.css')) {
+			} elseif(
+				((string)substr((string)$path_original_file, -4, 4) == '.php')
+				OR
+				(
+					((string)substr((string)$path_original_file, -3, 3) == '.js')
+					AND
+					((string)substr((string)$path_original_file, -8, 8) != '.mtpl.js')
+					AND
+					((string)substr((string)$path_original_file, -7, 7) != '.inc.js')
+				)
+				OR
+				((string)substr((string)$path_original_file, -4, 4) == '.css')
+			) {
 				if(stripos((string)$tmp_read_file_head, '[@[#[!NO-STRIP!]#]@]') === false) {
 					$tmp_is_a_file_and_needs_strip = true;
 				} //end if
@@ -377,7 +389,12 @@ final class AppCodeOptimizer {
 					$tmp_chksyntax = '';
 				} //end if else
 				//--
-			} elseif(((string)substr((string)$path_original_file, -3, 3) == '.js') AND ((string)substr((string)$path_original_file, -7, 7) != '.inc.js') AND ($tmp_is_a_file_and_needs_strip === true)) {
+			} elseif(
+				((string)substr((string)$path_original_file, -3, 3) == '.js') AND
+				((string)substr((string)$path_original_file, -8, 8) != '.mtpl.js') AND
+				((string)substr((string)$path_original_file, -7, 7) != '.inc.js') AND
+				($tmp_is_a_file_and_needs_strip === true)
+			) {
 				//--
 				$this->counters['js']++;
 				//--
@@ -475,7 +492,13 @@ final class AppCodeOptimizer {
 					$this->counters['files-nostrip']++;
 					$this->sfnostrip[] = (string) $path_original_file;
 					echo '<span title="PHP *No-Strip* : '.Smart::escape_html($path_original_file).'" style="color:#E13DFC;cursor:default;">&clubs;</span>'."\n";
-				} elseif(((string)substr((string)$path_original_file, -3, 3) == '.js') AND ((string)substr((string)$path_original_file, -7, 7) != '.inc.js')) { // js skipped scripts
+				} elseif(
+					((string)substr((string)$path_original_file, -3, 3) == '.js')
+					AND
+					((string)substr((string)$path_original_file, -8, 8) != '.mtpl.js')
+					AND
+					((string)substr((string)$path_original_file, -7, 7) != '.inc.js')
+				) { // js skipped scripts
 					$this->counters['files-nostrip']++;
 					$this->sfnostrip[] = (string) $path_original_file;
 					echo '<span title="JS *No-Strip* : '.Smart::escape_html($path_original_file).'" style="color:#E13DFC;cursor:default;">&spades;</span>'."\n";
@@ -513,7 +536,13 @@ final class AppCodeOptimizer {
 					$err = 'ERROR: A PHP FILE syntax check failed: '.Smart::real_path($path_destination_file).' @ ['.$lint_chk.']';
 					return (string) $err;
 				} //end if
-			} elseif(((string)substr((string)$path_original_file, -3, 3) == '.js') AND ((string)substr((string)$path_original_file, -7, 7) != '.inc.js')) { // js skipped scripts
+			} elseif(
+				((string)substr((string)$path_original_file, -3, 3) == '.js')
+				AND
+				((string)substr((string)$path_original_file, -8, 8) != '.mtpl.js')
+				AND
+				((string)substr((string)$path_original_file, -7, 7) != '.inc.js')
+			) { // js skipped scripts
 				$lint_chk = (string) JsOptimizer::lint_code(Smart::real_path($path_destination_file));
 				if($lint_chk) {
 					$err = 'ERROR: A JS-Script syntax check failed: '.Smart::real_path($path_destination_file).' @ ['.$lint_chk.']';

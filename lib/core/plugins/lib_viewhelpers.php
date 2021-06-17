@@ -43,7 +43,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210612
+ * @version 	v.20210616
  * @package 	Plugins:ViewComponents
  *
  */
@@ -1462,7 +1462,7 @@ final class SmartViewHtmlHelpers {
 						$data[(string)$min] = (string) str_replace('{{{offset}}}', (int)(($min-1)*$limit), (string)$link);
 					} //end if else
 				} //end if else
-				if(($max > ($adjacents + 1)) AND ((string)$arr[(string)($min+1)] == '')) {
+				if(($max > ($adjacents + 1)) AND ((!isset($arr[(string)($min+1)])) OR ((string)$arr[(string)($min+1)] == ''))) {
 					$data['.'] = 'DOTS';
 				} //end if else
 			} //end if
@@ -1476,7 +1476,7 @@ final class SmartViewHtmlHelpers {
 			} //end foreach
 			//--
 			if((!isset($arr[(string)$max])) OR ((string)$arr[(string)$max] == '')) {
-				if(($max > ($adjacents + 1)) AND ((string)$arr[(string)($max-1)] == '')) {
+				if(($max > ($adjacents + 1)) AND ((!isset($arr[(string)($max-1)])) OR ((string)$arr[(string)($max-1)] == ''))) {
 					$data['..'] = 'DOTS';
 				} else {
 					$showlast = true; // fix if on last pages !!

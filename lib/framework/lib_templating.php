@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN
- * @version 	v.20210612
+ * @version 	v.20210617
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -1432,18 +1432,15 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 				//--
 				$matches[$i] = (array) $matches[$i];
 				//--
-				$part_orig 		= (string) $matches[$i][0];
-				$part_var 		= (string) $matches[$i][1];
-				$part_sign 		= (string) $matches[$i][2];
-				$part_value 	= (string) $matches[$i][3];
-			//	$part_uniqid 	= (string) $matches[$i][4]; // not used
-			//	$part_uniqix 	= (string) $matches[$i][5]; // not used
-				$part_if 		= (string) $matches[$i][6];
-			//	$part_tag_else 	= (string) $matches[$i][7]; // not used
-				$part_else 		= '';
-				if(array_key_exists(8, $matches[$i])) {
-					$part_else 	= (string) $matches[$i][8];
-				} //end if
+				$part_orig 		= (string) ($matches[$i][0] ?? null);
+				$part_var 		= (string) ($matches[$i][1] ?? null);
+				$part_sign 		= (string) ($matches[$i][2] ?? null);
+				$part_value 	= (string) ($matches[$i][3] ?? null);
+			//	$part_uniqid 	= (string) ($matches[$i][4] ?? null); // not used
+			//	$part_uniqix 	= (string) ($matches[$i][5] ?? null); // not used
+				$part_if 		= (string) ($matches[$i][6] ?? null);
+			//	$part_tag_else 	= (string) ($matches[$i][7] ?? null); // not used
+				$part_else 		= (string) ($matches[$i][8] ?? null);
 				//--
 				$matches[$i] = null; // free mem
 				//--
@@ -1760,11 +1757,11 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 				//--
 				$matches[$i] = (array) $matches[$i];
 				//--
-				$part_orig 		= (string) $matches[$i][0];
-				$part_var 		= (string) $matches[$i][1];
-			//	$part_uniqid 	= (string) $matches[$i][2]; // not used
-			//	$part_uniqix 	= (string) $matches[$i][3]; // not used
-				$part_loop 		= (string) $matches[$i][4];
+				$part_orig 		= (string) ($matches[$i][0] ?? null);
+				$part_var 		= (string) ($matches[$i][1] ?? null);
+			//	$part_uniqid 	= (string) ($matches[$i][2] ?? null); // not used
+			//	$part_uniqix 	= (string) ($matches[$i][3] ?? null); // not used
+				$part_loop 		= (string) ($matches[$i][4] ?? null);
 				//--
 				$matches[$i] = null; // free mem
 				//--

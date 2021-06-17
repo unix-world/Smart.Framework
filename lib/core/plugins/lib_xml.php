@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     extensions: PHP XML ; classes: Smart
- * @version     v.20210428
+ * @version     v.20210615
  * @package     Plugins:ConvertersAndParsers
  *
  */
@@ -455,7 +455,7 @@ final class SmartXmlParser {
 		//--
 		$output = array();
 		if(is_object($root)) {
-			$output = $this->DomNode2Array($root);
+			$output = SmartDomUtils::DomNode2Array($root); // mixed
 		} //end if
 		if(!is_array($output)) {
 			$output = array();
@@ -465,74 +465,6 @@ final class SmartXmlParser {
 		} //end if
 		//--
 		return (array) $output;
-		//--
-	} //END FUNCTION
-	//===============================
-
-
-	//===============================
-	private function DomNode2Array($node) {
-		//--
-		if(!is_object($node)) {
-			return array();
-		} //end if
-		//--
-		$output = array();
-		//--
-		switch($node->nodeType) {
-			case XML_CDATA_SECTION_NODE:
-			case XML_TEXT_NODE:
-				//--
-				$output = '';
-				if((string)trim((string)$node->textContent) != '') {
-					$output = (string) $node->textContent; // FIX: to preserve text node exact as it is ...
-				} //end if
-				//--
-				break;
-			case XML_ELEMENT_NODE:
-				//--
-				if(is_object($node->childNodes)) {
-					for($i=0, $m=$node->childNodes->length; $i<$m; $i++) {
-						$child = $node->childNodes->item($i);
-						$v = $this->DomNode2Array($child);
-						if(is_array($output) && isset($child->tagName)) {
-							$t = (string) $child->tagName;
-							if(!isset($output[$t])) {
-								$output[$t] = array();
-							} //end if
-							$output[$t][] = $v;
-						} elseif($v || $v === '0') {
-							$output = (string) $v;
-						} //end if
-					} //end for
-					//--
-					if(is_object($node->attributes) && $node->attributes->length && !is_array($output)) { // has attributes but isn't an array
-						$output = array('@content' => $output); // change output into an array.
-					} //end if
-					//--
-					if(is_array($output)) {
-						if(is_object($node->attributes) && $node->attributes->length) {
-							$a = array();
-							foreach($node->attributes as $attrName => $attrNode) {
-								$a[(string)$attrName] = (string) $attrNode->value;
-							} //end foreach
-							$output['@attributes'] = $a;
-						} //end if
-						foreach($output as $t => $v) {
-							if(is_array($v) && (count($v) == 1) && ((string)$t != '@attributes')) {
-								$output[(string)$t] = $v[0];
-							} //end if
-						} //end foreach
-					} //end if
-					//--
-				} //end if
-				//--
-				break;
-			default:
-				// nothing to do
-		} //end switch
-		//--
-		return $output; // mixed
 		//--
 	} //END FUNCTION
 	//===============================
@@ -689,7 +621,7 @@ final class SmartXmlParser {
  *
  * @access      PUBLIC
  * @depends     classes: Smart
- * @version     v.20210428
+ * @version     v.20210615
  * @package     Plugins:ConvertersAndParsers
  *
  */
@@ -782,6 +714,246 @@ final class SmartXmlComposer {
 		return (string) $out;
 		//--
 
+	} //END FUNCTION
+	//===============================
+
+
+} //END CLASS
+
+//=====================================================================================
+//===================================================================================== CLASS END
+//=====================================================================================
+
+
+//=====================================================================================
+//===================================================================================== CLASS START
+//=====================================================================================
+
+
+/**
+ * Class Smart DOM (Document) Utils
+ *
+ * @access 		private
+ * @internal
+ *
+ * @version 	v.20210615
+ *
+ */
+final class SmartDomUtils {
+
+	// ::
+
+	//===============================
+	public static function DomHTML2Array(?string $source, ?string $mode='grouped') {
+		//--
+		if(!class_exists('DOMDocument')) {
+			Smart::log_warning(__METHOD__.' # The PHP DOMDocument() class is missing ...');
+			return array();
+		} //end if
+		//--
+		if((string)trim((string)$source) == '') { // the html source
+			return array();
+		} //end if
+		//--
+		@libxml_use_internal_errors(true);
+		@libxml_clear_errors();
+		//-- {{{SYNC-DOM-HTML-OPTIONS}}}
+		$dom = new DOMDocument('5', (string)SMART_FRAMEWORK_CHARSET);
+		//--
+		$dom->encoding = (string) SMART_FRAMEWORK_CHARSET;
+		$dom->strictErrorChecking = false; 	// do not throw errors
+		$dom->preserveWhiteSpace = false; 	// set this to false in order to real format HTML ...
+		$dom->formatOutput = false; 		// try to format pretty-print the code (will work just partial as the preserve white space is true ...)
+		$dom->resolveExternals = false; 	// disable load external entities from a doctype declaration
+		$dom->validateOnParse = false; 		// this must be explicit disabled as if set to true it may try to download the DTD and after to validate (insecure ...)
+		$dom->recover = true; // trying to parse non-well formed documents, for HTML make sense but not for XML
+	//	$dom->substituteEntities = false; 	// this attribute ir proprietary for LibXML, it does not make any difference ... still buggy with replacing &quot; with " (it's decoded value)
+		//-- pre fixes
+		$source = (string) str_replace('&quot;', '&Prime;', (string)$source); // fix: DomDocument will decode the &quot; to ", thus substitute with &Prime; (&#8243;) which is a unicode verion of it ″ and restore back thereafter ; if there are any &Prime; already converting &Prime; to &quot; later is not a problem ...
+		//--
+		@$dom->loadHTML(
+			(string) $source, // fix: in some versions of DomDocument or LibXML if not enclosed in a body container there are some strange behaviours when getting back the HTML code, so need this function: compose_html_document
+			LIBXML_ERR_WARNING | LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_HTML_NODEFDTD // {{{SYNC-LIBXML-OPTIONS}}} ; important !!! do not use the buggy flag LIBXML_HTML_NOIMPLIED as it will mess up the tags, is not stable enough inside LibXML
+		);
+		//--
+		@libxml_clear_errors();
+		@libxml_use_internal_errors(false);
+		//--
+		$root = null;
+		if(is_object($dom)) {
+			$root = $dom->documentElement;
+		} //end if
+		$dom = null; // free mem
+		//--
+		$output = array();
+		if(is_object($root)) {
+			$output = SmartDomUtils::DomNode2Array($root, (string)$mode); // mixed
+		} //end if
+		if(!is_array($output)) {
+			$output = array();
+		} //end if
+		if((string)$mode != 'ordered') {
+			if($root->tagName) {
+				$output['@root'] = (string) $root->tagName;
+			} //end if
+		} //end if
+		//--
+		return (array) $output;
+		//--
+	} //END FUNCTION
+	//===============================
+
+
+	//===============================
+	// EX: $root = $dom->documentElement; print_r(SmartDomUtils::DomNode2Array($root));
+	public static function DomNode2Array($node, ?string $mode='grouped') {
+		//--
+		if((string)$mode == 'ordered') {
+			return self::DomNode2OrderedArray($node); // mixed
+		} else {
+			return self::DomNode2GroupedArray($node); // mixed
+		} //end if else
+		//--
+	} //END FUNCTION
+	//===============================
+
+
+	//===============================
+	// build an associative array grouped by tags
+	private static function DomNode2GroupedArray($node) {
+		//--
+		if(!is_object($node)) {
+			return array();
+		} //end if
+		//--
+		$output = array();
+		//--
+		switch($node->nodeType) {
+			case XML_CDATA_SECTION_NODE:
+			case XML_TEXT_NODE:
+				//--
+				$output = '';
+				if((string)trim((string)$node->textContent) != '') {
+					$output = (string) $node->textContent; // FIX: to preserve text node exact as it is ...
+				} //end if
+				//--
+				break;
+			case XML_ELEMENT_NODE:
+				//--
+				if(is_object($node->childNodes)) {
+					for($i=0, $m=(int)$node->childNodes->length; $i<$m; $i++) {
+						$child = $node->childNodes->item($i);
+						$v = self::DomNode2GroupedArray($child);
+						if(is_array($output) && isset($child->tagName)) {
+							$t = (string) $child->tagName;
+							if(!isset($output[$t])) {
+								$output[$t] = array();
+							} //end if
+							$output[$t][] = $v;
+						} elseif($v || $v === '0') {
+							//-- # bug fix r.20210614
+						//	$output = (string) $v;
+							$output = is_array($v) ? (array) $v : (string) $v;
+							//--
+						} //end if
+					} //end for
+					//--
+					if(is_object($node->attributes) && $node->attributes->length && !is_array($output)) { // has attributes but isn't an array
+						$output = array('@content' => $output); // change output into an array.
+					} //end if
+					//--
+					if(is_array($output)) {
+						if(is_object($node->attributes) && $node->attributes->length) {
+							$a = array();
+							foreach($node->attributes as $attrName => $attrNode) {
+								$a[(string)$attrName] = (string) $attrNode->value;
+							} //end foreach
+							$output['@attributes'] = $a;
+						} //end if
+						foreach($output as $t => $v) {
+							if(is_array($v) && (count($v) == 1) && ((string)$t != '@attributes')) {
+								$output[(string)$t] = ($v[0] ?? null);
+							} //end if
+						} //end foreach
+					} //end if
+					//--
+				} //end if
+				//--
+				break;
+			default:
+				// nothing to do
+		} //end switch
+		//--
+		return $output; // mixed
+		//--
+	} //END FUNCTION
+	//===============================
+
+
+	//===============================
+	// build an associative array with all tags in order
+	private static function DomNode2OrderedArray($node) {
+		//--
+		if(!is_object($node)) {
+			return array();
+		} //end if
+		//--
+		$output = array();
+		//--
+		switch($node->nodeType) {
+			case XML_CDATA_SECTION_NODE:
+			case XML_TEXT_NODE:
+				//--
+				$output = '';
+				if((string)trim((string)$node->textContent) != '') {
+					$output = (string) $node->textContent; // FIX: to preserve text node exact as it is ...
+				} //end if
+				//--
+				break;
+			case XML_ELEMENT_NODE:
+				//--
+				if(is_object($node->childNodes)) {
+					for($i=0, $m=(int)$node->childNodes->length; $i<$m; $i++) {
+						$child = $node->childNodes->item($i);
+						$v = self::DomNode2OrderedArray($child);
+						if(is_array($output) && isset($child->tagName)) {
+							$t = (string) $child->tagName;
+							$output[] = [
+								(string) $t => $v
+							];
+						} elseif($v || $v === '0') {
+							//--
+							$output[] = is_array($v) ? (array) $v : (string) $v;
+							//--
+						} //end if
+					} //end for
+					//--
+					if(is_array($output)) {
+						if(is_object($node->attributes) && $node->attributes->length) {
+							$a = array();
+							foreach($node->attributes as $attrName => $attrNode) {
+								$a[(string)$attrName] = (string) $attrNode->value;
+							} //end foreach
+							$output['@attributes'] = $a;
+						} //end if
+						foreach($output as $t => $v) {
+							if(is_array($v) && (count($v) == 1) && ((string)$t != '@attributes')) {
+								$output[] = [
+									(string) $t => ($v[0] ?? null)
+								];
+							} //end if
+						} //end foreach
+					} //end if
+					//--
+				} //end if
+				//--
+				break;
+			default:
+				// nothing to do
+		} //end switch
+		//--
+		return $output; // mixed
+		//--
 	} //END FUNCTION
 	//===============================
 

@@ -1,19 +1,17 @@
 # '[###TITLE|html###]' (<H1> "Heading 1" &reg; &#169; &#169a;)
 
 &copy;&nbsp;&nbsp;2015-2021&nbsp;unix-world.org
-Extended Markdown Test :: v.20210612
+Extended Markdown Test :: v.20210617
 
 ## H2 (Unicode <Test>) ăĂîÎâÂşŞţŢ &quot;&nbsp;&quot; &lt;&quot;&gt;
 
 ### H3 (Alternate Unicode <Test>) ăĂîÎâÂșȘțȚ
 
-#### H4
+#### H4 {H:.myClass #myID}
 
-##### H5
+##### H5 {H:@data-id=h-5}
 
-###### H6
-
-Alternatively, for H1 and H2, an underline-ish style:
+###### H6 {H:@style=display:inline-block}
 
 ::: .operation_info
 ```javascript
@@ -38,6 +36,8 @@ This is an article DIV
 ::: @section-div
 This is a section DIV
 :::
+
+Alternatively, for H1 and H2, an underline-ish style:
 
 Alt-<H1>
 ======
@@ -162,6 +162,7 @@ New Line
 	use "**asterisks**"
 - Or minuses
 + Or pluses
+* ###### H6 {H:@style=display:inline-block}
 
 Some Paragraph
 	Some Preformat area
@@ -203,7 +204,7 @@ Inline-style:
 ![alt text](https://parsedown.org/md.png "Logo Title Text 1") {I: @width=100 @style=box-shadow:$10px$10px$5px$#888888;}
 
 Reference-style:
-![alt text][logo] {@width=50}
+![alt text][logo] {I: @width=50}
 
 Refered Link: [logo]
 [logo]: //parsedown.org/md.png "Logo Title Text 2"
@@ -238,7 +239,7 @@ No language indicated, so no syntax highlighting (fallback to PlainText).
 But let's throw in a <b>tag</b>.
 ```
 
-| One {@class=bordered}     | Two {T:@class=bordered}        | Three {T: @class=bordered}   | Four {T: @class=bordered}         |
+| One {T:@class=bordered}     | Two {T:@class=bordered}        | Three {T: @class=bordered}   | Four {T: @class=bordered}         |
 | ------------- |-------------| ---------| ------------- |
 | One {T: @class=bordered}     | Two {T: @class=bordered}        | Three {T: @class=bordered}   | Four {T: @class=bordered}         |
 
@@ -290,6 +291,7 @@ Markdown {T: @class=dbordered} | Less {T: @class=dbordered} | Pretty {T: @class=
 
 > Blockquotes are very handy in email to emulate reply text.
 > This line is part of the same quote.
+> ###### H6
 > ``` javascript
 > let a = 2;
 > const b = 3;
@@ -303,6 +305,8 @@ Markdown {T: @class=dbordered} | Less {T: @class=dbordered} | Pretty {T: @class=
 Quote break.
 
 > This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
+>> This is 2nd level
+>>> and this is 3rd
 
 ### Use Hypens, Asterisks and Underscores
 
@@ -332,7 +336,7 @@ This line is only separated by a single newline, so it's a separate line in the 
 
 ![Inline Base64 Image](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiB2aWV3Qm94PSIwIDAgNzIuMjQ4ODkzIDcyLjI0ODg5MyIgaWQ9InNpZ24taW5mbyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkIj4gPGRlZnMgaWQ9ImRlZnM0Ij4gIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyIgaWQ9InN0eWxlNiIgLz4gPC9kZWZzPiA8ZyBpZD0idGV4dDM3ODEiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOm5vbmU7Ij4gIDxnIGlkPSJnMzAwOSI+ICAgPHBhdGggZD0ibSA2Mi45MzA1NzMsMzYuMTI0NDQ2IGEgMjYuODA2MTI4LDI2LjgwNjEyOCAwIDEgMSAtNTMuNjEyMjUzNSwwIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgNTMuNjEyMjUzNSwwIHoiIGlkPSJwYXRoMzAxMSIgc3R5bGU9ImZpbGw6IzNiNTk5ODtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6ZXZlbm9kZDtzdHJva2U6IzNiNTk5ODtzdHJva2Utd2lkdGg6MTQuMTIxMDg1MTc7c3Ryb2tlLW9wYWNpdHk6MSIgLz4gICA8cGF0aCBkPSJtIDQwLjA1Mjk3OSwyOS44NjU4ODYgLTEwLjQwMzg0LDAgMCwxLjMwMDQ4IGMgMi4zODQyMTEsMC40ODc2NzkgMi44NzE4OTMsMC45NzUzNjIgMi44NzE4OTMsMy4xOTcwMTMgbCAwLDE1LjkzMDg4IGMgMCwyLjIyMTY1MiAtMC4zNzkzMDksMi42NTUxNDggLTIuODcxODkzLDMuMjUxMjAxIGwgMCwxLjMwMDQ4IDEyLjk1MDYxNCwwIDAsLTEuMzAwNDggYyAtMS44OTY1MzIsLTAuMjcwOTMzIC0yLjU0Njc3NCwtMS4wMjk1NDkgLTIuNTQ2Nzc0LC0zLjA4ODY0MSBsIDAsLTIwLjU5MDkzMyBNIDM2LjI1OTkxMiwxNy40MDI5NTIgYyAtMi4zMzAwMjQsMCAtNC4yMjY1NiwxLjg5NjUzNSAtNC4yMjY1Niw0LjE3MjM3MyAwLDIuNDM4Mzk4IDEuNzg4MTYzLDQuMjI2NTYgNC4xNzIzNzQsNC4yMjY1NiAyLjM4NDIxMSwwIDQuMjI2NTYsLTEuNzg4MTYyIDQuMjI2NTYsLTQuMTcyMzczIDAsLTIuMzMwMDI1IC0xLjg0MjM0OSwtNC4yMjY1NiAtNC4xNzIzNzQsLTQuMjI2NTYiIGlkPSJwYXRoMzAwNiIgc3R5bGU9ImZpbGw6I2ZmZmZmZjsiIC8+ICA8L2c+IDwvZz48L3N2Zz4= "Inline Base64 Image")
 
-![Alternate Text](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Alternate Image: Jpeg and Webp with Unveil"){.testClass1 .testClass2 #testID @data-test=Sample$Image %unveil %alternate=https://www.gstatic.com/webp/gallery/1.sm.webp$image/webp}
+![Alternate Text](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Alternate Image: Jpeg and Webp with Unveil"){I: .testClass1 .testClass2 #testID @data-test=Sample$Image %unveil %alternate=https://www.gstatic.com/webp/gallery/1.sm.webp$image/webp}
 
 [![IMAGE ALT TEXT HERE](//img.youtube.com/vi/4rUrYN4cnGs/0.jpg) {I:%unveil}](//www.youtube.com/watch?v=4rUrYN4cnGs "Sample Video Preview Image with Unveil"){L:.video-link #link .Extra-Class @target=_blank}
 

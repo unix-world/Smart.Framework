@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210605
+ * @version 	v.20210613
  * @package 	Plugins:Network
  *
  */
@@ -65,6 +65,7 @@ final class SmartRobot {
 			'extension' 		=> '',
 			'filename' 			=> '',
 			'mode' 				=> 'file', // DO NOT CHANGE !!
+			'errmsg' 			=> '',
 			'result' 			=> 0,
 			'code' 				=> '400', // HTTP 400 BAD REQUEST
 			'headers' 			=> '',
@@ -120,6 +121,7 @@ final class SmartRobot {
 				$tmp_browse_arr = (array) self::load_url_content((string)$tmp_imglink, (int)SMART_FRAMEWORK_NETSOCKET_TIMEOUT, 'GET', '', '', '', (string)$tmp_allow_credentials); // [OK]
 				//--
 				$out_arr['mode'] 			= (string) $tmp_browse_arr['mode'];
+				$out_arr['errmsg'] 			= (string) $tmp_browse_arr['errmsg'];
 				$out_arr['result'] 			= (string) $tmp_browse_arr['result'];
 				$out_arr['code'] 			= (string) $tmp_browse_arr['code'];
 				$out_arr['headers'] 		= (string) $tmp_browse_arr['headers'];
@@ -228,6 +230,7 @@ final class SmartRobot {
 				'client' => (string) __METHOD__,
 				'log' => 'ERROR: FILE Name is Empty ...',
 				'mode' => 'file', // DO NOT CHANGE !!
+				'errmsg' => '',
 				'result' => '0',
 				'code' => '400', // HTTP 400 BAD REQUEST
 				'headers' => '',
@@ -275,6 +278,7 @@ final class SmartRobot {
 					'client' => (string) __METHOD__,
 					'log' => 'ERROR: FILE Not Found or Invalid Path or Invalid DataURL ...',
 					'mode' => 'file', // DO NOT CHANGE !!
+					'errmsg' => '',
 					'result' => '0',
 					'code' => '404', // HTTP 404 NOT FOUND
 					'headers' => '',
@@ -319,6 +323,7 @@ final class SmartRobot {
 					'client' => (string) __METHOD__,
 					'log' => 'OK: Content decoded from embedded data-url image !',
 					'mode' => 'embedded', // DO NOT CHANGE !!
+					'errmsg' => '',
 					'result' => '1',
 					'code' => '200', // HTTP 200 OK
 					'headers' => (string) SmartUnicode::sub_str((string)$y_url_or_path, 0, 50).'...', // try to get the 1st 50 chars for trying to guess the extension
@@ -333,6 +338,7 @@ final class SmartRobot {
 					'client' => (string) __METHOD__,
 					'log' => 'ERROR: Invalid DataURL ...',
 					'mode' => 'file', // DO NOT CHANGE !!
+					'errmsg' => '',
 					'result' => '0',
 					'code' => '404', // HTTP 404 NOT FOUND
 					'headers' => '',
@@ -487,6 +493,7 @@ final class SmartRobot {
 				'client' 			=> (string) __METHOD__,
 				'log' 				=> (string) $data['log'].$tmp_extra_log,
 				'mode' 				=> (string) $data['mode'], // DO NOT CHANGE !!
+				'errmsg' 			=> (string) $data['errmsg'],
 				'result' 			=> (string) $data['result'],
 				'code' 				=> (string) $data['code'],
 				'headers' 			=> (string) $data['headers'],
@@ -595,7 +602,7 @@ final class SmartRobot {
 			} elseif(((string)substr((string)$y_url_or_path, 0, 7) == 'http://') OR ((string)substr((string)$y_url_or_path, 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
 				$the_url_or_path_type = 'url'; // it is an url
 				// trust the headers, must be preserved as above
-			} else { // !!! it is a relative path but for the security reasons must be accessed via the local URL only since content source may be untrusted !!!
+			} else { // !!! it should be considered as a relative path for the security reasons must be accessed via the local URL only since content source may be untrusted !!!
 				$y_url_or_path = (string) SmartUtils::get_server_current_url().$y_url_or_path;
 				$the_url_or_path_type = 'url'; // it is an url
 				// trust the headers, must be preserved as above

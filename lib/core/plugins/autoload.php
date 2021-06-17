@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-//-- r.20210526
+//-- r.20210614
 // #PLUGINS# :: they are loaded via Dependency Injection
 //--
 /**
@@ -69,6 +69,7 @@ function autoload__SmartFrameworkPlugins($classname) {
 			require_once('lib/core/plugins/lib_yaml.php');				// yaml converter
 			break;
 		//-- xml parser and composer
+		case 'SmartDomUtils':
 		case 'SmartXmlComposer':
 		case 'SmartXmlParser':
 			require_once('lib/core/plugins/lib_xml.php');				// xml parser and composer

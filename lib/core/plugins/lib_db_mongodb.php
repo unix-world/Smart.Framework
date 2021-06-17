@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartComponents
- * @version 	v.20210528
+ * @version 	v.20210616
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -110,7 +110,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	/**
 	 * Class constructor
 	 *
-	 * @throws 	\Exception 	Depending how this class it is constructed it may throw Exception or Raise Fatal Error
+	 * @throws 	Exception 	Depending how this class it is constructed it may throw Exception or Raise Fatal Error
 	 *
 	 * @param 	ARRAY 		$y_configs_arr 		:: *Optional* ; The Array of Configuration parameters ; Default is Empty Array, case which will get the configuration from config.php ; if custom, the ARRAY STRUCTURE should be identical with the default config.php: $configs['mongodb'].
 	 * @param 	BOOLEAN 	$y_fatal_err 		:: *Optional* ; Set if Errors handling mode ; Default is TRUE ; if set to FALSE will throw Exception instead of Raise a Fatal Error
@@ -449,6 +449,46 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 
 	//======================================================
 	/**
+	 * Escape FTS text, to be used in a safe mode with mongo Full Text Search
+	 *
+	 * @return 	STRING						:: FTS escaped
+	 */
+	public function escapeFtsText(?string $text) {
+
+		//--
+		$text = (string) SmartUnicode::fix_charset((string)$text); // fix
+		//--
+
+		//--
+		return (string) strtr((string)$text, [ '"' => '', '-' => ' ' ]); // " and - are special FTS patterns ; " encloses a phrase ; - negates term ; - can also can separe words # https://docs.mongodb.com/manual/reference/operator/query/text/
+		//--
+
+ 	} //END FUNCTION
+	//======================================================
+
+
+	//======================================================
+	/**
+	 * Escape Regex text, to be used in a safe mode with mongo $regex => 'text...'
+	 *
+	 * @return 	STRING						:: Regex escaped
+	 */
+	public function escapeRegexText(?string $text) {
+
+		//--
+		$text = (string) SmartUnicode::fix_charset((string)$text); // fix
+		//--
+
+		//--
+		return (string) preg_quote((string)$text, '/');
+		//--
+
+ 	} //END FUNCTION
+	//======================================================
+
+
+	//======================================================
+	/**
 	 * Test if a command output is OK compliant (will check if result[0][ok] == 1)
 	 * Notice: not all MongoDB commands will return this standard answer, but majority
 	 *
@@ -485,7 +525,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 * This is the Magic Method (Call) that maps the PHP class extra methods to MongoDB methods.
 	 * It have variadic parameters mapped to MongoDB sub-calls.
 	 *
-	 * @throws 	\Exception 	Depending how this class it is constructed it may throw Exception or Raise Fatal Error
+	 * @throws 	Exception 	Depending how this class it is constructed it may throw Exception or Raise Fatal Error
 	 *
 	 * @magic
 	 *
@@ -557,7 +597,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 * 		'data' => [
 	 * 			'description' => 'This is the document #'.$i,
 	 * 			'date_time' => (string) date('Y-m-d H:i:s'),
-	 * 			'rating' => \Smart::random_number(1,9) / 100
+	 * 			'rating' => Smart::random_number(1,9) / 100
 	 * 		]
 	 * 	];
 	 * } //end for
@@ -611,7 +651,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 * 				'$addToSet' 	=> (array) [ 'updated' => date('Y-m-d H:i:s') ] 	// update array #2 using $addToSet (can be also: $push or $inc, ...)
 	 * 			]
 	 * 		);
-	 * } catch(\Exception $err) {
+	 * } catch(Exception $err) {
 	 * 		// if upsert goes wrong ...
 	 * }
 	 * $doc = [];
