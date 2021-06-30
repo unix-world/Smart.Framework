@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true); 	// if set to TRUE because is shared
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210612
+	// v.20210630
 
 	public function Initialize() {
 		//--
@@ -311,6 +311,16 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					);
 				} //end if else
 				//--
+				$restrictions = '';
+				if((string)trim((string)$select_user['restrict']) !== '') {
+					$restrictions = SmartViewHtmlHelpers::html_select_list_multi(
+						'restrictions-list', // html element ID
+						(string) $select_user['restrict'], // list of selected values
+						'list',
+						(array) SmartAuth::build_arr_privileges((string)$select_user['restrict']) // array with all values
+					);
+				} //end if
+				//--
 				$this->PageViewSetVar(
 					'main',
 					SmartMarkersTemplating::render_file_template(
@@ -323,7 +333,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'LAST-NAME' 		=> (string) $select_user['name_l'],
 							'SELF-KEYS' 		=> (string) ((string)$select_user['id'] == (string)SmartAuth::get_login_id()) ? 'yes' : 'no',
 							'KEYS' 				=> (string) $user_pkeys, // {{{SYNC-ADM-AUTH-KEYS}}}
-							'PRIV-LIST-HTML' 	=> (string) $form_edit_priv // HTML code
+							'PRIV-LIST-HTML' 	=> (string) $form_edit_priv, // HTML code
+							'RESTR-LIST-HTML' 	=> (string) $restrictions,
 						]
 					)
 				);

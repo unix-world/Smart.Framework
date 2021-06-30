@@ -1,4 +1,4 @@
-<!-- v.20210530 -->
+<!-- v.20210630 -->
 [@@@SUB-TEMPLATE:admin-form-styles.mtpl.htm@@@]
 <center><div><table><tr><td>
 	<form id="edit_form" name="edit_form" class="ux-form ux-form-aligned" onSubmit="return false;">
@@ -37,6 +37,12 @@
 			<label>Privileges</label>
 			<div style="display:inline-block;">[###PRIV-LIST-HTML###]</div>
 		</div>
+		[%%%IF:RESTR-LIST-HTML:!=;%%%]
+		<div class="ux-control-group">
+			<label>Restrictions</label>
+			<div style="display:inline-block;">[###RESTR-LIST-HTML###]</div>
+		</div>
+		[%%%/IF:RESTR-LIST-HTML%%%]
 		<div class="ux-controls">
 			<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.CloseDelayedModalPopUp();"> Cancel &nbsp; <i class="sfi sfi-spinner11"></i></button>
 			<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.SubmitFormByAjax('edit_form', '[###ACTIONS-URL|html###]edit-update', 'yes'); return false;"> Save &nbsp; <i class="sfi sfi-checkmark"></i></button>

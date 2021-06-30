@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20210530
+	// v.20210630
 
 	private $db;
 
@@ -273,9 +273,12 @@ final class SqAuthAdmins {
 		$where = '';
 		$params = '';
 		//--
+		$id = (string) \trim((string)$id);
+		$id = (string) \trim((string)$id. '%');
+		$id = (string) \trim((string)$id);
 		if((string)$id != '') {
-			$where = ' WHERE (`id` = ?)';
-			$params = array($id);
+			$where = ' WHERE (`id` LIKE ?)';
+			$params = array($id.'%');
 		} //end if else
 		//--
 		return (int) $this->db->count_data(
@@ -316,10 +319,12 @@ final class SqAuthAdmins {
 		$where = '';
 		$params = '';
 		//--
+		$id = (string) \trim((string)$id);
+		$id = (string) \trim((string)$id. '%');
+		$id = (string) \trim((string)$id);
 		if((string)$id != '') {
-			$limit = ' LIMIT 1 OFFSET 0';
-			$where = ' WHERE (`id` = ?)';
-			$params = array($id);
+			$where = ' WHERE (`id` LIKE ?)';
+			$params = array($id.'%');
 		} //end if else
 		//--
 		$sortby = (string) \strtolower((string)\trim((string)$sortby));
@@ -349,7 +354,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function insertAccount($data) {
+	public function insertAccount($data, $active=0) {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
@@ -359,9 +364,17 @@ final class SqAuthAdmins {
 		$this->db->write_data('VACUUM');
 		//--
 		$data = (array) $data;
-		$data['id'] = (string) \Smart::safe_username((string)\trim((string)$data['id']));
-		$data['pass'] = (string) \trim((string)$data['pass']);
-		$data['email'] = (string) \trim((string)$data['email']);
+		$data['id'] = (string) \Smart::safe_username((string)\trim((string)($data['id'] ?? null)));
+		$data['pass'] = (string) \trim((string)($data['pass'] ?? null));
+		$data['email'] = (string) \trim((string)($data['email'] ?? null));
+		$data['name_f'] = (string) \trim((string)($data['name_f'] ?? null));
+		$data['name_l'] = (string) \trim((string)($data['name_l'] ?? null));
+		$data['priv'] = ($data['priv'] ?? null); // mixed: array or string
+		$data['restrict'] = (string) \trim((string)($data['restrict'] ?? null));
+		//--
+		if($active !== 1) {
+			$active = 0;
+		} //end if
 		//--
 		if((\strlen((string)$data['id']) < 3) OR (\strlen((string)$data['id']) > 25)) {
 			return -10; // invalid username length
@@ -409,8 +422,10 @@ final class SqAuthAdmins {
 						'email' 	=>          $data['email'], // mixed: false (NULL) or string
 						'name_f' 	=> (string) $data['name_f'],
 						'name_l' 	=> (string) $data['name_l'],
-						'created' 	=> \time(),
-						'active' 	=> '0'
+						'priv' 		=> (string) $data['priv'],
+						'restrict' 	=> (string) $data['restrict'],
+						'created' 	=> (int)    \time(),
+						'active' 	=> (int)    $active,
 					],
 					'insert'
 				)
@@ -587,8 +602,14 @@ final class SqAuthAdmins {
 		if((string)$id == '') {
 			return -10; // invalid username length
 		} //end if
+		//--
+		$data['email'] = (string) \trim((string)($data['email'] ?? null));
+		$data['name_f'] = (string) \trim((string)($data['name_f'] ?? null));
+		$data['name_l'] = (string) \trim((string)($data['name_l'] ?? null));
+		$data['priv'] = ($data['priv'] ?? null); // mixed: array or string
+		$data['upd-keys'] = (string) ($data['upd-keys'] ?? null);
+		$data['keys'] = (string) \trim((string)($data['keys'] ?? null));
 		//-- {{{SYNC-MOD-AUTH-EMAIL-VALIDATION}}}
-		$data['email'] = (string) $data['email'];
 		if((\strlen((string)$data['email']) < 6) OR (\strlen((string)$data['email']) > 96) OR (!\preg_match((string)\SmartValidator::regex_stringvalidation_expression('email'), (string)$data['email']))) {
 			$data['email'] = null; // NULL, as the email is invalid
 		} //end if
@@ -675,38 +696,9 @@ final class SqAuthAdmins {
 		//--
 		if($this->db->check_if_table_exists('admins') != 1) { // create auth DB if not exists
 			//--
-			if((\defined('\\APP_AUTH_ADMIN_USERNAME')) AND (\defined('\\APP_AUTH_ADMIN_PASSWORD'))) {
-				//--
-				$init_username = (string) \APP_AUTH_ADMIN_USERNAME;
-				if(\SmartAuth::validate_auth_username(
-					(string) $init_username,
-					true // check for reasonable length, as 5 chars
-				) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
-					return 'Initialize DB: Invalid AUTH UserName';
-				} //end if
-				$init_password = (string) \APP_AUTH_ADMIN_PASSWORD;
-				if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
-					(string) $init_password,
-					(bool) ((\defined('\\APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (\APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false) // check for complexity just on login ! ... for the rest do not check because if this constant changes ... cannot re-update everything !
-				) !== true) {
-					return 'Initialize DB: Invalid AUTH Password';
-				} //end if
-				$init_hash_pass = (string) \SmartHashCrypto::password((string)$init_password, (string)$init_username);
-				//--
-				$init_privileges = (string) '<superadmin>,<admin>,'.\APP_AUTH_PRIVILEGES;
-				$init_privileges = \Smart::list_to_array((string)$init_privileges, true);
-				$init_privileges = \Smart::array_to_list((array)$init_privileges);
-				//--
-				$this->db->write_data('BEGIN');
-				$this->db->write_data((string)$this->dbDefaultSchema());
-				$this->db->write_data("INSERT INTO `admins` VALUES ('".$this->db->escape_str((string)$init_username)."', '".$this->db->escape_str((string)$init_hash_pass)."', 1, 0, 'admin@localhost', 'Mr.', 'Super', 'Admin', '', '', '', '', '', '', '', 0, 0, 0, '".$this->db->escape_str((string)$init_privileges)."', '<modify>', '', '', 0, ".(int)\time().")");
-				$this->db->write_data('COMMIT');
-				//--
-			} else {
-				//--
-				return 'Initialize DB: AUTH UserName or Password not defined (constants) ...';
-				//--
-			} //end if
+			$this->db->write_data('BEGIN');
+			$this->db->write_data((string)$this->dbDefaultSchema());
+			$this->db->write_data('COMMIT');
 			//--
 		} //end if
 		//--
@@ -737,7 +729,7 @@ final class SqAuthAdmins {
 
 
 	private function dbDefaultSchema() { // {{{SYNC-TABLE-AUTH_TEMPLATE}}}
-//-- default schema ; default user: APP_AUTH_ADMIN_USERNAME ; default pass: APP_AUTH_ADMIN_PASSWORD
+//-- default schema
 $version = (string) $this->db->escape_str(\SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.\SMART_FRAMEWORK_RELEASE_VERSION);
 $schema = <<<SQL
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@auth-admins', '{$version}');

@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+June 30, 2021 :: Version 8.7 rev.20210630
+	* Fix broken auth initialization for auth admins
+
 June 17, 2021 :: Version 8.7 rev.20210617
 	* many improvements, optimizations and security fixes for the markdown rendering as html, includding better regex escaping
 	* fix SmartCodeMirror to indent with tabs just on selected syntax types

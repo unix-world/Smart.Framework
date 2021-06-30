@@ -37,7 +37,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20210611
+ * @version 	v.20210630
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -114,43 +114,21 @@ final class AuthAdminsHandler {
 		//--
 
 		//--
-		if(!\SmartFileSystem::is_type_file((string)\APP_AUTH_DB_SQLITE)) {
-			//--
-			if(!\defined('\\APP_AUTH_ADMIN_USERNAME')) {
-				\SmartFrameworkRuntime::Raise503Error('Set in config: `APP_AUTH_ADMIN_USERNAME` !'."\n".'You must set the `APP_AUTH_ADMIN_USERNAME` constant in config before installation. Manually REFRESH this page after by pressing F5 ...');
-				die('AuthAdminsHandler:CHECK-CREDENTIALS:1');
-				return;
-			} //end if
-			if(\SmartAuth::validate_auth_username(
-				(string) \APP_AUTH_ADMIN_USERNAME,
-				true // check for reasonable length, as 5 chars
-			) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
-				\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: `APP_AUTH_ADMIN_USERNAME` !'."\n".'The `APP_AUTH_ADMIN_USERNAME` set in config must be at least 5 characters long ! Manually REFRESH this page after by pressing F5 ...');
-				die('AuthAdminsHandler:CHECK-CREDENTIALS:2');
-				return;
-			} //end if
-			//--
-			if(!\defined('\\APP_AUTH_ADMIN_PASSWORD')) {
-				\SmartFrameworkRuntime::Raise503Error('Set in config: `APP_AUTH_ADMIN_PASSWORD` !'."\n".'You must set the `APP_AUTH_ADMIN_PASSWORD` constant into config before installation. Manually REFRESH this page after by pressing F5 ...');
-				die('AuthAdminsHandler:CHECK-CREDENTIALS:3');
-				return;
-			} //end if
-			if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
-				(string) \APP_AUTH_ADMIN_PASSWORD,
-				true
-			) !== true) {
-				\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: `APP_AUTH_ADMIN_PASSWORD` ... need to be changed !'."\n".'THE PASSWORD IS TOO SHORT OR DOES NOT MEET THE REQUIRED COMPLEXITY CRITERIA.'."\n".'Must be min 8 chars and max 30 chars.'."\n".'Must contain at least 1 character A-Z, 1 character a-z, one digit 0-9, one special character such as: ! @ # $ % ^ & * ( ) _ - + = [ { } ] / | . , ; ? ...'."\n".'Manually REFRESH this page after by pressing F5 ...');
-				die('AuthAdminsHandler:CHECK-CREDENTIALS:4');
-				return;
-			} //end if
-			//--
-		} //end if
-		//--
-		if(!\defined('\\APP_AUTH_PRIVILEGES')) {
+		if(!\defined('\\APP_AUTH_PRIVILEGES')) { // this must be check always, not only on initDb
 			\SmartFrameworkRuntime::Raise503Error('Set in config the `APP_AUTH_PRIVILEGES` constant !'."\n".'The `APP_AUTH_PRIVILEGES` constant is required to run this Authentication plugin ...');
 			die('AuthAdminsHandler:CHECK-PRIVS');
 			return;
 		} //end if
+		//--
+		$init_err = '';
+		if(!\SmartFileSystem::is_type_file((string)\APP_AUTH_DB_SQLITE)) {
+			$init_err = self::initDb();
+		} //end if
+		if((string)$init_err != '') {
+			\SmartFrameworkRuntime::Raise503Error((string)$init_err);
+			die('AuthAdminsHandler:INIT-FAILED');
+		} //end if
+		$init_err = '';
 		//--
 
 		//-- do auth except of login page
@@ -222,8 +200,8 @@ final class AuthAdminsHandler {
 				$db = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // will create + initialize DB if not found
 			} catch(\Exception $e) {
 				$db = null;
-				\SmartFrameworkRuntime::Raise500Error('AUTH DB Failed to Initialize: `'.$e->getMessage().'`');
-				die('AuthAdminsHandler:AUTH-DB-INIT-FAILED');
+				\SmartFrameworkRuntime::Raise500Error('AUTH DB Failed: `'.$e->getMessage().'`');
+				die('AuthAdminsHandler:AUTH-DB-FAILED');
 				return;
 			} //end try catch
 			//-- try to check the failed logins
@@ -385,6 +363,77 @@ final class AuthAdminsHandler {
 		} //end if
 		//--
 
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function initDb() {
+		//--
+		if(!\defined('\\APP_AUTH_ADMIN_USERNAME')) {
+			return 'Set in config: `APP_AUTH_ADMIN_USERNAME` !'."\n".'You must set the `APP_AUTH_ADMIN_USERNAME` constant in config before installation. Manually REFRESH this page after by pressing F5 ...';
+		} //end if
+		if(\SmartAuth::validate_auth_username(
+			(string) \APP_AUTH_ADMIN_USERNAME,
+			true // check for reasonable length, as 5 chars
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+			return 'Invalid value set in config for: `APP_AUTH_ADMIN_USERNAME` !'."\n".'The `APP_AUTH_ADMIN_USERNAME` set in config must be at least 5 characters long ! Manually REFRESH this page after by pressing F5 ...';
+		} //end if
+		//--
+		if(!\defined('\\APP_AUTH_ADMIN_PASSWORD')) {
+			return 'Set in config: `APP_AUTH_ADMIN_PASSWORD` !'."\n".'You must set the `APP_AUTH_ADMIN_PASSWORD` constant into config before installation. Manually REFRESH this page after by pressing F5 ...';
+		} //end if
+		if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+			(string) \APP_AUTH_ADMIN_PASSWORD,
+			true
+		) !== true) {
+			return 'Invalid value set in config for: `APP_AUTH_ADMIN_PASSWORD` ... need to be changed !'."\n".'THE PASSWORD IS TOO SHORT OR DOES NOT MEET THE REQUIRED COMPLEXITY CRITERIA.'."\n".'Must be min 8 chars and max 30 chars.'."\n".'Must contain at least 1 character A-Z, 1 character a-z, one digit 0-9, one special character such as: ! @ # $ % ^ & * ( ) _ - + = [ { } ] / | . , ; ? ...'."\n".'Manually REFRESH this page after by pressing F5 ...';
+		} //end if
+		//--
+		$idb = null;
+		//--
+		try {
+			$idb = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // will create + initialize DB if not found
+		} catch(\Exception $e) {
+			$idb = null;
+			return 'AUTH DB Failed to Initialize: `'.$e->getMessage().'`';
+		} //end try catch
+		//--
+		$init_username = (string) \APP_AUTH_ADMIN_USERNAME;
+		$init_password = (string) \APP_AUTH_ADMIN_PASSWORD;
+		$init_hash_pass = (string) \SmartHashCrypto::password((string)$init_password, (string)$init_username);
+		//--
+		$init_privileges = (string) '<superadmin>,<admin>';
+		$init_privileges = \Smart::list_to_array((string)$init_privileges, true);
+		$init_privileges = \Smart::array_to_list((array)$init_privileges);
+		//--
+		$wr = $idb->insertAccount(
+			[
+				'id' 	 	=> (string) $init_username,
+				'email'  	=> null,
+				'pass' 	 	=> (string) $init_hash_pass,
+				'name_f' 	=> (string) 'Super',
+				'name_l' 	=> (string) 'Admin',
+				'priv'   	=> (string) $init_privileges,
+				'restrict' 	=> '<modify>',
+			],
+			1
+		);
+		//--
+		if((int)$wr !== 1) {
+			return 'AUTH DB Failed to Create the account for: `'.\APP_AUTH_ADMIN_USERNAME.'`'.print_r($wr,1);
+		} //end if
+		//--
+		$test_init = (int) $idb->countByFilter((string)\APP_AUTH_ADMIN_USERNAME);
+		//--
+		$idb = null;
+		//--
+		if((int)$test_init !== 1) {
+			return 'AUTH DB Failed to Find the account for: `'.\APP_AUTH_ADMIN_USERNAME.'`';
+		} //end if
+		//--
+		return '';
+		//--
 	} //END FUNCTION
 	//================================================================
 
