@@ -11,7 +11,7 @@ input.datetime_Field_DatePicker {
 	padding-left: 27px !important;
 	padding-right: 5px !important;
 	min-width: 125px !important;
-	background: url("../../../js/jquery/datepicker/css/images/calendar.svg") no-repeat 5px 50%;
+	background: url("../../js/jquery/datepicker/css/images/calendar.svg") no-repeat 5px 50%;
 }
 
 input.datetime_Field_TimePicker {
@@ -19,7 +19,7 @@ input.datetime_Field_TimePicker {
 	padding-left: 25px !important;
 	padding-right: 5px !important;
 	min-width: 85px!important;
-	background: url("../../../js/jquery/timepicker/css/images/timepicker.svg") no-repeat 5px 50%;
+	background: url("../../js/jquery/timepicker/css/images/timepicker.svg") no-repeat 5px 50%;
 }
 
 /* -- */

@@ -177,6 +177,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'testunit.html-editor':
 				//--
+				$semaphores[] = 'load:font:mono';
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				$main = '<script>'.SmartViewHtmlHelpers::js_code_init_away_page().'</script>';
 				$main .= SmartViewHtmlHelpers::html_jsload_htmlarea();
@@ -187,6 +188,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'testunit.code-editor':
 				//--
+				$semaphores[] = 'load:font:mono';
 				$mode = $this->RequestVarGet('mode', 'markdown', 'string');
 				if((string)$mode != 'markdown') {
 					$mode = 'html';
