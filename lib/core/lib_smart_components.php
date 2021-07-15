@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20210612
+ * @version 	v.20210707
  * @package 	Application:ViewComponents
  *
  */
@@ -945,20 +945,6 @@ final class SmartComponents {
 		//--
 		switch((string)strtolower((string)$y_os_id)) { // {{{SYNC-SRV-OS-ID}}} ; {{{SYNC-CLI-OS-ID}}}
 			//-
-			case 'macosx':
-			case 'macos':
-			case 'mac': // cli
-				$desc = 'Apple MacOS';
-				$pict = 'os/mac-os';
-				break;
-			//-
-			case 'windows':
-			case 'winnt':
-			case 'win': // cli
-				$desc = 'Microsoft Windows';
-				$pict = 'os/windows-os';
-				break;
-			//-
 			case 'openbsd':
 				$desc = 'OpenBSD';
 				$pict = 'os/bsd-openbsd';
@@ -985,6 +971,14 @@ final class SmartComponents {
 			case 'lnx': // cli
 				$desc = 'Linux';
 				$pict = 'os/linux-generic';
+				break;
+			case 'alpine':
+				$desc = 'Alpine Linux';
+				$pict = 'os/linux-alpine';
+				break;
+			case 'archlinux':
+				$desc = 'Arch Linux';
+				$pict = 'os/linux-archlinux';
 				break;
 			case 'debian':
 				$desc = 'Debian Linux';
@@ -1013,6 +1007,20 @@ final class SmartComponents {
 			case 'suse':
 				$desc = 'SuSE Linux';
 				$pict = 'os/linux-suse';
+				break;
+			//-
+			case 'macosx':
+			case 'macos':
+			case 'mac': // cli
+				$desc = 'Apple MacOS';
+				$pict = 'os/mac-os';
+				break;
+			//-
+			case 'windows':
+			case 'winnt':
+			case 'win': // cli
+				$desc = 'Microsoft Windows';
+				$pict = 'os/windows-os';
 				break;
 			//-
 			case 'solaris':

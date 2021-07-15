@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20210611 -->
+<!-- AuthAdmins Login # v.20210630 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -24,7 +24,7 @@ span.help {
 	cursor: help !important;
 }
 span.info {
-	font-size: 27px !important;
+	font-size: 28px !important;
 	font-weight: bold !important;
 	line-height: 48px !important;
 }
@@ -49,11 +49,11 @@ const AuthAdminsCheck = () => {
 	<div><center>
 		<div id="info-area">
 			<div class="ux-grid-row">
-				<div class="ux-grid-col c1"><span style="cursor:not-allowed;" title="This is a PRIVATE AREA and requires LOGIN with a valid UserName and Password ... Auth Area ID: `[###AREA-ID|html###]`"><img src="lib/framework/img/sign-info.svg" style="opacity:0.7;"></span></div>
-				<div class="ux-grid-col c4"><span class="info" style="color:#778899!important;">Private&nbsp;Area</span></div>
-				<div class="ux-grid-col c2"><i class="sfi sfi-xxl sfi-lock" style="color:#EFEFEF;"></i></div>
-				<div class="ux-grid-col c4"><span style="font-size:27px; font-weight:bold; line-height:48px; color:#DDDDDD;" id="info-alt-text"></span></div>
-				<div class="ux-grid-col c1"><span style="cursor:help;" title="UNAUTHORIZED OR IMPROPER USE OF THIS PRIVATE COMPUTER AREA may result in administrative disciplinary actions, civil charges/criminal penalties, and/or other sanctions by the law ! DO NOT TRY to login without having an account on this area. Any attempt to enforce this authentication system will be recorded and logged (actions and the IP address) for security reasons." onClick="smartJ$Browser.AlertDialog('<b>' + smartJ$Utils.escape_html($(this).attr('title')) + '</b>', null, 'WARNING', 575, 250);"><img src="lib/framework/img/sign-question.svg" style="opacity:0.7;"></span></div>
+				<div class="ux-grid-col m1 s12"><span style="cursor:not-allowed;" title="This is a PRIVATE AREA and requires LOGIN with a valid UserName and Password ... Auth Area ID: `[###AREA-ID|html###]`"><img src="lib/framework/img/sign-info.svg" style="opacity:0.7;"></span></div>
+				<div class="ux-grid-col m4 s12"><span class="info" style="color:#778899!important;">Private&nbsp;Area</span></div>
+				<div class="ux-grid-col m2 s12"><i class="sfi sfi-xxl sfi-lock" style="color:#EFEFEF;"></i></div>
+				<div class="ux-grid-col m4 s12"><span style="font-size:1rem; font-weight:bold; line-height:48px; color:#DDDDDD;" id="info-alt-text"></span></div>
+				<div class="ux-grid-col m1 s12"><span style="cursor:help;" title="UNAUTHORIZED OR IMPROPER USE OF THIS PRIVATE COMPUTER AREA may result in administrative disciplinary actions, civil charges/criminal penalties, and/or other sanctions by the law ! DO NOT TRY to login without having an account on this area. Any attempt to enforce this authentication system will be recorded and logged (actions and the IP address) for security reasons." onClick="smartJ$Browser.AlertDialog('<b>' + smartJ$Utils.escape_html($(this).attr('title')) + '</b>', null, 'WARNING', 575, 250);"><img src="lib/framework/img/sign-question.svg" style="opacity:0.7;"></span></div>
 			</div>
 		</div>
 	</center></div>
@@ -112,8 +112,14 @@ const AuthAdminsCheck = () => {
 			i = 0;
 		}
 		const text = String(privateAreaText[i] || '');
+		let relFontsize = 16;
 		if(text) {
-			$('#info-alt-text').empty().hide().text(text).fadeIn('slow');
+			if(text.length > 16) {
+				relFontsize = 16;
+			} else {
+				relFontsize = 20;
+			}
+			$('#info-alt-text').empty().hide().css({'font-size':relFontsize+'px'}).text(text).fadeIn('slow');
 		}
 		i++;
 	};
