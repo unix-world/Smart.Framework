@@ -191,6 +191,8 @@ final class SmartMarkdownToHTML {
 		} //end if
 		//-- make sure no definitions are set
 		$this->DefinitionData = array(); // init
+		//-- pre-fix charset, it is mandatory to be converted to UTF-8
+		$text = (string) SmartUnicode::fix_charset($text);
 		//-- pre trim
 		$text = (string) trim((string)$text)."\n"; // ensure the last new line if having a backslash
 		//-- Fix broking curly quotes: ‘ = &lsquo; [0145] ; ’ = &rsquo; [0146] ; “ = &ldquo; [0147] ; ” = &rdquo; [0148]
@@ -198,8 +200,9 @@ final class SmartMarkdownToHTML {
 		//-- standardize line breaks
 		$text = (string) str_replace(["\r\n", "\r"], "\n", $text);
 		//-- special breaks ; use `\` + `\n` as a new line enforcer
+		$special_nbsp_space = (string) utf8_encode("\xA0"); // need to be UTF-8 encoded to avoid break the unicode string
 		if($this->sBreakEnabled) {
-			$text = (string) str_replace(['\\'."\n"], "\n"."\xA0"."\n", $text); // don;t use &nbsp;, can occur in code tags and is rendered as html escaped
+			$text = (string) str_replace(['\\'."\n"], "\n".$special_nbsp_space."\n", $text); // don;t use &nbsp;, can occur in code tags and is rendered as html escaped
 		} else { // IMPORTANT: \ must be enclosed by newlines, otherwise may behave unpredictable on replace ...
 			$text = (string) str_replace(['\\'."\n"], "\n", $text);
 		} //end if else
@@ -242,7 +245,7 @@ final class SmartMarkdownToHTML {
 			(string) $markup
 		);
 		//-- revert nbsp
-		$markup = (string) str_replace("\xA0", '&nbsp;', (string)$markup); // must be before prepare html and before fix charset else will break the charset detection (will detect ISO-8859-1 instead of UTF-8)
+		$markup = (string) str_replace((string)$special_nbsp_space, '&nbsp;', (string)$markup); // must be before prepare html and before fix charset else will break the charset detection (will detect ISO-8859-1 instead of UTF-8)
 		//-- prepare the HTML
 		$markup = (string) $this->prepareHTML((string)$markup);
 		//-- fix charset
