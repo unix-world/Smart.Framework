@@ -1,7 +1,7 @@
 # '[###TITLE|html###]' (<H1> "Heading 1" &reg; &#169; &#169a;)
 
 &copy;&nbsp;&nbsp;2015-2021&nbsp;unix-world.org
-Extended Markdown Test :: v.20210617
+Extended Markdown Test :: v.20210720
 
 ## H2 (Unicode <Test>) ăĂîÎâÂşŞţŢ &quot;&nbsp;&quot; &lt;&quot;&gt;
 
@@ -12,7 +12,7 @@ Extended Markdown Test :: v.20210617
 ##### H5 {H:@data-id=h-5}
 
 ###### H6 {H:@style=display:inline-block}
-
+\
 ::: .operation_info
 ```javascript
 var test = true;
@@ -32,7 +32,7 @@ This is important
 ::: @article-div
 This is an article DIV
 :::
-
+\
 ::: @section-div
 This is a section DIV
 :::
@@ -238,7 +238,7 @@ with no highlight and some <tag>Tag</tag> ...
 No language indicated, so no syntax highlighting (fallback to PlainText).
 But let's throw in a <b>tag</b>.
 ```
-
+\
 | One {T:@class=bordered}     | Two {T:@class=bordered}        | Three {T: @class=bordered}   | Four {T: @class=bordered}         |
 | ------------- |-------------| ---------| ------------- |
 | One {T: @class=bordered}     | Two {T: @class=bordered}        | Three {T: @class=bordered}   | Four {T: @class=bordered}         |
