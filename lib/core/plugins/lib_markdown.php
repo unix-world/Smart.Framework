@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
- * @version 	v.20210617
+ * @version 	v.20210720
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -57,7 +57,7 @@ final class SmartMarkdownToHTML {
 	// 	* fixed multiple security vulnerabilities: character encoding fixes, fixed regex escapings, fixed html escapings, code and regex optimizations
 	// 	* extend the syntax to support attributes, added pandoc style block divs
 
-	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210617';
+	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210720';
 
 	//===================================
 
@@ -199,7 +199,7 @@ final class SmartMarkdownToHTML {
 		$text = (string) str_replace(["\r\n", "\r"], "\n", $text);
 		//-- special breaks ; use `\` + `\n` as a new line enforcer
 		if($this->sBreakEnabled) {
-			$text = (string) str_replace(['\\'."\n"], "\n".' '."\n", $text); // don;t use &nbsp;, can occur in code tags and is rendered as html escaped
+			$text = (string) str_replace(['\\'."\n"], "\n"."\xA0"."\n", $text); // don;t use &nbsp;, can occur in code tags and is rendered as html escaped
 		} else { // IMPORTANT: \ must be enclosed by newlines, otherwise may behave unpredictable on replace ...
 			$text = (string) str_replace(['\\'."\n"], "\n", $text);
 		} //end if else
@@ -241,6 +241,8 @@ final class SmartMarkdownToHTML {
 			],
 			(string) $markup
 		);
+		//-- revert nbsp
+		$markup = (string) str_replace("\xA0", '&nbsp;', (string)$markup); // must be before prepare html and before fix charset else will break the charset detection (will detect ISO-8859-1 instead of UTF-8)
 		//-- prepare the HTML
 		$markup = (string) $this->prepareHTML((string)$markup);
 		//-- fix charset
