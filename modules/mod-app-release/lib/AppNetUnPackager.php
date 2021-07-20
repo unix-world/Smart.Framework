@@ -45,9 +45,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetUnPackager {
 
 	// ::
-	// v.20210715
+	// v.20210720
 
-	public const APP_NET_UNPACKAGER_VERSION = 'v.20210715';
+	public const APP_NET_UNPACKAGER_VERSION = 'v.20210720';
 
 	public const APP_NET_UNPACKAGER_MIN_PACK_SIZE = 777; // min 777 bytes by the headers
 
@@ -91,11 +91,11 @@ Options -Indexes
 		//--
 		if(
 			((string)trim((string)$appid) == '') OR
-			((int)strlen((string)$appid) < 7) OR
+			((int)strlen((string)$appid) < 5) OR // {{{SYNC-APPCODEPACK-ID-SIZE}}}
 			((int)strlen((string)$appid) > 25) OR
 			(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$appid))
 		) {
-			return 'INVALID APP ID: '.$appid.' # must be between 7 and 25 characters';
+			return 'INVALID APP ID: '.$appid.' # must be between 5 and 25 characters';
 		} //end if
 		if(!preg_match('/^[_a-z0-9\-\.]+$/', (string)$appid)) { // regex namespace
 			return 'INVALID APP ID: '.$appid.' # contains invalid characters';

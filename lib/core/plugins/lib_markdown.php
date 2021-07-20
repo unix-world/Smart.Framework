@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
- * @version 	v.20210720.0057
+ * @version 	v.20210720
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -57,7 +57,7 @@ final class SmartMarkdownToHTML {
 	// 	* fixed multiple security vulnerabilities: character encoding fixes, fixed regex escapings, fixed html escapings, code and regex optimizations
 	// 	* extend the syntax to support attributes, added pandoc style block divs
 
-	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210720';
+	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210721';
 
 	//===================================
 

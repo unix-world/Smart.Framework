@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210605
+ * @version 	v.20210720
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -120,11 +120,12 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 		$ok = false;
 		$str_ofs = (int) strlen('/'.$appid.'/'); // mixed
-		if((int)$str_ofs > 12) { // min app id len is 10 + 2 slashes
+		$min_len_id = 5 + 2; // {{{SYNC-APPCODEPACK-ID-SIZE}}} ; min app id len is 5 + 2 slashes
+		if((int)$str_ofs > (int)$min_len_id) {
 			if((string)substr((string)TASK_APP_RELEASE_CODEPACK_APP_DIR, -1 * (int)$str_ofs, (int)$str_ofs) == (string)'/'.$appid.'/') { // must end in it
 				if(SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
 					$str_ofs = (int) strlen('/'.$appid.'/'.AppCodeUtils::APPCODEPACK_SUFFIX_OPTIMIZATIONS); // mixed
-					if((int)$str_ofs > 12) { // min app id len is 10 + 2 slashes
+					if((int)$str_ofs > (int)$min_len_id) {
 						if((string)substr((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR, -1 * (int)$str_ofs, (int)$str_ofs) == (string)'/'.$appid.'/'.AppCodeUtils::APPCODEPACK_SUFFIX_OPTIMIZATIONS) { // must end in it
 							if(SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
 								$ok = true;
