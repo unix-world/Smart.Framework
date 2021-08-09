@@ -28,9 +28,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Nested identic IF/ELSE or nested identic LOOP syntax must be separed with unique terminators such as: (1), (2), ...
 // For IF/ELSE syntax variable order matters for comparison if used inside LOOP ; when comparing a (special context) variable inside a LOOP with another variable (from out of this context), the LOOP context variable must be placed in the left side, otherwise the comparison will fail as the left variable may be evaluated prior the LOOP variable to be initialized ...
 // For nested LOOP it only supports max 5 nested levels (combining more levels would be inefficient - because of the exponential structure complexity of context data, such as metadata context that must be replicated)
-// 		-_MAXSIZE_- 		The max array index = arraysize ; Available *ONLY* in LOOP
+// 		-_MAXSIZE_- 		The max array index = arraysize ;Available also in LOOP / IF
 // 		_-MAXCOUNT-_ 		The max iterator of array: arraysize-1 ; Available also in LOOP / IF
-// 		-_INDEX_- 			The current array index: 1..arraysize ; Available *ONLY* in LOOP
+// 		-_INDEX_- 			The current array index: 1..arraysize ; Available also in LOOP / IF
 // 		_-ITERATOR-_		The current array iterator: 0..(arraysize-1) ; Available also in LOOP / IF
 // 		_-VAL-_				The current loop value ; Available also in LOOP / IF
 // 		_-KEY-_				The current loop key ; Available also in LOOP / IF
@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN
- * @version 	v.20210617
+ * @version 	v.20210806
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -1290,6 +1290,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 					} elseif((string)$escexpr == '|b64') { // !! this should not be exported to JS, it a bit heavyweight for a light templating engine like js ..., and if needed it can build the syntax using concatenation with a b64 encoded string that can be done in js, using smart crypt utils / b64
 						$val = (string) base64_encode((string)$val); // Apply Base64 Encode
 					//--
+					} elseif((string)$escexpr == '|sha1') { // !! this should not be exported to JS, it a bit heavyweight for a light templating engine like js ..., and if needed it can build the syntax using concatenation with a sha1 hashed string that can be done in js, using smart crypt utils / sha1
+						$val = (string) sha1((string)$val); // Apply SHA1 Hashing
+					//--
 					} else {
 						Smart::log_warning('Invalid or Undefined Marker-TPL Escaping: '.$escexpr.' - detected in Replacement Key: '.$crr_match[0].' -> [Val: '.$val.']');
 					} //end if else
@@ -1604,7 +1607,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
-							if(((int)$tmp_the_arr % (int)$bind_value) == 0) { // if evaluate to true keep the inner content
+							if((int)((int)$tmp_the_arr % (int)$bind_value) == 0) { // if evaluate to true keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
 								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
@@ -1614,7 +1617,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 							if(is_array($tmp_the_arr)) {
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
-							if(((int)$tmp_the_arr % (int)$bind_value) != 0) { // if evaluate to false keep the inner content
+							if((int)((int)$tmp_the_arr % (int)$bind_value) != 0) { // if evaluate to false keep the inner content
 								$line .= (string) $bind_if; // if part
 							} else {
 								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
@@ -1791,6 +1794,8 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 							//-- process IF inside LOOP for this context (the global context is evaluated prior as this function is called after process_if_syntax() in process_syntax() via render_template()
 							if(strpos((string)$mks_line, '[%%%IF:') !== false) {
 								$tmp_arr_context = array(); // init
+								$tmp_arr_context[(string)$bind_var_key.'.'.'-_MAXSIZE_-'] = (string) ($mxcnt+1); // new behaviour: available also in if
+								$tmp_arr_context[(string)$bind_var_key.'.'.'-_INDEX_-'] = (string) ($j+1); // new behaviour: available also in if
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-MAXCOUNT-_'] = (string) $mxcnt;
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-ITERATOR-_'] = (string) $j;
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-KEY-_'] = (string) $j;
@@ -1834,12 +1839,12 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 							//-- process the loop replacements
 							$mks_line = (string) self::replace_marker(
 								(string) $mks_line,
-								(string) $bind_var_key.'.'.'-_MAXSIZE_-', // no if context
+								(string) $bind_var_key.'.'.'-_MAXSIZE_-', // new behaviour: available also in if
 								(string) ($mxcnt+1)
 							);
 							$mks_line = (string) self::replace_marker(
 								(string) $mks_line,
-								(string) $bind_var_key.'.'.'-_INDEX_-', // no if context
+								(string) $bind_var_key.'.'.'-_INDEX_-', // new behaviour: available also in if
 								(string) ($j+1)
 							);
 							$mks_line = (string) self::replace_marker(
@@ -1897,6 +1902,8 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 							//-- process IF inside LOOP for this context (the global context is evaluated prior as this function is called after process_if_syntax() in process_syntax() via render_template()
 							if(strpos((string)$mks_line, '[%%%IF:') !== false) {
 								$tmp_arr_context = array(); // init
+								$tmp_arr_context[(string)$bind_var_key.'.'.'-_MAXSIZE_-'] = (string) ($mxcnt+1); // new behaviour: available also in if
+								$tmp_arr_context[(string)$bind_var_key.'.'.'-_INDEX_-'] = (string) ($ziterator+1); // new behaviour: available also in if
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-MAXCOUNT-_'] = (string) $mxcnt;
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-ITERATOR-_'] = (string) $ziterator;
 								$tmp_arr_context[(string)$bind_var_key.'.'.'_-KEY-_'] = (string) $zkey;
@@ -1950,12 +1957,12 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 							//-- process the loop replacements
 							$mks_line = (string) self::replace_marker(
 								(string) $mks_line,
-								(string) $bind_var_key.'.'.'-_MAXSIZE_-', // no if context
+								(string) $bind_var_key.'.'.'-_MAXSIZE_-', // new behaviour: available also in if
 								(string) ($mxcnt+1)
 							);
 							$mks_line = (string) self::replace_marker(
 								(string) $mks_line,
-								(string) $bind_var_key.'.'.'-_INDEX_-', // no if context
+								(string) $bind_var_key.'.'.'-_INDEX_-', // new behaviour: available also in if
 								(string) ($ziterator+1)
 							);
 							$mks_line = (string) self::replace_marker(

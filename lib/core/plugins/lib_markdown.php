@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
- * @version 	v.20210720
+ * @version 	v.20210806
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -57,7 +57,7 @@ final class SmartMarkdownToHTML {
 	// 	* fixed multiple security vulnerabilities: character encoding fixes, fixed regex escapings, fixed html escapings, code and regex optimizations
 	// 	* extend the syntax to support attributes, added pandoc style block divs
 
-	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210721';
+	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210806';
 
 	//===================================
 
@@ -195,6 +195,7 @@ final class SmartMarkdownToHTML {
 		$text = (string) SmartUnicode::fix_charset($text);
 		//-- pre trim
 		$text = (string) trim((string)$text)."\n"; // ensure the last new line if having a backslash
+		$text = (string) str_replace(['/*', '*/'], ['/\*', '\*/'], $text); // fix: preserve code comments ; if need bold or italic prev/after / use _ !!
 		//-- Fix broking curly quotes: ‘ = &lsquo; [0145] ; ’ = &rsquo; [0146] ; “ = &ldquo; [0147] ; ” = &rdquo; [0148]
 		$text = (string) str_replace(['‘', '’', '“', '”', '″', '″'], ['\'', '\'', '"', '"', '"', '"'], $text); // bug fix (special apostrophes will break the UTF-8 markdown ... don't know why !? but need fixing ; perhaps they are interpreted different in UTF-16 context !!!)
 		//-- standardize line breaks

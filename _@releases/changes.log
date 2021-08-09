@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+August 06, 2021 :: Version 8.7 rev.20210805
+	* Templating (PHP): Add SHA1 hashing ; make available the .-_MAXSIZE_- and .-_INDEX_- also in IF inside LOOP
+	* Markdown: Fix: force to preserve code comments style as: /* comment */ also outside code
+
 June 30, 2021 :: Version 8.7 rev.20210630
 	* Fix broken auth initialization for auth admins
 
