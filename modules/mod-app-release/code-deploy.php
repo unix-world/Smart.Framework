@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210527
+ * @version 	v.20210812
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -288,7 +288,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		$signature_eappcodeunpack = '';
 		$arr_appcodeunpack = [];
 		if((string)$content_appcodeunpack != '') {
-			$signature_appcodeunpack = (string) SmartHashCrypto::sha384((string)$content_appcodeunpack);
+			$signature_appcodeunpack = (string) SmartHashCrypto::sha512((string)$content_appcodeunpack);
 			$content_appcodeunpack = (string) SmartUtils::crypto_blowfish_encrypt((string)$content_appcodeunpack, (string)APP_DEPLOY_SECRET);
 			$signature_eappcodeunpack = (string) SmartHashCrypto::sha256((string)$content_appcodeunpack);
 			$arr_appcodeunpack = [ // {{{SYNC-APPCODEUNPACK-SELF-UPDATE}}}

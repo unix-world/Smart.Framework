@@ -303,7 +303,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$unique_entropy 		= (string) sha1(Smart::unique_entropy('testunit', false));
 				$unique_cluster_entropy = (string) sha1(Smart::unique_entropy('testunit', true));
 				//--
-				$overall_entropy = (string) 'UUID32:'.Smart::uuid_32()."\n".'UUID34:'.Smart::uuid_34()."\n".'UUID35:'.Smart::uuid_35()."\n".'UUID37:'.Smart::uuid_37()."\n".'UUID36:'.Smart::uuid_36($unique_entropy)."\n".'UUID45:'.Smart::uuid_45($unique_cluster_entropy);
+				$overall_entropy = (string) 'UUID10N:'.Smart::uuid_10_num()."\n".'UUID10R:'.Smart::uuid_10_str()."\n".'UUID10S:'.Smart::uuid_10_seq()."\n".'UUID12S:'.Smart::uuid_12_seq()."\n".'UUID13S:'.Smart::uuid_13_seq()."\n".'UUID15S:'.Smart::uuid_15_seq()."\n".'UUID32:'.Smart::uuid_32()."\n".'UUID34:'.Smart::uuid_34()."\n".'UUID35:'.Smart::uuid_35()."\n".'UUID37:'.Smart::uuid_37()."\n".'UUID36:'.Smart::uuid_36($unique_entropy)."\n".'UUID45:'.Smart::uuid_45($unique_cluster_entropy);
 				//--
 				$extra_main = '<div style="color:#999999;"><small><b>Unique Entropy Test Values:</b><br>'.Smart::nl_2_br(Smart::escape_html($overall_entropy)).'</small></div><br><br>';
 				$is_modal = $this->RequestVarGet('winmod', '', 'string');

@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavUtils {
 
 	// ::
-	// v.20210526
+	// v.20210812
 
 
 	//============================================================
@@ -104,7 +104,6 @@ final class DavUtils {
 			case 'md5':
 			case 'sha1':
 			case 'sha256':
-			case 'sha384':
 			case 'sha512':
 				$type = 'checksum';
 				break;

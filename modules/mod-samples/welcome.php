@@ -114,7 +114,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		if($this->PageCacheisActive()) {
 			//-- because the Request can modify the content, also the unique key must take in account variables that will vary the page config or page content vars
-			$the_page_cache_key = (string) $this->PageCacheSafeKey('samples-welcome-'.$module_area.'@'.SmartTextTranslations::getLanguage().'__'.SmartHashCrypto::sha384((string)$some_var_from_request));
+			$the_page_cache_key = (string) $this->PageCacheSafeKey('samples-welcome-'.$module_area.'@'.SmartTextTranslations::getLanguage().'__'.SmartHashCrypto::sha256((string)$some_var_from_request));
 			//--
 		} //end if
 		//--

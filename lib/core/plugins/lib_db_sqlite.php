@@ -63,7 +63,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20210527
+ * @version 	v.20210812
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -477,7 +477,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20210527
+ * @version 	v.20210812
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -668,7 +668,6 @@ final class SmartSQliteUtilDb {
 				'md5' 						=>  1,
 				'sha1' 						=>  1,
 				'sha256' 					=>  1,
-				'sha384' 					=>  1,
 				'sha512' 					=>  1,
 				'strlen' 					=>  1,
 				'charlen' 					=>  1, // mbstring
@@ -1840,7 +1839,7 @@ final class SmartSQliteUtilDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20210527
+ * @version 	v.20210812
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -1994,13 +1993,6 @@ final class SmartSQliteFunctions {
 	public static function sha256($str) {
 		//--
 		return (string) SmartHashCrypto::sha256((string)$str);
-		//--
-	} //END FUNCTION
-
-
-	public static function sha384($str) {
-		//--
-		return (string) SmartHashCrypto::sha384((string)$str);
 		//--
 	} //END FUNCTION
 

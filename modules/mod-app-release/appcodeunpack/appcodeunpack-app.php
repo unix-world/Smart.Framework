@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20210612
+// [AppCodeUnpack / APP] v.20210812
 // (c) 2013-2021 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20210612
+	// v.20210812
 
-	private const APPCODEUNPACK_VERSION = 's.20210612.2358';
+	private const APPCODEUNPACK_VERSION = 's.20210812.1228';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -736,7 +736,7 @@ final class AppCodeUnpack {
 								$tmp_upd_ctx = (string) SmartUtils::crypto_blowfish_decrypt((string)$frm['appcodeunpack']['='], (string)APPCODEPACK_DEPLOY_SECRET);
 								if(
 									((string)trim((string)$tmp_upd_ctx) != '') AND
-									((string)$frm['appcodeunpack']['#'] === (string)SmartHashCrypto::sha384((string)$tmp_upd_ctx))
+									((string)$frm['appcodeunpack']['#'] === (string)SmartHashCrypto::sha512((string)$tmp_upd_ctx))
 								) {
 									SmartFileSystem::write((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php', (string)$tmp_upd_ctx);
 									if((string)SmartFileSystem::read((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php') === (string)$tmp_upd_ctx) {

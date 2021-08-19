@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartCipherCrypto, SmartFrameworkRegistry
- * @version 	v.20210528
+ * @version 	v.20210819
  * @package 	@Core:Authentication
  *
  */
@@ -72,7 +72,7 @@ final class SmartAuth {
 	 *
 	 * @return 	BOOLEAN		:: TRUE if the username is valid or false if not
 	 */
-	public static function validate_auth_username(?string $auth_user_name, bool $check_reasonable=false) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+	public static function validate_auth_username(?string $auth_user_name, bool $check_reasonable=false) : bool { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
 		//--
 		$auth_user_name = (string) $auth_user_name;
 		//--
@@ -106,7 +106,7 @@ final class SmartAuth {
 	 *
 	 * @return 	BOOLEAN		:: TRUE if the password is valid or false if not
 	 */
-	public static function validate_auth_password(?string $auth_user_pass, bool $check_complexity=false) { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+	public static function validate_auth_password(?string $auth_user_pass, bool $check_complexity=false) : bool { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
 		//--
 		$check_pass = (string) SmartUnicode::deaccent_str((string)$auth_user_pass);
 		$check_pass = (string) Smart::normalize_spaces((string)$auth_user_pass);
@@ -160,11 +160,11 @@ final class SmartAuth {
 	 *
 	 * @return 	BOOLEAN									:: TRUE if all data is OK, FALSE if not or try to reauthenticate under the same execution (which is not allowed ; must be just once per execution)
 	 */
-	public static function set_login_data($y_user_id, $y_user_alias, $y_user_email='', $y_user_fullname='', $y_user_privileges_list=['none','no-privilege'], $y_user_quota=-1, array $y_user_metadata=[], $y_realm='DEFAULT', $y_method='', $y_pass='', $y_keys='') {
+	public static function set_login_data(?string $y_user_id, ?string $y_user_alias, ?string $y_user_email='', ?string $y_user_fullname='', $y_user_privileges_list=['none','no-privilege'], $y_user_quota=-1, array $y_user_metadata=[], ?string $y_realm='DEFAULT', ?string $y_method='', ?string $y_pass='', ?string $y_keys='') : bool {
 		//-- !!! IMPORTANT !!! $y_user_privileges_list can be string or array !!!
 		if(self::$AuthCompleted !== false) { // avoid to re-auth
 			Smart::log_warning('Re-Authentication is not allowed ...');
-			return;
+			return false;
 		} //end if
 		self::$AuthCompleted = true;
 		//--
@@ -183,7 +183,7 @@ final class SmartAuth {
 		//--
 		$y_user_quota = Smart::format_number_int($y_user_quota); // can be also negative
 		//--
-		$the_key = '#'.Smart::random_number(10000,99999).'#';
+		$the_key = '#'.Smart::random_number(10000,99999).'#'; // must be at least 7 bytes
 		//--
 		$the_pass = '';
 		if((string)$y_pass != '') {
@@ -222,11 +222,9 @@ final class SmartAuth {
 			//--
 			return true;
 			//--
-		} else {
-			//--
-			return false;
-			//--
 		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -238,7 +236,7 @@ final class SmartAuth {
 	 *
 	 * @return 	BOOLEAN		:: TRUE if current user is Logged-in, FALSE if not
 	 */
-	public static function check_login() {
+	public static function check_login() : bool {
 		//--
 		$logged_in = false;
 		//--
@@ -260,7 +258,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING		:: The user login method
 	 */
-	public static function get_login_method() {
+	public static function get_login_method() : string {
 		//--
 		if(array_key_exists('USER_LOGIN_METHOD', self::$AuthData)) {
 			return (string) self::$AuthData['USER_LOGIN_METHOD'];
@@ -278,7 +276,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING		:: The plain password if was set or empty string
 	 */
-	public static function get_login_password() {
+	public static function get_login_password() : string {
 		//--
 		if((!array_key_exists('USER_LOGIN_PASS', self::$AuthData)) OR (!array_key_exists('KEY', self::$AuthData))) {
 			return ''; // no pass or no key
@@ -298,7 +296,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING		:: The plain privacy-key if was set and valid or empty string
 	 */
-	public static function get_login_privkey() {
+	public static function get_login_privkey() : string {
 		//--
 		if((!array_key_exists('USER_PRIV_KEYS', self::$AuthData)) OR (!array_key_exists('KEY', self::$AuthData))) {
 			return ''; // no priv-key or not key
@@ -318,7 +316,7 @@ final class SmartAuth {
 	 *
 	 * @return 	ARRAY		:: a complete array containing all the meta-data of the current auth user
 	 */
-	public static function get_login_data() {
+	public static function get_login_data() : array {
 		//--
 		return array(
 			'is-logged-in' 		=> self::check_login(),
@@ -345,7 +343,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING		:: if current user is Logged-in will get the user (login) ID which is mandatory, else an empty string
 	 */
-	public static function get_login_id() {
+	public static function get_login_id() : string {
 		//--
 		if(!array_key_exists('USER_ID', self::$AuthData)) {
 			return '';
@@ -363,7 +361,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING		:: returns the user login email or an empty string if not set
 	 */
-	public static function get_login_email() {
+	public static function get_login_email() : string {
 		//--
 		if(!array_key_exists('USER_EMAIL', self::$AuthData)) {
 			return '';
@@ -381,7 +379,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING		:: returns the user login alias (username) or an empty string if not set
 	 */
-	public static function get_login_alias() {
+	public static function get_login_alias() : string {
 		//--
 		if(!array_key_exists('USER_ALIAS', self::$AuthData)) {
 			return '';
@@ -399,7 +397,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING		:: returns the user login full name or an empty string if not set
 	 */
-	public static function get_login_fullname() {
+	public static function get_login_fullname() : string {
 		//--
 		if(!array_key_exists('USER_FULLNAME', self::$AuthData)) {
 			return '';
@@ -417,7 +415,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING		:: returns user login privileges as a list-string like: '<privilege_one>,<privilege_two>,...' or an empty string if not set
 	 */
-	public static function get_login_privileges() {
+	public static function get_login_privileges() : string {
 		//--
 		if(!array_key_exists('USER_PRIVILEGES', self::$AuthData)) {
 			return '';
@@ -435,7 +433,7 @@ final class SmartAuth {
 	 *
 	 * @return 	ARRAY		:: returns user login privileges as an array[privilege_one, privilege_two, ...] or an empty array if not set
 	 */
-	public static function get_login_arr_privileges() {
+	public static function get_login_arr_privileges() : array {
 		//--
 		if(!array_key_exists('USER_PRIVILEGES', self::$AuthData)) {
 			return array();
@@ -453,7 +451,7 @@ final class SmartAuth {
 	 *
 	 * @return 	BOOLEAN		:: TRUE if the current user have the tested privilege or FALSE if does not
 	 */
-	public static function test_login_privilege($y_privilege_to_test) {
+	public static function test_login_privilege(?string $y_privilege_to_test) : bool {
 		//--
 		$y_privilege_to_test = (string) trim((string)$y_privilege_to_test);
 		//--
@@ -479,7 +477,7 @@ final class SmartAuth {
 	 *
 	 * @return 	INTEGER		:: returns the user (storage) quota
 	 */
-	public static function get_login_quota() {
+	public static function get_login_quota() : int {
 		//--
 		$login_quota = -1;
 		//--
@@ -501,7 +499,7 @@ final class SmartAuth {
 	 *
 	 * @return 	ARRAY		:: returns an array with all current user metadata
 	 */
-	public static function get_login_metadata() {
+	public static function get_login_metadata() : array {
 		//--
 		if(!array_key_exists('USER_METADATA', self::$AuthData)) {
 			return array();
@@ -519,7 +517,7 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING		:: returns the current user auth realm or an empty string if not set
 	 */
-	public static function get_login_realm() {
+	public static function get_login_realm() : string {
 		//--
 		$login_realm = 'DEFAULT';
 		//--
@@ -543,7 +541,7 @@ final class SmartAuth {
 	 *
 	 * @return 	ARRAY							:: returns the associative array of auth privileges as Array('priv_1' => 'Priv 1', 'priv_2' => 'Priv 2', ..., 'priv_n' => 'Priv n')
 	 */
-	public static function build_arr_privileges($y_priv_list) {
+	public static function build_arr_privileges($y_priv_list) : array {
 		//--
 		if(!is_array($y_priv_list)) {
 			$y_priv_list = (array) Smart::list_to_array((string)$y_priv_list);
@@ -578,16 +576,17 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING					:: returns a string with the privacy-key (decrypted, if any, and if valid) which was supposed to be provided as encrypted
 	 */
-	public static function decrypt_privkey($y_pkey, $y_pass) {
+	public static function decrypt_privkey(?string $y_pkey, ?string $y_pass) : string {
 		//--
 		if((string)trim((string)$y_pkey) == '') {
 			return '';
 		} //end if
-		if((string)trim((string)$y_pass) == '') {
+		//--
+		if((int)strlen((string)trim((string)$y_pass)) < 7) { // this is the minimum enforced by SmartCipherCrypto !
 			return (string) $y_pkey; // return the encrypted key to avoid lost it
 		} //end if
 		//--
-		return (string) SmartCipherCrypto::decrypt('blowfish.cbc', (string)$y_pass, (string)$y_pkey); // {{{SYNC-ADM-AUTH-KEYS}}} ; avoid use smart utils here to avoid circular dependency as smart utils depends on smart auth ; more, keep always the internal blowfish.cbc here and not depend on external openssl blowfish cbc which could change or dissapear
+		return (string) SmartCipherCrypto::blowfish_decrypt((string)$y_pass, (string)$y_pkey, 'blowfish.cbc'); // {{{SYNC-ADM-AUTH-KEYS}}} ; avoid use smart utils here to avoid circular dependency as smart utils depends on smart auth ; more, keep always the internal blowfish.cbc here and not depend on external openssl blowfish cbc which could change or dissapear
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -604,16 +603,16 @@ final class SmartAuth {
 	 *
 	 * @return 	STRING					:: returns a string with the safe encrypted privacy-key or empty string if was empty
 	 */
-	public static function encrypt_privkey($y_pkey, $y_pass) {
+	public static function encrypt_privkey(?string $y_pkey, ?string $y_pass) : string {
 		//--
 		if((string)trim((string)$y_pkey) == '') {
 			return '';
 		} //end if
-		if((string)trim((string)$y_pass) == '') {
+		if((int)strlen((string)trim((string)$y_pass)) < 7) { // this is the minimum enforced by SmartCipherCrypto !
 			return ''; // return empty string to avoid return it in unencrypted plain format
 		} //end if
 		//--
-		return (string) SmartCipherCrypto::encrypt('blowfish.cbc', (string)$y_pass, (string)$y_pkey); // {{{SYNC-ADM-AUTH-KEYS}}} ; avoid use smart utils here to avoid circular dependency as smart utils depends on smart auth ; more, keep always the internal blowfish.cbc here and not depend on external openssl blowfish cbc which could change or dissapear
+		return (string) SmartCipherCrypto::blowfish_encrypt((string)$y_pass, (string)$y_pkey, 'blowfish.cbc'); // {{{SYNC-ADM-AUTH-KEYS}}} ; avoid use smart utils here to avoid circular dependency as smart utils depends on smart auth ; more, keep always the internal blowfish.cbc here and not depend on external openssl blowfish cbc which could change or dissapear
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -629,7 +628,7 @@ final class SmartAuth {
 	 * @internal
 	 *
 	 */
-	public static function registerInternalCacheToDebugLog() {
+	public static function registerInternalCacheToDebugLog() : void {
 		//--
 		if(SmartFrameworkRegistry::ifInternalDebug()) {
 			if(SmartFrameworkRegistry::ifDebug()) {

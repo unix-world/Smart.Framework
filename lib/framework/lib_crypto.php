@@ -31,7 +31,7 @@ if(!function_exists('hash_algos')) {
 //=====================================================================================
 
 /**
- * Class: SmartHashCrypto - provide various hashes for a string: salted password, sha512, sha384, sha256, sha1, md5.
+ * Class: SmartHashCrypto - provide various hashes for a string: salted password, sha512, sha256, sha1, md5.
  *
  * <code>
  * // Usage example:
@@ -41,8 +41,8 @@ if(!function_exists('hash_algos')) {
  * @usage       static object: Class::method() - This class provides only STATIC methods
  *
  * @access      PUBLIC
- * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartFrameworkRegistry
- * @version     v.20210506
+ * @depends     PHP hash_algos() / hash() ; classes: SmartFrameworkRegistry, Smart
+ * @version     v.20210818
  * @package     @Core:Crypto
  *
  */
@@ -57,13 +57,15 @@ final class SmartHashCrypto {
 	/**
 	 * Encrypt (one way) a password :: this may depend on *OPTIONAL* extra salt $y_custom_salt
 	 *
-	 * @param STRING $y_pass
-	 * @return STRING, 128 chars length
+	 * @param STRING $y_pass 			The password
+	 * @param STRING $y_custom_salt 	The salt (default is empty)
+	 * @param BOOLEAN $y_base64 		If set to TRUE will use Base64 Encoding instead of Hexa Encoding
+	 * @return STRING 					The hash: SHA512 with a custom salt (+ an internally hard-coded salt to avoid rainbow attack), 128 chars length (hex) or 88 chars length (b64)
 	 */
-	public static function password($y_pass, $y_custom_salt='') { // {{{SYNC-HASH-PASSWORD}}}
+	public static function password(?string $y_pass, ?string $y_custom_salt='', bool $y_base64=false) : string { // {{{SYNC-HASH-PASSWORD}}}
 		//-- v.151216
 		// Password Salt must not be very complex :: http://stackoverflow.com/questions/5482437/md5-hashing-using-password-as-salt
-		// extraordinary good salt + weak password = breakable in seconds
+		// extraordinary good salt + weak password = more easy to break
 		// just sensible salt + strong password = unbreakable
 		// the best is to pre-pend the salt: http://stackoverflow.com/questions/4171859/password-salts-prepending-vs-appending
 		// ex: azA-Z09 pass, prepend needs 26^6 permutations while append 26^10, so append adds more complexity
@@ -73,7 +75,85 @@ final class SmartHashCrypto {
 			$y_custom_salt = (string) md5((string)'$1'.$y_custom_salt.'$2'.$y_pass);
 		} //end if
 		//--
-		return self::sha512((string)$y_custom_salt.'@ Smart Framework :'.$y_pass.': スマート フレームワーク # 170115%!Password.512/($Auth)*'.strtoupper((string)sha1((string)$y_pass.'&$'.$y_custom_salt)).'^#[?]');
+		return (string) self::sha512((string)$y_custom_salt.'@ Smart Framework :'.$y_pass.': スマート フレームワーク # 170115%!Password.512/($Auth)*'.strtoupper((string)sha1((string)$y_pass.'&$'.$y_custom_salt)).'^#[?]', (bool)$y_base64);
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Returns the Safe Composed Key from a Key to be used in hash derived methods
+	 * The purpose of this method is to provide a colission free pre-derived key from a string key (a password, an encrypt/decrypt key) to be used as the base to create a real derived key by hashing methods later
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING $key 				The key (min 7 bytes ; max 4096 bytes)
+	 * @return STRING 					The safe composed key, 553 bytes (characters) ; contains only an ascii subset of: hexa[01234567890abcdef] + NullByte
+	 */
+	public static function safecomposedkey(?string $key) : string {
+		//--
+		// This should be used as the basis for a derived key, will be 100% in theory and practice agains hash colissions (see the comments below)
+		// It implements a safe mechanism that in order that a key to produce a colission must collide at the same time in all hashing mechanisms: md5, sha1, ha256 and sha512 + crc32b control
+		// By enforcing the max key length to 4096 bytes actually will not have any chance to collide even in the lowest hashing such as md5 ...
+		// It will return a string of 553 bytes length as: (base:key)[8(crc32b) + 1(null) + 32(md5) + 1(null) + 40(sha1) + 1(null) + 64(sha256) + 1(null) + 128(sha512) = 276] + 1(null) + (base:saltedKeyWithNullBytePrefix)[8(crc32b) + 1(null) + 32(md5) + 1(null) + 40(sha1) + 1(null) + 64(sha256) + 1(null) + 128(sha512) = 276]
+		// More, it will return a fixed length (553 bytes) string with an ascii subset just of [ 01234567890abcdef + NullByte ] which already is colission free by using a max source string length of 4096 bytes and by combining many hashes as: md5, sha1, sha256, sha512 and the crc32b
+		//--
+		$original_key = (string) $key;
+		$key = (string) trim((string)$key); // {{{SYNC-CRYPTO-KEY-TRIM}}}
+		if((string)$original_key !== (string)$key) {
+			if(SmartFrameworkRegistry::ifInternalDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
+					Smart::log_notice(__METHOD__.' # Key is invalid, must not contain trailing spaces: `'.$key.'`');
+				} //end if
+			} //end if
+			Smart::raise_error(__METHOD__.' # Key is invalid, must not contain trailing spaces !');
+			return '';
+		} //end if
+		//--
+		$klen = (int) strlen((string)$key);
+		//--
+		if((int)$klen < 7) { // {{{SYNC-CRYPTO-KEY-MIN}}} ; minimum acceptable secure key is 7 characters long
+			if(SmartFrameworkRegistry::ifInternalDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
+					Smart::log_notice(__METHOD__.' # Key is too short: `'.$key.'`');
+				} //end if
+			} //end if
+			Smart::raise_error(__METHOD__.' # Key Size is lower than 7 bytes ('.(int)$klen.') which is not safe against brute force attacks !');
+			return '';
+		} elseif((int)$klen > 4096) { // {{{SYNC-CRYPTO-KEY-MAX}}} ; max key size is enforced to allow ZERO theoretical colissions on any of: md5, sha1, sha256 or sha512
+			//-- as a precaution, use the lowest supported value which is 4096 (as the md5 supports) ; under this value all the hashes are safe against colissions (in theory)
+			// MD5     produces 128 bits which is 16 bytes, not characters, each byte has 256 possible values ; theoretical safe max colission free is: 16*256 =  4096 bytes
+			// SHA-1   produces 160 bits which is 20 bytes, not characters, each byte has 256 possible values ; theoretical safe max colission free is: 20*256 =  5120 bytes
+			// SHA-256 produces 256 bits which is 32 bytes, not characters, each byte has 256 possible values ; theoretical safe max colission free is: 32*256 =  8192 bytes
+			// SHA-512 produces 512 bits which is 64 bytes, not characters, each byte has 256 possible values ; theoretical safe max colission free is: 64*256 = 16384 bytes
+			//-- anyway, as a more precaution, combine all hashes thus a key should produce a colission at the same time in all: md5, sha1, sha256 and sha512 ... which in theory, event with bad implementations of the hashing functions this is excluded !
+			if(SmartFrameworkRegistry::ifInternalDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
+					Smart::log_notice(__METHOD__.' # Key is too long: `'.$key.'`');
+				} //end if
+			} //end if
+			Smart::raise_error(__METHOD__.' # Key Size is higher than 4096 bytes ('.(int)$klen.') which is not safe against collisions !');
+			return '';
+		} //end if
+		//--
+		// Security concept: be safe against collisions, the idea is to concatenate more algorithms on the exactly same input !!
+		// https://security.stackexchange.com/questions/169711/when-hashing-do-longer-messages-have-a-higher-chance-of-collisions
+		// just sensible salt + strong password = unbreakable ; using a minimal salt, prepended, the NULL byte ; a complex salt may be used later in combination with derived keys
+		// the best is to pre-pend the salt: http://stackoverflow.com/questions/4171859/password-salts-prepending-vs-appending
+		//--
+		$nByte = (string) chr(0);
+		$salted_key = (string) $nByte.$key; // adding a not so complex fixed salt as suffix
+		//--
+		// https://stackoverflow.com/questions/1323013/what-are-the-chances-that-two-messages-have-the-same-md5-digest-and-the-same-sha
+		// use just hex here and the null byte, with fixed lengths to reduce the chance of collisions for the next step (with not so complex fixed length strings, chances of colissions are infinite lower) ; this will generate a predictible concatenated hash using multiple algorithms ; actually the chances to find a colission for a string between 1..1024 characters that will produce a colission of all 4 hashing algorithms at the same time is ZERO in theory and in practice ... and in the well known universe using well known mathematics !
+		//--
+		$hkey1 = (string) SmartHashCrypto::crc32b((string)$key).       $nByte.SmartHashCrypto::md5((string)$key).       $nByte.SmartHashCrypto::sha1((string)$key).       $nByte.SmartHashCrypto::sha256((string)$key).       $nByte.SmartHashCrypto::sha512((string)$key);
+		$hkey2 = (string) SmartHashCrypto::crc32b((string)$salted_key).$nByte.SmartHashCrypto::md5((string)$salted_key).$nByte.SmartHashCrypto::sha1((string)$salted_key).$nByte.SmartHashCrypto::sha256((string)$salted_key).$nByte.SmartHashCrypto::sha512((string)$salted_key);
+		$composed_key = (string) $hkey1.$nByte.$hkey2;
+		//--
+		return (string) $composed_key;
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -83,37 +163,22 @@ final class SmartHashCrypto {
 	/**
 	 * Returns the SHA512 hash of a string
 	 *
-	 * @param STRING $y_str
-	 * @return STRING, 128 chars length
+	 * @param STRING $y_str 			String to be hashed
+	 * @param BOOLEAN $y_base64 		If set to TRUE will use Base64 Encoding instead of Hexa Encoding
+	 * @return STRING 					The hash: 128 chars length (hex) or 88 chars length (b64)
 	 */
-	public static function sha512($y_str) {
+	public static function sha512(?string $y_str, bool $y_base64=false) : string { // execution cost: 0.35
 		//--
 		if(!self::algo_check('sha512')) {
-			Smart::raise_error('ERROR: Smart.Framework Crypto Hash requires SHA512 Hash/Algo', 'SHA512 Hash/Algo is missing');
+			Smart::raise_error(__METHOD__.' # ERROR: Smart.Framework Crypto Hash requires SHA512 Hash/Algo');
 			return '';
 		} //end if
 		//--
-		return (string) hash('sha512', (string)$y_str, false); // execution cost: 0.35
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	/**
-	 * Returns the SHA384 hash of a string
-	 *
-	 * @param STRING $y_str
-	 * @return STRING, 96 chars length
-	 */
-	public static function sha384($y_str) {
-		//--
-		if(!self::algo_check('sha384')) {
-			Smart::raise_error('ERROR: Smart.Framework Crypto Hash requires SHA384 Hash/Algo', 'SHA384 Hash/Algo is missing');
-			return '';
-		} //end if
-		//--
-		return (string) hash('sha384', (string)$y_str, false); // execution cost: 0.34
+		if($y_base64 === true) {
+			return (string) base64_encode((string)hash('sha512', (string)$y_str, true));
+		} else {
+			return (string) hash('sha512', (string)$y_str, false);
+		} //end if else
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -123,17 +188,22 @@ final class SmartHashCrypto {
 	/**
 	 * Returns the SHA256 hash of a string
 	 *
-	 * @param STRING $y_str
-	 * @return STRING, 64 chars length
+	 * @param STRING $y_str 			String to be hashed
+	 * @param BOOLEAN $y_base64 		If set to TRUE will use Base64 Encoding instead of Hexa Encoding
+	 * @return STRING 					The hash: 64 chars length (hex) or 44 chars length (b64)
 	 */
-	public static function sha256($y_str) {
+	public static function sha256(?string $y_str, bool $y_base64=false) : string { // execution cost: 0.21
 		//--
 		if(!self::algo_check('sha256')) {
-			Smart::raise_error('ERROR: Smart.Framework Crypto Hash requires SHA256 Hash/Algo', 'SHA256 Hash/Algo is missing');
+			Smart::raise_error(__METHOD__.' # ERROR: Smart.Framework Crypto Hash requires SHA256 Hash/Algo');
 			return '';
 		} //end if
 		//--
-		return (string) hash('sha256', (string)$y_str, false); // execution cost: 0.21
+		if($y_base64 === true) {
+			return (string) base64_encode((string)hash('sha256', (string)$y_str, true));
+		} else {
+			return (string) hash('sha256', (string)$y_str, false);
+		} //end if else
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -143,17 +213,26 @@ final class SmartHashCrypto {
 	/**
 	 * Returns the SHA1 hash of a string
 	 *
-	 * @param STRING $y_str
-	 * @return STRING, 40 chars length
+	 * @param STRING $y_str 			String to be hashed
+	 * @param BOOLEAN $y_base64 		If set to TRUE will use Base64 Encoding instead of Hexa Encoding
+	 * @return STRING 					The hash: 40 chars length (hex) or 28 chars length (b64)
 	 */
-	public static function sha1($y_str) {
+	public static function sha1(?string $y_str, bool $y_base64=false) : string { // execution cost: 0.14
 		//--
 		if(!function_exists('sha1')) {
-			Smart::raise_error('ERROR: Smart.Framework Crypto Hash requires SHA1 support', 'SHA1 support is missing');
+			Smart::raise_error(__METHOD__.' # ERROR: Smart.Framework Crypto Hash requires SHA1 support');
 			return '';
 		} //end if
 		//--
-		return (string) sha1((string)$y_str); // execution cost: 0.14
+		if($y_base64 === true) {
+			//--
+			return (string) base64_encode((string)hex2bin((string)sha1((string)$y_str)));
+			//--
+		} else {
+			//--
+			return (string) sha1((string)$y_str);
+			//--
+		} //end if else
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -163,17 +242,26 @@ final class SmartHashCrypto {
 	/**
 	 * Returns the MD5 hash of a string
 	 *
-	 * @param STRING $y_str
-	 * @return STRING, 32 chars length
+	 * @param STRING $y_str 			String to be hashed
+	 * @param BOOLEAN $y_base64 		If set to TRUE will use Base64 Encoding instead of Hexa Encoding
+	 * @return STRING 					The hash: 32 chars length (hex) or 24 chars length (b64)
 	 */
-	public static function md5($y_str) {
+	public static function md5(?string $y_str, bool $y_base64=false) : string { // execution cost: 0.13
 		//--
 		if(!function_exists('md5')) {
-			Smart::raise_error('ERROR: Smart.Framework Crypto Hash requires MD5 support', 'MD5 support is missing');
+			Smart::raise_error(__METHOD__.' # ERROR: Smart.Framework Crypto Hash requires MD5 support');
 			return '';
 		} //end if
 		//--
-		return (string) md5((string)$y_str); // execution cost: 0.13
+		if($y_base64 === true) {
+			//--
+			return (string) base64_encode((string)hex2bin((string)md5((string)$y_str)));
+			//--
+		} else {
+			//--
+			return (string) md5((string)$y_str);
+			//--
+		} //end if else
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -183,20 +271,21 @@ final class SmartHashCrypto {
 	/**
 	 * Returns the CRC32B hash of a string in base16 by default or base36 optional (better than CRC32, portable between 32-bit and 64-bit platforms, unsigned)
 	 *
-	 * @param STRING $y_str
-	 * @param BOOLEAN $y_base36
-	 * @return STRING, 8 chars length
+	 * @param STRING $y_str 			String to be hashed
+	 * @param BOOLEAN $y_base36 		If set to TRUE will use Base36 Encoding instead of Hexa Encoding
+	 * @return STRING 					The hash: 8 chars length (hex) or 7 chars length (b36)
 	 */
-	public static function crc32b($y_str, $y_base36=false) {
+	public static function crc32b(?string $y_str, bool $y_base36=false) : string { // execution cost: 0.21
 		//--
-		if(!self::algo_check('sha512')) {
-			Smart::raise_error('ERROR: Smart.Framework Crypto Hash requires CRC32B Hash/Algo', 'CRC32B Hash/Algo is missing');
+		if(!self::algo_check('crc32b')) {
+			Smart::raise_error(__METHOD__.' # ERROR: Smart.Framework Crypto Hash requires CRC32B Hash/Algo');
 			return '';
 		} //end if
 		//--
-		$hash = (string) hash('crc32b', (string)$y_str, false); // execution cost: 0.21
+		$hash = (string) hash('crc32b', (string)$y_str, false);
 		if($y_base36 === true) {
-			$hash = (string) base_convert((string)$hash, 16, 36);
+		//	$hash = (string) str_pad((string)base_convert((string)$hash, 16, 36), 7, '0', STR_PAD_LEFT); // 10x faster but unsafe on some platforms ...
+			$hash = (string) str_pad((string)Smart::base_from_hex_convert((string)$hash, 36), 7, '0', STR_PAD_LEFT);
 		} //end if
 		//--
 		return (string) $hash;
@@ -209,22 +298,20 @@ final class SmartHashCrypto {
 
 
 	//==============================================================
-	private static function algo_check($y_algo) {
+	private static function algo_check(string $y_algo) : bool {
 		//--
-		if(in_array($y_algo, (array)self::algos())) {
-			$out = 1;
+		if(in_array((string)$y_algo, (array)self::algos())) {
+			return true;
 		} else {
-			$out = 0;
+			return false;
 		} //end if else
-		//--
-		return $out;
 		//--
 	} //END FUNCTION
 	//==============================================================
 
 
 	//==============================================================
-	private static function algos() {
+	private static function algos() : array {
 		//--
 		if((!array_key_exists('algos', self::$cache)) OR (!is_array(self::$cache['algos']))) {
 			self::$cache['algos'] = (array) hash_algos();

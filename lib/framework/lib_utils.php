@@ -15,6 +15,15 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Smart-Framework - Utils
 //======================================================
 
+//--
+if(!defined('SMART_FRAMEWORK_SECURITY_KEY')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SECURITY_KEY');
+} //end if
+if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) == '') {
+	die('Empty INIT constant value for SMART_FRAMEWORK_SECURITY_KEY');
+} //end if
+//--
 
 //--
 // gzdeflate / gzinflate (rfc1951) have no checksum for data integrity by default ; if sha1 checksums are integrated separately, it can be better than other zlib algorithms
@@ -38,7 +47,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20210611
+ * @version 	v.20210819
  * @package 	@Core:Extra
  *
  */
@@ -313,16 +322,16 @@ final class SmartUtils {
 
 
 	//================================================================
-	// Archive data (string) to B64/Zlib-Raw/Hex
+	// Archive data (string) to B64/Zlib-Raw/Hex (v2 only)
 	public static function data_archive(?string $y_str) {
 		//-- if empty data, return empty string
 		if((string)$y_str == '') {
 			return '';
 		} //end if
 		//-- checksum of original data
-		$chksum = SmartHashCrypto::sha1((string)$y_str);
+		$chksum = (string) SmartHashCrypto::sha256((string)$y_str);
 		//-- prepare data and add checksum
-		$y_str = (string) trim((string)strtoupper((string)bin2hex((string)$y_str))).'#CHECKSUM-SHA1#'.$chksum;
+		$y_str = (string) trim((string)bin2hex((string)$y_str)).'#CKSUM256#'.$chksum; // use lower hex for data and for checksum ; compression will be better using a more restricted charset and not upper letters combined with lower letters
 		$out = @gzdeflate((string)$y_str, -1, ZLIB_ENCODING_RAW); // don't make it string, may return false ; -1 = default compression of the zlib library is used which is 6
 		//-- check for possible deflate errors
 		if(($out === false) OR ((string)$out == '')) {
@@ -347,9 +356,9 @@ final class SmartUtils {
 		//--
 		$y_str = ''; // free mem
 		//-- add signature
-		$out = (string) trim((string)base64_encode((string)$out))."\n".'PHP.SF.151129/B64.ZLibRaw.HEX';
+		$out = (string) trim((string)base64_encode((string)$out))."\n".'SFZ.20210818/B64.ZLibRaw.hex';
 		//-- test unarchive
-		$unarch_checksum = SmartHashCrypto::sha1(self::data_unarchive($out));
+		$unarch_checksum = (string) SmartHashCrypto::sha256((string)self::data_unarchive($out));
 		if((string)$chksum != (string)$unarch_checksum) { // check: if there is a serious bug with ZLib or PHP we can't tolerate, so test decompress here !!
 			Smart::log_warning('Smart.Framework Utils / Data Archive :: Data Encode Check Failed ! ...');
 			return '';
@@ -362,7 +371,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	// Unarchive data (string) from B64/Zlib-Raw/Hex
+	// Unarchive data (string) from B64/Zlib-Raw/Hex (v2 and v1)
 	public static function data_unarchive(?string $y_enc_data) {
 		//--
 		$y_enc_data = (string) trim((string)$y_enc_data);
@@ -374,66 +383,83 @@ final class SmartUtils {
 		$out = ''; // initialize output
 		//-- pre-process
 		$arr = array();
-		$arr = (array) explode("\n", (string)$y_enc_data);
+		$arr = (array) explode("\n", (string)$y_enc_data, 3); // let it be 3 not 2 ; if there is some garbage ona new line after signature just let it there ...
 		$y_enc_data = ''; // free mem
-		if(!array_key_exists(0, $arr)) {
-			$arr[0] = null;
-		} //end if
-		if(!array_key_exists(1, $arr)) {
-			$arr[1] = null;
-		} //end if
-		$arr[0] = (string) trim((string)$arr[0]); // is the data packet
-		$arr[1] = (string) trim((string)$arr[1]); // signature
+		$arr[0] = (string) trim((string)($arr[0] ?? '')); // is the data packet
+		$arr[1] = (string) trim((string)($arr[1] ?? '')); // signature
 		//-- check signature
-		if((string)$arr[1] != 'PHP.SF.151129/B64.ZLibRaw.HEX') { // signature is different, try to decode but log the error
-			Smart::log_notice('Smart.Framework // Data Unarchive // Invalid Package Signature: '.$arr[1]);
+		if((string)$arr[1] == '') {
+			Smart::log_warning(__METHOD__.' # Empty Package Signature');
+			return '';
+		} //end if
+		$versionDetected = 0;
+		if((string)$arr[1] == 'SFZ.20210818/B64.ZLibRaw.hex') { // v2
+			$versionDetected = 2;
+		} elseif((string)$arr[1] == 'PHP.SF.151129/B64.ZLibRaw.HEX') { // v1
+			$versionDetected = 1;
+		} //end if else
+		if((int)$versionDetected <= 0) { // signature is different, try to decode but log the error
+			Smart::log_warning(__METHOD__.' # Invalid Package Signature: `'.$arr[1].'`');
+			return '';
 		} //end if
 		//-- decode it (at least try)
+		if((string)$arr[0] == '') {
+			Smart::log_warning(__METHOD__.' # Invalid Package Format @ v.'.$versionDetected);
+			return '';
+		} //end if
 		$out = @base64_decode((string)$arr[0]); // NON-STRICT ! don't make it string, may return false
-		if(($out === false) OR ((string)trim((string)$out) == '')) { // use trim, the deflated string can't contain only spaces
-			Smart::log_warning('Smart.Framework // Data Unarchive // Invalid B64 Data for packet with signature: '.$arr[1]);
+		if(($out === false) OR ((string)trim((string)$out) == '')) { // use trim, the deflated string can't contain only spaces, expect having hex data + checksum
+			Smart::log_warning(__METHOD__.' # Invalid B64 Data @ v.'.$versionDetected);
 			return '';
 		} //end if
 		$out = @gzinflate($out);
 		if(($out === false) OR ((string)trim((string)$out) == '')) {
-			Smart::log_warning('Smart.Framework // Data Unarchive // Invalid Zlib GzInflate Data for packet with signature: '.$arr[1]);
+			Smart::log_warning(__METHOD__.' # Invalid Zlib GzInflate Data @ v.'.$versionDetected);
 			return '';
 		} //end if
 		//-- post-process
-		if(strpos((string)$out, '#CHECKSUM-SHA1#') !== false) {
-			//--
-			$arr = array();
-			$arr = (array) explode('#CHECKSUM-SHA1#', (string)$out);
-			if(!array_key_exists(0, $arr)) {
-				$arr[0] = null;
-			} //end if
-			if(!array_key_exists(1, $arr)) {
-				$arr[1] = null;
-			} //end if
-			//--
-			$out = '';
-			$arr[0] = @hex2bin(strtolower(trim((string)$arr[0]))); // don't make it string, may return false ; it is the data packet
-			if(($arr[0] === false) OR ((string)$arr[0] == '')) { // no trim here ... (the real string may contain only some spaces)
-				Smart::log_warning('Smart.Framework // Data Unarchive // Invalid HEX Data for packet with signature: '.$arr[1]);
-				return '';
-			} //end if
-			$arr[1] = (string) trim((string)$arr[1]); // the checksum
-			if(SmartHashCrypto::sha1($arr[0]) != (string)$arr[1]) {
-				Smart::log_warning('Smart.Framework // Data Unarchive // Invalid Packet, Checksum FAILED :: A checksum was found but is invalid: '.$arr[1]);
-				return '';
-			} //end if
-			//--
-			$out = (string) $arr[0];
-			$arr = array();
-			//--
-		} else {
-			//--
-			Smart::log_warning('Smart.Framework // Data Unarchive // Invalid Packet, no Checksum :: This can occur if decompression failed or an invalid packet has been assigned ...');
+		$versionCksumSeparator = '#CKSUM256#'; // v2
+		if((int)$versionDetected == 1) {
+			$versionCksumSeparator = '#CHECKSUM-SHA1#'; // v1
+		} //end if
+		if(((string)trim((string)$versionCksumSeparator) == '') OR (strpos((string)$out, (string)$versionCksumSeparator) === false)) {
+			Smart::log_warning(__METHOD__.' # Invalid Packet, no Checksum :: This can occur if decompression failed or an invalid packet has been assigned @ v.'.$versionDetected);
 			return '';
-			//--
 		} //end if
 		//--
-		return (string) $out;
+		$arr = array();
+		$arr = (array) explode((string)$versionCksumSeparator, (string)$out, 2); // should be 2 ... otherwise is invalid
+		$out = '';
+		$arr[0] = (string) trim((string)($arr[0] ?? null));
+		$arr[1] = (string) trim((string)($arr[1] ?? null));
+		//--
+		if((int)$versionDetected == 1) {
+			$arr[0] = (string) strtolower((string)$arr[0]); // on v1 must be done this conversion, the v1 was exporting upper letter hex
+		} //end if
+		//--
+		$arr[0] = @hex2bin((string)$arr[0]); // don't make it string, may return false ; it is the data packet
+		if(($arr[0] === false) OR ((string)$arr[0] == '')) { // no trim here ... (the real string may contain only some spaces)
+			Smart::log_warning(__METHOD__.' # Invalid HEX Data v.'.$versionDetected);
+			return '';
+		} //end if
+		//--
+		$arr[1] = (string) trim((string)$arr[1]); // the checksum
+		$is_checksum_ok = false;
+		if((int)$versionDetected == 1) { // v1, sha1
+			if((string)SmartHashCrypto::sha1((string)$arr[0]) == (string)$arr[1]) {
+				$is_checksum_ok = true;
+			} //end if
+		} else { // v2, sha256
+			if((string)SmartHashCrypto::sha256((string)$arr[0]) == (string)$arr[1]) {
+				$is_checksum_ok = true;
+			} //end if
+		} //end if else
+		if($is_checksum_ok !== true) {
+			Smart::log_warning(__METHOD__.' # Invalid Packet, Checksum FAILED :: A checksum was found but is invalid: `'.$arr[1].'` on v.'.$versionDetected);
+			return '';
+		} //end if
+		//--
+		return (string) $arr[0];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -856,6 +882,7 @@ final class SmartUtils {
 
 
 	//================================================================
+	// The crypto provider will be selected from the init value: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO
 	public static function crypto_blowfish_algo() {
 		//--
 		$cipher = 'blowfish.cbc'; // default: internal
@@ -875,21 +902,19 @@ final class SmartUtils {
 	//================================================================
 	// This always provides a compatible layer with the JS Blowfish CBC
 	// It must be used for safe exchanging data between PHP and Javascript
+	// Also it may be used for persistent data (ex: data storage) ; this will be always supported even if the openssl blowfish support will dissapear the built-in support will be available
+	// If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY
+	// The crypto provider will be selected from the init value: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO
 	public static function crypto_blowfish_encrypt(?string $y_data, ?string $y_key='') {
 		//--
-		if((string)$y_data == '') { // do not trim !
-			return '';
-		} //end if
-		//--
+		$y_key = (string) trim((string)$y_key);
 		if((string)$y_key == '') {
-			$key = (string) SMART_FRAMEWORK_SECURITY_KEY;
+			$key = (string) trim((string)SMART_FRAMEWORK_SECURITY_KEY);
 		} else {
 			$key = (string) $y_key;
 		} //end if
 		//--
-		$cipher = (string) self::crypto_blowfish_algo();
-		//--
-		return (string) SmartCipherCrypto::encrypt((string)$cipher, (string)$key, (string)$y_data);
+		return (string) SmartCipherCrypto::blowfish_encrypt((string)$key, (string)$y_data, (string)self::crypto_blowfish_algo());
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -897,22 +922,20 @@ final class SmartUtils {
 
 	//================================================================
 	// This always provides a compatible layer with the JS Blowfish CBC
-	// It must be used for safe exchanging data between PHP and Javascript
+	// It can be used for safe data exchanging between PHP and Javascript
+	// Also it may be used for persistent data (ex: data storage) ; this will be always supported even if the openssl blowfish support will dissapear the built-in support will be available
+	// If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY
+	// The crypto provider will be selected from the init value: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO
 	public static function crypto_blowfish_decrypt(?string $y_data, ?string $y_key='') {
 		//--
-		if((string)trim((string)$y_data) == '') {
-			return '';
-		} //end if
-		//--
+		$y_key = (string) trim((string)$y_key);
 		if((string)$y_key == '') {
-			$key = (string) SMART_FRAMEWORK_SECURITY_KEY;
+			$key = (string) trim((string)SMART_FRAMEWORK_SECURITY_KEY);
 		} else {
 			$key = (string) $y_key;
 		} //end if
 		//--
-		$cipher = (string) self::crypto_blowfish_algo();
-		//--
-		return (string) SmartCipherCrypto::decrypt((string)$cipher, (string)$key, (string)$y_data);
+		return (string) SmartCipherCrypto::blowfish_decrypt((string)$key, (string)$y_data, (string)self::crypto_blowfish_algo());
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -936,12 +959,14 @@ final class SmartUtils {
 
 
 	//================================================================
-	// This is intended for general use of symetric crypto api in Smart.Framework
-	// It can use any of the: hash or openssl algos: blowfish, twofish, serpent, ghost
+	// This is intended for general use of symetric crypto api in Smart.Framework with dynamic data
+	// It can use any of the: hash or openssl algos: blowfish, aes, camellia
+	// Important: do not use this method for persistent data ! Algos in OpenSSL may chanve over time
 	public static function crypto_encrypt(?string $y_data, ?string $y_key='') {
 		//--
+		$y_key = (string) trim((string)$y_key);
 		if((string)$y_key == '') {
-			$key = (string) SMART_FRAMEWORK_SECURITY_KEY;
+			$key = (string) trim((string)SMART_FRAMEWORK_SECURITY_KEY);
 		} else {
 			$key = (string) $y_key;
 		} //end if
@@ -956,11 +981,13 @@ final class SmartUtils {
 
 	//================================================================
 	// This is intended for general use of symetric crypto api in Smart.Framework
-	// It can use any of the: hash or openssl algos: blowfish, twofish, serpent, ghost
+	// It can use any of the: hash or openssl algos: blowfish, aes, camellia
+	// Important: do not use this method for persistent data ! Algos in OpenSSL may chanve over time
 	public static function crypto_decrypt(?string $y_data, ?string $y_key='') {
 		//--
+		$y_key = (string) trim((string)$y_key);
 		if((string)$y_key == '') {
-			$key = (string) SMART_FRAMEWORK_SECURITY_KEY;
+			$key = (string) trim((string)SMART_FRAMEWORK_SECURITY_KEY);
 		} else {
 			$key = (string) $y_key;
 		} //end if

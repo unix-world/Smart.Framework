@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20210818
  *
  */
 final class TestUnitStrings {
@@ -358,9 +358,9 @@ final class TestUnitStrings {
 				'line3' => ['A' => 'b', 'c' => 'D', 'e' => '', 'F' => ['g' => 'H', 'i' => '']],
 				'line4' => '',
 				'line5' => \date('Y-m-d H:i:s'),
-				'Line6' => \SmartHashCrypto::sha1((string)\time()),
-				'linE7' => \SmartHashCrypto::sha256((string)\time()),
-				'LiNe8' => \SmartHashCrypto::sha384((string)\time()),
+				'Line6' => \SmartHashCrypto::md5((string)\time()),
+				'linE7' => \SmartHashCrypto::sha1((string)\time()),
+				'LiNe8' => \SmartHashCrypto::sha256((string)\time()),
 				'LiNE9' => \SmartHashCrypto::sha512((string)\time())
 			);
 			$test_xml = (string) (new \SmartXmlComposer())->transform($test_arr, 'xml'); // array to xml
@@ -396,10 +396,19 @@ final class TestUnitStrings {
 		$the_random_unicode_text = (string) \sha1($unicode_text.\Smart::random_number(1000,9999)).'-'.$unicode_text." \r\n\t".'-'.\Smart::uuid_10_num().'-'.\Smart::uuid_10_str().'-'.\Smart::uuid_10_seq();
 		//--
 		if((string)$err == '') {
-			$the_test = 'Data: Archive / Unarchive';
+			$the_test = 'Data: Archive / Unarchive (v2)';
 			$tests[] = $the_test;
-			if(\SmartUtils::data_unarchive(\SmartUtils::data_archive($the_random_unicode_text)) !== (string)$the_random_unicode_text) {
+			if((string)\SmartUtils::data_unarchive((string)\SmartUtils::data_archive($the_random_unicode_text)) !== (string)$the_random_unicode_text) {
 				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.$the_random_unicode_text.']';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'Data: Unarchive (v1)';
+			$tests[] = $the_test;
+			$testPhpArchDataV1 = 'HclBDkBAEETRw1hLplupZimDSMRKHMD06Psfgdj9/IfM1ZQ9Z00YLVlnfxNc+Zt+j6Phc+HM3tDkbcn7eR3tuU3SDKGhjwrCUaM4i6dbS7r9qRgEdIsq6i8='."\n".'PHP.SF.151129/B64.ZLibRaw.HEX';
+			if((string)\SmartUtils::data_unarchive((string)$testPhpArchDataV1) !== 'Lorem Ipsum dolor sit Amet') {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		//--

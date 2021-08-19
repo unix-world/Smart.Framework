@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20210615
+ * @version     v.20210816
  * @package     @Core
  *
  */
@@ -89,6 +89,14 @@ final class Smart {
 	public const REGEX_SAFE_USERNAME 	= '/^[a-z0-9\.]+$/';
 
 	public const DECIMAL_NUM_PRECISION 	= '9999999999999.9'; // DECIMAL I[13].D[1] ; if I + D > 14 looses some decimal precision ; by example: 99999999999999.9900 becomes 99999999999999.98 with 2 decimals and 100000000000000.0 with one decimal on number format ! ; no higher decimal numbers than this are safe using a precision like 14, the max in PHP
+
+	public const CHARSET_BASE_16 = '0123456789abcdef';
+	public const CHARSET_BASE_32 = '0123456789ABCDEFGHIJKLMNOPQRSTUV';
+	public const CHARSET_BASE_36 = '0123456789abcdefghijklmnopqrstuvwxyz';
+	public const CHARSET_BASE_58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; // compatible with smartgo
+	public const CHARSET_BASE_62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	public const CHARSET_BASE_85 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#'; // https://rfc.zeromq.org/spec:32/Z85/
+	public const CHARSET_BASE_92 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#|;,_~`"'; // uxm, compatible with smartgo
 
 	private static $Cfgs = []; // registry of cached config data
 
@@ -1975,6 +1983,235 @@ final class Smart {
 
 
 	//================================================================
+	// based on idea by: https://github.com/tuupola/base62 # License MIT
+	private static function base_asciihex_convert(array $source, int $sourceBase, int $targetBase) {
+		//--
+		$result = [];
+		//--
+		while($count = count($source)) {
+			$quotient = [];
+			$remainder = 0;
+			for($i = 0; $i !== $count; $i++) {
+				$accumulator = $source[$i] + $remainder * $sourceBase;
+				//--
+				$digit = intdiv($accumulator, $targetBase); // PHP 7+
+			//	$digit = ($accumulator - ($accumulator % $targetBase)) / $targetBase; // PHP 5.6-
+				//--
+				$remainder = $accumulator % $targetBase;
+				if(count($quotient) || $digit) {
+					$quotient[] = $digit;
+				} //end if
+			} //end for
+			array_unshift($result, $remainder);
+			$source = $quotient;
+		} //end while
+		$source = null;
+		//--
+		return (array) $result;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// based on idea by: https://github.com/tuupola/base62 # License MIT
+	/**
+	 * Safe convert to hex from any of the following bases: 32, 36, 58, 62, 85, 92
+	 * In case of error will return an empty string.
+	 *
+	 * @param STRING 		$encoded			:: A string (baseXX encoded) that was previous encoded using Smart::base_from_hex_convert()
+	 * @param INTEGER 		$currentBase		:: The base to convert ; Available source base: 32, 36, 58, 62, 85, 92
+	 * @return STRING 							:: The decoded string (as hex) from the selected base or empty string on error
+	 */
+	public static function base_to_hex_convert(string $encoded, int $currentBase) {
+		//--
+		$encoded = (string) trim((string)$encoded);
+		if((string)$encoded == '') {
+			self::log_warning(__METHOD__.' # Empty Input');
+			return '';
+		} //end if
+		//--
+		$currentBase = (int) $currentBase;
+		$baseCharset = '';
+		switch((int)$currentBase) {
+			case 32:
+				$baseCharset = (string) self::CHARSET_BASE_32;
+				break;
+			case 36:
+				$baseCharset = (string) self::CHARSET_BASE_36;
+				break;
+			case 58:
+				$baseCharset = (string) self::CHARSET_BASE_58;
+				break;
+			case 62:
+				$baseCharset = (string) self::CHARSET_BASE_62;
+				break;
+			case 85:
+				$baseCharset = (string) self::CHARSET_BASE_85;
+				break;
+			case 92:
+				$baseCharset = (string) self::CHARSET_BASE_92;
+				break;
+			default:
+				break;
+		} //end switch
+		$baseCharset = (string) trim((string)$baseCharset);
+		if((string)$baseCharset == '') {
+			self::log_warning(__METHOD__.' # Invalid Current Base: `'.(int)$currentBase.'`');
+			return '';
+		} //end if
+		//--
+		if((int)strlen((string)$encoded) !== (int)strspn((string)$encoded, (string)$baseCharset)) {
+			self::log_warning(__METHOD__.' # Invalid Input, NOT HEX: `'.$encoded.'`');
+			return '';
+		} //end if
+		//--
+		$data = (array) str_split((string)$encoded, 1);
+		$encoded = null;
+		$data = (array) array_map(function($character) use($baseCharset) {
+			return strpos($baseCharset, $character);
+		}, $data);
+		//--
+		$leadingZeroes = 0;
+		while(!empty($data) && 0 === $data[0]) {
+			$leadingZeroes++;
+			array_shift($data);
+		} //end while
+		//--
+		$converted = (array) self::base_asciihex_convert((array)$data, (int)$currentBase, 256);
+		$data = null;
+		//--
+		if(0 < $leadingZeroes) {
+			$converted = (array) array_merge(
+				(array) array_fill(0, $leadingZeroes, 0),
+				(array) $converted
+			);
+		} //end if
+		//--
+		$converted = (string) implode('', array_map('chr', (array)$converted));
+		//--
+		return (string) bin2hex((string)$converted);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// based on idea by: https://github.com/tuupola/base62 # License MIT
+	/**
+	 * Safe convert from hex to any of the following bases: 32, 36, 58, 62, 85, 92
+	 * In case of error will return an empty string.
+	 *
+	 * @param STRING 		$hexstr			:: A hexadecimal string (base16) ; can be from bin2hex($string) or from dechex($integer) but in the case of using dechex must use also left padding with zeros to have an even length of the hex data
+	 * @param INTEGER 		$targetBase		:: The base to convert ; Available target base: 32, 36, 58, 62, 85, 92
+	 * @return STRING 						:: The encoded string in the selected base or empty string on error
+	 */
+	public static function base_from_hex_convert(string $hexstr, int $targetBase) {
+		//--
+		$hexstr = (string) trim((string)$hexstr); // req. hex to allow converting also integer values not only strings as bin2hex($string) ; passing an integer can be done using dechex($integer) will use a different compression, making a shorter converted string ; Ex: bin2hex('2') = 3132 / dec2hex(2) = c !!
+		if((string)$hexstr == '') {
+			self::log_warning(__METHOD__.' # Empty Input');
+			return '';
+		} //end if
+		//--
+		$targetBase = (int) $targetBase;
+		$baseCharset = '';
+		switch((int)$targetBase) {
+			case 32:
+				$baseCharset = (string) self::CHARSET_BASE_32;
+				break;
+			case 36:
+				$baseCharset = (string) self::CHARSET_BASE_36;
+				break;
+			case 58:
+				$baseCharset = (string) self::CHARSET_BASE_58;
+				break;
+			case 62:
+				$baseCharset = (string) self::CHARSET_BASE_62;
+				break;
+			case 85:
+				$baseCharset = (string) self::CHARSET_BASE_85;
+				break;
+			case 92:
+				$baseCharset = (string) self::CHARSET_BASE_92;
+				break;
+			default:
+				break;
+		} //end switch
+		$baseCharset = (string) trim((string)$baseCharset);
+		if((string)$baseCharset == '') {
+			self::log_warning(__METHOD__.' # Invalid Target Base: `'.(int)$targetBase.'`');
+			return '';
+		} //end if
+		//--
+		if((int)strlen((string)$hexstr) !== (int)strspn((string)$hexstr, (string)self::CHARSET_BASE_16)) {
+			self::log_warning(__METHOD__.' # Invalid Input, NOT HEX: `'.$hexstr.'`');
+			return '';
+		} //end if
+		//--
+		$source = (string) hex2bin((string)$hexstr);
+		if((string)$source == '') {
+			self::log_warning(__METHOD__.' # Invalid Input / Invalid HEX: `'.$hexstr.'`');
+			return '';
+		} //end if
+		$hexstr = null; // free mem
+		$source = (array) array_map('ord', (array)str_split((string)$source, 1)); // map hex (16) to ascii (256)
+		//--
+		$leadingZeroes = 0;
+		while(!empty($source) && 0 === $source[0]) {
+			$leadingZeroes++;
+			array_shift($source); // trim off leading zeroes
+		} //end while
+		//--
+		$result = (array) self::base_asciihex_convert((array)$source, 256, (int)$targetBase);
+		$source = null;
+		//--
+		if(0 < $leadingZeroes) {
+			$result = array_merge(
+				(array) array_fill(0, (int)$leadingZeroes, 0),
+				(array) $result
+			);
+		} //end if
+		//--
+		return implode('', array_map(function($val) use($baseCharset) {
+			return (string) $baseCharset[$val];
+		}, (array)$result));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/* Converts a 64-bit integer number to base62 (string)
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param INTEGER+ $num
+	 * @return STRING
+	 */
+	public static function int10_to_base62_str(?int $num) {
+		//--
+		$num = (int) $num;
+		if($num < 0) {
+			$num = 0;
+		} //end if
+		//--
+		// METHOD UPGRADED ON 2021.08.12 AS THIS IS SAFER ON ALL PLATFORMS
+		// THE OLD METHOD IS AVAILABLE ONLY FOR TESTING IN: modules/mod-samples/libs/TestUnitCrypto.php
+		//--
+		$hex = (string) dechex((int)$num);
+		if((strlen((string)$hex) % 2) != 0) {
+			$hex = '0'.$hex; // even zeros padding
+		} //end if
+		//--
+		return (string) self::base_from_hex_convert((string)$hex, 62);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	/**
 	 * Returns the valid Net Server ID (to be used in a cluster)
 	 * Valid values are 0..1295 (or 00..ZZ if BASE36)
@@ -2018,34 +2255,6 @@ final class Smart {
 		} //end if
 		//--
 		return (string) 'Namespace:'.SMART_SOFTWARE_NAMESPACE.'NetServer#'.$netserverid.'UUIDUSequence='.self::uuid_13_seq().';UUIDSequence='.self::uuid_10_seq().';UUIDRandStr='.self::uuid_10_str().';UUIDRandNum='.self::uuid_10_num().';'.$y_suffix;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	// converts a 64-bit integer number to base62 (string)
-	private static function int10_to_base62_str(?int $num) {
-		//--
-		$num = (int) $num;
-		if($num < 0) {
-			$num = 0;
-		} //end if
-		//--
-		$b = 62;
-		$base = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-		//--
-		$r = (int) $num % $b;
-		$res = (string) $base[$r];
-		//--
-		$q = (int) floor($num / $b);
-		while ($q) {
-			$r = (int) $q % $b;
-			$q = (int) floor($q / $b);
-			$res = (string) $base[$r].$res;
-		} //end while
-		//--
-		return (string) $res;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2534,6 +2743,48 @@ final class Smart {
 		} //end for
 		//--
 		return (array) $new_arr;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Base64 (Safe URL) Modified Encoding from a string by replacing the standard base64 encoding as follows:
+	 * '+' with '-',
+	 * '/' with '_',
+	 * '=' with '.'
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING 	$str 				:: The string to be encoded
+	 * @return STRING 						:: The safe URL Base64 encoded string
+	 */
+	public static function b64s_enc(string $str) {
+		//--
+		return (string) str_replace(['+', '/', '='], ['-', '_', '.'], (string)base64_encode((string)$str));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Decoded string from the Base64 (Safe URL) Encoding by replacing back as follows before applying the standard base64 decoding:
+	 * '-' with '+',
+	 * '_' with '/',
+	 * '.' with '='
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING 	$str 				:: The safe URL Base64 encoded string
+	 * @return STRING 						:: The decoded string
+	 */
+	public static function b64s_dec(string $str) {
+		//--
+		return (string) base64_decode((string)str_replace(['-', '_', '.'], ['+', '/', '='], (string)trim((string)$str)));
 		//--
 	} //END FUNCTION
 	//================================================================

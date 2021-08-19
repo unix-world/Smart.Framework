@@ -22,20 +22,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 // [PHP8]
 
-//--
-if(!defined('SMART_FRAMEWORK_SECURITY_KEY')) {
-	@http_response_code(500);
-	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SECURITY_KEY');
-} //end if
-if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) == '') {
-	die('Empty INIT constant value for SMART_FRAMEWORK_SECURITY_KEY');
-} //end if
-//--
-
 //=====================================================================================
 //===================================================================================== CLASS START
 //=====================================================================================
-
 
 /**
  * Class: SmartCipherCrypto
@@ -50,8 +39,8 @@ if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) == '') {
  * @usage       static object: Class::method() - This class provides only STATIC methods
  * @hints       Blowfish is a 64-bit (8 bytes) block cipher. Max Key is up to 56 chars length (56 bytes = 448 bits). The CBC mode requires a initialization vector (iv).
  *
- * @depends     classes: Smart, SmartCryptoCipherBlowfishCBC, SmartCryptoOpenSSLCipher, SmartCryptoCipherHash
- * @version     v.20210506
+ * @depends     classes: SmartFrameworkRegistry, Smart, SmartCryptoCipherBlowfishCBC, SmartCryptoOpenSSLCipher, SmartCryptoCipherHash
+ * @version     v.20210819
  * @package     @Core:Crypto
  *
  */
@@ -59,34 +48,28 @@ final class SmartCipherCrypto {
 
 	// ::
 
-
 	//==============================================================
 	/**
 	 * Encrypts a string using the selected Cipher Algo.
 	 *
 	 * @param ENUM $cipher 		Selected cipher: hash/{mode}, blowfish.cbc, openssl/cipher/mode
-	 * @param STRING $key 		The encryption key
+	 * @param STRING $key 		The encryption key (must be between 7 and 4096 bytes)
 	 * @param STRING $data 		The plain data to be encrypted
-	 * @return STRING 			The encrypted data
+	 * @return STRING 			The encrypted data as B64S or empty string on error
 	 */
-	public static function encrypt($cipher, $key, $data) {
+	public static function encrypt(?string $cipher, ?string $key, ?string $data) {
+		//--
+		$crypto = self::crypto((string)$cipher, (string)$key);
+		if(!is_object($crypto)) {
+			Smart::log_warning(__METHOD__.' # ERROR: '.$crypto);
+			return '';
+		} //end if
 		//--
 		if((string)trim((string)$data) == '') {
 			return '';
 		} //end if
 		//--
-		if(((string)$cipher == 'blowfish') OR ((string)$cipher == 'blowfish.cbc')) { // use the built-in blowfish CBC
-			$crypt = new SmartCryptoCipherBlowfishCBC((string)$key);
-		} elseif(substr((string)$cipher, 0, 8) == 'openssl/') {
-			$crypt = new SmartCryptoOpenSSLCipher((string)$key, (string)$cipher);
-		} elseif(substr((string)$cipher, 0, 5) == 'hash/') {
-			$crypt = new SmartCryptoCipherHash((string)$key, (string)$cipher);
-		} else {
-			Smart::raise_error('SmartCipherCrypto/Encrypt: INVALID Cipher/Algo');
-			return '';
-		} //end if else
-		//--
-		return (string) $crypt->encrypt((string)$data);
+		return (string) $crypto->encrypt((string)$data);
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -97,28 +80,201 @@ final class SmartCipherCrypto {
 	 * Decrypts a string using the selected Cipher Algo.
 	 *
 	 * @param ENUM $cipher 		Selected cipher: hash/{mode}, blowfish.cbc, openssl/cipher/mode
-	 * @param STRING $key 		The encryption key
+	 * @param STRING $key 		The encryption key (must be between 7 and 4096 bytes)
 	 * @param STRING $data 		The encrypted data
-	 * @return STRING 			The plain / decrypted data
+	 * @return STRING 			The plain (decrypted) data or empty string on error
 	 */
-	public static function decrypt($cipher, $key, $data) {
+	public static function decrypt(?string $cipher, ?string $key, ?string $data) {
+		//--
+		$crypto = self::crypto((string)$cipher, (string)$key);
+		if(!is_object($crypto)) {
+			Smart::log_warning(__METHOD__.' # ERROR: '.$crypto);
+			return '';
+		} //end if
 		//--
 		if((string)trim((string)$data) == '') {
 			return '';
 		} //end if
 		//--
-		if(((string)$cipher == 'blowfish') OR ((string)$cipher == 'blowfish.cbc')) { // use the built-in blowfish CBC
-			$crypt = new SmartCryptoCipherBlowfishCBC((string)$key);
-		} elseif(substr((string)$cipher, 0, 8) == 'openssl/') {
-			$crypt = new SmartCryptoOpenSSLCipher((string)$key, (string)$cipher);
-		} elseif(substr((string)$cipher, 0, 5) == 'hash/') {
-			$crypt = new SmartCryptoCipherHash((string)$key, (string)$cipher);
-		} else {
-			Smart::raise_error('SmartCipherCrypto/Decrypt: INVALID Cipher/Algo');
+		return (string) $crypto->decrypt((string)$data);
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Encrypts a string using the Blowfish CBC 448bit (v2) or the Blowfish CBC 384bit (v1)
+	 * This is intended to be used for persistent data (ex: data storage)
+	 * It will be always supported even if the openssl blowfish support will dissapear the built-in support will be available
+	 *
+	 * @access 		private		Use the alias method from lib utils !
+	 * @internal
+	 *
+	 * @param STRING $key 		The encryption key (must be between 7 and 4096 bytes)
+	 * @param STRING $data 		The plain data to be encrypted
+	 * @param ENUM $cipher 		Selected cipher: blowfish.cbc (default) | openssl/blowfish/CBC
+	 * @return STRING 			The encrypted data as B64S or empty string on error
+	 */
+	public static function blowfish_encrypt(?string $key, ?string $data, ?string $cipher=null) {
+		//--
+		if((string)$cipher !== 'openssl/blowfish/CBC') {
+			$cipher = 'blowfish.cbc'; // fall back to internal
+		} //end if
+		//--
+		if((string)$data == '') { // do not trim, preserve original data !
 			return '';
+		} //end if
+		//--
+		return (string) 'bf'.(56*8).'.'.'v2'.'!'.self::encrypt((string)$cipher, (string)$key, (string)$data);
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Decrypts a string using the Blowfish CBC 448bit (v2)
+	 * This is intended to be used for persistent data (ex: data storage)
+	 * It will be always supported even if the openssl blowfish support will dissapear the built-in support will be available
+	 *
+	 * @access 		private		Use the alias method from lib utils !
+	 * @internal
+	 *
+	 * @param STRING $key 		The encryption key (must be between 7 and 4096 bytes)
+	 * @param STRING $data 		The plain data to be encrypted
+	 * @param ENUM $cipher 		Selected cipher: blowfish.cbc (default) | openssl/blowfish/CBC
+	 * @return STRING 			The encrypted data as B64S or empty string on error
+	 */
+	public static function blowfish_decrypt(?string $key, ?string $data, ?string $cipher=null) {
+		//--
+		if((string)$cipher !== 'openssl/blowfish/CBC') {
+			$cipher = 'blowfish.cbc'; // fall back to internal
+		} //end if
+		//--
+		$data = (string) trim((string)$data);
+		if((string)$data == '') {
+			return '';
+		} //end if
+		//--
+		$version = 2;
+		if(strpos((string)$data, 'bf'.(56*8).'.'.'v2'.'!') !== 0) {
+			if(strpos((string)$data, 'bf'.(48*8).'.'.'v1'.'!') === 0) {
+				$data = (array) explode('!', (string)$data, 2);
+				$data = (string) trim((string)($data[1] ?? null));
+			} //end if
+			if(!preg_match('/^['.preg_quote((string)strtoupper((string)Smart::CHARSET_BASE_16)).']+$/', (string)$data)) {
+				return ''; // stop here, malformed data, must be hex all upper as v1 implemented
+			} //end if
+			$version = 1;
+		} else { // v2
+			$data = (array) explode('!', (string)$data, 2);
+			$data = (string) trim((string)($data[1] ?? null));
 		} //end if else
 		//--
-		return (string) $crypt->decrypt((string)$data);
+		if($version == 1) { // v1 (only support decrypt)
+			return (string) (new SmartCryptoCipherBlowfishCBC( // blowfish 384 CBC
+				(string) (string) substr((string)SmartHashCrypto::sha512((string)$key), 13, 29).strtoupper((string)substr((string)sha1((string)$key), 13, 10)).substr((string)md5((string)$key), 13, 9),
+				(string) substr((string)base64_encode((string)sha1('@Smart.Framework-Crypto/BlowFish:'.$key.'#'.sha1('BlowFish-iv-SHA1'.$key).'-'.strtoupper((string)md5('BlowFish-iv-MD5'.$key)).'#')), 1, 8),
+				false // use 384bit
+			))->decrypt((string)$data, false, false);
+		} else { // v2
+			return (string) self::decrypt((string)$cipher, (string)$key, (string)$data);
+		} //end if else
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Generate a Derived Key and Initialization vector iV
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING $key 		The encryption key
+	 * @return ARRAY 			[ key => '...', 'iv' => '...' ]
+	 */
+	private static function keyderive(?string $key) { // {{{SYNC-CRYPTO-KEY-DERIVE}}}
+		//--
+		$key = (string) trim((string)$key); // {{{SYNC-CRYPTO-KEY-TRIM}}}
+		//--
+		$composed_key = (string) SmartHashCrypto::safecomposedkey((string)$key);
+		$len_composed_key = (int) strlen((string)$composed_key);
+		$len_composed_trimmed_key = (int) strlen((string)trim((string)$composed_key));
+		if(((int)$len_composed_key !== 553) OR ((int)$len_composed_trimmed_key !== 553)) {
+			if(SmartFrameworkRegistry::ifInternalDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
+					Smart::log_notice(__METHOD__.' # Safe Composed Key is invalid: `'.$key.'`');
+				} //end if
+			} //end if
+			Smart::raise_error(__METHOD__.' # Safe Composed Key is invalid ('.(int)$len_composed_trimmed_key.'/'.(int)$len_composed_trimmed_key.') !');
+			return array();
+		} //end if
+		//--
+		$derived_key = (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha256((string)$composed_key), 92)."'".Smart::base_from_hex_convert((string)SmartHashCrypto::md5((string)$composed_key), 92);
+		//-- IV, based on crc32 and sha1
+		$iv = (string) str_pad((string)SmartHashCrypto::crc32b((string)$key, true), 8, '0', STR_PAD_LEFT);
+		$iv .= ':'.SmartHashCrypto::sha1((string)$key, true);
+		//-- chances are zero in practice to have a key colission by ensuring 2 different (salted and not salted) input to produce a simultan colission in all 5 algos: CRC32 / MD5 / SHA1 / SHA256 / SHA512 at once !!!
+		return (array) [
+			'key' => (string) $derived_key, // safe derivation: contains a complete SHA256(B64) and the first 11 chars from SHA512(B64) from the hash of composed key
+			'iv'  => (string) $iv, // ensure the checksum of original input string
+		];
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Get the crypto object or an error message if could not initialize the crypto object
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param ENUM $cipher 		Selected cipher: hash/{mode}, blowfish.cbc, openssl/cipher/mode
+	 * @param STRING $key 		The encryption key
+	 * @return MIXED 			Crypto OBJECT / The Error Message as STRING
+	 */
+	private static function crypto(string $cipher, string $key) {
+		//--
+		$key = (string) trim((string)$key);
+		if((string)$key == '') {
+			return 'The Key is Empty';
+		} //end if
+		//--
+		if((string)substr((string)$cipher, 0, 5) == 'hash/') {
+			$arr_kiv = [ 'key' => (string) $key, 'iv' => '' ]; // key will be derived inside hash object, no IV ...
+		} else {
+			$arr_kiv = (array) self::keyderive((string)$key);
+		} //end if else
+		if((int)Smart::array_size($arr_kiv) <= 0) {
+			return 'Empty Key Derivation ...'; // will log warnings from keyderive ...
+		} //end if
+		//--
+		$crypto = '???';
+		if(((string)$cipher == 'blowfish') OR ((string)$cipher == 'blowfish.cbc')) { // use the built-in blowfish CBC
+			$arr_kiv['key'] = (string) substr((string)$arr_kiv['key'], 0, 448/8); // {{{SYNC-BLOWFISH-KEY}}}
+			$arr_kiv['iv'] = (string) substr((string)$arr_kiv['iv'], 0, 64/8); // {{{SYNC-BLOWFISH-IV}}}
+			$crypto = new SmartCryptoCipherBlowfishCBC((string)$arr_kiv['key'], (string)$arr_kiv['iv']); // blowfish448
+		} elseif((string)substr((string)$cipher, 0, 8) == 'openssl/') {
+			if(strpos((string)$cipher, '/blowfish/') !== false) { // blowfish448
+				$arr_kiv['key'] = (string) substr((string)$arr_kiv['key'], 0, 448/8); // {{{SYNC-BLOWFISH-KEY}}}
+				$arr_kiv['iv'] = (string) substr((string)$arr_kiv['iv'], 0, 64/8); // {{{SYNC-BLOWFISH-IV}}}
+			} else { // camellia256 / aes256
+				$arr_kiv['key'] = (string) substr((string)$arr_kiv['key'], 0, 256/8); // {{{SYNC-BLOWFISH-KEY}}}
+				$arr_kiv['iv'] = (string) substr((string)$arr_kiv['iv'], 0, 128/8); // {{{SYNC-BLOWFISH-IV}}}
+			} //end if else
+			$crypto = new SmartCryptoOpenSSLCipher((string)$cipher, (string)$arr_kiv['key'], (string)$arr_kiv['iv']);
+		} elseif((string)substr((string)$cipher, 0, 5) == 'hash/') {
+			$crypto = new SmartCryptoCipherHash((string)$cipher, (string)$arr_kiv['key']); // key will be derived inside hash object, no IV ...
+		} else {
+			$crypto = 'INVALID Cipher/Algo';
+		} //end if else
+		//--
+		return $crypto; // mixed
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -145,8 +301,8 @@ final class SmartCipherCrypto {
  * @access 		private
  * @internal
  *
- * @depends     extensions: PHP OpenSSL ; classes: Smart, SmartHashCrypto ; constants SMART_FRAMEWORK_SECURITY_KEY
- * @version     v.20210506
+ * @depends     extensions: PHP OpenSSL ; classes: Smart, SmartHashCrypto
+ * @version     v.20210819
  *
  */
 final class SmartCryptoOpenSSLCipher {
@@ -174,19 +330,14 @@ final class SmartCryptoOpenSSLCipher {
 	 * @param enum $runmode		ex: openssl/blowfish/CBC
 	 * @access public
 	 */
-	public function __construct($key, $runmode) {
+	public function __construct(string $runmode, string $key, string $iv) {
 		//--
 		if((!function_exists('openssl_encrypt')) OR (!function_exists('openssl_decrypt'))) {
-			Smart::raise_error('SmartCryptoOpenSSLCipher requires the PHP OpenSSL Extension with Encrypt/Decrypt support ! If is not available use the alternative Encryption Mode in Configuration INITS !', 'PHP OpenSSL Extension Encrypt/Decrypt support is missing');
-			return '';
-		} //end if
-		//-- Blowfish uses a variable size key, ranging from 32 to 448 bits (4 to 56 characters)
-		$key = (string) $key;
-		if((string)trim((string)$key) == '') {
-			$key = (string) SMART_FRAMEWORK_SECURITY_KEY;
+			Smart::raise_error(__METHOD__.' # requires the PHP OpenSSL Extension with Encrypt/Decrypt support ! If is not available use the alternative Encryption Mode in Configuration INITS !', 'PHP OpenSSL Extension Encrypt/Decrypt support is missing');
+			return;
 		} //end if
 		//--
-		$tmp_mode_crypto 	= (array)  explode('/', (string)$runmode); // Example: 'openssl/blowfish/CBC'
+		$tmp_mode_crypto 	= (array) explode('/', (string)$runmode, 3); // Example: 'openssl/blowfish/CBC'
 		if(!array_key_exists(0, $tmp_mode_crypto)) {
 			$tmp_mode_crypto[0] = null;
 		} //end if
@@ -201,17 +352,53 @@ final class SmartCryptoOpenSSLCipher {
 		$tmp_expl_method 	= (string) trim((string)strtoupper((string)$tmp_mode_crypto[2]));
 		//--
 		if((string)$tmp_expl_check != 'openssl') {
-			Smart::raise_error('SmartCryptoOpenSSLCipher // Invalid Run Mode: '.$tmp_mode_crypto);
-			return '';
+			Smart::raise_error(__METHOD__.' # Invalid Run Mode: '.$tmp_mode_crypto);
+			return;
+		} //end if
+		//--
+		$len_key = 0;
+		$len_iv = 0;
+		switch((string)$tmp_expl_algo) { // cipher
+			//--
+			case 'blowfish': // 448 ; currently this is the only-one compatible with the Symmetric Crypto JS Api ; chipher (Blowfish is a 64-bit (8 bytes) block cipher)
+				//-- Blowfish uses 64-bit blocks, a variable size key (ranging from 32 to 448 bits = 4 to 56 bytes[characters]) and an initialization vector (IV, 64bit = 8 bytes[characters])
+				$len_key = 56; // Blowfish448 # key: 448 bits = 56 bytes ; {{{SYNC-BLOWFISH-KEY}}}
+				$len_iv  =  8; // Blowfish448 # iv:   64 bits =  8 bytes ; {{{SYNC-BLOWFISH-IV}}}
+				//--
+				break;
+			case 'camellia256': // 256
+				//-- Camellia key ; sizes: 128, 192 or 256 bits = max 32 chars ; Camellia iv ; block size: 128 bits = 16 chars
+				$len_key = 32; // Camellia256 # key: 256 bits = 32 bytes
+				$len_iv  = 16; // Camellia256 # iv:  128 bits = 16 bytes
+				//--
+				break;
+			case 'aes256': // 256
+				//-- AES key ; sizes: 128, 192 or 256 bits = max 32 chars ; AES iv ; block size: 128 bits = 16 chars
+				$len_key = 32; // AES256 # key: 256 bits = 32 bytes
+				$len_iv  = 16; // AES256 # iv:  128 bits = 16 bytes
+				//--
+				break;
+			default:
+				Smart::raise_error(__METHOD__.' # Invalid Cipher: '.$tmp_expl_algo);
+				return;
+		} //end if
+		//--
+		if(((int)strlen((string)$key) !== (int)$len_key) OR ((int)strlen((string)trim((string)$key)) !== (int)$len_key)) {
+			Smart::raise_error(__METHOD__.' # Invalid Key, must be exactly '.(int)$len_key.' bytes ('.(int)((int)$len_key * 8).' bits)');
+			return;
+		} //end if
+		if(((int)strlen((string)$iv) !== (int)$len_iv) OR ((int)strlen((string)trim((string)$iv)) !== (int)$len_iv)) {
+			Smart::raise_error(__METHOD__.' # Invalid iV, must be exactly '.(int)$len_iv.' bytes ('.(int)((int)$len_iv * 8).' bits)');
+			return;
 		} //end if
 		//--
 		$this->crypto_opts = 0;
 		//--
 		switch((string)$tmp_expl_algo) { // cipher
 			//--
-			case 'blowfish': // currently this is the only-one compatible with the Symmetric Crypto JS Api ; chipher (Blowfish is a 64-bit (8 bytes) block cipher)
+			case 'blowfish': // 448 ; currently this is the only-one compatible with the Symmetric Crypto JS Api ; chipher (Blowfish is a 64-bit (8 bytes) block cipher)
 				//--
-				$this->crypto_opts = OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING; // preserve compatibility with mcrypt
+				$this->crypto_opts = OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING; // preserve compatibility with the PHP and JS classes and also mcrypt
 				//--
 				switch((string)$tmp_expl_method) { // for blowfish accept only: CBC, CFB or OFB
 					case 'OFB':
@@ -224,31 +411,9 @@ final class SmartCryptoOpenSSLCipher {
 					default:
 						$this->crypto_cipher = 'BF-CBC'; // Blowfish CBC (default mode)
 				} //end switch
-				//-- Blowfish key {{{SYNC-BLOWFISH-KEY}}} ; key size: 32 .. 448 bits (4 .. 56 chars) ; default used is 384 bits = 48 chars.
-				$this->crypto_key = (string) substr((string)SmartHashCrypto::sha512((string)$key), 13, 29).strtoupper((string)substr((string)sha1((string)$key), 13, 10)).substr((string)md5((string)$key), 13, 9);
-				//-- Blowfish iv {{{SYNC-BLOWFISH-IV}}} ; block size: 64 bits = 8 chars
-				$this->crypto_iv = (string) substr((string)base64_encode((string)sha1('@Smart.Framework-Crypto/BlowFish:'.$key.'#'.sha1('BlowFish-iv-SHA1'.$key).'-'.strtoupper((string)md5('BlowFish-iv-MD5'.$key)).'#')), 1, 8);
 				//--
-				break;
-			case 'aes256':
-				//--
-				$this->crypto_opts = OPENSSL_RAW_DATA; // don't use OPENSSL_ZERO_PADDING
-				//--
-				switch((string)$tmp_expl_method) { // for AES256 accept only: CBC, CFB or OFB
-					case 'OFB':
-						$this->crypto_cipher = 'AES-256-OFB'; // AES-256 OFB
-						break;
-					case 'CFB':
-						$this->crypto_cipher = 'AES-256-CFB'; // AES-256 CFB
-						break;
-					case 'CBC':
-					default:
-						$this->crypto_cipher = 'AES-256-CBC'; // AES-256 CBC (default mode)
-				} //end switch
-				//-- key sizes: 128, 192 or 256 bits = max 32 chars
-				$this->crypto_key = (string) substr((string)SmartHashCrypto::sha512((string)$key), 13, 20).strtoupper((string)substr((string)sha1((string)$key), 13, 10)).substr((string)md5((string)$key), 13, 2);
-				//-- block sizes: 128 bits = 16 chars
-				$this->crypto_iv = (string) substr((string)base64_encode((string)sha1('@Smart.Framework-Crypto/AES256:'.$key.'#'.sha1('AES256-iv-SHA1'.$key).'-'.strtoupper((string)md5('AES256-iv-MD5'.$key)).'#')), 1, 16);
+				$this->crypto_key = (string) $key; // Blowfish key: 448 bits = 56 bytes ; {{{SYNC-BLOWFISH-KEY}}}
+				$this->crypto_iv = (string) $iv; // Blowfish iv: 64 bits = 8 bytes ; {{{SYNC-BLOWFISH-IV}}}
 				//--
 				break;
 			case 'camellia256':
@@ -266,50 +431,37 @@ final class SmartCryptoOpenSSLCipher {
 					default:
 						$this->crypto_cipher = 'CAMELLIA-256-CBC'; // CAMELLIA-256 CBC (default mode)
 				} //end switch
-				//-- key sizes: 128, 192 or 256 bits = max 32 chars
-				$this->crypto_key = (string) substr((string)SmartHashCrypto::sha512((string)$key), 13, 20).strtoupper((string)substr((string)sha1((string)$key), 13, 10)).substr((string)md5((string)$key), 13, 2);
-				//-- block sizes: 128 bits = 16 chars
-				$this->crypto_iv = (string) substr((string)base64_encode((string)sha1('@Smart.Framework-Crypto/Camellia256:'.$key.'#'.sha1('Camellia256-iv-SHA1'.$key).'-'.strtoupper((string)md5('Camellia256-iv-MD5'.$key)).'#')), 19, 16);
+				//--
+				$this->crypto_key = (string) $key; // Camellia key: 256 bits = 32 bytes
+				$this->crypto_iv = (string) $iv; // Camellia iv: 128 bits = 16 bytes
+				//--
+				break;
+			case 'aes256':
+				//--
+				$this->crypto_opts = OPENSSL_RAW_DATA; // don't use OPENSSL_ZERO_PADDING
+				//--
+				switch((string)$tmp_expl_method) { // for AES256 accept only: CBC, CFB or OFB
+					case 'OFB':
+						$this->crypto_cipher = 'AES-256-OFB'; // AES-256 OFB
+						break;
+					case 'CFB':
+						$this->crypto_cipher = 'AES-256-CFB'; // AES-256 CFB
+						break;
+					case 'CBC':
+					default:
+						$this->crypto_cipher = 'AES-256-CBC'; // AES-256 CBC (default mode)
+				} //end switch
+				//--
+				$this->crypto_key = (string) $key; // AES key: 256 bits = 32 bytes
+				$this->crypto_iv = (string) $iv; // AES iv: 128 bits = 16 bytes
 				//--
 				break;
 			default:
-				Smart::raise_error('SmartCryptoOpenSSLCipher // Invalid Cipher: '.$tmp_expl_algo);
-				return '';
+				Smart::raise_error(__METHOD__.' # Invalid Cipher to set: '.$tmp_expl_algo);
+				return;
 		} //end if
 		//--
 	//	Smart::log_notice(__CLASS__.' @ Cipher: '.$this->crypto_cipher);
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	/**
-	 * Get the Internal Key (the real key is a modified version of the original key)
-	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 */
-	public function getKey() {
-		//--
-		return (string) $this->crypto_key;
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	/**
-	 * Get the Initialization Vector (the real IV is a modified version of the original IV)
-	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 */
-	public function getIv() {
-		//--
-		return (string) $this->crypto_iv;
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -325,22 +477,38 @@ final class SmartCryptoOpenSSLCipher {
 	 */
 	public function encrypt($plainText) {
 		//--
-		$plainText = (string) $plainText;
+		if((string)trim((string)$this->crypto_key) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto Key is Empty');
+			return '';
+		} //end if
+		if((string)trim((string)$this->crypto_iv) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto iV is Empty');
+			return '';
+		} //end if
+		if((string)trim((string)$this->crypto_cipher) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto Cipher is Empty');
+			return '';
+		} //end if
+		//--
+		if((string)$plainText == '') {
+			return '';
+		} //end if
 		//-- base64 :: because is not UTF-8 safe and may corrupt unicode characters
-		$plainText = base64_encode((string)$plainText);
+		$plainText = (string) base64_encode((string)$plainText);
 		//-- {{{SYNC-BLOWFISH-CHECKSUM}}}
-		$plainText .= '#CHECKSUM-SHA1#'.sha1($plainText);
+		$plainText .= '#CKSUM256#'.SmartHashCrypto::sha256((string)$plainText, true);
 		//--
 		//== {{{SYNC-BLOWFISH-PADDING}}}
 		//-- Blowfish is a 64-bit block cipher. This means that the data must be provided in units that are a multiple of 8 bytes
-		$padding = 8 - (strlen($plainText) & 7);
+		$padding = 8 - (int)(strlen($plainText) & 7);
 		//-- unixman: fix: add spaces as padding as we have it as b64 encoded and will not modify the original
 		for($i=0; $i<$padding; $i++) {
 			$plainText .= ' '; // unixman (pad with spaces)
 		} //end for
 		//==
 		//--
-		return (string) strtoupper((string)bin2hex((string)openssl_encrypt((string)$plainText, (string)$this->crypto_cipher, (string)$this->crypto_key, $this->crypto_opts, (string)$this->crypto_iv)));
+	//	return (string) strtoupper((string)bin2hex((string)openssl_encrypt((string)$plainText, (string)$this->crypto_cipher, (string)$this->crypto_key, $this->crypto_opts, (string)$this->crypto_iv)));
+		return (string) Smart::b64s_enc((string)openssl_encrypt((string)$plainText, (string)$this->crypto_cipher, (string)$this->crypto_key, $this->crypto_opts, (string)$this->crypto_iv));
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -356,25 +524,50 @@ final class SmartCryptoOpenSSLCipher {
 	 */
 	public function decrypt($cipherText) {
 		//--
-		if((!is_string($cipherText)) OR ((string)$cipherText == '')) {
+		if((string)trim((string)$this->crypto_key) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto Key is Empty');
+			return '';
+		} //end if
+		if((string)trim((string)$this->crypto_iv) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto iV is Empty');
+			return '';
+		} //end if
+		if((string)trim((string)$this->crypto_cipher) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto Cipher is Empty');
 			return '';
 		} //end if
 		//--
-		$cipherText = @hex2bin(strtolower(trim((string)$cipherText)));
+		$cipherText = (string) trim((string)$cipherText);
+		if((string)$cipherText == '') {
+			return '';
+		} //end if
+		//--
+	//	$cipherText = (string) hex2bin((string)strtolower((string)$cipherText));
+		$cipherText = (string) Smart::b64s_dec((string)$cipherText);
+		if((string)$cipherText == '') {
+			Smart::log_notice(__METHOD__.' # Decode Failed');
+			return '';
+		} //end if
 		//-- {{{SYNC-BLOWFISH-PADDING-TRIM}}} :: trim padding spaces
 		$plainText = (string) trim((string)openssl_decrypt((string)$cipherText, (string)$this->crypto_cipher, (string)$this->crypto_key, $this->crypto_opts, (string)$this->crypto_iv));
+		if((string)$plainText == '') {
+			Smart::log_notice(__METHOD__.' # Decrypt ('.$this->crypto_cipher.') Failed');
+			return '';
+		} //end if
 		//-- {{{SYNC-BLOWFISH-CHECKSUM}}}
-		$arr = (array) explode('#CHECKSUM-SHA1#', $plainText);
-		$plainText = '';
-		if(array_key_exists(0, $arr)) {
-			$plainText = (string) trim((string)$arr[0]);
+		$arr = (array) explode('#CKSUM256#', (string)$plainText, 2);
+		$plainText = (string) trim((string)($arr[0] ?? ''));
+		$checksum = (string) trim((string)($arr[1] ?? ''));
+		if((string)$plainText == '') {
+			Smart::log_notice(__METHOD__.' # Decrypt: Data is Empty');
+			return ''; // no checksum
 		} //end if
-		$checksum = '';
-		if(array_key_exists(1, $arr)) {
-			$checksum = (string) trim((string)$arr[1]);
+		if((string)$checksum == '') {
+			Smart::log_notice(__METHOD__.' # Decrypt: Checksum is Empty');
+			return ''; // no checksum
 		} //end if
-		if((string)sha1($plainText) != (string)$checksum) {
-			Smart::log_notice('SmartCryptoOpenSSLCipher/Decrypt: Checksum Failed');
+		if((string)SmartHashCrypto::sha256((string)$plainText, true) != (string)$checksum) {
+			Smart::log_notice(__METHOD__.' # Decrypt: Checksum Failed');
 			return ''; // string is corrupted, avoid to return
 		} //end if
 		//-- base64 :: because is not UTF-8 safe and may corrupt unicode characters
@@ -410,9 +603,8 @@ final class SmartCryptoOpenSSLCipher {
 
 /**
  * Class: SmartCryptoCipherBlowfishCBC
- * Provides a built-in based feature to handle the Blowfish (CBC) encryption / decryption.
+ * Provides a built-in based feature to handle the Blowfish 448-bit CBC encryption / decryption.
  *
- * This provides an advanced crypto handler for Blowfish CBC algorithm.
  * It is recommended to use instead the SmartUtils::crypto_blowfish_encrypt() and SmartUtils::crypto_blowfish_decrypt() which are detecting from inits if to use the OpenSSL Blowfish (faster) or the built-in Blowfish (compatible with all platforms) classes of Blowfish CBC.
  *
  * @usage       dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
@@ -421,8 +613,8 @@ final class SmartCryptoOpenSSLCipher {
  * @access 		private
  * @internal
  *
- * @depends     classes: Smart, SmartHashCrypto ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version     v.20210512
+ * @depends     classes: Smart, SmartHashCrypto
+ * @version     v.20210819
  *
  */
 final class SmartCryptoCipherBlowfishCBC {
@@ -450,49 +642,28 @@ final class SmartCryptoCipherBlowfishCBC {
 	 * @param string $key
 	 * @access public
 	 */
-	public function __construct($key) {
-		//-- Blowfish uses a variable size key, ranging from 32 to 448 bits (4 to 56 characters)
-		if((string)trim((string)$key) == '') {
-			$key = (string) SMART_FRAMEWORK_SECURITY_KEY;
+	public function __construct(string $key, string $iv, bool $enforce448=true) {
+		//-- Blowfish uses 64-bit blocks, a variable size key (ranging from 32 to 448 bits = 4 to 56 bytes[characters]) and an initialization vector (IV, 64bit = 8 bytes[characters])
+		if($enforce448 === false) { // will only allow decrypt to support v1
+			if(((int)strlen((string)$key) !== 48) OR ((int)strlen((string)trim((string)$key)) !== 48)) {
+				Smart::raise_error(__METHOD__.' # Invalid (v1) Key, must be exactly 48 bytes (384 bits)');
+				return;
+			} //end if
+		} else {
+			if(((int)strlen((string)$key) !== 56) OR ((int)strlen((string)trim((string)$key)) !== 56)) {
+				Smart::raise_error(__METHOD__.' # Invalid Key, must be exactly 56 bytes (448 bits)');
+				return;
+			} //end if
 		} //end if
-		//-- Blowfish key {{{SYNC-BLOWFISH-KEY}}}
-		$this->_key = (string) substr((string)SmartHashCrypto::sha512((string)$key), 13, 29).strtoupper((string)substr((string)sha1((string)$key), 13, 10)).substr((string)md5((string)$key), 13, 9);
-		//-- Blowfish iv {{{SYNC-BLOWFISH-IV}}}
-		$this->_iv = (string) substr((string)base64_encode((string)sha1('@Smart.Framework-Crypto/BlowFish:'.$key.'#'.sha1('BlowFish-iv-SHA1'.$key).'-'.strtoupper((string)md5('BlowFish-iv-MD5'.$key)).'#')), 1, 8);
+		if(((int)strlen((string)$iv) !== 8) OR ((int)strlen((string)trim((string)$iv)) !== 8)) {
+			Smart::raise_error(__METHOD__.' # Invalid iV, must be exactly 8 bytes (64 bits)');
+			return;
+		} //end if
+		//--
+		$this->_key = (string) $key; 	// Blowfish448 key: 448 bits = 56 bytes ; {{{SYNC-BLOWFISH-KEY}}} ; for v1 (which supports decrypt only) must be 384 bits = 48 bytes
+		$this->_iv 	= (string) $iv; 	// Blowfish448 iv:   64 bits =  8 bytes ; {{{SYNC-BLOWFISH-IV}}}
 		//--
 		$this->init();
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	/**
-	 * Get the Internal Key
-	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 */
-	public function getKey() {
-		//--
-		return (string) $this->_key;
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	/**
-	 * Get the Initialization Vector
-	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 */
-	public function getIv() {
-		//--
-		return (string) $this->_iv;
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -503,16 +674,41 @@ final class SmartCryptoCipherBlowfishCBC {
 	 * Encrypts a string in CBC Mode
 	 *
 	 * @param string $plainText
+	 * @param string $b64 (if FALSE will use v1 HEX, otherwise v2 B64s) ; option currently disabled it is always TRUE to enforce use v2 !
+	 * @param string $cksum256 (if FALSE will use v1 SHA1, otherwise v2 SHA256) ; option currently disabled it is always TRUE to enforce use v2 !
 	 * @return string Returns cipher text
 	 * @access public
 	 */
-	public function encrypt($plainText) {
+	public function encrypt($plainText, $b64=true, $cksum256=true) {
 		//--
-		$plainText = (string) $plainText;
+		$b64 = true; 		// disable v1 encrypt (only decrypt should be available) ; use v2 !
+		$cksum256 = true; 	// disable v1 encrypt (only decrypt should be available) ; use v2 !
+		//--
+		if((string)trim((string)$this->_key) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto Key is Empty');
+			return '';
+		} //end if
+		if((string)trim((string)$this->_iv) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto iV is Empty');
+			return '';
+		} //end if
+		//-- disallow encrypt with a key lower than 56 bytes (448 bit) since v2 !!
+		if((int)strlen((string)trim((string)$this->_key)) !== 56) {
+			Smart::log_warning(__METHOD__.' # Invalid Key, must be exactly 56 bytes (448 bits)'); // for encrypt, enforce this
+			return '';
+		} //end if
+		//--
+		if((string)$plainText == '') {
+			return '';
+		} //end if
 		//--
 		$plainText = (string) base64_encode((string)$plainText); // b64 because is not UTF-8 safe and may corrupt unicode characters
 		//-- {{{SYNC-BLOWFISH-CHECKSUM}}}
-		$plainText .= '#CHECKSUM-SHA1#'.sha1($plainText);
+		if($cksum256 === false) { // v1
+			$plainText .= '#CHECKSUM-SHA1#'.SmartHashCrypto::sha1((string)$plainText); // sha1, hex
+		} else { // v2
+			$plainText .= '#CKSUM256#'.SmartHashCrypto::sha256((string)$plainText, true); // sha256, b64
+		} //end if else
 		//--
 		//== {{{SYNC-BLOWFISH-PADDING}}}
 		//-- Blowfish is a 64-bit block cipher. This means that the data must be provided in units that are a multiple of 8 bytes
@@ -525,9 +721,11 @@ final class SmartCryptoCipherBlowfishCBC {
 		//--
 		$cipherText = '';
 		$len = (int) strlen((string)$plainText);
-		$plainText .= str_repeat(chr(0), (8 - ($len % 8)) % 8);
-		//list(, $Xl, $Xr) = unpack('N2', substr($plainText, 0, 8) ^ $this->_iv);
+		$plainText .= (string) str_repeat(chr(0), (8 - ($len % 8)) % 8);
 		$arx = unpack('N2', substr($plainText, 0, 8) ^ $this->_iv);
+		if(!is_array($arx)) {
+			$arx = []; // fix for PHP8
+		} //end if
 		if(!array_key_exists(0, $arx)) {
 			$arx[0] = null; // fix for PHP8
 		} //end if
@@ -536,8 +734,10 @@ final class SmartCryptoCipherBlowfishCBC {
 		$this->_encipher($Xl, $Xr);
 		$cipherText .= pack('N2', $Xl, $Xr);
 		for($i = 8; $i < $len; $i += 8) {
-			//list(, $Xl, $Xr) = unpack('N2', substr($plainText, $i, 8) ^ substr($cipherText, $i - 8, 8));
 			$arx = unpack('N2', substr($plainText, $i, 8) ^ substr($cipherText, $i - 8, 8));
+			if(!is_array($arx)) {
+				$arx = []; // fix for PHP8
+			} //end if
 			if(!array_key_exists(0, $arx)) {
 				$arx[0] = null; // fix for PHP8
 			} //end if
@@ -547,7 +747,11 @@ final class SmartCryptoCipherBlowfishCBC {
 			$cipherText .= pack('N2', $Xl, $Xr);
 		} //end for
 		//--
-		return (string) strtoupper((string)bin2hex((string)$cipherText));
+		if($b64 === false) { // v1
+			return (string) strtoupper((string)bin2hex((string)$cipherText)); // upper hex
+		} else { // v2
+			return (string) Smart::b64s_enc((string)$cipherText); // b64s
+		} //end if else
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -558,37 +762,60 @@ final class SmartCryptoCipherBlowfishCBC {
 	 * Decrypts an encrypted string in CBC Mode
 	 *
 	 * @param string $cipherText
+	 * @param string $b64 (if FALSE will use v1 HEX, otherwise v2 B64s)
+	 * @param string $cksum256 (if FALSE will use v1 SHA1, otherwise v2 SHA256)
 	 * @return string Returns plain text
 	 * @access public
 	 */
-	public function decrypt($cipherText) {
+	public function decrypt($cipherText, $b64=true, $cksum256=true) {
 		//--
-		if((!is_string($cipherText)) OR ((string)$cipherText == '')) {
+		if((string)trim((string)$this->_key) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto Key is Empty');
+			return '';
+		} //end if
+		if((string)trim((string)$this->_iv) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto iV is Empty');
 			return '';
 		} //end if
 		//--
-		$plainText = '';
+		$cipherText = (string) trim((string)$cipherText);
+		if((string)$cipherText == '') {
+			return '';
+		} //end if
 		//--
-		$cipherText = (string) @hex2bin(strtolower(trim((string)$cipherText)));
-		//--
-		if(strlen($cipherText) <= 0) {
+		if($b64 === false) { // v1
+			$encmode = 'HEX';
+			$cipherText = (string) @hex2bin((string)strtolower((string)trim((string)$cipherText))); // upper hex
+		} else { // v2
+			$encmode = 'B64s';
+			$cipherText = (string) Smart::b64s_dec((string)trim((string)$cipherText)); // b64s
+		} //end if else
+		if((string)$cipherText == '') {
+			Smart::log_notice(__METHOD__.' # Decode ('.$encmode.') Failed');
 			return '';
 		} //end if
 		//--
 		$len = (int) strlen((string)$cipherText);
-		$cipherText .= str_repeat(chr(0), (8 - ($len % 8)) % 8);
-		//list(, $Xl, $Xr) = unpack('N2', substr($cipherText, 0, 8));
+		$cipherText .= (string) str_repeat(chr(0), (8 - ($len % 8)) % 8);
 		$arx = unpack('N2', substr($cipherText, 0, 8));
+		if(!is_array($arx)) {
+			$arx = []; // fix for PHP8
+		} //end if
 		if(!array_key_exists(0, $arx)) {
 			$arx[0] = null; // fix for PHP8
 		} //end if
 		list($kk, $Xl, $Xr) = $arx; // FIX to be compatible with the upcoming PHP 7
 		$arx = null;
 		$this->_decipher($Xl, $Xr);
-		$plainText .= (pack('N2', $Xl, $Xr) ^ $this->_iv);
+		//--
+		$plainText = '';
+		//--
+		$plainText .= (string) (pack('N2', $Xl, $Xr) ^ $this->_iv);
 		for($i = 8; $i < $len; $i += 8) {
-			//list(, $Xl, $Xr) = unpack('N2', substr($cipherText, $i, 8));
 			$arx = unpack('N2', substr($cipherText, $i, 8));
+			if(!is_array($arx)) {
+				$arx = []; // fix for PHP8
+			} //end if
 			if(!array_key_exists(0, $arx)) {
 				$arx[0] = null; // fix for PHP8
 			} //end if
@@ -599,18 +826,36 @@ final class SmartCryptoCipherBlowfishCBC {
 		} //end for
 		//-- {{{SYNC-BLOWFISH-PADDING-TRIM}}} :: trim padding spaces
 		$plainText = (string) trim((string)$plainText);
+		if((string)$plainText == '') {
+			Smart::log_notice(__METHOD__.' # Decrypt Failed');
+			return '';
+		} //end if
 		//-- {{{SYNC-BLOWFISH-CHECKSUM}}}
-		$arr = (array) explode('#CHECKSUM-SHA1#', $plainText);
-		$plainText = '';
-		if(array_key_exists(0, $arr)) {
-			$plainText = (string) trim((string)$arr[0]);
+		if($cksum256 === false) { // v1
+			$separator = '#CHECKSUM-SHA1#';
+		} else { // v2
+			$separator = '#CKSUM256#';
+		} //end if else
+		$arr = (array) explode((string)$separator, (string)$plainText, 2);
+		$plainText = (string) trim((string)($arr[0] ?? ''));
+		$checksum = (string) trim((string)($arr[1] ?? ''));
+		if((string)$plainText == '') {
+			Smart::log_notice(__METHOD__.' # Decrypt: Data is Empty');
+			return ''; // no checksum
 		} //end if
-		$checksum = '';
-		if(array_key_exists(1, $arr)) {
-			$checksum = (string) trim((string)$arr[1]);
+		if((string)$checksum == '') {
+			Smart::log_notice(__METHOD__.' # Decrypt: Checksum is Empty');
+			return ''; // no checksum
 		} //end if
-		if((string)sha1((string)$plainText) != (string)$checksum) {
-			Smart::log_notice('SmartCryptoCipherBlowfishCBC/Decrypt: Checksum Failed');
+		if($cksum256 === false) { // v1
+			$version = 'Sha1';
+			$testsum = (string) SmartHashCrypto::sha1((string)$plainText); // sha1 hex
+		} else { // v2
+			$version = 'Sha256B64';
+			$testsum = (string) SmartHashCrypto::sha256((string)$plainText, true); // sha256 b64
+		} //end if else
+		if((string)$testsum != (string)$checksum) {
+			Smart::log_notice(__METHOD__.' # Checksum ('.$version.') Failed');
 			return ''; // string is corrupted, avoid to return
 		} //end if
 		//-- b64 because is not UTF-8 safe and may corrupt unicode characters
@@ -1031,7 +1276,7 @@ final class SmartCryptoCipherBlowfishCBC {
 
 
 /*** Sample Usage
-$bf = new SmartCryptoCipherBlowfishCBC('some secret key!');
+$bf = new SmartCryptoCipherBlowfishCBC('a-56-bytes-secret-key-abcdefghijklmnopqrstuvwxyz-1234567', 'iv:2345;'); // the key must be 56 bytes (characters) ; the iv must be 8 bytes (characters)
 $encrypted = $bf->encrypt('this is some example plain text');
 $plaintext = $bf->decrypt($encrypted);
 echo "plain text: $plaintext";
@@ -1064,8 +1309,8 @@ echo "plain text: $plaintext";
  * @access 		private
  * @internal
  *
- * @depends     classes: Smart, SmartHashCrypto ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version     v.20210506
+ * @depends     classes: Smart, SmartHashCrypto
+ * @version     v.20210819
  *
  */
 final class SmartCryptoCipherHash {
@@ -1079,34 +1324,56 @@ final class SmartCryptoCipherHash {
 	// @ PRIVATE
 	private $hash_length 	= 0;		// @var	int :: String length of hashed values using the current algorithm
 	// @PRIVATE
-	private $mode 			= null;		// @var enum :: md5, sha1, sha256, sha384, sha512
+	private $mode 			= null;		// @var enum :: md5, sha1, sha256, sha512
 	//========================================
 
 
 	//==============================================================
 	 // Constructor method
-	 // Used to set key for encryption and decryption.
+	 // Used to set key for encryption and decryption (must be between 7 and 4096 bytes)
 	 // @param	string	$key	Your secret key used for encryption and decryption
 	 // @return mixed
-	public function __construct($key, $mode='sha256') {
+	public function __construct(string $mode, string $key) {
 
-		// fix for empty key
-		$key = (string) $key;
-		if((string)trim((string)$key) == '') {
-			$key = (string) SMART_FRAMEWORK_SECURITY_KEY;
+		//--
+		$key = (string) trim((string)$key);
+		if((string)$key == '') { // fix for empty key
+			Smart::raise_error(__METHOD__.' # Empty Key');
+			return;
 		} //end if
+		//--
+		$klen = (int) strlen((string)$key);
+		if((int)$klen < 7) { // {{{SYNC-CRYPTO-KEY-MIN}}} ; minimum acceptable secure key is 7 characters long
+			if(SmartFrameworkRegistry::ifInternalDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
+					Smart::log_notice(__METHOD__.' # Key is too short: `'.$key.'`');
+				} //end if
+			} //end if
+			Smart::raise_error(__METHOD__.' # Key Size is lower than 7 bytes ('.(int)$klen.') which is not safe against brute force attacks !');
+			return;
+		} elseif((int)$klen > 4096) { // {{{SYNC-CRYPTO-KEY-MAX}}} ; max key size is enforced to allow ZERO theoretical colissions on any of: md5, sha1, sha256 or sha512
+			if(SmartFrameworkRegistry::ifInternalDebug()) {
+				if(SmartFrameworkRegistry::ifDebug()) {
+					Smart::log_notice(__METHOD__.' # Key is too long: `'.$key.'`');
+				} //end if
+			} //end if
+			Smart::raise_error(__METHOD__.' # Key Size is higher than 4096 bytes ('.(int)$klen.') which is not safe against collisions !');
+			return;
+		} //end if
+		//--
 
 		// for the case: hash/sha256
-		if((string)substr((string)$mode, 0, 5) == 'hash/') {
-			$cfgcrypto = (string) $mode;
-			$mode = '';
-			$arr = (array) explode('/', (string)$cfgcrypto);
-			$cfgcrypto = null;
-			if(array_key_exists(1, $arr)) {
-				$mode = (string) trim((string)$arr[1]);
-			} //end if
-			$arr = null;
+		if((string)substr((string)$mode, 0, 5) != 'hash/') {
+			Smart::raise_error(__METHOD__.' # Invalid Mode: '.$mode);
+			return;
 		} //end if
+
+		$cfgcrypto = (string) $mode;
+		$mode = '';
+		$arr = (array) explode('/', (string)$cfgcrypto, 2);
+		$cfgcrypto = null;
+		$mode = (string) trim((string)($arr[1] ?? ''));
+		$arr = null;
 
 		// mode
 		switch((string)$mode) {
@@ -1114,10 +1381,7 @@ final class SmartCryptoCipherHash {
 				$this->mode = 'md5';
 				break;
 			case 'sha1':
-				$this->mode = 'sha1'; // default
-				break;
-			case 'sha384':
-				$this->mode = 'sha384';
+				$this->mode = 'sha1';
 				break;
 			case 'sha512':
 				$this->mode = 'sha512';
@@ -1144,8 +1408,21 @@ final class SmartCryptoCipherHash {
 	 // @return string	Encrypted message
 	public function encrypt($string) {
 
+		if((string)trim((string)$this->mode) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto Mode is Not Selected');
+			return '';
+		} //end if
+		if((string)trim((string)$this->hash_key) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto Key is Empty');
+			return '';
+		} //end if
+		if((int)$this->hash_length <= 0) {
+			Smart::log_warning(__METHOD__.' # Crypto Key is Negative');
+			return '';
+		} //end if
+
 		$string = (string) base64_encode((string)$string); // this is required because it cannot handle unicode characters
-		$string = (string) $string.'#CHECKSUM-MD5#'.md5((string)$string);
+		$string = (string) $string.'#CKSUM256#'.SmartHashCrypto::sha256((string)$string, true);
 
 		// gen IV
 		$iv = $this->_generate_iv();
@@ -1174,7 +1451,8 @@ final class SmartCryptoCipherHash {
 			$c++;
 		} //end while
 
-		return (string) strtoupper((string)bin2hex((string)$out));
+	//	return (string) strtoupper((string)bin2hex((string)$out));
+		return (string) Smart::b64s_enc((string)$out);
 
 	} //END FUNCTION
 	//==============================================================
@@ -1187,19 +1465,33 @@ final class SmartCryptoCipherHash {
 	 // @return string	Decrypted message
 	public function decrypt($string) {
 
-		$string = (string) @hex2bin(strtolower(trim((string)$string)));
+		if((string)trim((string)$this->mode) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto Mode is Not Selected');
+			return '';
+		} //end if
+		if((string)trim((string)$this->hash_key) == '') {
+			Smart::log_warning(__METHOD__.' # Crypto Key is Empty');
+			return '';
+		} //end if
+		if((int)$this->hash_length <= 0) {
+			Smart::log_warning(__METHOD__.' # Crypto Key is Negative');
+			return '';
+		} //end if
+
+	//	$string = (string) @hex2bin((string)strtolower((string)trim((string)$string)));
+		$string = (string) Smart::b64s_dec((string)trim((string)$string));
 
 		//-- Extract encrypted IV from input
-		$tmp_iv = substr($string, 0, $this->hash_length);
+		$tmp_iv = (string) substr((string)$string, 0, (int)$this->hash_length);
 		//-- Extract encrypted message from input
-		$string = substr($string, $this->hash_length, (strlen($string) - $this->hash_length));
+		$string = (string) substr((string)$string, (int)$this->hash_length, (int)((int)strlen((string)$string) - (int)$this->hash_length));
 		//--
 		$iv = '';
 		$out = '';
 		//--
 
 		//-- Regenerate IV by xor-ing encrypted IV from block 1 and $this->hashed_key :: Mathematics: (IV XOR KeY) XOR Key = IV
-		for($c=0;$c < $this->hash_length;$c++) {
+		for($c=0; $c<$this->hash_length;$c++) {
 			$iv .= chr(ord($tmp_iv[$c]) ^ ord($this->hash_key[$c]));
 		} //end for
 		//-- Use IV as key for decrypting the first block cyphertext
@@ -1223,17 +1515,11 @@ final class SmartCryptoCipherHash {
 		//--
 
 		//--
-		$arr = (array) explode('#CHECKSUM-MD5#', $out);
-		$out = '';
-		if(array_key_exists(0, $arr)) {
-			$out = (string) trim((string)$arr[0]);
-		} //end if
-		$chk = '';
-		if(array_key_exists(1, $arr)) {
-			$chk = (string) trim((string)$arr[1]);
-		} //end if
+		$arr = (array) explode('#CKSUM256#', $out, 2);
+		$out = (string) trim((string)($arr[0] ?? ''));
+		$chk = (string) trim((string)($arr[1] ?? ''));
 		//--
-		if((string)md5($out) == (string)$chk) {
+		if((string)SmartHashCrypto::sha256((string)$out, true) == (string)$chk) {
 			$out = (string) base64_decode((string)$out);
 		} else {
 			$out = ''; // invalid checksum
@@ -1281,18 +1567,15 @@ final class SmartCryptoCipherHash {
 			case 'sha256':
 				$result = SmartHashCrypto::sha256($string);
 				break;
-			case 'sha384':
-				$result = SmartHashCrypto::sha384($string);
-				break;
 			case 'sha512':
 				$result = SmartHashCrypto::sha512($string);
 				break;
 			default:
-				Smart::log_warning('ERROR: Invalid mode for: '.__CLASS__.' / '.__METHOD__.': '.$this->mode.' ; Using sha1()');
+				Smart::log_warning(__METHOD__.' # ERROR: Invalid mode: '.$this->mode.' ; Using SHA1');
 				$result = (string) sha1((string)$string);
 		} //end switch
 
-		return (string) @hex2bin((string)$result); // convert hexadecimal hash value to binary string
+		return (string) hex2bin((string)$result); // convert hexadecimal hash value to binary string
 
 	} //END FUNCTION
 	//==============================================================
