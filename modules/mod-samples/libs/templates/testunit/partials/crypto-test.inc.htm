@@ -1,4 +1,4 @@
-<!-- Partial Template: TestUnit.Partials.CryptoTest r.20210812 -->
+<!-- Partial Template: TestUnit.Partials.CryptoTest r.20210824 -->
 <div id="qunit-test-result"></div>
 <h2>PHP Unicode Crypto Tests [ [###EXE-TIME|html###] ] :</h2>
 <div style="white-space: nowrap !important;">
@@ -40,13 +40,13 @@ CustomCipher@Options:&nbsp;<span style="color:#CCCCCC;">PHP:[###HASHCRYPT-OPTION
 	//--
 	let the_error = 0;
 	//--
-	const testBaseConv = [###BASE-CONV-ERR|json###];
-	if(Array.isArray(testBaseConv)) {
-		if(testBaseConv.length > 0) {
-			alert('PHP Base Conversion Tests ERRORS(' + testBaseConv.length + '):' + "\n\n" + testBaseConv.join('\n\n'));
+	const miscErrors = [###MISC-ERR|json###];
+	if(Array.isArray(miscErrors)) {
+		if(miscErrors.length > 0) {
+			alert('PHP Base Conversion Tests ERRORS(' + miscErrors.length + '):' + "\n\n" + miscErrors.join('\n\n'));
 		} //end if
 	} else {
-		alert('Test ERROR: PHP Base Conversion Tests is not array !');
+		alert('Test ERROR: Tests misc Errors is not array !');
 	} //end if
 	//--
 	const unicodeText = $('#unicode-string').text();

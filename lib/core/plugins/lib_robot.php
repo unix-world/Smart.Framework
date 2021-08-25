@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210613
+ * @version 	v.20210823
  * @package 	Plugins:Network
  *
  */
@@ -428,8 +428,10 @@ final class SmartRobot {
 							} //end if
 						} //end if
 						//--
+						$tmp_auth_method = (string) strtoupper((string)SmartAuth::get_login_method());
+						//--
 						if(
-							((string)SmartAuth::get_login_method() == 'HTTP-BASIC') AND
+							(((string)$tmp_auth_method == 'HTTP-BASIC') OR (strpos((string)$tmp_auth_method, 'AUTH:HTTP-BASIC:') === 0)) AND // {{{SYNC-AUTH-METHODS-NAME}}}
 							((string)$auth_name == '') AND
 							((string)$auth_pass == '') AND
 							(

@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20210816
+ * @version     v.20210824
  * @package     @Core
  *
  */
@@ -2182,6 +2182,67 @@ final class Smart {
 
 
 	//================================================================
+	/* Converts hex (string) to 64-bit integer number
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param INTEGER+ $num
+	 * @return STRING
+	 */
+	 public static function hex_to_int10(?string $hex) {
+		//--
+		$hex = (string) strtolower((string)trim((string)$hex));
+		//-- standardize for comparing
+		if(strpos((string)$hex, '0x') === 0) {
+			$hex = (string) substr((string)$hex, 2);
+		} //end if
+		//-- add prefix
+		$hex = (string) '0x'.trim((string)ltrim((string)$hex, '0'));
+		//-- compare with max supported hex on this platform to avoid overflows
+		$maxhex = (string) '0x'.trim((string)ltrim((string)self::int10_to_hex((int)PHP_INT_MAX), '0'));
+		if(((int)strlen((string)$hex) > (int)strlen((string)$maxhex)) OR ((string)$hex > (string)$maxhex)) {
+			self::log_warning(__METHOD__.' # HEX `'.$hex.'` is too large for this platform. Max HEX is: `'.$maxhex.'` as :`'.PHP_INT_MAX.'`');
+			$hex = (string) $maxhex;
+		} //end if
+		//--
+		return (int) hexdec((string)$hex);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/* Converts a 64-bit integer number to hex (string)
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param INTEGER+ $num
+	 * @return STRING
+	 */
+	 public static function int10_to_hex(?int $num) {
+		//--
+		$num = (int) $num;
+		if($num < 0) {
+			$num = 0;
+		} //end if
+		//--
+		$hex = (string) dechex((int)$num);
+		$len = (int) strlen((string)$hex);
+		if((int)$len <= 0) {
+			$hex = '00'; // this should not happen but anyway, it have to be fixed just in the case
+		} elseif(((int)$len % 2) != 0) {
+			$hex = '0'.$hex; // even zeros padding
+		} //end if
+		//--
+		return (string) $hex;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	/* Converts a 64-bit integer number to base62 (string)
 	 *
 	 * @access 		private
@@ -2197,13 +2258,10 @@ final class Smart {
 			$num = 0;
 		} //end if
 		//--
-		// METHOD UPGRADED ON 2021.08.12 AS THIS IS SAFER ON ALL PLATFORMS
+		// METHOD UPGRADED ON 2021.08.12 AS THIS IS SAFER ON ALL 64-bit PLATFORMS
 		// THE OLD METHOD IS AVAILABLE ONLY FOR TESTING IN: modules/mod-samples/libs/TestUnitCrypto.php
 		//--
-		$hex = (string) dechex((int)$num);
-		if((strlen((string)$hex) % 2) != 0) {
-			$hex = '0'.$hex; // even zeros padding
-		} //end if
+		$hex = (string) self::int10_to_hex((int)$num);
 		//--
 		return (string) self::base_from_hex_convert((string)$hex, 62);
 		//--
@@ -2761,7 +2819,11 @@ final class Smart {
 	 * @param STRING 	$str 				:: The string to be encoded
 	 * @return STRING 						:: The safe URL Base64 encoded string
 	 */
-	public static function b64s_enc(string $str) {
+	public static function b64s_enc(?string $str) {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
 		//--
 		return (string) str_replace(['+', '/', '='], ['-', '_', '.'], (string)base64_encode((string)$str));
 		//--
@@ -2782,7 +2844,11 @@ final class Smart {
 	 * @param STRING 	$str 				:: The safe URL Base64 encoded string
 	 * @return STRING 						:: The decoded string
 	 */
-	public static function b64s_dec(string $str) {
+	public static function b64s_dec(?string $str) {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
 		//--
 		return (string) base64_decode((string)str_replace(['-', '_', '.'], ['+', '/', '='], (string)trim((string)$str)));
 		//--

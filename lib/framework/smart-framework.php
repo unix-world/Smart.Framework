@@ -17,7 +17,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework v.8.7 # r.20210812
+// Smart-Framework v.8.7 # r.20210822
 //======================================================
 // Requires PHP 7.3 / 7.4 / 8.0 / 8.1 or later
 //======================================================
@@ -35,8 +35,8 @@ require('lib/framework/lib_unicode.php'); 		// smart unicode (support)
 require('lib/framework/lib_security.php'); 		// smart security (compliance)
 require('lib/framework/lib_registry.php'); 		// smart registry (data records)
 require('lib/framework/lib_smart.php'); 		// smart (base) core
-require('lib/framework/lib_crypto.php');		// smart crypto utils (asymmetric) :: encrypt as hash only
-require('lib/framework/lib_cryptos.php');		// smart crypto utils (symmetric) :: encrypt/decrypt
+require('lib/framework/lib_cryptohs.php');		// smart crypto (utils) hash
+require('lib/framework/lib_cryptoas.php');		// smart crypto (utils) symmetric and asymmetric
 require('lib/framework/lib_filesys.php');		// smart file system (utils, fs, get)
 require('lib/framework/lib_http_cli.php');		// smart http client
 require('lib/framework/lib_auth.php');			// smart authentication

@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @ignore
  *
- * @version 	v.20210610
+ * @version 	v.20210823
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -142,7 +142,7 @@ final class AuthProviderHttpBasic implements \SmartModExtLib\AuthAdmins\AuthProv
 			$authheader = null;
 			//--
 		} //end if else
-		//--
+		//-- {{{SYNC-AUTH-METHODS-NAME}}}
 		$credentials['auth-user'] = (string) \trim((string)\SmartFrameworkSecurity::FilterUnsafeString((string)$credentials['auth-user'])); // filter + trim: for basic auth the username cannot start or end with spaces
 		$credentials['auth-pass'] = (string) \trim((string)\SmartFrameworkSecurity::FilterUnsafeString((string)$credentials['auth-pass'])); // filter + trim: for basic auth the password cannot start or end with spaces
 		$credentials['auth-mode'] = (string) 'AUTH:'.\strtoupper((string)$credentials['auth-mode']);

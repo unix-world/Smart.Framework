@@ -595,6 +595,8 @@ final class SmartMailerSend {
 		//--
 		$cid = (string) $this->safe_header_str((string)$cid); // content ID
 		//--
+		$charset = '';
+		//--
 		switch((string)strtolower((string)$ctype)) {
 			//-- text parts
 			case 'text/plain':
@@ -800,7 +802,7 @@ final class SmartMailerSend {
 		} //end if
 		$subject = (string) SmartUnicode::sub_str((string)$subject, 0, 127); // {{{SYNC-MAIL-SEND-SUBJ-SIZE}}} max subject bytes is 255 but if all chars are unicode, is 255 / 2 =~ 127
 		//--
-		if((string)$charset == 'ISO-8859-1') {
+		if((string)$this->charset == 'ISO-8859-1') {
 			//--
 			$subject = (string) SmartUnicode::deaccent_str((string)$subject);
 			$subject = (string) $this->safe_header_str((string)$subject);
@@ -887,6 +889,14 @@ final class SmartMailerSend {
 			$part['message'] = (string) base64_encode((string)$part['message']); // encode b64
 			$part['message'] = (string) trim((string)chunk_split((string)$part['message'], 76, "\r\n"));
 		} //end if
+		//--
+		$part['ctype'] = $part['ctype'] ?? null;
+		$part['charset'] = $part['charset'] ?? null;
+		$part['name'] = $part['name'] ?? null;
+		$part['cid'] = $part['cid'] ?? null;
+		$part['disp'] = $part['disp'] ?? null;
+		$part['filename'] = $part['filename'] ?? null;
+		$part['message'] = $part['message'] ?? null;
 		//--
 		return 	'Content-Type: '.$this->safe_value_str($part['ctype']).($part['charset'] ? '; charset='.$this->safe_value_str($part['charset']) : '').($part['name'] ? '; name="'.$this->safe_value_str($part['name']).'"' : '')."\r\n".
 				'Content-Transfer-Encoding: '.$this->safe_value_str(strtoupper((string)$part['encode']))."\r\n".

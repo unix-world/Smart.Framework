@@ -47,7 +47,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20210819
+ * @version 	v.20210822
  * @package 	@Core:Extra
  *
  */
@@ -71,7 +71,7 @@ final class SmartUtils {
 			self::$AppReleaseHash = (string) strtolower((string)$hash);
 		} //end if
 		//--
-		return (string) self::$AppReleaseHash;
+		return (string) trim((string)ltrim((string)self::$AppReleaseHash, '0'));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1510,7 +1510,7 @@ final class SmartUtils {
 			$uuid = (string) SMART_APP_VISITOR_COOKIE;
 		} //end if
 		//--
-		return (string) SmartHashCrypto::sha1('>'.SMART_SOFTWARE_NAMESPACE.'['.SMART_FRAMEWORK_SECURITY_KEY.']'.self::client_ident_private_key().'>'.$uuid);
+		return (string) SmartHashCrypto::sha1('>'.SMART_SOFTWARE_NAMESPACE.'['.self::client_ident_private_key().']'.$uuid.'>'.SMART_FRAMEWORK_SECURITY_KEY);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2181,7 +2181,7 @@ final class SmartUtils {
 				$wp_browser = 'smk'; // mozilla seamonkey
 				$wp_class = 'gk'; // gecko class
 			} elseif((strpos($the_lower_signature, ' edg/') !== false) OR (strpos($the_lower_signature, ' edge/') !== false)) {
-				$wp_browser = 'iee'; //microsoft edge
+				$wp_browser = 'iee'; // microsoft edge (must be before ie)
 				$wp_class = 'wk'; // webkit class
 			} elseif((strpos($the_lower_signature, ' msie ') !== false) OR (strpos($the_lower_signature, ' trident/') !== false)) {
 				$wp_browser = 'iex'; // internet explorer (must be before any stealth browsers as ex.: opera)
@@ -2244,10 +2244,10 @@ final class SmartUtils {
 				$wp_os = 'sun'; // sun solaris incl clones
 			} //end if
 			//-- identify mobile os
-			if((strpos($the_lower_signature, 'iphone') !== false) OR (strpos($the_lower_signature, 'ipad') !== false) OR (strpos($the_lower_signature, ' opios/') !== false)) {
+			if((strpos($the_lower_signature, 'iphone') !== false) OR (strpos($the_lower_signature, 'ipad') !== false) OR (strpos($the_lower_signature, ' opios/') !== false) OR (strpos($the_lower_signature, ' crios/') !== false)) {
 				$wp_os = 'ios'; // apple mobile ios: iphone / ipad / ipod
 				$wp_mb = 'yes';
-			} elseif((strpos($the_lower_signature, 'android') !== false) OR (strpos($the_lower_signature, ' opr/') !== false)) {
+			} elseif((strpos($the_lower_signature, 'android') !== false) OR (strpos($the_lower_signature, ' opr/') !== false) OR (strpos($the_lower_signature, ' oupeng/') !== false)) {
 				$wp_os = 'and'; // google android
 				$wp_mb = 'yes';
 			} elseif((strpos($the_lower_signature, 'windows ce') !== false) OR (strpos($the_lower_signature, 'windows phone') !== false) OR (strpos($the_lower_signature, 'windows mobile') !== false) OR (strpos($the_lower_signature, 'windows rt') !== false)) {

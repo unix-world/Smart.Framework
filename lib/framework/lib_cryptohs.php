@@ -12,7 +12,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework - Crypto Support: Hash Crypto (asymmetric, encrypt only as hash)
+// Smart-Framework - Hash Crypto Support
 //======================================================
 // NOTICE: This is unicode safe
 //======================================================
@@ -32,6 +32,9 @@ if(!function_exists('hash_algos')) {
 
 /**
  * Class: SmartHashCrypto - provide various hashes for a string: salted password, sha512, sha256, sha1, md5.
+ *  Hints:
+ *  - hashing passwords: is better to prepend the secret, the input is unknown to attackers so these kind of hashes are safe against length attacks ; they have to be protected against colissions ... where more different inputs can generate the same hash !
+ *  - hashing checksum: they MUST append the secret to the text to real protect against length attacks where both the input and the hash are public # https://en.wikipedia.org/wiki/Length_extension_attack
  *
  * <code>
  * // Usage example:
@@ -42,7 +45,7 @@ if(!function_exists('hash_algos')) {
  *
  * @access      PUBLIC
  * @depends     PHP hash_algos() / hash() ; classes: SmartFrameworkRegistry, Smart
- * @version     v.20210818
+ * @version     v.20210822
  * @package     @Core:Crypto
  *
  */

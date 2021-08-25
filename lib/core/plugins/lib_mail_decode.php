@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210310
+ * @version 	v.20210823
  * @package 	Plugins:Mailer
  *
  */
@@ -245,6 +245,7 @@ final class SmartMailerMimeDecode {
 		//== [FROM]
 		$from = '';
 		//--
+		$headers['from'] = $headers['from'] ?? null;
 		if(is_array($headers['from'])) {
 			$from = (string) trim((string)$headers['from'][0]);
 		} else {
@@ -276,6 +277,7 @@ final class SmartMailerMimeDecode {
 		//== [TO]
 		$to = '';
 		//--
+		$headers['to'] = $headers['to'] ?? null;
 		if(is_array($headers['to'])) {
 			$to = (string) trim((string)$headers['to'][0]);
 		} else {
@@ -310,6 +312,7 @@ final class SmartMailerMimeDecode {
 		$export_cc_addr = array();
 		$export_cc_name = array();
 		//--
+		$headers['cc'] = $headers['cc'] ?? null;
 		if(is_array($headers['cc'])) {
 			$cc = (string) trim((string)$headers['cc'][0]);
 		} else {
@@ -329,8 +332,8 @@ final class SmartMailerMimeDecode {
 			$tmp_arr = array();
 			$tmp_arr = $this->separe_email_from_name($arr_cc[$z]);
 			//--
-			$export_cc_addr[] = (string) trim((string)$tmp_arr[0]);
-			$export_cc_name[] = (string) trim((string)$tmp_arr[1]);
+			$export_cc_addr[] = (string) trim((string)($tmp_arr[0] ?? null));
+			$export_cc_name[] = (string) trim((string)($tmp_arr[1] ?? null));
 			//--
 			$tmp_arr = array();
 			//--
@@ -346,6 +349,7 @@ final class SmartMailerMimeDecode {
 		//== [BCC]
 		$bcc = '';
 		//--
+		$headers['bcc'] = $headers['bcc'] ?? null;
 		if(is_array($headers['bcc'])) {
 			$bcc = (string) trim((string)$headers['bcc'][0]);
 		} else {
@@ -367,6 +371,7 @@ final class SmartMailerMimeDecode {
 		//== [SUBJECT]
 		$subj = '';
 		//--
+		$headers['subject'] = $headers['subject'] ?? null;
 		if(is_array($headers['subject'])) {
 			$subj = (string) trim((string)$headers['subject'][0]);
 		} else {
@@ -386,6 +391,7 @@ final class SmartMailerMimeDecode {
 		//== [DATE]
 		$date = '';
 		//--
+		$headers['date'] = $headers['date'] ?? null;
 		if(is_array($headers['date'])) {
 			$date = (string) trim((string)$headers['date'][0]);
 		} else {
@@ -405,6 +411,7 @@ final class SmartMailerMimeDecode {
 		//== [MESSAGE-UID]
 		$msguid = '';
 		//--
+		$headers['x-universally-unique-identifier'] = $headers['x-universally-unique-identifier'] ?? null;
 		if(is_array($headers['x-universally-unique-identifier'])) {
 			$msguid = (string) trim((string)$headers['x-universally-unique-identifier'][0]);
 		} else {
@@ -422,6 +429,7 @@ final class SmartMailerMimeDecode {
 		//== [MESSAGE-ID]
 		$msgid = '';
 		//--
+		$headers['message-id'] = $headers['message-id'] ?? null;
 		if(is_array($headers['message-id'])) {
 			$msgid = (string) trim((string)$headers['message-id'][0]);
 		} else {
@@ -439,6 +447,7 @@ final class SmartMailerMimeDecode {
 		//== [IN-REPLY-TO]
 		$inreplyto = '';
 		//--
+		$headers['in-reply-to'] = $headers['in-reply-to'] ?? null;
 		if(is_array($headers['in-reply-to'])) {
 			$inreplyto = (string) trim((string)$headers['in-reply-to'][0]);
 		} else {
@@ -456,6 +465,7 @@ final class SmartMailerMimeDecode {
 		//== [PRIORITY] :: ( 1=high, 3=normal, 5=low )
 		$priority = '';
 		//--
+		$headers['x-priority'] = $headers['x-priority'] ?? null;
 		if(is_array($headers['x-priority'])) {
 			$priority = (string) trim((string)$headers['x-priority'][0]);
 		} else {
@@ -553,6 +563,8 @@ final class SmartMailerMimeDecode {
 					//-- get params from pre-body-arrays
 					if((string)$key === 'ctype_parameters') {
 						//--
+						$value['charset'] = (string) ($value['charset'] ?? null);
+						//--
 						if((string)trim($value['charset']) != '') {
 							//--
 							$tmp_charset = SmartUnicode::str_tolower($value['charset']);
@@ -568,6 +580,8 @@ final class SmartMailerMimeDecode {
 					} elseif((string)$key === 'headers') {
 						//--
 						$this->arr_heads[] = $value;
+						//--
+						$value['content-id'] = (string) ($value['content-id'] ?? null);
 						//--
 						if((string)trim($value['content-id']) != '') {
 							$this->last_cid = (string) str_replace([' ', '<', '>'], ['', '', ''], (string)$value['content-id']);
@@ -772,7 +786,7 @@ final class SmartMailerMimeDecode {
  * @access 		private
  * @internal
  *
- * @version 	v.20210310
+ * @version 	v.20210823
  *
  */
 final class SmartMailerMimeExtract {
@@ -930,6 +944,7 @@ final class SmartMailerMimeExtract {
 						$return->ctype_primary   = $regs[1];
 						$return->ctype_secondary = $regs[2];
 					} //end if
+					$content_type['other'] = $content_type['other'] ?? null;
 					//if(isset($content_type['other'])) {
 					if(is_array($content_type['other'])) {
 						//while(list($p_name, $p_value) = @each($content_type['other'])) {
@@ -946,6 +961,7 @@ final class SmartMailerMimeExtract {
 					break;
 				case 'content-disposition';
 					$content_disposition = $this->_parseHeaderValue($headers[(string)$key]['value']);
+					$content_disposition['other'] = $content_disposition['other'] ?? null;
 					$return->disposition = $content_disposition['value'];
 					//if(isset($content_disposition['other'])) {
 					if(is_array($content_disposition['other'])) {
@@ -1221,6 +1237,7 @@ final class SmartMailerMimeExtract {
 						*/
 						$param_value = (string) trim((string)$param_value, '"'); // trim quotes on both sides ; this is a bug fix of the above commented code
 						//--
+						$return['other'] = $return['other'] ?? null;
 						if(!is_array($return['other'])) {
 							$return['other'] = [];
 						} //end if

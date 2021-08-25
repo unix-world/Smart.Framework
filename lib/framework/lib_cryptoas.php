@@ -1,5 +1,5 @@
 <?php
-// [LIB - Smart.Framework / Symmetric Crypto and Hashing]
+// [LIB - Smart.Framework / Symmetric and Asymmetric Crypto]
 // (c) 2006-2021 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -12,15 +12,15 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework - Crypto Support (symmetric, encrypt/decrypt): BlowFish (CBC) built-in / BlowFish/AES256/Camellia256 (CBC/CFB/OFB via OpenSSL)
+// Smart-Framework - Symmetric and Asymmetric Crypto Support
+// 		* symmetric (encrypt/decrypt): BlowFish (CBC) built-in / BlowFish/AES256/Camellia256 (CBC/CFB/OFB via OpenSSL)
+// 		* asymmetric (shad key): DhKx built-in
 //======================================================
 // NOTICE: This is unicode safe
-//	* Recommended type is CBC
-//	* Unicode issues were fixed as this: because Blowfish is not unicode safe we do B64Encode before BlowFish encode
-//	* Returned string is Upper Bin2Hex
 //======================================================
 
-// [PHP8]
+// [PHP8] r.20210825
+
 
 //=====================================================================================
 //===================================================================================== CLASS START
@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints       Blowfish is a 64-bit (8 bytes) block cipher. Max Key is up to 56 chars length (56 bytes = 448 bits). The CBC mode requires a initialization vector (iv).
  *
  * @depends     classes: SmartFrameworkRegistry, Smart, SmartCryptoCipherBlowfishCBC, SmartCryptoOpenSSLCipher, SmartCryptoCipherHash
- * @version     v.20210819
+ * @version     v.20210825
  * @package     @Core:Crypto
  *
  */
@@ -302,7 +302,7 @@ final class SmartCipherCrypto {
  * @internal
  *
  * @depends     extensions: PHP OpenSSL ; classes: Smart, SmartHashCrypto
- * @version     v.20210819
+ * @version     v.20210825
  *
  */
 final class SmartCryptoOpenSSLCipher {
@@ -614,7 +614,7 @@ final class SmartCryptoOpenSSLCipher {
  * @internal
  *
  * @depends     classes: Smart, SmartHashCrypto
- * @version     v.20210819
+ * @version     v.20210825
  *
  */
 final class SmartCryptoCipherBlowfishCBC {
@@ -1292,6 +1292,577 @@ echo "plain text: $plaintext";
 //===================================================================================== CLASS START
 //=====================================================================================
 
+
+/**
+ * Class: SmartDhKx
+ * Provides methods to implement a secure algorithm for Diffie-Hellman key exchange between a server and a client ; Supports dual operation mode (Int64 or BigInt ; for using BigInt requires the PHP GMP extension ...)
+ * It implements a modified version of the DH algo to provide much more secure shared data ...
+ *
+ * @usage       dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
+ *
+ * @access 		private
+ * @internal
+ *
+ * @depends     classes: SmartFrameworkRegistry, Smart, SmartHashCrypto, SmartCipherCrypto, SmartCryptoCipherBlowfishCBC ; PHP GMP extension (optional, only if uses BigInt)
+ * @version     v.20210825
+ *
+ */
+final class SmartDhKx {
+
+	private $useBigInt = false;
+	private $size = 'default';
+	private $prix = 'default';
+
+
+	public function __construct(bool $useBigInt=false, ?string $prix=null, ?string $size=null) {
+		//--
+		if(((bool)$useBigInt === true) AND (function_exists('gmp_binomial'))) {
+			//--
+			$this->useBigInt = true;
+			//--
+		} else {
+			//--
+			$this->useBigInt = false;
+			//--
+		} //end if else
+		//--
+		$size = (string) trim((string)$size);
+		if((string)$size != '') {
+			$this->size = (string) $size;
+		} //end if
+		//--
+		$prix = (string) trim((string)$prix);
+		if((string)$prix != '') {
+			$this->prix = (string) $prix;
+		} //end if
+		//--
+	} //END FUNCTION
+
+
+	public function getMode() : string {
+		//--
+		$mode = '??';
+		if($this->useBigInt === true) {
+			$mode = 'BigInt';
+		} else {
+			$mode = 'Int64';
+		} //end if else
+		//--
+		return (string) $mode;
+		//--
+	} //END FUNCTION
+
+
+	public function getBaseGen(?string $size=null) : string {
+		//--
+		$size = (string) trim((string)$size);
+		if(((string)$size == '') OR ((string)$size == 'default')) {
+			$size = (string) $this->size;
+		} //end if
+		//--
+		return (string) $this->rng((string)$size);
+		//--
+	} //END FUNCTION
+
+
+	public function getSrvData(?string $basegen) : array {
+		//--
+		$size 	= (string) $this->size;
+		$prix 	= (string) $this->prix;
+		$p 		= (string) $this->prime((string)$prix);
+		$ssec 	= (string) $this->rng((string)$size);
+		$spub 	= (string) $this->powm((string)$basegen, (string)$ssec, (string)$p);
+		//--
+		return [
+			'base' => (string) $basegen,
+			'prix' => (string) $prix,
+			'sec'  => (string) $ssec,
+			'pub'  => (string) $spub,
+		];
+		//--
+	} //END FUNCTION
+
+
+	public function getSrvShad(?string $ssec, ?string $cpub) : string {
+		//--
+		$prix 	= (string) $this->prix;
+		$p 		= (string) $this->prime((string)$prix);
+		$shad 	= (string) $this->powm((string)$cpub, (string)$ssec, (string)$p);
+		//--
+		return (string) $this->shadizer((string)$shad);
+		//--
+	} //END FUNCTION
+
+
+	public function getCliData(?string $basegen) : array {
+		//--
+		$size 	= (string) $this->size;
+		$prix 	= (string) $this->prix;
+		$p 		= (string) $this->prime((string)$prix);
+		$csec 	= (string) $this->rng((string)$size);
+		$cpub 	= (string) $this->powm((string)$basegen, (string)$csec, (string)$p);
+		//--
+		return [
+			'base' => (string) $basegen,
+			'prix' => (string) $prix,
+			'sec'  => (string) $csec,
+			'pub'  => (string) $cpub,
+		];
+		//--
+	} //END FUNCTION
+
+
+	public function getCliShad(?string $csec, ?string $spub) : string {
+		//--
+		$prix 	= (string) $this->prix;
+		$p 		= (string) $this->prime((string)$prix);
+		$shad 	= (string) $this->powm((string)$spub, (string)$csec, (string)$p);
+		//--
+		return (string) $this->shadizer((string)$shad);
+		//--
+	} //END FUNCTION
+
+
+	// partial data (cli) derived from any valid idz data
+	public function getIdzShadData(?string $idz) : array {
+		//--
+		$idz = (string) trim((string)$idz);
+		//--
+		$err = '';
+		$cliShad = '';
+		if((string)$idz == '') {
+			$err = 'Empty Idz';
+		} else {
+			$arr = (array) $this->idxtizer((string)$idz);
+			$arr['err'] = (string) trim((string)($arr['err'] ?? null));
+			if((string)$arr['err'] != '') {
+				$err = (string) $arr['err'];
+			} else {
+				$cliShad = (string) trim((string)$this->getCliShad((string)$arr['csec'], (string)$arr['spub']));
+				if((string)$cliShad == '') {
+					$err = 'Empty Shad';
+				} //end if
+			} //end if
+		} //end if
+		//--
+		return [
+			'type' 	=> 'IdzShadData',
+			'mode' 	=> (string) $this->getMode(),
+			'size' 	=> (string) $this->size,
+			'prix' 	=> (string) $this->prix,
+			'shad' 	=> (string) $cliShad,
+			'err' 	=> (string) $err,
+		];
+		//--
+	} //END FUNCTION
+
+
+	// full data
+	public function getData() : array {
+		//--
+		$basegen = $this->getBaseGen((string)$this->size);
+		//--
+		$srvData = (array)  $this->getSrvData((string)$basegen);
+		$cliData = (array)  $this->getCliData((string)$basegen);
+		$srvShad = (string) $this->getSrvShad((string)$srvData['sec'], (string)$cliData['pub']);
+		$cliShad = (string) $this->getCliShad((string)$cliData['sec'], (string)$srvData['pub']);
+		//--
+		$err = '';
+		if(((string)trim((string)$srvShad) == '') OR ((string)trim((string)$srvShad) == '0') OR ((string)$srvShad !== (string)$cliShad)) {
+			$err = 'Shad Mismatch';
+		} //end if
+		//--
+		return [
+			'type' 	=> 'Data',
+			'mode' 		=> (string) $this->getMode(),
+			'size' 		=> (string) $this->size,
+			'prix' 		=> (string) $this->prix,
+			'prim' 		=> (string) $this->prime((string)$this->prix),
+			'basegen' 	=> (string) $basegen,
+			'srv' => [
+				'sec'  => (string) $srvData['sec'],
+				'pub'  => (string) $srvData['pub'],
+				'shad' => (string) $srvShad,
+			],
+			'cli' => [
+				'sec'  => (string) $cliData['sec'],
+				'pub'  => (string) $cliData['pub'],
+				'shad' => (string) $cliShad,
+			],
+			'idz' => (string) $this->idatizer((string)$cliData['sec'], (string)$srvData['pub']),
+			'err' => (string) $err,
+		];
+		//--
+	} //END FUNCTION
+
+
+	//== [PRIVATES]
+
+
+	// iddxtizer
+	private function idxtizer(?string $idz) : array {
+		//--
+		$idz = (string) trim((string)$idz);
+		if((string)$idz == '') {
+			return [
+				'err' => 'Invalid IDZ (1)'
+			];
+		} //end if
+		//--
+		if(strpos((string)$idz , '!') === false) {
+			return [
+				'err' => 'Invalid IDZ (2)'
+			];
+		} //end if
+		//--
+		$arr = (array) explode('!', (string)$idz);
+		if(Smart::array_size($arr) != 3) {
+			return [
+				'err' => 'Invalid IDZ (3)'
+			];
+		} //end if
+		//--
+		$pfx = 'dH.';
+		$ver = 'v1';
+		$sig = '';
+		$mod = '0';
+		if($this->useBigInt === true) {
+			$sig = 'iHg.';
+			$mod = '1';
+		} else {
+			$sig = 'i64.';
+			$mod = '2';
+		} //end if else
+		if((string)$arr[0] != $pfx.$sig.$ver) {
+			return [
+				'err' => 'Invalid IDZ (4.'.$mod.')'
+			];
+		} //end if
+		//--
+		$arr[1] = (string) trim((string)Smart::b64s_dec((string)$arr[1]));
+		if((string)$arr[1] == '') {
+			return [
+				'err' => 'Invalid IDZ (5)'
+			];
+		} //end if
+		//--
+		$arr[2] = (string) trim((string)Smart::b64s_dec((string)$arr[2]));
+		if((string)$arr[2] == '') {
+			return [
+				'err' => 'Invalid IDZ (6)'
+			];
+		} //end if
+		//--
+		$bk = (string) trim((string)Smart::base_to_hex_convert((string)$arr[2],85));
+		if((string)$bk == '') {
+			return [
+				'err' => 'Invalid IDZ (7)'
+			];
+		} //end if
+		$arr[2] = (string) trim((string)substr((string)hex2bin((string)$bk),1));
+		if((string)$arr[2] == '') {
+			return [
+				'err' => 'Invalid IDZ (8)'
+			];
+		} //end if
+		//--
+		$arr[1] = (string) trim((string)SmartCipherCrypto::blowfish_decrypt((string)Smart::base_from_hex_convert((string)SmartHashCrypto::sha256('&='.$bk.'#'),92),(string)$arr[1]));
+		if((string)$arr[1] == '') {
+			return [
+				'err' => 'Invalid IDZ (9)'
+			];
+		} //end if
+		$arr[1] = (string) trim((string)substr((string)hex2bin((string)trim((string)Smart::base_to_hex_convert((string)$arr[1], 92))),1));
+		if((string)$arr[1] == '') {
+			return [
+				'err' => 'Invalid IDZ (10)'
+			];
+		} //end if
+		//--
+		return [
+			'csec' => (string) $arr[1],
+			'spub' => (string) $arr[2],
+		];
+		//--
+	} //END FUNCTION
+
+
+	// iddatizer
+	private function idatizer(?string $csec, ?string $spub) : string {
+		//--
+		$shd = 'dH';
+		//--
+		if($this->useBigInt === true) {
+			$shd .= '.iHg';
+		} else {
+			$shd .= '.i64';
+		} //end if else
+		//--
+		$bk = (string) bin2hex('@'.$spub);
+		//--
+		return (string) $shd.'.v1!'.Smart::b64s_enc((string)SmartCipherCrypto::blowfish_encrypt((string)Smart::base_from_hex_convert((string)SmartHashCrypto::sha256('&='.$bk.'#'),92),(string)Smart::base_from_hex_convert((string)bin2hex('$'.$csec),92))).'!'.Smart::b64s_enc((string)Smart::base_from_hex_convert((string)$bk,85));
+		//--
+	} //END FUNCTION
+
+
+	// hexfixer
+	private function evenhexlen(?string $shx) {
+		//--
+		$shx = (string) trim((string)$shx);
+		//--
+		$len = (int) strlen((string)$shx);
+		if((int)$len <= 0) {
+			$shx = '00'; // this should not happen but anyway, it have to be fixed just in the case
+		} elseif(((int)$len % 2) != 0) {
+			$shx = '0'.$shx; // even zeros padding
+		} //end if
+		//--
+		return (string) $shx;
+		//--
+	} //END FUNCTION
+
+
+	// shaddowizer
+	private function shadizer(?string $shad) : string {
+		//--
+		$shd = '';
+		//--
+		if($this->useBigInt === true) {
+			$shx = (string) $this->evenhexlen((string)gmp_strval((string)$shad, 16));
+			$shd = (string) Smart::base_from_hex_convert((string)$shx, 92);
+		} else {
+			$shx = (string) $this->evenhexlen((string)base_convert((string)$shad, 10, 16));
+			$shd = (string) Smart::base_from_hex_convert((string)$shx, 85)."'".Smart::base_from_hex_convert((string)$shx, 62)."'".Smart::base_from_hex_convert((string)$shx, 92)."'".Smart::base_from_hex_convert((string)$shx, 58);
+		} //end if else
+		//--
+		return (string) $shd;
+		//--
+	} //END FUNCTION
+
+
+	// randomizer
+	private function rng(?string $size) : string {
+		//--
+		if($this->useBigInt === true) {
+			return (string) $this->rngBigint((string)$size);
+		} else {
+			return (string) $this->rngInt64((string)$size);
+		} //end if else
+		//--
+	} //END FUNCTION
+
+
+	// pwr deriv by prim
+	private function powm(?string $a, ?string $b, ?string $pri) : string {
+		//--
+		if($this->useBigInt === true) {
+			return (string) $this->powmBigint((string)$a, (string)$b, (string)$pri);
+		} else {
+			return (string) $this->powmInt64((string)$a, (string)$b, (string)$pri);
+		} //end if else
+		//--
+	} //END FUNCTION
+
+
+	// primes ...
+	private function prime(?string $prix) : string {
+		//--
+		if($this->useBigInt === true) {
+			return (string) $this->primeBigint((string)$prix);
+		} else {
+			return (string) $this->primeInt64((string)$prix);
+		} //end if else
+		//--
+	} //END FUNCTION
+
+
+	//== [SPECIFIC PRIVATES: Int64 and BigInt]
+
+
+	// Int64 randomizer
+	private function rngInt64(?string $size) : string {
+		//--
+		$size = (string) trim((string)$size);
+		if(((string)$size == '') OR ((string)$size == 'default')) {
+			$size = 24;
+		} //end if
+		//--
+		switch((int)$size) {
+			case 12:
+			case 16:
+			case 24:
+				break;
+			default:
+				$size = 24;
+				Smart::log_warning(__METHOD__.' # Invalid Size Selection, using defaults: '.(int)$size);
+		} //end switch
+		//--
+		return (string) Smart::random_number((int)1, (int)(2 ** (int)$size));
+		//--
+	} //END FUNCTION
+
+
+	// BigInt randomizer
+	private function rngBigint(?string $size) : string {
+		//--
+		$size = (string) trim((string)$size);
+		if(((string)$size == '') OR ((string)$size == 'default')) {
+			$size = 16;
+		} //end if
+		//--
+		switch((int)$size) {
+			case 128:
+			case 96:
+			case 64:
+			case 48:
+			case 32:
+			case 16:
+			case 8:
+				break;
+			default:
+				$size = 16;
+				Smart::log_warning(__METHOD__.' # Invalid Size Selection, using defaults: '.(int)$size);
+		} //end switch
+		//--
+		return (string) gmp_random_bits((int)$size * 32); // use as in js, Uint32Array
+		//--
+	} //END FUNCTION
+
+
+	// Int64 pwr deriv by prim
+	private function powmInt64(?string $a, ?string $b, ?string $pri) : string {
+		//--
+		$a = (int) $a;
+		$b = (int) $b;
+		//--
+		if(strpos((string)trim((string)$pri), '0x') === 0) { // hex (if hex, expect to be prefixed with 0x)
+			$pri = (int) Smart::hex_to_int10((string)trim((string)$pri));
+		} else {
+			$pri = (int) $pri; // int64
+		} //end if else
+		//--
+		if((int)$b <= 0) {
+			return (string) 1;
+		} elseif((int)$b === 1) {
+			return (string) ((int)$a % (int)$pri);
+		} elseif((int)((int)$b % (int)2) === 0) {
+			return (string) (
+				(int) $this->powmInt64(
+					(string) (int) ((int)((int)$a * (int)$a) % (int)$pri),
+					(string) (int) ((int)$b / (int)2),
+					(string) (int) $pri
+				) % (int)$pri
+			);
+		} else {
+			return (string) (
+				(int) ((int)$this->powmInt64(
+					(string) (int) ((int)((int)$a * (int)$a) % (int)$pri),
+					(string) (int) ((int)$b / (int)2),
+					(string) (int) $pri
+				) * (int)$a) % (int)$pri
+			);
+		} //end if else
+		//--
+	} //END FUNCTION
+
+
+	// Int64 pwr deriv by prim
+	private function powmBigint(?string $a, ?string $b, ?string $pri) : string {
+		//--
+		return (string) gmp_powm((string)$a, (string)$b, (string)gmp_init((string)$pri));
+		//--
+	} //END FUNCTION
+
+
+	// Int64 primes ...
+	private const primesInt64 = [ // max js safe int is: 9007199254740992 ; of which sqrt is: ~ 94906265 (length: 8)
+		72419213, 54795931, 32926051, 21801887, 77635013, 25470191, 77639819, 42010253,
+		33563273, 32792339, 15923857, 67022173, 84250253, 67680727, 63438329, 52164643,
+		51603269, 61444631, 58831133, 55711141, 73596863, 48905489, 61642963, 53812273,
+		16600799, 79158229, 56490361, 73391389, 64351751, 14227727, 40517299, 95234563,
+		42913363, 63566527, 52338703, 80146337, 37597201, 93581269, 32547497, 75587359,
+		26024821, 57042743, 13862969, 46496719, 42787387, 29830469, 59912407, 75206447,
+		40343341, 72357113, 23434063, 24336373, 39422399, 12866611, 11592293, 83937899,
+		79746883, 37997129, 76431193, 67774627, 72107393, 31363271, 30388361, 25149569,
+		54104161, 50575709, 70327973, 54960077, 92119793, 80615231, 38967139, 65609657,
+		66432673, 56145097, 73864853, 70708361, 23913011, 35283481, 58352201, 57881491,
+		89206109, 70619069, 96913759, 66156679, 63395257, 70022237, 93547543, 10891057,
+		75492367, 86902223, 33054397, 36325571, 49119293, 64100537, 31986431, 16636237,
+	]; // 0x00 .. 0x5F
+	private function primeInt64(?string $prix) : string {
+		//--
+		$prix = (string) trim((string)$prix);
+		if(((string)$prix === '') OR ((string)$prix === 'default')) {
+			$prix = -1;
+		} //end if
+		$prix = (int) $prix;
+		$px = (string) self::primesInt64[47]; // 0x2F
+		if(((int)$prix >= 0) AND ((int)$prix < (int)Smart::array_size(self::primesInt64))) {
+			$px = (string) self::primesInt64[(int)$prix];
+		} elseif((int)$prix !== -1) {
+			Smart::log_warning(__METHOD__.' # Invalid Prime Selection (Int64), using defaults: '.(string)$prix);
+		} //end if
+		//--
+		return (string) '0x'.ltrim((string)Smart::int10_to_hex((int)$px), '0'); // preserve js compat, trim leading zeroes
+		//--
+	} //END FUNCTION
+
+
+	private const primesBigint = [
+		'h017' 		=> '0x1141317432f7b89',
+		'h031' 		=> '0x6febe061005175e46c896e4079',
+		'h047' 		=> '0xf3f2b0ee30050c5f6bfcb9df1b9454e77bc3503',
+		'h061' 		=> '0x4771cfc3c2b8ad4561cb5437132e35e8398e8f956a2f2c94c51',
+		'h097' 		=> '0x426f09b2b25aba6bbcbf9ca5edb660b91d033440916732af9ae175a84afb665a25b392361c6952119',
+		'h127' 		=> '0x2c6121e6b14ecf756c083544de0e0933cac90dbeb6239905bfbec764527bbb4166ff832a2bcc3b4d6f634eddd30e40634adbbb5bfd',
+		'h257' 		=> '0x279e569032f0c7256218b58ad6418aa0e9436be424ab8f1431b1f9e6b5814e0ebda0ff65ef085d7e73fee51744dec07fe08c1a1cc65855630ca983927ca277406ac42094064387d65aeaa849f9bf449e04df8cb0e99a44b004ce0efca3386f1e82c078723cd265288d9a41',
+		'h232c1' 	=> '0xFFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A63A3620FFFFFFFFFFFFFFFF',
+		'h309c2' 	=> '0xFFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE65381FFFFFFFFFFFFFFFF',
+		'h617c14' 	=> '0xFFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A637ED6B0BFF5CB6F406B7EDEE386BFB5A899FA5AE9F24117C4B1FE649286651ECE45B3DC2007CB8A163BF0598DA48361C55D39A69163FA8FD24CF5F83655D23DCA3AD961C62F356208552BB9ED529077096966D670C354E4ABC9804F1746C08CA18217C32905E462E36CE3BE39E772C180E86039B2783A2EC07A28FB5C55DF06F4C52C9DE2BCBF6955817183995497CEA956AE515D2261898FA051015728E5A8AACAA68FFFFFFFFFFFFFFFF',
+	];
+	private function primeBigint(?string $prix) : string {
+		//--
+		$px = null;
+		$prix = trim((string)$prix);
+		if((string)$prix == '') {
+			$prix = 'default';
+		} //end if
+		switch((string)$prix) {
+			case 'h017':
+			case 'h031':
+			case 'h047':
+			case 'h061':
+			case 'h097':
+			case 'h127':
+			case 'h257':
+			case 'h232c1':
+			case 'h309c2':
+			case 'h617c14':
+				$px = (string) self::primesBigint[(string)$prix];
+				break;
+			default:
+				if((string)$prix !== 'default') {
+					Smart::log_warning(__METHOD__.' # Invalid Prime Selection (Bigint), using defaults: '.(string)$prix);
+				} //end if
+				$px = (string) self::primesBigint['h127'];
+		} //end switch
+		//--
+		return (string) strtolower((string)$px);
+		//--
+	} //END FUNCTION
+
+
+} //END CLASS
+
+//=====================================================================================
+//===================================================================================== CLASS END
+//=====================================================================================
+
+
+//=====================================================================================
+//===================================================================================== CLASS START
+//=====================================================================================
+
 // provide the (WEAK but FAST :: symetrical :: HASH) cryptography support // (ENCRYPT + DECRYPT)
 // v.1.2.1 (unixworld)
 // Simple but secure encryption based on hash functions
@@ -1310,7 +1881,7 @@ echo "plain text: $plaintext";
  * @internal
  *
  * @depends     classes: Smart, SmartHashCrypto
- * @version     v.20210819
+ * @version     v.20210825
  *
  */
 final class SmartCryptoCipherHash {

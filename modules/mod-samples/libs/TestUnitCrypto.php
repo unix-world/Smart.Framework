@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210819
+ * @version 	v.20210825
  *
  */
 final class TestUnitCrypto {
@@ -38,18 +38,95 @@ final class TestUnitCrypto {
 	//============================================================
 	public static function testPhpAndJs() {
 
+/*
+$dhkx = new SmartDhKx();
+$dh = (array) $dhkx->getData();
+if(!is_array($dh)) {
+	die('ERROR: DhKx Test is not array');
+} //end if
+$failures = 0;
+if((string)$dh['err'] != '') {
+	$failures++;
+} //end if
+$idz = null;
+if($failures <= 0) {
+	$idz = (array) $dhkx->getIdzShadData((string)$dh['idz']);
+	if((string)$idz['err'] != '') {
+		$failures++;
+	} else {
+		if((string)$idz['shad'] != (string)$dh['srv']['shad']) {
+			$failures++;
+		} //end if
+	} //end if else
+} //end if
+echo '<div id="result"><h1>Failures: #'.(int)$failures.'</h1></div>'."\n";
+echo '<pre id="jsonData">';
+echo Smart::escape_html((string)Smart::json_encode($dh, true, true, false));
+echo '<hr>';
+echo Smart::escape_html((string)Smart::json_encode($idz, true, true, false));
+echo '</pre>';
+die('');
+*/
+
+/*
+<script>
+const smartJ$Options = {
+	DhKx: {
+		DevMode: true,
+	//	UseBigInt: true,
+	//	Prix: 'h617c14',
+	//	Size: '128',
+	},
+};
+Object.freeze(smartJ$Options); // sec.
+window.smartJ$Options = smartJ$Options; // g-exp.
+</script>
+
+<div id="result"></div>
+<pre id="jsonData"></pre>
+<pre id="jsonIdzData"></pre>
+<script>
+let failures = 0;
+let dh = smartJ$DhKx.getData();
+let idz = null;
+if(dh.err) {
+	failures++;
+} else {
+	idz = smartJ$DhKx.getIdzShadData(dh.idz);
+	if(idz.err != '') {
+		failures++;
+	} else {
+		if(idz.shad != dh.srv.shad) {
+			failures++;
+		} //end if
+	} //end if else
+} //end if
+$('#result').html('<h1>Failures: #' + smartJ$Utils.escape_html(failures) + '</h1>');
+$('#jsonData').empty().text(JSON.stringify(dh, null, 4));
+$('#jsonIdzData').empty().text(JSON.stringify(idz, null, 4));
+if(failures > 0) {
+	alert('There are #' + failures + ' failures ...');
+}
+</script>
+*/
+
 		//--
 		$time = \microtime(true);
 		//--
 
 		//--
-		$err_bases = [];
+		$err_misc = [];
 		//--
 		$test_int = (int) \time();
+		$test_hex_int = (string) \Smart::int10_to_hex((int)$test_int);
+		$test_rev_int = (int) \Smart::hex_to_int10((string)$test_hex_int);
+		if((int)$test_int != (int)$test_rev_int) {
+			$err_misc[] = 'TestUnit FAILED :: Int64 to Hex and reverse test failed: '.$test_int.' -> '.$test_hex_int.' -> '.$test_rev_int;
+		} //end if
 		$test_b62_from_int10_old = (string) self::int10_to_base62_str((int)$test_int);
 		$test_b62_from_int10_new = (string) \Smart::int10_to_base62_str((int)$test_int);
-		if((string)$test_b62_from_int10_old != (string)$test_b62_from_int10_new) {
-			$err_bases[] = 'TestUnit FAILED :: B62 From Int (base10) test Errors'."\n".'OLD='.$test_b62_from_int10_old."\n".'NEW='.$test_b62_from_int10_new."\n".'INT='.(int)$test_int;
+		if(((string)$test_b62_from_int10_old != (string)$test_b62_from_int10_new) OR ((string)trim((string)$test_b62_from_int10_new) == '')) {
+			$err_misc[] = 'TestUnit FAILED :: B62 From Int (base10) test Errors'."\n".'OLD='.$test_b62_from_int10_old."\n".'NEW='.$test_b62_from_int10_new."\n".'INT='.(int)$test_int;
 		} //end if
 		//--
 		$test_base_str = '0'.'Unicode String:		şŞţŢăĂîÎâÂșȘțȚ (05-09#';
@@ -71,7 +148,7 @@ final class TestUnitCrypto {
 				$tmp_bconv = (string) \Smart::base_from_hex_convert((string)$test_base_hex_str, (int)$key);
 			} //end if else
 			if((string)$tmp_bconv != (string)$val) {
-				$err_bases[] = 'TestUnit FAILED :: BaseFromHex Convert to Base `'.(int)$key.'` Errors'."\n".'EXPECTED='.$val."\n".'RESULT='.$tmp_bconv."\n".'HEXSTR='.(string)$test_base_hex_str;
+				$err_misc[] = 'TestUnit FAILED :: BaseFromHex Convert to Base `'.(int)$key.'` Errors'."\n".'EXPECTED='.$val."\n".'RESULT='.$tmp_bconv."\n".'HEXSTR='.(string)$test_base_hex_str;
 			} //end if
 			if((int)$key == 64) {
 				$tmp_back_str = (string) \Smart::b64s_dec((string)$tmp_bconv);
@@ -82,7 +159,7 @@ final class TestUnitCrypto {
 			} //end if else
 			$arr_test_dec_bases[$key] = (string) $tmp_back_str;
 			if((string)$tmp_back_str !== (string)$test_base_str) { // hex may difer due to tha fact that backward will not do dechex() but only binhex() over result ...
-				$err_bases[] = 'TestUnit FAILED :: BaseToHex Convert from Base `'.(int)$key.'` Errors'."\n".'EXPECTED='.$test_base_str."\n".'RESULT='.$tmp_back_str."\n".'HEXSTR='.(string)$tmp_back_hex;
+				$err_misc[] = 'TestUnit FAILED :: BaseToHex Convert from Base `'.(int)$key.'` Errors'."\n".'EXPECTED='.$test_base_str."\n".'RESULT='.$tmp_back_str."\n".'HEXSTR='.(string)$tmp_back_hex;
 			} //end if
 		} //end for
 		//--
@@ -113,8 +190,7 @@ final class TestUnitCrypto {
 		$he_dec = \SmartUtils::crypto_decrypt($he_enc, $hkey);
 		//--
 		if(((string)$he_dec != (string)$unicode_text) OR (\sha1($he_dec) != \SmartHashCrypto::sha1($unicode_text))) {
-			\Smart::raise_error('TestUnit FAILED in '.__METHOD__.'() :: Crypto Cipher test', 'TestUnit: Crypto Cipher test failed ...');
-			return;
+			$err_misc[] = 'TestUnit FAILED # Crypto Cipher test';
 		} //end if
 		//--
 
@@ -123,8 +199,7 @@ final class TestUnitCrypto {
 		$bf_enc = \SmartUtils::crypto_blowfish_encrypt($unicode_text, $bf_key);
 		$bf_dec = \SmartUtils::crypto_blowfish_decrypt($bf_enc, $bf_key);
 		if(((string)$bf_dec != (string)$unicode_text) OR ((string)\SmartHashCrypto::sha512($bf_dec) != (string)\SmartHashCrypto::sha512($unicode_text))) {
-			\Smart::raise_error('TestUnit FAILED in '.__METHOD__.'() :: Crypto Blowfish test', 'TestUnit: Blowfish test failed ...');
-			return;
+			$err_misc[] = 'TestUnit FAILED # Crypto Blowfish test';
 		} //end if
 		//--
 
@@ -135,13 +210,11 @@ final class TestUnitCrypto {
 		$testBfV1Plain = 'Lorem Ipsum dolor sit Amet';
 		$bf_v1_dec = \SmartUtils::crypto_blowfish_decrypt($testBfV1Data, $bfV1Key);
 		if(((string)$bf_v1_dec != (string)$testBfV1Plain) OR ((string)\SmartHashCrypto::sha256($bf_v1_dec) != (string)\SmartHashCrypto::sha256($testBfV1Plain))) {
-			\Smart::raise_error('TestUnit FAILED in '.__METHOD__.'() :: Crypto Blowfish V1 Decrypt test', 'TestUnit: Blowfish V1 Decrypt test failed ...');
-			return;
+			$err_misc[] = 'TestUnit FAILED # Blowfish V1 Decrypt test';
 		} //end if
 		$bf_v1x_dec = \SmartUtils::crypto_blowfish_decrypt($testBfV1XData, $bfV1Key);
 		if(((string)$bf_v1x_dec != (string)$testBfV1Plain) OR ((string)\SmartHashCrypto::sha256($bf_v1x_dec) != (string)\SmartHashCrypto::sha256($testBfV1Plain))) {
-			\Smart::raise_error('TestUnit FAILED in '.__METHOD__.'() :: Crypto Blowfish V1 Decrypt test', 'TestUnit: Blowfish V1 Decrypt test failed ...');
-			return;
+			$err_misc[] = 'TestUnit FAILED # Crypto Blowfish V1 Decrypt test';
 		} //end if
 		//--
 
@@ -155,6 +228,7 @@ final class TestUnitCrypto {
 			[
 				//--
 				'EXE-TIME' 					=> (string) $time,
+				'MISC-ERR' 					=> (string) \Smart::json_encode((array)$err_misc),
 				'UNICODE-TEXT' 				=> (string) $unicode_text,
 				'JS-ESCAPED' 				=> (string) \Smart::escape_js($unicode_text),
 				'HASH-SHA512-HEX' 			=> (string) \SmartHashCrypto::sha512($unicode_text), // hex
@@ -171,7 +245,6 @@ final class TestUnitCrypto {
 				'HEX2BIN-DECODED' 			=> (string) $hex2bin,
 				'BASE64-ENCODED' 			=> (string) $b64enc,
 				'BASE64-DECODED' 			=> (string) $b64dec,
-				'BASE-CONV-ERR' 			=> (string) \Smart::json_encode((array)$err_bases),
 				'BASE-CONV-TESTS' 			=> (array)  $arr_test_bases,
 				'BASE-CONV-DEC-TESTS' 		=> (array)  $arr_test_dec_bases,
 				'BASE-CONV-STR' 			=> (string) $test_base_str,

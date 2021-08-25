@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20210605
+ * @version 	v.20210823
  * @package 	Plugins:Mailer
  *
  */
@@ -299,7 +299,25 @@ final class SmartMailerUtils {
 	public static function send_custom_email($mail_config, $logsend_dir, $to, $cc, $bcc, $subj, $message, $is_html, array $attachments=[], $replytoaddr='', $inreplyto='', $priority='3', $charset='UTF-8') {
 
 		//--
-		$mail_config = (array) $mail_config;
+		$mail_config = (array) \Smart::array_init_keys(
+			$mail_config,
+			[
+				'server-mx-domain',
+				'server-host',
+				'server-port',
+				'server-ssl',
+				'server-cafile',
+				'auth-user',
+				'auth-password',
+				'auth-mode',
+				'from-return',
+				'from-address',
+				'from-name',
+				'use-qp-encoding',
+				'use-min-enc-subj',
+				'use-antispam-rules',
+			]
+		);
 		//--
 
 		//-- SMTP connection vars
@@ -417,7 +435,25 @@ final class SmartMailerUtils {
 	public static function send_extended_email($y_server_settings, $y_mode, $to, $cc, $bcc, $subj, $message, $is_html, array $attachments=[], $replytoaddr='', $inreplyto='', $priority=3, $charset='UTF-8') {
 
 		//--
-		$y_server_settings = (array) $y_server_settings;
+		$y_server_settings = (array) \Smart::array_init_keys(
+			$y_server_settings,
+			[
+				'smtp_mxdomain',
+				'server_name',
+				'server_port',
+				'server_sslmode',
+				'server_cafile',
+				'server_auth_user',
+				'server_auth_pass',
+				'server_auth_mode',
+				'send_from_return',
+				'send_from_addr',
+				'send_from_name',
+				'use_qp_encoding',
+				'use_min_enc_subj',
+				'use_antispam_rules',
+			]
+		);
 		//--
 
 		//-- SMTP HELO
@@ -565,7 +601,7 @@ final class SmartMailerUtils {
 				//--
 				$tmp_cid = 'img_'.sha1('Smart.Framework eMail-Utils // CID Embed // '.'@'.$tmp_imglink.'#'); // this should not vary by $i or others because if duplicate images are detected only the first is attached
 				//--
-				if(!$chk_duplicates_arr[(string)$tmp_cid]) { // avoid browse twice the same image
+				if((!isset($chk_duplicates_arr[(string)$tmp_cid])) OR (!$chk_duplicates_arr[(string)$tmp_cid])) { // avoid browse twice the same image
 					//--
 					$tmp_fcontent = '';
 					$tmp_fake_fname = '';
@@ -815,7 +851,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20210612
+ * @version 	v.20210823
  * @package 	Plugins:Mailer
  *
  */
@@ -1411,6 +1447,8 @@ final class SmartMailerMimeParser {
 					$key = (string) $key;
 					$val = (array) $val;
 					//--
+					$val['type'] = $val['type'] ?? null;
+					$val['skip'] = $val['skip'] ?? null;
 					if(((string)$val['type'] == 'text') AND ($val['skip'] !== true)) { // assure we don't print other things
 						//--
 						$cnt += 1;
@@ -1421,7 +1459,7 @@ final class SmartMailerMimeParser {
 						$tmp_link_pre = '<span title="Mime Part #'.$cnt.' ( '.Smart::escape_html(strtolower($val['mode']).' : '.strtoupper($val['charset'])).' )"><a href="'.self::mime_link($y_ctrl_key, $the_message_eml, $key, $y_link, $eval_arr[0], $eval_arr[1], 'partial').'" target="'.$y_target.'__mimepart" data-smart="open.popup">';
 						$tmp_link_pst = '</a></span>';
 						//--
-						if((string)$skips[$key] == '') { // print part if not skipped by similarity ...
+						if((!isset($skips[$key])) OR ((string)$skips[$key] == '')) { // print part if not skipped by similarity ...
 							//--
 							if((string)$skip_part_linking == 'yes') { // avoid display sub-text part links when only a part is displayed
 								$tmp_pict_img = '';

@@ -51,8 +51,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	Smart, SmartCipherCrypto, SmartFrameworkRegistry
- * @version 	v.20210819
+ * @depends 	Smart, SmartFrameworkRegistry, SmartCipherCrypto, SmartCryptoCipherBlowfishCBC
+ * @version 	v.20210825
  * @package 	@Core:Authentication
  *
  */
@@ -586,7 +586,7 @@ final class SmartAuth {
 			return (string) $y_pkey; // return the encrypted key to avoid lost it
 		} //end if
 		//--
-		return (string) SmartCipherCrypto::blowfish_decrypt((string)$y_pass, (string)$y_pkey, 'blowfish.cbc'); // {{{SYNC-ADM-AUTH-KEYS}}} ; avoid use smart utils here to avoid circular dependency as smart utils depends on smart auth ; more, keep always the internal blowfish.cbc here and not depend on external openssl blowfish cbc which could change or dissapear
+		return (string) SmartCipherCrypto::blowfish_decrypt((string)$y_pass, (string)$y_pkey); // {{{SYNC-ADM-AUTH-KEYS}}} ; avoid use smart utils here to avoid circular dependency as smart utils depends on smart auth ; more, keep always the internal blowfish.cbc here and not depend on external openssl blowfish cbc which could change or dissapear
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -612,7 +612,7 @@ final class SmartAuth {
 			return ''; // return empty string to avoid return it in unencrypted plain format
 		} //end if
 		//--
-		return (string) SmartCipherCrypto::blowfish_encrypt((string)$y_pass, (string)$y_pkey, 'blowfish.cbc'); // {{{SYNC-ADM-AUTH-KEYS}}} ; avoid use smart utils here to avoid circular dependency as smart utils depends on smart auth ; more, keep always the internal blowfish.cbc here and not depend on external openssl blowfish cbc which could change or dissapear
+		return (string) SmartCipherCrypto::blowfish_encrypt((string)$y_pass, (string)$y_pkey); // {{{SYNC-ADM-AUTH-KEYS}}} ; avoid use smart utils here to avoid circular dependency as smart utils depends on smart auth ; more, keep always the internal blowfish.cbc here and not depend on external openssl blowfish cbc which could change or dissapear
 		//--
 	} //END FUNCTION
 	//================================================================
