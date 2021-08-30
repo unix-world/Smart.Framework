@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartRedisDb
- * @version 	v.20210527
+ * @version 	v.20210830
  * @package 	Plugins:PersistentCache:Redis
  *
  */
@@ -66,7 +66,7 @@ class SmartRedisPersistentCache extends SmartAbstractPersistentCache {
 		//--
 		$redis_cfg = (array) Smart::get_from_config('redis');
 		//--
-		if(Smart::array_size($redis_cfg) > 0) {
+		if((int)Smart::array_size($redis_cfg) > 0) {
 			self::$is_active = true;
 		} else {
 			self::$is_active = false;
@@ -233,7 +233,7 @@ class SmartRedisPersistentCache extends SmartAbstractPersistentCache {
 		} //end if
 		//--
 		$y_value = (string) SmartUnicode::fix_charset((string)$y_value); // fix
-		$y_expiration = Smart::format_number_int($y_expiration, '+');
+		$y_expiration = (int) Smart::format_number_int((int)$y_expiration, '+');
 		//--
 		if((string)$y_realm != '') {
 			$real_key = (string) $y_realm.':'.$y_key;
@@ -252,7 +252,7 @@ class SmartRedisPersistentCache extends SmartAbstractPersistentCache {
 		if((string)strtoupper((string)trim((string)$result)) == 'QUEUED') {
 			$result = 'OK'; // fix for in-transaction result
 		} //end if
-		if($y_expiration > 0) {
+		if((int)$y_expiration > 0) {
 			$resexp = self::$redis->expire((string)$real_key, (int)$y_expiration); // returns: 0/1 or if in transaction: QUEUED
 			if((string)strtoupper((string)trim((string)$resexp)) == 'QUEUED') {
 				$resexp = '1'; // fix for in-transaction result
@@ -262,7 +262,7 @@ class SmartRedisPersistentCache extends SmartAbstractPersistentCache {
 		} //end if
 		$transact_arr = (array) self::$redis->exec();
 		$transact_test_arr['result'] = (string) $transact_arr[0];
-		if($y_expiration > 0) {
+		if((int)$y_expiration > 0) {
 			$transact_test_arr['resexp'] = (string) $transact_arr[1];
 		} else {
 			if((string)$resexp == '1') {

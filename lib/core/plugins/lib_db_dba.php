@@ -40,8 +40,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
- * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartComponents
- * @version 	v.20210527
+ * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartHashCrypto, SmartComponents
+ * @version 	v.20210830
  * @package 	Plugins:Database:Dba
  *
  */
@@ -278,7 +278,7 @@ final class SmartDbaDb {
 			//--
 		} //end if
 		//--
-		$hash = (string) sha1((string)$key);
+		$hash = (string) SmartHashCrypto::sha256((string)$key);
 		//--
 		$op = @dba_fetch((string)$hash, $this->dba); // get :: mixed: false or string
 		$rlen = 0;
@@ -361,7 +361,7 @@ final class SmartDbaDb {
 			//--
 		} //end if
 		//--
-		$hash = (string) sha1((string)$key);
+		$hash = (string) SmartHashCrypto::sha256((string)$key);
 		//--
 		$op = @dba_fetch((string)$hash, $this->dba); // get :: mixed: false or string
 		$rlen = 0;
@@ -442,7 +442,7 @@ final class SmartDbaDb {
 		} //end if else
 		//--
 		$data = (string) SmartDbaUtilDb::dataPack([
-			'hash' 		=> (string) sha1((string)$key),
+			'hash' 		=> (string) SmartHashCrypto::sha256((string)$key),
 			'key' 		=> (string) $key,
 			'expire' 	=> (int)    $expiration,
 			'value' 	=> (string) $value
@@ -454,8 +454,8 @@ final class SmartDbaDb {
 			//--
 		} //end if
 		//--
-		@dba_delete((string)sha1((string)$key), $this->dba); // first delete to try save space and avoid duplicates on some drivers
-		$op = @dba_replace((string)sha1((string)$key), (string)$data, $this->dba); // insert or replace (upsert)
+		@dba_delete((string)SmartHashCrypto::sha256((string)$key), $this->dba); // first delete to try save space and avoid duplicates on some drivers
+		$op = @dba_replace((string)SmartHashCrypto::sha256((string)$key), (string)$data, $this->dba); // insert or replace (upsert)
 		//--
 		if(SmartFrameworkRegistry::ifDebug()) {
 			//--
@@ -525,7 +525,7 @@ final class SmartDbaDb {
 			//--
 		} //end if
 		//-- check if key exists
-		$op = @dba_exists((string)sha1((string)$key), $this->dba);
+		$op = @dba_exists((string)SmartHashCrypto::sha256((string)$key), $this->dba);
 		//-- if key exists check if expired ; if expired unset it and return the same answer as it would not exists
 		if($op !== false) {
 			if((int)$this->getTtl($key) < -1) { // returns: -2 expired, -3 error ...
@@ -597,7 +597,7 @@ final class SmartDbaDb {
 			//--
 		} //end if
 		//--
-		$op = @dba_delete((string)sha1((string)$key), $this->dba);
+		$op = @dba_delete((string)SmartHashCrypto::sha256((string)$key), $this->dba);
 		$this->optimizeDb(true); // randomly optimize DB
 		//--
 		if(SmartFrameworkRegistry::ifDebug()) {
@@ -941,14 +941,14 @@ final class SmartDbaDb {
 		} //end if
 		//--
 		if(
-			(array_key_exists('hash', (array)$value))  							AND
-			(array_key_exists('key', (array)$value))  							AND
-			(array_key_exists('expire', (array)$value)) 						AND
-			(array_key_exists('value', (array)$value)) 							AND
-			((string)$value['hash'] === (string)$hash) 							AND
-			(preg_match('/^[a-f0-9]+$/', (string)$hash)) 						AND
-			((int)strlen((string)$hash) === 40) 								AND
-			((string)sha1((string)$value['key']) === (string)$hash) 			AND
+			(array_key_exists('hash', (array)$value))  									AND
+			(array_key_exists('key', (array)$value))  									AND
+			(array_key_exists('expire', (array)$value)) 								AND
+			(array_key_exists('value', (array)$value)) 									AND
+			((string)$value['hash'] === (string)$hash) 									AND
+			(preg_match('/^[a-f0-9]+$/', (string)$hash)) 								AND
+			((int)strlen((string)$hash) === 64) 										AND
+			((string)SmartHashCrypto::sha256((string)$value['key']) === (string)$hash) 	AND
 			((int)$value['expire'] >= -1)
 		) {
 			if($checkKey !== false) {
@@ -1306,7 +1306,7 @@ final class SmartDbaDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP DBA Extension ; classes: Smart
- * @version 	v.20210527
+ * @version 	v.20210830
  * @package 	Plugins:Database:Dba
  *
  */

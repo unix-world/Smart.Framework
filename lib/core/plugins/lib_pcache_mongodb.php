@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartMongoDb
- * @version 	v.20210527
+ * @version 	v.20210830
  * @package 	Plugins:PersistentCache:MongoDB
  *
  */
@@ -150,7 +150,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 			return false;
 		} //end if
 		//--
-		$id = (string) SmartHashCrypto::sha512($y_realm.':'.$y_key);
+		$id = (string) self::getIdKeyHash($y_realm, $y_key);
 		//--
 		$rd = array();
 		try {
@@ -182,7 +182,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 						if(array_key_exists('expire', (array)$rd)) {
 							if(array_key_exists('expire_at', (array)$rd)) {
 								if(((string)$id === (string)$rd['id']) AND ((string)$y_key === (string)$rd['key']) AND ((string)$y_realm === (string)$rd['realm'])) {
-									if((string)$id === (string)SmartHashCrypto::sha512($rd['realm'].':'.$rd['key'])) {
+									if((string)$id === (string)self::getIdKeyHash($rd['realm'], $rd['key'])) {
 										if(((int)$rd['expire'] <= 0) OR (((int)$rd['expire'] > 0) AND ((int)$rd['expire_at'] > 0) AND ((int)$rd['expire_at'] >= (int)time()))) {
 											$ok = true;
 										} //end if
@@ -220,7 +220,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 			return -3;
 		} //end if
 		//--
-		$id = (string) SmartHashCrypto::sha512($y_realm.':'.$y_key);
+		$id = (string) self::getIdKeyHash($y_realm, $y_key);
 		//--
 		$rd = array();
 		try {
@@ -252,7 +252,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 						if(array_key_exists('expire', (array)$rd)) {
 							if(array_key_exists('expire_at', (array)$rd)) {
 								if(((string)$id === (string)$rd['id']) AND ((string)$y_key === (string)$rd['key']) AND ((string)$y_realm === (string)$rd['realm'])) {
-									if((string)$id === (string)SmartHashCrypto::sha512($rd['realm'].':'.$rd['key'])) {
+									if((string)$id === (string)self::getIdKeyHash($rd['realm'], $rd['key'])) {
 										if(((int)$rd['expire'] <= 0) OR (((int)$rd['expire'] > 0) AND ((int)$rd['expire_at'] > 0) AND ((int)$rd['expire_at'] >= (int)time()))) {
 											if((int)$rd['expire'] <= 0) {
 												if((int)$rd['expire_at'] <= 0) {
@@ -301,7 +301,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 			return null;
 		} //end if
 		//--
-		$id = (string) SmartHashCrypto::sha512($y_realm.':'.$y_key);
+		$id = (string) self::getIdKeyHash($y_realm, $y_key);
 		//--
 		$rd = array();
 		try {
@@ -326,15 +326,17 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 						if(array_key_exists('expire', (array)$rd)) {
 							if(array_key_exists('expire_at', (array)$rd)) {
 								if(((string)$id === (string)$rd['id']) AND ((string)$y_key === (string)$rd['key']) AND ((string)$y_realm === (string)$rd['realm'])) {
-									if((string)$id === (string)SmartHashCrypto::sha512($rd['realm'].':'.$rd['key'])) {
+									if((string)$id === (string)self::getIdKeyHash($rd['realm'], $rd['key'])) {
 										if(((int)$rd['expire'] <= 0) OR (((int)$rd['expire'] > 0) AND ((int)$rd['expire_at'] > 0) AND ((int)$rd['expire_at'] >= (int)time()))) {
 											if(array_key_exists('pcache', (array)$rd)) {
 												$rd['pcache'] = Smart::unseryalize((string)$rd['pcache']);
 												if(is_array($rd['pcache'])) {
 													if(array_key_exists('checksum', (array)$rd['pcache'])) {
 														if(array_key_exists('data', (array)$rd['pcache'])) {
-															if((string)$rd['pcache']['checksum'] === (string)sha1($y_realm.':'.$y_key.':'.$rd['pcache']['data'])) {
-																$data = (string) $rd['pcache']['data'];
+															if((string)trim((string)$rd['pcache']['checksum']) != '') {
+																if((string)$rd['pcache']['checksum'] === (string)SmartHashCrypto::sha512((string)$y_realm.':'.$y_key.':'.$rd['pcache']['data'], true)) { // b64
+																	$data = (string) $rd['pcache']['data'];
+																} //end if
 															} //end if
 														} //end if
 													} //end if
@@ -398,7 +400,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 			$expiration = -1; // does not expire (compatible to Redis)
 		} //end if else
 		//--
-		$id = (string) SmartHashCrypto::sha512($y_realm.':'.$y_key);
+		$id = (string) self::getIdKeyHash($y_realm, $y_key);
 		//--
 		$upsert = array();
 		try {
@@ -411,7 +413,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 				],
 				'$set', 			// operation
 				[ // update array
-					'_id' 		=> (string) SmartHashCrypto::sha256($y_realm.':'.$y_key).'-'.SmartHashCrypto::crc32b($y_key.':'.$y_realm), // ensure the same uuid to avoid 2 different uuids are upserted in the same time and generate duplicate error on high concurrency
+					'_id' 		=> (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha512($y_realm.':'.$y_key), 62).'-'.SmartHashCrypto::crc32b($y_realm.':'.$y_key, true), // ensure the same uuid to avoid 2 different uuids are upserted in the same time and generate duplicate error on high concurrency
 					'id' 		=> (string) $id,
 					'key' 		=> (string) $y_key,
 					'realm' 	=> (string) $y_realm,
@@ -422,7 +424,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 					'expire' 	=> (int)    $expire,
 					'expire_at' => (int)    $expiration,
 					'pcache' 		=> (string) Smart::seryalize([
-						'checksum' 	=> (string) sha1($y_realm.':'.$y_key.':'.$y_value),
+						'checksum' 	=> (string) SmartHashCrypto::sha512((string)$y_realm.':'.$y_key.':'.$y_value, true), // b64
 						'data' 		=> (string) $y_value
 					]) // data is serialized pcache as string
 				]
@@ -477,7 +479,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 			} //end try catch
 			// do not check $delete[1] >= 1, as it may already be deleted by other process
 		} else {
-			$id = (string) SmartHashCrypto::sha512($y_realm.':'.$y_key);
+			$id = (string) self::getIdKeyHash($y_realm, $y_key);
 			try {
 				$delete = self::$mongo->delete(
 					(string) self::COLLECTION,
@@ -500,6 +502,13 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 
 
 	//===== PRIVATES
+
+
+	private static function getIdKeyHash($y_realm, $y_key) {
+		//--
+		return (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha512((string)$y_realm.':'.$y_key), 62);
+		//--
+	} //END FUNCTION
 
 
 	private static function initCacheManager() {

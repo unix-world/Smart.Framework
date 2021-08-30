@@ -29,8 +29,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
- * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20210610
+ * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartHashCrypto, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
+ * @version		v.20210830
  * @package 	Application
  *
  */
@@ -629,7 +629,7 @@ final class SmartFrameworkRuntime {
 		//--
 		return (string) trim((string)SmartUtils::crypto_decrypt(
 			(string) $y_encrypted_link,
-			'Smart.Framework//DownloadLink'.SMART_FRAMEWORK_SECURITY_KEY // {{{SYNC-DOWNLOAD-LINK-CRYPT-KEY}}}
+			(string) 'Smart.Framework//DownloadLink'.SMART_FRAMEWORK_SECURITY_KEY // {{{SYNC-DOWNLOAD-LINK-CRYPT-KEY}}}
 		));
 		//--
 	} //END FUNCTION
@@ -662,16 +662,16 @@ final class SmartFrameworkRuntime {
 		$y_ctrl_key = (string) SMART_ERROR_AREA.'/'.$y_ctrl_key; // {{{SYNC-DWN-CTRL-PREFIX}}}
 		//--
 		$crrtime = (int) time();
-		$access_key = SmartHashCrypto::sha1('DownloadLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$y_file.'^'.$y_ctrl_key);
-		$unique_key = SmartHashCrypto::sha1('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$y_file.'+'.$y_ctrl_key);
+		$access_key = (string) SmartHashCrypto::checksum('DownloadLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$y_file.'^'.$y_ctrl_key);
+		$unique_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$y_file.'+'.$y_ctrl_key);
 		//-- {{{SYNC-DOWNLOAD-ENCRYPT-ARR}}}
 		$safe_download_link = SmartUtils::crypto_encrypt(
-			trim((string)$crrtime)."\n". 									// set the current time
-			trim((string)$y_file)."\n". 									// the file path
-			trim((string)$access_key)."\n". 								// access key based on UniqueID cookie
-			trim((string)$unique_key)."\n".									// unique key based on: User-Agent and IP
-			'-'."\n",														// self robot browser UserAgentName/ID key (does not apply here)
-			'Smart.Framework//DownloadLink'.SMART_FRAMEWORK_SECURITY_KEY 	// {{{SYNC-DOWNLOAD-LINK-CRYPT-KEY}}}
+			(string) trim((string)$crrtime)."\n". 									// set the current time
+			(string) trim((string)$y_file)."\n". 									// the file path
+			(string) trim((string)$access_key)."\n". 								// access key based on UniqueID cookie
+			(string) trim((string)$unique_key)."\n".								// unique key based on: User-Agent and IP
+			(string) '-'."\n",														// self robot browser UserAgentName/ID key (does not apply here)
+			(string) 'Smart.Framework//DownloadLink'.SMART_FRAMEWORK_SECURITY_KEY 	// {{{SYNC-DOWNLOAD-LINK-CRYPT-KEY}}}
 		);
 		//--
 		return (string) Smart::escape_url((string)trim((string)$safe_download_link));
@@ -1305,9 +1305,9 @@ final class SmartFrameworkRuntime {
 				} //end if
 			} //end if
 			//--
-			$cookie = (string) trim((string)strtolower((string)SmartFrameworkRegistry::getCookieVar((string)SMART_FRAMEWORK_UUID_COOKIE_NAME)));
-			if(((string)$cookie == '') OR (strlen((string)$cookie) != 40) OR (!preg_match('/^[a-f0-9]+$/', (string)$cookie))) {
-				$entropy = (string) sha1((string)Smart::unique_entropy('uuid-cookie')); // generate a random unique key ; cookie was not yet set or is invalid
+			$cookie = (string) trim((string)SmartFrameworkRegistry::getCookieVar((string)SMART_FRAMEWORK_UUID_COOKIE_NAME));
+			if(((string)$cookie == '') OR ((int)strlen((string)$cookie) < 64) OR (!preg_match('/^[A-Za-z0-9]+$/', (string)$cookie))) { // if sha512 is all zero will be just 64 ; expects 64..86 bytes
+				$entropy = (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha512((string)Smart::unique_entropy('uuid-cookie')), 62); // generate a random unique key ; cookie was not yet set or is invalid ; use B62 to avoid re-encode as url encode which will raise the size as encoding %xy non-letter or non-numeric chars ...
 				SmartUtils::set_cookie((string)SMART_FRAMEWORK_UUID_COOKIE_NAME, (string)$entropy, (int)$expire);
 				$cookie = (string) $entropy;
 				$wasset = true;

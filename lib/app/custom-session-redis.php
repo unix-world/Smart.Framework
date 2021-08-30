@@ -27,7 +27,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'Redis: Memory based');
  *
  * @access 		PUBLIC
  * @depends 	SmartRedisDb, Smart
- * @version 	v.20210527
+ * @version 	v.20210830
  * @package 	Application
  *
  */
@@ -89,7 +89,7 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 	//==================================================
 	public function write($id, $data) {
 		//--
-		$key = (string) SmartPersistentCache::safeKey((string)$this->sess_area).':'.SmartPersistentCache::safeKey($id.'_'.$this->sess_ns);
+		$key = (string) SmartPersistentCache::safeKey((string)$this->sess_area).':'.SmartPersistentCache::safeKey((string)$this->sess_ns).'_'.SmartPersistentCache::safeKey((string)$id);
 		//--
 		$result = $this->redis->set((string)$key, (string)$data);
 		//--
@@ -118,7 +118,7 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 	//==================================================
 	public function read($id) {
 		//--
-		$key = (string) SmartPersistentCache::safeKey((string)$this->sess_area).':'.SmartPersistentCache::safeKey($id.'_'.$this->sess_ns);
+		$key = (string) SmartPersistentCache::safeKey((string)$this->sess_area).':'.SmartPersistentCache::safeKey((string)$this->sess_ns).'_'.SmartPersistentCache::safeKey((string)$id);
 		//--
 		$data = $this->redis->get((string)$key);
 		//--
@@ -135,7 +135,7 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 	//==================================================
 	public function destroy($id) {
 		//--
-		$key = (string) SmartPersistentCache::safeKey((string)$this->sess_area).':'.SmartPersistentCache::safeKey($id.'_'.$this->sess_ns);
+		$key = (string) SmartPersistentCache::safeKey((string)$this->sess_area).':'.SmartPersistentCache::safeKey((string)$this->sess_ns).'_'.SmartPersistentCache::safeKey((string)$id);
 		//--
 		$ok = $this->redis->del((string)$key);
 		//--

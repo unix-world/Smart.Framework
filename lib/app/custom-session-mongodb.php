@@ -27,7 +27,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'MongoDB: DB NoSQL based
  *
  * @access 		PUBLIC
  * @depends 	SmartMongoDb, Smart
- * @version 	v.20210527
+ * @version 	v.20210830
  * @package 	Application
  *
  */
@@ -183,7 +183,7 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 				],
 				'$set', 			// operation
 				[ // update array
-					'_id' 		=> (string) SmartHashCrypto::sha256($id.':'.$this->sess_area.':'.$this->sess_ns).'-'.SmartHashCrypto::crc32b($this->sess_ns.':'.$this->sess_area.':'.$id), // ensure the same uuid to avoid 2 different uuids are upserted in the same time and generate duplicate error on high concurrency
+					'_id' 		=> (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha512($this->sess_ns.':'.$this->sess_area.':'.$id), 62).'-'.SmartHashCrypto::crc32b($this->sess_ns.':'.$this->sess_area.':'.$id, true), // ensure the same uuid to avoid 2 different uuids are upserted in the same time and generate duplicate error on high concurrency
 					'id' 		=> (string) $id,
 					'area' 		=> (string) $this->sess_area,
 					'ns' 		=> (string) $this->sess_ns,
@@ -194,7 +194,7 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 					'expire' 	=> (int)    $expire,
 					'expire_at' => (int)    ((int)$now + (int)$expire),
 					'session' 		=> (string) Smart::seryalize([
-						'checksum' 	=> (string) sha1($id.':'.$this->sess_area.':'.$this->sess_ns.':'.$data),
+						'checksum' 	=> (string) SmartHashCrypto::sha512($id.':'.$this->sess_area.':'.$this->sess_ns.':'.$data, true), // b64
 						'data' 		=> (string) $data
 					]) // data is serialized session as string
 				]
@@ -250,15 +250,15 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 			Smart::log_warning('MongoDB Custom Session: Read Error: Invalid Session Key: checksum');
 			return ''; // invalid
 		} //end if
-		if((int)strlen((string)$arr['session']['checksum']) != 40) { // expects sha1
-			Smart::log_warning('MongoDB Custom Session: Read Error: Invalid Session Checksum Length');
+		if((string)trim((string)$arr['session']['checksum']) == '') { // expects sha512/b64
+			Smart::log_warning('MongoDB Custom Session: Read Error: Empty Session Checksum');
 			return ''; // invalid
 		} //end if
 		if(!array_key_exists('data', $arr['session'])) {
 			Smart::log_warning('MongoDB Custom Session: Read Error: Invalid Session Key: data');
 			return ''; // invalid
 		} //end if
-		if((string)sha1($id.':'.$this->sess_area.':'.$this->sess_ns.':'.$arr['session']['data']) !== (string)$arr['session']['checksum']) {
+		if((string)SmartHashCrypto::sha512($id.':'.$this->sess_area.':'.$this->sess_ns.':'.$arr['session']['data'], true) !== (string)$arr['session']['checksum']) {
 			Smart::log_warning('MongoDB Custom Session: Read Error: Invalid Session Data Checksum');
 			return ''; // invalid
 		} //end if

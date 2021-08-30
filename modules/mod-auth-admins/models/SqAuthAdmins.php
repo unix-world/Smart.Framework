@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20210630
+	// v.20210830
 
 	private $db;
 
@@ -51,7 +51,7 @@ final class SqAuthAdmins {
 		} //end if
 		//--
 		$init_schema = $this->initDBSchema(); // mixed
-		if($init_schema !== true) { // create default schema if not exists (and a default account)
+		if($init_schema !== null) { // create default schema if not exists (and a default account)
 			throw new \Exception('DB Init Schema Failed with Message: '.$init_schema);
 		} //end if
 		//--
@@ -69,7 +69,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function getLoginData($auth_user_name, $auth_user_hash_pass) {
+	public function getLoginData(string $auth_user_name, string $auth_user_pass) : array {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
@@ -81,22 +81,35 @@ final class SqAuthAdmins {
 		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
 			return array();
 		} //end if
-		if(\strlen((string)$auth_user_hash_pass) != 128) { // SHA512
+		if(\SmartAuth::validate_auth_password(
+			(string) $auth_user_pass
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
 			return array();
 		} //end if
 		//--
-		return (array) $this->db->read_asdata(
-			'SELECT * FROM `admins` WHERE ((`id` = ?) AND (`pass` = ?) AND (`active` = 1)) LIMIT 1 OFFSET 0',
+		$arr = (array) $this->db->read_asdata(
+			'SELECT * FROM `admins` WHERE ((`id` = ?) AND (`active` = 1)) LIMIT 1 OFFSET 0',
 			[
-				(string) $auth_user_name,
-				(string) $auth_user_hash_pass
+				(string) $auth_user_name
 			]
 		);
+		if((int)\Smart::array_size($arr) <= 0) {
+			return array();
+		} //end if
+		$arr['pass'] = (string) \trim((string)($arr['pass'] ?? null));
+		if((string)$arr['pass'] == '') {
+			return array();
+		} //end if
+		if(\SmartHashCrypto::checkpassword((string)$arr['pass'], (string)$auth_user_pass, (string)$auth_user_name) !== true) {
+			return array();
+		} //end if
+		//--
+		return (array) $arr; // OK
 		//--
 	} //END FUNCTION
 
 
-	public function checkFailLoginData($id, $hashpass, $ip) {
+	public function checkFailLoginData(string $id, string $pass, string $ip) : int {
 		//--
 		$ip = (string) \trim((string)$ip);
 		$id = (string) \trim((string)$id);
@@ -119,8 +132,8 @@ final class SqAuthAdmins {
 			return 0;
 		} //end if
 		//--
-		$test_arr = $this->getLoginData($id, $hashpass);
-		if(\Smart::array_size($test_arr) > 0) { // successful login after a timeout
+		$test_arr = (array) $this->getLoginData((string)$id, (string)$pass);
+		if((int)\Smart::array_size($test_arr) > 0) { // successful login after a timeout
 			return 0;
 		} //end if
 		$test_arr = null;
@@ -136,7 +149,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function logSuccessfulLoginData($id, $ip) {
+	public function logSuccessfulLoginData(string $id, string $ip) : bool {
 		//--
 		$ip = (string) \trim((string)$ip);
 		//--
@@ -189,7 +202,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function logUnsuccessfulLoginData($id, $ip, $ua) {
+	public function logUnsuccessfulLoginData(string $id, string $ip, string $ua) : bool {
 		//--
 		$ip = (string) \trim((string)$ip);
 		$ua = (string) \trim((string)$ua);
@@ -205,8 +218,8 @@ final class SqAuthAdmins {
 		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
 			$id = '';
 		} else {
-			$arr = (array) $this->getById($id);
-			if(\Smart::array_size($arr) <= 0) {
+			$arr = (array) $this->getById((string)$id);
+			if((int)\Smart::array_size($arr) <= 0) {
 				$id = '';
 			} //end if
 			$arr = null;
@@ -246,7 +259,7 @@ final class SqAuthAdmins {
 	//===== Management
 
 
-	public function getById($id) {
+	public function getById(string $id) : array {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
@@ -263,7 +276,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function countByFilter($id='') {
+	public function countByFilter(string $id='') : int {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
@@ -289,7 +302,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function getListByFilter($fields=array(), $limit=10, $ofs=0, $sortby='id', $sortdir='ASC', $id='') {
+	public function getListByFilter(array $fields=[], int $limit=10, int $ofs=0, string $sortby='id', string $sortdir='ASC', string $id='') : array {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
@@ -354,7 +367,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function insertAccount($data, $active=0) {
+	public function insertAccount(array $data, bool $active=false) : int {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
@@ -372,21 +385,27 @@ final class SqAuthAdmins {
 		$data['priv'] = ($data['priv'] ?? null); // mixed: array or string
 		$data['restrict'] = (string) \trim((string)($data['restrict'] ?? null));
 		//--
-		if($active !== 1) {
-			$active = 0;
+		if($active !== true) {
+			$active = false;
 		} //end if
 		//--
-		if((\strlen((string)$data['id']) < 3) OR (\strlen((string)$data['id']) > 25)) {
-			return -10; // invalid username length
+		if(((string)$data['id'] == '') OR ((string)$data['pass'] == '')) {
+			return -10; // empty username or password
 		} //end if
-		if(!\preg_match('/^[a-z0-9\.]+$/', (string)$data['id'])) {
-			return -11; // invalid characters in username
+		if(\SmartAuth::validate_auth_username(
+			(string) $data['id']
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+			return -11; // invalid username
 		} //end if
-		if(!\preg_match('/^[a-f0-9]+$/', (string)$data['pass'])) {
-			return -12; // invalid password, must be hex hash
+		if(\SmartAuth::validate_auth_password(
+			(string) $data['pass']
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}} ; don't check complexity here !
+			return -12; // invalid password
 		} //end if
-		if(\strlen((string)$data['pass']) != 128) {
-			return -13; // invalid password, must be sha512 (128 chars)
+		//--
+		$data['pass'] = (string) \trim((string)\SmartHashCrypto::password((string)$data['pass'], (string)$data['id']));
+		if((int)\strlen((string)$data['pass']) !== (int)\SmartHashCrypto::PASSWORD_HASH_LENGTH) {
+			return -13; // invalid password, it have to be a fixed length as defined
 		} //end if
 		//-- {{{SYNC-MOD-AUTH-EMAIL-VALIDATION}}}
 		if((\strlen((string)$data['email']) < 6) OR (\strlen((string)$data['email']) > 96) OR (!\preg_match((string)\SmartValidator::regex_stringvalidation_expression('email'), (string)$data['email']))) {
@@ -440,7 +459,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function updateStatus($id, $status) {
+	public function updateStatus(string $id, int $status) : int {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
@@ -484,11 +503,11 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function decryptPrivKey($pkey_enc) { // {{{SYNC-ADM-AUTH-KEYS}}}
+	public function decryptPrivKey(?string $pkey_enc) : string { // {{{SYNC-ADM-AUTH-KEYS}}}
 		//--
 		$pass = (string) \SmartAuth::get_login_password();
 		//--
-		if((string)trim((string)$pass) == '') {
+		if((string)\trim((string)$pass) == '') {
 			return '';
 		} //end if
 		//--
@@ -497,7 +516,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function encryptPrivKey($pkey_plain, $newpass=null) { // {{{SYNC-ADM-AUTH-KEYS}}}
+	public function encryptPrivKey(?string $pkey_plain, ?string $newpass=null) : string { // {{{SYNC-ADM-AUTH-KEYS}}}
 		//--
 		if($newpass !== null) {
 			$pass = (string) $newpass; // used only when a user changes his/her account password by him(her)self ; if so, re-encrypt the private key with this new password
@@ -505,7 +524,7 @@ final class SqAuthAdmins {
 			$pass = (string) \SmartAuth::get_login_password();
 		} //end if else
 		//--
-		if((string)trim((string)$pass) == '') {
+		if((string)\trim((string)$pass) == '') {
 			return '';
 		} //end if
 		//--
@@ -514,7 +533,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function updatePassword($id, $hash, $pass) {
+	public function updatePassword(string $id, string $pass) : int {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
@@ -529,8 +548,8 @@ final class SqAuthAdmins {
 			return -10; // invalid username ID length
 		} //end if
 		//--
-		$rd_arr = (array) $this->getById($id);
-		if(\Smart::array_size($rd_arr) <= 0) {
+		$rd_arr = (array) $this->getById((string)$id);
+		if((int)\Smart::array_size($rd_arr) <= 0) {
 			return -11; // invalid username ID (does not exists)
 		} //end if
 		//--
@@ -541,12 +560,14 @@ final class SqAuthAdmins {
 		//--
 		$rd_arr = null;
 		//--
-		$hash = (string) $hash;
-		if(!\preg_match('/^[a-f0-9]+$/', (string)$hash)) {
-			return -12; // invalid password, must be hex hash
+		if(\SmartAuth::validate_auth_password(
+			(string) $pass
+		) !== true) { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}} ; don't check complexity here !
+			return -12; // invalid password
 		} //end if
-		if(\strlen((string)$hash) != 128) {
-			return -13; // invalid password, must be sha512 (128 chars)
+		$hash = (string) (string) \trim((string)\SmartHashCrypto::password((string)$pass, (string)$id));
+		if((int)\strlen((string)$hash) !== (int)\SmartHashCrypto::PASSWORD_HASH_LENGTH) {
+			return -13; // invalid password, it have to be a fixed length as defined
 		} //end if
 		//--
 		$arr = [
@@ -577,7 +598,7 @@ final class SqAuthAdmins {
 				'update'
 			).' '.$this->db->prepare_param_query('WHERE (`id` = ?)', [(string)$id])
 		);
-		$out = $wr[1];
+		$out = (int) $wr[1];
 		//--
 		$this->db->write_data('COMMIT');
 		//--
@@ -586,7 +607,7 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
-	public function updateAccount($id, $data) {
+	public function updateAccount(string $id, array $data) : int {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # Invalid AUTH DB Connection !');
@@ -629,8 +650,8 @@ final class SqAuthAdmins {
 		if(\Smart::array_size($check_eml) > 0) {
 			$out = -2; // duplicate email
 		} else {
-			$test = (array) $this->getById($id);
-			if(\Smart::array_size($test) <= 0) {
+			$test = (array) $this->getById((string)$id);
+			if((int)\Smart::array_size($test) <= 0) {
 				$out = -3; // invalid account id
 			} else {
 				$arr = [
@@ -688,7 +709,7 @@ final class SqAuthAdmins {
 	//======= [ PRIVATES ]
 
 
-	private function initDBSchema() {
+	private function initDBSchema() : ?string {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			return 'Invalid AUTH DB Connection !';
@@ -723,19 +744,20 @@ final class SqAuthAdmins {
 			$this->db->write_data('COMMIT');
 		} //end if
 		//--
-		return true;
+		return null;
 		//--
 	} //END FUNCTION
 
 
-	private function dbDefaultSchema() { // {{{SYNC-TABLE-AUTH_TEMPLATE}}}
+	private function dbDefaultSchema() : string { // {{{SYNC-TABLE-AUTH_TEMPLATE}}}
 //-- default schema
-$version = (string) $this->db->escape_str(\SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.\SMART_FRAMEWORK_RELEASE_VERSION);
+$version = (string) $this->db->escape_str((string)\SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.\SMART_FRAMEWORK_RELEASE_VERSION);
+$passlen = (int) \SmartHashCrypto::PASSWORD_HASH_LENGTH;
 $schema = <<<SQL
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@auth-admins', '{$version}');
 CREATE TABLE 'admins' (
 	`id` character varying(25) PRIMARY KEY NOT NULL,
-	`pass` character varying(128) NOT NULL,
+	`pass` character varying({$passlen}) NOT NULL,
 	`active` smallint DEFAULT 0 NOT NULL,
 	`quota` bigint DEFAULT 0 NOT NULL,
 	`email` character varying(96) DEFAULT NULL NULL,

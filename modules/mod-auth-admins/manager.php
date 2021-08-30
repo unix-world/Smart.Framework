@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true); 	// if set to TRUE because is shared
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210630
+	// v.20210830
 
 	public function Initialize() {
 		//--
@@ -191,8 +191,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} elseif((string)trim((string)$frm['id']) == '') {
 					$message = 'INVALID ID (empty)';
 				} elseif(SmartAuth::validate_auth_password((string)$frm['pass'], (bool)((defined('APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false)) !== true) { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
-					$message = 'Invalid Password: Too short or too long. Must match a minimal complexity level ...';
-				} elseif(((string)$frm['repass'] !== (string)$frm['pass']) OR ((string)sha1((string)$frm['repass']) !== (string)sha1((string)$frm['pass']))) {
+					$message = 'Invalid Password: Too short or too long or does not match the minimal complexity level ...';
+				} elseif(((string)$frm['repass'] !== (string)$frm['pass']) OR ((string)SmartHashCrypto::sha256((string)$frm['repass']) !== (string)SmartHashCrypto::sha256((string)$frm['pass']))) {
 					$message = 'Invalid Password: Password and Retype of Password does not match';
 				} //end if else
 				//--
@@ -203,8 +203,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
 					$wr = $model->updatePassword(
 						(string) $frm['id'],
-						(string) SmartHashCrypto::password((string)$frm['pass'], (string)$frm['id']),
-						(string) $frm['pass'] // this is required to re-encode keys
+						(string) $frm['pass']
 					);
 					$model = null; // close connection
 				} //end if
@@ -453,16 +452,16 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								//--
 							} else {
 								//--
-								$wr = $model->updateStatus(
+								$wr = (int) $model->updateStatus(
 									(string) $id,
 									(int)    (strtolower($value) == 'true' || $value == '1') ? 1 : 0
 								);
 								//--
-								if($wr == 1) {
+								if((int)$wr === 1) {
 									$status = 'OK';
 									$message = 'Status ['.ucfirst($column).'] updated';
 								} else {
-									$message = 'FAILED to update Status ['.ucfirst($column).']';
+									$message = 'FAILED to update Status ['.ucfirst((string)$column).']';
 								} //end if else
 								//--
 							} //end if else
@@ -528,8 +527,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} elseif(SmartAuth::validate_auth_username((string)$frm['id']) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
 					$message = 'Invalid Username ID: Too short or too long. Must use only this pattern: a-z 0-9 .';
 				} elseif(SmartAuth::validate_auth_password((string)$frm['pass'], (bool)((defined('APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false)) !== true) { // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
-					$message = 'Invalid Password: Too short or too long. Must match a minimal complexity level ...';
-				} elseif(((string)$frm['repass'] !== (string)$frm['pass']) OR ((string)sha1((string)$frm['repass']) !== (string)sha1((string)$frm['pass']))) {
+					$message = 'Invalid Password: Too short or too long or does not match the minimal complexity level ...';
+				} elseif(((string)$frm['repass'] !== (string)$frm['pass']) OR ((string)SmartHashCrypto::sha256((string)$frm['repass']) !== (string)SmartHashCrypto::sha256((string)$frm['pass']))) {
 					$message = 'Invalid Password Retype: does not match the Password';
 				} elseif(((int)SmartUnicode::str_len((string)$frm['name_f']) < 1) OR ((int)SmartUnicode::str_len((string)$frm['name_f']) > 64)) {
 					$message = 'Invalid First Name Length: must be between 1 and 64 characters';
@@ -548,13 +547,15 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				if((string)$message == '') {
 					$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
-					$wr = $model->insertAccount([
-						'id' 	 => (string) $frm['id'],
-						'email'  => (string) $frm['email'],
-						'pass' 	 => (string) SmartHashCrypto::password((string)$frm['pass'], (string)$frm['id']),
-						'name_f' => (string) $frm['name_f'],
-						'name_l' => (string) $frm['name_l']
-					]);
+					$wr = $model->insertAccount(
+						[
+							'id' 	 => (string) $frm['id'],
+							'email'  => (string) $frm['email'],
+							'pass' 	 => (string) $frm['pass'],
+							'name_f' => (string) $frm['name_f'],
+							'name_l' => (string) $frm['name_l']
+						]
+					);
 					$model = null; // close connection
 				} //end if
 				if(($wr == 1) AND ((string)$message == '')) {
@@ -608,8 +609,15 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						'id' => (string) $id
 					);
 					$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
-					$data['totalRows'] = $model->countByFilter($id);
-					$data['rowsList'] = $model->getListByFilter(['id', 'active', 'email', 'name_f', 'name_l', 'modif', 'priv', ['keys' => 'length']], $data['itemsPerPage'], $ofs, $sortby, $sortdir, $id);
+					$data['totalRows'] = $model->countByFilter((string)$id);
+					$data['rowsList'] = $model->getListByFilter(
+						(array)  ['id', 'active', 'email', 'name_f', 'name_l', 'modif', 'priv', ['keys' => 'length']],
+						(int)    $data['itemsPerPage'],
+						(int)    $ofs,
+						(string) $sortby,
+						(string) $sortdir,
+						(string) $id
+					);
 					$model = null; // close connection
 					//--
 				} else {

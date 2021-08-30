@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20210530
+ * @version		20210830
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -193,10 +193,10 @@ abstract class SmartAbstractAppMiddleware {
 			// [SFR.UA]\n
 			// #END#
 			//--
-			$crrtime 	= (string) trim((string)(isset($arr_metadata[0]) ? $arr_metadata[0] : ''));
-			$filepath 	= (string) trim((string)(isset($arr_metadata[1]) ? $arr_metadata[1] : ''));
-			$access_key = (string) trim((string)(isset($arr_metadata[2]) ? $arr_metadata[2] : ''));
-			$unique_key = (string) trim((string)(isset($arr_metadata[3]) ? $arr_metadata[3] : ''));
+			$crrtime 	= (string) trim((string)($arr_metadata[0] ?? ''));
+			$filepath 	= (string) trim((string)($arr_metadata[1] ?? ''));
+			$access_key = (string) trim((string)($arr_metadata[2] ?? ''));
+			$unique_key = (string) trim((string)($arr_metadata[3] ?? ''));
 			$arr_metadata = array(); // clear
 			//--
 			$timed_hours = 1; // default expire in 1 hour
@@ -209,20 +209,20 @@ abstract class SmartAbstractAppMiddleware {
 			} //end if
 			//--
 			if((int)$timed_hours > 0) {
-				if((int)$crrtime < (int)(time() - (60 * 60 * $timed_hours))) {
+				if((int)$crrtime < (int)((int)time() - (60 * 60 * (int)$timed_hours))) {
 					Smart::log_info('File Download', 'Failed: 403 / Download expired at: '.date('Y-m-d H:i:s O', (int)$crrtime).' for: '.$filepath.' on Client: '.$client_signature);
 					SmartFrameworkRuntime::Raise403Error('ERROR: The Access Key for this Download is Expired !');
 					return '';
 				} //end if
 			} //end if
 			//--
-			if((string)$access_key != (string)sha1('DownloadLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$filepath.'^'.$controller_key)) {
+			if((string)$access_key != (string)SmartHashCrypto::checksum('DownloadLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$filepath.'^'.$controller_key)) {
 				Smart::log_info('File Download', 'Failed: 403 / Invalid Access Key for: '.$filepath.' on Client: '.$client_signature);
 				SmartFrameworkRuntime::Raise403Error('ERROR: Invalid Access Key for this Download !');
 				return '';
 			} //end if
 			//--
-			if((string)$unique_key != (string)SmartHashCrypto::sha1('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$filepath.'+'.$controller_key)) {
+			if((string)$unique_key != (string)SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$filepath.'+'.$controller_key)) {
 				Smart::log_info('File Download', 'Failed: 403 / Invalid Client (Unique) Key for: '.$filepath.' on Client: '.$client_signature);
 				SmartFrameworkRuntime::Raise403Error('ERROR: Invalid Client Key to Access this Download !');
 				return '';
@@ -235,10 +235,10 @@ abstract class SmartAbstractAppMiddleware {
 					$skip_log = 'yes'; // do not log if accessed via admin area and user is authenticated
 				} //end if
 				//--
-				$tmp_file_ext = (string) strtolower((string)SmartFileSysUtils::get_file_extension_from_path($filepath)); // [OK]
+				$tmp_file_ext  = (string) strtolower((string)SmartFileSysUtils::get_file_extension_from_path($filepath)); // [OK]
 				$tmp_file_name = (string) strtolower((string)SmartFileSysUtils::get_file_name_from_path($filepath));
 				//--
-				$tmp_eval = SmartFileSysUtils::mime_eval($tmp_file_name);
+				$tmp_eval = (array) SmartFileSysUtils::mime_eval($tmp_file_name);
 				$mime_type = (string) $tmp_eval[0];
 				$mime_disp = (string) $tmp_eval[1];
 				//-- the path must not start with / but this is tested below

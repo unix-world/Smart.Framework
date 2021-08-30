@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210527
+ * @version 	v.20210830
  *
  */
 final class SmartAppTaskController extends SmartAbstractAppController {
@@ -160,7 +160,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 				return;
 			} //end if
 			//--
-			$download_key = (string) sha1((string)$this->ControllerGetParam('controller').'#'.$appid.'#'.SMART_FRAMEWORK_SECURITY_KEY); // generate a unique download key that will expire shortly
+			$download_key = (string) SmartHashCrypto::checksum((string)$this->ControllerGetParam('controller').'#'.$appid); // generate a unique download key that will expire shortly
 			$dwn = (string) trim((string)$this->RequestVarGet('dwn', '', 'string'));
 			if((string)$dwn != '') {
 				$this->PageViewSetCfgs([

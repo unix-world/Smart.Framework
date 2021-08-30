@@ -850,8 +850,8 @@ final class SmartMailerUtils {
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20210823
+ * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
+ * @version 	v.20210830
  * @package 	Plugins:Mailer
  *
  */
@@ -893,17 +893,18 @@ final class SmartMailerMimeParser {
 		$y_ctrl_key = (string) SMART_ERROR_AREA.'/'.$y_ctrl_key; // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
 		//--
 		$crrtime = (int) time();
-		$access_key = sha1('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$y_msg_file.'>'.$y_ctrl_key);
-		$unique_key = sha1('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$y_msg_file.'>'.$y_ctrl_key);
-		$self_robot_key = sha1('Time='.$crrtime.'#'.SmartAuth::get_login_id().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SmartUtils::get_selfrobot_useragent_name().'$'.$access_key.':'.$y_msg_file.'>'.$y_ctrl_key);
+		//--
+		$access_key     = (string) SmartHashCrypto::checksum('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$y_msg_file.'>'.$y_ctrl_key);
+		$unique_key     = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$y_msg_file.'>'.$y_ctrl_key);
+		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_login_id().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SmartUtils::get_selfrobot_useragent_name().'$'.$access_key.':'.$y_msg_file.'>'.$y_ctrl_key);
 		//-- {{{SYNC-MIME-ENCRYPT-ARR}}}
 		$safe_link = SmartUtils::crypto_encrypt(
-			trim((string)$crrtime)."\n". 			// current time stamp
-			trim((string)$y_msg_file)."\n". 		// file
-			trim((string)$access_key)."\n". 		// access key based on UniqueID cookie
-			trim((string)$unique_key)."\n". 		// unique key based on: AuthUserID, User-Agent and IP
-			trim((string)$self_robot_key)."\n", 	// self robot browser UserAgentName/ID key
-			'Smart.Framework//MimeLink'.SMART_FRAMEWORK_SECURITY_KEY
+			(string) trim((string)$crrtime)."\n". 			// current time stamp
+			(string) trim((string)$y_msg_file)."\n". 		// file
+			(string) trim((string)$access_key)."\n". 		// access key based on UniqueID cookie
+			(string) trim((string)$unique_key)."\n". 		// unique key based on: AuthUserID, User-Agent and IP
+			(string) trim((string)$self_robot_key)."\n", 	// self robot browser UserAgentName/ID key
+			(string) 'Smart.Framework//MimeLink'.SMART_FRAMEWORK_SECURITY_KEY
 		);
 		//--
 		return (string) $safe_link;
@@ -957,7 +958,7 @@ final class SmartMailerMimeParser {
 		} //end if
 		//--
 		if((string)$the_msg_part != '') {
-			$the_msg_part = strtolower(trim((string)SmartUtils::url_hex_decode((string)$the_msg_part)));
+			$the_msg_part = (string) strtolower((string)trim((string)SmartUtils::url_obfs_decode((string)$the_msg_part)));
 		} //end if
 		//--
 		$decoded_link =  trim((string)SmartUtils::crypto_decrypt(
@@ -967,12 +968,12 @@ final class SmartMailerMimeParser {
 		$dec_arr = (array) explode("\n", trim((string)$decoded_link));
 		//print_r($dec_arr);
 		//--
-		$arr['creation-time'] 	= trim((string)(isset($dec_arr[0]) ? $dec_arr[0] : ''));
-		$arr['message-file'] 	= trim((string)(isset($dec_arr[1]) ? $dec_arr[1] : ''));
-		$arr['message-part'] 	= trim((string)$the_msg_part);
-		$arr['access-key'] 		= trim((string)(isset($dec_arr[2]) ? $dec_arr[2] : ''));
-		$arr['bw-unique-key'] 	= trim((string)(isset($dec_arr[3]) ? $dec_arr[3] : ''));
-		$arr['sf-robot-key']	= trim((string)(isset($dec_arr[4]) ? $dec_arr[4] : ''));
+		$arr['creation-time'] 	= (string) trim((string)($dec_arr[0] ?? ''));
+		$arr['message-file'] 	= (string) trim((string)($dec_arr[1] ?? ''));
+		$arr['message-part'] 	= (string) trim((string)$the_msg_part);
+		$arr['access-key'] 		= (string) trim((string)($dec_arr[2] ?? ''));
+		$arr['bw-unique-key'] 	= (string) trim((string)($dec_arr[3] ?? ''));
+		$arr['sf-robot-key']	= (string) trim((string)($dec_arr[4] ?? ''));
 		//-- check if file path is valid
 		if((string)$arr['message-file'] == '') {
 			$arr = array();
@@ -985,12 +986,13 @@ final class SmartMailerMimeParser {
 			return (array) $arr;
 		} //end if
 		//--
-		$browser_os_ip_identification = SmartUtils::get_os_browser_ip(); // get browser and os identification
+		$browser_os_ip_identification = (array) SmartUtils::get_os_browser_ip(); // get browser and os identification
 		//-- re-compose the access key
 		$crrtime = (int) $arr['creation-time'];
-		$access_key = sha1('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$arr['message-file'].'>'.$y_ctrl_key);
-		$uniq_key = sha1('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$arr['message-file'].'>'.$y_ctrl_key);
-		$self_robot_key = sha1('Time='.$crrtime.'#'.SmartAuth::get_login_id().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.trim($browser_os_ip_identification['signature']).'$'.$access_key.':'.$arr['message-file'].'>'.$y_ctrl_key);
+		//--
+		$access_key     = (string) SmartHashCrypto::checksum('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$arr['message-file'].'>'.$y_ctrl_key);
+		$uniq_key       = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$arr['message-file'].'>'.$y_ctrl_key);
+		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_login_id().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.trim((string)$browser_os_ip_identification['signature']).'$'.$access_key.':'.$arr['message-file'].'>'.$y_ctrl_key);
 		//-- check access key
 		if((string)$arr['error'] == '') {
 			if((string)$access_key != (string)$arr['access-key']) {
@@ -1686,16 +1688,16 @@ final class SmartMailerMimeParser {
 			//--
 			$the_url_param_msg = (string) self::encode_mime_fileurl((string)$y_msg_file, (string)$y_ctrl_key); // {{{SYNC-MIME-ENCRYPT-ARR}}}
 			if((string)$y_part != '') {
-				$the_url_param_msg .= '@'.SmartUtils::url_hex_encode((string)$y_part); // have part
+				$the_url_param_msg .= '@'.SmartUtils::url_obfs_encode((string)$y_part); // have part
 			} //end if
 			//--
 			if((string)$y_rawmime != '') {
 				$the_url_param_raw = 'raw';
-				$the_url_param_mime = (string) Smart::escape_url(SmartUtils::url_hex_encode((string)$y_rawmime));
+				$the_url_param_mime = (string) SmartUtils::url_obfs_encode((string)$y_rawmime);
 			} //end if
 			if((string)$y_rawdisp != '') {
 				$the_url_param_raw = 'raw';
-				$the_url_param_disp = (string) Smart::escape_url(SmartUtils::url_hex_encode((string)$y_rawdisp));
+				$the_url_param_disp = (string) SmartUtils::url_obfs_encode((string)$y_rawdisp);
 			} //end if
 			//--
 			$the_url_param_mode = '';
@@ -1711,14 +1713,14 @@ final class SmartMailerMimeParser {
 					'{{{RAWMODE}}}',
 					'{{{MIME}}}',
 					'{{{DISP}}}',
-					'{{{MODE}}}'
+					'{{{MODE}}}',
 				],
 				[
-					(string) $the_url_param_msg,
-					(string) $the_url_param_raw,
-					(string) $the_url_param_mime,
-					(string) $the_url_param_disp,
-					(string) $the_url_param_mode
+					(string) Smart::escape_url($the_url_param_msg),
+					(string) Smart::escape_url($the_url_param_raw),
+					(string) Smart::escape_url($the_url_param_mime),
+					(string) Smart::escape_url($the_url_param_disp),
+					(string) Smart::escape_url($the_url_param_mode),
 				],
 				(string) $y_link
 			);

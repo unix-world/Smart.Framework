@@ -37,7 +37,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20210630
+ * @version 	v.20210830
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -71,7 +71,7 @@ final class AuthAdminsHandler {
 			die('AuthAdminsHandler:APP_AUTH_DB_SQLITE:1');
 			return;
 		} //end if
-		\define('APP_AUTH_DB_SQLITE', '#db/auth-admins-'.\sha1((string)\SMART_FRAMEWORK_SECURITY_KEY).'.sqlite'); // define inject constants direct in global scope, no need to prefix-slashes
+		\define('APP_AUTH_DB_SQLITE', '#db/auth-admins-'.\SmartHashCrypto::sha1((string)\SMART_FRAMEWORK_SECURITY_KEY).'.sqlite'); // define inject constants direct in global scope, no need to prefix-slashes
 		if(!\defined('\\APP_AUTH_DB_SQLITE')) {
 			\SmartFrameworkRuntime::Raise500Error('AUTH STORAGE could not be defined inside AdminAuth !');
 			die('AuthAdminsHandler:APP_AUTH_DB_SQLITE:2');
@@ -205,10 +205,13 @@ final class AuthAdminsHandler {
 				return;
 			} //end try catch
 			//-- try to check the failed logins
-			$hash_pass = (string) \SmartHashCrypto::password((string)$auth_user_pass, $auth_user_name);
 			if((string)$auth_user_name != '') {
 				//--
-				$check_fail = (int) $db->checkFailLoginData((string)$auth_user_name, (string)$hash_pass, (string)\SmartUtils::get_ip_client());
+				$check_fail = (int) $db->checkFailLoginData(
+					(string) $auth_user_name,
+					(string) $auth_user_pass,
+					(string) \SmartUtils::get_ip_client()
+				);
 				$retry_seconds = (int) \Smart::format_number_int(($check_fail - \time()), '+');
 				//--
 				if($check_fail > 0) {
@@ -226,7 +229,7 @@ final class AuthAdminsHandler {
 				//--
 			} else {
 				//--
-				$admin_login = (array) $db->getLoginData((string)$auth_user_name, (string)$hash_pass); // try to login
+				$admin_login = (array) $db->getLoginData((string)$auth_user_name, (string)$auth_user_pass); // try to login
 				//--
 			} //end if else
 			//-- test if login is successful
@@ -401,7 +404,6 @@ final class AuthAdminsHandler {
 		//--
 		$init_username = (string) \APP_AUTH_ADMIN_USERNAME;
 		$init_password = (string) \APP_AUTH_ADMIN_PASSWORD;
-		$init_hash_pass = (string) \SmartHashCrypto::password((string)$init_password, (string)$init_username);
 		//--
 		$init_privileges = (string) '<superadmin>,<admin>';
 		$init_privileges = \Smart::list_to_array((string)$init_privileges, true);
@@ -411,13 +413,13 @@ final class AuthAdminsHandler {
 			[
 				'id' 	 	=> (string) $init_username,
 				'email'  	=> null,
-				'pass' 	 	=> (string) $init_hash_pass,
+				'pass' 	 	=> (string) $init_password,
 				'name_f' 	=> (string) 'Super',
 				'name_l' 	=> (string) 'Admin',
 				'priv'   	=> (string) $init_privileges,
 				'restrict' 	=> '<modify>',
 			],
-			1
+			true
 		);
 		//--
 		if((int)$wr !== 1) {

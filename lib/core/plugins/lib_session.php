@@ -67,7 +67,7 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20210428
+ * @version 	v.20210830
  * @package 	Application:Session
  *
  */
@@ -288,9 +288,9 @@ final class SmartSession {
 		// (2) an almost unique client public key hash based on it's IP and Browser (1) and Session Name
 		// (3) a unique session id composed from (1) and (2)
 		//-- thus the correlation between the above makes almost impossible to forge it as it locks to IP+Browser, using a public entropy cookie all encrypted with a secret key and derived and related, finally composed.
-		$the_sess_hash_priv_key = (string) SmartHashCrypto::sha1($the_sess_client_uuid.'^'.SMART_APP_VISITOR_COOKIE.'^'.SMART_FRAMEWORK_SECURITY_KEY);
-		$the_sess_hash_pub_key = (string) SmartHashCrypto::sha1('^'.SMART_FRAMEWORK_SESSION_NAME.'&'.$the_sess_client_uuid.'&'.$the_sess_hash_priv_key.'&'.SMART_FRAMEWORK_SECURITY_KEY.'$');
-		$the_sess_id = (string) $the_sess_hash_pub_key.'-'.SmartHashCrypto::sha1('^'.$the_sess_client_uuid.'&'.$the_sess_hash_pub_key.'&'.$the_sess_hash_priv_key.'$'); // session ID combines the secret client key based on it's IP / Browser and the Client Entropy Cookie
+		$the_sess_hash_priv_key = (string) SmartHashCrypto::sha512($the_sess_client_uuid.'^'.SMART_APP_VISITOR_COOKIE.'^'.SMART_FRAMEWORK_SECURITY_KEY);
+		$the_sess_hash_pub_key = (string) SmartHashCrypto::sha512('^'.SMART_FRAMEWORK_SESSION_NAME.'&'.$the_sess_client_uuid.'&'.$the_sess_hash_priv_key.'&'.SMART_FRAMEWORK_SECURITY_KEY.'$');
+		$the_sess_id = (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha512($the_sess_hash_pub_key.'^'.$the_sess_client_uuid.'&'.$the_sess_hash_priv_key), 62); // session ID combines the secret client key based on it's IP / Browser and the Client Entropy Cookie ; 64..86 characters long
 		//--
 		$sf_sess_area = (string) Smart::safe_filename((string)SMART_FRAMEWORK_SESSION_PREFIX);
 		if(((string)$sf_sess_area == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$sf_sess_area))) {
@@ -350,7 +350,7 @@ final class SmartSession {
 		@session_save_path($sf_sess_dir);
 		@session_cache_limiter('nocache');
 		//--
-		$the_name_of_session = (string) SMART_FRAMEWORK_SESSION_NAME.'__Key_'.$the_sess_hash_pub_key; // protect session name data agains forgers
+		$the_name_of_session = (string) SMART_FRAMEWORK_SESSION_NAME.'__Key_'.Smart::base_from_hex_convert((string)$the_sess_hash_pub_key, 62); // protect session name data agains forgers
 		//--
 		@session_id((string)$the_sess_id);
 		@session_name((string)$the_name_of_session);
@@ -416,7 +416,7 @@ final class SmartSession {
 		//--
 		if(
 			(Smart::array_size($_SESSION) <= 0)   OR
-			(!isset($_SESSION['session_ID']))     OR (strlen($_SESSION['session_ID']) < 32)                                  OR
+			(!isset($_SESSION['session_ID']))     OR ((int)strlen($_SESSION['session_ID']) < 64)                             OR
 			(!isset($_SESSION['visitor_UUID']))   OR ((string)$_SESSION['visitor_UUID'] != (string)SMART_APP_VISITOR_COOKIE) OR
 			(!isset($_SESSION['uniqbrowser_ID'])) OR ((string)$_SESSION['uniqbrowser_ID'] != (string)$the_sess_client_uuid)  OR
 			(!isset($_SESSION['session_AREA']))   OR ((string)$_SESSION['session_AREA'] != (string)$sf_sess_area)            OR
@@ -427,8 +427,8 @@ final class SmartSession {
 			//--
 			if(Smart::array_size($_SESSION) > 0) {
 				//--
-				if((!isset($_SESSION['session_ID'])) OR (strlen($_SESSION['session_ID']) < 32)) {
-					Smart::log_warning('Session Reset: Session ID must be at least 32 characters ...');
+				if((!isset($_SESSION['session_ID'])) OR (strlen($_SESSION['session_ID']) < 64)) {
+					Smart::log_warning('Session Reset: Session ID must be at least 64 characters ...');
 				} //end if
 				//--
 				if((!isset($_SESSION['visitor_UUID'])) OR ((string)$_SESSION['visitor_UUID'] != (string)SMART_APP_VISITOR_COOKIE)) {
@@ -517,7 +517,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20210428
+ * @version 	v.20210830
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {

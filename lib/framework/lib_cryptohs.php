@@ -20,6 +20,16 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // [PHP8]
 
 //--
+if(!defined('SMART_FRAMEWORK_SECURITY_KEY')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SECURITY_KEY');
+} //end if
+if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) == '') {
+	die('Empty INIT constant value for SMART_FRAMEWORK_SECURITY_KEY');
+} //end if
+//--
+
+//--
 if(!function_exists('hash_algos')) {
 	@http_response_code(500);
 	die('PHP Extension Hash is not available');
@@ -45,7 +55,7 @@ if(!function_exists('hash_algos')) {
  *
  * @access      PUBLIC
  * @depends     PHP hash_algos() / hash() ; classes: SmartFrameworkRegistry, Smart
- * @version     v.20210822
+ * @version     v.20210830
  * @package     @Core:Crypto
  *
  */
@@ -53,32 +63,169 @@ final class SmartHashCrypto {
 
 	// ::
 
+	public const PASSWORD_HASH_LENGTH = 128;
+
+	private const SALT_SFSIGN = 'Smart Framework';
+	private const SALT_HASHTG = '#';
+	private const SALT_CRYPTO = 'スマート フレームワーク';
+
+	private const PASSWORD_PREFIX_V2 = 'sfpass.v2!';
+
 	private static $cache = [];
 
 
 	//==============================================================
 	/**
-	 * Encrypt (one way) a password :: this may depend on *OPTIONAL* extra salt $y_custom_salt
+	 * Create a safe checksum of data
+	 * It will append the salt to the end of data to avoid the length extension attack # https://en.wikipedia.org/wiki/Length_extension_attack
+	 *
+	 * @param STRING $y_data 			The data to be hashed
+	 * @param STRING $y_custom_salt 	The salt (will be trimmed from whitespaces) ; If the salt is empty will use the SMART_FRAMEWORK_SECURITY_KEY as the checksum must use a mandatory salt appended to the data to prevent the length extension attack
+	 * @return STRING 					The checksum hash as B62 using the hex SHA256 as data + 'salt' suffix (append) ; ~ 43 bytes length
+	 */
+	public static function checksum(?string $y_data, ?string $y_custom_salt=null) : string {
+		//--
+		$y_custom_salt = (string) trim((string)$y_custom_salt);
+		if((string)$y_custom_salt == '') {
+			$y_custom_salt = (string) SMART_FRAMEWORK_SECURITY_KEY;
+		} //end if
+		//--
+		$hexstr = (string) self::sha256((string)$y_data.'#'.$y_custom_salt);
+		//--
+		return (string) Smart::base_from_hex_convert((string)$hexstr, 62);
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Encrypt (one way) a password by creating a safe password hash
+	 * By default will use the v2 which is more colission resistant, by using a new algorithm to derive the password
+	 * NOTICE: it uses a custom salt + an internally hard-coded salt to avoid rainbow attack
 	 *
 	 * @param STRING $y_pass 			The password
 	 * @param STRING $y_custom_salt 	The salt (default is empty)
-	 * @param BOOLEAN $y_base64 		If set to TRUE will use Base64 Encoding instead of Hexa Encoding
-	 * @return STRING 					The hash: SHA512 with a custom salt (+ an internally hard-coded salt to avoid rainbow attack), 128 chars length (hex) or 88 chars length (b64)
+	 * @param ENUM $y_version 			The password version ; v1 = hex password format (old, r.20151216) ; v2 = b64 password format (default, r.20210830)
+	 * @return STRING 					The password hash: for v1 will return a 128 bytes SHA512 (hex) ; for v2 will return a 98 bytes hash composed from a prefix and the SHA512 (base64, 88 bytes)
 	 */
-	public static function password(?string $y_pass, ?string $y_custom_salt='', bool $y_base64=false) : string { // {{{SYNC-HASH-PASSWORD}}}
-		//-- v.151216
-		// Password Salt must not be very complex :: http://stackoverflow.com/questions/5482437/md5-hashing-using-password-as-salt
-		// extraordinary good salt + weak password = more easy to break
-		// just sensible salt + strong password = unbreakable
-		// the best is to pre-pend the salt: http://stackoverflow.com/questions/4171859/password-salts-prepending-vs-appending
+	public static function password(string $y_pass, string $y_custom_salt='', string $y_version='v2') : string { // {{{SYNC-HASH-PASSWORD}}}
+		//--
+		// the password salt must not be too complex related to the password itself # http://stackoverflow.com/questions/5482437/md5-hashing-using-password-as-salt
+		// nn extraordinary good salt + a weak password may increase the risk of colissions
+		// just sensible salt + strong password = safer
+		// for passwords the best is to pre-pend the salt: http://stackoverflow.com/questions/4171859/password-salts-prepending-vs-appending
+		// for checksuming is better to append the salt to avoid the length extension attack # https://en.wikipedia.org/wiki/Length_extension_attack
 		// ex: azA-Z09 pass, prepend needs 26^6 permutations while append 26^10, so append adds more complexity
 		// SHA512 is high complexity: O(2^n/2) # http://stackoverflow.com/questions/6776050/how-long-to-brute-force-a-salted-sha-512-hash-salt-provided
 		//--
-		if((string)$y_custom_salt != '') {
-			$y_custom_salt = (string) md5((string)'$1'.$y_custom_salt.'$2'.$y_pass);
+		if(((int)strlen((string)$y_pass) > 2048) OR ((int)strlen((string)$y_custom_salt) > 2048)) { // {{{SYNC-CRYPTO-KEY-MAX}}} divided by 2 as it is composed of both
+			Smart::raise_error(__METHOD__.' # Internal Error: Password or Salt is too long !');
+			return '';
 		} //end if
 		//--
-		return (string) self::sha512((string)$y_custom_salt.'@ Smart Framework :'.$y_pass.': スマート フレームワーク # 170115%!Password.512/($Auth)*'.strtoupper((string)sha1((string)$y_pass.'&$'.$y_custom_salt)).'^#[?]', (bool)$y_base64);
+		$salt = '';
+		$pass = '';
+		$prefix = '';
+		switch((string)$y_version) {
+			case 'v1': // r.20151216
+				//--
+				$prefix = ''; // for v1 there is no prefix
+				//--
+				$salt = '';
+				if((string)$y_custom_salt != '') {
+					$salt = (string) self::md5((string)'$1'.$y_custom_salt.'$2'.$y_pass);
+				} //end if
+				$pass = (string) self::sha512((string)$salt.'@ '.self::SALT_SFSIGN.' :'.$y_pass.': '.self::SALT_CRYPTO.' '.self::SALT_HASHTG.' 170115%!Password.512/($Auth)*'.strtoupper((string)sha1((string)$y_pass.'&$'.$salt)).'^#[?]');
+				//--
+				break;
+			case 'v2': // r.20210830
+				//--
+				$prefix = (string) self::PASSWORD_PREFIX_V2;
+				//--
+				$salt = (string) self::sha512((string)$y_custom_salt.' '.self::SALT_SFSIGN.' '.self::SALT_HASHTG.' '.self::SALT_CRYPTO); // req. padding if salt is empty, will use a fixed salt
+				$pass = (string) self::safecomposedkey((string)str_pad((string)trim((string)$y_pass), 7, '|', STR_PAD_RIGHT)); // req. padding, if an empty password is sent by auth login tries to avoid fatal error
+				$pass = (string) self::sha512((string)self::sha256((string)$salt).' '.$pass.' '.$salt, true);
+				//--
+				break;
+			default:
+				//--
+				Smart::raise_error(__METHOD__.' # Internal Error: Invalid Password Version: '.$y_version);
+				return '';
+				//--
+		} //end switch
+		//--
+		$prefix = (string) trim((string)$prefix);
+		$pass = (string) trim((string)$pass);
+		$minpasslen = (int) ceil(128 / 2 * 1.33); // hex / 2 * 1.33 as b64
+		if((int)strlen((string)$pass) < (int)$minpasslen) {
+			Smart::raise_error(__METHOD__.' # Internal Error: Password hash must be at least: '.(int)$minpasslen.' bytes !');
+			return '';
+		} //end if
+		$pass = (string) $prefix.str_pad((string)$pass, ((int)self::PASSWORD_HASH_LENGTH - (int)strlen((string)$prefix)), '*');
+		if((int)strlen((string)$pass) !== (int)self::PASSWORD_HASH_LENGTH) {
+			Smart::raise_error(__METHOD__.' # Internal Error: Password hash length must be '.(int)self::PASSWORD_HASH_LENGTH.' bytes !');
+			return '';
+		} //end if
+		//--
+		return (string) $pass;
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Check a password hash provided by SmartHashCrypto::password()
+	 * It must use the same salt as it was used when password was hashed ; if not using version detect the same version must be used as used when hashed
+	 *
+	 * @param STRING $y_hash 			The password hash to be checked
+	 * @param STRING $y_pass 			The password
+	 * @param STRING $y_custom_salt 	The salt (default is empty)
+	 * @param ENUM $y_version 			The password version ; Default is NULL to autodetect ; if a version (v1 or v2) is specified will check just using that specific version
+	 * @return BOOL 					Will return TRUE if password match or FALSE if not
+	 */
+	public static function checkpassword(string $y_hash, string $y_pass, string $y_custom_salt='', ?string $y_version=null) : bool {
+		//--
+		$y_hash = (string) trim((string)$y_hash);
+		if((int)strlen((string)$y_hash) !== (int)self::PASSWORD_HASH_LENGTH) {
+			return false;
+		} //end if
+		//--
+		$ver = '';
+		if($y_version === null) { // autodetect
+			if(strpos((string)$y_hash, '!') === false) {
+				if(!\preg_match('/^[a-f0-9]+$/', (string)$y_hash)) { // hex
+					return false;
+				} //end if
+				$ver = 'v1';
+			} elseif(strpos((string)$y_hash, (string)self::PASSWORD_PREFIX_V2) === 0) {
+				if(!\preg_match('/^[a-zA-Z0-9\+\/\=]+$/', (string)rtrim((string)substr((string)$y_hash, (int)strlen((string)self::PASSWORD_PREFIX_V2)),'*'))) { // b64, except signature and padding
+					return false;
+				} //end if
+				$ver = 'v2';
+			} //end if
+		} else { // use a specific version
+			$ver = (string) $y_version;
+		} //end if else
+		//--
+		$hash = '';
+		switch((string)$ver) {
+			case 'v1':
+			case 'v2':
+				$hash = (string) self::password((string)$y_pass, (string)$y_custom_salt, (string)$ver);
+				break;
+			default:
+				return false;
+		} //end switch
+		if(((string)trim((string)$hash) == '') OR ((int)strlen((string)$hash) !== (int)self::PASSWORD_HASH_LENGTH)) {
+			return false;
+		} //end if
+		if((string)$hash === (string)$y_hash) {
+			return true;
+		} else {
+			return false;
+		} //end if else
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -152,8 +299,8 @@ final class SmartHashCrypto {
 		// https://stackoverflow.com/questions/1323013/what-are-the-chances-that-two-messages-have-the-same-md5-digest-and-the-same-sha
 		// use just hex here and the null byte, with fixed lengths to reduce the chance of collisions for the next step (with not so complex fixed length strings, chances of colissions are infinite lower) ; this will generate a predictible concatenated hash using multiple algorithms ; actually the chances to find a colission for a string between 1..1024 characters that will produce a colission of all 4 hashing algorithms at the same time is ZERO in theory and in practice ... and in the well known universe using well known mathematics !
 		//--
-		$hkey1 = (string) SmartHashCrypto::crc32b((string)$key).       $nByte.SmartHashCrypto::md5((string)$key).       $nByte.SmartHashCrypto::sha1((string)$key).       $nByte.SmartHashCrypto::sha256((string)$key).       $nByte.SmartHashCrypto::sha512((string)$key);
-		$hkey2 = (string) SmartHashCrypto::crc32b((string)$salted_key).$nByte.SmartHashCrypto::md5((string)$salted_key).$nByte.SmartHashCrypto::sha1((string)$salted_key).$nByte.SmartHashCrypto::sha256((string)$salted_key).$nByte.SmartHashCrypto::sha512((string)$salted_key);
+		$hkey1 = (string) self::crc32b((string)$key).       $nByte.self::md5((string)$key).       $nByte.self::sha1((string)$key).       $nByte.self::sha256((string)$key).       $nByte.self::sha512((string)$key);
+		$hkey2 = (string) self::crc32b((string)$salted_key).$nByte.self::md5((string)$salted_key).$nByte.self::sha1((string)$salted_key).$nByte.self::sha256((string)$salted_key).$nByte.self::sha512((string)$salted_key);
 		$composed_key = (string) $hkey1.$nByte.$hkey2;
 		//--
 		return (string) $composed_key;

@@ -68,7 +68,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			return;
 		} //end if
 
-		$download_key 	= (string) sha1((string)time().SMART_FRAMEWORK_SECURITY_KEY); // generate a unique download key that will expire shortly
+		$download_key 	= (string) SmartHashCrypto::checksum((string)microtime(true)); // generate a unique download key that will expire shortly
 		$download_link 	= (string) SmartFrameworkRuntime::Create_Download_Link((string)$this->download_file, (string)$download_key); // generate an encrypted internal download link to serve that file once
 
 		$this->PageViewSetRawHeaders([

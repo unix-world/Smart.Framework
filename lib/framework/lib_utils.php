@@ -16,16 +16,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //======================================================
 
 //--
-if(!defined('SMART_FRAMEWORK_SECURITY_KEY')) {
-	@http_response_code(500);
-	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SECURITY_KEY');
-} //end if
-if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) == '') {
-	die('Empty INIT constant value for SMART_FRAMEWORK_SECURITY_KEY');
-} //end if
-//--
-
-//--
 // gzdeflate / gzinflate (rfc1951) have no checksum for data integrity by default ; if sha1 checksums are integrated separately, it can be better than other zlib algorithms
 //--
 if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
@@ -47,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20210822
+ * @version 	v.20210830
  * @package 	@Core:Extra
  *
  */
@@ -94,7 +84,7 @@ final class SmartUtils {
 	// return the max size of all current used cookies for the current domain
 	public static function cookie_size_max() {
 		//--
-		return (int) SMART_FRAMEWORK_MAX_BROWSER_COOKIE_SIZE; // the max cookie size is 4096 includding name, time, domain, ... and the rest of cookie data, thus use max safe is 3072 bytes per cookie
+		return (int) SMART_FRAMEWORK_MAX_BROWSER_COOKIE_SIZE; // the max cookie size is 4096 includding name, time, domain, ... and the rest of cookie data, thus use max safe is 3072 bytes per cookie, as the rest will be reserved for UID and Session Cookies
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -251,20 +241,20 @@ final class SmartUtils {
 
 
 	//================================================================
-	// simple encode a URL parameter using bin2hex()
-	public static function url_hex_encode(?string $y_val) {
+	// obfuscate an URL parameter using b64s encode
+	public static function url_obfs_encode(?string $y_val) {
 		//--
-		return (string) @bin2hex((string)$y_val);
+		return (string) Smart::b64s_enc((string)$y_val);
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	// simple encode a URL parameter using hex2bin()
-	public static function url_hex_decode(?string $y_enc_val) {
+	// de-obfuscate an URL parameter using b64s decode + safe filter
+	public static function url_obfs_decode(?string $y_enc_val) {
 		//--
-		return (string) SmartFrameworkSecurity::FilterUnsafeString((string)@hex2bin((string)$y_enc_val));
+		return (string) SmartFrameworkSecurity::FilterUnsafeString((string)Smart::b64s_dec((string)$y_enc_val));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1501,7 +1491,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	// This is the visitor UID calculated using the visitor private key and visitor public key
+	// This is the visitor UID as SHA512/B62 (86 bytes) calculated using the visitor private key and visitor public key
 	// This should be used just for tracking purposes and can be really trusted if the SMART_APP_VISITOR_COOKIE is defined as it came from internal as the value of the SMART_FRAMEWORK_UUID_COOKIE_NAME which is optional
 	public static function get_visitor_tracking_uid() {
 		//--
@@ -1510,7 +1500,7 @@ final class SmartUtils {
 			$uuid = (string) SMART_APP_VISITOR_COOKIE;
 		} //end if
 		//--
-		return (string) SmartHashCrypto::sha1('>'.SMART_SOFTWARE_NAMESPACE.'['.self::client_ident_private_key().']'.$uuid.'>'.SMART_FRAMEWORK_SECURITY_KEY);
+		return (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha512('>'.SMART_SOFTWARE_NAMESPACE.'['.self::client_ident_private_key().']'.$uuid.'>'.SMART_FRAMEWORK_SECURITY_KEY), 62);
 		//--
 	} //END FUNCTION
 	//================================================================

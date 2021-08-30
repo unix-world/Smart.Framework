@@ -68,8 +68,8 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
- * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210527
+ * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartHashCrypto, SmartUnicode, SmartUtils, SmartComponents
+ * @version 	v.20210830
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -1433,7 +1433,7 @@ final class SmartPgsqlDb {
 			$queryval = (string) self::prepare_param_query((string)$queryval, (array)$params_or_title, $y_connection);
 		} //end if
 		//--
-		$unique_id = 'WrIgData_PgSQL_'.Smart::uuid_12_seq().'_'.Smart::uuid_10_str().'_'.Smart::uuid_10_num().'_'.sha1(SmartUtils::client_ident_private_key()).'_'.sha1(SmartUtils::get_visitor_tracking_uid().':'.Smart::uuid_36('pgsql-write-ig').':'.Smart::uuid_45('pgsql-write-ig')).'_Func'; // this must be a unique that cannot guess to avoid dollar escaping injections
+		$unique_id = 'WrIgData_PgSQL_'.Smart::uuid_12_seq().'_'.Smart::uuid_10_str().'_'.Smart::uuid_10_num().'_'.SmartUtils::get_visitor_tracking_uid().'_'.SmartHashCrypto::sha256((string)SmartUtils::client_ident_private_key().':'.Smart::uuid_37().':'.Smart::uuid_36('pgsql-write-ig').':'.Smart::uuid_45('pgsql-write-ig')).'_Func'; // this must be a unique that cannot guess to avoid dollar escaping injections
 		//--
 		$prep_query = (string) '
 		DO LANGUAGE plpgsql
@@ -2473,7 +2473,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210527
+ * @version 	v.20210830
  * @package 	Plugins:Database:PostgreSQL
  *
  */
