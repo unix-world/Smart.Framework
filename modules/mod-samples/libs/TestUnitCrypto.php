@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210825
+ * @version 	v.20210903
  *
  */
 final class TestUnitCrypto {
@@ -165,7 +165,7 @@ if(failures > 0) {
 		//--
 
 		//--
-		$unicode_text = "Unicode String [ ".\time()." ]: @ Smart スマート // Cloud Application Platform クラウドアプリケーションプラットフォーム '".\implode('', \array_keys(\SmartUnicode::accented_chars()))." \" <p></p>
+		$unicode_text = "Unicode String [ ".\time()." ]: @ Smart スマート // Cloud Application Platform クラウドアプリケーションプラットフォーム '".\implode('', (array)\array_keys((array)\SmartUnicode::ACCENTED_CHARS))." \" <p></p>
 		? & * ^ $ @ ! ` ~ % () [] {} | \\ / + - _ : ; , . #'".\microtime().'#';
 		//--
 

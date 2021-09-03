@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20210824
+ * @version     v.20210903
  * @package     @Core
  *
  */
@@ -95,6 +95,7 @@ final class Smart {
 	public const CHARSET_BASE_36 = '0123456789abcdefghijklmnopqrstuvwxyz';
 	public const CHARSET_BASE_58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; // compatible with smartgo
 	public const CHARSET_BASE_62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	public const CHDIFF_BASE_64s = [ '+' => '-', '/' => '_', '=' => '.' ];
 	public const CHARSET_BASE_85 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#'; // https://rfc.zeromq.org/spec:32/Z85/
 	public const CHARSET_BASE_92 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#|;,_~`"'; // uxm, compatible with smartgo
 
@@ -1605,8 +1606,7 @@ final class Smart {
 		//-- if new tags may appear after strip tags that is natural as they were encoded already with entities ... ; Anyway, the following can't be used as IT BREAKS TEXT THAT COMES AFTER < which was previous encoded as &lt; !!!
 		//$yhtmlcode = (string) strip_tags((string)$yhtmlcode); // fix: after all fixes when reversing entities, new tags can appear that were encoded, so needs run again for safety ...
 		//-- restore html unicode entities
-		$html_accents = (array) SmartUnicode::accented_html_entities();
-		$yhtmlcode = (string) str_replace((array)array_values($html_accents), (array)array_keys($html_accents), (string)$yhtmlcode);
+		$yhtmlcode = (string) str_replace((array)array_values((array)SmartUnicode::ACCENTED_HTML_ENTITIES), (array)array_keys((array)SmartUnicode::ACCENTED_HTML_ENTITIES), (string)$yhtmlcode);
 		//-- try to convert other remaining html entities
 		$yhtmlcode = (string) html_entity_decode((string)$yhtmlcode, ENT_HTML5, SMART_FRAMEWORK_CHARSET);
 		//-- clean any other remaining html entities
@@ -2825,7 +2825,7 @@ final class Smart {
 			return '';
 		} //end if
 		//--
-		return (string) str_replace(['+', '/', '='], ['-', '_', '.'], (string)base64_encode((string)$str));
+		return (string) strtr((string)base64_encode((string)$str), (array)self::CHDIFF_BASE_64s);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2846,11 +2846,12 @@ final class Smart {
 	 */
 	public static function b64s_dec(?string $str) {
 		//--
+		$str = (string) trim((string)$str);
 		if((string)$str == '') {
 			return '';
 		} //end if
 		//--
-		return (string) base64_decode((string)str_replace(['-', '_', '.'], ['+', '/', '='], (string)trim((string)$str)));
+		return (string) base64_decode((string)strtr((string)$str, (array)array_flip((array)self::CHDIFF_BASE_64s)));
 		//--
 	} //END FUNCTION
 	//================================================================

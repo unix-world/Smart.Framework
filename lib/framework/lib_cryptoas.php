@@ -19,7 +19,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // NOTICE: This is unicode safe
 //======================================================
 
-// [PHP8] r.20210825
+// [PHP8] r.20210903
 
 
 //=====================================================================================
@@ -614,7 +614,7 @@ final class SmartCryptoOpenSSLCipher {
  * @internal
  *
  * @depends     classes: Smart, SmartHashCrypto
- * @version     v.20210825
+ * @version     v.20210903
  *
  */
 final class SmartCryptoCipherBlowfishCBC {
@@ -785,10 +785,10 @@ final class SmartCryptoCipherBlowfishCBC {
 		//--
 		if($b64 === false) { // v1
 			$encmode = 'HEX';
-			$cipherText = (string) @hex2bin((string)strtolower((string)trim((string)$cipherText))); // upper hex
+			$cipherText = (string) @hex2bin((string)strtolower((string)$cipherText)); // upper hex
 		} else { // v2
 			$encmode = 'B64s';
-			$cipherText = (string) Smart::b64s_dec((string)trim((string)$cipherText)); // b64s
+			$cipherText = (string) Smart::b64s_dec((string)$cipherText); // b64s
 		} //end if else
 		if((string)$cipherText == '') {
 			Smart::log_notice(__METHOD__.' # Decode ('.$encmode.') Failed');
