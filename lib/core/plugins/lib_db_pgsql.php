@@ -69,7 +69,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartHashCrypto, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210830
+ * @version 	v.20211120
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -531,9 +531,9 @@ final class SmartPgsqlDb {
 		//==
 
 		//--
-		$arr_data = self::read_data('SELECT "nspname" FROM "pg_namespace" WHERE ("nspname" = \''.self::escape_str($y_schema, '', $y_connection).'\')', 'Check if Schema Exists', $y_connection);
+		$arr_data = (array) self::read_data('SELECT "nspname" FROM "pg_namespace" WHERE ("nspname" = \''.self::escape_str($y_schema, '', $y_connection).'\')', 'Check if Schema Exists', $y_connection);
 		//--
-		if((string)$arr_data[0] == (string)$y_schema) {
+		if(isset($arr_data[0]) AND ((string)$arr_data[0] == (string)$y_schema)) {
 			$out = 1;
 		} else {
 			$out = 0;
@@ -2473,7 +2473,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210830
+ * @version 	v.20211120
  * @package 	Plugins:Database:PostgreSQL
  *
  */

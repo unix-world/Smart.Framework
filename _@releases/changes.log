@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+November 20, 2021 :: Version 8.7 rev.20211120
+	* fix lib postgresql check schema test for isset $arr[0] to avoid warnings on PHP 8+
+	* add comments for postgresql and mysqli databases: encoding / collation / character type
+
 August 06, 2021 :: Version 8.7 rev.20210805
 	* Templating (PHP): Add SHA1 hashing ; make available the .-_MAXSIZE_- and .-_INDEX_- also in IF inside LOOP
 	* Markdown: Fix: force to preserve code comments style as: /* comment */ also outside code

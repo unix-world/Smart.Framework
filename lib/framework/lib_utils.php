@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20210830
+ * @version 	v.20211122
  * @package 	@Core:Extra
  *
  */
@@ -169,7 +169,6 @@ final class SmartUtils {
 		} //end if
 		//--
 		$cookie_name = (string) trim((string)$cookie_name);
-		//--
 		if(((string)$cookie_name == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$cookie_name))) { // {{{SYNC-REQVARS-VALIDATION}}}
 			return false;
 		} //end if
@@ -182,6 +181,10 @@ final class SmartUtils {
 			$cookie_data = null; // unsetting a cookie needs an empty value
 		} else { // expire by session
 			$expire_seconds = 0; // explicit set to zero
+		} //end if
+		if((string)$cookie_data == '') {
+			$cookie_data = null;
+			$expire_seconds = -1; // explicit set to -1 to unset an empty cookie
 		} //end if
 		//--
 		if((string)$cookie_domain == '@') { // if empty or non @ leave as it is
