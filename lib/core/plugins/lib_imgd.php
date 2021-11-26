@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring
- * @version 	v.20210605
+ * @version 	v.20211126
  * @package 	Plugins:Image
  *
  */
@@ -1393,7 +1393,7 @@ final class SmartImageGdProcess {
 	//================================================================
 	private function testIfValidImg($img) {
 		//--
-		if((\is_resource($img)) OR (\is_a($img, '\\GdImage'))) { // fix to be PHP8 compatible # https://php.watch/versions/8.0/gdimage
+		if(is_resource($img) OR is_a($img, '\\GdImage')) { // fix to be PHP8 compatible # https://php.watch/versions/8.0/gdimage
 			return true;
 		} //end if
 		//--

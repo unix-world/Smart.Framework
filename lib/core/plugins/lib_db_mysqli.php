@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210527
+ * @version 	v.20211126
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -83,6 +83,8 @@ final class SmartMysqliDb {
 
 	private static $slow_time = 0.0050;
 	private static $server_version = [];
+
+	private static $default_connection = null;
 
 
 	//======================================================
@@ -204,6 +206,9 @@ final class SmartMysqliDb {
 		//-- {{{SYNC-CONNECTIONS-IDS}}}
 		$the_conn_key = (string)$yhost.':'.$yport.'@'.$ydb.'#'.$yuser;
 		//--
+		$driver = new mysqli_driver();
+		$driver->report_mode = MYSQLI_REPORT_OFF; // PHP 8.1+ ; the MYSQLI_REPORT_ERROR is not required as all reporting is done by the server here ...
+		//--
 		$connection = @mysqli_init();
 		@mysqli_options($connection, MYSQLI_OPT_LOCAL_INFILE, false);
 		if(!@mysqli_real_connect($connection, (string)$yhost, (string)$yuser, (string)$password, false, (int)$yport)) {
@@ -224,7 +229,7 @@ final class SmartMysqliDb {
 		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'open-close',
-				'data' => 'Connected to Server: '.$the_conn_key,
+				'data' => 'Connected to Server: '.$the_conn_key.' ; Error Reporting: MYSQLI_REPORT_OFF',
 				'connection' => (string) self::get_connection_id($connection)
 			]);
 		} //end if
@@ -1652,7 +1657,7 @@ final class SmartMysqliDb {
 		//--
 		if($y_connection === 'DEFAULT') { // just for the default connection !!!
 			//--
-			if(!defined('SMART_FRAMEWORK_DB_LINK_MySQL')) { // MySQL default connection constant to avoid re-connection which can break transactions
+			if(!self::$default_connection) { // MySQL default connection check to avoid re-connection which can break transactions
 				//--
 				if(Smart::array_size($cfg) <= 0) {
 					self::error('', 'CHECK-DEFAULT-MYSQLI-CONFIGS', 'The Default MySQLi Configs not detected !', 'The configs[mysqli] is not an array !', $y_description);
@@ -1671,7 +1676,7 @@ final class SmartMysqliDb {
 					//--
 					$y_connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)$the_conn_key];
 					//--
-					define('SMART_FRAMEWORK_DB_LINK_MySQL', (string)$the_conn_key);
+					self::$default_connection = (string) $the_conn_key;
 					//--
 					if(SmartFrameworkRegistry::ifDebug()) {
 						SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
@@ -1695,7 +1700,7 @@ final class SmartMysqliDb {
 						(string) $cfg['type']
 					);
 					//--
-					define('SMART_FRAMEWORK_DB_LINK_MySQL', (string)$the_conn_key);
+					self::$default_connection = (string) $the_conn_key;
 					//--
 					if(is_object($y_connection)) {
 						//--
@@ -1711,7 +1716,7 @@ final class SmartMysqliDb {
 				//--
 			} else {
 				//-- re-use the default connection
-				$y_connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)SMART_FRAMEWORK_DB_LINK_MySQL];
+				$y_connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)self::$default_connection];
 				//--
 			} //end if
 			//--
@@ -1883,7 +1888,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20210527
+ * @version 	v.20211126
  * @package 	Plugins:Database:MySQL
  *
  */

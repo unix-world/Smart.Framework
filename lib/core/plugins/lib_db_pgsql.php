@@ -37,7 +37,8 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
 /**
  * Class: SmartPgsqlDb - provides a Static PostgreSQL DB Server Client that can be used just with the DEFAULT connection from configs.
  *
- * Tested and Stable on PostgreSQL versions: 9.0.x / 9.1.x / 9.2.x / 9.3.x / 9.4.x / 9.5.x / 9.6.x / 10.x / 11.x / 12.x
+ * Tested and Stable with PHP 7.3 / 7.4 / 8.0 / 8.1
+ * Tested and Stable on PostgreSQL versions: 9.0.x / 9.1.x / 9.2.x / 9.3.x / 9.4.x / 9.5.x / 9.6.x / 10.x / 11.x / 12.x / 13.x
  * Tested and Stable with PgPool-II versions: 3.0.x / 3.1.x / 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x
  * Tested and Stable with PgBouncer: all versions
  *
@@ -69,7 +70,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartHashCrypto, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211120
+ * @version 	v.20211126
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -79,6 +80,8 @@ final class SmartPgsqlDb {
 
 	private static $slow_time = 0.0050;
 	private static $server_version = [];
+
+	private static $default_connection = null;
 
 
 	//======================================================
@@ -111,7 +114,7 @@ final class SmartPgsqlDb {
 	 * @param FLOAT $y_debug_sql_slowtime			:: debug query slow time
 	 * @param ENUM $y_type							:: server type: postgresql or pgpool2
 	 *
-	 * @return RESOURCE								:: the postgresql connection resource ID
+	 * @return RESOURCE/OBJECT						:: the postgresql connection resource ID or Object (since PHP 8.1+)
 	 *
 	 * @access 		private
 	 * @internal
@@ -208,7 +211,7 @@ final class SmartPgsqlDb {
 		$connection = @pg_connect('host='.$yhost.' port='.$yport.' dbname='.$ydb.' user='.$yuser.' password='.$password.' connect_timeout='.$timeout);
 		// @pg_close($connection) (if is resource) ; but reusing connections policy dissalow disconnects
 		//--
-		if(!is_resource($connection)) {
+		if(!self::is_valid_connection($connection)) {
 			self::error($yhost.':'.$yport.'@'.$ydb.'#'.$yuser, 'Connection', 'Connect to PgSQL Server', 'NO CONNECTION !!!', 'Connection Failed to PgSQL Server !');
 			return;
 		} //end if
@@ -217,7 +220,7 @@ final class SmartPgsqlDb {
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 				'type' => 'open-close',
 				'data' => 'Connected to PgSQL Server: '.$the_conn_key,
-				'connection' => (string) $connection
+				'connection' => (string) self::connection_hash($connection)
 			]);
 		} //end if
 		//--
@@ -249,7 +252,9 @@ final class SmartPgsqlDb {
 			self::error($connection, 'Encoding-Get-Charset', 'Wrong Server Encoding on PgSQL Server', 'Server='.$server_encoding[0], 'Client='.SMART_FRAMEWORK_SQL_CHARSET);
 			return;
 		} //end if
-		@pg_free_result($result);
+		if(self::is_valid_result($result)) { // check in case of error
+			@pg_free_result($result);
+		} //end if
 		//--
 
 		//--
@@ -264,7 +269,7 @@ final class SmartPgsqlDb {
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 				'type' => 'set',
 				'data' => 'SET Client Encoding [+check] to: '.@pg_client_encoding(),
-				'connection' => (string) $connection,
+				'connection' => (string) self::connection_hash($connection),
 				'skip-count' => 'yes'
 			]);
 		} //end if
@@ -282,7 +287,9 @@ final class SmartPgsqlDb {
 					self::error($connection, 'Set-Session-Transaction-Level', 'Failed to Set Session Transaction Level as '.$transact, 'Error='.@pg_last_error($connection), 'DB='.$ydb);
 					return;
 				} //end if
-				@pg_free_result($result);
+				if(self::is_valid_result($result)) { // check in case of error
+					@pg_free_result($result);
+				} //end if
 				//--
 				$result = @pg_query('SHOW transaction_isolation');
 				$chk = @pg_fetch_row($result);
@@ -294,11 +301,13 @@ final class SmartPgsqlDb {
 					SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 						'type' => 'set',
 						'data' => 'SET Session Transaction Isolation Level [+check] to: '.strtoupper($chk[0]),
-						'connection' => (string) $connection,
+						'connection' => (string) self::connection_hash($connection),
 						'skip-count' => 'yes'
 					]);
 				} //end if
-				@pg_free_result($result);
+				if(self::is_valid_result($result)) { // check in case of error
+					@pg_free_result($result);
+				} //end if
 				//--
 				break;
 			default:
@@ -307,7 +316,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//-- export only at the end (after all settings)
-		SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key] = $connection; // export connection
+		SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key] = &$connection; // export connection
 		//--
 
 		//-- OUTPUT
@@ -681,7 +690,7 @@ final class SmartPgsqlDb {
 				'params' => $dbg_query_params,
 				'rows' => $pgsql_result_count,
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-				'connection' => (string) $y_connection
+				'connection' => (string) self::connection_hash($y_connection)
 			]);
 			//--
 		} //end if
@@ -697,7 +706,9 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		@pg_free_result($result);
+		if(self::is_valid_result($result)) { // check in case of error
+			@pg_free_result($result);
+		} //end if
 		//--
 
 		//--
@@ -802,7 +813,7 @@ final class SmartPgsqlDb {
 				'params' => $dbg_query_params,
 				'rows' => $number_of_rows,
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-				'connection' => (string) $y_connection
+				'connection' => (string) self::connection_hash($y_connection)
 			]);
 			//--
 		} //end if
@@ -838,7 +849,9 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		@pg_free_result($result);
+		if(self::is_valid_result($result)) { // check in case of error
+			@pg_free_result($result);
+		} //end if
 		//--
 
 		//--
@@ -943,7 +956,7 @@ final class SmartPgsqlDb {
 				'params' => $dbg_query_params,
 				'rows' => $number_of_rows,
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-				'connection' => (string) $y_connection
+				'connection' => (string) self::connection_hash($y_connection)
 			]);
 			//--
 		} //end if
@@ -991,7 +1004,9 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		@pg_free_result($result);
+		if(self::is_valid_result($result)) { // check in case of error
+			@pg_free_result($result);
+		} //end if
 		//--
 
 		//--
@@ -1101,7 +1116,7 @@ final class SmartPgsqlDb {
 				'params' => $dbg_query_params,
 				'rows' => $number_of_rows,
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-				'connection' => (string) $y_connection
+				'connection' => (string) self::connection_hash($y_connection)
 			]);
 			//--
 		} //end if
@@ -1142,7 +1157,9 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		@pg_free_result($result);
+		if(self::is_valid_result($result)) { // check in case of error
+			@pg_free_result($result);
+		} //end if
 		//--
 
 		//--
@@ -1252,7 +1269,7 @@ final class SmartPgsqlDb {
 					'query' => $queryval,
 					'params' => '',
 					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-					'connection' => (string) $y_connection
+					'connection' => (string) self::connection_hash($y_connection)
 				]);
 			} elseif(stripos((string)trim((string)$queryval), 'SET ') === 0) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
@@ -1261,7 +1278,7 @@ final class SmartPgsqlDb {
 					'query' => $queryval,
 					'params' => $dbg_query_params,
 					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-					'connection' => (string) $y_connection
+					'connection' => (string) self::connection_hash($y_connection)
 				]);
 			} elseif( // {{{SYNC-PGSQL-STATEMENTS-SPECIAL}}}
 				(stripos((string)trim((string)$queryval), 'COPY ') === 0) OR
@@ -1281,7 +1298,7 @@ final class SmartPgsqlDb {
 					'params' => $dbg_query_params,
 					'rows' => $affected,
 					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-					'connection' => (string) $y_connection
+					'connection' => (string) self::connection_hash($y_connection)
 				]);
 			} else {
 				SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
@@ -1291,7 +1308,7 @@ final class SmartPgsqlDb {
 					'params' => $dbg_query_params,
 					'rows' => $affected,
 					'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-					'connection' => (string) $y_connection
+					'connection' => (string) self::connection_hash($y_connection)
 				]);
 			} //end if else
 			//--
@@ -1318,7 +1335,9 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		@pg_free_result($result);
+		if(self::is_valid_result($result)) { // check in case of error
+			@pg_free_result($result);
+		} //end if
 		//--
 
 		//--
@@ -1525,7 +1544,7 @@ final class SmartPgsqlDb {
 				'params' => $dbg_query_params,
 				'rows' => $affected,
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
-				'connection' => (string) $y_connection
+				'connection' => (string) self::connection_hash($y_connection)
 			]);
 			//--
 		} //end if
@@ -1551,7 +1570,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		if(is_resource($result)) { // check in case of error
+		if(self::is_valid_result($result)) { // check in case of error
 			@pg_free_result($result);
 		} //end if
 		//--
@@ -2040,9 +2059,13 @@ final class SmartPgsqlDb {
 		//==
 
 		//--
+		$conn_hash = (string) self::connection_hash($y_connection);
+		//--
+
+		//--
 		if($y_revalidate !== true) {
-			if((string)self::$server_version[(string)$y_connection] != '') {
-				return (string) self::$server_version[(string)$y_connection];
+			if((string)self::$server_version[(string)$conn_hash] != '') {
+				return (string) self::$server_version[(string)$conn_hash];
 			} //end if
 		} //end if
 		//--
@@ -2071,7 +2094,9 @@ final class SmartPgsqlDb {
 			//--
 		} //end if else
 		//--
-		@pg_free_result($result);
+		if(self::is_valid_result($result)) { // check in case of error
+			@pg_free_result($result);
+		} //end if
 		//--
 
 		//--
@@ -2088,7 +2113,7 @@ final class SmartPgsqlDb {
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 				'type' => 'metainfo',
 				'data' => 'PostgreSQL Server Version: '.$pgsql_version,
-				'connection' => (string) $y_connection,
+				'connection' => (string) self::connection_hash($y_connection),
 				'skip-count' => 'yes'
 			]);
 		} //end if
@@ -2102,7 +2127,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		self::$server_version[(string)$y_connection] = (string) $pgsql_num_version;
+		self::$server_version[(string)$conn_hash] = (string) $pgsql_num_version;
 		//--
 
 		//--
@@ -2178,6 +2203,34 @@ final class SmartPgsqlDb {
 	//======================================================
 
 
+	//======================================================
+	/**
+	 * Check if a connection is a valid PostgreSQL Connection
+	 *
+	 * @return 										:: STRING
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public static function connection_hash($y_connection) {
+		//--
+		if(is_resource($y_connection)) {
+			$y_connection = (string) $y_connection; // cast to string to get resource ID
+		} elseif(is_object($y_connection)) { // object
+			$y_connection = (string) Smart::base_from_hex_convert(spl_object_hash($y_connection), 36);
+		} elseif(Smart::is_nscalar($y_connection)) { // scalar or null
+			$y_connection = (string) $y_connection;
+		} else {
+			$y_connection = ''; // invalid, cannot be array
+		} //end if
+		//--
+		return (string) $y_connection;
+		//--
+	} //END FUNCTION
+	//======================================================
+
+
 	//======================================================================
 	// # PRIVATES
 	//======================================================================
@@ -2216,7 +2269,7 @@ final class SmartPgsqlDb {
 		//--
 		if($y_connection === 'DEFAULT') { // just for the default connection !!!
 			//--
-			if(!defined('SMART_FRAMEWORK_DB_LINK_PostgreSQL')) { // PostgreSQL default connection is exported as constant to avoid re-connection which can break transactions
+			if(!self::$default_connection) { // PostgreSQL default connection check to avoid re-connection which can break transactions
 				//--
 				if(Smart::array_size($cfg) <= 0) {
 					self::error('', 'CHECK-DEFAULT-PGSQL-CONFIGS', 'The Default PostgreSQL Configs not detected !', 'The configs[pgsql] is not an array or not set correctly !', $y_description);
@@ -2233,15 +2286,15 @@ final class SmartPgsqlDb {
 				$the_conn_key = (string) $cfg['server-host'].':'.$cfg['server-port'].'@'.$cfg['dbname'].'#'.$cfg['username'];
 				if((array_key_exists('pgsql', (array)SmartFrameworkRegistry::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['pgsql']))) { // if the connection was made before using the SmartPgsqlExtDb
 					//--
-					$y_connection = SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key];
+					$y_connection = &SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key];
 					//--
-					define('SMART_FRAMEWORK_DB_LINK_PostgreSQL', $y_connection);
+					self::$default_connection = (string) $the_conn_key;
 					//--
 					if(SmartFrameworkRegistry::ifDebug()) {
 						SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 							'type' => 'open-close',
 							'data' => 'Re-Using Connection to PgSQL Server as DEFAULT: '.$the_conn_key,
-							'connection' => (string) $y_connection
+							'connection' => (string) self::connection_hash($y_connection)
 						]);
 					} //end if
 					//--
@@ -2259,9 +2312,9 @@ final class SmartPgsqlDb {
 						(string) $cfg['type']
 					);
 					//--
-					define('SMART_FRAMEWORK_DB_LINK_PostgreSQL', $y_connection);
+					self::$default_connection = (string) $the_conn_key;
 					//--
-					if(is_resource($y_connection)) {
+					if(self::is_valid_connection($y_connection)) {
 						//--
 						define('SMART_FRAMEWORK_DB_VERSION_PostgreSQL', self::check_server_version($y_connection, true)); // re-validate
 						//--
@@ -2271,13 +2324,13 @@ final class SmartPgsqlDb {
 				//--
 			} else {
 				//-- re-use the default connection
-				$y_connection = SMART_FRAMEWORK_DB_LINK_PostgreSQL;
+				$y_connection = &SmartFrameworkRegistry::$Connections['pgsql'][(string)self::$default_connection];
 				//--
 			} //end if
 			//--
 		} //end if
 		//--
-		if(!is_resource($y_connection)) { // if no connection
+		if(!self::is_valid_connection($y_connection)) { // if no connection
 			//--
 			self::error($y_connection, 'CHECK-CONNECTION', 'Connection is BROKEN !', 'Connection-ID: '.$y_connection, $y_description);
 			return null;
@@ -2295,7 +2348,7 @@ final class SmartPgsqlDb {
 			//--
 		} //end if else
 		//--
-		return $y_connection;
+		return $y_connection; // resource / object / mixed
 		//--
 	} //END FUNCTION
 	//======================================================
@@ -2336,6 +2389,46 @@ final class SmartPgsqlDb {
 
 	//======================================================
 	/**
+	 * Check if a connection is a valid PostgreSQL Connection
+	 *
+	 * @return 										:: TRUE / FALSE
+	 *
+	 */
+	private static function is_valid_connection($y_connection) {
+		//--
+		$ok = false;
+		if(is_resource($y_connection) OR is_a($y_connection, '\\PgSql\\Connection')) { // fix to be PHP 8.1 compatible # https://www.php.net/manual/en/function.pg-connect.php
+			$ok = true;
+		} //end if
+		//--
+		return (bool) $ok;
+		//--
+	} //END FUNCTION
+	//======================================================
+
+
+	//======================================================
+	/**
+	 * Check if a connection is a valid PostgreSQL Result
+	 *
+	 * @return 										:: TRUE / FALSE
+	 *
+	 */
+	private static function is_valid_result($y_result) {
+		//--
+		$ok = false;
+		if(is_resource($y_result) OR is_a($y_result, '\\PgSql\\Result')) { // fix to be PHP 8.1 compatible # https://www.php.net/manual/en/function.pg-free-result.php
+			$ok = true;
+		} //end if
+		//--
+		return (bool) $ok;
+		//--
+	} //END FUNCTION
+	//======================================================
+
+
+	//======================================================
+	/**
 	 * Displays the PgSQL Errors and HALT EXECUTION (This have to be a FATAL ERROR as it occur when a FATAL PgSQL ERROR happens or when a Query Syntax is malformed)
 	 * PRIVATE
 	 *
@@ -2343,6 +2436,8 @@ final class SmartPgsqlDb {
 	 *
 	 */
 	private static function error($y_connection, $y_area, $y_error_message, $y_query, $y_params_or_title, $y_warning='') {
+		//--
+		$y_connection = (string) self::connection_hash($y_connection); // cast to string to get resource ID or Object Hash
 		//--
 		if(defined('SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
 			throw new Exception('#POSTGRESQL-DB@'.$y_connection.'# :: Q# // PgSQL Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
@@ -2445,8 +2540,9 @@ SQL;
 /**
  * Class: SmartPgsqlExtDb - provides a Dynamic (Extended) PostgreSQL DB Server Client that can be used with custom made connections.
  *
- * Tested and Stable on PostgreSQL versions: 9.0.x / 9.1.x / 9.2.x / 9.3.x / 9.4.x / 9.5.x / 9.6.x / 10.x / 11.x
- * Tested and Stable with PgPool-II versions: 3.0.x / 3.1.x / 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x
+ * Tested and Stable with PHP 7.3 / 7.4 / 8.0 / 8.1
+ * Tested and Stable on PostgreSQL versions: 9.0.x / 9.1.x / 9.2.x / 9.3.x / 9.4.x / 9.5.x / 9.6.x / 10.x / 11.x / 12.x / 13.x
+ * Tested and Stable with PgPool-II versions: 3.0.x / 3.1.x / 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x
  * Tested and Stable with PgBouncer: all versions
  *
  * This class is made to be used with custom made PostgreSQL connections (other servers than default).
@@ -2473,7 +2569,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211120
+ * @version 	v.20211126
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -2513,13 +2609,13 @@ final class SmartPgsqlExtDb {
 			(array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['pgsql']))
 		) {
 			//-- try to reuse the connection :: only check if array key exists, not if it is a valid resource ; this should be as so to avoid mismatching connection mixings (if by example will re-use the connection of another server, and connection is broken in the middle of a transaction, it will fail ugly ;) and out of any control !
-			$this->connection = SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key];
+			$this->connection = &SmartFrameworkRegistry::$Connections['pgsql'][(string)$the_conn_key];
 			//--
 			if(SmartFrameworkRegistry::ifDebug()) {
 				SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 					'type' => 'open-close',
 					'data' => 'Re-Using Connection to PgSQL Server: '.$the_conn_key,
-					'connection' => (string)$this->connection
+					'connection' => (string) SmartPgsqlDb::connection_hash($this->connection)
 				]);
 			} //end if
 			//--
