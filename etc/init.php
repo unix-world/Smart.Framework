@@ -20,8 +20,8 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 
 //============================================================
 //--------------------------------------- DEBUG AND PROFILING :: these must use define constants not using compile time const, to be able to use in conditional contexts
-//define('SMART_FRAMEWORK_PROFILING_HTML_PERF', 		true); 										// Uncomment this to enable the HTML Performance Profiler (it can be used also in production environments for HTML Metrics and Profiling purposes)
-//define('SMART_FRAMEWORK_DEBUG_MODE', 					true);										// Uncomment this to enable Debugging and the Web Profiler Toolbar (do not use in production environments but only for internal Debugging / Profiling purposes)
+//define('SMART_FRAMEWORK_PROFILING_HTML_PERF', 		true); 										// Uncomment this to enable the HTML Performance Profiler for Browser (it can be used also in production environments for HTML Metrics and Profiling purposes)
+//define('SMART_FRAMEWORK_DEBUG_MODE', 					true);										// Uncomment this to enable Debugging and the Web Profiler Toolbar ; This works on main requests only ; XHR Requests will be shown in the main request parent area (do not use in production environments but only for internal Debugging / Profiling purposes)
 //---------------------------------------
 //============================================================ ALWAYS CHANGE !
 //--------------------------------------- TIMEZONE
@@ -39,7 +39,7 @@ const SMART_SOFTWARE_NAMESPACE =  						'smart-framework.default';					// APP Na
 //--------------------------------------- RUNTIME ENVIRONMENT :: CHANGE IT with 'prod' for a production environment !
 const SMART_FRAMEWORK_ENV =  							'dev'; 										// APP Environment: can be set to 'dev' or 'prod' ; id set to 'prod' (production environment) will not log E_USER_NOTICE and E_DEPRECATED and will not display in-page error details but just log them ; for development mode set this to 'dev'
 //--------------------------------------- COOKIES
-const SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE = 	 	'Lax'; 										// The UniqueID Cookie SameSite Policy ; if not defined will not use any policy (old compatibility) ; If set must be one of these values: Lax / Strict or None ; set to None works only with a https secured connection because new browsers require this !
+const SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE = 	 	'Lax'; 										// The UniqueID Cookie SameSite Policy ; if not defined will not use Any Policy (old, compatibility fallback behaviour) ; If set must be one of these values: Lax / Strict or None ; set to None works only with a https secured connection because new browsers require this !
 const SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME =  		0;											// The UniqueID Cookie LifeTime in seconds ; set to 0 for expire on browser close
 const SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN =  		'';											// The UniqueID Cookie domain: set it (empty) `` for the current subdomain as `sdom.domain.tld` ; set it as `*` or explicit `domain.tld` for all sub-domains of domain.tld ; default is `` (empty) if not defined at all ; this is for advanced use of cookies management in sensitive production environments where you need per sub-domain encapsulated cookies
 //---------------------------------------
@@ -56,7 +56,7 @@ const SMART_FRAMEWORK_NETSERVER_MAXLOAD =  				false;										// Load Balancing
 const SMART_FRAMEWORK_SSL_MODE =  						'tls';										// SSL/TLS Mode: tls | sslv3
 const SMART_FRAMEWORK_SSL_CIPHERS = 					'HIGH';										// SSL/TLS Context Ciphers: ciphers ; default: 'HIGH' ; generally allow only high ciphers
 const SMART_FRAMEWORK_SSL_VFY_HOST = 					true;										// SSL/TLS Context Verify Host: verify_host ; default: true
-const SMART_FRAMEWORK_SSL_VFY_PEER = 					false;										// SSL/TLS Context Verify Peer: verify_peer ; default: false ; this fails with some CAs
+const SMART_FRAMEWORK_SSL_VFY_PEER = 					false;										// SSL/TLS Context Verify Peer: verify_peer ; default: false ; this may fail with some CAs
 const SMART_FRAMEWORK_SSL_VFY_PEER_NAME = 				false;										// SSL/TLS Context Verify Peer Name: verify_peer_name ; default: false ; allow also wildcard names *
 const SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED = 			true;										// SSL/TLS Context Allow Self-Signed Certificates: allow_self_signed ; default: true ; generally must allow self-signed certificates but verified above
 const SMART_FRAMEWORK_SSL_DISABLE_COMPRESS = 			true;										// SSL/TLS Context Allow Self-Signed Certificates: disable_compression ; default: true ; help mitigate the CRIME attack vector

@@ -5,6 +5,7 @@
 November 26, 2021 :: Version 8.7 rev.20211126
 	* PHP 8.1 compatibility for MySQLi and PostgreSQL libs
 	* fixed root namespace access in lib gd image
+	* fixed some comments in etc/init.php
 
 November 20, 2021 :: Version 8.7 rev.20211120
 	* fix lib postgresql check schema test for isset $arr[0] to avoid warnings on PHP 8+
