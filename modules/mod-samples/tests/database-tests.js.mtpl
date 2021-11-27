@@ -1,7 +1,7 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%/COMMENT%%%]
-//===== QUnit Tests.DataBase: START :: r.20210526
+//===== QUnit Tests.DataBase: START :: r.20211127
 
 (() => {
 
@@ -203,7 +203,6 @@
 
 
 // Smart.Framework.Modules Tests (optional)
-[@@@SUB-TEMPLATE:?!modules/mod-dbal-zend/tests/module-test.js.mtpl!@@@]
 [@@@SUB-TEMPLATE:?!modules/mod-db-orm-redbean/tests/module-test.js.mtpl!@@@]
 
 // #END

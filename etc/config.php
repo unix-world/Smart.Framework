@@ -71,8 +71,7 @@ $configs['sendmail']['log-messages']			= 'no';						// `no` | `yes` :: // Log Se
 //
 //		Other DB Connectors are available via Smart.Framework.Modules as:
 // 			* SoLR (includded separately in Smart.Framework.Modules/smart-extra-libs ; uncomment this line into modules/app/app-custom-bootstrap.inc.php # require_once('modules/smart-extra-libs/autoload.php') ; requires the PHP Solr extensions available in PECL)
-//			* Zend-DBAL (a PDO adapter for MySQL / PostgreSQL and SQLite ; includded separately in Smart.Framework.Modules/mod-dbal-zend)
-//			* RedBean-ORM (an easy to use ORM for MySQL / PostgreSQL / SQLite / CUBRID / Firebird/Interbase ; includded separately in Smart.Framework.Modules/mod-dbal-zend)
+//			* RedBean-ORM (an easy to use ORM for MySQL / PostgreSQL / SQLite / CUBRID / Firebird/Interbase ; includded separately in Smart.Framework.Modules/mod-db-orm-redbean)
 //
 //=====
 

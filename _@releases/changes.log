@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+November 26, 2021 :: Version 8.7 rev.20211127
+	* PHP 8.1 compatibility fixes
+
 November 26, 2021 :: Version 8.7 rev.20211126
 	* PHP 8.1 compatibility for MySQLi and PostgreSQL libs
 	* fixed root namespace access in lib gd image
