@@ -260,7 +260,7 @@ final class SmartPgsqlDb {
 		//--
 		$encoding = @pg_set_client_encoding($connection, (string)SMART_FRAMEWORK_SQL_CHARSET);
 		//--
-		if(($encoding < 0) OR ((string)@pg_client_encoding() != (string)SMART_FRAMEWORK_SQL_CHARSET)) {
+		if(($encoding < 0) OR ((string)@pg_client_encoding($connection) != (string)SMART_FRAMEWORK_SQL_CHARSET)) {
 			self::error($connection, 'Encoding-Check-Charset', 'Failed to set Client Encoding on PgSQL Server', 'Server='.SMART_FRAMEWORK_SQL_CHARSET, 'Client='.@pg_client_encoding($connection));
 			return;
 		} //end if

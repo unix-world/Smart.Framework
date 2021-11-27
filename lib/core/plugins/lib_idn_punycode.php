@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: SmartUnicode
- * @version 	v.20210512
+ * @version 	v.20211127
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -184,11 +184,11 @@ final class SmartPunycode {
 						if ($q < $t) {
 							break;
 						} //end if
-						$code = $t + (($q - $t) % (self::const_BASE - $t));
+						$code = $t + ((int)($q - $t) % (self::const_BASE - $t));
 						$output .= self::const_ENCODE_TABLE[$code];
 						$q = ($q - $t) / (self::const_BASE - $t);
 					} //end for
-					$output .= self::const_ENCODE_TABLE[$q];
+					$output .= self::const_ENCODE_TABLE[(int)$q];
 					$bias = $this->adapt($delta, $h + 1, ($h === $b));
 					$delta = 0;
 					$h++;
@@ -197,7 +197,7 @@ final class SmartPunycode {
 			$delta++;
 			$n++;
 		} //end while
-		return self::const_PREFIX . $output;
+		return self::const_PREFIX.$output;
 	} //END FUNCTION
 
 

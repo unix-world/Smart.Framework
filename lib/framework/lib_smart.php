@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20210903
+ * @version     v.20211127
  * @package     @Core
  *
  */
@@ -1957,7 +1957,10 @@ final class Smart {
 	 *
 	 * @return INTEGER 						:: An integer random number
 	 */
-	public static function random_number(?int $y_min=0, ?int $y_max=-1, bool $y_seed=false) {
+	public static function random_number($y_min=0, $y_max=-1, bool $y_seed=false) {
+		//-- PHP 8.1 Fix to avoid deprecation notice float to int conversion
+		$y_min = (int) $y_min;
+		$y_max = (int) $y_max;
 		//-- seed the mt_rand() using mt_srand()
 		if($y_seed !== false) {
 			if($y_seed === true) {
