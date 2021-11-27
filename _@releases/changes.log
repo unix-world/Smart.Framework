@@ -4,6 +4,7 @@
 
 November 26, 2021 :: Version 8.7 rev.20211127
 	* PHP 8.1 compatibility fixes
+	* PHP 8.1 compatibility for PostgreSQL lib
 
 November 26, 2021 :: Version 8.7 rev.20211126
 	* PHP 8.1 compatibility for MySQLi and PostgreSQL libs

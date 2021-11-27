@@ -70,7 +70,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartHashCrypto, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211126
+ * @version 	v.20211127
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -261,14 +261,14 @@ final class SmartPgsqlDb {
 		$encoding = @pg_set_client_encoding($connection, (string)SMART_FRAMEWORK_SQL_CHARSET);
 		//--
 		if(($encoding < 0) OR ((string)@pg_client_encoding() != (string)SMART_FRAMEWORK_SQL_CHARSET)) {
-			self::error($connection, 'Encoding-Check-Charset', 'Failed to set Client Encoding on PgSQL Server', 'Server='.SMART_FRAMEWORK_SQL_CHARSET, 'Client='.@pg_client_encoding());
+			self::error($connection, 'Encoding-Check-Charset', 'Failed to set Client Encoding on PgSQL Server', 'Server='.SMART_FRAMEWORK_SQL_CHARSET, 'Client='.@pg_client_encoding($connection));
 			return;
 		} //end if
 		//--
 		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('db', 'pgsql|log', [
 				'type' => 'set',
-				'data' => 'SET Client Encoding [+check] to: '.@pg_client_encoding(),
+				'data' => 'SET Client Encoding [+check] to: '.@pg_client_encoding($connection),
 				'connection' => (string) self::connection_hash($connection),
 				'skip-count' => 'yes'
 			]);
@@ -291,7 +291,7 @@ final class SmartPgsqlDb {
 					@pg_free_result($result);
 				} //end if
 				//--
-				$result = @pg_query('SHOW transaction_isolation');
+				$result = @pg_query($connection, 'SHOW transaction_isolation');
 				$chk = @pg_fetch_row($result);
 				if((!is_array($chk)) OR ((string)trim((string)$chk[0]) == '') OR ((string)$transact != (string)strtoupper((string)trim((string)$chk[0])))) {
 					self::error($connection, 'Check-Session-Transaction-Level', 'Failed to Set Session Transaction Level as '.$transact, 'Error='.@pg_last_error($connection), 'DB='.$ydb);
@@ -2569,7 +2569,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211126
+ * @version 	v.20211127
  * @package 	Plugins:Database:PostgreSQL
  *
  */
