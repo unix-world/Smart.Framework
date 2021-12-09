@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210612
+ * @version 	v.20211209
  * @package 	development:modules:PageBuilder
  *
  */
@@ -616,12 +616,20 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 				return array();
 			} //end if
 		} //end for
+		//--
 		$realm = (string) (isset($arr_parse_transl_key[0]) ? $arr_parse_transl_key[0] : '').(isset($arr_parse_transl_key[1]) ? $arr_parse_transl_key[1] : '');
+		//--
+		if(!\is_array($this->translators)) {
+			$this->translators = []; // init array if not array # fix for PHP8
+		} //end if
+		if(!\array_key_exists((string)$realm.'@'.$lang, (array)$this->translators)) {
+			$this->translators[(string)$realm.'@'.$lang] = null; // init key if not exists # fix for PHP8
+		} //end if
 		if(!\is_object($this->translators[(string)$realm.'@'.$lang])) {
 			$this->translators[(string)$realm.'@'.$lang] = \SmartTextTranslations::getTranslator((string)(isset($arr_parse_transl_key[0]) ? $arr_parse_transl_key[0] : ''), (string)(isset($arr_parse_transl_key[1]) ? $arr_parse_transl_key[1] : ''), (string)$lang);
 		} //end if
 		if(\is_object($this->translators[(string)$realm.'@'.$lang])) {
-			$translated_text = $this->translators[(string)$realm.'@'.$lang]->text((string)(isset($arr_parse_transl_key[2]) ? $arr_parse_transl_key[2] : ''));
+			$translated_text = (string) $this->translators[(string)$realm.'@'.$lang]->text((string)(isset($arr_parse_transl_key[2]) ? $arr_parse_transl_key[2] : ''));
 		} //end if
 		//--
 		$translated_text = (string) \Smart::escape_html((string)$translated_text);
@@ -1200,7 +1208,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 										//--
 									} elseif((string)$v['type'] == 'translation') {
 										//--
-										$arr_tmp_item = (array) $this->loadTranslation((string)$id, (array)$v['config'], (array)$arr_tmp_item, (string)$this->crr_lang);
+										$arr_tmp_item = (array) $this->loadTranslation((string)$id, (array)($v['config'] ?? []), (array)$arr_tmp_item, (string)$this->crr_lang);
 										//--
 									} elseif((string)$v['type'] == 'segment') {
 										//--

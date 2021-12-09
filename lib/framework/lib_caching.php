@@ -48,7 +48,7 @@ if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER')) {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartFrameworkRegistry
- * @version 	v.20210513
+ * @version 	v.20211209
  * @package 	@Core
  *
  */
@@ -70,7 +70,7 @@ final class SmartCache {
 	public static function keyExists(?string $y_realm, ?string $y_key) {
 		//--
 		if(is_array(self::$CachedData)) {
-			if(is_array(self::$CachedData[(string)$y_realm])) {
+			if((array_key_exists((string)$y_realm, self::$CachedData)) AND (is_array(self::$CachedData[(string)$y_realm]))) {
 				if(array_key_exists((string)$y_key, self::$CachedData[(string)$y_realm])) {
 					return true;
 				} else {
@@ -147,15 +147,14 @@ final class SmartCache {
 	 */
 	public static function unsetKey(?string $y_realm, ?string $y_key) {
 		//--
-		if(!is_array(self::$CachedData)) {
-			self::$CachedData = [];
-		} //end if
-		if((!array_key_exists((string)$y_realm, self::$CachedData)) OR (!is_array(self::$CachedData[(string)$y_realm]))) {
-			self::$CachedData[(string)$y_realm] = [];
-		} //end if
-		//--
-		if(array_key_exists((string)$y_key, self::$CachedData[(string)$y_realm])) {
+		if(self::keyExists($y_realm, $y_key) === true) {
+			//--
 			unset(self::$CachedData[(string)$y_realm][(string)$y_key]);
+			//--
+			if(Smart::array_size(self::$CachedData[(string)$y_realm]) <= 0) {
+				unset(self::$CachedData[(string)$y_realm]);
+			} //end if
+			//--
 		} //end if
 		//--
 		if(SmartFrameworkRegistry::ifDebug()) {

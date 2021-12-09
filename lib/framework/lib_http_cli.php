@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS, SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20210613
+ * @version 	v.20211208
  * @package 	@Core:Network
  *
  */
@@ -356,7 +356,7 @@ final class SmartHttpClient {
 			'post-str-len' 		=> (int)    strlen($this->poststring),
 			'post-vars-len' 	=> (int)    Smart::array_size($this->postvars),
 			'post-files-len' 	=> (int)    Smart::array_size($this->postfiles),
-			'put-resource' 		=> (string) substr($this->putbodyres, 0, 255).' ...',
+			'put-resource' 		=> (string) Smart::text_cut_by_limit($this->putbodyres, 255, true, '...'),
 			'put-res-mode' 		=> (string) $this->putbodymode,
 			'put-body-len' 		=> (int)    $this->put_body_len,
 			'mode' 				=> (string) trim((string)($this->url_parts['protocol'] ?? '')),
@@ -364,8 +364,8 @@ final class SmartHttpClient {
 			'result' 			=> (int)    $result,
 			'pre-code' 			=> (string) $this->pre_status, // if 100-continue, this is the HTTP 1.1 Pre-Status
 			'pre-headers' 		=> (string) $this->pre_header, // if 100-continue, this is the HTTP 1.1 Pre-Header
-			'code' 				=> (string) $this->status,
 			'redirect-url' 		=> (string) $redirect_url,
+			'code' 				=> (string) $this->status,
 			'headers' 			=> (string) $this->header,
 			'content' 			=> (string) $this->body,
 			'log' 				=> (string) 'User-Agent: '.$this->useragent."\n", // this is reserved for calltime functions
