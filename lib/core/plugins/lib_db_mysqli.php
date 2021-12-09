@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211126
+ * @version 	v.20211209
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -481,7 +481,7 @@ final class SmartMysqliDb {
 		$mysql_result_count = 0; // store COUNT data
 		if((string)$error == '') {
 			$record = @mysqli_fetch_row($result);
-			$mysql_result_count = Smart::format_number_int($record[0]);
+			$mysql_result_count = Smart::format_number_int((int)($record[0] ?? null));
 		} //end if
 		//--
 
@@ -1888,7 +1888,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211126
+ * @version 	v.20211209
  * @package 	Plugins:Database:MySQL
  *
  */
