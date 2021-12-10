@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20210526
+	// v.20211210
 
 
 	private static $db = null;
@@ -104,6 +104,8 @@ final class PageBuilderFrontend {
 		//--
 		$y_id = (string) \trim((string)$y_id);
 		//--
+		$arr = [];
+		//--
 		if((string)self::dbType() == 'pgsql') {
 			if((string)\substr($y_id, 0, 1) == '#') { // segment
 				if($y_check_segments !== true) {
@@ -144,7 +146,7 @@ final class PageBuilderFrontend {
 			return false; // n/a
 		} //end if else
 		//--
-		if((string)$arr['id'] === (string)$y_id) {
+		if(((int)\Smart::array_size($arr) > 0) AND ((string)$arr['id'] === (string)$y_id)) {
 			if($y_ctrl !== null) {
 				if(\is_array($y_ctrl)) {
 					$found = false;

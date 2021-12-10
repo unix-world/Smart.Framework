@@ -123,7 +123,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210611
+ * @version 	v.20211210
  * @package 	development:Application
  *
  */
@@ -424,10 +424,10 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 				} //end if
 			} //end if
 		} else {
-			$size = (int) strlen((string)$this->pageview['main']);
+			$size = (int) strlen((string)($this->pageview['main'] ?? null));
 			$type = 'Raw Output';
 			if($show_output === true) {
-				$part = (string) substr((string)$this->pageview['main'], 0, 65535);
+				$part = (string) substr((string)($this->pageview['main'] ?? null), 0, 65535);
 				if($size > 65535) {
 					$part .= '...';
 				} //end if

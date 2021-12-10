@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+December 26, 2021 :: Version 8.7 rev.20211210
+	* PHP 8+ compatibility fixes + optimizations
+
 November 26, 2021 :: Version 8.7 rev.20211127
 	* PHP 8.1 compatibility fixes for: Smart, PostgreSQL lib, PunnyCode Lib, smart error handler
 
