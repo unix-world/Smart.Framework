@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //-----------------------------------------------------
 
 //======================================================
-// Smart-Framework - App Bootstrap :: r.20210530
+// Smart-Framework - App Bootstrap :: r.20211213
 // DEPENDS: SmartFramework, SmartFrameworkRuntime
 //======================================================
 // This file can be customized per App ...
@@ -48,7 +48,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20210526
+ * @version 	v.20211213
  *
  */
 final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
@@ -155,7 +155,9 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 	// 1st param: 'www' will be used for the default language ; must not contain dots
 	// 2nd param: if TRUE will redirect the 'en' subdomain (because matches the default language as set in SMART_FRAMEWORK_DEFAULT_LANG) to the subdomain to 'www' (1st parameter)
 	// 3rd param: if TRUE will redirect all other subdomains (except 'www' and the 'en' subdomains), to 'www' (1st parameter)
-	public static function AppSetLanguageBySubdomain(string $default_subdomain='www', bool $redirect_default_language_to_default_subdomain=true, bool $redirect_other_subdomains=false) {
+	// 4th param: if TRUE and 3rd param is FALSE will show 404 for all other subdomains (except 'www' and the 'en' subdomains)
+	// 5th param: ARRAY of sub-domains to be excepted (valid languages must not be includded here, they are managed separately) or empty array if none ; ex: [ 'sdom1', 'sdom2' ]
+	public static function AppSetLanguageBySubdomain(string $default_subdomain='www', bool $redirect_default_language_to_default_subdomain=true, bool $redirect_other_subdomains=false, bool $notfound_other_subdomains=false, array $except_subdomains=[]) {
 		//--
 		if(self::$isSetLanguageBySubdomain !== false) {
 			return; // avoid run after it was used by runtime
@@ -181,19 +183,33 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 		} //end if
 		//--
 		$pdom = (string) trim((string)SmartUtils::get_server_current_subdomain_name());
+		//--
 		if(((string)$pdom != '') AND ((string)$pdom != (string)$default_subdomain)) {
+			//--
+			$except_subdom = false;
+			if((int)Smart::array_size($except_subdomains) > 0) {
+				if(in_array((string)$pdom, (array)$except_subdomains)) {
+					$except_subdom = true;
+				} //end if
+			} //end if
 			//--
 			if(((string)$pdom != (string)SmartTextTranslations::getDefaultLanguage()) AND (SmartTextTranslations::validateLanguage($pdom))) { // other languages
 				SmartTextTranslations::setLanguage((string)$pdom); // set only other languages if valid: ro, de, ...
 				return;
-			} else {
+			} elseif($except_subdom !== true) {
 				if(
-					(($redirect_default_language_to_default_subdomain === true) AND ((string)$pdom == (string)SmartTextTranslations::getDefaultLanguage())) OR
+					(($redirect_default_language_to_default_subdomain === true) AND ((string)$pdom == (string)SmartTextTranslations::getDefaultLanguage()))
+					OR
 					(($redirect_other_subdomains === true) AND ((string)$pdom != (string)SmartTextTranslations::getDefaultLanguage()) AND ((string)$pdom != (string)$default_subdomain) AND (!in_array((string)$pdom, (array)$arr_available_languages)))
 				) {
 					http_response_code(301); // permanent redirect if the language code is not valid
 					SmartFrameworkRuntime::outputHttpSafeHeader('Location: '.SmartUtils::get_server_current_protocol().($default_subdomain ? $default_subdomain.'.' : '').SmartUtils::get_server_current_basedomain_name().SmartUtils::get_server_current_request_uri()); // force redirect
 					die(''); // stop here, mandatory
+				} elseif(($redirect_other_subdomains !== true) AND ((string)$pdom != (string)SmartTextTranslations::getDefaultLanguage()) AND ((string)$pdom != (string)$default_subdomain) AND (!in_array((string)$pdom, (array)$arr_available_languages))) {
+					if($notfound_other_subdomains === true) {
+						http_response_code(404);
+						die((string)SmartComponents::http_message_404_notfound('Invalid Sub-Domain ...'));
+					} //end if
 				} //end if else
 			} //end if else
 			//--
