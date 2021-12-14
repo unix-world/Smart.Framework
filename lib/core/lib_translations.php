@@ -35,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations, SmartFrameworkRegistry
- * @version 	v.20210526
+ * @version 	v.20211214
  * @package 	@Core:Translations
  *
  */
@@ -430,6 +430,14 @@ final class SmartTextTranslations {
 		} //end if
 		//--
 		$arr = (array) array_change_key_case((array)$arr, CASE_LOWER); // make all keys lower
+		$arr = (array) Smart::array_init_keys($arr, [
+			'language-id',
+			'decimal-separator',
+			'thousands-separator',
+			'calendar-week-start',
+			'calendar-date-format-client',
+			'calendar-date-format-server',
+		]);
 		//--
 		switch((string)$arr['decimal-separator']) {
 			case ',':
@@ -644,7 +652,7 @@ final class SmartTextTranslations {
 		//--
 		$translations = (array) self::getFromOptimalPlace($the_lang, $y_area, $y_subarea);
 		//--
-		return (string) $translations[(string)$y_textkey];
+		return (string) ($translations[(string)$y_textkey] ?? null);
 		//--
 	} //END FUNCTION
 	//=====
@@ -779,12 +787,12 @@ final class SmartTextTranslations {
 		if(self::checkSourceParser() === true) {
 			$version = (string) SmartAdapterTextTranslations::getTranslationsVersion();
 			if((string)$version == '') {
-				$version = date('Y-m-d');
+				$version = (string) date('Y-m-d');
 				Smart::log_warning('SmartAdapterTextTranslations::getTranslationsVersion() must return a non-empty string ...');
 			} //end if
 		} else {
 			Smart::log_warning('SmartAdapterTextTranslations::getTranslationsVersion() must be defined ...');
-			$version = date('Y-m-d');
+			$version = (string) date('Y-m-d');
 		} //end if
 		//--
 		self::$cache['translations:persistent-cache-version'] = (string) $version;
@@ -958,7 +966,7 @@ final class SmartTextTranslations {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartTextTranslations, SmartFrameworkRegistry
- * @version 	v.20210512
+ * @version 	v.20211214
  * @package 	@Core:Translations
  *
  */
@@ -1070,7 +1078,7 @@ final class SmartTextTranslator {
  * @access 		private
  * @internal
  *
- * @version 	v.20210512
+ * @version 	v.20211214
  * @package 	development:@Core
  *
  */
