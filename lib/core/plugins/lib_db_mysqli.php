@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211209
+ * @version 	v.20211216
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -331,7 +331,7 @@ final class SmartMysqliDb {
 	 */
 	public static function quote_likes($y_string) {
 		//--
-		return (string) str_replace(['_', '%'], ['\\_', '\\%'], (string)$y_string); // escape for LIKE / SIMILAR: extra special escape: _ = \_ ; % = \%
+		return (string) str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], (string)$y_string); // escape for LIKE / SIMILAR: extra special escape: \ = \\ ; _ = \_ ; % = \%
 		//--
 	} //END FUNCTION
 	//======================================================
@@ -360,7 +360,7 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if((string)$y_mode == 'likes') { // escape for LIKE / ILIKE / SIMILAR: extra special escape: _ = \_ ; % = \%
+		if((string)$y_mode == 'likes') { // escape for LIKE / ILIKE / SIMILAR: extra special escape: \ = \\ ; _ = \_ ; % = \%
 			$y_string = (string) self::quote_likes((string)$y_string);
 		} //end if
 		//--
@@ -1888,7 +1888,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211209
+ * @version 	v.20211216
  * @package 	Plugins:Database:MySQL
  *
  */

@@ -37,7 +37,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20211216
  *
  */
 final class TestUnitSQLite3Model {
@@ -98,7 +98,7 @@ final class TestUnitSQLite3Model {
 		//--
 		$where = '';
 		if((string)$src != '') {
-			$where = ' WHERE name LIKE \''.$this->connection->escape_str((string)$src).'%\'';
+			$where = ' WHERE name LIKE \''.$this->connection->escape_str((string)$src, 'likes').'%\' ESCAPE \''.$this->connection->likes_escaper().'\'';
 		} //end if else
 		//--
 

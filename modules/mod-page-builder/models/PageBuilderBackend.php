@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20210609
+	// v.20211216
 
 
 	private static $db = null;
@@ -1073,28 +1073,28 @@ final class PageBuilderBackend {
 					if((string)self::dbType() == 'pgsql') {
 						$where = 'WHERE (a."name" ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
 					} elseif((string)self::dbType() == 'sqlite') {
-						$where = 'WHERE (a.`name` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\')';
+						$where = 'WHERE (a.`name` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\' ESCAPE \''.self::$db->likes_escaper().'\')';
 					} //end if else
 					break;
 				case 'ctrl':
 					if((string)self::dbType() == 'pgsql') {
 						$where = 'WHERE (a."ctrl" ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
 					} elseif((string)self::dbType() == 'sqlite') {
-						$where = 'WHERE (a.`ctrl` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\')';
+						$where = 'WHERE (a.`ctrl` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\' ESCAPE \''.self::$db->likes_escaper().'\')';
 					} //end if else
 					break;
 				case 'template':
 					if((string)self::dbType() == 'pgsql') {
 						$where = 'WHERE ((a."layout" ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\') AND (SUBSTR("id",1,1) != \'#\'))';
 					} elseif((string)self::dbType() == 'sqlite') {
-						$where = 'WHERE ((a.`layout` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\') AND (substr(`id`,1,1) != \'#\'))';
+						$where = 'WHERE ((a.`layout` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\' ESCAPE \''.self::$db->likes_escaper().'\') AND (substr(`id`,1,1) != \'#\'))';
 					} //end if else
 					break;
 				case 'area':
 					if((string)self::dbType() == 'pgsql') {
 						$where = 'WHERE ((a."layout" ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\') AND (SUBSTR("id",1,1) = \'#\'))';
 					} elseif((string)self::dbType() == 'sqlite') {
-						$where = 'WHERE ((a.`layout` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\') AND (substr(`id`,1,1) = \'#\'))';
+						$where = 'WHERE ((a.`layout` LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\' ESCAPE \''.self::$db->likes_escaper().'\') AND (substr(`id`,1,1) = \'#\'))';
 					} //end if else
 					break;
 				case 'code':
@@ -1116,13 +1116,13 @@ final class PageBuilderBackend {
 							if((string)self::dbType() == 'pgsql') {
 								$where = 'WHERE (smart_str_striptags(convert_from(decode(a."code", \'base64\'), \'UTF8\')) ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
 							} elseif((string)self::dbType() == 'sqlite') {
-								$where = 'WHERE (smart_strip_tags(smart_base64_decode(a.`code`)) LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\')';
+								$where = 'WHERE (smart_strip_tags(smart_base64_decode(a.`code`)) LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\' ESCAPE \''.self::$db->likes_escaper().'\')';
 							} //end if else
 						} else { // default search
 							if((string)self::dbType() == 'pgsql') {
 								$where = 'WHERE (convert_from(decode(a."code", \'base64\'), \'UTF8\') ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
 							} elseif((string)self::dbType() == 'sqlite') {
-								$where = 'WHERE (smart_base64_decode(a.`code`) LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\')';
+								$where = 'WHERE (smart_base64_decode(a.`code`) LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\' ESCAPE \''.self::$db->likes_escaper().'\')';
 							} //end if else
 						} //end if else
 					} //end if
@@ -1144,7 +1144,7 @@ final class PageBuilderBackend {
 						if((string)self::dbType() == 'pgsql') {
 							$where = 'WHERE (convert_from(decode(a."data", \'base64\'), \'UTF8\') ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\')';
 						} elseif((string)self::dbType() == 'sqlite') {
-							$where = 'WHERE (smart_base64_decode(a.`data`) LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\')';
+							$where = 'WHERE (smart_base64_decode(a.`data`) LIKE \'%'.self::$db->escape_str((string)$y_src, 'likes').'%\' ESCAPE \''.self::$db->likes_escaper().'\')';
 						} //end if else
 					} //end if
 					break;

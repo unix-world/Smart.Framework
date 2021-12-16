@@ -2,7 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
-December 26, 2021 :: Version 8.7 rev.20211210
+December 16, 2021 :: Version 8.7 rev.20211216
+	* Fix: better escaping for SQL LIKE syntax type: SQLite, PostgreSQL and MySQLi
+	* Add in SQlite a method to return the LIKE escaper: likes_escaper() to use with "SELECT * FROM tbl1 WHERE LIKE '%'".$expr."%' ESCAPE '".$db->likes_escaper()."'"
+	* Fix PageBuilder SQLite LIKES
+
+December 10, 2021 :: Version 8.7 rev.20211210
 	* PHP 8+ compatibility fixes + optimizations
 
 November 26, 2021 :: Version 8.7 rev.20211127

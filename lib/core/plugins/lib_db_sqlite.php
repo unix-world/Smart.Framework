@@ -63,7 +63,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20210812
+ * @version 	v.20211216
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -186,11 +186,27 @@ final class SmartSQliteDb {
 
 	//--
 	/**
+	 * Will return the escaper character for likes syntax: \
+	 * This is intended to be used with the ESCAPE keyword that must follow a LIKE escaped syntax
+	 */
+	public static function likes_escaper() {
+		//--
+		return '\\';
+		//--
+	} //END FUNCTION
+	//--
+
+
+	//--
+	/**
 	 * Escape a string to be compliant and Safe (against SQL Injection) with SQLite standards.
 	 * This function will not add the (single) quotes arround the string, but just will just escape it to be safe.
 	 *
+	 * IMPORTANT: in SQLite when using this to escape a LIKE expression it must be followed by ESCAPE keyword to indicate the escaping character used
+	 * Ex: PHP $db->read_(a|as)data('SELECT * FROM table1 WHERE name LIKE \'%'.$db->escape_str('a_b', 'likes').'\' ESCAPE \''.$db->likes_escaper().'\'');
+	 *
 	 * @param STRING $string 						:: A String or a Number to be Escaped
-	 * @param ENUM $y_mode							:: '' = default ; 'likes' = Escape LIKE Syntax (% _)
+	 * @param ENUM $y_mode							:: '' = default ; 'likes' = Escape LIKE Syntax (\ % _) ; SELECT * FROM table1 WHERE name LIKE '%a\_b' ESCAPE '\' ;
 	 * @return STRING 								:: The Escaped String / Number
 	 */
 	public function escape_str($string, $y_mode='') {
@@ -477,7 +493,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20210812
+ * @version 	v.20211216
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -1331,15 +1347,28 @@ final class SmartSQliteUtilDb {
 
 
 	//======================================================
+	// IMPORTANT: in SQLite when using this to escape a LIKE expression it must be followed by ESCAPE keyword to indicate the escaping character used
 	public static function quote_likes($y_string) {
 		//--
-		return (string) str_replace(['_', '%'], ['\\_', '\\%'], (string)$y_string); // escape for LIKE / SIMILAR: extra special escape: _ = \_ ; % = \%
+		return (string) str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], (string)$y_string); // escape for LIKE: extra special escape: \ = \\ ; _ = \_ ; % = \%
 		//--
 	} //END FUNCTION
 	//======================================================
 
 
 	//======================================================
+	public static function likes_escaper() {
+		//--
+		return '\\'; // return the escaper character for likes syntax: \ ; this is intended to be used with the ESCAPE keyword that must follow a LIKE escaped syntax
+		//--
+	} //END FUNCTION
+	//======================================================
+
+
+	//======================================================
+	// IMPORTANT: in SQLite when using this to escape a LIKE expression it must be followed by ESCAPE keyword to indicate the escaping character used
+	// Ex SQL: SELECT * FROM table1 WHERE name LIKE '%a\_b' ESCAPE '\'
+	// Ex: PHP self::read_(a|as)data($db, 'SELECT * FROM table1 WHERE name LIKE \'%'.self::escape_str($db, 'a_b', 'likes').'\' ESCAPE \''.self::likes_escaper().'\'');
 	public static function escape_str($db, $y_string, $y_mode='') {
 		//--
 		self::check_connection($db);
@@ -1347,7 +1376,7 @@ final class SmartSQliteUtilDb {
 		$y_string = (string) SmartUnicode::fix_charset((string)$y_string); // Fix
 		$y_mode = (string) trim((string)strtolower((string)$y_mode));
 		//--
-		if((string)$y_mode == 'likes') { // escape for LIKE / ILIKE / SIMILAR: extra special escape: _ = \_ ; % = \%
+		if((string)$y_mode == 'likes') { // escape for LIKE / ILIKE / SIMILAR: extra special escape: \ = \\ ; _ = \_ ; % = \%
 			$y_string = (string) self::quote_likes((string)$y_string);
 		} //end if
 		//--
@@ -1839,7 +1868,7 @@ final class SmartSQliteUtilDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20210812
+ * @version 	v.20211216
  * @package 	Plugins:Database:SQLite
  *
  */

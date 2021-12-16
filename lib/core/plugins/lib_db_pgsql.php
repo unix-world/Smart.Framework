@@ -70,7 +70,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartHashCrypto, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211127
+ * @version 	v.20211216
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -330,14 +330,14 @@ final class SmartPgsqlDb {
 	//======================================================
 	/**
 	 * Fix a string to be compliant with PgSQL LIKE / ILIKE / SIMILAR syntax.
-	 * It will use special quotes for the LIKE / ILIKE / SIMILAR special characters: % _
+	 * It will use special quotes for the LIKE / ILIKE / SIMILAR special characters: % _ and \
 	 * This function IS NOT INTENDED TO ESCAPE AGAINST SQL INJECTIONS ; USE IT ONLY WITH PREPARED PARAMS OR USE escape_str() with mode 'likes' / escape_literal() with mode 'likes'
 	 *
 	 * @param STRING $y_string						:: A String or a Number to be Quoted for LIKES
 	 */
 	public static function quote_likes($y_string) {
 		//--
-		return (string) str_replace(['_', '%'], ['\\_', '\\%'], (string)$y_string); // escape for LIKE / ILIKE / SIMILAR: extra special escape: _ = \_ ; % = \%
+		return (string) str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], (string)$y_string); // escape for LIKE / ILIKE / SIMILAR: extra special escape: \ = \\ ; _ = \_ ; % = \%
 		//--
 	} //END FUNCTION
 	//======================================================
@@ -382,7 +382,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		if((string)$y_mode == 'likes') { // escape for LIKE / ILIKE / SIMILAR: extra special escape: _ = \_ ; % = \%
+		if((string)$y_mode == 'likes') { // escape for LIKE / ILIKE / SIMILAR: extra special escape: \ = \\ ; _ = \_ ; % = \%
 			$y_string = (string) self::quote_likes((string)$y_string);
 		} elseif((string)$y_mode == 'regex') { // escape for regex: ~ ~* !~ !~*
 			$y_string = (string) self::quote_regex((string)$y_string);
@@ -423,7 +423,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		if((string)$y_mode == 'likes') { // escape for LIKE / ILIKE / SIMILAR: extra special escape: _ = \_ ; % = \%
+		if((string)$y_mode == 'likes') { // escape for LIKE / ILIKE / SIMILAR: extra special escape: \ = \\ ; _ = \_ ; % = \%
 			$y_string = (string) self::quote_likes((string)$y_string);
 		} elseif((string)$y_mode == 'regex') { // escape for regex: ~ ~* !~ !~*
 			$y_string = (string) self::quote_regex((string)$y_string);
@@ -2569,7 +2569,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211127
+ * @version 	v.20211216
  * @package 	Plugins:Database:PostgreSQL
  *
  */
