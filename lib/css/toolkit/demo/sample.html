@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Smart UX CSS Toolkit :: r.8.7 / smart.framework.v.8.7 -->
-<!-- extended by unixman, (c) 2015-2021 unix-world.org :: License: BSD :: based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc. -->
+<!-- extended by unixman, (c) 2015-2021 unix-world.org :: License: BSD :: based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc. ; based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com -->
 <html>
 <head>
 	<!-- basepath -->
@@ -33,7 +33,7 @@
 <div style="width:100% !important; padding-left:10px; padding-top:2px; padding-right:10px; box-sizing: border-box !important; -moz-box-sizing: border-box !important; -webkit-box-sizing: border-box !important;">
 
 	<div class="ux-section">
-		<h1 class="lightSpeedIn animated delay-1s">UX Toolkit <span style="color:#CCCCCC!important; font-weight:normal!important; font-size:75%!important;">r.20210610</span> - Overview</h1>
+		<h1 class="lightSpeedIn animated delay-1s">UX Toolkit <span style="color:#CCCCCC!important; font-weight:normal!important; font-size:75%!important;">r.20211228</span> - Overview</h1>
 	</div>
 
 	<br>
@@ -1545,6 +1545,58 @@
 	<br>
 	<br>
 
+<!-- Tabs -->
+
+	<div class="ux-subsection"><h2 id="steps">Tabs</h2></div>
+
+	<div class="ux-tab-area">
+		<input type="radio" id="tab1" name="css-tabs" checked>
+		<input type="radio" id="tab2" name="css-tabs">
+		<input type="radio" id="tab3" name="css-tabs">
+		<ul class="ux-tabs">
+			<li class="ux-tab"><label for="tab1">Tab One</label></li>
+			<li class="ux-tab"><label for="tab2">Tab Two</label></li>
+			<li class="ux-tab"><label for="tab3">Tab Three</label></li>
+		</ul>
+		<div class="ux-tab-content">
+			<h4>Tab One (Light)</h4>
+			<p>Tab #1. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+		<div class="ux-tab-content">
+			<h4>Tab Two (Light)</h4>
+			<p>Tab #2. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+		<div class="ux-tab-content">
+			<h4>Tab Three (Light)</h4>
+			<p>Tab #3. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+	</div>
+
+	<div class="ux-tab-area dark">
+		<input type="radio" id="tab1d" name="css-tabsd">
+		<input type="radio" id="tab2d" name="css-tabsd">
+		<input type="radio" id="tab3d" name="css-tabsd" checked>
+		<ul class="ux-tabs dark">
+			<li class="ux-tab dark"><label for="tab1d">Dark Tab One</label></li>
+			<li class="ux-tab dark"><label for="tab2d">Dark Tab Two</label></li>
+			<li class="ux-tab dark"><label for="tab3d">Dark Tab Three</label></li>
+		</ul>
+		<div class="ux-tab-content dark">
+			<h4>Tab One (Dark)</h4>
+			<p>Tab #1. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+		<div class="ux-tab-content dark">
+			<h4>Tab Two (Dark)</h4>
+			<p>Tab #2. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+		<div class="ux-tab-content dark">
+			<h4>Tab Three (Dark)</h4>
+			<p>Tab #3. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+		</div>
+	</div>
+
+	<br>
+
 <!-- Collapsibles -->
 
 	<div class="ux-subsection"><h2 id="steps">Collapsibles</h2></div>
@@ -1556,21 +1608,21 @@
 			<input id="tab-one" type="checkbox" name="tabs" checked>
 			<label for="tab-one">Label One</label>
 			<div class="tab-content">
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+				<p>Area #1. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
 			</div>
 		</div>
 		<div class="tab">
 			<input id="tab-two" type="checkbox" name="tabs">
 			<label for="tab-two">Label Two</label>
 			<div class="tab-content">
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+				<p>Area #2. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
 			</div>
 		</div>
 		<div class="tab">
 			<input id="tab-three" type="checkbox" name="tabs">
 			<label for="tab-three">Label Three</label>
 			<div class="tab-content">
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+				<p>Area #3. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
 			</div>
 		</div>
 	</div>
@@ -1582,21 +1634,21 @@
 			<input id="tab-four" type="radio" name="tabs2" checked>
 			<label for="tab-four">Label One</label>
 			<div class="tab-content">
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+				<p>Area #1. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
 			</div>
 		</div>
 		<div class="tab">
 			<input id="tab-five" type="radio" name="tabs2">
 			<label for="tab-five">Label Two</label>
 			<div class="tab-content">
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+				<p>Area #2. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
 			</div>
 		</div>
 		<div class="tab">
 			<input id="tab-six" type="radio" name="tabs2">
 			<label for="tab-six">Label Three</label>
 			<div class="tab-content">
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
+				<p>Area #3. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, architecto, explicabo perferendis nostrum, maxime impedit atque odit sunt pariatur illo obcaecati soluta molestias iure facere dolorum adipisci eum? Saepe, itaque.</p>
 			</div>
 		</div>
 	</div>

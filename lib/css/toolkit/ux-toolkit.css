@@ -2,8 +2,9 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20210610), (c) 2015-2021 unix-world.org
+	extended by unixman, (stable.20211228), (c) 2015-2021 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
+	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
 
 /*** Base ***/
@@ -1640,6 +1641,98 @@ div.ux-dropdown ul li a:not(.ux-button):hover {
 	border-bottom: 0px !important;
 }
 
+/*** Tabs (by Unixman) ***/
+
+.ux-tab-area {
+	overflow-x: hidden; /* easily hide the radio inputs */
+	margin-bottom: 32px;
+	padding-left: 5px;
+	padding-right: 5px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid #EDEDED;
+}
+.ux-tab-area [type="radio"] {
+	display: none; /* hiding the inputs */
+}
+.ux-tab-area.dark {
+	background: #666666;
+}
+
+.ux-tabs {
+	display: flex;
+	align-items: stretch;
+	list-style: none;
+	padding: 0;
+	border-bottom: 1px solid #EDEDED;
+}
+.ux-tabs.dark {
+	border-bottom: 1px solid #777777;
+}
+
+.ux-tab > label {
+	display: block;
+	margin-bottom: -1px;
+	margin-left: -1px;
+	padding: 12px 15px;
+	border: 1px solid #EDEDED;
+	background: #F7F7F7;
+	color: #666666;
+	font-size: 12px;
+	font-weight: bold;
+/*	text-transform: uppercase;
+	letter-spacing: 1px; */
+	cursor: pointer;
+	transition: all 0.3s;
+}
+.ux-tab.dark > label {
+	border: 1px solid #777777;
+	background: #555555;
+	color: #F7F7F7;
+}
+.ux-tab:hover label {
+	border-top-color: #777777;
+	color: #777777;
+}
+.ux-tab.dark:hover label {
+	border-top-color: #EDEDED;
+	color: #FFFFFF;
+}
+
+.ux-tab-content {
+	display: none;
+	color: #777777;
+}
+.ux-tab-content.dark {
+	display: none;
+	background-color: #666666;
+	color: #FFFFFF;
+}
+
+/* as it cannot replace the numbers with variables or calls to element properties, the number of this selector parts is the tab count limit */
+.ux-tab-area [type="radio"]:nth-of-type(1):checked ~ .ux-tabs .ux-tab:nth-of-type(1) label,
+.ux-tab-area [type="radio"]:nth-of-type(2):checked ~ .ux-tabs .ux-tab:nth-of-type(2) label,
+.ux-tab-area [type="radio"]:nth-of-type(3):checked ~ .ux-tabs .ux-tab:nth-of-type(3) label,
+.ux-tab-area [type="radio"]:nth-of-type(4):checked ~ .ux-tabs .ux-tab:nth-of-type(4) label,
+.ux-tab-area [type="radio"]:nth-of-type(5):checked ~ .ux-tabs .ux-tab:nth-of-type(5) label,
+.ux-tab-area [type="radio"]:nth-of-type(6):checked ~ .ux-tabs .ux-tab:nth-of-type(6) label,
+.ux-tab-area [type="radio"]:nth-of-type(7):checked ~ .ux-tabs .ux-tab:nth-of-type(7) label,
+.ux-tab-area [type="radio"]:nth-of-type(8):checked ~ .ux-tabs .ux-tab:nth-of-type(8) label {
+	border-bottom-color: #FFFFFF;
+	border-top-color: #555555;
+	background: #FFFFFF;
+	color: #555555;
+}
+.ux-tab-area [type="radio"]:nth-of-type(1):checked ~ .ux-tab-content:nth-of-type(1),
+.ux-tab-area [type="radio"]:nth-of-type(2):checked ~ .ux-tab-content:nth-of-type(2),
+.ux-tab-area [type="radio"]:nth-of-type(3):checked ~ .ux-tab-content:nth-of-type(3),
+.ux-tab-area [type="radio"]:nth-of-type(4):checked ~ .ux-tab-content:nth-of-type(4),
+.ux-tab-area [type="radio"]:nth-of-type(5):checked ~ .ux-tab-content:nth-of-type(5),
+.ux-tab-area [type="radio"]:nth-of-type(6):checked ~ .ux-tab-content:nth-of-type(6),
+.ux-tab-area [type="radio"]:nth-of-type(7):checked ~ .ux-tab-content:nth-of-type(7),
+.ux-tab-area [type="radio"]:nth-of-type(8):checked ~ .ux-tab-content:nth-of-type(8) {
+	display: block;
+}
+
 /*** Collapsible (by Unixman) ***/
 
 .ux-collapse div.tab {
@@ -1656,7 +1749,7 @@ div.ux-dropdown ul li a:not(.ux-button):hover {
 .ux-collapse div.tab label {
 	color: #111111;
 	background-color: #F7F7F7;
-	border: 1px solid #ededed;
+	border: 1px solid #EDEDED;
 	border-bottom: 0 !important;
 	position: relative;
 	display: block;
@@ -1668,7 +1761,7 @@ div.ux-dropdown ul li a:not(.ux-button):hover {
 .ux-collapse div.tab div.tab-content {
 	color: #111111;
 	background-color: #FCFCFC;
-	border: 1px solid #ededed;
+	border: 1px solid #EDEDED;
 	border-top: 0 !important;
 	max-height: 0;
 	overflow: hidden;
