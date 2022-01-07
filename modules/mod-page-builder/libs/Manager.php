@@ -51,7 +51,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20210612
+ * @version 	v.20220107
  * @package 	PageBuilder
  *
  */
@@ -1605,7 +1605,7 @@ final class Manager {
 				//--
 				$query = (array) \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordDetailsById($y_id);
 				//--
-				if(((string)\trim((string)$y_id) != '') AND ((string)$y_id == (string)$query['id']) AND ((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-edit') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true))) {
+				if(((string)\trim((string)$y_id) != '') AND ((int)\Smart::array_size($query) > 0) AND ((string)$y_id == (string)$query['id']) AND ((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-edit') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-data-edit') === true))) {
 					//--
 					$proc_id = (string) $query['id'];
 					//--
@@ -1615,17 +1615,17 @@ final class Manager {
 						//--
 						$data = array();
 						//--
-						$data['name'] = (string) \SmartUnicode::sub_str((string)\trim((string)$y_frm['name']), 0, 255);
+						$data['name'] = (string) \SmartUnicode::sub_str((string)\trim((string)($y_frm['name'] ?? null)), 0, 255);
 						if((string)$error == '') {
 							if((string)$data['name'] == '') {
 								$error = self::text('err_6')."\n"; // invalid (empty) Title
 							} //end if
 						} //end if
 						//--
-						$data['ctrl'] = (string) \SmartUnicode::sub_str((string)\trim((string)$y_frm['ctrl']), 0, 128);
+						$data['ctrl'] = (string) \SmartUnicode::sub_str((string)\trim((string)($y_frm['ctrl'] ?? null)), 0, 128);
 						//--
 						$data['tags'] = [];
-						$arr_tmp_tags = (array) \explode(',', (string)\trim((string)$y_frm['tags']));
+						$arr_tmp_tags = (array) \explode(',', (string)\trim((string)($y_frm['tags'] ?? null)));
 						for($g=0; $g<\Smart::array_size($arr_tmp_tags); $g++) {
 							$arr_tmp_tags[$g] = (string) \trim((string)$arr_tmp_tags[$g]);
 							if((\strlen((string)$arr_tmp_tags[$g]) >= 1) AND (\strlen((string)$arr_tmp_tags[$g]) <= 25)) {
@@ -1639,12 +1639,12 @@ final class Manager {
 							} //end if
 						} //end for
 						//--
-						$data['translations'] = (int) (isset($y_frm['translations']) ? $y_frm['translations'] : null);
+						$data['translations'] = (int) ($y_frm['translations'] ?? null);
 						if($data['translations'] != 1) {
 							$data['translations'] = 0;
 						} //end if
 						//--
-						$data['special'] = (int) $y_frm['special'];
+						$data['special'] = (int) ($y_frm['special'] ?? null);
 						if($data['special'] < 0) {
 							$data['special'] = 0;
 						} elseif($data['special'] > 999999999) {
@@ -1653,17 +1653,17 @@ final class Manager {
 						//--
 						if(!self::testIsSegmentPage($query['id'])) {
 							//--
-							$data['active'] = \Smart::format_number_int($y_frm['active'], '+');
+							$data['active'] = \Smart::format_number_int(($y_frm['active'] ?? null), '+');
 							if(((string)$data['active'] != '0') AND ((string)$data['active'] != '1')) {
 								$data['active'] = '0';
 							} //end if
 							//--
-							$data['auth'] = \Smart::format_number_int($y_frm['auth'], '+');
+							$data['auth'] = \Smart::format_number_int(($y_frm['auth'] ?? null), '+');
 							if(((string)$data['auth'] != '0') AND ((string)$data['auth'] != '1')) {
 								$data['auth'] = '0';
 							} //end if
 							//--
-							$data['mode'] = (string) \strtolower((string)\trim($y_frm['mode']));
+							$data['mode'] = (string) \strtolower((string)\trim((string)($y_frm['mode'] ?? null)));
 							switch((string)$data['mode']) {
 								case 'raw':
 									$data['mode'] = 'raw';
@@ -1679,7 +1679,7 @@ final class Manager {
 									$data['mode'] = 'html';
 							} //end switch
 							//--
-							$data['layout'] = (string) \trim((string)(isset($y_frm['layout']) ? $y_frm['layout'] : ''));
+							$data['layout'] = (string) \trim((string)($y_frm['layout'] ?? null));
 							$data['layout'] = (string) \Smart::safe_filename((string)$data['layout']);
 							$data['layout'] = (string) \strtolower((string)$data['layout']);
 							if(\strlen((string)$data['layout']) > 75) {
