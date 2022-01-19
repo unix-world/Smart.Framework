@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211216
+ * @version 	v.20220119
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -444,7 +444,9 @@ final class SmartMysqliDb {
 		if(is_array($params_or_title)) {
 			if(Smart::array_size($params_or_title) > 0) {
 				$use_param_query = true;
-			} //end if
+			} else {
+				$params_or_title = '';
+			} //end if else
 		} //end if
 		//--
 		if($use_param_query === true) {
@@ -566,7 +568,9 @@ final class SmartMysqliDb {
 		if(is_array($params_or_title)) {
 			if(Smart::array_size($params_or_title) > 0) {
 				$use_param_query = true;
-			} //end if
+			} else {
+				$params_or_title = '';
+			} //end if else
 		} //end if
 		//--
 		if($use_param_query === true) {
@@ -707,7 +711,9 @@ final class SmartMysqliDb {
 		if(is_array($params_or_title)) {
 			if(Smart::array_size($params_or_title) > 0) {
 				$use_param_query = true;
-			} //end if
+			} else {
+				$params_or_title = '';
+			} //end if else
 		} //end if
 		//--
 		if($use_param_query === true) {
@@ -867,7 +873,9 @@ final class SmartMysqliDb {
 		if(is_array($params_or_title)) {
 			if(Smart::array_size($params_or_title) > 0) {
 				$use_param_query = true;
-			} //end if
+			} else {
+				$params_or_title = '';
+			} //end if else
 		} //end if
 		//--
 		if($use_param_query === true) {
@@ -1022,7 +1030,9 @@ final class SmartMysqliDb {
 		if(is_array($params_or_title)) {
 			if(Smart::array_size($params_or_title) > 0) {
 				$use_param_query = true;
-			} //end if
+			} else {
+				$params_or_title = '';
+			} //end if else
 		} //end if
 		//--
 		if($use_param_query === true) {
@@ -1888,7 +1898,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211216
+ * @version 	v.20220119
  * @package 	Plugins:Database:MySQL
  *
  */

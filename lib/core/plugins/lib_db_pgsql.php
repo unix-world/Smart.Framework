@@ -70,7 +70,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartHashCrypto, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211216
+ * @version 	v.20220119
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -624,8 +624,12 @@ final class SmartPgsqlDb {
 
 		//--
 		$use_param_query = false;
-		if(Smart::array_size($params_or_title) > 0) {
-			$use_param_query = true;
+		if(is_array($params_or_title)) {
+			if(Smart::array_size($params_or_title) > 0) {
+				$use_param_query = true;
+			} else {
+				$params_or_title = '';
+			} //end if else
 		} //end if
 		//--
 		if($use_param_query === true) {
@@ -748,8 +752,12 @@ final class SmartPgsqlDb {
 
 		//--
 		$use_param_query = false;
-		if(Smart::array_size($params_or_title) > 0) {
-			$use_param_query = true;
+		if(is_array($params_or_title)) {
+			if(Smart::array_size($params_or_title) > 0) {
+				$use_param_query = true;
+			} else {
+				$params_or_title = '';
+			} //end if else
 		} //end if
 		//--
 		if($use_param_query === true) {
@@ -891,8 +899,12 @@ final class SmartPgsqlDb {
 
 		//--
 		$use_param_query = false;
-		if(Smart::array_size($params_or_title) > 0) {
-			$use_param_query = true;
+		if(is_array($params_or_title)) {
+			if(Smart::array_size($params_or_title) > 0) {
+				$use_param_query = true;
+			} else {
+				$params_or_title = '';
+			} //end if else
 		} //end if
 		//--
 		if($use_param_query === true) {
@@ -1051,8 +1063,12 @@ final class SmartPgsqlDb {
 
 		//--
 		$use_param_query = false;
-		if(Smart::array_size($params_or_title) > 0) {
-			$use_param_query = true;
+		if(is_array($params_or_title)) {
+			if(Smart::array_size($params_or_title) > 0) {
+				$use_param_query = true;
+			} else {
+				$params_or_title = '';
+			} //end if else
 		} //end if
 		//--
 		if($use_param_query === true) {
@@ -1204,8 +1220,12 @@ final class SmartPgsqlDb {
 
 		//--
 		$use_param_query = false;
-		if(Smart::array_size($params_or_title) > 0) {
-			$use_param_query = true;
+		if(is_array($params_or_title)) {
+			if(Smart::array_size($params_or_title) > 0) {
+				$use_param_query = true;
+			} else {
+				$params_or_title = '';
+			} //end if else
 		} //end if
 		//--
 		if($use_param_query === true) {
@@ -2569,7 +2589,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20211216
+ * @version 	v.20220119
  * @package 	Plugins:Database:PostgreSQL
  *
  */
