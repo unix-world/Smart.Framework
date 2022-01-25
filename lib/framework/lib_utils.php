@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20211122
+ * @version 	v.20220126
  * @package 	@Core:Extra
  *
  */
@@ -1849,7 +1849,7 @@ final class SmartUtils {
 		if(Smart::array_size($xout) <= 0) {
 			//--
 			$tmp_srv_software = ''; // fix for PHP8
-			if(array_key_exists('SERVER_SOFTWARE', $_SERVER)) {
+			if(array_key_exists('SERVER_SOFTWARE', (array)$_SERVER)) {
 				$tmp_srv_software = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_SOFTWARE']);
 			} //end if else
 			$tmp_version_arr = (array) explode('/', (string)$tmp_srv_software);
@@ -1882,16 +1882,68 @@ final class SmartUtils {
 		$out = (string) self::$cache['get_server_os'];
 		//--
 		if((string)$out == '') {
-			//--
-			if(!array_key_exists('SERVER_SOFTWARE', $_SERVER)) {
-				$tmp_srv_software = ''; // fix for PHP8
-			} else {
-				$tmp_srv_software = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_SOFTWARE']);
+			//-- Notice: if Apache Tokens OS may be hidden ... so this is only an approximate guess of the server OS, not accurate !
+			$srv_software = ''; // fix for PHP8
+			if(array_key_exists('SERVER_SOFTWARE', (array)$_SERVER)) {
+				$srv_software = (string) strtolower((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_SOFTWARE']));
 			} //end if else
 			//--
-			$the_lower_os = (string) strtolower((string)$tmp_srv_software);
+			$the_lower_os = (string) strtolower((string)$srv_software);
 			//--
-			switch(strtolower((string)PHP_OS)) { // {{{SYNC-SRV-OS-ID}}}
+			switch((string)strtolower((string)PHP_OS)) { // {{{SYNC-SRV-OS-ID}}}
+				case 'openbsd': // OpenBSD
+					$out = 'openbsd';
+					break;
+				case 'netbsd': //NetBSD
+					$out = 'netbsd';
+					break;
+				case 'freebsd': // FreeBSD
+					$out = 'freebsd';
+					break;
+				case 'dragonfly':
+				case 'dragonflybsd':
+					$out = 'dragonfly'; // DragonFlyBSD
+					break;
+				case 'bsdos':
+				case 'bsd': // Generic BSD OS
+					$out = 'bsd-os';
+					break;
+				case 'linux':
+					$out = 'linux'; // Generic Linux
+					//- Notice: there is no easy method to guess the linux release ; there are some complicated methods but they are too slow ...
+					if(strpos($the_lower_os, '(debian') !== false) {
+						$out = 'debian';
+					} elseif(strpos($the_lower_os, '(ubuntu') !== false) {
+						$out = 'ubuntu';
+					} elseif(strpos($the_lower_os, '(mint') !== false) {
+						$out = 'mint';
+					} elseif(strpos($the_lower_os, '(suse') !== false) {
+						$out = 'suse';
+					} elseif(strpos($the_lower_os, '(redhat') !== false) {
+						$out = 'redhat';
+					} elseif(strpos($the_lower_os, '(centos') !== false) {
+						$out = 'centos';
+					} elseif(strpos($the_lower_os, '(fedora') !== false) {
+						$out = 'fedora';
+					} elseif(strpos($the_lower_os, '(alpine') !== false) {
+						$out = 'alpine';
+					} elseif(strpos($the_lower_os, '(arch') !== false) {
+						$out = 'arch';
+					} elseif(strpos($the_lower_os, '(manjaro') !== false) {
+						$out = 'manjaro';
+					} elseif(strpos($the_lower_os, '(solus') !== false) {
+						$out = 'solus';
+					} //end if else
+					//-
+					break;
+				case 'openindiana':
+				case 'illumos':
+				case 'opensolaris':
+				case 'solaris':
+				case 'sunos':
+				case 'sun':
+					$out = 'solaris'; // SOLARIS
+					break;
 				case 'mac':
 				case 'macos':
 				case 'darwin':
@@ -1904,54 +1956,9 @@ final class SmartUtils {
 				case 'win64':
 					$out = 'winnt'; // Windows NT
 					break;
-				case 'bsdos':
-				case 'bsd': // Generic BSD OS
-					$out = 'bsd-os';
-					break;
-				case 'netbsd': //NetBSD
-					$out = 'netbsd';
-					break;
-				case 'openbsd': // OpenBSD
-					$out = 'openbsd';
-					break;
-				case 'freebsd': // FreeBSD
-					$out = 'freebsd';
-					break;
-				case 'dragonfly':
-				case 'dragonflybsd':
-					$out = 'dragonfly'; // DragonFlyBSD
-					break;
-				case 'linux':
-					$out = 'linux'; // Generic Linux
-					//-
-					if(strpos($the_lower_os, '(debian') !== false) {
-						$out = 'debian';
-					} elseif(strpos($the_lower_os, '(ubuntu') !== false) {
-						$out = 'ubuntu';
-					} elseif(strpos($the_lower_os, '(mint') !== false) {
-						$out = 'mint';
-					} elseif(strpos($the_lower_os, '(redhat') !== false) {
-						$out = 'redhat';
-					} elseif(strpos($the_lower_os, '(centos') !== false) {
-						$out = 'centos';
-					} elseif(strpos($the_lower_os, '(fedora') !== false) {
-						$out = 'fedora';
-					} elseif(strpos($the_lower_os, '(suse') !== false) {
-						$out = 'suse';
-					} //end if else
-					//-
-					break;
-				case 'opensolaris':
-				case 'openindiana':
-				case 'nexenta':
-				case 'solaris':
-				case 'sunos':
-				case 'sun':
-					$out = 'solaris'; // SOLARIS
-					break;
 				default:
 					// UNKNOWN
-					$out = strtoupper('[?] '.PHP_OS);
+					$out = (string) strtoupper('[?] '.PHP_OS);
 			} //end switch
 			//--
 			self::$cache['get_server_os'] = (string) $out;

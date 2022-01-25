@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20210707
+ * @version 	v.20220126
  * @package 	Application:ViewComponents
  *
  */
@@ -922,7 +922,7 @@ final class SmartComponents {
 		} //end switch
 		//--
 		return (array) [
-			'img'  => (string) 'lib/core/img/'.$pict.'.svg',
+			'img'  => (string) 'lib/core/img/'.Smart::safe_pathname($pict).'.svg',
 			'desc' => (string) $desc.' :: Web Browser'
 		];
 		//--
@@ -967,19 +967,6 @@ final class SmartComponents {
 				$pict = 'os/bsd-generic';
 				break;
 			//-
-			case 'linux':
-			case 'lnx': // cli
-				$desc = 'Linux';
-				$pict = 'os/linux-generic';
-				break;
-			case 'alpine':
-				$desc = 'Alpine Linux';
-				$pict = 'os/linux-alpine';
-				break;
-			case 'archlinux':
-				$desc = 'Arch Linux';
-				$pict = 'os/linux-archlinux';
-				break;
 			case 'debian':
 				$desc = 'Debian Linux';
 				$pict = 'os/linux-debian';
@@ -991,6 +978,10 @@ final class SmartComponents {
 			case 'mint':
 				$desc = 'Mint Linux';
 				$pict = 'os/linux-mint';
+				break;
+			case 'suse':
+				$desc = 'SuSE Linux';
+				$pict = 'os/linux-suse';
 				break;
 			case 'redhat':
 				$desc = 'RedHat Linux';
@@ -1004,9 +995,32 @@ final class SmartComponents {
 				$desc = 'Fedora Linux';
 				$pict = 'os/linux-fedora';
 				break;
-			case 'suse':
-				$desc = 'SuSE Linux';
-				$pict = 'os/linux-suse';
+			case 'alpine':
+				$desc = 'Alpine Linux';
+				$pict = 'os/linux-alpine';
+				break;
+			case 'arch':
+				$desc = 'Arch Linux';
+				$pict = 'os/linux-arch';
+				break;
+			case 'manjaro':
+				$desc = 'Manjaro Linux';
+				$pict = 'os/linux-manjaro';
+				break;
+			case 'solus':
+				$desc = 'Solus Linux';
+				$pict = 'os/linux-solus';
+				break;
+			case 'linux':
+			case 'lnx': // cli
+				$desc = 'Linux';
+				$pict = 'os/linux-generic';
+				break;
+			//-
+			case 'solaris':
+			case 'sun': // cli
+				$desc = '(Open) Solaris';
+				$pict = 'os/unix-solaris';
 				break;
 			//-
 			case 'macosx':
@@ -1021,12 +1035,6 @@ final class SmartComponents {
 			case 'win': // cli
 				$desc = 'Microsoft Windows';
 				$pict = 'os/windows-os';
-				break;
-			//-
-			case 'solaris':
-			case 'sun': // cli
-				$desc = '(Open) Solaris';
-				$pict = 'os/unix-solaris';
 				break;
 			//- cli only
 			case 'ios':
@@ -1055,7 +1063,7 @@ final class SmartComponents {
 		} //end switch
 		//--
 		return (array) [
-			'img'  => (string) 'lib/core/img/'.$pict.'.svg',
+			'img'  => (string) 'lib/core/img/'.Smart::safe_pathname((string)$pict).'.svg',
 			'desc' => (string) $desc.' Operating System'
 		];
 		//--

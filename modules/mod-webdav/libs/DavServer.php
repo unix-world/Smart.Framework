@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20210526
+	// v.20220126
 
 	const DAV_RESOURCE_TYPE_COLLECTION = 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION = 'noncollection';
@@ -42,7 +42,7 @@ final class DavServer {
 
 	public static function getSupportedBrowserIds() {
 		//--
-		return array('fox', 'crm', 'opr', 'sfr', 'iee', 'iex', 'eph', 'nsf');
+		return array('fox', 'smk', 'crm', 'iee', 'sfr', 'eph', 'wkt', 'opr', 'nsf');
 		//--
 	} //END FUNCTION;
 
