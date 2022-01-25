@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+January 25, 2022 :: Version 8.7 rev.20220125
+	* Fix: explicit avoid to read the HTTP Body on HEAD method
+
 January 07, 2022 :: Version 8.7 rev.20220107
 	* PHP8 Fixes
 

@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS, SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20211208
+ * @version 	v.20220125
  * @package 	@Core:Network
  *
  */
@@ -387,6 +387,10 @@ final class SmartHttpClient {
 		//--
 
 		//--
+		$this->method = (string) strtoupper((string)trim((string)$method));
+		//--
+
+		//--
 		if($this->debug) {
 			$run_time = microtime(true);
 		} //end if
@@ -470,7 +474,7 @@ final class SmartHttpClient {
 			//--
 		} //end if
 		//--
-		while(($this->socket) && (trim($line = @fgets($this->socket, 4096)) != '') && (!feof($this->socket))) {
+		while(($this->socket) && ((string)trim((string)($line = @fgets($this->socket, 4096))) != '') && (!feof($this->socket))) {
 			//--
 			$this->header .= (string) $line;
 			//--
@@ -507,31 +511,39 @@ final class SmartHttpClient {
 		//--
 
 		//-- Get response body
-		while(($this->socket) && (!feof($this->socket))) {
+		if((string)$method == 'HEAD') { // avoid get body if HEAD method
 			//--
-			$this->body .= (string) @fgets($this->socket, 4096);
+			$this->body = 'Response Headers:'."\n".'Method HEAD'."\n".$this->header;
 			//--
-			if(!$this->socket) {
+		} else {
+			//--
+			while(($this->socket) && (!feof($this->socket))) {
 				//--
-				if($this->debug) {
-					$this->log .= '[ERR] Premature connection end (2.4)'."\n";
-					Smart::log_notice('LibHTTP // GetAnswer // Premature connection end (2.4) ... '.$url);
+				$this->body .= (string) @fgets($this->socket, 4096);
+				//--
+				if(!$this->socket) {
+					//--
+					if($this->debug) {
+						$this->log .= '[ERR] Premature connection end (2.4)'."\n";
+						Smart::log_notice('LibHTTP // GetAnswer // Premature connection end (2.4) ... '.$url);
+					} //end if
+					$this->close_connection();
+					return 0;
+					//--
 				} //end if
-				$this->close_connection();
-				return 0;
 				//--
-			} //end if
-			//--
-		} //end while
-		//-- if HTTP 1.1 Transfer Chunked, try to parse the chunked body
-		if((string)$this->protocol == '1.1') {
-			if((string)trim((string)$this->header) != '') {
-				if(stripos((string)$this->header, 'Transfer-Encoding: chunked') !== false) {
-					if((string)trim((string)$this->body) != '') {
-						$this->body = (string) SmartHttpUtils::chunked_part_decode($this->body);
+			} //end while
+			//-- if HTTP 1.1 Transfer Chunked, try to parse the chunked body
+			if((string)$this->protocol == '1.1') {
+				if((string)trim((string)$this->header) != '') {
+					if(stripos((string)$this->header, 'Transfer-Encoding: chunked') !== false) {
+						if((string)trim((string)$this->body) != '') {
+							$this->body = (string) SmartHttpUtils::chunked_part_decode($this->body);
+						} //end if
 					} //end if
 				} //end if
 			} //end if
+			//--
 		} //end if
 		//--
 
@@ -608,10 +620,6 @@ final class SmartHttpClient {
 	//==============================================
 	// [PRIVATE] :: request from url and return content, headers, ...
 	private function send_request($url, $user='', $pwd='', $method='GET', $ssl_version='') {
-
-		//--
-		$this->method = (string) strtoupper(trim((string)$method));
-		//--
 
 		//--
 		$this->connect_timeout = (int) $this->connect_timeout;
@@ -1000,10 +1008,10 @@ final class SmartHttpClient {
 			if((string)$this->protocol == '1.1') { // on HTTP 1.1 will get an earlier header as: HTTP/1.1 100 Continue
 				if($this->put_body_len > 0) { // this comes ONLY if file or string to put is non-empty !!!
 					$this->pre_header = (string) @fgets($this->socket, 4096);
-					$this->pre_status = (string) trim(substr(trim($this->pre_header), 9, 3));
+					$this->pre_status = (string) trim((string)substr((string)trim((string)$this->pre_header), 9, 3));
 					//Smart::log_notice('Status: '.$this->pre_status.' @ Header: '."\n".$this->pre_header);
 					if(((string)$this->pre_status == '100') AND ((string)$this->pre_header != '')) {
-						while(($this->socket) && (trim($line = @fgets($this->socket, 4096)) != '') && (!feof($this->socket))) {
+						while(($this->socket) && ((string)trim((string)($line = @fgets($this->socket, 4096))) != '') && (!feof($this->socket))) {
 							$this->pre_header .= (string) $line; // this is required after 100-continue !!!
 							if(!$this->socket) {
 								if($this->debug) {

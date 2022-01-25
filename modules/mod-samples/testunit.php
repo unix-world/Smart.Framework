@@ -452,7 +452,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'test.load-url':
 				//--
-				$robot = (array) SmartRobot::load_url_content('http://www.unix-world.org', 20, 'GET');
+				$method = (string) $this->RequestVarGet('method', 'get', ['get', 'head']);
+				if((string)$method == '') {
+					$method = 'get';
+				} //end if
+				$robot = (array) SmartRobot::load_url_content('http://www.unix-world.org', 20, (string)strtoupper((string)$method));
 				if(($robot['result'] != 1) OR ($robot['code'] != 200)) {
 					$this->PageViewSetErrorStatus(502, 'Browsing failed for the given URL :: Result: '.$robot['result'].' ; Status-Code: '.(int)$robot['code']);
 					$robot = null; // free mem
@@ -465,7 +469,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'test.load-secure-url':
 				//--
-				$robot = (array) SmartRobot::load_url_content('https://www.unix-world.org', 20, 'GET', (string)SMART_FRAMEWORK_SSL_MODE);
+				$method = (string) $this->RequestVarGet('method', 'get', ['get', 'head']);
+				if((string)$method == '') {
+					$method = 'get';
+				} //end if
+				$robot = (array) SmartRobot::load_url_content('https://www.unix-world.org', 20, (string)strtoupper((string)$method), (string)SMART_FRAMEWORK_SSL_MODE);
 				if(($robot['result'] != 1) OR ($robot['code'] != 200)) {
 					$this->PageViewSetErrorStatus(502, 'Browsing failed for the given URL :: Result: '.$robot['result'].' ; Status-Code: '.(int)$robot['code']);
 					$robot = null; // free mem
