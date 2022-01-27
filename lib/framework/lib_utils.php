@@ -1917,14 +1917,16 @@ final class SmartUtils {
 						$out = 'ubuntu';
 					} elseif(strpos($the_lower_os, '(mint') !== false) {
 						$out = 'mint';
-					} elseif(strpos($the_lower_os, '(suse') !== false) {
-						$out = 'suse';
 					} elseif(strpos($the_lower_os, '(redhat') !== false) {
 						$out = 'redhat';
 					} elseif(strpos($the_lower_os, '(centos') !== false) {
 						$out = 'centos';
 					} elseif(strpos($the_lower_os, '(fedora') !== false) {
 						$out = 'fedora';
+					} elseif(strpos($the_lower_os, '(suse') !== false) {
+						$out = 'suse';
+					} elseif(strpos($the_lower_os, '(opensuse') !== false) {
+						$out = 'opensuse';
 					} elseif(strpos($the_lower_os, '(alpine') !== false) {
 						$out = 'alpine';
 					} elseif(strpos($the_lower_os, '(arch') !== false) {
@@ -1941,7 +1943,6 @@ final class SmartUtils {
 				case 'opensolaris':
 				case 'solaris':
 				case 'sunos':
-				case 'sun':
 					$out = 'solaris'; // SOLARIS
 					break;
 				case 'mac':
@@ -2240,7 +2241,7 @@ final class SmartUtils {
 				$wp_os = 'lnx'; // *linux
 			} elseif((strpos($the_lower_signature, 'netbsd') !== false) OR (strpos($the_lower_signature, 'openbsd') !== false) OR (strpos($the_lower_signature, 'freebsd') !== false) OR (strpos($the_lower_signature, 'dragonfly') !== false) OR (strpos($the_lower_signature, ' bsd ') !== false)) {
 				$wp_os = 'bsd'; // *bsd
-			} elseif((strpos($the_lower_signature, 'solaris') !== false) OR (strpos($the_lower_signature, 'sunos') !== false) OR (strpos($the_lower_signature, 'nexenta') !== false) OR (strpos($the_lower_signature, 'openindiana') !== false)) {
+			} elseif((strpos($the_lower_signature, 'solaris') !== false) OR (strpos($the_lower_signature, 'sunos') !== false) OR (strpos($the_lower_signature, 'opensolaris') !== false) OR (strpos($the_lower_signature, 'illumos') !== false) OR (strpos($the_lower_signature, 'openindiana') !== false)) {
 				$wp_os = 'sun'; // sun solaris incl clones
 			} //end if
 			//-- identify mobile os

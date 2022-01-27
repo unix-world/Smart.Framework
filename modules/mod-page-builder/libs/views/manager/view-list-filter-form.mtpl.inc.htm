@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List # Filter :: v.20210526 -->
+<!-- Pagebuilder / Manage @ List # Filter :: v.20220126 -->
 <style>
 #pgbld-btn-reset-cnt:hover i.sfi,
 #pgbld-btn-alt-list:hover i.sfi {
@@ -16,15 +16,15 @@
 		<select name="srcby" id="filter-srcby" class="ux-input-def ux-input-1-4">
 			<option value="" title="[###HINT-0|html###]">* [###TXT-SEARCH-BY|html###] *:</option>
 			[%%%IF:SHOW-FILTER-CTRL:==yes;%%%]
-			<option value="ctrl" title="[###HINT-5|html###]">[ [###TXT-COL-CTRL|html###] ]</option>
+			<option value="ctrl" title="">[ [###TXT-COL-CTRL|html###] ]</option>
 			[%%%/IF:SHOW-FILTER-CTRL%%%]
 			<option value="id" title="[###HINT-5|html###]">[###TXT-COL-ID|html###]</option>
 			<option value="id-ref" title="[###HINT-1|html###]">[###TXT-COL-REFID|html###]</option>
-			<option value="name" title="[###HINT-5|html###]">[###TXT-COL-NAME|html###]</option>
+			<option value="name" title="">[###TXT-COL-NAME|html###]</option>
 			[%%%IF:ALLOW-PAGES:==yes;%%%]
-			<option value="template" title="[###HINT-5|html###]">[###TXT-COL-TEMPLATE|html###]</option>
+			<option value="template" title="">[###TXT-COL-TEMPLATE|html###]</option>
 			[%%%/IF:ALLOW-PAGES%%%]
-			<option value="area" title="[###HINT-5|html###]">[###TXT-COL-AREA|html###]</option>
+			<option value="area" title="">[###TXT-COL-AREA|html###]</option>
 			<option value="code" title="[###HINT-4|html###]">[###TXT-COL-CODE|html###]</option>
 			<option value="data" title="[###HINT-1|html###]">[###TXT-COL-RUNTIME|html###]</option>
 			<option value="tags" title="[###HINT-1|html###]">[###TXT-COL-TAGS|html###]</option>

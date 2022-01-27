@@ -1,7 +1,7 @@
 # '[###TITLE|html###]' (<H1> "Heading 1" &reg; &#169; &#169a;)
 
-&copy;&nbsp;&nbsp;2015-2021&nbsp;unix-world.org
-Extended Markdown Test :: v.20210720
+&copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
+Extended Markdown Test :: v.20220126
 
 ## H2 (Unicode <Test>) ăĂîÎâÂşŞţŢ &quot;&nbsp;&quot; &lt;&quot;&gt;
 
@@ -201,7 +201,7 @@ Some text to show that the reference links can follow later.
 Here's our logo (hover to see the title text):
 
 Inline-style:
-![alt text](https://parsedown.org/md.png "Logo Title Text 1") {I: @width=100 @style=box-shadow:$10px$10px$5px$#888888;}
+![use the alt text also for title to avoid duplicate](https://parsedown.org/md.png "=@.") {I: @width=100 @style=box-shadow:$10px$10px$5px$#888888;}
 
 Reference-style:
 ![alt text][logo] {I: @width=50}

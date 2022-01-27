@@ -979,12 +979,8 @@ final class SmartComponents {
 				$desc = 'Mint Linux';
 				$pict = 'os/linux-mint';
 				break;
-			case 'suse':
-				$desc = 'SuSE Linux';
-				$pict = 'os/linux-suse';
-				break;
 			case 'redhat':
-				$desc = 'RedHat Linux';
+				$desc = 'RedHat Enterprise Linux';
 				$pict = 'os/linux-redhat';
 				break;
 			case 'centos':
@@ -994,6 +990,14 @@ final class SmartComponents {
 			case 'fedora':
 				$desc = 'Fedora Linux';
 				$pict = 'os/linux-fedora';
+				break;
+			case 'suse':
+				$desc = 'SuSE Enterprise Linux';
+				$pict = 'os/linux-suse-e';
+				break;
+			case 'opensuse':
+				$desc = 'OpenSuSE Linux';
+				$pict = 'os/linux-suse';
 				break;
 			case 'alpine':
 				$desc = 'Alpine Linux';
@@ -1019,7 +1023,7 @@ final class SmartComponents {
 			//-
 			case 'solaris':
 			case 'sun': // cli
-				$desc = '(Open) Solaris';
+				$desc = 'OpenSolaris';
 				$pict = 'os/unix-solaris';
 				break;
 			//-

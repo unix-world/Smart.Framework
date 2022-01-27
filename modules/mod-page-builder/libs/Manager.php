@@ -51,7 +51,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20220107
+ * @version 	v.20220126
  * @package 	PageBuilder
  *
  */
@@ -2251,10 +2251,18 @@ final class Manager {
 											$tmp_arr_lvl3[$z]['img-type-html'] = (string) self::getImgForCodeType((string)$tmp_arr_lvl3[$z]['id'], (string)$tmp_arr_lvl3[$z]['mode']);
 										} //end for
 										$tmp_arr_lvl2[$k]['ref-childs'] = (array) $tmp_arr_lvl3;
-										if(!\array_key_exists((string)$tmp_arr_lvl3[$z]['id'], $total)) {
-											$total[(string)$tmp_arr_lvl3[$z]['id']] = 0;
+										if(!\array_key_exists((string)$z, $tmp_arr_lvl3)) {
+											$tmp_arr_lvl3[$z] = [];
 										} //end if
-										$total[(string)$tmp_arr_lvl3[$z]['id']] += 1;
+										if(!\array_key_exists('id', $tmp_arr_lvl3[$z])) {
+											$tmp_arr_lvl3[$z]['id'] = null;
+										} //end if
+										if((string)$tmp_arr_lvl3[$z]['id'] != '') {
+											if(!\array_key_exists((string)$tmp_arr_lvl3[$z]['id'], $total)) {
+												$total[(string)$tmp_arr_lvl3[$z]['id']] = 0;
+											} //end if
+											$total[(string)$tmp_arr_lvl3[$z]['id']] += 1;
+										} //end if else
 									} //end if
 									$tmp_arr_lvl3 = array();
 									if(!\array_key_exists((string)$tmp_arr_lvl2[$k]['id'], $total)) {

@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartParser
- * @version 	v.20210806
+ * @version 	v.20220126
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -57,7 +57,7 @@ final class SmartMarkdownToHTML {
 	// 	* fixed multiple security vulnerabilities: character encoding fixes, fixed regex escapings, fixed html escapings, code and regex optimizations
 	// 	* extend the syntax to support attributes, added pandoc style block divs
 
-	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20210806';
+	private const MKDW_VERSION = 'Smart.Markdown.parser@v.1.8.0-r.20220126';
 
 	//===================================
 
@@ -71,6 +71,8 @@ final class SmartMarkdownToHTML {
 	private $use_all_unveil = false; 		// if set to TRUE will use unveil for all images
 	//--
 	private $DefinitionData;
+	//--
+	private $special_nbsp_space;
 	//--
 
 	private const BlockTypes = [
@@ -175,6 +177,8 @@ final class SmartMarkdownToHTML {
 		$this->relative_url_prefix 		= (string) trim((string)$y_relative_url_prefix); // if provided use this prefix for all relative urls
 		$this->use_all_unveil 			= (bool) $y_use_all_unveil;
 		//--
+		$this->special_nbsp_space 		= (string) utf8_encode("\xA0"); // need to be UTF-8 encoded to avoid break the unicode string
+		//--
 	} //END FUNCTION
 
 
@@ -201,10 +205,9 @@ final class SmartMarkdownToHTML {
 		//-- standardize line breaks
 		$text = (string) str_replace(["\r\n", "\r"], "\n", $text);
 		//-- special breaks ; use `\` + `\n` as a new line enforcer
-		$special_nbsp_space = (string) utf8_encode("\xA0"); // need to be UTF-8 encoded to avoid break the unicode string
 		$text = (string) str_replace('\\'."\n".'|', '\\'."\n\n".'|', $text); // fix for tables, need double LF between \ and |
 		if($this->sBreakEnabled) {
-			$text = (string) str_replace('\\'."\n", "\n".$special_nbsp_space."\n", $text); // don;t use &nbsp;, can occur in code tags and is rendered as html escaped
+			$text = (string) str_replace('\\'."\n", "\n".$this->special_nbsp_space."\n", $text); // don't use &nbsp;, can occur in code tags and is rendered as html escaped
 		} else { // IMPORTANT: \ must be enclosed by newlines, otherwise may behave unpredictable on replace ...
 			$text = (string) str_replace('\\'."\n", "\n", $text);
 		} //end if else
@@ -248,7 +251,7 @@ final class SmartMarkdownToHTML {
 		);
 		//-- revert nbsp
 		if($this->sBreakEnabled) {
-			$markup = (string) str_replace((string)$special_nbsp_space, '&nbsp;', (string)$markup); // must be before prepare html and before fix charset else will break the charset detection (will detect ISO-8859-1 instead of UTF-8)
+			$markup = (string) str_replace((string)$this->special_nbsp_space, '&nbsp;', (string)$markup); // must be before prepare html and before fix charset else will break the charset detection (will detect ISO-8859-1 instead of UTF-8)
 		} //end if
 		//-- prepare the HTML
 		$markup = (string) $this->prepareHTML((string)$markup);
@@ -754,39 +757,39 @@ final class SmartMarkdownToHTML {
 								//--
 								case 'section-div':
 									$eltype = 'section';
-									$handler = 'divs_div';
+									$handler = 'divs_span';
 									break;
 								case 'article-div':
 									$eltype = 'article';
-									$handler = 'divs_div';
+									$handler = 'divs_span';
 									break;
 								case 'header-div':
 									$eltype = 'header';
-									$handler = 'divs_div';
+									$handler = 'divs_span';
 									break;
 								case 'footer-div':
 									$eltype = 'footer';
-									$handler = 'divs_div';
+									$handler = 'divs_span';
 									break;
 								case 'main-div':
 									$eltype = 'main';
-									$handler = 'divs_div';
+									$handler = 'divs_span';
 									break;
 								case 'aside-div':
 									$eltype = 'aside';
-									$handler = 'divs_div';
+									$handler = 'divs_span';
 									break;
 								case 'nav-div':
 									$eltype = 'nav';
-									$handler = 'divs_div';
+									$handler = 'divs_span';
 									break;
 								case 'summary-div':
 									$eltype = 'summary';
-									$handler = 'divs_div';
+									$handler = 'divs_span';
 									break;
 								case 'details-div':
 									$eltype = 'details';
-									$handler = 'divs_div';
+									$handler = 'divs_span';
 									break;
 								//--
 								case 'div-divs':
@@ -796,6 +799,7 @@ final class SmartMarkdownToHTML {
 									$handler = 'lines';
 									break;
 								//--
+									case 'div-spans':
 									default:
 										// as default :-)
 							} //end switch
@@ -1141,7 +1145,18 @@ final class SmartMarkdownToHTML {
 		if((!is_array($Line)) OR (!is_array($Block))) {
 			return;
 		} //end if
-		//--
+		//-- fix by unixman: because of past logic changes with very special characters and the unicode NBSP, the UL / OL did not detected correctly the end block because the
+		$testLine = (string) trim((string)$Line['text']);
+		if((string)$testLine == (string)$this->special_nbsp_space) {
+			//--
+			$Block['interrupted'] = true;
+			//--
+			$Block['complete'] = true;
+			//--
+			return $Block;
+			//--
+		} //end if
+		//-- #end fix
 		if($Block['indent'] === $Line['indent'] AND preg_match('/^'.$Block['pattern'].'(?:[ ]+(.*)|$)/', $Line['text'], $matches)) { // no need for preg_quote() here, the $Block['pattern'] is a regex that come from above {{{MARKDOWN-PATTERN-UL-OL}}}
 			//--
 			if(isset($Block['interrupted'])) {
@@ -1848,6 +1863,10 @@ final class SmartMarkdownToHTML {
 				'extent' => $Link['extent'] + 1,
 				'markup' => (string) ' &nbsp;<i class="'.Smart::escape_html((string)trim((string)$Link['element']['attributes']['title'])).'"></i>&nbsp; ',
 			);
+		} //end if
+		//--
+		if((string)trim((string)$Link['element']['attributes']['title']) == '=@.') { // unixman fix: if title is "=@." make the same as alt to avoid duplicate text in the code ...
+			$Link['element']['attributes']['title'] = (string) $Link['element']['text'];
 		} //end if
 		//--
 		$Inline = array(

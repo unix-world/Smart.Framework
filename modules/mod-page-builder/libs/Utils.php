@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210616
+ * @version 	v.20220126
  * @package 	PageBuilder
  *
  */
@@ -286,7 +286,7 @@ final class Utils {
 		$str = (string) \str_replace(["\r\n", "\r"], "\n", (string)$str); 		// normalize line endings
 		$str = (string) \str_replace(["\x0B", "\0", "\f"], ' ', (string)$str); 	// fix weird characters
 		if($remove_trailing_spaces !== false) {
-			$str = (string) \preg_replace('/[ ]+[\\n]/', "\n", (string)$str); 	// remove trailing line spaces (not for YAML code)
+			$str = (string) \preg_replace('/([ ]|\t)+[\\n]/', "\n", (string)$str); 	// remove trailing line spaces from inside empty lines because outside empty lines are trimmed (not for YAML code)
 		} //end if
 		if($indent_with_tabs === true) {
 			$str = (string) \preg_replace_callback('/^([ ]|\t)+/m', function($matches) {

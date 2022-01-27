@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20211209
+ * @version 	v.20220126
  * @package 	development:modules:PageBuilder
  *
  */
@@ -1144,7 +1144,14 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 								//--
 								$v['id'] = (string) \trim((string)$v['id']);
 								//--
-								if((string)$v['id'] != '') { // must have a valid ID, the type[plugin/segment] is tested in pre-parse phase
+								$is_id_ok = false;
+								if((string)$v['type'] == 'value') {
+									$is_id_ok = true; // text values can be empty, they can be used for conditionals and later rewritten
+								} elseif((string)$v['id'] != '') {
+									$is_id_ok = true; // must have a valid ID, the type[plugin/segment] is tested in pre-parse phase
+								} //end if else
+								//--
+								if($is_id_ok === true) {
 									//--
 									$arr_tmp_item = [
 										'type' 		=> (string) $v['type'],
