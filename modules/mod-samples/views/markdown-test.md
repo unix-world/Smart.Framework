@@ -1,7 +1,7 @@
 # [%%%IF:TITLE:==;%%%]... ==Title is empty== ...[%%%ELSE:TITLE%%%][###TITLE|html###][%%%/IF:TITLE%%%]
 
 &copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
-Extended Markdown v.II (smart flavour) // Test :: r.20220205
+Extended Markdown v.II (smart flavour) // Test :: r.20220208
 
 # (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old bad features have been dropped, and some still supported in compatibility mode ...
 
@@ -86,10 +86,10 @@ test();
 ```
 
 
-##### ==Alternate Style== Heading 1 with test, to avoid parse as # headers
+##### ==Alternate Style== Heading 1 with test, to avoid parse as # headers**
 ======
 
-###### __Alternate Style__ Heading 2 with test, to avoid parse as # headers
+###### __Alternate Style__ Heading 2 with **test**, to avoid **parse** <b>as</b> # headers
 ------
 
 
@@ -455,7 +455,7 @@ class A {
 This is a preformat inside blockquote
 pre line 2 ++++/----
 
-[Test Link](http://w3soft.org "=@."){L: %blank}
+[**Test** Link with Syntax &#039;<a>&#039; &lt;br&gt; &copy; &#039;OK&#039;](http://w3soft.org "=@."){L: %blank}
 ![Alt Txt](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Img"){I: @width=100}
 ~~~
 

@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20220205
+ * @version     v.20220208
  * @package     @Core
  *
  */
@@ -101,7 +101,7 @@ final class Smart {
 
 	//--
 
-	private const STRIP_HTML_ENTITIES = [ // the most usual HTML Entities list, but some of them are modified, do not export as public, it may be tricky !
+	public const STRIP_HTML_ENTITIES = [ // keep unique also in case insensitive ! the most usual HTML Entities list, export as public to be able to use in other contexts
 		'&NewLine;' 	=> "\n",
 		'&Tab;' 		=> "\t",
 		'&nbsp;' 		=> ' ',
@@ -1578,7 +1578,23 @@ final class Smart {
 			$y_code = (string) trim((string)$y_code);
 		} //end if
 		//--
-		return nl2br((string)$y_code, false); // 2nd param is false for not xhtml tags, since PHP 5.3 !!
+		return (string) nl2br((string)$y_code, false); // 2nd param is false for not xhtml tags, since PHP 5.3 !!
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Decode HTML Entities
+	 *
+	 * @param STRING 		$str			:: The code to be processed
+	 *
+	 * @return STRING 						:: The processed Code
+	 */
+	public static function decode_html_entities(?string $str) {
+		//--
+		return (string) html_entity_decode((string)$str, ENT_HTML5 | ENT_QUOTES, SMART_FRAMEWORK_CHARSET);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1593,7 +1609,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The processed HTML Code
 	 */
-	public static function striptags(?string $yhtmlcode, ?string $ynewline='yes') {
+	public static function striptags(?string $yhtmlcode, ?string $ynewline='yes') { // {{{SYNC-SMART-STRIP-TAGS-LOGIC}}}
 		//--
 		$yhtmlcode = (string) $yhtmlcode;
 		$ynewline = (string) $ynewline;
@@ -1630,17 +1646,18 @@ final class Smart {
 		//-- strip the tags
 		$yhtmlcode = (string) strip_tags((string)$yhtmlcode);
 		//-- restore some usual html entities
-		$yhtmlcode = (string) str_ireplace((array)array_keys((array)self::STRIP_HTML_ENTITIES), (array)array_values((array)self::STRIP_HTML_ENTITIES), (string)$yhtmlcode); // must be insensitive replace ... by example &Prime; can be also &prime;
+		$yhtmlcode = (string) str_ireplace((array)array_keys((array)self::STRIP_HTML_ENTITIES), (array)array_values((array)self::STRIP_HTML_ENTITIES), (string)$yhtmlcode); // must be insensitive replace ... by example &Prime; can be also &prime; ... in this context, using STRIP_HTML_ENTITIES they willnot conflict with wrong entities if using case insensitice since they are unique also in case insensitive
 		//-- if new tags may appear after strip tags that is natural as they were encoded already with entities ... ; Anyway, the following can't be used as IT BREAKS TEXT THAT COMES AFTER < which was previous encoded as &lt; !!!
-		//$yhtmlcode = (string) strip_tags((string)$yhtmlcode); // fix: after all fixes when reversing entities, new tags can appear that were encoded, so needs run again for safety ...
+		//$yhtmlcode = (string) strip_tags((string)$yhtmlcode); // [disabled, not needed] fix: after all fixes when reversing entities, new tags can appear that were encoded, so needs run again for safety ...
 		//-- restore html unicode entities
 		$yhtmlcode = (string) str_replace((array)array_values((array)SmartUnicode::ACCENTED_HTML_ENTITIES), (array)array_keys((array)SmartUnicode::ACCENTED_HTML_ENTITIES), (string)$yhtmlcode);
 		//-- try to convert other remaining html entities
-		$yhtmlcode = (string) html_entity_decode((string)$yhtmlcode, ENT_HTML5, SMART_FRAMEWORK_CHARSET);
+		$yhtmlcode = (string) self::decode_html_entities((string)$yhtmlcode);
 		//-- clean any other remaining html entities
 		$yhtmlcode = (string) preg_replace('/&\#?([0-9a-z]+);/i', ' ', (string)$yhtmlcode);
 		//-- cleanup multiple spaces with just one space
-		$yhtmlcode = (string) preg_replace('/[ \\t]+/', ' ', (string)$yhtmlcode); // replace any horizontal whitespace character ' since PHP 5.4 can be /[\h]+/
+		$yhtmlcode = (string) preg_replace('/[ \\t]+/', ' ', (string)$yhtmlcode); // replace multiple tabs or spaces with one space
+		//-- other fixes
 		$yhtmlcode = (string) preg_replace('/^\s*[\n]{2,}/m', '', (string)$yhtmlcode); // fix: replace multiple consecutive lines that may also contain before optional leading spaces
 		$yhtmlcode = (string) preg_replace('/[^\S\r\n]+$/m', '', (string)$yhtmlcode); // remove trailing spaces on each line
 		//--

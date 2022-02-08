@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartYamlConverter
- * @version 	v.20220207
+ * @version 	v.20220208
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'Smart.Markdown.parser@v.2.0.0-r.20220207';
+	private const MKDW_VERSION = 'Smart.Markdown.parser@v.2.0.0-r.20220208';
 
 	//===================================
 
@@ -141,6 +141,22 @@ final class SmartMarkdownToHTML {
 	//--
 	private const PATTERN_LIST_UL 		= '/^([\t ]*)[\*\-\+]{1}[\t ]+/'; 										// UL list
 	private const PATTERN_LIST_OL 		= '/^([\t ]*)[0-9]+[\.\)]{1}[\t ]+/'; 									// OL List
+	//--
+
+	//--
+	private const SYNTAX_INLINE_FORMATTING = [
+		'**' => 'b', // strong
+		'==' => 'i', // em
+		'~~' => 's', // strike
+		'__' => 'u', // underline
+		'--' => 'del',
+		'++' => 'ins',
+		'!!' => 'sub',
+		'^^' => 'sup',
+		',,'  => 'q',
+		'$$' => 'var', // can be used for math
+		'``' => 'mark', // ```inline code``` and block codes are handled elsewhere, there is no risk to collide with them, this is safe
+	];
 	//--
 
 	//==
@@ -699,18 +715,21 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function replaceInlineTextFormatting(?string $text, ?array $replacements) : string {
+	private function replaceInlineTextFormatting(?string $text) : string {
 		//--
-		if((string)$text == '') {
+		if((string)trim((string)$text) == '') {
 			return '';
 		} //end if
-		//--
-		if((int)Smart::array_size($replacements) <= 0) {
-			Smart::log_warning(__METHOD__.' # No Replacements have been supplied ...');
-			return (string) $text;
+		//-- backward compatible text formatting syntax (v1) ... as much as it can be supported !
+		if($this->useCompatibilityMode) {
+			foreach((array)self::PATTERN_INLINE_COMPAT_FIX as $key => $val) {
+				$text = (string) preg_replace_callback((string)$val, function($matches) use($key) {
+					return (string) $key.($matches[2] ?? '').$key;
+				}, (string)$text);
+			} //end foreach
 		} //end if
 		//--
-		foreach($replacements as $key => $val) {
+		foreach((array)self::SYNTAX_INLINE_FORMATTING as $key => $val) {
 			//--
 			if(strpos((string)$text, (string)$key) !== false) {
 				$repls = 0;
@@ -736,9 +755,15 @@ final class SmartMarkdownToHTML {
 					} //end if
 					//--
 				} //end while
-				//-- must fix closing tag on each line, otherwise need to run html validate as too many tags may remain unclosed ; tags on another line are not supported ... it is better this way to avoid running html validator as mandatory for safety
+				//-- fix: add closing tag if missing, otherwise need to run html validate as too many tags may remain unclosed ; tags on another line are not supported ... it is better this way to avoid running html validator as mandatory for safety
 				if(($repls % 2) !== 0) { // {{{SYNC-MKDW-LOOP-INLINE-EVEN-TAGS}}} ; this condition works just if the above stop number is even: 8192
 					$text .= '</'.Smart::escape_html((string)$val).'>'; // closing tag if not even ; if while loop breaks before end be sure close last line, also inline tags cannot spread on many lines !
+				} //end if
+				//-- fix: remove empty tags: if by example the strings ends with ** will replace it with <b> and will fix closing tag after with </b> resulting in string ending with an empty tag as <b></b> ; this also fixes the situation <b>[\t ]*</b> a tag with just spaces ; all need to be removed at the end after applying html escape
+				if((strpos((string)$text, '<') !== false) AND (strpos((string)$text, '>') !== false)) {
+					$text = (string) preg_replace_callback('/\<([a-z]+)\>([\t ]*)\<\/\1\>/', function($matches) {
+						return (string) ($matches[2] ?? '');
+					}, (string)$text); // replace all empty tags
 				} //end if
 				//--
 			} //end if
@@ -836,6 +861,8 @@ final class SmartMarkdownToHTML {
 				Smart::log_warning(__METHOD__.' # Invalid Element Type: '.$type);
 				return (string) Smart::escape_html((string)$text);
 		} //end switch
+		//--
+		//== {{{SYNC-MKDW-RENDER-ENTITIES-AND-INLINE-FORMATTING}}}
 		//-- replace html entities with placeholders
 		$text = (string) strtr((string)$text, (array)self::HTML_ENTITIES_REPLACEMENTS);
 		//-- headings: h1..h6 (# style)
@@ -846,32 +873,16 @@ final class SmartMarkdownToHTML {
 			$unparsed = (bool) $renderr['unparsed'];
 			$renderr = null;
 		} //end if
-		//-- default escaping, if not escaped elsewhere
+		//-- apply default escaping, if not escaped elsewhere
 		if($unparsed === true) {
 			$text = (string) Smart::escape_html((string)$text); // line not parsed, escape html here ; if line was parsed, the escapes were made in renderLineHeadings
 		} //end if
-		//-- render html entities
+		//-- render back html entities
 		$text = (string) strtr((string)$text, (array)array_flip((array)self::HTML_ENTITIES_REPLACEMENTS));
-		//-- backward compatible text formatting syntax (v1) ... as much as it can be supported !
-		if($this->useCompatibilityMode) {
-			foreach(self::PATTERN_INLINE_COMPAT_FIX as $key => $val) {
-				$text = (string) preg_replace((string)$val, $key.'${2}'.$key, (string)$text);
-			} //end foreach
-		} //end if
-		//-- v2 text formatting syntax
-		$text = (string) $this->replaceInlineTextFormatting((string)$text, [
-			'**' => 'b', // strong
-			'==' => 'i', // em
-			'~~' => 's', // strike
-			'__' => 'u', // underline
-			'--' => 'del',
-			'++' => 'ins',
-			'!!' => 'sub',
-			'^^' => 'sup',
-			',,'  => 'q',
-			'$$' => 'var', // can be used for math
-			'``' => 'mark', // ```inline code``` and block codes are handled elsewhere, there is no risk to collide with them, this is safe
-		]);
+		//-- text formatting syntax
+		$text = (string) $this->replaceInlineTextFormatting((string)$text);
+		//--
+		//== #end sync
 		//--
 		return (string) $tag_start.$text.$tag_end;
 		//--
@@ -1314,6 +1325,27 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	private function renderAltOrTitle(?string $txt) : string { // {{{SYNC-SMART-STRIP-TAGS-LOGIC}}}
+		//--
+		$txt = (string) self::replaceInlineTextFormatting((string)$txt); // render syntax (will be cleared below)
+		$txt = (string) strip_tags((string)$txt); // cleanup syntax tags
+		//--
+		$txt = (string) Smart::decode_html_entities((string)$txt); // restore html entities
+		$txt = (string) preg_replace('/&\#?([0-9a-z]+);/i', ' ', (string)$txt); // clean any other remaining html entities
+		$txt = (string) preg_replace('/[ \\t]+/', ' ', (string)$txt); // replace multiple tabs or spaces with one space
+		//--
+		$txt = (string) strtr((string)$txt, [
+			"''" 	=> '',
+			"' '" 	=> '',
+			'""' 	=> '',
+			'" "' 	=> '',
+		]);
+		//--
+		return (string) Smart::escape_html((string)$txt);
+		//--
+	} //END FUNCTION
+
+
 	private function renderHtmlImageOnly(?array $extracted_image_only_arr, ?string $link_or_image_md_part) : ?string {
 		//--
 		if(!is_array($extracted_image_only_arr)) {
@@ -1350,7 +1382,7 @@ final class SmartMarkdownToHTML {
 			if((string)$img_title != '') {
 				$img_title = (string) str_replace("\t", ' ', (string)$img_title);
 				if(strpos((string)$img_title, 'sfi sfi-') === 0) {
-					return '<i class="sfi sfi-'.substr((string)$img_title, 8).'" title="'.substr($img_title, 8).'"></i>';
+					return '<i class="sfi sfi-'.Smart::escape_html((string)substr((string)$img_title, 8)).'" title="'.self::renderAltOrTitle((string)substr((string)$img_title, 8)).'"></i>';
 				} //end if
 			} //end if
 		} //end if
@@ -1408,7 +1440,7 @@ final class SmartMarkdownToHTML {
 		$datasrc = '';
 		//--
 		if((string)$alternate_img_src != '') {
-			$html .= '<picture'.($img_id ? ' id="'.Smart::escape_html((string)$img_id).'"' : '').($img_title ? ' title="'.Smart::escape_html((string)$img_title).'"' : '').$this->buildAttributeData((array)$atts).'>';
+			$html .= '<picture'.($img_id ? ' id="'.Smart::escape_html((string)$img_id).'"' : '').($img_title ? ' title="'.self::renderAltOrTitle((string)$img_title).'"' : '').$this->buildAttributeData((array)$atts).'>';
 			if($use_lazyload) {
 				$srcset = '';
 				$datasrc = (string) $alternate_img_src;
@@ -1426,7 +1458,7 @@ final class SmartMarkdownToHTML {
 			$src = (string) $img_src;
 			$datasrc = '';
 		} //end if else
-		$html .= '<img'.(($img_id && ((string)$alternate_img_src == '')) ? ' id="'.Smart::escape_html((string)$img_id).'"' : '').($img_alt_txt ? ' alt="'.Smart::escape_html((string)$img_alt_txt).'"' : '').($img_title ? ' title="'.Smart::escape_html((string)$img_title).'"' : '').$this->buildAttributeData((array)$atts).' src="'.Smart::escape_html((string)$src).'"'.($datasrc ? ' data-src="'.Smart::escape_html((string)$datasrc).'"' : '').'>';
+		$html .= '<img'.(($img_id && ((string)$alternate_img_src == '')) ? ' id="'.Smart::escape_html((string)$img_id).'"' : '').($img_alt_txt ? ' alt="'.self::renderAltOrTitle((string)$img_alt_txt).'"' : '').($img_title ? ' title="'.self::renderAltOrTitle((string)$img_title).'"' : '').$this->buildAttributeData((array)$atts).' src="'.Smart::escape_html((string)$src).'"'.($datasrc ? ' data-src="'.Smart::escape_html((string)$datasrc).'"' : '').'>';
 		//--
 		if((string)$alternate_img_src != '') {
 			$html .= '</picture>';
@@ -1492,7 +1524,14 @@ final class SmartMarkdownToHTML {
 		if(strpos((string)$link_txt, '![') === 0) { // {{{SYNC-MKDW-DETECT-IMG-START}}}
 			$link_html_txt = (string) $this->renderLinksAndImages((string)$link_txt, true); // circular reference protection ; disable detect links inside links !
 		} else {
-			$link_html_txt = (string) Smart::escape_html((string)$link_txt);
+			$link_html_txt = (string) $link_txt;
+			//== {{{SYNC-MKDW-RENDER-ENTITIES-AND-INLINE-FORMATTING}}}
+			$link_html_txt = (string) strtr((string)$link_html_txt, (array)self::HTML_ENTITIES_REPLACEMENTS); // replace html entities with placeholders
+			//- SKIP render line headings in this context
+			$link_html_txt = (string) Smart::escape_html((string)$link_html_txt); // apply default escaping
+			$link_html_txt = (string) strtr((string)$link_html_txt, (array)array_flip((array)self::HTML_ENTITIES_REPLACEMENTS)); // render back html entities
+			$link_html_txt = (string) self::replaceInlineTextFormatting((string)$link_html_txt); // text formatting syntax
+			//== #end sync
 		} //end if
 		//--
 		if((string)$link_title == '=@.') {
@@ -1501,7 +1540,7 @@ final class SmartMarkdownToHTML {
 		//--
 		$link_href = (string) $this->fixRelativeURL((string)$link_href);
 		//--
-		return '<a href="'.Smart::escape_html((string)$link_href).'" title="'.Smart::escape_html((string)$link_title).'"'.$this->buildAttributeData((array)$atts).'>'.$link_html_txt.'</a>';
+		return '<a href="'.Smart::escape_html((string)$link_href).'" title="'.self::renderAltOrTitle((string)$link_title).'"'.$this->buildAttributeData((array)$atts).'>'.$link_html_txt.'</a>';
 		//--
 	} //END FUNCTION
 
