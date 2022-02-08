@@ -33,7 +33,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  *
  * @depends 	classes: SmartFrameworkSecurity
  *
- * @version 	v.20210611
+ * @version 	v.20220207
  * @package 	Application
  *
  */
@@ -156,7 +156,7 @@ final class SmartFrameworkRegistry {
 	 * Test if DEBUG is ON
 	 * Debug can be enabled on both: Production or Development Environments, by setting; define('SMART_FRAMEWORK_DEBUG_MODE', true); // init.php
 	 * Using Debug in Production Environment must be enabled per one IP only that can have access to that feature to avoid expose sensitive data to the world !!!
-	 * Ex: if(myIPDetected()) { define('SMART_FRAMEWORK_DEBUG_MODE', true); } // in init.php, for a Production Environment
+	 * Ex: if(myIPIsDetected()) { define('SMART_FRAMEWORK_DEBUG_MODE', true); } // in init.php, for a Production Environment
 	 *
 	 * @return 	BOOLEAN			:: if Debug is ON will return TRUE, else will return FALSE
 	 */
@@ -185,7 +185,7 @@ final class SmartFrameworkRegistry {
 	 * INTERNAL DEBUG expects that also DEBUG is ON, otherwise may behave in a wrong way ...
 	 * Internal Debug can be enabled on both: Production or Development Environments, by setting; define('SMART_FRAMEWORK_INTERNAL_DEBUG', true); // init.php
 	 * Using Debug in Production Environment must be enabled per one IP only that can have access to that feature to avoid expose sensitive data to the world !!!
-	 * Ex: if(myIPDetected()) { define('SMART_FRAMEWORK_INTERNAL_DEBUG', true); } // in init.php, for a Production Environment
+	 * Ex: if(myIPIsDetected()) { define('SMART_FRAMEWORK_INTERNAL_DEBUG', true); } // in init.php, for a Production Environment
 	 *
 	 * @return 	BOOLEAN			:: if Internal Debug (Advanced Debug) is ON will return TRUE, else will return FALSE
 	 */
@@ -475,10 +475,7 @@ final class SmartFrameworkRegistry {
 	 */
 	public static function setCookieVar($key, $value) {
 		//--
-		if(self::$RequestLock !== false) { // check if can run
-			@trigger_error(__METHOD__.'() :: '.'Cannot Re-Register Vars, Registry is already locked !', E_USER_WARNING);
-			return false; // avoid run after registry was already locked
-		} //end if
+		// do not check if request is locked ; cookies must be set if needed later into this registry by Smart.Framework internal methods only ...
 		//--
 		$key = (string) trim((string)$key);
 		if(((string)$key == '') OR (!SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}

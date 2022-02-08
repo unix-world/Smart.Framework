@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+February 07, 2022 :: Version 8.7 rev.20220207
+	* Completely rewritten of SmartMarkdownToHTML class ; implement Markdown v.2 Extended (from draft specifications) ; The old class only supports Markdown v1 and have been moved to modules and renamed as SmartPMarkdownToHTML
+	* Rework of init settings for better supporting server side proxy / reverse proxy (ex: HAProxy)
+
 January 26, 2022 :: Version 8.7 rev.20220126
 	* Optimize and extend OS detection logic
 	* Fix: explicit avoid to read the HTTP Body on HEAD method

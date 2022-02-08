@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210615
+ * @version 	v.20220205
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -41,8 +41,8 @@ final class SmartHtmlParser {
 
 	//-- parsing registers
 	private $html 					= '';					// the html string
-	private $elements 				= array();				// html elements array
-	private $comments 				= array();				// html comments array
+	private $elements 				= [];					// html elements array
+	private $comments 				= [];					// html comments array
 	//-- parsing flags
 	private $el_parsed 				= false;				// init: false ; will be set to true after html elements are parsed to avoid re-parsing of elements
 	private $cm_parsed 				= false;				// init: false ; will be set to true after html comments are parsed to avoid re-parsing of comments
@@ -50,9 +50,10 @@ final class SmartHtmlParser {
 	private $is_clean 				= false;				// init: false ; will be set to true after html is cleaned to avoid re-clean
 	//-- extra settings
 	private $signature 				= true;					// if set to true will add the signature for the cleanup code as html comments
-	private $dom_processing 		= true;					// if set to false will dissalow post-processing of html cleanup with Tidy (if available) or DomDocument (if available and Tidy not available) ; if set to true (default) if tidy or DomDocument class is available (by checking in this order) will use any of it it for post-processing of html cleanup
-	private $dom_log_errors 		= false; 				// if set to true will log Tidy <- LibXML -> DomDocument errors and warnings
-	private $dom_prefer_domdoc 		= false; 				// if set to TRUE will prefer DomDocument instead of tidy for dom processing ; if set to 2 will prefer tidy ; IMPORTANT: requires tidy v5 or later ... do not use tidyp which miss some important options like skip dropping empty tags which may contain iconic fonts
+	private $validators 			= '<tidy>,<dom>'; 		// the validators ; this option combines internally with $this->validate_code ; possible values: '' = none ; can be '<tidy>,<dom>' = any ; '<tidy>' = only tidy ; '<dom>' = only dom
+	private $validate_code 			= true;					// false or zero dissalow ; true or 1 allow ; 2 mandatory
+	private $validate_log_errors 	= false; 				// if set to true will log Tidy <- LibXML -> DomDocument errors and warnings
+	private $validation_errors 		= ''; 					// will keep the validation errors
 	//-- regex expressions
 	private $expr_tag_name 			= ''; 					// regex expr: the allowed characters in tag names (just for open tags ... the end tags will add / and space
 	private $expr_tag_start 		= ''; 					// regex expr: tag start
@@ -65,39 +66,128 @@ final class SmartHtmlParser {
 
 
 	//=========================================================================
-	public function __construct(?string $y_html='', bool $y_signature=true, $y_allow_dom_processing=true, bool $y_log_dom_warn_err=false) {
+	/*
+	 * Class constructor
+	 *
+	 * ! IMPORTANT !
+	 * if want to use Tidy, requires tidy v5 or later ... do not use tidyp which miss some important options like skip dropping empty tags which may contain iconic fonts
+	 *
+	 * @param STRING 	$y_html					:: The HTML Code
+	 * @param STRING 	$y_signature			:: If cleanup or validated, add the specific signature at the end as a html comment
+	 * @param STRING 	$y_html_validate		:: *Optional*, used for get_clean_html(), Default is 'any' ; validate or not the HTML Code via DOM and/or Tidy, in which order, and if optional or mandatory ; if optional, will use fallback ; if mandatory and the validator(s) are not available will throw an error
+	 * 												Examples:
+	 * 													'' or false or 0 			= disable validation
+	 * 													'any' or true or 1			= optional, any of Tidy or DOM, in this order ; if none available will not validate
+	 * 													'any:prefer:tidy' or 2		= like the above
+	 * 													'any:prefer:dom' or 3		= like the above, but in reverse order
+	 * 													'tidy' or 4					= Tidy, optional ; if Tidy is not available will not validate
+	 * 													'dom' or 5					= Dom, optional ; if DOM is not available will not validate
+	 * 													'tidy:required' or 6 		= require validation, use Tidy if not available raise an error
+	 * 													'dom:required' or 7 		= require validation, use DOM if not available raise an error
+	 * 													'any:required' or 8 		= require validation, use any of Tidy or DOM, in this order ; if none available raise an error
+	 * 													'any:required:tidy' or 9 	= require validation, use any of Tidy or DOM, in this order ; if none available raise an error
+	 * 													'any:required:dom' or 10 	= require validation, use any of DOM or Tidy, in this order ; if none available raise an error
+	 *
+	 * @param STRING 	$y_log_validation_warn_err		:: Log the validation errors if any ; disabled by default
+	 *
+	 */
+	public function __construct(?string $y_html='', bool $y_signature=true, $y_html_validate=true, bool $y_log_validation_warn_err=false) {
+
 		//--
-		if(!Smart::is_nscalar($y_allow_dom_processing)) {
-			$y_allow_dom_processing = true;
+		if(defined('SMART_HTML_CLEANER_USE_VALIDATOR')) {
+			$y_html_validate = SMART_HTML_CLEANER_USE_VALIDATOR; // override by setting a constant ; in some contexts perhaps is better to use the same validation in all places
 		} //end if
+		//--
+		if(!Smart::is_nscalar($y_html_validate)) {
+			$y_html_validate = true; // default
+		} //end if
+		//--
+
+		//--
+		$this->validators 			= '<tidy>,<dom>'; // default, any of tidy or dom, in this order
+		$this->validate_code 		= true; // yes, optional, default
+		$this->validate_log_errors 	= false; // default
+		//--
+		if(($y_html_validate === false) OR ((string)$y_html_validate == '') OR ((string)$y_html_validate == '0')) {
+			$this->validate_code 		= false; // no, dissalow
+			$this->validate_log_errors 	= false;
+			$this->validators = '';
+		} else {
+			$this->validate_code 		= true; // yes, optional
+			$this->validate_log_errors 	= (bool) $y_log_validation_warn_err;
+			if(($y_html_validate === 'any:required:dom') OR ((string)$y_html_validate == '10')) {
+				$this->validate_code 	= 2; // yes, mandatory
+				$this->validators 		= '<dom>,<tidy>';
+			} elseif(($y_html_validate === 'any:required:tidy') OR ((string)$y_html_validate == '9') OR ($y_html_validate === 'any:required') OR ((string)$y_html_validate == '8')) {
+				$this->validate_code 	= 2; // yes, mandatory
+				$this->validators 		= '<tidy>,<dom>';
+			} elseif(($y_html_validate === 'dom:required') OR ((string)$y_html_validate == '7')) {
+				$this->validate_code 	= 2; // yes, mandatory
+				$this->validators 		= '<dom>';
+			} elseif(($y_html_validate === 'tidy:required') OR ((string)$y_html_validate == '6')) {
+				$this->validate_code 	= 2; // yes, mandatory
+				$this->validators 		= '<tidy>';
+			} elseif(($y_html_validate === 'dom') OR ((string)$y_html_validate == '5')) {
+				$this->validators 		= '<dom>';
+			} elseif(($y_html_validate === 'tidy') OR ((string)$y_html_validate == '4')) {
+				$this->validators 		= '<tidy>';
+			} elseif(($y_html_validate === 'any:prefer:dom') OR ((string)$y_html_validate == '3')) {
+				$this->validators 		= '<dom>,<tidy>';
+			} else { // default: true, 1, 'any' ; 'any:prefer:tidy', 2 ; other invalid options
+				$this->validators 		= '<tidy>,<dom>';
+			} //end if else
+		} //end if else
+		//--
+		if((int)$this->validate_code <= 0) { // fix
+			$this->validate_log_errors = false;
+			$this->validators = '';
+		} elseif((int)$this->validate_code > 2) { // fix
+			$this->validate_code = 2;
+		} //end if else
+		//--
+		$this->validators = (array)  Smart::list_to_array((string)$this->validators);
+		//--
+
+		//--
+		if(in_array('tidy', (array)$this->validators)) {
+			if(!class_exists('tidy')) {
+				if((int)$this->validate_code >= 2) {
+					Smart::raise_error(__METHOD__.' # HTML Validation with Tidy is required by current settings and Tidy is not available !');
+					return;
+				} else {
+					$this->validators = (array) array_diff((array)$this->validators, ['tidy']); // remove tidy from values
+				} //end if
+			} //end if
+		} //end if
+		//--
+		if(in_array('dom', (array)$this->validators)) {
+			if(!class_exists('DOMDocument')) {
+				if((int)$this->validate_code >= 2) {
+					Smart::raise_error(__METHOD__.' # HTML Validation with DOMDocument is required by current settings and DOMDocument is not available !');
+					return;
+				} else {
+					$this->validators = (array) array_diff((array)$this->validators, ['dom']); // remove dom from values
+				} //end if
+			} //end if
+		} //end if
+		//--
+		if((int)Smart::array_size($this->validators) > 1) {
+			$tmp_arr_validators = (array) $this->validators;
+			$this->validators = [ (string) $tmp_arr_validators[0] ]; // keep just first
+			$tmp_arr_validators = null;
+		} //end if
+		//--
+		if((int)Smart::array_size($this->validators) <= 0) {
+			$this->validate_code 		= false; // disabled, there are no validators available
+			$this->validate_log_errors 	= false;
+		} //end if
+		//--
+
 		//--
 		$this->html = (string) $y_html;
+		$this->signature = (bool) $y_signature;
 		//--
-		$this->signature 			= (bool) $y_signature;
-		$this->dom_processing 		= (bool) $y_allow_dom_processing;
-		$this->dom_log_errors 		= (bool) $y_log_dom_warn_err;
-		//--
-		if((bool)$y_allow_dom_processing === false) { // if set to zero or FALSE
-			$this->dom_prefer_domdoc = 0;
-		} else { // can be: true, 1, 2
-			$this->dom_prefer_domdoc = (int) $y_allow_dom_processing; // [ (int)TRUE = 1 ] ; by default prefer dom document (default, it is built-in)
-			if(defined('SMART_HTML_CLEANER_USE_TIDY')) { // IMPORTANT: the constant SMART_HTML_CLEANER_USE_TIDY should not be defined as general, to be able to define per controller ...
-				if(SMART_HTML_CLEANER_USE_TIDY === true) {
-					if($y_allow_dom_processing === true) { // rewrite only if set as default to true, not explicit to 1 or 2
-						$this->dom_prefer_domdoc = 2; // prefer tidy
-					} //end if
-				} elseif(SMART_HTML_CLEANER_USE_TIDY === false) {
-					$this->dom_prefer_domdoc = 1; // prefer dom document, tidy is disabled
-				} elseif((string)SMART_HTML_CLEANER_USE_TIDY == 'tidy') {
-					$this->dom_prefer_domdoc = 2; // mandatory tidy
-				} //end if else
-			} //end if
-		} //end if else
-		if((int)$this->dom_prefer_domdoc < 0) {
-			$this->dom_prefer_domdoc = 0;
-		} elseif((int)$this->dom_prefer_domdoc > 2) {
-			$this->dom_prefer_domdoc = 1;
-		} //end if
+
 		//--
 		$this->expr_tag_name 		= SmartValidator::regex_stringvalidation_segment('tag-name');
 		$this->expr_tag_start 		= SmartValidator::regex_stringvalidation_segment('tag-start');
@@ -107,6 +197,7 @@ final class SmartHtmlParser {
 		//-- {{{SYNC-HTML-TAGS-REGEX}}}
 		$this->regex_tag_name 		= '/^['.$this->expr_tag_name.']+$/si';
 		//--
+
 	} //END FUNCTION
 	//=========================================================================
 
@@ -215,6 +306,15 @@ final class SmartHtmlParser {
 		return (string) $this->html;
 		//--
 
+	} //END FUNCTION
+	//=========================================================================
+
+
+	//=========================================================================
+	public function getValidationErrors() {
+		//--
+		return (string) $this->validation_errors;
+		//--
 	} //END FUNCTION
 	//=========================================================================
 
@@ -577,18 +677,9 @@ final class SmartHtmlParser {
 		//--
 		$use_dom = null;
 		//--
-		if($this->dom_processing !== false) {
+		if((int)$this->validate_code > 0) { // if not skip validation
 			//--
-			if(defined('SMART_HTML_CLEANER_USE_TIDY') AND ((string)SMART_HTML_CLEANER_USE_TIDY == 'tidy')) {
-				if(((int)$this->dom_prefer_domdoc !== 2) OR (!class_exists('tidy'))) {
-					$err_text = 'Smart/HTML.Cleaner ERROR: Tidy is missing but the options require explicit use of Tidy ...'."\n".'The HTML Output was aborted due to security restrictions, HTML not validated by Tidy !';
-					Smart::log_warning($err_text."\n".'The original HTML is here:'."\n".'`'.$this->html.'`');
-					$this->html = '<div class="operation_error">'.Smart::nl_2_br((string)Smart::escape_html((string)$err_text)).'</div>';
-					return;
-				} //end if
-			} //end if
-			//--
-			if(((int)$this->dom_prefer_domdoc === 2) AND (class_exists('tidy'))) { // IMPORTANT: do not initialize tidy if html is empty, it is very expensive
+			if(in_array('tidy', (array)$this->validators)) { // IMPORTANT: do not initialize tidy if html is empty, it is very expensive
 				//--
 				$use_dom = 'T';
 				//--
@@ -599,8 +690,11 @@ final class SmartHtmlParser {
 					if(SmartFrameworkRegistry::ifDebug()) {
 						$max_err_level = 2;
 						$enable_warns = true;
-					} elseif($this->dom_log_errors === true) {
+					} else { // this may be used also in production environments if needed
 						$max_err_level = 1;
+						if(!SmartFrameworkRegistry::ifProdEnv()) {
+							$enable_warns = true;
+						} //end if
 					} //end if
 					//--
 					$etidy = (string) strtolower((string)SMART_FRAMEWORK_SQL_CHARSET); // tidy uses utf8 instead of UTF-8
@@ -657,14 +751,26 @@ final class SmartHtmlParser {
 					//--
 					$tidy->parseString((string)$this->compose_html_document((string)$this->html), (array)$ctidy, (string)$etidy); // fix: in some versions of tidy the first comment dissapear if not enclosed in a body container, so need this function: compose_html_document
 					$testClean = $tidy->cleanRepair();
+					$this->validation_errors = (string) $tidy->errorBuffer;
+					$this->validation_errors = (string) trim((string)$this->validation_errors);
+					if((string)$this->validation_errors != '') { // this may be used also in production environments if needed
+						//--
+						$this->validation_errors = (string) str_replace(["\r\n", "\r"], "\n", trim((string)$this->validation_errors));
+						//-- fix duplicate messages from tidy
+						$this->validation_errors = (array) explode("\n", (string)$this->validation_errors);
+						$this->validation_errors = (array) array_unique((array)$this->validation_errors);
+						$this->validation_errors = (array) array_values((array)$this->validation_errors);
+						//--
+						$this->validation_errors = (string) '[Tidy]'."\n".implode("\n", (array)$this->validation_errors);
+						//--
+					} //end if
 					//--
-					if((SmartFrameworkRegistry::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
-						$notice_log = $tidy->errorBuffer;
-						if((string)$notice_log != '') {
-							Smart::log_notice(__CLASS__.' # Tidy [Result='.$testClean.'] Log:'."\n".$notice_log."\n".'#END'."\n");
-						} //end if
-						if(SmartFrameworkRegistry::ifDebug()) {
-							Smart::log_notice(__CLASS__.' # Debug Tidy [Result='.$testClean.'] Clean HTML-String:'."\n".$this->html."\n".'#END');
+					if((SmartFrameworkRegistry::ifDebug()) OR ($this->validate_log_errors === true)) {
+						if((string)$this->validation_errors != '') {
+							Smart::log_notice(__CLASS__.' # Tidy [Result='.$testClean.'] Log:'."\n".$this->validation_errors."\n".'#END'."\n");
+							if(SmartFrameworkRegistry::ifDebug()) {
+								Smart::log_notice(__CLASS__.' # Debug Tidy [Result='.$testClean.'] Clean HTML-String:'."\n".$this->html."\n".'#END');
+							} //end if
 						} //end if
 					} //end if
 					//--
@@ -687,7 +793,7 @@ final class SmartHtmlParser {
 					//--
 				} //end if
 				//--
-			} elseif(class_exists('DOMDocument')) { // DOMDocument will be used by default as is generally available if extension loaded if not set explicit to use tidy ; it does not such a good job as tidy ... ; for example will convert &quot; to real " ... which is not so good, but this is fixed below ...
+			} elseif(in_array('dom', (array)$this->validators)) { // DOMDocument will be used by default as is generally available if extension loaded if not set explicit to use tidy ; it does not such a good job as tidy ... ; for example will convert &quot; to real " ... which is not so good, but this is fixed below ...
 				//--
 				$use_dom = 'D';
 				//--
@@ -718,24 +824,31 @@ final class SmartHtmlParser {
 					//print_r($this->html); die();
 					$dom = null; // free mem
 					//--
-					if((SmartFrameworkRegistry::ifDebug()) OR ($this->dom_log_errors === true)) { // log errors if set :: OR ((string)$this->html == '')
-						$errors = (array) @libxml_get_errors();
-						if(Smart::array_size($errors) > 0) {
-							$notice_log = '';
-							$max_err_level = 1;
-							if(SmartFrameworkRegistry::ifDebug()) {
-								$max_err_level = 2;
-							} //end if
-							foreach($errors as $z => $error) {
-								if((int)$error->level <= (int)$max_err_level) {
-									if(is_object($error)) {
-										$notice_log .= 'FORMAT-ERROR: ['.$error->code.'] / Level: '.$error->level.' / Line: '.$error->line.' / Column: '.$error->column.' / Message: '.trim((string)$error->message)."\n";
-									} //end if
+					$this->validation_errors = '';
+					//--
+					$errors = (array) @libxml_get_errors();
+					if(Smart::array_size($errors) > 0) { // this may be used also in production environments if needed
+						$max_err_level = 1; // for DOMDocument there is no specific option if SmartFrameworkRegistry::ifProdEnv() ... leave as is
+						if(SmartFrameworkRegistry::ifDebug()) {
+							$max_err_level = 2;
+						} //end if
+						foreach($errors as $z => $error) {
+							if((int)$error->level <= (int)$max_err_level) {
+								if(is_object($error)) {
+									$this->validation_errors .= 'line '.(int)$error->line.' column '.(int)$error->column.' - ['.$error->code.'#'.(int)$error->level.']: '.trim((string)$error->message)."\n";
 								} //end if
-							} //end foreach
-							if((string)$notice_log != '') {
-								Smart::log_notice(__CLASS__.' # DOMDocument [Result='.$testClean.'] Log:'."\n".$notice_log."\n".'#END'."\n");
 							} //end if
+						} //end foreach
+					} //end if
+					$errors = null;
+					$this->validation_errors = (string) trim((string)$this->validation_errors);
+					if((string)$this->validation_errors != '') {
+						$this->validation_errors = (string) '[DOM]'."\n".str_replace(["\r\n", "\r"], "\n", trim((string)$this->validation_errors));
+					} //end if
+					//--
+					if((SmartFrameworkRegistry::ifDebug()) OR ($this->validate_log_errors === true)) {
+						if((string)$this->validation_errors != '') {
+							Smart::log_notice(__CLASS__.' # DOMDocument [Result='.$testClean.'] Log:'."\n".$this->validation_errors."\n".'#END'."\n");
 							if(SmartFrameworkRegistry::ifDebug()) {
 								Smart::log_notice(__CLASS__.' # Debug DomDocument [Result='.$testClean.'] Clean HTML-String:'."\n".$this->html."\n".'#END');
 							} //end if
@@ -753,18 +866,18 @@ final class SmartHtmlParser {
 					//--
 				} //end if
 				//--
-			} else {
+			} else { // no validators available
 				//--
 				if($y_comments === false) {
-					$this->html = $this->remove_comments((string)$this->html); // remove comments, no DOM processing available
+					$this->html = $this->remove_comments((string)$this->html); // remove comments
 				} //end if
 				//--
 			} //end if else
 			//--
-		} else {
+		} else { // validation not enabled
 			//--
 			if($y_comments === false) {
-				$this->html = $this->remove_comments((string)$this->html); // remove comments, DOM processing not enable
+				$this->html = $this->remove_comments((string)$this->html); // remove comments
 			} //end if
 			//--
 		} //end if

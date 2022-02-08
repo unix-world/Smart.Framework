@@ -343,18 +343,19 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$main = '';
 				$semaphores[] = 'load:code-highlight-js';
-				if(rand(0,1) == 1) {
-					$semaphores[] = 'theme:dark'; // {{{SYNC-DEMO-UI-THEME}}}
-				} else {
+			//	if(rand(0,1) == 1) {
+			//		$semaphores[] = 'theme:dark'; // {{{SYNC-DEMO-UI-THEME}}}
+			//	} else {
 					$semaphores[] = 'theme:light'; // {{{SYNC-DEMO-UI-THEME}}}
-				} //end if else
-				$validate = rand(0,1);
-				$main .= '<h1>Markdown Syntax Render Test</h1><hr>';
-				$main .= SmartMarkersTemplating::render_template(
-					(string) (new SmartMarkdownToHTML(true, true, true, false, (bool)$validate))->text((string)SmartFileSystem::read($this->ControllerGetParam('module-view-path').'markdown-test.md')),
+			//	} //end if else
+				$validate = false;
+				$mkdw_options = '<allow:marker-tpl>,<use:js-unveil>'; //,<validate:html>';
+				$main .= '<h1 style="background: #2F3448; color: #FFFFFF; padding: 8px;">Markdown Syntax Render Test</h1><hr>';
+				$main .= (string) SmartMarkersTemplating::render_template(
+					(string) (new SmartMarkdownToHTML(true, true, false, (string)$mkdw_options, null, true, null, true))->parse((string)SmartFileSystem::read($this->ControllerGetParam('module-view-path').'markdown-test.md')), // C:1
 					[
 						'semaphore' => (string) Smart::array_to_list($semaphores),
-						'TITLE' 	=> 'This is a <test> title that comes from TPL variables [Validate='.(int)$validate.']'
+						'TITLE' 	=> 'Markdown <tpl> demo',
 					]
 				);
 				$main .= '<hr>';

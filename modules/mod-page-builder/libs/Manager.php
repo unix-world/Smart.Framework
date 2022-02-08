@@ -37,6 +37,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
 //define('SMART_PAGEBUILDER_DISABLE_DELETE', true); 	// this can be set in etc/config-admin.php to disable page deletions in PageBuilder Manager (optional)
 //define('SMART_PAGEBUILDER_ALLOW_FULLTREE', true); 	// allow display full tree (this should be enabled just for small projects)
 //define('SMART_PAGEBUILDER_THEME_DARK', true); 		// if set to TRUE will enable the dark theme for the page builder editors
+//define('SMART_PAGEBUILDER_VALIDATE_HTML', true); 		// if set will validate the HTML ; just for admin area
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -51,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20220126
+ * @version 	v.20220206
  * @package 	PageBuilder
  *
  */
@@ -629,9 +630,11 @@ final class Manager {
 		if(\defined('\\SMART_PAGEBUILDER_THEME_DARK') AND (\SMART_PAGEBUILDER_THEME_DARK === true)) {
 			$theme_readonly = 'oceanic-next';
 			$theme_editable = 'zenburn';
+			$theme_mkdw_htmlsrc = 'uxm';
 		} else {
 			$theme_readonly = 'uxm';
 			$theme_editable = 'uxw';
+			$theme_mkdw_htmlsrc = 'oceanic-next';
 		} //end if
 		//--
 		if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-edit') === true)) {
@@ -784,26 +787,64 @@ final class Manager {
 					if(((string)$y_mode == 'codeview') OR ((string)$y_mode == 'codesrcview')) {
 						//--
 						if((string)$query['mode'] == 'raw') {
+							//--
 							$out .= '</div>'."\n";
 							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh', true, (string)$theme_readonly);
+							//--
 						} elseif((string)$query['mode'] == 'text') {
+							//--
 							$out .= '</div>'."\n";
 							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh', true, (string)$theme_readonly);
+							//--
 						} elseif((string)$query['mode'] == 'markdown') {
+							//--
 							$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 							$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-preview.svg'.'" alt="'.self::text('record_sytx_html').'" title="'.self::text('record_sytx_html').'" style="cursor:pointer;" onClick="'.'smartJ$Browser.LoadElementContentByAjax('."jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-preview-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
+							$codemode = 'markdown';
 							if((string)$y_mode == 'codesrcview') {
+								//--
 								$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 								$out .= '<img alt="'.self::text('record_sytx_mkdw').'" title="'.self::text('record_sytx_mkdw').'" src="'.self::$ModulePath.'libs/views/manager/img/syntax-markdown.svg'.'" style="cursor:pointer;" onClick="'.'smartJ$Browser.LoadElementContentByAjax('."jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
-								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code']); // render on the fly
+								//--
+								$arr_mkdw_render_notices = (array) \SmartModExtLib\PageBuilder\Utils::getRenderedMarkdownNotices((string)$query['code']);
+								if((string)$arr_mkdw_render_notices['validator'] != '') {
+									$out .= '<br><div style="float:right; cursor:help;" title="HTML Code Validator Check: '.\Smart::escape_html((string)$arr_mkdw_render_notices['validator'].' # Warnings/Errors: '.(int)\Smart::array_size((array)$arr_mkdw_render_notices['notices'])).'"><i class="sfi sfi-html-five"></i></div>';
+									$out .= (string) self::renderNotices((array)$arr_mkdw_render_notices['notices'], 'Markdown Html Rendering', 'Html Validation Warnings/Errors');
+								} //end if
+								$arr_mkdw_render_notices = null;
+								//--
+								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], null, '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_VALIDATE_HTML ; no need for validation here ; do not log notices
+								$codemode = 'html';
+								//--
+								$theme_readonly = (string) $theme_mkdw_htmlsrc;
+								//--
 							} //end if
 							$out .= '</div>'."\n";
-							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'markdown', false, '885px', '70vh', true, (string)$theme_readonly);
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], (string)$codemode, false, '885px', '70vh', true, (string)$theme_readonly);
+							//--
 						} else { // html
+							//--
 							$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 							$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-preview.svg'.'" alt="'.self::text('record_sytx_html').' Preview" title="'.self::text('record_sytx_html').' Preview" style="cursor:pointer;" onClick="'.'smartJ$Browser.LoadElementContentByAjax('."jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-preview-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
+							//--
+							if((string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption() != '') {
+								//--
+								$htmlparser = new \SmartHtmlParser((string)$query['code'], true, (string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption(), false);
+								$htmlparser->get_clean_html();
+								$validerrs = (string) trim((string)$htmlparser->getValidationErrors());
+								if((string)$validerrs != '') {
+									$validerrs = [ 'check' => (array)explode("\n", (string)$validerrs) ];
+									$out .= '<br><div style="float:right; cursor:help;" title="HTML Code Validator Check: '.\Smart::escape_html((string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption().' # Warnings/Errors: '.(int)\Smart::array_size((array)$validerrs)).'"><i class="sfi sfi-html-five"></i></div>';
+									$out .= (string) self::renderNotices((array)$validerrs, 'Html Code', 'Html Validation Warnings/Errors');
+								} //end if
+								$validerrs = null;
+								$htmlparser = null;
+								//--
+							} //end if
+							//--
 							$out .= '</div>'."\n";
 							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'html', false, '885px', '70vh', true, (string)$theme_readonly);
+							//--
 						} //end if else
 						//--
 					} else { // view
@@ -822,7 +863,7 @@ final class Manager {
 							$the_editor_styles = '';
 							if((string)$query['mode'] == 'markdown') {
 								$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/markdown.css">';
-								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code']); // render on the fly
+								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], null, '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_VALIDATE_HTML ; no need for validation here ; do not log notices
 							} else {
 							//	$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/js/jsedithtml/cleditor/jquery.cleditor.smartframeworkcomponents.css">'; // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
 								$query['code'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$query['code']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
@@ -2130,8 +2171,7 @@ final class Manager {
 			$unassigned_ctrl = true;
 		} //end if
 		$y_ctrl = (string) \trim((string)$y_ctrl);
-		//--
-		$src = (string) \trim((string)$src);
+		//-- {{{SYNC-PAGE-BUILDER-DO-NOT-TRIM-SRC}}} do not trim $src here, will be trimmed in model if needed
 		if((string)\trim((string)$src) == '') {
 			$srcby = '';
 		} elseif((string)\trim((string)$srcby) == '') {
@@ -2501,8 +2541,7 @@ final class Manager {
 		} //end if
 		//--
 		$limit = 25;
-		//--
-		$src = (string) \trim((string)$src);
+		//-- {{{SYNC-PAGE-BUILDER-DO-NOT-TRIM-SRC}}} do not trim $src here, will be trimmed in model if needed
 		if((string)\trim((string)$src) == '') {
 			$srcby = '';
 		} elseif((string)\trim((string)$srcby) == '') {
@@ -3068,6 +3107,42 @@ final class Manager {
 	private static function drawFieldLayoutPages($y_mode, $y_listmode, $y_value, $y_htmlvar='') {
 		//--
 		return (string) \SmartViewHtmlHelpers::html_select_list_single('', $y_value, $y_listmode, (array)\SmartModExtLib\PageBuilder\Utils::getAvailableLayouts(), $y_htmlvar, '250', '', 'no', 'no');
+		//--
+	} //END FUNCTION
+	//==================================================================
+
+
+	//==================================================================
+	private static function renderNotices(array $arr_notices, string $title, string $subtitle) : string {
+		//--
+		$html = '';
+		//--
+		if(\Smart::array_size($arr_notices) > 0) {
+			//--
+			$html = '<ul>';
+			//--
+			foreach($arr_notices as $rnKey => $rnVal) {
+				$html .= '<li>';
+				if(\is_array($rnVal)) {
+					$html .= (string) \Smart::escape_html((string)$subtitle).':<br>';
+					$html .= '<ul>'."\n";
+					foreach($rnVal as $rnXKey => $rnXVal) {
+						$html .= (string) '<li>'.\Smart::escape_html((string)$rnXVal).'</li>'."\n";
+					} //end foreach
+					$html .= '</ul>'."\n";
+				} else {
+					$html .= (string) \Smart::escape_html((string)$rnVal);
+				} //end if else
+				$html .= '</li>'."\n";
+			} //end foreach
+			//--
+			$html .= '</ul>'."\n";
+			//--
+			$html = (string) \SmartComponents::operation_notice('NOTICE: '.\Smart::escape_html((string)$title).':<br>'.$html, '92%');
+			//--
+		} //end if
+		//--
+		return (string) $html;
 		//--
 	} //END FUNCTION
 	//==================================================================

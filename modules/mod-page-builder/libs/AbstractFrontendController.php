@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20220126
+ * @version 	v.20220205
  * @package 	development:modules:PageBuilder
  *
  */
@@ -880,10 +880,49 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//--
 
 		//--
-		if($is_settings_segment === true) {
-			$data_arr['self-code']  = '';
+		$yaml = (string) \base64_decode((string)$arr['data']);
+		//--
+		if((string)\trim((string)$yaml) != '') {
+			$ymp = new \SmartYamlConverter(false); // do not log YAML errors
+			$yaml = (array) $ymp->parse((string)$yaml);
+			$yerr = (string) $ymp->getError();
+			if($yerr) {
+				$this->fatalError(
+					'PageBuilder: Invalid Data Structure (YAML) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] # YAML Parse Error: '.$yerr,
+					'Invalid PageBuilder Object Data Structure'
+				);
+				return array();
+			} //end if
+			$ymp = null;
 		} else {
-			$data_arr['self-code']  = (string) $arr['code'];
+			$yaml = array();
+		} //end if
+		//--
+		if(!\is_array($yaml)) {
+			$yaml = [];
+		} //end if
+		if((!\array_key_exists('RENDER', $yaml)) OR (!\is_array($yaml['RENDER']))) {
+			$yaml['RENDER'] = [];
+		} //end if
+		//--
+		if($this->debug === true) {
+			if($this->IfDebug()) {
+				$this->SetDebugData('Page / Segment ['.(string)$id.'] Runtime Data', $yaml);
+			} //end if
+		} //end if
+		//--
+
+		//--
+		$skip_rendering = false;
+		if(\array_key_exists('@', (array)$yaml['RENDER'])) {
+			$skip_rendering = true; // fix: avoid render twice this type of sengments because will be rendered as value later via loadValue()
+		} //end if
+		//--
+
+		//--
+		$data_arr['self-code']  = '';
+		if($is_settings_segment !== true) {
+			$data_arr['self-code'] = (string) $arr['code'];
 		} //end if else
 		$data_arr['self-syntax'] = (string) $arr['mode'];
 		//--
@@ -925,9 +964,14 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 				} //end if
 			} elseif((string)$data_arr['mode'] == 'markdown') {
 				//Smart::log_warning('rendering markdown on ID='.$arr['id']);
-				$data_arr['mode'] = 'markdown:rendered';
+				$data_arr['mode'] = 'markdown:safe';
 				if((string)\trim((string)$data_arr['code']) != '') {
-					$data_arr['code'] = (string) \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$data_arr['code']);
+					if($skip_rendering === true) { // the case of @ self content objects: for these type of objects the content is not quite need to be rendeed in this stage, but mostly validated with data keys only ; the content of this objects will be later rewritten with another referred object and the content of this objects will be used there not here in this context ...
+						$data_arr['code'] = (string) \Smart::escape_html((string)$data_arr['code']); // it is too costly to render the markdown if not needed thus only make it safe (just in case) to be able to validate with data keys !
+					} else {
+						$data_arr['mode'] = 'markdown:rendered';
+						$data_arr['code'] = (string) \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$data_arr['code']);
+					} //end if else
 				} //end if
 			} elseif((string)$data_arr['mode'] == 'html') {
 				$data_arr['mode'] = 'html:safe';
@@ -937,39 +981,6 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			} //end if
 			//--
 		} //end if else
-		//--
-
-		//--
-		$yaml = (string) \base64_decode((string)$arr['data']);
-		//--
-		if((string)\trim((string)$yaml) != '') {
-			$ymp = new \SmartYamlConverter(false); // do not log YAML errors
-			$yaml = (array) $ymp->parse((string)$yaml);
-			$yerr = (string) $ymp->getError();
-			if($yerr) {
-				$this->fatalError(
-					'PageBuilder: Invalid Data Structure (YAML) detected on Page/Segment: ['.\implode(';', $this->current_page).'/'.(string)$id.'] # YAML Parse Error: '.$yerr,
-					'Invalid PageBuilder Object Data Structure'
-				);
-				return array();
-			} //end if
-			$ymp = null;
-		} else {
-			$yaml = array();
-		} //end if
-		//--
-		if(!\is_array($yaml)) {
-			$yaml = [];
-		} //end if
-		if((!\array_key_exists('RENDER', $yaml)) OR (!\is_array($yaml['RENDER']))) {
-			$yaml['RENDER'] = [];
-		} //end if
-		//--
-		if($this->debug === true) {
-			if($this->IfDebug()) {
-				$this->SetDebugData('Page / Segment ['.(string)$id.'] Runtime Data', $yaml);
-			} //end if
-		} //end if
 		//--
 
 		//-- feature: can use custom render vars as defined in prev level, but not for zero level

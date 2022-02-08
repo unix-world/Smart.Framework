@@ -2,30 +2,30 @@
 ## Dual-licensed: under BSD license or GPLv3 license (at your choice)
 ### This software project is open source.
 #### You must choose which license to use depending on your use case: BSD license or GPLv3 license
-**(c) 2009 - 2021 unix-world.org** / support&#64;unix-world.org
+**(c) 2009 - 2021 unix-world.org** / support&#064;unix-world.org
 
- &nbsp; | &nbsp;
-------------- | -------------
- **Demo URL:** | <http://demo.unix-world.org/smart-framework/>
- **Download URL:** | [https://github.com/unix-world/Smart.Framework](https://github.com/unix-world/Smart.Framework)
- **Download Modules URL:** | [https://github.com/unix-world/Smart.Framework.Modules](https://github.com/unix-world/Smart.Framework.Modules)
+| &nbsp; | &nbsp; |
+| ------------- | ------------- |
+| **Demo URL:** | [http://demo.unix-world.org/smart-framework/](http://demo.unix-world.org/smart-framework/) |
+| **Download URL:** | [https://github.com/unix-world/Smart.Framework](https://github.com/unix-world/Smart.Framework) |
+| **Download Modules URL:** | [https://github.com/unix-world/Smart.Framework.Modules](https://github.com/unix-world/Smart.Framework.Modules) |
 
 &nbsp;
 
 ### Smart.Framework design philosophy:
-* A very **pragmatic** and practical aproach: **A Practical Web Framework for Practical People**
-* Based on a previous **experience of more than 17 years** of developing web projects, research and experiments using web technologies
-* Web oriented approach: to offer **a solid and secure platform** for building websites or web based applications for Web Clients, Desktops and Mobiles
-* Clean Code: **MVC code pattern** with built-in Dependency-Injection
-* **Hybrid** Architecture: **Multi-Tier combined with Middlewares architecture** to provide a flexible and responsive web service
-* **Modular Architecture**: **support creating reusable modules** (there are also many turn-key modules available in Smart.Framework.Modules)
-* **Full Decoupled Libraries**: the framework core is using independent (decoupled) libraries (**no 3rd party dependencies**)
-* **NameSpace Separation in modules** for: Models, Views, Controllers and Libraries
-* **Easy to integrate** with 3rd party (vendor) libraries
-* Native **Cloud Server Services (built-in)**, as module for: WebDAV Server, CalDAV Server, CardDAV Server
-* Native **Cloud Client Provider (built-in)**, as library for HTTP/HTTPS access which supports the full range of HTTP(S) Methods / Requests: GET, POST, PUT, DELETE, ...
-* **Native Router** based on smart URL Links: **/?page=my-module.sample** that can be used as **/?/page/my-module.sample** or **/?/page/sample** if (my-module is default bundle)
-* Integrates with **Apache Rewrite** to use SEO friendly links like **/sample.html** instead of traditional link **/?page=my-module.sample** or smart link **/?/page/my-module.sample/**
+- A very **pragmatic** and practical aproach: **A Practical Web Framework for Practical People**
+- Based on a previous **experience of more than 17 years** of developing web projects, research and experiments using web technologies
+- Web oriented approach: to offer **a solid and secure platform** for building websites or web based applications for Web Clients, Desktops and Mobiles
+- Clean Code: **MVC code pattern** with built-in Dependency-Injection
+- **Hybrid** Architecture: **Multi-Tier combined with Middlewares architecture** to provide a flexible and responsive web service
+- **Modular Architecture**: **support creating reusable modules** (there are also many turn-key modules available in Smart.Framework.Modules)
+- **Full Decoupled Libraries**: the framework core is using independent (decoupled) libraries (**no 3rd party dependencies**)
+- **NameSpace Separation in modules** for: Models, Views, Controllers and Libraries
+- **Easy to integrate** with 3rd party (vendor) libraries
+- Native **Cloud Server Services (built-in)**, as module for: WebDAV Server, CalDAV Server, CardDAV Server
+- Native **Cloud Client Provider (built-in)**, as library for HTTP/HTTPS access which supports the full range of HTTP(S) Methods / Requests: GET, POST, PUT, DELETE, ...
+- **Native Router** based on smart URL Links: **/?page=my-module.sample** that can be used as **/?/page/my-module.sample** or **/?/page/sample** if (my-module is default bundle)
+- Integrates with **Apache Rewrite** to use SEO friendly links like **/sample.html** instead of traditional link **/?page=my-module.sample** or smart link **/?/page/my-module.sample/**
 
 #### Easy develop your web projects with Smart.Framework
 **The primary goal of Smart.Framework is to provide a very practical, fast and secure web framework.**
@@ -47,20 +47,20 @@ The original software architecture of this web framework allows it to deliver a 
 &nbsp;
 ### Benchmark Scenario:
 **Using a simple controller (no Caching) that Outputs: 'Hello World'**
-The benchmark was running using *Apache Benchmark* suite with the following command:
-*ab -n 5000 -c 250 http://{localhost}/{framework}/{benchmark-page}*
-
+The benchmark was running using **Apache Benchmark** suite with the following command:
+`ab -n 5000 -c 250 http://{localhost}/{framework}/{benchmark-page}`
+&nbsp;
 **Hardware platform**: one physical server (Supermicro):
-* **2 x Intel(R) Xeon(R) CPU E5-2699 v4** @ 2.20GHz 64-bit (Total: 44 cores / 88 threads)
-* **512 GB RAM**, DDR4 ECC @ 2133 MHz
-* **HDD 2 x 1TB** SSD/NVME
++ **2 x Intel(R) Xeon(R) CPU E5-2699 v4** @ 2.20GHz 64-bit (Total: 44 cores / 88 threads)
++ **512 GB RAM**, DDR4 ECC @ 2133 MHz
++ **HDD 2 x 1TB** SSD/NVME
 
 **Software**:
-* OS: **Debian 10 Linux 64-bit**, up-to-date 2021-05-26
-* Apps: **Apache 2.4.48**, **PHP 7.4.19 with Opcache enabled**
++ OS: **Debian 10 Linux 64-bit**, up-to-date 2021-05-26
++ Apps: **Apache 2.4.48**, **PHP 7.4.19 with Opcache enabled**
 
 #### Benchmark Results of tested PHP Frameworks:
-* **Smart.Framework v.8.7 head@2021.05.26** with MarkersTPL Templating: ~ **_8.878K_** (8878) *requests per second*
-* **CodeIgniter v.4.1** with PHP Templating: ~ **_5.37K_** (5344) *requests per second* ( **1.3x slower than Smart.Framework** )
-* **Laravel 8.5** with Blade Templating ~ **_1.83K_** (1835) *requests per second* ( **5x slower than Smart.Framework** )
-* **Symfony 5.2** with Twig Templating: ~ **_1.71K_** (1532) *requests per second* ( **5x slower than Smart.Framework** )
++ **Smart.Framework v.8.7 head@2021.05.26** with MarkersTPL Templating: ~ **8.878K** (8878) requests per second
++ **CodeIgniter v.4.1** with PHP Templating: ~ **5.37K** (5344) requests per second ( **1.3x slower than Smart.Framework** )
++ **Laravel 8.5** with Blade Templating ~ **1.83K** (1835) requests per second ( **5x slower than Smart.Framework** )
++ **Symfony 5.2** with Twig Templating: ~ **1.71K** (1532) requests per second ( **5x slower than Smart.Framework** )

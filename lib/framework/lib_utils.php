@@ -36,8 +36,8 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_CUSTOM, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20220126
+ * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
+ * @version 	v.20220207
  * @package 	@Core:Extra
  *
  */
@@ -226,6 +226,8 @@ final class SmartUtils {
 		if($cookie_httponly === true) {
 			$options['httponly'] = true; // WARNING: a cookie with HttpOnly cannot be accessed by javascript, so use it with precaution
 		} //end if
+		//--
+		SmartFrameworkRegistry::setCookieVar((string)$cookie_name, (string)$cookie_data);
 		//--
 		return (bool) @setcookie((string)$cookie_name, (string)$cookie_data, (array)$options); // req. PHP 7.3+
 		//--
@@ -1487,7 +1489,7 @@ final class SmartUtils {
 	//================================================================
 	public static function get_visitor_signature() {
 		//--
-		return (string) 'Visitor // '.trim((string)self::get_ip_client()).' ; '.trim((string)self::get_ip_proxyclient()).' :: '.self::get_visitor_useragent();
+		return (string) 'Visitor // '.trim((string)self::get_ip_client()).' :: '.self::get_visitor_useragent(); // fix: do not use self::get_ip_proxyclient() here ... if using DNS load balancing + multiple load balancers with multiple backends switching the load balancer (aka reverse proxy) when browsing and changing between web pages will change this signature which will change the client_ident_private_key() and then may lead to user session expired ...
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1532,13 +1534,84 @@ final class SmartUtils {
 
 
 	//================================================================
+	// Ex: http:// or https://
 	public static function get_server_current_protocol() {
 		//--
-		if((isset($_SERVER['HTTPS'])) AND ((string)trim((string)strtolower((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTPS']))) == 'on')) {
-			$current_protocol = 'https://';
-		} else {
-			$current_protocol = 'http://';
-		} //end if else
+		$current_protocol = '';
+		//--
+		$err = false;
+		//--
+		if(defined('SMART_FRAMEWORK_SRVPROXY_ENABLED') AND (SMART_FRAMEWORK_SRVPROXY_ENABLED === true)) {
+			if(defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO')) {
+				$hkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO));
+				if((string)$hkey != '') {
+					if((string)strtolower((string)$hkey) == 'http') { // explicit set to HTTP
+						$current_protocol = 'http://';
+					} elseif((string)strtolower((string)$hkey) == 'https') { // explicit set to HTTPS
+						$current_protocol = 'https://';
+					} elseif(preg_match('/^[_A-Z]+$/', (string)$hkey)) { // must to be a valid header key from the allowed list
+						$allowed_list = (array) self::_protolist_valid_server_headers();
+						if(
+							in_array((string)$hkey, (array)array_keys((array)$allowed_list))
+							AND
+							isset($allowed_list[(string)$hkey])
+							AND
+							is_array($allowed_list[(string)$hkey])
+						) {
+							if(isset($_SERVER[(string)$hkey])) {
+								$skey = (string) strtolower((string)trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER[(string)$hkey])));
+								if(in_array((string)$skey, (array)array_keys((array)$allowed_list[(string)$hkey]))) {
+									if(isset($allowed_list[(string)$hkey][(string)$skey])) {
+										$sval = (string) $allowed_list[(string)$hkey][(string)$skey];
+										if((string)$sval != '') {
+											if(in_array((string)$sval, [ 'http', 'https' ])) {
+												$current_protocol = (string) $sval.'://';
+											} else {
+												$err = true;
+											} //end if
+										} else {
+											$err = true;
+										} //end if
+									} else {
+										$err = true;
+									} //end if else
+								} else {
+									$err = true;
+								} //end if else
+							} else {
+								$err = true;
+							} //end if else
+						} else {
+							$err = true;
+						} //end if else
+					} else {
+						$err = true;
+					} //end if else
+				} else {
+					// if set to empty string: skip, not an error, it is set so to be detected below
+				} //end if else
+			} else {
+				$err = true;
+			} //end if
+		} //end if
+		//--
+		if($err) {
+			Smart::raise_error('Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO', 'Cannot Determine Current Server Protocol');
+			return '';
+		} //end if
+		//--
+		if((string)$current_protocol == '') { // if not get custom above, detect
+			if((isset($_SERVER['HTTPS'])) AND ((string)trim((string)strtolower((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTPS']))) == 'on')) {
+				$current_protocol = 'https://';
+			} else {
+				$current_protocol = 'http://';
+			} //end if else
+		} //end if
+		//--
+		if((string)$current_protocol == '') {
+			Smart::raise_error('Failed to determine the server current protocol: `http://` or `https://` ...', 'Failed to determine Current Server Protocol');
+			return '';
+		} //end if
 		//--
 		return (string) $current_protocol;
 		//--
@@ -1547,14 +1620,67 @@ final class SmartUtils {
 
 
 	//================================================================
-	// Ex: 443
+	// Ex: 80 or 443 or ...
 	public static function get_server_current_port() {
 		//--
-		if(!array_key_exists('SERVER_PORT', $_SERVER)) {
-			return ''; // fix for PHP8
+		$current_port = '';
+		//--
+		$err = false;
+		//--
+		if(defined('SMART_FRAMEWORK_SRVPROXY_ENABLED') AND (SMART_FRAMEWORK_SRVPROXY_ENABLED === true)) {
+			if(defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PORT')) {
+				$hkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_SERVER_PORT));
+				if((string)$hkey != '') {
+					if((preg_match('/^[0-9]+$/', (string)$hkey)) AND (((int)$hkey >= 1) AND ((int)$hkey <= 65535))) { // explicit set to a valid TCP port
+						$current_port = (int) $hkey;
+					} elseif(preg_match('/^[_A-Z]+$/', (string)$hkey)) { // must to be a valid header key from the allowed list
+						$allowed_list = (array) self::_portlist_valid_server_headers();
+						if(in_array((string)$hkey, (array)$allowed_list)) {
+							if(isset($_SERVER[(string)$hkey])) {
+								$skey = (string) (int) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER[(string)$hkey]));
+								if(((int)$skey >= 1) AND ((int)$skey <= 65535)) {
+									$current_port = (string) (int) $skey;
+								} else {
+									$err = true;
+								} //end if else
+							} else {
+								$err = true;
+							} //end if else
+						} else {
+							$err = true;
+						} //end if else
+					} else {
+						$err = true;
+					} //end if else
+				} else {
+					// if set to empty string: skip, not an error, it is set so to be detected below
+				} //end if else
+			} else {
+				$err = true;
+			} //end if
 		} //end if
 		//--
-		return (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_PORT']));
+		if($err) {
+			Smart::raise_error('Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PORT', 'Cannot Determine Current Server Port');
+			return '';
+		} //end if
+		//--
+		if((string)$current_port == '') { // if not get custom above, detect
+			$port = null;
+			if(array_key_exists('SERVER_PORT', $_SERVER)) {
+				$port = (string) (int) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_PORT']));
+			} //end if
+			if(((int)$port >= 1) AND ((int)$port <= 65535)) {
+				$current_port = (string) (int) $port;
+			} //end if
+		} //end if
+		//--
+		if((string)$current_port == '') {
+			Smart::raise_error('Failed to determine the server current port: ex: `80` or `443` ...', 'Failed to determine Current Server Port');
+			return '';
+		} //end if
+		//--
+		return (string) $current_port;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1635,7 +1761,7 @@ final class SmartUtils {
 		if($xout === null) {
 			//--
 			$the_dom_crr = (string) SmartUtils::get_server_current_domain_name();
-			if((string)SmartValidator::validate_filter_ip_address($the_dom_crr) == '') { // if not IP address
+			if((string)trim((string)SmartValidator::validate_filter_ip_address($the_dom_crr)) == '') { // if not IP address
 				//--
 				$the_dom_base = (string) SmartUtils::get_server_current_basedomain_name();
 				if((strpos((string)$the_dom_base, '.') !== false) AND ((string)$the_dom_base != (string)$the_dom_crr)) { // for sub-domain the base domain must contain a dot
@@ -1691,6 +1817,60 @@ final class SmartUtils {
 		} //end if
 		//--
 		return (string) Smart::fix_path_separator((string)trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SCRIPT_NAME']))); // Fix: on Windows it can contain \ instead of /
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// Ex: script.php
+	public static function get_server_current_script() {
+		//--
+		if(!array_key_exists('get_server_current_script', self::$cache)) {
+			self::$cache['get_server_current_script'] = null; // fix for PHP8
+		} //end if
+		$xout = (string) self::$cache['get_server_current_script'];
+		//--
+		if((string)$xout == '') {
+			//--
+			$current_script = '';
+			if((string)self::get_server_current_full_script() != '') {
+				$current_script = (string) basename((string)self::get_server_current_full_script());
+			} //end if
+			if((string)$current_script == '') {
+				Smart::raise_error('Cannot Determine Current WebServer Script', 'Invalid Current WebServer Script');
+				return '';
+			} //end if
+			//--
+			$xout = (string) $current_script;
+			//--
+			self::$cache['get_server_current_script'] = (string) $xout;
+			//--
+		} //end if
+		//--
+		return (string) $xout;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// Ex: ?param1=one&param2=two
+	public static function get_server_current_queryurl() {
+		//--
+		if(!array_key_exists('QUERY_STRING', $_SERVER)) {
+			$url_query = ''; // fix for PHP8
+		} else {
+			$url_query = (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['QUERY_STRING'])); // will get without the prefix '?' as: page=one&subpage=two
+		} //end if
+		//--
+		if((string)$url_query == '') {
+			$url_query = '?'; // at least '?' is expected even if the url query is empty
+		} elseif((string)substr((string)$url_query, 0, 1) != '?') { // add '?' prefix if missing, this is required for building url with suffixes, all current url builders rely on assuming there will be a '?' as prefix
+			$url_query = '?'.$url_query;
+		} //end if else
+		//--
+		return $url_query;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1779,60 +1959,6 @@ final class SmartUtils {
 		} //end if
 		//--
 		return (string) $xout;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	// Ex: script.php
-	public static function get_server_current_script() {
-		//--
-		if(!array_key_exists('get_server_current_script', self::$cache)) {
-			self::$cache['get_server_current_script'] = null; // fix for PHP8
-		} //end if
-		$xout = (string) self::$cache['get_server_current_script'];
-		//--
-		if((string)$xout == '') {
-			//--
-			$current_script = '';
-			if((string)self::get_server_current_full_script() != '') {
-				$current_script = (string) basename((string)self::get_server_current_full_script());
-			} //end if
-			if((string)$current_script == '') {
-				Smart::raise_error('Cannot Determine Current WebServer Script', 'Invalid Current WebServer Script');
-				return '';
-			} //end if
-			//--
-			$xout = (string) $current_script;
-			//--
-			self::$cache['get_server_current_script'] = (string) $xout;
-			//--
-		} //end if
-		//--
-		return (string) $xout;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	// Ex: ?param1=one&param2=two
-	public static function get_server_current_queryurl() {
-		//--
-		if(!array_key_exists('QUERY_STRING', $_SERVER)) {
-			$url_query = ''; // fix for PHP8
-		} else {
-			$url_query = (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['QUERY_STRING'])); // will get without the prefix '?' as: page=one&subpage=two
-		} //end if
-		//--
-		if((string)$url_query == '') {
-			$url_query = '?'; // at least '?' is expected even if the url query is empty
-		} elseif((string)substr((string)$url_query, 0, 1) != '?') { // add '?' prefix if missing, this is required for building url with suffixes, all current url builders rely on assuming there will be a '?' as prefix
-			$url_query = '?'.$url_query;
-		} //end if else
-		//--
-		return $url_query;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1974,80 +2100,144 @@ final class SmartUtils {
 
 	//================================================================
 	/**
-	 * Get the Client real IP such as: REMOTE_ADDR
-	 * This function should be used always across the Smart.Framework to get the client's real IP and never must use directly REMOTE_ADDR as it may change when using apache/php behind haproxy or varnish and in this case the HTTP_X_FORWARDED_FOR will return client's real IP address by example !
+	 * Check if the Client real IP is trusted
+	 * If something fails in the detection of the Client real IP address this will return FALSE
 	 *
-	 * @return 	STRING						:: IP Address ; if no address detected will RAISE an ERROR ...
+	 * @return 	BOOLEAN						:: TRUE if trusted ; FALSE if not
+	 */
+	public static function is_ip_client_trusted() {
+		//--
+		$ip = (string) self::get_ip_client(); // this will check the validity of SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP !
+		if((string)trim((string)$ip) == '') {
+			return false;
+		} //end if
+		//--
+		if(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP')) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the Client real IP ; by default will use $_SERVER['REMOTE_ADDR'] ; but if set in configs can use by example $_SERVER['HTTP_X_FORWARDED_FOR'] or other values (ex: in the case of a reverse proxy)
+	 * This function should be used always across the Smart.Framework to get the client's real IP instead using directly the $_SERVER['REMOTE_ADDR'] as the real client IP may change when using apache/php behind haproxy or varnish and in this case by example the $_SERVER['HTTP_X_FORWARDED_FOR'] may return client's real IP address and the $_SERVER['REMOTE_ADDR'] will be in this case the IP of the proxy ...
+	 *
+	 * @return 	STRING						:: IP Address ; if no address detected will RAISE a FATAL ERROR ...
 	 */
 	public static function get_ip_client() {
 		//--
-		// # if SMART_FRAMEWORK_IPDETECT_CUSTOM is set to TRUE, should be only for PRIVATE NETWORKS, just in case the IP detection fails for some buggy proxies then can use the below fix:
-		// const SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK = '0.0.0.0'; // If using this fix, if this mandatory function cannot determine the IP address for a client (ex: malformed headers), instead of raise fatal error it can use a fake IP address for the client IP !!! IMPORTANT: if you have to use it never use here other IP addresses than one of these (IPV4 0.0.0.0 / IPV6 ::ffff:0000:0000 ; IPV4 255.255.255.255 / IPV6 ::ffff:ffff:ffff) or the SECURITY CAN BE SERIOUS COMPROMISED by XSS or session hijacking !!! MORE: it is not safe to use this fallback at all ! USE IT ON YOUR OWN RISK !!!!!!!
-		// # !!! NEVER USE THE ABOVE FIX FOR PUBLIC NETWORKS !!! IT IS MORE THAN DANGEROUS !!!
+		// # if SMART_FRAMEWORK_SRVPROXY_ENABLED is set to TRUE, should be only for PRIVATE NETWORKS like local behind a trusted reverse proxy (ex: load balancers)
+		// if custom IP detection was set and the custom IP detection fails (ex: missing the specific header defined in SMART_FRAMEWORK_SRVPROXY_CLIENT_IP) than the SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP will be set internally and some features of Smart.Framework that depend on a trusted client IP detection will not be available (ex: session)
+		// # !!! NEVER define the SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP in any config or custom development context, it is reserved for internal usage only !!!
 		//--
 		if(array_key_exists('get_ip_client', self::$cache)) {
 			return (string) self::$cache['get_ip_client'];
 		} //end if
 		//--
-		$the_hdr = '';
-		$err = false;
-		//--
-		if(!defined('SMART_FRAMEWORK_IPDETECT_CLIENT')) { // must be defined
-			$err = true;
-		} //end if
-		//--
-		if(!$err) {
-			$the_hdr = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_IPDETECT_CLIENT));
-			if((string)$the_hdr == '') {
-				$err = true;
-			} elseif(!preg_match('/^[_A-Z]+$/', (string)$the_hdr)) {
-				$err = true;
-			} elseif(!in_array((string)$the_hdr, (array)self::_iplist_valid_client_headers())) {
-				$err = true;
-			} //end if
-		} //end if
-		//--
-		if($err) {
-			Smart::raise_error('Cannot Determine Current Client IP Address', 'Invalid definition for SMART_FRAMEWORK_IPDETECT_CLIENT');
+		if(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP')) {
+			Smart::raise_error('The constant SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP is reserved for internal usage only ... should never be defined outside this method: '.__METHOD__, 'Client IP detection context error');
 			return '';
 		} //end if
 		//--
-		self::$cache['get_ip_client:validated-header'] = (string) $the_hdr;
+		$hkey = '';
+		$hval = '';
 		//--
-		$tmp_hdr = '';
-		if(array_key_exists((string)$the_hdr, (array)$_SERVER)) {
-			$tmp_hdr = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER[(string)$the_hdr]); // fix for PHP8
+		$err = false;
+		//--
+		if(!defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_IP')) { // must be defined
+			$err = true;
 		} //end if
+		//--
+		$custom = (bool) (defined('SMART_FRAMEWORK_SRVPROXY_ENABLED') AND (SMART_FRAMEWORK_SRVPROXY_ENABLED === true));
+		//--
+		if(!$err) {
+			//--
+			$hkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP));
+			//--
+			if((string)$hkey == '') {
+				$err = true;
+			} elseif(!preg_match('/^[_A-Z]+$/', (string)$hkey)) {
+				$err = true;
+			} //end if else
+			//--
+			if(!$err) {
+				//--
+				if($custom === true) {
+					if(!in_array((string)$hkey, (array)self::_iplist_valid_client_headers())) {
+						$err = true;
+					} //end if
+				} else { // default
+					if((string)$hkey != 'REMOTE_ADDR') { // if not custom detection, the REMOTE_ADDR should be used
+						$err = true;
+					} //end if
+				} //end if else
+				//--
+			} //end if
+			//--
+		} //end if
+		//--
+		if($err) {
+			Smart::raise_error('Invalid definition for SMART_FRAMEWORK_SRVPROXY_CLIENT_IP : `'.SMART_FRAMEWORK_SRVPROXY_CLIENT_IP.'`', 'Cannot Determine Current Client IP Address');
+			return '';
+		} //end if
+		//--
+		$hval = (string) SmartFrameworkSecurity::FilterUnsafeString((string)trim((string)($_SERVER[(string)$hkey] ?? '')));
 		//--
 		$ip = ''; // init
 		//--
-		$ip = (string) self::_iplist_get_first_address((string)$tmp_hdr); // can be one IP or a list with multiple addresses ; here the 1st one is the client's IP ...
-		$ip = (string) SmartValidator::validate_filter_ip_address($ip);
+		if((string)$hkey == 'REMOTE_ADDR') {
+			$ip = (string) self::_iplist_get_first_address((string)$hval); // when using this one, normally there is just one address ; but if there are many, trust the 1st one being the client's IP
+		} else {
+			$ip = (string) self::_iplist_get_last_address((string)$hval); // can be one or multiple IP addresses ; since this is mostly a custom header which can be faked, trust the last one as it should be the one added by the proxy by example (a proxy will rewrite or append it's address to this field ...)
+		} //end if else
+		//--
+		$ip = (string) trim((string)SmartValidator::validate_filter_ip_address($ip));
+		//--
+		if((string)$ip == '') {
+			//--
+			$hkey = 'REMOTE_ADDR';
+			$hval = (string) SmartFrameworkSecurity::FilterUnsafeString((string)trim((string)($_SERVER[(string)$hkey] ?? '')));
+			$ip = (string) self::_iplist_get_first_address((string)$hval); // when using this one, normally there is just one address ; but if there are many, trust the 1st one being the client's IP
+			$ip = (string) trim((string)SmartValidator::validate_filter_ip_address($ip));
+			//--
+			if((string)$ip == '') {
+				$hkey = 'FAKE_ADDR';
+				$ip = '127.8.7.8'; // fake IP, could not detect a real one
+			} //end if else
+			//--
+			define('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP', 'CUSTOM-IP-DETECTION-FALLBACK:['.$hkey.']'); // this is important, some Smart.Framework features will not be enabled when this set, but this is how it should be from the security point of view ... with an untrusted client IP that could not be properly detected !
+			Smart::log_warning('Invalid Client IP Address. Fallback to: '.SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP.' ; IP='.$ip);
+			//--
+			if((string)$ip == '') {
+				Smart::raise_error('Invalid Client IP Address', 'Cannot Determine Current Client IP Address');
+				return '';
+			} //end if
+			//--
+		} //end if
+		//--
+		self::$cache['get_ip_client:validated-header-key'] = (string) $hkey; // the header key
+		self::$cache['get_ip_client:validated-header-val'] = (string) $hval; // the header raw value
+		self::$cache['get_ip_client'] = (string) $ip; // the validated client IP
 		//--
 		if(SmartFrameworkRegistry::ifDebug()) {
 			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Client',
-				'data' => 'Validation Header:'."\n".self::pretty_print_var(self::$cache['get_ip_client:validated-header'])
+				'data' => 'Validation Header Key: `'.self::$cache['get_ip_client:validated-header-key'].'`'
 			]);
 			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Client',
-				'data' => 'Validated at Header: `'.self::$cache['get_ip_client:validated-header'].'` = `'.$ip.'`'
+				'data' => 'Validation Header Raw Value: `'.self::$cache['get_ip_client:validated-header-val'].'`'
+			]);
+			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+				'title' => 'SmartUtils // Get IP Client',
+				'data' => 'IP Detected: `'.self::$cache['get_ip_client'].'`'.($custom === true ? ' [SRV-PROXY=true]' : '').(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP') ? ' [UNTRUSTED:true;'.SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP.']' : '')
 			]);
 		} //end if
-		//--
-		if((string)$ip == '') {
-			if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM') AND (SMART_FRAMEWORK_IPDETECT_CUSTOM === true)) { // use the following fix ONLY with IP custom detect case ...
-				if(defined('SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK') AND (SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK)) { // hidden feature, this is extremely dangerous !!
-					$ip = (string) SmartValidator::validate_filter_ip_address((string)SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK);
-				} //end if
-			} //end if
-			if((string)$ip == '') {
-				Smart::raise_error('Cannot Determine Current Client IP Address', 'Invalid Client IP Address');
-				return '';
-			} //end if
-		} //end if
-		//--
-		self::$cache['get_ip_client'] = (string) $ip;
 		//--
 		return (string) self::$cache['get_ip_client'];
 		//--
@@ -2065,7 +2255,7 @@ final class SmartUtils {
 	public static function get_ip_proxyclient() {
 		//--
 		if(array_key_exists('get_ip_proxyclient', self::$cache)) {
-			return (string) self::$cache['get_ip_proxyclient']; // fix for PHP8
+			return (string) self::$cache['get_ip_proxyclient'];
 		} //end if
 		//--
 		$arr_valid_hdrs = (array) self::_iplist_valid_client_headers();
@@ -2073,27 +2263,33 @@ final class SmartUtils {
 		$arr_hdrs = [];
 		$err = false;
 		//--
-		if(!defined('SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT')) { // must be defined
+		if(!defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_IP')) { // must be defined, it is used also in this method
 			$err = true;
 		} //end if
 		//--
+		if(!defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP')) { // must be defined
+			$err = true;
+		} //end if
+		//--
+		$custom = (bool) (defined('SMART_FRAMEWORK_SRVPROXY_ENABLED') AND (SMART_FRAMEWORK_SRVPROXY_ENABLED === true));
+		//--
 		if(!$err) {
-			$tmp_arr_hdrs = (array) Smart::list_to_array((string)SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT, true);
+			$tmp_arr_hdrs = (array) Smart::list_to_array((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, true);
 			$use_remote_addr = false;
 			if(in_array('REMOTE_ADDR', (array)$tmp_arr_hdrs)) {
-				if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM') AND (SMART_FRAMEWORK_IPDETECT_CUSTOM === true)) {
-					if((string)SMART_FRAMEWORK_IPDETECT_CLIENT != 'REMOTE_ADDR') {
+				if($custom === true) {
+					if((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP != 'REMOTE_ADDR') {
 						$use_remote_addr = true;
 					} //end if
 				} else {
-					Smart::raise_error('Cannot Determine Current Client Proxy IP Address', 'The SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT must not contain REMOTE_ADDR when SMART_FRAMEWORK_IPDETECT_CUSTOM is not set to TRUE !');
+					Smart::raise_error('The SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP must not contain REMOTE_ADDR when SMART_FRAMEWORK_SRVPROXY_ENABLED is not set to TRUE !', 'Cannot Determine Current Client Proxy IP Address');
 					return '';
 				} //end if
 			} //end if
 			for($i=0; $i<Smart::array_size($tmp_arr_hdrs); $i++) {
 				$tmp_arr_hdrs[$i] = (string) strtoupper((string)$tmp_arr_hdrs[$i]);
 				if(preg_match('/^[_A-Z]+$/', (string)$tmp_arr_hdrs[$i])) {
-					if((string)$tmp_arr_hdrs[$i] != 'REMOTE_ADDR') { // except REMOTE_ADDR, which is usable by conditions will be added at the end any other valid headers can be in both places: SMART_FRAMEWORK_IPDETECT_CLIENT and SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT as they can contain more than one IP, separed by comma and get ip client from SMART_FRAMEWORK_IPDETECT_CLIENT will use the first in this list and the get proxy ip from SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT will use the last ; ex: 127.0.0.1, 128.0.0.1, ...
+					if((string)$tmp_arr_hdrs[$i] != 'REMOTE_ADDR') { // except REMOTE_ADDR, which is usable by conditions will be added at the end any other valid headers can be in both places: SMART_FRAMEWORK_SRVPROXY_CLIENT_IP and SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP as they can contain more than one IP, separed by comma and get ip client from SMART_FRAMEWORK_SRVPROXY_CLIENT_IP will use the first in this list and the get proxy ip from SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP will use the last ; ex: 127.0.0.1, 128.0.0.1, ...
 						if(in_array((string)$tmp_arr_hdrs[$i], (array)$arr_valid_hdrs)) {
 							$arr_hdrs[] = (string) $tmp_arr_hdrs[$i];
 						} //end if
@@ -2101,9 +2297,9 @@ final class SmartUtils {
 				} //end if
 			} //end for
 			$tmp_arr_hdrs = null;
-			if(defined('SMART_FRAMEWORK_IPDETECT_CUSTOM') AND (SMART_FRAMEWORK_IPDETECT_CUSTOM === true)) {
+			if($custom === true) {
 				if($use_remote_addr === true) {
-					$arr_hdrs[] = 'REMOTE_ADDR'; // if present in SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT and not in SMART_FRAMEWORK_IPDETECT_CLIENT only when SMART_FRAMEWORK_IPDETECT_CUSTOM is TRUE it must be add at the end only
+					$arr_hdrs[] = 'REMOTE_ADDR'; // add at the end, only if present in SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP and not in SMART_FRAMEWORK_SRVPROXY_CLIENT_IP only when SMART_FRAMEWORK_SRVPROXY_ENABLED is TRUE it must be add at the end only
 				} //end if
 			} elseif(Smart::array_size($arr_hdrs) <= 0) {
 				$err = true; // this must not be an error, if using a proxy there are situations when no client proxy may be returned ...
@@ -2111,36 +2307,70 @@ final class SmartUtils {
 		} //end if
 		//--
 		if($err) {
-			Smart::raise_error('Cannot Determine Current Client Proxy IP Address', 'Invalid definition for SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT');
+			Smart::raise_error('Invalid definition for SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP', 'Cannot Determine Current Client Proxy IP Address');
 			return '';
 		} //end if
 		//--
-		self::$cache['get_ip_proxyclient:validated-headers'] = (array) $arr_hdrs;
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
-				'title' => 'SmartUtils // Get IP Proxy Client',
-				'data' => 'Validation Headers:'."\n".self::pretty_print_var(self::$cache['get_ip_proxyclient:validated-headers'])
-			]);
+		$chkey = '';
+		if($custom === true) {
+			$chkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP));
+			if(((string)trim((string)$chkey) == '') OR (!in_array((string)$chkey, (array)self::_iplist_valid_client_headers()))) {
+				Smart::raise_error('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition must be validated against SMART_FRAMEWORK_SRVPROXY_CLIENT_IP which contains an invalid value', 'Failed to validate Current Client Proxy IP Address');
+				return '';
+			} //end if
 		} //end if
 		//--
 		$proxy = ''; // init
+		$hkey = '';
+		$hval = '';
 		//--
 		for($i=0; $i<Smart::array_size($arr_hdrs); $i++) {
-			if(isset($_SERVER[(string)$arr_hdrs[$i]]) AND ((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER[(string)$arr_hdrs[$i]]) != '')) {
-				$proxy = (string) self::_iplist_get_last_address((string)$_SERVER[(string)$arr_hdrs[$i]]);
-				if((string)$proxy != '') {
-					if(SmartFrameworkRegistry::ifDebug()) {
-						SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
-							'title' => 'SmartUtils // Get IP Proxy Client',
-							'data' => 'Validated at Header: `'.$arr_hdrs[$i].'` = `'.$proxy.'`'
-						]);
+			$hkey = (string) strtoupper((string)trim((string)$arr_hdrs[$i]));
+			if((string)$hkey != '') {
+				if((string)$chkey != '') {
+					if((string)$hkey == (string)$chkey) {
+						Smart::raise_error('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition cannot contain the same key as defined in SMART_FRAMEWORK_SRVPROXY_CLIENT_IP', 'Failed to register Current Client Proxy IP Address');
+						return '';
 					} //end if
-					break;
+				} //end if
+				$hval = (string) trim((string)($_SERVER[(string)$hkey] ?? ''));
+				if((string)$hval != '') {
+					if((string)SmartFrameworkSecurity::FilterUnsafeString((string)$hval) != '') {
+						$proxy = (string) self::_iplist_get_last_address((string)$hval); // since this is mostly from a custom header which can be faked, trust the last one as it should be the one added by the proxy by example (a proxy will rewrite or append it's address to this field ...)
+						$proxy = (string) trim((string)SmartValidator::validate_filter_ip_address($proxy));
+						if((string)$proxy != '') {
+							break;
+						} //end if
+					} //end if
 				} //end if
 			} //end if
+			$hkey = ''; // must reset each cycle, except break
+			$hval = ''; // must reset each cycle, except break
 		} //end for
 		//--
+		self::$cache['get_ip_proxyclient:check-header-keys'] = (array) $arr_hdrs; // the header keys
+		self::$cache['get_ip_proxyclient:validated-header-key'] = (string) $hkey; // the validated header key
+		self::$cache['get_ip_proxyclient:validated-header-val'] = (string) $hval; // the header raw value
 		self::$cache['get_ip_proxyclient'] = (string) $proxy;
+		//--
+		if(SmartFrameworkRegistry::ifDebug()) {
+			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+				'title' => 'SmartUtils // Get IP Proxy Client',
+				'data' => 'Check Header Keys:'."\n".self::pretty_print_var(self::$cache['get_ip_proxyclient:check-header-keys'])
+			]);
+			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+				'title' => 'SmartUtils // Get IP Proxy Client',
+				'data' => 'Validation Header Key: `'.self::$cache['get_ip_proxyclient:validated-header-key'].'`'
+			]);
+			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+				'title' => 'SmartUtils // Get IP Proxy Client',
+				'data' => 'Validation Header Raw Value: `'.self::$cache['get_ip_proxyclient:validated-header-val'].'`'
+			]);
+			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+				'title' => 'SmartUtils // Get IP Proxy Client',
+				'data' => 'IP Proxy Detected: `'.self::$cache['get_ip_proxyclient'].'`'.($custom === true ? ' [SRV-PROXY=true]' : '')
+			]);
+		} //end if
 		//--
 		return (string) self::$cache['get_ip_proxyclient'];
 		//--
@@ -2156,9 +2386,10 @@ final class SmartUtils {
 		if((!array_key_exists('get_os_browser_ip', self::$cache)) OR (!is_array(self::$cache['get_os_browser_ip']))) {
 			self::$cache['get_os_browser_ip'] = []; // fix for PHP8
 		} //end if
-		$xout = (array) self::$cache['get_os_browser_ip'];
 		//--
-		if(Smart::array_size($xout) <= 0) {
+		$arr = (array) self::$cache['get_os_browser_ip'];
+		//--
+		if(Smart::array_size($arr) <= 0) {
 			//--
 			$wp_browser = '[?]';
 			$wp_class = '[?]';
@@ -2183,30 +2414,30 @@ final class SmartUtils {
 				$wp_class = 'gk'; // gecko class
 			} elseif((strpos($the_lower_signature, ' edg/') !== false) OR (strpos($the_lower_signature, ' edge/') !== false)) {
 				$wp_browser = 'iee'; // microsoft edge (must be before ie)
-				$wp_class = 'wk'; // webkit class
+				$wp_class = 'bk'; // blink class
 			} elseif((strpos($the_lower_signature, ' msie ') !== false) OR (strpos($the_lower_signature, ' trident/') !== false)) {
 				$wp_browser = 'iex'; // internet explorer (must be before any stealth browsers as ex.: opera)
 				$wp_class = 'ie'; // trident class
 			} elseif((strpos($the_lower_signature, 'opera') !== false) OR (strpos($the_lower_signature, ' opr/') !== false) OR (strpos($the_lower_signature, ' oupeng/') !== false) OR (strpos($the_lower_signature, ' opios/') !== false)) {
 				$wp_browser = 'opr'; // opera
-				$wp_class = 'wk'; // webkit class
+				$wp_class = 'bk'; // blink class
 			} elseif((strpos($the_lower_signature, 'chrome') !== false) OR (strpos($the_lower_signature, 'chromium') !== false) OR (strpos($the_lower_signature, 'iridium') !== false) OR (strpos($the_lower_signature, ' crios/') !== false)) {
 				$wp_browser = 'crm'; // chrome
+				$wp_class = 'bk'; // blink class
+			} elseif(strpos($the_lower_signature, 'konqueror') !== false) { // must be detected before safari because includes safari signature
+				$wp_browser = 'knq'; // konqueror (kde)
 				$wp_class = 'wk'; // webkit class
 			} elseif(strpos($the_lower_signature, 'epiphany') !== false) { // must be detected before safari because includes safari signature
 				$wp_browser = 'eph'; // epiphany (gnome)
-				$wp_class = 'xy'; // various class
-			} elseif(strpos($the_lower_signature, 'konqueror') !== false) { // must be detected before safari because includes safari signature
-				$wp_browser = 'knq'; // konqueror (kde)
-				$wp_class = 'xy'; // various class
+				$wp_class = 'wk'; // webkit class
 			} elseif((strpos($the_lower_signature, 'safari') !== false) OR (strpos($the_lower_signature, 'applewebkit') !== false)) {
 				$wp_browser = 'sfr'; // safari
 				$wp_class = 'wk'; // webkit class
 			} elseif(strpos($the_lower_signature, 'webkit') !== false) { // general webkit signature, untrusted
 				$wp_browser = 'wkt'; // webkit
-				$wp_class = 'xy'; // various class
+				$wp_class = 'wk'; // webkit class
 			} elseif((strpos($the_lower_signature, 'mozilla') !== false) OR (strpos($the_lower_signature, 'gecko') !== false)) { // general mozilla signature, untrusted
-				$wp_browser = 'moz'; // mozilla derivates
+				$wp_browser = 'moz'; // mozilla derivates, but not firefox which is detected above
 				$wp_class = 'xy'; // various class
 			} elseif(strpos($the_lower_signature, 'netsurf/') !== false) { // it have just a simple signature
 				$wp_browser = 'nsf'; // netsurf
@@ -2235,26 +2466,27 @@ final class SmartUtils {
 			//-- identify os
 			if((strpos($the_lower_signature, 'windows') !== false) OR (strpos($the_lower_signature, 'winnt') !== false)) {
 				$wp_os = 'win'; // ms windows
-			} elseif((strpos($the_lower_signature, ' mac ') !== false) OR (strpos($the_lower_signature, 'macos') !== false) OR (strpos($the_lower_signature, 'os x') !== false) OR (strpos($the_lower_signature, 'osx') !== false) OR (strpos($the_lower_signature, 'darwin') !== false)) {
+			} elseif((strpos($the_lower_signature, 'macos') !== false) OR (strpos($the_lower_signature, 'macosx') !== false) OR (strpos($the_lower_signature, ' mac ') !== false) OR (strpos($the_lower_signature, 'os x') !== false) OR (strpos($the_lower_signature, 'osx') !== false) OR (strpos($the_lower_signature, 'darwin') !== false)) {
 				$wp_os = 'mac'; // apple mac / osx / darwin
 			} elseif(strpos($the_lower_signature, 'linux') !== false) {
 				$wp_os = 'lnx'; // *linux
-			} elseif((strpos($the_lower_signature, 'netbsd') !== false) OR (strpos($the_lower_signature, 'openbsd') !== false) OR (strpos($the_lower_signature, 'freebsd') !== false) OR (strpos($the_lower_signature, 'dragonfly') !== false) OR (strpos($the_lower_signature, ' bsd ') !== false)) {
+			} elseif((strpos($the_lower_signature, 'openbsd') !== false) OR (strpos($the_lower_signature, 'netbsd') !== false) OR (strpos($the_lower_signature, 'freebsd') !== false) OR (strpos($the_lower_signature, 'dragonfly') !== false) OR (strpos($the_lower_signature, ' bsd ') !== false)) {
 				$wp_os = 'bsd'; // *bsd
-			} elseif((strpos($the_lower_signature, 'solaris') !== false) OR (strpos($the_lower_signature, 'sunos') !== false) OR (strpos($the_lower_signature, 'opensolaris') !== false) OR (strpos($the_lower_signature, 'illumos') !== false) OR (strpos($the_lower_signature, 'openindiana') !== false)) {
+			} elseif((strpos($the_lower_signature, 'openindiana') !== false) OR (strpos($the_lower_signature, 'illumos') !== false) OR (strpos($the_lower_signature, 'opensolaris') !== false) OR (strpos($the_lower_signature, 'solaris') !== false) OR (strpos($the_lower_signature, 'sunos') !== false)) {
 				$wp_os = 'sun'; // sun solaris incl clones
 			} //end if
 			//-- identify mobile os
-			if((strpos($the_lower_signature, 'iphone') !== false) OR (strpos($the_lower_signature, 'ipad') !== false) OR (strpos($the_lower_signature, ' opios/') !== false) OR (strpos($the_lower_signature, ' crios/') !== false)) {
+			if((strpos($the_lower_signature, 'iphone') !== false) OR (strpos($the_lower_signature, 'ipad') !== false) OR (strpos($the_lower_signature, 'ipod') !== false) OR (strpos($the_lower_signature, ' opios/') !== false) OR (strpos($the_lower_signature, ' crios/') !== false)) {
 				$wp_os = 'ios'; // apple mobile ios: iphone / ipad / ipod
 				$wp_mb = 'yes';
-			} elseif((strpos($the_lower_signature, 'android') !== false) OR (strpos($the_lower_signature, ' opr/') !== false) OR (strpos($the_lower_signature, ' oupeng/') !== false)) {
+			} elseif((strpos($the_lower_signature, 'android') !== false) OR (strpos($the_lower_signature, 'saphi') !== false) OR (strpos($the_lower_signature, ' opr/') !== false) OR (strpos($the_lower_signature, ' oupeng/') !== false)) {
 				$wp_os = 'and'; // google android
 				$wp_mb = 'yes';
 			} elseif((strpos($the_lower_signature, 'windows ce') !== false) OR (strpos($the_lower_signature, 'windows phone') !== false) OR (strpos($the_lower_signature, 'windows mobile') !== false) OR (strpos($the_lower_signature, 'windows rt') !== false)) {
 				$wp_os = 'wmo'; // ms windows mobile
 				$wp_mb = 'yes';
-			} elseif((strpos($the_lower_signature, 'linux mobile') !== false) OR (strpos($the_lower_signature, 'ubuntu; mobile') !== false) OR (strpos($the_lower_signature, 'tizen') !== false) OR (strpos($the_lower_signature, 'blackberry') !== false)) {
+			} elseif(
+				((strpos($the_lower_signature, 'mobile') !== false) AND ((strpos($the_lower_signature, 'linux') !== false) OR (strpos($the_lower_signature, 'ubuntu') !== false))) OR (strpos($the_lower_signature, 'tizen') !== false) OR (strpos($the_lower_signature, 'webos') !== false) OR (strpos($the_lower_signature, 'raspberry') !== false) OR (strpos($the_lower_signature, 'blackberry') !== false)) {
 				$wp_os = 'lxm'; // linux mobile
 				$wp_mb = 'yes';
 			} //end if
@@ -2270,7 +2502,7 @@ final class SmartUtils {
 			//-- identify proxy ip if any
 			$wp_px = self::get_ip_proxyclient();
 			//-- out data arr
-			$xout = array(
+			$arr = array(
 				'signature'	=> (string) $the_srv_signature,
 				'mobile' 	=> (string) $wp_mb,
 				'os' 		=> (string) $wp_os,
@@ -2280,14 +2512,14 @@ final class SmartUtils {
 				'px' 		=> (string) $wp_px
 			);
 			//--
-			self::$cache['get_os_browser_ip'] = (array) $xout;
+			self::$cache['get_os_browser_ip'] = (array) $arr;
 			//--
 		} //end if
 		//--
 		if((string)$y_mode != '') {
-			return (string) $xout[(string)$y_mode];
+			return (string) $arr[(string)$y_mode];
 		} else {
-			return (array) $xout;
+			return (array) $arr;
 		} //end if else
 		//--
 	} //END FUNCTION
@@ -2451,8 +2683,8 @@ final class SmartUtils {
 			$imax = (int) Smart::array_size($arr);
 			if($imax > 0) {
 				for($i=0; $i<$imax; $i++) { // loop forward
-					$tmp_ip = (string) SmartValidator::validate_filter_ip_address(trim((string)$arr[$i])); // this returns empty if no valid IP
-					if((string)$tmp_ip != '') {
+					$tmp_ip = (string) SmartValidator::validate_filter_ip_address((string)trim((string)$arr[$i])); // this returns empty if no valid IP
+					if((string)trim((string)$tmp_ip) != '') {
 						$ip = (string) $tmp_ip;
 						break;
 					} //end if
@@ -2465,7 +2697,7 @@ final class SmartUtils {
 			//--
 		} //end if
 		//--
-		return (string) $ip;
+		return (string) trim((string)$ip);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2490,7 +2722,7 @@ final class SmartUtils {
 				//--
 				for($i=($imax-1); $i>0; $i--) { // loop backward
 					$tmp_ip = (string) SmartValidator::validate_filter_ip_address((string)trim((string)$arr[$i])); // this returns empty if no valid IP
-					if((string)$tmp_ip != '') {
+					if((string)trim((string)$tmp_ip) != '') {
 						$ip = (string) $tmp_ip;
 						break;
 					} //end if
@@ -2504,7 +2736,7 @@ final class SmartUtils {
 			//--
 		} //end if
 		//--
-		return (string) $ip;
+		return (string) trim((string)$ip);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2517,6 +2749,24 @@ final class SmartUtils {
 		// the HTTP_X_FORWARDED_FOR should be always the second, as this is de facto standard # see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
 		//--
 		return array('REMOTE_ADDR', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_REAL_IP', 'HTTP_X_CLUSTER_CLIENT_IP');
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function _protolist_valid_server_headers() {
+		//--
+		return array('HTTP_X_FORWARDED_PROTO' => [ 'https' => 'https', 'http' => 'http' ], 'HTTP_X_FORWARDED_HTTPS' => [ 'on' => 'https', 'off' => 'http' ]);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function _portlist_valid_server_headers() {
+		//--
+		return array('HTTP_X_FORWARDED_PORT', 'HTTP_X_PORT');
 		//--
 	} //END FUNCTION
 	//================================================================

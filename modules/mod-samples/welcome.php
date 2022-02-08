@@ -236,7 +236,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			)
 		);
 		//--
-		$this->PageViewAppendVar('main', (string) (new SmartMarkdownToHTML(true, false))->text((string)SmartFileSystem::read('README.md')));
+		$this->PageViewAppendVar('main', (string) (new SmartMarkdownToHTML(true, false, false, null, null, true, null, true))->parse((string)SmartFileSystem::read('README.md'))); // C:1
 		$this->PageViewAppendVar('main', '<div style="text-align:right; color:#CCCCCC;">['.Smart::escape_html($some_var_from_request).']</div>'.'<hr>'.'<div style="color:#DDDDDD">Smart.Framework have Full Unicode (UTF-8) Support: '.Smart::escape_html('Unicode@String :: Smart スマート // Cloud Application Platform クラウドアプリケーションプラットフォーム :: áâãäåāăąÁÂÃÄÅĀĂĄ ćĉčçĆĈČÇ ďĎ èéêëēĕėěęÈÉÊËĒĔĖĚĘ ĝģĜĢ ĥħĤĦ ìíîïĩīĭȉȋįÌÍÎÏĨĪĬȈȊĮ ĳĵĲĴ ķĶ ĺļľłĹĻĽŁ ñńņňÑŃŅŇ óôõöōŏőøœÒÓÔÕÖŌŎŐØŒ ŕŗřŔŖŘ șşšśŝßȘŞŠŚŜ țţťȚŢŤ ùúûüũūŭůűųÙÚÛÜŨŪŬŮŰŲ ŵŴ ẏỳŷÿýẎỲŶŸÝ źżžŹŻŽ').'</div><hr><br>');
 		$txt_meta = 'Smart.Framework, a modern, high-performance   PHP / Javascript Framework (for Web) featuring MVC + Middlewares #123-456:789+10 11.12';
 		$this->PageViewSetVars([

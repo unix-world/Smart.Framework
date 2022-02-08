@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20211216
+	// v.20220205
 
 
 	private static $db = null;
@@ -911,6 +911,8 @@ final class PageBuilderBackend {
 
 	public static function listGetRecords($y_xsrc, $y_src, $y_limit, $y_ofs, $y_xsort, $y_sort) {
 		//--
+		// {{{SYNC-PAGE-BUILDER-DO-NOT-TRIM-SRC}}} do not trim here: $y_src ; will be trimmed later if needed
+		//--
 		$y_limit = \Smart::format_number_int($y_limit, '+');
 		if($y_limit < 1) {
 			$y_limit = 1;
@@ -993,6 +995,8 @@ final class PageBuilderBackend {
 
 	public static function listCountRecords($y_xsrc, $y_src) {
 		//--
+		// {{{SYNC-PAGE-BUILDER-DO-NOT-TRIM-SRC}}} do not trim here: $y_src ; will be trimmed later if needed
+		//--
 		$where = (string) self::buildListWhereCondition($y_xsrc, $y_src);
 		//--
 		if((string)self::dbType() == 'pgsql') {
@@ -1036,12 +1040,13 @@ final class PageBuilderBackend {
 
 	private static function buildListWhereCondition($y_xsrc, $y_src) {
 		//--
-		$y_src = (string) \trim((string)$y_src);
+		// {{{SYNC-PAGE-BUILDER-DO-NOT-TRIM-SRC}}} do not trim here: $y_src ; will be trimmed down later if needed
 		//--
 		$where = '';
-		if((string)$y_src != '') {
+		if((string)\trim((string)$y_src) != '') {
 			switch((string)$y_xsrc) {
 				case 'id':
+					$y_src = (string) \trim((string)$y_src);
 					if((string)self::dbType() == 'pgsql') {
 						$where = 'WHERE (a."id" LIKE \''.\SmartPgsqlDb::escape_str((string)$y_src).'\')';
 					} elseif((string)self::dbType() == 'sqlite') {
@@ -1049,6 +1054,7 @@ final class PageBuilderBackend {
 					} //end if else
 					break;
 				case 'id-ref':
+					$y_src = (string) \trim((string)$y_src);
 					if((string)$y_src == '[]') { // empty
 						if((string)self::dbType() == 'pgsql') {
 							$where = 'WHERE (a."ref" = \'[]\')';
@@ -1084,6 +1090,7 @@ final class PageBuilderBackend {
 					} //end if else
 					break;
 				case 'template':
+					$y_src = (string) \trim((string)$y_src);
 					if((string)self::dbType() == 'pgsql') {
 						$where = 'WHERE ((a."layout" ILIKE \'%'.\SmartPgsqlDb::escape_str((string)$y_src, 'likes').'%\') AND (SUBSTR("id",1,1) != \'#\'))';
 					} elseif((string)self::dbType() == 'sqlite') {
@@ -1149,6 +1156,7 @@ final class PageBuilderBackend {
 					} //end if
 					break;
 				case 'tags':
+					$y_src = (string) \trim((string)$y_src);
 					if((string)$y_src == '[]') { // empty
 						if((string)self::dbType() == 'pgsql') {
 							$where = 'WHERE (a."tags" = \'[]\')';
@@ -1170,6 +1178,7 @@ final class PageBuilderBackend {
 					} //end if else
 					break;
 				case 'translations':
+					$y_src = (string) \trim((string)$y_src);
 					$is_positive = false;
 					if(\strpos((string)$y_src, '!') === 0) { // negation search: !ro
 						$y_src = (string) \ltrim((string)$y_src, '!');
@@ -1278,7 +1287,7 @@ final class PageBuilderBackend {
 									if((\strlen((string)$v['id']) >= 2) AND (\strlen((string)$v['id']) <= 63)) { // db id constraint
 										$test_exists = (array) self::getRecordIdsById((string)$v['id']);
 										$tmp_arr_refs = [ (string)$y_id ];
-										if((string)$test_exists['id'] == '') { // segment does not exists
+										if((int)\Smart::array_size($test_exists) <= 0) { // segment does not exists
 											$tmp_new_arr = [
 												'id' 		=> (string) $v['id'],
 												'ref' 		=> (string) \Smart::json_encode((array)$tmp_arr_refs),

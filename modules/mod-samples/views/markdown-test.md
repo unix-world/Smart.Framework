@@ -1,18 +1,20 @@
-# '[###TITLE|html###]' (<H1> "Heading 1" &reg; &#169; &#169a;)
+# [%%%IF:TITLE:==;%%%]... ==Title is empty== ...[%%%ELSE:TITLE%%%][###TITLE|html###][%%%/IF:TITLE%%%]
 
 &copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
-Extended Markdown Test :: v.20220126
+Extended Markdown v.II (smart flavour) // Test :: r.20220205
 
-## H2 (Unicode <Test>) ăĂîÎâÂşŞţŢ &quot;&nbsp;&quot; &lt;&quot;&gt;
+# (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old bad features have been dropped, and some still supported in compatibility mode ...
 
-### H3 (Alternate Unicode <Test>) ăĂîÎâÂșȘțȚ
+## (H2) "Unicode" &reg; <Test> ăĂîÎâÂşŞţŢ &quot;&nbsp;&quot; &lt;&quot;&gt;
+
+### (H3) 'Alternate Unicode' <Test> ăĂîÎâÂșȘțȚ
 
 #### H4 {H:.myClass #myID}
 
 ##### H5 {H:@data-id=h-5}
 
 ###### H6 {H:@style=display:inline-block}
-\
+
 ::: .operation_info
 ```javascript
 var test = true;
@@ -20,49 +22,53 @@ var test = true;
 :::
 
 ::: .operation_notice .test_class_notice #test-div-notice
-This is a
-notice <a>bc
+**This is a**
+**==notice==** <a>bc
 with an icon ![ICON](SFI-ICON "sfi sfi-leaf sfi-2x")
 :::
 
 ::: .operation_important .test_class_important #test-div-important
-This is important
-:::
-
-::: @article-div
-This is an article DIV
+This is ==important==
 :::
 \
+::: @article-div
+This is an article DIV &nbsp; [A Button Link](/#==test== ""){L: .ux-button}
+:::
+
 ::: @section-div
 This is a section DIV
 :::
-
-Alternatively, for H1 and H2, an underline-ish style:
-
-Alt-<H1>
-======
-
-Alt-<H2>
-------
-
+\
+Safe html escapes, below:
 <Line1 <i>> 1
-&Line2 &copy; <i>& 2\
-`Line3 <i>` 3 <a>
+&Line2 &copy; <i>& 2
+`Line3 <i>` $$variable$$ as: \$\$variable\$\$ or if variable contains dollar sign: $$\$3$$ as \$\$\\$3\$\$ <a>
 \
-<Line4> 4
-\
-\
+<Line4> 4\
 "Line5 <i> 5" <a>
  &Line6
 
-[Go To <anchor>](#anchor<x>)
+[Go To <anchor>](#anchor)
 
-Emphasis, aka <italics>, with *asterisks* or _underscores_.
+ABC ```abc``` \`\`\`zzz\`\`\` ```yy\!y```
+DEF ``def`` \`\`www`\`\ ``qq\!q``
 
+
+A preformat:
 ~~~~
 This is a pre-"formated" <text>
 and this is another line ...
 ~~~~
+
+Empty pre, below:
+~~~
+~~~
+
+```
+```
+
+```
+```
 
 PHP code (PHP Start-Tag and PHP End-Tag must be removed ...)
 ```php
@@ -70,7 +76,8 @@ PHP code (PHP Start-Tag and PHP End-Tag must be removed ...)
 
 // php sample code
 function test() {
-	echo 'this is <a> "test" &copy; ...';
+	$escape = 'htmlspecialchars'; // !! this is a comment !!
+	echo $$escape('this is <a> "test" &copy; ...');
 }
 
 test();
@@ -78,53 +85,143 @@ test();
 ?>
 ```
 
-##### Test code injection:
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png?#time123456&now98765&a=<"> "Logo Title Text 1")
-<http://#inline.url.tag?#time123456&now98765&c="&a=<">>
-<http://#inline.url.tag2>
-<">
 
----
+##### ==Alternate Style== Heading 1 with test, to avoid parse as # headers
+======
 
-<%
-href="#&quot;">Test
-%>
-<?
-test('<a href="#">Test</a>');
-?>
-	<%
-	href="#">Test
-	%>
-	<?
-	test('<a href="#">Test</a>');
-	?>
+###### __Alternate Style__ Heading 2 with test, to avoid parse as # headers
+------
 
-\
 
-Strong emphasis, aka bold, with **asterisks** or __underscores__.
+**Strong emphasis**, aka \*\*bold\*\*, with asterisks.
+==Emphasis==, aka \=\=italics\=\= with equals ; but also supports old behaviour such as \_italic\_ _italic_
+Combined **emphasis** (**bold**) with ==italics== as: **bolded ==italic==** or ==italic **bolded**==
 
-Combined emphasis with **asterisks and _underscores_**.
+The same with \_\_underlines\_\_ as __underlines__ with underdashes
+This syntax break compatibility with v1, in v1 double underscores are used for bold with the same functionality like double stars ; thus in v1 \*\*bold\*\* is the same like \_\_bold\_\_
+But in v2 \*\*bold\*\* is bold and \_\_underline\_\_ is underline ...
 
-<a href="#">Strikethrough</a> uses two tildes. ~~Scratch this.~~
+Strikethrough uses \~\~tildes\~\~ like ~~Example StrikeThrough~~
 
-Subscript is just ~this~ ...
-Superscript is ^this^ ...
-Syntax:
-CO~2~ for subscript
-E=mc^2^ for superscript
+
+Syntax was extended in v2 by: Inserts, Deletions, Highlights
+--deletion-- is \-\-delete\-\-
+++insert++ is \+\+insert\+\+
+``highlight`` is \`\`highlight\`\`
+
+
+This is a !!Subscript!! as \!\!this\!\! ... ; but also supports old syntax (v1) such as CO~2~ as CO\~2\~
+And this is a ^^Superscript^^ as \^\^this\^\^ ... ; but also supports old syntax (v1) such as E=mc^2^ as E=mc\^2\^
+Examples:
+CO!!2!! for subscript as CO\!\!2\!\!
+E=mc^^2^^ for superscript as E=mc\^\^2\^\^
+
+,,A quotation,, as \,\,Quote\,\,
 
 - - -
-some text aligned on left (default)
+some text **aligned on left ``==(default)==``**
 
 |{T:@class=hidden}|
 | :---: |
-| some centered text |
+| some **centered** text ; ``in v2 this can be done also by using div with a class`` |
 
 |{T: @class=hidden}|
 | ---: |
-| some text aligned on right |
+| some text **aligned on right** ; ``in v2 this can be done also by using div with a class`` |
+
+|{!DEF!=.dbordered} ||
+| :--- | :--- |
+| #### Heading inside !!table cell!! | ##### Another Heading inside ^^table cell^^ |
 
 - - -
+## Lists
+* * *
+
+1. a
+	4. **aa**
+	3. ==ab==
+	2. __ac__
+	1. ~~ac~~
+1. b
+	- x
+		* x1
+			- xx^^1^^
+			- xx!!2!!
+			- xx3
+		- x2
+			1. xx\^\^a\^\^
+			1. xx\!\!b\!\!
+			1. xxc
+		+ x3
+			1) x3``**a**``
+			1) x3b ```var z = 2;```
+			1) x3c
+			1) x3d
+	+ y
+	* z
+1. c
+
+1. a
+	1. aa
+	2. ab
+	3. ac
+1. b
+	+ x
+		- x1
+			* xx1
+			* xx2
+			* xx3
+		- x2
+			1. xxa
+			1. xxb
+			1. xxc
+		- x3
+			1) x3a
+			1) x3b
+			1) x3c
+			1) x3dd
+1. cc
+
+1. a
+	1. aa
+	2. ab
+	3. ac
+1. b
+	1. x
+		- x1
+			- xx1
+			- xx2
+			- xx3
+		- x2
+			1. xxa
+			1. xxb
+			1. xxc
+				1. z1
+				1. z2
+				1. z3
+		- x3
+			1) x3a
+			1) x3b
+			1) x3c
+			1) x3dd
+				+ y3a
+				+ y3b
+				+ y3cc
+1. cc
+
+1) alt1
+	+ one
+	+ two
+1) alt2
+1) alt3
+
+1) aalt1
+2) aalt2
+3) aalt3
+
+* one
+* two
+* three
 
 1. First ordered <list> "item"
 ```
@@ -133,16 +230,15 @@ This is some code
 ~~~
 	This is preformat inside li
 ~~~
-		And this is another preformat
+		And this is another preformat (will be unsupported)
 	::: @div-paragraphs
-		This is a div with paragraphs ...
+		This is a div with paragraphs ... (will be unsupported)
 	:::
 ::: @div-divs
 This is a div with divs ...
 :::\
-
 2. Another <"item">
-	* Unordered sub-list.
+	+ Unordered sub-list.
 	- Another
 3. Actual numbers don't matter, just that it's a number ```li with code ...```
 	1. Ordered sub-list
@@ -158,11 +254,10 @@ New Line
         Note that this line is separate, but within the same paragraph.
 		(This is contrary to the typical GFM line break behaviour, where trailing spaces are not required.)
 
-* Unordered <list> can
++ Unordered <list> can
 	use "**asterisks**"
 - Or minuses
-+ Or pluses
-* ###### H6 {H:@style=display:inline-block}
+- ###### OR H6 {H:@style=display:inline-block}
 
 Some Paragraph
 	Some Preformat area
@@ -190,7 +285,7 @@ my email is <me@example.com>
 Or leave it empty and use the [link text itself]
 
 [![Logo](lib/framework/img/sf-logo.svg "Slimbox"){I:@width=256 @height=256}](lib/framework/img/sf-logo.svg){L:@data-slimbox=slimbox}
-[![Logo](lib/framework/img/sf-logo.svg) icon with text](http://demo.unix-world.org/smart-framework)
+[![Logo](lib/framework/img/sf-logo.svg)](http://demo.unix-world.org/smart-framework "icon with text")
 
 Some text to show that the reference links can follow later.
 
@@ -239,7 +334,7 @@ No language indicated, so no syntax highlighting (fallback to PlainText).
 But let's throw in a <b>tag</b>.
 ```
 \
-| One {T:@class=bordered}     | Two {T:@class=bordered}        | Three {T: @class=bordered}   | Four {T: @class=bordered}         |
+| {!DEF!=NO-TABLE-HEAD;ALIGN-HEAD-CENTER} One {T:@class=bordered}     | Two {T:@class=bordered}        | Three {T: @class=bordered}   | Four {T: @class=bordered}         |
 | ------------- |-------------| ---------| ------------- |
 | One {T: @class=bordered}     | Two {T: @class=bordered}        | Three {T: @class=bordered}   | Four {T: @class=bordered}         |
 
@@ -247,11 +342,15 @@ But let's throw in a <b>tag</b>.
 | ------------- |-------------| ---------| ------------- |
 | Span Across |||a {T: @colspan=3}|
 
+| {!DEF!=.dbordered} One     | Two        | Three   | Four          |
+| ------------- |-------------| ---------| ------------- |
+| Span Across simple |a {T: @colspan=3}|
+
 |          Grouping {T: @colspan=3 @class=bordered}            |  First Header {T: @class=bordered}  | Second Header {T: @class=bordered} | Third Header {T: @class=bordered} |
- ------------ | :-----------: | :-----------: | :---------: | :---------: | ---------:
-Content {T: @rowspan=2 @class=bordered}  | *Long Cell* {T: @colspan=5 @class=bordered} ||
-**Cell** {T: @colspan=3 @class=bordered} |  Cell {T: @colspan=2 @class=bordered}        |
-One {T: @class=bordered} |two {T: @class=bordered} |three {T: @class=bordered} |four {T: @class=bordered} |five {T: @class=bordered} |six {T: @class=bordered}
+| ------------ | :-----------: | :-----------: | :---------: | :---------: | ---------: |
+| ``Content`` {T: @rowspan=2 @class=bordered}  | ==Long Cell== {T: @colspan=5 @class=bordered} |||
+| **Cell** {T: @colspan=3 @class=bordered} |  ~~Cell~~ {T: @colspan=2 @class=bordered}        | |
+| ++One++ {T: @class=bordered} |--two-- {T: @class=bordered} |__three__ {T: @class=bordered} |four^^4^^ {T: @class=bordered} |five!!5!! {T: @class=bordered} |six ```// have some code``` {T: @class=bordered} |
 
 Colons can be used to align columns.
 
@@ -261,10 +360,10 @@ Colons can be used to align columns.
 | Stripes {T: @class=stripped}         | c2.2 {T: @class=stripped}     |   $12 {T: @class=stripped}         |
 | zebra stripes {T: @class=stripped$bordered}   | c2.3 {T: @class=stripped$bordered}     |    $1 {T: @class=stripped$bordered}         |
 
-First Header  | Second Header
-------------- | -------------
-Content Cell  | Content Cell
-Content Cell  | Content Cell
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
 
 |{!DEF!=AUTO-WIDTH;.dbordered;.stripped;#tbl-one} Name   | Description     |
 | ------------- | -----------------------  |
@@ -282,65 +381,127 @@ Content Cell  | Content Cell
 | col 2 is {T: @class=dbordered}      | centered {T: @class=dbordered}        |   $12 {T: @class=dbordered} |
 | zebra stripes {T: @class=dbordered} | are neat {T: @class=dbordered}        |    $1 {T: @class=dbordered} |
 
-The outer pipes (|) are optional, and you don't need to make the raw Markdown line up prettily. You can also use inline Markdown.
+You can also use inline Markdown in tables.
 
-Markdown {T: @class=dbordered} | Less {T: @class=dbordered} | Pretty {T: @class=dbordered}
---- | --- | ---
-*Still* {T: @class=dbordered} | `renders` {T: @class=dbordered} | **nicely** {T: @class=dbordered}
-1 {T: @class=dbordered} | 2 {T: @class=dbordered} | 3 {T: @class=dbordered}
+| Markdown {T: @class=dbordered} | Less {T: @class=dbordered} | Pretty {T: @class=dbordered} |
+| --- | --- | --- |
+| *Still* {T: @class=dbordered} | `renders` {T: @class=dbordered} | **nicely** {T: @class=dbordered} |
+| 1 {T: @class=dbordered} | 2 {T: @class=dbordered} | 3 {T: @class=dbordered} |
 
-> Blockquotes are very handy in email to emulate reply text.
+> # Blockquotes are very handy in email to emulate reply text.
 > This line is part of the same quote.
 > ###### H6
 > ``` javascript
 > let a = 2;
 > const b = 3;
-> var a = 4;
+> var x = 4;
 > class A {
 >   constructor() {
 >   }
 > }
 > ```
 
-Quote break.
+> # Another block quote
+> This is **the end** of ==2nd quote==
+> |{!DEF!=.dbordered} with a table | within |
+> | and another table line | ... |
+> .
 
+And another Quote example, inside a div
+
+::: .operation_info
 > This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
 >> This is 2nd level
 >>> and this is 3rd
+:::
 
-### Use Hypens, Asterisks and Underscores
+## And a v2 Quote
 
-\-\-\-
-\_\_\_
-\*\*\*
+<<<
+::: .operation_important
+This is a Markdown v2 Div inside a v2 BlockQuote
+``The blockquote v2 supports all the syntax ^^inside^^ !``
+==Althought in Markdown v2 also the v1 Blockquote supports all the syntax inside but is much harder to write it !!inside!! ;-)==
+:::
+# Line 1
+## Line 2
+### Line 3
+#### Line 4
+##### Line 5
+###### Line 6
+
+1) alt1
+	+ one
+	+ two
+1) alt2
+1) alt3
+
+* a list
+	- within
+	+ \+\+\+\+\+\+
+
+And some code below
+```javascript
+let a = 2;
+const b = 3;
+var x = 4;
+class A {
+  constructor() {
+  }
+}
+```
+
+~~~
+This is a preformat inside blockquote
+pre line 2 ++++/----
+
+[Test Link](http://w3soft.org "=@."){L: %blank}
+![Alt Txt](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Img"){I: @width=100}
+~~~
+
+|{!DEF!=AUTO-WIDTH;.dbordered;.stripped;#tbl-one} Name   | Description     |
+| ------------- | -----------------------  |
+| Help          | Display the help window. |
+| Close         | Closes a window          |
+<<<
 
 ### Horizontal Rules
 
-- - -
-Hyphens
 ---
-
+Hyphens
+-\-\-
+___
+Underscores
+\_\_\_
 ***
 Asterisks
+\*\*\*
+
+- - -
+Hyphens with spaces
+\- \- \-
+
 * * *
+Asterisks wit spaces
+\* \* \*
 
-Underscores
-___
-
+\
+;;;
 Here's a line for us to start with.
 
 This line is separated from the one above by two newlines, so it will be a *separate paragraph*.
-
+;;;;
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+::::
+Some **text** before image ![Inline Base64 Image](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiB2aWV3Qm94PSIwIDAgNzIuMjQ4ODkzIDcyLjI0ODg5MyIgaWQ9InNpZ24taW5mbyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkIj4gPGRlZnMgaWQ9ImRlZnM0Ij4gIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyIgaWQ9InN0eWxlNiIgLz4gPC9kZWZzPiA8ZyBpZD0idGV4dDM3ODEiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOm5vbmU7Ij4gIDxnIGlkPSJnMzAwOSI+ICAgPHBhdGggZD0ibSA2Mi45MzA1NzMsMzYuMTI0NDQ2IGEgMjYuODA2MTI4LDI2LjgwNjEyOCAwIDEgMSAtNTMuNjEyMjUzNSwwIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgNTMuNjEyMjUzNSwwIHoiIGlkPSJwYXRoMzAxMSIgc3R5bGU9ImZpbGw6IzNiNTk5ODtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6ZXZlbm9kZDtzdHJva2U6IzNiNTk5ODtzdHJva2Utd2lkdGg6MTQuMTIxMDg1MTc7c3Ryb2tlLW9wYWNpdHk6MSIgLz4gICA8cGF0aCBkPSJtIDQwLjA1Mjk3OSwyOS44NjU4ODYgLTEwLjQwMzg0LDAgMCwxLjMwMDQ4IGMgMi4zODQyMTEsMC40ODc2NzkgMi44NzE4OTMsMC45NzUzNjIgMi44NzE4OTMsMy4xOTcwMTMgbCAwLDE1LjkzMDg4IGMgMCwyLjIyMTY1MiAtMC4zNzkzMDksMi42NTUxNDggLTIuODcxODkzLDMuMjUxMjAxIGwgMCwxLjMwMDQ4IDEyLjk1MDYxNCwwIDAsLTEuMzAwNDggYyAtMS44OTY1MzIsLTAuMjcwOTMzIC0yLjU0Njc3NCwtMS4wMjk1NDkgLTIuNTQ2Nzc0LC0zLjA4ODY0MSBsIDAsLTIwLjU5MDkzMyBNIDM2LjI1OTkxMiwxNy40MDI5NTIgYyAtMi4zMzAwMjQsMCAtNC4yMjY1NiwxLjg5NjUzNSAtNC4yMjY1Niw0LjE3MjM3MyAwLDIuNDM4Mzk4IDEuNzg4MTYzLDQuMjI2NTYgNC4xNzIzNzQsNC4yMjY1NiAyLjM4NDIxMSwwIDQuMjI2NTYsLTEuNzg4MTYyIDQuMjI2NTYsLTQuMTcyMzczIDAsLTIuMzMwMDI1IC0xLjg0MjM0OSwtNC4yMjY1NiAtNC4xNzIzNzQsLTQuMjI2NTYiIGlkPSJwYXRoMzAwNiIgc3R5bGU9ImZpbGw6I2ZmZmZmZjsiIC8+ICA8L2c+IDwvZz48L3N2Zz4= "Inline Base64 Image") and some ``text`` after
+::::
+![Alternate Text](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Alternate Image: Jpeg and Webp with Unveil"){I: .testClass1 .testClass2 #testID @data-test=Sample$Image %lazyload=unveil %alternate=https://www.gstatic.com/webp/gallery/1.sm.webp$image/webp}
+;;;;
+[![IMAGE ALT TEXT HERE](//img.youtube.com/vi/4rUrYN4cnGs/0.jpg) {I:%lazyload=unveil}](//www.youtube.com/watch?v=4rUrYN4cnGs "Sample Video Preview Image with Unveil"){L:.video-link #link .Extra-Class @target=_blank}
+;;;
 
-![Inline Base64 Image](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiB2aWV3Qm94PSIwIDAgNzIuMjQ4ODkzIDcyLjI0ODg5MyIgaWQ9InNpZ24taW5mbyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkIj4gPGRlZnMgaWQ9ImRlZnM0Ij4gIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyIgaWQ9InN0eWxlNiIgLz4gPC9kZWZzPiA8ZyBpZD0idGV4dDM3ODEiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOm5vbmU7Ij4gIDxnIGlkPSJnMzAwOSI+ICAgPHBhdGggZD0ibSA2Mi45MzA1NzMsMzYuMTI0NDQ2IGEgMjYuODA2MTI4LDI2LjgwNjEyOCAwIDEgMSAtNTMuNjEyMjUzNSwwIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgNTMuNjEyMjUzNSwwIHoiIGlkPSJwYXRoMzAxMSIgc3R5bGU9ImZpbGw6IzNiNTk5ODtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6ZXZlbm9kZDtzdHJva2U6IzNiNTk5ODtzdHJva2Utd2lkdGg6MTQuMTIxMDg1MTc7c3Ryb2tlLW9wYWNpdHk6MSIgLz4gICA8cGF0aCBkPSJtIDQwLjA1Mjk3OSwyOS44NjU4ODYgLTEwLjQwMzg0LDAgMCwxLjMwMDQ4IGMgMi4zODQyMTEsMC40ODc2NzkgMi44NzE4OTMsMC45NzUzNjIgMi44NzE4OTMsMy4xOTcwMTMgbCAwLDE1LjkzMDg4IGMgMCwyLjIyMTY1MiAtMC4zNzkzMDksMi42NTUxNDggLTIuODcxODkzLDMuMjUxMjAxIGwgMCwxLjMwMDQ4IDEyLjk1MDYxNCwwIDAsLTEuMzAwNDggYyAtMS44OTY1MzIsLTAuMjcwOTMzIC0yLjU0Njc3NCwtMS4wMjk1NDkgLTIuNTQ2Nzc0LC0zLjA4ODY0MSBsIDAsLTIwLjU5MDkzMyBNIDM2LjI1OTkxMiwxNy40MDI5NTIgYyAtMi4zMzAwMjQsMCAtNC4yMjY1NiwxLjg5NjUzNSAtNC4yMjY1Niw0LjE3MjM3MyAwLDIuNDM4Mzk4IDEuNzg4MTYzLDQuMjI2NTYgNC4xNzIzNzQsNC4yMjY1NiAyLjM4NDIxMSwwIDQuMjI2NTYsLTEuNzg4MTYyIDQuMjI2NTYsLTQuMTcyMzczIDAsLTIuMzMwMDI1IC0xLjg0MjM0OSwtNC4yMjY1NiAtNC4xNzIzNzQsLTQuMjI2NTYiIGlkPSJwYXRoMzAwNiIgc3R5bGU9ImZpbGw6I2ZmZmZmZjsiIC8+ICA8L2c+IDwvZz48L3N2Zz4= "Inline Base64 Image")
-
-![Alternate Text](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Alternate Image: Jpeg and Webp with Unveil"){I: .testClass1 .testClass2 #testID @data-test=Sample$Image %unveil %alternate=https://www.gstatic.com/webp/gallery/1.sm.webp$image/webp}
-
-[![IMAGE ALT TEXT HERE](//img.youtube.com/vi/4rUrYN4cnGs/0.jpg) {I:%unveil}](//www.youtube.com/watch?v=4rUrYN4cnGs "Sample Video Preview Image with Unveil"){L:.video-link #link .Extra-Class @target=_blank}
-
-Fenced code blocks
+## Fenced code blocks
 
 ```javascript
 function test() {
@@ -348,12 +509,12 @@ function test() {
 }
 ```
 
-Set in stone
-------------
+
+## Set in stone
 
 Preformatted blocks are useful for ASCII art:
 
-```
+~~~~
              ,-.
     ,     ,-.   ,-.
    / \   (   )-(   )
@@ -365,10 +526,9 @@ Preformatted blocks are useful for ASCII art:
      |
      |    -hrr-
   ___|_____________
-```
-
-External linking action
---------------------
+~~~~
+\
+## External linking action
 
 The top search engines are: [Google] [1] and also
 [Bing] [2] or [Yandex] [3].
@@ -379,7 +539,7 @@ The top search engines are: [Google] [1] and also
 
 
 [](#) {L: @id=anchor}
-
+\
 ## Sample Data Definition
 
 ```html
@@ -392,8 +552,10 @@ The top search engines are: [Google] [1] and also
 </dl>
 ```
 
-**Below should be rendered as plain HTML (HTML tags are disabled in this Markdown Parser ...)**
-<!-- the code below should be escaped -->
+
+### Below should be rendered as plain HTML (HTML tags are disabled in this Markdown Parser ...)
+~~~
+<!-- the content in preformats should not be escaped, like in code, everything is preserved exactly as it is, there is no inline parsing here -->
 <dl><!-- this is a comment -->
   <!-- this is a nother comment -->
   <dt>Definition list</dt>
@@ -404,3 +566,34 @@ comment -->
   <dt>Markdown in HTML</dt>
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
+~~~
+
+* * *
+\
+##### Test code injection:
+![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png?#time123456&now98765&a=<"> "Logo Title Text 1")
+<http://#inline.url.tag?#time123456&now98765&c="&a=<">> // **no more supported in v2**
+<http://#inline.url.tag2> // **no more supported in v2**
+<">
+
+- - -
+
+<%
+href="#&quot;">Test
+%>
+<?
+test('<a href="#">Test</a>');
+?>
+	<%
+	href="#">Test
+	%>
+	<?
+	test('<a href="#">Test</a>');
+	?>
+
+- - -
+
+
+|||
+| --- | --: |
+|# END| (test for last line flushing ...) |

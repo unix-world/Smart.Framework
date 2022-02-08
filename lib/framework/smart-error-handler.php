@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20220126 # this should be loaded from app web root only
+// # r.20220207 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2022.01.26'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2022.02.07'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -159,7 +159,7 @@ array_map(function($const){
 },
 [ // {{{SYNC-SMART-APP-INI-SETTINGS}}}
 	'SMART_STANDALONE_APP', 'SMART_FRAMEWORK_RUNTIME_MODE', 'SMART_FRAMEWORK_LIB_PATH',
-	'SMART_SOFTWARE_NAMESPACE', 'SMART_FRAMEWORK_SECURITY_KEY', 'SMART_FRAMEWORK_IPDETECT_CUSTOM',
+	'SMART_SOFTWARE_NAMESPACE', 'SMART_FRAMEWORK_SECURITY_KEY', 'SMART_FRAMEWORK_SRVPROXY_ENABLED',
 	'SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME', 'SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE', 'SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN',
 	'SMART_FRAMEWORK_TIMEZONE', 'SMART_FRAMEWORK_CHARSET', 'SMART_FRAMEWORK_SECURITY_FILTER_INPUT', 'SMART_FRAMEWORK_SQL_CHARSET',
 	'SMART_FRAMEWORK_MEMORY_LIMIT', 'SMART_FRAMEWORK_EXECUTION_TIMEOUT', 'SMART_FRAMEWORK_NETSOCKET_TIMEOUT', 'SMART_FRAMEWORK_NETSERVER_ID',
@@ -200,35 +200,37 @@ if(!defined('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS')) {
 	define('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS', '');
 } //end if
 //--
-if(!is_bool(SMART_FRAMEWORK_IPDETECT_CUSTOM)) {
+if(!is_bool(SMART_FRAMEWORK_SRVPROXY_ENABLED)) {
 	@http_response_code(500);
-	die('Invalid value for SMART_FRAMEWORK_IPDETECT_CUSTOM');
+	die('Invalid value for SMART_FRAMEWORK_SRVPROXY_ENABLED');
 } //end if
-if(SMART_FRAMEWORK_IPDETECT_CUSTOM === true) {
-	if((!defined('SMART_FRAMEWORK_IPDETECT_CLIENT')) OR (!defined('SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT'))) {
+if(SMART_FRAMEWORK_SRVPROXY_ENABLED === true) {
+	if(
+		(!defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_IP')) OR (!defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP'))
+		OR
+		(!defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO')) OR (!defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PORT'))
+	) {
 		@http_response_code(500);
-		die('The following constants must be defined when SMART_FRAMEWORK_IPDETECT_CUSTOM is set to TRUE: SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT');
+		die('The following constants must be defined when SMART_FRAMEWORK_SRVPROXY_ENABLED is set to TRUE: SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT');
 	} //end if
 } else {
-	if((defined('SMART_FRAMEWORK_IPDETECT_CLIENT')) OR (defined('SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT'))) {
+	if(
+		(defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_IP')) OR (defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP'))
+		OR
+		(defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO')) OR (defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PORT'))
+	) {
 		@http_response_code(500);
-		die('The following constants must NOT be defined when SMART_FRAMEWORK_IPDETECT_CUSTOM is not set or set to FALSE: SMART_FRAMEWORK_IPDETECT_CLIENT, SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT');
+		die('The following constants must NOT be defined when SMART_FRAMEWORK_SRVPROXY_ENABLED is NOT SET to TRUE: SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT');
 	} //end if
-	define('SMART_FRAMEWORK_IPDETECT_CLIENT', 'REMOTE_ADDR');
-	define('SMART_FRAMEWORK_IPDETECT_PROXY_CLIENT', '<HTTP_X_FORWARDED_FOR>,<HTTP_CLIENT_IP>,<HTTP_X_REAL_IP>');
+	define('SMART_FRAMEWORK_SRVPROXY_CLIENT_IP', 'REMOTE_ADDR');
+	define('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP', '<HTTP_X_FORWARDED_FOR>,<HTTP_CLIENT_IP>,<HTTP_X_REAL_IP>');
+	define('SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO', '');
+	define('SMART_FRAMEWORK_SRVPROXY_SERVER_PORT', false);
 } //end if else
 //--
-if(defined('SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK')) {
-	if(SMART_FRAMEWORK_IPDETECT_CUSTOM !== true) {
-		@http_response_code(500);
-		die('A defined constant: SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK can be used only if SMART_FRAMEWORK_IPDETECT_CUSTOM is set to TRUE !');
-	} //end if
-	if(filter_var((string)SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK, FILTER_VALIDATE_IP) === false) { // if fail will return FALSE ; {{{SYNC-IP-VALIDATE}}}
-		@http_response_code(500);
-		die('A defined constant have an invalid value: SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK: `'.SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK.'`');
-	} //end if
-} else {
-	define('SMART_FRAMEWORK_IPDETECT_ERR_FALLBACK', false); // security: prevent changing on the road ...
+if(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP')) {
+	@http_response_code(500);
+	die('A reserved constant was defined: SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP ... this constant is reserved to be used internally only by Smart.Framework and should never be defined in any config or custom context !');
 } //end if
 //--
 if(defined('SMART_ERROR_AREA')) { // display this error area
@@ -424,7 +426,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 			'==================================='."\n".
 			'PHP '.PHP_VERSION.' [SMART-ERR-HANDLER:'.strtoupper((string)SMART_FRAMEWORK_ENV).'] #'.$errno.' ['.$ferr.']'.$app_halted.' @ '.date('Y-m-d H:i:s O')."\n".
 			'-----------------'."\n".
-			'HTTP-METHOD: '.($_SERVER['REQUEST_METHOD'] ?? '').' # '.'CLIENT: '.trim((string)($_SERVER['REMOTE_ADDR'] ?? '').' ; '.($_SERVER['HTTP_CLIENT_IP'] ?? '').' ; '.($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''), '; ').' @ '.($_SERVER['HTTP_USER_AGENT'] ?? '')."\n".
+			'HTTP-METHOD: '.($_SERVER['REQUEST_METHOD'] ?? '').' # '.'CLIENT: '.trim((string)($_SERVER['REMOTE_ADDR'] ?? '').' ; '.($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '').' ; '.($_SERVER['HTTP_CLIENT_IP'] ?? '').' ; '.($_SERVER['HTTP_X_REAL_IP'] ?? ''), '; ').' @ '.($_SERVER['HTTP_USER_AGENT'] ?? '')."\n".
 			'URI: ['.SMART_ERROR_AREA.'] @ '.($_SERVER['SERVER_NAME'] ?? '').':'.($_SERVER['SERVER_PORT'] ?? '').($_SERVER['REQUEST_URI'] ?? '')."\n".
 			'-----------------'."\n".
 			'Script: '.$errfile."\n".
@@ -558,7 +560,7 @@ register_shutdown_function(function(){
 					'==================================='."\n".
 					'PHP '.PHP_VERSION.' [SMART-ERR-HANDLER:'.strtoupper((string)SMART_FRAMEWORK_ENV).'] #0 [APP-SHUTDOWN-ERROR] :: Execution COMPLETED ! @ '.date('Y-m-d H:i:s O')."\n".
 					'-----------------'."\n".
-					'HTTP-METHOD: '.($_SERVER['REQUEST_METHOD'] ?? '').' # '.'CLIENT: '.trim((string)($_SERVER['REMOTE_ADDR'] ?? '').' ; '.($_SERVER['HTTP_CLIENT_IP'] ?? '').' ; '.($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''), '; ').' @ '.($_SERVER['HTTP_USER_AGENT'] ?? '')."\n".
+					'HTTP-METHOD: '.($_SERVER['REQUEST_METHOD'] ?? '').' # '.'CLIENT: '.trim((string)($_SERVER['REMOTE_ADDR'] ?? '').' ; '.($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '').' ; '.($_SERVER['HTTP_CLIENT_IP'] ?? '').' ; '.($_SERVER['HTTP_X_REAL_IP'] ?? ''), '; ').' @ '.($_SERVER['HTTP_USER_AGENT'] ?? '')."\n".
 					'URI: ['.SMART_ERROR_AREA.'] @ '.($_SERVER['SERVER_NAME'] ?? '').':'.($_SERVER['SERVER_PORT'] ?? '').($_SERVER['REQUEST_URI'] ?? '')."\n".
 					'-----------------'."\n".
 					'Script: '.$error['file']."\n".

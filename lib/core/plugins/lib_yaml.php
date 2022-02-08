@@ -23,7 +23,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //=====================================================================================
 
 
-//-- YAML Parser
+//-- Smart YAML Parser
 //
 // [Simple PHP YAML Class.]
 // This class can be used to read a YAML file (or string) and convert its contents into a PHP array.
@@ -32,8 +32,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Based on Spyc v.0.5 with fixes from 0.5.1
 // (c) 2005-2006 Chris Wanstrath, 2006-2011 Vlad Andersen under the MIT License
 //
-// (c) 2014-2017 unix-world.org, fixes and modifications by unixman (iradu@unix-world.org)
-// includes many fixes and modification to be unicode compliant and some bug fixes
+// (c) 2014-2022 unix-world.org, fixes and modifications by unixman (iradu@unix-world.org)
+// includes many fixes and modification to be unicode compliant and some bug fixes under BSD License
 // [REGEX-SAFE-OK]
 //--
 
@@ -44,7 +44,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210609
+ * @version 	v.20220204
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -53,14 +53,9 @@ final class SmartYamlConverter {
 	// ->
 
 	//================================================================
-	/**
-	 * Setting this to true will force YAMLDump to enclose any string value in quotes
-	 * @var BOOLEAN
-	 * @default false
-	 */
-	public $setting_dump_force_quotes = false;
 	//--
 	private $yaml_dump_indent;
+	private $yaml_dump_force_quotes = false; // setting this to true will force YAML Dump to enclose any string value in quotes
 	private $yaml_contains_group_anchor = false;
 	private $yaml_contains_group_alias = false;
 	private $path;
@@ -68,21 +63,28 @@ final class SmartYamlConverter {
 	private $yaml_arr_saved_groups = [];
 	private $indent;
 	//--
-	private $delayedPath = array(); // @var array :: Path modifier that should be applied after adding current element.
+	private $delayedPath = array(); // array :: Path modifier that should be applied after adding current element.
 	//--
 	private $logerr = true;
 	private $err = '';
 	//--
-	private const const_REMPTY = "\0\0\0\0\0";
-	private const const_YAML_LITERAL_PLACEHOLDER = '___YAML_Literal_Block___';
+	private const const_REMPTY = "\0\0\0\0\0"; // sequence of null bytes ; leave it with double quotes !
+	//--
+	private const const_YML_SAFETY_KEY = 'YamL78lMy'; // use a very special and unique prefix for special keys
+	private const const_YML_SAFETY_HASH = 'f3b2840d7eb8c2cc8b221828e0cd1fc56511fa6ed3650340ef3be489c724f749b87da1965d502110f73330e230a719e6a9c518951046c00d2edffa3dd7dd1f23'; // sha512 hex of self::const_YML_SAFETY_KEY."\t".self::const_REMPTY
+	//--
+	private const const_YML_SAFETY_PREFIX = self::const_YML_SAFETY_KEY.self::const_YML_SAFETY_HASH; // use only this prefix for special keys
+	private const const_YML_LITERAL_PLACEHOLDER = '___'.self::const_YML_SAFETY_PREFIX.'_Literal_Block___';
+	//--
 	//================================================================
 
 
 	//================================================================
 	// Constructor
-	public function __construct($log_errors=true) {
+	public function __construct($log_errors=true, $dump_force_quotes=false) {
 		//--
 		$this->logerr = (bool) $log_errors;
+		$this->yaml_dump_force_quotes = (bool) $dump_force_quotes;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -374,7 +376,7 @@ final class SmartYamlConverter {
 	 */
 	private function _doFolding($value, $indent) {
 		//--
-		if($this->setting_dump_force_quotes && is_string($value) && $value !== self::const_REMPTY) {
+		if($this->yaml_dump_force_quotes && is_string($value) && $value !== self::const_REMPTY) {
 			//$value = '"'.$value.'"';
 			$value = "'".str_replace("'", "\\'", $value)."'"; // fix by unixman
 		} //end if
@@ -412,7 +414,7 @@ final class SmartYamlConverter {
 			if($literalBlockStyle) {
 				$line = rtrim($line, $literalBlockStyle." \n");
 				$literalBlock = '';
-				$line .= self::const_YAML_LITERAL_PLACEHOLDER;
+				$line .= self::const_YML_LITERAL_PLACEHOLDER;
 				$literal_block_indent = strlen($Source[$i+1]) - strlen(ltrim($Source[$i+1]));
 				while(++$i < $cnt && $this->literalBlockContinues($Source[$i], $this->indent)) {
 				  $literalBlock = $this->addLiteralLine($literalBlock, $Source[$i], $literalBlockStyle, $literal_block_indent);
@@ -448,8 +450,11 @@ final class SmartYamlConverter {
 
 	//================================================================
 	private function loadFromString($input) {
+		//-- dissalow special prefix
+		$safety_prefix = (string) ucfirst((string)strrev((string)strtolower((string)self::const_YML_SAFETY_PREFIX)));
+		$input = (string) str_replace((string)self::const_YML_SAFETY_PREFIX, (string)$safety_prefix, (string)$input); // replace all possible interferences with safety keys
 		//--
-		$lines = explode("\n", (string)$input);
+		$lines = (array) explode("\n", (string)$input);
 		//--
 		foreach($lines as $k => $v) {
 			$lines[$k] = (string) rtrim((string)$v, "\r");
@@ -674,7 +679,7 @@ final class SmartYamlConverter {
 		} //end if
 		if($pcre) {
 			$saved_empties = $strings[0];
-			$inline = preg_replace($regex, 'YAMLEmpty', $inline);
+			$inline = preg_replace($regex, self::const_YML_SAFETY_PREFIX.'__Empty', $inline);
 		} //end if
 		unset($regex);
 		//-- Check for strings
@@ -686,7 +691,7 @@ final class SmartYamlConverter {
 		} //end if
 		if($pcre) {
 			$saved_strings = $strings[0];
-			$inline = preg_replace($regex, 'YAMLString', $inline);
+			$inline = preg_replace($regex, self::const_YML_SAFETY_PREFIX.'__String', $inline);
 		} //end if
 		unset($regex);
 		//--
@@ -697,12 +702,12 @@ final class SmartYamlConverter {
 			// Check for sequences
 			while(preg_match($regex_seq, $inline, $matchseqs)) {
 				$seqs[] = $matchseqs[0];
-				$inline = preg_replace($regex_seq, ('YAMLSeq'.(Smart::array_size($seqs) - 1).'s'), $inline, 1); // safe
+				$inline = preg_replace($regex_seq, (self::const_YML_SAFETY_PREFIX.'__Seq'.(Smart::array_size($seqs) - 1).'s'), $inline, 1); // safe
 			} //end while
 			// Check for mappings
 			while(preg_match($regex_map, $inline, $matchmaps)) {
 				$maps[] = $matchmaps[0];
-				$inline = preg_replace($regex_map, ('YAMLMap'.(Smart::array_size($maps) - 1).'s'), $inline, 1); // safe
+				$inline = preg_replace($regex_map, (self::const_YML_SAFETY_PREFIX.'__Map'.(Smart::array_size($maps) - 1).'s'), $inline, 1); // safe
 			} //end while
 			if($i++ >= 10) {
 				break;
@@ -719,9 +724,9 @@ final class SmartYamlConverter {
 			//-- Re-add the sequences
 			if(!empty($seqs)) {
 				foreach($explode as $key => $value) {
-					if(strpos($value, 'YAMLSeq') !== false) {
+					if(strpos($value, self::const_YML_SAFETY_PREFIX.'__Seq') !== false) {
 						foreach($seqs as $seqk => $seq) {
-							$explode[$key] = str_replace(('YAMLSeq'.$seqk.'s'), $seq, $value);
+							$explode[$key] = str_replace((self::const_YML_SAFETY_PREFIX.'__Seq'.$seqk.'s'), $seq, $value);
 							$value = $explode[$key];
 						} //end foreach
 					} //end if
@@ -730,9 +735,9 @@ final class SmartYamlConverter {
 			//-- Re-add the mappings
 			if(!empty($maps)) {
 				foreach($explode as $key => $value) {
-					if(strpos($value, 'YAMLMap') !== false) {
+					if(strpos($value, self::const_YML_SAFETY_PREFIX.'__Map') !== false) {
 						foreach($maps as $mapk => $map) {
-							$explode[$key] = str_replace(('YAMLMap'.$mapk.'s'), $map, $value);
+							$explode[$key] = str_replace((self::const_YML_SAFETY_PREFIX.'__Map'.$mapk.'s'), $map, $value);
 							$value = $explode[$key];
 						} //end foreach
 					} //end if
@@ -741,11 +746,11 @@ final class SmartYamlConverter {
 			//-- Re-add the strings
 			if(!empty($saved_strings)) {
 				foreach ($explode as $key => $value) {
-					while(strpos($value, 'YAMLString') !== false) {
+					while(strpos($value, self::const_YML_SAFETY_PREFIX.'__String') !== false) {
 						//-- fix by unixman (security issue, unsafe preg_replace may lead to unpredictable results if a string inside YAML syntax like [ 'a', 'b', '$1', '\\1', "xYz", ... ] contains a regex backtrace like in the example ...)
-					//	$explode[$key] = (string) preg_replace('/YAMLString/', $saved_strings[$stringi], $value, 1); // unsafe, if the $saved_strings[$stringi] contains any regex back reference such as $1 or \\1 ... the results are unpredictable !
+					//	$explode[$key] = (string) preg_replace('/'.self::const_YML_SAFETY_PREFIX.'__String/', $saved_strings[$stringi], $value, 1); // unsafe, if the $saved_strings[$stringi] contains any regex back reference such as $1 or \\1 ... the results are unpredictable !
 						$explode[$key] = (string) preg_replace_callback( // this is safe !
-							'/YAMLString/',
+							'/'.self::const_YML_SAFETY_PREFIX.'__String/',
 							function($matches) use ($saved_strings, $stringi) {
 								return (string) ($saved_strings[$stringi] ?? '');
 							},
@@ -762,8 +767,8 @@ final class SmartYamlConverter {
 			//-- Re-add the empty strings fix from v.0.5.1
 			if(!empty($saved_empties)) {
 				foreach($explode as $key => $value) {
-					while(strpos($value,'YAMLEmpty') !== false) {
-						$explode[$key] = preg_replace('/YAMLEmpty/', '', $value, 1);
+					while(strpos($value, self::const_YML_SAFETY_PREFIX.'__Empty') !== false) {
+						$explode[$key] = preg_replace('/'.self::const_YML_SAFETY_PREFIX.'__Empty/', '', $value, 1);
 						$value = $explode[$key];
 					} //end while
 				} //end foreach
@@ -771,16 +776,16 @@ final class SmartYamlConverter {
 			//--
 			$finished = true;
 			foreach($explode as $key => $value) {
-				if(strpos($value, 'YAMLSeq') !== false) {
+				if(strpos($value, self::const_YML_SAFETY_PREFIX.'__Seq') !== false) {
 					$finished = false; break;
 				} //end if
-				if(strpos($value, 'YAMLMap') !== false) {
+				if(strpos($value, self::const_YML_SAFETY_PREFIX.'__Map') !== false) {
 					$finished = false; break;
 				} //end if
-				if(strpos($value, 'YAMLString') !== false) {
+				if(strpos($value, self::const_YML_SAFETY_PREFIX.'__String') !== false) {
 					$finished = false; break;
 				} //end if
-				if(strpos($value,'YAMLEmpty') !== false) { // fix from v.0.5.1
+				if(strpos($value, self::const_YML_SAFETY_PREFIX.'__Empty') !== false) { // fix from v.0.5.1
 					$finished = false; break;
 				} //end if
 			} //end foreach
@@ -876,7 +881,7 @@ final class SmartYamlConverter {
 		//--
 		$key = key($incoming_data);
 		$value = isset($incoming_data[$key]) ? $incoming_data[$key] : null;
-		if($key === '__!YAMLZero') {
+		if($key === '__!'.self::const_YML_SAFETY_PREFIX.'__Zero') {
 			$key = '0';
 		} //end if
 		//--
@@ -1037,7 +1042,7 @@ final class SmartYamlConverter {
 		foreach($lineArray as $k => $v) {
 			if(is_array($v)) {
 				$lineArray[$k] = $this->revertLiteralYamlPlaceHolder($v, $literalBlock);
-			} elseif(substr($v, -1 * strlen(self::const_YAML_LITERAL_PLACEHOLDER)) == self::const_YAML_LITERAL_PLACEHOLDER) {
+			} elseif((string)substr($v, -1 * strlen(self::const_YML_LITERAL_PLACEHOLDER)) == (string)self::const_YML_LITERAL_PLACEHOLDER) {
 				$lineArray[$k] = rtrim($literalBlock, " \r\n");
 			} //end if else
 		} //end foreach
@@ -1293,7 +1298,7 @@ final class SmartYamlConverter {
 			// Set the type of the value.  Int, string, etc
 			$value = $this->_toType($value);
 			if($key === '0') {
-				$key = '__!YAMLZero';
+				$key = '__!'.self::const_YML_SAFETY_PREFIX.'__Zero';
 			} //end if
 			$array[$key] = $value;
 		} else {

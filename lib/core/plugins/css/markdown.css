@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.1.8.0 r.20210601 */
+/* Smart.Markdown.parser # v.1.8.0 r.20220203 */
 
 /* ----------------------------- */
 
@@ -33,8 +33,12 @@
 }
 
 /* Unordered Lists */
-.markdown ul li {
-	list-style-type: square;
+.markdown ul {
+/*	list-style-type: square; */
+	list-style-type: disc;
+}
+.markdown ol {
+	list-style-type: decimal;
 }
 
 /* Table */
@@ -68,11 +72,11 @@
 
 .markdown table.stripped tr:nth-child(even) td,
 .markdown table tr:nth-child(even) td.stripped {
-	background: #F9F9F9;
+	background: #FEFEFE;
 }
 .markdown table.stripped tr:nth-child(odd) td,
 .markdown table tr:nth-child(odd) td.stripped {
-	background: #FEFEFE;
+	background: #F9F9F9;
 }
 .markdown table.stripped tr:hover td,
 .markdown table tr:hover td.stripped {
@@ -120,7 +124,8 @@
 	border-left: 10px solid #CCCCCC;
 	margin: 20px 10px;
 	padding: 15px 10px;
-	quotes: "\201C""\201D""\2018""\2019";
+	quotes: "\201C" "\201D";
+/*	quotes: "\201C" "\201D" "\2018" "\2019"; */
 }
 .markdown blockquote:before {
 	color: #CCCCCC;
@@ -130,8 +135,19 @@
 	margin-right: 0.25rem;
 	vertical-align: -2rem;
 }
-.markdown blockquote p {
+.markdown blockquote p { /* TODO: remove this fix for v2 */
 	display: inline;
+}
+.markdown div.mkdw-line,
+.markdown p.mkdw-line {
+	padding-bottom: 5px;
+	display: block;
+}
+.markdown .flexbox > .mkdw-line {
+	display: flex !important;
+	flex-direction: row;
+	align-items: center;
+	gap: 5px;
 }
 /* -- */
 
@@ -146,12 +162,54 @@
 .markdown code.mkdw-code {
 	white-space: pre;
 }
-.markdown code:not(.mkdw-code) {
+.markdown code.mkdw-inline-code {
+	display: inline !important;
 	background: #EEEEEE;
 	color: #333333;
+	padding: 0;
 	padding-left: 4px;
 	padding-right: 4px;
 }
+
+.markdown q,
+.markdown del,
+.markdown ins,
+.markdown mark,
+.markdown var {
+	display: inline !important;
+	padding: 0;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+.markdown q {
+	background: #333333;
+	color: #F0F0F0;
+}
+.markdown q:before {
+	content: '˝';
+}
+.markdown q:after {
+	content: '˝';
+}
+.markdown del {
+	background: #FF4455;
+	color: #333333;
+}
+.markdown ins {
+	background: #C2D140;
+	color: #333333;
+}
+.markdown var {
+	background: #F8F8F8;
+	color: #333333;
+}
+/*	text-decoration: none; */
+}
+.markdown mark {
+	background: #F8C555;
+	color: #111111;
+}
+
 .markdown li pre {
 	margin-left: 20px;
 	margin-right: 20px;
@@ -160,6 +218,7 @@
 
 .markdown img {
 	max-width: 100%;
+/*	margin: 5px; */
 }
 
 /* ----------------------------- */

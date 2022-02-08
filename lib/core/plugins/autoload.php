@@ -80,7 +80,7 @@ function autoload__SmartFrameworkPlugins($classname) {
 			break;
 		//-- markdown
 		case 'SmartMarkdownToHTML':
-			require_once('lib/core/plugins/lib_markdown.php');			// markdown to html parser
+			require_once('lib/core/plugins/lib_markdown.php');			// markdown to html parser, v2
 			break;
 		//-- db drivers
 		case 'SmartRedisDb':

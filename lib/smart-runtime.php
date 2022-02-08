@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR (((string)SMART_FRAMEWORK_RUNTI
 //-----------------------------------------------------
 
 
-//====================================================== r.20210526
+//====================================================== r.20220207
 // Smart-Framework - App Runtime (this should be loaded only from app web root)
 // DEPENDS: Smart.Framework + Smart.Framework/Components
 // DO NOT MODIFY THIS FILE OR ANY OTHER FILE(S) UNDER lib/* or index.php or admin.php or task.php [They will be all overwritten on any future framework updates or upgrades] !!!
@@ -250,7 +250,31 @@ SmartCache::setKey('smart-app-runtime', 'visitor-cookie', (string)SMART_APP_VISI
 //========================= APP.BOOTSTRAP: RUN
 SmartAppBootstrap::Run(); // MUST load the modules/app/app-custom-bootstrap.inc.php
 //=========================
-
+//-- server data: detection tests and caching
+SmartUtils::get_server_current_request_method();
+SmartUtils::get_server_current_protocol();
+SmartUtils::get_server_current_port();
+SmartUtils::get_server_current_ip();
+SmartUtils::get_server_current_domain_name();
+SmartUtils::get_server_current_basedomain_name();
+SmartUtils::get_server_current_subdomain_name();
+SmartUtils::get_server_current_request_path();
+SmartUtils::get_server_current_request_uri();
+SmartUtils::get_server_current_full_script();
+SmartUtils::get_server_current_script();
+SmartUtils::get_server_current_queryurl();
+SmartUtils::get_server_current_path();
+SmartUtils::get_server_current_url();
+SmartUtils::get_webserver_version();
+SmartUtils::get_server_os();
+//-- client data: detection tests and caching
+SmartUtils::get_ip_client();
+SmartUtils::get_ip_proxyclient();
+SmartUtils::get_visitor_useragent();
+SmartUtils::get_visitor_signature();
+SmartUtils::get_visitor_tracking_uid();
+SmartUtils::get_os_browser_ip();
+//--
 //=========================
 //==
 if(defined('SMART_FRAMEWORK_APP_RUNTIME')) {

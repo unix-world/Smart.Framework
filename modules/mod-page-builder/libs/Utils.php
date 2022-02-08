@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220126
+ * @version 	v.20220206
  * @package 	PageBuilder
  *
  */
@@ -166,9 +166,85 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function renderMarkdown($markdown_code, $validate=false, $relative_url_prefix='', $use_all_unveil=false) {
+	public static function extractPageBuilderSyntax(string $text) : array { // extract PageBuilder like syntax, approx., doesn't need to match exactly, it is for preserving the syntax and may be larger but reserved for future extensions
 		//--
-		return (string) \SmartMarkersTemplating::prepare_nosyntax_html_template((string)self::fixSafeCode((string)(new \SmartMarkdownToHTML(true, true, true, false, (int)$validate, (string)$relative_url_prefix, (bool)$use_all_unveil))->text((string)$markdown_code))); // B:1 S:1 L:1 E:1 V:0/1
+		$matches = array();
+		$pcre = preg_match_all(
+			'/(\{\{([\:]{1}|[\=%]{1}|[\=\#]{1}){1}){1}[^\s]*((\2)\}\}){1}/sU', // will match: {{:.:}} ; {{=%.%=}} ; {{=#.#=}}
+			(string) $text,
+			$matches,
+			PREG_PATTERN_ORDER,
+			0
+		);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return array();
+		} //end if
+		//--
+		return (array) ((isset($matches[0]) && is_array($matches[0])) ? $matches[0] : []);
+		//--
+	} //END FUNCTION
+
+
+	public static function htmlValidatorOption() : string {
+		//--
+		if(\defined('\\SMART_PAGEBUILDER_VALIDATE_HTML')) {
+			return (string) \SMART_PAGEBUILDER_VALIDATE_HTML;
+		} //end if
+		//--
+		return '';
+		//--
+	} //END FUNCTION
+
+
+	public static function markdownRenderingGetOptionHtmlValidate(?string $option_validate_html) : ?string {
+		//--
+		if($option_validate_html === null) {
+			return '';
+		} //end if
+		//--
+		if((string)$option_validate_html == '') {
+			$option_validate_html = (string) self::htmlValidatorOption();
+		} //end if
+		//--
+		return (string) '<validate:html:'.str_replace(['<','>'], '', (string)$option_validate_html).'>'; // important: do not allow < or > to be able to inject other options ... strict the html validation is expected here
+		//--
+	} //END FUNCTION
+
+
+	public static function renderMarkdown(?string $markdown_code, ?string $option_validate_html='', ?string $relative_url_prefix='', bool $log_render_notices=true) : string {
+		//--
+		$option_validate_html = (string) self::markdownRenderingGetOptionHtmlValidate($option_validate_html); // do not cast method param, it may be null which changes the options !
+		//--
+		$syntax_pagebuiler = (array) self::extractPageBuilderSyntax((string)$markdown_code);
+		//-- TODO: add constant to override compatibility mode ; by default is disabled here ...
+		return (string) (new \SmartMarkdownToHTML(true, true, false, (string)$option_validate_html, (string)$relative_url_prefix, (bool)$log_render_notices, (array)$syntax_pagebuiler, false))->parse((string)$markdown_code); // C:0
+		//--
+	} //END FUNCTION
+
+
+	public static function getRenderedMarkdownNotices(string $markdown_code, string $option_validate_html='') : array {
+		//--
+		$option_validate_html = (string) self::markdownRenderingGetOptionHtmlValidate((string)$option_validate_html); // here, validator cannot be null
+		//--
+		if((string)$option_validate_html == '') {
+			return (array) [
+				'validator' => '',
+				'notices' 	=> [],
+			];
+		} //end if
+		//--
+		$syntax_pagebuiler = (array) self::extractPageBuilderSyntax((string)$markdown_code);
+		//--
+		$obj = new \SmartMarkdownToHTML(true, true, false, (string)$option_validate_html, null, false, (array)$syntax_pagebuiler, false); // C:0
+		$obj->parse((string)$markdown_code);
+		//--
+		$syntax_pagebuiler = null;
+		//--
+		return (array) [
+			'validator' => (string) $obj->validator(),
+			'notices' 	=> (array)  $obj->notices(),
+		];
 		//--
 	} //END FUNCTION
 
