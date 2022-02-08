@@ -1539,9 +1539,12 @@ final class SmartUtils {
 		//--
 		$current_protocol = '';
 		//--
-		$err = false;
-		//--
 		if(defined('SMART_FRAMEWORK_SRVPROXY_ENABLED') AND (SMART_FRAMEWORK_SRVPROXY_ENABLED === true)) {
+			//--
+			$err = false;
+			//--
+			$skey = '';
+			//--
 			if(defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO')) {
 				$hkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO));
 				if((string)$hkey != '') {
@@ -1593,11 +1596,12 @@ final class SmartUtils {
 			} else {
 				$err = true;
 			} //end if
-		} //end if
-		//--
-		if($err) {
-			Smart::raise_error('Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO', 'Cannot Determine Current Server Protocol');
-			return '';
+			//--
+			if($err) {
+				Smart::raise_error('Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO: `'.$skey.'`', 'Cannot Determine Current Server Protocol');
+				return '';
+			} //end if
+			//--
 		} //end if
 		//--
 		if((string)$current_protocol == '') { // if not get custom above, detect
@@ -1625,9 +1629,12 @@ final class SmartUtils {
 		//--
 		$current_port = '';
 		//--
-		$err = false;
-		//--
 		if(defined('SMART_FRAMEWORK_SRVPROXY_ENABLED') AND (SMART_FRAMEWORK_SRVPROXY_ENABLED === true)) {
+			//--
+			$err = false;
+			//--
+			$skey = '';
+			//--
 			if(defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PORT')) {
 				$hkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_SERVER_PORT));
 				if((string)$hkey != '') {
@@ -1658,11 +1665,12 @@ final class SmartUtils {
 			} else {
 				$err = true;
 			} //end if
-		} //end if
-		//--
-		if($err) {
-			Smart::raise_error('Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PORT', 'Cannot Determine Current Server Port');
-			return '';
+			//--
+			if($err) {
+				Smart::raise_error('Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PORT: `'.$skey.'`', 'Cannot Determine Current Server Port');
+				return '';
+			} //end if
+			//--
 		} //end if
 		//--
 		if((string)$current_port == '') { // if not get custom above, detect
