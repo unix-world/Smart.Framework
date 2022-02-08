@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20220207
+ * @version 	v.20220208
  * @package 	@Core:Extra
  *
  */
@@ -49,6 +49,23 @@ final class SmartUtils {
 
 	private static $cache = [];
 
+	private const VALID_HEADERS_CLIENT_OR_PROXY_IP = [
+		'REMOTE_ADDR', // the REMOTE_ADDR must be the 1st in this list, ALWAYS !!!
+		'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', // the HTTP_X_FORWARDED_FOR should be always the second, as this is de facto standard # see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+		'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_REAL_IP', 'HTTP_X_CLUSTER_CLIENT_IP',
+	];
+
+	private const VALID_HEADERS_SERVER_PROTO = [
+		'HTTP_X_FORWARDED_PROTO' => [
+			'https' => 'https',
+			'http' 	=> 'http' ],
+		'HTTP_X_FORWARDED_HTTPS' => [
+			'on' 	=> 'https',
+			'off' 	=> 'http'
+		]
+	];
+
+	private const VALID_HEADERS_SERVER_PORT = [ 'HTTP_X_FORWARDED_PORT', 'HTTP_X_PORT' ];
 
 	//================================================================
 	// get the App Release Hash based on Framework Version.Release.ModulesRelease
@@ -1553,7 +1570,7 @@ final class SmartUtils {
 					} elseif((string)strtolower((string)$hkey) == 'https') { // explicit set to HTTPS
 						$current_protocol = 'https://';
 					} elseif(preg_match('/^[_A-Z]+$/', (string)$hkey)) { // must to be a valid header key from the allowed list
-						$allowed_list = (array) self::_protolist_valid_server_headers();
+						$allowed_list = (array) self::VALID_HEADERS_SERVER_PROTO;
 						if(
 							in_array((string)$hkey, (array)array_keys((array)$allowed_list))
 							AND
@@ -1563,6 +1580,7 @@ final class SmartUtils {
 						) {
 							if(isset($_SERVER[(string)$hkey])) {
 								$skey = (string) strtolower((string)trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER[(string)$hkey])));
+								$skey = (string) self::_head_value_get_last_val((string)$skey); // may contain multiple as list, separed by comma, the last one is trusted as added by the reverse proxy
 								if(in_array((string)$skey, (array)array_keys((array)$allowed_list[(string)$hkey]))) {
 									if(isset($allowed_list[(string)$hkey][(string)$skey])) {
 										$sval = (string) $allowed_list[(string)$hkey][(string)$skey];
@@ -1641,10 +1659,11 @@ final class SmartUtils {
 					if((preg_match('/^[0-9]+$/', (string)$hkey)) AND (((int)$hkey >= 1) AND ((int)$hkey <= 65535))) { // explicit set to a valid TCP port
 						$current_port = (int) $hkey;
 					} elseif(preg_match('/^[_A-Z]+$/', (string)$hkey)) { // must to be a valid header key from the allowed list
-						$allowed_list = (array) self::_portlist_valid_server_headers();
+						$allowed_list = (array) self::VALID_HEADERS_SERVER_PORT;
 						if(in_array((string)$hkey, (array)$allowed_list)) {
 							if(isset($_SERVER[(string)$hkey])) {
 								$skey = (string) (int) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER[(string)$hkey]));
+								$skey = (string) self::_head_value_get_last_val((string)$skey); // may contain multiple as list, separed by comma, the last one is trusted as added by the reverse proxy
 								if(((int)$skey >= 1) AND ((int)$skey <= 65535)) {
 									$current_port = (string) (int) $skey;
 								} else {
@@ -2176,7 +2195,7 @@ final class SmartUtils {
 			if(!$err) {
 				//--
 				if($custom === true) {
-					if(!in_array((string)$hkey, (array)self::_iplist_valid_client_headers())) {
+					if(!in_array((string)$hkey, (array)self::VALID_HEADERS_CLIENT_OR_PROXY_IP)) {
 						$err = true;
 					} //end if
 				} else { // default
@@ -2199,9 +2218,9 @@ final class SmartUtils {
 		$ip = ''; // init
 		//--
 		if((string)$hkey == 'REMOTE_ADDR') {
-			$ip = (string) self::_iplist_get_first_address((string)$hval); // when using this one, normally there is just one address ; but if there are many, trust the 1st one being the client's IP
+			$ip = (string) self::_head_value_get_first_val((string)$hval); // when using this one, normally there is just one address ; but if there are many, trust the 1st one being the client's IP
 		} else {
-			$ip = (string) self::_iplist_get_last_address((string)$hval); // can be one or multiple IP addresses ; since this is mostly a custom header which can be faked, trust the last one as it should be the one added by the proxy by example (a proxy will rewrite or append it's address to this field ...)
+			$ip = (string) self::_head_value_get_last_val((string)$hval); // can be one or multiple IP addresses ; since this is mostly a custom header which can be faked, trust the last one as it should be the one added by the proxy by example (a proxy will rewrite or append it's address to this field ...)
 		} //end if else
 		//--
 		$ip = (string) trim((string)SmartValidator::validate_filter_ip_address($ip));
@@ -2210,7 +2229,7 @@ final class SmartUtils {
 			//--
 			$hkey = 'REMOTE_ADDR';
 			$hval = (string) SmartFrameworkSecurity::FilterUnsafeString((string)trim((string)($_SERVER[(string)$hkey] ?? '')));
-			$ip = (string) self::_iplist_get_first_address((string)$hval); // when using this one, normally there is just one address ; but if there are many, trust the 1st one being the client's IP
+			$ip = (string) self::_head_value_get_first_val((string)$hval); // when using this one, normally there is just one address ; but if there are many, trust the 1st one being the client's IP
 			$ip = (string) trim((string)SmartValidator::validate_filter_ip_address($ip));
 			//--
 			if((string)$ip == '') {
@@ -2266,7 +2285,7 @@ final class SmartUtils {
 			return (string) self::$cache['get_ip_proxyclient'];
 		} //end if
 		//--
-		$arr_valid_hdrs = (array) self::_iplist_valid_client_headers();
+		$arr_valid_hdrs = (array) self::VALID_HEADERS_CLIENT_OR_PROXY_IP;
 		//--
 		$arr_hdrs = [];
 		$err = false;
@@ -2322,7 +2341,7 @@ final class SmartUtils {
 		$chkey = '';
 		if($custom === true) {
 			$chkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP));
-			if(((string)trim((string)$chkey) == '') OR (!in_array((string)$chkey, (array)self::_iplist_valid_client_headers()))) {
+			if(((string)trim((string)$chkey) == '') OR (!in_array((string)$chkey, (array)self::VALID_HEADERS_CLIENT_OR_PROXY_IP))) {
 				Smart::raise_error('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition must be validated against SMART_FRAMEWORK_SRVPROXY_CLIENT_IP which contains an invalid value', 'Failed to validate Current Client Proxy IP Address');
 				return '';
 			} //end if
@@ -2344,7 +2363,7 @@ final class SmartUtils {
 				$hval = (string) trim((string)($_SERVER[(string)$hkey] ?? ''));
 				if((string)$hval != '') {
 					if((string)SmartFrameworkSecurity::FilterUnsafeString((string)$hval) != '') {
-						$proxy = (string) self::_iplist_get_last_address((string)$hval); // since this is mostly from a custom header which can be faked, trust the last one as it should be the one added by the proxy by example (a proxy will rewrite or append it's address to this field ...)
+						$proxy = (string) self::_head_value_get_last_val((string)$hval); // since this is mostly from a custom header which can be faked, trust the last one as it should be the one added by the proxy by example (a proxy will rewrite or append it's address to this field ...)
 						$proxy = (string) trim((string)SmartValidator::validate_filter_ip_address($proxy));
 						if((string)$proxy != '') {
 							break;
@@ -2670,111 +2689,66 @@ final class SmartUtils {
 
 
 	//================================================================
-	// gets the IP from composed headers
-	// Note on Proxy and IPs:
-	// Format: 'X-Forwarded-For: client, proxy1, proxy2'
-	// 15 characters for IPv4 (xxx.xxx.xxx.xxx format, 12+3 separators)
-	// 39 characters (32 + 7 separators) for IPv6
-	private static function _iplist_get_first_address($ip) {
+	// gets the first value from simple or composed headers
+	// Example: 'X-Forwarded-For: client'
+	// Example: 'X-Forwarded-For: client, proxy1, proxy2'
+	private static function _head_value_get_first_val(?string $str) {
 		//--
-		$ip = (string) trim((string)$ip);
+		$str = (string) trim((string)$str);
 		//--
-		if((string)$ip == '') {
+		if((string)$str == '') {
 			return '';
 		} //end if
 		//--
-		if(strpos((string)$ip, ',') !== false) { // if we detect many IPs in a header
+		if(strpos((string)$str, ',') !== false) { // if we detect many values in a header, separed by comma
 			//--
-			$arr = (array) explode(',', (string)$ip);
-			$ip = ''; // we clear it
+			$arr = (array) explode(',', (string)$str);
+			$str = ''; // we clear it
 			//--
 			$imax = (int) Smart::array_size($arr);
-			if($imax > 0) {
-				for($i=0; $i<$imax; $i++) { // loop forward
-					$tmp_ip = (string) SmartValidator::validate_filter_ip_address((string)trim((string)$arr[$i])); // this returns empty if no valid IP
-					if((string)trim((string)$tmp_ip) != '') {
-						$ip = (string) $tmp_ip;
-						break;
-					} //end if
+			if((int)$imax > 0) {
+				for($i=0; $i<$imax; $i++) { // loop forward ; do not validate ; the trusted is the first value before first comma
+					$str = (string) trim((string)$arr[$i]);
+					break;
 				} //end for
 			} //end if
 			//--
-		} else {
-			//--
-			$ip = (string) SmartValidator::validate_filter_ip_address((string)$ip);
-			//--
 		} //end if
 		//--
-		return (string) trim((string)$ip);
+		return (string) $str;
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	private static function _iplist_get_last_address($ip) {
+	// gets the first value from simple or composed headers
+	// Example: 'X-Forwarded-For: client'
+	// Example: 'X-Forwarded-For: client, proxy1, proxy2'
+	private static function _head_value_get_last_val(?string $str) {
 		//--
-		$ip = (string) trim((string)$ip);
+		$str = (string) trim((string)$str);
 		//--
-		if((string)$ip == '') {
+		if((string)$str == '') {
 			return '';
 		} //end if
 		//--
-		if(strpos((string)$ip, ',') !== false) { // if we detect many IPs in a header
+		if(strpos((string)$str, ',') !== false) { // if we detect many values in a header, separed by comma
 			//--
-			$arr = (array) explode(',', (string)$ip);
-			$ip = ''; // we clear it
+			$arr = (array) explode(',', (string)$str);
+			$str = ''; // we clear it
 			//--
-			$imax = Smart::array_size($arr);
-			if($imax > 1) {
-				//--
-				for($i=($imax-1); $i>0; $i--) { // loop backward
-					$tmp_ip = (string) SmartValidator::validate_filter_ip_address((string)trim((string)$arr[$i])); // this returns empty if no valid IP
-					if((string)trim((string)$tmp_ip) != '') {
-						$ip = (string) $tmp_ip;
-						break;
-					} //end if
+			$imax = (int) Smart::array_size($arr);
+			if((int)$imax > 1) {
+				for($i=($imax-1); $i>0; $i--) { // loop backward ; do not validate ; the trusted is the last value after comma
+					$str = (string) trim((string)$arr[$i]);
+					break;
 				} //end for
-				//--
 			} //end if
-			//--
-		} else {
-			//--
-			$ip = (string) SmartValidator::validate_filter_ip_address((string)$ip);
 			//--
 		} //end if
 		//--
-		return (string) trim((string)$ip);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	private static function _iplist_valid_client_headers() {
-		//--
-		// the REMOTE_ADDR must be the 1st in this list, ALWAYS !!!
-		// the HTTP_X_FORWARDED_FOR should be always the second, as this is de facto standard # see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
-		//--
-		return array('REMOTE_ADDR', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_REAL_IP', 'HTTP_X_CLUSTER_CLIENT_IP');
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	private static function _protolist_valid_server_headers() {
-		//--
-		return array('HTTP_X_FORWARDED_PROTO' => [ 'https' => 'https', 'http' => 'http' ], 'HTTP_X_FORWARDED_HTTPS' => [ 'on' => 'https', 'off' => 'http' ]);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	private static function _portlist_valid_server_headers() {
-		//--
-		return array('HTTP_X_FORWARDED_PORT', 'HTTP_X_PORT');
+		return (string) $str;
 		//--
 	} //END FUNCTION
 	//================================================================
