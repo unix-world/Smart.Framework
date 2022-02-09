@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20220208
+ * @version 	v.20220209
  * @package 	@Core:Extra
  *
  */
@@ -66,6 +66,9 @@ final class SmartUtils {
 	];
 
 	private const VALID_HEADERS_SERVER_PORT = [ 'HTTP_X_FORWARDED_PORT', 'HTTP_X_PORT' ];
+
+	private const FAKE_IP_CLIENT = '0.0.0.0'; 			// must differ from FAKE_IP_SERVER ; must be 0.0.0.0 to show as undetected
+	private const FAKE_IP_SERVER = '256.256.256.256'; 	// must differ from FAKE_IP_CLIENT ; must be 256.256.256.256 that does not exists ... so there is no risk to be solved on something that exists ...
 
 	//================================================================
 	// get the App Release Hash based on Framework Version.Release.ModulesRelease
@@ -1538,10 +1541,11 @@ final class SmartUtils {
 
 
 	//================================================================
+	// ex: GET / POST / HEAD ... ; must not return an empty value ; if not detected, fallback to default GET
 	public static function get_server_current_request_method() {
 		//--
 		if(!array_key_exists('REQUEST_METHOD', $_SERVER)) {
-			return ''; // fix for PHP8
+			return 'GET';
 		} //end if
 		//--
 		return (string) strtoupper((string)trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['REQUEST_METHOD']))); // string
@@ -1551,8 +1555,12 @@ final class SmartUtils {
 
 
 	//================================================================
-	// Ex: http:// or https://
+	// Ex: http:// or https:// ; must not return an empty protocol if not set but fallback to default: http://
 	public static function get_server_current_protocol() {
+		//--
+		if(array_key_exists('get_server_current_protocol', self::$cache)) {
+			return (string) self::$cache['get_server_current_protocol'];
+		} //end if
 		//--
 		$current_protocol = '';
 		//--
@@ -1616,8 +1624,8 @@ final class SmartUtils {
 			} //end if
 			//--
 			if($err) {
-				Smart::raise_error('Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO: `'.$skey.'`', 'Cannot Determine Current Server Protocol');
-				return '';
+				Smart::log_warning('ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO: `'.$skey.'`');
+				$current_protocol = 'http://'; // fallback to default
 			} //end if
 			//--
 		} //end if
@@ -1631,19 +1639,25 @@ final class SmartUtils {
 		} //end if
 		//--
 		if((string)$current_protocol == '') {
-			Smart::raise_error('Failed to determine the server current protocol: `http://` or `https://` ...', 'Failed to determine Current Server Protocol');
-			return '';
+			Smart::log_warning('ERR: Failed to determine the server current protocol: `http://` or `https://` ...');
+			$current_protocol = 'http://'; // fallback to default
 		} //end if
 		//--
-		return (string) $current_protocol;
+		self::$cache['get_server_current_protocol'] = (string) $current_protocol;
+		//--
+		return (string) self::$cache['get_server_current_protocol'];
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	// Ex: 80 or 443 or ...
+	// Ex: 80 or 443 or ... ; must not return an empty port if not set but fallback to default: 80
 	public static function get_server_current_port() {
+		//--
+		if(array_key_exists('get_server_current_port', self::$cache)) {
+			return (string) self::$cache['get_server_current_port'];
+		} //end if
 		//--
 		$current_port = '';
 		//--
@@ -1686,8 +1700,8 @@ final class SmartUtils {
 			} //end if
 			//--
 			if($err) {
-				Smart::raise_error('Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PORT: `'.$skey.'`', 'Cannot Determine Current Server Port');
-				return '';
+				Smart::log_warning('ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PORT: `'.$skey.'`');
+				$current_port = '80'; // fallback to default
 			} //end if
 			//--
 		} //end if
@@ -1703,39 +1717,55 @@ final class SmartUtils {
 		} //end if
 		//--
 		if((string)$current_port == '') {
-			Smart::raise_error('Failed to determine the server current port: ex: `80` or `443` ...', 'Failed to determine Current Server Port');
-			return '';
+			Smart::log_warning('ERR: Failed to determine the server current port: ex: `80` or `443` ...');
+			$current_port = '80'; // fallback to default
 		} //end if
 		//--
-		return (string) $current_port;
+		self::$cache['get_server_current_port'] = (string) $current_port;
+		//--
+		return (string) self::$cache['get_server_current_port'];
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	// Ex: 127.0.0.1
+	// Ex: 127.0.0.1 ; must not return an empty value ; in case of failure must log and return a fake, inexistent IP
 	public static function get_server_current_ip() {
 		//--
-		if(!array_key_exists('SERVER_ADDR', $_SERVER)) {
-			return ''; // fix for PHP8
+		if(array_key_exists('get_server_current_ip', self::$cache)) {
+			return (string) self::$cache['get_server_current_ip'];
 		} //end if
 		//--
-		return (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_ADDR']));
+		if(!array_key_exists('SERVER_ADDR', $_SERVER)) {
+			Smart::log_warning('ERR: Failed to get current server IP address');
+			self::$cache['get_server_current_ip'] = (string) self::FAKE_IP_SERVER; // return a fake IP, that does not exists {{{SYNC-SRV-DETECTION-FAKE-IP}}}
+		} else {
+			self::$cache['get_server_current_ip'] = (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_ADDR']));
+		} //end if
+		//--
+		return (string) self::$cache['get_server_current_ip'];
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	// get the current domain or IP (Ex: localhost or mydom.ext or IP address)
+	// get the current domain or IP (Ex: localhost or mydom.ext or IP address) ; must not return an empty value ; if no domain detected return the server's IP
 	public static function get_server_current_domain_name() {
 		//--
-		if(!array_key_exists('SERVER_NAME', $_SERVER)) {
-			return ''; // fix for PHP8
+		if(array_key_exists('get_server_current_domain_name', self::$cache)) {
+			return (string) self::$cache['get_server_current_domain_name'];
 		} //end if
 		//--
-		return (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_NAME']));
+		if(!array_key_exists('SERVER_NAME', $_SERVER)) {
+			Smart::log_warning('ERR: Failed to get current server Domain Name');
+			self::$cache['get_server_current_domain_name'] = (string) self::get_server_current_ip(); // fallback to IP, but log
+		} else {
+			self::$cache['get_server_current_domain_name'] = (string) trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_NAME']));
+		} //end if else
+		//--
+		return (string) self::$cache['get_server_current_domain_name'];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1745,74 +1775,67 @@ final class SmartUtils {
 	// get base domain without sub-domain (Ex: mydom.ext or IP address)
 	public static function get_server_current_basedomain_name() {
 		//--
-		if(!array_key_exists('get_server_current_basedomain_name', self::$cache)) {
-			self::$cache['get_server_current_basedomain_name'] = null; // fix for PHP8
+		if(array_key_exists('get_server_current_basedomain_name', self::$cache)) {
+			return (string) self::$cache['get_server_current_basedomain_name'];
 		} //end if
-		$xout = (string) self::$cache['get_server_current_basedomain_name'];
 		//--
-		if((string)$xout == '') {
-			//--
-			$domain = (string) self::get_server_current_domain_name();
-			//--
-			if(preg_match('/^[0-9\.]+$/', $domain) OR (strpos($domain, ':') !== false)) { // if IPv4 or IPv6
+		$domain = (string) self::get_server_current_domain_name();
+		//--
+		$xout = '';
+		if(preg_match('/^[0-9\.]+$/', $domain) OR (strpos($domain, ':') !== false)) { // if IPv4 or IPv6
+			$xout = (string) $domain;
+		} else { // assume is domain
+			if(strpos($domain, '.') !== false) { // ex: subdomain.domain.ext or subdomain.domain
+				$domain = (array) explode('.', (string)$domain);
+				$domain = (array) array_reverse($domain);
+				$xout = (string) $domain[1].'.'.$domain[0]; // PHP8 OK, as it tests if . exists
+			} else { // ex: localhost
 				$xout = (string) $domain;
-			} else { // assume is domain
-				if(strpos($domain, '.') !== false) { // ex: subdomain.domain.ext or subdomain.domain
-					$domain = (array) explode('.', (string)$domain);
-					$domain = (array) array_reverse($domain);
-					$xout = (string) $domain[1].'.'.$domain[0]; // PHP8 OK, as it tests if . exists
-				} else { // ex: localhost
-					$xout = (string) $domain;
-				} //end if else
-			} //end if
-			//--
-			self::$cache['get_server_current_basedomain_name'] = (string) $xout;
-			//--
+			} //end if else
 		} //end if
 		//--
-		return (string) $xout;
+		self::$cache['get_server_current_basedomain_name'] = (string) $xout;
+		//--
+		return (string) self::$cache['get_server_current_basedomain_name'];
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	// get sub-domain without base domain (Ex: www) ; works with subdom.domain.ext or sub.dom.domain.ext ; If IP address or no-extension domain, will return empty string
+	// get sub-domain without base domain (Ex: www.) ; works with subdom.domain.ext or sub.dom.domain.ext ; If IP address or no-extension domain, will return empty string
 	public static function get_server_current_subdomain_name() {
 		//--
-		if(!array_key_exists('get_server_current_subdomain_name', self::$cache)) {
-			self::$cache['get_server_current_subdomain_name'] = null; // fix for PHP8
+		if(array_key_exists('get_server_current_subdomain_name', self::$cache)) {
+			return (string) self::$cache['get_server_current_subdomain_name'];
 		} //end if
-		$xout = self::$cache['get_server_current_subdomain_name']; // return mixed: null or empty string or the subdomain
 		//--
-		if($xout === null) {
+		$sdom = '';
+		//--
+		$the_dom_crr = (string) SmartUtils::get_server_current_domain_name();
+		if((string)trim((string)SmartValidator::validate_filter_ip_address($the_dom_crr)) == '') { // if not IP address
 			//--
-			$the_dom_crr = (string) SmartUtils::get_server_current_domain_name();
-			if((string)trim((string)SmartValidator::validate_filter_ip_address($the_dom_crr)) == '') { // if not IP address
-				//--
-				$the_dom_base = (string) SmartUtils::get_server_current_basedomain_name();
-				if((strpos((string)$the_dom_base, '.') !== false) AND ((string)$the_dom_base != (string)$the_dom_crr)) { // for sub-domain the base domain must contain a dot
-					$xout = (string) trim((string)substr((string)$the_dom_crr, 0, (int)((int)strlen((string)$the_dom_crr) - (int)strlen((string)$the_dom_base) - 1)));
-				} //end if
-				//--
+			$the_dom_base = (string) SmartUtils::get_server_current_basedomain_name();
+			if((strpos((string)$the_dom_base, '.') !== false) AND ((string)$the_dom_base != (string)$the_dom_crr)) { // for sub-domain the base domain must contain a dot
+				$sdom = (string) trim((string)substr((string)$the_dom_crr, 0, (int)((int)strlen((string)$the_dom_crr) - (int)strlen((string)$the_dom_base) - 1)));
 			} //end if
 			//--
-			self::$cache['get_server_current_subdomain_name'] = (string) $xout;
-			//--
 		} //end if
 		//--
-		return (string) $xout;
+		self::$cache['get_server_current_subdomain_name'] = (string) $sdom;
+		//--
+		return (string) self::$cache['get_server_current_subdomain_name'];
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	// Ex: /sites/test/script.php/page.html|path/to/something-else ; the path is decoded
+	// Ex: /sites/test/script.php/page.html|path/to/something-else ; the path is decoded ; can be empty
 	public static function get_server_current_request_path() {
 		//--
 		if(!array_key_exists('PATH_INFO', $_SERVER)) {
-			return ''; // fix for PHP8
+			return '';
 		} //end if
 		//--
 		return (string) SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']);
@@ -1826,7 +1849,7 @@ final class SmartUtils {
 	public static function get_server_current_request_uri() {
 		//--
 		if(!array_key_exists('REQUEST_URI', $_SERVER)) {
-			return ''; // fix for PHP8
+			return ''; // can be empty
 		} //end if
 		//--
 		return (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['REQUEST_URI']);
@@ -1840,7 +1863,7 @@ final class SmartUtils {
 	public static function get_server_current_full_script() {
 		//--
 		if(!array_key_exists('SCRIPT_NAME', $_SERVER)) {
-			return ''; // fix for PHP8
+			return ''; // can be empty
 		} //end if
 		//--
 		return (string) Smart::fix_path_separator((string)trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SCRIPT_NAME']))); // Fix: on Windows it can contain \ instead of /
@@ -1850,32 +1873,24 @@ final class SmartUtils {
 
 
 	//================================================================
-	// Ex: script.php
+	// Ex: script.php ; can return empty on failure
 	public static function get_server_current_script() {
 		//--
-		if(!array_key_exists('get_server_current_script', self::$cache)) {
-			self::$cache['get_server_current_script'] = null; // fix for PHP8
-		} //end if
-		$xout = (string) self::$cache['get_server_current_script'];
-		//--
-		if((string)$xout == '') {
-			//--
-			$current_script = '';
-			if((string)self::get_server_current_full_script() != '') {
-				$current_script = (string) basename((string)self::get_server_current_full_script());
-			} //end if
-			if((string)$current_script == '') {
-				Smart::raise_error('Cannot Determine Current WebServer Script', 'Invalid Current WebServer Script');
-				return '';
-			} //end if
-			//--
-			$xout = (string) $current_script;
-			//--
-			self::$cache['get_server_current_script'] = (string) $xout;
-			//--
+		if(array_key_exists('get_server_current_script', self::$cache)) {
+			return (string) self::$cache['get_server_current_script'];
 		} //end if
 		//--
-		return (string) $xout;
+		$current_script = '';
+		if((string)self::get_server_current_full_script() != '') {
+			$current_script = (string) basename((string)self::get_server_current_full_script());
+		} //end if
+		if((string)$current_script == '') {
+			Smart::log_warning('Cannot Determine Current WebServer Script'); // do not return here, must be cached
+		} //end if
+		//--
+		self::$cache['get_server_current_script'] = (string) $current_script;
+		//--
+		return (string) self::$cache['get_server_current_script'];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1884,6 +1899,10 @@ final class SmartUtils {
 	//================================================================
 	// Ex: ?param1=one&param2=two
 	public static function get_server_current_queryurl() {
+		//--
+		if(array_key_exists('get_server_current_queryurl', self::$cache)) {
+			return (string) self::$cache['get_server_current_queryurl'];
+		} //end if
 		//--
 		if(!array_key_exists('QUERY_STRING', $_SERVER)) {
 			$url_query = ''; // fix for PHP8
@@ -1897,7 +1916,9 @@ final class SmartUtils {
 			$url_query = '?'.$url_query;
 		} //end if else
 		//--
-		return $url_query;
+		self::$cache['get_server_current_queryurl'] = (string) $url_query;
+		//--
+		return (string) self::$cache['get_server_current_queryurl'];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1907,38 +1928,31 @@ final class SmartUtils {
 	// Ex: /sites/test/
 	public static function get_server_current_path() {
 		//--
-		if(!array_key_exists('get_server_current_path', self::$cache)) {
-			self::$cache['get_server_current_path'] = null; // fix for PHP8
-		} //end if
-		$xout = (string) self::$cache['get_server_current_path'];
-		//--
-		if((string)$xout == '') {
-			//--
-			$current_path = '/'; // this is default
-			if((string)self::get_server_current_full_script() != '') {
-				$current_path = (string) Smart::dir_name(self::get_server_current_full_script()); // may return '' or .
-				if(((string)$current_path == '') OR ((string)$current_path == '.') OR ((string)$current_path == '//')) {
-					$current_path = '/';
-				} //end if
-				if((string)substr((string)$current_path, 0, 1) != '/') {
-					$current_path = '/'.$current_path;
-				} //end if
-				if((string)substr((string)$current_path, -1, 1) != '/') {
-					$current_path .= '/';
-				} //end if
-			} //end if
-			if((string)$current_path == '') {
-				Smart::raise_error('Cannot Determine Current WebServer URL / Path', 'Invalid WebServer URL / Path');
-				return '';
-			} //end if
-			//--
-			$xout = (string) $current_path;
-			//--
-			self::$cache['get_server_current_path'] = (string) $xout;
-			//--
+		if(array_key_exists('get_server_current_path', self::$cache)) {
+			return (string) self::$cache['get_server_current_path'];
 		} //end if
 		//--
-		return (string) $xout;
+		$current_path = '/'; // this is default
+		//--
+		if((string)self::get_server_current_full_script() != '') {
+			$current_path = (string) Smart::dir_name(self::get_server_current_full_script()); // may return '' or .
+			if(((string)$current_path == '') OR ((string)$current_path == '.') OR ((string)$current_path == '//')) {
+				$current_path = '/';
+			} //end if
+			if((string)substr((string)$current_path, 0, 1) != '/') {
+				$current_path = '/'.$current_path;
+			} //end if
+			if((string)substr((string)$current_path, -1, 1) != '/') {
+				$current_path .= '/';
+			} //end if
+		} //end if
+		if((string)$current_path == '') {
+			Smart::log_warning('Cannot Determine Current WebServer URL / Path'); // do not return here, must be cached
+		} //end if
+		//--
+		self::$cache['get_server_current_path'] = (string) $current_path;
+		//--
+		return (string) self::$cache['get_server_current_path'];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1948,44 +1962,37 @@ final class SmartUtils {
 	// Ex: http(s)://domain(:port)/sites/test/
 	public static function get_server_current_url() {
 		//--
-		if(!array_key_exists('get_server_current_url', self::$cache)) {
-			self::$cache['get_server_current_url'] = null; // fix for PHP8
-		} //end if
-		$xout = (string) self::$cache['get_server_current_url'];
-		//--
-		if((string)$xout == '') {
-			//--
-			$current_port = self::get_server_current_port();
-			if((string)$current_port == '') {
-				Smart::raise_error('Cannot Determine Current WebServer URL / Port', 'Invalid WebServer URL / Port');
-				return '';
-			} //end if
-			$used_port = ':'.$current_port;
-			//--
-			$current_domain = self::get_server_current_domain_name();
-			if((string)$current_domain == '') {
-				Smart::raise_error('Cannot Determine Current WebServer URL / Domain', 'Invalid WebServer URL / Domain');
-				return '';
-			} //end if
-			//--
-			$current_prefix = 'http://';
-			if((string)$current_port == '80') {
-				$used_port = ''; // avoid specify port if default, 80 on http://
-			} //end if
-			if((string)self::get_server_current_protocol() == 'https://') {
-				$current_prefix = 'https://';
-				if((string)$current_port == '443') {
-					$used_port = ''; // avoid specify port if default, 443 on https://
-				} //end if
-			} //end if
-			//--
-			$xout = (string) $current_prefix.$current_domain.$used_port.self::get_server_current_path();
-			//--
-			self::$cache['get_server_current_url'] = (string) $xout;
-			//--
+		if(array_key_exists('get_server_current_url', self::$cache)) {
+			return (string) self::$cache['get_server_current_url'];
 		} //end if
 		//--
-		return (string) $xout;
+		$current_port = (string) self::get_server_current_port(); // this shoud not return an empty value, but just in case
+		if((string)$current_port == '') {
+			Smart::log_warning('ERR: Cannot Determine Current WebServer URL / Port');
+			$current_port = '80'; // fallback on default
+		} //end if
+		$used_port = ':'.$current_port;
+		//--
+		$current_domain = self::get_server_current_domain_name(); // this shoud not return an empty value, but just in case
+		if((string)$current_domain == '') {
+			Smart::log_warning('Cannot Determine Current WebServer URL / Domain');
+			$current_domain = (string) self::FAKE_IP_SERVER; // use a fake IP, that does not exists {{{SYNC-SRV-DETECTION-FAKE-IP}}}
+		} //end if
+		//--
+		$current_prefix = 'http://';
+		if((string)$current_port == '80') {
+			$used_port = ''; // avoid specify port if default, 80 on http://
+		} //end if
+		if((string)self::get_server_current_protocol() == 'https://') {
+			$current_prefix = 'https://';
+			if((string)$current_port == '443') {
+				$used_port = ''; // avoid specify port if default, 443 on https://
+			} //end if
+		} //end if
+		//--
+		self::$cache['get_server_current_url'] = (string) $current_prefix.$current_domain.$used_port.self::get_server_current_path();
+		//--
+		return (string) self::$cache['get_server_current_url'];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1994,33 +2001,26 @@ final class SmartUtils {
 	//================================================================
 	public static function get_webserver_version() {
 		//--
-		if(!array_key_exists('get_webserver_version', self::$cache)) {
-			self::$cache['get_webserver_version'] = null; // fix for PHP8
-		} //end if
-		$xout = (array) self::$cache['get_webserver_version'];
-		//--
-		if(Smart::array_size($xout) <= 0) {
-			//--
-			$tmp_srv_software = ''; // fix for PHP8
-			if(array_key_exists('SERVER_SOFTWARE', (array)$_SERVER)) {
-				$tmp_srv_software = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_SOFTWARE']);
-			} //end if else
-			$tmp_version_arr = (array) explode('/', (string)$tmp_srv_software);
-			$tmp_name_str = (string) trim((string)($tmp_version_arr[0] ?? ''));
-			$tmp_out = (string) trim((string)($tmp_version_arr[1] ?? ''));
-			$tmp_version_arr = (array) explode(' ', (string)$tmp_out);
-			$tmp_version_str = (string) trim((string)($tmp_version_arr[0] ?? ''));
-			//--
-			$xout = [
-				'name' => (string) $tmp_name_str,
-				'version' => (string) $tmp_version_str
-			];
-			//--
-			self::$cache['get_webserver_version'] = (array) $xout;
-			//--
+		if(array_key_exists('get_webserver_version', self::$cache)) {
+			return (array) self::$cache['get_webserver_version'];
 		} //end if
 		//--
-		return (array) $xout;
+		$tmp_srv_software = ''; // fix for PHP8
+		if(array_key_exists('SERVER_SOFTWARE', (array)$_SERVER)) {
+			$tmp_srv_software = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['SERVER_SOFTWARE']);
+		} //end if else
+		$tmp_version_arr = (array) explode('/', (string)$tmp_srv_software);
+		$tmp_name_str = (string) trim((string)($tmp_version_arr[0] ?? ''));
+		$tmp_out = (string) trim((string)($tmp_version_arr[1] ?? ''));
+		$tmp_version_arr = (array) explode(' ', (string)$tmp_out);
+		$tmp_version_str = (string) trim((string)($tmp_version_arr[0] ?? ''));
+		//--
+		self::$cache['get_webserver_version'] = [
+			'name' => (string) $tmp_name_str,
+			'version' => (string) $tmp_version_str
+		];
+		//--
+		return (array) self::$cache['get_webserver_version'];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2166,9 +2166,9 @@ final class SmartUtils {
 			return (string) self::$cache['get_ip_client'];
 		} //end if
 		//--
-		if(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP')) {
-			Smart::raise_error('The constant SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP is reserved for internal usage only ... should never be defined outside this method: '.__METHOD__, 'Client IP detection context error');
-			return '';
+		if(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP')) { // this should be fatal error !
+			Smart::log_warning('The constant SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP is reserved for internal usage only ... should never be defined outside this method: '.__METHOD__);
+			// do not return here, let it go, at least will determine as much as it can and since this is already defined will be anyway marked as untrusted ...
 		} //end if
 		//--
 		$hkey = '';
@@ -2208,42 +2208,43 @@ final class SmartUtils {
 			//--
 		} //end if
 		//--
-		if($err) {
-			Smart::raise_error('Invalid definition for SMART_FRAMEWORK_SRVPROXY_CLIENT_IP : `'.SMART_FRAMEWORK_SRVPROXY_CLIENT_IP.'`', 'Cannot Determine Current Client IP Address');
-			return '';
-		} //end if
-		//--
-		$hval = (string) SmartFrameworkSecurity::FilterUnsafeString((string)trim((string)($_SERVER[(string)$hkey] ?? '')));
-		//--
 		$ip = ''; // init
 		//--
-		if((string)$hkey == 'REMOTE_ADDR') {
-			$ip = (string) self::_head_value_get_first_val((string)$hval); // when using this one, normally there is just one address ; but if there are many, trust the 1st one being the client's IP
+		if($err) {
+			//--
+			Smart::log_warning('Invalid definition for SMART_FRAMEWORK_SRVPROXY_CLIENT_IP : `'.SMART_FRAMEWORK_SRVPROXY_CLIENT_IP.'`', 'Cannot Determine Current Client IP Address');
+			$ip = ''; // must be empty, will fallback below on a fake ip and set as untrusted
+			//--
 		} else {
-			$ip = (string) self::_head_value_get_last_val((string)$hval); // can be one or multiple IP addresses ; since this is mostly a custom header which can be faked, trust the last one as it should be the one added by the proxy by example (a proxy will rewrite or append it's address to this field ...)
-		} //end if else
+			//--
+			$hval = (string) SmartFrameworkSecurity::FilterUnsafeString((string)trim((string)($_SERVER[(string)$hkey] ?? '')));
+			//--
+			if((string)$hkey == 'REMOTE_ADDR') {
+				$ip = (string) self::_head_value_get_first_val((string)$hval); // when using this one, normally there is just one address ; but if there are many, trust the 1st one being the client's IP
+			} else {
+				$ip = (string) self::_head_value_get_last_val((string)$hval); // can be one or multiple IP addresses ; since this is mostly a custom header which can be faked, trust the last one as it should be the one added by the proxy by example (a proxy will rewrite or append it's address to this field ...)
+			} //end if else
+			//--
+			$ip = (string) trim((string)SmartValidator::validate_filter_ip_address($ip));
+			//--
+		} //end if
 		//--
-		$ip = (string) trim((string)SmartValidator::validate_filter_ip_address($ip));
-		//--
-		if((string)$ip == '') {
+		if((string)$ip == '') { // fallback on a fake IP, log warning, mark as untrusted
 			//--
 			$hkey = 'REMOTE_ADDR';
 			$hval = (string) SmartFrameworkSecurity::FilterUnsafeString((string)trim((string)($_SERVER[(string)$hkey] ?? '')));
 			$ip = (string) self::_head_value_get_first_val((string)$hval); // when using this one, normally there is just one address ; but if there are many, trust the 1st one being the client's IP
 			$ip = (string) trim((string)SmartValidator::validate_filter_ip_address($ip));
 			//--
-			if((string)$ip == '') {
+			if((string)$ip == '') { // fallback
 				$hkey = 'FAKE_ADDR';
-				$ip = '127.8.7.8'; // fake IP, could not detect a real one
+				$ip = (string) self::FAKE_IP_CLIENT; // fake IP, could not detect a real one
 			} //end if else
 			//--
-			define('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP', 'CUSTOM-IP-DETECTION-FALLBACK:['.$hkey.']'); // this is important, some Smart.Framework features will not be enabled when this set, but this is how it should be from the security point of view ... with an untrusted client IP that could not be properly detected !
-			Smart::log_warning('Invalid Client IP Address. Fallback to: '.SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP.' ; IP='.$ip);
-			//--
-			if((string)$ip == '') {
-				Smart::raise_error('Invalid Client IP Address', 'Cannot Determine Current Client IP Address');
-				return '';
+			if(!defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP')) {
+				define('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP', 'CUSTOM-IP-DETECTION-FALLBACK:['.$hkey.']'); // this is important, some Smart.Framework features will not be enabled when this set, but this is how it should be from the security point of view ... with an untrusted client IP that could not be properly detected !
 			} //end if
+			Smart::log_warning('Invalid Client IP Address. Fallback to: '.SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP.' ; IP='.$ip);
 			//--
 		} //end if
 		//--
@@ -2308,15 +2309,15 @@ final class SmartUtils {
 					if((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP != 'REMOTE_ADDR') {
 						$use_remote_addr = true;
 					} //end if
-				} else {
-					Smart::raise_error('The SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP must not contain REMOTE_ADDR when SMART_FRAMEWORK_SRVPROXY_ENABLED is not set to TRUE !', 'Cannot Determine Current Client Proxy IP Address');
-					return '';
+				} else { // this should be just warning
+					Smart::log_warning('The SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP must not contain REMOTE_ADDR when SMART_FRAMEWORK_SRVPROXY_ENABLED is not set to TRUE !');
+					return ''; // proxy can be empty if not proper detected
 				} //end if
 			} //end if
 			for($i=0; $i<Smart::array_size($tmp_arr_hdrs); $i++) {
 				$tmp_arr_hdrs[$i] = (string) strtoupper((string)$tmp_arr_hdrs[$i]);
 				if(preg_match('/^[_A-Z]+$/', (string)$tmp_arr_hdrs[$i])) {
-					if((string)$tmp_arr_hdrs[$i] != 'REMOTE_ADDR') { // except REMOTE_ADDR, which is usable by conditions will be added at the end any other valid headers can be in both places: SMART_FRAMEWORK_SRVPROXY_CLIENT_IP and SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP as they can contain more than one IP, separed by comma and get ip client from SMART_FRAMEWORK_SRVPROXY_CLIENT_IP will use the first in this list and the get proxy ip from SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP will use the last ; ex: 127.0.0.1, 128.0.0.1, ...
+					if((string)$tmp_arr_hdrs[$i] != 'REMOTE_ADDR') { // except REMOTE_ADDR, which is usable by conditions will be added at the end any other valid headers can be in both places: SMART_FRAMEWORK_SRVPROXY_CLIENT_IP and SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP as they can contain more than one IP, separed by comma and get ip client from SMART_FRAMEWORK_SRVPROXY_CLIENT_IP will use the first in this list and the get proxy ip from SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP will use the last ; ex: 127.0.0.1, 127.0.1.1, ...
 						if(in_array((string)$tmp_arr_hdrs[$i], (array)$arr_valid_hdrs)) {
 							$arr_hdrs[] = (string) $tmp_arr_hdrs[$i];
 						} //end if
@@ -2334,16 +2335,16 @@ final class SmartUtils {
 		} //end if
 		//--
 		if($err) {
-			Smart::raise_error('Invalid definition for SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP', 'Cannot Determine Current Client Proxy IP Address');
-			return '';
+			Smart::log_warning('Invalid definition for SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP');
+			return ''; // proxy can be empty if not proper detected
 		} //end if
 		//--
 		$chkey = '';
 		if($custom === true) {
 			$chkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP));
 			if(((string)trim((string)$chkey) == '') OR (!in_array((string)$chkey, (array)self::VALID_HEADERS_CLIENT_OR_PROXY_IP))) {
-				Smart::raise_error('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition must be validated against SMART_FRAMEWORK_SRVPROXY_CLIENT_IP which contains an invalid value', 'Failed to validate Current Client Proxy IP Address');
-				return '';
+				Smart::log_warning('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition must be validated against SMART_FRAMEWORK_SRVPROXY_CLIENT_IP which contains an invalid value');
+				return ''; // proxy can be empty if not proper detected
 			} //end if
 		} //end if
 		//--
@@ -2356,8 +2357,8 @@ final class SmartUtils {
 			if((string)$hkey != '') {
 				if((string)$chkey != '') {
 					if((string)$hkey == (string)$chkey) {
-						Smart::raise_error('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition cannot contain the same key as defined in SMART_FRAMEWORK_SRVPROXY_CLIENT_IP', 'Failed to register Current Client Proxy IP Address');
-						return '';
+						Smart::log_warning('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition cannot contain the same key as defined in SMART_FRAMEWORK_SRVPROXY_CLIENT_IP', 'Failed to register Current Client Proxy IP Address');
+						return ''; // proxy can be empty if not proper detected
 					} //end if
 				} //end if
 				$hval = (string) trim((string)($_SERVER[(string)$hkey] ?? ''));
