@@ -703,7 +703,7 @@ The class provides the core methods for JavaScript API of Smart.Framework</div><
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Core</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$Utils</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20210608</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210822</span></li>
 		<li><b>Usage:</b> smartJ$Utils.method();</li>
 		
 		
@@ -1409,7 +1409,8 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 </div><div class="doc-container" id="Method--bin2hex">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>bin2hex</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`bin` Parameter">bin</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1421,6 +1422,7 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 			@param: {String} s The string to be processed<br>
+			@param: {Boolean} bin Set to TRUE if the string is binary to avoid re-encode to UTF-8<br>
 	
 	
 	</div>
@@ -1429,7 +1431,8 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 </div><div class="doc-container" id="Method--hex2bin">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>hex2bin</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`hex` Parameter">hex</span></b></span>
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`hex` Parameter">hex</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`bin` Parameter">bin</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1441,6 +1444,7 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 			@param: {String} hex The string to be processed<br>
+			@param: {Boolean} bin Set to TRUE if the string is binary to avoid re-decode as UTF-8<br>
 	
 	
 	</div>
@@ -1783,13 +1787,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:44:56 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:24:25 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>

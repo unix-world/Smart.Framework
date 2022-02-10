@@ -33,12 +33,12 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // [REGEX-SAFE-OK] ; [PHP8]
 
 /**
- * Class: SmartMarkdownToHTML - Exports Markdown Code to HTML Code.
+ * Class: SmartMarkdownToHTML - Exports Markdown (v2, smart flavour) Code to HTML Code.
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartYamlConverter
- * @version 	v.20220208
+ * @version 	v.20220210
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>

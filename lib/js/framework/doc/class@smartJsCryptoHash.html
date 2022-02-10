@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="smartJ$CryptoHash        static class smartJ$CryptoHash  {  } .    CLASS :: Smart CryptoHash (ES6, Strict Mode) Crypto Hash for JavaScript: CRC32B / MD5 /">
-<meta name="keywords" content="smartj cryptohash, static, class, smart, cryptohash, es6, strict, mode, crypto, hash, for, javascript, crc32b, md5, sha1, sha512, language, located, at, lib js framework smart-framework.pak.js, crypt utils.js, package, sf.javascript:crypto, name, frozen, yes, version, usage, smartj cryptohash.method, throws, smartj testcrypto.raiseerror, depends, smartj utils, smartj testcrypto, methods, public, function, string, s, console.error, return, the, of, param, returns, a, properties, constants, documentation, index, definition, list, generated, on">
+<meta name="keywords" content="smartj cryptohash, static, class, smart, cryptohash, es6, strict, mode, crypto, hash, for, javascript, crc32b, md5, sha1, sha256, sha512, hex, b64, language, located, at, lib js framework smart-framework.pak.js, crypt utils.js, package, sf.javascript:crypto, name, frozen, yes, version, usage, smartj cryptohash.method, throws, smartj testcrypto.raiseerror, depends, smartj utils, smartj testcrypto, methods, public, function, string, s, boolean, b36, console.error, return, the, of, param, if, set, to, true, will, use, base36, encoding, instead, returns, a, base64, properties, constants, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$CryptoHash">
 <link rel="icon" href="data:,">
 <title>JS Documentation for: smartJ$CryptoHash</title>
@@ -694,7 +694,7 @@ select#select-summary {
 </h1>
 <!-- Description -->
 <div class="doc-comments">CLASS :: Smart CryptoHash (ES6, Strict Mode)<br>
-Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA512</div><br>
+Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA256 / SHA512 :: (Hex / B64)</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
@@ -703,7 +703,7 @@ Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA512</div><br>
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Crypto</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$CryptoHash</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20210608</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20210825</span></li>
 		<li><b>Usage:</b> smartJ$CryptoHash.method();</li>
 		<li><span class="doc-throws"><b>Throws:</b> smartJ$TestCrypto.raiseError</span></li>
 		
@@ -720,7 +720,8 @@ Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA512</div><br>
 <!-- methods r.20210414 -->
 <div class="doc-container" id="Method--crc32b">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>crc32b</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`b36` Parameter">b36</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -732,6 +733,7 @@ Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA512</div><br>
 	
 	
 			@param: {String} s The string<br>
+			@param: {Boolean} b36 If set to TRUE will use Base36 Encoding instead of Hex Encoding<br>
 	
 	
 	</div>
@@ -740,7 +742,8 @@ Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA512</div><br>
 	
 </div><div class="doc-container" id="Method--md5">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>md5</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`b64` Parameter">b64</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -752,6 +755,7 @@ Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA512</div><br>
 	
 	
 			@param: {String} s The string<br>
+			@param: {Boolean} b64 If set to TRUE will use Base64 Encoding instead of Hex Encoding<br>
 	
 	
 	</div>
@@ -760,7 +764,8 @@ Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA512</div><br>
 	
 </div><div class="doc-container" id="Method--sha1">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>sha1</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`b64` Parameter">b64</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -772,6 +777,7 @@ Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA512</div><br>
 	
 	
 			@param: {String} s The string<br>
+			@param: {Boolean} b64 If set to TRUE will use Base64 Encoding instead of Hex Encoding<br>
 	
 	
 	</div>
@@ -780,7 +786,8 @@ Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA512</div><br>
 	
 </div><div class="doc-container" id="Method--sha512">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>sha512</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`b64` Parameter">b64</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -792,10 +799,33 @@ Crypto Hash for JavaScript: CRC32B / MD5 / SHA1 / SHA512</div><br>
 	
 	
 			@param: {String} s The string<br>
+			@param: {Boolean} b64 If set to TRUE will use Base64 Encoding instead of Hex Encoding<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Returns the SHA512 hash of a string</div>
+	
+	
+</div><div class="doc-container" id="Method--sha256">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>sha256</b></span>&nbsp;(
+			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
+			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`b64` Parameter">b64</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+			@throws: console.error<br>
+	
+			@return: {String} The SHA256 hash of the string<br>
+	
+	
+	
+			@param: {String} s The string<br>
+			@param: {Boolean} b64 If set to TRUE will use Base64 Encoding instead of Hex Encoding<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Returns the SHA256 hash of a string</div>
 	
 	
 </div>
@@ -853,6 +883,8 @@ function smartHandleDocSelector(obj) {
 			
 									<option value="Method--sha512"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;sha512()</option>
 			
+									<option value="Method--sha256"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;sha256()</option>
+			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
@@ -870,13 +902,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:44:57 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:24:25 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>

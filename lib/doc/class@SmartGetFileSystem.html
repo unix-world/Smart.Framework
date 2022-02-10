@@ -791,17 +791,10 @@ Files and Folders must contain ONLY safe characters as: `[a-z] [A-Z] [0-9] _ - .
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
-<br></span><span style="color: #999999">//&nbsp;Get&nbsp;Storage&nbsp;example:<br>
-&nbsp;</span><span style="color: #FFFFFF">$filesys&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartGetFileSystem</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);<br>
-&nbsp;</span><span style="color: #FFFFFF">$data&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$filesys</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get_storage</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;my_dir/my_subdir&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
-&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$data</span><span style="color: #FFCC00; font-weight: bold">);<br>
-<br>
-&nbsp;</span><span style="color: #999999">//&nbsp;Search&nbsp;for&nbsp;Files&nbsp;example:<br>
-&nbsp;</span><span style="color: #FFFFFF">$obj&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartGetFileSystem</span><span style="color: #FFCC00; font-weight: bold">();<br>
-&nbsp;</span><span style="color: #FFFFFF">$arr&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$obj</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">search_files</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;uploads/&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">false</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;.svg&#39;</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">&#39;100&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
-&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$arr</span><span style="color: #FFCC00; font-weight: bold">);<br>
-<br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Get&nbsp;Storage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">$filesys&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartGetFileSystem</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$data&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$filesys</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get_storage</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'my_dir/my_subdir'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$data</span><span style="color: #FFCC00; font-weight: bold">);<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;Search&nbsp;for&nbsp;Files&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">$obj&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartGetFileSystem</span><span style="color: #FFCC00; font-weight: bold">();<br>&nbsp;</span><span style="color: #FFFFFF">$arr&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$obj</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">search_files</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'uploads/'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">false</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'.svg'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'100'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$arr</span><span style="color: #FFCC00; font-weight: bold">);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+</span>
+</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -862,13 +855,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:43:50 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:24:17 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>

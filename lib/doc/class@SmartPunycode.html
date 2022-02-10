@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartPunycode        final class \ SmartPunycode    {   } -&gt;    Class: SmartPunycode - provides a IDN Converter using the Punycode implementation as">
-<meta name="keywords" content="smartpunycode, final, class, provides, a, idn, converter, using, the, punycode, implementation, as, described, in, rfc, http:  tools.ietf.org html rfc3492, language, php, located, at, lib core plugins lib idn punycode.php, package, plugins:convertersandparsers, namespace, name, version, v.20210512, depends, classes, smartunicode, usage, dynamic, object, new, class method, this, only, methods, public, function, construct, param, string, encoding, character, constructor, encode, input, return, representation, ascii, domain, unicode, to, be, encoded, or, email, address, its, decode, counterpart, properties, constants, sample, code, domain iso, jösefsson.tßst123.org, outputs, xn-jsefsson-n4a.xn-tst123-bta.org, domain unicode, email iso, räksmörgås jösefsson.tßst123.org, xn-rksmrgs jsefsson-vnbx43ag.xn-tst123-bta.org, email unicode, end, documentation, index, definition, list, generated, on">
+<meta name="keywords" content="smartpunycode, final, class, provides, a, idn, converter, using, the, punycode, implementation, as, described, in, rfc, http:  tools.ietf.org html rfc3492, language, php, located, at, lib core plugins lib idn punycode.php, package, plugins:convertersandparsers, namespace, name, version, v.20211127, depends, classes, smartunicode, usage, dynamic, object, new, class method, this, only, methods, public, function, construct, param, string, encoding, character, constructor, encode, input, return, representation, ascii, domain, unicode, to, be, encoded, or, email, address, its, decode, counterpart, properties, constants, sample, code, domain iso, jösefsson.tßst123.org, outputs, xn-jsefsson-n4a.xn-tst123-bta.org, domain unicode, email iso, räksmörgås jösefsson.tßst123.org, xn-rksmrgs jsefsson-vnbx43ag.xn-tst123-bta.org, email unicode, end, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartPunycode">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartPunycode</title>
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartPunycode</span></li>
 		
-		<li><b>Version:</b> v.20210512</li>
+		<li><b>Version:</b> v.20211127</li>
 		<li><b>Depends:</b> classes:  SmartUnicode</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -784,15 +784,10 @@ select#select-summary {
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
-<br>
-$domain_iso&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">encode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;j&ouml;sefsson.t&szlig;st123.org&#39;</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;xn--jsefsson-n4a.xn--tst123-bta.org<br>
-&nbsp;</span><span style="color: #FFFFFF">$domain_unicode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">decode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;xn--jsefsson-n4a.xn--tst123-bta.org&#39;</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;j&ouml;sefsson.t&szlig;st123.org<br>
-<br>
-&nbsp;</span><span style="color: #FFFFFF">$email_iso&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">encode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;r&auml;ksm&ouml;rg&aring;s@j&ouml;sefsson.t&szlig;st123.org&#39;</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;xn--rksmrgs@jsefsson-vnbx43ag.xn--tst123-bta.org<br>
-&nbsp;</span><span style="color: #FFFFFF">$email_unicode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">decode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;xn--rksmrgs@jsefsson-vnbx43ag.xn--tst123-bta.org&#39;</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;r&auml;ksm&ouml;rg&aring;s@j&ouml;sefsson.t&szlig;st123.org<br>
-<br>
-//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br>$domain_iso&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">encode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'j&ouml;sefsson.t&szlig;st123.org'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;xn--jsefsson-n4a.xn--tst123-bta.org<br>&nbsp;</span><span style="color: #FFFFFF">$domain_unicode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">decode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'xn--jsefsson-n4a.xn--tst123-bta.org'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;j&ouml;sefsson.t&szlig;st123.org<br><br>&nbsp;</span><span style="color: #FFFFFF">$email_iso&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">encode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'r&auml;ksm&ouml;rg&aring;s@j&ouml;sefsson.t&szlig;st123.org'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;xn--rksmrgs@jsefsson-vnbx43ag.xn--tst123-bta.org<br>&nbsp;</span><span style="color: #FFFFFF">$email_unicode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(string)&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartPunycode</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">decode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'xn--rksmrgs@jsefsson-vnbx43ag.xn--tst123-bta.org'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;outputs:&nbsp;r&auml;ksm&ouml;rg&aring;s@j&ouml;sefsson.t&szlig;st123.org<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+</span>
+</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -853,13 +848,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:43:54 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:24:19 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>

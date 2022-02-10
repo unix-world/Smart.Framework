@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartHashCrypto        final class \ SmartHashCrypto    {   } ::    Class: SmartHashCrypto - provide various hashes for a string: salted password,">
-<meta name="keywords" content="smarthashcrypto, final, class, provide, various, hashes, for, a, string, salted, password, sha512, sha384, sha256, sha1, md5, language, php, located, at, lib framework lib crypto.php, package, core:crypto, namespace, name, version, v.20210506, depends, hash algos, hash, classes, smart, smartframeworkregistry, usage, static, object, class::method, this, provides, only, methods, public, function, y pass, y custom salt, return, chars, length, param, encrypt, one, way, may, depend, on, optional, extra, salt, y str, returns, the, of, crc32b, boolean, y base36, false, in, base16, by, default, or, base36, better, than, crc32, portable, between, 32-bit, and, 64-bit, platforms, unsigned, properties, constants, sample, code, example, some method of this class, end, documentation, index, definition, list, generated">
+<meta name="keywords" content="smarthashcrypto, final, class, provide, various, hashes, for, a, string, salted, password, sha512, sha256, sha1, md5, hints, hashing, passwords, is, better, to, prepend, the, secret, input, unknown, attackers, so, these, kind, of, are, safe, against, length, attacks, they, have, be, protected, colissions, where, more, different, inputs, can, generate, same, hash, checksum, must, append, text, real, protect, both, and, public, https:  en.wikipedia.org wiki length extension attack, language, php, located, at, lib framework lib cryptohs.php, package, core:crypto, namespace, name, version, v.20211210, depends, hash algos, classes, smartframeworkregistry, smart, usage, static, object, class::method, this, provides, only, methods, function, y data, y custom salt, null, return, as, b62, using, hex, data, salt, suffix, bytes, param">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartHashCrypto">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartHashCrypto</title>
@@ -696,18 +696,21 @@ select#select-summary {
 	}&nbsp;::
 </h1>
 <!-- Description -->
-<div class="doc-comments">Class: SmartHashCrypto - provide various hashes for a string: salted password, sha512, sha384, sha256, sha1, md5.</div><br>
+<div class="doc-comments">Class: SmartHashCrypto - provide various hashes for a string: salted password, sha512, sha256, sha1, md5.<br>
+Hints:<br>
+- hashing passwords: is better to prepend the secret, the input is unknown to attackers so these kind of hashes are safe against length attacks ; they have to be protected against colissions ... where more different inputs can generate the same hash !<br>
+- hashing checksum: they MUST append the secret to the text to real protect against length attacks where both the input and the hash are public # https://en.wikipedia.org/wiki/Length_extension_attack</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/framework/lib_crypto.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/lib_cryptohs.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> @Core:Crypto</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartHashCrypto</span></li>
 		
-		<li><b>Version:</b> v.20210506</li>
-		<li><b>Depends:</b> PHP  hash_algos() / hash() ; classes: Smart, SmartFrameworkRegistry</li>
+		<li><b>Version:</b> v.20211210</li>
+		<li><b>Depends:</b> PHP  hash_algos() / hash() ; classes: SmartFrameworkRegistry, Smart</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -720,62 +723,96 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<div class="doc-container" id="Method--password">
+<div class="doc-container" id="Method--checksum">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>checksum</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_data` Parameter is REQUIRED">$y_data</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_custom_salt` Parameter is OPTIONAL, with the Default Value: null">$y_custom_salt</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The checksum hash as B62 using the hex SHA256 as data + 'salt' suffix (append) ; ~ 43 bytes length<br>
+@param: {STRING} $y_data: The data to be hashed<br>
+@param: {STRING} $y_custom_salt: The salt (will be trimmed from whitespaces) ; If the salt is empty will use the SMART_FRAMEWORK_SECURITY_KEY as the checksum must use a mandatory salt appended to the data to prevent the length extension attack</div>
+	
+			<div class="doc-method-comments">Create a safe checksum of data<br>
+It will append the salt to the end of data to avoid the length extension attack # https://en.wikipedia.org/wiki/Length_extension_attack</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--password">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>password</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_pass` Parameter is REQUIRED">$y_pass</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_custom_salt` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_custom_salt</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_pass` Parameter is REQUIRED">$y_pass</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_custom_salt` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_custom_salt</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_version` Parameter is OPTIONAL, with the Default Value: &quot;v2&quot;">$y_version</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;v2&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING,
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
-			<div class="doc-method-ret-params">@return: {STRING,} 128 chars length<br>
-@param: {STRING} $y_pass</div>
+			<div class="doc-method-ret-params">@return: {STRING} The password hash: for v1 will return a 128 bytes SHA512 (hex) ; for v2 will return a 128 bytes padded with * on right, composed from 98 bytes hash with a prefix and the SHA512 (base64, 88 bytes)<br>
+@param: {STRING} $y_pass: The password<br>
+@param: {STRING} $y_custom_salt: The salt (default is empty)<br>
+@param: {ENUM} $y_version: The password version ; v1 = hex password format (old, r.20151216) ; v2 = b64 password format (default, r.20210830)</div>
 	
-			<div class="doc-method-comments">Encrypt (one way) a password :: this may depend on *OPTIONAL* extra salt $y_custom_salt</div>
+			<div class="doc-method-comments">Encrypt (one way) a password by creating a safe password hash<br>
+By default will use the v2 which is more colission resistant, by using a new algorithm to derive the password<br>
+NOTICE: it uses a custom salt + an internally hard-coded salt to avoid rainbow attack</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--sha512">
+</div><div class="doc-container" id="Method--checkpassword">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>checkpassword</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_hash` Parameter is REQUIRED">$y_hash</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_pass` Parameter is REQUIRED">$y_pass</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_custom_salt` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_custom_salt</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_version` Parameter is OPTIONAL, with the Default Value: null">$y_version</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOL} Will return TRUE if password match or FALSE if not<br>
+@param: {STRING} $y_hash: The password hash to be checked<br>
+@param: {STRING} $y_pass: The password<br>
+@param: {STRING} $y_custom_salt: The salt (default is empty)<br>
+@param: {ENUM} $y_version: The password version ; Default is NULL to autodetect ; if a version (v1 or v2) is specified will check just using that specific version</div>
+	
+			<div class="doc-method-comments">Check a password hash provided by SmartHashCrypto::password()<br>
+It must use the same salt as it was used when password was hashed ; if not using version detect the same version must be used as used when hashed</div>
+	
+	
+	
+</div><!-- Skip Internal-Priv Method: `safecomposedkey()` --><div class="doc-container" id="Method--sha512">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>sha512</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_base64` Parameter is OPTIONAL, with the Default Value: false">$y_base64</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING,
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
-			<div class="doc-method-ret-params">@return: {STRING,} 128 chars length<br>
-@param: {STRING} $y_str</div>
+			<div class="doc-method-ret-params">@return: {STRING} The hash: 128 chars length (hex) or 88 chars length (b64)<br>
+@param: {STRING} $y_str: String to be hashed<br>
+@param: {BOOLEAN} $y_base64: If set to TRUE will use Base64 Encoding instead of Hexa Encoding</div>
 	
 			<div class="doc-method-comments">Returns the SHA512 hash of a string</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--sha384">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>sha384</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING,
-	
-	
-			<div class="doc-method-ret-params">@return: {STRING,} 96 chars length<br>
-@param: {STRING} $y_str</div>
-	
-			<div class="doc-method-comments">Returns the SHA384 hash of a string</div>
-	
-	
-	
 </div><div class="doc-container" id="Method--sha256">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>sha256</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_base64` Parameter is OPTIONAL, with the Default Value: false">$y_base64</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING,
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
-			<div class="doc-method-ret-params">@return: {STRING,} 64 chars length<br>
-@param: {STRING} $y_str</div>
+			<div class="doc-method-ret-params">@return: {STRING} The hash: 64 chars length (hex) or 44 chars length (b64)<br>
+@param: {STRING} $y_str: String to be hashed<br>
+@param: {BOOLEAN} $y_base64: If set to TRUE will use Base64 Encoding instead of Hexa Encoding</div>
 	
 			<div class="doc-method-comments">Returns the SHA256 hash of a string</div>
 	
@@ -783,14 +820,16 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--sha1">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>sha1</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_base64` Parameter is OPTIONAL, with the Default Value: false">$y_base64</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING,
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
-			<div class="doc-method-ret-params">@return: {STRING,} 40 chars length<br>
-@param: {STRING} $y_str</div>
+			<div class="doc-method-ret-params">@return: {STRING} The hash: 40 chars length (hex) or 28 chars length (b64)<br>
+@param: {STRING} $y_str: String to be hashed<br>
+@param: {BOOLEAN} $y_base64: If set to TRUE will use Base64 Encoding instead of Hexa Encoding</div>
 	
 			<div class="doc-method-comments">Returns the SHA1 hash of a string</div>
 	
@@ -798,14 +837,16 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--md5">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>md5</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_base64` Parameter is OPTIONAL, with the Default Value: false">$y_base64</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING,
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
-			<div class="doc-method-ret-params">@return: {STRING,} 32 chars length<br>
-@param: {STRING} $y_str</div>
+			<div class="doc-method-ret-params">@return: {STRING} The hash: 32 chars length (hex) or 24 chars length (b64)<br>
+@param: {STRING} $y_str: String to be hashed<br>
+@param: {BOOLEAN} $y_base64: If set to TRUE will use Base64 Encoding instead of Hexa Encoding</div>
 	
 			<div class="doc-method-comments">Returns the MD5 hash of a string</div>
 	
@@ -813,16 +854,16 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--crc32b">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>crc32b</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>, 
-			<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_base36` Parameter is OPTIONAL, with the Default Value: false">$y_base36</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_str` Parameter is REQUIRED">$y_str</span></b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_base36` Parameter is OPTIONAL, with the Default Value: false">$y_base36</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING,
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
-			<div class="doc-method-ret-params">@return: {STRING,} 8 chars length<br>
-@param: {STRING} $y_str<br>
-@param: {BOOLEAN} $y_base36</div>
+			<div class="doc-method-ret-params">@return: {STRING} The hash: 8 chars length (hex) or 7 chars length (b36)<br>
+@param: {STRING} $y_str: String to be hashed<br>
+@param: {BOOLEAN} $y_base36: If set to TRUE will use Base36 Encoding instead of Hexa Encoding</div>
 	
 			<div class="doc-method-comments">Returns the CRC32B hash of a string in base16 by default or base36 optional (better than CRC32, portable between 32-bit and 64-bit platforms, unsigned)</div>
 	
@@ -842,17 +883,20 @@ select#select-summary {
 	<h2 class="doc-header">class Constants</h2>
 </div>
 <!-- constants r.20200121 -->
-
+<div class="doc-container" id="Constant--PASSWORD_HASH_LENGTH">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>PASSWORD_HASH_LENGTH</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>128</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
 <!-- Sample Code -->
 <br>
 <div class="doc-container" id="SAMPLE--Code-">
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
-<br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>
-&nbsp;</span><span style="color: #FFFFFF">SmartHashCrypto</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br>
-<br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">SmartHashCrypto</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+</span>
+</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -884,13 +928,18 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
+									<option value="Method--checksum"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;checksum()</option>
+			
+			
 									<option value="Method--password"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;password()</option>
 			
 			
+									<option value="Method--checkpassword"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;checkpassword()</option>
+			
+			
+						
+			
 									<option value="Method--sha512"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;sha512()</option>
-			
-			
-									<option value="Method--sha384"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;sha384()</option>
 			
 			
 									<option value="Method--sha256"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;sha256()</option>
@@ -915,6 +964,8 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
+									<option value="Constant--PASSWORD_HASH_LENGTH">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;PASSWORD_HASH_LENGTH</option>
+			
 			
 		</optgroup>
 				<optgroup label="Class Sample usage">
@@ -927,13 +978,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:43:49 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:24:16 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>

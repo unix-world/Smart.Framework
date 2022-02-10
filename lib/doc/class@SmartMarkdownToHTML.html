@@ -5,8 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartMarkdownToHTML        final class \ SmartMarkdownToHTML    {   } -&gt;    Class: SmartMarkdownToHTML - Exports Markdown Code to HTML Code.">
-<meta name="keywords" content="smartmarkdowntohtml, final, class, exports, markdown, code, to, html, language, php, located, at, lib core plugins lib markdown.php, package, plugins:convertersandparsers, namespace, name, version, v.20210612, depends, smart, smartunicode, smartutils, smartparser, usage, dynamic, object, new, class method, this, provides, only, methods, public, function, construct, bool, y breaksenabled, true, y sbreakenabled, y urlslinked, y htmlentitiesdisabled, false, y validatehtml, string, y relative url prefix, null, constructor, with, many, options, text, return, param, the, be, processed, converts, properties, constants, sample, echo, hello, prints, p hello, i smartmarkdowntohtml  i p, end, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartMarkdownToHTML        final class \ SmartMarkdownToHTML    {   } -&gt;    Class: SmartMarkdownToHTML - Exports Markdown (v2, smart flavour) Code to HTML Code.">
+<meta name="keywords" content="smartmarkdowntohtml, final, class, exports, markdown, code, to, html, language, php, located, at, lib core plugins lib markdown.php, package, plugins:convertersandparsers, namespace, name, version, v.20220210, depends, smart, smartunicode, smartutils, smartyamlconverter, usage, dynamic, object, new, class method, this, provides, only, methods, public, function, construct, bool, y breaksenabled, true, y sbreakenabled, y lazyloadimgdisabled, false, string, y renderoptions, null, y relative url prefix, y log render notices, array, y arr preserve extra syntax, y usecompatibilitymode, constructor, with, many, options, parse, text, return, param, the, be, processed, converts, properties, constants, sample, hello, would, default, div, class  mkdw-line  hello, b smartmarkdowntohtml  b, or, if, set, paragraphs, p hello, p, cannot, nested, like, divs, but, is, just, another, option, end, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMarkdownToHTML">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartMarkdownToHTML</title>
@@ -454,7 +454,7 @@ nav.ux-navbar li > a:only-child::after {
 	<div id="logo" style="display:flex; align-items:center;">
 		<span style="line-height:50px;">
 						&#9776;
-			
+
 		</span>
 		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
 	</div>
@@ -463,7 +463,7 @@ nav.ux-navbar li > a:only-child::after {
 		<ul class="menu">
 		<li><a href="index.html#Package--PluginsConvertersAndParsers-" title="return to Index">return to Index</a></li>
 	</ul>
-	
+
 </nav>
 <!-- skip logo -->
 <!-- class r.20210525 -->
@@ -689,14 +689,14 @@ select#select-summary {
 <!-- Headings -->
 <h1 title="PHP class: `\SmartMarkdownToHTML` @ PHP Namespace: `\`" id="Class--Summary-">
 	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartMarkdownToHTML</span><br>
-	
-	
+
+
 	{
-	
+
 	}&nbsp;-&gt;
 </h1>
 <!-- Description -->
-<div class="doc-comments">Class: SmartMarkdownToHTML - Exports Markdown Code to HTML Code.</div><br>
+<div class="doc-comments">Class: SmartMarkdownToHTML - Exports Markdown (v2, smart flavour) Code to HTML Code.</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
@@ -705,13 +705,13 @@ select#select-summary {
 		<li><span class="doc-package"><b>Package:</b> Plugins:ConvertersAndParsers</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartMarkdownToHTML</span></li>
-		
-		<li><b>Version:</b> v.20210612</li>
-		<li><b>Depends:</b> Smart,  SmartUnicode, SmartUtils, SmartParser</li>
-		
+
+		<li><b>Version:</b> v.20220210</li>
+		<li><b>Depends:</b> Smart,  SmartUnicode, SmartUtils, SmartYamlConverter</li>
+
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
-		
-		
+
+
 	</ul>
 </div>
 <!-- Methods -->
@@ -722,38 +722,40 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_breaksEnabled` Parameter is OPTIONAL, with the Default Value: true">$y_breaksEnabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sBreakEnabled` Parameter is OPTIONAL, with the Default Value: true">$y_sBreakEnabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_urlsLinked` Parameter is OPTIONAL, with the Default Value: true">$y_urlsLinked</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_htmlEntitiesDisabled` Parameter is OPTIONAL, with the Default Value: false">$y_htmlEntitiesDisabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_validateHtml` Parameter is OPTIONAL, with the Default Value: false">$y_validateHtml</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_relative_url_prefix` Parameter is OPTIONAL, with the Default Value: null">$y_relative_url_prefix</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
-	
-	
+				<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_breaksEnabled` Parameter is OPTIONAL, with the Default Value: true">$y_breaksEnabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>,
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sBreakEnabled` Parameter is OPTIONAL, with the Default Value: true">$y_sBreakEnabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>,
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_lazyLoadImgDisabled` Parameter is OPTIONAL, with the Default Value: false">$y_lazyLoadImgDisabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>,
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_renderOptions` Parameter is OPTIONAL, with the Default Value: null">$y_renderOptions</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>,
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_relative_url_prefix` Parameter is OPTIONAL, with the Default Value: null">$y_relative_url_prefix</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>,
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_log_render_notices` Parameter is OPTIONAL, with the Default Value: false">$y_log_render_notices</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>,
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_preserve_extra_syntax` Parameter is OPTIONAL, with the Default Value: null">$y_arr_preserve_extra_syntax</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>,
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_useCompatibilityMode` Parameter is OPTIONAL, with the Default Value: false">$y_useCompatibilityMode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+
+
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
-	
-	
-	
+
+
+
 			<div class="doc-method-comments">Class constructor with many options</div>
-	
-	
-	
-</div><div class="doc-container" id="Method--text">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>text</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>
-	
-	
+
+
+
+</div><div class="doc-container" id="Method--parse">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>parse</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>
+
+
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
-	
-	
+
+
 			<div class="doc-method-ret-params">@return: {STRING} HTML code<br>
 @param: {STRING} $text: The Markdown to be processed</div>
-	
+
 			<div class="doc-method-comments">Converts Markdown to HTML</div>
-	
-	
-	
-</div>
+
+
+
+</div><!-- Skip Internal-Priv Method: `notices()` --><!-- Skip Internal-Priv Method: `validator()` -->
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -774,13 +776,10 @@ select#select-summary {
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
-<br>
-$markdown&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartMarkdownToHTML</span><span style="color: #FFCC00; font-weight: bold">();<br>
-&nbsp;echo&nbsp;</span><span style="color: #FFFFFF">$markdown</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">text</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">&#39;Hello&nbsp;_SmartMarkdownToHTML_!&#39;</span><span style="color: #FFCC00; font-weight: bold">);<br>
-&nbsp;</span><span style="color: #999999">//&nbsp;prints:&nbsp;&#39;&lt;p&gt;Hello&nbsp;&lt;i&gt;SmartMarkdownToHTML&lt;/i&gt;!&lt;/p&gt;&#39;<br>
-<br>
-//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br>$markdown&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartMarkdownToHTML</span><span style="color: #FFCC00; font-weight: bold">();<br>&nbsp;</span><span style="color: #FFFFFF">$html&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$markdown</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">parse</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Hello&nbsp;**SmartMarkdownToHTML**&nbsp;!'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #999999">//&nbsp;$html&nbsp;would&nbsp;be&nbsp;(default):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&lt;div&nbsp;class="mkdw-line"&gt;Hello&nbsp;&lt;b&gt;SmartMarkdownToHTML&lt;/b&gt;&nbsp;!&lt;/div&gt;'<br>&nbsp;//&nbsp;or&nbsp;if&nbsp;set&nbsp;with&nbsp;paragraphs&nbsp;$html&nbsp;would&nbsp;be:&nbsp;'&lt;p&gt;Hello&nbsp;&lt;b&gt;SmartMarkdownToHTML&lt;/b&gt;&nbsp;!&lt;/p&gt;'&nbsp;&lt;!--&nbsp;paragraphs&nbsp;cannot&nbsp;be&nbsp;nested&nbsp;like&nbsp;divs,&nbsp;but&nbsp;is&nbsp;just&nbsp;another&nbsp;option&nbsp;...&nbsp;--&gt;<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+</span>
+</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -813,38 +812,42 @@ function smartHandleDocSelector(obj) {
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
 									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
-			
-			
-									<option value="Method--text"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;text()</option>
-			
-			
-			
+
+
+									<option value="Method--parse"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parse()</option>
+
+
+
+
+
+
+
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
-			
+
 		</optgroup>
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
-			
+
 		</optgroup>
 				<optgroup label="Class Sample usage">
 			<option value="SAMPLE--Code-">Sample code</option>
 		</optgroup>
-		
+
 	</select>
 </div>
 <!-- summary-selectjs r.20210420 -->
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:43:56 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:24:20 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>

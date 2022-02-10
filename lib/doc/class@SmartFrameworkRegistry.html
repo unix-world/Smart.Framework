@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartFrameworkRegistry        final class \ SmartFrameworkRegistry    {   } ::    Class Smart.Framework Registry It may be used anywhere inside">
-<meta name="keywords" content="smartframeworkregistry, final, class, smart.framework, registry, it, may, be, used, anywhere, inside, or, by, plugins, and, application, modules, normally, there, is, no, need, to, use, this, as, the, controllers, can, access, methods, of, directly, language, php, located, at, lib framework lib registry.php, package, namespace, name, version, v.20210611, depends, classes, smartframeworksecurity, public, static, function, isadminarea, boolean, return, if, admin, area, will, true, else, false, test, service, for, services, running, over, admin.php, task.php, index.php, istaskarea, task, an, with, some, unrestricted, features, must, restricted, ip, avoid, security, issues, designed, mostly, in, development, but, production, restricting, using, init, setting, smart framework runtime task allowed ips, ifprodenv, environment, always, considered, set">
+<meta name="keywords" content="smartframeworkregistry, final, class, smart.framework, registry, it, may, be, used, anywhere, inside, or, by, plugins, and, application, modules, normally, there, is, no, need, to, use, this, as, the, controllers, can, access, methods, of, directly, language, php, located, at, lib framework lib registry.php, package, namespace, name, version, v.20220207, depends, classes, smartframeworksecurity, public, static, function, isadminarea, boolean, return, if, admin, area, will, true, else, false, test, service, for, services, running, over, admin.php, task.php, index.php, istaskarea, task, an, with, some, unrestricted, features, must, restricted, ip, avoid, security, issues, designed, mostly, in, development, but, production, restricting, using, init, setting, smart framework runtime task allowed ips, ifprodenv, environment, always, considered, set">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartFrameworkRegistry">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartFrameworkRegistry</title>
@@ -708,7 +708,7 @@ Normally there is no need to use this class as the controllers can access method
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartFrameworkRegistry</span></li>
 		
-		<li><b>Version:</b> v.20210611</li>
+		<li><b>Version:</b> v.20220207</li>
 		<li><b>Depends:</b> classes:  SmartFrameworkSecurity</li>
 		
 		
@@ -778,7 +778,7 @@ Using this method to detect if Production or Development Environment the code ca
 			<div class="doc-method-comments">Test if DEBUG is ON<br>
 Debug can be enabled on both: Production or Development Environments, by setting; define('SMART_FRAMEWORK_DEBUG_MODE', true); // init.php<br>
 Using Debug in Production Environment must be enabled per one IP only that can have access to that feature to avoid expose sensitive data to the world !!!<br>
-Ex: if(myIPDetected()) { define('SMART_FRAMEWORK_DEBUG_MODE', true); } // in init.php, for a Production Environment</div>
+Ex: if(myIPIsDetected()) { define('SMART_FRAMEWORK_DEBUG_MODE', true); } // in init.php, for a Production Environment</div>
 	
 	
 	
@@ -795,7 +795,7 @@ Ex: if(myIPDetected()) { define('SMART_FRAMEWORK_DEBUG_MODE', true); } // in ini
 INTERNAL DEBUG expects that also DEBUG is ON, otherwise may behave in a wrong way ...<br>
 Internal Debug can be enabled on both: Production or Development Environments, by setting; define('SMART_FRAMEWORK_INTERNAL_DEBUG', true); // init.php<br>
 Using Debug in Production Environment must be enabled per one IP only that can have access to that feature to avoid expose sensitive data to the world !!!<br>
-Ex: if(myIPDetected()) { define('SMART_FRAMEWORK_INTERNAL_DEBUG', true); } // in init.php, for a Production Environment</div>
+Ex: if(myIPIsDetected()) { define('SMART_FRAMEWORK_INTERNAL_DEBUG', true); } // in init.php, for a Production Environment</div>
 	
 	
 	
@@ -960,13 +960,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:43:49 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:24:16 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>

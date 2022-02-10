@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartDbaDb        final class \ SmartDbaDb    {   } -&gt;    Class: SmartDbaDb - provides a Client for DBA Databases. By default this class will just log">
-<meta name="keywords" content="smartdbadb, final, class, provides, a, client, for, dba, databases, by, default, this, will, just, log, the, errors, it, supports, following, handlers, gdbm, qdbm, db4, which, do, not, have, limits, on, record, size, handler, be, locked, using, lockfile, as, is, supported, all, platforms, and, language, php, located, at, lib core plugins lib db dba.php, package, plugins:database:dba, namespace, name, version, v.20210527, depends, extensions, extension, classes, smart, smartcomponents, hints, mainly, written, to, used, with, key value, store, usage, dynamic, object, new, class method, only, methods, public, function, construct, string, file, y description, boolean, y fatal err, false, float, y debug exch slowtime, param, db, path, if, does, exists, created, but, re-suffixed, see, getdbrealpath">
+<meta name="keywords" content="smartdbadb, final, class, provides, a, client, for, dba, databases, by, default, this, will, just, log, the, errors, it, supports, following, handlers, gdbm, qdbm, db4, which, do, not, have, limits, on, record, size, handler, be, locked, using, lockfile, as, is, supported, all, platforms, and, language, php, located, at, lib core plugins lib db dba.php, package, plugins:database:dba, namespace, name, version, v.20210830, depends, extensions, extension, classes, smart, smarthashcrypto, smartcomponents, hints, mainly, written, to, used, with, key value, store, usage, dynamic, object, new, class method, only, methods, public, function, construct, string, file, y description, boolean, y fatal err, false, float, y debug exch slowtime, param, db, path, if, does, exists, created, but, re-suffixed, see">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartDbaDb">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartDbaDb</title>
@@ -709,8 +709,8 @@ The handler will be locked using LockFile as it is supported on all platforms an
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartDbaDb</span></li>
 		
-		<li><b>Version:</b> v.20210527</li>
-		<li><b>Depends:</b> extensions:  PHP DBA Extension ; classes: Smart, SmartComponents</li>
+		<li><b>Version:</b> v.20210830</li>
+		<li><b>Depends:</b> extensions:  PHP DBA Extension ; classes: Smart, SmartHashCrypto, SmartComponents</li>
 		<li><b>Hints:</b> This  class is mainly written to be used with DBA Key/Value store</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -951,10 +951,10 @@ This may break current transactions if called</div>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
-<br></span><span style="color: #999999">//&nbsp;Example&nbsp;(must&nbsp;be&nbsp;set&nbsp;in&nbsp;etc/config.php)<br>
-&nbsp;</span><span style="color: #FFFFFF">$configs</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">&#39;dba&#39;</span><span style="color: #FFCC00; font-weight: bold">][</span><span style="color: #5F9CCE">&#39;handler&#39;</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;=&nbsp;</span><span style="color: #5F9CCE">&#39;gdbm&#39;</span><span style="color: #FFCC00; font-weight: bold">;<br>
-<br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Example&nbsp;(must&nbsp;be&nbsp;set&nbsp;in&nbsp;etc/config.php)<br>&nbsp;</span><span style="color: #FFFFFF">$configs</span><span style="color: #FFCC00; font-weight: bold">[</span><span style="color: #5F9CCE">'dba'</span><span style="color: #FFCC00; font-weight: bold">][</span><span style="color: #5F9CCE">'handler'</span><span style="color: #FFCC00; font-weight: bold">]&nbsp;=&nbsp;</span><span style="color: #5F9CCE">'gdbm'</span><span style="color: #FFCC00; font-weight: bold">;<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+</span>
+</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1045,13 +1045,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:43:58 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:24:21 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>

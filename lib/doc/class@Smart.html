@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\Smart        final class \ Smart    {   } ::    Class: Smart (Base Functions) - provides the base methods for an easy and secure development with">
-<meta name="keywords" content="smart, final, class, base, functions, provides, the, methods, for, an, easy, and, secure, development, with, smart.framework, php, language, located, at, lib framework lib smart.php, package, core, namespace, name, version, v.20210609, depends, extensions, json, classes, smartunicode, smartframeworkregistry, optional-constants, smart framework netserver id, smart framework info log, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class::method, only, public, function, is nscalar, mixed, val, bool, return, false, array, or, resource, true, rest, param, value, tested, test, a, variable, scalar, null, get from config, string">
+<meta name="keywords" content="smart, final, class, base, functions, provides, the, methods, for, an, easy, and, secure, development, with, smart.framework, php, language, located, at, lib framework lib smart.php, package, core, namespace, name, version, v.20220208, depends, extensions, json, classes, smartunicode, smartframeworkregistry, optional-constants, smart framework netserver id, smart framework info log, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class::method, only, public, function, is nscalar, mixed, val, bool, return, false, array, or, resource, true, rest, param, value, tested, test, a, variable, scalar, null, get from config, string">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \Smart">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \Smart</title>
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> Smart</span></li>
 		
-		<li><b>Version:</b> v.20210609</li>
+		<li><b>Version:</b> v.20220208</li>
 		<li><b>Depends:</b> extensions:  PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG</li>
 		<li><b>Hints:</b> It  is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -1368,6 +1368,21 @@ The default cut suffix is (...) but can be disabled using the last parameter.</d
 	
 	
 	
+</div><div class="doc-container" id="Method--decode_html_entities">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decode_html_entities</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str` Parameter is REQUIRED">$str</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The processed Code<br>
+@param: {STRING} $str: The code to be processed</div>
+	
+			<div class="doc-method-comments">Decode HTML Entities</div>
+	
+	
+	
 </div><div class="doc-container" id="Method--striptags">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>striptags</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$yhtmlcode` Parameter is REQUIRED">$yhtmlcode</span></b></span>, 
@@ -1550,8 +1565,8 @@ This will replace: &quot;\r&quot;, &quot;\n&quot;, &quot;\t&quot;, &quot;\x0B&qu
 	
 </div><div class="doc-container" id="Method--random_number">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>random_number</b></span>&nbsp;(
-				<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_min` Parameter is OPTIONAL, with the Default Value: 0">$y_min</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_max` Parameter is OPTIONAL, with the Default Value: -1">$y_max</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>-1</b></span>, 
+				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_min` Parameter is OPTIONAL, with the Default Value: 0">$y_min</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_max` Parameter is OPTIONAL, with the Default Value: -1">$y_max</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>-1</b></span>, 
 			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_seed` Parameter is OPTIONAL, with the Default Value: false">$y_seed</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
@@ -1564,6 +1579,78 @@ This will replace: &quot;\r&quot;, &quot;\n&quot;, &quot;\t&quot;, &quot;\x0B&qu
 It may use a random seed based on microtime or custom using mt_srand() which uses MT_RAND_MT19937 for PHP &gt;= 7.1<br>
 NOTICE: using a time based seed may result in most of the calls to a random number may return the same number which perhaps is not what is expected !!<br>
 The min is zero. The max is limited to 2147483647 on most of the platforms.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--base_to_hex_convert">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>base_to_hex_convert</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$encoded` Parameter is REQUIRED">$encoded</span></b></span>, 
+			<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$currentBase` Parameter is REQUIRED">$currentBase</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The decoded string (as hex) from the selected base or empty string on error<br>
+@param: {STRING} $encoded: A string (baseXX encoded) that was previous encoded using Smart::base_from_hex_convert()<br>
+@param: {INTEGER} $currentBase: The base to convert ; Available source base: 32, 36, 58, 62, 85, 92</div>
+	
+			<div class="doc-method-comments">Safe convert to hex from any of the following bases: 32, 36, 58, 62, 85, 92<br>
+In case of error will return an empty string.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--base_from_hex_convert">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>base_from_hex_convert</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$hexstr` Parameter is REQUIRED">$hexstr</span></b></span>, 
+			<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$targetBase` Parameter is REQUIRED">$targetBase</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The encoded string in the selected base or empty string on error<br>
+@param: {STRING} $hexstr: A hexadecimal string (base16) ; can be from bin2hex($string) or from dechex($integer) but in the case of using dechex must use also left padding with zeros to have an even length of the hex data<br>
+@param: {INTEGER} $targetBase: The base to convert ; Available target base: 32, 36, 58, 62, 85, 92</div>
+	
+			<div class="doc-method-comments">Safe convert from hex to any of the following bases: 32, 36, 58, 62, 85, 92<br>
+In case of error will return an empty string.</div>
+	
+	
+	
+</div><div class="doc-container" id="Method--hex_to_int10">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>hex_to_int10</b></span>&nbsp;(
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$hex` Parameter is REQUIRED">$hex</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div><div class="doc-container" id="Method--int10_to_hex">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>int10_to_hex</b></span>&nbsp;(
+				<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$num` Parameter is REQUIRED">$num</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div><div class="doc-container" id="Method--int10_to_base62_str">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>int10_to_base62_str</b></span>&nbsp;(
+				<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$num` Parameter is REQUIRED">$num</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+	
 	
 	
 	
@@ -1879,7 +1966,7 @@ Intended usage: Large scale. Standard.</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--log_info">
+</div><!-- Skip Internal-Priv Method: `b64s_enc()` --><!-- Skip Internal-Priv Method: `b64s_dec()` --><div class="doc-container" id="Method--log_info">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>log_info</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$title` Parameter is REQUIRED">$title</span></b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$message` Parameter is REQUIRED">$message</span></b></span>
@@ -1995,6 +2082,33 @@ This will log the message as ERROR into the App Error Log and stop the execution
 </div><div class="doc-container" id="Constant--DECIMAL_NUM_PRECISION">
 	<span class="doc-modifiers">public</span> <i>const</i> <b>DECIMAL_NUM_PRECISION</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;9999999999999.9&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
 	
+</div><div class="doc-container" id="Constant--CHARSET_BASE_16">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>CHARSET_BASE_16</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;0123456789abcdef&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div><div class="doc-container" id="Constant--CHARSET_BASE_32">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>CHARSET_BASE_32</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;0123456789ABCDEFGHIJKLMNOPQRSTUV&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div><div class="doc-container" id="Constant--CHARSET_BASE_36">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>CHARSET_BASE_36</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;0123456789abcdefghijklmnopqrstuvwxyz&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div><div class="doc-container" id="Constant--CHARSET_BASE_58">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>CHARSET_BASE_58</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div><div class="doc-container" id="Constant--CHARSET_BASE_62">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>CHARSET_BASE_62</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div><div class="doc-container" id="Constant--CHDIFF_BASE_64s">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>CHDIFF_BASE_64s</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[&quot;+&quot; =&gt; &quot;-&quot;, &quot;/&quot; =&gt; &quot;_&quot;, &quot;=&quot; =&gt; &quot;.&quot;]</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div><div class="doc-container" id="Constant--CHARSET_BASE_85">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>CHARSET_BASE_85</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&amp;&lt;&gt;()[]{}@%$#&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div><div class="doc-container" id="Constant--CHARSET_BASE_92">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>CHARSET_BASE_92</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&amp;&lt;&gt;()[]{}@%$#|;,_~`\&quot;&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div><div class="doc-container" id="Constant--STRIP_HTML_ENTITIES">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>STRIP_HTML_ENTITIES</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[&quot;&amp;NewLine;&quot; =&gt; &quot;\n&quot;, &quot;&amp;Tab;&quot; =&gt; &quot;\t&quot;, &quot;&amp;nbsp;&quot; =&gt; &quot; &quot;, &quot;&amp;amp;&quot; =&gt; &quot;&amp;&quot;, &quot;&amp;quot;&quot; =&gt; &quot;\&quot;&quot;, &quot;&amp;apos;&quot; =&gt; &quot;'&quot;, &quot;&amp;#039;&quot; =&gt; &quot;'&quot;, &quot;&amp;lt;&quot; =&gt; &quot;&lt;&quot;, &quot;&amp;gt;&quot; =&gt; &quot;&gt;&quot;, &quot;&amp;sol;&quot; =&gt; &quot;/&quot;, &quot;&amp;bsol;&quot; =&gt; &quot;\\&quot;, &quot;&amp;middot;&quot; =&gt; &quot;.&quot;, &quot;&amp;centerdot;&quot; =&gt; &quot;.&quot;, &quot;&amp;bull;&quot; =&gt; &quot;.&quot;, &quot;&amp;sdot;&quot; =&gt; &quot;.&quot;, &quot;&amp;copy;&quot; =&gt; &quot;(c)&quot;, &quot;&amp;#169;&quot; =&gt; &quot;(c)&quot;, &quot;&amp;reg;&quot; =&gt; &quot;(R)&quot;, &quot;&amp;#174;&quot; =&gt; &quot;(R)&quot;, &quot;&amp;circledR;&quot; =&gt; &quot;(R)&quot;, &quot;&amp;trade;&quot; =&gt; &quot;(TM)&quot;, &quot;&amp;excl;&quot; =&gt; &quot;!&quot;, &quot;&amp;num;&quot; =&gt; &quot;#&quot;, &quot;&amp;commat;&quot; =&gt; &quot;@&quot;, &quot;&amp;#064;&quot; =&gt; &quot;@&quot;, &quot;&amp;curren;&quot; =&gt; &quot;¤&quot;, &quot;&amp;euro;&quot; =&gt; &quot;€&quot;, &quot;&amp;dollar;&quot; =&gt; &quot;$&quot;, &quot;&amp;cent;&quot; =&gt; &quot;¢&quot;, &quot;&amp;pound;&quot; =&gt; &quot;£&quot;, &quot;&amp;yen;&quot; =&gt; &quot;¥&quot;, &quot;&amp;lsaquo;&quot; =&gt; &quot;‹&quot;, &quot;&amp;rsaquo;&quot; =&gt; &quot;›&quot;, &quot;&amp;laquo;&quot; =&gt; &quot;«&quot;, &quot;&amp;raquo;&quot; =&gt; &quot;»&quot;, &quot;&amp;lsquo;&quot; =&gt; &quot;‘&quot;, &quot;&amp;rsquo;&quot; =&gt; &quot;’&quot;, &quot;&amp;ldquo;&quot; =&gt; &quot;“&quot;, &quot;&amp;rdquo;&quot; =&gt; &quot;”&quot;, &quot;&amp;bdquo;&quot; =&gt; &quot;„&quot;, &quot;&amp;acute;&quot; =&gt; &quot;`&quot;, &quot;&amp;prime;&quot; =&gt; &quot;`&quot;, &quot;&amp;dash;&quot; =&gt; &quot;-&quot;, &quot;&amp;ndash;&quot; =&gt; &quot;-&quot;, &quot;&amp;mdash;&quot; =&gt; &quot;-&quot;, &quot;&amp;horbar;&quot; =&gt; &quot;--&quot;, &quot;&amp;minus;&quot; =&gt; &quot;-&quot;, &quot;&amp;macr;&quot; =&gt; &quot;-&quot;, &quot;&amp;strns;&quot; =&gt; &quot;-&quot;, &quot;&amp;OverBar;&quot; =&gt; &quot;-&quot;, &quot;&amp;uml;&quot; =&gt; &quot;..&quot;, &quot;&amp;die;&quot; =&gt; &quot;..&quot;, &quot;&amp;Dot;&quot; =&gt; &quot;..&quot;, &quot;&amp;DoubleDot;&quot; =&gt; &quot;..&quot;, &quot;&amp;lowbar;&quot; =&gt; &quot;_&quot;, &quot;&amp;Hat;&quot; =&gt; &quot;^&quot;, &quot;&amp;comma;&quot; =&gt; &quot;,&quot;, &quot;&amp;nldr;&quot; =&gt; &quot;..&quot;, &quot;&amp;hellip;&quot; =&gt; &quot;...&quot;, &quot;&amp;tilde;&quot; =&gt; &quot;~&quot;, &quot;&amp;sim;&quot; =&gt; &quot;~&quot;, &quot;&amp;circ;&quot; =&gt; &quot;^&quot;, &quot;&amp;spades;&quot; =&gt; &quot;♠&quot;, &quot;&amp;clubs;&quot; =&gt; &quot;♣&quot;, &quot;&amp;hearts;&quot; =&gt; &quot;♥&quot;, &quot;&amp;diams;&quot; =&gt; &quot;♦&quot;, &quot;&amp;sung;&quot; =&gt; &quot;♪&quot;, &quot;&amp;flat;&quot; =&gt; &quot;♭&quot;, &quot;&amp;natur;&quot; =&gt; &quot;♮&quot;, &quot;&amp;natural;&quot; =&gt; &quot;♮&quot;, &quot;&amp;sharp;&quot; =&gt; &quot;♯&quot;, &quot;&amp;check;&quot; =&gt; &quot;✓&quot;, &quot;&amp;cross;&quot; =&gt; &quot;✗&quot;, &quot;&amp;sext;&quot; =&gt; &quot;✶&quot;, &quot;&amp;fnof;&quot; =&gt; &quot;ƒ&quot;, &quot;&amp;radic;&quot; =&gt; &quot;√&quot;, &quot;&amp;sum;&quot; =&gt; &quot;∑&quot;, &quot;&amp;prod;&quot; =&gt; &quot;∏&quot;, &quot;&amp;int;&quot; =&gt; &quot;∫&quot;, &quot;&amp;infin;&quot; =&gt; &quot;∞&quot;, &quot;&amp;percnt;&quot; =&gt; &quot;%&quot;, &quot;&amp;lpar;&quot; =&gt; &quot;(&quot;, &quot;&amp;rpar;&quot; =&gt; &quot;)&quot;, &quot;&amp;equals;&quot; =&gt; &quot;=&quot;, &quot;&amp;lowast;&quot; =&gt; &quot;*&quot;, &quot;&amp;ast;&quot; =&gt; &quot;*&quot;, &quot;&amp;midast;&quot; =&gt; &quot;*&quot;, &quot;&amp;plus;&quot; =&gt; &quot;+&quot;, &quot;&amp;divide;&quot; =&gt; &quot;÷&quot;, &quot;&amp;times;&quot; =&gt; &quot;x&quot;, &quot;&amp;frac12;&quot; =&gt; &quot;1/2&quot;, &quot;&amp;frac14;&quot; =&gt; &quot;1/4&quot;, &quot;&amp;frac34;&quot; =&gt; &quot;3/4&quot;, &quot;&amp;brvbar;&quot; =&gt; &quot;¦&quot;, &quot;&amp;brkbar;&quot; =&gt; &quot;¦&quot;, &quot;&amp;sect;&quot; =&gt; &quot;§&quot;, &quot;&amp;para;&quot; =&gt; &quot;¶&quot;, &quot;&amp;micro;&quot; =&gt; &quot;µ&quot;, &quot;&amp;iexcl;&quot; =&gt; &quot;¡&quot;, &quot;&amp;iquest;&quot; =&gt; &quot;¿&quot;, &quot;&amp;hibar;&quot; =&gt; &quot;¯&quot;, &quot;&amp;deg;&quot; =&gt; &quot;°&quot;, &quot;&amp;ordm;&quot; =&gt; &quot;º&quot;, &quot;&amp;plusmn;&quot; =&gt; &quot;±&quot;, &quot;&amp;PlusMinus;&quot; =&gt; &quot;±&quot;, &quot;&amp;sup1;&quot; =&gt; &quot;¹&quot;, &quot;&amp;sup2;&quot; =&gt; &quot;²&quot;, &quot;&amp;sup3;&quot; =&gt; &quot;³&quot;, &quot;&amp;ordf;&quot; =&gt; &quot;ª&quot;, &quot;&amp;cedil;&quot; =&gt; &quot;¸&quot;, &quot;&amp;Cedilla;&quot; =&gt; &quot;¸&quot;, &quot;&amp;not;&quot; =&gt; &quot;¬&quot;, &quot;&amp;forall;&quot; =&gt; &quot;∀&quot;, &quot;&amp;part;&quot; =&gt; &quot;∂&quot;, &quot;&amp;exist;&quot; =&gt; &quot;∃&quot;, &quot;&amp;empty;&quot; =&gt; &quot;∅&quot;, &quot;&amp;nabla;&quot; =&gt; &quot;∇&quot;, &quot;&amp;isin;&quot; =&gt; &quot;∈&quot;, &quot;&amp;notin;&quot; =&gt; &quot;∉&quot;, &quot;&amp;ni;&quot; =&gt; &quot;∋&quot;, &quot;&amp;prop;&quot; =&gt; &quot;∝&quot;, &quot;&amp;ang;&quot; =&gt; &quot;∠&quot;, &quot;&amp;and;&quot; =&gt; &quot;∧&quot;, &quot;&amp;or;&quot; =&gt; &quot;∨&quot;, &quot;&amp;cap;&quot; =&gt; &quot;∩&quot;, &quot;&amp;cup;&quot; =&gt; &quot;∪&quot;, &quot;&amp;there4;&quot; =&gt; &quot;∴&quot;, &quot;&amp;cong;&quot; =&gt; &quot;≅&quot;, &quot;&amp;asymp;&quot; =&gt; &quot;≈&quot;, &quot;&amp;ne;&quot; =&gt; &quot;≠&quot;, &quot;&amp;equiv;&quot; =&gt; &quot;≡&quot;, &quot;&amp;le;&quot; =&gt; &quot;≤&quot;, &quot;&amp;ge;&quot; =&gt; &quot;≥&quot;, &quot;&amp;sub;&quot; =&gt; &quot;⊂&quot;, &quot;&amp;sup;&quot; =&gt; &quot;⊃&quot;, &quot;&amp;nsub;&quot; =&gt; &quot;⊄&quot;, &quot;&amp;sube;&quot; =&gt; &quot;⊆&quot;, &quot;&amp;supe;&quot; =&gt; &quot;⊇&quot;, &quot;&amp;oplus;&quot; =&gt; &quot;+&quot;, &quot;&amp;otimes;&quot; =&gt; &quot;x&quot;, &quot;&amp;perp;&quot; =&gt; &quot;⊥&quot;]</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
 </div>
 <!-- Sample Code -->
 <br>
@@ -2002,10 +2116,10 @@ This will log the message as ERROR into the App Error Log and stop the execution
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [T] --><code><span style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php<br>
-<br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>
-&nbsp;</span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br>
-<br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span></span></code><!-- [/T] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+</span>
+</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -2151,6 +2265,9 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--nl_2_br"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;nl_2_br()</option>
 			
 			
+									<option value="Method--decode_html_entities"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decode_html_entities()</option>
+			
+			
 									<option value="Method--striptags"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;striptags()</option>
 			
 			
@@ -2184,6 +2301,21 @@ function smartHandleDocSelector(obj) {
 			
 			
 									<option value="Method--random_number"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;random_number()</option>
+			
+			
+									<option value="Method--base_to_hex_convert"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;base_to_hex_convert()</option>
+			
+			
+									<option value="Method--base_from_hex_convert"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;base_from_hex_convert()</option>
+			
+			
+									<option value="Method--hex_to_int10"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hex_to_int10()</option>
+			
+			
+									<option value="Method--int10_to_hex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;int10_to_hex()</option>
+			
+			
+									<option value="Method--int10_to_base62_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;int10_to_base62_str()</option>
 			
 			
 									<option value="Method--net_server_id"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;net_server_id()</option>
@@ -2237,6 +2369,10 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--list_to_array"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;list_to_array()</option>
 			
 			
+						
+			
+						
+			
 									<option value="Method--log_info"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;log_info()</option>
 			
 			
@@ -2276,6 +2412,24 @@ function smartHandleDocSelector(obj) {
 			
 									<option value="Constant--DECIMAL_NUM_PRECISION">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;DECIMAL_NUM_PRECISION</option>
 			
+									<option value="Constant--CHARSET_BASE_16">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;CHARSET_BASE_16</option>
+			
+									<option value="Constant--CHARSET_BASE_32">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;CHARSET_BASE_32</option>
+			
+									<option value="Constant--CHARSET_BASE_36">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;CHARSET_BASE_36</option>
+			
+									<option value="Constant--CHARSET_BASE_58">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;CHARSET_BASE_58</option>
+			
+									<option value="Constant--CHARSET_BASE_62">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;CHARSET_BASE_62</option>
+			
+									<option value="Constant--CHDIFF_BASE_64s">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;CHDIFF_BASE_64s</option>
+			
+									<option value="Constant--CHARSET_BASE_85">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;CHARSET_BASE_85</option>
+			
+									<option value="Constant--CHARSET_BASE_92">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;CHARSET_BASE_92</option>
+			
+									<option value="Constant--STRIP_HTML_ENTITIES">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;STRIP_HTML_ENTITIES</option>
+			
 			
 		</optgroup>
 				<optgroup label="Class Sample usage">
@@ -2288,13 +2442,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:43:49 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:24:16 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>

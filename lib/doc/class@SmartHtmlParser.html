@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartHtmlParser        final class \ SmartHtmlParser    {   } -&gt;    Class: SmartHtmlParser - provides a HTML Parser and Cleaner that will sanitize and">
-<meta name="keywords" content="smarthtmlparser, final, class, provides, a, html, parser, and, cleaner, that, will, sanitize, parse, the, code, language, php, located, at, lib core plugins lib html.php, package, plugins:convertersandparsers, namespace, name, version, v.20210609, depends, classes, smart, usage, dynamic, object, new, class method, this, only, methods, public, function, construct, string, y html, bool, y signature, true, y allow dom processing, y log dom warn err, false, get comments, get all tags, get tags, tag, get std html, get clean html, y comments, array, y extra tags remove, y extra tags clean, y allowed tags, y allow media tags, y allow iframes, properties, constants, documentation, index, definition, list, generated, on">
+<meta name="keywords" content="smarthtmlparser, final, class, provides, a, html, parser, and, cleaner, that, will, sanitize, parse, the, code, language, php, located, at, lib core plugins lib html.php, package, plugins:convertersandparsers, namespace, name, version, v.20220205, depends, classes, smart, usage, dynamic, object, new, class method, this, only, methods, public, function, construct, string, y html, bool, y signature, true, y html validate, y log validation warn err, false, get comments, get all tags, get tags, tag, get std html, get clean html, y comments, array, y extra tags remove, y extra tags clean, y allowed tags, y allow media tags, y allow iframes, getvalidationerrors, properties, constants, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartHtmlParser">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartHtmlParser</title>
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartHtmlParser</span></li>
 		
-		<li><b>Version:</b> v.20210609</li>
+		<li><b>Version:</b> v.20220205</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -724,8 +724,8 @@ select#select-summary {
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
 				<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
 			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_signature` Parameter is OPTIONAL, with the Default Value: true">$y_signature</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_dom_processing` Parameter is OPTIONAL, with the Default Value: true">$y_allow_dom_processing</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_log_dom_warn_err` Parameter is OPTIONAL, with the Default Value: false">$y_log_dom_warn_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_validate` Parameter is OPTIONAL, with the Default Value: true">$y_html_validate</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_log_validation_warn_err` Parameter is OPTIONAL, with the Default Value: false">$y_log_validation_warn_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -789,6 +789,17 @@ select#select-summary {
 			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_media_tags` Parameter is OPTIONAL, with the Default Value: false">$y_allow_media_tags</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
 			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_iframes` Parameter is OPTIONAL, with the Default Value: false">$y_allow_iframes</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div><div class="doc-container" id="Method--getValidationErrors">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getValidationErrors</b></span>&nbsp;(
+		
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
 	
@@ -862,6 +873,9 @@ function smartHandleDocSelector(obj) {
 									<option value="Method--get_clean_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_clean_html()</option>
 			
 			
+									<option value="Method--getValidationErrors"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getValidationErrors()</option>
+			
+			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
@@ -879,13 +893,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2021-06-12 19:43:56 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:24:20 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2021 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
 </center></div>
 </body>
 </html>
