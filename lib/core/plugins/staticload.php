@@ -11,13 +11,12 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-//-- r.20210526
+//-- r.20220210
 // #PLUGINS# :: they can be loaded always (require) or as dependency injection (require_once)
 //--
 require_once('lib/core/plugins/lib_idn_punycode.php'); 		// idn punnycode converter
 require_once('lib/core/plugins/lib_detect_img.php');		// detect img
 require_once('lib/core/plugins/lib_robot.php'); 			// smart robot
-require_once('lib/core/plugins/lib_ftp_cli.php');			// ftp client
 //--
 require_once('lib/core/plugins/lib_mail_send.php');			// mail send client (sendmail, smtp)
 require_once('lib/core/plugins/lib_mail_get.php'); 			// mail get client (pop3, imap4)

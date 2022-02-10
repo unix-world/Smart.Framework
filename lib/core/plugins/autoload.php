@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 
-//-- r.20210614
+//-- r.20220210
 // #PLUGINS# :: they are loaded via Dependency Injection
 //--
 /**
@@ -39,10 +39,6 @@ function autoload__SmartFrameworkPlugins($classname) {
 		//-- robot
 		case 'SmartRobot':
 			require_once('lib/core/plugins/lib_robot.php'); 			// smart robot
-			break;
-		//-- ftp client
-		case 'SmartFtpClient':
-			require_once('lib/core/plugins/lib_ftp_cli.php');			// ftp client
 			break;
 		//-- mail
 		case 'SmartMailerSend':

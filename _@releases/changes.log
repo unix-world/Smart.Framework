@@ -2,6 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+February 10, 2022 :: Version 8.7 rev.20220210
+	* move lib FTP client to smart modules
+	* add support for detecting client IP / Proxy and server protocol port behind a reverse proxy (ex: haproxy)
+	* lib utils optimizations
+	* minor bug fixes in the new Markdown Parser (v2) ; marked now as STABLE
+
 February 07, 2022 :: Version 8.7 rev.20220207
 	* Completely rewritten of SmartMarkdownToHTML class ; implement Markdown v.2 Extended (from draft specifications) ; The old class only supports Markdown v1 and have been moved to modules and renamed as SmartPMarkdownToHTML
 	* Rework of init settings for better supporting server side proxy / reverse proxy (ex: HAProxy)
