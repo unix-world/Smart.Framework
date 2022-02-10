@@ -37,7 +37,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
 //define('SMART_PAGEBUILDER_DISABLE_DELETE', true); 	// this can be set in etc/config-admin.php to disable page deletions in PageBuilder Manager (optional)
 //define('SMART_PAGEBUILDER_ALLOW_FULLTREE', true); 	// allow display full tree (this should be enabled just for small projects)
 //define('SMART_PAGEBUILDER_THEME_DARK', true); 		// if set to TRUE will enable the dark theme for the page builder editors
-//define('SMART_PAGEBUILDER_VALIDATE_HTML', true); 		// if set will validate the HTML ; just for admin area
+//define('SMART_PAGEBUILDER_VALIDATE_HTML', true); 		// if set will validate the HTML ; just for admin area ; optimal values: 'tidy' or 'tidy:required'
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -52,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20220206
+ * @version 	v.20220210
  * @package 	PageBuilder
  *
  */
@@ -675,14 +675,14 @@ final class Manager {
 						$out .= '<input type="hidden" name="frm[language]" value="'.\Smart::escape_html((string)$y_lang).'">';
 					} //end if
 					if((string)$query['mode'] == 'raw') {
-						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '885px', '70vh', true, (string)$theme_editable);
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '90vw', '70vh', true, (string)$theme_editable);
 					} elseif((string)$query['mode'] == 'text') {
-						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '885px', '70vh', true, (string)$theme_editable);
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'text', true, '90vw', '70vh', true, (string)$theme_editable);
 					} elseif((string)$query['mode'] == 'markdown') {
-						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'markdown', true, '885px', '70vh', true, (string)$theme_editable);
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'markdown', true, '90vw', '70vh', true, (string)$theme_editable);
 					} else {
-					//	$out .= \SmartViewHtmlHelpers::html_js_htmlarea('pbld_code_htmleditor', 'frm[code]', $query['code'], '885px', '70vh', true); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
-						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'html', true, '885px', '70vh', true, (string)$theme_editable);
+					//	$out .= \SmartViewHtmlHelpers::html_js_htmlarea('pbld_code_htmleditor', 'frm[code]', $query['code'], '90vw', '70vh', true); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
+						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'html', true, '90vw', '70vh', true, (string)$theme_editable);
 					} //end if else
 					$out .= '<div align="left">';
 					if((string)$query['mode'] == 'raw') {
@@ -762,7 +762,7 @@ final class Manager {
 						$orphans_key = null;
 						$orphans_val = null;
 						$warn_placeholders .= '</ul>';
-						$out .= (string) \SmartComponents::operation_warn('WARNING: Undefined or Invalid Placeholders detected:<br>'.$warn_placeholders, '92%');
+						$out .= (string) \SmartComponents::operation_warn('WARNING: Undefined or Invalid Placeholders detected:'.'<div style="max-height:70px; overflow:auto;">'.$warn_placeholders.'</div>', '92%'); // {{{SYNC-PAGEBUILDER-NOTIFICATIONS-HEIGHT}}}
 					} //end if
 					$warn_placeholders = null; // free mem
 					$arr_placehold_orphans = null; // free mem
@@ -789,53 +789,62 @@ final class Manager {
 						if((string)$query['mode'] == 'raw') {
 							//--
 							$out .= '</div>'."\n";
-							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh', true, (string)$theme_readonly);
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '90vw', '70vh', true, (string)$theme_readonly);
 							//--
 						} elseif((string)$query['mode'] == 'text') {
 							//--
 							$out .= '</div>'."\n";
-							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '885px', '70vh', true, (string)$theme_readonly);
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'text', false, '90vw', '70vh', true, (string)$theme_readonly);
 							//--
 						} elseif((string)$query['mode'] == 'markdown') {
 							//--
 							$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 							$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-preview.svg'.'" alt="'.self::text('record_sytx_html').'" title="'.self::text('record_sytx_html').'" style="cursor:pointer;" onClick="'.'smartJ$Browser.LoadElementContentByAjax('."jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-preview-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
+							//--
 							$codemode = 'markdown';
+							//--
 							if((string)$y_mode == 'codesrcview') {
 								//--
 								$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 								$out .= '<img alt="'.self::text('record_sytx_mkdw').'" title="'.self::text('record_sytx_mkdw').'" src="'.self::$ModulePath.'libs/views/manager/img/syntax-markdown.svg'.'" style="cursor:pointer;" onClick="'.'smartJ$Browser.LoadElementContentByAjax('."jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-view-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
 								//--
+							} //end if
+							//--
+							if(\SmartModExtLib\PageBuilder\Utils::displayValidationErrors() === true) {
+								//--
 								$arr_mkdw_render_notices = (array) \SmartModExtLib\PageBuilder\Utils::getRenderedMarkdownNotices((string)$query['code']);
 								if((string)$arr_mkdw_render_notices['validator'] != '') {
-									$out .= '<br><div style="float:right; cursor:help;" title="HTML Code Validator Check: '.\Smart::escape_html((string)$arr_mkdw_render_notices['validator'].' # Warnings/Errors: '.(int)\Smart::array_size((array)$arr_mkdw_render_notices['notices'])).'"><i class="sfi sfi-html-five"></i></div>';
+									$out .= '<br><div style="float:left; cursor:help;" title="Markdown/HTML Code Validation: '.\Smart::escape_html((string)$arr_mkdw_render_notices['validator'].' # Warnings/Errors: '.(((int)\Smart::array_size((array)$arr_mkdw_render_notices['notices']) > 0) ? 'YES' : 'NO')).'"><i class="sfi sfi-html-five"></i></div>';
 									$out .= (string) self::renderNotices((array)$arr_mkdw_render_notices['notices'], 'Markdown Html Rendering', 'Html Validation Warnings/Errors');
 								} //end if
 								$arr_mkdw_render_notices = null;
 								//--
-								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], null, '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_VALIDATE_HTML ; no need for validation here ; do not log notices
-								$codemode = 'html';
+							} //end if
+							//--
+							if((string)$y_mode == 'codesrcview') {
 								//--
 								$theme_readonly = (string) $theme_mkdw_htmlsrc;
+								$codemode = 'html';
+								//--
+								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], '', '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_VALIDATE_HTML ; no need for validation here ; do not log notices
 								//--
 							} //end if
 							$out .= '</div>'."\n";
-							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], (string)$codemode, false, '885px', '70vh', true, (string)$theme_readonly);
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], (string)$codemode, false, '90vw', '70vh', true, (string)$theme_readonly);
 							//--
 						} else { // html
 							//--
 							$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 							$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-preview.svg'.'" alt="'.self::text('record_sytx_html').' Preview" title="'.self::text('record_sytx_html').' Preview" style="cursor:pointer;" onClick="'.'smartJ$Browser.LoadElementContentByAjax('."jQuery('#code-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-preview-tab-code&id='.\Smart::escape_url($query['id']).'&translate='.\Smart::escape_url($y_lang)))."', 'GET', 'html');".'">';
 							//--
-							if((string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption() != '') {
+							if(\SmartModExtLib\PageBuilder\Utils::displayValidationErrors() === true) {
 								//--
 								$htmlparser = new \SmartHtmlParser((string)$query['code'], true, (string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption(), false);
 								$htmlparser->get_clean_html();
 								$validerrs = (string) trim((string)$htmlparser->getValidationErrors());
+								$out .= '<br><div style="float:left; cursor:help;" title="HTML Code Validation: '.\Smart::escape_html((string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption().' # Warnings/Errors: '.(((string)$validerrs != '') ? 'YES' : 'NO')).'"><i class="sfi sfi-html-five"></i></div>';
 								if((string)$validerrs != '') {
-									$validerrs = [ 'check' => (array)explode("\n", (string)$validerrs) ];
-									$out .= '<br><div style="float:right; cursor:help;" title="HTML Code Validator Check: '.\Smart::escape_html((string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption().' # Warnings/Errors: '.(int)\Smart::array_size((array)$validerrs)).'"><i class="sfi sfi-html-five"></i></div>';
-									$out .= (string) self::renderNotices((array)$validerrs, 'Html Code', 'Html Validation Warnings/Errors');
+									$out .= (string) self::renderNotices([ 0 => (array)explode("\n", (string)$validerrs) ], 'Html Code', 'Html Validation Warnings/Errors');
 								} //end if
 								$validerrs = null;
 								$htmlparser = null;
@@ -843,7 +852,7 @@ final class Manager {
 							} //end if
 							//--
 							$out .= '</div>'."\n";
-							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'html', false, '885px', '70vh', true, (string)$theme_readonly);
+							$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', '', $query['code'], 'html', false, '90vw', '70vh', true, (string)$theme_readonly);
 							//--
 						} //end if else
 						//--
@@ -863,14 +872,14 @@ final class Manager {
 							$the_editor_styles = '';
 							if((string)$query['mode'] == 'markdown') {
 								$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/markdown.css">';
-								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], null, '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_VALIDATE_HTML ; no need for validation here ; do not log notices
+								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], '', '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_VALIDATE_HTML ; no need for validation here ; do not log notices
 							} else {
 							//	$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/js/jsedithtml/cleditor/jquery.cleditor.smartframeworkcomponents.css">'; // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
 								$query['code'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$query['code']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
 							} //end if else
 							// TODO: test using: '<style>'."\n".\trim((string)\SmartFileSystem::read('lib/core/css/base.css'))."\n".'</style>'
 							$the_website_styles = '<style>* { font-family: \'IBM Plex Sans\', \'Noto Sans\', arial, sans-serif; font-smooth: always; } a, th, td, div, span, p, blockquote, pre, code { font-size:13px; }</style>';
-							$out .= \SmartViewHtmlHelpers::html_js_preview_iframe('pbld_code_editor', '<!DOCTYPE html><html><head>'.$the_website_styles.$the_editor_styles.'</head><body style="background:#FFFFFF;">'.$query['code'].'</body></html></html>', $y_width='885px', $y_height='70vh');
+							$out .= \SmartViewHtmlHelpers::html_js_preview_iframe('pbld_code_editor', '<!DOCTYPE html><html><head>'.$the_website_styles.$the_editor_styles.'</head><body style="background:#FFFFFF;">'.$query['code'].'</body></html></html>', $y_width='90vw', $y_height='70vh');
 						} //end if else
 						//--
 					} //end if else
@@ -947,7 +956,7 @@ final class Manager {
 				$out .= (string) self::getPreviewButtons((string)$query['id']);
 				$out .= '</div>'."\n";
 				$out .= '<input type="hidden" name="frm[form_mode]" value="yaml">';
-				$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', 'frm[data]', $query['data'], 'yaml', true, '885px', '70vh', true, (string)$theme_editable); // OK.new
+				$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', 'frm[data]', $query['data'], 'yaml', true, '90vw', '70vh', true, (string)$theme_editable); // OK.new
 				$out .= '<div align="left"><font size="4" color="#003399"><b>&lt;/<i>yaml</i>&gt;</b></font></div>'."\n";
 				$out .= "\n".'</form>'."\n";
 				$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', false);</script>';
@@ -964,16 +973,16 @@ final class Manager {
 				$out = '';
 				if($yerr) {
 					//--
-					$out .= (string) \SmartComponents::operation_error('YAML Parse ERROR: '.\Smart::escape_html($yerr), '815px');
+					$out .= (string) \SmartComponents::operation_error('YAML Parse ERROR: '.\Smart::escape_html($yerr), '92%');
 					//--
 				} else {
 					//--
 					if((string)$query['mode'] == 'settings') {
 						//--
 						if(\Smart::array_size($yaml) <= 0) {
-							$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Empty definition for settings', '815px');
+							$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Empty definition for settings', '92%');
 						} elseif(\Smart::array_size($yaml['SETTINGS']) <= 0) {
-							$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Invalid `SETTINGS` definition', '815px');
+							$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Invalid `SETTINGS` definition', '92%');
 						} //end if else
 						//--
 					} else {
@@ -1029,7 +1038,7 @@ final class Manager {
 							$orphans_key = null;
 							$orphans_val = null;
 							$warn_placeholders .= '</ul>';
-							$out .= (string) \SmartComponents::operation_warn('WARNING: Undefined or Invalid Keys detected:<br>'.$warn_placeholders, '92%');
+							$out .= (string) \SmartComponents::operation_warn('WARNING: Unused or Invalid Keys detected:'.'<div style="max-height:70px; overflow:auto;">'.$warn_placeholders.'</div>', '92%'); // {{{SYNC-PAGEBUILDER-NOTIFICATIONS-HEIGHT}}}
 						} //end if
 						$warn_placeholders = null; // free mem
 						$arr_placehold_orphans = null; // free mem
@@ -1037,11 +1046,11 @@ final class Manager {
 						if(\Smart::array_size($yaml) > 0) {
 							if((string)$query['mode'] == 'raw') {
 								if(\Smart::array_size($yaml['PROPS']) <= 0) {
-									$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Invalid `PROPS` definition', '815px');
+									$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Invalid `PROPS` definition', '92%');
 								} //end if
 							} else {
 								if(\Smart::array_size($yaml['RENDER']) <= 0) {
-									$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Invalid `RENDER` definition', '815px');
+									$out .= (string) \SmartComponents::operation_warn('YAML Structure WARNING: Invalid `RENDER` definition', '92%');
 								} //end if
 							} //end if else
 						} //end if
@@ -1061,9 +1070,9 @@ final class Manager {
 				} //end if else
 				$out .= '</div>'."\n";
 				if((string)$y_mode == 'preview') {
-					$out .= '<div id="yaml-json-renderer" style="width:835px; height: 70vh; border: 1px solid #ECECEC; padding: 0.5em 1.5em; overflow:auto;"></div><script>(function(){ var yamlData = \''.\Smart::escape_js(\Smart::json_encode($yaml, false, false, true)).'\'; var yamlJsonData = null; try { yamlJsonData = JSON.parse(yamlData); } catch(err){ jQuery(\'#yaml-json-renderer\').html(\'<div id="operation_error">\' + \'ERROR Parsing YAML to JSON Data: \' + err + \'</div>\'); return; } jQuery(\'#yaml-json-renderer\').css({\'white-space\':\'pre\'}).jsonViewer(yamlJsonData, {collapsed:false, withQuotes:false}); })();</script>';
+					$out .= '<div id="yaml-json-renderer" style="width:88vw; height: 70vh; border: 1px solid #ECECEC; padding: 0.5em 1.5em; overflow:auto;"></div><script>(function(){ var yamlData = \''.\Smart::escape_js(\Smart::json_encode($yaml, false, false, true)).'\'; var yamlJsonData = null; try { yamlJsonData = JSON.parse(yamlData); } catch(err){ jQuery(\'#yaml-json-renderer\').html(\'<div id="operation_error">\' + \'ERROR Parsing YAML to JSON Data: \' + err + \'</div>\'); return; } jQuery(\'#yaml-json-renderer\').css({\'white-space\':\'pre\'}).jsonViewer(yamlJsonData, {collapsed:false, withQuotes:false}); })();</script>';
 				} else { // view
-					$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', '', $query['data'], 'yaml', false, '885px', '70vh', true, (string)$theme_readonly); // OK.new
+					$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', '', $query['data'], 'yaml', false, '90vw', '70vh', true, (string)$theme_readonly); // OK.new
 				} //end if else
 				$out .= '<div align="left"><font size="4"><b>&lt;/yaml&gt;</b></font></div>'."\n";
 				$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', true); smartJ$UI.TabsActivate(\'tabs\', true);</script>';
@@ -3119,7 +3128,7 @@ final class Manager {
 		//--
 		if(\Smart::array_size($arr_notices) > 0) {
 			//--
-			$html = '<ul>';
+			$html = '<div style="max-height:70px; overflow:auto;"><ul>'; // {{{SYNC-PAGEBUILDER-NOTIFICATIONS-HEIGHT}}}
 			//--
 			foreach($arr_notices as $rnKey => $rnVal) {
 				$html .= '<li>';
@@ -3136,7 +3145,7 @@ final class Manager {
 				$html .= '</li>'."\n";
 			} //end foreach
 			//--
-			$html .= '</ul>'."\n";
+			$html .= '</ul></div>'."\n";
 			//--
 			$html = (string) \SmartComponents::operation_notice('NOTICE: '.\Smart::escape_html((string)$title).':<br>'.$html, '92%');
 			//--

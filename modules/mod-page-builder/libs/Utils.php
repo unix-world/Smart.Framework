@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220206
+ * @version 	v.20220210
  * @package 	PageBuilder
  *
  */
@@ -197,14 +197,27 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function markdownRenderingGetOptionHtmlValidate(?string $option_validate_html) : ?string {
+	public static function displayValidationErrors() : bool {
+		//--
+		$validopts = (string) self::htmlValidatorOption();
+		//--
+		if((string)$validopts != '') {
+			return true;
+		} //end if
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+
+
+	public static function markdownRenderingGetOptionHtmlValidate(?string $option_validate_html=null) : ?string {
 		//--
 		if($option_validate_html === null) {
-			return '';
+			$option_validate_html = (string) self::htmlValidatorOption();
 		} //end if
 		//--
 		if((string)$option_validate_html == '') {
-			$option_validate_html = (string) self::htmlValidatorOption();
+			return '';
 		} //end if
 		//--
 		return (string) '<validate:html:'.str_replace(['<','>'], '', (string)$option_validate_html).'>'; // important: do not allow < or > to be able to inject other options ... strict the html validation is expected here
@@ -213,6 +226,11 @@ final class Utils {
 
 
 	public static function renderMarkdown(?string $markdown_code, ?string $option_validate_html='', ?string $relative_url_prefix='', bool $log_render_notices=true) : string {
+		//--
+		// The default options are used on frontend rendering
+		// as default should use '' not null for $option_validate_html
+		// if $option_validate_html is set to null can use the override constant SMART_PAGEBUILDER_VALIDATE_HTML
+		// if $option_validate_html is set to '' will disable validation
 		//--
 		$option_validate_html = (string) self::markdownRenderingGetOptionHtmlValidate($option_validate_html); // do not cast method param, it may be null which changes the options !
 		//--
@@ -223,15 +241,17 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function getRenderedMarkdownNotices(string $markdown_code, string $option_validate_html='') : array {
+	public static function getRenderedMarkdownNotices(string $markdown_code) : array {
 		//--
-		$option_validate_html = (string) self::markdownRenderingGetOptionHtmlValidate((string)$option_validate_html); // here, validator cannot be null
+		$option_validate_html = (string) self::markdownRenderingGetOptionHtmlValidate(); // here, validator cannot be null
 		//--
-		if((string)$option_validate_html == '') {
-			return (array) [
-				'validator' => '',
-				'notices' 	=> [],
-			];
+		if($option_validate_html !== null) {
+			if((string)$option_validate_html == '') {
+				return (array) [
+					'validator' => '',
+					'notices' 	=> [],
+				];
+			} //end if
 		} //end if
 		//--
 		$syntax_pagebuiler = (array) self::extractPageBuilderSyntax((string)$markdown_code);

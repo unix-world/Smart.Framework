@@ -7,6 +7,7 @@ February 10, 2022 :: Version 8.7 rev.20220210
 	* add support for detecting client IP / Proxy and server protocol port behind a reverse proxy (ex: haproxy)
 	* lib utils optimizations
 	* minor bug fixes in the new Markdown Parser (v2) ; marked now as STABLE
+	* stable feature: PageBuilder, enable and use HTML Syntax Validation for HTML and Markdown syntax objects
 
 February 07, 2022 :: Version 8.7 rev.20220207
 	* Completely rewritten of SmartMarkdownToHTML class ; implement Markdown v.2 Extended (from draft specifications) ; The old class only supports Markdown v1 and have been moved to modules and renamed as SmartPMarkdownToHTML

@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20220205
+ * @version 	v.20220210
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -448,8 +448,8 @@ final class SmartHtmlParser {
 		//--
 		// THIS IS A FIX for Tidy and DomDocument as some version of these parsers fail if only body provided ...
 		// Trick: the meta charset have not be supplied because if set to UTF-8 the DomDocument will decode all possible entities, includding &Prime; thus the fixback to &quot; is no more available to force &quot; instead of " when using DomDocument
-		//--
-		return (string) '<!DOCTYPE html>'."\n".'<html>'."\n".'<head>'."\n".'<title>HTML Document</title>'."\n".'</head>'."\n".'<body>'."\n".$body."\n".'</body>'."\n".'</html>'."\n";
+		//-- DO NOT ADD MORE \n, all tags includding body must be on one line to match validation errors line numbers
+		return (string) '<!DOCTYPE html>'.'<html>'.'<head>'.'<title>HTML Document</title>'.'</head>'.'<body>'.$body."\n".'</body>'.'</html>'."\n";
 		//--
 
 	} //END FUNCTION
@@ -692,9 +692,9 @@ final class SmartHtmlParser {
 						$enable_warns = true;
 					} else { // this may be used also in production environments if needed
 						$max_err_level = 1;
-						if(!SmartFrameworkRegistry::ifProdEnv()) {
-							$enable_warns = true;
-						} //end if
+					//	if(!SmartFrameworkRegistry::ifProdEnv()) {
+							$enable_warns = true; // always register warings, may be useful also in production as long as there is a specific option to log them or not
+					//	} //end if
 					} //end if
 					//--
 					$etidy = (string) strtolower((string)SMART_FRAMEWORK_SQL_CHARSET); // tidy uses utf8 instead of UTF-8

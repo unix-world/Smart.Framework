@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'Smart.Markdown.parser@v.2.0.0-r.20220208';
+	private const MKDW_VERSION = 'Smart.Markdown.parser@v.2.0.0-r.20220210';
 
 	//===================================
 
@@ -273,6 +273,10 @@ final class SmartMarkdownToHTML {
 			$this->optionValidateHtml = 'any:required:tidy'; // validate, prefer tidy, required
 		} elseif(in_array('validate:html:any:required:dom', (array)$this->renderOptions)) {
 			$this->optionValidateHtml = 'any:required:dom'; // validate, prefer dom, required
+		} elseif(in_array('validate:html:tidy', (array)$this->renderOptions)) {
+			$this->optionValidateHtml = 'tidy'; // validate, tidy only, optional
+		} elseif(in_array('validate:html:dom', (array)$this->renderOptions)) {
+			$this->optionValidateHtml = 'dom'; // validate, dom only, optional
 		} elseif(in_array('validate:html:tidy:required', (array)$this->renderOptions)) {
 			$this->optionValidateHtml = 'tidy:required'; // validate, tidy, required
 		} elseif(in_array('validate:html:dom:required', (array)$this->renderOptions)) {
