@@ -1,5 +1,5 @@
 
-/* ------------------------------------------------ CSS3, Base Styles START :: r.20210612 */
+/* ------------------------------------------------ CSS3, Base Styles START :: r.20220214 */
 
 /* IMPORTANT: !! FOR A VERY CLEAR READABILITY OF PAGE FONTS !!
  * except the main body and main elements sizes (sized in pixels),
@@ -39,6 +39,11 @@ div, p, ol, ul, form, fieldset, blockquote, address, dl {
 	line-height: 1.5;
 }
 
+ul {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
 li {
 	list-style-position: inside; /* bugfix for chrome */
 }
@@ -53,34 +58,34 @@ small {
 }
 
 h1 {
-	font-size: 2rem; /* 32px */
+	font-size: 2.25rem; /* 36px */
 	margin-top: 0.625rem; /* 10px */
 	margin-bottom: 0.625rem; /* 10px */
 }
 h2 {
-	font-size: 1.75rem; /* 28px */
+	font-size: 2rem; /* 32px */
 	margin-top: 0.5rem; /* 8px */
 	margin-bottom: 0.5rem; /* 8px */
 }
 h3 {
-	font-size: 1.5rem; /* 24px */
+	font-size: 1.75rem; /* 28px */
 	margin-top: 0.375rem; /* 6px */
 	margin-bottom: 0.375rem; /* 6px */
 }
 h4 {
-	font-size: 1.25rem; /* 20px */
-	margin-top: 0.3125rem; /* 5px */
-	margin-bottom: 0.3125rem; /* 5px */
-}
-h5 {
-	font-size: 1.125rem; /* 18px */
+	font-size: 1.5rem; /* 24px */
 	margin-top: 0.25rem; /* 4px */
 	margin-bottom: 0.25rem; /* 4px */
 }
+h5 {
+	font-size: 1.25rem; /* 20px */
+	margin-top: 0.125rem; /* 2px */
+	margin-bottom: 0.125rem; /* 2px */
+}
 h6 {
 	font-size: 1rem; /* 16px */
-	margin-top: 0.1875rem; /* 3px */
-	margin-bottom: 0.1875rem; /* 3px */
+	margin-top: 0.063rem; /* 1px */
+	margin-bottom: 0.063rem; /* 1px */
 }
 
 img {

@@ -1,9 +1,9 @@
 # [%%%IF:TITLE:==;%%%]... ==Title is empty== ...[%%%ELSE:TITLE%%%][###TITLE|html###][%%%/IF:TITLE%%%]
 
 &copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
-Extended Markdown v.II (smart flavour) // Test :: r.20220208
+Extended Markdown v.II (smart flavour) // Test :: r.20220214
 
-# (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old bad features have been dropped, and some still supported in compatibility mode ...
+# (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old "bad" features have been dropped, and others supported ==only in compatibility mode== ...
 
 ## (H2) "Unicode" &reg; <Test> ăĂîÎâÂşŞţŢ &quot;&nbsp;&quot; &lt;&quot;&gt;
 
@@ -39,19 +39,19 @@ This is an article DIV &nbsp; [A Button Link](/#==test== ""){L: .ux-button}
 This is a section DIV
 :::
 \
-Safe html escapes, below:
+Safe html escapes \\, below:
 <Line1 <i>> 1
 &Line2 &copy; <i>& 2
 `Line3 <i>` $$variable$$ as: \$\$variable\$\$ or if variable contains dollar sign: $$\$3$$ as \$\$\\$3\$\$ <a>
 \
-<Line4> 4\
+<Line4> 4
 "Line5 <i> 5" <a>
  &Line6
 
 [Go To <anchor>](#anchor)
 
 ABC ```abc``` \`\`\`zzz\`\`\` ```yy\!y```
-DEF ``def`` \`\`www`\`\ ``qq\!q``
+DEF ``def`` \`\`www\`\` ``qq\!q``
 
 
 A preformat:
@@ -128,10 +128,10 @@ some text **aligned on left ``==(default)==``**
 |{T: @class=hidden}|
 | ---: |
 | some text **aligned on right** ; ``in v2 this can be done also by using div with a class`` |
-
+\
 |{!DEF!=.dbordered} ||
 | :--- | :--- |
-| #### Heading inside !!table cell!! | ##### Another Heading inside ^^table cell^^ |
+| #### Heading inside !!table cell!! | ##### Another \| Heading inside ^^table cell^^ |
 
 - - -
 ## Lists
@@ -498,8 +498,18 @@ Some **text** before image ![Inline Base64 Image](data:image/svg+xml;base64,PHN2
 ::::
 ![Alternate Text](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Alternate Image: Jpeg and Webp with Unveil"){I: .testClass1 .testClass2 #testID @data-test=Sample$Image %lazyload=unveil %alternate=https://www.gstatic.com/webp/gallery/1.sm.webp$image/webp}
 ;;;;
-[![IMAGE ALT TEXT HERE](//img.youtube.com/vi/4rUrYN4cnGs/0.jpg) {I:%lazyload=unveil}](//www.youtube.com/watch?v=4rUrYN4cnGs "Sample Video Preview Image with Unveil"){L:.video-link #link .Extra-Class @target=_blank}
 ;;;
+
+
+### Sample Video
+[![IMAGE ALT TEXT HERE](//img.youtube.com/vi/4rUrYN4cnGs/0.jpg) {I:%lazyload=unveil}](//www.youtube.com/watch?v=4rUrYN4cnGs "Sample Video Preview Image with Unveil"){L:.video-link #link .Extra-Class @target=_blank}
+\
+![Sample Video OGG](https://www.w3schools.com/html/mov_bbb.ogg){I: #video-1 %video=ogg @width=320 @height=176 @controls=none}
+![Sample Video Webm/MP4](https://www.w3schools.com/html/mov_bbb.webm$https://www.w3schools.com/html/mov_bbb.mp4){I: #video-2 %video=webm$mp4 @width=320 @height=176 @preload=none @poster=https://www.w3schools.com/images/w3html5.gif}
+\
+### Sample Audio
+![Sample Audio OGG/MP3](https://www.w3schools.com/html/horse.ogg$https://www.w3schools.com/html/horse.mp3){I: #audio-1 %audio=ogg$mpeg}
+
 
 ## Fenced code blocks
 

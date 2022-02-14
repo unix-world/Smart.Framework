@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartYamlConverter
- * @version 	v.20220210
+ * @version 	v.20220214
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'Smart.Markdown.parser@v.2.0.0-r.20220210';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.0.1-r.20220214';
 
 	//===================================
 
@@ -76,21 +76,20 @@ final class SmartMarkdownToHTML {
 //	[OK] add  BlockQuote, both: normal or like gitlab (multiline between <<< and <<<), but only with one level ; it must be extracted first ; pre-parsed ; it can contain code or pre that must be extracted after ; idea: can extract, and replaced with a blockquote like gitlab by mangling left '> '
 //		like above idea for indented PRE code blocks ! # perhaps add indent tab with nbsp like here: https://www.markdownguide.org/hacks/#indent-tab ; but for replacing indented pre
 //	[NO] hardbreaks: https://docs.gitlab.com/ee/user/asciidoc.html
-//		implement video using as img but with {I: %video=video.webm$type=webm$att1=1$att2=2}
-//		finalize options in construct ; make options support also as non-associative array, they are easy to manage ...
-//	[OK] implement LAZYLOAD for images (unveil)
+//	[OK] implement video and audio using media syntax but with {I: %video=video.webm$type=webm$att1=1$att2=2}
+//	[OK] finalize options in construct
+//	[NO: in the future perhaps, when the framework will support PHP8+ only because it needs a typecast like null|string|array ] make options support also as non-associative array, they are easy to manage ...]
+//	[OK] implement LAZYLOAD for media images (unveil)
 //	[OK] implement relative URL prefix
 //	[OK: will not implement in v2 max-*] implement for tables from table options: ALIGN-HEAD-LEFT ; ALIGN-LEFT ; NO-TABLE-HEAD ; ALIGN-HEAD-CENTER ; ALIGN-AUTO ; max-cells-# max-rows-# ; these are fixes with tables from import ; but should in v2 be used max-* ??
 //		table captions to support import from html !? idea: https://forum.obsidian.md/t/captions-for-tables-in-markdown/17240/5 ; or idea, via table DEF
 // 	[OK] Inline URL Tags are no more supported in v2: aka <http://#inline.url.tag2>
 
 	//--
-	private $breaksEnabled = true; 					// add <br> for text on multiple lines
-	private $sBreakEnabled = true;					// enable \s and \S
+	private $sBreakEnabled = true;					// enable \ break
+	private $mediaExtraEnabled = true; 				// enable extra media: videos, audio ; images are always enabled
 	private $useCompatibilityMode = true; 			// use the compatibility mode with v1 and support 99% of v1 syntax, otherwise some old v1 syntax will not be parsed ; v1 syntax is not optimal and takes much overhead ...
-	private $imagesEnabled = true; 					// enable images
-	private $videosEnabled = true; 					// enable images
-	private $lazyLoadImgDisabled = false; 			// if TRUE will Disable the lazy load feature for images
+	private $lazyLoadImgDisabled = false; 			// if TRUE will Disable the lazy load feature for media images
 	private $renderOptions = ''; 					// Render Options: <allow:marker-tpl>,<validate:html>,<validate:html:dom>,<validate:html:tidy>,<validate:html:required>,<validate:html:tidy:required>,<validate:html:dom:required>
 	private $optionValidateHtml = false; 			// based on render options
 	private $optionAllowMarkerTplSyntax = false; 	// If set to TRUE will not disable the Markers TPL Syntax ; by default does not allow
@@ -107,27 +106,26 @@ final class SmartMarkdownToHTML {
 
 	//-- special parsing helper characters
 	private const SPECIAL_CHAR_ENTRY_MARK 	= "\u{204F}"; // unicode reversed semicolon &bsemi; or &#8271; (unicode): ⁏ (not ;)
-	private const SPECIAL_CHAR_UNBSP_BREAK 	= "\u{00A0}"; // unicode NBSP (special character) aka utf8_encode("\xA0"), used for line breaks
 	//--
 
-	//-- extra, by unixman: attributes can optional start with a type prefix to know which attributes to assign to nested elements (ex: image in a link, or link in a table cell, or image in a link in a table cell)
-	private const regexHdrAttribute 	= '[\t ]*\{(H\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Header - optional, starts with {H:
-	private const regexImgAttribute 	= '[\t ]*\{(I\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Images - optional, starts with {I:
-	private const regexLnkAttribute 	= '[\t ]*\{(L\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Links  - optional, starts with {L:
-	private const regexTblCellAttribute = '[\t ]*\{(T\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Table Cell Attributes - optional, starts with {T:
-	private const regexTblDefinition 	= '[\t ]*(\{\!DEF\!\=([_A-Za-z0-9\.\-\#;]+)\})[\t ]*'; 							// Table Definition - optional, first head cell starts with: {!DEF!=
+	//-- extra, by unixman: attributes can optional start with a type prefix to know which attributes to assign to nested elements (ex: media in a link, or link in a table cell, or media in a link in a table cell)
+	private const regexHeadingAttribute 	= '[\t ]*\{(H\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Header 					- optional, starts with {H:
+	private const regexMediaAttribute 		= '[\t ]*\{(I\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Media 					- optional, starts with {I:
+	private const regexLinkAttribute 		= '[\t ]*\{(L\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Links 					- optional, starts with {L:
+	private const regexTableCellAttribute 	= '[\t ]*\{(T\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Table Cell Attributes 	- optional, starts with {T:
+	private const regexTableDefinition 		= '[\t ]*(\{\!DEF\!\=([_A-Za-z0-9\.\-\#;]+)\})[\t ]*'; 							// Table Definition 		- optional, first head cell only, starts with: {!DEF!=
 	//--
 
 	//-- links: regex
-	private const regexLinkStart 		= '\[((?:[^\]\[]++|(?R))*+)\]'; // inspired from parsedown inlineLink part#1 v.1.8.0 with fixes: escapes
-	private const regexLinkEnd 			= '[\(]\s*+((?:[^ \t\(\)]++|[\(][^ \t)]+[\)])++)(?:[ \t]+("[^"]*+"|\'[^\']*+\'))?\s*+[\)]'; // inspired from parsedown inlineLink part#2 v.1.8.0 with fixes: escapes
-	//-- images: regex
-	private const regexImgStart 		= '[\!]{1}'.self::regexLinkStart; // the same but starts with an exclamation mark: !
-	private const regexImgEnd 			= ''.self::regexLinkEnd; // the same
-	//-- links with or without images inside ; images in links: patterns
-	private const PATTERN_LINK_AND_IMG 	= '/[\!]?'.self::regexLinkStart.''.self::regexLinkEnd.'(('.self::regexImgAttribute.')|('.self::regexLnkAttribute.'))*/s'; // link or image or link with image inside ; but to parse also images so add the image start exclamation sign (!) ... ; if image inside must be extracted again form the first part as the regexLinkStart includes inside also regexImgStart if any ;-)
-	private const PATTERN_LINK_ONLY 	= '/'.self::regexLinkStart.''.self::regexLinkEnd.'/'; 	// must run after extracting PATTERN_LINK_AND_IMG to extract only links, without attributes from the match 1st part
-	private const PATTERN_IMG_ONLY 		= '/'.self::regexImgStart.''.self::regexImgEnd.'/'; 	// must run after extracting PATTERN_LINK_AND_IMG to extract only images, without attributes from the match 1st part ; works also for images embedded into links
+	private const regexLinkStart 			= '\[((?:[^\]\[]++|(?R))*+)\]'; // inspired from parsedown inlineLink part#1 v.1.8.0 with fixes: escapes
+	private const regexLinkEnd 				= '[\(]\s*+((?:[^ \t\(\)]++|[\(][^ \t)]+[\)])++)(?:[ \t]+("[^"]*+"|\'[^\']*+\'))?\s*+[\)]'; // inspired from parsedown inlineLink part#2 v.1.8.0 with fixes: escapes
+	//-- media: regex
+	private const regexMediaStart 			= '[\!]{1}'.self::regexLinkStart; // the same but starts with an exclamation mark: !
+	private const regexMediaEnd 			= ''.self::regexLinkEnd; // the same
+	//-- links with or without media inside ; media in links: patterns
+	private const PATTERN_LINK_AND_MEDIA 	= '/[\!]?'.self::regexLinkStart.''.self::regexLinkEnd.'(('.self::regexMediaAttribute.')|('.self::regexLinkAttribute.'))*/s'; // link or media or link with media inside ; but to parse also media so add the media start exclamation sign (!) ... ; if media inside must be extracted again form the first part as the regexLinkStart includes inside also regexMediaStart if any ;-)
+	private const PATTERN_LINK_ONLY 		= '/'.self::regexLinkStart.''.self::regexLinkEnd.'/'; 	// must run after extracting PATTERN_LINK_AND_MEDIA to extract only links, without attributes from the match 1st part
+	private const PATTERN_MEDIA_ONLY 		= '/'.self::regexMediaStart.''.self::regexMediaEnd.'/'; 	// must run after extracting PATTERN_LINK_AND_MEDIA to extract only media, without attributes from the match 1st part ; works also for media embedded into links
 	//--
 
 	//--
@@ -165,7 +163,7 @@ final class SmartMarkdownToHTML {
 		'``' => '/([`]{1})(?<!\\\\`)(?<!``)([^`]+)(\1)/', 		// CODE compatibility like `code`, now mapped to ``highlight`` because cannot map as ```code``` because ```code``` are pre-extracted and does not need to be escaped !
 		'==' => '/([_]{1})(?<!\\\\_)(?<!__)([^_]+)(\1)/', 		// EM  compatibility support as in v2 syntax completely changed from _italic_ or *italic* to ==italic== ; at least will support _italic_
 		'!!' => '/([~]{1})(?<!\\\\~)(?<!~~)([^~]+)(\1)/', 		// SUB compatibility support as in v2 syntax completely changed from ~sub~ to !!sub!!
-		'^^' => '/([\^]{1})(?<!\\\\\^)(?<!\^\^)([^\^]+)(\1)/', // SUP compatibility support as in v2 syntax completely changed from ^sup^ to ^^sup^^
+		'^^' => '/([\^]{1})(?<!\\\\\^)(?<!\^\^)([^\^]+)(\1)/', 	// SUP compatibility support as in v2 syntax completely changed from ^sup^ to ^^sup^^
 	]; // if \ has to be matched with a regular expression \\, then '\\\\' must be used in PHP code #  https://www.php.net/manual/en/regexp.reference.escape.php
 	//--
 	private const PATTERN_BLOCK_QUOTED 	= '/(\n[\>]+[^\n]*)+\n/s'; // Compatibility Mode Quoted Block ; must use double \n to separe two blocks !
@@ -191,7 +189,7 @@ final class SmartMarkdownToHTML {
 		'&lowbar;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/lowbar/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // _ used for underline
 		'&dash;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/dash/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // - used for lists or deletions or table align
 		'&plus;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/plus/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // + used for lists or inserts
-		'&excl;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/excl/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ! used for subscript or images
+		'&excl;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/excl/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ! used for subscript or media
 		'&Hat;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/Hat/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ^ used for superscript
 		'&comma;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/comma/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // , used for inline quote
 		'&dollar;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/dollar/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // $ // used for var
@@ -202,8 +200,8 @@ final class SmartMarkdownToHTML {
 		'&period;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/period/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // . used for numeric lists
 		'&rpar;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/rpar/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ) used for numeric lists
 		'&lpar;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/lpar/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // (
-		'&rbrack;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/rbrack/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ] used for links or images
-		'&lbrack;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/lbrack/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // [ used for links or images
+		'&rbrack;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/rbrack/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ] used for links or media
+		'&lbrack;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/lbrack/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // [ used for links or media
 		'&rbrace;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/rbrace/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // } used for attributes
 		'&lbrace;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/lbrace/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // { used for attributes
 		'&percnt;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/percnt/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // %
@@ -252,13 +250,13 @@ final class SmartMarkdownToHTML {
 	/**
 	 * Class constructor with many options
 	 */
-	public function __construct(bool $y_breaksEnabled=true, bool $y_sBreakEnabled=true, bool $y_lazyLoadImgDisabled=false, ?string $y_renderOptions=null, ?string $y_relative_url_prefix=null, bool $y_log_render_notices=false, ?array $y_arr_preserve_extra_syntax=null, bool $y_useCompatibilityMode=false) {
+	public function __construct(bool $y_sBreakEnabled=true, bool $y_mediaExtraEnabled=true, bool $y_lazyLoadImgDisabled=false, ?string $y_renderOptions=null, ?string $y_relative_url_prefix=null, bool $y_log_render_notices=false, ?array $y_arr_preserve_extra_syntax=null, bool $y_useCompatibilityMode=false) {
 		//--
-		$this->breaksEnabled 			= (bool)   $y_breaksEnabled; 		// add <br> for consecutive empty lines
-		$this->sBreakEnabled 			= (bool)   $y_sBreakEnabled; 		// add <br> for a backslash \ followed by an empty line
-		$this->lazyLoadImgDisabled 		= (bool)   $y_lazyLoadImgDisabled; 	// if disabled the Markdown parser will not use the lazy load feature for images
+		$this->sBreakEnabled 			= (bool) $y_sBreakEnabled; 			// add <br> for a backslash \ followed by an empty line
+		$this->mediaExtraEnabled 		= (bool) $y_mediaExtraEnabled; 		// enable extra media: video, audio, iconic font (SFI) ; images are always enabled
+		$this->lazyLoadImgDisabled 		= (bool) $y_lazyLoadImgDisabled; 	// if disabled the Markdown parser will not use the lazy load feature for media images
 		//--
-		$this->renderOptions 			= (array)  Smart::list_to_array((string)$y_renderOptions); // render options
+		$this->renderOptions 			= (array) Smart::list_to_array((string)$y_renderOptions); // render options
 		//--
 		$this->optionValidateHtml 	  = ''; // like false, do not validate except if required by options
 		if(in_array('validate:html:any', (array)$this->renderOptions)) {
@@ -319,59 +317,17 @@ final class SmartMarkdownToHTML {
 		$this->NoticesLog = [];
 		//-- pre-fix charset, it is mandatory to be converted to UTF-8
 		$text = (string) SmartUnicode::fix_charset($text);
-		//-- pre trim
-		$text = (string) trim((string)$text)."\n"; // ensure the last new line if having a backslash
+		//-- substitute specials
 		$text = (string) str_replace((string)self::SPECIAL_CHAR_ENTRY_MARK, ';', $text); // this character is completely dissalowed, will be used for processing purposes only
-		//-- Fix broking curly quotes: ‘ = &lsquo; [0145] ; ’ = &rsquo; [0146] ; “ = &ldquo; [0147] ; ” = &rdquo; [0148]
-		$text = (string) str_replace(['‘', '’', '“', '”', '″', '″'], ['\'', '\'', '"', '"', '"', '"'], $text); // bug fix (special apostrophes will break the UTF-8 markdown ... don't know why !? but need fixing ; perhaps they are interpreted different in UTF-16 context !!!)
 		//-- standardize line breaks
 		$text = (string) str_replace(["\r\n", "\r"], "\n", $text);
-		//-- special breaks ; use `\` + `\n` as a new line enforcer
-		$text = (string) str_replace('\\'."\n".'|', '\\'."\n\n".'|', $text); // fix for tables, need double LF between \ and |
-		if($this->sBreakEnabled) {
-			$text = (string) str_replace('\\'."\n", "\n".self::SPECIAL_CHAR_UNBSP_BREAK."\n", $text); // don't use &nbsp;, can occur in code tags and is rendered as html escaped
-		} else { // IMPORTANT: \ must be enclosed by newlines, otherwise may behave unpredictable on replace ...
-			$text = (string) str_replace('\\'."\n", "\n", $text);
-		} //end if else
 		//-- remove surrounding line breaks
 		$text = (string) trim($text, "\n");
-		//-- fix for tables, escaped | must not be converted (by unixman) {{{SYNC-FIX-ESCAPED-|-}}}
-		$text = (string) str_replace( // save existing '┆' as the html entity '┆' to preserve originals ; replace all escaped | with ┆, they will be converted back below
-			[
-				'\\|',
-				'\\`'
-			],
-			[
-				'┆',
-				'‛' // this is utf-8 8219, a special backtick
-			],
-			(string) $text
-		);
 		//-- parse markdown
-		$markup = (string) $this->renderDocument($text);
+		$markup = (string) $this->renderDocument($text); // !!!!!!! MAXIMUM ATENTION WHAT CHARACTERS ARE REPLACED BEFORE THIS TO AVOID CHANGE THE CODE BLOCKS WHICH NEED TO BE PRESERVED AS THEY ARE !!!!!!!
 		$text = ''; // free mem
 		//-- trim line breaks
 		$markup = (string) trim($markup, "\n");
-		//-- fix back for tables (by unixman), must be before prepare HTML because it may convert ┆
-		$markup = (string) str_replace(
-			[
-				'┆',
-				'‛', // this is utf-8 8219, a special backtick
-				'∖`', // this is utf-8, 8726, a special backslash
-				'∖' // this is utf-8, 8726, a special backslash ; if need a backslash character use this
-			],
-			[
-				'|',
-				'`',
-				'`',
-				'\\'
-			],
-			(string) $markup
-		);
-		//-- revert nbsp
-		if($this->sBreakEnabled) {
-			$markup = (string) str_replace((string)self::SPECIAL_CHAR_UNBSP_BREAK, "\n".'<br>'."\n", (string)$markup); // must be before prepare html and before fix charset else will break the charset detection (will detect ISO-8859-1 instead of UTF-8)
-		} //end if
 		//-- prepare the HTML
 		$markup = (string) $this->prepareHTML((string)$markup);
 		//-- fix charset
@@ -382,6 +338,8 @@ final class SmartMarkdownToHTML {
 		if($this->optionAllowMarkerTplSyntax !== true) {
 			$markup = (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)$markup);
 		} //end if
+		//-- Replace backslashes with the equivalent html entity
+		$markup = (string) str_replace('\\', '&bsol;', $markup);
 		//--
 		$this->documentParsed = true;
 		//--
@@ -442,15 +400,15 @@ final class SmartMarkdownToHTML {
 			$info_compat = 'C:0';
 		} //end if else
 		//--
-		if($this->breaksEnabled) {
+		if($this->sBreakEnabled) {
 			$info_linebreaks = 'B:1';
 		} else {
 			$info_linebreaks = 'B:0';
 		} //end if else
-		if($this->sBreakEnabled) {
-			$info_sbreaks = 'S:1';
+		if($this->mediaExtraEnabled) {
+			$info_sbreaks = 'M:1';
 		} else {
-			$info_sbreaks = 'S:0';
+			$info_sbreaks = 'M:0';
 		} //end if else
 		if($this->lazyLoadImgDisabled) {
 			$info_entities = 'Z:0';
@@ -464,7 +422,7 @@ final class SmartMarkdownToHTML {
 			$info_validatehtml = 'V:0';
 		} //end if
 		//--
-		$markup = "\n".'<!--  HTML/Markdown :: ( '.Smart::escape_html($info_compat.' '.$info_linebreaks.' '.$info_sbreaks.' '.$info_entities.' '.$info_validatehtml.' T:'.date('YmdHi')).' ) -->'."\n".'<div id="markdown-'.sha1((string)$markup).'-'.Smart::uuid_10_num().'" class="markdown">'."\n".$markup."\n".'</div>'."\n".'<!--  # HTML/Markdown # '.Smart::escape_html((string)self::MKDW_VERSION).'  -->'."\n"; // if parsed and contain HTML Tags, add div and comments
+		$markup = "\n".'<!-- HTML/Markdown :: ( '.Smart::escape_html($info_compat.' '.$info_linebreaks.' '.$info_sbreaks.' '.$info_entities.' '.$info_validatehtml.' T:'.date('YmdHi')).' ) -->'."\n".'<div id="markdown-'.sha1((string)$markup).'-'.Smart::uuid_10_num().'" class="markdown">'."\n".$markup."\n".'</div>'."\n".'<!-- # HTML/Markdown # '.Smart::escape_html((string)self::MKDW_VERSION).'  -->'."\n"; // if parsed and contain HTML Tags, add div and comments
 		//--
 		if((string)$this->optionValidateHtml != '') {
 			$htmlparser = new SmartHtmlParser((string)$markup, true, (string)$this->optionValidateHtml, false);
@@ -542,6 +500,19 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	private function escapeValidHtmlTagName(?string $tag) : string { // escape and validate a html tag ; if invalid tag name will return 'invalid'
+		//--
+		$tag = (string) strtolower((string)trim((string)$tag));
+		//--
+		if(((string)$tag == '') OR (!preg_match('/^[a-z]+/', (string)$tag)) OR (!preg_match('/^[a-z0-9]+$/', (string)$tag))) { // must start with a-z ; can contain 0-9 (ex: h1..h6)
+			$tag = 'invalidtag'; // {{{SYNC-MKDW-HTML-TAG-INVALID}}}
+		} //end if
+		//--
+		return (string) $tag;
+		//--
+	} //END FUNCTION
+
+
 	private function getDataBlockQuoteds(?string $text) : array { // Quoted Blocks
 		//--
 		$matches = array();
@@ -584,10 +555,10 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function getDataInlineLinksAndImages(?string $text) : array { // Inline Links, Links with Images, Images
+	private function getDataInlineLinksAndMedia(?string $text) : array { // Inline Links, Links with Media, Media
 		//--
 		$matches = array();
-		$pcre = preg_match_all((string)self::PATTERN_LINK_AND_IMG, (string)$text, $matches, PREG_PATTERN_ORDER, 0);
+		$pcre = preg_match_all((string)self::PATTERN_LINK_AND_MEDIA, (string)$text, $matches, PREG_PATTERN_ORDER, 0);
 		if($pcre === false) {
 			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
 			return [];
@@ -598,7 +569,7 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function getInlineLink(?string $text) : array { // Inline Images
+	private function getInlineLink(?string $text) : array { // Inline Links
 		//--
 		$matches = array();
 		$pcre = preg_match((string)self::PATTERN_LINK_ONLY, (string)$text, $matches, PREG_OFFSET_CAPTURE, 0);
@@ -612,10 +583,10 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function getInlineImage(?string $text) : array { // Inline Images
+	private function getInlineMedia(?string $text) : array { // Inline Media
 		//--
 		$matches = array();
-		$pcre = preg_match((string)self::PATTERN_IMG_ONLY, (string)$text, $matches, PREG_OFFSET_CAPTURE, 0);
+		$pcre = preg_match((string)self::PATTERN_MEDIA_ONLY, (string)$text, $matches, PREG_OFFSET_CAPTURE, 0);
 		if($pcre === false) {
 			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
 			return [];
@@ -687,7 +658,7 @@ final class SmartMarkdownToHTML {
 		switch((string)$element) {
 			case 'syntax-mtpl':
 			case 'syntax-extra':
-			case 'inline-links-n-images':
+			case 'inline-links-and-media':
 			case 'inline-code':
 				$nl = ''; // skip newline in this context
 				break;
@@ -742,9 +713,9 @@ final class SmartMarkdownToHTML {
 					//--
 					$replt = '';
 					if(($repls % 2) !== 0) {
-						$replt = '</'.Smart::escape_html((string)$val).'>'; // closing tag
+						$replt = '</'.self::escapeValidHtmlTagName((string)$val).'>'; // closing tag
 					} else {
-						$replt = '<'.Smart::escape_html((string)$val).'>'; // opening tag
+						$replt = '<'.self::escapeValidHtmlTagName((string)$val).'>'; // opening tag
 					} //end if else
 					//--
 					$text = (string) Smart::str_replace_first((string)$key, (string)$replt, (string)$text);
@@ -761,7 +732,7 @@ final class SmartMarkdownToHTML {
 				} //end while
 				//-- fix: add closing tag if missing, otherwise need to run html validate as too many tags may remain unclosed ; tags on another line are not supported ... it is better this way to avoid running html validator as mandatory for safety
 				if(($repls % 2) !== 0) { // {{{SYNC-MKDW-LOOP-INLINE-EVEN-TAGS}}} ; this condition works just if the above stop number is even: 8192
-					$text .= '</'.Smart::escape_html((string)$val).'>'; // closing tag if not even ; if while loop breaks before end be sure close last line, also inline tags cannot spread on many lines !
+					$text .= '</'.self::escapeValidHtmlTagName((string)$val).'>'; // closing tag if not even ; if while loop breaks before end be sure close last line, also inline tags cannot spread on many lines !
 				} //end if
 				//-- fix: remove empty tags: if by example the strings ends with ** will replace it with <b> and will fix closing tag after with </b> resulting in string ending with an empty tag as <b></b> ; this also fixes the situation <b>[\t ]*</b> a tag with just spaces ; all need to be removed at the end after applying html escape
 				if((strpos((string)$text, '<') !== false) AND (strpos((string)$text, '>') !== false)) {
@@ -853,8 +824,8 @@ final class SmartMarkdownToHTML {
 				$text = (string) $attributes['element:text'];
 				$atts = (array)  $attributes['element:atts'];
 				$attributes = null;
-				$tag_start = '<'.$type.$this->buildAttributeData((array)$atts).'>';
-				$tag_end = '</'.$type.'>'."\n";
+				$tag_start = '<'.self::escapeValidHtmlTagName($type).$this->buildAttributeData((array)$atts).'>';
+				$tag_end = '</'.self::escapeValidHtmlTagName($type).'>'."\n";
 				$attributes = null;
 				break;
 			case 'li':
@@ -900,7 +871,7 @@ final class SmartMarkdownToHTML {
 		switch((string)$element) {
 			case 'syntax-mtpl':
 			case 'syntax-extra':
-			case 'inline-links-n-images':
+			case 'inline-links-and-media':
 			case 'inline-code':
 			case 'code':
 			case 'pre':
@@ -919,11 +890,11 @@ final class SmartMarkdownToHTML {
 		foreach($this->DefinitionData['extracted'][(string)$element.':placeholders'] as $key => $val) {
 			if((string)trim((string)$key) != '') {
 				if((string)$element == 'syntax-mtpl') { // mtpl syntax: PRESERVE exactly how it is
-					$text = (string) str_replace((string)$key, (string)$val, (string)$text); // ! no new line here, PRESERVE ; replace all occurences here not only first, they may have been replicated, by ex the =@. for links and images
+					$text = (string) str_replace((string)$key, (string)$val, (string)$text); // ! no new line here, PRESERVE ; replace all occurences here not only first, they may have been replicated, by ex the =@. for links and media
 				} elseif((string)$element == 'syntax-extra') { // extra syntax: PRESERVE exactly how it is
-					$text = (string) str_replace((string)$key, (string)$val, (string)$text); // ! no new line here, PRESERVE ; replace all occurences here not only first, they may have been replicated, by ex the =@. for links and images
-				} elseif((string)$element == 'inline-links-n-images') { // links, links with images, images
-					$val = (string) $this->renderLinksAndImages((string)$val); // it returns html safe escaped code
+					$text = (string) str_replace((string)$key, (string)$val, (string)$text); // ! no new line here, PRESERVE ; replace all occurences here not only first, they may have been replicated, by ex the =@. for links and media
+				} elseif((string)$element == 'inline-links-and-media') { // links, links with media, media
+					$val = (string) $this->renderLinksAndMedia((string)$val); // it returns html safe escaped code
 					$text = (string) Smart::str_replace_first((string)$key, (string)$val, (string)$text); // ! no new line here, it is inline syntax
 				} elseif((string)$element == 'inline-code') { // code
 					$val = (string) substr((string)$val, 3, -3); // remove 1st ``` and last ```
@@ -933,12 +904,18 @@ final class SmartMarkdownToHTML {
 					$max = (int) Smart::array_size($arr);
 					if((int)$max > 0) {
 						for($i=0; $i<$max; $i++) {
-							if((string)$element == 'blockquote') {
-								$arr[$i] = (string) ltrim((string)ltrim((string)$arr[$i], '>'))."\n"; // do not escape !! will be processed later as lines between a blockquote
+							if((string)$element == 'blockquote') { // compat blockquote pre-process
+								$arr[$i] = (string) ltrim((string)$arr[$i], '>'); // first ltrim only the > characters
+								$tmp_test_char = (string) substr($arr[$i], 0, 1);
+								if(((string)$tmp_test_char == ' ') OR ((string)$tmp_test_char == "\t")) {
+									$arr[$i] = (string) substr((string)$arr[$i], 1); // eliminate only first space or tab, DO NOT ltrim() all spaces ; otherwise, the code or pre inside will loose the format
+								} //end if
+								$tmp_test_char = null;
+								$arr[$i] .= "\n"; // do not escape !! will be processed later as lines between a blockquote
 								if((int)$i <= 0) { // first
 									$arr[$i] = '<<<'."\n".$arr[$i];
 								} //end if
-								if(!array_key_exists((int)((int)$i+1), $arr)) {
+								if(!array_key_exists((int)((int)$i+1), $arr)) { // last
 									$arr[$i] .= '<<<'."\n";
 								} //end if
 							} elseif((string)$element == 'code') { // pre+code
@@ -978,6 +955,9 @@ final class SmartMarkdownToHTML {
 	// Examples:
 	//		[link](http://unix-world.org) {L:.primary9 #link .Upper-Case @data-smart=open.modal$700$300}
 	//		![alt text](https://www.gstatic.com/webp/gallery/1.sm.jpg "Logo Title Text 1") {I:@width=100 @style=box-shadow:$10px$10px$5px$#888888; %lazyload=unveil %alternate=https://www.gstatic.com/webp/gallery/1.sm.webp$image/webp}
+	//		![Sample Video OGG](https://www.w3schools.com/html/mov_bbb.ogg){I: #video-1 %video=ogg @width=320 @height=176 @controls=none}
+	//		![Sample Video Webm/MP4](https://www.w3schools.com/html/mov_bbb.webm$https://www.w3schools.com/html/mov_bbb.mp4){I: #video-2 %video=webm$mp4 @width=320 @height=176 @preload=none @poster=https://www.w3schools.com/images/w3html5.gif}
+	//		![Sample Audio OGG/MP3](https://www.w3schools.com/html/horse.ogg$https://www.w3schools.com/html/horse.mp3){I: #audio-1 %audio=ogg$mpeg}
 	// 		TABLE / TH / TD {T: @class=bordered}
 	private function parseAttributeData(string $eltype, ?string $attributeString) : array {
 		//--
@@ -1005,17 +985,21 @@ final class SmartMarkdownToHTML {
 					$arr['id'] = (string) substr((string)$attribute, 1);
 				} elseif($attribute[0] === '.') { // . html class name
 					$classes[] = (string) substr((string)$attribute, 1);
-				} elseif($attribute[0] === '%') { // % alternate image
+				} elseif($attribute[0] === '%') { // % alternate media (used for images)
 					if($eltype === 'a') {
 						if((string)$attribute == '%blank') {
 							$arr['target'] = '_blank';
 						} //end if
-					} elseif($eltype === 'img') {
-						if(strpos((string)$attribute, '%lazyload=') === 0) {
+					} elseif($eltype === 'media') {
+						if(strpos((string)$attribute, '%video=') === 0) {
+							$arr['video'] = (string) substr((string)$attribute, 7);
+						} elseif(strpos((string)$attribute, '%audio=') === 0) {
+							$arr['audio'] = (string) substr((string)$attribute, 7);
+						} elseif(strpos((string)$attribute, '%lazyload=') === 0) {
 							$arr['lazyload'] = (string) substr((string)$attribute, 10);
 						} elseif(strpos((string)$attribute, '%alternate=') === 0) {
 							$tmp_attr = (array) explode('$', (string)$attribute);
-							$tmp_altimg = (string) substr((string)$tmp_attr[0], 11);
+							$tmp_alternate = (string) substr((string)$tmp_attr[0], 11);
 							if(
 								(strpos((string)$attribute, '%alternate=') === 0) AND
 								(strpos((string)$attribute, '$') !== false) AND
@@ -1023,16 +1007,16 @@ final class SmartMarkdownToHTML {
 								(count($tmp_attr) === 2) AND
 								((string)trim((string)$tmp_attr[0]) != '') AND
 								((string)trim((string)$tmp_attr[1]) != '') AND
-								((string)trim((string)$tmp_altimg) != '')
+								((string)trim((string)$tmp_alternate) != '')
 							) {
-								$tmp_attr[0] = (string) $tmp_altimg;
+								$tmp_attr[0] = (string) $tmp_alternate;
 								$arr['alternate'] = (array) $tmp_attr;
 							} else {
 								if(SmartFrameworkRegistry::ifDebug()) {
 									self::notice_log((string)__METHOD__, 'Parser Notice: Wrong Attribute (2): `'.$attribute.'` in: `'.$attributeString.'`'); // this can occur with converted markdown ... (Ex: perl docs)
 								} //end if
 							} //end if else
-							$tmp_altimg = null;
+							$tmp_alternate = null;
 							$tmp_attr = null;
 						} else {
 							if(SmartFrameworkRegistry::ifDebug()) {
@@ -1095,11 +1079,11 @@ final class SmartMarkdownToHTML {
 		//--
 		$type = (string) strtolower((string)trim((string)$type));
 		switch((string)$type) {
-			case 'img': // image
-				$regex = (string) self::regexImgAttribute;
+			case 'media': // media
+				$regex = (string) self::regexMediaAttribute;
 				break;
 			case 'a': // link
-				$regex = (string) self::regexLnkAttribute;
+				$regex = (string) self::regexLinkAttribute;
 				break;
 			case 'h1':
 			case 'h2':
@@ -1107,10 +1091,10 @@ final class SmartMarkdownToHTML {
 			case 'h4':
 			case 'h5':
 			case 'h6':
-				$regex = (string) self::regexHdrAttribute;
+				$regex = (string) self::regexHeadingAttribute;
 				break;
 			case 'td':
-				$regex = (string) self::regexTblCellAttribute;
+				$regex = (string) self::regexTableCellAttribute;
 				break;
 			default:
 				Smart::log_warning(__METHOD__.' # Invalid Element Type: '.$type);
@@ -1148,7 +1132,7 @@ final class SmartMarkdownToHTML {
 		//--
 		$table_defs = [];
 		$defs_matches = array();
-		if(preg_match('/^'.self::regexTblDefinition.'/', (string)$firstTableHeaderCell, $defs_matches)) {
+		if(preg_match('/^'.self::regexTableDefinition.'/', (string)$firstTableHeaderCell, $defs_matches)) {
 			if(isset($defs_matches[0]) AND isset($defs_matches[1])) {
 				$firstTableHeaderCell = (string) Smart::str_replace_first((string)$defs_matches[0], '', (string)$firstTableHeaderCell); // {{{SYNC-MKDW-REPL-ATTS-DEF}}}
 				if(isset($defs_matches[2])) {
@@ -1264,7 +1248,7 @@ final class SmartMarkdownToHTML {
 					$lst_type = 'ol';
 				} //end if
 				if((string)trim((string)$lst_type) != '') {
-					$html .= (string) "\n".str_repeat("\t", (int)$level).'<'.$lst_type.'>'."\n";
+					$html .= (string) "\n".str_repeat("\t", (int)$level).'<'.self::escapeValidHtmlTagName($lst_type).'>'."\n";
 				} //end if
 			} //end if
 			$html .= (string) str_repeat("\t", (int)$karr[1]).'<li>'.$this->createHtmlInline((string)$karr[2], 'li');
@@ -1275,7 +1259,7 @@ final class SmartMarkdownToHTML {
 		} //end foreach
 		//--
 		if((string)trim((string)$lst_type) != '') {
-			$html .= (string) str_repeat("\t", (int)$level). '</'.$lst_type.'>';
+			$html .= (string) str_repeat("\t", (int)$level). '</'.self::escapeValidHtmlTagName($lst_type).'>';
 		} //end if
 		//--
 		return (string) $html;
@@ -1350,55 +1334,171 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function renderHtmlImageOnly(?array $extracted_image_only_arr, ?string $link_or_image_md_part) : ?string {
+	private function renderHtmlMediaOnly(?array $extracted_media_only_arr, ?string $link_or_media_md_part) : ?string {
 		//--
-		if(!is_array($extracted_image_only_arr)) {
+		if(!is_array($extracted_media_only_arr)) {
 			return null;
 		} //end if
-		if(!isset($extracted_image_only_arr[0]) OR !is_array($extracted_image_only_arr[0])) {
+		if(!isset($extracted_media_only_arr[0]) OR !is_array($extracted_media_only_arr[0])) {
 			return null;
 		} //end if
-		if(!isset($extracted_image_only_arr[1]) OR !is_array($extracted_image_only_arr[1])) {
+		if(!isset($extracted_media_only_arr[1]) OR !is_array($extracted_media_only_arr[1])) {
 			return null;
 		} //end if
-		if(!isset($extracted_image_only_arr[2]) OR !is_array($extracted_image_only_arr[2])) {
+		if(!isset($extracted_media_only_arr[2]) OR !is_array($extracted_media_only_arr[2])) {
 			return null;
 		} //end if
-		if(!isset($extracted_image_only_arr[3]) OR !is_array($extracted_image_only_arr[3])) {
-			$extracted_image_only_arr[3] = [ '', -1 ]; // {{{SYNC-IMG-LINKS-TITLE-CAN-MISS}}} ; if no title text, there are only 3 elements in the array: 0, 1 and 2
+		if(!isset($extracted_media_only_arr[3]) OR !is_array($extracted_media_only_arr[3])) {
+			$extracted_media_only_arr[3] = [ '', -1 ]; // {{{SYNC-MKDW-MEDIA-LINKS-TITLE-CAN-MISS}}} ; if no title text, there are only 3 elements in the array: 0, 1 and 2
 		} //end if
 		//--
-		$img_alt_txt 	= (string) trim((string)($extracted_image_only_arr[1][0] ?? null));
-		$img_title 		= (string) trim((string)($extracted_image_only_arr[3][0] ?? null));
-		$img_src 		= (string) trim((string)($extracted_image_only_arr[2][0] ?? null));
+		$media_alt_txt 	= (string) trim((string)($extracted_media_only_arr[1][0] ?? null));
+		$media_title 	= (string) trim((string)($extracted_media_only_arr[3][0] ?? null));
+		$media_src 		= (string) trim((string)($extracted_media_only_arr[2][0] ?? null));
 		//--
-		$img_title = (string) trim((string)trim((string)$img_title, '"\'')); // remove trailing quotes
+		$media_title = (string) trim((string)trim((string)$media_title, '"\'')); // remove trailing quotes
 		//--
-		$attributes = (array) $this->parseElementAttributes((string)$link_or_image_md_part, 'img');
+		$attributes = (array) $this->parseElementAttributes((string)$link_or_media_md_part, 'media'); // TODO: identify media type here perhaps ...
 		$atts = (array) $attributes['element:atts'];
 		$attributes = null;
 		//--
-		if((string)$img_src == '') {
-			return null; // invalid image ; the image src is empty
+		if((string)$media_src == '') {
+			return null; // invalid media ; the media src is empty
 		} //end if
 		//--
-		if((string)$img_src == 'SFI-ICON') {
-			if((string)$img_title != '') {
-				$img_title = (string) str_replace("\t", ' ', (string)$img_title);
-				if(strpos((string)$img_title, 'sfi sfi-') === 0) {
-					return '<i class="sfi sfi-'.Smart::escape_html((string)substr((string)$img_title, 8)).'" title="'.self::renderAltOrTitle((string)substr((string)$img_title, 8)).'"></i>';
-				} //end if
+		if((string)$media_src == 'SFI-ICON') {
+			//--
+			if(!$this->mediaExtraEnabled) {
+				return null; // extra media disabled
 			} //end if
+			//--
+			if((string)$media_title != '') {
+				//--
+				$media_title = (string) str_replace("\t", ' ', (string)$media_title);
+				//--
+				if(strpos((string)$media_title, 'sfi sfi-') === 0) {
+					return '<i class="sfi sfi-'.Smart::escape_html((string)substr((string)$media_title, 8)).'" title="'.self::renderAltOrTitle((string)substr((string)$media_title, 8)).'"></i>';
+				} //end if
+				//--
+			} //end if
+			//--
 		} //end if
 		//--
-		if((string)$img_title == '=@.') {
-			$img_title = (string) $img_alt_txt; // unixman fix: if title is "=@." make the same as alt to avoid duplicating the same text in the markdown code
-		} //end if
-		//--
-		$img_id = '';
+		$media_id = '';
 		if(isset($atts['id'])) {
-			$img_id = (string) trim((string)$atts['id']);
+			$media_id = (string) trim((string)$atts['id']);
 			unset($atts['id']);
+		} //end if
+		//--
+		if(isset($atts['video'])) {
+			//--
+			if(!$this->mediaExtraEnabled) {
+				return null; // extra media disabled
+			} //end if
+			//--
+			$media_title = (string) $media_alt_txt; // for video there is no alt attribute; to avoid duplicating, use for the title always the alt
+			//--
+			$atts['video'] = (string) strtolower((string)trim((string)$atts['video']));
+			//--
+			$arr_video_srcs  = (array) explode('$', (string)$media_src);
+			$arr_video_types = (array) explode('$', (string)$atts['video']);
+			//--
+			unset($atts['video']);
+			//--
+			$html_video_source = '';
+			for($i=0; $i<Smart::array_size($arr_video_srcs); $i++) {
+				$videosrc = (string) trim((string)$arr_video_srcs[$i]);
+				if((string)$videosrc != '') {
+					$videotype = (string) strtolower((string)trim((string)($arr_video_types[$i] ?? null)));
+					switch((string)$videotype) {
+						case 'ogg':
+						case 'webm':
+						case 'mp4':
+							$videotype = '/'.$videotype;
+							break;
+						case '':
+						default:
+							$videotype = ''; // reset ; unrecognized
+					} //end switch
+				} //end if
+				$html_video_source .= '<source type="video'.Smart::escape_html((string)$videotype).'" src="'.Smart::escape_html((string)$videosrc).'">';
+			} //end for
+			//--
+			if(!isset($atts['preload'])) {
+				$atts['preload'] = 'auto';
+			} //end if
+			//--
+			if(!isset($atts['controls'])) {
+				$atts['controls'] = 'true';
+			} //end if
+			if(((string)$atts['controls'] == 'no') OR ((string)$atts['controls'] == 'none') OR ((string)$atts['controls'] == 'false')) {
+				unset($atts['controls']);
+			} //end if
+			//--
+			if((string)$html_video_source == '') {
+				return null; // invalid video
+			} //end if
+			//--
+			return '<video'.($media_id ? ' id="'.Smart::escape_html((string)$media_id).'"' : '').($media_title ? ' title="'.self::renderAltOrTitle((string)$media_title).'"' : '').$this->buildAttributeData((array)$atts).'>'.$html_video_source.'</video>';
+			//--
+		} elseif(isset($atts['audio'])) {
+			//--
+			if(!$this->mediaExtraEnabled) {
+				return null; // extra media disabled
+			} //end if
+			//--
+			$media_title = (string) $media_alt_txt; // for audio there is no alt attribute; to avoid duplicating, use for the title always the alt
+			//--
+			$atts['audio'] = (string) strtolower((string)trim((string)$atts['audio']));
+			//--
+			$arr_audio_srcs  = (array) explode('$', (string)$media_src);
+			$arr_audio_types = (array) explode('$', (string)$atts['audio']);
+			//--
+			unset($atts['audio']);
+			//--
+			$html_audio_source = '';
+			for($i=0; $i<Smart::array_size($arr_audio_srcs); $i++) {
+				$audiosrc = (string) trim((string)$arr_audio_srcs[$i]);
+				if((string)$audiosrc != '') {
+					$audiotype = (string) strtolower((string)trim((string)($arr_audio_types[$i] ?? null)));
+					switch((string)$audiotype) { // https://en.wikipedia.org/wiki/HTML5_audio
+						case 'ogg':
+						case 'mpeg': // mp3
+						case 'mp4':
+						case 'webm':
+						case 'flac':
+						case 'wav':
+							$audiotype = '/'.$audiotype;
+							break;
+						case '':
+						default:
+							$audiotype = ''; // reset ; unrecognized
+					} //end switch
+				} //end if
+				$html_audio_source .= '<source type="audio'.Smart::escape_html((string)$audiotype).'" src="'.Smart::escape_html((string)$audiosrc).'">';
+			} //end for
+			//--
+			if(!isset($atts['preload'])) {
+				$atts['preload'] = 'auto';
+			} //end if
+			//--
+			if(!isset($atts['controls'])) {
+				$atts['controls'] = 'true';
+			} //end if
+			if(((string)$atts['controls'] == 'no') OR ((string)$atts['controls'] == 'none') OR ((string)$atts['controls'] == 'false')) {
+				unset($atts['controls']);
+			} //end if
+			//--
+			if((string)$html_audio_source == '') {
+				return null; // invalid audio
+			} //end if
+			//--
+			return '<audio'.($media_id ? ' id="'.Smart::escape_html((string)$media_id).'"' : '').($media_title ? ' title="'.self::renderAltOrTitle((string)$media_title).'"' : '').$this->buildAttributeData((array)$atts).'>'.$html_audio_source.'</audio>';
+			//--
+		} //end if else
+		//--
+		if((string)$media_title == '=@.') {
+			$media_title = (string) $media_alt_txt; // unixman fix: if title is "=@." make the same as alt to avoid duplicating the same text in the markdown code
 		} //end if
 		//--
 		$alternate_img_src = '';
@@ -1444,7 +1544,7 @@ final class SmartMarkdownToHTML {
 		$datasrc = '';
 		//--
 		if((string)$alternate_img_src != '') {
-			$html .= '<picture'.($img_id ? ' id="'.Smart::escape_html((string)$img_id).'"' : '').($img_title ? ' title="'.self::renderAltOrTitle((string)$img_title).'"' : '').$this->buildAttributeData((array)$atts).'>';
+			$html .= '<picture'.($media_id ? ' id="'.Smart::escape_html((string)$media_id).'"' : '').($media_title ? ' title="'.self::renderAltOrTitle((string)$media_title).'"' : '').$this->buildAttributeData((array)$atts).'>';
 			if($use_lazyload) {
 				$srcset = '';
 				$datasrc = (string) $alternate_img_src;
@@ -1457,12 +1557,12 @@ final class SmartMarkdownToHTML {
 		//--
 		if($use_lazyload) {
 			$src = '';
-			$datasrc = (string) $img_src;
+			$datasrc = (string) $media_src;
 		} else {
-			$src = (string) $img_src;
+			$src = (string) $media_src;
 			$datasrc = '';
 		} //end if else
-		$html .= '<img'.(($img_id && ((string)$alternate_img_src == '')) ? ' id="'.Smart::escape_html((string)$img_id).'"' : '').($img_alt_txt ? ' alt="'.self::renderAltOrTitle((string)$img_alt_txt).'"' : '').($img_title ? ' title="'.self::renderAltOrTitle((string)$img_title).'"' : '').$this->buildAttributeData((array)$atts).' src="'.Smart::escape_html((string)$src).'"'.($datasrc ? ' data-src="'.Smart::escape_html((string)$datasrc).'"' : '').'>';
+		$html .= '<img'.(($media_id && ((string)$alternate_img_src == '')) ? ' id="'.Smart::escape_html((string)$media_id).'"' : '').($media_alt_txt ? ' alt="'.self::renderAltOrTitle((string)$media_alt_txt).'"' : '').($media_title ? ' title="'.self::renderAltOrTitle((string)$media_title).'"' : '').$this->buildAttributeData((array)$atts).' src="'.Smart::escape_html((string)$src).'"'.($datasrc ? ' data-src="'.Smart::escape_html((string)$datasrc).'"' : '').'>';
 		//--
 		if((string)$alternate_img_src != '') {
 			$html .= '</picture>';
@@ -1473,9 +1573,9 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function renderHtmlLinkOnly(?array $extracted_link_only_arr, ?string $link_or_image_md_part) : ?string {
+	private function renderHtmlLinkOnly(?array $extracted_link_only_arr, ?string $link_or_media_md_part) : ?string {
 		//--
-		if(!is_array($extracted_link_only_arr)) { // it can contain a sub-image !
+		if(!is_array($extracted_link_only_arr)) { // it can contain a sub-media !
 			return null;
 		} //end if
 		if(!isset($extracted_link_only_arr[0]) OR !is_array($extracted_link_only_arr[0])) {
@@ -1488,16 +1588,16 @@ final class SmartMarkdownToHTML {
 			return null;
 		} //end if
 		if(!isset($extracted_link_only_arr[3]) OR !is_array($extracted_link_only_arr[3])) {
-			$extracted_image_only_arr[3] = [ '', -1 ]; // {{{SYNC-IMG-LINKS-TITLE-CAN-MISS}}} ; if no title text, there are only 3 elements in the array: 0, 1 and 2
+			$extracted_link_only_arr[3] = [ '', -1 ]; // {{{SYNC-MKDW-MEDIA-LINKS-TITLE-CAN-MISS}}} ; if no title text, there are only 3 elements in the array: 0, 1 and 2
 		} //end if
 		//--
-		$link_txt 		= (string) trim((string)($extracted_link_only_arr[1][0] ?? null));
-		$link_title 	= (string) trim((string)($extracted_link_only_arr[3][0] ?? null));
-		$link_href 		= (string) trim((string)($extracted_link_only_arr[2][0] ?? null));
+		$link_txt 	= (string) trim((string)($extracted_link_only_arr[1][0] ?? null));
+		$link_title = (string) trim((string)($extracted_link_only_arr[3][0] ?? null));
+		$link_href 	= (string) trim((string)($extracted_link_only_arr[2][0] ?? null));
 		//--
 		$link_title = (string) trim((string)trim((string)$link_title, '"\'')); // remove trailing quotes
 		//--
-		$attributes = (array) $this->parseElementAttributes((string)$link_or_image_md_part, 'a');
+		$attributes = (array) $this->parseElementAttributes((string)$link_or_media_md_part, 'a');
 		$atts = (array) $attributes['element:atts'];
 		$attributes = null;
 		//--
@@ -1525,8 +1625,8 @@ final class SmartMarkdownToHTML {
 		} //end if
 		//--
 		$link_html_txt = '';
-		if(strpos((string)$link_txt, '![') === 0) { // {{{SYNC-MKDW-DETECT-IMG-START}}}
-			$link_html_txt = (string) $this->renderLinksAndImages((string)$link_txt, true); // circular reference protection ; disable detect links inside links !
+		if(strpos((string)$link_txt, '![') === 0) { // {{{SYNC-MKDW-DETECT-MEDIA-START}}}
+			$link_html_txt = (string) $this->renderLinksAndMedia((string)$link_txt, true); // circular reference protection ; disable detect links inside links !
 		} else {
 			$link_html_txt = (string) $link_txt;
 			//== {{{SYNC-MKDW-RENDER-ENTITIES-AND-INLINE-FORMATTING}}}
@@ -1549,9 +1649,9 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function renderLinksAndImages(?string $text, bool $nolinks=false) : string {
+	private function renderLinksAndMedia(?string $text, bool $nolinks=false) : string {
 		//--
-		$text = (string) $text; // this expects to be the extracted string part by PATTERN_LINK_AND_IMG
+		$text = (string) $text; // this expects to be the extracted string part by PATTERN_LINK_AND_MEDIA
 		//--
 		$trimmed_txt = (string) trim((string)$text);
 		if((string)$trimmed_txt == '') {
@@ -1563,7 +1663,7 @@ final class SmartMarkdownToHTML {
 		} else {
 			$is_link = (bool) (strpos((string)$trimmed_txt, '[') === 0);  // {{{SYNC-MKDW-DETECT-LINK-START}}} ; expects: [anchor-id](#) ; [](#){L: #anchor-id} ; [](#){L: @id=anchor-id} ; [Text](http://url.link) ; [Text](http://url.link "Title goes here...") {L: .ux-button #the-id} ; [![Alternate Text](wpub/path-to/image.svg.gif.png.jpg.webp "Image Title")](http://url.link) {I:@width=256 @height=256} {L:@data-slimbox=slimbox} ; [![Alternate Text](wpub/path-to/image.svg.gif.png.jpg.webp "Image Title"){I:@width=256 @height=256}](http://url.link){L:@data-slimbox=slimbox}
 		} //end if else
-		$is_image = (bool) (strpos((string)$trimmed_txt, '![') === 0); // {{{SYNC-MKDW-DETECT-IMG-START}}}  ; expects: ![Alternate Text](wpub/path-to/image.svg.gif.png.jpg.webp "Image Title") {I:@width=256 @height=256}
+		$is_media = (bool) (strpos((string)$trimmed_txt, '![') === 0); // {{{SYNC-MKDW-DETECT-MEDIA-START}}}  ; expects: ![Alternate Text](wpub/path-to/image.svg.gif.png.jpg.webp "Image Title") {I:@width=256 @height=256}
 		//--
 		$trimmed_txt = null; // free mem
 		//--
@@ -1571,13 +1671,13 @@ final class SmartMarkdownToHTML {
 		//--
 		if($is_link === true) { // is link
 			$arr = (array) $this->getInlineLink((string)$text);
-		} elseif($is_image === true) { // is image
-			$arr  = (array) $this->getInlineImage((string)$text);
+		} elseif($is_media === true) { // is media
+			$arr  = (array) $this->getInlineMedia((string)$text);
 		} else {
-			return (string) Smart::escape_html((string)$text); // not link, not image
+			return (string) Smart::escape_html((string)$text); // not link, not media
 		} //end if else
-		//-- {{{SYNC-MKDW-CHECK-REGEX-ARR-RESULT-LINKS-IMAGES}}}
-		if((int)Smart::array_size($arr) < 3) { // {{{SYNC-IMG-LINKS-TITLE-CAN-MISS}}} ; if no title text, there are only 3 elements in the array: 0, 1 and 2
+		//--
+		if((int)Smart::array_size($arr) < 3) { // {{{SYNC-MKDW-MEDIA-LINKS-TITLE-CAN-MISS}}} ; if no title text, there are only 3 elements in the array: 0, 1 and 2
 			return (string) Smart::escape_html((string)$text); // something wrong, regex did not found a valid structure ...
 		} //end if
 		for($i=0; $i<Smart::array_size($arr); $i++) {
@@ -1596,26 +1696,26 @@ final class SmartMarkdownToHTML {
 		} //end if
 		//--
 		$is_link  = (bool) (strpos((string)$trimmed_txt, '[') === 0);
-		$is_image = (bool) (strpos((string)$trimmed_txt, '![') === 0);
+		$is_media = (bool) (strpos((string)$trimmed_txt, '![') === 0);
 		//--
 		$trimmed_txt = null; // free mem
 		//--
-		if($is_image === true) { // is image ; process first because links can also contain images
+		if($is_media === true) { // is media ; process first because links can also contain media
 			//--
-			$rendered_html = $this->renderHtmlImageOnly((array)$arr, (string)$text); // do not cast ; it is mixed ; can be null if the image was wrong or string if rendered
+			$rendered_html = $this->renderHtmlMediaOnly((array)$arr, (string)$text); // do not cast ; it is mixed ; can be null if the media was wrong or string if rendered
 			//--
 			if($rendered_html === null) {
-				return (string) Smart::escape_html((string)$text); // invalid image ; could not render the image html code
+				return (string) Smart::escape_html((string)$text); // invalid media ; could not render the media html code
 			} //end if
 			//--
 			return (string) $rendered_html;
 			//--
-		} elseif($is_link === true) { // is link ; process second ; links can contain also images
+		} elseif($is_link === true) { // is link ; process second ; links can contain also media
 			//--
-			$rendered_html = $this->renderHtmlLinkOnly((array)$arr, (string)$text); // do not cast ; it is mixed ; can be null if the image was wrong or string if rendered
+			$rendered_html = $this->renderHtmlLinkOnly((array)$arr, (string)$text); // do not cast ; it is mixed ; can be null if the media was wrong or string if rendered
 			//--
 			if($rendered_html === null) {
-				return (string) Smart::escape_html((string)$text); // invalid image ; could not render the image html code
+				return (string) Smart::escape_html((string)$text); // invalid media ; could not render the media html code
 			} //end if
 			//--
 			return (string) $rendered_html;
@@ -1687,13 +1787,13 @@ final class SmartMarkdownToHTML {
 			'crr'  => $line_crr, 	// do not cast ; ?string
 			'next' => false, 		// do not cast ; ?string | false ; set to false if not modified
 		];
-		if(((string)trim((string)$line_crr) == '') OR ((string)trim((string)$line_crr) == (string)self::SPECIAL_CHAR_UNBSP_BREAK)) { // {{{SYNC-MKDW-LINE-BREAKS}}}
-			return (array) $renderr; // empty or break line
+		if((string)trim((string)$line_crr) == '') {
+			return (array) $renderr; // empty
 		} //end if
 		//-- check special markers
 		if(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/') === 0) {
 			if(
-				(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/inline-links-n-images/') === 0)
+				(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/inline-links-and-media/') === 0)
 				OR
 				(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/inline-code/') === 0)
 			) {
@@ -1758,12 +1858,12 @@ final class SmartMarkdownToHTML {
 		//-- 2nd extract code blocks to be preserved and replace them with placeholders
 		$this->DefinitionData['extracted']['code'] = (array) $this->getDataBlockCodes((string)$text);
 		$text = (string) $this->getTextWithPlaceholders((string)$text, 'code', (array)$this->DefinitionData['extracted']['code']);
-		//-- 3rd extract links, links with images, images ; after extract+convert code blocks, after extracting code blocks and inline code, but prior to extract pre-formats ; pre-formats may contain images
-		// MUST BE BEFORE INLINE CODE to avoid rendering a portion of an image or link title that contains ```code``` as code {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-IMAGES-ORDER}}}
-		$this->DefinitionData['extracted']['inline-links-n-images'] = (array) $this->getDataInlineLinksAndImages((string)$text);
-		$text = (string) $this->getTextWithPlaceholders((string)$text, 'inline-links-n-images', (array)$this->DefinitionData['extracted']['inline-links-n-images']);
+		//-- 3rd extract links, links with media, media ; after extract+convert code blocks, after extracting code blocks and inline code, but prior to extract pre-formats ; pre-formats may contain media
+		// MUST BE BEFORE INLINE CODE to avoid rendering a portion of an media or link title that contains ```code``` as code {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-MEDIA-ORDER}}}
+		$this->DefinitionData['extracted']['inline-links-and-media'] = (array) $this->getDataInlineLinksAndMedia((string)$text);
+		$text = (string) $this->getTextWithPlaceholders((string)$text, 'inline-links-and-media', (array)$this->DefinitionData['extracted']['inline-links-and-media']);
 		//-- 4th extract inline code to be preserved and replace them with placeholders !!! keep before pre, pre may contain code !!!
-		// MUST BE AFTER INLINE LINKS AND IMAGES to avoid rendering a portion of an image or link title that contains ```code``` as code {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-IMAGES-ORDER}}}
+		// MUST BE AFTER INLINE LINKS AND MEDIA to avoid rendering a portion of an media or link title that contains ```code``` as code {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-MEDIA-ORDER}}}
 		$this->DefinitionData['extracted']['inline-code'] = (array) $this->getDataInlineCodes((string)$text);
 		$text = (string) $this->getTextWithPlaceholders((string)$text, 'inline-code', (array)$this->DefinitionData['extracted']['inline-code']);
 		//-- 5th extract pre blocks to be preserved and replace them with placeholders
@@ -1796,6 +1896,14 @@ final class SmartMarkdownToHTML {
 				//--
 				// skip explicit null lines, they are by default string and can not be null except if set so
 				//--
+			} elseif((string)trim((string)$arr[$i]) == '\\') {
+				//--
+				if($this->sBreakEnabled) {
+					$arr[$i] = '<br>';
+				} else {
+					$arr[$i] = '';
+				} //end if else
+				//--
 			} else {
 			//======= Empty or Spaces Only Line
 				//--
@@ -1816,21 +1924,15 @@ final class SmartMarkdownToHTML {
 				//--
 				if((string)trim((string)$arr[$i]) == '') { // {{{SYNC-MKWD-EMPTY-LINE}}} empty or spaces only line ; used to reset some parsing data
 					//-- br (must be at the end, it checks if the line is still empty after above flushes
-					if($this->breaksEnabled) {
-						if(
-							((string)trim((string)$line_next) == '')
-							AND
-							($line_last === false)
-							AND
-							(
-								((string)trim((string)$arr[$i]) == '')
-								OR // {{{SYNC-MKDW-LINE-BREAKS}}}
-								((string)trim((string)$arr[$i]) == (string)self::SPECIAL_CHAR_UNBSP_BREAK)
-							)
-						) {
-							$arr[$i] = (string) '<br>'."\n";
-							$line_is_unparsed = false;
-						} //end if
+					if(
+						((string)trim((string)$line_next) == '')
+						AND
+						($line_last === false)
+						AND
+						((string)trim((string)$arr[$i]) == '')
+					) {
+						$arr[$i] = (string) '<br>'."\n";
+						$line_is_unparsed = false;
 					} //end if
 					//--
 			//======= Blockquote
@@ -2015,6 +2117,8 @@ final class SmartMarkdownToHTML {
 			//======= Table
 				} elseif(strpos((string)$arr[$i], '|') === 0) { // table ; {{{SYNC-MKWD-CONDITION-TABLE-LINE}}}
 					//--
+					$arr[$i] = (string) str_replace('\\|', '┆', (string)$arr[$i]); // {{{SYNC-MKDW-TABLE-CELL-VBAR-FIX}}} ; fix: if a cell have to contain a vertical bar, make a special replacement
+					//--
 					$cells = (array) explode('|', (string)$arr[$i]);
 					$ncells = 0;
 					$mcells = 0;
@@ -2079,6 +2183,7 @@ final class SmartMarkdownToHTML {
 						$tbl_head_use_td = false;
 						$harr = [];
 						for($c=1; $c<Smart::array_size($cells)-1; $c++) {
+							$cells[$c] = (string) str_replace('┆', '|', (string)$cells[$c]); // {{{SYNC-MKDW-TABLE-CELL-VBAR-FIX}}} ; fix back
 							if($def_table === null) {
 								if((int)$c == 1) {
 									$is_tbl_init = true;
@@ -2134,10 +2239,10 @@ final class SmartMarkdownToHTML {
 							if((string)$align_tbl_head != '') {
 								$cell_align = (string) $align_tbl_head;
 							} else {
-								$cell_align = (string) (isset($paligns[$c-1]) && $paligns[$c-1]);
+								$cell_align = (string) ((isset($paligns[$c-1]) && $paligns[$c-1]) ? $paligns[$c-1] : '');
 							} //end if else
 							if((string)$cells[$c] != '') { // if cell is empty, that is intentional to solve the issue with collspans, so do not render that cell
-								$arr[$i] .= "\t"."\t".'<'.$cell_elem.$this->buildAttributeData((array)$carr['element:atts']).($cell_align ? ' style="text-align:'.Smart::escape_html((string)$cell_align).';"' : '').'>'.(trim((string)$carr['element:text']) ? $this->createHtmlInline((string)trim((string)$carr['element:text']), 'td') : '&nbsp;').'</'.$cell_elem.'>'."\n"; // do not parse inline attributes
+								$arr[$i] .= "\t"."\t".'<'.self::escapeValidHtmlTagName($cell_elem).$this->buildAttributeData((array)$carr['element:atts']).($cell_align ? ' style="text-align:'.Smart::escape_html((string)$cell_align).';"' : '').'>'.(trim((string)$carr['element:text']) ? $this->createHtmlInline((string)trim((string)$carr['element:text']), 'td') : '&nbsp;').'</'.self::escapeValidHtmlTagName($cell_elem).'>'."\n"; // do not parse inline attributes
 								$line_is_unparsed = false;
 							} //end if
 							$carr = null;
@@ -2205,7 +2310,7 @@ final class SmartMarkdownToHTML {
 					//--
 				} //end if
 				//--
-			} //end if
+			} //end if else
 			//--
 			if($arr[$i] !== null) { // must use a separate check for null than above !
 				$text .= (string) $arr[$i]; // add only non-null lines
@@ -2246,12 +2351,16 @@ final class SmartMarkdownToHTML {
 		$text = (string) $this->fixEscapings((string)$text);
 		//-- 8th render back blocks
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'pre');
-		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'inline-code'); 				// {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-IMAGES-ORDER}}}
-		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'inline-links-n-images'); 	// {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-IMAGES-ORDER}}}
+		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'inline-code'); 				// {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-MEDIA-ORDER}}}
+		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'inline-links-and-media'); 	// {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-MEDIA-ORDER}}}
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'code');
 		//-- post render
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'syntax-extra');
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'syntax-mtpl');
+		//--
+		if((stripos((string)$text, '<invalidtag') !== false) OR (stripos((string)$text, '</invalidtag') !== false)) { // {{{SYNC-MKDW-HTML-TAG-INVALID}}}
+			self::notice_log((string)__METHOD__, ' # Invalid tags found ...');
+		} //end if
 		//--
 		$this->initDefinitionData(true); // init, clear
 		//--

@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.1.8.0 r.20220203 */
+/* Smart.Markdown.parser # v.1.8.0 r.20220214 */
 
 /* ----------------------------- */
 
@@ -13,7 +13,7 @@
 .markdown h4,
 .markdown h5,
 .markdown h6 {
-	display: block;
+	display: inline-block !important;
 }
 
 /* Helpers */
@@ -159,6 +159,11 @@
 	white-space: pre;
 	overflow: auto;
 }
+.markdown li pre {
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
 .markdown code.mkdw-code {
 	white-space: pre;
 }
@@ -184,6 +189,7 @@
 .markdown q {
 	background: #333333;
 	color: #F0F0F0;
+	font-size: 0.9375em; /* em not rem, need to be relative to parent not to root */
 }
 .markdown q:before {
 	content: '˝';
@@ -200,20 +206,18 @@
 	color: #333333;
 }
 .markdown var {
-	background: #F8F8F8;
+	background: #F0F0F0;
 	color: #333333;
-}
-/*	text-decoration: none; */
+	font-weight: bold;
+	font-style: italic;
 }
 .markdown mark {
-	background: #F8C555;
+	background: #F9EA82;
 	color: #111111;
+	font-weight: bold;
+	font-style: normal;
 }
 
-.markdown li pre {
-	margin-left: 20px;
-	margin-right: 20px;
-}
 /* -- */
 
 .markdown img {
