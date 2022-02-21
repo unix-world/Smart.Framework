@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20220205
+	// v.20220215
 
 
 	private static $db = null;
@@ -936,6 +936,8 @@ final class PageBuilderBackend {
 			case 'ref':
 			case 'name':
 			case 'ctrl':
+			case 'layout':
+			case 'tags':
 			case 'modified':
 			case 'counter':
 			case 'translations':

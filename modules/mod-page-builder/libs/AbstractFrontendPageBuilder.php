@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20210526
+ * @version 	v.20220219
  * @package 	development:modules:PageBuilder
  *
  */
@@ -33,7 +33,7 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 
 
 	//===== $y_ctrl can be: NULL / STRING / ARRAY
-	final public function checkIfPageOrSegmentExist(string $y_id, $y_ctrl=null) {
+	final public function checkIfPageOrSegmentExist(string $y_id, $y_ctrl=null) : bool {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return false;
@@ -46,7 +46,7 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 
 
 	//===== $y_ctrl can be: NULL / STRING / ARRAY
-	final public function checkIfPageExist(string $y_id, $y_ctrl=null) {
+	final public function checkIfPageExist(string $y_id, $y_ctrl=null) : bool {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return false;
@@ -59,7 +59,7 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 
 
 	//===== $y_ctrl can be: NULL / STRING / ARRAY
-	final public function checkIfSegmentExist(string $y_id, $y_ctrl=null) {
+	final public function checkIfSegmentExist(string $y_id, $y_ctrl=null) : bool {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return false;
@@ -72,7 +72,7 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 
 
 	//=====
-	final public function getPageById(string $y_id) {
+	final public function getPageById(string $y_id) : array {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return array();
@@ -84,7 +84,7 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 	//=====
 
 	//=====
-	final public function getSegmentById(string $y_id) {
+	final public function getSegmentById(string $y_id) : array {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return array();
@@ -97,7 +97,7 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 
 
 	//=====
-	final public function getListOfPagesByCtrl(string $y_ctrl, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) {
+	final public function getListOfPagesByCtrl(string $y_ctrl, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) : array {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return array();
@@ -107,7 +107,7 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 		//--
 	} //END FUNCTION
 	//=====
-	final public function countListOfPagesByCtrl(string $y_ctrl) {
+	final public function countListOfPagesByCtrl(string $y_ctrl) : int {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return 0;
@@ -119,7 +119,7 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 	//=====
 
 	//=====
-	final public function getListOfSegmentsByCtrl(string $y_ctrl, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) {
+	final public function getListOfSegmentsByCtrl(string $y_ctrl, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) : array {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return array();
@@ -129,7 +129,7 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 		//--
 	} //END FUNCTION
 	//=====
-	final public function countListOfSegmentsByCtrl(string $y_ctrl) {
+	final public function countListOfSegmentsByCtrl(string $y_ctrl) : int {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return 0;
@@ -142,91 +142,125 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 
 
 	//=====
-	final public function getListOfPagesByTag(string $y_tag, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) {
+	final public function getListOfPagesByTag(?string $y_ctrl, string $y_tag, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) : array {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return array();
 		} //end if
 		//--
-		return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('pages', 'tags', (string)$y_tag, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		if((string)$y_ctrl != '') {
+			return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('pages', 'tags:ctrl', [ 'tags' => (string)$y_tag, 'ctrl' => (string)$y_ctrl ], (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		} else {
+			return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('pages', 'tags', (string)$y_tag, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		} //end if else
 		//--
 	} //END FUNCTION
 	//=====
-	final public function countListOfPagesByTag(string $y_tag) {
+	final public function countListOfPagesByTag(?string $y_ctrl, string $y_tag) : int {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return 0;
 		} //end if
 		//--
-		return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('pages', 'tags', (string)$y_tag);
+		if((string)$y_ctrl != '') {
+			return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('pages', 'tags:ctrl', [ 'tags' => (string)$y_tag, 'ctrl' => (string)$y_ctrl ]);
+		} else {
+			return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('pages', 'tags', (string)$y_tag);
+		} //end if else
 		//--
 	} //END FUNCTION
 	//=====
 
 	//=====
-	final public function getListOfSegmentsByTag(string $y_tag, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) {
+	final public function getListOfSegmentsByTag(?string $y_ctrl, string $y_tag, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) : array {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return array();
 		} //end if
 		//--
-		return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'tags', (string)$y_tag, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		if((string)$y_ctrl != '') {
+			return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'tags:ctrl', [ 'tags' => (string)$y_tag, 'ctrl' => (string)$y_ctrl ], (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		} else {
+			return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'tags', (string)$y_tag, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		} //end if else
 		//--
 	} //END FUNCTION
 	//=====
-	final public function countListOfSegmentsByTag(string $y_tag) {
+	final public function countListOfSegmentsByTag(?string $y_ctrl, string $y_tag) : int {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return 0;
 		} //end if
 		//--
-		return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'tags', (string)$y_tag);
+		if((string)$y_ctrl != '') {
+			return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'tags:ctrl', [ 'tags' => (string)$y_tag, 'ctrl' => (string)$y_ctrl ]);
+		} else {
+			return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'tags', (string)$y_tag);
+		} //end if else
 		//--
 	} //END FUNCTION
 	//=====
 
 
 	//=====
-	final public function getListOfSegmentsByArea(string $y_area, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) {
+	final public function getListOfSegmentsByArea(?string $y_ctrl, string $y_area, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) : array {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return array();
 		} //end if
 		//--
-		return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'area', (string)$y_area, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		if((string)$y_ctrl != '') {
+			return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'area:ctrl', [ 'area' => (string)$y_area, 'ctrl' => (string)$y_ctrl ], (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		} else {
+			return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'area', (string)$y_area, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		} //end if else
 		//--
 	} //END FUNCTION
 	//=====
-	final public function countListOfSegmentsByArea(string $y_area) {
+	final public function countListOfSegmentsByArea(?string $y_ctrl, string $y_area) : int {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return 0;
 		} //end if
 		//--
-		return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'area', (string)$y_area);
+		if((string)$y_ctrl != '') {
+			return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'area:ctrl', [ 'area' => (string)$y_area, 'ctrl' => (string)$y_ctrl ]);
+		} else {
+			return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'area', (string)$y_area);
+		} //end if else
 		//--
 	} //END FUNCTION
 	//=====
 
 
 	//=====
-	final public function getListOfSegmentsByAreaTag(string $y_tag, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) {
+	final public function getListOfSegmentsByAreaTag(?string $y_ctrl, array $y_arr_area_tags, string $y_orderby='id', string $y_orderdir='ASC', int $y_limit=0, int $y_ofs=0) : array {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return array();
 		} //end if
-		//--
-		return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'area:tags', (string)$y_tag, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		//-- $y_arr_area_tags = [ 'area' => 'string', 'tags' => 'string' ]
+		if((string)$y_ctrl != '') {
+			$y_arr_area_tags['ctrl'] = (string) $y_ctrl;
+			return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'area:tags:ctrl', (array)$y_arr_area_tags, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		} else {
+			return (array) \SmartModDataModel\PageBuilder\PageBuilderFrontend::getListOfObjectsBy('segments', 'area:tags', (array)$y_arr_area_tags, (string)$y_orderby, (string)$y_orderdir, (int)$y_limit, (int)$y_ofs);
+		} //end if else
 		//--
 	} //END FUNCTION
 	//=====
-	final public function countListOfSegmentsByAreaTag(string $y_tag) {
+	final public function countListOfSegmentsByAreaTag(?string $y_ctrl, array $y_arr_area_tags) : int {
 		//--
 		if((string)$this->ControllerGetParam('module-area') != 'index') {
 			return 0;
 		} //end if
-		//--
-		return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'area:tags', (string)$y_tag);
+		//-- $y_arr_area_tags = [ 'area' => 'string', 'tags' => 'string' ]
+		if((string)$y_ctrl != '') {
+			$y_arr_area_tags['ctrl'] = (string) $y_ctrl;
+			return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'area:tags:ctrl', (array)$y_arr_area_tags);
+		} else {
+			return (int) \SmartModDataModel\PageBuilder\PageBuilderFrontend::countListOfObjectsBy('segments', 'area:tags', (array)$y_arr_area_tags);
+		} //end if else
 		//--
 	} //END FUNCTION
 	//=====

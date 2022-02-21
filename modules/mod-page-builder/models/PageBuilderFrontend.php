@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20211221
+	// v.20220219
 
 
 	private static $db = null;
@@ -343,7 +343,10 @@ final class PageBuilderFrontend {
 		switch((string)$y_fld) {
 			case 'ctrl':
 			case 'tags':
+			case 'tags:ctrl':
 				break;
+			case 'area:ctrl':
+			case 'area:tags:ctrl':
 			case 'area:tags':
 			case 'area':
 				if((string)$y_obj_type == 'pages') {
@@ -476,13 +479,44 @@ final class PageBuilderFrontend {
 						(string) '#'
 					]
 				);
+			} elseif((string)$y_fld == 'tags:ctrl') {
+				$arr_tag = (array) (\is_array($y_value) ? $y_value : []);
+				$qresult = \SmartPgsqlDb::{$fx_exec}(
+					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("tags" ? $1) AND ("ctrl" = $2) AND (SUBSTR("id",1,1) '.$sign_expr.' $3)'.$extra_condition.') '.$qr_suffix,
+					[
+						(string) ($arr_tag['tags'] ?? null), // tags
+						(string) ($arr_tag['ctrl'] ?? null), // ctrl
+						(string) '#'
+					]
+				);
+			} elseif((string)$y_fld == 'area:ctrl') {
+				$arr_tag = (array) (\is_array($y_value) ? $y_value : []);
+				$qresult = \SmartPgsqlDb::{$fx_exec}(
+					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND ("ctrl" = $2) AND (SUBSTR("id",1,1) '.$sign_expr.' $3)'.$extra_condition.') '.$qr_suffix,
+					[
+						(string) ($arr_tag['area'] ?? null), // area
+						(string) ($arr_tag['ctrl'] ?? null), // ctrl
+						(string) '#'
+					]
+				);
 			} elseif((string)$y_fld == 'area:tags') {
-				$arr_tag = (array) \explode(':', (string)$y_value);
+				$arr_tag = (array) (\is_array($y_value) ? $y_value : []);
 				$qresult = \SmartPgsqlDb::{$fx_exec}(
 					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND ("tags" ? $2) AND (SUBSTR("id",1,1) '.$sign_expr.' $3)'.$extra_condition.') '.$qr_suffix,
 					[
-						(string) (isset($arr_tag[0]) ? $arr_tag[0] : ''), // area
-						(string) (isset($arr_tag[1]) ? $arr_tag[1] : ''), // tags
+						(string) ($arr_tag['area'] ?? null), // area
+						(string) ($arr_tag['tags'] ?? null), // tags
+						(string) '#'
+					]
+				);
+			} elseif((string)$y_fld == 'area:tags:ctrl') {
+				$arr_tag = (array) (\is_array($y_value) ? $y_value : []);
+				$qresult = \SmartPgsqlDb::{$fx_exec}(
+					'SELECT '.$select_what.' FROM "web"."page_builder" WHERE (("layout" LIKE $1) AND ("tags" ? $2) AND ("ctrl" = $3) AND (SUBSTR("id",1,1) '.$sign_expr.' $4)'.$extra_condition.') '.$qr_suffix,
+					[
+						(string) ($arr_tag['area'] ?? null), // area
+						(string) ($arr_tag['tags'] ?? null), // tags
+						(string) ($arr_tag['ctrl'] ?? null), // ctrl
 						(string) '#'
 					]
 				);
@@ -522,13 +556,44 @@ final class PageBuilderFrontend {
 						(string) '#'
 					]
 				);
+			} elseif((string)$y_fld == 'tags:ctrl') {
+				$arr_tag = (array) (\is_array($y_value) ? $y_value : []);
+				$qresult = self::$db->{$fx_exec}(
+					'SELECT '.$select_what.' FROM `page_builder` WHERE ((smart_json_arr_contains(`tags`, ?) = 1) AND (`ctrl` = ?) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
+					[
+						(string) ($arr_tag['tags'] ?? null), // tags
+						(string) ($arr_tag['ctrl'] ?? null), // ctrl
+						(string) '#'
+					]
+				);
+			} elseif((string)$y_fld == 'area:ctrl') {
+				$arr_tag = (array) (\is_array($y_value) ? $y_value : []);
+				$qresult = self::$db->{$fx_exec}(
+					'SELECT '.$select_what.' FROM `page_builder` WHERE ((`layout` LIKE ?) AND (`ctrl` = ?) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
+					[
+						(string) ($arr_tag['area'] ?? null), // area
+						(string) ($arr_tag['ctrl'] ?? null), // ctrl
+						(string) '#'
+					]
+				);
 			} elseif((string)$y_fld == 'area:tags') {
-				$arr_tag = (array) \explode(':', (string)$y_value);
+				$arr_tag = (array) (\is_array($y_value) ? $y_value : []);
 				$qresult = self::$db->{$fx_exec}(
 					'SELECT '.$select_what.' FROM `page_builder` WHERE ((`layout` LIKE ?) AND (smart_json_arr_contains(`tags`, ?) = 1) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
 					[
-						(string) (isset($arr_tag[0]) ? $arr_tag[0] : ''), // area
-						(string) (isset($arr_tag[1]) ? $arr_tag[1] : ''), // tags
+						(string) ($arr_tag['area'] ?? null), // area
+						(string) ($arr_tag['tags'] ?? null), // tags
+						(string) '#'
+					]
+				);
+			} elseif((string)$y_fld == 'area:tags:ctrl') {
+				$arr_tag = (array) (\is_array($y_value) ? $y_value : []);
+				$qresult = self::$db->{$fx_exec}(
+					'SELECT '.$select_what.' FROM `page_builder` WHERE ((`layout` LIKE ?) AND (smart_json_arr_contains(`tags`, ?) = 1) AND (`ctrl` = ?) AND (substr(`id`,1,1) '.$sign_expr.' ?)'.$extra_condition.') '.$qr_suffix,
+					[
+						(string) ($arr_tag['area'] ?? null), // area
+						(string) ($arr_tag['tags'] ?? null), // tags
+						(string) ($arr_tag['ctrl'] ?? null), // ctrl
 						(string) '#'
 					]
 				);

@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder        abstract class \SmartModExtLib\PageBuilder\ AbstractFrontendPageBuilder  extends">
-<meta name="keywords" content="smartmodextlib pagebuilder abstractfrontendpagebuilder, abstract, class, smartmodextlib pagebuilder, abstractfrontendpagebuilder, extends, smartabstractappcontroller, frontend, pagebuilder, provides, the, definitions, to, create, controllers, and, plugins, language, php, located, at, modules mod-page-builder libs abstractfrontendpagebuilder.php, package, development:modules:pagebuilder, namespace, name, version, v.20210526, hints, needs, be, extended, as, uniqueclasspluginname, usage, dynamic, object, new, class method, this, only, methods, inheritance, chart, →, ↳, final, public, function, checkifpageorsegmentexist, string, y id, y ctrl, null, checkifpageexist, checkifsegmentexist, getpagebyid, getsegmentbyid, getlistofpagesbyctrl, y orderby, id, y orderdir, asc, int, y limit, y ofs, countlistofpagesbyctrl, getlistofsegmentsbyctrl, countlistofsegmentsbyctrl, getlistofpagesbytag, y tag, countlistofpagesbytag, getlistofsegmentsbytag, countlistofsegmentsbytag, getlistofsegmentsbyarea, y area, countlistofsegmentsbyarea, getlistofsegmentsbyareatag, countlistofsegmentsbyareatag, construct, y module path, y controller, y url page, y hardcoded area, inherited, from, param, relative, path, followed, by, a, trailing, slash, current, module, containing">
+<meta name="keywords" content="smartmodextlib pagebuilder abstractfrontendpagebuilder, abstract, class, smartmodextlib pagebuilder, abstractfrontendpagebuilder, extends, smartabstractappcontroller, frontend, pagebuilder, provides, the, definitions, to, create, controllers, and, plugins, language, php, located, at, modules mod-page-builder libs abstractfrontendpagebuilder.php, package, development:modules:pagebuilder, namespace, name, version, v.20220219, hints, needs, be, extended, as, uniqueclasspluginname, usage, dynamic, object, new, class method, this, only, methods, inheritance, chart, →, ↳, final, public, function, checkifpageorsegmentexist, string, y id, y ctrl, null, checkifpageexist, checkifsegmentexist, getpagebyid, getsegmentbyid, getlistofpagesbyctrl, y orderby, id, y orderdir, asc, int, y limit, y ofs, countlistofpagesbyctrl, getlistofsegmentsbyctrl, countlistofsegmentsbyctrl, getlistofpagesbytag, y tag, countlistofpagesbytag, getlistofsegmentsbytag, countlistofsegmentsbytag, getlistofsegmentsbyarea, y area, countlistofsegmentsbyarea, getlistofsegmentsbyareatag, array, y arr area tags, countlistofsegmentsbyareatag, construct, y module path, y controller, y url page, y hardcoded area, inherited, from, param, relative, path, followed, by, a, trailing, slash, current">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder</title>
@@ -703,7 +703,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\PageBuilder\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> AbstractFrontendPageBuilder</span></li>
 		
-		<li><b>Version:</b> v.20210526</li>
+		<li><b>Version:</b> v.20220219</li>
 		
 		<li><b>Hints:</b> needs  to be extended as: UniqueClassPluginName</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -845,7 +845,8 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--getListOfPagesByTag">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfPagesByTag</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>, 
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
 			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
@@ -861,7 +862,8 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--countListOfPagesByTag">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfPagesByTag</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -873,7 +875,8 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--getListOfSegmentsByTag">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfSegmentsByTag</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>, 
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
 			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
@@ -889,7 +892,8 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--countListOfSegmentsByTag">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfSegmentsByTag</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -901,7 +905,8 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--getListOfSegmentsByArea">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfSegmentsByArea</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_area` Parameter is REQUIRED">$y_area</span></b></span>, 
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_area` Parameter is REQUIRED">$y_area</span></b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
 			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
@@ -917,7 +922,8 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--countListOfSegmentsByArea">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfSegmentsByArea</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_area` Parameter is REQUIRED">$y_area</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_area` Parameter is REQUIRED">$y_area</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -929,7 +935,8 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--getListOfSegmentsByAreaTag">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getListOfSegmentsByAreaTag</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>, 
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_area_tags` Parameter is REQUIRED">$y_arr_area_tags</span></b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderby` Parameter is OPTIONAL, with the Default Value: &quot;id&quot;">$y_orderby</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;id&quot;</b></span>, 
 			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_orderdir` Parameter is OPTIONAL, with the Default Value: &quot;ASC&quot;">$y_orderdir</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;ASC&quot;</b></span>, 
 			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_limit` Parameter is OPTIONAL, with the Default Value: 0">$y_limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
@@ -945,7 +952,8 @@ select#select-summary {
 	
 </div><div class="doc-container" id="Method--countListOfSegmentsByAreaTag">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>countListOfSegmentsByAreaTag</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_tag` Parameter is REQUIRED">$y_tag</span></b></span>
+				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl` Parameter is REQUIRED">$y_ctrl</span></b></span>, 
+			<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_area_tags` Parameter is REQUIRED">$y_arr_area_tags</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -2021,7 +2029,7 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-10 04:31:21 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:33 +0000</small>
 <hr>
 <br>
 <!-- # -->

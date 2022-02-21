@@ -29,7 +29,7 @@ if(!SmartAppInfo::TestIfModuleExists('mod-page-builder')) {
  */
 final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\AbstractFrontendController {
 
-	// r.20210526
+	// r.20220219
 
 	public function Run() {
 
@@ -64,14 +64,14 @@ final class SmartAppIndexController extends \SmartModExtLib\PageBuilder\Abstract
 		$test_segments = (array) $this->getSegmentById('#my-segment-1'); // just for test ...
 		$this->PageViewAppendVar('main', 'A segment By ID %: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
 
-		$test_segments = (array) $this->getListOfSegmentsByArea('%', 'name', 'DESC', 0, 10); // just for test ...
-		$this->PageViewAppendVar('main', 'List of segments ['.(int)$this->countListOfSegmentsByArea('%').'] By Area %: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
+		$test_segments = (array) $this->getListOfSegmentsByArea(null, '%', 'name', 'DESC', 0, 10); // just for test ...
+		$this->PageViewAppendVar('main', 'List of segments ['.(int)$this->countListOfSegmentsByArea(null, '%').'] By Area %: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
 
-		$test_segments = (array) $this->getListOfSegmentsByTag('abc', 'name', 'DESC', 0, 2); // just for test ...
-		$this->PageViewAppendVar('main', 'List of segments ['.(int)$this->countListOfSegmentsByTag('abc').'] By Tag `abc`: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
+		$test_segments = (array) $this->getListOfSegmentsByTag(null, 'abc', 'name', 'DESC', 0, 2); // just for test ...
+		$this->PageViewAppendVar('main', 'List of segments ['.(int)$this->countListOfSegmentsByTag(null, 'abc').'] By Tag `abc`: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
 
-		$test_segments = (array) $this->getListOfPagesByTag('abc', 'name', 'DESC', 0, 2); // just for test ...
-		$this->PageViewAppendVar('main', 'List of pages ['.(int)$this->countListOfPagesByTag('abc').'] By Tag `abc`: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
+		$test_segments = (array) $this->getListOfPagesByTag(null, 'abc', 'name', 'DESC', 0, 2); // just for test ...
+		$this->PageViewAppendVar('main', 'List of pages ['.(int)$this->countListOfPagesByTag(null, 'abc').'] By Tag `abc`: '.Smart::escape_html(SmartUtils::pretty_print_var($test_segments)).'<br>');
 
 		//-- this code can be uncommented to dissalow Raw Pages from PageBuilder
 		/*

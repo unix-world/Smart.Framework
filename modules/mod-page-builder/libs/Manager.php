@@ -52,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20220210
+ * @version 	v.20220215
  * @package 	PageBuilder
  *
  */
@@ -160,10 +160,11 @@ final class Manager {
 		$text['ctrl'] 				= 'Controller';
 		$text['template'] 			= 'Page Template';
 		$text['area'] 				= 'Segment Area';
+		$text['layout'] 			= 'Template / Area';
 		$text['tags'] 				= 'Tags';
 		$text['name'] 				= 'Name';
 		$text['active']				= 'Active';
-		$text['special'] 			= 'Grade';
+		$text['special'] 			= 'Class';
 		$text['login'] 				= 'Login Restricted';
 		$text['modified']			= 'Modified';
 		$text['size'] 				= 'Size';
@@ -2427,6 +2428,7 @@ final class Manager {
 				'TXT-COL-RUNTIME' 	=> (string) self::text('record_runtime', false),
 				'TXT-COL-TAGS' 		=> (string) self::text('tags', false),
 				'TXT-COL-SYNTAX' 	=> (string) self::text('record_syntax', false),
+				'TXT-COL-LAYOUT' 	=> (string) self::text('layout', false),
 				'TXT-COL-SPECIAL' 	=> (string) self::text('special', false),
 				'TXT-COL-ACTIVE' 	=> (string) self::text('active', false),
 				'TXT-COL-AUTH' 		=> (string) self::text('auth', false),
@@ -2519,6 +2521,7 @@ final class Manager {
 				'TXT-COL-RUNTIME' 	=> (string) self::text('record_runtime', false),
 				'TXT-COL-TAGS' 		=> (string) self::text('tags', false),
 				'TXT-COL-SYNTAX' 	=> (string) self::text('record_syntax', false),
+				'TXT-COL-LAYOUT' 	=> (string) self::text('layout', false),
 				'TXT-COL-SPECIAL' 	=> (string) self::text('special', false),
 				'TXT-COL-ACTIVE' 	=> (string) self::text('active', false),
 				'TXT-COL-AUTH' 		=> (string) self::text('auth', false),

@@ -92,7 +92,34 @@ jQuery(function() {
 
 	var displayCtrl = function(row, cell, value, columnDef, dataContext) {
 		value = String(value);
-		return '<span style="color:#778899;" title="' + smartJ$Utils.escape_html(dataContext['layout']) + '">&nbsp;' + smartJ$Utils.escape_html(value) + '</span>';
+		return '<span style="color:#778899; font-size:88%;">&nbsp;' + smartJ$Utils.escape_html(value) + '</span>';
+	}
+
+	var displayLayout = function(row, cell, value, columnDef, dataContext) {
+		value = String(value);
+		var theTitle = 'Template (Page)';
+		var theColor = '#888888';
+		var theAlign = 'left';
+		var theStyle = 'italic';
+		if(String(dataContext.id).substr(0, 1) == '#') {
+			theTitle = 'Area (Segment)';
+			theColor = '#333333';
+			theAlign = 'right';
+			theStyle = 'normal';
+		}
+		return '<div style="font-size:88%; font-style:' + smartJ$Utils.escape_html(theStyle) + '; padding-left:5px; padding-right:5px; text-align:' + smartJ$Utils.escape_html(theAlign) + '; color:' + smartJ$Utils.escape_html(theColor) + ';" title="' + smartJ$Utils.escape_html(theTitle) + '">' + smartJ$Utils.escape_html(value) + '</div>';
+	}
+
+	var displayTags = function(row, cell, value, columnDef, dataContext) {
+		value = String(value);
+		var arr;
+		try {
+			arr = JSON.parse(value);
+		} catch(err){}
+		if(!Array.isArray(arr)) {
+			arr = [];
+		}
+		return '<span style="color:#111111; font-size:80%;" title="' + smartJ$Utils.escape_html(value) + '">&nbsp;' + smartJ$Utils.escape_html(arr.join(' ; ')) + '</span>';
 	}
 
 	var displaySpecial = function(row, cell, value, columnDef, dataContext) {
@@ -172,7 +199,7 @@ jQuery(function() {
 
 	var displayName = function(row, cell, value, columnDef, dataContext) {
 		value = String(value);
-		return '<span title="' + smartJ$Utils.escape_html(dataContext['tags']) + '">&nbsp;' + smartJ$Utils.escape_html(value) + '</span>';
+		return '<span>&nbsp;' + smartJ$Utils.escape_html(value) + '</span>';
 	}
 
 	var diffColSize = function(colName) {
@@ -182,14 +209,20 @@ jQuery(function() {
 		[%%%/IF:LIST-DELETE-URL%%%]
 		var size = parseInt(jQuery(window).width() - szDiff - 50 - 75 - 75 - 75 - 75 - 75 - 75) - 100;
 		switch(String(colName)) {
+			case 'tags':
+				size = size * 0.2;
+				break;
+			case 'layout':
+				size = size * 0.15;
+				break;
 			case 'ctrl':
-				size = size * 0.25;
+				size = size * 0.15;
 				break;
 			case 'id':
-				size = size * 0.25;
+				size = size * 0.2;
 				break;
 			case 'name':
-				size = size * 0.50;
+				size = size * 0.3;
 				break;
 			default:
 				size = size * 0;
@@ -204,18 +237,20 @@ jQuery(function() {
 	// Grid Data Defs: defaultSortDir:1
 	var columns = [
 		[%%%IF:LIST-DELETE-URL:!=;%%%]
-		{id:'x-del', 		field:'id', 			name:'#', 								sortable:false, 	width:50, 					formatter:displayDel},
+		{id:'x-del', 		field:'id', 			name:'#', 								sortable:false, 	width:50, 						formatter:displayDel},
 		[%%%/IF:LIST-DELETE-URL%%%]
-		{id:'x-ops', 		field:'id', 			name:'@', 								sortable:false, 	width:50, 					formatter:displayOps},
-		{id:'special', 		field:'special',		name:'[###TXT-COL-SPECIAL|js###]', 		sortable:true, 		width:75, 					formatter:displaySpecial,editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_AlignRight'},
-		{id:'ctrl', 		field:'ctrl', 			name:'[###TXT-COL-CTRL|js###]', 		sortable:true, 		width:diffColSize('ctrl'), 	formatter:displayCtrl, editor:TextCellSelector, cssClass:'smartGrid_Important'},
-		{id:'mode', 		field:'mode', 			name:'[###TXT-COL-SYNTAX|js###]', 		sortable:true, 		width:75, 					formatter:displayCodeType, editor:TextCellSelector},
-		{id:'id', 			field:'id', 			name:'[###TXT-COL-ID|js###]', 			sortable:true, 		width:diffColSize('id'), 	formatter:displayID, editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColumnId'},
-		{id:'active', 		field:'active', 		name:'[###TXT-COL-ACTIVE|js###]', 		sortable:true, 		width:75, 					formatter:displayActive, editor:TextCellSelector},
-		{id:'name', 		field:'name', 			name:'[###TXT-COL-NAME|js###]', 		sortable:true, 		width:diffColSize('name'), 	formatter:displayName, editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColumnName'},
-		{id:'auth', 		field:'auth', 			name:'[###TXT-COL-AUTH|js###]', 		sortable:true, 		width:75, 					formatter:displayAuth, editor:TextCellSelector},
-		{id:'translations', field:'translations', 	name:'[###TXT-COL-TRANSL|js###]', 		sortable:true, 		width:75, 					formatter:displayTransl, editor:TextCellSelector},
-		{id:'counter', 		field:'counter', 		name:'[###TXT-COL-COUNTER|js###]', 		sortable:true, 		width:75, 					editor:TextCellSelector, cssClass:'smartGrid_AlignRight'}
+		{id:'x-ops', 		field:'id', 			name:'@', 								sortable:false, 	width:50, 						formatter:displayOps},
+		{id:'special', 		field:'special',		name:'[###TXT-COL-SPECIAL|js###]', 		sortable:true, 		width:75, 						formatter:displaySpecial,editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_AlignRight'},
+		{id:'ctrl', 		field:'ctrl', 			name:'[###TXT-COL-CTRL|js###]', 		sortable:true, 		width:diffColSize('ctrl'), 		formatter:displayCtrl, editor:TextCellSelector, cssClass:'smartGrid_Important'},
+		{id:'mode', 		field:'mode', 			name:'[###TXT-COL-SYNTAX|js###]', 		sortable:true, 		width:75, 						formatter:displayCodeType, editor:TextCellSelector},
+		{id:'id', 			field:'id', 			name:'[###TXT-COL-ID|js###]', 			sortable:true, 		width:diffColSize('id'), 		formatter:displayID, editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColumnId'},
+		{id:'active', 		field:'active', 		name:'[###TXT-COL-ACTIVE|js###]', 		sortable:true, 		width:75, 						formatter:displayActive, editor:TextCellSelector},
+		{id:'name', 		field:'name', 			name:'[###TXT-COL-NAME|js###]', 		sortable:true, 		width:diffColSize('name'), 		formatter:displayName, editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColumnName'},
+		{id:'layout', 		field:'layout', 		name:'[###TXT-COL-LAYOUT|js###]', 		sortable:true, 		width:diffColSize('layout'),	formatter:displayLayout, editor:TextCellSelector},
+		{id:'tags', 		field:'tags', 			name:'[###TXT-COL-TAGS|js###]', 		sortable:true, 		width:diffColSize('tags'),		formatter:displayTags, editor:TextCellSelector, cssClass:'smartGrid_Important'},
+		{id:'auth', 		field:'auth', 			name:'[###TXT-COL-AUTH|js###]', 		sortable:true, 		width:75, 						formatter:displayAuth, editor:TextCellSelector},
+		{id:'translations', field:'translations', 	name:'[###TXT-COL-TRANSL|js###]', 		sortable:true, 		width:75, 						formatter:displayTransl, editor:TextCellSelector},
+		{id:'counter', 		field:'counter', 		name:'[###TXT-COL-COUNTER|js###]', 		sortable:true, 		width:75, 						editor:TextCellSelector, cssClass:'smartGrid_AlignRight'}
 	];
 
 	// Grid Options

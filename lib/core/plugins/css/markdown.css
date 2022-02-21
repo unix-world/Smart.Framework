@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.1.8.0 r.20220214 */
+/* Smart.Markdown.parser # v.1.8.0 r.20220215 */
 
 /* ----------------------------- */
 
@@ -13,7 +13,7 @@
 .markdown h4,
 .markdown h5,
 .markdown h6 {
-	display: inline-block !important;
+	display: block; /* important for floating images */
 }
 
 /* Helpers */
