@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20220126
+	// v.20220307
 
 	const DAV_RESOURCE_TYPE_COLLECTION = 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION = 'noncollection';
@@ -167,18 +167,18 @@ final class DavServer {
 		if(\Smart::array_size($arr_items) > 0) {
 			foreach($arr_items as $key => $val) {
 				if(\Smart::array_size($val) > 0) { // must check if array is non empty
-					// no need to check isset() for $val[key] as they come from fixed definitions
+					$val['dav-resource-type'] = (string) ($val['dav-resource-type'] ?? null);
 					if((string)$val['dav-resource-type'] == (string)self::DAV_RESOURCE_TYPE_COLLECTION) {
-						$val['dav-resource-type'] = (string) self::DAV_RESOURCE_TYPE_COLLECTION;
-						$val['c-xml-restype'] = (string) \trim((string)$val['c-xml-restype']);
-						$val['c-xml-data'] = (string) $val['c-xml-data'];
-						if((string)\trim((string)$val['c-xml-restype']) == '') {
+						$val['dav-resource-type'] = (string) self::DAV_RESOURCE_TYPE_COLLECTION; // rewrite, to be sure it matches the case
+						$val['c-xml-restype'] = (string) \trim((string)($val['c-xml-restype'] ?? null));
+						$val['c-xml-data'] = (string) ($val['c-xml-data'] ?? null);
+						if((string)$val['c-xml-restype'] == '') {
 							$val['c-xml-restype'] = '<d:collection/>'; // default
 						} //end if else
 					} elseif((string)$val['dav-resource-type'] == (string)self::DAV_RESOURCE_TYPE_NONCOLLECTION) {
-						$val['dav-resource-type'] = (string) self::DAV_RESOURCE_TYPE_NONCOLLECTION;
+						$val['dav-resource-type'] = (string) self::DAV_RESOURCE_TYPE_NONCOLLECTION; // rewrite, to be sure it matches the case
 						$val['c-xml-restype'] = ''; // non-collection items does not use this
-						$val['c-xml-data'] = (string) $val['c-xml-data'];
+						$val['c-xml-data'] = (string) ($val['c-xml-data'] ?? null);
 					} else {
 						$val['dav-resource-type'] = (string) self::DAV_RESOURCE_TYPE_NOTFOUND;
 						$val['c-xml-restype'] = ''; // not-found items does not use this
@@ -186,15 +186,15 @@ final class DavServer {
 					} //end if else
 					$item_arr[] = (array) [
 						'IS-ROOT' 				=> (string) ($sett_is_root ? 'yes' : 'no'),
-						'DAV-RESOURCE-TYPE' 	=> (string) $val['dav-resource-type'],
-						'DAV-REQUEST-PATH' 		=> (string) $val['dav-request-path'],
-						'DATE-CREATION' 		=> (string) \gmdate('D, d M Y H:i:s O', (int)$val['date-creation-timestamp']),
-						'DATE-MODIFIED' 		=> (string) \gmdate('D, d M Y H:i:s O', (int)$val['date-modified-timestamp']),
-						'SIZE-BYTES' 			=> (int)    $val['size-bytes'],
-						'MIME-TYPE' 			=> (string) $val['mime-type'],
-						'E-TAG' 				=> (string) $val['etag-hash'],
-						'C-XML-RESOURCE-TYPE' 	=> (string) $val['c-xml-restype'],
-						'C-XML-DATA' 			=> (string) $val['c-xml-data']
+						'DAV-RESOURCE-TYPE' 	=> (string) ($val['dav-resource-type'] ?? null),
+						'DAV-REQUEST-PATH' 		=> (string) ($val['dav-request-path']  ?? null),
+						'DATE-CREATION' 		=> (string) \gmdate('D, d M Y H:i:s O', (int)($val['date-creation-timestamp'] ?? null)),
+						'DATE-MODIFIED' 		=> (string) \gmdate('D, d M Y H:i:s O', (int)($val['date-modified-timestamp'] ?? null)),
+						'SIZE-BYTES' 			=> (int)    ($val['size-bytes'] ?? null),
+						'MIME-TYPE' 			=> (string) ($val['mime-type'] ?? null),
+						'E-TAG' 				=> (string) ($val['etag-hash'] ?? null),
+						'C-XML-RESOURCE-TYPE' 	=> (string) ($val['c-xml-restype'] ?? null),
+						'C-XML-DATA' 			=> (string) ($val['c-xml-data']  ?? null),
 					];
 					$sett_is_root = false; // set to false after first usage
 				} //end if
@@ -215,8 +215,8 @@ final class DavServer {
 				'DAV-REQUEST-URI' 	=> (string) $dav_req_uri,
 				'HTTP-STATUS' 		=> (int)    $http_status,
 				'ITEM' 				=> (array) 	$item_arr,
-				'QUOTA-USED' 		=> (int)    $arr_quota['used'],
-				'QUOTA-FREE' 		=> (int)    $arr_quota['free']
+				'QUOTA-USED' 		=> (int)    ($arr_quota['used'] ?? null),
+				'QUOTA-FREE' 		=> (int)    ($arr_quota['free'] ?? null),
 			],
 			'yes' // cache
 		);

@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
- * @version 	v.20210608
+ * @version 	v.20220224
  * @package 	Application:Development
  *
  */
@@ -1210,7 +1210,8 @@ private static function print_log_database(?string $title, $db_log) {
 						if(Smart::array_size($tmp_arr['params']) > 0) {
 							$tmp_params = array();
 							foreach($tmp_arr['params'] as $key => $val) {
-								$tmp_params[] = SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html('$'.($key+1).' : '.SmartUtils::pretty_print_var($val)), true);
+								$tmp_param_key = (string) (is_numeric($key) ? '$'.((int)$key + 1) : $key);
+								$tmp_params[] = SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html((string)$tmp_param_key.' : '.SmartUtils::pretty_print_var($val)), true);
 							} //end foreach
 							$log .= '<br>'.'@PARAMS:&nbsp;{ '.implode(', ', $tmp_params).' }';
 							$tmp_params = array();

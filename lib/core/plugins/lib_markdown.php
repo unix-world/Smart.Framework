@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartYamlConverter
- * @version 	v.20220214
+ * @version 	v.20220317
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.0.1-r.20220214';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.0.1-r.20220317';
 
 	//===================================
 
@@ -656,17 +656,21 @@ final class SmartMarkdownToHTML {
 		//--
 		$nl = '';
 		switch((string)$element) {
+			//--
 			case 'syntax-mtpl':
 			case 'syntax-extra':
 			case 'inline-links-and-media':
 			case 'inline-code':
 				$nl = ''; // skip newline in this context
 				break;
+			//-- {{{SYNC-MKDW-SPECIAL-BLOCK-TYPES}}}
 			case 'code':
 			case 'pre':
 			case 'blockquote':
+			//-- #end sync
 				$nl = "\n"; // use newline in this context
 				break;
+			//--
 			default:
 				Smart::log_warning(__METHOD__.' # Invalid element: `'.$element.'`');
 				return (string) $text;
@@ -869,13 +873,16 @@ final class SmartMarkdownToHTML {
 		$this->initDefinitionData(false); // init if req., no clear
 		//--
 		switch((string)$element) {
+			//--
 			case 'syntax-mtpl':
 			case 'syntax-extra':
 			case 'inline-links-and-media':
 			case 'inline-code':
+			//-- {{{SYNC-MKDW-SPECIAL-BLOCK-TYPES}}}
 			case 'code':
 			case 'pre':
 			case 'blockquote':
+			//-- #end sync
 				// ok
 				break;
 			default:
@@ -1792,15 +1799,21 @@ final class SmartMarkdownToHTML {
 		} //end if
 		//-- check special markers
 		if(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/') === 0) {
-			if(
-				(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/inline-links-and-media/') === 0)
+			if( // {{{SYNC-MKDW-SPECIAL-BLOCK-TYPES}}}
+				(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/code/') === 0)
 				OR
-				(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/inline-code/') === 0)
+				(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/pre/') === 0)
+				OR
+				(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/blockquote/') === 0)
 			) {
-				$renderr['crr'] = (string) $this->createHtmlInline((string)$line_crr, 'p');
-				return (array) $renderr; // skip these lines, they are post-render markers (ex: code, pre, ...)
-			} else {
-				return (array) $renderr; // skip these lines, they are post-render markers (ex: code, pre, ...)
+				return (array) $renderr; // skip these lines, they are post-render markers: code, pre, blockquote
+		//	} elseif(
+		//		(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/inline-links-and-media/') === 0)
+		//		OR
+		//		(strpos((string)$line_crr, (string)self::SPECIAL_CHAR_ENTRY_MARK.'/%/inline-code/') === 0)
+		//	) {
+		//		$renderr['crr'] = (string) $this->createHtmlInline((string)$line_crr, 'p');
+		//		return (array) $renderr; // skip these lines, they need to be rendered here: inline-links-and-media, inline-code
 			} //end if else
 		} //end if
 		//-- OLD Style Headings, alt headers: h1, h2

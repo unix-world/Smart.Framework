@@ -204,5 +204,6 @@
 
 // Smart.Framework.Modules Tests (optional)
 [@@@SUB-TEMPLATE:?!modules/mod-db-orm-redbean/tests/module-test.js.mtpl!@@@]
+[@@@SUB-TEMPLATE:?!modules/mod-dbal-laminas/tests/module-test.js.mtpl!@@@]
 
 // #END
