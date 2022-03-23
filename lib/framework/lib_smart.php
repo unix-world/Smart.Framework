@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20220208
+ * @version     v.20220322
  * @package     @Core
  *
  */
@@ -101,14 +101,13 @@ final class Smart {
 
 	//--
 
-	public const STRIP_HTML_ENTITIES = [ // keep unique also in case insensitive ! the most usual HTML Entities list, export as public to be able to use in other contexts
+	private const STRIP_HTML_ENTITIES = [ // keep unique also in case insensitive ! the most usual HTML Entities list, used for normalize strip tags only ; no need to export as public
 		'&NewLine;' 	=> "\n",
 		'&Tab;' 		=> "\t",
 		'&nbsp;' 		=> ' ',
-		'&amp;' 		=> '&',
 		'&quot;' 		=> '"',
 		'&apos;' 		=> "'",
-		'&#039;' 		=> "'", // alternate for &apos;
+		'&#039;' 		=> "'", // alternate for &apos; (HTML4)
 		'&lt;' 			=> '<',
 		'&gt;' 			=> '>',
 		'&sol;' 		=> '/',
@@ -176,11 +175,6 @@ final class Smart {
 		'&check;' 		=> '✓',
 		'&cross;' 		=> '✗',
 		'&sext;' 		=> '✶',
-		'&fnof;' 		=> 'ƒ',
-		'&radic;' 		=> '√',
-		'&sum;' 		=> '∑',
-		'&prod;' 		=> '∏',
-		'&int;' 		=> '∫',
 		'&infin;' 		=> '∞',
 		'&percnt;' 		=> '%',
 		'&lpar;' 		=> '(',
@@ -211,38 +205,7 @@ final class Smart {
 		'&sup2;' 		=> '²',
 		'&sup3;' 		=> '³',
 		'&ordf;' 		=> 'ª',
-		'&cedil;' 		=> '¸',
-		'&Cedilla;' 	=> '¸',
-		'&not;' 		=> '¬',
-		'&forall;' 		=> '∀',
-		'&part;' 		=> '∂',
-		'&exist;' 		=> '∃',
-		'&empty;' 		=> '∅',
-		'&nabla;' 		=> '∇',
-		'&isin;' 		=> '∈',
-		'&notin;' 		=> '∉',
-		'&ni;' 			=> '∋',
-		'&prop;' 		=> '∝',
-		'&ang;' 		=> '∠',
-		'&and;' 		=> '∧',
-		'&or;' 			=> '∨',
-		'&cap;' 		=> '∩',
-		'&cup;' 		=> '∪',
-		'&there4;' 		=> '∴',
-		'&cong;' 		=> '≅',
-		'&asymp;' 		=> '≈',
-		'&ne;' 			=> '≠',
-		'&equiv;' 		=> '≡',
-		'&le;' 			=> '≤',
-		'&ge;' 			=> '≥',
-		'&sub;' 		=> '⊂',
-		'&sup;' 		=> '⊃',
-		'&nsub;' 		=> '⊄',
-		'&sube;' 		=> '⊆',
-		'&supe;' 		=> '⊇',
-		'&oplus;' 		=> '+',
-		'&otimes;' 		=> 'x',
-		'&perp;' 		=> '⊥'
+		'&amp;' 		=> '&', // must be at the end because it is contained as prexif in any entity if double encoded ...
 	];
 
 	//--
@@ -1594,7 +1557,7 @@ final class Smart {
 	 */
 	public static function decode_html_entities(?string $str) {
 		//--
-		return (string) html_entity_decode((string)$str, ENT_HTML5 | ENT_QUOTES, SMART_FRAMEWORK_CHARSET);
+		return (string) html_entity_decode((string)$str, ENT_HTML5 | ENT_QUOTES, (string)SMART_FRAMEWORK_CHARSET);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1606,10 +1569,11 @@ final class Smart {
 	 *
 	 * @param ARRAY 		$yhtmlcode		:: HTML Code to be stripped of tags
 	 * @param YES/NO 		$y_mode			:: yes to convert <br> to new lines \n, otherwise (if no) will convert <br> to spaces
+	 * @param YES/NO 		$ynormalize 	:: yes to normalize the code as text, otherwise (if no) will do not use extra normalize feature so the code may be re-used for re-encoding as html (ex: extract markdown) ...
 	 *
 	 * @return STRING 						:: The processed HTML Code
 	 */
-	public static function striptags(?string $yhtmlcode, ?string $ynewline='yes') { // {{{SYNC-SMART-STRIP-TAGS-LOGIC}}}
+	public static function striptags(?string $yhtmlcode, ?string $ynewline='yes', ?string $ynormalize='yes') { // {{{SYNC-SMART-STRIP-TAGS-LOGIC}}}
 		//--
 		$yhtmlcode = (string) $yhtmlcode;
 		$ynewline = (string) $ynewline;
@@ -1646,7 +1610,9 @@ final class Smart {
 		//-- strip the tags
 		$yhtmlcode = (string) strip_tags((string)$yhtmlcode);
 		//-- restore some usual html entities
-		$yhtmlcode = (string) str_ireplace((array)array_keys((array)self::STRIP_HTML_ENTITIES), (array)array_values((array)self::STRIP_HTML_ENTITIES), (string)$yhtmlcode); // must be insensitive replace ... by example &Prime; can be also &prime; ... in this context, using STRIP_HTML_ENTITIES they willnot conflict with wrong entities if using case insensitice since they are unique also in case insensitive
+		if((string)$ynormalize != 'no') {
+			$yhtmlcode = (string) str_ireplace((array)array_keys((array)self::STRIP_HTML_ENTITIES), (array)array_values((array)self::STRIP_HTML_ENTITIES), (string)$yhtmlcode); // must be insensitive replace ... by example &Prime; can be also &prime; ... in this context, using STRIP_HTML_ENTITIES they willnot conflict with wrong entities if using case insensitice since they are unique also in case insensitive
+		} //end if
 		//-- if new tags may appear after strip tags that is natural as they were encoded already with entities ... ; Anyway, the following can't be used as IT BREAKS TEXT THAT COMES AFTER < which was previous encoded as &lt; !!!
 		//$yhtmlcode = (string) strip_tags((string)$yhtmlcode); // [disabled, not needed] fix: after all fixes when reversing entities, new tags can appear that were encoded, so needs run again for safety ...
 		//-- restore html unicode entities
@@ -1654,7 +1620,9 @@ final class Smart {
 		//-- try to convert other remaining html entities
 		$yhtmlcode = (string) self::decode_html_entities((string)$yhtmlcode);
 		//-- clean any other remaining html entities
-		$yhtmlcode = (string) preg_replace('/&\#?([0-9a-z]+);/i', ' ', (string)$yhtmlcode);
+		if((string)$ynormalize != 'no') {
+			$yhtmlcode = (string) preg_replace('/&\#?([0-9a-z]+);/i', ' ', (string)$yhtmlcode);
+		} //end if
 		//-- cleanup multiple spaces with just one space
 		$yhtmlcode = (string) preg_replace('/[ \\t]+/', ' ', (string)$yhtmlcode); // replace multiple tabs or spaces with one space
 		//-- other fixes

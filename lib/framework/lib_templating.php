@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN
- * @version 	v.20220207
+ * @version 	v.20220321
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -720,7 +720,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 		//--
 		$matches = array();
 		$pcre = preg_match_all(
-			'/(\[\#\#\#){1}[A-Z0-9_\-\.\|]+((\|[a-z0-9]+)*)[^\s]*(\#\#\#\]){1}/sU',
+			'/(\[\#\#\#){1}[A-Z0-9_\-\.\|]+?((\|[a-z0-9]+?)*?)[^\s]*?(\#\#\#\]){1}/s', // '/(\[\#\#\#){1}[A-Z0-9_\-\.\|]+((\|[a-z0-9]+)*)[^\s]*(\#\#\#\]){1}/sU',
 			(string) $mtemplate,
 			$matches,
 			PREG_PATTERN_ORDER,
@@ -742,7 +742,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 		//--
 		$matches = array();
 		$pcre = preg_match_all(
-			'/(\[%%%){1}[\/]?(IF|ELSE|LOOP|COMMENT|\|SB\-L|\|SB\-R|\|R|\|N|\|T|\|SPACE){1}[^\s]*(%%%\]){1}/sU',
+			'/(\[%%%){1}[\/]??(IF|ELSE|LOOP|COMMENT|\|SB\-L|\|SB\-R|\|R|\|N|\|T|\|SPACE){1}[^\s]*?(%%%\]){1}/s', // '/(\[%%%){1}[\/]?(IF|ELSE|LOOP|COMMENT|\|SB\-L|\|SB\-R|\|R|\|N|\|T|\|SPACE){1}[^\s]*(%%%\]){1}/sU',
 			(string) $mtemplate,
 			$matches,
 			PREG_PATTERN_ORDER,
@@ -764,7 +764,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 		//--
 		$matches = array();
 		$pcre = preg_match_all(
-			'/(\[@@@){1}SUB\-TEMPLATE\:[^\s]*(@@@\]){1}/sU',
+			'/(\[@@@){1}SUB\-TEMPLATE\:[^\s]*?(@@@\]){1}/', // '/(\[@@@){1}SUB\-TEMPLATE\:[^\s]*(@@@\]){1}/sU',
 			(string) $mtemplate,
 			$matches,
 			PREG_PATTERN_ORDER,
@@ -841,7 +841,11 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 	 */
 	private static function analize_extract_markers(string $mtemplate) : array {
 		//--
-		return (array) self::analize_parts_extract('/###([A-Z0-9_\-\.]+)/', (string)$mtemplate, true); // {{{SYNC-TPL-EXPR-MARKER}}} :: start part only :: - [ - ] (can be in IF statement) ; uppercase
+		return (array) self::analize_parts_extract(
+			'/###([A-Z0-9_\-\.]+)/',
+			(string) $mtemplate,
+			true
+		); // {{{SYNC-TPL-EXPR-MARKER}}} :: start part only :: - [ - ] (can be in IF statement) ; uppercase
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -859,7 +863,11 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 	 */
 	private static function analize_extract_ifs(string $mtemplate) : array {
 		//--
-		return (array) self::analize_parts_extract('{\[%%%IF\:([a-zA-Z0-9_\-\.]+)\:}sU', (string)$mtemplate, true); // {{{SYNC-TPL-EXPR-IF}}} :: start part only ; uppercase
+		return (array) self::analize_parts_extract(
+			'{\[%%%IF\:([a-zA-Z0-9_\-\.]+?)\:}s', // '{\[%%%IF\:([a-zA-Z0-9_\-\.]+)\:}sU'
+			(string) $mtemplate,
+			true
+		); // {{{SYNC-TPL-EXPR-IF}}} :: start part only ; uppercase
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -877,7 +885,11 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 	 */
 	private static function analize_extract_loops(string $mtemplate) : array {
 		//--
-		return (array) self::analize_parts_extract('{\[%%%LOOP\:([a-zA-Z0-9_\-\.]+)((\([0-9]+\))?%)%%\]}sU', (string)$mtemplate, true); // {{{SYNC-TPL-EXPR-LOOP}}} ; uppercase
+		return (array) self::analize_parts_extract(
+			'{\[%%%LOOP\:([a-zA-Z0-9_\-\.]+?)((\([0-9]+?\))??%)%%\]}s', // '{\[%%%LOOP\:([a-zA-Z0-9_\-\.]+)((\([0-9]+\))?%)%%\]}sU'
+			(string) $mtemplate,
+			true
+		); // {{{SYNC-TPL-EXPR-LOOP}}} ; uppercase
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -895,7 +907,11 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 	 */
 	private static function analize_extract_specials(string $mtemplate) : array {
 		//--
-		return (array) self::analize_parts_extract('{\[%%%\|?([a-zA-Z0-9_\-\.]+)%%%\]}sU', (string)$mtemplate, true); // {{{SYNC-TPL-EXPR-SPECIALS}}} ; uppercase
+		return (array) self::analize_parts_extract(
+			'{\[%%%\|??([a-zA-Z0-9_\-\.]+?)%%%\]}s', // '{\[%%%\|?([a-zA-Z0-9_\-\.]+)%%%\]}sU'
+			(string) $mtemplate,
+			true
+		); // {{{SYNC-TPL-EXPR-SPECIALS}}} ; uppercase
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -913,7 +929,11 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 	 */
 	private static function analize_extract_subtpls(string $mtemplate) : array {
 		//--
-		return (array) self::analize_parts_extract('{\[@@@SUB\-TEMPLATE\:([a-zA-Z0-9_\-\.\/\!\?\|%]+)@@@\]}', (string)$mtemplate, false); // FIX: add an extra % to parse also SUB-TPL %vars% # {{{SYNC-TPL-EXPR-SUBTPL}}} :: + % ; preserve case
+		return (array) self::analize_parts_extract(
+			'{\[@@@SUB\-TEMPLATE\:([a-zA-Z0-9_\-\.\/\!\?\|%]+)@@@\]}',
+			(string) $mtemplate,
+			false
+		); // FIX: add an extra % to parse also SUB-TPL %vars% # {{{SYNC-TPL-EXPR-SUBTPL}}} :: + % ; preserve case
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1448,8 +1468,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 		//--
 		if(strpos((string)$mtemplate, '[%%%COMMENT') !== false) {
 			//--
-			//$pattern = '{\[%%%COMMENT%%%\](.*)?\[%%%\/COMMENT%%%\]}sU';
-			$pattern = '{\s?\[%%%COMMENT%%%\](.*)?\[%%%\/COMMENT%%%\]\s?}sU'; // Fix: trim parts
+		//	$pattern = '{\[%%%COMMENT%%%\](.*)?\[%%%\/COMMENT%%%\]}sU';
+		//	$pattern = '{\s?\[%%%COMMENT%%%\](.*)?\[%%%\/COMMENT%%%\]\s?}sU'; // Fix: trim parts
+			$pattern = '{\s??\[%%%COMMENT%%%\](.*?)??\[%%%\/COMMENT%%%\]\s??}s'; // Fix: trim parts
 			$mtemplate = (string) preg_replace($pattern, '', (string)$mtemplate);
 			//--
 		} //end if
@@ -1513,7 +1534,8 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 				$y_arr_context = [];
 			} //end if
 			//-- {{{SYNC-TPL-EXPR-IF}}}
-			$pattern = '{\[%%%IF\:([a-zA-Z0-9_\-\.]+)\:(@\=\=|@\!\=|@\<\=|@\<|@\>\=|@\>|\=\=|\!\=|\<\=|\<|\>\=|\>|\!%|%|\!\?|\?|\^~|\^\*|&~|&\*|\$~|\$\*)([^\[\]]*);((\([0-9]+\))?)%%%\](.*)?(\[%%%ELSE\:\1\4%%%\](.*)?)?\[%%%\/IF\:\1\4%%%\]}sU';
+		//	$pattern = '{\[%%%IF\:([a-zA-Z0-9_\-\.]+)\:(@\=\=|@\!\=|@\<\=|@\<|@\>\=|@\>|\=\=|\!\=|\<\=|\<|\>\=|\>|\!%|%|\!\?|\?|\^~|\^\*|&~|&\*|\$~|\$\*)([^\[\]]*);((\([0-9]+\))?)%%%\](.*)?(\[%%%ELSE\:\1\4%%%\](.*)?)?\[%%%\/IF\:\1\4%%%\]}sU';
+			$pattern = '{\[%%%IF\:([a-zA-Z0-9_\-\.]+?)\:(@\=\=|@\!\=|@\<\=|@\<|@\>\=|@\>|\=\=|\!\=|\<\=|\<|\>\=|\>|\!%|%|\!\?|\?|\^~|\^\*|&~|&\*|\$~|\$\*)([^\[\]]*?);((\([0-9]+\))??)%%%\](.*?)??(\[%%%ELSE\:\1\4%%%\](.*?)??)??\[%%%\/IF\:\1\4%%%\]}s';
 			$matches = array();
 			$pcre = preg_match_all((string)$pattern, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
 			if($pcre === false) {
@@ -1838,7 +1860,8 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 				$y_arr_vars = [];
 			} //end if
 			//--
-			$pattern = '{\[%%%LOOP\:([a-zA-Z0-9_\-\.]+)((\([0-9]+\))?%)%%\](.*)?\[%%%\/LOOP\:\1\2%%\]}sU'; // {{{SYNC-TPL-EXPR-LOOP}}}
+		//	$pattern = '{\[%%%LOOP\:([a-zA-Z0-9_\-\.]+)((\([0-9]+\))?%)%%\](.*)?\[%%%\/LOOP\:\1\2%%\]}sU'; // {{{SYNC-TPL-EXPR-LOOP}}}
+			$pattern = '{\[%%%LOOP\:([a-zA-Z0-9_\-\.]+?)((\([0-9]+?\))??%)%%\](.*?)??\[%%%\/LOOP\:\1\2%%\]}s'; // {{{SYNC-TPL-EXPR-LOOP}}}
 			$matches = array();
 			$pcre = preg_match_all((string)$pattern, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
 			if($pcre === false) {

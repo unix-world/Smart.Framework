@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220210
+ * @version 	v.20220321
  * @package 	PageBuilder
  *
  */
@@ -170,7 +170,7 @@ final class Utils {
 		//--
 		$matches = array();
 		$pcre = preg_match_all(
-			'/(\{\{([\:]{1}|[\=%]{1}|[\=\#]{1}){1}){1}[^\s]*((\2)\}\}){1}/sU', // will match: {{:.:}} ; {{=%.%=}} ; {{=#.#=}}
+			'/(\{\{([\:]{1}|[\=%]{1}|[\=\#]{1}){1}){1}[^\s]*?((\2)\}\}){1}/s', // '/(\{\{([\:]{1}|[\=%]{1}|[\=\#]{1}){1}){1}[^\s]*((\2)\}\}){1}/sU', // will match: {{:.:}} ; {{=%.%=}} ; {{=#.#=}}
 			(string) $text,
 			$matches,
 			PREG_PATTERN_ORDER,

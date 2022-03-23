@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils, SmartYamlConverter
- * @version 	v.20220317
+ * @version 	v.20220322
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.0.1-r.20220317';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.1.7-r.20220322';
 
 	//===================================
 
@@ -104,10 +104,6 @@ final class SmartMarkdownToHTML {
 	private $documentParsed = false;
 	//--
 
-	//-- special parsing helper characters
-	private const SPECIAL_CHAR_ENTRY_MARK 	= "\u{204F}"; // unicode reversed semicolon &bsemi; or &#8271; (unicode): ⁏ (not ;)
-	//--
-
 	//-- extra, by unixman: attributes can optional start with a type prefix to know which attributes to assign to nested elements (ex: media in a link, or link in a table cell, or media in a link in a table cell)
 	private const regexHeadingAttribute 	= '[\t ]*\{(H\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Header 					- optional, starts with {H:
 	private const regexMediaAttribute 		= '[\t ]*\{(I\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Media 					- optional, starts with {I:
@@ -129,13 +125,14 @@ final class SmartMarkdownToHTML {
 	//--
 
 	//--
-//	private const PATTERN_BLOCK_CODE  	= '/\n[`]{3}[\t a-z0-9\-]{0,255}\n(.*\n)?[`]{3}\n/sU'; 					// Fenced Code Blocks 			#1826 steps
-	private const PATTERN_BLOCK_CODE  	= '/\n[`]{3}[\t a-z0-9\-]{0,255}\n([^\n]*\n)*[`]{3}\n/sU'; 				// Fenced Code Blocks 			# 956 steps (optimal)
+//	private const PATTERN_BLOCK_CODE 	= '/\n[`]{3}[\t a-z0-9\-]{0,255}\n([^\n]*\n)*[`]{3}\n/sU'; 				// Fenced Code Blocks
+	private const PATTERN_BLOCK_CODE 	= '/\n[`]{3}[\t a-z0-9\-]{0,255}\n([^\n]*?\n)*?[`]{3}\n/s'; 			// Fenced Code Blocks
 	//--
-	private const PATTERN_INLINE_CODE 	= '/[`]{3}.*[`]{3}/sU'; 												// Inline Code
+//	private const PATTERN_INLINE_CODE 	= '/[`]{3}.*[`]{3}/sU'; 												// Inline Code
+	private const PATTERN_INLINE_CODE 	= '/[`]{3}.*?[`]{3}/s'; 												// Inline Code
 	//--
-//	private const PATTERN_BLOCK_PRE  	= '/\n[~]{3,4}\n(.*\n)?[~]{3,4}\n/sU'; 									// Fenced Preformat Blocks 		# 934 steps
-	private const PATTERN_BLOCK_PRE  	= '/\n[~]{3,4}\n([^\n]*\n)*[~]{3,4}\n/sU'; 								// Fenced Preformat Blocks		# 848 steps (optimal)
+//	private const PATTERN_BLOCK_PRE 	= '/\n[~]{3,4}\n([^\n]*\n)*[~]{3,4}\n/sU'; 								// Fenced Preformat Blocks
+	private const PATTERN_BLOCK_PRE 	= '/\n[~]{3,4}\n([^\n]*?\n)*?[~]{3,4}\n/s'; 							// Fenced Preformat Blocks
 	//--
 	private const PATTERN_LIST_UL 		= '/^([\t ]*)[\*\-\+]{1}[\t ]+/'; 										// UL list
 	private const PATTERN_LIST_OL 		= '/^([\t ]*)[0-9]+[\.\)]{1}[\t ]+/'; 									// OL List
@@ -170,7 +167,10 @@ final class SmartMarkdownToHTML {
 	//--
 	//==
 
-	//--
+	//==
+	//-- special parsing helper characters
+	private const SPECIAL_CHAR_ENTRY_MARK 	= "\u{204F}"; // unicode reversed semicolon &bsemi; or &#8271; (unicode): ⁏ (not ;)
+	//-- supported html entities (the most usual)
 	private const HTML_ENTITIES_REPLACEMENTS = [
 		//-- html
 		'&nbsp;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/nbsp/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // non breakable space
@@ -243,6 +243,40 @@ final class SmartMarkdownToHTML {
 		//--
 	];
 	//--
+	//==
+
+	//==
+	//-- {{{SYNC-MKDW-EXTERNAL-CONVERT-ESCAPINGS}}}
+	public const ESCAPINGS_REPLACEMENTS = [
+		'\\\\' 	=> '\\',
+		'\\_' 	=> '_',
+		'\\*' 	=> '*',
+		'\\-' 	=> '-',
+		'\\+' 	=> '+',
+		'\\=' 	=> '=',
+		'\\`' 	=> '`',
+		'\\~' 	=> '~',
+		'\\!' 	=> '!',
+		'\\#' 	=> '#',
+		'\\$' 	=> '$',
+		'\\@' 	=> '@',
+		'\\%' 	=> '%',
+		'\\^' 	=> '^',
+		'\\(' 	=> '(',
+		'\\)' 	=> ')',
+		'\\[' 	=> '[',
+		'\\]' 	=> ']',
+		'\\{' 	=> '{',
+		'\\}' 	=> '}',
+		'\\.' 	=> '.',
+		'\\,' 	=> ',',
+		'\\:' 	=> ':',
+		'\\;' 	=> ';',
+		'\\<\\<\\<' => '<<<', // do not replace just single < or > ; they may collide with html tags
+	//	'\\|' 	=> '|', // {{{SYNC-FIX-ESCAPED-|-}}} ; this is done above by using a circular replacement (before vs after rendering ...)
+	];
+	//--
+	//==
 
 	//===================================
 
@@ -467,35 +501,7 @@ final class SmartMarkdownToHTML {
 
 	private function fixEscapings(?string $text) : string { // this is an extra feature, inspired from turndown.js ; some character sequences cannot be used without being escaped in markdown ... revert them here (except the code which has a special revert only ...)
 		//--
-		return (string) strtr((string)$text, [
-			'\\\\' 	=> '\\',
-			'\\_' 	=> '_',
-			'\\*' 	=> '*',
-			'\\-' 	=> '-',
-			'\\+' 	=> '+',
-			'\\=' 	=> '=',
-			'\\`' 	=> '`',
-			'\\~' 	=> '~',
-			'\\!' 	=> '!',
-			'\\#' 	=> '#',
-			'\\$' 	=> '$',
-			'\\@' 	=> '@',
-			'\\%' 	=> '%',
-			'\\^' 	=> '^',
-			'\\(' 	=> '(',
-			'\\)' 	=> ')',
-			'\\[' 	=> '[',
-			'\\]' 	=> ']',
-			'\\{' 	=> '{',
-			'\\}' 	=> '}',
-			'\\.' 	=> '.',
-			'\\,' 	=> ',',
-			'\\:' 	=> ':',
-			'\\;' 	=> ';',
-		//	'\\>' 	=> '>', // do not ! may collide with html tags
-		//	'\\<' 	=> '<', // do not ! may collide with html tags
-		//	'\\|' 	=> '|', // {{{SYNC-FIX-ESCAPED-|-}}} ; this is done above by using a circular replacement (before vs after rendering ...)
-		]);
+		return (string) strtr((string)$text, (array)self::ESCAPINGS_REPLACEMENTS);
 		//--
 	} //END FUNCTION
 
@@ -684,8 +690,11 @@ final class SmartMarkdownToHTML {
 		if((int)$max > 0) {
 			for($i=0; $i<$max; $i++) {
 				$placeholder = (string) self::SPECIAL_CHAR_ENTRY_MARK.'/%/'.$element.'/place/'.$i.'/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%';
-				$this->DefinitionData['extracted'][(string)$element.':placeholders'][(string)$placeholder] = (string) $arr[$i];
 				$text = (string) Smart::str_replace_first((string)$arr[$i], (string)$nl.$placeholder.$nl, (string)$text);
+				if((string)$element == 'inline-links-and-media') {
+					$arr[$i] = (string) strtr((string)$arr[$i], [ '```' => '``' ]); // fix: links and media cannot contain inline code ; thus if inline code detected will be changed to highlight (mark) ; for links that contain in description 3 backticks sequence ; it is req. because links and media are extracted out before inline code ... it is a very specific situation !
+				} //end if
+				$this->DefinitionData['extracted'][(string)$element.':placeholders'][(string)$placeholder] = (string) $arr[$i];
 			} //end for
 		} //end if
 		//--
@@ -779,6 +788,23 @@ final class SmartMarkdownToHTML {
 		} //end if
 		//--
 		return (string) $url;
+		//--
+	} //END FUNCTION
+
+
+	private function fixRenderCode(?string $text) {
+		//--
+		return (string) str_replace( // {{{SYNC-MKDW-CODE-FIX-SPECIALS}}}
+			[
+				'\\`\\`\\`',
+				'∖`∖`∖`', // '∖' here is the utf-8 #8726 (a special backslash)
+			],
+			[
+				'```',
+				'\\`\\`\\`',
+			],
+			(string) $text
+		);
 		//--
 	} //END FUNCTION
 
@@ -902,9 +928,11 @@ final class SmartMarkdownToHTML {
 					$text = (string) str_replace((string)$key, (string)$val, (string)$text); // ! no new line here, PRESERVE ; replace all occurences here not only first, they may have been replicated, by ex the =@. for links and media
 				} elseif((string)$element == 'inline-links-and-media') { // links, links with media, media
 					$val = (string) $this->renderLinksAndMedia((string)$val); // it returns html safe escaped code
+					$val = (string) $this->fixEscapings((string)$val); // for links and media need to be fixed here ... cannot later !
 					$text = (string) Smart::str_replace_first((string)$key, (string)$val, (string)$text); // ! no new line here, it is inline syntax
 				} elseif((string)$element == 'inline-code') { // code
 					$val = (string) substr((string)$val, 3, -3); // remove 1st ``` and last ```
+					$val = (string) $this->fixRenderCode((string)$val); // {{{SYNC-MKDW-CODE-FIX-SPECIALS}}}
 					$text = (string) Smart::str_replace_first((string)$key, (string)'<code class="mkdw-inline-code">'.Smart::escape_html((string)$val).'</code>', (string)$text); // ! no new line here, it is inline syntax
 				} else {
 					$arr = (array) $this->getTextAsLinesArr((string)$val);
@@ -935,6 +963,7 @@ final class SmartMarkdownToHTML {
 								} elseif((int)$i === ((int)$max - 1)) {
 									$arr[$i] = '</code></pre>'."\n";
 								} else {
+									$arr[$i] = (string) $this->fixRenderCode((string)$arr[$i]); // {{{SYNC-MKDW-CODE-FIX-SPECIALS}}}
 									$arr[$i] = (string) Smart::escape_html((string)$arr[$i])."\n"; // do not parse inline, preserve code
 								} //end if else
 							} else { // pre
@@ -2056,12 +2085,12 @@ final class SmartMarkdownToHTML {
 					} //end if else
 					//--
 			//======= Horizontal Rule # need to be detected before lists !!
-				} elseif(in_array((string)$arr[$i], [ '- - -', '* * *' ])) { // hr
+				} elseif(in_array((string)substr((string)$arr[$i], 0, 5), [ '- - -', '* * *' ])) { // hr
 					//--
 					$arr[$i] = '<hr>'."\n";
 					$line_is_unparsed = false;
 					//--
-				} elseif(in_array((string)$arr[$i], [ '---', '***', '___' ])) { // hr ; support v1
+				} elseif(in_array((string)substr((string)$arr[$i], 0, 3), [ '---', '***', '___' ])) { // hr ; support v1
 					//--
 					$arr[$i] = '<hr>'."\n";
 					$line_is_unparsed = false;
@@ -2254,10 +2283,10 @@ final class SmartMarkdownToHTML {
 							} else {
 								$cell_align = (string) ((isset($paligns[$c-1]) && $paligns[$c-1]) ? $paligns[$c-1] : '');
 							} //end if else
-							if((string)$cells[$c] != '') { // if cell is empty, that is intentional to solve the issue with collspans, so do not render that cell
+						//	if((string)$cells[$c] != '') { // bugfix (realm=javascript&key=3) it appears that also with empty cell and colspans the cell must be rendered ...  ; previous assumption was: if cell is empty, that is intentional to solve the issue with collspans, so do not render that cell
 								$arr[$i] .= "\t"."\t".'<'.self::escapeValidHtmlTagName($cell_elem).$this->buildAttributeData((array)$carr['element:atts']).($cell_align ? ' style="text-align:'.Smart::escape_html((string)$cell_align).';"' : '').'>'.(trim((string)$carr['element:text']) ? $this->createHtmlInline((string)trim((string)$carr['element:text']), 'td') : '&nbsp;').'</'.self::escapeValidHtmlTagName($cell_elem).'>'."\n"; // do not parse inline attributes
 								$line_is_unparsed = false;
-							} //end if
+						//	} //end if
 							$carr = null;
 							$cell_align = null;
 						} //end for
