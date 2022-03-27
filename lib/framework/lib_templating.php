@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN
- * @version 	v.20220321
+ * @version 	v.20220328
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -119,7 +119,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 		} //end if
 		//die('<pre>'.Smart::escape_html(print_r($matches,1)).'</pre>');
 		for($i=0; $i<Smart::array_size($matches); $i++) {
-			$mtemplate = (string) str_replace((string)$matches[$i][0], '⁅***¦SUB-TEMPLATE:'.(string)$matches[$i][1].'(*****INCLUDE:START{*****)¦***⁆'.(string)$matches[$i][0].'⁅***¦SUB-TEMPLATE:'.(string)$matches[$i][1].'(*****}INCLUDE:END*****)¦***⁆', (string)$mtemplate);
+			$mtemplate = (string) str_replace((string)$matches[$i][0], '<!-- ⁅***¦SUB-TEMPLATE:'.(string)$matches[$i][1].'(*****INCLUDE:START{*****)¦***⁆ -->'.(string)$matches[$i][0].'<!-- ⁅***¦SUB-TEMPLATE:'.(string)$matches[$i][1].'(*****}INCLUDE:END*****)¦***⁆ -->', (string)$mtemplate);
 		} //end for
 		$matches = array();
 		//--
@@ -1058,8 +1058,166 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 		$html .= '</tr></table><hr>';
 		//-- ending
 		$html .= '</div><h2 style="display:inline;background:#777788;color:#FFFFFF;padding:3px;">Marker-TPL Source - with ALL:[Level 1..n] Sub-Templates Includded (if any)</h2><div id="tpl-display-for-highlight"><pre id="'.'__marker__template__analyzer-tpl_'.Smart::escape_html($hash).'"><code class="debug-tpl" data-syntax="markertpl">'.Smart::escape_html($mtemplate).'</code></pre></div><hr>'."\n".'<!-- #END: Marker-TPL Analysis @ '.Smart::escape_html($hash).' -->';
+		//-- ast
+		if(SmartFrameworkRegistry::ifInternalDebug()) {
+			//--
+			$html .= '</div><h2 style="display:inline;background:#777788;color:#FFFFFF;padding:3px;">Marker-TPL AST Nodes Syntax Tree - with ALL:[Level 1..n] Sub-Templates Includded (if any)</h2>';
+			//--
+			$ast = (array) self::process_ast_raw_tree((string)$mtemplate);
+			$tree = (array) self::process_ast_nodes_tree((array)$ast);
+			$nodes = (array) $tree['nodes'];
+			$tree = null;
+			$ast = null;
+			//--
+			$html .= self::analyze_display_ast_nodes_tree((array)$nodes);
+			//--
+			$html .= '</div>';
+			//--
+		} //end if
 		//-- return
 		return (string) self::prepare_nosyntax_html_template($html, true, true);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * DO Analyze a Marker Template Nodes
+	 * This is intended for DEVELOPMENT / INTERNAL DEBUG ONLY (never use this in production environments !)
+	 *
+	 * @param 	ARRAY 		$arr 							:: The Nodes AST Syntax Tree of the TPL
+	 * @param 	STRING 		$tag 							:: **INTERNAL USE ONLY** Curent Node Tag (must be initialized always with empty string) ; this parameter is only used by recursive calls of this method, later
+	 *
+	 * @return 	STRING										:: The analyze info HTML
+	 *
+	 */
+	private static function analyze_display_ast_nodes_tree(array $nodes, string $tag='') : string {
+		//--
+		$html = '';
+		//--
+		if((string)$tag == '') {
+			$html .= '<ul>'."\n";
+		} //end if
+		//--
+		$html .= '<li>TPL&nbsp;<b>['.Smart::escape_html((string)($tag ? $tag : 'ROOT')).']</b></li><ul>'."\n";
+		//--
+		foreach($nodes as $key => $val) {
+			//--
+			$ttag = '?';
+			if(strpos((string)$val[0], '[%%%COMMENT%%%]') === 0) {
+				$ttag = 'COMMENT';
+			} elseif(strpos((string)$val[0], '[%%%IF:') === 0) {
+				$ttag = 'IF';
+			} elseif(strpos((string)$val[0], '[%%%LOOP:') === 0) {
+				$ttag = 'LOOP';
+			} //end if else
+			//--
+			if(is_array($val)) {
+				$html .= (string) self::analyze_display_ast_nodes_tree((array)$val, (string)$ttag);
+			} else {
+				$html .= '<li>'.Smart::escape_html((string)$val).'</li>';
+			} //end if else
+			//--
+		} //end foreach
+		//--
+		$html .= '</ul>'."\n";
+		//--
+		if((string)$tag == '') {
+			$html .= '</ul>'."\n";
+		} //end if
+		//--
+		return (string) self::prepare_nosyntax_html_template($html, true, true);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Process the Raw AST Syntax Tree for a Marker Template
+	 * This is intended for DEVELOPMENT / DEBUG ONLY (never use this in production environments !)
+	 *
+	 * @param 	STRING 		$mtemplate 						:: The Marker-TPL string
+	 *
+	 * @return 	ARRAY										:: The Raw AST Syntax Tree of the TPL
+	 *
+	 */
+	private static function process_ast_raw_tree(string $mtemplate) : array {
+		//--
+		if((string)trim((string)$mtemplate) == '') {
+			return array();
+		} //end if
+		//--
+		return (array) preg_split('/(\[%%%.*?%%%\]|\[@@@.*?@@@\]|\[\#\#\#.*?\#\#\#\]|\[\:\:\:.*?\:\:\:\])/s', (string)$mtemplate, null, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Process the Nodes AST Syntax Tree for a Marker Template
+	 * This is intended for DEVELOPMENT / DEBUG ONLY (never use this in production environments !)
+	 *
+	 * @param 	ARRAY 		$arr 							:: The Raw AST Tree of the TPL
+	 * @param 	INTEGER 	$cnt 							:: **INTERNAL USE ONLY** The start counter (must must be initialized always with zero) ; this parameter is only used by recursive calls of this method, later
+	 * @param 	STRING 		$tag 							:: **INTERNAL USE ONLY** Curent Node Tag (must be initialized always with empty string) ; this parameter is only used by recursive calls of this method, later
+	 *
+	 * @return 	ARRAY										:: The Nodes AST Syntax Tree of the TPL
+	 *
+	 */
+	private static function process_ast_nodes_tree(array $arr, int $crr=0, string $tag='') : array {
+		//--
+		$crrNode = [];
+		//--
+		if((string)$tag != '') {
+			$crrNode[] = $tag;
+		} //end if
+		//--
+		if((int)$crr < 0) {
+			$crr = 0;
+		} //end if
+		//--
+		for($i=(int)$crr; $i<Smart::array_size($arr); $i++) {
+			//--
+			if(strpos((string)$arr[$i], '[%%%COMMENT%%%]') === 0) {
+				$t = (array) self::process_ast_nodes_tree((array)$arr, (int)($i+1), (string)$arr[$i]);
+				$i = (int) $t['iterator'];
+				$crrNode[] = (array) $t['nodes'];
+				$t = null;
+			} elseif(strpos((string)$arr[$i], '[%%%/COMMENT%%%]') === 0) {
+				$crrNode[] = $arr[$i];
+				if((string)$tag != '') {
+					break;
+				} //end if
+			} elseif(strpos((string)$arr[$i], '[%%%IF:') === 0) {
+				$t = (array) self::process_ast_nodes_tree((array)$arr, (int)($i+1), (string)$arr[$i]);
+				$i = (int) $t['iterator'];
+				$crrNode[] = (array) $t['nodes'];
+				$t = null;
+			} elseif(strpos((string)$arr[$i], '[%%%/IF:') === 0) {
+				$crrNode[] = $arr[$i];
+				if((string)$tag != '') {
+					break;
+				} //end if
+			} elseif(strpos((string)$arr[$i], '[%%%LOOP:') === 0) {
+				$t = (array) self::process_ast_nodes_tree((array)$arr, (int)($i+1), (string)$arr[$i]);
+				$i = (int) $t['iterator'];
+				$crrNode[] = (array) $t['nodes'];
+				$t = null;
+			} elseif(strpos((string)$arr[$i], '[%%%/LOOP:') === 0) {
+				$crrNode[] = $arr[$i];
+				if((string)$tag != '') {
+					break;
+				} //end if
+			} else {
+				$crrNode[] = $arr[$i];
+			} //end if else
+			//--
+		} //end for
+		//--
+		return [ 'iterator' => (int)$i, 'nodes' => (array)$crrNode ];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1225,8 +1383,6 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 			//--
 			$regex = '/\[###'.preg_quote((string)$key, '/').'((\|[a-z0-9]+)*)'.'###\]/'; // {{{SYNC-REGEX-MARKER-TEMPLATES}}}
 			//--
-			$val = (string) self::prepare_nosyntax_content($val);
-			//--
 			$matches = array();
 			$pcre = preg_match_all((string)$regex, (string)$mtemplate, $matches, PREG_SET_ORDER, 0);
 			if($pcre === false) {
@@ -1236,40 +1392,46 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 			//--
 			$arr_repls = [];
 			//--
-			for($i=0; $i<Smart::array_size($matches); $i++) {
+			if(Smart::array_size($matches) > 0) {
 				//--
-				$crr_match = (array) $matches[$i];
-				$matches[$i] = null; // free mem
+				$val = (string) self::prepare_nosyntax_content($val);
 				//--
-				if(!array_key_exists((string)$crr_match[0], (array)$arr_repls)) {
+				for($i=0; $i<Smart::array_size($matches); $i++) {
 					//--
-					$crr_match[1] = (string) trim((string)$crr_match[1]);
+					$crr_match = (array) $matches[$i];
+					$matches[$i] = null; // free mem
 					//--
-					if((string)$crr_match[1] == '') { // if no escaping
+					if(!array_key_exists((string)$crr_match[0], (array)$arr_repls)) {
 						//--
-						$arr_repls[(string)$crr_match[0]] = (string) $val; // use raw value
+						$crr_match[1] = (string) trim((string)$crr_match[1]);
 						//--
-					} else { // if escapings, apply
-						//--
-						$crr_match[1] = (string) trim((string)$crr_match[1], '|');
-						//--
-						if((string)$crr_match[1] == '') {
+						if((string)$crr_match[1] == '') { // if no escaping
 							//--
-							// in this case will skip the replacement
+							$arr_repls[(string)$crr_match[0]] = (string) $val; // use raw value
 							//--
-							Smart::log_warning('Invalid or Undefined Marker-TPL Escaping - detected in Replacement Key: '.$crr_match[0].' -> [Val: '.$val.']');
+						} else { // if escapings, apply
 							//--
-						} else {
+							$crr_match[1] = (string) trim((string)$crr_match[1], '|');
 							//--
-							$arr_repls[(string)$crr_match[0]] = (string) self::escape_marker_value((array)$crr_match, (string)$val);
+							if((string)$crr_match[1] == '') {
+								//--
+								// in this case will skip the replacement
+								//--
+								Smart::log_warning('Invalid or Undefined Marker-TPL Escaping - detected in Replacement Key: '.$crr_match[0].' -> [Val: '.$val.']');
+								//--
+							} else {
+								//--
+								$arr_repls[(string)$crr_match[0]] = (string) self::escape_marker_value((array)$crr_match, (string)$val);
+								//--
+							} //end if else
 							//--
-						} //end if else
+						} //end if
 						//--
 					} //end if
 					//--
-				} //end if
+				} //end for
 				//--
-			} //end for
+			} //end if
 			//--
 			if(Smart::array_size($arr_repls) > 0) {
 				$mtemplate = (string) str_replace((array)array_keys((array)$arr_repls), (array)array_values((array)$arr_repls), (string)$mtemplate);
@@ -1453,7 +1615,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 				$arr_specials = '';
 			} //end if else
 			Smart::log_warning('Invalid or Undefined Marker-TPL: Marker Syntax detected in Template:'.$arr_ifs.$arr_loops.$arr_specials."\n".self::log_template($mtemplate));
-			$mtemplate = (string) str_replace(array('[%%%', '%%%]'), array('⁅%%%¦', '¦%%%⁆'), (string)$mtemplate); // finally protect against invalid loops (may have not bind to an existing var or invalid syntax)
+			$mtemplate = (string) str_replace(array('[%%%', '%%%]'), array('⁅%%%¦', '¦%%%⁆'), (string)$mtemplate); // {{{SYNC-TPL-INVALID-PERCENT-SYNTAX}}} ; finally protect against invalid loops (may have not bind to an existing var or invalid syntax)
 		} //end if
 		//--
 		return (string) $mtemplate;
@@ -1533,7 +1695,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 				Smart::log_warning('Marker Template LOOP: Invalid Context Array Passed ...');
 				$y_arr_context = [];
 			} //end if
-			//-- {{{SYNC-TPL-EXPR-IF}}}
+			//-- {{{SYNC-TPL-EXPR-IF}}} ; {{{SYNC-TPL-EXPR-IF-IN-LOOP}}}
 		//	$pattern = '{\[%%%IF\:([a-zA-Z0-9_\-\.]+)\:(@\=\=|@\!\=|@\<\=|@\<|@\>\=|@\>|\=\=|\!\=|\<\=|\<|\>\=|\>|\!%|%|\!\?|\?|\^~|\^\*|&~|&\*|\$~|\$\*)([^\[\]]*);((\([0-9]+\))?)%%%\](.*)?(\[%%%ELSE\:\1\4%%%\](.*)?)?\[%%%\/IF\:\1\4%%%\]}sU';
 			$pattern = '{\[%%%IF\:([a-zA-Z0-9_\-\.]+?)\:(@\=\=|@\!\=|@\<\=|@\<|@\>\=|@\>|\=\=|\!\=|\<\=|\<|\>\=|\>|\!%|%|\!\?|\?|\^~|\^\*|&~|&\*|\$~|\$\*)([^\[\]]*?);((\([0-9]+\))??)%%%\](.*?)??(\[%%%ELSE\:\1\4%%%\](.*?)??)??\[%%%\/IF\:\1\4%%%\]}s';
 			$matches = array();
@@ -1582,18 +1744,6 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 						} //end if else
 					} //end if
 					//--
-					$line = '';
-					//-- Fix: trim parts {{{SYNC-TPL-FIX-TRIM-PARTS}}}
-					$bind_if 	= (string) trim((string)$bind_if,   "\n\r\0\x0B");
-					$bind_else 	= (string) trim((string)$bind_else, "\n\r\0\x0B");
-					//-- recursive process if in pieces of if or else
-					if(strpos((string)$bind_if, '[%%%IF:') !== false) {
-						$bind_if = (string) self::process_if_syntax((string)$bind_if, (array)$y_arr_vars, (string)$y_context, (array)$y_arr_context);
-					} //end if
-					if(strpos((string)$bind_else, '[%%%IF:') !== false) {
-						$bind_else = (string) self::process_if_syntax((string)$bind_else, (array)$y_arr_vars, (string)$y_context, (array)$y_arr_context);
-					} //end if
-					//--
 					if(((string)substr((string)$bind_value, 0, 3) == '###') AND ((string)substr((string)$bind_value, -3, 3) == '###')) { // compare with a comparison marker (from a variable) instead of static value
 						$bind_value = (string) strtoupper((string)trim((string)$bind_value, '#'));
 						if(array_key_exists((string)$bind_value, (array)$y_arr_context)) {
@@ -1610,48 +1760,51 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 					} else { // exist in original arr
 						$tmp_the_arr = Smart::array_get_by_key_path((array)$y_arr_vars, (string)$bind_var_key, '.'); // mixed
 					} //end if else
+					//--
+					$condition_part_else = null;
+					//--
 					switch((string)$part_sign) {
 						//-- arrays
 						case '@==': // array count ==
 							if(Smart::array_size($tmp_the_arr) == (int)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '@!=': // array count !=
 							if(Smart::array_size($tmp_the_arr) != (int)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '@<=': // array count <=
 							if(Smart::array_size($tmp_the_arr) <= (int)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '@<': // array count <
 							if(Smart::array_size($tmp_the_arr) < (int)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '@>=': // array count >=
 							if(Smart::array_size($tmp_the_arr) >= (int)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '@>': // array count >
 							if(Smart::array_size($tmp_the_arr) > (int)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						//-- strings or numbers (compare all as strings)
@@ -1660,9 +1813,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
 							if((string)$tmp_the_arr == (string)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '!=':
@@ -1670,9 +1823,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
 							if((string)$tmp_the_arr != (string)$bind_value) { // if evaluate to false keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						//-- numbers
@@ -1681,9 +1834,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
 							if((float)$tmp_the_arr <= (float)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '<':
@@ -1691,9 +1844,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
 							if((float)$tmp_the_arr < (float)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '>=':
@@ -1701,9 +1854,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
 							if((float)$tmp_the_arr >= (float)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '>':
@@ -1711,9 +1864,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
 							if((float)$tmp_the_arr > (float)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '%': // modulo (true/false)
@@ -1721,9 +1874,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
 							if((int)((int)$tmp_the_arr % (int)$bind_value) == 0) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '!%': // not modulo (false/true)
@@ -1731,9 +1884,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = 0; // fix PHP8 array to string conversion
 							} //end if
 							if((int)((int)$tmp_the_arr % (int)$bind_value) != 0) { // if evaluate to false keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						//-- string lists
@@ -1743,11 +1896,11 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 							} //end if
 							$tmp_compare_arr = (array) explode('|', (string)$bind_value);
 							if(in_array((string)$tmp_the_arr, (array)$tmp_compare_arr)) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
-							$tmp_compare_arr = array();
+							$tmp_compare_arr = null;
 							break;
 						case '!?': // not in list (elements separed by |)
 							if(is_array($tmp_the_arr)) {
@@ -1755,11 +1908,11 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 							} //end if
 							$tmp_compare_arr = (array) explode('|', (string)$bind_value);
 							if(!in_array((string)$tmp_the_arr, (array)$tmp_compare_arr)) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
-							$tmp_compare_arr = array();
+							$tmp_compare_arr = null;
 							break;
 						//-- strings
 						case '^~': // if variable starts with part, case sensitive
@@ -1767,9 +1920,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
 							if(SmartUnicode::str_pos((string)$tmp_the_arr, (string)$bind_value) === 0) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '^*': // if variable starts with part, case insensitive
@@ -1777,9 +1930,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
 							if(SmartUnicode::str_ipos((string)$tmp_the_arr, (string)$bind_value) === 0) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '&~': // if variable contains part, case sensitive
@@ -1787,9 +1940,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
 							if(SmartUnicode::str_contains((string)$tmp_the_arr, (string)$bind_value)) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '&*': // if variable contains part, case insensitive
@@ -1797,9 +1950,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
 							if(SmartUnicode::str_icontains((string)$tmp_the_arr, (string)$bind_value)) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '$~': // if variable ends with part, case sensitive
@@ -1807,9 +1960,9 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
 							if(SmartUnicode::sub_str((string)$tmp_the_arr, (-1 * SmartUnicode::str_len((string)$bind_value)), SmartUnicode::str_len((string)$bind_value)) == (string)$bind_value) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						case '$*': // if variable ends with part, case insensitive ### !!! Expensive in Execution !!! ###
@@ -1817,19 +1970,51 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								$tmp_the_arr = ''; // fix PHP8 array to string conversion
 							} //end if
 							if((SmartUnicode::str_tolower(SmartUnicode::sub_str((string)$tmp_the_arr, (-1 * SmartUnicode::str_len(SmartUnicode::str_tolower((string)$bind_value))), SmartUnicode::str_len(SmartUnicode::str_tolower((string)$bind_value)))) == (string)SmartUnicode::str_tolower((string)$bind_value)) OR (SmartUnicode::str_toupper(SmartUnicode::sub_str((string)$tmp_the_arr, (-1 * SmartUnicode::str_len(SmartUnicode::str_toupper((string)$bind_value))), SmartUnicode::str_len(SmartUnicode::str_toupper((string)$bind_value)))) == (string)SmartUnicode::str_toupper((string)$bind_value))) { // if evaluate to true keep the inner content
-								$line .= (string) $bind_if; // if part
+								$condition_part_else = false;
 							} else {
-								$line .= (string) $bind_else; // else part ; if else not present will don't add = remove it !
+								$condition_part_else = true;
 							} //end if else
 							break;
 						//--
 						default:
 							// invalid syntax
-							Smart::log_warning('Invalid Marker Template IF Syntax: ['.$part_sign.'] / Template: '.$mtemplate);
+							$condition_part_else = null;
+							Smart::log_warning('Invalid Marker Template IF Syntax Sign: ['.$part_sign.' '.$part_var.'] / Template: '.$mtemplate);
 					} //end switch
 					//--
-				//	$mtemplate = (string) str_replace((string)$part_orig, (string)$line, (string)$mtemplate); // BUGFIX: If there are duplicate sub-ifs str replace without limit will replace other occurences not yet parsed and when the loop try to replace original part (which was modified by previous no limit replaces) will fail to find that part and replace it ...
+					$line = '';
+					//--
+					if($condition_part_else === false) {
+						//-- Fix: trim {{{SYNC-TPL-FIX-TRIM-PARTS}}}
+						$bind_if = (string) trim((string)$bind_if, "\n\r\0\x0B");
+						//-- recursive process if part, find other nested ifs
+						if(strpos((string)$bind_if, '[%%%IF:') !== false) {
+							$bind_if = (string) self::process_if_syntax((string)$bind_if, (array)$y_arr_vars, (string)$y_context, (array)$y_arr_context);
+						} //end if
+						//--
+						$line = (string) $bind_if; // if part
+						//--
+					} elseif($condition_part_else === true) {
+						//-- Fix: trim {{{SYNC-TPL-FIX-TRIM-PARTS}}}
+						$bind_else = (string) trim((string)$bind_else, "\n\r\0\x0B");
+						//-- recursive process else part, find other nested ifs
+						if(strpos((string)$bind_else, '[%%%IF:') !== false) {
+							$bind_else = (string) self::process_if_syntax((string)$bind_else, (array)$y_arr_vars, (string)$y_context, (array)$y_arr_context);
+						} //end if
+						//--
+						$line = (string) $bind_else; // else part ; if else not present will don't add = remove it !
+						//--
+					} else {
+						//--
+						Smart::log_warning('Invalid Marker Template IF Syntax: ['.$part_var.' '.$part_sign.' '.$part_value.']');
+						//--
+						$line = (string) str_replace(array('[%%%', '%%%]'), array('⁅%%%¦', '¦%%%⁆'), (string)$part_orig); // {{{SYNC-TPL-INVALID-PERCENT-SYNTAX}}}
+						//--
+					} //end if else
+					//--
 					$mtemplate = (string) Smart::str_replace_first((string)$part_orig, (string)$line, (string)$mtemplate); // MUST REPLACE ONLY THE FIRST OCCURENCE because this function is recursive and the regex will already contain the original parts only and if a 2nd part is replaced but not yet parsed in this for loop the str replace will fail to find it
+					//--
+					$line = '';
 					//--
 				} //end if else
 				//--
@@ -1906,7 +2091,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 							//-- operate on a copy of original
 							$mks_line = (string) $loop_orig;
 							//-- process IF inside LOOP for this context (the global context is evaluated prior as this function is called after process_if_syntax() in process_syntax() via render_template()
-							if(strpos((string)$mks_line, '[%%%IF:') !== false) {
+							if(strpos((string)$mks_line, '[%%%IF:'.$bind_var_key.'.') !== false) {
 								$tmp_arr_context = array(); // init
 								$tmp_arr_context[(string)$bind_var_key.'.'.'-_MAXSIZE_-'] = (string) ($mxcnt+1); // new behaviour: available also in if
 								$tmp_arr_context[(string)$bind_var_key.'.'.'-_INDEX_-'] = (string) ($j+1); // new behaviour: available also in if
@@ -1938,7 +2123,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 								);
 							} //end if
 							//-- process 2nd Level LOOP inside LOOP for non-Associative Array: sub-array vars
-							if((strpos((string)$mks_line, '[%%%LOOP:') !== false) AND (is_array($y_arr_vars[(string)$bind_var_key][$j]))) {
+							if((strpos((string)$mks_line, '[%%%LOOP:'.$bind_var_key.'.') !== false) AND (is_array($y_arr_vars[(string)$bind_var_key][$j]))) {
 								foreach($y_arr_vars[(string)$bind_var_key][$j] as $qk => $qv) {
 									if(((strpos((string)$mks_line, '[%%%LOOP:'.(string)$bind_var_key.'.'.strtoupper((string)$qk).'%') !== false) OR (strpos((string)$mks_line, '[%%%LOOP:'.(string)$bind_var_key.'.'.strtoupper((string)$qk).'(') !== false)) AND (is_array($qv))) {
 										//echo '***** ['.$bind_var_key.'.'.strtoupper((string)$qk).'] = '.print_r($qv,1)."\n\n";
@@ -2014,7 +2199,7 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 							$ziterator = $j;
 							$j++;
 							//-- process IF inside LOOP for this context (the global context is evaluated prior as this function is called after process_if_syntax() in process_syntax() via render_template()
-							if(strpos((string)$mks_line, '[%%%IF:') !== false) {
+							if(strpos((string)$mks_line, '[%%%IF:'.$bind_var_key.'.') !== false) {
 								$tmp_arr_context = array(); // init
 								$tmp_arr_context[(string)$bind_var_key.'.'.'-_MAXSIZE_-'] = (string) ($mxcnt+1); // new behaviour: available also in if
 								$tmp_arr_context[(string)$bind_var_key.'.'.'-_INDEX_-'] = (string) ($ziterator+1); // new behaviour: available also in if
@@ -2121,7 +2306,6 @@ final class SmartMarkersTemplating { // syntax: r.20210604
 						//--
 					} //end if else
 					//--
-				//	$mtemplate = (string) str_replace((string)$part_orig, (string)$line, (string)$mtemplate); // BUGFIX: If there are duplicate sub-ifs str replace without limit will replace other occurences not yet parsed and when the loop try to replace original part (which was modified by previous no limit replaces) will fail to find that part and replace it ...
 					$mtemplate = (string) Smart::str_replace_first((string)$part_orig, (string)$line, (string)$mtemplate); // MUST REPLACE ONLY THE FIRST OCCURENCE because this function is recursive and the regex will already contain the original parts only and if a 2nd part is replaced but not yet parsed in this for loop the str replace will fail to find it
 					//--
 				} //end if else

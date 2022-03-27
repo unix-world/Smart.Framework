@@ -17,7 +17,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* Smart::
 //	* SmartUnicode::
 //	* SmartUtils::
-//	* SmartYamlConverter::
 // REQUIRED CSS:
 //	* markdown.css
 //======================================================
@@ -37,8 +36,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	Smart, SmartUnicode, SmartUtils, SmartYamlConverter
- * @version 	v.20220322
+ * @depends 	Smart, SmartUnicode, SmartUtils
+ * @version 	v.20220328
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +52,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.1.7-r.20220322';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.1.8-r.20220328';
 
 	//===================================
 
@@ -1221,7 +1220,7 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function decodeB64YamlText(?string $value) {
+	private function decodeListNodeEntry(?string $value) {
 		//--
 		$value = (string) trim((string)$value);
 		if((string)$value != '') {
@@ -1234,7 +1233,7 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function decodeB64YamlArray(?array $arr) : array {
+	private function decodeListNodeArray(?array $arr) : array {
 		//--
 		$xarr = array();
 		//--
@@ -1243,13 +1242,13 @@ final class SmartMarkdownToHTML {
 			foreach($arr as $key => $value) {
 				//--
 				if((string)$key != '@') {
-					$key = (string) $this->decodeB64YamlText($key);
+					$key = (string) $this->decodeListNodeEntry($key);
 				} //end if
 				//--
 				if(is_array($value)) {
-					$xarr[(string)$key] = $this->decodeB64YamlArray($value);
+					$xarr[(string)$key] = $this->decodeListNodeArray($value);
 				} else {
-					$xarr[(string)$key] = (string) $this->decodeB64YamlText($value);
+					$xarr[(string)$key] = (string) $this->decodeListNodeEntry($value);
 				} //end if else
 				//--
 			} //end foreach
@@ -1261,7 +1260,7 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function convertListYamlArrToHtml(?array $arr, int $level=0) : string {
+	private function convertProcessedListArrToHtml(?array $arr, int $level=0) : string {
 		//--
 		$max = (int) Smart::array_size($arr);
 		//--
@@ -1289,7 +1288,7 @@ final class SmartMarkdownToHTML {
 			} //end if
 			$html .= (string) str_repeat("\t", (int)$karr[1]).'<li>'.$this->createHtmlInline((string)$karr[2], 'li');
 			if((int)Smart::array_size($val) > 0) {
-				$html .= (string) $this->convertListYamlArrToHtml($val, (int)$karr[1]);
+				$html .= (string) $this->convertProcessedListArrToHtml($val, (int)$karr[1]);
 			} //end if
 			$html .= '</li>'."\n";
 		} //end foreach
@@ -1303,22 +1302,70 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
+	private function createListNodeKey(array $val, int $iterator) : string {
+		//--
+		$val['type']  = (string) ($val['type'] ?? null);
+		$val['level'] = (int)    ($val['level'] ?? null);
+		$val['code']  = (string) ($val['code'] ?? null);
+		//--
+		return (string) ($val['type'] === 'ol' ? '#ol:' : '*ul:').' '.(int)$val['level'].' '.base64_encode((string)$val['code']).' '.(int)$iterator;
+		//--
+	} //END FUNCTION
+
+
+	private function parseListNodesArr(array $arr, int $cnt=0, int $level=0) : array {
+		//--
+		if((int)$cnt < 0) {
+			$cnt = 0;
+		} //end if
+		if((int)$level < 0) {
+			$level = 0;
+		} //end if
+		//--
+		$crrNode = [];
+		//--
+		for($i=(int)$cnt; $i<Smart::array_size($arr); $i++) {
+			//--
+			if(is_array($arr[$i])) {
+				//--
+				if(isset($arr[$i+1]) AND is_array($arr[$i+1]) AND ((int)$arr[$i+1]['level'] > (int)$level)) { // > ; level increase
+					$key = (string) $this->createListNodeKey((array)$arr[$i], $i);
+					$tarr = (array) $this->parseListNodesArr((array)$arr, (int)($i+1), (int)$arr[$i+1]['level']);
+					$i = (int) $tarr['iterator'];
+					$crrNode[(string)$key] = (array) $tarr['nodes'];
+					$tarr = null;
+				} else { // = ; same level
+					$key = (string) $this->createListNodeKey((array)$arr[$i], $i);
+					$crrNode[(string)$key] = null;
+				} //end if
+				//--
+				if(isset($arr[$i+1]) AND is_array($arr[$i+1]) AND ((int)$arr[$i+1]['level'] < (int)$level)) { // < ; level decrease ; at the end ... it can be after any of the above cases, in the case if level increase must get the updated $i ... !
+					break;
+				} //end if
+				//--
+			} //end if
+			//--
+		} //end for
+		//--
+		return [ 'iterator' => (int)$i, 'nodes' => (array)$crrNode ];
+		//--
+	} //END FUNCTION
+
+
 	private function convertListArrToHtml(?array $arr) : string {
 		//--
+		/*
 		$max = (int) Smart::array_size($arr);
-		//--
 		if((int)$max <= 0) {
 			return (string) '';
 		} //end if
-		//--
 		$yaml = '@:'."\n";
 		for($l=0; $l<$max; $l++) {
 			$yaml .= (string) str_repeat("\t", (int)((int)$arr[$l]['level'] + 1)).'"'.($arr[$l]['type'] === 'ol' ? '#ol:' : '*ul:').' '.(int)$arr[$l]['level'].' '.base64_encode((string)$arr[$l]['code']).' '.(int)$l.'"'.':'."\n"; // must keep numbers as the keys must be unique !
 		} //end for
-		//--
-	//	return $yaml; // DEBUG
+		//return $yaml; // DEBUG
 		$yobj = new SmartYamlConverter(false);
-		$arr = (array) $yobj->parse((string)$yaml);
+		$yarr = (array) $yobj->parse((string)$yaml);
 		$yerr = (string) $yobj->getError();
 		$yaml = null;
 		$yobj = null;
@@ -1328,23 +1375,31 @@ final class SmartMarkdownToHTML {
 			} //end if
 		} //end if
 		$yerr = null;
+		//$arr = (array) $yarr;
+print_r($yarr);
+		*/
 		//--
-		$arr = (array) $this->decodeB64YamlArray($arr);
+		$tarr = (array) $this->parseListNodesArr($arr);
+		$arr = [ '@' => (array)$tarr['nodes'] ];
+//print_r($arr); die();
+		$tarr = null;
+		//--
+		$arr = (array) $this->decodeListNodeArray($arr);
 		if(!isset($arr['@'])) {
 			if(SmartFrameworkRegistry::ifDebug()) {
-				Smart::log_notice(__METHOD__.' # YAML Data Conversion Failed: @');
+				Smart::log_notice(__METHOD__.' # List Data Conversion Failed: @');
 			} //end if
 			return (string) '';
 		} //end if
 		if((int)Smart::array_size($arr['@']) <= 0) {
 			if(SmartFrameworkRegistry::ifDebug()) {
-				Smart::log_notice(__METHOD__.' # YAML Data Conversion Failed: [..]');
+				Smart::log_notice(__METHOD__.' # List Data Conversion Failed: [..]');
 			} //end if
 			return (string) '';
 		} //end if
 		//--
 	//	print_r($arr['@']); die(); // DEBUG
-		return (string) $this->convertListYamlArrToHtml((array)$arr['@']);
+		return (string) $this->convertProcessedListArrToHtml((array)$arr['@']);
 		//--
 	} //END FUNCTION
 
