@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20220221
+// [Smart.Framework / INIT] v.20220330
 // (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -76,7 +76,7 @@ const SMART_SOFTWARE_MKTPL_DEBUG_LEN =  				0;											// If set will use this
 const SMART_FRAMEWORK_IDENT_ROBOTS =  					'<robot>,<apache>,<httperf>,<benchmark>,<scanner>,<googlebot>,<google adsbot>,<google toolbar>,<google web preview>,<google feed fetcher>,<yahoo! slurp>,<webcrawler>,<domaincrawler>,<catchbot>,<webalta crawler>,<superbot>,<msnbot>,<ms url control>,<winhttp>,<roku dvp>,<linkwalker>,<aihitbot>,<ia_archiver>,<sanszbot>,<linguee bot>,<swish-e>,<tarantula>,<fast-webcrawler>,<jeeves>,<teoma>,<baiduspider>,<bing bot>,<yandex>,<exabot>,<everyfeed spider>,<gregarius>,<facebook scraper>,<email wolf>,<gaisbot>,<gulperbot>,<grub-client>,<peach >,<htmlparser>,<w3c css validator>,<w3c (x)html validator>,<w3c p3p validator>,<download demon>,<offline explorer>,<webcopier>,<web downloader>,<webzip>,<htmldoc>,<wget >,<curl/>,<php >,<libwww-perl>,<python-urllib>,<java >'; // robots identification by user agent portions of signature
 //--------------------------------------- UPLOADS SECURITY :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
 const SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS = 		'<svg>,<png>,<gif>,<jpg>,<jpeg>,<webp>'.','.'<webm>,<ogv>,<ogg>,<mp4>,<mov>'.','.'<txt>,<md>,<pdf>,<odt>,<ods>,<odp>,<csv>,<doc>,<rtf>,<xls>,<ppt>'.','.'<json>,<yaml>,<xml>,<eml>,<ics>,<vcf>'.','.'<7z>,<zip>,<rar>,<tar>,<tgz>,<tbz>,<gz>,<bz2>,<xz>'.','.'<ps>,<eps>,<tif>,<tiff>,<wmf>,<bmp>,<swf>'; // *OPTIONAL* The List of Allowed file extensions for Uploads ; if set and empty, will dissalow any upload by default ; if set and non-empty will only allow files with these extensions to be uploaded (if this is set the SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS will not count at all)
-const SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS =  		'<htm>,<html>,<js>,<sass>,<scss>,<css>,<shtml>,<phtml>,<php>,<sql>,<inc>,<tpl>,<mtpl>,<twig>,<dust>,<t3fluid>,<pl>,<py>,<pyc>,<pyo>,<rb>,<go>,<asp>,<jsp>,<sh>,<bash>,<bat>,<cmd>,<cgi>,<fcgi>,<fastcgi>,<scgi>,<wsgi>,<exe>,<msi>,<dll>,<dylib>,<bin>,<so>'; // The List of DENIED file extensions for Uploads ; files with these extensions will not be allowed to be uploaded by default
+const SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS =  		'<htm>,<html>,<js>,<sass>,<scss>,<css>,<shtml>,<phtml>,<php>,<sql>,<inc>,<tpl>,<mtpl>,<twig>,<twist>,<t3fluid>,<pl>,<py>,<pyc>,<pyo>,<rb>,<go>,<asp>,<jsp>,<sh>,<bash>,<bat>,<cmd>,<cgi>,<fcgi>,<fastcgi>,<scgi>,<wsgi>,<exe>,<msi>,<dll>,<dylib>,<bin>,<so>'; // The List of DENIED file extensions for Uploads ; files with these extensions will not be allowed to be uploaded by default
 //---------------------------------------
 //============================================================ # BELOW ARE APP SPECIFIC SETTINGS
 //--------------------------------------- DOWNLOADS SECURITY :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING

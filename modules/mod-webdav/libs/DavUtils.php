@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavUtils {
 
 	// ::
-	// v.20210812
+	// v.20220330
 
 
 	//============================================================
@@ -166,7 +166,7 @@ final class DavUtils {
 			case 'html':
 			case 'tpl':
 			case 'mtpl':
-			case 'dust':
+			case 'twist':
 			case 'twig':
 			case 't3fluid':
 				$type = 'html';

@@ -45,7 +45,7 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetUnPackager {
 
 	// ::
-	// v.20210720
+	// v.20220330
 
 	public const APP_NET_UNPACKAGER_VERSION = 'v.20210720';
 
@@ -448,7 +448,7 @@ Options -Indexes
 			case 'shtml':
 			case 'tpl':
 			case 'mtpl':
-			case 'dust':
+			case 'twist':
 			case 'twig':
 			case 't3fluid':
 			case 'php':

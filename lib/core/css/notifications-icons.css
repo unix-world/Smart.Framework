@@ -13,7 +13,7 @@ div#operation_question,  div.operation_question,
 div#operation_success,   div.operation_success,
 div#operation_warn,      div.operation_warn,
 div#operation_error,     div.operation_error {
-	max-width: calc(100% - 52px) !important; /* must adust and substract the padding: -52px */
+	max-width: calc(100% - 52px) !important; /* must adjust and substract the padding: -52px */
 	padding-left: 52px !important;
 }
 

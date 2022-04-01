@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20220220
+ * @version 	v.20220330
  * @package 	@Core:Extra
  *
  */
@@ -355,16 +355,16 @@ final class SmartUtils {
 		} //end if
 		$len_data = (int) strlen((string)$y_str);
 		$len_arch = (int) strlen((string)$out);
-		if(($len_data > 0) AND ($len_arch > 0)) {
-			$ratio = $len_data / $len_arch;
+		if(((int)$len_data > 0) AND ((int)$len_arch > 0)) {
+			$ratio = (float) ((int)$len_data / (int)$len_arch); // division by zero is checked above as $out not to be empty!
 		} else {
 			$ratio = 0;
 		} //end if
-		if($ratio <= 0) { // check for empty input / output !
+		if((float)$ratio <= 0) { // check for empty input / output !
 			Smart::log_warning('Smart.Framework Utils / Data Archive :: ZLib Data Ratio is zero ! ...');
 			return '';
 		} //end if
-		if($ratio > 32768) { // check for this bug in ZLib {{{SYNC-GZ-ARCHIVE-ERR-CHECK}}}
+		if((float)$ratio > 32768) { // check for this bug in ZLib {{{SYNC-GZ-ARCHIVE-ERR-CHECK}}}
 			Smart::log_warning('Smart.Framework Utils / Data Archive :: ZLib Data Ratio is higher than 32768 ! ...');
 			return '';
 		} //end if

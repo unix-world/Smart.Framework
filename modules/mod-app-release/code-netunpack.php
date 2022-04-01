@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210622
+ * @version 	v.20220330
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -204,22 +204,27 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 
 		//--
 		$arr_php = [ // {{{SYNC-SMART-FRAMEWORK-LIBS-ORDER}}}
+			//--
 			'lib/framework/smart-error-handler.php' 						=> true,
+			//--
 			'lib/framework/lib_unicode.php'									=> true,
 			'lib/framework/lib_security.php'								=> true,
 			'lib/framework/lib_registry.php'								=> true,
 			'lib/framework/lib_smart.php'									=> true,
+			'lib/framework/lib_filesys.php'									=> true,
+			'lib/framework/lib_caching.php'									=> true,
+			//--
 			'lib/framework/lib_cryptohs.php'								=> true,
 			'lib/framework/lib_cryptoas.php'								=> true,
-			'lib/framework/lib_filesys.php'									=> true,
 			'lib/framework/lib_http_cli.php'								=> true,
 			'lib/framework/lib_auth.php'									=> true,
 			'lib/framework/lib_valid_parse.php'								=> true,
 			'lib/framework/lib_utils.php'									=> true,
-			'lib/framework/lib_caching.php'									=> true,
 			'lib/framework/lib_templating.php'								=> true,
+			//--
 			'modules/mod-app-release/lib/AppNetUnPackager.php'				=> true,
 			'modules/mod-app-release/appcodeunpack/appcodeunpack-app.php'	=> false, // do not minify !
+			//--
 		];
 		//--
 

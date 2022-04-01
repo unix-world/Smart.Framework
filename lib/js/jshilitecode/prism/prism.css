@@ -1,11 +1,12 @@
 /*
-// PrismJS 1.23.0 :: prism.css
-//(c) 2012-2021 Lea Verou, License: MIT
+// PrismJS 1.27.0 :: prism.css
+//(c) 2012-2022 Lea Verou, License: MIT
 // Theme: Dark
+// Based on Prism Dark Original Theme
 
-// (c) 2021 unix-world.org, License: BSD
+// (c) 2021-2022 unix-world.org, License: BSD
 // customized by unixman :: colors, line-height, some logic, added tpl variables
-// r.20210610
+// r.20220330
 */
 
 code[class*="language-"],
@@ -125,6 +126,25 @@ pre[class*="language-"] {
 
 .token.entity {
 	cursor: help;
+}
+
+.token.keyword-comment,
+.token.keyword-endcomment,
+.token.keyword-if,
+.token.keyword-ifelse,
+.token.keyword-else,
+.token.keyword-endif,
+.token.keyword-switch,
+.token.keyword-while,
+.token.keyword-do,
+.token.keyword-for,
+.token.keyword-endfor,
+.token.keyword-foreach,
+.token.keyword-map,
+.token.keyword-reduce,
+.token.keyword-filter,
+.token.keyword-with {
+	font-weight: bold;
 }
 
 /* PHP Extras */

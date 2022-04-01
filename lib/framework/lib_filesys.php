@@ -849,10 +849,9 @@ final class SmartFileSysUtils {
 			case 'html':
 			case 'mtpl': // marker tpl templating
 			case 'tpl':  // tpl templating
-			case 'dust': // tpl dust
+			case 'twist': // tpl twist
 			case 'twig': // twig templating
 			case 't3fluid': // typo3 fluid templating
-			case 'latte': // nette latte templating
 			case 'django': // django templating
 				$type = 'text/html';
 				$disp = 'attachment';

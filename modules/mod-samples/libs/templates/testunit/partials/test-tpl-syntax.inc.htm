@@ -17,7 +17,7 @@
 				<div id="operation_info" style="color:#778899!important; font-size:13px!important; line-height:17px!important;">
 					<b>
 					As an alternative to the Marker-TPL Templating Engine syntax (built-in, default) it is possible to use alternatives:
-					<a href="https://github.com/linkedin/dustjs" target="dust_syntax_reference_tpl" data-smart="open.popup">Dust Templating Engine (by LinkedIn)</a> syntax to render Views of Smart.Framework by using the Smart.Framework.Module: <a href="https://github.com/unix-world/Smart.Framework.Modules/tree/master/mod-tpl-dust" target="smart_mod_tpldust_reference_tpl" data-smart="open.popup">mod-tpl-dust</a>
+					Twist Templating Engine (Twig like Grammar but much safer, implementing Liquid like Safety) syntax to render Views of Smart.Framework by using the Smart.Framework.Module: <a href="https://github.com/unix-world/Smart.Framework.Modules/tree/master/mod-tpl-twist" target="smart_mod_tpltwist_reference_tpl" data-smart="open.popup">mod-tpl-twist</a>
 					or is possible to use
 					<a href="https://github.com/twigphp/Twig" target="twig_syntax_reference_tpl" data-smart="open.popup">Twig Templating Engine</a> syntax to render Views of Smart.Framework by using the Smart.Framework.Module: <a href="https://github.com/unix-world/Smart.Framework.Modules/tree/master/mod-tpl-twig" target="smart_mod_tpltwig_reference_tpl" data-smart="open.popup">mod-tpl-twig</a>.
 					<br>
@@ -29,10 +29,10 @@
 			</td>
 			<td> &nbsp;&nbsp;&nbsp; </td>
 			<td align="right">
-				[%%%IF:TPL-DUST-AVAIL:==yes;%%%]
-				<a href="?/page/tpl-dust.test" target="testunit_dust_test" data-smart="open.modal" class="ux-button ux-button-dark" title="Dust Templating Engine (by LinkedIn) is available as an extra module for Smart.Framework and can be used as an alternative to the Marker-TPL Templating Engine"><i class="sfi sfi-stack"></i> &nbsp; Dust Templating Demo (extra modules)</a>
+				[%%%IF:TPL-TWIST-AVAIL:==yes;%%%]
+				<a href="?/page/tpl-twist.test" target="testunit_twist_test" data-smart="open.modal" class="ux-button ux-button-dark" title="Twist Templating Engine is available as an extra module for Smart.Framework and can be used as an alternative to the Marker-TPL Templating Engine"><i class="sfi sfi-stack"></i> &nbsp; Twist Templating Demo (extra modules)</a>
 				<br>
-				[%%%/IF:TPL-DUST-AVAIL%%%]
+				[%%%/IF:TPL-TWIST-AVAIL%%%]
 				[%%%IF:TPL-TWIG-AVAIL:==yes;%%%]
 				<a href="?/page/tpl-twig.test" target="testunit_twig_test" data-smart="open.modal" class="ux-button ux-button-regular" title="Twig Templating Engine is available as an extra module for Smart.Framework and can be used as an alternative to the Marker-TPL Templating Engine"><i class="sfi sfi-stack"></i> &nbsp; Twig Templating Demo (extra modules)</a>
 				<br>

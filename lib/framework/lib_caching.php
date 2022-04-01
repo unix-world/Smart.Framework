@@ -25,10 +25,7 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 	die('ERROR: The PHP ZLIB Extension (gzencode/gzdecode) is required for Smart.Framework / Lib Utils');
 } //end if
 //--
-if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER')) {
-	@http_response_code(500);
-	die('A required INIT constant has not been defined: SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER');
-} //end if
+// OPTIONAL Constant: SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER
 //--
 
 //=====================================================================================
@@ -48,7 +45,7 @@ if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER')) {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartFrameworkRegistry
- * @version 	v.20211209
+ * @version 	v.20220330
  * @package 	@Core
  *
  */
@@ -67,21 +64,17 @@ final class SmartCache {
 	 *
 	 * @return BOOLEAN	TRUE if Key Exists or FALSE if not
 	 */
-	public static function keyExists(?string $y_realm, ?string $y_key) {
+	public static function keyExists(?string $y_realm, ?string $y_key) : bool {
 		//--
 		if(is_array(self::$CachedData)) {
 			if((array_key_exists((string)$y_realm, self::$CachedData)) AND (is_array(self::$CachedData[(string)$y_realm]))) {
 				if(array_key_exists((string)$y_key, self::$CachedData[(string)$y_realm])) {
 					return true;
-				} else {
-					return false;
 				} //end if else
-			} else {
-				return false;
 			} //end if else
-		} else {
-			return false;
-		} //end if else
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 
@@ -98,9 +91,9 @@ final class SmartCache {
 		//--
 		if(self::keyExists($y_realm, $y_key) === true) {
 			return self::$CachedData[(string)$y_realm][(string)$y_key];
-		} else {
-			return null;
-		} //end if else
+		} //end if
+		//--
+		return null;
 		//--
 	} //END FUNCTION
 
@@ -114,7 +107,7 @@ final class SmartCache {
 	 *
 	 * @return BOOLEAN	Always returns true
 	 */
-	public static function setKey(?string $y_realm, ?string $y_key, $y_value) {
+	public static function setKey(?string $y_realm, ?string $y_key, $y_value) : bool {
 		//--
 		if(!is_array(self::$CachedData)) {
 			self::$CachedData = [];
@@ -145,7 +138,7 @@ final class SmartCache {
 	 *
 	 * @return BOOLEAN	Always returns true
 	 */
-	public static function unsetKey(?string $y_realm, ?string $y_key) {
+	public static function unsetKey(?string $y_realm, ?string $y_key) : bool {
 		//--
 		if(self::keyExists($y_realm, $y_key) === true) {
 			//--
@@ -178,7 +171,11 @@ final class SmartCache {
 	 *
 	 * @return ARRAY 	all the data ...
 	 */
-	public static function getAll() {
+	public static function getAll() : array {
+		//--
+		if(!is_array(self::$CachedData)) {
+			return array();
+		} //end if
 		//--
 		return (array) self::$CachedData;
 		//--
@@ -196,7 +193,7 @@ final class SmartCache {
 	 *
 	 * @return BOOLEAN	TRUE if is success or FALSE if fail
 	 */
-	public static function clearData() {
+	public static function clearData() : bool {
 		//--
 		self::$CachedData = array();
 		//--
@@ -229,7 +226,7 @@ final class SmartCache {
  * @internal
  *
  * @depends 	classes: Smart, SmartFrameworkRegistry
- * @version 	v.20210513
+ * @version 	v.20220330
  * @package 	development:Application
  *
  */
@@ -608,28 +605,29 @@ abstract class SmartAbstractPersistentCache {
 			return '';
 		} //end if
 		//-- compress
-		$len_data = strlen((string)$raw_data);
 		$arch_data = @gzencode((string)$raw_data, -1, FORCE_GZIP); // don't make it string, may return false ; -1 = default compression of the zlib library is used which is 6
-		$raw_data = ''; // free mem
 		//-- check for possible zlib-pack errors
 		if(($arch_data === false) OR ((string)$arch_data == '')) {
 			Smart::log_warning('SmartPersistentCache / Cache Variable Compress :: Zlib GZ-Encode ERROR ! ...');
 			return '';
 		} //end if
-		$len_arch = strlen((string)$arch_data);
-		if(($len_data > 0) AND ($len_arch > 0)) {
-			$ratio = $len_data / $len_arch;
+		$len_data = (int) strlen((string)$raw_data);
+		$len_arch = (int) strlen((string)$arch_data);
+		if(((int)$len_data > 0) AND ((int)$len_arch > 0)) {
+			$ratio = (float) ((int)$len_data / (int)$len_arch); // division by zero is checked above as $out not to be empty!
 		} else {
 			$ratio = 0;
 		} //end if
-		if($ratio <= 0) { // check for empty input / output !
+		if((float)$ratio <= 0) { // check for empty input / output !
 			Smart::log_warning('SmartPersistentCache / Cache Variable Compress :: ZLib Data Ratio is zero ! ...');
 			return '';
 		} //end if
-		if($ratio > 32768) { // check for this bug in ZLib {{{SYNC-GZ-ARCHIVE-ERR-CHECK}}}
+		if((float)$ratio > 32768) { // check for this bug in ZLib {{{SYNC-GZ-ARCHIVE-ERR-CHECK}}}
 			Smart::log_warning('SmartPersistentCache / Cache Variable Compress :: ZLib Data Ratio is higher than 32768 ! ...');
 			return '';
 		} //end if
+		//--
+		$raw_data = ''; // free mem
 		//--
 		return (string) base64_encode((string)$arch_data);
 		//--
@@ -710,7 +708,7 @@ if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') OR ((string)SMART_FRAMEW
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210513
+ * @version 	v.20220330
  * @package 	Application:Caching
  *
  */
@@ -718,10 +716,11 @@ final class SmartPersistentCache extends SmartAbstractPersistentCache {
 
 	// ::
 
+	// TODO: implement a filesystem caching instead of blackhole ...
 
 	public static function getVersionInfo() {
 		//--
-		return (string) 'BLACKHOLE: FAKE, EMULATED Persistent Cache ; THIS HAVE NO STORAGE ATTACHED ; Provides just compatibility support for the Persistent Cache when not using any real adapter to ensure the code requiring the class `'.__CLASS__.'` is functional ...';
+		return (string) 'BLACKHOLE: FAKE, EMULATED Persistent Cache ; THIS HAVE NO STORAGE ATTACHED ; Provides just compatibility support for the Persistent Cache when not using a real adapter to ensure the code requiring the class `'.__CLASS__.'` is functional ...';
 		//--
 	} //END FUNCTION
 

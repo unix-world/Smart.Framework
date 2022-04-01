@@ -71,8 +71,8 @@ if((string)$var == 'some-string') {
  * @hints       It is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.
  *
  * @access      PUBLIC
- * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20220322
+ * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
+ * @version     v.20220330
  * @package     @Core
  *
  */
