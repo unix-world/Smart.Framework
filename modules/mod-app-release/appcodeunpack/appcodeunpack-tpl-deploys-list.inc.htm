@@ -1,4 +1,4 @@
-<!-- deploys list v.20210822 -->
+<!-- deploys list v.20220403 -->
 <style>
 div.deploysRow {
 	background: #ECECEC;
@@ -26,7 +26,7 @@ span.filter-search-value {
 <script>
 const getSelectedList = (name) => {
 	let arr = [];
-	name = AppCodeUnpackJs.stringPureVal(name, true);
+	name = AppJs.stringPureVal(name, true);
 	if(name == '') {
 		console.warn('getSelectedList', 'Empty Name');
 		return arr;
@@ -35,30 +35,30 @@ const getSelectedList = (name) => {
 		arr.push($(el).val());
 	});
 	if(arr.length <= 0) {
-		AppCodeUnpackJs.displayAlertDialog('<div class="operation_notice">Nothing selected</div>', null, 'Selection', 550, 200);
+		AppJs.displayAlertDialog('<div class="operation_notice">Nothing selected</div>', null, 'Selection', 550, 200);
 	}
 	return arr;
 };
 const submitSelectedList = (name) => {
 	const arr = getSelectedList(name);
 	if(arr.length > 0) {
-		AppCodeUnpackJs.displayConfirmDialog(
+		AppJs.displayConfirmDialog(
 			'<div class="operation_important">Remove selected Deployments from the Server ? Press OK to Confirm.</div><div class="operation_info">This operation cannot be undone ...</div>',
 			() => {
 				const dTime = new Date();
-				const uuid = AppCodeUnpackJs.sha1(dTime) + '-' + AppCodeUnpackJs.md5(dTime);
-				const theList = AppCodeUnpackJs.b64enc(AppCodeUnpackJs.bfenc(JSON.stringify(arr), uuid));
+				const uuid = AppJs.sha1(dTime) + '-' + AppJs.md5(dTime);
+				const theList = AppJs.b64enc(AppJs.bfenc(JSON.stringify(arr), uuid));
 				const theData = {
 					frm: {
 						uuid: uuid,
 						list: theList,
-						checksum: AppCodeUnpackJs.sha512(theList + '#' + uuid),
+						checksum: AppJs.sha512(theList + '#' + uuid),
 					}
 				};
 				showLoader();
-				AppCodeUnpackJs.removeAllGrowls();
+				AppJs.removeAllGrowls();
 				setTimeout(() => {
-					AppCodeUnpackJs.SubmitAjaxRequest(AppCodeUnpackJs.url_add_suffix('[###SCRIPT|js###]', 'action=deploys-cleanup'), theData, () => { hideLoader(); setTimeout(() => { self.location=self.location; }, 2500); }, () => { hideLoader(); }, () => { hideLoader(); });
+					AppJs.SubmitAjaxRequest(AppJs.url_add_suffix('[###SCRIPT|js###]', 'action=deploys-cleanup'), theData, () => { hideLoader(); setTimeout(() => { self.location=self.location; }, 2500); }, () => { hideLoader(); }, () => { hideLoader(); });
 				}, 750);
 			},
 			'DEPLOYMENTS Cleanup Confirmation',
@@ -66,7 +66,7 @@ const submitSelectedList = (name) => {
 			300
 		);
 	} else {
-		AppCodeUnpackJs.displayAlertDialog('<div class="operation_notice">Nothing selected</div>', null, 'Selection', 550, 200);
+		AppJs.displayAlertDialog('<div class="operation_notice">Nothing selected</div>', null, 'Selection', 550, 200);
 	}
 };
 </script>
@@ -78,7 +78,7 @@ const submitSelectedList = (name) => {
 </div>
 <div>
 <div class="deploysRow">
-	<input type="checkbox" onClick="(() => { const isSelected = AppCodeUnpackJs.selectAllCheckBoxes('deploys'); $(this).prop('checked', isSelected); })();"> &nbsp;
+	<input type="checkbox" onClick="(() => { const isSelected = AppJs.selectAllCheckBoxes('deploys'); $(this).prop('checked', isSelected); })();"> &nbsp;
 	&nbsp;&nbsp;&nbsp;
 	<input type="text" class="ux-field" id="filter-list" maxlength="255"> <button class="ux-button ux-button-info ux-button-small" onClick="filterList(true);">Display by Filter</button> <button class="ux-button ux-button-secondary ux-button-small" onClick="filterList(false);">Display All</button> <span id="filter-info" class="filterInfo">Displaying ALL Results</span><span class="filterInfo"> ; Reverse Order (newest first)</span>
 </div>

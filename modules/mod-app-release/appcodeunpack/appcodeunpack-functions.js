@@ -1,16 +1,16 @@
 
-// AppCodeUnpack JS Local Functions
-// (c) 2013-2021 unix-world.org
+// AppJs Local Functions
+// (c) 2013-2022 unix-world.org
 // License: BSD
-// v.20210822
+// v.20220403
 
 // DEPENDS: smartJ$Utils, smartJ$Date, smartJ$Base64, smartJ$CryptoHash, smartJ$CryptoBlowfish, jQuery
 
 //==================================================================
 //==================================================================
 
-const AppCodeUnpackJs = new class{constructor(){ // STATIC CLASS, ES6
-	const _N$ = 'AppCodeUnpackJs';
+const AppJs = new class{constructor(){ // STATIC CLASS, ES6
+	const _N$ = 'AppJs';
 
 	// :: static
 	const _C$ = this;
@@ -63,7 +63,7 @@ const AppCodeUnpackJs = new class{constructor(){ // STATIC CLASS, ES6
 
 
 	const selectAllCheckBoxes = (name) => {
-		name = AppCodeUnpackJs.stringPureVal(name, true);
+		name = _Utils$.stringPureVal(name, true);
 		if(name == '') {
 			_p$.warn(_N$, 'selectCheckBoxes', 'Empty Selector Name');
 			return false;
@@ -496,9 +496,9 @@ const AppCodeUnpackJs = new class{constructor(){ // STATIC CLASS, ES6
 
 }}; //END CLASS
 
-AppCodeUnpackJs.secureClass();
+AppJs.secureClass();
 
-window.AppCodeUnpackJs = AppCodeUnpackJs;
+window.AppJs = AppJs;
 
 //==================================================================
 //==================================================================

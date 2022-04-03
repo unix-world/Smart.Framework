@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<!-- AppCodeUnpack # Smart.Framework Code Release Manager # v.20210822 -->
-<!-- (c) 2013-2021 unix-world.org - all rights reserved -->
+<!-- AppCodeUnpack # Smart.Framework Code Release Manager # v.20220403 -->
+<!-- (c) 2013-2022 unix-world.org - all rights reserved -->
 <html>
 <head>
 <meta charset="[###CHARSET|html###]">
@@ -50,8 +50,8 @@ const enableHomeLinks = () => {
 		});
 	}).addClass('pointerCursor');
 	$('#appcodepack-txt').on('click', () => { self.location = '[###SCRIPT|js###]'; }).addClass('pointerCursor');
-	$('#netarchive-logo').on('click', () => { self.location = AppCodeUnpackJs.url_add_suffix('[###SCRIPT|js###]', 'action=deploys-list'); }).addClass('pointerCursor');
-	$('#php-logo').on('click', () => { self.location = AppCodeUnpackJs.url_add_suffix('[###SCRIPT|js###]', 'action=logs-list'); }).addClass('pointerCursor');
+	$('#netarchive-logo').on('click', () => { self.location = AppJs.url_add_suffix('[###SCRIPT|js###]', 'action=deploys-list'); }).addClass('pointerCursor');
+	$('#php-logo').on('click', () => { self.location = AppJs.url_add_suffix('[###SCRIPT|js###]', 'action=logs-list'); }).addClass('pointerCursor');
 };
 const hideLoader = () => {
 	$('#Loader-Img').hide();
@@ -60,7 +60,7 @@ const showLoader = () => {
 	$('#Loader-Img').show();
 }
 const hideForm = (the_form_id) => {
-	the_form_id = AppCodeUnpackJs.stringPureVal(the_form_id, true);
+	the_form_id = AppJs.stringPureVal(the_form_id, true);
 	if(the_form_id == '') {
 		console.error('hideForm', 'The FormID empty');
 		return;
@@ -77,7 +77,7 @@ const hideForm = (the_form_id) => {
 	$form.hide();
 };
 const showForm = (the_form_id) => {
-	the_form_id = AppCodeUnpackJs.stringPureVal(the_form_id, true);
+	the_form_id = AppJs.stringPureVal(the_form_id, true);
 	if(the_form_id == '') {
 		console.error('showForm', 'The FormID empty');
 		return;
@@ -100,7 +100,7 @@ const filterList = (isFiltering) => {
 	let expr = '';
 	const $fld = $('input#filter-list');
 	if(isFiltering === true) {
-		expr = AppCodeUnpackJs.stringPureVal($fld.val(), true);
+		expr = AppJs.stringPureVal($fld.val(), true);
 	}
 	let rowsShown = 0;
 	$('div.filter-search-container').each((idx, el) => {

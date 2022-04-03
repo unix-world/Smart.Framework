@@ -1,4 +1,4 @@
-<!-- deploy form v.20210822 -->
+<!-- deploy form v.20220403 -->
 <form name="unpack-form" id="unpack-form" method="post" enctype="multipart/form-data" action="#" onsubmit="return false;">
 <div class="boxTable greyTable">
 	<table width="width:100%;">
@@ -57,21 +57,21 @@ const hideCurrentForm = () => {
 };
 (() => {
 	$('#unpack-bttn-form').on('click', () => {
-		AppCodeUnpackJs.displayConfirmDialog(
-			'<div class="operation_important">Deploy the Appcodepack Package on Server ? Press OK to Confirm.</div><div class="operation_info">This operation cannot be undone ...</div><center><h5>Selected AppID: <span style="color:#ED2839;">' + AppCodeUnpackJs.escape_html($('#select-appid').val()) + '</span></h5></center>',
+		AppJs.displayConfirmDialog(
+			'<div class="operation_important">Deploy the Appcodepack Package on Server ? Press OK to Confirm.</div><div class="operation_info">This operation cannot be undone ...</div><center><h5>Selected AppID: <span style="color:#ED2839;">' + AppJs.escape_html($('#select-appid').val()) + '</span></h5></center>',
 			() => {
-				const crrIsoDate = AppCodeUnpackJs.getCrrIsoDateTime();
-				AppCodeUnpackJs.removeAllGrowls();
+				const crrIsoDate = AppJs.getCrrIsoDateTime();
+				AppJs.removeAllGrowls();
 				hideCurrentForm();
 				setTimeout(() => {
-					AppCodeUnpackJs.SubmitTheFormByAjax(
+					AppJs.SubmitTheFormByAjax(
 						currentFormID, currentFormURL,
 						(fid, u, msg) => {
 							hideLoader();
 							enableHomeLinks();
-							AppCodeUnpackJs.displayGrowl(
+							AppJs.displayGrowl(
 								'Package Deploy Completed: OK',
-								'<h4>' + AppCodeUnpackJs.escape_html(crrIsoDate) + '</h4><h5>UUID:&nbsp;`' + AppCodeUnpackJs.escape_html(AppCodeUnpackJs.createUUID(crrIsoDate)) + '`</h5>' + '<pre>' + AppCodeUnpackJs.escape_html(msg.message) + '</pre>',
+								'<h4>' + AppJs.escape_html(crrIsoDate) + '</h4><h5>UUID:&nbsp;`' + AppJs.escape_html(AppJs.createUUID(crrIsoDate)) + '`</h5>' + '<pre>' + AppJs.escape_html(msg.message) + '</pre>',
 								0,
 								true,
 								'info',
