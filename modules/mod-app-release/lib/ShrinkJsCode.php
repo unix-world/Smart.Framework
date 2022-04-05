@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class ShrinkJsCode extends ShrinkCode {
 
 	// ->
-	// v.20210527
+	// v.20220405
 
 
 	private const PROPERTIESANDMETHODS = [ // 13 [ 8 + 5 ]
@@ -342,7 +342,9 @@ final class ShrinkJsCode extends ShrinkCode {
 		//-- multi-line comments
 		$this->registerPattern('/\/\*.*?\*\//s', '');
 		//-- single-line comments
-		$this->registerPattern('/\/\/.*$/m', '');
+	//	$this->registerPattern('/\/\/.*$/m', ''); // fails with weird characters after double slash comments ; ex: jquery.keyboard.extension-altkeyspopup.js
+		$this->registerPattern('/\/\/.*$/mu', ''); // bug fix for above situation
+	//	$this->registerPattern('/\s*(?:\/\/).*?$/mu', ''); // alternative
 		//--
 	} //END FUNCTION
 	//====================================================

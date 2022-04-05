@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20220330
+ * @version 	v.20220405
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -490,13 +490,30 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 					break;
 				} //end if
 				if(strpos((string)$key, 'APPCODEUNPACK_JS_LOCAL_') === 0) {
+					//--
 					$lint_err = (string) JsOptimizer::lint_code((string)Smart::real_path((string)$tmp_path));
 					if((string)$lint_err != '') {
 						$this->err = 'Lint Failed on css file for key ['.$key.']: `'.$tmp_path.'` with ERRORS: '.$lint_err;
 						return;
 						break;
 					} //end if
-					$tmp_content = (string) JsOptimizer::strip_code((string)$tmp_path); // read from source, not optimized, and strip
+					//--
+					$jsminmarkup = '';
+					if(defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN') && ((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN != '')) { // {{{SYNC-SIGNATURE-STRIP-NODE-COMMENTS}}} strip code using nodejs (if there is nodejs defined prefer strip using this)
+						$jsminmarkup = 'US';
+						$tmp_arr = (array) JsOptimizer::minify_code((string)Smart::real_path((string)$tmp_path), 'strip');
+						$tmp_content = (string) $tmp_arr['content'];
+						if((string)$tmp_arr['error'] != '') {
+							$this->err = 'Failed to include js file for key ['.$key.']: `'.$tmp_path.'` ... '.$tmp_arr['error'];
+							return;
+							break;
+						} //end if
+						$tmp_arr = null;
+					} else {
+						$jsminmarkup = 'CS';
+						$tmp_content = (string) JsOptimizer::strip_code((string)$tmp_path); // read from source, not optimized, and strip
+					} //end if else
+					//--
 				} else {
 					$tmp_content = (string) SmartFileSystem::read((string)$tmp_path); // read the minified
 				} //end if else
@@ -506,7 +523,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 					break;
 				} //end if
 				if(strpos((string)$key, 'APPCODEUNPACK_JS_LOCAL_') === 0) {
-					$tmp_content = '// JS-Script (CS): '.Smart::normalize_spaces((string)Smart::base_name((string)$val[$i])).' @ '.Smart::normalize_spaces((string)date('Y-m-d H:i:s O'))."\n".trim((string)$tmp_content)."\n".'// #END'."\n";
+					$tmp_content = '// JS-Script ('.$jsminmarkup.'): '.Smart::normalize_spaces((string)Smart::base_name((string)$val[$i])).' @ '.Smart::normalize_spaces((string)date('Y-m-d H:i:s O'))."\n".trim((string)$tmp_content)."\n".'// #END'."\n";
 				} //end if
 				$tmp_arr_content[] = (string) trim((string)$tmp_content);
 				$tmp_content = '';

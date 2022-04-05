@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class JsOptimizer {
 
 	// ::
-	// v.20210527
+	// v.20220405
 
 
 	//====================================================
@@ -78,13 +78,18 @@ final class JsOptimizer {
 
 	//====================================================
 	// js minify
-	public static function minify_code(?string $y_script_path) {
+	public static function minify_code(?string $y_script_path, ?string $y_strategy='minify') {
 		//--
 		$y_script_path = (string) trim((string)$y_script_path);
 		$y_script_path = (string) Smart::real_path((string)$y_script_path);
 		//--
 		$enc_content = '';
 		$err = '';
+		//--
+		$strategy_options = ' -m';
+		if((string)$y_strategy == 'strip') {
+			$strategy_options = '';
+		} //end if else
 		//--
 		if((string)$y_script_path == '') {
 			$err = 'ERROR: JsOptimizer/Minify / Empty Path ...';
@@ -97,7 +102,7 @@ final class JsOptimizer {
 						$enc_errors = '';
 						//--
 						$parr = (array) SmartUtils::run_proc_cmd(
-							(string) escapeshellcmd((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN).' '.Smart::real_path((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS).' -m --beautify beautify=false,ascii_only=true -- '.escapeshellarg((string)$y_script_path),
+							(string) escapeshellcmd((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN).' '.Smart::real_path((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS).$strategy_options.' --beautify beautify=false,ascii_only=true -- '.escapeshellarg((string)$y_script_path),
 							null,
 							null,
 							null

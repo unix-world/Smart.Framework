@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class AppCodeOptimizer {
 
 	// ->
-	// v.20210612
+	// v.20220405
 
 	private $debug;
 
@@ -409,6 +409,14 @@ final class AppCodeOptimizer {
 					//--
 					$the_compressor_signature = (string) 'UM'; // node minify
 					$tmp_arr = (array) JsOptimizer::minify_code($path_original_file);
+					$tmp_content = (string) $tmp_arr['content'];
+					$tmp_error = (string) $tmp_arr['error'];
+					$tmp_arr = null;
+					//--
+				} elseif(defined('TASK_APP_RELEASE_CODEPACK_NODEJS_BIN') && ((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN != '')) { // {{{SYNC-SIGNATURE-STRIP-NODE-COMMENTS}}} strip code using nodejs (if there is nodejs defined prefer strip using this)
+					//--
+					$the_compressor_signature = (string) 'US'; // node strip
+					$tmp_arr = (array) JsOptimizer::minify_code($path_original_file, 'strip');
 					$tmp_content = (string) $tmp_arr['content'];
 					$tmp_error = (string) $tmp_arr['error'];
 					$tmp_arr = null;
