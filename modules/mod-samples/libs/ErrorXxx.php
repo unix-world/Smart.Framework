@@ -204,7 +204,7 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 		$vars = (array) $this->getRenderVars();
 		//--
 		if(!\headers_sent()) {
-			\SmartFrameworkRuntime::outputHttpHeadersNoCache();
+			\SmartFrameworkRuntime::outputHttpHeadersCacheControl();
 			if($this->IsRawPage()) {
 				\SmartFrameworkRuntime::outputHttpSafeHeader('Content-Type: '.$cfgs['rawmime']);
 				\SmartFrameworkRuntime::outputHttpSafeHeader('Content-Disposition: '.$cfgs['rawdisp']);

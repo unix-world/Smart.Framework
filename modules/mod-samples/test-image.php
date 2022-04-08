@@ -135,7 +135,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//-- because we do here direct output we need to set all the required headers
-		SmartFrameworkRuntime::outputHttpHeadersNoCache();
+		SmartFrameworkRuntime::outputHttpHeadersCacheControl();
 		//--
 
 		//--

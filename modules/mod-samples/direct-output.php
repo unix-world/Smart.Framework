@@ -39,7 +39,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 
 		//--
-		SmartFrameworkRuntime::outputHttpHeadersNoCache();
+		SmartFrameworkRuntime::outputHttpHeadersCacheControl();
 		$this->InstantFlush();
 		//--
 

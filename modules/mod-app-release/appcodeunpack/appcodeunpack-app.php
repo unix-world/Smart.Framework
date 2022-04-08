@@ -1,7 +1,7 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20210822
-// (c) 2013-2021 unix-world.org - all rights reserved
+// [AppCodeUnpack / APP] v.20220406
+// (c) 2013-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20210822
+	// v.20220406
 
-	private const APPCODEUNPACK_VERSION = 's.20210822.2358';
+	private const APPCODEUNPACK_VERSION = 's.20220406.1654';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 

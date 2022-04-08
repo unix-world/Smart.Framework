@@ -3,9 +3,10 @@
 
 /* ----------------------------- */
 
-/* Notifications Icons r.20210528 */
+/* Notifications Icons r.20220406 */
 /* Keep as separate file from notifications.css because the notifications base styles are used as inline in some places and have no access to this relative paths */
 
+div#operation_display,   div.operation_display,
 div#operation_info,      div.operation_info,
 div#operation_notice,    div.operation_notice,
 div#operation_important, div.operation_important,
@@ -16,6 +17,12 @@ div#operation_error,     div.operation_error {
 	max-width: calc(100% - 52px) !important; /* must adjust and substract the padding: -52px */
 	padding-left: 52px !important;
 }
+
+/* This have no icon !
+div#operation_display,
+div.operation_display {
+}
+*/
 
 div#operation_info,
 div.operation_info {

@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20211210
+ * @version		20220406
  *
  */
 final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
@@ -125,7 +125,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 			} else {
 				Smart::log_warning('Headers Already Sent before SERVICE STATUS');
 			} //end if else
-			SmartFrameworkRuntime::outputHttpHeadersNoCache(); // headers: cache control, force no-cache
+			SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // headers: cache control, force no-cache
 			echo self::ServiceStatus($the_midmark);
 			//--
 			return false; // break stop
@@ -141,7 +141,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		if((string)$smartframeworkservice == 'debug') {
 			//--
 			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRuntime::outputHttpHeadersNoCache(); // headers: cache control, force no-cache
+				SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // headers: cache control, force no-cache
 				echo self::DebugInfoGet('idx');
 			} else {
 				http_response_code(404);
@@ -153,7 +153,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		} elseif((string)$smartframeworkservice == 'debug-tpl') {
 			//--
 			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRuntime::outputHttpHeadersNoCache(); // headers: cache control, force no-cache
+				SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // headers: cache control, force no-cache
 				echo SmartDebugProfiler::display_marker_tpl_debug((string)SmartFrameworkRegistry::getRequestVar('tpl'));
 			} else {
 				http_response_code(404);
@@ -365,9 +365,9 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		//--
 		if((int)$appStatusCode < 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
 			if(((int)$appSettings['expires'] > 0) AND (!SmartFrameworkRegistry::ifDebug())) {
-				SmartFrameworkRuntime::outputHttpHeadersNoCache((int)$appSettings['expires'], (int)$appSettings['modified'], (string)$appSettings['c-control']); // headers: cache expiration control
+				SmartFrameworkRuntime::outputHttpHeadersCacheControl((int)$appSettings['expires'], (int)$appSettings['modified'], (string)$appSettings['c-control']); // headers: cache expiration control
 			} elseif((int)$appSettings['expires'] != 304) { // {{{SYNC-MIDDLEWARE-CACHED-STATUS-CODE}}}
-				SmartFrameworkRuntime::outputHttpHeadersNoCache(); // headers: cache control, force no-cache
+				SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // headers: cache control, force no-cache
 			} //end if else
 		} //end if
 		//--

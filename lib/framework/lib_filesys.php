@@ -85,7 +85,7 @@ if(
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210513
+ * @version 	v.20220406
  * @package 	@Core:FileSystem
  *
  */
@@ -1080,10 +1080,6 @@ final class SmartFileSysUtils {
 				$disp = 'attachment';
 				break;
 			//-------------- fonts
-			case 'otf':
-				$type = 'application/x-font-otf';
-				$disp = 'attachment';
-				break;
 			case 'ttf':
 				$type = 'application/x-font-ttf';
 				$disp = 'attachment';
@@ -1128,6 +1124,12 @@ final class SmartFileSysUtils {
 				break;
 			case 'ldif':
 				$type = 'text/ldif';
+				$disp = 'attachment';
+				break;
+			//-------------- data
+			case 'csv': // csv comma
+			case 'tab': // csv tab
+				$type = 'text/csv';
 				$disp = 'attachment';
 				break;
 			//-------------- specials
@@ -1205,12 +1207,6 @@ final class SmartFileSysUtils {
 			//-------------- flash
 			case 'swf':
 				$type = 'application/x-shockwave-flash';
-				$disp = 'attachment';
-				break;
-			//-------------- data
-			case 'csv': // csv comma
-			case 'tab': // csv tab
-				$type = 'text/csv';
 				$disp = 'attachment';
 				break;
 			//-------------- rich text

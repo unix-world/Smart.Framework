@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartHashCrypto, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20210830
+ * @version		v.20220406
  * @package 	Application
  *
  */
@@ -125,7 +125,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise202Status(?string $y_msg, ?string $y_title='', ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(202);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 202 ...');
@@ -140,7 +140,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise203Status(?string $y_msg, ?string $y_title='', ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(203);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 203 ...');
@@ -155,7 +155,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise208Status(?string $y_msg, ?string $y_title='', ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(208);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 208 ...');
@@ -187,7 +187,7 @@ final class SmartFrameworkRuntime {
 		} //end switch
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code((int)$y_code); // redirect
 			self::outputHttpSafeHeader('Location: '.$y_location); // force redirect
 		} else {
@@ -203,7 +203,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise400Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(400);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 400 ...');
@@ -225,7 +225,7 @@ final class SmartFrameworkRuntime {
 		} //end if
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			self::outputHttpSafeHeader('WWW-Authenticate: Basic realm="'.$y_realm.'"');
 			self::outputHttpSafeHeader('HTTP/1.0 401 Authorization Required');
 			http_response_code(401);
@@ -246,7 +246,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise401Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(401);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 401 ...');
@@ -261,7 +261,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise403Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(403);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 403 ...');
@@ -276,7 +276,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise404Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(404);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 404 ...');
@@ -291,7 +291,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise429Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(429);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 429 ...');
@@ -306,7 +306,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise500Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(500);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 500 ...');
@@ -321,7 +321,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise502Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(502);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 502 ...');
@@ -336,7 +336,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise503Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(503);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 503 ...');
@@ -351,7 +351,7 @@ final class SmartFrameworkRuntime {
 	public static function Raise504Error(?string $y_msg, ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
-			self::outputHttpHeadersNoCache();
+			self::outputHttpHeadersCacheControl();
 			http_response_code(504);
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 504 ...');
@@ -419,7 +419,7 @@ final class SmartFrameworkRuntime {
 
 	//======================================================================
 	// for Advanced use Only :: this function outputs !!! the HTTP NoCache / Expire Headers
-	public static function outputHttpHeadersNoCache($expiration=-1, $modified=-1, $control='private') {
+	public static function outputHttpHeadersCacheControl($expiration=-1, $modified=-1, $control='private') {
 		//--
 		if(self::$NoCacheHeadersSent !== false) {
 			return; // this function can be called more than once per execution ; thus if so stop it here ; no log required ...
@@ -442,7 +442,7 @@ final class SmartFrameworkRuntime {
 				//-- {{{SYNC-HTTP-NOCACHE-HEADERS}}}
 				header('Cache-Control: no-cache, must-revalidate'); // HTTP 1.1 no-cache, not use their stale copy
 				header('Pragma: no-cache'); // HTTP 1.0 no-cache
-				header('Expires: '.gmdate('D, d M Y', @strtotime('-1 year')).' '.date('H:i:s').' GMT'); // HTTP 1.0 no-cache expires
+				header('Expires: '.gmdate('D, d M Y', @strtotime('-1 year')).' '.gmdate('H:i:s').' GMT'); // HTTP 1.0 no-cache expires
 				header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 				//--
 			} else {

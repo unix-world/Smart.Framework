@@ -24,7 +24,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20210605
+ * @version 	v.20220406
  *
  */
 abstract class AbstractTaskController extends \SmartAbstractAppController {
@@ -172,7 +172,7 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 			$this->app_main_url = (string) $this->ControllerGetParam('url-script').'?page=auth-admins.tasks';
 		} //end if
 		//--
-		\SmartFrameworkRuntime::outputHttpHeadersNoCache();
+		\SmartFrameworkRuntime::outputHttpHeadersCacheControl();
 		echo (string) \SmartMarkersTemplating::render_file_template(
 			self::MODULE_TPL_PATH.'template-task-start.mtpl.htm',
 			(array) array_merge((array)$arr_vars, (array)\SmartComponents::set_app_template_conform_metavars([

@@ -37,7 +37,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20210830
+ * @version 	v.20220407
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -51,7 +51,7 @@ final class AuthAdminsHandler {
 	private const TPL_INC_PATH = 'modules/mod-auth-admins/libs/templates/auth-admins-handler/';
 	private const IMG_LOADER   = 'lib/framework/img/loading-spokes.svg';
 	private const IMG_UNICORN  = 'lib/framework/img/unicorn-auth-logo.svg';
-	private const TXT_UNICORN  = 'Unicorn Secure Authentication';
+	private const TXT_UNICORN  = 'Smart.Unicorn Secure Authentication';
 
 
 	//================================================================
@@ -360,7 +360,7 @@ final class AuthAdminsHandler {
 				return;
 			} //end if
 			//--
-			\SmartFrameworkRuntime::outputHttpHeadersNoCache(); // fix: needs no cache headers
+			\SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // fix: needs no cache headers
 			die((string)$login_or_logout_form); // display login or logot form
 			//--
 		} //end if
