@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20220330
+ * @version 	v.20220411
  * @package 	@Core:Extra
  *
  */
@@ -1535,6 +1535,20 @@ final class SmartUtils {
 	public static function get_encoding_charset() {
 		//--
 		return (string) SMART_FRAMEWORK_CHARSET;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// ex: xmlhttprequest
+	public static function get_server_current_request_with() {
+		//--
+		if(!array_key_exists('HTTP_X_REQUESTED_WITH', $_SERVER)) {
+			return ''; // can be empty
+		} //end if
+		//--
+		return (string) strtolower((string)trim((string)SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_X_REQUESTED_WITH'])));
 		//--
 	} //END FUNCTION
 	//================================================================

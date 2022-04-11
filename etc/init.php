@@ -256,12 +256,14 @@ ini_set('y2k_compliance', '0');												// it is recommended to use this as d
 ini_set('precision', '14');													// decimal number precision
 ini_set('pcre.backtrack_limit', '8000000');									// PCRE BackTrack Limit 8M (min req. is 1M = 1000000) ; PCRE String Limits
 ini_set('pcre.recursion_limit', '800000');									// PCRE Recursion Limit 800K (min req. is 100K = 100000) ; PCRE Expression Limits
-//-- pcre JIT (disable this if you have very complex PCRE expressions combined with very complex PHP functions otherwise the PCRE-JIT Memory may overflow)
-//ini_set('pcre.jit', '0');													// PCRE JIT can be disabled if explicit needed so
-//if((int)ini_get('pcre.jit') > 0) {
-//	@http_response_code(500);
-//	die('Smart.Framework INI // The PHP.INI PCRE JIT could not be DISABLED !');
-//} //end if
+//-- pcre JIT (disable this if you have very complex PCRE expressions combined with very complex PHP functions ; by commenting this out the PCRE-JIT Memory may overflow ...)
+if((int)ini_get('pcre.jit') > 0) {
+	ini_set('pcre.jit', '0');													// PCRE JIT can be disabled if explicit needed so
+	if((int)ini_get('pcre.jit') > 0) {
+		@http_response_code(500);
+		die('Smart.Framework INI // The PHP.INI PCRE JIT could not be DISABLED !');
+	} //end if
+} //end if
 //---------------------------------------- session checks
 if((string)ini_get('session.auto_start') != '0') {
 	@http_response_code(500);

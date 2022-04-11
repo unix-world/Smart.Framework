@@ -7,7 +7,7 @@
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //####################
 
-//== v.20220406
+//== v.20220411
 //--
 ini_set('display_errors', '1'); 											// temporary enable this to display bootstrap errors if any ; will be managed later by Smart Error Handler
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 			// on bootstrap show real-time errors (sync with Smart Error Handler)
@@ -21,6 +21,9 @@ if(is_file('.sf-unpack')) { // {{{SYNC-HTTP-NOCACHE-HEADERS}}} ; Tasks must be a
 	} //end if
 	die('<!-- Smart.Framework [T] 503 Maintenance -->');
 } //end if
+//--
+//==
+ob_start();
 //--
 const SMART_FRAMEWORK_LIB_PATH =  			'lib/framework/'; 				// smart framework lib path
 const SMART_FRAMEWORK_RUNTIME_MODE =  		'web.task'; 					// runtime mode: 'web.task'
@@ -50,12 +53,28 @@ if((string)get_parent_class('SmartAppAdminMiddleware') != 'SmartAbstractAppMiddl
 	die('Smart.Framework // App [T] Service: the Class SmartAppAdminMiddleware must be extended from the Class SmartAbstractAppMiddleware ...');
 } //end if
 //--
-$run = SmartAppAdminMiddleware::Run(); // Handle the Admin service
+$output = ob_get_contents();
+ob_end_clean();
+if((string)$output != '') {
+	Smart::log_warning('The middleware service [T] detected an illegal output in initialize'."\n".'The result of this output is: '.$output);
+} //end if
+$output = '';
+//--
+//==
+//--
+$run = SmartAppAdminMiddleware::Run(); // Handle the Admin/Task service
+ob_start();
 if(SmartFrameworkRegistry::ifDebug()) {
 	if($run !== false) {
 		SmartAppAdminMiddleware::DebugInfoSet('tsk', (bool)$run);
 	} //end if
 } //end if
+$output = ob_get_contents();
+ob_end_clean();
+if((string)$output != '') {
+	Smart::log_warning('The middleware service [T] detected an illegal output in shutdown'."\n".'The result of this output is: '.$output);
+} //end if
+$output = '';
 //--
 if((string)setlocale(LC_ALL, 0) != 'C') { // {{{SYNC-LOCALES-CHECK}}}
 	@trigger_error(

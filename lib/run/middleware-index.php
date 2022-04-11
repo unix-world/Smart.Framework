@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20220406
+ * @version		20220411
  *
  */
 final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
@@ -52,7 +52,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 
 
 	//====================================================================
-	public static function Run() {
+	public static function Run() { // return mixed: true (main request) ; false (child request) ; null/void (other cases)
 		//--
 		//==
 		//--

@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20220406
+ * @version		20220411
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -62,9 +62,11 @@ abstract class SmartAbstractAppMiddleware {
 	private const DEBUG_COOKIE_ADM = 'SmartFramework__DebugAdmID';
 	private const DEBUG_COOKIE_TSK = 'SmartFramework__DebugTskID';
 
+
 	//=====
 	public static function Run() {
 		// THIS HAVE TO IMPLEMENT THE MIDDLEWARE SERVICE HANDLER (MANDATORY)
+		// return mixed: true (main request) ; false (child request) ; null/void (other cases)
 	} //END FUNCTION
 	//=====
 
@@ -453,10 +455,7 @@ abstract class SmartAbstractAppMiddleware {
 		//--
 		$area = (string) $area;
 		$is_main = (bool) $is_main;
-		$req_with = '';
-		if(array_key_exists('HTTP_X_REQUESTED_WITH', $_SERVER)) {
-			$req_with = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_X_REQUESTED_WITH']);
-		} //end if
+		$req_with = (string) SmartUtils::get_server_current_request_with();
 		if(((int)http_response_code() > 299) OR ((string)$req_with != '')) {
 			$is_main = false;
 		} //end if
