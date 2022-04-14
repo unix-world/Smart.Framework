@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20220330
+ * @version     v.20220414
  * @package     @Core
  *
  */
@@ -1113,7 +1113,7 @@ final class Smart {
 	public static function array_size($y_arr) { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO TEST ALSO NON-ARRAY VARS !!!
 		//--
 		if(is_array($y_arr)) {
-			return count($y_arr);
+			return (int) count($y_arr);
 		} else {
 			return 0;
 		} //end if else
