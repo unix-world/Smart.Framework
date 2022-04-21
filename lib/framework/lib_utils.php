@@ -37,13 +37,15 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20220411
+ * @version 	v.20220419
  * @package 	@Core:Extra
  *
  */
 final class SmartUtils {
 
 	// ::
+
+	public const GENERIC_VALUE_OS_BROWSER_IP = '[?]';
 
 	private static $AppReleaseHash = null;
 
@@ -2126,7 +2128,7 @@ final class SmartUtils {
 					break;
 				default:
 					// UNKNOWN
-					$out = (string) strtoupper('[?] '.PHP_OS);
+					$out = (string) strtoupper((string)self::GENERIC_VALUE_OS_BROWSER_IP.' '.PHP_OS);
 			} //end switch
 			//--
 			self::$cache['get_server_os'] = (string) $out;
@@ -2433,12 +2435,12 @@ final class SmartUtils {
 		//--
 		if(Smart::array_size($arr) <= 0) {
 			//--
-			$wp_browser = '[?]';
-			$wp_class = '[?]';
-			$wp_os = '[?]';
-			$wp_ip = '[?]';
-			$wp_px = '[?]';
-			$wp_mb = 'no'; // by default is not mobile
+			$wp_browser = (string) self::GENERIC_VALUE_OS_BROWSER_IP;
+			$wp_class 	= (string) self::GENERIC_VALUE_OS_BROWSER_IP;
+			$wp_os 		= (string) self::GENERIC_VALUE_OS_BROWSER_IP;
+			$wp_ip 		= (string) self::GENERIC_VALUE_OS_BROWSER_IP;
+			$wp_px 		= (string) self::GENERIC_VALUE_OS_BROWSER_IP;
+			$wp_mb 		= 'no'; // by default is not mobile
 			//--
 			$the_srv_signature = '';
 			if(array_key_exists('HTTP_USER_AGENT', $_SERVER)) { // fix for PHP8
@@ -2482,21 +2484,30 @@ final class SmartUtils {
 				$wp_browser = 'moz'; // mozilla derivates, but not firefox which is detected above
 				$wp_class = 'xy'; // various class
 			} elseif(strpos($the_lower_signature, 'netsurf/') !== false) { // it have just a simple signature
-				$wp_browser = 'nsf'; // netsurf
+				$wp_browser = 'nsf'; // netsurf {{{SYNC-DETECT-SIGNATURE-BROWSER-NETSURF}}}
 				$wp_class = 'xy'; // various class
 			} elseif((strpos($the_lower_signature, 'lynx') !== false) OR (strpos($the_lower_signature, 'links') !== false)) {
 				$wp_browser = 'lyx'; // lynx / links (text browser)
 				$wp_class = 'tx'; // text class
-			} elseif(defined('SMART_FRAMEWORK_IDENT_ROBOTS')) {
-				$robots = (array) Smart::list_to_array((string)SMART_FRAMEWORK_IDENT_ROBOTS, false);
-				$imax = Smart::array_size($robots);
-				for($i=0; $i<$imax; $i++) {
-					if(strpos($the_lower_signature, (string)$robots[$i]) !== false) {
-						$wp_browser = 'bot'; // Robot
-						$wp_class = 'rb'; // bot class
-						break;
-					} //end if
-				} //end for
+			} //end if else
+			//-- robots
+			if(defined('SMART_FRAMEWORK_IDENT_ROBOTS')) {
+				if(((string)$wp_browser == (string)self::GENERIC_VALUE_OS_BROWSER_IP) OR ((string)$wp_browser == 'nsf')) { // {{{SYNC-DETECT-SIGNATURE-BROWSER-NETSURF}}} ; if not detected or netsurf
+					$robots = [];
+					if(is_array(SMART_FRAMEWORK_IDENT_ROBOTS)) {
+						$robots = (array) SMART_FRAMEWORK_IDENT_ROBOTS;
+					} else {
+						$robots = (array) Smart::list_to_array((string)SMART_FRAMEWORK_IDENT_ROBOTS, false);
+					} //end if else
+					$imax = (int) Smart::array_size($robots);
+					for($i=0; $i<$imax; $i++) {
+						if(stripos($the_lower_signature, (string)$robots[$i]) !== false) {
+							$wp_browser = 'bot'; // Robot
+							$wp_class = 'rb'; // bot class
+							break;
+						} //end if
+					} //end for
+				} //end if
 			} //end if else
 			//-- this is just for self-robot which name is always unique and impossible to guess ; this must override the rest of detections just in the case that someone adds it to the ident robots in init ...
 			if((string)trim($the_lower_signature) == (string)strtolower(self::get_selfrobot_useragent_name())) {

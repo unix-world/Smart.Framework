@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210823
+ * @version 	v.20220419
  * @package 	Plugins:Network
  *
  */
@@ -203,13 +203,13 @@ final class SmartRobot {
 	 * @param STRING 	$y_auth_name				:: used only for URLs, the auth user name
 	 * @param STRING 	$y_auth_pass				:: used only for URLs, the auth password
 	 * @param YES/NO	$y_allow_set_credentials	:: DEFAULT IS SET to NO ; if YES must be set just for internal URLs ; if set to AUTO will try to detect if can trust based on task.php / admin.php / index.php local framework scripts ; if the $y_url_or_path to get is detected to be under current URL will send also the Unique / session IDs ; more if detected that is from task.php / admin.php and if this is set to YES will send the HTTP-BASIC Auth credentials if detected (using YES with other URLs than Smart.Framework's current URL can be a serious SECURITY ISSUE, so don't !)
-	 * @param BOOL 		$y_allow_num_redirects 		:: DEFAULT IS SET to 2 ; Between 0..5 ; if > 0 will allow this number of redirects if 301/302, but only if not set to send any auth username/pass/credentials to avoid security leaks) ; if 0 will allow no redirects
+	 * @param BOOL 		$y_allow_num_redirects 		:: DEFAULT IS SET to 2 ; Between 0..10 ; if > 0 will allow this number of redirects if 301/302, but only if not set to send any auth username/pass/credentials to avoid security leaks) ; if 0 will allow no redirects
 	 * @return ARRAY
 	 */
 	public static function load_url_content($y_url_or_path, $y_timeout=30, $y_method='GET', $y_ssl_method='', $y_auth_name='', $y_auth_pass='', $y_allow_set_credentials='no', $y_allow_num_redirects=2) {
 		//--
 		// fixed sessionID with new Dynamic generated
-		// added support for redirects if 301/302 and no auth/credentials
+		// added support for safe redirects if 301/302 if no auth/credentials ; min: 0 ; max: 10 ; {{{SYNC-SAFE-HTTP-REDIRECT-POLICY}}}
 		//--
 		// ### IMPORTANT ###
 		// BECAUSE OF SECURITY CONCERNS, NEVER USE OR MODIFY THIS FUNCTION TO LOAD A FILE PATH
@@ -220,8 +220,8 @@ final class SmartRobot {
 		$y_allow_num_redirects = (int) $y_allow_num_redirects;
 		if((int)$y_allow_num_redirects < 0) {
 			$y_allow_num_redirects = 0;
-		} elseif((int)$y_allow_num_redirects > 5) {
-			$y_allow_num_redirects = 5;
+		} elseif((int)$y_allow_num_redirects > 10) {
+			$y_allow_num_redirects = 10;
 		} //end if
 		//--
 		if((string)$y_url_or_path == '') {

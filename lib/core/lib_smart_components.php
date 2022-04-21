@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20220126
+ * @version 	v.20220419
  * @package 	Application:ViewComponents
  *
  */
@@ -1059,7 +1059,7 @@ final class SmartComponents {
 				$pict = 'os/mobile/linux-mobile';
 				break;
 			//-
-			case '[?]':
+			case SmartUtils::GENERIC_VALUE_OS_BROWSER_IP:
 			default:
 				$desc = '[UNKNOWN]: ('.$y_os_id.')';
 				$pict = 'os/other-os';

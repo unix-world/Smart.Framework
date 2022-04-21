@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20220406
+// [Smart.Framework / INIT] v.20220419
 // (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -72,8 +72,22 @@ const SMART_FRAMEWORK_CHMOD_DIRS =  					0770;										// Folder Permissions: 	
 const SMART_FRAMEWORK_CHMOD_FILES =  					0660;										// File Permissions: 	default is 0660 (can be used for both production or development) ; use: 0660 | 0640 | 0600 for production ; use: 0666 | 0664 | 0644 for development		{{{SYNC-SMARTFRAMEWORK-DEFAULT-FILES-CHMOD}}}
 //---------------------------------------- TPL DEBUGGING
 const SMART_SOFTWARE_MKTPL_DEBUG_LEN =  				0;											// If set will use this TPL Debug Length (255..524280) ; If not set will use default: 512
-//---------------------------------------- ROBOTS IDENTIFY :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING :: Sample (spaces between <> counts): '<bot signature 1>,<bot signature 2 >,< another-bot >'
-const SMART_FRAMEWORK_IDENT_ROBOTS =  					'<robot>,<apache>,<httperf>,<benchmark>,<scanner>,<googlebot>,<google adsbot>,<google toolbar>,<google web preview>,<google feed fetcher>,<yahoo! slurp>,<webcrawler>,<domaincrawler>,<catchbot>,<webalta crawler>,<superbot>,<msnbot>,<ms url control>,<winhttp>,<roku dvp>,<linkwalker>,<aihitbot>,<ia_archiver>,<sanszbot>,<linguee bot>,<swish-e>,<tarantula>,<fast-webcrawler>,<jeeves>,<teoma>,<baiduspider>,<bing bot>,<yandex>,<exabot>,<everyfeed spider>,<gregarius>,<facebook scraper>,<email wolf>,<gaisbot>,<gulperbot>,<grub-client>,<peach >,<htmlparser>,<w3c css validator>,<w3c (x)html validator>,<w3c p3p validator>,<download demon>,<offline explorer>,<webcopier>,<web downloader>,<webzip>,<htmldoc>,<wget >,<curl/>,<php >,<libwww-perl>,<python-urllib>,<java >'; // robots identification by user agent portions of signature
+//---------------------------------------- ROBOTS IDENTIFY :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
+const SMART_FRAMEWORK_IDENT_ROBOTS = [ // r.20220419 ; case insensitive ; spaces will be preserved ; can be array or string list ; example: '<bot signature 1>,<bot signature 2 >,< another-bot >' OR [ 'bot signature 1', 'bot signature 2 ', ' another-bot ' ]
+	'(smart.framework ', '(smart.framework.go ',
+	'robot', 'apache', 'httperf', 'benchmark', 'scanner',
+	'Googlebot', 'AdsBot-Google', 'APIs-Google', 'Mediapartners-Google', 'FeedFetcher-Google', 'Google-Read-Aloud', 'DuplexWeb-Google', 'Storebot-Google', 'googleweblight',
+	'Yahoo! Slurp', ' slurp,', ' slurp;', '(slurp)', '(slurp/',
+	'bingbot/', '/bingbot.', 'bing bot', 'msnbot', 'ms url control', 'winhttp',
+	'YandexBot', 'yandex.com/bots', 'Baiduspider', 'DuckDuckBot', 'exabot', 'Jeeves/', 'ia_archiver',
+	'facebot', 'facebookexternalhit/', 'LinkedInBot/',
+	'wget ', 'curl/', 'Go-http-client/', 'php ', ' php/', 'libwww-perl', 'python-urllib', 'java ', 'htmldoc',
+	'webcrawler', 'domaincrawler', 'catchbot', 'webalta crawler', 'superbot',
+	'roku dvp', 'linkwalker', 'aihitbot', 'sanszbot', 'linguee bot', 'swish-e', 'tarantula', 'fast-webcrawler', 'teoma', 'everyfeed spider', 'gregarius',
+	'email wolf', 'gaisbot', 'gulperbot', 'grub-client', 'peach ',
+	'htmlparser', 'w3c css validator', 'w3c (x)html validator', 'w3c p3p validator',
+	'download demon', 'offline explorer', 'webcopier', 'webzip', 'web downloader',
+]; // robots identification by user agent portions of signature
 //--------------------------------------- UPLOADS SECURITY :: CHANGE IT ONLY YOU KNOW WHAT YOU ARE DOING
 const SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS = 		'<svg>,<png>,<gif>,<jpg>,<jpeg>,<webp>'.','.'<webm>,<ogv>,<ogg>,<mp4>,<mov>'.','.'<txt>,<md>,<pdf>,<odt>,<ods>,<odp>,<csv>,<doc>,<rtf>,<xls>,<ppt>'.','.'<json>,<yaml>,<xml>,<eml>,<ics>,<vcf>'.','.'<7z>,<zip>,<rar>,<tar>,<tgz>,<tbz>,<gz>,<bz2>,<xz>'.','.'<ps>,<eps>,<tif>,<tiff>,<wmf>,<bmp>,<swf>'; // *OPTIONAL* The List of Allowed file extensions for Uploads ; if set and empty, will dissalow any upload by default ; if set and non-empty will only allow files with these extensions to be uploaded (if this is set the SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS will not count at all)
 const SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS =  		'<htm>,<html>,<js>,<sass>,<scss>,<css>,<shtml>,<phtml>,<php>,<sql>,<inc>,<tpl>,<mtpl>,<twig>,<twist>,<t3fluid>,<pl>,<py>,<pyc>,<pyo>,<rb>,<go>,<asp>,<jsp>,<sh>,<bash>,<bat>,<cmd>,<cgi>,<fcgi>,<fastcgi>,<scgi>,<wsgi>,<exe>,<msi>,<dll>,<dylib>,<bin>,<so>'; // The List of DENIED file extensions for Uploads ; files with these extensions will not be allowed to be uploaded by default

@@ -67,7 +67,7 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20220207
+ * @version 	v.20220419
  * @package 	Application:Session
  *
  */
@@ -304,7 +304,7 @@ final class SmartSession {
 			$sf_sess_ns = '@sr-'.$sf_sess_dpfx;
 		} elseif((string)$browser_os_ip_identification['bw'] == 'bot') {
 			$sf_sess_ns = 'r0-'.$sf_sess_dpfx; // we just need a short prefix for robots (on disk is costly for GC to keep separate folders, but of course, not so safe)
-		} elseif((string)$browser_os_ip_identification['bw'] == '[?]') {
+		} elseif((string)$browser_os_ip_identification['bw'] == (string)SmartUtils::GENERIC_VALUE_OS_BROWSER_IP) {
 			$sf_sess_ns = 'c-'.'_x_'.'-'.$sf_sess_dpfx; // unidentified browser
 		} else {
 			$sf_sess_ns = 'c-'.substr((string)$browser_os_ip_identification['bw'],0,3).'-'.$sf_sess_dpfx; // we just need a short prefix for clients (on disk is costly for GC to keep separate folders, but of course, not so safe)
@@ -515,7 +515,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20210830
+ * @version 	v.20220419
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {
