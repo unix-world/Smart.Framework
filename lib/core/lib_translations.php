@@ -334,7 +334,7 @@ final class SmartTextTranslations {
 	//=====
 
 
-	//================================================================
+	//=====
 	/**
 	 * Get the safe regional date format for Js (Javascript)
 	 *
@@ -370,10 +370,10 @@ final class SmartTextTranslations {
 		return (string) $format;
 		//--
 	} //END FUNCTION
-	//================================================================
+	//=====
 
 
-	//================================================================
+	//=====
 	/**
 	 * Get the safe regional date format for PHP
 	 *
@@ -409,7 +409,7 @@ final class SmartTextTranslations {
 		return (string) $format;
 		//--
 	} //END FUNCTION
-	//================================================================
+	//=====
 
 
 	//=====
@@ -437,7 +437,14 @@ final class SmartTextTranslations {
 			'calendar-week-start',
 			'calendar-date-format-client',
 			'calendar-date-format-server',
+			'language-direction',
 		]);
+		//--
+		if((string)strtoupper((string)trim((string)$arr['language-direction'])) == 'RTL') {
+			$arr['language-direction'] = 'RTL'; // right to left
+		} else {
+			$arr['language-direction'] = 'LTR'; // left to right
+		} //end if
 		//--
 		switch((string)$arr['decimal-separator']) {
 			case ',':

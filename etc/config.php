@@ -28,8 +28,9 @@ $configs['app']['info-url'] = 'smart-framework.demo';						// Info URL: this mus
 //---------------------------------------
 
 
-//--------------------------------------- REGIONAL SETTINGS
+//--------------------------------------- REGIONAL SETTINGS (for the default language ; they will be automatically adjusted as set with other language when another language is set ...)
 $configs['regional']['language-id']					= 'en';					// The default Language ID: `en` | `ro` | ... (must exists and defined below under $languages)
+$configs['regional']['language-direction'] 			= 'LTR'; 				// Language Direction: LTR = Left-To-Right ; RTL = Right-To-Left
 $configs['regional']['decimal-separator']			= '.';					// decimal separator `.` | `,`
 $configs['regional']['thousands-separator']			= ',';					// thousand separator `,` | `.` | ` `
 $configs['regional']['calendar-week-start']			= '0';					// 0=start on sunday | 1=start on Monday ; used for both PHP and Javascript
@@ -37,7 +38,7 @@ $configs['regional']['calendar-date-format-client'] = 'dd.mm.yy';			// Client Da
 $configs['regional']['calendar-date-format-server']	= 'd.m.Y';				// Server Date Format - PHP (allow only these characters: Y m d . - [space])
 //--------------------------------------- LANGUAGE SETTINGS
 $languages = [ 'en' => '[EN]' ];											// default associative array of available languages for this software
-//$languages = [ 'en' => '[EN]', 'ro' => [ 'name' => '[RO]', 'decimal-separator' => ',', 'thousands-separator' => '.', 'calendar-week-start' => '1' ] ]; // extended associative array of available languages for this software ; to enable languages be sure to set the SMART_FRAMEWORK_URL_PARAM_LANGUAGE in init.php
+//$languages = [ 'en' => '[EN]', 'ro' => [ 'name' => '[RO]', 'language-direction' => 'LTR', 'decimal-separator' => ',', 'thousands-separator' => '.', 'calendar-week-start' => '1' ] ]; // extended associative array of available languages for this software ; to enable languages be sure to set the SMART_FRAMEWORK_URL_PARAM_LANGUAGE in init.php
 //---------------------------------------
 
 

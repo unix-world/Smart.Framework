@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20220419
+ * @version 	v.20220509
  * @package 	@Core:Extra
  *
  */
@@ -1028,7 +1028,7 @@ final class SmartUtils {
 	 * @return ARRAY								:: array [ status => 'OK' | 'WARN' | 'ERR', 'message' => '' | 'WARN Message' | 'ERR Message', 'msg-code' => 0..n, 'filename' => '' | 'filename.ext', 'filetype' => '' | 'ext', 'filesize' => Bytes, 'filecontent' => '' | 'the Contents of the file ...' ]
 	 */
 	public static function read_uploaded_file(?string $var_name, ?int $var_index=-1, ?int $max_size=0, ?string $allowed_extensions='') {
-		//-- {{{SYNC-HANDLE-F-UPLOADS}}}
+		//-- {{{SYNC-HANDLE-F-UPLOADS}}} v.20220509
 		$var_name 	= (string) trim((string)$var_name);
 		$var_index 	= (int)    $var_index; // can be negative or 0..n
 		$max_size 	= (int)    Smart::format_number_int($max_size,'+');
@@ -1047,17 +1047,23 @@ final class SmartUtils {
 			'filecontent' 	=> '' 				// '' | 'the Contents of the file ...'
 		];
 		//--
+		if((string)$var_name == '') {
+			$out['status'] = 'ERR';
+			$out['message'] = 'Invalid File VarName for Upload';
+			$out['msg-code'] = 2;
+			return (array) $out;
+		} //end if
+		//--
 		if(Smart::array_size($_FILES) <= 0) {
 			$out['status'] = 'WARN';
 			$out['message'] = 'No files uploads detected ...';
 			$out['msg-code'] = 1;
 			return (array) $out;
 		} //end if
-		//--
-		if((string)$var_name == '') {
-			$out['status'] = 'ERR';
-			$out['message'] = 'Invalid File VarName for Upload';
-			$out['msg-code'] = 2;
+		if((!isset($_FILES[$var_name])) OR (!is_array($_FILES[$var_name]))) {
+			$out['status'] = 'WARN';
+			$out['message'] = 'No files uploads detected for `'.$var_name.'` ...';
+			$out['msg-code'] = 1;
 			return (array) $out;
 		} //end if
 		//--
@@ -1246,7 +1252,7 @@ final class SmartUtils {
 	 * @return MIXED								:: '' (empty string) if all OK ; FALSE (boolean) if upload failed ; otherwise will return a non-empty string with the ERROR / WARNING message if the file was not successfuly stored in the destination directory
 	 */
 	public static function store_uploaded_file(?string $dest_dir, ?string $var_name, ?int $var_index=-1, bool $allow_rewrite=true, ?int $max_size=0, ?string $allowed_extensions='', ?string $new_name='', bool $enforce_lowercase=false) {
-		//-- {{{SYNC-HANDLE-F-UPLOADS}}} v.20200419
+		//-- {{{SYNC-HANDLE-F-UPLOADS}}} v.20220509
 		$dest_dir = (string) $dest_dir;
 		$var_name = (string) trim((string)$var_name);
 		$var_index = (int) $var_index;

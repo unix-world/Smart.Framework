@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20211228), (c) 2015-2021 unix-world.org
+	extended by unixman, (stable.20220428), (c) 2015-2021 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -823,7 +823,7 @@ since IE8 won't execute CSS that contains a CSS3 selector.
 .ux-form textarea[readonly],
 .ux-select[readonly],
 .ux-field[readonly] {
-	cursor: pointer;
+	cursor: crosshair;
 	background-color: #FAFAFA; /* menu hover bg color */
 	color: #777; /* menu text color */
 	border-color: #ccc;
