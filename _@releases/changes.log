@@ -2,8 +2,18 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+June 03, 2022
+	* Implement HTTP Status 410 (Gone)
+
 April 06, 2022
 	* renamed SmartFrameworkRuntime::outputHttpHeadersNoCache to SmartFrameworkRuntime::outputHttpHeadersCacheControl
+
+May 31, 2022
+	* SmartBrowser: do internal log of connection errors even of no debug
+	* Fixes for MongoDB 5+
+
+May 09, 2022
+	* Fix PHP8 Warning for Utils: read uploaded file
 
 March 30, 2022
 	* fixes and optimizations

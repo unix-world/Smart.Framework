@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartHashCrypto, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20220406
+ * @version		v.20220603
  * @package 	Application
  *
  */
@@ -41,9 +41,9 @@ final class SmartFrameworkRuntime {
 
 	private static $NoCacheHeadersSent 		= false;
 
-	private static $HttpStatusCodesOK  		= [200, 202, 203, 208, 304]; 						// list of framework available HTTP OK Status Codes (sync with middlewares)
-	private static $HttpStatusCodesRDR 		= [301, 302]; 										// list of framework available HTTP Redirect Status Codes (sync with middlewares)
-	private static $HttpStatusCodesERR 		= [400, 401, 403, 404, 429, 500, 502, 503, 504]; 	// list of framework available HTTP Error Status Codes (sync with middlewares)
+	private static $HttpStatusCodesOK  		= [200, 202, 203, 208, 304]; 							// list of framework available HTTP OK Status Codes (sync with middlewares)
+	private static $HttpStatusCodesRDR 		= [301, 302]; 											// list of framework available HTTP Redirect Status Codes (sync with middlewares)
+	private static $HttpStatusCodesERR 		= [400, 401, 403, 404, 410, 429, 500, 502, 503, 504]; 	// list of framework available HTTP Error Status Codes (sync with middlewares)
 
 	private static $RequestProcessed 		= false; // after all request variables are processed this will be set to true to avoid re-process request variables which can be a huge security issue if re-process is called by mistake !
 
@@ -93,6 +93,9 @@ final class SmartFrameworkRuntime {
 				break;
 			case 404:
 				$status_code_msg = 'Not Found';
+				break;
+			case 410:
+				$status_code_msg = 'Gone';
 				break;
 			case 429:
 				$status_code_msg = 'Too Many Requests';
@@ -282,6 +285,21 @@ final class SmartFrameworkRuntime {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 404 ...');
 		} //end if else
 		die(SmartComponents::http_message_404_notfound((string)$y_msg, (string)$y_htmlmsg));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	public static function Raise410Error(?string $y_msg, ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(410);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 410 ...');
+		} //end if else
+		die(SmartComponents::http_message_410_gone((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================

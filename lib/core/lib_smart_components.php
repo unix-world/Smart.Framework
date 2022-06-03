@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20220419
+ * @version 	v.20220603
  * @package 	Application:ViewComponents
  *
  */
@@ -224,6 +224,27 @@ final class SmartComponents {
 		} //end if
 		//--
 		return self::http_error_message('404 Not Found', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// 410 Gone :: A 410 is more permanent than a 404; it means that the page is gone. To be used for limited-time / promotional services.
+	public static function http_message_410_gone(?string $y_message, ?string $y_html_message='') {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'410.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'410.php');
+				if(function_exists('custom_http_message_410_gone')) {
+					return custom_http_message_410_gone((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return self::http_error_message('410 Gone', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================

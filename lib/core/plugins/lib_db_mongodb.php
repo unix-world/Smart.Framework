@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartComponents
- * @version 	v.20210616
+ * @version 	v.20220531
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -807,7 +807,11 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 						foreach((array)$args[2] as $key => $val) {
 							$key = (string) trim((string)$key);
 							if((string)$key != '') {
-								$opts['projection'][(string)$key] = $val; // mixed: number or array
+								if(\is_array($val)) {
+									$opts['projection'][(string)$key] = (array) $val;
+								} else {
+									$opts['projection'][(string)$key] = 1; // must be 1 here, as of MongoDB 5.0
+								} //end if else
 							} //end if
 						} //end foreach
 					} elseif(Smart::array_type_test($args[2]) === 1) { // non-associative

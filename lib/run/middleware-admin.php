@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A][T]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20220411
+ * @version		20220603
  *
  */
 final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // return mixed: true (main request) ; false (child request) ; null/void (other cases)
@@ -453,6 +453,10 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 			//-- client errors
 			case 429:
 				SmartFrameworkRuntime::Raise429Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
+			case 410:
+				SmartFrameworkRuntime::Raise410Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 404:
