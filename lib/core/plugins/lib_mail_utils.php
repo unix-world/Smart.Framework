@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20210823
+ * @version 	v.20220620
  * @package 	Plugins:Mailer
  *
  */
@@ -202,8 +202,6 @@ final class SmartMailerUtils {
 				$msg .= '[failed]'."\n".'LOG: '."\n".$smtp->log."\n";
 				//--
 			} //end if else
-			//--
-			$msg .= $chk['message']."\n";
 			//--
 			if($i >= 5) {
 				break; // do not check more than 5 servers

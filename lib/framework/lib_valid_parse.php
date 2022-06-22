@@ -238,7 +238,7 @@ final class SmartParser {
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode
- * @version     v.20210506
+ * @version     v.20220620
  * @package     @Core:Extra
  *
  */
@@ -286,7 +286,7 @@ final class SmartValidator {
 				return '+'; // just in case
 		} //end switch
 		//--
-		switch(strtolower((string)$y_mode)) { // WARNING: Never use class modifiers like [:print:] with /u modifier as it fails with some versions of PHP / Regex / PCRE
+		switch((string)strtolower((string)$y_mode)) { // WARNING: Never use class modifiers like [:print:] with /u modifier as it fails with some versions of PHP / Regex / PCRE
 			//--
 			//== #EXTERNAL USE
 			//--
