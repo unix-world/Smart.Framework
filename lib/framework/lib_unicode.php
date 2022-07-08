@@ -27,10 +27,6 @@ if(!function_exists('mb_stripos')) {
 	@http_response_code(500);
 	die('ERROR: The PHP MBString Extension is required for Unicode support into Smart.Framework / Unicode');
 } //end if
-if((!function_exists('utf8_decode')) OR (!function_exists('utf8_encode'))) {
-	@http_response_code(500);
-	die('ERROR: The PHP UTF8-Decode/Encode (from XML Extension) is required for Smart.Framework / Unicode');
-} //end if
 //-- require UTF-8 Character Set
 if(defined('SMART_FRAMEWORK_CHARSET')) {
 	if((string)SMART_FRAMEWORK_CHARSET != 'UTF-8') {
@@ -118,8 +114,8 @@ if(mb_substitute_character() !== 63) {
  *  //strtolower()                  SmartUnicode::str_tolower()             [ok]        the PHP strtolower() is not unicode safe and will not make lower case the accented characters
  *  //strtoupper()                  SmartUnicode::str_toupper()             [ok]        the PHP strtoupper() is not unicode safe and will not make upper case the accented characters
  *  //--
- *  //utf8_decode()                 SmartUnicode::utf8_to_iso()             [ok]        the PHP utf8_decode() breaks strings that are used in unicode environments thus the strings need to be re-encoded ; if not re-encoded back to unicode the regex \u will fail in strange modes ...
- *  //utf8_encode()                 -                                       [!!]        there is a risk to double encode the string and break it !! ; Fix: avoid do utf8 encode on an empty string (some PHP versions have a bug with exhaust memory)
+ *  //utf8_decode()                 SmartUnicode::utf8_to_iso()             [ok]        it may break strings that are used in unicode environments thus the strings need to be re-encoded ; if not re-encoded back to unicode the regex \u will fail in strange modes ...
+ *  //utf8_encode()                 SmartUnicode::iso_to_utf8()             [!!]        there is a risk to double encode the string and break it if is not ISO ; use just for ISO strings !!
  *  //wordwrap()                    SmartUnicode::word_wrap()               [ok]        the PHP wordwrap() is not unicode safe
  *  //strip_tags()                  Smart::striptags()                      [ok+]       the PHP strip_tags() will not replace some extra things like &nbsp; and much other html entities
  *  //--
@@ -154,7 +150,7 @@ if(mb_substitute_character() !== 63) {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET
- * @version     v.20210903
+ * @version     v.20220708
  * @package     @Core
  *
  */
@@ -911,9 +907,7 @@ final class SmartUnicode {
 			if((string)SMART_FRAMEWORK_CHARSET == 'UTF-8') {
 				if((string)$y_charset_to != (string)SMART_FRAMEWORK_CHARSET) {
 					if($normalize) {
-						if((string)$ystr != '') { // Fix: avoid do utf8 encode on an empty string (some PHP versions have a bug with exhaust memory)
-							$ystr = (string) utf8_encode((string)$ystr); // fix: this is needed to normalize the strings into the framework's current charset
-						} //end if
+						$ystr = (string) self::utf8_enc((string)$ystr); // fix: this is needed to normalize the strings into the framework's current charset
 					} //end if
 				} //end if
 			} //end if
@@ -950,14 +944,89 @@ final class SmartUnicode {
 
 	//================================================================
 	/**
-	 * Safe Convert UTF-8 to Unicode ISO.
+	 * Converts a string from ISO-8859-1 to UTF-8
+	 * Replacement for utf8_encode() which is deprecated since PHP 8.2
+	 *
+	 * @param STRING 	$str			:: An ISO-8859-1 string
+	 *
+	 * @return STRING					:: The UTF-8 encoded string
+	 */
+	public static function utf8_enc($str) {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+	//	return (string) utf8_encode((string)$str); // deprecated since PHP 8.2
+		return (string) mb_convert_encoding((string)$str, 'UTF-8', 'ISO-8859-1');
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Converts a string from UTF-8 to ISO-8859-1, replacing invalid or unrepresentable characters with ?
+	 * Replacement for utf8_decode() which is deprecated since PHP 8.2
+	 *
+	 * @param STRING 	$str			:: An UTF-8 string
+	 *
+	 * @return STRING					:: The decoded string as ISO-8859-1 having all invalid characters replaced with ?
+	 */
+	public static function utf8_dec($str) {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+	//	return (string) utf8_decode((string)$str); // deprecated since PHP 8.2
+		return (string) mb_convert_encoding((string)$str, 'ISO-8859-1', 'UTF-8');
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Safe Convert Unicode ISO to UTF-8 that can be also normalized from Unicode.
+	 * It will remove all invalid characters except latin1.
+	 *
+	 * NOTICE: When $normalize is set to FALSE will do exactly as utf8_enc()
+	 * When $normalize is set to TRUE will assume the string is Unicode ISO and will first decode it
+	 *
+	 * @param STRING 	$str			:: The string
+	 * @param BOOLEAN	$normalize		:: Normalize (Default is FALSE) - will normalize the string from the default framework charset else the string will be incompatible with the current encoding ... ; Using this to true must be use with very much attention, depending by context !!!
+	 *
+	 * @return STRING					:: The processed string
+	 */
+	public static function iso_to_utf8($str, $normalize=false) {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		if($normalize) {
+			$str = (string) self::utf8_dec((string)$str);
+		} //end if
+		//--
+		$str = (string) self::utf8_enc((string)$str);
+		//--
+		return (string) $str;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Safe Convert UTF-8 to ISO that can be also normalized to Unicode.
 	 * It will remove all invalid characters except latin1.
 	 *
 	 * NOTICE: It converts the string back to unicode since all the strings in the framework are unicode (UTF-8) to avoid breaking the regex with \u over those strings !!!
-	 * Never use just single utf8_decode() when the framework is in UTF-8 mode, else the regex \u will fail over those strings ...
+	 * Never use just single utf8_enc() when the framework is in UTF-8 mode, else the regex \u will fail over those strings ...
 	 *
 	 * @param STRING 	$str			:: The string
-	 * @param BOOLEAN	$normalize		:: Normalize (Default is TRUE) - will normalize the string into the default framework charset else the string will be incompatible with the current encoding ... ; Using this to false must be use with very much attention !!!
+	 * @param BOOLEAN	$normalize		:: Normalize (Default is TRUE) - will normalize the string into the default framework charset else the string will be incompatible with the current encoding ... ; Using this to false must be use with very much attention, depending by context !!!
 	 *
 	 * @return STRING					:: The processed string
 	 */
@@ -969,12 +1038,10 @@ final class SmartUnicode {
 		//--
 		$str = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$str); // Fix: remove unsafe characters from original string
 		//--
-		$str = (string) utf8_decode((string)$str);
+		$str = (string) self::utf8_dec((string)$str);
 		//--
 		if($normalize) {
-			if((string)$str != '') { // Fix: avoid do utf8 encode on an empty string (some PHP versions have a bug with exhaust memory)
-				$str = (string) utf8_encode($str);
-			} //end if
+			$str = (string) self::utf8_enc((string)$str);
 		} //end if
 		//--
 		return (string) $str;

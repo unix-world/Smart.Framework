@@ -63,7 +63,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20211216
+ * @version 	v.20220708
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -493,7 +493,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20211216
+ * @version 	v.20220708
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -691,8 +691,8 @@ final class SmartSQliteUtilDb {
 				'strip_tags' 				=> -1, // can have 1 or 2 args (PHP)
 				'striptags' 				=>  1, // Smart
 				'deaccent_str' 				=>  1,
-				'utf8_encode' 				=>  1,
-				'utf8_decode' 				=>  1,
+				'utf8_enc' 					=>  1,
+				'utf8_dec' 					=>  1,
 				'json_arr_contains' 		=>  2,
 				'json_obj_contains' 		=>  3,
 				'json_arr_delete' 			=>  2,
@@ -1868,7 +1868,7 @@ final class SmartSQliteUtilDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20211216
+ * @version 	v.20220708
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -1928,16 +1928,16 @@ final class SmartSQliteFunctions {
 	} //END FUNCTION
 
 
-	public static function utf8_encode($str) {
+	public static function utf8_enc($str) {
 		//--
-		return (string) utf8_encode((string)$str);
+		return (string) SmartUnicode::utf8_enc((string)$str);
 		//--
 	} //END FUNCTION
 
 
-	public static function utf8_decode($str) {
+	public static function utf8_dec($str) {
 		//--
-		return (string) utf8_decode((string)$str);
+		return (string) SmartUnicode::utf8_dec((string)$str);
 		//--
 	} //END FUNCTION
 
