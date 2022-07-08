@@ -4,6 +4,7 @@
 
 July 08, 2022
 	* Replace deprecated utf8_encode() and utf8_decode() with their MBString Equivalents
+	* Fix Deprecated MBString HTML-ENTITIES
 
 June 03, 2022
 	* Implement HTTP Status 410 (Gone)

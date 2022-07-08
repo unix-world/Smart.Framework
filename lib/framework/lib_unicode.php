@@ -336,7 +336,7 @@ final class SmartUnicode {
 		'Ž' => 'Z'
 	];
 
-	public const ACCENTED_HTML_ENTITIES = [ // Unicode Accented HTML-Entities Table
+	public const ACCENTED_HTML_ENTITIES = [ // Unicode Accented Basic HTML-Entities Table
 		'á' => '&#225;',
 		'â' => '&#226;',
 		'ã' => '&#227;',
@@ -1078,23 +1078,43 @@ final class SmartUnicode {
 
 	//================================================================
 	/**
-	 * Convert the Unicode Accented Characters to Safe HTML Entities
+	 * Safe Convert the Unicode Accented Characters to Safe HTML Entities
 	 *
 	 * @param STRING 	$str			:: The string
+	 * @param ENUM 		$encoding 		:: A valid MB Encoding (Ex: UTF-8, ISO-8859-1, ...) or empty string to try detect
+	 * @param BOOL 		$normalize 		:: Default is FALSE ; if TRUE will normalize the conversion by forcing all ISO-8859-1 (may break some remaining UTF-8 characters)
 	 *
 	 * @return STRING					:: The processed string
 	 */
-	public static function html_entities($str) {
+	public static function html_entities($str, $encoding='', $normalize=false) {
 		//--
 		if((string)$str == '') {
 			return '';
 		} //end if
 		//--
+		$encoding = (string) strtoupper((string)trim((string)$encoding));
+		if((string)$encoding == 'HTML-ENTITIES') {
+			$encoding = ''; // fix !
+		} //end if
+		if((string)$encoding == '') {
+			$encoding = self::detect_encoding((string)$str); // mixed
+		} //end if
+		if(!$encoding) {
+			$encoding = (string) SMART_FRAMEWORK_CHARSET; // fallback
+		} //end if
+		//--
+	//	if($normalize) {
 		$str = (string) strtr((string)$str, (array)self::ACCENTED_HTML_ENTITIES);
+	//	} //end if
 		//--
-		$str = (string) self::convert_charset($str, '', 'HTML-ENTITIES', true);
+	//	$str = (string) self::convert_charset((string)$str, (string)$encoding, 'HTML-ENTITIES', true); // MBString HTML-ENTITIES is deprecated since PHP 8.2
+		$str = (string) mb_encode_numericentity((string)$str, [ 0x80, 0x10ffff, 0, 0xffffff ], (string)$encoding); // https://stackoverflow.com/questions/3005116/how-to-convert-all-characters-to-their-html-entity-equivalent-using-php/3005240#3005240
 		//--
-		return (string) self::utf8_to_iso((string)$str); // use utf8 to iso for safety
+		if($normalize) {
+			$str = self::utf8_to_iso((string)$str); // use utf8 to iso for safety
+		} //end if
+		//--
+		return (string) $str;
 		//--
 	} //END FUNCTION
 	//================================================================

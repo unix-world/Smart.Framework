@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20220210
+ * @version 	v.20220708
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -648,7 +648,8 @@ final class SmartHtmlParser {
 		//--
 
 		//-- {{{SYNC-HTML-PARSER-RECOMPOSE}}}
-		$this->html = (string) SmartUnicode::convert_charset((string)implode('', (array)$this->elements), 'UTF-8', 'HTML-ENTITIES');
+	//	$this->html = (string) SmartUnicode::convert_charset((string)implode('', (array)$this->elements), 'UTF-8', 'HTML-ENTITIES');
+		$this->html = (string) SmartUnicode::html_entities((string)implode('', (array)$this->elements), 'UTF-8', false); // use the UTF-8 charset ; do not normalize
 		//--
 
 		//--
