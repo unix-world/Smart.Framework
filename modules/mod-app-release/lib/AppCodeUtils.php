@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // App Code Utils
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION [T]
@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class AppCodeUtils {
 
 	// ::
-	// v.20210528
+	// v.20220730
 
 	private const CODEPACK_INI = 'etc/appcodepack/appcodepack.ini';
 	private const CODEPACK_SETTINGS = 'etc/appcodepack/appcodepack.yaml';

@@ -1,6 +1,6 @@
 /*
  * Toastr v.3.1.7
- * (c) 2021 unix-world.org
+ * (c) 2021-2022 unix-world.org
  *
  * Based on Toastr v.2.1.1
  * Copyright 2012-2015
@@ -13,8 +13,8 @@
  */
 
 /*
-// (c) 2021 unix-world.org
-// fixes by unixman r.20210503:
+// (c) 2021-2022 unix-world.org
+// fixes by unixman r.20220730:
 // 	* Added renders: darknote, notice
 */
 
@@ -227,7 +227,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 }
 .toast-warning,
 .toast-warning * {
-	color: #FFFFFF;
+	color: #333333;
 }
 
 .toast-error,

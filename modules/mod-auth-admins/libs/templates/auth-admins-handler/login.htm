@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20210630 -->
+<!-- AuthAdmins Login # v.20220730 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -34,14 +34,12 @@ const ovID = 'sf-adm-login-overlay';
 const AuthAdminsCheck = () => {
 	const url = '[###LOGIN-URL|js###]';
 	const dtime = Date.now();
-	const params = '&url=' + smartJ$Utils.escape_url(url) + '&time=' + smartJ$Utils.escape_url(dtime);
 	if((url != undefined) && url) {
+		const params = '&url=' + smartJ$Utils.escape_url(url) + '&time=' + smartJ$Utils.escape_url(dtime);
 		const uri = '[###LOGIN-SCRIPT|js###]?page=auth-admins.manager&action=login-timeout' + params;
 		const chk = '[###LOGIN-SCRIPT|js###]?page=auth-admins.manager&action=login-check' + params;
-		if(url) {
-			smartJ$Browser.OverlayShow(null, null, null, ovID);
-			smartJ$Browser.SubmitFormByAjax(null, chk, 'yes', () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeOK); }, () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeERR); }, (fid, u, msg) => { if(msg != undefined) { if(msg.status != undefined) { if(msg.status != 401) { setTimeout(() => { self.location = uri; }, 500); return; } } } setTimeout(() => { smartJ$Browser.OverlayClear(ovID); setTimeout(() => { smartJ$Browser.OverlayHide(ovID); self.location = self.location; }, 750); }, 700); }, true);
-		}
+		smartJ$Browser.OverlayShow(null, null, null, ovID);
+		smartJ$Browser.SubmitFormByAjax(null, chk, 'yes', () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeOK); }, () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeERR); }, (fid, u, msg) => { if(msg != undefined) { if(msg.status != undefined) { if(msg.status != 401) { setTimeout(() => { self.location = uri; }, 500); return; } } } setTimeout(() => { smartJ$Browser.OverlayClear(ovID); setTimeout(() => { smartJ$Browser.OverlayHide(ovID); self.location = self.location; }, 750); }, 700); }, true);
 	}
 };
 </script>
@@ -85,7 +83,7 @@ const AuthAdminsCheck = () => {
 </div>
 <script>
 (() => {
-	const privateAreaText = [ // [21 langs] :: EN + 20
+	const privateAreaText = [ // [22 langs] :: EN + 21
 		'Privater Bereich', 						// de
 		'Zonă Privată', 							// ro
 		'Ιδιωτικός χώρος', 							// el
@@ -99,6 +97,7 @@ const AuthAdminsCheck = () => {
 		'Aladani agbegbe', 							// yo
 		'Privat område', 							// da, no, sv
 		'منطقة خاصة', 								// ar
+		'אזור פרטי', 									// he,
 		'निजी क्षेत्र', 									// hi, ne
 		'Yksityisalue Asiaton oleskelu kielletty', 	// fi
 		'Einkasvæði', 								// is

@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Marker-TPL Templating]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN
- * @version 	v.20220331
+ * @version 	v.20220719
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -1187,7 +1187,7 @@ final class SmartMarkersTemplating {
 			return array();
 		} //end if
 		//--
-		return (array) preg_split('/(\[%%%.*?%%%\]|\[@@@.*?@@@\]|\[\#\#\#.*?\#\#\#\]|\[\:\:\:.*?\:\:\:\])/s', (string)$mtemplate, null, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+		return (array) preg_split('/(\[%%%.*?%%%\]|\[@@@.*?@@@\]|\[\#\#\#.*?\#\#\#\]|\[\:\:\:.*?\:\:\:\])/s', (string)$mtemplate, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		//--
 	} //END FUNCTION
 	//================================================================

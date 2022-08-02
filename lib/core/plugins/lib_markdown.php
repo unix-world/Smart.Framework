@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / Markdown to HTML Parser]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20220328
+ * @version 	v.20220714
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -52,7 +52,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.1.8-r.20220328';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.1.8-r.20220714';
 
 	//===================================
 
@@ -83,6 +83,7 @@ final class SmartMarkdownToHTML {
 //	[OK: will not implement in v2 max-*] implement for tables from table options: ALIGN-HEAD-LEFT ; ALIGN-LEFT ; NO-TABLE-HEAD ; ALIGN-HEAD-CENTER ; ALIGN-AUTO ; max-cells-# max-rows-# ; these are fixes with tables from import ; but should in v2 be used max-* ??
 //		table captions to support import from html !? idea: https://forum.obsidian.md/t/captions-for-tables-in-markdown/17240/5 ; or idea, via table DEF
 // 	[OK] Inline URL Tags are no more supported in v2: aka <http://#inline.url.tag2>
+// 	[OK] Add support for URL encoded data as ?URL@ENC:element%28%29:URL@ENC? for inline code and similar elements contained in links and media
 
 	//--
 	private $sBreakEnabled = true;					// enable \ break
@@ -173,6 +174,7 @@ final class SmartMarkdownToHTML {
 	private const HTML_ENTITIES_REPLACEMENTS = [
 		//-- html
 		'&nbsp;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/nbsp/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // non breakable space
+		'&amp;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/amp/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // & ampersand
 		'&quot;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/quot/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // " double quote
 		'&apos;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/apos/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ' html5 apos
 		'&#039;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/039/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ' html4 apos
@@ -514,6 +516,16 @@ final class SmartMarkdownToHTML {
 		} //end if
 		//--
 		return (string) $tag;
+		//--
+	} //END FUNCTION
+
+
+	// some syntax as inline code and similar elements contained in links or media can't be rendered because some characters conflicts ... this is a solution !
+	private function fixDecodeUrlEncSyntax(?string $text) : string { // this will postfix special situations with weird characters in links and media
+		//--
+		return (string) preg_replace_callback('/(\?URL@ENC\:)(.*)(\:URL@ENC\?)/U', function($matches) {
+			return (string) Smart::escape_html((string)rawurldecode($matches[2] ?? ''));
+		}, (string)$text); // replace all ?URL-ENC:...:URL-ENC? syntax
 		//--
 	} //END FUNCTION
 
@@ -1000,7 +1012,7 @@ final class SmartMarkdownToHTML {
 		//--
 		$arr = array();
 		//--
-		$attributes = preg_split('/[ ]+/', $attributeString, - 1, PREG_SPLIT_NO_EMPTY);
+		$attributes = preg_split('/[ ]+/', $attributeString, -1, PREG_SPLIT_NO_EMPTY);
 		//--
 		$classes = array();
 		if(is_array($attributes)) {
@@ -1275,12 +1287,15 @@ final class SmartMarkdownToHTML {
 		$lst_type = '';
 		$html = '';
 		//--
+		$lsize = (int) Smart::array_size($arr);
 		foreach($arr as $key => $val) {
 			$karr = (array) explode("\t", (string)$key, 4);
 			if((string)trim((string)$lst_type) == '') {
 				$lst_type = 'ul';
-				if(strpos((string)trim((string)$karr[0]), '#') === 0) {
-					$lst_type = 'ol';
+				if((int)$lsize > 1) { // fix: for lists with only one element force them as UL (the case of broken lists ...)
+					if(strpos((string)trim((string)$karr[0]), '#') === 0) {
+						$lst_type = 'ol';
+					} //end if
 				} //end if
 				if((string)trim((string)$lst_type) != '') {
 					$html .= (string) "\n".str_repeat("\t", (int)$level).'<'.self::escapeValidHtmlTagName($lst_type).'>'."\n";
@@ -1353,31 +1368,6 @@ final class SmartMarkdownToHTML {
 
 
 	private function convertListArrToHtml(?array $arr) : string {
-		//--
-		/*
-		$max = (int) Smart::array_size($arr);
-		if((int)$max <= 0) {
-			return (string) '';
-		} //end if
-		$yaml = '@:'."\n";
-		for($l=0; $l<$max; $l++) {
-			$yaml .= (string) str_repeat("\t", (int)((int)$arr[$l]['level'] + 1)).'"'.($arr[$l]['type'] === 'ol' ? '#ol:' : '*ul:').' '.(int)$arr[$l]['level'].' '.base64_encode((string)$arr[$l]['code']).' '.(int)$l.'"'.':'."\n"; // must keep numbers as the keys must be unique !
-		} //end for
-		//return $yaml; // DEBUG
-		$yobj = new SmartYamlConverter(false);
-		$yarr = (array) $yobj->parse((string)$yaml);
-		$yerr = (string) $yobj->getError();
-		$yaml = null;
-		$yobj = null;
-		if((string)$yerr != '') {
-			if(SmartFrameworkRegistry::ifDebug()) {
-				Smart::log_notice(__METHOD__.' # YAML Data Conversion Errors: '.$yerr);
-			} //end if
-		} //end if
-		$yerr = null;
-		//$arr = (array) $yarr;
-print_r($yarr);
-		*/
 		//--
 		$tarr = (array) $this->parseListNodesArr($arr);
 		$arr = [ '@' => (array)$tarr['nodes'] ];
@@ -2450,6 +2440,7 @@ print_r($yarr);
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'pre');
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'inline-code'); 				// {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-MEDIA-ORDER}}}
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'inline-links-and-media'); 	// {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-MEDIA-ORDER}}}
+		$text = (string) $this->fixDecodeUrlEncSyntax((string)$text);
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'code');
 		//-- post render
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'syntax-extra');

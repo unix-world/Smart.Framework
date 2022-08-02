@@ -6,7 +6,7 @@
 
 // (c) 2021-2022 unix-world.org, License: BSD
 // customized by unixman :: colors, line-height, some logic, added tpl variables
-// r.20220330
+// r.20220728
 */
 
 code[class*="language-"],
@@ -426,6 +426,17 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
 .token.tpl-expr-subtpl {
 	color: #C8D741 !important;
 	font-weight: bold !important;
+}
+
+/* unixman */
+
+div.prism-get-code a {
+	font-size: 1.25rem !important;
+	font-weight: bold !important;
+	cursor: pointer !important;
+	padding: 0 !important;
+	padding-top: 8px!important;
+	color: #0077AA !important;
 }
 
 /* END */

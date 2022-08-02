@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.1.8.0 r.20220215 */
+/* Smart.Markdown.parser # v.1.8.0 r.20220714 */
 
 /* ----------------------------- */
 
@@ -63,6 +63,10 @@
 
 .markdown table.full-width-table {
 	width: 100%;
+}
+
+.markdown table.list-table {
+	margin-left: 50px;
 }
 
 .markdown table th.hidden {

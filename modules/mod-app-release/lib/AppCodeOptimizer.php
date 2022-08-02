@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // App Code Optimizer
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION [T]
@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class AppCodeOptimizer {
 
 	// ->
-	// v.20220405
+	// v.20220730
 
 	private $debug;
 
@@ -139,13 +139,12 @@ final class AppCodeOptimizer {
 		//--
 		if(SmartFileSystem::is_type_dir($filesource)) {
 			$this->err = 'ERROR: The source FILE is A DIRECTORY: '.$filesource;
-			return (string) $err;
+			return;
 		} //end if
 		if(!SmartFileSystem::is_type_file($filesource)) {
 			$this->err = 'ERROR: The source FILE does NOT EXIST: '.$filesource;
-			return (string) $err;
+			return;
 		} //end if
-		//--
 		//--
 		if($this->debug) {
 			$this->add_to_log('Source File: '.$filesource);

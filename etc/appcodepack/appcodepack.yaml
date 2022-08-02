@@ -1,5 +1,5 @@
 # [@[#[!SF.DEV-ONLY!]#]@] ; do not remove this line, it is for safety to dissalow this file to be send in a release package
-# appcodepack.yaml s.20210812.1228 ; sample: MINIFY ; (c) 2013-2021 unix-world.org
+# appcodepack.yaml s.20220730.1558 ; sample: MINIFY ; (c) 2013-2022 unix-world.org
 APP-RELEASE:
 	# the app ID
 	smart-framework.local:
@@ -14,7 +14,7 @@ APP-RELEASE:
 		# the app deploy auth username ; default is: `super.admin`
 		deploy-auth-user: super.admin
 		# the app unpack auth password ; default is: `The1pass!` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
-		deploy-auth-pass: FCEB3D00DE28538B9B9311C10A6B003FBE491D64980F5CA63AD004CDCE47D900B22DD9B6D075C07D260306156A4EAB2D4767948AF722C5A924F6F3944DF5FF4013A6998FF2C9D142
+		deploy-auth-pass: bf448.v2!99uQpE-PXzRCtXTMpC0mJrIn5rKd80VvyAVnzB5vqq_JC_kW-6u9c-hK_iTVwcuXkn43_Zub_hn4te0dhx_4CMH1wfbvsX-Y
 		# list of folders to include or exclude
 		folders:
 			- _sql ; =sql
@@ -45,7 +45,7 @@ APP-RELEASE:
 			- https://127.0.0.1/sites/RELEASE/test-unpack/appcodeunpack.php
 		deploy-secret: "Set-here-1-private-key-that-must-not-be-disclosed!"
 		deploy-auth-user: super.admin
-		deploy-auth-pass: FCEB3D00DE28538B9B9311C10A6B003FBE491D64980F5CA63AD004CDCE47D900B22DD9B6D075C07D260306156A4EAB2D4767948AF722C5A924F6F3944DF5FF4013A6998FF2C9D142
+		deploy-auth-pass: bf448.v2!99uQpE-PXzRCtXTMpC0mJrIn5rKd80VvyAVnzB5vqq_JC_kW-6u9c-hK_iTVwcuXkn43_Zub_hn4te0dhx_4CMH1wfbvsX-Y
 		folders:
 			- etc
 			- lib

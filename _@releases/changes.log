@@ -2,6 +2,18 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+August 02, 2022
+	* Add support for encrypted password in configs / sendmail for SmartMailerUtils::send_email
+	* Add support for mail decode to parse the 'reply-to' address if any for email messages
+
+July 30, 2022
+	* HighlightJs (Prism): add view code (blob)
+	* Internal fixes: JS and PHP files
+	* Mark as PHP 8.0 STABLE (previous was marked as PHP 7.4 STABLE)
+	* Mark as PHP 8.1 STABLE
+	* Mark as PHP 8.2 ready
+	* Prepare to drop support for PHP 7.3 (at the end of this year, 2022)
+
 July 08, 2022
 	* Replace deprecated utf8_encode() and utf8_decode() with their MBString Equivalents
 	* Fix Deprecated MBString HTML-ENTITIES

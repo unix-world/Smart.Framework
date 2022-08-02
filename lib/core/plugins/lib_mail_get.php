@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / Mail Get (IMAP4 and POP3 Client)]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK

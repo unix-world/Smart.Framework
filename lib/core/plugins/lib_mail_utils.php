@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / Mail Utils]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20220620
+ * @version 	v.20220802
  * @package 	Plugins:Mailer
  *
  */
@@ -244,6 +244,31 @@ final class SmartMailerUtils {
 		//--
 		if(Smart::array_size($def_mail_cfg) <= 0) {
 			return -1; // warning: the default config is empty
+		} //end if
+		//--
+
+		//-- fix: detect encrypted password and decrypt
+		if(isset($def_mail_cfg['auth-password'])) {
+			if(is_array($def_mail_cfg['auth-password'])) {
+				if(
+					isset($def_mail_cfg['auth-password']['encrypted'])
+					AND
+					is_string($def_mail_cfg['auth-password']['encrypted'])
+					AND
+					((string)$def_mail_cfg['auth-password']['encrypted'] == 'bf:enc')
+					AND
+					isset($def_mail_cfg['auth-password']['data'])
+					AND
+					is_string($def_mail_cfg['auth-password']['data'])
+					AND
+					((string)trim((string)$def_mail_cfg['auth-password']['data']) != '')
+				) {
+					$def_mail_cfg['auth-password'] = (string) \SmartUtils::crypto_blowfish_decrypt((string)$def_mail_cfg['auth-password']['data']);
+				} else {
+					$def_mail_cfg['auth-password'] = ''; // INVALID
+					Smart::log_warning(__METHOD__.' # Invalid definition for config value: sendmail.auth-password !');
+				} //end if
+			} //end if
 		} //end if
 		//--
 
@@ -849,7 +874,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20210830
+ * @version 	v.20220802
  * @package 	Plugins:Mailer
  *
  */
@@ -1117,6 +1142,7 @@ final class SmartMailerMimeParser {
 		$reply_text['atts_num'] 	= '';
 		$reply_text['atts_lst'] 	= '';
 		$reply_text['filepath'] 	= '';
+		$reply_text['reply-to'] 	= '';
 		$reply_text['from'] 		= '';
 		$reply_text['from-name'] 	= '';
 		$reply_text['to'] 			= '';
@@ -1514,6 +1540,7 @@ final class SmartMailerMimeParser {
 		if((string)$y_process_mode == 'data-full') { // output an array with message and all header info as data structure
 			//--
 			return array(
+				'reply-to' 		=> (string) $head['reply-to'],
 				'from' 			=> (string) $head['from_addr'],
 				'from-name' 	=> (string) $head['from_name'],
 				'to' 			=> (string) $head['to_addr'],
@@ -1531,6 +1558,7 @@ final class SmartMailerMimeParser {
 			//--
 		} elseif((string)$y_process_mode == 'data-reply') { // output a special array for replies only
 			//--
+			$reply_text['reply-to'] 	= (string) $head['reply-to'];
 			$reply_text['from'] 		= (string) $head['from_addr'];
 			$reply_text['from-name'] 	= (string) $head['from_name'];
 			$reply_text['to'] 			= (string) $head['to_addr'];

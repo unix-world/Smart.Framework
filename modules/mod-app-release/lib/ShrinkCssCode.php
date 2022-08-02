@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Strip CSS Code
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION [T]
@@ -19,7 +19,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 
 /**
  * Shrink (Strip) CSS Code
- * (c) 2021 unix-world.org
+ * (c) 2021-2022 unix-world.org
  *
  * based on CSS Minifier Class v.1.3.63, license BSD
  * (c) 2012-2021 Matthias Mullie
@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class ShrinkCssCode extends ShrinkCode {
 
 	// ->
-	// v.20210527
+	// v.20220730
 
 
 	//====================================================

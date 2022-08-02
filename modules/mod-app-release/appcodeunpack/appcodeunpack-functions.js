@@ -2,7 +2,7 @@
 // AppJs Local Functions
 // (c) 2013-2022 unix-world.org
 // License: BSD
-// v.20220406
+// v.20220730
 
 // DEPENDS: smartJ$Utils, smartJ$Date, smartJ$Base64, smartJ$CryptoHash, smartJ$CryptoBlowfish, jQuery
 

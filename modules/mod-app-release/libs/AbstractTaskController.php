@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Class: \SmartModExtLib\AppRelease\AbstractTaskController
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\AppRelease;
@@ -30,7 +30,7 @@ if(!\SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20210611
+ * @version 	v.20220730
  *
  */
 abstract class AbstractTaskController extends \SmartModExtLib\AuthAdmins\AbstractTaskController {

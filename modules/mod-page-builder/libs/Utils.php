@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\PageBuilder\Utils
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\PageBuilder;

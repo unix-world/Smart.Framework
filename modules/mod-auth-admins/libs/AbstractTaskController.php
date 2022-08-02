@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\AuthAdmins\AbstractTaskController
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\AuthAdmins;
@@ -24,7 +24,7 @@ define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20220406
+ * @version 	v.20220730
  *
  */
 abstract class AbstractTaskController extends \SmartAbstractAppController {

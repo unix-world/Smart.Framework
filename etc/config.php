@@ -1,7 +1,7 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
 // [Smart.Framework / CFG - SETTINGS]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -50,6 +50,10 @@ $configs['sendmail']['server-port']				= '465';					// `` | SMTP Server Port
 $configs['sendmail']['server-ssl']				= 'tls';					// `` | SSL Mode: starttls | tls | sslv3
 $configs['sendmail']['auth-user']				= 'user@yourdomain.tld';	// `` | smtp auth user (SMTP auth)
 $configs['sendmail']['auth-password']			= '';						// `` | smtp auth password (SMTP auth)
+//$configs['sendmail']['auth-password'] 		= [ 						// `` | smtp auth password (SMTP auth) :: alternative, stored as encrypted ...
+//	'encrypted' => 'bf:enc',
+//	'data' 		=> '...encrypted password goes here ...', // store this as blowfish v2 encrypted using the init security key as set
+//];
 $configs['sendmail']['auth-mode']				= '';						// `` | smtp auth mode (SMTP auth) ; '', 'login', 'auth:plain', 'auth:cram-md5'
 $configs['sendmail']['from-address']			= 'user@yourdomain.tld';	// the email address From:
 $configs['sendmail']['from-name'] 				= 'Your Name';				// the from name to be set in From:

@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModDataModel\PageBuilder\PageBuilderBackend
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModDataModel\PageBuilder;
@@ -970,6 +970,7 @@ final class PageBuilderBackend {
 					$sort = 'ORDER BY (smart_charlen(a.`data`) + smart_charlen(a.`code`)) '.$xsort;
 				} //end if else
 				break;
+			case 'published':
 			default:
 				if((string)self::dbType() == 'pgsql') {
 					$sort = 'ORDER BY a."published" DESC';

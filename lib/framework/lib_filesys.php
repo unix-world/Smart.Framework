@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / FileSystem]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -1459,7 +1459,7 @@ final class SmartFileSysUtils {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
  * @depends 	classes: Smart ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES
- * @version 	v.20210513
+ * @version 	v.20220729
  * @package 	@Core:FileSystem
  *
  */
@@ -2098,6 +2098,10 @@ final class SmartFileSystem {
 	public static function write_if_not_exists($file_name, $file_content, $y_chkcompare='no') {
 		//--
 		$file_name = (string) $file_name;
+		//--
+		if((string)$file_content == '') {
+			$y_chkcompare = 'no'; // fix: without this will not write the file !
+		} //end if
 		//--
 		if((string)$file_name == '') {
 			Smart::log_warning(__METHOD__.'() // WriteIfNotExists: Empty File Name');

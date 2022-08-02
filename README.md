@@ -2,7 +2,7 @@
 ## Dual-licensed: under BSD license or GPLv3 license (at your choice)
 ### This software project is open source.
 #### You must choose which license to use depending on your use case: BSD license or GPLv3 license
-**(c) 2009 - 2021 unix-world.org** / support&#064;unix-world.org
+**(c) 2009 - 2022 unix-world.org** / support&#064;unix-world.org
 
 | &nbsp; | &nbsp; |
 | ------------- | ------------- |
@@ -41,8 +41,8 @@ The original software architecture of this web framework allows it to deliver a 
 	- caching policies can be controlled to expire based on content / GET or POST variables INPUT even with changing COOKIES
 
 
-#### This software framework is compatible, stable and actively tested with PHP 7.3 / 7.4 / 8.0 / 8.1 versions.
-**Prefered PHP version** is: **7.4** (LTS).
+#### This software framework is compatible, stable and actively tested with PHP 7.3 / 7.4 / 8.0 / 8.1 / 8.2 versions.
+**Prefered PHP version** is: **8.0** (LTS).
 
 &nbsp;
 ### Benchmark Scenario:
@@ -56,11 +56,11 @@ The benchmark was running using **Apache Benchmark** suite with the following co
 + **HDD 2 x 1TB** SSD/NVME
 
 **Software**:
-+ OS: **Debian 10 Linux 64-bit**, up-to-date 2021-05-26
-+ Apps: **Apache 2.4.48**, **PHP 7.4.19 with Opcache enabled**
++ OS: **Debian 11 Linux 64-bit**, up-to-date 2022-07-30
++ Apps: **Apache 2.4.54**, **PHP 8.0.21 with Opcache enabled**
 
 #### Benchmark Results of tested PHP Frameworks:
-+ **Smart.Framework v.8.7 head@2021.05.26** with MarkersTPL Templating: ~ **8.878K** (8878) requests per second
-+ **CodeIgniter v.4.1** with PHP Templating: ~ **5.37K** (5344) requests per second ( **1.3x slower than Smart.Framework** )
-+ **Laravel 8.5** with Blade Templating ~ **1.83K** (1835) requests per second ( **5x slower than Smart.Framework** )
-+ **Symfony 5.2** with Twig Templating: ~ **1.71K** (1532) requests per second ( **5x slower than Smart.Framework** )
++ **Smart.Framework v.8.7 head@2022.07.30** with MarkersTPL Templating: ~ **8.887K** (8887) requests per second
++ **CodeIgniter v.4.1** with PHP Templating: ~ **5.38K** (5381) requests per second ( **1.3x slower than Smart.Framework** )
++ **Laravel 8.5** with Blade Templating ~ **1.85K** (1852) requests per second ( **5x slower than Smart.Framework** )
++ **Symfony 5.2** with Twig Templating: ~ **1.74K** (1741) requests per second ( **5x slower than Smart.Framework** )

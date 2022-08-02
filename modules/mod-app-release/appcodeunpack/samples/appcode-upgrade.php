@@ -1,7 +1,7 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
 // AppCodePack Upgrade Script
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('APPCODEUNPACK_READY')) { // this must be defined in the first line of the application
@@ -14,7 +14,7 @@ if(!defined('APPCODEPACK_APP_ID')) { // this must be defined in the first line o
 //-----------------------------------------------------
 
 //=====
-// AppCodePack Upgrade Script, v.20210612
+// AppCodePack Upgrade Script, v.20220730
 //=====
 
 //--
@@ -35,6 +35,7 @@ if((string)trim((string)$server_id) == '') {
 AppCodePackUpgrade::RemoveAppFile('tmp/logs/index.html');
 //-- remove a dir after release (sample)
 AppCodePackUpgrade::RemoveAppDir('tmp/cache/');
+AppCodePackUpgrade::CreateAppDir('tmp/cache/');
 //--
 
 //-- release the maintenance.html file (may need to release maintenance mode before runing commands that may hit via http, not the case here but this is a sample)
@@ -53,13 +54,25 @@ AppCodePackUpgrade::RunCmd('date'); // throws if unsuccessful
 final class AppCodePackUpgrade {
 
 	// ::
-	// v.20210612
+	// v.20220712
+
+
+	public static function GetVisitorIpAddr() {
+		//--
+		return (string) SmartUtils::get_ip_client();
+		//--
+	} //END FUNCTION
 
 
 	public static function GetWebsiteInstanceId() {
 		//--
-		if((string)APPCODEPACK_APP_ID == '') {
-			throw new Exception(__METHOD__.'() # Empty APPCODEPACK_APP_ID');
+		if((!defined('APPCODEPACK_APP_ID')) OR ((string)APPCODEPACK_APP_ID == '')) {
+			throw new Exception(__METHOD__.'() # Empty or Undefined APPCODEPACK_APP_ID');
+			return '';
+		} //end if
+		//--
+		if(!preg_match('/^[_a-z0-9\-\.]+$/', (string)APPCODEPACK_APP_ID)) { // regex namespace
+			throw new Exception(__METHOD__.'() # Invalid APPCODEPACK_APP_ID');
 			return '';
 		} //end if
 		//--
@@ -68,8 +81,22 @@ final class AppCodePackUpgrade {
 	} //END FUNCTION
 
 
+	public static function IsValidWebsiteInstanceId() {
+		//--
+		$appid = '';
+		try {
+			$appid = (string) self::GetWebsiteInstanceId();
+		} catch(Exception $e) {
+			$appid = '';
+		} //end if
+		//--
+		return (bool) ($appid ? true : false);
+		//--
+	} //END FUNCTION
+
+
 	// run a command and if not successful throw error
-	// returns: - ; Throws Error if not successful
+	// returns: array ; Throws Error if not successful
 	public static function RunCmd($cmd) {
 		//--
 		$parr = (array) SmartUtils::run_proc_cmd(
@@ -92,7 +119,7 @@ final class AppCodePackUpgrade {
 
 
 	// clear the maintenance.html file (may be needed if need to run a command after maintenance has been disabled ...)
-	// returns: - ; Throws Error if not successful
+	// returns: true/false ; Throws Error if not successful
 	public static function ReleaseMaintenanceFile() {
 		//--
 		$test = (string) AppCodeUnpack::releaseMaintenanceFile();
@@ -107,11 +134,11 @@ final class AppCodePackUpgrade {
 
 
 	// remove a file inside app base folder (may be needed for some upgrades to remove temporary task files ...)
-	// returns: - ; Throws Error if not successful
+	// returns: true/false ; Throws Error if not successful
 	public static function RemoveAppFile($file_path) {
 		//--
-		if((string)APPCODEPACK_APP_ID == '') {
-			throw new Exception(__METHOD__.'() # Empty APPCODEPACK_APP_ID');
+		if(!self::IsValidWebsiteInstanceId()) {
+			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
 			return false;
 		} //end if
 		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
@@ -145,11 +172,11 @@ final class AppCodePackUpgrade {
 
 
 	// remove a folder inside app base folder (may be needed for some upgrades to remove temporary dirs ...)
-	// returns: - ; Throws Error if not successful
+	// returns: true/false ; Throws Error if not successful
 	public static function RemoveAppDir($dir_path) {
 		//--
-		if((string)APPCODEPACK_APP_ID == '') {
-			throw new Exception(__METHOD__.'() # Empty APPCODEPACK_APP_ID');
+		if(!self::IsValidWebsiteInstanceId()) {
+			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
 			return false;
 		} //end if
 		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
@@ -178,6 +205,133 @@ final class AppCodePackUpgrade {
 		} //end if
 		//--
 		return true;
+		//--
+	} //END FUNCTION
+
+
+	// create a folder inside app base folder (may be needed for some upgrades to create temporary dirs ...)
+	// returns: true/false ; Throws Error if not successful
+	public static function CreateAppDir($dir_path) {
+		//--
+		if(!self::IsValidWebsiteInstanceId()) {
+			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
+			return false;
+		} //end if
+		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
+			throw new Exception(__METHOD__.'() # Unsafe APPCODEPACK_APP_ID: '.APPCODEPACK_APP_ID);
+			return false;
+		} //end if
+		//--
+		$dir_path = Smart::safe_pathname((string)$dir_path);
+		if((string)$dir_path == '') {
+			throw new Exception(__METHOD__.'() # Empty DirPath');
+			return false;
+		} //end if
+		//--
+		$dir_app_path = (string) SmartFileSysUtils::add_dir_last_slash((string)APPCODEPACK_APP_ID).$dir_path;
+		if(!SmartFileSysUtils::check_if_safe_path((string)$dir_app_path)) {
+			throw new Exception(__METHOD__.'() # Unsafe Path: '.$dir_app_path);
+			return false;
+		} //end if
+		//--
+		SmartFileSystem::dir_create((string)$dir_app_path);
+		//--
+		if(!SmartFileSystem::is_type_dir((string)$dir_app_path)) {
+			throw new Exception(__METHOD__.'() # Failed to Create Dir: '.$dir_app_path);
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+
+
+	// test if a folder exists inside app base folder (may be needed for some upgrades to test temporary dirs ...)
+	// returns: true/false ; Throws Error if any issue
+	public static function ExistsAppDir($dir_path) {
+		//--
+		if(!self::IsValidWebsiteInstanceId()) {
+			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
+			return false;
+		} //end if
+		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
+			throw new Exception(__METHOD__.'() # Unsafe APPCODEPACK_APP_ID: '.APPCODEPACK_APP_ID);
+			return false;
+		} //end if
+		//--
+		$dir_path = Smart::safe_pathname((string)$dir_path);
+		if((string)$dir_path == '') {
+			throw new Exception(__METHOD__.'() # Empty DirPath');
+			return false;
+		} //end if
+		//--
+		$dir_app_path = (string) SmartFileSysUtils::add_dir_last_slash((string)APPCODEPACK_APP_ID).$dir_path;
+		if(!SmartFileSysUtils::check_if_safe_path((string)$dir_app_path)) {
+			throw new Exception(__METHOD__.'() # Unsafe Path: '.$dir_app_path);
+			return false;
+		} //end if
+		//--
+		return (bool) SmartFileSystem::is_type_dir((string)$dir_app_path);
+		//--
+	} //END FUNCTION
+
+
+	// test if a path exists inside app base folder (may be needed for some upgrades to test temporary paths ...)
+	// returns: true/false ; Throws Error if any issue
+	public static function ExistsAppPath($path) {
+		//--
+		if(!self::IsValidWebsiteInstanceId()) {
+			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
+			return false;
+		} //end if
+		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
+			throw new Exception(__METHOD__.'() # Unsafe APPCODEPACK_APP_ID: '.APPCODEPACK_APP_ID);
+			return false;
+		} //end if
+		//--
+		$path = Smart::safe_pathname((string)$path);
+		if((string)$path == '') {
+			throw new Exception(__METHOD__.'() # Empty Path');
+			return false;
+		} //end if
+		//--
+		$the_app_path = (string) SmartFileSysUtils::add_dir_last_slash((string)APPCODEPACK_APP_ID).$path;
+		if(!SmartFileSysUtils::check_if_safe_path((string)$the_app_path)) {
+			throw new Exception(__METHOD__.'() # Unsafe Path: '.$the_app_path);
+			return false;
+		} //end if
+		//--
+		return (bool) SmartFileSystem::path_exists((string)$the_app_path);
+		//--
+	} //END FUNCTION
+
+
+	// test if a file exists inside app base folder (may be needed for some upgrades to test temporary files ...)
+	// returns: true/false ; Throws Error if any issue
+	public static function ExistsAppFile($file_path) {
+		//--
+		if(!self::IsValidWebsiteInstanceId()) {
+			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
+			return false;
+		} //end if
+		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
+			throw new Exception(__METHOD__.'() # Unsafe APPCODEPACK_APP_ID: '.APPCODEPACK_APP_ID);
+			return false;
+		} //end if
+		//--
+		$file_path = Smart::safe_pathname((string)$file_path);
+		if((string)$file_path == '') {
+			throw new Exception(__METHOD__.'() # Empty FilePath');
+			return false;
+		} //end if
+		//--
+		$file_app_path = (string) SmartFileSysUtils::add_dir_last_slash((string)APPCODEPACK_APP_ID).$file_path;
+		if(!SmartFileSysUtils::check_if_safe_path((string)$file_app_path)) {
+			throw new Exception(__METHOD__.'() # Unsafe Path: '.$file_app_path);
+			return false;
+		} //end if
+		//--
+		return (bool) SmartFileSystem::is_type_file((string)$file_app_path);
 		//--
 	} //END FUNCTION
 

@@ -100,7 +100,7 @@ function pageBuilder_MediaDeleteDialog(imgFile, imgPath, imgType, imgSize, isUse
 	} //end if else
 }
 function pageBuilder_MediaInfoAlert(imgFile, imgPath, imgType, imgSize, isUsed) {
-	smartJ$Browser.AlertDialog('<i class="sfi sfi-info"></i> &nbsp; <b>Image</b> &nbsp;<i>' + smartJ$Utils.escape_html(' @ ' + imgType + ' # ' + imgSize) + '</i><br><span style="color:#444444; font-size:0.9em;"><b><i>' + smartJ$Utils.escape_html(imgFile) + '</i></b></span><br><input type="text" class="ux-input" value="' + smartJ$Utils.escape_html(imgPath) + '" style="width:670px;" onclick="jQuery(this).select();" readonly><br><br><center><div><img src="' + smartJ$Utils.escape_html(imgPath) + '" style="max-width:400px; max-height:200px; width:auto !important; height:auto !important; border:1px solid #ECECEC !important;"></div></center>', null, 'Media Image Info: Used in [#' + isUsed + '] Object(s)', 720, 425);
+	smartJ$Browser.AlertDialog('<i class="sfi sfi-info"></i> &nbsp; <b>Image</b> &nbsp;<i>' + smartJ$Utils.escape_html(' @ ' + imgType + ' # ' + imgSize) + '</i><br><span style="color:#444444; font-size:0.9em;"><b><i>' + smartJ$Utils.escape_html(imgFile) + '</i></b></span><br><input type="text" class="ux-input" value="' + smartJ$Utils.escape_html(imgPath) + '" style="width:670px;" onclick="jQuery(this).select();" readonly><br><br><center><div><img src="' + smartJ$Utils.escape_html(imgPath) + '" style="max-width:400px; max-height:200px; width:auto !important; height:auto !important; border:1px solid #ECECEC !important;"></div></center>', null, 'Media Image Info: Used in [#' + smartJ$Utils.escape_html(isUsed) + '] Object(s)', 720, 425);
 }
 </script>
 <table width="100%" border="0">

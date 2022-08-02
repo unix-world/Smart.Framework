@@ -29,7 +29,7 @@ if((SmartFrameworkRegistry::isAdminArea() === true) OR (SmartFrameworkRegistry::
 
 
 /**
- * Index Controller
+ * Admin Controller
  *
  * @ignore
  *
@@ -348,7 +348,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			//	} else {
 					$semaphores[] = 'theme:light'; // {{{SYNC-DEMO-UI-THEME}}}
 			//	} //end if else
-				$validate = false;
 				$mkdw_options = '<allow:marker-tpl>,<use:js-unveil>'; //,<validate:html>';
 				$main .= '<h1 style="background: #2F3448; color: #FFFFFF; padding: 8px;">Markdown Syntax Render Test</h1><hr>';
 				$main .= (string) SmartMarkersTemplating::render_template(
@@ -552,7 +551,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 
 /**
- * Admin Controller (optional)
+ * Index Controller (optional)
  *
  * @ignore
  *

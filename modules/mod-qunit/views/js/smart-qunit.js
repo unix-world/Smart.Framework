@@ -5,7 +5,7 @@
  * SmartQUnit 1.3.1 [ES6]
  * @version 20210526
  *
- * (c) 2018-2021 unix-world.org
+ * (c) 2018-2022 unix-world.org
  * Released under the BSD license
  */
 

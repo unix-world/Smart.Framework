@@ -36,7 +36,7 @@
 <script src="lib/js/jquery/slickgrid/smart-grid.js"></script>
 <script>
 	var IdOfGrid = 'PageBuilderSlickGrid';
-	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', '[###LIST-JSON-URL|js###]', 'PageBuilder_Smart_Slickgrid_List', 'id', 'DESC', '', 'filtering');
+	var TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', '[###LIST-JSON-URL|js###]', 'PageBuilder_Smart_Slickgrid_List', 'name', 'ASC', '', 'filtering');
 </script>
 <script>
 function pageBuilderFormBtnFilter() {
@@ -240,12 +240,12 @@ jQuery(function() {
 		{id:'x-del', 		field:'id', 			name:'#', 								sortable:false, 	width:50, 						formatter:displayDel},
 		[%%%/IF:LIST-DELETE-URL%%%]
 		{id:'x-ops', 		field:'id', 			name:'@', 								sortable:false, 	width:50, 						formatter:displayOps},
-		{id:'special', 		field:'special',		name:'[###TXT-COL-SPECIAL|js###]', 		sortable:true, 		width:75, 						formatter:displaySpecial,editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_AlignRight'},
-		{id:'ctrl', 		field:'ctrl', 			name:'[###TXT-COL-CTRL|js###]', 		sortable:true, 		width:diffColSize('ctrl'), 		formatter:displayCtrl, editor:TextCellSelector, cssClass:'smartGrid_Important'},
+		{id:'name', 		field:'name', 			name:'[###TXT-COL-NAME|js###]', 		sortable:true, 		width:diffColSize('name'), 		formatter:displayName, editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColumnName'},
 		{id:'mode', 		field:'mode', 			name:'[###TXT-COL-SYNTAX|js###]', 		sortable:true, 		width:75, 						formatter:displayCodeType, editor:TextCellSelector},
 		{id:'id', 			field:'id', 			name:'[###TXT-COL-ID|js###]', 			sortable:true, 		width:diffColSize('id'), 		formatter:displayID, editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColumnId'},
 		{id:'active', 		field:'active', 		name:'[###TXT-COL-ACTIVE|js###]', 		sortable:true, 		width:75, 						formatter:displayActive, editor:TextCellSelector},
-		{id:'name', 		field:'name', 			name:'[###TXT-COL-NAME|js###]', 		sortable:true, 		width:diffColSize('name'), 		formatter:displayName, editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColumnName'},
+		{id:'ctrl', 		field:'ctrl', 			name:'[###TXT-COL-CTRL|js###]', 		sortable:true, 		width:diffColSize('ctrl'), 		formatter:displayCtrl, editor:TextCellSelector, cssClass:'smartGrid_Important'},
+		{id:'special', 		field:'special',		name:'[###TXT-COL-SPECIAL|js###]', 		sortable:true, 		width:75, 						formatter:displaySpecial,editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_AlignRight'},
 		{id:'layout', 		field:'layout', 		name:'[###TXT-COL-LAYOUT|js###]', 		sortable:true, 		width:diffColSize('layout'),	formatter:displayLayout, editor:TextCellSelector},
 		{id:'tags', 		field:'tags', 			name:'[###TXT-COL-TAGS|js###]', 		sortable:true, 		width:diffColSize('tags'),		formatter:displayTags, editor:TextCellSelector, cssClass:'smartGrid_Important'},
 		{id:'auth', 		field:'auth', 			name:'[###TXT-COL-AUTH|js###]', 		sortable:true, 		width:75, 						formatter:displayAuth, editor:TextCellSelector},

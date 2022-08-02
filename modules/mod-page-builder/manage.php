@@ -1,7 +1,7 @@
 <?php
 // Controller: PageBuilder/Manage
 // Route: ?/page/page-builder.manage
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION
@@ -59,8 +59,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'records-list-json': // JSON: for list
 				$ofs = $this->RequestVarGet('ofs', 0, 'integer+');
-				$sortby = $this->RequestVarGet('sortby', 'id', 'string');
-				$sortdir = $this->RequestVarGet('sortdir', '', 'string');
+				$sortby = $this->RequestVarGet('sortby', 'name', 'string');
+				$sortdir = $this->RequestVarGet('sortdir', 'ASC', 'string');
 				$srcby = $this->RequestVarGet('srcby', '', 'string');
 				$src = $this->RequestVarGet('src', '', 'string');
 				$this->PageViewSetCfg('rawpage', true);

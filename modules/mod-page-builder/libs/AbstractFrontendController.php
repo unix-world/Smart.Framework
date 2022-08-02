@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\PageBuilder\AbstractFrontendController
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\PageBuilder;
@@ -101,7 +101,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		//--
 		$this->render_done = true; // flag: dissalow multiple page renders per controller
 		//--
-		if(!\array_key_exists((string)$page_id, $this->rendered_pages)) {
+		if(!\array_key_exists((string)$page_id, (array)$this->rendered_pages)) {
 			$this->rendered_pages[(string)$page_id] = 0;
 		} //end if
 		$this->rendered_pages[(string)$page_id]++; // register rendered pages

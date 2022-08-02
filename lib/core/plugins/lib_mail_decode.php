@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / Mail Mime Decode]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210823
+ * @version 	v.20220802
  * @package 	Plugins:Mailer
  *
  */
@@ -201,6 +201,7 @@ final class SmartMailerMimeDecode {
 		$export_msguid = '';
 		$export_msgid = '';
 		$export_inreplyto = '';
+		$export_replyto = '';
 		$export_priority = '';
 		$export_attachments = '';
 		//--
@@ -462,6 +463,27 @@ final class SmartMailerMimeDecode {
 		//--
 		//==
 
+		//== [REPLY-TO] :: if reply to is an email address reply should respond to this address (this is a standard) !
+		$replyto = '';
+		//--
+		$headers['reply-to'] = $headers['reply-to'] ?? null;
+		if(is_array($headers['reply-to'])) {
+			$replyto = (string) trim((string)$headers['reply-to'][0]);
+		} else {
+			$replyto = (string) trim((string)$headers['reply-to']);
+		} //end if else
+		//--
+		$tmp_arr = array();
+		$tmp_arr = $this->separe_email_from_name($replyto);
+		//--
+		$export_replyto = (string) trim((string)$tmp_arr[0]);
+		//--
+		$tmp_arr = array();
+		//--
+		$replyto = '';
+		//--
+		//==
+
 		//== [PRIORITY] :: ( 1=high, 3=normal, 5=low )
 		$priority = '';
 		//--
@@ -521,6 +543,7 @@ final class SmartMailerMimeDecode {
 			'message-uid' 	=> (string) $export_msguid,
 			'message-id' 	=> (string) $export_msgid,
 			'in-reply-to' 	=> (string) $export_inreplyto,
+			'reply-to' 		=> (string) $export_replyto,
 			'priority' 		=> (string) $export_priority,
 			'attachments' 	=> (string) $export_attachments
 		);
@@ -786,7 +809,7 @@ final class SmartMailerMimeDecode {
  * @access 		private
  * @internal
  *
- * @version 	v.20210823
+ * @version 	v.20220802
  *
  */
 final class SmartMailerMimeExtract {
