@@ -28,7 +28,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 /**
  * Class Smart MongoDB Client (for PHP MongoDB extension v.1.1.0 or later)
- * Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 / 4.3
+ * Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 / 4.3 / 4.4 / 5.0
  *
  * <code>
  *
@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartComponents
- * @version 	v.20220531
+ * @version 	v.20220804
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -372,6 +372,9 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		} else {
 			$err = 'MongoDB ObjectId Class not found ...';
 		} //end if else
+		if((string)$err != '') {
+			Smart::log_notice('#MongoDB# :: Get ObjectID: '.$err);
+		} //end if
 		//--
 		return $objMongoId; // mixed: Object or String
 		//--
@@ -444,6 +447,80 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		return (string) $dictionary;
 		//--
 	} //END FUNCTION
+	//======================================================
+
+
+	//======================================================
+	/**
+	 * custom usage, test if the search expression is a FTS search phrase
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public function isFtsSearchPhrase(?string $text) {
+		//--
+		$text = (string) trim((string)$text);
+		//--
+		return (bool) ((strpos((string)$text, '"') === 0) && ((string)substr((string)$text, -1, 1) == '"'));
+		//--
+	} //END FUNCTION
+	//======================================================
+
+
+	//======================================================
+	/**
+	 * custom usage, prepare the FTS keywords from a FTS search phrase
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public function prepareFtsSearchKeywords(?string $text) {
+
+		//--
+		$is_phrase = (bool) $this->isFtsSearchPhrase((string)$text);
+		//--
+		$text = (string) $this->escapeFtsText((string)$text);
+		$text = (string) trim((string)$text); // need another trim after the above method ...
+		//--
+
+		//--
+		if($is_phrase !== true) {
+			//--
+			$arr = (array) explode(' ', (string)$text);
+			$text = [];
+			for($i=0; $i<count($arr); $i++) {
+				$arr[$i] = (string) trim((string)$arr[$i]);
+				if((string)$arr[$i] != '') {
+					$text[] = '"'.$arr[$i].'"';
+				} //end if
+			} //end for
+			$arr = null;
+			//--
+			if((int)Smart::array_size($text) > 0) {
+				$text = (string) implode(' ', (array)$text);
+			} else {
+				$text = '';
+			} //end if
+			//--
+		} else {
+			//--
+			if((string)$text != '') {
+				//--
+				$text = '"'.$text.'"';
+			} else {
+				$text = '';
+			} //end if else
+			//--
+		} //end if else
+		//--
+
+		//--
+		return (string) trim((string)$text);
+		//--
+
+ 	} //END FUNCTION
 	//======================================================
 
 

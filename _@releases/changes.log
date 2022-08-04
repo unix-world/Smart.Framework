@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+August 04, 2022
+	* Fix index name UNIQ in mongo pcache adapter
+	* Extend Lib MongoDB with 2 new methods: isFtsSearchPhrase, prepareFtsSearchKeywords
+
 August 02, 2022
 	* Add support for encrypted password in configs / sendmail for SmartMailerUtils::send_email
 	* Add support for mail decode to parse the 'reply-to' address if any for email messages

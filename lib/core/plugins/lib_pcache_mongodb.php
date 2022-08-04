@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartMongoDb
- * @version 	v.20210830
+ * @version 	v.20220804
  * @package 	Plugins:PersistentCache:MongoDB
  *
  */
@@ -576,7 +576,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 								'key' 				=> [ 'realm' => 1 ]
 							],
 							[
-								'name' 				=> 'unique_idx',
+								'name' 				=> 'uniq',
 								'key' 				=> [ 'id' => 1, 'key' => 1, 'realm' => 1 ],
 								'unique' 			=> true
 							],
