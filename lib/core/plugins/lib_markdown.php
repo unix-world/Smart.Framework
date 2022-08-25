@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20220714
+ * @version 	v.20220815
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.1.8-r.20220714';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220815';
 
 	//===================================
 
@@ -85,6 +85,7 @@ final class SmartMarkdownToHTML {
 //		table captions to support import from html !? idea: https://forum.obsidian.md/t/captions-for-tables-in-markdown/17240/5 ; or idea, via table DEF
 // 	[OK] Inline URL Tags are no more supported in v2: aka <http://#inline.url.tag2>
 // 	[OK] Add support for URL encoded data as ?URL@ENC:element%28%29:URL@ENC? for inline code and similar elements contained in links and media
+// 	[OK] Support most of elements inside a list
 
 	//--
 	private $sBreakEnabled = true;					// enable \ break
@@ -169,8 +170,15 @@ final class SmartMarkdownToHTML {
 	//==
 
 	//==
-	//-- special parsing helper characters
-	private const SPECIAL_CHAR_ENTRY_MARK 	= "\u{204F}"; // unicode reversed semicolon &bsemi; or &#8271; (unicode): ⁏ (not ;)
+	//-- special parsing helper characters ; {{{SYNC-SPECIAL-CHARACTER-MKDW-PARSER}}}
+	private const SPECIAL_CHAR_ENTRY_MARK 	= "\u{2042}"; // unicode character &#8258; (unicode): ⁂ "\u{2042}"
+	private const SPECIAL_CHAR_ENTRY_REPL 	= '&#8258;'; // restore as html entity '&#8258;'
+	//-- #end {{{SYNC-SPECIAL-CHARACTER-MKDW-PARSER}}}
+
+	//-- {{{SYNC-SPECIAL-CHARACTER-MKDW-CONVERTER}}}
+	private const SPECIAL_CHAR_CONV_REPL 	= '&#8273;'; // the special char used by converter converted to entity ; (unicode) ⁑ ; "\u{2051}" : '&#8273;'
+	//-- #end {{{SYNC-SPECIAL-CHARACTER-MKDW-CONVERTER}}}
+
 	//-- supported html entities (the most usual)
 	private const HTML_ENTITIES_REPLACEMENTS = [
 		//-- html
@@ -242,6 +250,10 @@ final class SmartMarkdownToHTML {
 		'&check;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/check/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ✓
 		'&cross;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/cross/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ✗
 		'&sext;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/sext/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ✶
+		//-- {{{SYNC-SPECIAL-CHARACTER-MKDW-CONVERTER}}}
+		self::SPECIAL_CHAR_CONV_REPL => self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/convmkdwsf/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // the special mark used by Html2Markdown convertor: ⁑
+		//-- {{{SYNC-SPECIAL-CHARACTER-MKDW-PARSER}}}
+		self::SPECIAL_CHAR_ENTRY_REPL => self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/specmkdwsf/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // the special mark itself: ⁂
 		//--
 	];
 	//--
@@ -353,8 +365,11 @@ final class SmartMarkdownToHTML {
 		$this->NoticesLog = [];
 		//-- pre-fix charset, it is mandatory to be converted to UTF-8
 		$text = (string) SmartUnicode::fix_charset($text);
-		//-- substitute specials
-		$text = (string) str_replace((string)self::SPECIAL_CHAR_ENTRY_MARK, ';', $text); // this character is completely dissalowed, will be used for processing purposes only
+		//-- substitute special reserved character as html entity ; this character is reserved (completely dissalowed), will be used for processing purposes only
+	//	$text = (string) str_replace((string)self::SPECIAL_CHAR_ENTRY_MARK, (string)self::SPECIAL_CHAR_ENTRY_REPL, $text);
+		$text = (string) strtr($text, [
+			(string) self::SPECIAL_CHAR_ENTRY_MARK => (string) self::SPECIAL_CHAR_ENTRY_REPL,
+		]);
 		//-- standardize line breaks
 		$text = (string) str_replace(["\r\n", "\r"], "\n", $text);
 		//-- remove surrounding line breaks
@@ -375,7 +390,10 @@ final class SmartMarkdownToHTML {
 			$markup = (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)$markup);
 		} //end if
 		//-- Replace backslashes with the equivalent html entity
-		$markup = (string) str_replace('\\', '&bsol;', $markup);
+	//	$markup = (string) str_replace('\\', '&bsol;', $markup);
+		$markup = (string) strtr($markup, [
+			'\\' => '&bsol;',
+		]);
 		//--
 		$this->documentParsed = true;
 		//--
@@ -794,7 +812,7 @@ final class SmartMarkdownToHTML {
 			AND
 			(stripos((string)trim((string)$url), 'https://') !== 0)
 			AND
-			(stripos((string)trim((string)$url), '//') !== 0)
+			(strpos((string)trim((string)$url), '//') !== 0)
 		) {
 			return (string) $this->relative_url_prefix.$url;
 		} //end if
@@ -1021,14 +1039,19 @@ final class SmartMarkdownToHTML {
 			foreach($attributes as $z => $attribute) {
 				//--
 				if($attribute[0] === '@') { // @ html attr
-					$tmp_arr = (array) explode('=', $attribute);
-					if(!array_key_exists(0, $tmp_arr)) {
-						$tmp_arr[0] = null;
-					} //end if
-					if(!array_key_exists(1, $tmp_arr)) {
-						$tmp_arr[1] = null;
-					} //end if
-					$arr[(string)trim((string)substr((string)trim((string)$tmp_arr[0]),1))] = (string) trim((string)str_replace(['$'], [' '], (string)trim((string)$tmp_arr[1])));
+					if(strpos((string)$attribute, '=') !== false) { // ex: @style=box-shadow:$10px$10px$5px$#888888;filter:grayscale!!_80%_!!;
+						$tmp_arr = (array) explode('=', $attribute);
+						if(!array_key_exists(0, $tmp_arr)) {
+							$tmp_arr[0] = null;
+						} //end if
+						if(!array_key_exists(1, $tmp_arr)) {
+							$tmp_arr[1] = null;
+						} //end if
+					//	$arr[(string)trim((string)substr((string)trim((string)$tmp_arr[0]),1))] = (string) trim((string)str_replace(['$', '!-', '-!'], [' ', '(', ')'], (string)trim((string)$tmp_arr[1])));
+						$arr[(string)trim((string)substr((string)trim((string)$tmp_arr[0]),1))] = (string) trim((string)strtr((string)trim((string)$tmp_arr[1]), ['$' => ' ', '!!_' => '(', '_!!' => ')']));
+					} else { // ex: @article-div
+						$arr['id'] = (string) substr((string)$attribute, 1);
+					} //end if else
 				} elseif($attribute[0] === '#') { // # html id
 					$arr['id'] = (string) substr((string)$attribute, 1);
 				} elseif($attribute[0] === '.') { // . html class name
@@ -1233,12 +1256,12 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function decodeListNodeEntry(?string $value) {
+	private function formatListNodeEntry(?string $value) {
 		//--
 		$value = (string) trim((string)$value);
 		if((string)$value != '') {
 			$arr = (array) explode(' ', (string)$value, 4);
-			$value = (string) str_replace("\t", ' ', (string)trim((string)$arr[0]))."\t".str_replace("\t", ' ', (string)trim((string)$arr[1]))."\t".str_replace("\t", ' ', (string)base64_decode((string)trim((string)$arr[2])))."\t".str_replace("\t", ' ', (string)trim((string)$arr[3])); // must keep numbers as the keys must be unique !
+			$value = (string) str_replace("\t", ' ', (string)trim((string)$arr[0]))."\t".str_replace("\t", ' ', (string)trim((string)$arr[1]))."\t".str_replace("\t", ' ', (string)trim((string)$arr[2]))."\t".str_replace("\t", ' ', (string)trim((string)$arr[3])); // must keep numbers as the keys must be unique !
 		} //end if
 		//--
 		return (string) $value;
@@ -1255,13 +1278,13 @@ final class SmartMarkdownToHTML {
 			foreach($arr as $key => $value) {
 				//--
 				if((string)$key != '@') {
-					$key = (string) $this->decodeListNodeEntry($key);
+					$key = (string) $this->formatListNodeEntry($key);
 				} //end if
 				//--
 				if(is_array($value)) {
 					$xarr[(string)$key] = $this->decodeListNodeArray($value);
 				} else {
-					$xarr[(string)$key] = (string) $this->decodeListNodeEntry($value);
+					$xarr[(string)$key] = (string) $this->formatListNodeEntry($value);
 				} //end if else
 				//--
 			} //end foreach
@@ -1302,7 +1325,16 @@ final class SmartMarkdownToHTML {
 					$html .= (string) "\n".str_repeat("\t", (int)$level).'<'.self::escapeValidHtmlTagName($lst_type).'>'."\n";
 				} //end if
 			} //end if
-			$html .= (string) str_repeat("\t", (int)$karr[1]).'<li>'.$this->createHtmlInline((string)$karr[2], 'li');
+			$arr_li = (array) explode('|', (string)$karr[2]);
+			$html .= (string) str_repeat("\t", (int)$karr[1]).'<li>'.$this->createHtmlInline((string)base64_decode((string)$arr_li[0]), 'li');
+			$arr_li[1] = (string) trim((string)$arr_li[1]);
+			if((string)$arr_li[1] != '') {
+				$arr_li[1] = (string) base64_decode((string)$arr_li[1]);
+				if((string)trim((string)$arr_li[1]) != '') {
+					$html .= (string) $arr_li[1];
+				} //end if
+			} //end if
+			$arr_li = null;
 			if((int)Smart::array_size($val) > 0) {
 				$html .= (string) $this->convertProcessedListArrToHtml($val, (int)$karr[1]);
 			} //end if
@@ -1324,7 +1356,14 @@ final class SmartMarkdownToHTML {
 		$val['level'] = (int)    ($val['level'] ?? null);
 		$val['code']  = (string) ($val['code'] ?? null);
 		//--
-		return (string) ($val['type'] === 'ol' ? '#ol:' : '*ul:').' '.(int)$val['level'].' '.base64_encode((string)$val['code']).' '.(int)$iterator;
+		$val['extra'] = (array)  ($val['extra'] ?? null);
+		if(Smart::array_size($val['extra']) > 0) {
+			$val['extra'] = (string) implode("\n", (array)$val['extra']);
+		} else {
+			$val['extra'] = '';
+		} //end if
+		//--
+		return (string) ($val['type'] === 'ol' ? '#ol:' : '*ul:').' '.(int)$val['level'].' '.base64_encode((string)$val['code']).'|'.base64_encode((string)$val['extra']).' '.(int)$iterator;
 		//--
 	} //END FUNCTION
 
@@ -1459,7 +1498,7 @@ final class SmartMarkdownToHTML {
 				$media_title = (string) str_replace("\t", ' ', (string)$media_title);
 				//--
 				if(strpos((string)$media_title, 'sfi sfi-') === 0) {
-					return '<i class="sfi sfi-'.Smart::escape_html((string)substr((string)$media_title, 8)).'" title="'.self::renderAltOrTitle((string)substr((string)$media_title, 8)).'"></i>';
+					return '<i class="sfi sfi-'.Smart::escape_html((string)substr((string)$media_title, 8)).'"></i>&nbsp; '.($media_alt_txt ? self::renderAltOrTitle((string)$media_alt_txt) : '');
 				} //end if
 				//--
 			} //end if
@@ -1971,6 +2010,8 @@ final class SmartMarkdownToHTML {
 		//--
 		for($i=0; $i<Smart::array_size($arr); $i++) {
 			//--
+			$is_list = false;
+			//--
 			$line_is_unparsed = true;
 			$line_next = null;
 			$line_last = false; // not last line
@@ -1999,18 +2040,26 @@ final class SmartMarkdownToHTML {
 				$match_list_ol_entry = array();
 				//--
 				if(
-					!preg_match((string)self::PATTERN_LIST_UL, (string)$arr[$i])
-					AND
-					!preg_match((string)self::PATTERN_LIST_OL, (string)$arr[$i])
-				) { // lists: ul / ol ; {{{SYNC-MKWD-CONDITION-LIST-LINE}}}
-					$def_lists = null; // fix: reset it on each line that is not a list
+					($line_last === true) // if last line
+					OR
+					((string)trim((string)$arr[$i]) == '') // or an empty line
+				) {
+					if($def_lists !== null) {
+						$arr[$i] = (string) $this->convertListArrToHtml($def_lists)."\n"; // close the list
+						$line_is_unparsed = false;
+						$def_lists = null; // fix: reset it on each line that is not a list
+					} //end if
 				} //end if
 				//--
 				if(strpos((string)$arr[$i], '|') !== 0) { // table ; {{{SYNC-MKWD-CONDITION-TABLE-LINE}}}
 					$def_table = null; // fix: reset it on each line that is not a table
 				} //end if
 				//--
-				if((string)trim((string)$arr[$i]) == '') { // {{{SYNC-MKWD-EMPTY-LINE}}} empty or spaces only line ; used to reset some parsing data
+				if($line_is_unparsed !== true) {
+					//--
+					// skip, already rendered above
+					//--
+				} elseif((string)trim((string)$arr[$i]) == '') { // {{{SYNC-MKWD-EMPTY-LINE}}} empty or spaces only line ; used to reset some parsing data
 					//-- br (must be at the end, it checks if the line is still empty after above flushes
 					if(
 						((string)trim((string)$line_next) == '')
@@ -2148,7 +2197,6 @@ final class SmartMarkdownToHTML {
 					preg_match((string)self::PATTERN_LIST_OL, (string)$arr[$i], $match_list_ol_entry)
 				) { // lists: ul / ol ; {{{SYNC-MKWD-CONDITION-LIST-LINE}}}
 					//--
-					$is_list = false;
 					$list_type = '';
 					$list_level = -1;
 					$list_code = '';
@@ -2171,36 +2219,13 @@ final class SmartMarkdownToHTML {
 							'level' => (int)    $list_level,
 							'type' 	=> (string) $list_type,
 							'code' 	=> (string) $list_code,
+							'extra' => (array)  [],
 						];
 						//--
 						$arr[$i] = null; // avoid display now, will be done later
 						$line_is_unparsed = false;
 						//--
 					} // end if
-					//--
-					if(
-						(($line_last === true))
-						OR
-						(
-							!preg_match((string)self::PATTERN_LIST_UL, (string)$line_next)
-							AND // lists: ul / ol ; {{{SYNC-MKWD-CONDITION-LIST-LINE}}}
-							!preg_match((string)self::PATTERN_LIST_OL, (string)$line_next)
-						)
-					) { // must render and close the list here if next line is not part of a list to avoid collide with other elements ex: blockquotes
-						//--
-						if($def_lists !== null) {
-							//--
-							$arr[$i] = (string) $this->convertListArrToHtml($def_lists)."\n";
-							$line_is_unparsed = false;
-							//--
-							//$arr[$i] = '<pre>'.Smart::escape_html((string)$this->convertListArrToHtml($def_lists)).'</pre>';
-							//$arr[$i] .= "\n".'<pre>'."\n".print_r($def_lists,1).'</pre>'; // DEBUG: print lists data
-							//--
-						} //end if
-						//--
-						$def_lists = null; // reset
-						//--
-					} //end if
 					//--
 			//======= Table
 				} elseif(strpos((string)$arr[$i], '|') === 0) { // table ; {{{SYNC-MKWD-CONDITION-TABLE-LINE}}}
@@ -2257,7 +2282,8 @@ final class SmartMarkdownToHTML {
 									} //end if
 								} //end if
 								if(Smart::array_size($paligns) > 0) {
-									$arr[$i+1] = null; // discard the 2nd table line with aligns
+									$arr[$i+1] = null; // discard the 2nd table line with aligns ; it must exists, above is tested as should not be the last line
+									$line_next = null; // bugfix: if the last table row is the one with aligns because this line was missing in the past it was not closing the table ! it is logic that if the above line is reset also this test line which is the reference of next line should reset as this is tested in a table before the alignements line and will not impact other things !
 								} //end if
 							} //end if
 						} else {
@@ -2399,6 +2425,27 @@ final class SmartMarkdownToHTML {
 				} //end if
 				//--
 			} //end if else
+			//--
+			if($arr[$i] !== null) {
+				if($def_lists !== null) {
+					if($is_list !== true) { // for the case not a list but considered inside a list until first empty line
+						if((string)trim((string)$arr[$i]) != '') {
+							$max_def_lists = (int) Smart::array_size($def_lists);
+							if((int)$max_def_lists > 0) {
+								$max_def_lists -= 1;
+								if(!\is_array($def_lists[(int)$max_def_lists]['extra'])) {
+									$def_lists[(int)$max_def_lists]['extra'] = [];
+								} //end if
+								$def_lists[(int)$max_def_lists]['extra'][] = (string) $arr[$i];
+								$arr[$i] = null; // avoid display now
+								$line_is_unparsed = false;
+							} //end if
+						} //end if else
+					} //end if else
+					$arr[$i] = null; // avoid display now
+					$line_is_unparsed = false;
+				} //end if
+			} //end if
 			//--
 			if($arr[$i] !== null) { // must use a separate check for null than above !
 				$text .= (string) $arr[$i]; // add only non-null lines

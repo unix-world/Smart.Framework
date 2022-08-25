@@ -52,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20220215
+ * @version 	v.20220816
  * @package 	PageBuilder
  *
  */
@@ -1563,10 +1563,15 @@ final class Manager {
 				if((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-create') === true)) {
 					//-- {{{SYNC-PAGEBUILDER-ID-CONSTRAINTS}}}
 					$y_frm['id'] = (string) \trim((string)$y_frm['id']);
-					$y_frm['id'] = (string) \Smart::safe_validname($y_frm['id'], ''); // allow: [a-z0-9] _ - . @
-					$y_frm['id'] = (string) \str_replace(array('.', '@'), array('-', '-'), (string)$y_frm['id']); // dissalow: . @ [ @ is used to replace # with @ on segments folders ; . will conflict with SmartFramework style pages like module.page when using Semantic URL Rules ]
+					$y_frm['id'] = (string) \Smart::create_slug((string)$y_frm['id'], true, 63); // lowercase, max 63, output: a-z 0-9 _ -
 					//--
-					if((\strlen((string)$y_frm['id']) >= 2) AND ((string)\trim((string)$y_frm['id'], '_-') != '')) { // {{{SYNC-PAGEBUILDER-ID-CONSTRAINTS}}} in DB we have a constraint to be minimum 2 characters
+					if(
+						((int)\strlen((string)$y_frm['id']) >= 1) // {{{SYNC-PAGEBUILDER-SLUG-LEN-CONSTRAINTS}}} ; ex: 'go' or 'c' are valid slugs
+						AND
+						((int)\strlen((string)$y_frm['id']) <= 63)
+						AND
+						((string)\trim((string)$y_frm['id'], '_-') != '') // must not contain only - or _
+					) {
 						//--
 						$data = array();
 						//--
@@ -1896,10 +1901,15 @@ final class Manager {
 				if(((string)\trim((string)$y_id) != '') AND ((string)$y_id == (string)$query['id']) AND ((\SmartAuth::test_login_privilege('superadmin') === true) OR (\SmartAuth::test_login_privilege('pagebuilder-create') === true))) {
 					//-- {{{SYNC-PAGEBUILDER-ID-CONSTRAINTS}}}
 					$y_frm['id'] = (string) \trim((string)$y_frm['id']);
-					$y_frm['id'] = (string) \Smart::safe_validname($y_frm['id'], ''); // allow: [a-z0-9] _ - . @
-					$y_frm['id'] = (string) \str_replace(array('.', '@'), array('-', '-'), (string)$y_frm['id']); // dissalow: . @ [ @ is used to replace # with @ on segments folders ; . will conflict with SmartFramework style pages like module.page when using Semantic URL Rules ]
+					$y_frm['id'] = (string) \Smart::create_slug((string)$y_frm['id'], true, 63); // lowercase, max 63, output: a-z 0-9 _ -
 					//--
-					if((\strlen((string)$y_frm['id']) >= 2) AND ((string)\trim((string)$y_frm['id'], '_-') != '')) { // {{{SYNC-PAGEBUILDER-ID-CONSTRAINTS}}} in DB we have a constraint to be minimum 2 characters
+					if(
+						((int)\strlen((string)$y_frm['id']) >= 1) // {{{SYNC-PAGEBUILDER-SLUG-LEN-CONSTRAINTS}}} ; ex: 'go' or 'c' are valid slugs
+						AND
+						((int)\strlen((string)$y_frm['id']) <= 63)
+						AND
+						((string)\trim((string)$y_frm['id'], '_-') != '') // must not contain only - or _
+					) {
 						//--
 						if((string)\substr((string)$y_id, 0, 1) == '#') {
 							$y_frm['id'] = '#'.$y_frm['id']; // if cloned is segment then make this also a segment

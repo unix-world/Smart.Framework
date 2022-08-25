@@ -1,7 +1,7 @@
 # [%%%IF:TITLE:==;%%%]... ==Title is empty== ...[%%%ELSE:TITLE%%%][###TITLE|html###][%%%/IF:TITLE%%%]
 
 &copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
-Extended Markdown v.II (smart flavour) // Test :: r.20220328
+Extended Markdown v.II (smart flavour) // Test :: r.20220810
 
 # (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old "bad" features have been dropped, and others supported ==only in compatibility mode== ...
 
@@ -25,6 +25,8 @@ var test = true;
 **This is a**
 **==notice==** <a>bc
 with an icon ![ICON](SFI-ICON "sfi sfi-leaf sfi-2x")
+and a button with icon
+[![A button link with icon](SFI-ICON "sfi sfi-leaf")](/#==test== "Title ..."){L:@target=test @data-smart=open.popup .ux-button .ux-button-dark}
 :::
 
 ::: .operation_important .test_class_important #test-div-important
@@ -32,7 +34,7 @@ This is ==important==
 :::
 \
 ::: @article-div
-This is an article DIV &nbsp; [A Button Link](/#==test== ""){L: .ux-button}
+This is an article DIV &nbsp; [A Button Link](/#==test== ""){L: .ux-button @=_blank}
 :::
 
 ::: @section-div
@@ -225,19 +227,24 @@ some text **aligned on left ``==(default)==``**
 * three
 
 1. First ordered <list> "item"
+#### This is a header inside list
+![Alt Txt](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Img"){I: @width=100}
 ```
-This is some code
+This is some code inside list
 ```
 ~~~
-	This is preformat inside li
+	This is preformat inside list
 ~~~
-		And this is another preformat (will be unsupported)
+::: @div-divs .operation_info
+This is a div  inside list
+:::
+		``And this is an old version another preformat, inside li (space/tab indented: unsupported)``
 	::: @div-paragraphs
-		This is a div with paragraphs ... (will be unsupported)
+		``This is an old style div inside preformat, inside li (space/tab indented: unsupported)``
 	:::
-::: @div-divs
-This is a div with divs ...
-:::\
+<<<
+BlockQuote inside List
+<<<
 2. Another <"item">
 	+ Unordered sub-list.
 	- Another
@@ -440,8 +447,8 @@ This is a Markdown v2 Div inside a v2 BlockQuote
 * a list
 	- within
 	+ \+\+\+\+\+\+
-
 And some code below
+### some header
 ```javascript
 let a = 2;
 const b = 3;
@@ -451,6 +458,11 @@ class A {
   }
 }
 ```
+\
+|{!DEF!=AUTO-WIDTH;.dbordered;.stripped;#tbl-one} Name   | Description     |
+| ------------- | -----------------------  |
+| Help          | Display the help window. |
+| Close         | Closes a window          |
 
 ~~~
 This is a preformat inside blockquote
@@ -459,11 +471,6 @@ pre line 2 ++++/----
 [**Test** Link with Syntax &#039;<a>&#039; &lt;br&gt; &copy; &#039;OK&#039;](http://w3soft.org "=@."){L: %blank}
 ![Alt Txt](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Img"){I: @width=100}
 ~~~
-
-|{!DEF!=AUTO-WIDTH;.dbordered;.stripped;#tbl-one} Name   | Description     |
-| ------------- | -----------------------  |
-| Help          | Display the help window. |
-| Close         | Closes a window          |
 <<<
 
 ### Horizontal Rules

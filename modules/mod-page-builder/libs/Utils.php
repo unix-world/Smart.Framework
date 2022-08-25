@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220321
+ * @version 	v.20220816
  * @package 	PageBuilder
  *
  */
@@ -112,8 +112,47 @@ final class Utils {
 
 
 	public static function getMediaFolderByObjectId($y_id) {
+		//-- {{{SYNC-PAGEBUILDER-ID-CONSTRAINTS}}}
+		$y_id = (string) \trim((string)$y_id);
 		//--
-		return (string) \Smart::safe_pathname('wpub/media-pbld/'.\Smart::safe_filename(\str_replace('#', '@', (string)$y_id)).'/');
+		$prefix = '1'; // page
+		if(\strpos((string)$y_id, '#') === 0) {
+			$prefix = '2'; // segment
+			$y_id = (string) \substr((string)$y_id, 1); // remove the first # for segments
+		} //end if
+		$prefix = (string) \trim((string)$prefix, '/'); // dissalow path character by mistake, just in case
+		if((string)$prefix == '') {
+			$prefix = '@';
+		} //end if
+		//--
+		$y_id = (string) \Smart::create_slug((string)$y_id, true, 63); // lowercase, max 63, output: a-z 0-9 _ - ; {{{SYNC-PAGEBUILDER-OBJECTID-FOLDER-CHARS}}}
+		if((string)$y_id == '') {
+			$y_id = '@';
+		} //end if
+		//-- 28 x 32000 = 896000 x 2 max objects (896000 pages and 896000 segments) = 1792000 ; if need to store more media than this use the alternative 'files-pbld' where the structure is free ; expand like this due to the constraint on many operating systems having max 32000 sub-folders in a folder
+		$suffix = (string) \substr((string)\ltrim((string)$y_id, '_-'), 0, 1); // eliminate from prefix - or _ to get a letter or number ; when object is created is supposed to have the constraint of not containing only - and _
+		$suffix = (string) \trim((string)$suffix, '/'); // dissalow path character by mistake, just in case
+		if((string)$suffix == '') {
+			$suffix = '@';
+		} //end if
+		//--
+		$dir = (string) \Smart::safe_pathname(self::getMediaFolderRoot().\Smart::safe_filename((string)$prefix, '@').'/'.\Smart::safe_filename((string)$suffix, '@').'/'.\Smart::safe_filename((string)$y_id, '@').'/');
+		//--
+		if(\SmartFileSystem::is_type_dir((string)$dir)) {
+			//-- create index files only if dir exists
+			$level1 = (string) \Smart::safe_pathname(self::getMediaFolderRoot().\Smart::safe_filename((string)$prefix, '@').'/');
+			if(!\SmartFileSystem::is_type_file((string)$level1.'index.html')) {
+				\SmartFileSystem::write((string)$level1.'index.html', '');
+			} //end if
+			//--
+			$level2 = (string) \Smart::safe_pathname(self::getMediaFolderRoot().\Smart::safe_filename((string)$prefix, '@').'/'.\Smart::safe_filename((string)$suffix, '@').'/');
+			if(!\SmartFileSystem::is_type_file((string)$level2.'index.html')) {
+				\SmartFileSystem::write((string)$level2.'index.html', '');
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) $dir;
 		//--
 	} //END FUNCTION
 
@@ -173,15 +212,15 @@ final class Utils {
 			'/(\{\{([\:]{1}|[\=%]{1}|[\=\#]{1}){1}){1}[^\s]*?((\2)\}\}){1}/s', // '/(\{\{([\:]{1}|[\=%]{1}|[\=\#]{1}){1}){1}[^\s]*((\2)\}\}){1}/sU', // will match: {{:.:}} ; {{=%.%=}} ; {{=#.#=}}
 			(string) $text,
 			$matches,
-			PREG_PATTERN_ORDER,
+			\PREG_PATTERN_ORDER,
 			0
 		);
 		if($pcre === false) {
-			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			\Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
 			return array();
 		} //end if
 		//--
-		return (array) ((isset($matches[0]) && is_array($matches[0])) ? $matches[0] : []);
+		return (array) ((isset($matches[0]) && \is_array($matches[0])) ? $matches[0] : []);
 		//--
 	} //END FUNCTION
 
@@ -340,7 +379,7 @@ final class Utils {
 		//--
 		$pcre = \preg_match_all((string)$re, (string)$str, $matches);
 		if($pcre === false) {
-			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			\Smart::log_warning(__METHOD__.'() # ERROR: '.\SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
 			return array();
 		} //end if
 		$arr = (array) \Smart::array_sort((array)$matches[0], 'natcasesort');
@@ -360,7 +399,7 @@ final class Utils {
 		//--
 		$pcre = \preg_match_all((string)$re, (string)$str, $matches);
 		if($pcre === false) {
-			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			\Smart::log_warning(__METHOD__.'() # ERROR: '.\SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
 			return array();
 		} //end if
 		$arr = (array) \Smart::array_sort((array)$matches[0], 'natcasesort');

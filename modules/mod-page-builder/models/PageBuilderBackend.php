@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20220215
+	// v.20220816
 
 
 	private static $db = null;
@@ -543,8 +543,13 @@ final class PageBuilderBackend {
 		$y_arr_data = (array) $y_arr_data;
 		//--
 		$y_arr_data['id'] = (string) \trim((string)$y_arr_data['id']);
-		if(\strlen((string)$y_arr_data['id']) < 2) {
-			return -1; // data must contain the ID and must be non-empty, at least 2 chars (constraint)
+		//-- {{{SYNC-PAGEBUILDER-SLUG-LEN-CONSTRAINTS}}}
+		$minlen = 1; // {{{SYNC-PAGEBUILDER-SLUG-LEN-CONSTRAINTS}}} ; ex: 'go' or 'c' are valid slugs
+		if(\strpos((string)$y_arr_data['id'], '#') === 0) { // if segment, it was prefixed with a # (min length must be +1)
+			$minlen = 2;
+		} //end if
+		if(\strlen((string)$y_arr_data['id']) < (int)$minlen) {
+			return -1; // data must contain the ID and must be non-empty, at least 1 char (constraint)
 		} //end if
 		if(\strlen((string)$y_arr_data['id']) > 63) {
 			return -2; // max 63 chars (constraint, in case it is used with wildcard subdomains)

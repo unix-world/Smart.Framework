@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20220708
+ * @version 	v.20220814
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -145,7 +145,7 @@ final class SmartHtmlParser {
 			$this->validate_code = 2;
 		} //end if else
 		//--
-		$this->validators = (array)  Smart::list_to_array((string)$this->validators);
+		$this->validators = (array) Smart::list_to_array((string)$this->validators);
 		//--
 
 		//--
@@ -632,7 +632,7 @@ final class SmartHtmlParser {
 					//--
 				} elseif(preg_match('/^[<'.$this->expr_tag_name.'\/ >]+$/si', (string)$code)) { // simple tags (includding tags like <br />) ; needs extra / and space
 					//--
-					$this->elements[$i] = strtolower((string)$code);
+					$this->elements[$i] = (string) strtolower((string)$code);
 					if($tag_have_endline) {
 						$this->elements[$i] .= "\n";
 					} //end if
@@ -954,7 +954,7 @@ final class SmartHtmlParser {
 		//--
 
 		//--
-		$this->elements = array(); // init
+		$this->elements = []; // init
 		//--
 		if((string)$this->html == '') {
 			return;
@@ -969,7 +969,8 @@ final class SmartHtmlParser {
 		$text = '';
 		$tag = '';
 		//--
-		$raw = (array) explode("\n", (string)$this->html);
+	//	$raw = (array) explode("\n", (string)$this->html);
+		$raw = (array) explode("\n", '<smart-parser-html>'.$this->html.'</smart-parser-html>'); // {{{SYNC-HTML-PARSER-FIX-ENCLOSING-TAGS:SMART}}} ; BugFix: without enclosing tags the text after last tag will be lost ; this fix add enclosing tags which will be cleared at the end of this method !
 		//--
 		foreach($raw as $key => $line) {
 			//--
@@ -1007,13 +1008,19 @@ final class SmartHtmlParser {
 				} //end if else
 				if((!$ignorechar) AND (!$intag)) {
 					$text .= $line[$charsindex];
-				} else {
-					if((!$ignorechar) AND ($intag)) {
-						$tag .= $line[$charsindex];
-					} //end if
+				} elseif((!$ignorechar) AND ($intag)) {
+					$tag .= $line[$charsindex];
 				} //end if else
 			} //end for
 		} //end while
+		//--
+
+		//-- {{{SYNC-HTML-PARSER-FIX-ENCLOSING-TAGS:SMART}}} ; fix back: remove fake mandatory enclosing tags
+		array_shift($this->elements); // remove first entry: <smart-parser-html>
+		array_pop($this->elements); // remove last entry: </smart-parser-html>
+		if(!is_array($this->elements)) {
+			$this->elements = [];
+		} //end if
 		//--
 
 	} //END FUNCTION

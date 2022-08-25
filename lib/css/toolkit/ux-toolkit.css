@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20220428), (c) 2015-2021 unix-world.org
+	extended by unixman, (stable.20220813), (c) 2015-2022 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -1406,7 +1406,7 @@ nav.ux-navbar label#alt-logo {
 nav.ux-navbar img#img-logo {
 	display: block;
 	float: left;
-	margin-top: 1px;
+	margin-top: 2px;
 	width: 48px;
 	height: 48px;
 }
@@ -1433,7 +1433,7 @@ nav.ux-navbar ul li {
 }
 nav.ux-navbar a, nav.ux-navbar label.notoggle {
 	display: block;
-	padding: 0 20px;
+	padding: 0 16px;
 	color: #FFFFFF;
 	font-size: 20px;
 	line-height: 50px;

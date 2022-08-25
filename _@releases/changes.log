@@ -2,6 +2,13 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+August 16, 2022
+	* bugfix: markdown parser was not closing table tag when last line was the aligning line
+	* bugfix: html parser fix code was loosing code after last tag if not all code was enclosed in tags
+
+August 10, 2022
+	* markdown renderer new features: suport most of the elements inside list LI ; support button with icon ; support ( and ) inside css defs as !!_ and _!!
+
 August 04, 2022
 	* Fix index name UNIQ in mongo pcache adapter
 	* Extend Lib MongoDB with 2 new methods: isFtsSearchPhrase, prepareFtsSearchKeywords
