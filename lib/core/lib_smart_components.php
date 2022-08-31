@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20220710
+ * @version 	v.20220831
  * @package 	Application:ViewComponents
  *
  */
@@ -750,6 +750,7 @@ final class SmartComponents {
 		$arr_data['timeout-execution'] 			= (int)    $timeout_execution; 												// execution timeout (req. by qunit)
 		$arr_data['timeout-netsocket'] 			= (int)    $timeout_netsocket; 												// netsocket timeout (req. by qunit)
 		$arr_data['time-date-start'] 			= (string) date('Y-m-d H:i:s O'); 											// date time start
+		$arr_data['time-date-year'] 			= (string) date('Y'); 														// date time Year
 		$arr_data['auth-login-ok'] 				= (string) (SmartAuth::check_login() === true ? 'yes' : 'no'); 				// Auth Login OK: yes/no
 		$arr_data['auth-login-id'] 				= (string) SmartAuth::get_login_id(); 										// Auth Login ID
 		$arr_data['auth-login-alias'] 			= (string) SmartAuth::get_login_alias(); 									// Auth Login Alias (UserName)

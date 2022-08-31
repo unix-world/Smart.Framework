@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20220815
+ * @version 	v.20220829
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220815';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220829';
 
 	//===================================
 
@@ -2238,6 +2238,7 @@ final class SmartMarkdownToHTML {
 					$paligns = [];
 					$aligns = [];
 					$mcells = (int) ((int)Smart::array_size($cells) - 2); // is is 1st line, use real
+					$tbl_line_discarded = false;
 					//--
 					if($def_table !== null) {
 						if((int)$def_table['cells'] < (int)$mcells) {
@@ -2284,6 +2285,7 @@ final class SmartMarkdownToHTML {
 								if(Smart::array_size($paligns) > 0) {
 									$arr[$i+1] = null; // discard the 2nd table line with aligns ; it must exists, above is tested as should not be the last line
 									$line_next = null; // bugfix: if the last table row is the one with aligns because this line was missing in the past it was not closing the table ! it is logic that if the above line is reset also this test line which is the reference of next line should reset as this is tested in a table before the alignements line and will not impact other things !
+									$tbl_line_discarded = true; // bugfix: {{{SYNC-MKWD-CONDITION-TABLE-LINE}}}
 								} //end if
 							} //end if
 						} else {
@@ -2387,7 +2389,9 @@ final class SmartMarkdownToHTML {
 							if(
 								(($line_last === true))
 								OR
-								(strpos((string)$line_next, '|') !== 0) // {{{SYNC-MKWD-CONDITION-TABLE-LINE}}}
+								(($tbl_line_discarded === true) AND isset($arr[$i+2]) AND (strpos((string)$arr[$i+2], '|') !== 0)) // {{{SYNC-MKWD-CONDITION-TABLE-LINE}}}
+								OR
+								(($tbl_line_discarded !== true) AND (strpos((string)$line_next, '|') !== 0)) // {{{SYNC-MKWD-CONDITION-TABLE-LINE}}}
 							) {
 								$arr[$i] .= '</table>'."\n"; // must close table here if next line is not part of a table to avoid collide with other elements ex: blockquotes
 								$line_is_unparsed = false;
@@ -2408,6 +2412,7 @@ final class SmartMarkdownToHTML {
 					$mcells = 0;
 					$paligns = null;
 					$aligns = null;
+					$tbl_line_discarded = null;
 					//--
 				} //end if else (end table)
 				//-- DEFAULT ; OTHER CASES: special markers: keep as they are ; parse alt headers and reset below line ; for the rest, apply html escape + parse inline
