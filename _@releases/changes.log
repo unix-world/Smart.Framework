@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+August 31, 2022
+	* optimizations
+
 August 16, 2022
 	* bugfix: markdown parser was not closing table tag when last line was the aligning line
 	* bugfix: html parser fix code was loosing code after last tag if not all code was enclosed in tags
