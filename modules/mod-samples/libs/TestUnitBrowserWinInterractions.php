@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20220901
  *
  */
 final class TestUnitBrowserWinInterractions {
@@ -81,7 +81,7 @@ final class TestUnitBrowserWinInterractions {
 			$btn = 'Open Modal or PopUp (auto)';
 		} //end if else
 		//--
-		return (string) '<a class="ux-button ux-button-regular" style="min-width:320px;" target="'.\Smart::escape_html($wname).'" href="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.interractions'.'" onClick="smartJ$Browser.PopUpLink(this.href, this.target, null, null, '.(int)$set.'); return false;">'.\Smart::escape_html($btn).'  &nbsp; <i class="sfi sfi-terminal"></i>'.'</a>';
+		return (string) '<a class="ux-button ux-button-details" style="min-width:320px;" target="'.\Smart::escape_html($wname).'" href="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.interractions'.'" onClick="smartJ$Browser.PopUpLink(this.href, this.target, null, null, '.(int)$set.'); return false;">'.\Smart::escape_html($btn).'  &nbsp; <i class="sfi sfi-terminal"></i>'.'</a>';
 		//--
 	} //END FUNCTION
 	//============================================================
@@ -103,7 +103,7 @@ final class TestUnitBrowserWinInterractions {
 			$btn = 'Open PopUp or Modal (auto)';
 		} //end if else
 		//--
-		return (string) '<a class="ux-button ux-button-highlight" style="min-width:320px;" target="'.\Smart::escape_html($wname).'" href="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.interractions'.'" onClick="smartJ$Browser.PopUpLink(this.href, this.target, null, null, '.(int)$set.'); return false;">'.\Smart::escape_html($btn).'  &nbsp; <i class="sfi sfi-shift"></i>'.'</a>';
+		return (string) '<a class="ux-button ux-button-highlight" style="min-width:320px;" target="'.\Smart::escape_html($wname).'" href="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.interractions'.'" onClick="smartJ$Browser.PopUpLink(this.href, this.target, null, null, '.(int)$set.'); return false;">'.\Smart::escape_html($btn).'  &nbsp; <i class="sfi sfi-fa-certificate"></i>'.'</a>';
 		//--
 	} //END FUNCTION
 	//============================================================
@@ -121,7 +121,7 @@ final class TestUnitBrowserWinInterractions {
 	//============================================================
 	private static function bttn_set_parent_refresh() {
 		//--
-		return (string) '<button class="ux-button ux-button-dark" style="min-width:320px;" onClick="smartJ$Browser.RefreshParent(); return false;">[ Set: Parent Refresh / Reload ] &nbsp; <i class="sfi sfi-notification"></i></button>';
+		return (string) '<button class="ux-button ux-button-regular" style="min-width:320px;" onClick="smartJ$Browser.RefreshParent(); return false;">[ Set: Parent Refresh / Reload ] &nbsp; <i class="sfi sfi-notification"></i></button>';
 		//--
 	} //END FUNCTION
 	//============================================================
@@ -134,7 +134,7 @@ final class TestUnitBrowserWinInterractions {
 			$question = 'This is a test for Confirm Unload. Are you sure you want to close this page ?';
 		} //end if
 		//--
-		return '<button class="ux-button ux-button-dark" style="min-width:320px;" onClick="smartJ$Browser.PageAwayControl(\''.\Smart::escape_js($question).'\'); return false;">[ Set: Confirm Unload ] &nbsp; <i class="sfi sfi-question"></i></button>';
+		return '<button class="ux-button" style="min-width:320px;" onClick="smartJ$Browser.PageAwayControl(\''.\Smart::escape_js($question).'\'); return false;">[ Set: Confirm Unload ] &nbsp; <i class="sfi sfi-question"></i></button>';
 		//--
 	} //END FUNCTION
 	//============================================================

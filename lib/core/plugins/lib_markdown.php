@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20220829
+ * @version 	v.20220904
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220829';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220904';
 
 	//===================================
 
@@ -870,8 +870,16 @@ final class SmartMarkdownToHTML {
 		$type = (string) strtolower((string)trim((string)$type));
 		switch((string)$type) {
 			case 'p':
-				$tag_start = '<div class="mkdw-line">';
-				$tag_end = '</div>'."\n";
+				if(strpos((string)$text, '####### ') === 0) { // skip div and newline for (h7:span) ; add a space before
+					$tag_start = ' '; // preserve a space instead newline
+					$tag_end = '';
+				} elseif(strpos((string)$text, '######## ') === 0) { // skip div and newline for (h8:data) ; add a newline before
+					$tag_start = "\n";
+					$tag_end = '';
+				} else { // for all the rest, DEFAULT
+					$tag_start = '<div class="mkdw-line">';
+					$tag_end = '</div>'."\n";
+				} //end if
 				break;
 			case 'h1':
 			case 'h2':
@@ -886,6 +894,26 @@ final class SmartMarkdownToHTML {
 				$attributes = null;
 				$tag_start = '<'.self::escapeValidHtmlTagName($type).$this->buildAttributeData((array)$atts).'>';
 				$tag_end = '</'.self::escapeValidHtmlTagName($type).'>'."\n";
+				$attributes = null;
+				break;
+			case 'span': // h7
+				$headings_parsed = true; // avoid re-parse headers in the same line if already there is one
+				$attributes = (array) $this->parseElementAttributes((string)$text, 'span'); // parse as h7
+				$text = (string) $attributes['element:text'];
+				$atts = (array)  $attributes['element:atts'];
+				$attributes = null;
+				$tag_start = '<span'.$this->buildAttributeData((array)$atts).'>';
+				$tag_end = '</span>'; // no extra new line
+				$attributes = null;
+				break;
+			case 'data': // h8
+				$headings_parsed = true; // avoid re-parse headers in the same line if already there is one
+				$attributes = (array) $this->parseElementAttributes((string)$text, 'data'); // parse as h7
+				$text = (string) $attributes['element:text'];
+				$atts = (array)  $attributes['element:atts'];
+				$attributes = null;
+				$tag_start = '<data'.$this->buildAttributeData((array)$atts).'>';
+				$tag_end = '</data>'; // no extra new line
 				$attributes = null;
 				break;
 			case 'li':
@@ -1033,7 +1061,7 @@ final class SmartMarkdownToHTML {
 		//--
 		$attributes = preg_split('/[ ]+/', $attributeString, -1, PREG_SPLIT_NO_EMPTY);
 		//--
-		$classes = array();
+		$classes = [];
 		if(is_array($attributes)) {
 			//--
 			foreach($attributes as $z => $attribute) {
@@ -1106,8 +1134,19 @@ final class SmartMarkdownToHTML {
 		} //end if
 		//--
 		if(Smart::array_size($classes) > 0) {
-			$classes = (array) array_values((array)array_unique((array)$classes));
+			$tmp_classes = (array) array_values((array)array_unique((array)$classes));
+			$classes = [];
+			foreach($tmp_classes as $clskey => $clsval) {
+				$clsval = (string) trim((string)$clsval); // allow camel case
+				if((string)$clsval != '') {
+					if(stripos((string)$clsval, 'mkdw-') !== 0) { // allowed classes: must not start with 'mkdw-', the prefix is reserved for the main CSS of Markdown
+						$classes[] = (string) $clsval;
+					} //end if
+				} //end if
+			} //end foreach
 			$arr['class'] = (string) implode(' ', (array)$classes);
+			$classes = null;
+			$tmp_classes = null;
 		} //end if
 		//--
 		return (array) $arr;
@@ -1115,12 +1154,36 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function buildAttributeData(?array $arr) : string {
+	private function buildAttributeData(?array $arr, ?array $exclusions=[]) : string {
 		//--
 		$catt = [];
 		//--
 		if((int)Smart::array_size($arr) > 0) {
-			foreach($arr as $key => $val) {
+			//--
+			$real_atts = [];
+			foreach($arr as $akey => $aval) {
+				$akey = (string) strtolower((string)trim((string)$akey)); // make all lower string
+				if( // validate the HTML attribute
+					((string)$akey != '') // non-empty
+					AND
+					preg_match('/^[a-z]+/', (string)$akey) // must start with a-z
+					AND
+					preg_match('/^[a-z0-9\-]+$/', (string)$akey) // may contain only a-z 0-9 -
+				) {
+					$ok = true;
+					if(is_array($exclusions)) {
+						if(array_key_exists((string)$akey, (array)$exclusions)) {
+							$ok = false;
+						} //end if
+					} //end if
+					if($ok === true) {
+						$real_atts[(string)$akey] = $aval; // mixed
+					} //end if
+				} //end if
+			} //end foreach
+			$arr = null;
+			//--
+			foreach($real_atts as $key => $val) {
 				$prefix = '';
 				if(is_array($val)) {
 					$prefix = 'data-mkdw-'; // TODO: use later these kind of attributes for post rendering !
@@ -1128,6 +1191,7 @@ final class SmartMarkdownToHTML {
 				} //end if
 				$catt[] = (string) Smart::escape_html((string)$prefix.$key).'="'.Smart::escape_html((string)$val).'"'; // attributes must not be parsed inline
 			} //end foreach
+			//--
 		} //end if
 		//--
 		if((int)Smart::array_size($catt) > 0) {
@@ -1162,6 +1226,8 @@ final class SmartMarkdownToHTML {
 			case 'h4':
 			case 'h5':
 			case 'h6':
+			case 'span': // h7
+			case 'data': // h8
 				$regex = (string) self::regexHeadingAttribute;
 				break;
 			case 'td':
@@ -1863,34 +1929,23 @@ final class SmartMarkdownToHTML {
 		//--
 		$line_is_unparsed = true;
 		//--
-		$level = (int) strspn((string)(string)$line_crr, '#', 0, 8); // fix by unixman
-		if(((int)$level >= 1) AND ((int)$level <= 6)) {
-			if(strpos((string)$line_crr, '# ') === (int)((int)$level-1)) { // h1
+		$level = (int) strspn((string)(string)$line_crr, '#', 0, 10); // fix by unixman ; find up to 10 levels of #, we only use 8
+		if(((int)$level >= 1) AND ((int)$level <= 6)) { // h1..h6
+			if(strpos((string)$line_crr, '# ') === (int)((int)$level-1)) { // h1..h6
 				$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, (int)((int)$level+1)), 'h'.(int)$level, true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
 				$line_is_unparsed = false;
 			} //end if
+		} elseif((int)$level == 7) { // span
+			if(strpos((string)$line_crr, '# ') === (int)((int)$level-1)) { // h7:span
+				$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, (int)((int)$level+1)), 'span', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
+				$line_is_unparsed = false;
+			} //end if
+		} elseif((int)$level == 8) { // data
+			if(strpos((string)$line_crr, '# ') === (int)((int)$level-1)) { // h8:data
+				$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, (int)((int)$level+1)), 'data', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
+				$line_is_unparsed = false;
+			} //end if
 		} //end if
-		/*
-		if(strpos((string)$line_crr, '# ') === 0) { // h1
-			$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, 2), 'h1', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
-			$line_is_unparsed = false;
-		} elseif(strpos((string)$line_crr, '## ') === 0) { // h2
-			$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, 3), 'h2', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
-			$line_is_unparsed = false;
-		} elseif(strpos((string)$line_crr, '### ') === 0) { // h3
-			$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, 4), 'h3', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
-			$line_is_unparsed = false;
-		} elseif(strpos((string)$line_crr, '#### ') === 0) { // h4
-			$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, 5), 'h4', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
-			$line_is_unparsed = false;
-		} elseif(strpos((string)$line_crr, '##### ') === 0) { // h5
-			$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, 6), 'h5', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
-			$line_is_unparsed = false;
-		} elseif(strpos((string)$line_crr, '###### ') === 0) { // h6
-			$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, 7), 'h6', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
-			$line_is_unparsed = false;
-		} //end if else
-		*/
 		//--
 		$renderr = [
 			'crr'  		=> $line_crr, 					// do not cast ; ?string
@@ -2088,7 +2143,7 @@ final class SmartMarkdownToHTML {
 						//--
 						$blockquote_atts = (array) $this->parseAttributeData('blockquote', (string)ltrim((string)$arr[$i], '<'));
 						//--
-						$arr[$i] = '<blockquote'.(isset($blockquote_atts['id']) ? ' id="'.Smart::escape_html((string)$blockquote_atts['id']).'"' : '').(isset($blockquote_atts['class']) ? ' class="'.Smart::escape_html((string)$blockquote_atts['class']).'"' : '').'>'; // do not parse inline: id, class
+						$arr[$i] = '<blockquote'.(isset($blockquote_atts['id']) ? ' id="'.Smart::escape_html((string)$blockquote_atts['id']).'"' : '').(isset($blockquote_atts['class']) ? ' class="'.Smart::escape_html((string)$blockquote_atts['class']).'"' : '').$this->buildAttributeData((array)$blockquote_atts, [ 'id' => false, 'class' => false ]).'>'; // do not parse inline: id, class
 						$line_is_unparsed = false;
 						//--
 						$blockquote_atts = null;
@@ -2111,7 +2166,7 @@ final class SmartMarkdownToHTML {
 						//--
 						$div_atts = (array) $this->parseAttributeData('div', (string)ltrim((string)$arr[$i], ':'));
 						//--
-						$arr[$i] = '<div'.(isset($div_atts['id']) ? ' id="'.Smart::escape_html((string)$div_atts['id']).'"' : '').(isset($div_atts['class']) ? ' class="'.Smart::escape_html((string)$div_atts['class']).'"' : '').'>'; // do not parse inline: id, class
+						$arr[$i] = '<div'.(isset($div_atts['id']) ? ' id="'.Smart::escape_html((string)$div_atts['id']).'"' : '').(isset($div_atts['class']) ? ' class="'.Smart::escape_html((string)$div_atts['class']).'"' : '').$this->buildAttributeData((array)$div_atts, [ 'id' => false, 'class' => false ]).'>'; // do not parse inline: id, class
 						$line_is_unparsed = false;
 						//--
 						$div_atts = null;
@@ -2153,7 +2208,7 @@ final class SmartMarkdownToHTML {
 						//--
 						$sect_atts = (array) $this->parseAttributeData('section', (string)ltrim((string)$arr[$i], ';'));
 						//--
-						$arr[$i] = '<section'.(isset($sect_atts['id']) ? ' id="'.Smart::escape_html((string)$sect_atts['id']).'"' : '').(isset($sect_atts['class']) ? ' class="'.Smart::escape_html((string)$sect_atts['class']).'"' : '').'>'; // do not parse inline: id, class
+						$arr[$i] = '<section'.(isset($sect_atts['id']) ? ' id="'.Smart::escape_html((string)$sect_atts['id']).'"' : '').(isset($sect_atts['class']) ? ' class="'.Smart::escape_html((string)$sect_atts['class']).'"' : '').$this->buildAttributeData((array)$sect_atts, [ 'id' => false, 'class' => false ]).'>'; // do not parse inline: id, class
 						$line_is_unparsed = false;
 						//--
 						$sect_atts = null;

@@ -57,6 +57,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 		$semaphores[] = 'load:ui-toolkit';
 		$semaphores[] = 'load:base-js';
 	//	$semaphores[] = 'load:utils-js';
+		$semaphores[] = 'skip:unveil-js';
 		//--
 
 		//--

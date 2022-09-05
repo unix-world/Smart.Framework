@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20220831
+ * @version 	v.20220905
  * @package 	Application:ViewComponents
  *
  */
@@ -47,6 +47,27 @@ final class SmartComponents {
 
 	// ::
 	// {{{SYNC-SMART-HTTP-STATUS-CODES}}}
+
+
+	// {{{SYNC-INIT-MTPL-DEFVARS}}}
+	public const DEFAULT_PAGE_VARS = [
+		'template-path',		// current template path ; ex: 'etc/templates/default/' ; relative path, trailing slash is required
+		'template-file',		// current template file ; ex: 'template.htm' | 'template-modal.htm', ... whatever template is available
+		'semaphore',			// a general purpose page conditional variable ; ex: '<theme:dark>,<skip:unveil-js>'
+		'struct-schema',		// structured document schema ; ex: '//schema.org/CreativeWork' ; '<script type="application/ld+json">{}</script>'
+		'canonical-url',		// page canonical url ; ex: '//website.test/this-page.html'
+		'title',				// page title ; ex: 'The Page Title'
+		'meta-description',		// page meta description ; ex: 'This is an example page'
+		'meta-keywords',		// page meta keywords ; ex: 'keyword1, keyword2, ..., keywordN'
+		'head-meta',			// head extra meta tags section
+		'head-css',				// head extra css style tags section
+		'head-js',				// head extra javascript tags section
+		'header',				// page header section
+		'nav',					// page nav section
+		'main',					// page main section ; for raw pages this is the only that will display
+		'aside',				// page aside section
+		'footer',				// page footer section
+	];
 
 
 	//================================================================
@@ -742,6 +763,7 @@ final class SmartComponents {
 		$arr_data['srv-ip-addr'] 				= (string) SmartUtils::get_server_current_ip(); 							// current server IP (ex: 127.0.0.1)
 		$arr_data['srv-proto'] 					= (string) $srvproto; 														// http:// | https://
 		$arr_data['net-proto'] 					= (string) ((string)$srvproto == 'https://') ? 'https' : 'http'; 			// http | https
+		$arr_data['prefix-proto'] 				= (string) ((string)$srvproto == 'https://') ? 'https:' : 'http:'; 			// http: | https: ; required for constructs like '[###PREFIX-PROTO|html###]//some.url/'
 		$arr_data['srv-port'] 					= (string) $srvport; 														// '' | ''  | ':8080' ... (the current server port address ; empty for port 80 and 443 ; for the rest of ports will be :portnumber)
 		$arr_data['net-port'] 					= (string) $netport; 														// 80 | 443 | 8080 ... (the current server port)
 		$arr_data['srv-script'] 				= (string) SmartUtils::get_server_current_script(); 						// index.php | admin.php | task.php
@@ -757,11 +779,16 @@ final class SmartComponents {
 		$arr_data['auth-login-fullname'] 		= (string) SmartAuth::get_login_fullname(); 								// Auth Login FullName
 		$arr_data['auth-login-privileges'] 		= (string) SmartAuth::get_login_privileges(); 								// Auth Login Privileges
 		$arr_data['debug-mode'] 				= (string) (SmartFrameworkRegistry::ifDebug() ? 'yes' : 'no'); 				// yes | no
-		//-- PHP8 fixes (initialize all missing array keys)
-		$arr_def_keys = [ 'template-path', 'template-file', 'semaphore', 'title', 'head-meta', 'head-css', 'head-js', 'header', 'main', 'aside', 'footer' ]; 	// {{{SYNC-INIT-MTPL-DEFVARS}}}
-		for($i=0; $i<count($arr_def_keys); $i++) {
-			if(!array_key_exists((string)$arr_def_keys[$i], $arr_data)) {
-				$arr_data[(string)$arr_def_keys[$i]] = '';
+		//-- initialize all missing array keys
+		for($i=0; $i<count((array)self::DEFAULT_PAGE_VARS); $i++) { // {{{SYNC-INIT-MTPL-DEFVARS}}}
+			if(!array_key_exists((string)self::DEFAULT_PAGE_VARS[$i], (array)$arr_data)) { // avoid rewrite a key from above
+				$arr_data[(string)self::DEFAULT_PAGE_VARS[$i]] = ''; // init key
+			} else {
+				if(!Smart::is_nscalar($arr_data[(string)self::DEFAULT_PAGE_VARS[$i]])) {
+					$arr_data[(string)self::DEFAULT_PAGE_VARS[$i]] = ''; // reset key, the value is wrong, must be scalar
+					Smart::log_warning(__METHOD__.' # Invalid, non-scalar value for page variable `'.strtoupper((string)(string)self::DEFAULT_PAGE_VARS[$i]));
+				} //end if
+				$arr_data[(string)self::DEFAULT_PAGE_VARS[$i]] = (string) $arr_data[(string)self::DEFAULT_PAGE_VARS[$i]]; // force string
 			} //end if
 		} //end for
 		//--
@@ -806,21 +833,11 @@ final class SmartComponents {
 		} //end if
 		//--
 
-		//-- add meta vars and conform all keys to lowercase
+		//-- init or set all standard page vars {{{SYNC-INIT-MTPL-DEFVARS}}}
 		$arr_data = (array) self::set_app_template_conform_metavars($arr_data);
-		//-- special TPL vars
-		$arr_data['template-path'] 				= (string) $template_path; // current template path (ex: etc/templates/default/)
-		$arr_data['template-file'] 				= (string) $template_file; // current template file (ex: template.htm | template-modal.htm | ...)
-		//-- external TPL vars ; {{{SYNC-INIT-MTPL-DEFVARS}}}
-		$arr_data['semaphore'] 					= (string) $arr_data['semaphore']; // a general purpose conditional var
-		$arr_data['title'] 						= (string) $arr_data['title'];
-		$arr_data['head-meta'] 					= (string) $arr_data['head-meta'];
-		$arr_data['head-css'] 					= (string) $arr_data['head-css'];
-		$arr_data['head-js'] 					= (string) $arr_data['head-js'];
-		$arr_data['header'] 					= (string) $arr_data['header'];
-		$arr_data['main'] 						= (string) $arr_data['main'];
-		$arr_data['aside'] 						= (string) $arr_data['aside'];
-		$arr_data['footer'] 					= (string) $arr_data['footer'];
+		$arr_data['template-path'] 				= (string) $template_path; // overwrite
+		$arr_data['template-file'] 				= (string) $template_file; // overwrite
+		$arr_data['main'] 						= (string) ($arr_data['main'] ?? null); // mandatory
 		//--
 
 		//-- read TPL

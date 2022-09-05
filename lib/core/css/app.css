@@ -21,6 +21,8 @@
 
 /* -- core -- */
 
+@import url("../../../lib/core/css/custom.css");
+
 @import url("../../../lib/core/css/notifications.css");
 @import url("../../../lib/core/css/notifications-icons.css");
 
@@ -34,7 +36,7 @@
 
 @import url("../../../lib/core/plugins/css/navpager.css");
 
-/* -- extra -- */
+/* -- captcha -- */
 
 @import url("../../../lib/core/plugins/css/captcha.css");
 

@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20220813), (c) 2015-2022 unix-world.org
+	extended by unixman, (stable.20220902), (c) 2015-2022 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -379,14 +379,14 @@ a.ux-link:hover {
 }
 
 .ux-button-primary {
-	border: 1px solid #20639E !important;
-	background-color: #337AB7 !important;
+	border: 1px solid #0454B0 !important;
+	background-color: #1565C0 !important;
 	color: #FFFFFF !important;
 }
 .ux-button-primary:hover,
 .ux-button-primary:focus {
-	border: 1px solid #10528D !important;
-	background-color: #2269A6 !important;
+	border: 1px solid #0343A0 !important;
+	background-color: #0454B0 !important;
 	color: #FFFFFF !important;
 }
 
@@ -403,50 +403,62 @@ a.ux-link:hover {
 }
 
 .ux-button-regular {
-	border: 1px solid #507100 !important;
+	border: 1px solid #608200 !important;
 	background-color: #719300 !important;
 	color: #FFFFFF !important;
 }
 .ux-button-regular:hover,
 .ux-button-regular:focus {
-	border: 1px solid #406000 !important;
+	border: 1px solid #507100 !important;
 	background-color: #608200 !important;
 	color: #FFFFFF !important;
 }
 
 .ux-button-highlight {
-	border: 1px solid #DB860E !important;
+	border: 1px solid #EE8800 !important;
 	background-color: #FF9900 !important;
 	color: #FFFFFF !important;
 }
 .ux-button-highlight:hover,
 .ux-button-highlight:focus {
-	border: 1px solid #CA750D !important;
+	border: 1px solid #DB860E !important;
 	background-color: #EE8800 !important;
 	color: #FFFFFF !important;
 }
 
 .ux-button-special {
-	border: 1px solid #D21D1D !important;
+	border: 1px solid #E32E2E !important;
 	background-color: #F43F3F !important;
 	color: #FFFFFF !important;
 }
 .ux-button-special:hover,
 .ux-button-special:focus {
-	border: 1px solid #C10C0C !important;
+	border: 1px solid #D21D1D !important;
 	background-color: #E32E2E !important;
 	color: #FFFFFF !important;
 }
 
 .ux-button-info {
-	border: 1px solid #178DB0 !important;
+	border: 1px solid #20A0C4 !important;
 	background-color: #31B0D5 !important;
 	color: #FFFFFF !important;
 }
 .ux-button-info:hover,
 .ux-button-info:focus {
-	border: 1px solid #067CA0 !important;
+	border: 1px solid #178DB0 !important;
 	background-color: #20A0C4 !important;
+	color: #FFFFFF !important;
+}
+
+.ux-button-details {
+	border: 1px solid #4d5774 !important;
+	background-color: #5e6885 !important;
+	color: #FFFFFF !important;
+}
+.ux-button-details:hover,
+.ux-button-details:focus {
+	border: 1px solid #2a3140 !important;
+	background-color: #3c4663 !important;
 	color: #FFFFFF !important;
 }
 

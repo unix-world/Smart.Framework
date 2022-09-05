@@ -1,5 +1,5 @@
 
-/* -- CSS Start :: Smart.Framework / Base :: r.20210612 -- */
+/* -- CSS Start :: Smart.Framework / Base :: r.20220903 -- */
 
 * {
 	font-family: 'IBM Plex Sans', 'Noto Sans', arial, sans-serif;
@@ -27,6 +27,16 @@ div, p, ol, ul, form, fieldset, blockquote, address, dl {
 	line-height: 1.5;
 }
 
+ul, ol {
+	margin-top: 0;
+	margin-bottom: 10px;
+}
+ul {
+	list-style-type: square;
+}
+ol {
+	list-style-type: decimal;
+}
 li {
 	list-style-position: inside; /* bugfix for chrome */
 }
@@ -94,6 +104,10 @@ td {
 
 a, a:link, a:visited, a:hover {
 	color: #000000;
+}
+
+input[type="text"]:disabled {
+	background-color: #FFFFFF;
 }
 
 /* -- CSS End -- */

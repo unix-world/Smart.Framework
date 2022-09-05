@@ -33,6 +33,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		$this->PageViewSetCfg('template-path', 'modules/mod-auth-admins/templates/');
 		$this->PageViewSetCfg('template-file', 'template-simple.htm');
 		//--
+		$semaphores = [];
+		$semaphores[] = 'skip:unveil-js';
+		$this->PageViewSetVar('semaphore', (string) Smart::array_to_list($semaphores));
+		//--
 		return true;
 		//--
 	} //END FUNCTION

@@ -1,7 +1,7 @@
 # [%%%IF:TITLE:==;%%%]... ==Title is empty== ...[%%%ELSE:TITLE%%%][###TITLE|html###][%%%/IF:TITLE%%%]
 
 &copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
-Extended Markdown v.II (smart flavour) // Test :: r.20220810
+Extended Markdown v.II (smart flavour) // Test :: r.20220904
 
 # (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old "bad" features have been dropped, and others supported ==only in compatibility mode== ...
 
@@ -55,6 +55,12 @@ Safe html escapes \\, below:
 ABC ```abc``` \`\`\`zzz\`\`\` ```yy\!y```
 DEF ``def`` \`\`www\`\` ``qq\!q``
 ```ABCD```
+
+
+A math formula
+::: .math-latex
+\mathtt{\operatorname{Math.sinh(x)}} = \frac{e^x - e^{-x}}{2}
+:::
 
 
 A preformat:
@@ -266,6 +272,8 @@ New Line
 	use "**asterisks**"
 - Or minuses
 - ###### OR H6 {H:@style=display:inline-block}
+####### This is a span{H: @id=mySpan}
+######## This is a data tag{H: @value=myData}
 
 Some Paragraph
 	Some Preformat area

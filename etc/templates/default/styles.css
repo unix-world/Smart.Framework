@@ -1,5 +1,5 @@
 
-/* ------------------------------------------------ CSS3, Base Styles START :: r.20220214 */
+/* ------------------------------------------------ CSS3, Base Styles START :: r.20220903 */
 
 /* IMPORTANT: !! FOR A VERY CLEAR READABILITY OF PAGE FONTS !!
  * except the main body and main elements sizes (sized in pixels),
@@ -39,11 +39,16 @@ div, p, ol, ul, form, fieldset, blockquote, address, dl {
 	line-height: 1.5;
 }
 
-ul {
+ul, ol {
 	margin-top: 0;
-	margin-bottom: 0;
+	margin-bottom: 10px;
 }
-
+ul {
+	list-style-type: square;
+}
+ol {
+	list-style-type: decimal;
+}
 li {
 	list-style-position: inside; /* bugfix for chrome */
 }
@@ -118,54 +123,6 @@ a, a:link, a:visited, a:hover {
 input[type="text"]:disabled {
 	background-color: #FFFFFF;
 }
-/***
-label {
-	font-size: 0.9rem;
-	font-weight: normal;
-}
-textarea {
-	font-size: 0.9rem;
-	background-color: #FEFEFE;
-	color: #000000;
-	border: 1px;
-	border-style: solid;
-	border-color: #CCCCCC;
-}
-select {
-	font-size: 0.9rem;
-	background-color: #FEFEFE;
-	color: #666666;
-	border: 1px;
-	border-style: solid;
-	border-color: #CCCCCC;
-}
-input {
-	font-size: 0.9rem;
-	background-color: #FFFFFF;
-	color: #000000;
-	border: 1px;
-	border-style: solid;
-	border-color: #CCCCCC;
-}
-input[type=submit], input[type=button] {
-	font-size: 0.9rem;
-	font-weight: bold;
-	background-color: #FFFFFF;
-	color: #778899;
-	border: 1px;
-	border-style: outset;
-	border-color: #333333;
-	cursor: pointer;
-}
-input:invalid+span:after {
-	content: '✖';
-	padding-left: 5px;
-}
-input:valid+span:after {
-	content: '✓';
-	padding-left: 5px;
-}
-***/
 
 /* ----- box sizing fixes (if necessary) ----- */
 /***
@@ -198,18 +155,6 @@ div#app-container.app-box {
 	padding-left:  3px !important;
 	padding-top:   1px !important;
 	padding-right: 3px !important;
-}
-
-img#shaddow {
-	border: 0px;
-	box-shadow: 2px 2px 3px #BBBBBB; /* Opera and other CSS3 supporting browsers */
-}
-
-.inline-block {
-	display: inline-block;
-}
-.inline {
-	display: inline;
 }
 
 /* ------------------------------------------------ Base Styles END */

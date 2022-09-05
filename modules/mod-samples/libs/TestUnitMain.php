@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220330
+ * @version 	v.20220901
  *
  */
 final class TestUnitMain {
@@ -64,8 +64,8 @@ final class TestUnitMain {
 		$basic_form_start 	= '<form class="ux-form ux-inline-block" id="form_for_test" action="'.\SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.main&tab=1&winmod=yes" method="post" target="_blank"><input type="hidden" name="testformdata[test]" value="Testing ..."><input type="hidden" name="testformdata[another-test]" value="Testing more ...">';
 		$basic_form_end 	= '</form>';
 		//--
-		$basic_form_send_modal = '<input class="ux-button ux-button-info" style="min-width:320px;" type="submit" value="Submit Form with Confirmation / Modal" OnClick="'.\SmartViewHtmlHelpers::js_code_confirm_form_submit('<div align="left"><h3><b>Are you sure you want to submit this form [MODAL] ?</b></h3></div>', 'my_form').'">';
-		$basic_form_send_popup = '<input class="ux-button ux-button-dark" style="min-width:320px;" type="submit" value="Submit Form with Confirmation / PopUp" OnClick="'.\SmartViewHtmlHelpers::js_code_confirm_form_submit('<div align="left"><h3><b>Are you sure you want to submit this form [POPUP] ?</b></h3></div>', 'my_form', '780', '420', '1').'">';
+		$basic_form_send_modal = '<input class="ux-button ux-button-secondary" style="min-width:320px;" type="submit" value="Submit Form with Confirmation / Modal" OnClick="'.\SmartViewHtmlHelpers::js_code_confirm_form_submit('<div align="left"><h3><b>Are you sure you want to submit this form [MODAL] ?</b></h3></div>', 'my_form').'">';
+		$basic_form_send_popup = '<input class="ux-button ux-button-regular" style="min-width:320px;" type="submit" value="Submit Form with Confirmation / PopUp" OnClick="'.\SmartViewHtmlHelpers::js_code_confirm_form_submit('<div align="left"><h3><b>Are you sure you want to submit this form [POPUP] ?</b></h3></div>', 'my_form', '780', '420', '1').'">';
 		//--
 
 		//-- ajax post form
@@ -183,7 +183,7 @@ final class TestUnitMain {
 				'Test-Buttons_AJAX-POST' 					=> (string) $btnop,
 				'TEST-VAR'  								=> '<div style="background-color: #ECECEC; padding: 10px;"><b>Smart.Framework</b> :: PHP/Javascript web framework :: Test and Demo Suite @ '.$info_adm.'</div>',
 				'TEST-ELEMENTS_DIALOG' 						=> '<a class="ux-button ux-button-primary" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h1>Do you like this framework ?</h1><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="Yes">Yes</option><option value="No">No</option></select></div>', 'smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(\'Well ... then you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\'))').' return false;">Test JS-UI Dialog &nbsp; <i class="sfi sfi-share"></i></a>',
-				'TEST-ELEMENTS_ALERT' 						=> '<a class="ux-button ux-button-secondary" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_alert_dialog('<h2>You can press now OK !</h2><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="One">One</option><option value="Two">Two</option></select></div>', 'smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(\'Good ... you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\'))').' return false;">Test JS-UI Alert  &nbsp; <i class="sfi sfi-share"></i></a>',
+				'TEST-ELEMENTS_ALERT' 						=> '<a class="ux-button ux-button-info" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_alert_dialog('<h2>You can press now OK !</h2><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="One">One</option><option value="Two">Two</option></select></div>', 'smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(\'Good ... you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\'))').' return false;">Test JS-UI Alert  &nbsp; <i class="sfi sfi-share"></i></a>',
 				'TEST-ELEMENTS_SEND-CONFIRM-MODAL' 			=> (string) $basic_form_start.$basic_form_send_modal.$basic_form_end,
 				'TEST-ELEMENTS_SEND-CONFIRM-POPUP' 			=> (string) $basic_form_start.$basic_form_send_popup.$basic_form_end,
 				'TEST-ELEMENTS-WND-INTERRACTIONS-MODAL' 	=> (string) \SmartModExtLib\Samples\TestUnitBrowserWinInterractions::bttnModalTestInit(),

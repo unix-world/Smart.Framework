@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220816
+ * @version 	v.20220903
  * @package 	PageBuilder
  *
  */
@@ -433,6 +433,46 @@ final class Utils {
 		} //end if
 		//--
 		return (string) \trim((string)$str);
+		//--
+	} //END FUNCTION
+
+
+	public static function getParsedPluginSettingsFromValueOrDefinedConstant($param_sett) : array {
+		//--
+		// $param_sett is MIXED: can be nScalar or Array but the type counts !
+		//--
+		$out = [
+			'value' => null,
+			'error' => '??',
+		];
+		//--
+		if((string)\substr((string)$param_sett, 0, 7) == '!const:') {
+			$param_sett = (string) \strtoupper((string)\trim((string)\substr((string)$param_sett, 7)));
+			if((string)$param_sett == '') {
+				$out['error'] = 'Constant is #EMPTY#';
+				return (array) $out;
+			} //end if
+			if(
+				((string)\substr((string)$param_sett, 0, 29) != 'PAGEBUILDER_PLUGIN_SETTINGS__')
+				OR
+				((string)\substr((string)$param_sett, -1, 1) == '_')
+				OR
+				(!\preg_match('/^[A-Z0-9_]+$/', (string)$param_sett))
+			) {
+				$out['error'] = 'Constant Name is Dissalowed: `'.$param_sett.'`';
+				return (array) $out;
+			} //end if
+			if(!\defined('\\'.$param_sett)) {
+				$out['error'] = 'Constant is N/A: `'.$param_sett.'`';
+				return (array) $out;
+			} //end if
+			$out['value'] = \constant('\\'.$param_sett); // mixed
+		} else {
+			$out['value'] = $param_sett; // mixed, as is
+		} //end if
+		//--
+		$out['error'] = ''; // reset
+		return (array) $out;
 		//--
 	} //END FUNCTION
 

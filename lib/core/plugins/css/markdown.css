@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.2.2.8-r.20220829 */
+/* Smart.Markdown.parser # v.2.2.8-r.20220904 */
 
 /* ----------------------------- */
 
@@ -40,10 +40,10 @@
 	text-decoration: underline;
 }
 
-/* Unordered Lists */
+/* Lists */
 .markdown ul {
-/*	list-style-type: square; */
-	list-style-type: disc;
+/*	list-style-type: disc; */
+	list-style-type: square;
 }
 .markdown ol {
 	list-style-type: decimal;
@@ -181,10 +181,10 @@
 .markdown code.mkdw-code {
 	white-space: pre;
 }
-.markdown code.mkdw-inline-code {
+.markdown code.mkdw-inline-code { /* be consistent with main styles */
 	display: inline !important;
-	background: #EEEEEE;
-	color: #333333;
+	background: #DDDDFF;
+	color: #111111;
 	padding: 0;
 	padding-left: 4px;
 	padding-right: 4px;
@@ -223,7 +223,7 @@
 	background: #F0F0F0;
 	color: #333333;
 	font-weight: bold;
-	font-style: italic;
+	font-style: normal; /* italic */
 }
 .markdown mark {
 	background: #F9EA82;
@@ -237,6 +237,15 @@
 .markdown img {
 	max-width: 100%;
 /*	margin: 5px; */
+}
+
+/* -- */
+
+.markdown data {
+	background: #666699;
+	color: #CCCCCC;
+	font-size: 0.875rem;
+	padding: 1px;
 }
 
 /* ----------------------------- */

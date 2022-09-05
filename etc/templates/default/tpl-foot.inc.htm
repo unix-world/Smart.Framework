@@ -1,13 +1,18 @@
-<!-- TPL Foot (Custom) r.20210612 -->
+<!-- TPL Foot r.20220904 -->
 [%%%IF:SEMAPHORE:&*<load:searchterm-highlight-js>;%%%]
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-search-term-highlight.inc.htm!@@@]
 [%%%ELSE:SEMAPHORE%%%]
-<!-- Highlight SearchTerm: skip -->
+<!-- HLSrcTerm: skip -->
 [%%%/IF:SEMAPHORE%%%]
 [%%%IF:SEMAPHORE:&*<load:code-highlight-js>;%%%]
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-hljs.inc.htm!@@@]
 [%%%ELSE:SEMAPHORE%%%]
-<!-- HLjs, Smart HLjs: skip -->
+<!-- HLjs: skip -->
+[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<load:math-latex-js>;%%%]
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-mathlatex.inc.htm!@@@]
+[%%%ELSE:SEMAPHORE%%%]
+<!-- MathLatex: skip -->
 [%%%/IF:SEMAPHORE%%%]
 [%%%IF:SEMAPHORE:&*<skip:unveil-js>;%%%]
 <!-- Unveil: skip -->

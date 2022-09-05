@@ -2,6 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+September 05, 2022
+	* Extend Page Component with extra fields: ex: schema
+	* Math Latex Formula Parser Javascript
+	* Markdown: implement span, data
+	* fix main reset CSS: ul / ol
+
 August 31, 2022
 	* optimizations
 
