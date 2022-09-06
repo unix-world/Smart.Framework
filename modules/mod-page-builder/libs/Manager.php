@@ -52,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20220816
+ * @version 	v.20220907
  * @package 	PageBuilder
  *
  */
@@ -318,7 +318,7 @@ final class Manager {
 				'RECORD-ID'			=> (string) \Smart::escape_html($query['id']),
 				'RECORD-NAME' 		=> (string) $draw_name,
 				'RECORD-TYPE' 		=> (string) $query['mode'],
-				'BUTTONS-CLOSE' 	=> (string) '<input type="button" value="'.\Smart::escape_html($translator_window->text('button_close')).'" class="ux-button" onClick="smartJ$Browser.CloseModalPopUp(); return false;">',
+				'BUTTONS-CLOSE' 	=> (string) '<input type="button" value="'.\Smart::escape_html($translator_window->text('button_close')).'" class="ux-button ux-button-dark" onClick="smartJ$Browser.CloseModalPopUp(); return false;">',
 				'TAB-TXT-PROPS'		=> (string) '<img height="16" src="'.self::$ModulePath.'libs/views/manager/img/props.svg'.'" alt="'.self::text('tab_props').'" title="'.self::text('tab_props').'">'.'&nbsp;'.self::text('tab_props'),
 				'TAB-LNK-PROPS'		=> (string) self::composeUrl('op=record-view-tab-props&id='.\Smart::escape_url($query['id'])),
 				'TAB-TXT-CODE'		=> (string) self::getImgForCodeType($query['id'], $query['mode']).'&nbsp;'.self::text('tab_code'),
@@ -840,7 +840,9 @@ final class Manager {
 							//--
 							if(\SmartModExtLib\PageBuilder\Utils::displayValidationErrors() === true) {
 								//--
-								$htmlparser = new \SmartHtmlParser((string)$query['code'], true, (string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption(), false);
+								$validation_html = (string) \SmartModExtLib\PageBuilder\Utils::fixPageBuilderCodeBeforeValidation((string)$query['code']);
+								$htmlparser = new \SmartHtmlParser((string)$validation_html, true, (string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption(), false);
+								$validation_html = null;
 								$htmlparser->get_clean_html();
 								$validerrs = (string) trim((string)$htmlparser->getValidationErrors());
 								$out .= '<br><div style="float:left; cursor:help;" title="HTML Code Validation: '.\Smart::escape_html((string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption().' # Warnings/Errors: '.(((string)$validerrs != '') ? 'YES' : 'NO')).'"><i class="sfi sfi-html-five"></i></div>';
@@ -1518,7 +1520,7 @@ final class Manager {
 		$out .= \SmartMarkersTemplating::render_file_template(
 			(string) self::$ModulePath.'libs/views/manager/view-record-frm-add.mtpl.htm',
 			[
-				'BUTTONS-CLOSE' 	=> (string) '<input type="button" value="'.\Smart::escape_html($translator_window->text('button_close')).'" class="ux-button" onClick="smartJ$Browser.CloseModalPopUp(); return false;">',
+				'BUTTONS-CLOSE' 	=> (string) '<input type="button" value="'.\Smart::escape_html($translator_window->text('button_close')).'" class="ux-button ux-button-secondary" onClick="smartJ$Browser.CloseModalPopUp(); return false;">',
 				'THE-TTL' 			=> (string) '<img height="16" src="'.self::$ModulePath.'libs/views/manager/img/op-add.svg'.'" alt="'.self::text('ttl_add').'" title="'.self::text('ttl_add').'">'.'&nbsp;'.self::text('ttl_add'),
 				'REFRESH-PARENT' 	=> (string) '<script>smartJ$Browser.RefreshParent();</script>',
 				'FORM-NAME' 		=> (string) 'page_form_add',
@@ -1527,7 +1529,7 @@ final class Manager {
 				'LABELS-ID'			=> (string) self::text('id'),
 				'LABELS-NAME'		=> (string) self::text('name'),
 				'LABELS-CTRL' 		=> (string) self::text('ctrl'),
-				'BUTTONS-SUBMIT' 	=> (string) '<button class="ux-button ux-button-highlight" type="button" onClick="'.\SmartViewHtmlHelpers::js_ajax_submit_html_form('page_form_add', self::composeUrl('op=record-add-do')).' return false;">'.' &nbsp; '.'<i class="sfi sfi-floppy-disk"></i>'.' &nbsp; '.self::text('save').'</button>'
+				'BUTTONS-SUBMIT' 	=> (string) '<button class="ux-button ux-button-regular" type="button" onClick="'.\SmartViewHtmlHelpers::js_ajax_submit_html_form('page_form_add', self::composeUrl('op=record-add-do')).' return false;">'.' &nbsp; '.'<i class="sfi sfi-floppy-disk"></i>'.' &nbsp; '.self::text('save').'</button>'
 			],
 			'no'
 		);
@@ -2062,7 +2064,7 @@ final class Manager {
 		$out = \SmartMarkersTemplating::render_file_template(
 			(string) self::$ModulePath.'libs/views/manager/view-record-frm-clone.mtpl.htm',
 			[
-				'BUTTONS-CLOSE' 	=> (string) '<input type="button" value="'.\Smart::escape_html($translator_window->text('button_close')).'" class="ux-button" onClick="smartJ$Browser.CloseModalPopUp(); return false;">',
+				'BUTTONS-CLOSE' 	=> (string) '<input type="button" value="'.\Smart::escape_html($translator_window->text('button_close')).'" class="ux-button ux-button-dark" onClick="smartJ$Browser.CloseModalPopUp(); return false;">',
 				'THE-TTL' 			=> (string) '<img height="16" src="'.self::$ModulePath.'libs/views/manager/img/op-clone.svg'.'" alt="'.self::text('ttl_clone').'" title="'.self::text('ttl_clone').'">'.'&nbsp;'.self::text('ttl_clone'),
 				'REFRESH-PARENT' 	=> (string) '<script>smartJ$Browser.RefreshParent();</script>',
 				'FORM-NAME' 		=> (string) 'page_form_clone',
@@ -2167,7 +2169,7 @@ final class Manager {
 			//--
 		} else {
 			//--
-			$out .= \SmartComponents::operation_question(self::text('ttl_del').' ?<div style="display:inline-block; margin-left:100px; min-width:200px;"><a class="ux-button ux-button-special" onClick="'.\Smart::escape_html(\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h1>'.self::text('msg_confirm_del').' !</h1>', 'self.location=\''.self::composeUrl('op=record-delete&delete=yes&id='.\Smart::escape_url($y_id)).'\';', '550', '250', self::text('dp').' ?')).'; return false;" href="#">Yes</a><a class="ux-button ux-button-primary" href="'.\Smart::escape_html(self::composeUrl('op=record-view&id='.\Smart::escape_url($y_id))).'">No</a></div>', '720');
+			$out .= \SmartComponents::operation_question(self::text('ttl_del').' ?<div style="display:inline-block; margin-left:100px; min-width:200px;"><a class="ux-button ux-button-special" onClick="'.\Smart::escape_html(\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h1>'.self::text('msg_confirm_del').' !</h1>', 'self.location=\''.self::composeUrl('op=record-delete&delete=yes&id='.\Smart::escape_url($y_id)).'\';', '550', '250', self::text('dp').' ?')).'; return false;" href="#">DELETE</a><a class="ux-button" href="'.\Smart::escape_html(self::composeUrl('op=record-view&id='.\Smart::escape_url($y_id))).'">Cancel</a></div>', '720');
 			$out .= self::ViewDisplayRecord((string)$y_id, 0);
 			//--
 		} //end if else

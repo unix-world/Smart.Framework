@@ -2,7 +2,12 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
-September 05, 2022
+September 07, 2022
+	* Markdown: parse attributes also for article and flexbox (except class for flexbox)
+	* Mod Page Builder Modernize Styles
+	* Fix PageBuilder Abstract Controller: do not trim DATA type value ; Add raw escaping sequence for value/field in loadValue()
+	* Move SlimSelect Js from Mod Documentor to framework
+	* Markdown fix nested div/flexbox section/article
 	* Extend Page Component with extra fields: ex: schema
 	* Math Latex Formula Parser Javascript
 	* Markdown: implement span, data

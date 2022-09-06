@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20220205
+ * @version 	v.20220907
  * @package 	development:modules:PageBuilder
  *
  */
@@ -724,9 +724,14 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			$syntax = 'urlpart';
 			$arr['mode'] = 'urlpart:escaped';
 			$arr['id'] = (string) \Smart::escape_url((string)$arr['id']); // RawURL escape text, do not trim, preserve as is
-		} else { // 'raw'
+		} elseif((string)$syntax == 'raw') {
+			$syntax = 'text';
+			$arr['mode'] = 'text:raw';
+			$arr['id'] = (string) $arr['id']; // do not trim
+			// do not escape
+		} else { // 'unknown'
 			if((string)$escape == '') { // if no escape provided force it to url escape which is safe in all contexts (html / js / text / markdown / url)
-				$escape = 'url'; // protect !! raw values always require an escape
+				$escape = 'url'; // protect !! unknown values always require an escape for safety
 			} //end if
 		} //end if else
 		//--
@@ -1153,12 +1158,16 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 									$v['id'] = 'FALSE';
 								} //end if
 								//--
-								$v['id'] = (string) \trim((string)$v['id']);
+								//$v['id'] = (string) \trim((string)$v['id']); // Fix: DO NOT Pre-Trim Always ; trim ONLY if is not a type value ; raw values must be preserved (Ex: page TEMPLATE@TITLE, mostly used with raw escape may be composed from many parts like a field and a value, which will be appended, must not be trimmed ...)
 								//--
 								$is_id_ok = false;
 								if((string)$v['type'] == 'value') {
-									$is_id_ok = true; // text values can be empty, they can be used for conditionals and later rewritten
-								} elseif((string)$v['id'] != '') {
+									$is_id_ok = true; // text values can be empty, should not be trimmed, they can be used for conditionals and later rewritten
+									if((string)\trim((string)$v['id']) == '') {
+										$v['id'] = ''; // dissalow only spaces values
+									} //end if
+								} elseif((string)\trim((string)$v['id']) != '') {
+									$v['id'] = (string) \trim((string)$v['id']);
 									$is_id_ok = true; // must have a valid ID, the type[plugin/segment] is tested in pre-parse phase
 								} //end if else
 								//--
@@ -1216,6 +1225,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												break;
 											default:
 												// nothing, leave as is
+												\Smart::log_notice((string)__METHOD__.' # Invalid Field `'.$v['id'].'` on Page/Segment: ['.\implode(';', $this->current_page).']'.'/'.(string)$id.'] for referenced segment: '.$arr_tmp_item['id']);
 										} //end switch
 										//--
 										$arr_tmp_item = (array) $this->loadValue((string)$id, (array)$v['config'], (array)$arr_tmp_item, []);

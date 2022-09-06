@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20220904
+ * @version 	v.20220907
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220904';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220907';
 
 	//===================================
 
@@ -1714,6 +1714,10 @@ final class SmartMarkdownToHTML {
 				} //end if
 				unset($atts['lazyload']);
 			} //end if
+		} else {
+			if(isset($atts['lazyload'])) {
+				unset($atts['lazyload']); // do not set a lazyload="" attribute on img
+			} //end if
 		} //end if
 		//--
 		if($use_lazyload) {
@@ -2151,7 +2155,7 @@ final class SmartMarkdownToHTML {
 					} //end if else
 					//--
 			//======= Div
-				} elseif((strpos((string)$arr[$i], ':::') === 0) AND ((string)trim((string)$arr[$i]) != '::::')) { // div
+				} elseif((strpos((string)$arr[$i], ':::') === 0) AND ((string)substr((string)$arr[$i], 0, 4) != '::::')) { // div
 					//--
 					if($is_div === true) { // close div
 						//--
@@ -2174,7 +2178,7 @@ final class SmartMarkdownToHTML {
 					} //end if else
 					//--
 			//======= Flexbox Div (cannot have attributes because need a fixed match to avoid div match this on closing loop ; div matches start with :::)
-				} elseif((string)trim((string)$arr[$i]) == '::::') { // flexbox, derive from div but with 4 colons to allow flexbox in div, 2 divs can't be nested
+				} elseif(strpos((string)$arr[$i], '::::') === 0) { // flexbox, derive from div but with 4 colons to allow flexbox in div, 2 divs can't be nested
 					//--
 					if($is_flexbox === true) { // close flexbox
 						//--
@@ -2187,13 +2191,17 @@ final class SmartMarkdownToHTML {
 						//--
 						$is_flexbox = true;
 						//--
-						$arr[$i] = '<!-- fxb --><div class="flexbox">'; // fixed, no id or atts
+						$fbx_atts = (array) (array) $this->parseAttributeData('div', (string)ltrim((string)$arr[$i], ':'));
+						//--
+						$arr[$i] = '<!-- fxb --><div class="flexbox"'.(isset($fbx_atts['id']) ? ' id="'.Smart::escape_html((string)$fbx_atts['id']).'"' : '').$this->buildAttributeData((array)$fbx_atts, [ 'id' => false, 'class' => false ]).'>'; // do not parse inline: id, class ; class is fixed
 						$line_is_unparsed = false;
+						//--
+						$fbx_atts = null;
 						//--
 					} //end if else
 					//--
 			//======= Section
-				} elseif((strpos((string)$arr[$i], ';;;') === 0) AND ((string)trim((string)$arr[$i]) != ';;;;')) { // section
+				} elseif((strpos((string)$arr[$i], ';;;') === 0) AND ((string)substr((string)$arr[$i], 0, 4) != ';;;;')) { // section
 					//--
 					if($is_section === true) { // close section
 						//--
@@ -2216,7 +2224,7 @@ final class SmartMarkdownToHTML {
 					} //end if else
 					//--
 			//======= Article (must read above section to match condition)
-				} elseif((string)trim((string)$arr[$i]) == ';;;;') { // article
+				} elseif(strpos((string)$arr[$i], ';;;;') === 0) { // article
 					//--
 					if($is_article === true) { // close article
 						//--
@@ -2229,8 +2237,12 @@ final class SmartMarkdownToHTML {
 						//--
 						$is_article = true;
 						//--
-						$arr[$i] = '<article>'; // fixed, no id or atts
+						$art_atts = (array) $this->parseAttributeData('article', (string)ltrim((string)$arr[$i], ';'));
+						//--
+						$arr[$i] = '<article'.(isset($art_atts['id']) ? ' id="'.Smart::escape_html((string)$art_atts['id']).'"' : '').(isset($art_atts['class']) ? ' class="'.Smart::escape_html((string)$art_atts['class']).'"' : '').$this->buildAttributeData((array)$art_atts, [ 'id' => false, 'class' => false ]).'>'; // do not parse inline: id, class
 						$line_is_unparsed = false;
+						//--
+						$art_atts = null;
 						//--
 					} //end if else
 					//--

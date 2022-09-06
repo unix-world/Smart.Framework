@@ -1,5 +1,5 @@
 
-/* ------------------------------------------------ CSS3, Base Styles START :: r.20220903 */
+/* ------------------------------------------------ CSS3, Base Styles START :: r.20220907 */
 
 /* IMPORTANT: !! FOR A VERY CLEAR READABILITY OF PAGE FONTS !!
  * except the main body and main elements sizes (sized in pixels),
@@ -34,6 +34,8 @@ body {
 	line-height: 1.5;
 }
 
+/* ----- resets ----- */
+
 div, p, ol, ul, form, fieldset, blockquote, address, dl {
 	font-size: 0.9375rem; /* 15px */
 	line-height: 1.5;
@@ -41,7 +43,8 @@ div, p, ol, ul, form, fieldset, blockquote, address, dl {
 
 ul, ol {
 	margin-top: 0;
-	margin-bottom: 10px;
+	margin-bottom: 0;
+/*	margin-bottom: 10px; */
 }
 ul {
 	list-style-type: square;
@@ -61,6 +64,8 @@ table, pre, code, code * {
 small {
 	font-size: 0.75rem;
 }
+
+/* ----- headings ----- */
 
 h1 {
 	font-size: 2.25rem; /* 36px */
@@ -93,6 +98,8 @@ h6 {
 	margin-bottom: 0.063rem; /* 1px */
 }
 
+/* ----- misc ----- */
+
 img {
 	border: 0;
 }
@@ -102,6 +109,8 @@ hr {
 	border-top: 1px solid #CCCCCC;
 	height: 1px;
 }
+
+/* ----- tables ----- */
 
 table {
 	font-weight: normal;
@@ -113,6 +122,8 @@ th {
 td {
 	font-weight: normal;
 }
+
+/* ----- links ----- */
 
 a, a:link, a:visited, a:hover {
 	color: #000000;

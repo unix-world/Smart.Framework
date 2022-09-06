@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220903
+ * @version 	v.20220906
  * @package 	PageBuilder
  *
  */
@@ -280,34 +280,6 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function getRenderedMarkdownNotices(string $markdown_code) : array {
-		//--
-		$option_validate_html = (string) self::markdownRenderingGetOptionHtmlValidate(); // here, validator cannot be null
-		//--
-		if($option_validate_html !== null) {
-			if((string)$option_validate_html == '') {
-				return (array) [
-					'validator' => '',
-					'notices' 	=> [],
-				];
-			} //end if
-		} //end if
-		//--
-		$syntax_pagebuiler = (array) self::extractPageBuilderSyntax((string)$markdown_code);
-		//--
-		$obj = new \SmartMarkdownToHTML(true, true, false, (string)$option_validate_html, null, false, (array)$syntax_pagebuiler, false); // C:0
-		$obj->parse((string)$markdown_code);
-		//--
-		$syntax_pagebuiler = null;
-		//--
-		return (array) [
-			'validator' => (string) $obj->validator(),
-			'notices' 	=> (array)  $obj->notices(),
-		];
-		//--
-	} //END FUNCTION
-
-
 	public static function composePluginClassName($str) {
 		//--
 		$arr = (array) \explode('-', (string)$str);
@@ -473,6 +445,72 @@ final class Utils {
 		//--
 		$out['error'] = ''; // reset
 		return (array) $out;
+		//--
+	} //END FUNCTION
+
+
+	public static function fixPageBuilderCodeBeforeValidation(?string $html_code) : string {
+		//--
+		$validation_placeholders = (array) self::extractPlaceholders((string)$html_code);
+		foreach($validation_placeholders as $phkey => $phval) {
+			$html_code = (string) \strtr((string)$html_code, [ (string)$phval => (string)\SmartHashCrypto::crc32b((string)$phval) ]); // tidy gives error if the url is like {{:PLACEHOLDER:}} thus fake it and replace with a small hash ;-)
+		} //end foreach
+		$validation_placeholders = null;
+		//--
+		$validation_markers = (array) self::extractMarkers((string)$html_code);
+		foreach($validation_markers as $mkkey => $mkval) {
+			$html_code = (string) \strtr((string)$html_code, [ (string)$mkval => (string)\SmartHashCrypto::crc32b((string)$mkval) ]); // tidy gives error if the url is like {{=#MARKER|html#=}} thus fake it and replace with a small hash ;-)
+		} //end foreach
+		$validation_markers = null;
+		//--
+		$html_code = (string) \strtr((string)$html_code, [ // {{{SYNC-PAGEBUILDER-FAKE-TIDY}}} tidy does not like these, .. fake tidy, browsers support them !
+			'src=""' 			=> 'src="data:,"', // ex: for lazyload images
+			'align="left"' 		=> '', // ex: for img
+			'align="center"' 	=> '', // ex: for img
+			'align="right"' 	=> '', // ex: for img
+			'<center>' 			=> '',
+			'</center>' 		=> '',
+		]);
+		//--
+		return (string) $html_code;
+		//--
+	} //END FUNCTION
+
+
+	public static function getRenderedMarkdownNotices(string $markdown_code) : array {
+		//--
+		$option_validate_html = (string) self::markdownRenderingGetOptionHtmlValidate(); // here, validator cannot be null
+		//--
+		if($option_validate_html !== null) {
+			if((string)$option_validate_html == '') {
+				return (array) [
+					'validator' => '',
+					'notices' 	=> [],
+				];
+			} //end if
+		} //end if
+		//--
+	//	$syntax_pagebuiler = (array) self::extractPageBuilderSyntax((string)$markdown_code);
+	//	$obj = new \SmartMarkdownToHTML(true, true, true, (string)$option_validate_html, null, false, (array)$syntax_pagebuiler, false); // C:0 ; disable lazyload images, tidy does not like empty src attribute on images
+		//--
+		$obj = new \SmartMarkdownToHTML(true, true, true, (string)$option_validate_html, null, false, null, false); // C:0 ; disable lazyload images, tidy does not like empty src attribute on images
+		$markdown_code = (string) \SmartModExtLib\PageBuilder\Utils::fixPageBuilderCodeBeforeValidation((string)$markdown_code); // is better to fake marker replacement with hashes ... than to keep markers, the values are not known here (as above)
+		//--
+		$markdown_code = (string) \strtr((string)$markdown_code, [ // {{{SYNC-PAGEBUILDER-FAKE-TIDY}}} tidy does not like these, .. fake tidy, browsers support them !
+		//	'src=""' => '',
+			'@align=left' 		=> '@data-align=left', // ex: for img
+			'@align=center' 	=> '@data-align=center', // ex: for img
+			'@align=right' 		=> '@data-align=right', // ex: for img
+		]);
+		//--
+		$obj->parse((string)$markdown_code);
+		//--
+	//	$syntax_pagebuiler = null;
+		//--
+		return (array) [
+			'validator' => (string) $obj->validator(),
+			'notices' 	=> (array)  $obj->notices(),
+		];
 		//--
 	} //END FUNCTION
 

@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List # Filter :: v.20220126 -->
+<!-- Pagebuilder / Manage @ List # Filter :: v.20220907 -->
 <style>
 #pgbld-btn-reset-cnt:hover i.sfi,
 #pgbld-btn-alt-list:hover i.sfi {
@@ -37,11 +37,11 @@
 		<span style="display:inline-block;"><input type="text" id="filter-src" name="src" placeholder="[###TXT-SEARCH-BY|html###] ..." value="" class="ux-input-def ux-input-1-4" title="[###HINT-3|html###]" autocomplete="off"></span>
 	</td>
 	<td style="width:1px;">&nbsp;</td>
-	<td style="width:1px;"><button type="button" class="ux-button ux-button-primary" onClick="try { pageBuilderFormBtnFilter(); } catch(err) { console.log(err); } return false;">[###TXT-FILTER|html###] &nbsp; <i class="sfi sfi-search"></i></button></td>
+	<td style="width:1px;"><button type="button" class="ux-button ux-button-details" onClick="try { pageBuilderFormBtnFilter(); } catch(err) { console.log(err); } return false;">[###TXT-FILTER|html###] &nbsp; <i class="sfi sfi-search"></i></button></td>
 	<td style="width:1px;"><button type="button" class="ux-button ux-button-secondary" onClick="try { pageBuilderFormBtnResetFilter(); } catch(err) { console.log(err); } return false;">[###TXT-RESET|html###] &nbsp; <i class="sfi sfi-history"></i></button></td>
 	<td style="width:1px;">
 	[%%%IF:LIST-NEW-URL:!=;%%%]
-	<a class="ux-button ux-button-special" href="[###LIST-NEW-URL|html###]" data-smart="open.modal">[###TXT-ADD-NEW|html###] &nbsp; <i class="sfi sfi-plus"></i></a>
+	<a class="ux-button ux-button-primary" href="[###LIST-NEW-URL|html###]" data-smart="open.modal">[###TXT-ADD-NEW|html###] &nbsp; <i class="sfi sfi-plus"></i></a>
 	[%%%ELSE:LIST-NEW-URL%%%]
 	&nbsp;
 	[%%%/IF:LIST-NEW-URL%%%]
@@ -83,16 +83,16 @@
 		[%%%/IF:IS-DEV-MODE%%%]
 	</td>
 	<td style="text-align:center;">
-		<span style="color:#777777; line-height:24px; font-size:24px; font-weight:bold;">[###LIST-TTL|html###]</span>
+		<span style="color:#3B4250; line-height:24px; font-size:24px; font-weight:bold;">[###LIST-TTL|html###]</span>
 	</td>
 	<td style="text-align:right; padding-right:10px;">
-		<span style="color:#CCCCCC; line-height:24px; font-size:24px; font-weight:bold;">[###LIST-RECORDS|html###]&nbsp;[###TXT-RECORDS|html###]<br><span id="infoTotalRows">[###FMT-LIST|html###]</span></span>
+		<span style="color:#CCDDEE; line-height:24px; font-size:24px; font-weight:bold;">[###LIST-RECORDS|html###]&nbsp;[###TXT-RECORDS|html###]<br><span id="infoTotalRows">[###FMT-LIST|html###]</span></span>
 	</td>
 	<td style="width:32px; text-align:right;">
 		[%%%IF:DB-TYPE:==pgsql;%%%]
-		<img width="32" height="32" src="lib/core/img/db/postgresql-logo.svg" alt="Powered by PostgreSQL DataBase" title="Powered by PostgreSQL DataBase" style="opacity:0.25; cursor:help;">
+		<img width="48" height="48" src="lib/core/img/db/postgresql-logo.svg" alt="Powered by PostgreSQL DataBase" title="Powered by PostgreSQL DataBase" style="opacity:0.5; cursor:help;">
 		[%%%ELSE:DB-TYPE%%%]
-		<img width="32" height="32" src="lib/core/img/db/sqlite-logo.svg" alt="Powered by SQLite DataBase" title="Powered by SQLite DataBase" style="opacity:0.25; cursor:help;">
+		<img width="48" height="48" src="lib/core/img/db/sqlite-logo.svg" alt="Powered by SQLite DataBase" title="Powered by SQLite DataBase" style="opacity:0.5; cursor:help;">
 		[%%%/IF:DB-TYPE%%%]
 	</td>
 	</tr></table>
