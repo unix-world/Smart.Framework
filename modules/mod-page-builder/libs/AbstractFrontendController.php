@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20220907
+ * @version 	v.20220908
  * @package 	development:modules:PageBuilder
  *
  */
@@ -1784,7 +1784,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 									if(!\array_key_exists('@', $arr_replacements)) {
 										$arr_replacements['@'] = '';
 									} //end if
-									$arr_replacements['@'] .= (string) $val[$i]['code']; // OK: always append
+									$arr_replacements['@'] .= (string) ($val[$i]['code'] ?? null); // OK: always append
 									//--
 								} else {
 									//--

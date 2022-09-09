@@ -187,11 +187,16 @@ final class SmartMarkdownToHTML {
 		'&quot;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/quot/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // " double quote
 		'&apos;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/apos/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ' html5 apos
 		'&#039;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/039/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ' html4 apos
+		'&#39;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/39/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ' html4 apos, short version of the above
 		'&lt;' 		=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/lt/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // < used for blockquotes
 		'&gt;' 		=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/gt/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // > used for blockquotes
 		//-- specials
 		'&sol;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/sol/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // / slash
+		'&#047;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/047/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // / slash, alternative, better supported
+		'&#47;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/47/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // / slash, short version of the above
 		'&bsol;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/bsol/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // \ backslash
+		'&#092;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/092/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // \ backslash, alternative, better supported
+		'&#92;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/92/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // \ backslash, short version of the above
 		//-- syntax
 		'&ast;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/ast/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // * used for lists or bold
 		'&equals;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/equals/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // = used for italic
@@ -221,9 +226,12 @@ final class SmartMarkdownToHTML {
 		'&horbar;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/horbar/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ―
 		//--
 		'&commat;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/commat/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // @
-		'&#064;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/64/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // alternate @ ; this should be supported as numeric too because it may be a trick to write an email address to hide it from some robots
+		'&#064;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/064/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // alternate @ ; this should be supported as numeric too because it may be a trick to write an email address to hide it from some robots
+		'&#64;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/64/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // alternative, short version of the above
 		'&copy;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/copy/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // (c)
+		'&#169;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/169/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // (c), alternative
 		'&reg;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/reg/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // (R)
+		'&#174;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/174/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // (R), alternative
 		'&trade;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/trade/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // (TM)
 		'&middot;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/middot/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // &middot;
 		'&nldr;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/nldr/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ‥
@@ -390,9 +398,9 @@ final class SmartMarkdownToHTML {
 			$markup = (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)$markup);
 		} //end if
 		//-- Replace backslashes with the equivalent html entity
-	//	$markup = (string) str_replace('\\', '&bsol;', $markup);
+	//	$markup = (string) str_replace('\\', '&#092;', $markup);
 		$markup = (string) strtr($markup, [
-			'\\' => '&bsol;',
+			'\\' => '&#092;',
 		]);
 		//--
 		$this->documentParsed = true;

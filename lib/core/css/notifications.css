@@ -3,17 +3,19 @@
 
 /* ----------------------------- */
 
-/* Notifications r.20220406 */
+/* Notifications r.20220908 */
 
 div#operation_display,   div.operation_display,
+div#operation_result,    div.operation_result,
 div#operation_info,      div.operation_info,
 div#operation_notice,    div.operation_notice,
 div#operation_important, div.operation_important,
+div#operation_hint,      div.operation_hint,
 div#operation_question,  div.operation_question,
 div#operation_success,   div.operation_success,
 div#operation_warn,      div.operation_warn,
 div#operation_error,     div.operation_error {
-	line-height: 36px;
+	line-height: 2.25rem;
 	text-align: left;
 	font-size: 1.25rem;
 	font-weight: bold;
@@ -37,13 +39,23 @@ div#operation_error,     div.operation_error {
 
 div#operation_display,
 div.operation_display {
-	background-color: #555555 !important;
+	background-color: #6F7996 !important;
 	color: #FFFFFF !important;
 }
 
+/* -- */
+
+div#operation_result,
+div.operation_result {
+	background-color: #555560 !important;
+	color: #FFFFFF !important;
+}
+
+/* -- */
+
 div#operation_info,
 div.operation_info {
-	background-color: #F7F7F7 !important;
+	background-color: #EFEFEF !important;
 	color: #333333 !important;
 }
 
@@ -51,7 +63,7 @@ div.operation_info {
 
 div#operation_notice,
 div.operation_notice {
-	background-color: #E4E3A8 !important;
+	background-color: #E9EDCA !important;
 	color: #444444 !important;
 }
 
@@ -59,6 +71,14 @@ div.operation_notice {
 
 div#operation_important,
 div.operation_important {
+	background-color: #4D5774 !important;
+	color: #FDFDFD !important;
+}
+
+/* -- */
+
+div#operation_hint,
+div.operation_hint {
 	background-color: #448FCE !important;
 	color: #FDFDFD !important;
 }
@@ -98,9 +118,12 @@ div.operation_error {
 /* ----------------------------- */
 
 @media all and (max-width:1279px) {
+	div#operation_display,   div.operation_display,
+	div#operation_result,    div.operation_result,
 	div#operation_info,      div.operation_info,
 	div#operation_notice,    div.operation_notice,
 	div#operation_important, div.operation_important,
+	div#operation_hint,      div.operation_hint,
 	div#operation_question,  div.operation_question,
 	div#operation_success,   div.operation_success,
 	div#operation_warn,      div.operation_warn,
@@ -110,9 +133,12 @@ div.operation_error {
 }
 
 @media all and (max-width:959px) {
+	div#operation_display,   div.operation_display,
+	div#operation_result,    div.operation_result,
 	div#operation_info,      div.operation_info,
 	div#operation_notice,    div.operation_notice,
 	div#operation_important, div.operation_important,
+	div#operation_hint,      div.operation_hint,
 	div#operation_question,  div.operation_question,
 	div#operation_success,   div.operation_success,
 	div#operation_warn,      div.operation_warn,
@@ -122,9 +148,12 @@ div.operation_error {
 }
 
 @media all and (max-width:767px) {
+	div#operation_display,   div.operation_display,
+	div#operation_result,    div.operation_result,
 	div#operation_info,      div.operation_info,
 	div#operation_notice,    div.operation_notice,
 	div#operation_important, div.operation_important,
+	div#operation_hint,      div.operation_hint,
 	div#operation_question,  div.operation_question,
 	div#operation_success,   div.operation_success,
 	div#operation_warn,      div.operation_warn,
@@ -134,9 +163,12 @@ div.operation_error {
 }
 
 @media all and (max-width:639px) {
+	div#operation_display,   div.operation_display,
+	div#operation_result,    div.operation_result,
 	div#operation_info,      div.operation_info,
 	div#operation_notice,    div.operation_notice,
 	div#operation_important, div.operation_important,
+	div#operation_hint,      div.operation_hint,
 	div#operation_question,  div.operation_question,
 	div#operation_success,   div.operation_success,
 	div#operation_warn,      div.operation_warn,

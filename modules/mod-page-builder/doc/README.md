@@ -1,5 +1,5 @@
 
-# Using the Smart PageBuilder Module for Smart.Framework, rev.20210526
+# Using the Smart PageBuilder Module for Smart.Framework, rev.20220908
 
 ## required settings in etc/config.php
 ```php
@@ -46,6 +46,16 @@ RENDER:
 			type: segment
 			id: my-segment-3 # html segment
 	AREA.TWO:
+#		content-n: # can set a marker value to another child segment
+#			type: segment
+#			id: my-segment-n
+#			render:
+#				SOME-MARKER:
+#					content:
+#						type: value
+#						id: some <text> goes here
+#						config:
+#							syntax: text
 		content-1:
 			type: plugin
 			id: page-builder/test1
@@ -61,16 +71,6 @@ RENDER:
 		content-3:
 			type: segment
 			id: my-segment-3 # markdown segment
-#		content-n:
-#			type: segment
-#			id: my-segment-n
-#			render:
-#				SOME-MARKER:
-#					content:
-#						type: value
-#						id: some <text> goes here
-#						config:
-#							syntax: text
 	AREA-THREE:
 		content:
 			type: plugin

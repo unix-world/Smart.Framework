@@ -1,8 +1,8 @@
 /***** V-TimeLine Responsive CSS :: r.8.7 / smart.framework.v.8.7 *****/
 
-/* V-TimeLine r.20210526
+/* V-TimeLine r.20220907
 	License: BSD
-	(c) 2015-2021 unix-world.org
+	(c) 2015-2022 unix-world.org
 	This software component was inspired from the following opensource projects:
 		(c) 2017 https://github.com/RyanFitzgerald/vertical-timeline
 		(c) 2014 https://github.com/soundarapandian/timeline
@@ -55,16 +55,14 @@
 		width: 100%;
 		text-align: right;
 		color: #444444;
-		font-size: 16px;
-		/* @alternate */ font-size: 1rem;
+		font-size: 1rem;
 	}
 	.vtml-responsive-container .vtml-timeline-block:nth-child(even) .vtml-timeline-content .vtml-date,
 	.vtml-responsive-container .vtml-timeline-block:nth-child(even) .vtml-small-container .vtml-timeline-content .vtml-date {
 		text-align: left !important;
 	}
 	.vtml-responsive-container .vtml-small-container .vtml-timeline-content .vtml-date {
-		font-size: 15px;
-		/* @alternate */ font-size: 0.9375rem;
+		font-size: 0.9375rem;
 	}
 
 	.vtml-responsive-container .vtml-timeline-block:nth-child(even) .vtml-timeline-content {

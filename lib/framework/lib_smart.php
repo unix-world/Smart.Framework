@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20220414
+ * @version     v.20220907
  * @package     @Core
  *
  */
@@ -108,10 +108,15 @@ final class Smart {
 		'&quot;' 		=> '"',
 		'&apos;' 		=> "'",
 		'&#039;' 		=> "'", // alternate for &apos; (HTML4)
+		'&#39;' 		=> "'", // short version of &#039;
 		'&lt;' 			=> '<',
 		'&gt;' 			=> '>',
 		'&sol;' 		=> '/',
+		'&#047;' 		=> '/', // alternate for &sol; better supported by schema.org
+		'&#47;' 		=> '/', // short version of &#047;
 		'&bsol;' 		=> '\\',
+		'&#092;' 		=> '\\', // alternate for &bsol; better supported by schema.org
+		'&#92;' 		=> '\\', // short version of &#092;
 		'&middot;' 		=> '.',
 		'&centerdot;' 	=> '.',
 		'&bull;' 		=> '.',
@@ -126,6 +131,7 @@ final class Smart {
 		'&num;' 		=> '#',
 		'&commat;' 		=> '@',
 		'&#064;' 		=> '@', // alternate for &commat;
+		'&#64;' 		=> '@', // short version of &#064;
 		'&curren;' 		=> '¤',
 		'&euro;' 		=> '€',
 		'&dollar;' 		=> '$',

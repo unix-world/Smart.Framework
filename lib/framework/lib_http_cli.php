@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS, SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20220531
+ * @version 	v.20220909
  * @package 	@Core:Network
  *
  */
@@ -127,6 +127,14 @@ final class SmartHttpClient {
 	public $cookies;
 
 	//--
+
+	/**
+	 * Pre-Built Post Type (used to set the Content-Type header) ; Example: 'application/json'
+	 * This is used just with $poststring
+	 * @var STRING
+	 * @default ''
+	 */
+	public $posttype;
 
 	/**
 	 * Pre-Built Post String (as alternative to PostVars) ; must not contain unencoded \r\n ; must use the RFC 3986 standard.
@@ -252,6 +260,7 @@ final class SmartHttpClient {
 		$this->rawheaders = array();
 		$this->cookies = array();
 		//--
+		$this->posttype = '';
 		$this->poststring = '';
 		$this->postvars = array();
 		$this->postfiles = array();
@@ -837,7 +846,11 @@ final class SmartHttpClient {
 			$header_form_type = '';
 			$post_string = '';
 			if((string)$this->poststring != '') {
-				$header_form_type = 'application/x-www-form-urlencoded';
+				if((string)$this->posttype != '') {
+					$header_form_type = (string) $this->posttype;
+				} else {
+					$header_form_type = 'application/x-www-form-urlencoded';
+				} //end if else
 				$post_string = (string) $this->poststring; // send raw post string
 			} elseif(Smart::array_size($this->postfiles) > 0) { // build multipart form data with/without extra post vars (files have anyway)
 				$boundary = (string) SmartHttpUtils::http_multipart_form_delimiter();

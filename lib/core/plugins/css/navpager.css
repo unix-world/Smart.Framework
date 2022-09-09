@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Components / NavPager :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* v.20210526 */
+/* v.20220907 */
 
 /* ----------------------------- */
 
@@ -12,22 +12,29 @@
 }
 
 #nav-pager-box * {
-	font-size: 13px !important;
-	font-weight: normal !important;
+	font-size: 13px;
+	font-weight: normal;
 }
-#nav-pager-box a#nav-pager-item {
-	color: #333333;
+
+#nav-pager-box a#nav-pager-item,
+#nav-pager-box span#nav-pager-current,
+#nav-pager-box span#nav-pager-dots,
+#nav-pager-box span#nav-pager-dsbl-item {
 	text-decoration: none;
 	display: inline-block;
 	margin-right: 5px;
 	margin-bottom: 5px;
-	background: #FCFCFC;
 	padding-top: 2px;
 	padding-bottom: 2px;
 	padding-left: 9px;
 	padding-right: 9px;
-	border: 1px solid #BBBBBB;
 	border-radius: 3px;
+}
+
+#nav-pager-box a#nav-pager-item {
+	border: 1px solid #BBBBBB;
+	background: #FCFCFC;
+	color: #333333;
 }
 #nav-pager-box a#nav-pager-item:hover {
 	color: #000000;
@@ -35,39 +42,15 @@
 	text-decoration: underline;
 }
 #nav-pager-box span#nav-pager-current {
-	color: #FFFFFF;
-	text-decoration: none;
-	display: inline-block;
-	margin-right: 5px;
-	margin-bottom: 5px;
+	border: 1px solid #BBBBBB;
 	background: #555555;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	padding-left: 9px;
-	padding-right: 9px;
-	border: 1px solid #BBBBBB;
-	border-radius: 3px;
+	color: #FFFFFF;
 }
-#nav-pager-box span#nav-pager-dots, #nav-pager-box span#nav-pager-dsbl-item {
-/*	color: #333333;
-	font-weight: normal;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	padding-left: 0px;
-	padding-right: 0px;
-	margin-right: 5px; */
-	color: #333333;
-	text-decoration: none;
-	display: inline-block;
-	margin-right: 5px;
-	margin-bottom: 5px;
-	background: #FCFCFC;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	padding-left: 9px;
-	padding-right: 9px;
+#nav-pager-box span#nav-pager-dots,
+#nav-pager-box span#nav-pager-dsbl-item {
 	border: 1px solid #BBBBBB;
-	border-radius: 3px;
+	background: #FCFCFC;
+	color: #333333;
 	cursor: default;
 }
 

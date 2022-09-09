@@ -2,7 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
-September 07, 2022
+September 08, 2022
+	* Fix UX buttons and notifications colors to not be very close with buttons
+	* Add extra css classes to notifications
+	* Extend BrowserJS Countdown with pretty format
 	* Markdown: parse attributes also for article and flexbox (except class for flexbox)
 	* Mod Page Builder Modernize Styles
 	* Fix PageBuilder Abstract Controller: do not trim DATA type value ; Add raw escaping sequence for value/field in loadValue()

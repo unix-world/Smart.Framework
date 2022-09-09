@@ -12,7 +12,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
+\define('SMART_APP_MODULE_DIRECT_OUTPUT', true);
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]

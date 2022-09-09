@@ -1,8 +1,8 @@
 /***** V-TimeLine CSS :: r.8.7 / smart.framework.v.8.7 *****/
 
-/* V-TimeLine r.20210526
+/* V-TimeLine r.20220907
 	License: BSD
-	(c) 2015-2021 unix-world.org
+	(c) 2015-2022 unix-world.org
 	This software component was inspired from the following opensource projects:
 		(c) 2017 https://github.com/RyanFitzgerald/vertical-timeline
 		(c) 2014 https://github.com/soundarapandian/timeline
@@ -77,13 +77,13 @@
 	margin-left: 9px;
 	margin-top: 7px;
 	text-align:center;
-	font-size: 30px;
+	font-size: 1.875rem;
 }
 .vtml-timeline-icon div .sfi { /* sf icons */
 	margin-left: 0px;
 	margin-top: 7px;
 	display: block;
-	font-size: 32px !important;
+	font-size: 2rem !important;
 }
 .vtml-timeline-icon div .fa { /* font awesome icons */
 	margin-top: 13px;
@@ -138,8 +138,7 @@
 .vtml-timeline-content p,
 .vtml-timeline-content .vtml-read-more,
 .vtml-timeline-content .vtml-date {
-	font-size: 14px;
-	/* @alternate */ font-size: 0.875rem;
+	font-size: 0.875rem;
 	text-align: justify;
 }
 .vtml-timeline-content .vtml-read-more,
@@ -167,8 +166,7 @@
 	font-weight: bold;
 	float: left;
 	padding: 0.8rem 0;
-	font-size: 16px;
-	/* @alternate */ font-size: 1rem;
+	font-size: 1rem;
 }
 .vtml-timeline-content::before {
 	content: '';
@@ -210,18 +208,18 @@ hr.vtml-hr {
 	margin-left: 8px;
 	margin-top: 7px;
 	text-align:center;
-	font-size: 20px;
+	font-size: 1.25rem;
 }
 .vtml-small-container .vtml-timeline-icon div .sfi { /* sf icons */
 	margin-left: 0px;
 	margin-top: -2px;
 	display: block;
-	font-size: 24px !important;
+	font-size: 1.5rem !important;
 }
 .vtml-small-container .vtml-timeline-icon div .fa { /* font awesome icons */
 	margin-top: 10px;
 	display: block;
-	font-size: 20px !important;
+	font-size: 1.25rem !important;
 }
 
 /* content */
@@ -233,7 +231,7 @@ hr.vtml-hr {
 .vtml-small-container .vtml-timeline-content p,
 .vtml-small-container .vtml-timeline-content .vtml-read-more,
 .vtml-small-container .vtml-timeline-content .vtml-date {
-	font-size: 0.813rem;
+	font-size: 0.8125rem;
 	text-align: initial;
 }
 
@@ -244,7 +242,7 @@ hr.vtml-hr {
 
 .vtml-small-container .vtml-timeline-content .vtml-date {
 	padding: 0;
-	font-size: 0.938rem;
+	font-size: 0.9375rem;
 }
 
 .vtml-small-container .vtml-timeline-content .vtml-read-more {
