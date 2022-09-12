@@ -47,7 +47,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * );
  *
  * // Sample POST, with optional Files and Cookies ; If Files, will send multipart form data
- * $browser = new SmartHttpClient();
+ * $browser = new SmartHttpClient('1.1'); // HTTP 1.1
  * $browser->postvars = [
  * 		'var1' => 'val1',
  * 		'var2' => 'val2'
@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS, SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20220909
+ * @version 	v.20220910
  * @package 	@Core:Network
  *
  */
@@ -99,7 +99,7 @@ final class SmartHttpClient {
 	/**
 	 * User agent (if used as robot, it must have the robot in the name to avoid start un-necessary sessions)
 	 * @var STRING
-	 * @default 'NetSurf/3.9 (Smart.Framework {version}; {OS} {Release} {Arch}; PHP/{php-ver})'
+	 * @default 'NetSurf/3.10 (Smart.Framework {version}; {OS} {Release} {Arch}; PHP/{php-ver})'
 	 */
 	public $useragent;
 
@@ -130,7 +130,7 @@ final class SmartHttpClient {
 
 	/**
 	 * Pre-Built Post Type (used to set the Content-Type header) ; Example: 'application/json'
-	 * This is used just with $poststring
+	 * This should be used just with $poststring to set a different content type than default which is 'application/x-www-form-urlencoded'
 	 * @var STRING
 	 * @default ''
 	 */
@@ -238,7 +238,7 @@ final class SmartHttpClient {
 	public function __construct($http_protocol='1.0') {
 
 		//-- signature (fake) as NetSurf Browser - which is a real browser but have no default support for Javascript
-		$this->useragent = 'NetSurf/3.9 ('.'Smart.Framework '.SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.SMART_FRAMEWORK_RELEASE_VERSION.'; '.php_uname('s').' '.php_uname('r').' '.php_uname('m').'; '.'PHP/'.PHP_VERSION.')';
+		$this->useragent = 'NetSurf/3.10 ('.'Smart.Framework '.SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.SMART_FRAMEWORK_RELEASE_VERSION.'; '.php_uname('s').' '.php_uname('r').' '.php_uname('m').'; '.'PHP/'.PHP_VERSION.')';
 		//--
 
 		//-- connection timeout
@@ -845,9 +845,13 @@ final class SmartHttpClient {
 			//--
 			$header_form_type = '';
 			$post_string = '';
+			$type_post_content = '';
 			if((string)$this->poststring != '') {
 				if((string)$this->posttype != '') {
-					$header_form_type = (string) $this->posttype;
+					$type_post_content = (string) Smart::normalize_spaces((string)SmartUnicode::fix_charset((string)trim((string)$this->posttype)));
+				} //end if
+				if((string)$type_post_content != '') {
+					$header_form_type = (string) $type_post_content;
 				} else {
 					$header_form_type = 'application/x-www-form-urlencoded';
 				} //end if else

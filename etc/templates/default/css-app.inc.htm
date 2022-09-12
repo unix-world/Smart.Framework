@@ -1,4 +1,4 @@
-<!-- CSS APP (Custom) :: r.20210612 -->
+<!-- CSS APP (Custom) :: r.20220910 -->
 [%%%COMMENT%%%] Hint: css with fonts speedup loading page: replace the attribute 'media="all"' for link tag with: 'media="none" onload="if(media!='all'){media='all';}"' [%%%/COMMENT%%%]
 <!-- Font -->
 [%%%IF:SEMAPHORE:&*<load:font:serif>;(16)%%%]
@@ -13,8 +13,10 @@
 <style type="text/css">* { font-family: 'IBM Plex Sans',arial,sans-serif; }</style>
 [%%%/IF:SEMAPHORE(17)%%%]
 [%%%/IF:SEMAPHORE(16)%%%]
-<!-- Custom Styles -->
+<!-- Default Styles -->
 <link rel="stylesheet" type="text/css" href="etc/templates/default/styles.css?[###RELEASE-HASH|url|html###]">
-<!-- App CSS -->
+<!-- UX Css -->
+<link rel="stylesheet" type="text/css" href="lib/css/ux.css?[###RELEASE-HASH|url|html###]">
+<!-- App Css -->
 <link rel="stylesheet" type="text/css" href="lib/core/css/app.css?[###RELEASE-HASH|url|html###]">
 <!-- # -->

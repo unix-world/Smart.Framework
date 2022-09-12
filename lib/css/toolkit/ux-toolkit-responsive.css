@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman (stable.20220908), (c) 2015-2022 unix-world.org
+	extended by unixman (stable.20220910), (c) 2015-2022 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -190,24 +190,6 @@ License: BSD
 
 @media (hover: none), all and (max-width:767px) { /* touchscreens or screens with a width lower than 768 */
 
-	/* Menu Bars (by Unixman) */
-
-	.ux-menubar-bar .ux-menubar-bar-item,
-	.ux-menubar-bar .ux-menubar-dropdown-hover {
-		float: none;
-		width: 100% !important;
-		text-align: left;
-	}
-	.ux-menubar-dropdown-content {
-		width: calc(98% - 50px) !important;
-	}
-
-	/* Menus, Horizontal */
-
-	.ux-menu-horizontal {
-		white-space: normal !important;
-	}
-
 	/* Responsive NavBar Menu (by Unixman) */
 
 	nav.ux-navbar span.detail-s {
@@ -361,6 +343,24 @@ License: BSD
 	}
 	nav.ux-navbar.navbar-black ul ul ul li * {
 		background-color: #192030 !important;
+	}
+
+	/* Menu Bars (by Unixman) */
+
+	.ux-menubar-bar .ux-menubar-bar-item,
+	.ux-menubar-bar .ux-menubar-dropdown-hover {
+		float: none;
+		width: 100% !important;
+		text-align: left;
+	}
+	.ux-menubar-dropdown-content {
+		width: calc(98% - 50px) !important;
+	}
+
+	/* Menus, Horizontal */
+
+	.ux-menu-horizontal {
+		white-space: normal !important;
 	}
 
 }

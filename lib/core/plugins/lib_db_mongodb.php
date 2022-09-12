@@ -28,7 +28,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 /**
  * Class Smart MongoDB Client (for PHP MongoDB extension v.1.1.0 or later)
- * Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 / 4.3 / 4.4 / 5.0
+ * Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 / 4.3 / 4.4 / 5.0 / 5.1 / 5.2
  *
  * <code>
  *
@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartComponents
- * @version 	v.20220804
+ * @version 	v.20220912
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -100,10 +100,10 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	private $connected = false;
 
 	/** @var string */
-	private $min_ver_srv = '2.6.0'; // min mongodb server version supported
+	private $min_ver_srv = '3.4.22'; // min mongodb server version supported ; prev supported version was 2.6.0 but was too old ; the 3.2 version is missing the `upsert` and `facet aggregation with fts` features ; 3.4 is supporting these features but only starting with 3.4.22 is stable
 
 	/** @var string */
-	private $min_ver_ext = '1.1.0'; // min mongodb php extension version supported
+	private $min_ver_ext = '1.3.0'; // prev supported version was 1.1.0 but the min php mongodb extension that supports `facet aggregation with fts` is 1.3
 
 
 	//======================================================

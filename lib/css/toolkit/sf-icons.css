@@ -23,12 +23,12 @@ Font Metrics:
 .sfi {
 	/* use !important to prevent issues with browser extensions that change fonts */
 	font-family: 'sf-icons' !important;
-	speak: none;
 	font-size: 1rem; /* 16px */
 	font-style: normal;
 	font-weight: normal;
 	font-variant: normal;
 	text-transform: none;
+	speak: none;
 	/* line-height: 1; */
 	/* Better Font Rendering */
 	font-smooth: grayscale !important;

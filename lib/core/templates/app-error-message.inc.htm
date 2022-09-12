@@ -1,4 +1,4 @@
-<!-- Partial Template: Core.AppErrorMessage v.20210526 -->
+<!-- Partial Template: Core.AppErrorMessage v.20220910 -->
 [%%%COMMENT%%%]
 	This should be ONLY a partial HTML template as is used after raising the main error !
 	IMPORTANT: It must not contain sub-templates as this is preloaded as plain text in memory to assure it will be available also for errors called from register_shutdown_function() handlers
@@ -32,7 +32,7 @@
 				<img width="48" src="[###CRR-URL|html###][###LOGO|html###]">
 				<br>
 				<br>
-				<font size="1" color="#778899"><sub><b>[###NAME|html###]</b><br><b><i>[###MODE|html###]&nbsp;[###TYPE|html###]</i></b></sub></font>
+				<span style="color:#778899;"><small><sub><b>[###NAME|html###]</b><br><b><i>[###MODE|html###]&nbsp;[###TYPE|html###]</i></b></sub></small></span>
 			</td>
 			<td align="left">
 				<div style="max-width:[###WIDTH|int###]px; overflow-x:auto;">

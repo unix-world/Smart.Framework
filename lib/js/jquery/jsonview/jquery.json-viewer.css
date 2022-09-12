@@ -1,7 +1,7 @@
 /**
  * jQuery json-viewer @ r.2016.08.22 # https://github.com/abodelot/jquery.json-viewer
  * @author: Alexandre Bodelot <alexandre.bodelot@gmail.com>
- * contains fixes by unixman: r.20220908
+ * contains fixes by unixman: r.20220910
  */
 
 /* fix by unixman */
@@ -15,27 +15,28 @@
 ul.json-dict, ol.json-array {
 	list-style-type: none;
 	margin: 0 0 0 1px;
-	border-left: 1px dotted #ccc;
+	border-left: 1px dotted #DDDDDD;
 	padding-left: 28px;
 	overflow: auto;
 }
 .json-key {
-	color: #333333;
+	color: #444444;
 	font-weight: bold;
 }
 .json-string {
-	color: #0B7500;
+	color: #5e6885;
 }
-.json-null {
-	color: #EE293A;
+.json-numeric {
+	color: #3367c2;
 	font-weight: bold;
 }
 .json-boolean {
-	color: #107DAC;
+	color: #2A9DF4;
 	font-weight: bold;
 }
-.json-numeric {
-	color: #005073;
+.json-null {
+	color: #ED2839;
+	font-weight: bold;
 }
 
 /* Toggle button */
@@ -43,8 +44,6 @@ a.json-toggle {
 	position: relative;
 	color: inherit;
 	text-decoration: none;
-	font-size: 14px;
-	line-height: 14px;
 }
 a.json-toggle:focus {
 	outline: none;

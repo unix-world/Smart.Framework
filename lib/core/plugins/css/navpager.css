@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Components / NavPager :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* v.20220907 */
+/* v.20220910 */
 
 /* ----------------------------- */
 
@@ -12,7 +12,7 @@
 }
 
 #nav-pager-box * {
-	font-size: 13px;
+	font-size: 0.8125rem;
 	font-weight: normal;
 }
 
@@ -32,25 +32,27 @@
 }
 
 #nav-pager-box a#nav-pager-item {
-	border: 1px solid #BBBBBB;
+	color: #666666;
 	background: #FCFCFC;
-	color: #333333;
+	border: 1px solid #DDDDDD;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 #nav-pager-box a#nav-pager-item:hover {
-	color: #000000;
-	background: #FFFFFF;
 	text-decoration: underline;
 }
+
 #nav-pager-box span#nav-pager-current {
-	border: 1px solid #BBBBBB;
+	color: #EEEEEE;
 	background: #555555;
-	color: #FFFFFF;
+	border: 1px solid #444444;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 #nav-pager-box span#nav-pager-dots,
 #nav-pager-box span#nav-pager-dsbl-item {
-	border: 1px solid #BBBBBB;
+	color: #666666;
 	background: #FCFCFC;
-	color: #333333;
+	border: 1px solid #DDDDDD;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 	cursor: default;
 }
 

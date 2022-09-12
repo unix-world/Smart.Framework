@@ -1,5 +1,5 @@
 
-/* -- CSS Start :: Smart.Framework / Extra :: r.20220903 -- */
+/* -- CSS Start :: Smart.Framework / Extra :: r.20220910 -- */
 
 img#shaddow {
 	border: 0px;
@@ -20,10 +20,12 @@ code:not(.syntax) { /* .syntax is a reserved class used by prism */
 
 div.math-latex {
 	background: #E6E2D3;
-	color: #666666;
 	padding: 4px;
 	display: block;
 	width: max-content;
+}
+div.math-latex * {
+	color: #333333 !important;
 }
 div.math-latex,
 div.math-latex > div:not(.math-render-latex) {
@@ -69,7 +71,7 @@ div.math-render-latex {
 	display: block;
 }
 .nodisplay {
-	display: none;
+	display: none !important;
 }
 
 /* -- CSS End -- */

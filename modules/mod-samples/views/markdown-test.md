@@ -1,7 +1,7 @@
 # [%%%IF:TITLE:==;%%%]... ==Title is empty== ...[%%%ELSE:TITLE%%%][###TITLE|html###][%%%/IF:TITLE%%%]
 
 &copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
-Extended Markdown v.II (smart flavour) // Test :: r.20220907
+Extended Markdown v.II (smart flavour) // Test :: r.20220910
 
 # (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old "bad" features have been dropped, and others supported ==only in compatibility mode== ...
 
@@ -391,11 +391,11 @@ Colons can be used to align columns.
 | Action ^Help^ | ~~Display the ăĂîÎâÂşŞţŢșȘțȚ~~ help **window**.|
 | Action ~Close~ | _Closes_ a window |
 
-| Left-Aligned {T: @class=dbordered}  | Center Aligned {T: @class=dbordered}  | Right Aligned {T: @class=dbordered} |
+| Left-Aligned {T: @class=pbordered}  | Center Aligned {T: @class=pbordered}  | Right Aligned {T: @class=pbordered} |
 | :------------ |:---------------:| -----:|
-| col 3 is {T: @class=dbordered}      | some wordy text {T: @class=dbordered} | $1600 {T: @class=dbordered} |
-| col 2 is {T: @class=dbordered}      | centered {T: @class=dbordered}        |   $12 {T: @class=dbordered} |
-| zebra stripes {T: @class=dbordered} | are neat {T: @class=dbordered}        |    $1 {T: @class=dbordered} |
+| col 3 is {T: @class=pbordered}      | some wordy text {T: @class=pbordered} | $1600 {T: @class=pbordered} |
+| col 2 is {T: @class=pbordered}      | centered {T: @class=pbordered}        |   $12 {T: @class=pbordered} |
+| zebra stripes {T: @class=pbordered} | are neat {T: @class=pbordered}        |    $1 {T: @class=pbordered} |
 
 You can also use inline Markdown in tables.
 
@@ -503,17 +503,28 @@ Asterisks wit spaces
 
 \
 ;;;
-Here's a line for us to start with.
+:::
+Div start
+::::
+... and Sub-Div start
+####### Span TAG
+######## Dfn TAG
+... Sub-Div #end
+::::
+Div End
+:::
 
-This line is separated from the one above by two newlines, so it will be a *separate paragraph*.
+
+This line is separated from the one above by two newlines, so it will be a breakline.
 ;;;;
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
-::::
+::: .flexbox
 Some **text** before image ![Inline Base64 Image](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiB2aWV3Qm94PSIwIDAgNzIuMjQ4ODkzIDcyLjI0ODg5MyIgaWQ9InNpZ24taW5mbyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkIj4gPGRlZnMgaWQ9ImRlZnM0Ij4gIDxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyIgaWQ9InN0eWxlNiIgLz4gPC9kZWZzPiA8ZyBpZD0idGV4dDM3ODEiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOm5vbmU7Ij4gIDxnIGlkPSJnMzAwOSI+ICAgPHBhdGggZD0ibSA2Mi45MzA1NzMsMzYuMTI0NDQ2IGEgMjYuODA2MTI4LDI2LjgwNjEyOCAwIDEgMSAtNTMuNjEyMjUzNSwwIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgNTMuNjEyMjUzNSwwIHoiIGlkPSJwYXRoMzAxMSIgc3R5bGU9ImZpbGw6IzNiNTk5ODtmaWxsLW9wYWNpdHk6MTtmaWxsLXJ1bGU6ZXZlbm9kZDtzdHJva2U6IzNiNTk5ODtzdHJva2Utd2lkdGg6MTQuMTIxMDg1MTc7c3Ryb2tlLW9wYWNpdHk6MSIgLz4gICA8cGF0aCBkPSJtIDQwLjA1Mjk3OSwyOS44NjU4ODYgLTEwLjQwMzg0LDAgMCwxLjMwMDQ4IGMgMi4zODQyMTEsMC40ODc2NzkgMi44NzE4OTMsMC45NzUzNjIgMi44NzE4OTMsMy4xOTcwMTMgbCAwLDE1LjkzMDg4IGMgMCwyLjIyMTY1MiAtMC4zNzkzMDksMi42NTUxNDggLTIuODcxODkzLDMuMjUxMjAxIGwgMCwxLjMwMDQ4IDEyLjk1MDYxNCwwIDAsLTEuMzAwNDggYyAtMS44OTY1MzIsLTAuMjcwOTMzIC0yLjU0Njc3NCwtMS4wMjk1NDkgLTIuNTQ2Nzc0LC0zLjA4ODY0MSBsIDAsLTIwLjU5MDkzMyBNIDM2LjI1OTkxMiwxNy40MDI5NTIgYyAtMi4zMzAwMjQsMCAtNC4yMjY1NiwxLjg5NjUzNSAtNC4yMjY1Niw0LjE3MjM3MyAwLDIuNDM4Mzk4IDEuNzg4MTYzLDQuMjI2NTYgNC4xNzIzNzQsNC4yMjY1NiAyLjM4NDIxMSwwIDQuMjI2NTYsLTEuNzg4MTYyIDQuMjI2NTYsLTQuMTcyMzczIDAsLTIuMzMwMDI1IC0xLjg0MjM0OSwtNC4yMjY1NiAtNC4xNzIzNzQsLTQuMjI2NTYiIGlkPSJwYXRoMzAwNiIgc3R5bGU9ImZpbGw6I2ZmZmZmZjsiIC8+ICA8L2c+IDwvZz48L3N2Zz4= "Inline Base64 Image") and some ``text`` after
-::::
+:::
 ![Alternate Text](https://www.gstatic.com/webp/gallery/1.sm.jpg "Sample Alternate Image: Jpeg and Webp with Unveil"){I: .testClass1 .testClass2 #testID @data-test=Sample$Image %lazyload=unveil %alternate=https://www.gstatic.com/webp/gallery/1.sm.webp$image/webp}
 ;;;;
+
 ;;;
 
 

@@ -3,11 +3,12 @@
 * Author: Flavius Matis - http://flaviusmatis.github.com/
 * URL: https://github.com/flaviusmatis/simplePagination.js
 *
-* (c) 2016-2019 unix-world.org
-* contains fixes by unixman r.20190103:
+* (c) 2016-2022 unix-world.org
+* contains fixes by unixman r.20220910:
 * 	- style improvements
 * 	- fixes for google.closures.stylesheet
 * 	- removed compact theme
+* 	- all styles optimized
 */
 
 ul.simple-pagination {
@@ -17,7 +18,7 @@ ul.simple-pagination {
 .simple-pagination {
 	display: block;
 	overflow: hidden;
-	padding: 0 5px 5px 0;
+	padding: 0;
 	margin: 0;
 }
 
@@ -29,127 +30,87 @@ ul.simple-pagination {
 
 .simple-pagination li {
 	list-style: none;
-	padding: 0;
 	float: left;
+	padding: 0;
 	margin: 0;
-	margin-bottom: 5px;
-	margin-bottom: 5px;
+	margin-top: 7px;
+	margin-bottom: 7px;
 }
 
-span.ellipse.clickable {
+.simple-pagination li .prev,
+.simple-pagination li .next,
+.simple-pagination li span.ellipse {
+	font-weight: bold;
+}
+
+.simple-pagination li span.ellipse.clickable {
 	cursor: pointer;
 }
 
-span.ellipse {
-	height:24px;
-}
-
-span.ellipse input {
-	background: #FFFFFF;
-	width: 55px;
+.simple-pagination li span.ellipse input {
+	color: #444444 !important;
+	background: #FFFFFF !important;
 	border: 0 !important;
-	height: 24px;
+	width: 100% !important;
+	height: 100% !important;
+	vertical-align: middle !important;
+}
+
+.simple-pagination a,
+.simple-pagination span,
+.simple-pagination span.ellipse.clickable {
+	float: left;
+	display: block;
 	vertical-align: middle;
-}
-
-/*------------------------------------*\
-	Light Theme Styles
-\*------------------------------------*/
-
-.light-theme a, .light-theme span, .light-theme span.ellipse.clickable {
-	float: left;
-	color: #666;
-	font-size:14px;
-	line-height:24px;
+	line-height: 1.5rem;
+	font-size: 0.875rem;
 	font-weight: normal;
 	text-align: center;
-	text-decoration: none;
-	border: 1px solid #BBB;
-	min-width: 14px;
-	max-width: 55px;
-	padding: 0 7px;
+	min-width: 0.875rem;
+	max-width: 3.5rem;
+	height: 1.5rem;
+	padding: 0 7px 0 7px;
 	margin: 0 5px 0 0;
 	border-radius: 3px;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-	background: #efefef; /* Old browsers */
-	/* @alternate */ background: -moz-linear-gradient(top, #ffffff 0%, #efefef 100%); /* FF3.6+ */
-	/* @alternate */ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#efefef)); /* Chrome,Safari4+ */
-	/* @alternate */ background: -webkit-linear-gradient(top, #ffffff 0%,#efefef 100%); /* Chrome10+,Safari5.1+ */
-	/* @alternate */ background: -o-linear-gradient(top, #ffffff 0%,#efefef 100%); /* Opera11.10+ */
-	/* @alternate */ background: -ms-linear-gradient(top, #ffffff 0%,#efefef 100%); /* IE10+ */
-	/* @alternate */ background: linear-gradient(top, #ffffff 0%,#efefef 100%); /* W3C */
 }
 
-.light-theme a:hover {
-	text-decoration: none; /* unixman */
+.simple-pagination a,
+.simple-pagination a:hover {
+	text-decoration: none;
+}
+
+.simple-pagination .ellipse {
+	background: none;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	cursor: default;
+}
+
+.simple-pagination .current {
+	cursor: default;
+}
+
+/* Light and Dark Theme */
+
+.simple-pagination.light-theme a,
+.simple-pagination.light-theme span,
+.simple-pagination.light-theme span.ellipse.clickable,
+.simple-pagination.dark-theme .current {
+	color: #666666;
 	background: #FCFCFC;
-}
-
-.light-theme .current {
-	background: #666;
-	color: #FFF;
-	border-color: #444;
-	box-shadow: 0 1px 0 rgba(255,255,255,1), 0 0 2px rgba(0, 0, 0, 0.3) inset;
-	cursor: default;
-}
-
-.light-theme .ellipse {
-	background: none;
-	border: none;
-	border-radius: 0;
-	box-shadow: none;
-	font-weight: bold;
-	cursor: default;
-}
-
-/*------------------------------------*\
-	Dark Theme Styles
-\*------------------------------------*/
-
-.dark-theme a, .dark-theme span, .dark-theme span.ellipse.clickable {
-	float: left;
-	color: #CCC;
-	font-size:14px;
-	line-height:24px;
-	font-weight: normal;
-	text-align: center;
-	text-decoration: none;
-	border: 1px solid #222;
-	min-width: 14px;
-	max-width: 55px;
-	padding: 0 7px;
-	margin: 0 5px 0 0;
-	border-radius: 3px;
+	border: 1px solid #DDDDDD;
 	box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-	background: #555; /* Old browsers */
-	/* @alternate */ background: -moz-linear-gradient(top, #555 0%, #333 100%); /* FF3.6+ */
-	/* @alternate */ background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#555), color-stop(100%,#333)); /* Chrome,Safari4+ */
-	/* @alternate */ background: -webkit-linear-gradient(top, #555 0%,#333 100%); /* Chrome10+,Safari5.1+ */
-	/* @alternate */ background: -o-linear-gradient(top, #555 0%,#333 100%); /* Opera11.10+ */
-	/* @alternate */ background: -ms-linear-gradient(top, #555 0%,#333 100%); /* IE10+ */
-	/* @alternate */ background: linear-gradient(top, #555 0%,#333 100%); /* W3C */
 }
 
-.dark-theme a:hover {
-	text-decoration: none; /* unixman */
-	background: #444;
-}
-
-.dark-theme .current {
-	background: #fff;
-	color: #333;
-	border-color: #666;
-	box-shadow: 0 1px 0 rgba(255,255,255,0.2), 0 0 1px 1px rgba(0, 0, 0, 0.1) inset;
-	cursor: default;
-}
-
-.dark-theme .ellipse { /* unixman */
-	background: none;
-	border: none;
-	border-radius: 0;
-	box-shadow: none;
-	font-weight: bold;
-	cursor: default;
+.simple-pagination.dark-theme a,
+.simple-pagination.dark-theme span,
+.simple-pagination.dark-theme span.ellipse.clickable,
+.simple-pagination.light-theme .current {
+	color: #EEEEEE;
+	background: #555555;
+	border: 1px solid #444444;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 
 /* END */

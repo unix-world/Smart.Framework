@@ -52,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20220907
+ * @version 	v.20220910
  * @package 	PageBuilder
  *
  */
@@ -181,7 +181,7 @@ final class Manager {
 		$text['translatable'] 		= 'Translatable';
 		$text['translations'] 		= 'Translations';
 		$text['warn_translations'] 	= 'WARNING: This PageBuilder Object is marked as Not Translatable but some Translations are detected';
-		$text['counter'] 			= 'Hit Counter';
+		$text['counter'] 			= 'Hits';
 		$text['pw_code'] 			= 'Code Preview';
 		$text['pw_data'] 			= 'Data Preview';
 		$text['pw_media'] 			= 'Media Preview';

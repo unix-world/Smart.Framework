@@ -1,5 +1,5 @@
 
-/* -- CSS Start :: Smart.Framework / Base :: r.20220907 -- */
+/* -- CSS Start :: Smart.Framework / Base :: r.20220910 -- */
 
 * {
 	font-family: 'IBM Plex Sans', 'Noto Sans', arial, sans-serif;
@@ -42,6 +42,7 @@ ol {
 }
 li {
 	list-style-position: inside; /* bugfix for chrome */
+	padding-bottom: 5px; /* fix for mobile elements too close */
 }
 
 table, pre, code, code * {
@@ -94,7 +95,7 @@ img {
 
 hr {
 	border: none 0;
-	border-top: 1px solid #CCCCCC;
+	border-top: 1px solid #EEEEEE;
 	height: 1px;
 }
 
@@ -121,6 +122,14 @@ a, a:link, a:visited, a:hover {
 
 input[type="text"]:disabled {
 	background-color: #FFFFFF;
+}
+
+/* ----- mobiles ----- */
+
+@media (hover: none), all and (max-width:767px) { /* touchscreens or screens with a width lower than 768 */
+	li {
+		padding-bottom: 10px; /* fix for mobile elements too close */
+	}
 }
 
 /* -- CSS End -- */

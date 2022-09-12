@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20220907
+ * @version 	v.20220910
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220907';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220910';
 
 	//===================================
 
@@ -881,7 +881,7 @@ final class SmartMarkdownToHTML {
 				if(strpos((string)$text, '####### ') === 0) { // skip div and newline for (h7:span) ; add a space before
 					$tag_start = ' '; // preserve a space instead newline
 					$tag_end = '';
-				} elseif(strpos((string)$text, '######## ') === 0) { // skip div and newline for (h8:data) ; add a newline before
+				} elseif(strpos((string)$text, '######## ') === 0) { // skip div and newline for (h8:dfn) ; add a newline before
 					$tag_start = "\n";
 					$tag_end = '';
 				} else { // for all the rest, DEFAULT
@@ -914,14 +914,14 @@ final class SmartMarkdownToHTML {
 				$tag_end = '</span>'; // no extra new line
 				$attributes = null;
 				break;
-			case 'data': // h8
+			case 'dfn': // h8
 				$headings_parsed = true; // avoid re-parse headers in the same line if already there is one
-				$attributes = (array) $this->parseElementAttributes((string)$text, 'data'); // parse as h7
+				$attributes = (array) $this->parseElementAttributes((string)$text, 'dfn'); // parse as h7
 				$text = (string) $attributes['element:text'];
 				$atts = (array)  $attributes['element:atts'];
 				$attributes = null;
-				$tag_start = '<data'.$this->buildAttributeData((array)$atts).'>';
-				$tag_end = '</data>'; // no extra new line
+				$tag_start = '<dfn'.$this->buildAttributeData((array)$atts).'>';
+				$tag_end = '</dfn>'; // no extra new line
 				$attributes = null;
 				break;
 			case 'li':
@@ -1235,7 +1235,7 @@ final class SmartMarkdownToHTML {
 			case 'h5':
 			case 'h6':
 			case 'span': // h7
-			case 'data': // h8
+			case 'dfn': // h8
 				$regex = (string) self::regexHeadingAttribute;
 				break;
 			case 'td':
@@ -1572,7 +1572,7 @@ final class SmartMarkdownToHTML {
 				$media_title = (string) str_replace("\t", ' ', (string)$media_title);
 				//--
 				if(strpos((string)$media_title, 'sfi sfi-') === 0) {
-					return '<i class="sfi sfi-'.Smart::escape_html((string)substr((string)$media_title, 8)).'"></i>&nbsp; '.($media_alt_txt ? self::renderAltOrTitle((string)$media_alt_txt) : '');
+					return '<i class="sfi sfi-'.Smart::escape_html((string)substr((string)$media_title, 8)).'"'.(isset($atts['style']) ? 'style="'.Smart::escape_html((string)$atts['style']).'"' : '').'></i>&nbsp; '.($media_alt_txt ? self::renderAltOrTitle((string)$media_alt_txt) : '');
 				} //end if
 				//--
 			} //end if
@@ -1952,9 +1952,9 @@ final class SmartMarkdownToHTML {
 				$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, (int)((int)$level+1)), 'span', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
 				$line_is_unparsed = false;
 			} //end if
-		} elseif((int)$level == 8) { // data
-			if(strpos((string)$line_crr, '# ') === (int)((int)$level-1)) { // h8:data
-				$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, (int)((int)$level+1)), 'data', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
+		} elseif((int)$level == 8) { // dfn
+			if(strpos((string)$line_crr, '# ') === (int)((int)$level-1)) { // h8:dfn
+				$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, (int)((int)$level+1)), 'dfn', true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
 				$line_is_unparsed = false;
 			} //end if
 		} //end if
@@ -2069,7 +2069,7 @@ final class SmartMarkdownToHTML {
 		//--
 		$is_blockquote = false;
 		$is_div = false;
-		$is_flexbox = false;
+		$is_sdiv = false;
 		$is_section = false;
 		$is_article = false;
 		$def_lists = null;
@@ -2185,26 +2185,26 @@ final class SmartMarkdownToHTML {
 						//--
 					} //end if else
 					//--
-			//======= Flexbox Div (cannot have attributes because need a fixed match to avoid div match this on closing loop ; div matches start with :::)
-				} elseif(strpos((string)$arr[$i], '::::') === 0) { // flexbox, derive from div but with 4 colons to allow flexbox in div, 2 divs can't be nested
+			//======= Sub-Div (it is needed to allow insert a div in another div because in markdown elements can't be nested if they are the same type)
+				} elseif(strpos((string)$arr[$i], '::::') === 0) {
 					//--
-					if($is_flexbox === true) { // close flexbox
+					if($is_sdiv === true) { // close sub-div
 						//--
-						$is_flexbox = false;
+						$is_sdiv = false;
 						//--
-						$arr[$i] = '</div><!-- /fxb -->'."\n"; // {{{SYNC-MKDW-ENDTAG-FLEXBOX}}}
+						$arr[$i] = '</div><!-- /sdiv -->'."\n"; // {{{SYNC-MKDW-ENDTAG-SUBDIV}}}
 						$line_is_unparsed = false;
 						//--
-					} else { // open flexbox
+					} else { // open sub-div
 						//--
-						$is_flexbox = true;
+						$is_sdiv = true;
 						//--
-						$fbx_atts = (array) (array) $this->parseAttributeData('div', (string)ltrim((string)$arr[$i], ':'));
+						$sdiv_atts = (array) (array) $this->parseAttributeData('div', (string)ltrim((string)$arr[$i], ':'));
 						//--
-						$arr[$i] = '<!-- fxb --><div class="flexbox"'.(isset($fbx_atts['id']) ? ' id="'.Smart::escape_html((string)$fbx_atts['id']).'"' : '').$this->buildAttributeData((array)$fbx_atts, [ 'id' => false, 'class' => false ]).'>'; // do not parse inline: id, class ; class is fixed
+						$arr[$i] = '<!-- sdiv --><div'.(isset($sdiv_atts['id']) ? ' id="'.Smart::escape_html((string)$sdiv_atts['id']).'"' : '').(isset($sdiv_atts['class']) ? ' class="'.Smart::escape_html((string)$sdiv_atts['class']).'"' : '').$this->buildAttributeData((array)$sdiv_atts, [ 'id' => false, 'class' => false ]).'>'; // do not parse inline: id, class
 						$line_is_unparsed = false;
 						//--
-						$fbx_atts = null;
+						$sdiv_atts = null;
 						//--
 					} //end if else
 					//--
@@ -2231,7 +2231,7 @@ final class SmartMarkdownToHTML {
 						//--
 					} //end if else
 					//--
-			//======= Article (must read above section to match condition)
+			//======= Article
 				} elseif(strpos((string)$arr[$i], ';;;;') === 0) { // article
 					//--
 					if($is_article === true) { // close article
@@ -2543,10 +2543,10 @@ final class SmartMarkdownToHTML {
 			$text .= '</div>'."\n"; // {{{SYNC-MKDW-ENDTAG-DIV}}}
 			self::notice_log((string)__METHOD__, ' # Unclosed tag found: DIV :::');
 		} //end if
-		if($is_flexbox === true) {
-			$is_flexbox = false;
-			$text .= '</div><!-- /fxb -->'."\n"; // {{{SYNC-MKDW-ENDTAG-FLEXBOX}}}
-			self::notice_log((string)__METHOD__, ' # Unclosed tag found: DIV.FLEXBOX ::::');
+		if($is_sdiv === true) {
+			$is_sdiv = false;
+			$text .= '</div><!-- /sdiv -->'."\n"; // {{{SYNC-MKDW-ENDTAG-SUBDIV}}}
+			self::notice_log((string)__METHOD__, ' # Unclosed tag found: DIV.SUB ::::');
 		} //end if
 		if($is_section === true) {
 			$is_section = false;

@@ -1,5 +1,5 @@
 
-/* ------------------------------------------------ CSS3, Base Styles START :: r.20220907 */
+/* ------------------------------------------------ CSS3, Base Styles START :: r.20220910 */
 
 /* IMPORTANT: !! FOR A VERY CLEAR READABILITY OF PAGE FONTS !!
  * except the main body and main elements sizes (sized in pixels),
@@ -54,6 +54,7 @@ ol {
 }
 li {
 	list-style-position: inside; /* bugfix for chrome */
+	padding-bottom: 5px; /* fix for mobile elements too close */
 }
 
 table, pre, code, code * {
@@ -106,7 +107,7 @@ img {
 
 hr {
 	border: none 0;
-	border-top: 1px solid #CCCCCC;
+	border-top: 1px solid #EEEEEE;
 	height: 1px;
 }
 
@@ -166,6 +167,14 @@ div#app-container.app-box {
 	padding-left:  3px !important;
 	padding-top:   1px !important;
 	padding-right: 3px !important;
+}
+
+/* ----- mobiles ----- */
+
+@media (hover: none), all and (max-width:767px) { /* touchscreens or screens with a width lower than 768 */
+	li {
+		padding-bottom: 10px; /* fix for mobile elements too close */
+	}
 }
 
 /* ------------------------------------------------ Base Styles END */

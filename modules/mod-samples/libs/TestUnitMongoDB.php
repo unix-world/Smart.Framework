@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20220912
  *
  */
 final class TestUnitMongoDB {
@@ -595,7 +595,7 @@ final class TestUnitMongoDB {
 						[	'$limit' => 4 ], 	// limit results: in the case of aggregate this is limit(3) + skip(1) = 4
 						[	'$skip' => 1 ] 		// offset (1)
 					],
-					'cursor' => [ 'batchSize' => 0 ] // this is required by MongoDB Server 3.6
+					'cursor' => [ 'batchSize' => 0 ] // this is required by MongoDB Server 3.6 and later
 				]
 			);
 			if((\Smart::array_size($result) != 3) OR (\Smart::array_size($result[0]) <= 0) OR (\Smart::array_size($result[1]) <= 0) OR (\Smart::array_size($result[2]) <= 0)) {
@@ -673,61 +673,59 @@ final class TestUnitMongoDB {
 
 		//--
 		if((string)$err == '') {
-			if((\version_compare((string)$mongo->get_server_version(), '3.4') >= 0) AND (\version_compare((string)$mongo->get_ext_version(), '1.3') >= 0)) {
-				$tst = 'Facet Aggregation with FTS (only for MongoDB Server >= 3.4 / MongoDB Extension >= 1.3)';
-				$tests[] = (string) $tst;
-				$result = $mongo->command(
-					[
-						'aggregate' => (string) 'myTestCollection',
-						'pipeline' => [ // return a pipeline
-							[
-								'$match' => [
-									'id' => [ '$exists' => true ], // query
-									'$text' => [ '$search' => 'test', '$language' => 'en' ] // FTS query
-								]
-							],
-							[
-								'$facet' => [ // $facet only works on MongoDB 3.4 or later !!
-									'records@ALL' => [
-										[
-											'$project' => [
-												'id' => true,
-												'title' => true,
-												'name' => true,
-												'cost' => true,
-												'language' => true,
-												'dictionary' => true,
-												'score' => [ '$meta' => 'textScore' ], // only for FTS
-											]
-										],
-										[ '$sort' => [ 'score' => -1 ] ], // order desc by FTS score
-										[ '$skip' => 0 ], // offset
-										[ '$limit' => 100 ] // limit
-									],
-									'count@ALL' => [
-										[ '$count' => 'total' ]
-									],
-									'countBy@COST' => [
-										[ '$unwind' => '$cost' ],
-										[ '$sortByCount' => '$cost' ]
-									],
-									'count@TITLE:#exists' => [
-										[ '$match' => [ 'title' => [ '$exists' => true ] ] ],
-										[ '$count' => 'count' ]
-									],
-									'count@TITLE:#!exists' => [
-										[ '$match' => [ 'title' => [ '$exists' => false ] ] ],
-										[ '$count' => 'count' ]
-									]
-								],
+			$tst = 'Facet Aggregation with FTS (only for MongoDB Server >= 3.4 / MongoDB Extension >= 1.3)';
+			$tests[] = (string) $tst;
+			$result = $mongo->command(
+				[
+					'aggregate' => (string) 'myTestCollection',
+					'pipeline' => [ // return a pipeline
+						[
+							'$match' => [
+								'id' => [ '$exists' => true ], // query
+								'$text' => [ '$search' => 'test', '$language' => 'en' ] // FTS query
 							]
 						],
-						'cursor' => [ 'batchSize' => 0 ] // this is required by MongoDB Server 3.6
-					]
-				);
-				if((\Smart::array_size($result) != 1) OR (\Smart::array_size($result[0]) <= 0) OR (\Smart::array_size($result[0]['records@ALL']) != 11) OR (\Smart::array_size($result[0]['count@TITLE:#exists']) <= 0) OR (\Smart::array_size($result[0]['count@TITLE:#exists'][0]) <= 0) OR ($result[0]['count@TITLE:#exists'][0]['count'] != 1)) {
-					$err = 'The Test: '.$tst.' FAILED ! Expected result of one specific document but is different: '.\print_r($result,1);
-				} //end if
+						[
+							'$facet' => [ // $facet only works on MongoDB 3.4 or later !!
+								'records@ALL' => [
+									[
+										'$project' => [
+											'id' => true,
+											'title' => true,
+											'name' => true,
+											'cost' => true,
+											'language' => true,
+											'dictionary' => true,
+											'score' => [ '$meta' => 'textScore' ], // only for FTS
+										]
+									],
+									[ '$sort' => [ 'score' => -1 ] ], // order desc by FTS score
+									[ '$skip' => 0 ], // offset
+									[ '$limit' => 100 ] // limit
+								],
+								'count@ALL' => [
+									[ '$count' => 'total' ]
+								],
+								'countBy@COST' => [
+									[ '$unwind' => '$cost' ],
+									[ '$sortByCount' => '$cost' ]
+								],
+								'count@TITLE:#exists' => [
+									[ '$match' => [ 'title' => [ '$exists' => true ] ] ],
+									[ '$count' => 'count' ]
+								],
+								'count@TITLE:#!exists' => [
+									[ '$match' => [ 'title' => [ '$exists' => false ] ] ],
+									[ '$count' => 'count' ]
+								]
+							],
+						]
+					],
+					'cursor' => [ 'batchSize' => 0 ] // this is required by MongoDB Server 3.6
+				]
+			);
+			if((\Smart::array_size($result) != 1) OR (\Smart::array_size($result[0]) <= 0) OR (\Smart::array_size($result[0]['records@ALL']) != 11) OR (\Smart::array_size($result[0]['count@TITLE:#exists']) <= 0) OR (\Smart::array_size($result[0]['count@TITLE:#exists'][0]) <= 0) OR ($result[0]['count@TITLE:#exists'][0]['count'] != 1)) {
+				$err = 'The Test: '.$tst.' FAILED ! Expected result of one specific document but is different: '.\print_r($result,1);
 			} //end if
 		} //end if
 		//--

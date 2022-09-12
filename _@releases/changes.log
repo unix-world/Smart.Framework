@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+September 10, 2022
+	* Add PostType to SmartHttpClient to be able to set other content type than application/x-www-form-urlencoded with POST
+	* Refactoring app.css in 2 parts: ux.css and app.css which will split requests in 2 separate threads rather than one
+
 September 08, 2022
 	* Fix UX buttons and notifications colors to not be very close with buttons
 	* Add extra css classes to notifications

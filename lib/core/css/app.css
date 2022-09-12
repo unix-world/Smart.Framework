@@ -1,23 +1,7 @@
 
-/* -- CSS Start :: Smart.Framework / App :: r.20210612 -- */
+/* -- CSS Start :: Smart.Framework / App :: r.20220910 -- */
 
 /* ----------------------------- */
-
-/* -- ui toolkit -- */
-
-@import url("../../../lib/css/toolkit/sf-icons.css");
-@import url("../../../lib/css/toolkit/ux-toolkit.css");
-@import url("../../../lib/css/toolkit/ux-toolkit-responsive.css");
-
-/* -- ui toolkit extras -- */
-
-@import url("../../../lib/css/animate/animate.css");
-
-@import url("../../../lib/css/v-timeline/style.css");
-@import url("../../../lib/css/v-timeline/style-responsive.css");
-
-@import url("../../../lib/css/txt-columns/style.css");
-@import url("../../../lib/css/txt-columns/style-responsive.css");
 
 /* -- core -- */
 
@@ -30,13 +14,11 @@
 
 /* -- plugins -- */
 
-@import url("../../../lib/core/plugins/css/email.css");
-
 @import url("../../../lib/core/plugins/css/markdown.css");
 
 @import url("../../../lib/core/plugins/css/navpager.css");
 
-/* -- captcha -- */
+@import url("../../../lib/core/plugins/css/email.css");
 
 @import url("../../../lib/core/plugins/css/captcha.css");
 

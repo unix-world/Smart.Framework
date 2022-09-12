@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.2.2.8-r.20220907 */
+/* Smart.Markdown.parser # v.2.2.8-r.20220910 */
 
 /* ----------------------------- */
 
@@ -27,7 +27,7 @@
 /* Helpers */
 .markdown hr {
 	border: none 0;
-	border-top: 1px solid #EDEDED;
+	border-top: 1px solid #EEEEEE;
 	height: 1px;
 }
 
@@ -109,7 +109,7 @@
 .markdown table tr.bordered,
 .markdown table th.bordered,
 .markdown table td.bordered {
-	border: 1px solid #E0E0E0;
+	border: 1px solid #E4E4E4;
 }
 
 .markdown table.dbordered tr,
@@ -118,7 +118,7 @@
 .markdown table tr.dbordered,
 .markdown table th.dbordered,
 .markdown table td.dbordered {
-	border: 1px dashed #E0E0E0;
+	border: 1px dashed #DCDCDC;
 }
 
 .markdown table.pbordered tr,
@@ -127,7 +127,7 @@
 .markdown table tr.pbordered,
 .markdown table th.pbordered,
 .markdown table td.pbordered {
-	border: 1px dotted #E0E0E0;
+	border: 1px dotted #CCCCCC;
 }
 
 /* Quote, BlockQuote */
@@ -212,8 +212,8 @@
 	content: '˝';
 }
 .markdown del {
-	background: #FF4455;
-	color: #333333;
+	background: #c2203f;
+	color: #FFFFFF;
 }
 .markdown ins {
 	background: #C2D140;
@@ -226,8 +226,8 @@
 	font-style: normal; /* italic */
 }
 .markdown mark {
-	background: #F9EA82;
-	color: #111111;
+	background: #FFFFC7;
+	color: #333333;
 	font-weight: bold;
 	font-style: normal;
 }
@@ -241,11 +241,12 @@
 
 /* -- */
 
-.markdown data {
-	background: #666699;
-	color: #CCCCCC;
+.markdown dfn {
+	color: #666699;
 	font-size: 0.875rem;
 	padding: 1px;
+	font-weight: bold;
+	font-style: italic; /* normal */
 }
 
 /* ----------------------------- */
