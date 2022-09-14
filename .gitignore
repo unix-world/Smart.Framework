@@ -6,7 +6,6 @@ modules/mod-barcodes
 modules/mod-captcha
 modules/mod-cloud
 modules/mod-countries
-modules/mod-db-admin
 modules/mod-db-orm-redbean
 modules/mod-dbal-zend
 modules/mod-docs
