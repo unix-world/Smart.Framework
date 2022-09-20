@@ -1,0 +1,16 @@
+<script>
+const testValidJson = (data) => {
+	let theError = '';
+	let testJSON = null;
+	try {
+		testJSON = JSON.parse(data);
+	} catch(err) {
+		theError = String(err);
+	}
+//	if((!testJSON) || (jQuery.type(testJSON) !== 'object') || (jQuery.isEmptyObject(testJSON))) {
+//		theError = 'Invalid JSON Object';
+//	}
+	testJSON = null;
+	return String(theError);
+};
+</script>

@@ -1,5 +1,5 @@
 /*
- * Toastr v.3.1.7
+ * Toastr v.3.1.7.2
  * (c) 2021-2022 unix-world.org
  *
  * Based on Toastr v.2.1.1
@@ -14,14 +14,16 @@
 
 /*
 // (c) 2021-2022 unix-world.org
-// fixes by unixman r.20220730:
+// fixes by unixman r.20220920:
 // 	* Added renders: darknote, notice
+//	* Change the color theme
 */
 
 .toast-title {
 	font-weight: bold;
 	word-wrap: break-word;
 }
+
 .toast-message {
 	word-wrap: break-word;
 }
@@ -29,6 +31,26 @@
 .toast-message a:hover {
 	text-decoration: none;
 }
+
+.toast-message h1 {
+	font-size: 1.75rem;
+}
+.toast-message h2 {
+	font-size: 1.5rem;
+}
+.toast-message h3 {
+	font-size: 1.375rem;
+}
+.toast-message h4 {
+	font-size: 1.25rem;
+}
+.toast-message h5 {
+	font-size: 1.125rem;
+}
+.toast-message h6 {
+	font-size: 1rem;
+}
+
 .toast-close-button {
 	z-index: 2147483001;
 	position: relative;
@@ -38,13 +60,13 @@
 	font-size: 20px;
 	font-weight: bold;
 	text-shadow: 0 1px 0 #ffffff;
-	opacity: 0.8;
+	opacity: 0.6;
 }
 .toast-close-button:hover,
 .toast-close-button:focus {
 	text-decoration: none;
 	cursor: pointer;
-	opacity: 0.4;
+	opacity: 0.8;
 }
 button.toast-close-button { /* Additional properties for button version iOS requires the button element instead of an anchor tag. If you want the anchor version, it requires `href="#"`. */
 	padding: 0;
@@ -52,6 +74,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 	background: transparent;
 	border: 0;
 }
+
 .toast-top-center {
 	top: 0;
 	right: 0;
@@ -88,6 +111,7 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 	bottom: 12px;
 	left: 12px;
 }
+
 #toast-container {
 	position: fixed;
 	z-index: 2147483000;
@@ -101,26 +125,24 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 	overflow: hidden;
 	margin: 0 0 10px 0;
 	padding: 15px 15px 15px 20px;
-/*	width: 300px; */
-	min-width: 300px !important;
-	max-width: 450px !important;
+	width: 400px;
+	max-width: 44vw;
 	max-height: 96vh !important;
 	overflow-y: auto;
 	overflow-x: hidden;
 	border-radius: 3px 3px 3px 3px;
 	background-position: 15px center;
 	background-repeat: no-repeat;
-	box-shadow: 0 0 5px rgba(136,136,136,0.75);
-	opacity: 0.97;
+	box-shadow: 0 0 4px rgba(136,136,136,0.72);
+	opacity: 0.98;
 }
-@media all and (max-width:639px) {
+@media all and (max-width:767px) {
 	#toast-container > div {
-		min-width: 275px !important;
-		max-width: 300px !important;
+		max-width: 88vw;
 	}
 }
 #toast-container > :hover {
-	box-shadow: 0 0 7px #888888;
+	box-shadow: 0 0 6px #888888;
 	opacity: 1;
 /*	cursor: pointer; */
 }
@@ -134,22 +156,40 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 	max-width: 96%;
 	margin: auto;
 }
+
 .toast-progress {
 	position: absolute;
 	left: 0;
 	top: 0;
 	height: 4px;
-	opacity: 0.4;
+	opacity: 0.6;
 }
 
 /* appearance */
 
+.toast-message input,
+.toast-message button {
+	margin: 2px;
+	border: 1px solid #DDDDDD;
+}
+.toast-message input {
+	background: #FFFFFF;
+	color: #444444;
+}
+.toast-message button {
+	background: #EEEEEE;
+	color: #222222;
+}
+.toast-message button:hover {
+	background: #DDDDDD;
+}
+
 .toast,
 .toast * {
-	background-color: #D9EDF7;
+	background: #FFFFDD;
 }
 .toast > .toast-progress {
-	background-color: #FFFFFF;
+	background: #FFFFFF;
 }
 .toast,
 .toast * {
@@ -158,10 +198,10 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-darknote,
 .toast-darknote * {
-	background-color: #333333;
+	background: #444444;
 }
 .toast-darknote > .toast-progress {
-	background-color: #FFFFFF;
+	background: #FFFFFF;
 }
 .toast-darknote,
 .toast-darknote * {
@@ -170,11 +210,10 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-notice,
 .toast-notice * {
-	background-color: #FFFFFF;
-	opacity: 0.87;
+	background: #FFFFFF;
 }
 .toast-notice > .toast-progress {
-	background-color: #ECECEC;
+	background: #778888;
 }
 .toast-notice,
 .toast-notice * {
@@ -183,11 +222,10 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-light,
 .toast-light * {
-	background-color: #FEFF99;
-	opacity: 0.78;
+	background: #E9EDCA;
 }
 .toast-light > .toast-progress {
-	background-color: #E0E0E0;
+	background: #5E6885;
 }
 .toast-light,
 .toast-light * {
@@ -196,10 +234,10 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-info,
 .toast-info * {
-	background-color: #2F96B4;
+	background: #4D5774;
 }
 .toast-info > .toast-progress {
-	background-color: #FFFFFF;
+	background: #FFFFFF;
 }
 .toast-info,
 .toast-info * {
@@ -208,10 +246,10 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-success,
 .toast-success * {
-	background-color: #7CAE0A;
+	background: #7CAE0A;
 }
 .toast-success > .toast-progress {
-	background-color: #FFFFFF;
+	background: #FFFFFF;
 }
 .toast-success,
 .toast-success * {
@@ -220,10 +258,10 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-warning,
 .toast-warning * {
-	background-color: #FDC300;
+	background: #FDC300;
 }
 .toast-warning > .toast-progress {
-	background-color: #FFFFFF;
+	background: #FFFFFF;
 }
 .toast-warning,
 .toast-warning * {
@@ -232,10 +270,10 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-error,
 .toast-error * {
-	background-color: #DC1728;
+	background: #ED2839;
 }
 .toast-error > .toast-progress {
-	background-color: #FFFFFF;
+	background: #FFFFFF;
 }
 .toast-error,
 .toast-error * {
@@ -244,10 +282,10 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 
 .toast-colored,
 .toast-colored * {
-	background-color: #EE3062;
+	background: #FF4173;
 }
 .toast-colored > .toast-progress {
-	background-color: #FFFFFF;
+	background: #FFFFFF;
 }
 .toast-colored,
 .toast-colored * {

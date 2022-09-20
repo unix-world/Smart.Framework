@@ -2,12 +2,26 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>toastr examples</title>
+	<title>Toastr demo</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<style type="text/css">* { font-family: 'IBM Plex Sans',arial,sans-serif; }</style>
 	<script src="../../jquery.js"></script>
 	<link href="../jquery.toastr.css" rel="stylesheet" type="text/css">
 	<script src="../jquery.toastr.js"></script>
 	<style>
+		.area {
+			padding: 10px;
+			line-height: 2;
+		}
+		.area button {
+			margin: 10px;
+		}
+		.options {
+			margin-top: 25px;
+		}
+		.options pre {
+			font-size: 0.75rem;
+		}
 		.row {
 			margin-left: 0;
 		}
@@ -15,17 +29,17 @@
 </head>
 
 <body class="container">
-<section class="row">
+<section class="row area">
 	<h1>Toastr Demo</h1>
 	<div class="well row">
 		<div class="row">
 			<div class="span4">
 				<div class="control-group">
-					<div class="controls">
+					<div class="controls" style="display:flex;">
 						<label class="control-label" for="title">Title</label>
-						<input id="title" type="text" class="input-large" placeholder="Enter a title ...">
+						<input id="title" type="text" class="input-large" placeholder="Enter a title ..." style="height:1rem; margin-left:7px; margin-right:15px;">
 						<label class="control-label" for="message">Message</label>
-						<textarea class="input-large" id="message" rows="3" placeholder="Enter a message ..."></textarea>
+						<textarea class="input-large" id="message" rows="3" placeholder="Enter a message ..." style="height:50px; margin-left:7px; margin-right:15px;"></textarea>
 					</div>
 				</div>
 				<div class="control-group">
@@ -166,7 +180,7 @@
 			<button type="button" class="btn btn-danger" id="cleartoasts">Clear Toasts</button>
 			<button type="button" class="btn btn-danger" id="clearlasttoast">Clear Last Toast</button>
 		</div>
-		<div class="row" style='margin-top: 25px;'>
+		<div class="row options">
 			<pre id='toastrOptions'></pre>
 		</div>
 	</div>
@@ -188,12 +202,13 @@
 		var $toastlast;
 
 		var getMessage = function () {
-			var msgs = ['My name is Inigo Montoya. You killed my father. Prepare to die!',
+			var msgs = [
+				'There are two ways of spreading light: to be the candle or the mirror that reflects it.',
 				'<div><input class="input-small" value="textbox">&nbsp;<a href="http://johnpapa.net" target="_blank">This is a hyperlink</a></div><div><button type="button" id="okBtn" class="btn btn-primary">Close me</button><button type="button" id="surpriseBtn" class="btn" style="margin: 0 8px 0 8px">Surprise me</button></div>',
-				'Are you the six fingered man?',
-				'Inconceivable!',
-				'I do not think that means what you think it means.',
-				'Have fun storming the castle!'
+				'You do not find the happy life. You make it.',
+				'Stay close to anything that makes you glad you are alive.',
+				'Make each day your masterpiece.',
+				'Happiness often sneaks in through a door you didn`t know you left open.',
 			];
 			i++;
 			if (i === msgs.length) {
@@ -339,11 +354,19 @@
 			return $toastlast;
 		}
 		$('#clearlasttoast').click(function () {
-			toastr.clear(getLastToast());
+			try {
+				let toast = getLastToast();
+				jQuery.toastr.clear(toast);
+			} catch(err) {
+				console.warn(err);
+			}
 		});
 		$('#cleartoasts').click(function () {
-			toastr.clear();
-		//	jQuery.toastr.clear();
+			try {
+				jQuery.toastr.clear();
+			} catch(err) {
+				console.warn(err);
+			}
 		});
 
 	})

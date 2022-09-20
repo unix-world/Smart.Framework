@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20220907
+ * @version     v.20220917
  * @package     @Core
  *
  */
@@ -128,6 +128,7 @@ final class Smart {
 		'&circledR;' 	=> '(R)', // alternate for &reg;
 		'&trade;' 		=> '(TM)',
 		'&excl;' 		=> '!',
+		'&quest;'		=> '?',
 		'&num;' 		=> '#',
 		'&commat;' 		=> '@',
 		'&#064;' 		=> '@', // alternate for &commat;
@@ -1631,7 +1632,7 @@ final class Smart {
 		} //end if
 		//-- cleanup multiple spaces with just one space
 		$yhtmlcode = (string) preg_replace('/[ \\t]+/', ' ', (string)$yhtmlcode); // replace multiple tabs or spaces with one space
-		//-- other fixes
+		//-- other fixes ; {{{SYNC-FIX-EMPTY-MULTI-LINES-WITH-ONE-LINE}}}
 		$yhtmlcode = (string) preg_replace('/^\s*[\n]{2,}/m', '', (string)$yhtmlcode); // fix: replace multiple consecutive lines that may also contain before optional leading spaces
 		$yhtmlcode = (string) preg_replace('/[^\S\r\n]+$/m', '', (string)$yhtmlcode); // remove trailing spaces on each line
 		//--

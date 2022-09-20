@@ -2,6 +2,28 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+September 16, 2022
+	* Refactoring CSS file name for jQuery Pager + UI Fixes for: Mod Auth Admins, Mod DB Admin
+	* Markdown extend: add support for ??cite term?? as CITE
+
+September 15, 2022
+	* Move Mod DB Admin from Smart.Framework.Modules to Smart.Framework
+	* Fix: Add a constant to prevent default access to mod db admin
+	* Toastr: Enhance color theme
+	* Fix Rating Stars Js
+	* VTimeline: Enhance color theme
+	* other CSS fixes
+
+September 13, 2022
+	* JsSmartBrowser add a default PopUpName
+	* Update MongoDB min supported version (also for PHP ext), that can handle upserts and fts facet aggregation
+	* Styles CSS: Add LI padding botton as a fix for mobile elements too close ; Fix UX NavBar LI Padding, set to zero
+	* UX Toolkit CSS Optimizations ; Fix Sfi Icons CSS ; Load SFI Icons after Ux Toolkit ; CSS Styles Fixes (many)
+	* Markdown: Add Support for Image Attribute Style to SFI Icons
+	* PageBuilder refactoring a method from private to public, move from Manager to Utils
+	* PageBuilder: change constant name SMART_PAGEBUILDER_VALIDATE_HTML with SMART_PAGEBUILDER_HTML_VALIDATOR
+	* PageBuilder: replace the deprecated <font></font> tag with <span></span>
+
 September 10, 2022
 	* Add PostType to SmartHttpClient to be able to set other content type than application/x-www-form-urlencoded with POST
 	* Refactoring app.css in 2 parts: ux.css and app.css which will split requests in 2 separate threads rather than one

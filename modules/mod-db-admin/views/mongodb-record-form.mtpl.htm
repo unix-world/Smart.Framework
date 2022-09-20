@@ -1,0 +1,65 @@
+<!-- MongoDB Record Form: Add/Edit -->
+<link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
+<style>
+#json-edit-area, #json-edit-area * {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+}
+</style>
+<script>
+const edtMode = '[###QMODE|js###]';
+const btnHandlerCancel = () => {
+	smartJ$Browser.CloseDelayedModalPopUp();
+	return false;
+};
+const btnHandlerSubmit = () => {
+	if(edtMode == 'visual') {
+		if(jsonEditor) {
+			jQuery('#json-hidden-area').val(JSON.stringify(jsonEditor.get()));
+		}
+	}
+	smartJ$Browser.SubmitFormByAjax('record_form', '[###ACTIONS-URL|js###]', 'yes');
+	return false;
+};
+</script>
+<h3>Database:&nbsp;<span style="color:#4D5774; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;<span style="color:#448FCE;">[###COLLECTION|html###]</span></h3>
+<h4><span style="color:#778899;">MongoDB :: </span>[###THE-TITLE|html|nl2br###]</h4>
+[%%%IF:RECORD-ID:!=;%%%]<h6>UUID: <span style="color:#5E6885;" title="Record UID">[###RECORD-ID|html###]</span></h6>[%%%/IF:RECORD-ID%%%]
+[%%%IF:QMODE:==visual;%%%]
+<!-- Visual Mode -->
+[%%%ELSE:QMODE%%%]
+[@@@SUB-TEMPLATE:partials/code-editor.mtpl.inc.htm@@@]
+<script>
+var cmInstance;
+jQuery(() => {
+	cmInstance = drawCodeEditor('cmInstance', 'json-edit-area', 'codeEditorMenuArea', '100%', '100%');
+});
+</script>
+[%%%/IF:QMODE%%%]
+<form id="record_form" name="record_form" class="ux-form" onSubmit="return false;">
+[%%%IF:ACTION-METHOD:==new;%%%][%%%IF:COLLECTION:==@NEW@;%%%]
+<b>[###TXT-COLLECTION|html###]:</b>&nbsp;<input type="text" name="newcollectionname" value=""><input type="hidden" name="collection" value="[###COLLECTION|html###]">
+[%%%/IF:COLLECTION%%%][%%%/IF:ACTION-METHOD%%%]
+<input type="hidden" name="mode" value="[###QMODE|html###]">
+<input type="hidden" name="frm[chk]" value="[###CHECKSUM-HASH|html###]">
+[%%%IF:QMODE:==visual;%%%]
+[@@@SUB-TEMPLATE:partials/json-editor.mtpl.inc.htm@@@]
+<input id="json-hidden-area" type="hidden" name="frm[json]" value="">
+<div id="json-edit-area" data-mode="visual" style="width: 96vw !important; min-width:320px !important; height: calc(100vh - 275px);"></div>
+<script>
+	drawJsonEditor('json-edit-area', '[###DATA-JSON|js###]');
+</script>
+[%%%ELSE:QMODE%%%]
+<div style="width: 96vw !important; min-width:320px !important; height: calc(100vh - 275px);">
+	<div id="codeEditorMenuArea"></div>
+	<textarea id="json-edit-area" data-mode="raw" name="frm[json]" maxlength="16777216" class="ux-field" style="width:100%; height:100%;" autocomplete="off" spellcheck="false" onKeyDown="smartJ$Browser.catchKeyTAB(event);">[###DATA-JSON|html###]</textarea>
+</div>
+[%%%/IF:QMODE%%%]
+<br>
+<br>
+<div class="ux-controls">
+	<button type="button" class="ux-button ux-button-spacing" onClick="btnHandlerCancel();"> Cancel &nbsp; <i style="color:#444444;" class="sfi sfi-spinner11"></i></button>
+	<button type="button" class="ux-button ux-button-highlight ux-button-spacing" onClick="btnHandlerSubmit();"> [###ACTION-TXT|html###] &nbsp; <i class="sfi sfi-checkmark"></i></button>
+</div>
+</form>
+<!-- # MongoDB Record Form: Add/Edit -->

@@ -1,0 +1,25 @@
+<!-- MongoDB Drop Collection -->
+<script>
+function btnHandlerCancel() {
+	smartJ$Browser.CloseDelayedModalPopUp();
+	return false;
+}
+function btnHandlerSubmit() {
+	jQuery.alertable.confirm('<h4><span style="color:#ED2839;">DROP the Collection</span> `<span style="color:#448FCE;">[###COLLECTION|html|js###]</span>`&nbsp;?</h4><br><h5>This action will <i>permanently DROP</i> the selected <i>Collection</i> and will <i>DELETE all the records</i> of this <i>Collection</i>.</h5>', { html:true }).then(function(){
+		smartJ$Browser.SubmitFormByAjax('collection_drop_form', '[###ACTIONS-URL|js###]', 'yes');
+	});
+	return false;
+}
+</script>
+<h2>Database:&nbsp;<span style="color:#4D5774; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;<span style="color:#448FCE;">[###COLLECTION|html###]</span></h2>
+<h3><span style="color:#778899;">MongoDB :: </span>[###THE-TITLE|html|nl2br###]</h3>
+<h5>The&nbsp;Collection&nbsp;`[###COLLECTION|html###]`&nbsp;<span style="color:#5E6885;" title="Number of Record(s) in this Collection"><i>contains</i>&nbsp;[###TOTAL-ALL-RECORDS|html###]&nbsp;Record(s)</span></h5>
+<form id="collection_drop_form" name="collection_drop_form" class="ux-form" onSubmit="return false;">
+<input type="hidden" name="collection" value="[###COLLECTION|html###]">
+</form>
+<br>
+<div class="ux-controls">
+	<button type="button" class="ux-button ux-button-spacing" onClick="btnHandlerCancel();"> Cancel &nbsp; <i style="color:#444444;" class="sfi sfi-spinner11"></i></button>
+	<button type="button" class="ux-button ux-button-special ux-button-spacing" onClick="btnHandlerSubmit();"> [###ACTION-TXT|html###] &nbsp; <i class="sfi sfi-bin"></i></button>
+</div>
+<!-- # MongoDB Drop Collection -->

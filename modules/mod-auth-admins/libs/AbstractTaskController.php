@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220730
+ * @version 	v.20220918
  *
  */
 abstract class AbstractTaskController extends \SmartAbstractAppController {
@@ -41,10 +41,11 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 	protected $sficon = '';
 	protected $msg = '';
 	protected $err = '';
-	protected $notice = '';
+	protected $warn = '';
+	protected $notice = ''; // for nothice there is no growl, there is only an extra HTML note ...
 	protected $notehtml = '';
 
-	protected $goback = '';
+	protected $goback = ''; // does not work in modals
 
 	protected $modal = false;
 	protected $workvar = '';
@@ -86,7 +87,28 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 	} //END FUNCTION
 
 
-	final protected function EchoTextMessage(string $message, bool $strong=false) {
+	final protected function FixMessageMultiNewLines(string $message) {
+		//--
+		if((string)\trim((string)$message) == '') {
+			return '';
+		} //end if
+		//--
+		$message = (string) \str_replace([ "\r\n", "\r" ], "\n", (string)$message);
+		//-- {{{SYNC-FIX-EMPTY-MULTI-LINES-WITH-ONE-LINE}}} - with an adjustments
+		$message = (string) \preg_replace('/^\n*[\n]{1,}/m', '', (string)$message); // fix: replace multiple consecutive lines that may also contain before optional leading spaces
+		$message = (string) \preg_replace('/[^\S\r\n]+$/m', '', (string)$message); // remove trailing spaces on each line
+		//--
+		return (string) \trim((string)$message);
+		//--
+	} //END FUNCTION
+
+
+	final protected function EchoTextMessage(string $message, bool $strong=false, bool $highlight=false) {
+		//--
+		if((string)\trim((string)$message) == '') {
+			echo '<br>'; // for TEXT messages this can be a space / tab / newline, don't enclose in a box as below, simply echo it
+			return;
+		} //end if
 		//--
 		$tag_start = '';
 		$tag_end = '';
@@ -95,15 +117,29 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 			$tag_end = '</b>';
 		} //end if
 		//--
-		echo (string) $tag_start.\Smart::nl_2_br((string)\Smart::escape_html((string)\trim((string)$message))."\n", false).$tag_end;
+		$css_class = '';
+		if($highlight === true) {
+			$css_class = 'task-highlight';
+		} //end if
+		//--
+		echo (string) '<pre class="task-result'.($css_class ? ' '.$css_class : '').'">'.$tag_start.\Smart::escape_html((string)\trim((string)$message)).$tag_end.'</pre>'."\n";
 		$this->InstantFlush();
 		//--
 	} //END FUNCTION
 
 
-	final protected function EchoHtmlMessage(string $message) {
+	final protected function EchoHtmlMessage(string $message, bool $highlight=false) {
 		//--
-		echo (string) $message;
+		if((string)\trim((string)$message) == '') {
+			return; // for HTML messages make non sense !
+		} //end if
+		//--
+		$css_class = '';
+		if($highlight === true) {
+			$css_class = 'task-highlight';
+		} //end if
+		//--
+		echo (string) '<div class="task-result'.($css_class ? ' '.$css_class : '').'">'.$message.'</div>'."\n"; // do not trim message, new lines must be appended to a non-empty html message, cant echo just new lines !
 		$this->InstantFlush();
 		//--
 	} //END FUNCTION
@@ -201,7 +237,8 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 
 	final public function ShutDown() {
 		//--
-		$err = (string) \trim((string)$this->err);
+		$err 	= (string) \trim((string)$this->err);
+		$warn 	= (string) \trim((string)$this->warn);
 		$notice = (string) \trim((string)$this->notice);
 		//--
 		$icon = '';
@@ -217,13 +254,17 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 			$icon = ' &nbsp;&nbsp; <i class="sfi sfi-2x sfi-'.\Smart::escape_html((string)$this->sficon).'"></i>';
 		} //end if
 		//--
-		if((string)$err != '') {
+		if((string)$err != '') { // error
 			echo (string) \SmartComponents::operation_error((string)\Smart::nl_2_br((string)\Smart::escape_html((string)$err)).$icon);
-		} elseif((string)$notice != '') {
+		} elseif((string)$warn != '') { // warning
+			echo (string) \SmartComponents::operation_warn((string)\Smart::nl_2_br((string)\Smart::escape_html((string)$warn)).$icon);
+		} elseif((string)$notice != '') { // notice, with extra support for an extra note in HTML format
 			echo (string) \SmartComponents::operation_notice((string)\Smart::nl_2_br((string)\Smart::escape_html((string)$notice)).$icon);
-			echo "\n";
-			echo (string) $this->notehtml;
-		} else {
+			if((string)\trim((string)$this->notehtml) != '') {
+				echo "\n";
+				echo (string) $this->notehtml;
+			} //end if
+		} else { // ok
 			echo (string) \SmartComponents::operation_success('OK: Completed ... '.\Smart::nl_2_br((string)\Smart::escape_html((string)$this->msg)).$icon);
 		} //end if
 		$this->InstantFlush();
@@ -237,11 +278,14 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 				'YEAR' 				=> (string) \date('Y'),
 				'WORKING' 			=> (string) (($this->working === true) ? 'yes' : 'no'),
 				'HAVE-ERRORS' 		=> (string) (\strlen((string)$err) ? 'yes' : 'no'),
+				'HAVE-WARNS' 		=> (string) (\strlen((string)$warn) ? 'yes' : 'no'),
 				'HAVE_NOTICE' 		=> (string) (\strlen((string)$notice) ? 'yes' : 'no'),
 				'MODAL' 			=> (string) (($this->modal === true) ? 'yes' : 'no'),
 				'SELFCLOSE' 		=> (string) (((int)$this->selfclose > 0) ? (int)$this->selfclose : 0),
 				'ENDSCROLL' 		=> (string) (($this->endscroll === true) ? 'yes' : 'no'),
-				'GO-BACK-URL' 		=> (string) $this->goback,
+				'GO-BACK-URL' 		=> (string) (($this->modal === true) ? '' : (string)$this->goback),
+				'MODAL' 			=> (string) (($this->modal === true) ? 'yes' : 'no'),
+				'MAIN-URL' 			=> (string) $this->app_main_url,
 			])
 		);
 		$this->InstantFlush();

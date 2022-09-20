@@ -1,5 +1,5 @@
 
--- START :: PostgreSQL: Web/PageBuilder :: r.20210526 # smart.framework.v.8.7 ###
+-- START :: PostgreSQL: Web/PageBuilder :: r.20220915 # smart.framework.v.8.7 ###
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';

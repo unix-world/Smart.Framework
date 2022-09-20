@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220906
+ * @version 	v.20220915
  * @package 	PageBuilder
  *
  */
@@ -227,8 +227,8 @@ final class Utils {
 
 	public static function htmlValidatorOption() : string {
 		//--
-		if(\defined('\\SMART_PAGEBUILDER_VALIDATE_HTML')) {
-			return (string) \SMART_PAGEBUILDER_VALIDATE_HTML;
+		if(\defined('\\SMART_PAGEBUILDER_HTML_VALIDATOR')) {
+			return (string) \SMART_PAGEBUILDER_HTML_VALIDATOR;
 		} //end if
 		//--
 		return '';
@@ -268,7 +268,7 @@ final class Utils {
 		//--
 		// The default options are used on frontend rendering
 		// as default should use '' not null for $option_validate_html
-		// if $option_validate_html is set to null can use the override constant SMART_PAGEBUILDER_VALIDATE_HTML
+		// if $option_validate_html is set to null can use the override constant SMART_PAGEBUILDER_HTML_VALIDATOR
 		// if $option_validate_html is set to '' will disable validation
 		//--
 		$option_validate_html = (string) self::markdownRenderingGetOptionHtmlValidate($option_validate_html); // do not cast method param, it may be null which changes the options !
@@ -479,6 +479,8 @@ final class Utils {
 
 	public static function getRenderedMarkdownNotices(string $markdown_code) : array {
 		//--
+		// the constant SMART_PAGEBUILDER_HTML_VALIDATOR must be defined for this method
+		//--
 		$option_validate_html = (string) self::markdownRenderingGetOptionHtmlValidate(); // here, validator cannot be null
 		//--
 		if($option_validate_html !== null) {
@@ -513,6 +515,42 @@ final class Utils {
 		];
 		//--
 	} //END FUNCTION
+
+
+	//==================================================================
+	public static function renderNotices(array $arr_notices, string $title, string $subtitle) : string {
+		//--
+		$html = '';
+		//--
+		if(\Smart::array_size($arr_notices) > 0) {
+			//--
+			$html = '<div style="max-height:70px; overflow:auto;"><ul>'; // {{{SYNC-PAGEBUILDER-NOTIFICATIONS-HEIGHT}}}
+			//--
+			foreach($arr_notices as $rnKey => $rnVal) {
+				$html .= '<li>';
+				if(\is_array($rnVal)) {
+					$html .= (string) \Smart::escape_html((string)$subtitle).':<br>';
+					$html .= '<ul>'."\n";
+					foreach($rnVal as $rnXKey => $rnXVal) {
+						$html .= (string) '<li>'.\Smart::escape_html((string)$rnXVal).'</li>'."\n";
+					} //end foreach
+					$html .= '</ul>'."\n";
+				} else {
+					$html .= (string) \Smart::escape_html((string)$rnVal);
+				} //end if else
+				$html .= '</li>'."\n";
+			} //end foreach
+			//--
+			$html .= '</ul></div>'."\n";
+			//--
+			$html = (string) \SmartComponents::operation_notice('NOTICE: '.\Smart::escape_html((string)$title).':<br>'.$html, '92%');
+			//--
+		} //end if
+		//--
+		return (string) $html;
+		//--
+	} //END FUNCTION
+	//==================================================================
 
 
 } //END CLASS

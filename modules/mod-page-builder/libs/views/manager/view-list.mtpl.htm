@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List / Records :: v.20220910 -->
+<!-- Pagebuilder / Manage @ List / Records :: v.20220918 -->
 <style>
 .smartGrid_AlignCenter {
 	text-align: center;
@@ -19,13 +19,9 @@
 .smartGrid_ColName {
 	color: #333333;
 }
-.smartGrid_ColTags {
-	color: #555555;
-	font-size: 80%;
-}
-.smartGrid_HeadHighlight {
-	background-color: #999999 !important;
-	color: #FFFFFF !important;
+.smartGrid_ColTags span {
+	color: #E4862A;
+	font-size: 0.6875rem !important;
 }
 .smartGrid_DivNum {
 	padding: 0;
@@ -33,17 +29,21 @@
 	padding-right: 2px;
 }
 .smartGrid_DivSpArea {
-	color: #E4862A;
+	color: #5E6885;
+}
+.smartGrid_Ctrl {
+	color: #778888;
+	font-size: 0.75rem !important;
 }
 .smartGrid_HitsArea {
 	color: #777777;
-	font-size: 80%;
+	font-size: 0.6875rem !important;
 }
 .smartGrid_DivWithImg {
-	padding-top: 2px;
+	text-align: center !important;
 }
 </style>
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css">
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/jquery.simplePagination.css">
 <script src="lib/js/jquery/pager/jquery.simplePagination.js"></script>
 <script src="lib/js/jquery/jquery.event.drag.js"></script>
 <script src="lib/js/jquery/jquery.event.drop.js"></script>
@@ -80,7 +80,7 @@ jQuery(() => {
 
 	const displayDel = (row, cell, value, columnDef, dataContext) => {
 		let html = '';
-		html += '<div class="smartGrid_DivWithImg"><center>';
+		html += '<div class="smartGrid_DivWithImg">';
 		if(!!lstDelUrl) {
 			html += '<a href="' + smartJ$Utils.escape_html(lstDelUrl) + smartJ$Utils.escape_url(value) + '" data-smart="open.modal">';
 			html += '<img src="[###PATH-MODULE|html|js###]libs/views/manager/img/op-delete.svg" alt="Delete" title="Delete">';
@@ -88,7 +88,7 @@ jQuery(() => {
 		} else {
 			html += '&nbsp;';
 		}
-		html += '</center></div>';
+		html += '</div>';
 		return html;
 	};
 
@@ -101,7 +101,7 @@ jQuery(() => {
 			img = 'type-segment.svg';
 		}
 		let html = '';
-		html += '<div class="smartGrid_DivWithImg"><center>';
+		html += '<div class="smartGrid_DivWithImg">';
 		if(!!lstRecUrl) {
 			html += '<a href="' + smartJ$Utils.escape_html(lstRecUrl) + smartJ$Utils.escape_url(value) + '" data-smart="open.modal" title="Display">';
 		}
@@ -109,28 +109,23 @@ jQuery(() => {
 		if(!!lstRecUrl) {
 			html += '</a>';
 		}
-		html += '</center></div>';
+		html += '</div>';
 		return html;
-	};
-
-	const displayCtrl = (row, cell, value, columnDef, dataContext) => {
-		value = String(value);
-		return '<span style="color:#778899; font-size:88%;">&nbsp;' + smartJ$Utils.escape_html(value) + '</span>';
 	};
 
 	const displayLayout = (row, cell, value, columnDef, dataContext) => {
 		value = String(value);
 		let theTitle = 'Template (Page)';
 		let theColor = '#888888';
-		let theAlign = 'left';
+		let theAlign = 'right';
 		let theStyle = 'italic';
 		if(String(dataContext.id).substr(0, 1) == '#') {
 			theTitle = 'Area (Segment)';
 			theColor = '#333333';
-			theAlign = 'right';
+			theAlign = 'left';
 			theStyle = 'normal';
 		}
-		return '<div style="font-size:88%; font-style:' + smartJ$Utils.escape_html(theStyle) + '; padding-left:5px; padding-right:5px; text-align:' + smartJ$Utils.escape_html(theAlign) + '; color:' + smartJ$Utils.escape_html(theColor) + ';" title="' + smartJ$Utils.escape_html(theTitle) + '">' + smartJ$Utils.escape_html(value) + '</div>';
+		return '<div style="font-size:0.75rem; font-style:' + smartJ$Utils.escape_html(theStyle) + '; padding-left:5px; padding-right:5px; text-align:' + smartJ$Utils.escape_html(theAlign) + '; color:' + smartJ$Utils.escape_html(theColor) + ';" title="' + smartJ$Utils.escape_html(theTitle) + '">' + smartJ$Utils.escape_html(value) + '</div>';
 	};
 
 	const displayTags = (row, cell, value, columnDef, dataContext) => {
@@ -143,16 +138,6 @@ jQuery(() => {
 			arr = [];
 		}
 		return '<span title="' + smartJ$Utils.escape_html(value) + '">&nbsp;' + smartJ$Utils.escape_html(arr.join(' ; ')) + '</span>';
-	};
-
-	const displaySpecial = (row, cell, value, columnDef, dataContext) => {
-		value = String(value);
-		return '<div class="smartGrid_DivSpArea smartGrid_DivNum">' + smartJ$Utils.escape_html(value) + '</div>';
-	};
-
-	const displayHits = (row, cell, value, columnDef, dataContext) => {
-		value = String(value);
-		return '<div class="smartGrid_DivNum smartGrid_HitsArea">' + smartJ$Utils.escape_html(value) + '</div>';
 	};
 
 	const displayID = (row, cell, value, columnDef, dataContext) => {
@@ -186,7 +171,7 @@ jQuery(() => {
 				break;
 		}
 		const fmtVal = value + ' / ' + dataContext['total_size'] + ' bytes';
-		return '<center><div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(fmtVal) + '" title="' + smartJ$Utils.escape_html(fmtVal) + '"></div></center>';
+		return '<div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(fmtVal) + '" title="' + smartJ$Utils.escape_html(fmtVal) + '"></div>';
 	};
 
 	const displayActive = (row, cell, value, columnDef, dataContext) => {
@@ -200,7 +185,7 @@ jQuery(() => {
 			img = 'status-linked.svg';
 			txt = 'All Segments are Active if used Programatically';
 		}
-		return '<center><div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div></center>';
+		return '<div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div>';
 	};
 
 	const displayAuth = (row, cell, value, columnDef, dataContext) => {
@@ -214,7 +199,7 @@ jQuery(() => {
 			img = 'restr-unknown.svg';
 			txt = 'Unknown (Segments may be used in any context ...)';
 		}
-		return '<center><div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div></center>';
+		return '<div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div>';
 	};
 
 	const displayTransl = (row, cell, value, columnDef, dataContext) => {
@@ -224,7 +209,7 @@ jQuery(() => {
 			img = 'translatable.svg';
 			txt = 'Translatable';
 		}
-		return '<center><div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div></center>';
+		return '<div class="smartGrid_DivWithImg"><img src="[###PATH-MODULE|html|js###]libs/views/manager/img/' + img + '" alt="' + smartJ$Utils.escape_html(txt) + '" title="' + smartJ$Utils.escape_html(txt) + '"></div>';
 	};
 
 	const displayName = (row, cell, value, columnDef, dataContext) => {
@@ -268,19 +253,19 @@ jQuery(() => {
 
 	// Grid Data Defs: defaultSortDir:1
 	let columns = [
-		{id:'x-del', 		field:'id', 			name:'#', 								sortable:false, 	width:50, 						formatter:displayDel},
-		{id:'x-ops', 		field:'id', 			name:'@', 								sortable:false, 	width:50, 						formatter:displayOps},
-		{id:'name', 		field:'name', 			name:'[###TXT-COL-NAME|js###]', 		sortable:true, 		width:diffColSize('name'), 		formatter:displayName,     editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColName'},
-		{id:'mode', 		field:'mode', 			name:'[###TXT-COL-SYNTAX|js###]', 		sortable:true, 		width:75, 						formatter:displayCodeType, editor:TextCellSelector},
-		{id:'id', 			field:'id', 			name:'[###TXT-COL-ID|js###]', 			sortable:true, 		width:diffColSize('id'), 		formatter:displayID,       editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColId'},
-		{id:'active', 		field:'active', 		name:'[###TXT-COL-ACTIVE|js###]', 		sortable:true, 		width:75, 						formatter:displayActive,   editor:TextCellSelector},
-		{id:'ctrl', 		field:'ctrl', 			name:'[###TXT-COL-CTRL|js###]', 		sortable:true, 		width:diffColSize('ctrl'), 		formatter:displayCtrl,     editor:TextCellSelector, cssClass:'smartGrid_Important'},
-		{id:'special', 		field:'special',		name:'[###TXT-COL-SPECIAL|js###]', 		sortable:true, 		width:75, 						formatter:displaySpecial,  editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_AlignRight'},
-		{id:'layout', 		field:'layout', 		name:'[###TXT-COL-LAYOUT|js###]', 		sortable:true, 		width:diffColSize('layout'),	formatter:displayLayout,   editor:TextCellSelector},
-		{id:'tags', 		field:'tags', 			name:'[###TXT-COL-TAGS|js###]', 		sortable:true, 		width:diffColSize('tags'),		formatter:displayTags,     editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColTags'},
-		{id:'auth', 		field:'auth', 			name:'[###TXT-COL-AUTH|js###]', 		sortable:true, 		width:75, 						formatter:displayAuth,     editor:TextCellSelector},
-		{id:'translations', field:'translations', 	name:'[###TXT-COL-TRANSL|js###]', 		sortable:true, 		width:75, 						formatter:displayTransl,   editor:TextCellSelector},
-		{id:'counter', 		field:'counter', 		name:'[###TXT-COL-COUNTER|js###]', 		sortable:true, 		width:75, 						formatter:displayHits,   editor:TextCellSelector, cssClass:'smartGrid_AlignRight'},
+		{id:'x-del', 		field:'id', 			name:'#', 								sortable:false, 					width:50, 						formatter:displayDel},
+		{id:'x-ops', 		field:'id', 			name:'@', 								sortable:false, 					width:50, 						formatter:displayOps},
+		{id:'name', 		field:'name', 			name:'[###TXT-COL-NAME|js###]', 		sortable:true, 						width:diffColSize('name'), 		formatter:displayName,     editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColName'},
+		{id:'mode', 		field:'mode', 			name:'[###TXT-COL-SYNTAX|js###]', 		sortable:true, 						width:75, 						formatter:displayCodeType, editor:TextCellSelector},
+		{id:'id', 			field:'id', 			name:'[###TXT-COL-ID|js###]', 			sortable:true, 						width:diffColSize('id'), 		formatter:displayID,       editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_ColId'},
+		{id:'active', 		field:'active', 		name:'[###TXT-COL-ACTIVE|js###]', 		sortable:true, sortNumeric:true,	width:75, 						formatter:displayActive,   editor:TextCellSelector},
+		{id:'ctrl', 		field:'ctrl', 			name:'[###TXT-COL-CTRL|js###]', 		sortable:true, 						width:diffColSize('ctrl'), 								   editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_Ctrl'},
+		{id:'special', 		field:'special',		name:'[###TXT-COL-SPECIAL|js###]', 		sortable:true, sortNumeric:true, 	width:75, 												   editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_AlignRight smartGrid_DivSpArea smartGrid_DivNum'},
+		{id:'layout', 		field:'layout', 		name:'[###TXT-COL-LAYOUT|js###]', 		sortable:true, 						width:diffColSize('layout'),	formatter:displayLayout,   editor:TextCellSelector, cssClass:'smartGrid_Important'},
+		{id:'tags', 		field:'tags', 			name:'[###TXT-COL-TAGS|js###]', 		sortable:true, 						width:diffColSize('tags'),		formatter:displayTags,     editor:TextCellSelector, cssClass:'smartGrid_ColTags'},
+		{id:'auth', 		field:'auth', 			name:'[###TXT-COL-AUTH|js###]', 		sortable:true, 						width:75, 						formatter:displayAuth,     editor:TextCellSelector},
+		{id:'translations', field:'translations', 	name:'[###TXT-COL-TRANSL|js###]', 		sortable:true, 						width:75, 						formatter:displayTransl,   editor:TextCellSelector},
+		{id:'counter', 		field:'counter', 		name:'[###TXT-COL-COUNTER|js###]', 		sortable:true, sortNumeric:true,	width:75, 						                           editor:TextCellSelector, cssClass:'smartGrid_Important smartGrid_AlignRight smartGrid_DivNum smartGrid_HitsArea'},
 	];
 	if(!lstDelUrl) {
 		columns.shift(0); // remove 1st column
@@ -294,7 +279,7 @@ jQuery(() => {
 		enableAsyncPostRender: true,
 		forceFitColumns: false,
 		asyncPostRenderDelay: 15,
-		rowHeight: 27,
+		rowHeight: 26,
 		editable: true,
 		autoEdit: false,
 	//	enableTextSelectionOnCells: false,

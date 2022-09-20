@@ -1,10 +1,10 @@
-<!-- v.20210630 -->
+<!-- v.20220915 -->
 [@@@SUB-TEMPLATE:admin-form-styles.mtpl.htm@@@]
 <center><div><table><tr><td>
 	<form id="edit_form" name="edit_form" class="ux-form ux-form-aligned" onSubmit="return false;">
 	<legend><h1>Edit Account</h1></legend><br>
 		<div class="ux-control-group">
-			<label>Username</label>
+			<label><i class="sfi sfi-user"></i>&nbsp;Username</label>
 			<input type="hidden" name="frm[id]" value="[###ID|html###]">
 			<span style="font-weight:bold;">[###ID|html###]</span>
 		</div>
@@ -21,8 +21,8 @@
 			<input name="frm[name_l]" class="ux-input-1-2" placeholder="Last name" type="text" value="[###LAST-NAME|html###]" required>
 		</div>
 		<div class="ux-control-group">
-			<label>Password:</label>
-			<a href="[###ACTIONS-URL|html###]change-pass-form&id=[###ID|url|html###]" class="ux-button ux-button-small">Change the Password</a>
+			<label>Password</label>
+			<a href="[###ACTIONS-URL|html###]change-pass-form&id=[###ID|url|html###]" class="ux-button ux-button-dark ux-button-small">Change the Password &nbsp; <i class="sfi sfi-key "></i></a>
 		</div>
 		[%%%IF:SELF-KEYS:==yes;%%%]
 		<input type="hidden" name="frm[upd-keys]" value="yes">
@@ -35,17 +35,17 @@
 		[%%%/IF:SELF-KEYS%%%]
 		<div class="ux-control-group">
 			<label>Privileges</label>
-			<div style="display:inline-block;">[###PRIV-LIST-HTML###]</div>
+			<div style="display:inline-block; font-size:0.875rem;">[###PRIV-LIST-HTML###]</div>
 		</div>
 		[%%%IF:RESTR-LIST-HTML:!=;%%%]
 		<div class="ux-control-group">
 			<label>Restrictions</label>
-			<div style="display:inline-block;">[###RESTR-LIST-HTML###]</div>
+			<div style="display:inline-block; font-size:0.875rem;">[###RESTR-LIST-HTML###]</div>
 		</div>
 		[%%%/IF:RESTR-LIST-HTML%%%]
 		<div class="ux-controls">
-			<button type="button" class="ux-button ux-button-special" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.CloseDelayedModalPopUp();"> Cancel &nbsp; <i class="sfi sfi-spinner11"></i></button>
-			<button type="button" class="ux-button ux-button-primary" style="margin-right:10px; margin-bottom:5px;" onClick="smartJ$Browser.SubmitFormByAjax('edit_form', '[###ACTIONS-URL|html###]edit-update', 'yes'); return false;"> Save &nbsp; <i class="sfi sfi-checkmark"></i></button>
+			<button type="button" class="ux-button ux-button-spacing" onClick="smartJ$Browser.CloseDelayedModalPopUp();"> Cancel &nbsp; <i style="color:#555555;" class="sfi sfi-spinner11"></i></button>
+			<button type="button" class="ux-button ux-button-highlight ux-button-spacing" onClick="smartJ$Browser.SubmitFormByAjax('edit_form', '[###ACTIONS-URL|html###]edit-update', 'yes'); return false;"> Save &nbsp; <i class="sfi sfi-checkmark"></i></button>
 		</div>
 	</form>
 </td></tr></table></div></center>

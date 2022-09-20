@@ -130,9 +130,6 @@ final class TestUnitMain {
 		if(\SmartAppInfo::TestIfModuleExists('mod-ui-bootstrap')) {
 			$demo_mod_ext_toolkits .= \SmartFileSystem::read('modules/mod-ui-bootstrap/testunit/templates/tab-ui-components.inc.htm');
 		} //end if
-		if(\SmartAppInfo::TestIfModuleExists('mod-ui-uikit')) {
-			$demo_mod_ext_toolkits .= \SmartFileSystem::read('modules/mod-ui-uikit/testunit/templates/tab-ui-components.inc.htm');
-		} //end if
 		if(\SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) {
 			$demo_mod_ext_toolkits .= \SmartFileSystem::read('modules/mod-ui-jqueryui/testunit/templates/tab-ui-components.inc.htm');
 		} //end if

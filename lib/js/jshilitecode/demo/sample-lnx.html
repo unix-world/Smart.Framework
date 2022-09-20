@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Prism - Linux / Unix Scripting Demo</title>
+  <title>HiliteJs - Linux / Unix Scripting - Demo</title>
 
   <link rel="stylesheet" href="../prism/fonts.css">
   <link rel="stylesheet" href="../prism/prism.css">
@@ -10,55 +10,18 @@
 
   <script type="text/javascript" src="../../jquery/jquery.js"></script>
   <script>
-  jQuery(document).ready(function() {
-    jQuery('div pre code').each(function(i, block) {
-      Prism.highlightElement(block);
+  jQuery(document).ready(() => {
+    jQuery('div pre code').each((i, el) => {
+      //$(el).parent().addClass('line-numbers');
+      Prism.highlightElement(el);
     });
   });
   </script>
 </head>
 <body>
 
-<h1>Prism Demo: Linux / Unix Scripting</h1>
+<h1>HiliteJs Demo: Linux / Unix Scripting</h1>
 <hr>
-
-<!-- Perl -->
-
-<div>
-<h2>Perl</h2>
-<pre><code class="language-perl">use strict;
-
-#
-# This script demonstrates some of the properties of
-# array assignments.
-#
-my @a = ("Small", "Medium", "Large");
-print `@a = ` . "@a\n";
-
-my ($smith, $jones, $johnson) = @a;
-print "$smith $jones $johnson\n";
-
-my ($here, $there) = @a;
-print "$here $there\n";
-
-my ($this) = @a;
-print "$this\n";
-
-my $this = @a;
-print "$this\n";
-
-my ($p, $q, $r, $s, $t) = ("p", "q", "r", "s", "t");
-print "[$p] [$q] [$r] [$s] [$t]\n";
-($p, $q, $r, $s, $t) = @a;
-print "[$p] [$q] [$r] [$s] [$t]\n";
-
-# A cute way to swap variables.
-my $aa = "Fred";
-my $bb = "Barney";
-($aa, $bb) = ($bb, $aa);
-print "$aa $bb\n";
-</code></pre>
-</div>
 
 <!-- Bash -->
 
@@ -97,6 +60,44 @@ $ echo &#39;All
 &gt; done!&#39;
 All
 done!
+</code></pre>
+</div>
+
+<!-- Perl -->
+
+<div>
+<h2>Perl</h2>
+<pre><code class="language-perl">use strict;
+
+#
+# This script demonstrates some of the properties of
+# array assignments.
+#
+my @a = ("Small", "Medium", "Large");
+print `@a = ` . "@a\n";
+
+my ($smith, $jones, $johnson) = @a;
+print "$smith $jones $johnson\n";
+
+my ($here, $there) = @a;
+print "$here $there\n";
+
+my ($this) = @a;
+print "$this\n";
+
+my $this = @a;
+print "$this\n";
+
+my ($p, $q, $r, $s, $t) = ("p", "q", "r", "s", "t");
+print "[$p] [$q] [$r] [$s] [$t]\n";
+($p, $q, $r, $s, $t) = @a;
+print "[$p] [$q] [$r] [$s] [$t]\n";
+
+# A cute way to swap variables.
+my $aa = "Fred";
+my $bb = "Barney";
+($aa, $bb) = ($bb, $aa);
+print "$aa $bb\n";
 </code></pre>
 </div>
 

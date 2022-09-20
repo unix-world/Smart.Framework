@@ -37,7 +37,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
 //define('SMART_PAGEBUILDER_DISABLE_DELETE', true); 	// this can be set in etc/config-admin.php to disable page deletions in PageBuilder Manager (optional)
 //define('SMART_PAGEBUILDER_ALLOW_FULLTREE', true); 	// allow display full tree (this should be enabled just for small projects)
 //define('SMART_PAGEBUILDER_THEME_DARK', true); 		// if set to TRUE will enable the dark theme for the page builder editors
-//define('SMART_PAGEBUILDER_VALIDATE_HTML', true); 		// if set will validate the HTML ; just for admin area ; optimal values: 'tidy' or 'tidy:required'
+//define('SMART_PAGEBUILDER_HTML_VALIDATOR', true); 	// if set will validate the HTML ; just for admin area and mostly for development purposes ; optimal values: 'tidy' or 'tidy:required' ; can be also DOM, but DOM wil not show all errors, DOM is better for rendering ; also Tidy have a bug that loose the pre-format, don't use Tidy for rendering ... just for validation
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -52,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20220910
+ * @version 	v.20220917
  * @package 	PageBuilder
  *
  */
@@ -160,7 +160,7 @@ final class Manager {
 		$text['ctrl'] 				= 'Controller';
 		$text['template'] 			= 'Page Template';
 		$text['area'] 				= 'Segment Area';
-		$text['layout'] 			= 'Template / Area';
+		$text['layout'] 			= 'Area / Template';
 		$text['tags'] 				= 'Tags';
 		$text['name'] 				= 'Name';
 		$text['active']				= 'Active';
@@ -229,10 +229,10 @@ final class Manager {
 		} //end if else
 		//--
 		$out = \SmartViewHtmlHelpers::html_jsload_editarea();
-		$out .= \SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body');
+		$out .= \SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'light');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Code Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
-		$out .= '<pre><code data-syntax="'.\Smart::escape_html($type).'" id="code-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['code'])).'</code></pre>';
+		$out .= '<pre><code class="syntax" data-syntax="'.\Smart::escape_html($type).'" id="code-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['code'])).'</code></pre>';
 		$out .= '</div>';
 		//--
 		return (string) $out;
@@ -253,10 +253,10 @@ final class Manager {
 		$type = 'yaml';
 		//--
 		$out = \SmartViewHtmlHelpers::html_jsload_editarea();
-		$out .= \SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body');
+		$out .= \SmartViewHtmlHelpers::html_jsload_hilitecodesyntax('body', 'dark');
 		$out .= '<div style="text-align:left;">';
 		$out .= '<h3>Data Preview: '.\Smart::escape_html($query['name']).' :: '.\Smart::escape_html($query['id']).'</h3>';
-		$out .= '<pre><code data-syntax="'.\Smart::escape_html($type).'" id="data-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['data'])).'</code></pre>';
+		$out .= '<pre><code class="syntax" data-syntax="'.\Smart::escape_html($type).'" id="data-view-area">'.\Smart::escape_html((string)\base64_decode((string)$query['data'])).'</code></pre>';
 		$out .= '</div>';
 		//--
 		return (string) $out;
@@ -299,7 +299,7 @@ final class Manager {
 		} //end switch
 		//--
 		if(self::testIsSegmentPage($query['id'])) {
-			$draw_name = '<font color="#003399">'.\Smart::escape_html($query['name']).'<font>';
+			$draw_name = '<span style="color:#4D5774">'.\Smart::escape_html($query['name']).'<span>';
 		} else {
 			$draw_name = \Smart::escape_html($query['name']);
 		} //end if else
@@ -653,13 +653,13 @@ final class Manager {
 					$out .= '<form name="page_form_html" id="page_form_html" method="post" action="#" onsubmit="return false;">';
 					$out .= '<div id="code-editor" align="left">';
 					if((string)$query['mode'] == 'raw') {
-						$out .= '<font size="4" color="#FF7700"><b>&lt;<i>raw</i>&gt;</b>'.' - '.self::text('ttl_edtc').'</font>';
+						$out .= '<span style="font-size:1.125rem; color:#FF7700"><b>&lt;<i>raw</i>&gt;</b>'.' - '.self::text('ttl_edtc').'</span>';
 					} elseif((string)$query['mode'] == 'text') {
-						$out .= '<font size="4" color="#007700"><b>&lt;<i>text</i>&gt;</b>'.' - '.self::text('ttl_edtc').'</font>';
+						$out .= '<span style="font-size:1.125rem; color:#007700"><b>&lt;<i>text</i>&gt;</b>'.' - '.self::text('ttl_edtc').'</span>';
 					} elseif((string)$query['mode'] == 'markdown') {
-						$out .= '<font size="4" color="#003399"><b>&lt;<i>markdown</i>&gt;</b>'.' - '.self::text('ttl_edtc').'</font>';
+						$out .= '<span style="font-size:1.125rem; color:#4D5774"><b>&lt;<i>markdown</i>&gt;</b>'.' - '.self::text('ttl_edtc').'</span>';
 					} else { // html
-						$out .= '<font size="4" color="#666699"><b>&lt;<i>html5</i>&gt;</b>'.' - '.self::text('ttl_edtc').'</font>';
+						$out .= '<span style="font-size:1.125rem; color:#666699"><b>&lt;<i>html5</i>&gt;</b>'.' - '.self::text('ttl_edtc').'</span>';
 					} //end if else
 					$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 					$out .= (string) $tselect;
@@ -687,13 +687,13 @@ final class Manager {
 					} //end if else
 					$out .= '<div align="left">';
 					if((string)$query['mode'] == 'raw') {
-						$out .= '<font size="4" color="#FF7700"><b>&lt;/<i>raw</i>&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem; color:#FF7700"><b>&lt;/<i>raw</i>&gt;</b></span>';
 					} elseif((string)$query['mode'] == 'text') {
-						$out .= '<font size="4" color="#007700"><b>&lt;/<i>text</i>&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem; color:#007700"><b>&lt;/<i>text</i>&gt;</b></span>';
 					} elseif((string)$query['mode'] == 'markdown') {
-						$out .= '<font size="4" color="#003399"><b>&lt;/<i>markdown</i>&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem; color:#4D5774"><b>&lt;/<i>markdown</i>&gt;</b></span>';
 					} else { // html
-						$out .= '<font size="4" color="#666699"><b>&lt;/<i>html5</i>&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem; color:#666699"><b>&lt;/<i>html5</i>&gt;</b></span>';
 					} //end if else
 					$out .= '</div>'."\n";
 					$out .= "\n".'</form>'."\n";
@@ -770,13 +770,13 @@ final class Manager {
 					//--
 					$out .= '<div id="code-viewer" align="left" style="min-height:35px;">';
 					if((string)$query['mode'] == 'raw') {
-						$out .= '<font size="4"><b>&lt;raw&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem;"><b>&lt;raw&gt;</b></span>';
 					} elseif((string)$query['mode'] == 'text') {
-						$out .= '<font size="4"><b>&lt;text&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem;"><b>&lt;text&gt;</b></span>';
 					} elseif((string)$query['mode'] == 'markdown') {
-						$out .= '<font size="4"><b>&lt;markdown&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem;"><b>&lt;markdown&gt;</b></span>';
 					} else {
-						$out .= '<font size="4"><b>&lt;html5&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem;"><b>&lt;html5&gt;</b></span>';
 					} //end if else
 					$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 					$out .= (string) $tselect;
@@ -816,7 +816,7 @@ final class Manager {
 								$arr_mkdw_render_notices = (array) \SmartModExtLib\PageBuilder\Utils::getRenderedMarkdownNotices((string)$query['code']);
 								if((string)$arr_mkdw_render_notices['validator'] != '') {
 									$out .= '<br><div style="float:left; cursor:help;" title="Markdown/HTML Code Validation: '.\Smart::escape_html((string)$arr_mkdw_render_notices['validator'].' # Warnings/Errors: '.(((int)\Smart::array_size((array)$arr_mkdw_render_notices['notices']) > 0) ? 'YES' : 'NO')).'"><i class="sfi sfi-html-five"></i></div>';
-									$out .= (string) self::renderNotices((array)$arr_mkdw_render_notices['notices'], 'Markdown Html Rendering', 'Html Validation Warnings/Errors');
+									$out .= (string) \SmartModExtLib\PageBuilder\Utils::renderNotices((array)$arr_mkdw_render_notices['notices'], 'Markdown Html Rendering', 'Html Validation Warnings/Errors');
 								} //end if
 								$arr_mkdw_render_notices = null;
 								//--
@@ -827,7 +827,7 @@ final class Manager {
 								$theme_readonly = (string) $theme_mkdw_htmlsrc;
 								$codemode = 'html';
 								//--
-								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], '', '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_VALIDATE_HTML ; no need for validation here ; do not log notices
+								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], '', '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_HTML_VALIDATOR ; no need for validation here ; do not log notices
 								//--
 							} //end if
 							$out .= '</div>'."\n";
@@ -847,7 +847,7 @@ final class Manager {
 								$validerrs = (string) trim((string)$htmlparser->getValidationErrors());
 								$out .= '<br><div style="float:left; cursor:help;" title="HTML Code Validation: '.\Smart::escape_html((string)\SmartModExtLib\PageBuilder\Utils::htmlValidatorOption().' # Warnings/Errors: '.(((string)$validerrs != '') ? 'YES' : 'NO')).'"><i class="sfi sfi-html-five"></i></div>';
 								if((string)$validerrs != '') {
-									$out .= (string) self::renderNotices([ 0 => (array)explode("\n", (string)$validerrs) ], 'Html Code', 'Html Validation Warnings/Errors');
+									$out .= (string) \SmartModExtLib\PageBuilder\Utils::renderNotices([ 0 => (array)explode("\n", (string)$validerrs) ], 'Html Code', 'Html Validation Warnings/Errors');
 								} //end if
 								$validerrs = null;
 								$htmlparser = null;
@@ -875,7 +875,7 @@ final class Manager {
 							$the_editor_styles = '';
 							if((string)$query['mode'] == 'markdown') {
 								$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/markdown.css">';
-								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], '', '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_VALIDATE_HTML ; no need for validation here ; do not log notices
+								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], '', '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_HTML_VALIDATOR ; no need for validation here ; do not log notices
 							} else {
 							//	$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/js/jsedithtml/cleditor/jquery.cleditor.smartframeworkcomponents.css">'; // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
 								$query['code'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$query['code']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
@@ -889,13 +889,13 @@ final class Manager {
 					//--
 					$out .= '<div align="left">';
 					if((string)$query['mode'] == 'raw') {
-						$out .= '<font size="4"><b>&lt;/raw&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem;"><b>&lt;/raw&gt;</b></span>';
 					} elseif((string)$query['mode'] == 'text') {
-						$out .= '<font size="4"><b>&lt;/text&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem;"><b>&lt;/text&gt;</b></span>';
 					} elseif((string)$query['mode'] == 'markdown') {
-						$out .= '<font size="4"><b>&lt;/markdown&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem;"><b>&lt;/markdown&gt;</b></span>';
 					} else { // html
-						$out .= '<font size="4"><b>&lt;/html5&gt;</b></font>';
+						$out .= '<span style="font-size:1.125rem;"><b>&lt;/html5&gt;</b></span>';
 					} //end if else
 					$out .= '</div>'."\n";
 					$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', true); smartJ$UI.TabsActivate(\'tabs\', true);</script>';
@@ -951,7 +951,7 @@ final class Manager {
 				//-- CODE EDITOR
 				$out = '';
 				$out .= '<form class="ux-form" name="page_form_yaml" id="page_form_yaml" method="post" action="#" onsubmit="return false;">';
-				$out .= '<div align="left" id="yaml-editor"><font size="4" color="#003399"><b>&lt;<i>yaml</i>&gt;</b>'.' - '.self::text('ttl_edtac').'</font>';
+				$out .= '<div align="left" id="yaml-editor"><span style="font-size:1.125rem; color:#4D5774"><b>&lt;<i>yaml</i>&gt;</b>'.' - '.self::text('ttl_edtac').'</span>';
 				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-save.svg'.'" alt="'.self::text('save').'" title="'.self::text('save').'" style="cursor:pointer;" onClick="'.\SmartViewHtmlHelpers::js_ajax_submit_html_form('page_form_yaml', self::composeUrl('op=record-edit-do&id='.\Smart::escape_url($query['id']))).'">';
 				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -960,7 +960,7 @@ final class Manager {
 				$out .= '</div>'."\n";
 				$out .= '<input type="hidden" name="frm[form_mode]" value="yaml">';
 				$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', 'frm[data]', $query['data'], 'yaml', true, '90vw', '70vh', true, (string)$theme_editable); // OK.new
-				$out .= '<div align="left"><font size="4" color="#003399"><b>&lt;/<i>yaml</i>&gt;</b></font></div>'."\n";
+				$out .= '<div align="left"><span style="font-size:1.125rem; color:#4D5774"><b>&lt;/<i>yaml</i>&gt;</b></span></div>'."\n";
 				$out .= "\n".'</form>'."\n";
 				$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', false);</script>';
 				$out .= '<script>smartJ$UI.TabsActivate(\'tabs\', false);</script>';
@@ -1062,7 +1062,7 @@ final class Manager {
 					//--
 				} //end if
 				//--
-				$out .= '<div align="left" id="yaml-viewer"><font size="4"><b>&lt;yaml&gt;</b></font>';
+				$out .= '<div align="left" id="yaml-viewer"><span style="font-size:1.125rem;"><b>&lt;yaml&gt;</b></span>';
 				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 				$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-edit.svg'.'" alt="'.self::text('ttl_edtac').'" title="'.self::text('ttl_edtac').'" style="cursor:pointer;" onClick="'.'smartJ$Browser.LoadElementContentByAjax('."jQuery('#yaml-viewer').parent().prop('id'), 'lib/framework/img/loading-bars.svg', '".\Smart::escape_js(self::composeUrl('op=record-edit-tab-data&id='.\Smart::escape_url($query['id'])))."', 'GET', 'html');".'">';
 				$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -1073,11 +1073,11 @@ final class Manager {
 				} //end if else
 				$out .= '</div>'."\n";
 				if((string)$y_mode == 'preview') {
-					$out .= '<div id="yaml-json-renderer" style="width:88vw; height: 70vh; border: 1px solid #ECECEC; padding: 0.5em 1.5em; overflow:auto;"></div><script>(function(){ var yamlData = \''.\Smart::escape_js(\Smart::json_encode($yaml, false, false, true)).'\'; var yamlJsonData = null; try { yamlJsonData = JSON.parse(yamlData); } catch(err){ jQuery(\'#yaml-json-renderer\').html(\'<div id="operation_error">\' + \'ERROR Parsing YAML to JSON Data: \' + err + \'</div>\'); return; } jQuery(\'#yaml-json-renderer\').css({\'white-space\':\'pre\'}).jsonViewer(yamlJsonData, {collapsed:false, withQuotes:false}); })();</script>';
+					$out .= '<style> #yaml-json-renderer, #yaml-json-renderer * { font-size: 0.8125rem !important; } </style><div id="yaml-json-renderer" style="width:88vw; height: 70vh; border: 1px solid #ECECEC; padding: 0.5em 1.5em; overflow:auto;"></div><script>(function(){ var yamlData = \''.\Smart::escape_js(\Smart::json_encode($yaml, false, false, true)).'\'; var yamlJsonData = null; try { yamlJsonData = JSON.parse(yamlData); } catch(err){ jQuery(\'#yaml-json-renderer\').html(\'<div id="operation_error">\' + \'ERROR Parsing YAML to JSON Data: \' + err + \'</div>\'); return; } jQuery(\'#yaml-json-renderer\').css({\'white-space\':\'pre\'}).jsonViewer(yamlJsonData, {collapsed:false, withQuotes:false}); })();</script>';
 				} else { // view
 					$out .= \SmartViewHtmlHelpers::html_js_editarea('record_sytx_yaml', '', $query['data'], 'yaml', false, '90vw', '70vh', true, (string)$theme_readonly); // OK.new
 				} //end if else
-				$out .= '<div align="left"><font size="4"><b>&lt;/yaml&gt;</b></font></div>'."\n";
+				$out .= '<div align="left"><span style="font-size:1.125rem;"><b>&lt;/yaml&gt;</b></span></div>'."\n";
 				$out .= '<script>smartJ$Browser.setFlag(\'PageAway\', true); smartJ$UI.TabsActivate(\'tabs\', true);</script>';
 				//--
 			} //end if else
@@ -2009,7 +2009,7 @@ final class Manager {
 			//--
 			$result = 'OK';
 			$title = '*';
-			$message = '<font size="3"><b>'.self::text('op_compl').'</b></font>';
+			$message = '<span style="font-size:1rem;"><b>'.self::text('op_compl').'</b></span>';
 			if($y_redir !== true) {
 				$redirect = (string) $y_redir;
 			} //end if
@@ -2021,7 +2021,7 @@ final class Manager {
 			//--
 			$result = 'ERROR';
 			$title = self::text('op_ncompl');
-			$message = '<font size="3"><b>'.$error.'</b></font>';
+			$message = '<span style="font-size:1rem;"><b>'.$error.'</b></span>';
 			$redirect = ''; // avoid redirect if error
 			//--
 		} //end if
@@ -2966,7 +2966,7 @@ final class Manager {
 		$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 		$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/op-preview-data.svg'.'" alt="'.self::text('pw_data').'" title="'.self::text('pw_data').'" style="cursor:pointer;" onClick="smartJ$Browser.PopUpLink(\''.\Smart::escape_js(self::composeUrl('op=record-view-highlight-data&id='.\Smart::escape_url($id))).'\', \'page-builder-pw\', null, null, 1); return false;">';
 		$out .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-		$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/media.svg'.'" alt="'.self::text('pw_media').'" title="'.self::text('pw_media').'" style="cursor:pointer;" onClick="smartJ$Browser.PopUpLink(\''.\Smart::escape_js(self::composeUrl('op=record-view-media&id='.\Smart::escape_url($id))).'\', \'page-builder-media\', null, null, 1); return false;">';
+		$out .= '<img src="'.self::$ModulePath.'libs/views/manager/img/media.svg'.'" alt="'.self::text('pw_media').'" title="'.self::text('pw_media').'" style="cursor:pointer;" onClick="smartJ$Browser.PopUpLink(\''.\Smart::escape_js(self::composeUrl('op=record-view-media&id='.\Smart::escape_url($id))).'\', \'page-builder-pw\', null, null, 1); return false;">';
 		//--
 		return (string) $out;
 		//--
@@ -3131,42 +3131,6 @@ final class Manager {
 	private static function drawFieldLayoutPages($y_mode, $y_listmode, $y_value, $y_htmlvar='') {
 		//--
 		return (string) \SmartViewHtmlHelpers::html_select_list_single('', $y_value, $y_listmode, (array)\SmartModExtLib\PageBuilder\Utils::getAvailableLayouts(), $y_htmlvar, '250', '', 'no', 'no');
-		//--
-	} //END FUNCTION
-	//==================================================================
-
-
-	//==================================================================
-	private static function renderNotices(array $arr_notices, string $title, string $subtitle) : string {
-		//--
-		$html = '';
-		//--
-		if(\Smart::array_size($arr_notices) > 0) {
-			//--
-			$html = '<div style="max-height:70px; overflow:auto;"><ul>'; // {{{SYNC-PAGEBUILDER-NOTIFICATIONS-HEIGHT}}}
-			//--
-			foreach($arr_notices as $rnKey => $rnVal) {
-				$html .= '<li>';
-				if(\is_array($rnVal)) {
-					$html .= (string) \Smart::escape_html((string)$subtitle).':<br>';
-					$html .= '<ul>'."\n";
-					foreach($rnVal as $rnXKey => $rnXVal) {
-						$html .= (string) '<li>'.\Smart::escape_html((string)$rnXVal).'</li>'."\n";
-					} //end foreach
-					$html .= '</ul>'."\n";
-				} else {
-					$html .= (string) \Smart::escape_html((string)$rnVal);
-				} //end if else
-				$html .= '</li>'."\n";
-			} //end foreach
-			//--
-			$html .= '</ul></div>'."\n";
-			//--
-			$html = (string) \SmartComponents::operation_notice('NOTICE: '.\Smart::escape_html((string)$title).':<br>'.$html, '92%');
-			//--
-		} //end if
-		//--
-		return (string) $html;
 		//--
 	} //END FUNCTION
 	//==================================================================

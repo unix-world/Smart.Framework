@@ -2451,9 +2451,7 @@ final class SmartUtils {
 			$wp_mb 		= 'no'; // by default is not mobile
 			//--
 			$the_srv_signature = '';
-			if(array_key_exists('HTTP_USER_AGENT', $_SERVER)) { // fix for PHP8
-				$the_srv_signature = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['HTTP_USER_AGENT']);
-			} //end if
+			$the_srv_signature = (string) SmartFrameworkSecurity::FilterUnsafeString((string)($_SERVER['HTTP_USER_AGENT'] ?? null)); // fix for PHP8
 			$the_lower_signature = (string) strtolower((string)$the_srv_signature);
 			//--
 			// {{{SYNC-CLI-BW-ID}}}
@@ -2492,36 +2490,12 @@ final class SmartUtils {
 				$wp_browser = 'moz'; // mozilla derivates, but not firefox which is detected above
 				$wp_class = 'xy'; // various class
 			} elseif(strpos($the_lower_signature, 'netsurf/') !== false) { // it have just a simple signature
-				$wp_browser = 'nsf'; // netsurf {{{SYNC-DETECT-SIGNATURE-BROWSER-NETSURF}}}
+				$wp_browser = 'nsf'; // netsurf
 				$wp_class = 'xy'; // various class
 			} elseif((strpos($the_lower_signature, 'lynx') !== false) OR (strpos($the_lower_signature, 'links') !== false)) {
 				$wp_browser = 'lyx'; // lynx / links (text browser)
 				$wp_class = 'tx'; // text class
 			} //end if else
-			//-- robots
-			if(defined('SMART_FRAMEWORK_IDENT_ROBOTS')) {
-				if(((string)$wp_browser == (string)self::GENERIC_VALUE_OS_BROWSER_IP) OR ((string)$wp_browser == 'nsf')) { // {{{SYNC-DETECT-SIGNATURE-BROWSER-NETSURF}}} ; if not detected or netsurf
-					$robots = [];
-					if(is_array(SMART_FRAMEWORK_IDENT_ROBOTS)) {
-						$robots = (array) SMART_FRAMEWORK_IDENT_ROBOTS;
-					} else {
-						$robots = (array) Smart::list_to_array((string)SMART_FRAMEWORK_IDENT_ROBOTS, false);
-					} //end if else
-					$imax = (int) Smart::array_size($robots);
-					for($i=0; $i<$imax; $i++) {
-						if(stripos($the_lower_signature, (string)$robots[$i]) !== false) {
-							$wp_browser = 'bot'; // Robot
-							$wp_class = 'rb'; // bot class
-							break;
-						} //end if
-					} //end for
-				} //end if
-			} //end if else
-			//-- this is just for self-robot which name is always unique and impossible to guess ; this must override the rest of detections just in the case that someone adds it to the ident robots in init ...
-			if((string)trim($the_lower_signature) == (string)strtolower(self::get_selfrobot_useragent_name())) {
-				$wp_browser = '@s#';
-				$wp_class = 'rb'; // bot class
-			} //end if
 			//--
 			// {{{SYNC-CLI-OS-ID}}}
 			//-- identify os
@@ -2557,6 +2531,29 @@ final class SmartUtils {
 					$wp_browser = 'wkt'; // webkit
 					$wp_class = 'xy'; // various class
 				} //end if
+			} //end if
+			//-- robots
+			if(defined('SMART_FRAMEWORK_IDENT_ROBOTS')) {
+					$robots = [];
+					if(is_array(SMART_FRAMEWORK_IDENT_ROBOTS)) {
+						$robots = (array) SMART_FRAMEWORK_IDENT_ROBOTS;
+					} else {
+						$robots = (array) Smart::list_to_array((string)SMART_FRAMEWORK_IDENT_ROBOTS, false);
+					} //end if else
+					$imax = (int) Smart::array_size($robots);
+					for($i=0; $i<$imax; $i++) {
+						if(stripos((string)$the_lower_signature, (string)$robots[$i]) !== false) {
+							$wp_browser = 'bot'; // Robot
+							$wp_class = 'rb'; // bot class
+							break;
+						} //end if
+					} //end for
+			//	} //end if
+			} //end if else
+			//-- this is just for self-robot which name is always unique and impossible to guess ; this must override the rest of detections just in the case that someone adds it to the ident robots in init ...
+			if((string)trim((string)$the_lower_signature) == (string)strtolower((string)self::get_selfrobot_useragent_name())) {
+				$wp_browser = '@s#';
+				$wp_class = 'rb'; // bot class
 			} //end if
 			//-- identify ip addr
 			$wp_ip = self::get_ip_client();

@@ -1,6 +1,6 @@
 MIT LICENSE - SlickGrid
 
-Copyright (c) 2015-2018 Radu Ovidiu I., http://www.unix-world.org
+Copyright (c) 2015-2022 unix-world.org, http://www.unix-world.org
 Copyright (c) 2010 Michael Leibman, http://github.com/mleibman/slickgrid
 
 Permission is hereby granted, free of charge, to any person obtaining

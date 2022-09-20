@@ -6,7 +6,7 @@
 
 // (c) 2021-2022 unix-world.org, License: BSD
 // customized by unixman :: colors, line-height, some logic, added tpl variables
-// r.20220728
+// r.20220918
 */
 
 code[class*="language-"],
@@ -36,6 +36,7 @@ code[class*="language-"] * {
 
 pre[class*="language-"],
 :not(pre) > code[class*="language-"] {
+	border: 1px solid #EEEEEE;
 	background: linear-gradient(to bottom, #FAFAFA, #FAFAFA 50%, #FAFCFC 50%, #FAFCFC);
 	background-size: 100% 10px;
 	z-index: -1;
@@ -340,13 +341,25 @@ pre > code.diff-highlight .token.inserted:not(.prefix) {
 
 /* unixman */
 
-div.prism-get-code a {
-	font-size: 1.5rem !important;
-	font-weight: bold !important;
-	cursor: pointer !important;
+div.prism-get-code {
+	display: block !important;
+	margin: 0 !important;
+	margin-top: 8px !important;
+	margin-left: -8px !important;
 	padding: 0 !important;
-	padding-top: 8px!important;
-	color: #333333 !important;
+	font-size: 1.125rem !important;
+	font-weight: bold !important;
+}
+
+div.prism-get-code a {
+	text-decoration: none !important;
+	border: 0 !important;
+	border-bottom: 1px dotted #777777 !important;
+	cursor: pointer !important;
+	color: #1565C0 !important;
+}
+div.prism-get-code a:hover {
+	color: #DD3300 !important;
 }
 
 /* END */

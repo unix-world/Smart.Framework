@@ -1,7 +1,16 @@
-<!-- Partial Template: TestUnit.Partials.CryptoTest r.20210824 -->
+<!-- Partial Template: TestUnit.Partials.CryptoTest r.20220918 -->
+<style>
+div.crypto-test-results {
+	white-space: nowrap !important;
+}
+div.crypto-test-results,
+div.crypto-test-results * {
+	font-size: 0.8125rem !important;
+}
+</style>
 <div id="qunit-test-result"></div>
 <h2>PHP Unicode Crypto Tests [ [###EXE-TIME|html###] ] :</h2>
-<div style="white-space: nowrap !important;">
+<div class="crypto-test-results">
 Unicode@String:&nbsp;<span id="unicode-string" style="color:#FF5500;">[###UNICODE-TEXT|html###]</span><br>
 Escaped@JS:&nbsp;<span id="jsescaped-string" style="color:#778899;">[###JS-ESCAPED|html###]</span><br>
 SHA512&nbsp;(hex):&nbsp;<span id="sha512-hash-hex" style="color:#888888;">[###HASH-SHA512-HEX|html###]</span><br>
@@ -34,7 +43,7 @@ CustomCipher@Options:&nbsp;<span style="color:#CCCCCC;">PHP:[###HASHCRYPT-OPTION
 </div>
 <hr>
 <h2>Javascript Unicode Crypto Tests:</h2>
-<div id="testunit-partial-crypto" style="white-space: nowrap !important;"></div>
+<div id="testunit-partial-crypto" class="crypto-test-results"></div>
 <script>
 (() => {
 	//--

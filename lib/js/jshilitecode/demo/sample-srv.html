@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Prism - Servers Config / Log Demo</title>
+  <title>HiliteJs - Servers Config and Logs - Demo</title>
 
   <link rel="stylesheet" href="../prism/fonts.css">
   <link rel="stylesheet" href="../prism/prism-light.css">
@@ -10,16 +10,17 @@
 
   <script type="text/javascript" src="../../jquery/jquery.js"></script>
   <script>
-  jQuery(document).ready(function() {
-    jQuery('div pre code').each(function(i, block) {
-      Prism.highlightElement(block);
+  jQuery(document).ready(() => {
+    jQuery('div pre code').each((i, el) => {
+      $(el).parent().addClass('line-numbers');
+      Prism.highlightElement(el);
     });
   });
   </script>
 </head>
 <body>
 
-<h1>Prism Demo: Servers Config / Log</h1>
+<h1>HiliteJs Demo: Servers Config and Logs</h1>
 <hr>
 
 <!-- Apache / Nginx: Access Log -->

@@ -14,6 +14,9 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 define('SMART_APP_MODULE_AREA', 'ADMIN');
 define('SMART_APP_MODULE_AUTH', true);
 
+if(!defined('SMART_PAGEBUILDER_HTML_VALIDATOR')) {
+	define('SMART_PAGEBUILDER_HTML_VALIDATOR', 'any:prefer:tidy'); // if available, use one ... ; {{{SYNC-PAGEBUILDER-FALLBACK-HTML-VALIDATOR}}}
+} //end if
 
 /**
  * PageBuilder Manage
@@ -23,7 +26,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// r.20210526
+	// r.20220917
 
 	public function Run() {
 

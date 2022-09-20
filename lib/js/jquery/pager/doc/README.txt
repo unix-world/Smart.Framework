@@ -9,7 +9,7 @@ JQuery 1.7.2 or later is recommended. Older versions might work as well, but the
 
 Step 2: OPTIONAL - include the CSS file with the 3 default themes
 
-<link type="text/css" rel="stylesheet" href="path_to/simplePagination.css"/>
+<link type="text/css" rel="stylesheet" href="path_to/jquery.simplePagination.css"/>
 
 If you skip this step, you will need to define your own styles or use Bootstrap.
 

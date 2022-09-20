@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.2.2.8-r.20220910 */
+/* Smart.Markdown.parser # v.2.2.8-r.20220918 */
 
 /* ----------------------------- */
 
@@ -34,10 +34,14 @@
 /* Links */
 .markdown a,
 .markdown a:link,
-.markdown a:visited,
+.markdown a:visited {
+	border-bottom: none;
+	text-decoration: underline #DDDDDD;
+	color: #0164C7;
+}
 .markdown a:hover {
-	color: #0077AA;
-	text-decoration: underline;
+	text-decoration: underline #4D5774;
+	color: #3B4250;
 }
 
 /* Lists */
@@ -165,10 +169,13 @@
 
 /* Pre, Code */
 .markdown pre {
-	border: 1px solid #F0F0F0;
-	background: #F9F9F9;
+	font-size: inherit;
+	border: 1px solid #EEEEEE;
+	background: #fafafa;
+	color: #111111;
 	padding: 3px;
-	white-space: pre;
+/*	white-space: pre; */
+	white-space: pre-wrap;
 	overflow: auto;
 }
 /*
@@ -181,9 +188,9 @@
 .markdown code.mkdw-code {
 	white-space: pre;
 }
-.markdown code.mkdw-inline-code { /* be consistent with main styles */
+.markdown code.mkdw-inline-code { /* be consistent with custom style */
 	display: inline !important;
-	background: #DDDDFF;
+	background: #DDDDEE;
 	color: #111111;
 	padding: 0;
 	padding-left: 4px;
@@ -194,16 +201,18 @@
 .markdown del,
 .markdown ins,
 .markdown mark,
+.markdown cite,
 .markdown var {
 	display: inline !important;
 	padding: 0;
 	padding-left: 4px;
 	padding-right: 4px;
+	font-size: inherit; /* em not rem, need to be relative to parent not to root */
 }
 .markdown q {
-	background: #333333;
+	background: #444444;
 	color: #F0F0F0;
-	font-size: 0.9375em; /* em not rem, need to be relative to parent not to root */
+	font-size: inherit; /* em not rem, need to be relative to parent not to root */
 }
 .markdown q:before {
 	content: '˝';
@@ -212,7 +221,7 @@
 	content: '˝';
 }
 .markdown del {
-	background: #c2203f;
+	background: #C2203F;
 	color: #FFFFFF;
 }
 .markdown ins {
@@ -220,16 +229,33 @@
 	color: #333333;
 }
 .markdown var {
-	background: #F0F0F0;
-	color: #333333;
+	background: #F4F4F4;
+	color: #444444;
 	font-weight: bold;
 	font-style: normal; /* italic */
 }
 .markdown mark {
 	background: #FFFFC7;
-	color: #333333;
+	color: #444444;
 	font-weight: bold;
 	font-style: normal;
+}
+.markdown cite {
+	background: #E6E2D3;
+	color: #444444;
+	font-weight: bold;
+	font-style: normal;
+}
+
+/* -- */
+
+.markdown dfn {
+	background: #E9EDCA;
+	color: #444444;
+	font-size: inherit;
+	padding: 1px;
+	font-weight: bold;
+	font-style: italic; /* normal */
 }
 
 /* -- */
@@ -237,16 +263,6 @@
 .markdown img {
 	max-width: 100%;
 /*	margin: 5px; */
-}
-
-/* -- */
-
-.markdown dfn {
-	color: #666699;
-	font-size: 0.875rem;
-	padding: 1px;
-	font-weight: bold;
-	font-style: italic; /* normal */
 }
 
 /* ----------------------------- */

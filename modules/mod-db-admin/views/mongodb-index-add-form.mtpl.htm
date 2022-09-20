@@ -1,0 +1,42 @@
+<!-- MongoDB Index Add Form -->
+<link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
+<style>
+#json-edit-area, #json-edit-area * {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+}
+</style>
+<script>
+function btnHandlerCancel() {
+	smartJ$Browser.CloseDelayedModalPopUp();
+	return false;
+}
+function btnHandlerSubmit() {
+	smartJ$Browser.SubmitFormByAjax('index_add_form', '[###ACTIONS-URL|js###]', 'yes');
+	return false;
+}
+</script>
+<h3>Database:&nbsp;<span style="color:#4D5774; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;<span style="color:#448FCE;">[###COLLECTION|html###]</span></h3>
+<h4><span style="color:#778899;">MongoDB :: </span>[###THE-TITLE|html|nl2br###]</h4>
+<h6><span style="color:#5E6885;" title="Hint">Enter below the JSON Definition for the New Index Creation:</span></h6><br>
+[@@@SUB-TEMPLATE:partials/code-editor.mtpl.inc.htm@@@]
+<script type="text/javascript">
+var cmInstance;
+jQuery(function() {
+	cmInstance = drawCodeEditor('cmInstance', 'json-edit-area', 'codeEditorMenuArea', '100%', '100%');
+});
+</script>
+<form id="index_add_form" name="index_add_form" class="ux-form" onSubmit="return false;">
+<input type="hidden" name="frm[chk]" value="[###CHECKSUM-HASH|html###]">
+<div style="width: 80vw !important; max-width: 960px; min-width:320px !important; height: calc(100vh - 325px); min-height: 200px;">
+	<div id="codeEditorMenuArea"></div>
+	<textarea id="json-edit-area" data-mode="raw" name="frm[json]" maxlength="16777216" class="ux-field" style="width:100%; height:100%;" autocomplete="off" spellcheck="false" onKeyDown="smartJ$Browser.catchKeyTAB(event);">[###DATA-JSON|html###]</textarea>
+</div>
+<br>
+<br>
+<div class="ux-controls">
+	<button type="button" class="ux-button ux-button-spacing" onClick="btnHandlerCancel();"> Cancel &nbsp; <i style="color:#444444;" class="sfi sfi-spinner11"></i></button>
+	<button type="button" class="ux-button ux-button-highlight ux-button-spacing" onClick="btnHandlerSubmit();"> [###ACTION-TXT|html###] &nbsp; <i class="sfi sfi-checkmark"></i></button>
+</div>
+</form>
+<!-- # MongoDB Index Add Form -->

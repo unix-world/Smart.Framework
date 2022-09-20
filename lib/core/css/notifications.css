@@ -3,7 +3,7 @@
 
 /* ----------------------------- */
 
-/* Notifications r.20220908 */
+/* Notifications r.20220916 */
 
 div#operation_display,   div.operation_display,
 div#operation_result,    div.operation_result,
@@ -111,7 +111,7 @@ div.operation_warn {
 
 div#operation_error,
 div.operation_error {
-	background-color: #C62828 !important;
+	background-color: #ED2839 !important;
 	color: #FFFFFF !important;
 }
 

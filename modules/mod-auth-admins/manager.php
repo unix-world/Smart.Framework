@@ -22,7 +22,8 @@ define('SMART_APP_MODULE_AUTH', true); 	// if set to TRUE because is shared
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20210830
+	// v.20220915
+
 
 	public function Initialize() {
 		//--
@@ -227,7 +228,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$jsevcode = '';
 				if((string)$frm['id'] == (string)SmartAuth::get_login_id()) { // if change password for current account must handle different
 					$redirect = '';
-					$jsevcode = 'smartJ$Browser.RefreshParent(); smartJ$Browser.CloseDelayedModalPopUp();';
+					$jsevcode = 'setTimeout(() => { smartJ$Browser.RefreshParent(); smartJ$Browser.CloseDelayedModalPopUp(); }, 3750);';
 				} //end if
 				//--
 				$this->PageViewSetVar(

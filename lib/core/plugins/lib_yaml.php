@@ -44,13 +44,16 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20220204
+ * @version 	v.20220912
  * @package 	Plugins:ConvertersAndParsers
  *
  */
 final class SmartYamlConverter {
 
 	// ->
+
+	// TODO:
+	//		* {{{BUG-YAML-COMMENTS}}} ; until this bug will be fixed DO NOT USE single ' or double " quotes after YAML comments starting with a #
 
 	//================================================================
 	//--
@@ -421,7 +424,7 @@ final class SmartYamlConverter {
 				} //end while
 				$i--;
 			} //end if
-			//-- Strip out comments fix #8 from v.0.5.1
+			//-- Strip out comments fix #8 from v.0.5.1 # {{{BUG-YAML-COMMENTS}}} # TODO: the below fix will not remove comments after # if enclosed in single or double quotes ; example: "value" # "comment" or "value" # 'comment'
 			if(strpos($line, '#') !== false) {
 				$line = preg_replace('/\s*#([^"\']+)$/', '', $line);
 			} //end if

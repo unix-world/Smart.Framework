@@ -1,0 +1,6 @@
+<select id="collections-list" class="ux-field" autocomplete="off" onChange="selectCollection();" title="[###COLLECTION|html###]">
+	<option value=""></option>
+	[%%%LOOP:COLLECTIONS%%%]
+	<option value="[###COLLECTIONS.NAME|html###]"[%%%IF:COLLECTIONS.NAME:==###COLLECTION###;%%%] selected[%%%/IF:COLLECTIONS.NAME%%%]>[###COLLECTIONS.NAME|html###]</option>
+	[%%%/LOOP:COLLECTIONS%%%]
+</select>

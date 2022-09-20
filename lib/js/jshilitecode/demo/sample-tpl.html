@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Prism - Templating Engines Demo</title>
+  <title>HiliteJs - Templating Engines - Demo</title>
 
   <link rel="stylesheet" href="../prism/fonts.css">
   <link rel="stylesheet" href="../prism/prism.css">
@@ -10,16 +10,17 @@
 
   <script type="text/javascript" src="../../jquery/jquery.js"></script>
   <script>
-  jQuery(document).ready(function() {
-    jQuery('div pre code').each(function(i, block) {
-      Prism.highlightElement(block);
+  jQuery(document).ready(() => {
+    jQuery('div pre code').each((i, el) => {
+      $(el).parent().addClass('line-numbers');
+      Prism.highlightElement(el);
     });
   });
   </script>
 </head>
 <body>
 
-<h1>Prism Demo: Templating Engines</h1>
+<h1>HiliteJs Demo: Templating Engines</h1>
 <hr>
 
 <!-- Marker-TPL -->
@@ -111,7 +112,7 @@ Markup is &amp;lt;em&amp;gt;not&amp;lt;/em&amp;gt; highlighted within comments.
 <!-- TEX -->
 
 <div>
-<h2>TeX</h2>
+<h2>LaTeX</h2>
 <pre><code class="language-tex">\documentclass{article}
 \usepackage[koi8-r]{inputenc}
 \hoffset=0pt

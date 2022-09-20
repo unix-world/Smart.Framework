@@ -1,0 +1,24 @@
+<!-- JSON Visual Editor -->
+<link rel="stylesheet" type="text/css" href="modules/mod-db-admin/views/js/json-editor/jsoneditor.css">
+<script src="modules/mod-db-admin/views/js/json-editor/jsoneditor.js"></script>
+<script>
+const drawJsonEditor = (divElemId, strJsonData) => {
+	divElemId = smartJ$Utils.stringPureVal(divElemId, true);
+	strJsonData = smartJ$Utils.stringPureVal(strJsonData) || '{}';
+	let json;
+	try {
+		json = JSON.parse(strJsonData);
+	} catch(err) {
+		json = {};
+	}
+	const options = {
+		mode: 'tree',
+		history: true,
+		search: false,
+	};
+	const container = document.getElementById(divElemId);
+	jsonEditor = new JSONEditor(container, options, json); // jsonEditor.set(json);
+	jsonEditor.expandAll();
+};
+</script>
+<!-- # JSON Visual Editor -->

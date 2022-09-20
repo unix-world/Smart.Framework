@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20220730
+// [Smart.Framework / INIT] v.20220916
 // (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -25,7 +25,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //---------------------------------------
 //============================================================ ALWAYS CHANGE !
 //--------------------------------------- TIMEZONE
-const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP (Example: Europe/London) ; default is: UTC
+const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP application (Example: Europe/London) ; default is: UTC
 //--------------------------------------- TASK RUNTIME ALLOWED IP LIST
 const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		''; 										// APP Task service area allowed IPs ; ex: '<127.0.0.1>,<::1>' ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
 //--------------------------------------- SECURITY

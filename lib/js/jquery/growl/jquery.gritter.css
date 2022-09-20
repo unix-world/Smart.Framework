@@ -1,4 +1,4 @@
-/* Gritter for jQuery Version: 1.7.4.8 :: with fixes by unixman r.20210331 */
+/* Gritter for jQuery Version: 1.7.4.8 :: with fixes by unixman r.20220920 */
 
 #gritter-notice-wrapper {
 	z-index: 2147483000;
@@ -6,17 +6,17 @@
 	top: 10px;
 	right: 10px;
 	min-width: 300px !important;
-	max-width: 450px !important;
+	width: 400px;
+	max-width: 44vw;
 	max-height: 96vh !important;
-	opacity: 0.95;
 	overflow-y: auto;
 	overflow-x: hidden;
+	opacity: 0.95;
 }
-
-@media all and (max-width:639px) {
+@media all and (max-width:767px) {
 	#gritter-notice-wrapper {
 		min-width: 275px !important;
-		max-width: 300px !important;
+		max-width: 88vw !important;
 	}
 }
 
@@ -63,7 +63,25 @@
 .gritter-item {
 	display:block;
 	padding: 2px 11px 8px 11px;
-	font-size: 12px;
+	font-size: 0.875rem;
+}
+.gritter-item h1 {
+	font-size: 1.75rem;
+}
+.gritter-item h2 {
+	font-size: 1.5rem;
+}
+.gritter-item h3 {
+	font-size: 1.375rem;
+}
+.gritter-item h4 {
+	font-size: 1.25rem;
+}
+.gritter-item h5 {
+	font-size: 1.125rem;
+}
+.gritter-item h6 {
+	font-size: 1rem;
 }
 .hover .gritter-item {
 	background-position: right -40px;
@@ -81,12 +99,12 @@
 	cursor: pointer;
 	width: 16px;
 	height: 16px;
-	font-size: 16px;
+	font-size: 1rem;
 	font-weight: bold;
 	z-index: 2147483001;
 }
 .gritter-title {
-	font-size: 14px;
+	font-size: 0.9375rem;
 	font-weight: bold;
 	padding: 0 0 7px 0;
 	display: block;
@@ -101,8 +119,11 @@
 	padding: 0;
 }
 .gritter-with-image {
-	width: 220px;
 	float: right;
+	max-width: calc(100% - 52px);
+}
+.gritter-without-image {
+	max-width: 100%;
 }
 
 .gritter-close,
@@ -110,7 +131,7 @@
 .gritter-item *,
 .gritter-bottom,
 .gritter-top {
-	background-color: #D9EDF7;
+	background: #D9EDF7;
 	color: #222222;
 }
 
@@ -122,7 +143,7 @@
 .gritter-dark .gritter-item *,
 .gritter-dark .gritter-bottom,
 .gritter-dark .gritter-top {
-	background-color: #777777;
+	background: #444444;
 	color: #FFFFFF;
 }
 
@@ -132,9 +153,9 @@
 .gritter-neutral .gritter-item *,
 .gritter-neutral .gritter-bottom,
 .gritter-neutral .gritter-top {
-	background-color: #FFFFFF;
-	color: #555555;
-	opacity: 0.9;
+	background: #FAFAFA;
+	color: #222222;
+	opacity: 0.97;
 }
 
 /* light */
@@ -143,7 +164,7 @@
 .gritter-light .gritter-item *,
 .gritter-light .gritter-bottom,
 .gritter-light .gritter-top {
-	background-color: #FEFF99;
+	background: #FEFF99;
 	color: #111111;
 }
 
@@ -153,7 +174,7 @@
 .gritter-blue .gritter-item *,
 .gritter-blue .gritter-bottom,
 .gritter-blue .gritter-top {
-	background-color: #344A78;
+	background: #344A78;
 	color: #FFFFFF;
 }
 
@@ -163,7 +184,7 @@
 .gritter-green .gritter-item *,
 .gritter-green .gritter-bottom,
 .gritter-green .gritter-top {
-	background-color: #86BD00;
+	background: #7CAE0A;
 	color: #FFFFFF;
 }
 
@@ -173,7 +194,7 @@
 .gritter-yellow .gritter-item *,
 .gritter-yellow .gritter-bottom,
 .gritter-yellow .gritter-top {
-	background-color: #FFCC00;
+	background: #FFCC00;
 	color: #111111;
 }
 
@@ -183,7 +204,7 @@
 .gritter-red .gritter-item *,
 .gritter-red .gritter-bottom,
 .gritter-red .gritter-top {
-	background-color: #FF3300;
+	background: #C00C00;
 	color: #FFFFFF;
 }
 
@@ -193,7 +214,7 @@
 .gritter-pink .gritter-item *,
 .gritter-pink .gritter-bottom,
 .gritter-pink .gritter-top {
-	background-color: #FF4073;
+	background: #FF4073;
 	color: #FFFFFF;
 }
 

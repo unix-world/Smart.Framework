@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20220910 # this should be loaded from app web root only
+// # r.20220916 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2022.09.10'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2022.09.16'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -474,7 +474,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 		if(!headers_sent()) {
 			@http_response_code(500); // try, if not headers send
 		} //end if
-		die('<!DOCTYPE html>'."\n".'<!-- Smart.Framework @ Smart Error Reporting / Smart Error Handler :: '.date('Y-m-d H:i:s O').' -->'."\n".'<html>'."\n".'<head><meta charset="'.SMART_FRAMEWORK_CHARSET.'"><title>! ERROR !</title><link rel="icon" href="data:,"><style>* { font-family: \'IBM Plex Mono\',mono; font-smooth: always; } hr { border: none 0; border-top: 1px solid #ECECEC; height: 1px; }</style></head>'."\n".'<body>'."\n".'<br><div><center><div style="min-width:300px; max-width:'.(SMART_FRAMEWORK_ENV === 'dev' ? '75vw' : '57vw').'; border: 1px solid #ECECEC; margin-top:10px; margin-bottom:10px; color:#333333;"><table cellpadding="4" style="max-width:70vw;"><tr valign="top"><td width="32">'.$errlogo.'</td><td>&nbsp;</td><td><b><span style="font-size:1.75rem;">HTTP 500 Internal Server Error</span><br><span style="font-size:1.25rem">'.'App Critical Error'.($appenv ? ' ('.$appenv.')' : '').' @ '.SMART_ERROR_AREA.' [#'.$errno.']:</span><br>'.'</b><i>'.nl2br((string)htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true), false).($script ? '<br><span style="color:#778899;">'.htmlspecialchars((string)$script, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</span>' : '').'</i></td></tr></table></div><br>'.(($smart_____framework_____last__error || $smart_____framework_____last__exception_html) ? "\n".'<!-- START: Last ERR Message --><div style="max-width:70vw; padding:5px; border: 1px solid #F0F0F0; border-radius:3px;"><span style="color:#222222; font-style:italic; font-weight:bold; font-size:3rem;"><span style="color:#4e5a92;">PHP '.PHP_VERSION.'</span> Last ERROR:</span><br><br>'.$err_prepend.$smart_____framework_____last__error.$smart_____framework_____last__exception_html.$err_append.'<br></div><br><br><hr size="1">'."\n".'<!-- #END: Last ERR Message -->'."\n" : '').'</center></div>'."\n".'</body>'."\n".'</html>'."\n");
+		die('<!DOCTYPE html>'."\n".'<!-- Smart.Framework @ Smart Error Reporting / Smart Error Handler :: '.date('Y-m-d H:i:s O').' -->'."\n".'<html>'."\n".'<head><meta charset="'.SMART_FRAMEWORK_CHARSET.'"><title>! ERROR !</title><link rel="icon" href="data:,"><style>* { font-family: \'IBM Plex Mono\',mono; font-smooth: always; } hr { border: none 0; border-top: 1px solid #EEEEEE; height: 1px; }</style></head>'."\n".'<body>'."\n".'<br><div><center><div style="min-width:300px; max-width:'.(SMART_FRAMEWORK_ENV === 'dev' ? '75vw' : '57vw').'; border: 1px solid #EEEEEE; margin-top:10px; margin-bottom:10px; color:#333333;"><table cellpadding="4" style="max-width:70vw;"><tr valign="top"><td width="32">'.$errlogo.'</td><td>&nbsp;</td><td><b><span style="font-size:1.75rem;">HTTP 500 Internal Server Error</span><br><span style="font-size:1.25rem">'.'App Critical Error'.($appenv ? ' ('.$appenv.')' : '').' @ '.SMART_ERROR_AREA.' [#'.$errno.']:</span><br>'.'</b><i>'.nl2br((string)htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true), false).($script ? '<br><span style="color:#778899;">'.htmlspecialchars((string)$script, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</span>' : '').'</i></td></tr></table></div><br>'.(($smart_____framework_____last__error || $smart_____framework_____last__exception_html) ? "\n".'<!-- START: Last ERR Message --><div style="max-width:70vw; padding:5px; border: 1px solid #F0F0F0; border-radius:3px;"><span style="color:#222222; font-style:italic; font-weight:bold; font-size:3rem;"><span style="color:#4e5a92;">PHP '.PHP_VERSION.'</span> Last ERROR:</span><br><br>'.$err_prepend.$smart_____framework_____last__error.$smart_____framework_____last__exception_html.$err_append.'<br></div><br><br><hr size="1">'."\n".'<!-- #END: Last ERR Message -->'."\n" : '').'</center></div>'."\n".'</body>'."\n".'</html>'."\n");
 		//--
 	} //end if else
 	//--

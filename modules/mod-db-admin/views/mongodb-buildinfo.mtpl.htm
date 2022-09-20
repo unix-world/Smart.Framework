@@ -1,0 +1,40 @@
+<!-- MongoDB List BuildInfo -->
+<link rel="stylesheet" href="lib/core/plugins/fonts/typo/mono/ibm-plex-mono.css">
+<style>
+#build-info {
+	background: #FEFEFE;
+	border: 1px solid #EEEEEE;
+	padding: 10px;
+}
+#build-info pre {
+	overflow-x: auto;
+}
+#build-info, #build-info * {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+}
+</style>
+<script>
+var theListLocation = '[###PAGE-LIST-URL|js###]';
+var theCookieNameCollection = '[###COOKIENAME-COLLECTION|js###]';
+function selectCollection() {
+	var selected = jQuery('#collections-list').val();
+	if(!selected) {
+		return false;
+	}
+	smartJ$Browser.setCookie(String(theCookieNameCollection), String(selected));
+	self.location = String(theListLocation);
+}
+</script>
+<img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="margin-right:5px; cursor:help;" title="MongoDB Server @ `[###HOST|html###]:[###PORT|html###]` # Version: `[###SRV-VERSION|html###]` # PHP-EXT: `[###CLI-VERSION|html###]`">
+<h2><span style="color:#778899;">MongoDB :: </span> Database:&nbsp;<span style="color:#4D5774">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Server: <span style="color:#FFAA00">[###HOST|html###]:[###PORT|html###]</span></h2>
+<b>Existing&nbsp;Collections:</b>&nbsp;[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@]&nbsp; &nbsp;<a class="ux-button ux-button-regular ux-button-spacing" href="[###URL-NEW-COLLECTION|html###]" data-smart="open.modal"><i class="sfi sfi-folder-plus"></i> &nbsp; Create New Collection</a><a href="[###PAGE-LIST-URL|html###]" class="ux-button ux-button-spacing"><i style="color:#444444;" class="sfi sfi-loop2"></i> &nbsp; Refresh</a>
+<br>
+<br>
+<div id="build-info">
+	<h3>Server&nbsp;Build&nbsp;Info</h3>
+	<pre>[###BUILD-INFO|html###][%%%|N%%%][%%%|N%%%]</pre>
+</div>
+<br>
+<br>
+<!-- # MongoDB List BuildInfo -->

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Prism - Network Data Protocols Demo</title>
+  <title>HiliteJs - Network Data Protocols - Demo</title>
 
   <link rel="stylesheet" href="../prism/fonts.css">
   <link rel="stylesheet" href="../prism/prism-light.css">
@@ -10,16 +10,17 @@
 
   <script type="text/javascript" src="../../jquery/jquery.js"></script>
   <script>
-  jQuery(document).ready(function() {
-    jQuery('div pre code').each(function(i, block) {
-      Prism.highlightElement(block);
+  jQuery(document).ready(() => {
+    jQuery('div pre code').each((i, el) => {
+      //$(el).parent().addClass('line-numbers');
+      Prism.highlightElement(el);
     });
   });
   </script>
 </head>
 <body>
 
-<h1>Prism Demo: Network Data Protocols</h1>
+<h1>HiliteJs Demo: Network Data Protocols</h1>
 <hr>
 
 <!-- CSP -->

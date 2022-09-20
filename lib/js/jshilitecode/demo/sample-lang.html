@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Prism - Languages Demo</title>
+  <title>HiliteJs - Programming Languages - Demo</title>
 
   <link rel="stylesheet" href="../prism/fonts.css">
   <link rel="stylesheet" href="../prism/prism-dark.css">
@@ -10,16 +10,17 @@
 
   <script type="text/javascript" src="../../jquery/jquery.js"></script>
   <script>
-  jQuery(document).ready(function() {
-    jQuery('div pre code').each(function(i, block) {
-      Prism.highlightElement(block);
+  jQuery(document).ready(() => {
+    jQuery('div pre code').each((i, el) => {
+      //$(el).parent().addClass('line-numbers');
+      Prism.highlightElement(el);
     });
   });
   </script>
 </head>
 <body>
 
-<h1>Prism Demo: Languages</h1>
+<h1>HiliteJs Demo: Programming Languages</h1>
 <hr>
 
 <!-- Go -->
@@ -397,39 +398,6 @@ g.salute
     return &quot;\(name) is \(age + offset) years old&quot;
   }
 }
-</code></pre>
-</div>
-
-<!-- Scheme -->
-
-<div class="system">
-<h2>Scheme</h2>
-<pre><code class="lang-scheme">(define (hofstadter-male-female n)
-(letrec ((female (lambda (n)
-           (if (= n 0)
-           1
-           (- n (male (female (- n 1)))))))
-     (male (lambda (n)
-         (if (= n 0)
-             0
-             (- n (female (male (- n 1))))))))
-  (let loop ((i 0))
-    (if (> i n)
-    '()
-    (cons (cons (female i)
-            (male i))
-      (loop (+ i 1)))))))
-
-(hofstadter-male-female 8)
-
-(define (find-first func lst)
-(call-with-current-continuation
- (lambda (return-immediately)
-   (for-each (lambda (x)
-       (if (func x)
-           (return-immediately x)))
-         lst)
-   #f)))
 </code></pre>
 </div>
 

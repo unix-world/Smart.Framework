@@ -4,8 +4,8 @@
 // Developed by Cory LaViska for A Beautiful Site, LLC
 // Licensed under the MIT license: http://opensource.org/licenses/MIT
 
-// r.20210424
-// (c) 2019-2021 unix-world.org
+// r.20220918
+// (c) 2019-2022 unix-world.org
 // License: BSD
 // contains fixes by unixman
 */
@@ -14,20 +14,30 @@
 .alertable {
 	position: fixed;
 	z-index: 2147482005;
-	top: 10vh;
+	top: 7vh;
 	left: 50%;
 	transform: translateX(-50%);
-	min-width: 295px;
-	width: 35vw;
-	max-width: 960px;
+	min-width: 292px;
+	width: 50vw;
+	max-width: 720px;
 	background: #FFFFFF;
-	border-radius: 4px;
+	border-radius: 3px;
 	padding: 20px;
 	margin: 0 auto;
-	min-height: 100px;
-	height: 25vh;
+	min-height: 192px;
+	height: auto;
 	max-height: 720px;
-	border: 1px solid #F2F2F2;
+	border: 1px solid #EEEEEE;
+}
+
+@media all and (max-width:767px) { /* screens with a width lower than 768 */
+	.alertable {
+		top: 7px !important;
+		width: 80vw !important;
+		max-width: 80px !important;
+		height: 80vh !important;
+		max-height: 80vh !important;
+	}
 }
 
 /* Overlay */
@@ -38,7 +48,7 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
-	background: rgba(238, 238, 238, 0.55);
+	background: rgba(238, 238, 238, 0.7);
 }
 
 /* Form */
@@ -89,27 +99,13 @@
 
 /* OK button */
 .alertable-ok {
-/*
-	background: #09d;
-	border: solid 1px #09d;
-	color: white;
-*/
-	background: #FFFFFF;
 	border: solid 1px #DDDDDD;
-	color: #333333;
-	font-family: inherit;
-	font-size: inherit;
-	border-radius: 3px;
-	padding: 6px 12px;
-	margin-left: 10px;
-	cursor: pointer;
+	background: #FFFFFF;
+	color: #444444;
 }
 
-.alertable-ok:hover,
 .alertable-ok:focus,
 .alertable-ok:active {
-/*	background-color: #08c; */
-	background-color: #DCDCDC;
 	outline: none;
 }
 .alertable-ok::-moz-focus-inner { /* disable mozilla focus selector as dotted border */
@@ -118,21 +114,34 @@
 
 /* Cancel button */
 .alertable-cancel {
-	border: solid 1px #DDDDDD;
+	border: solid 1px #DFDFDF;
 	background: #FFFFFF;
+	color: #777777;
+}
+
+/* OK and Cancel buttons */
+
+.alertable-ok,
+.alertable-cancel {
 	font-family: inherit;
 	font-size: inherit;
-	color: #888888;
 	border-radius: 3px;
 	padding: 6px 12px;
-	margin-left: 10px;
+	margin-right: 10px;
 	cursor: pointer;
 }
 
-.alertable-cancel:hover,
+.alertable-ok:focus,
+.alertable-ok:active,
 .alertable-cancel:focus,
 .alertable-cancel:active {
-	background-color: #f2f2f2;
+	border: 1px solid #BBBBBB;
 }
+
+.alertable-ok:hover,
+.alertable-cancel:hover {
+	border: 1px solid #888888;
+}
+
 
 /* END */

@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20220910
+ * @version 	v.20220918
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220910';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220918';
 
 	//===================================
 
@@ -150,8 +150,9 @@ final class SmartMarkdownToHTML {
 		'++' => 'ins',
 		'!!' => 'sub',
 		'^^' => 'sup',
-		',,'  => 'q',
+		',,'  => 'q', // inline quote
 		'$$' => 'var', // can be used for math
+		'??' => 'cite', // inline term def, ; cannot use dt/dd
 		'``' => 'mark', // ```inline code``` and block codes are handled elsewhere, there is no risk to collide with them, this is safe
 	];
 	//--
@@ -205,6 +206,7 @@ final class SmartMarkdownToHTML {
 		'&dash;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/dash/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // - used for lists or deletions or table align
 		'&plus;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/plus/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // + used for lists or inserts
 		'&excl;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/excl/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ! used for subscript or media
+		'&quest;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/quest/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ? used for dt
 		'&Hat;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/Hat/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // ^ used for superscript
 		'&comma;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/comma/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // , used for inline quote
 		'&dollar;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/dollar/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // $ // used for var
@@ -279,6 +281,7 @@ final class SmartMarkdownToHTML {
 		'\\`' 	=> '`',
 		'\\~' 	=> '~',
 		'\\!' 	=> '!',
+		'\\?' 	=> '?',
 		'\\#' 	=> '#',
 		'\\$' 	=> '$',
 		'\\@' 	=> '@',
@@ -316,25 +319,25 @@ final class SmartMarkdownToHTML {
 		//--
 		$this->optionValidateHtml 	  = ''; // like false, do not validate except if required by options
 		if(in_array('validate:html:any', (array)$this->renderOptions)) {
-			$this->optionValidateHtml = 'any'; // validate with any of dom or tidy (no preference), optional
-		} elseif(in_array('validate:html:any:prefer:tidy', (array)$this->renderOptions)) {
-			$this->optionValidateHtml = 'any:prefer:tidy'; // validate, prefer tidy, optional
+			$this->optionValidateHtml = 'any'; // validate with any of dom or tidy (dom is preffered, newer tidy versions breaks pre-formats), optional
 		} elseif(in_array('validate:html:any:prefer:dom', (array)$this->renderOptions)) {
 			$this->optionValidateHtml = 'any:prefer:dom'; // validate, prefer dom, optional
+		} elseif(in_array('validate:html:any:prefer:tidy', (array)$this->renderOptions)) {
+			$this->optionValidateHtml = 'any:prefer:tidy'; // validate, prefer tidy, optional
 		} elseif(in_array('validate:html:any:required', (array)$this->renderOptions)) {
 			$this->optionValidateHtml = 'any:required'; // validate with any of dom or tidy (no preference), required
-		} elseif(in_array('validate:html:any:required:tidy', (array)$this->renderOptions)) {
-			$this->optionValidateHtml = 'any:required:tidy'; // validate, prefer tidy, required
 		} elseif(in_array('validate:html:any:required:dom', (array)$this->renderOptions)) {
 			$this->optionValidateHtml = 'any:required:dom'; // validate, prefer dom, required
-		} elseif(in_array('validate:html:tidy', (array)$this->renderOptions)) {
-			$this->optionValidateHtml = 'tidy'; // validate, tidy only, optional
+		} elseif(in_array('validate:html:any:required:tidy', (array)$this->renderOptions)) {
+			$this->optionValidateHtml = 'any:required:tidy'; // validate, prefer tidy, required
 		} elseif(in_array('validate:html:dom', (array)$this->renderOptions)) {
 			$this->optionValidateHtml = 'dom'; // validate, dom only, optional
-		} elseif(in_array('validate:html:tidy:required', (array)$this->renderOptions)) {
-			$this->optionValidateHtml = 'tidy:required'; // validate, tidy, required
+		} elseif(in_array('validate:html:tidy', (array)$this->renderOptions)) {
+			$this->optionValidateHtml = 'tidy'; // validate, tidy only, optional
 		} elseif(in_array('validate:html:dom:required', (array)$this->renderOptions)) {
 			$this->optionValidateHtml = 'dom:required'; // validate, dom, required
+		} elseif(in_array('validate:html:tidy:required', (array)$this->renderOptions)) {
+			$this->optionValidateHtml = 'tidy:required'; // validate, tidy, required
 		} //end if
 		//--
 		$this->optionAllowMarkerTplSyntax = false;
@@ -851,7 +854,7 @@ final class SmartMarkdownToHTML {
 		//--
 		// Smart.Markdown inline syntax support:
 		// 		IMPORTANT:
-		// 			- do not use ## @@ %% here, they may collide with Marker Templating Syntax
+		// 			- do not use ## @@ %% here, they may collide with Marker Templating Syntax ; or {{: :}} which may collide with PageBuilder Syntax
 		// 			- do not use << or >> here, they are already html escaped when the replacements need to occur
 		//--
 		//	**bold** ; here the __bold__ is no more supported, it is now __underline__, but at least this is compatible with commonmark as **bold**
@@ -864,6 +867,7 @@ final class SmartMarkdownToHTML {
 		//	^^superscript^^ ; but support original compatible ^supperscript^ as there is no other way to have compatibility with commonmark
 		//	$$variable$$
 		//	,,quote,,
+		//	??definition term??
 		// ``highlight``
 		//--
 		if((string)trim((string)$text) == '') {

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Prism - Web Demo</title>
+  <title>HiliteJs - Web Scripting - Demo</title>
 
   <link rel="stylesheet" href="../prism/fonts.css">
   <link rel="stylesheet" href="../prism/prism-dark.css">
@@ -10,54 +10,18 @@
 
   <script type="text/javascript" src="../../jquery/jquery.js"></script>
   <script>
-  jQuery(document).ready(function() {
-    jQuery('div pre code').each(function(i, block) {
-      Prism.highlightElement(block);
+  jQuery(document).ready(() => {
+    jQuery('div pre code').each((i, el) => {
+      $(el).parent().addClass('line-numbers');
+      Prism.highlightElement(el);
     });
   });
   </script>
 </head>
 <body>
 
-<h1>Prism Demo: Web</h1>
+<h1>HiliteJs Demo: Web Scripting</h1>
 <hr>
-
-<!-- DIFF -->
-
-<div>
-<h2>Diff (unified)</h2>
-<pre><code class="language-diff">Index: languages/ini.js
-===================================================================
---- languages/ini.js    (revision 199)
-+++ languages/ini.js    (revision 200)
-@@ -1,8 +1,7 @@
- hljs.LANGUAGES.ini =
- {
-   case_insensitive: true,
--  defaultMode:
--  {
-+  defaultMode: {
-     contains: [&#39;comment&#39;, &#39;title&#39;, &#39;setting&#39;],
-     illegal: &#39;[^\\s]&#39;
-   },
-
-*** /path/to/original timestamp
---- /path/to/new      timestamp
-***************
-*** 1,3 ****
---- 1,9 ----
-+ This is an important
-+ notice! It should
-+ therefore be located at
-+ the beginning of this
-+ document!
-
-! compress the size of the
-! changes.
-
-  It is important to spell
-</code></pre>
-</div>
 
 <!-- Javascript -->
 
@@ -311,7 +275,19 @@ datahere
 
 <div>
 <h2>MongoDB</h2>
-<pre><code class="language-mongodb">{ $sample: { size: <positive integer> } }
+<pre><code class="language-mongodb">{
+	"tag": {
+		"$not": {
+			"$eq": "&lt;positive-integer&gt;"
+		}
+	},
+	"type": "page",
+	"size": {
+		"$gt": 3
+	},
+	"extra": null,
+	"active": true
+}
 </code></pre>
 </div>
 
@@ -571,6 +547,43 @@ a {
     @content;
   }
 }</code></pre>
+</div>
+
+<!-- DIFF -->
+
+<div>
+<h2>Diff (unified)</h2>
+<pre><code class="language-diff">Index: languages/ini.js
+===================================================================
+--- languages/ini.js    (revision 199)
++++ languages/ini.js    (revision 200)
+@@ -1,8 +1,7 @@
+ hljs.LANGUAGES.ini =
+ {
+   case_insensitive: true,
+-  defaultMode:
+-  {
++  defaultMode: {
+     contains: [&#39;comment&#39;, &#39;title&#39;, &#39;setting&#39;],
+     illegal: &#39;[^\\s]&#39;
+   },
+
+*** /path/to/original timestamp
+--- /path/to/new      timestamp
+***************
+*** 1,3 ****
+--- 1,9 ----
++ This is an important
++ notice! It should
++ therefore be located at
++ the beginning of this
++ document!
+
+! compress the size of the
+! changes.
+
+  It is important to spell
+</code></pre>
 </div>
 
 <!-- #END -->

@@ -1,8 +1,8 @@
 /*
  * jQuery Simple Dialog (SmartLightUI)
- * (c) 2015-2021 unix-world.org
+ * (c) 2015-2022 unix-world.org
  * License: BSD
- * v.20210503
+ * v.20220918
  */
 
 /* Overlay */
@@ -14,9 +14,8 @@
 	width: 1px;
 	height: 1px;
 	z-index: 1;
-/*	background-color: #EEEEEE;
-	opacity: 0.55; */
-	background: rgba(238, 238, 238, 0.55);
+/*	opacity: 0.55; */
+	background: rgba(238, 238, 238, 0.7);
 }
 
 /* Container */
@@ -29,14 +28,15 @@
 	height: 1px;
 	z-index: 1;
 	font-size: 16px;
-	text-align:left;
+	text-align: left;
 	background: #FFFFFF;
-	border: 1px solid #F2F2F2;
+	border: 1px solid #ECECEC;
 	padding-left: 5px;
 	padding-right: 5px;
-	border-top-left-radius: 6px;
-	border-top-right-radius: 6px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
 }
+
 #simpledialog-container #simpledialog-area-head {
 	height: 35px;
 	overflow: auto;
@@ -49,9 +49,9 @@
 	font-weight: bold;
 	padding-left: 10px;
 	padding-right: 10px;
-	border-bottom: 1px solid #ECECEC;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
+	border-bottom: 1px solid #EEEEEE;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
 }
 #simpledialog-container .message {
 	color: #333333;
@@ -66,11 +66,32 @@
 	width: 97%;
 	width: calc(100% - 20px);
 }
+
 #simpledialog-container hr {
 	border: 0;
 	height: 0;
-	border-bottom: 1px solid #ECECEC;
+	border-bottom: 1px solid #EEEEEE;
 }
+
+#simpledialog-container h1 {
+	font-size: 2.125rem;
+}
+#simpledialog-container h2 {
+	font-size: 1.875rem;
+}
+#simpledialog-container h3 {
+	font-size: 1.625rem;
+}
+#simpledialog-container h4 {
+	font-size: 1.375rem;
+}
+#simpledialog-container h5 {
+	font-size: 1.125rem;
+}
+#simpledialog-container h6 {
+	font-size: 1rem;
+}
+
 #simpledialog-container .buttons {
 	line-height: 28px;
 	float: right;
@@ -111,20 +132,6 @@
 	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIxMnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxMiAxNiIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4gICAgICAgIDx0aXRsZT54PC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9Ik9jdGljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4gICAgICAgIDxnIGlkPSJ4IiBmaWxsPSIjMDAwMDAwIj4gICAgICAgICAgICA8cG9seWdvbiBpZD0iU2hhcGUiIHBvaW50cz0iNy40OCA4IDExLjIzIDExLjc1IDkuNzUgMTMuMjMgNiA5LjQ4IDIuMjUgMTMuMjMgMC43NyAxMS43NSA0LjUyIDggMC43NyA0LjI1IDIuMjUgMi43NyA2IDYuNTIgOS43NSAyLjc3IDExLjIzIDQuMjUiPjwvcG9seWdvbj4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
 	background-repeat: no-repeat;
 	opacity: 0.5;
-}
-#simpledialog-container a.modal-close,
-#simpledialog-container a.modal-close:link,
-#simpledialog-container a.modal-close:active,
-#simpledialog-container a.modal-close:visited {
-	text-decoration: none;
-	font-weight: bold;
-	position: absolute;
-	right: 10px;
-	top: 2px;
-	color: #FFFFFF;
-}
-#simpledialog-container a.modal-close:hover {
-	color: #CCCCCC;
 }
 
 /* END */

@@ -1,7 +1,7 @@
 
 /*
 Smart.Framework - r.8.7 / smart.framework.v.8.7 - Icons (Iconic Font)
-version: 1.7 # r.20210611
+version: 1.7 # r.20220916
 (c) 2019-2021 unix-world.org
 License: BSD
 
@@ -42,7 +42,7 @@ Font Metrics:
 	font-size: 0.625rem !important; /* 10px */
 }
 .sfi-sm {
-	font-size: 0.75rem !important; /* 12px */
+	font-size: 0.8125rem !important; /* 13px */
 }
 .sfi-lg {
 	font-size: 1.125rem !important; /* 18px */

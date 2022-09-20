@@ -119,16 +119,16 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	public function __construct(array $y_configs_arr=[], bool $y_fatal_err=true) {
 
 		//--
+		$this->fatal_err = (bool) $y_fatal_err;
+		//--
+
+		//--
 		$this->extver = (string) phpversion('mongodb');
 		//--
 		if(version_compare((string)$this->extver, (string)$this->min_ver_ext) < 0) {
 			$this->error('[INIT]', 'PHP MongoDB Extension', 'CHECK PHP MongoDB Version', 'This version of MongoDB Client Library needs MongoDB PHP Extension v.'.$this->min_ver_ext.' or later. The current version is: '.$this->extver);
 			return;
 		} //end if
-		//--
-
-		//--
-		$this->fatal_err = (bool) $y_fatal_err;
 		//--
 
 		//--
@@ -1088,13 +1088,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 							return array();
 						} //end if
 					} //end if else
-					$this->error(
-						(string) $this->connex_key,
-						'MongoDB Write Execute',
-						'MongoDB->'.$method.'() :: '.$this->collection,
-						'ERROR: '.$err->getMessage(),
-						$args
-					);
+					$this->error((string)$this->connex_key, 'MongoDB Write Execute', 'MongoDB->'.$method.'() :: '.$this->collection, 'ERROR: '.$err->getMessage(), $args);
 					return array();
 				} //end try
 				if(!is_object($result)) {

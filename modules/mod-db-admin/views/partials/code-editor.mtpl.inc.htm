@@ -1,0 +1,15 @@
+<!-- JSON Code Editor -->
+[@@@SUB-TEMPLATE:!lib/js/jseditcode/templates/code-editor-init.inc.htm!@@@]
+<script>
+const drawCodeEditor = (refVarName, textareaElemId, divMenuAreaId, cmWidth, cmHeight) => {
+	const s$ = smartJ$Utils;
+	const pure$ = s$.stringPureVal;
+	textareaElemId = pure$(textareaElemId);
+	divMenuAreaId = pure$(divMenuAreaId);
+	refVarName = pure$(refVarName);
+	cmWidth = pure$(cmWidth);
+	cmHeight = pure$(cmHeight);
+	return SmartCodeMirror_Initialize(textareaElemId, false, 'application/ld+json', cmWidth, cmHeight, 'uxw', true, 530, divMenuAreaId, false, refVarName);
+};
+</script>
+<!-- # JSON Code Editor -->

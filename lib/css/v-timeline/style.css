@@ -1,6 +1,6 @@
 /***** V-TimeLine CSS :: r.8.7 / smart.framework.v.8.7 *****/
 
-/* V-TimeLine r.20220910
+/* V-TimeLine r.20220918
 	License: BSD
 	(c) 2015-2022 unix-world.org
 	This software component was inspired from the following opensource projects:
@@ -14,6 +14,7 @@
 .vtml-container {
 	width: 96%;
 	margin: 0 auto;
+	margin-bottom: 25px;
 }
 .vtml-container::after {
 	content: '';
@@ -40,7 +41,8 @@
 	left: 18px;
 	height: 100%;
 	width: 4px;
-	background: #E4E4E4;
+	background: #FFFFFF;
+	border: 1px solid #ECECEC;
 }
 
 .vtml-timeline-block {
@@ -66,8 +68,8 @@
 	width: 60px;
 	height: 60px;
 	margin-left: -13px;
-	border: 4px solid #E4E4E4;
-	border-radius: 10%;
+	border: 4px solid #EEEEEE;
+	border-radius: 1px;
 	cursor: default;
 }
 .vtml-timeline-icon div {
@@ -85,45 +87,45 @@
 	display: block;
 	font-size: 2rem !important;
 }
-.vtml-timeline-icon div .fa { /* font awesome icons */
-	margin-top: 13px;
-	display: block;
-}
 .vtml-timeline-icon.vtml-green {
-	background: #6D8813;
+	background: #87B615;
+	color: #FFFFFF;
+}
+.vtml-timeline-icon.vtml-brown {
+	background: #896B60;
 	color: #FFFFFF;
 }
 .vtml-timeline-icon.vtml-red {
-	background: #E32E2E;
+	background: #ED2839;
 	color: #FFFFFF;
 }
 .vtml-timeline-icon.vtml-yellow {
-	background: #EC971F;
-	color: #333333;
+	background: #F2C801;
+	color: #555555;
 }
 .vtml-timeline-icon.vtml-blue {
-	background: #2A3E81;
+	background: #5E6885;
 	color: #FFFFFF;
 }
 .vtml-timeline-icon.vtml-grey {
-	background: #778899;
+	background: #778888;
 	color: #FFFFFF;
 }
 .vtml-timeline-icon.vtml-black {
-	background: #333333;
+	background: #555555;
 	color: #FFFFFF;
 }
 .vtml-timeline-icon.vtml-white {
 	background: #FFFFFF;
-	color: #333333;
+	color: #555555;
 }
 
 .vtml-timeline-content {
 	position: relative;
 	margin-left: 60px;
-	background: #F5F6F8;
-	border-radius: 0.15rem;
-	padding: 1rem;
+	background: #FFFFFF;
+	border: 1px solid #ECECEC;
+	padding: 0.5rem 1rem 0.5rem 1rem;
 	overflow: hidden;
 }
 .vtml-timeline-content:after {
@@ -131,29 +133,42 @@
 	display: table;
 	clear: both;
 }
-.vtml-timeline-content h2 {
+.vtml-timeline-content img {
+	border: 1px solid #F7F7F7;
+	box-sizing: content-box;
+}
+.vtml-timeline-content img.noborder {
+	border: none !important;
+}
+.vtml-timeline-content h1,
+.vtml-timeline-content h2,
+.vtml-timeline-content h3,
+.vtml-timeline-content h4,
+.vtml-timeline-content h5,
+.vtml-timeline-content h6 {
 	display: inline !important;
 	color: #444444;
 }
 .vtml-timeline-content p,
 .vtml-timeline-content .vtml-read-more,
 .vtml-timeline-content .vtml-date {
-	color: #444444;
 	font-size: 0.875rem;
 	text-align: justify;
+}
+.vtml-timeline-content p {
+	color: #444444;
+	margin: 1rem 0;
+	line-height: 1.6;
 }
 .vtml-timeline-content .vtml-read-more,
 .vtml-timeline-content .vtml-date {
 	display: inline-block;
 }
-.vtml-timeline-content p {
-	margin: 1rem 0;
-	line-height: 1.6;
-}
 .vtml-timeline-content .vtml-read-more {
 	float: right;
 	padding: 0.25rem 0.35rem;
-	background: #76747F;
+	background: #666666;
+	border: 1px solid #555555;
 	color: #FFFFFF;
 	border-radius: 0.15rem;
 	text-decoration: none;
@@ -162,12 +177,17 @@
 	text-align: center;
 	min-width: 100px;
 }
+.vtml-timeline-content .vtml-read-more:hover {
+	background: #555555;
+	border: 1px solid #444444;
+}
 
 .vtml-timeline-content .vtml-date {
 	font-weight: bold;
 	float: left;
 	padding: 0.8rem 0;
 	font-size: 1rem;
+	color: #444444;
 }
 .vtml-timeline-content::before {
 	content: '';
@@ -198,8 +218,8 @@ hr.vtml-hr {
 	width: 48px;
 	height: 48px;
 	margin-left: -24px !important;
-	border: 4px solid #E4E4E4;
-	border-radius: 10%;
+	border: 4px solid #EEEEEE;
+	border-radius: 1px;
 	cursor: default;
 }
 .vtml-small-container .vtml-timeline-icon div {
@@ -213,14 +233,9 @@ hr.vtml-hr {
 }
 .vtml-small-container .vtml-timeline-icon div .sfi { /* sf icons */
 	margin-left: 0px;
-	margin-top: -2px;
+	margin-top: 2px;
 	display: block;
-	font-size: 1.5rem !important;
-}
-.vtml-small-container .vtml-timeline-icon div .fa { /* font awesome icons */
-	margin-top: 10px;
-	display: block;
-	font-size: 1.25rem !important;
+	font-size: 1.375rem !important;
 }
 
 /* content */
@@ -228,32 +243,51 @@ hr.vtml-hr {
 .vtml-small-container .vtml-timeline-content {
 	padding: 0.75rem;
 }
-
+.vtml-small-container .vtml-timeline-content h1,
+.vtml-small-container .vtml-timeline-content h2,
+.vtml-small-container .vtml-timeline-content h3,
+.vtml-small-container .vtml-timeline-content h4,
+.vtml-small-container .vtml-timeline-content h5,
+.vtml-small-container .vtml-timeline-content h6 {
+	display: inline !important;
+	color: #444444;
+}
+.vtml-small-container .vtml-timeline-content h1 {
+	font-size: 1.25rem;
+}
+.vtml-small-container .vtml-timeline-content h2 {
+	font-size: 1.125rem;
+}
+.vtml-small-container .vtml-timeline-content h3 {
+	font-size: 1.0625rem;
+}
+.vtml-small-container .vtml-timeline-content h4 {
+	font-size: 1rem;
+}
+.vtml-small-container .vtml-timeline-content h5 {
+	font-size: 0.9375rem;
+}
+.vtml-small-container .vtml-timeline-content h6 {
+	font-size: 0.875rem;
+}
 .vtml-small-container .vtml-timeline-content p,
 .vtml-small-container .vtml-timeline-content .vtml-read-more,
 .vtml-small-container .vtml-timeline-content .vtml-date {
 	font-size: 0.8125rem;
 	text-align: initial;
 }
-
 .vtml-small-container .vtml-timeline-content p {
-	margin: 0.25rem 0;
-	line-height: 1.4;
+	margin: 0.5rem 0 0.7rem 0;
+	line-height: 1.5;
 }
-
 .vtml-small-container .vtml-timeline-content .vtml-date {
 	padding: 0;
 	font-size: 0.9375rem;
 }
-
 .vtml-small-container .vtml-timeline-content .vtml-read-more {
 	text-align: center;
-}
-
-.vtml-small-container .vtml-timeline-content h2 {
-	display: inline !important;
-	color: #444444;
-	font-size: 1.125rem;
+	font-size: 0.75rem;
+	padding: 0.15rem 0.25rem;
 }
 
 /* END */

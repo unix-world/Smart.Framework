@@ -1,7 +1,7 @@
 # [%%%IF:TITLE:==;%%%]... ==Title is empty== ...[%%%ELSE:TITLE%%%][###TITLE|html###][%%%/IF:TITLE%%%]
 
 &copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
-Extended Markdown v.II (smart flavour) // Test :: r.20220910
+Extended Markdown v.II (smart flavour) // Test :: r.20220918
 
 # (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old "bad" features have been dropped, and others supported ==only in compatibility mode== ...
 
@@ -55,6 +55,7 @@ Safe html escapes \\, below:
 ABC ```abc``` \`\`\`zzz\`\`\` ```yy\!y```
 DEF ``def`` \`\`www\`\` ``qq\!q``
 ```ABCD```
+CITE ??cite term?? as: \?\?cite term\?\? or alternate, with HTML entities: &quest;?cite term?&quest;
 
 
 A math formula
@@ -273,7 +274,7 @@ New Line
 - Or minuses
 - ###### OR H6 {H:@style=display:inline-block}
 ####### This is a span{H: @id=mySpan}
-######## This is a data tag{H: @value=myData}
+######## This is a data tag{H: @data-value=myData}
 
 Some Paragraph
 	Some Preformat area
@@ -467,7 +468,7 @@ class A {
 }
 ```
 \
-|{!DEF!=AUTO-WIDTH;.dbordered;.stripped;#tbl-one} Name   | Description     |
+|{!DEF!=AUTO-WIDTH;.dbordered;.stripped;#tbl-two} Name   | Description     |
 | ------------- | -----------------------  |
 | Help          | Display the help window. |
 | Close         | Closes a window          |
@@ -529,7 +530,7 @@ Some **text** before image ![Inline Base64 Image](data:image/svg+xml;base64,PHN2
 
 
 ### Sample Video
-[![IMAGE ALT TEXT HERE](//img.youtube.com/vi/4rUrYN4cnGs/0.jpg) {I:%lazyload=unveil}](//www.youtube.com/watch?v=4rUrYN4cnGs "Sample Video Preview Image with Unveil"){L:.video-link #link .Extra-Class @target=_blank}
+[![IMAGE ALT TEXT HERE](//img.youtube.com/vi/4rUrYN4cnGs/0.jpg) {I:%lazyload=unveil}](//www.youtube.com/watch?v=4rUrYN4cnGs "Sample Video Preview Image with Unveil"){L:.video-link #link-video .Extra-Class @target=_blank}
 \
 ![Sample Video OGG](https://www.w3schools.com/html/mov_bbb.ogg){I: #video-1 %video=ogg @width=320 @height=176 @controls=none}
 ![Sample Video Webm/MP4](https://www.w3schools.com/html/mov_bbb.webm$https://www.w3schools.com/html/mov_bbb.mp4){I: #video-2 %video=webm$mp4 @width=320 @height=176 @preload=none @poster=https://www.w3schools.com/images/w3html5.gif}

@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20220910), (c) 2015-2022 unix-world.org
+	extended by unixman, (stable.20220918), (c) 2015-2022 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -299,13 +299,14 @@ a.ux-link, a.ux-link:link, a.ux-link:visited {
 	font-family: inherit !important;
 	font-size: 1rem !important;
 	font-weight: bold !important;
+	border-bottom: none !important;
 	text-decoration: underline #DDDDDD !important;
-	color: #20639E !important;
+	color: #0164C7 !important;
 	cursor: pointer !important;
 }
 a.ux-link:hover {
-	text-decoration: underline #295072 !important;
-	color: #10528D !important;
+	text-decoration: underline #4D5774 !important;
+	color: #3B4250 !important;
 }
 
 /*** Buttons :: modified ***/
@@ -328,8 +329,8 @@ a.ux-link:hover {
 	margin-right: 5px;
 	color: #317AB9 !important;
 	background-color: #FBFBFB !important;
-	border: 1px solid #E0E0E0 !important;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+	border: 1px solid #E7E7E7 !important;
+	box-shadow: 0 1px 2px rgba(128,128,128,0.2) !important;
 	border-radius: 3px !important;
 	text-overflow: ellipsis;
 	box-sizing: border-box !important;
@@ -340,11 +341,10 @@ a.ux-link:hover {
 	-moz-appearance: none !important;
 	-webkit-appearance: none !important;
 }
-.ux-button:hover,
-.ux-button:focus {
-	border: 1px solid #CCCCCC !important;
-	background-color: #F4F4F4 !important;
-	color: #2069A9 !important;
+.ux-button:hover {
+	border: 1px solid #D7D7D7 !important;
+	background-color: #F7F7F7 !important;
+	color: #5E6885 !important;
 }
 .ux-button:focus {
 	outline: 0 !important;
@@ -353,7 +353,6 @@ a.ux-link:hover {
 .ux-button[disabled],
 .ux-button-disabled,
 .ux-button-disabled:hover,
-.ux-button-disabled:focus,
 .ux-button-disabled:active,
 .ux-button-noaction {
 	background-image: none !important;
@@ -375,17 +374,22 @@ a.ux-link:hover {
 .ux-button-special,
 .ux-button-details,
 .ux-button-dark {
-	box-shadow: 0 1px 2px rgba(0,0,0,0.4) !important;
+	box-shadow: 0 1px 2px rgba(64,64,64,0.4) !important;
 }
 
+.ux-button-alt {
+	color: #ED2839 !important;
+}
+.ux-button-alt:hover {
+	color: #555555 !important;
+}
 
 .ux-button-primary {
 	border: 1px solid #2256B1 !important;
 	background-color: #3367C2 !important;
 	color: #FFFFFF !important;
 }
-.ux-button-primary:hover,
-.ux-button-primary:focus {
+.ux-button-primary:hover {
 	border: 1px solid #1145A0 !important;
 	background-color: #2256B1 !important;
 	color: #FFFFFF !important;
@@ -396,8 +400,7 @@ a.ux-link:hover {
 	background-color: #778899 !important;
 	color: #FFFFFF !important;
 }
-.ux-button-secondary:hover,
-.ux-button-secondary:focus {
+.ux-button-secondary:hover {
 	border: 1px solid #556677 !important;
 	background-color: #667788 !important;
 	color: #FFFFFF !important;
@@ -408,8 +411,7 @@ a.ux-link:hover {
 	background-color: #3BAEF5 !important;
 	color: #FFFFFF !important;
 }
-.ux-button-info:hover,
-.ux-button-info:focus {
+.ux-button-info:hover {
 	border: 1px solid #198CE3 !important;
 	background-color: #2A9DF4 !important;
 	color: #FFFFFF !important;
@@ -420,8 +422,7 @@ a.ux-link:hover {
 	background-color: #719300 !important;
 	color: #FFFFFF !important;
 }
-.ux-button-regular:hover,
-.ux-button-regular:focus {
+.ux-button-regular:hover {
 	border: 1px solid #507100 !important;
 	background-color: #608200 !important;
 	color: #FFFFFF !important;
@@ -432,8 +433,7 @@ a.ux-link:hover {
 	background-color: #FF9900 !important;
 	color: #FFFFFF !important;
 }
-.ux-button-highlight:hover,
-.ux-button-highlight:focus {
+.ux-button-highlight:hover {
 	border: 1px solid #DB860E !important;
 	background-color: #EE8800 !important;
 	color: #FFFFFF !important;
@@ -444,8 +444,7 @@ a.ux-link:hover {
 	background-color: #F43F3F !important;
 	color: #FFFFFF !important;
 }
-.ux-button-special:hover,
-.ux-button-special:focus {
+.ux-button-special:hover {
 	border: 1px solid #D21D1D !important;
 	background-color: #E32E2E !important;
 	color: #FFFFFF !important;
@@ -456,8 +455,7 @@ a.ux-link:hover {
 	background-color: #5E6885 !important;
 	color: #FFFFFF !important;
 }
-.ux-button-details:hover,
-.ux-button-details:focus {
+.ux-button-details:hover {
 	border: 1px solid #3C4663 !important;
 	background-color: #4D5774 !important;
 	color: #FFFFFF !important;
@@ -468,11 +466,16 @@ a.ux-link:hover {
 	background-color: #555555 !important;
 	color: #FEFEFE !important;
 }
-.ux-button-dark:hover,
-.ux-button-dark:focus {
+.ux-button-dark:hover {
 	border: 1px solid #333333 !important;
 	background-color: #444444 !important;
 	color: #FFFFFF !important;
+}
+
+.ux-button-spacing {
+	margin: 0;
+	margin-right: 20px;
+	margin-bottom: 10px;
 }
 
 /* Firefox: Get rid of the inner focus border */
@@ -499,7 +502,7 @@ a.ux-link:hover {
 }
 
 .ux-button-small {
-	padding: 6px 11px 6px 11px !important;
+	padding: 7px 12px 7px 12px !important;
 }
 .ux-button-small, .ux-button-small * {
 	font-size: 0.875rem !important; /* 14px */
@@ -603,13 +606,13 @@ striping:
 	background-color: #FFFFFF;
 }
 .ux-table .ux-tr-even:hover {
-	background-color: #FFFDD0;
+	background-color: #FFFFDD;
 }
 .ux-table .ux-tr-odd {
 	background-color: #F2F2F2;
 }
 .ux-table .ux-tr-odd:hover {
-	background-color: #FFFDD0;
+	background-color: #FFFFDD;
 }
 
 /* nth-child selector for modern browsers */
@@ -620,7 +623,7 @@ striping:
 	background-color: #F2F2F2;
 }
 .ux-table-striped tbody tr:hover {
-	background-color: #FFFDD0;
+	background-color: #FFFFDD;
 }
 
 /* BORDERED TABLES */
@@ -857,18 +860,17 @@ since IE8 won't execute CSS that contains a CSS3 selector.
 .ux-form textarea:focus:invalid,
 .ux-form select:focus:invalid {
 	color: #b94a48;
-	border-color: #e9322d;
+	border-color: #E9322D;
 }
 .ux-form input[type="file"]:focus:invalid:focus,
 .ux-form input[type="radio"]:focus:invalid:focus,
 .ux-form input[type="checkbox"]:focus:invalid:focus {
-	outline-color: #e9322d;
+	outline-color: #E9322D;
 }
-.ux-form select {
-	/* Normalizes the height; padding is not sufficient. */
+.ux-form select { /* normalizes the height; padding is not sufficient. */
 	height: 2rem;
-	border: 1px solid #ccc;
-	background-color: white;
+	border: 1px solid #CCCCCC;
+	background-color: #FFFFFF;
 }
 .ux-form select[multiple] {
 	height: auto;
@@ -943,7 +945,7 @@ since IE8 won't execute CSS that contains a CSS3 selector.
 	text-align: right;
 	display: inline-block;
 	vertical-align: middle;
-	width: 10rem;
+	width: 12rem;
 	margin: 0 1rem 0 0;
 }
 .ux-form-aligned .ux-controls {
@@ -1524,7 +1526,7 @@ div.ux-dropdown ul li a:not(.ux-button):hover {
 }
 .ux-menubar-color-grey, .ux-menubar-color-grey *, .ux-menubar-color-hover-grey:hover, .ux-menubar-color-hover-grey:hover * {
 	color: #000000 !important;
-	background-color: #BBBBBB!important;
+	background-color: #DDDDDD!important;
 }
 .ux-menubar-color-darkgrey, .ux-menubar-color-darkgrey *, .ux-menubar-color-hover-darkgrey:hover, .ux-menubar-color-hover-darkgrey:hover * {
 	color: #FFFFFF !important;
@@ -1532,7 +1534,7 @@ div.ux-dropdown ul li a:not(.ux-button):hover {
 }
 .ux-menubar-color-lightgrey, .ux-menubar-color-lightgrey *, .ux-menubar-color-hover-lightgrey:hover, .ux-menubar-color-hover-lightgrey:hover * {
 	color: #000000 !important;
-	background-color: #DCDCDC!important;
+	background-color: #EDEDED!important;
 }
 .ux-menubar-color-bluegrey, .ux-menubar-color-bluegrey *, .ux-menubar-color-hover-bluegrey:hover, .ux-menubar-color-hover-bluegrey:hover * {
 	color: #FFFFFF !important;
@@ -1666,7 +1668,7 @@ div.ux-dropdown ul li a:not(.ux-button):hover {
 .ux-menu-active > .ux-menu-link,
 .ux-menu-link:hover,
 .ux-menu-link:focus {
-	background-color: #eeeeee;
+	background-color: #EEEEEE;
 }
 
 .ux-menu-selected .ux-menu-link,
@@ -1912,10 +1914,10 @@ div.ux-dropdown ul li a:not(.ux-button):hover {
 
 /* hover/active styles */
 .ux-stepsbar a.active, .ux-stepsbar a:hover{
-	background: #333333;
+	background: #444444;
 }
 .ux-stepsbar a.active::after, .ux-stepsbar a:hover::after {
-	background: #333333;
+	background: #444444;
 }
 
 /* adding the arrows for the steps bar using rotated pseudo elements */
@@ -1978,7 +1980,7 @@ div.ux-dropdown ul li a:not(.ux-button):hover {
 }
 .ux-stepsbar-light a:hover, .ux-stepsbar-light a.active,
 .ux-stepsbar-light a:hover::after, .ux-stepsbar-light a.active::after{
-	background: #BBBBBB;
+	background: #DDDDDD;
 }
 
 /***** END *****/

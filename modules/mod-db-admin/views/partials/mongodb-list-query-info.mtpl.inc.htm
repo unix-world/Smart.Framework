@@ -1,0 +1,22 @@
+<table>
+	<tr>
+		<td width="200">
+			<div class="query-info">
+				Cost:&nbsp;<b>[###EXECUTION-TIME|html###]&nbsp;sec.</b>
+			</div>
+			<div class="query-info">
+				[%%%IF:TOTAL-ALL-RECORDS:==###TOTAL-RECORDS###;%%%]
+				All&nbsp;Records&nbsp;<b>[###TOTAL-ALL-RECORDS|int###]</b>
+				[%%%ELSE:TOTAL-ALL-RECORDS%%%]
+				Filtered&nbsp;Records:&nbsp;<b>[###TOTAL-RECORDS|int###]&nbsp;of&nbsp;[###TOTAL-ALL-RECORDS|int###]</b>
+				[%%%/IF:TOTAL-ALL-RECORDS%%%]
+			</div>
+			[%%%IF:PAGES:>0;(101)%%%][%%%IF:TOTAL-RECORDS:>###LIMIT-PER-PAGE###;(101)%%%]
+			<div class="query-info">
+				Page:&nbsp;<b>[###OFFSET|int###]&nbsp;of&nbsp;[###PAGES|int###]</b>
+			</div>
+			[%%%/IF:TOTAL-RECORDS(101)%%%][%%%/IF:PAGES(101)%%%]
+		</td>
+		<td>[###NAV-PAGER-HTML###]</td>
+	</tr>
+</table>

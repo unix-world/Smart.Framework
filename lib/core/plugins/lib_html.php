@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20220814
+ * @version 	v.20220817
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -93,6 +93,8 @@ final class SmartHtmlParser {
 	 */
 	public function __construct(?string $y_html='', bool $y_signature=true, $y_html_validate=true, bool $y_log_validation_warn_err=false) {
 
+		// if set, the validator log level can be overriden by constant: SMART_HTML_CLEANER_VALIDATOR_LOG_LEVEL
+
 		//--
 		if(defined('SMART_HTML_CLEANER_USE_VALIDATOR')) {
 			$y_html_validate = SMART_HTML_CLEANER_USE_VALIDATOR; // override by setting a constant ; in some contexts perhaps is better to use the same validation in all places
@@ -104,7 +106,7 @@ final class SmartHtmlParser {
 		//--
 
 		//--
-		$this->validators 			= '<tidy>,<dom>'; // default, any of tidy or dom, in this order
+		$this->validators 			= '<tidy>,<dom>'; // default, any of dom or tidy, in this order ; DOM is good for rendering, but some errors will not detect ; Tidy is good for validation but currently Tidy have a bug with PREFORMAT new lines which are loose since version 5.8 ...
 		$this->validate_code 		= true; // yes, optional, default
 		$this->validate_log_errors 	= false; // default
 		//--
@@ -408,11 +410,13 @@ final class SmartHtmlParser {
 		$html = (string) $html;
 		//--
 		if((strpos($html, '<') !== false) OR (strpos($html, '>') !== false)) {
-			$arr_tags_list = array( // remove these tags but keep their content
-				'!doctype' 	=> false, // does not have a tag end
-				'html' 		=> true,
-				'body' 		=> true,
-			); // for the head tag, it must be removed completely
+			$arr_tags_list = [ // remove these tags but keep their content
+			//	'?xml' 		=> false, 	// no tag end ; {{{SYNC-SMART-HTML-DOM-VALIDATE-UNICODE-FIX}}} ; this is added by DOM with the unicode fix
+			//	'startxml' 	=> true, 	// should have a tag end ; {{{SYNC-SMART-HTML-DOM-VALIDATE-UNICODE-FIX}}} ; this is added by DOM with the unicode fix
+				'!doctype' 	=> false, 	// should have a tag end
+				'html' 		=> true,	// should have end tag
+				'body' 		=> true,	// should have end tag
+			]; // for the head tag, it must be removed completely
 			$arr_tags_repl = array();
 			foreach($arr_tags_list as $key => $val) {
 				$tmp_regex_tag = (array) $this->regex_tag((string)$key);
@@ -443,13 +447,25 @@ final class SmartHtmlParser {
 
 
 	//=========================================================================
-	private function compose_html_document(?string $body) {
+	private function compose_html_document(?string $body, ?string $mode='') {
+
+		//-- {{{SYNC-SMART-HTML-DOM-VALIDATE-UNICODE-FIX}}} ; this is a fix for DomDocument to prefix a HTML document ; without this fix DomDocument will corrupt the unicode characters in document !
+	//	$fix_unicode_prefix = '';
+	//	if((string)$mode == 'dom') {
+	//		$fix_unicode_prefix = '<?xml encoding="'.SMART_FRAMEWORK_CHARSET.'">'."\n"; // fix to load utf-8 HTML in older versions of DOM
+	//	} //end if
+		//-- this have been solved by adding a meta since PHP 8.0
+		$fix_unicode_prefix = '';
+		if((string)$mode == 'dom') {
+			$fix_unicode_prefix = '<meta charset="'.SMART_FRAMEWORK_CHARSET.'">'; // this works in newer versions of DOM ; not necessary for Tidy
+		} //end if
+		//-- #end fix
 
 		//--
 		// THIS IS A FIX for Tidy and DomDocument as some version of these parsers fail if only body provided ...
 		// Trick: the meta charset have not be supplied because if set to UTF-8 the DomDocument will decode all possible entities, includding &Prime; thus the fixback to &quot; is no more available to force &quot; instead of " when using DomDocument
 		//-- DO NOT ADD MORE \n, all tags includding body must be on one line to match validation errors line numbers
-		return (string) '<!DOCTYPE html>'.'<html>'.'<head>'.'<title>HTML Document</title>'.'</head>'.'<body>'.$body."\n".'</body>'.'</html>'."\n";
+		return (string) '<!DOCTYPE html>'.'<html>'.'<head>'.$fix_unicode_prefix.'<title>HTML Document</title>'.'</head>'.'<body>'.$body."\n".'</body>'.'</html>'."\n";
 		//--
 
 	} //END FUNCTION
@@ -686,16 +702,12 @@ final class SmartHtmlParser {
 				//--
 				if((string)$this->html != '') {
 					//--
-					$max_err_level = 0; // 0: no errors ; 1: minimal ; 2: more
+					$max_err_level = 1; // 0: no errors ; 1: minimal ; 2: more
 					$enable_warns = false; // if set to true will output the HTML validation report to logs
-					if(SmartFrameworkRegistry::ifDebug()) {
-						$max_err_level = 2;
+					//--
+					$max_err_level = (int) $this->getOverrideValidatorLogLevel((int)$max_err_level);
+					if($max_err_level > 0) {
 						$enable_warns = true;
-					} else { // this may be used also in production environments if needed
-						$max_err_level = 1;
-					//	if(!SmartFrameworkRegistry::ifProdEnv()) {
-							$enable_warns = true; // always register warings, may be useful also in production as long as there is a specific option to log them or not
-					//	} //end if
 					} //end if
 					//--
 					$etidy = (string) strtolower((string)SMART_FRAMEWORK_SQL_CHARSET); // tidy uses utf8 instead of UTF-8
@@ -750,7 +762,7 @@ final class SmartHtmlParser {
 					];
 					$tidy = new tidy();
 					//--
-					$tidy->parseString((string)$this->compose_html_document((string)$this->html), (array)$ctidy, (string)$etidy); // fix: in some versions of tidy the first comment dissapear if not enclosed in a body container, so need this function: compose_html_document
+					$tidy->parseString((string)$this->compose_html_document((string)$this->html, 'tidy'), (array)$ctidy, (string)$etidy); // fix: in some versions of tidy the first comment dissapear if not enclosed in a body container, so need this function: compose_html_document
 					$testClean = $tidy->cleanRepair();
 					$this->validation_errors = (string) $tidy->errorBuffer;
 					$this->validation_errors = (string) trim((string)$this->validation_errors);
@@ -811,13 +823,13 @@ final class SmartHtmlParser {
 					$dom->formatOutput = false; 		// try to format pretty-print the code (will work just partial as the preserve white space is true ...)
 					$dom->resolveExternals = false; 	// disable load external entities from a doctype declaration
 					$dom->validateOnParse = false; 		// this must be explicit disabled as if set to true it may try to download the DTD and after to validate (insecure ...)
-					$dom->recover = true; // trying to parse non-well formed documents, for HTML make sense but not for XML
-				//	$dom->substituteEntities = false; 	// this attribute ir proprietary for LibXML, it does not make any difference ... still buggy with replacing &quot; with " (it's decoded value)
+					$dom->recover = true; 				// trying to parse non-well formed documents, for HTML make sense but not for XML
+					$dom->substituteEntities = false; 	// this attribute is a proprietary setting for LibXML, it does not make any difference ... still buggy with replacing &quot; with " (it's decoded value)
 					//-- pre fixes
-					$this->html = (string) str_replace('&quot;', '&Prime;', $this->html); // fix: DomDocument will decode the &quot; to ", thus substitute with &Prime; (&#8243;) which is a unicode verion of it ″ and restore back thereafter ; if there are any &Prime; already converting &Prime; to &quot; later is not a problem ...
+					$this->html = (string) str_replace('&quot;', '&Prime;', $this->html); // {{{SYNC-DOMDOCUMENT-ISSUE-QUOT-FIX}}} ; fix: DomDocument (in some older versions) will decode the &quot; to ", thus substitute with &Prime; (&#8243;) which is a unicode version of it ″ and restore back thereafter ; if there are any &Prime; already converting &Prime; to &quot; later is not a problem ...
 					//--
 					$testClean = @$dom->loadHTML(
-						(string) $this->compose_html_document((string)$this->html), // fix: in some versions of DomDocument or LibXML if not enclosed in a body container there are some strange behaviours when getting back the HTML code, so need this function: compose_html_document
+						(string) $this->compose_html_document((string)$this->html, 'dom'), // fix: in some versions of DomDocument or LibXML if not enclosed in a body container there are some strange behaviours when getting back the HTML code, so need this function: compose_html_document
 						LIBXML_ERR_WARNING | LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_HTML_NODEFDTD // {{{SYNC-LIBXML-OPTIONS}}} ; important !!! do not use the buggy flag LIBXML_HTML_NOIMPLIED as it will mess up the tags, is not stable enough inside LibXML
 					);
 				//	$this->html = (string) @$dom->saveHTML(@$dom->getElementsByTagName('body')->item(0)); // get back from DOM, only body ; using this will will decode all possible entities, includding &Prime; thus the fixback to &quot; is no more available to force &quot; instead of " when using DomDocument
@@ -827,16 +839,14 @@ final class SmartHtmlParser {
 					//--
 					$this->validation_errors = '';
 					//--
-					$errors = (array) @libxml_get_errors();
+					$errors = (array) Smart::json_decode((string)Smart::json_encode((array)@libxml_get_errors())); // get rid of objects, force array ...
 					if(Smart::array_size($errors) > 0) { // this may be used also in production environments if needed
 						$max_err_level = 1; // for DOMDocument there is no specific option if SmartFrameworkRegistry::ifProdEnv() ... leave as is
-						if(SmartFrameworkRegistry::ifDebug()) {
-							$max_err_level = 2;
-						} //end if
+						$max_err_level = (int) $this->getOverrideValidatorLogLevel((int)$max_err_level);
 						foreach($errors as $z => $error) {
-							if((int)$error->level <= (int)$max_err_level) {
-								if(is_object($error)) {
-									$this->validation_errors .= 'line '.(int)$error->line.' column '.(int)$error->column.' - ['.$error->code.'#'.(int)$error->level.']: '.trim((string)$error->message)."\n";
+							if(is_array($error)) {
+								if((int)($error['level'] ?? null) <= (int)$max_err_level) {
+									$this->validation_errors .= 'line '.(int)($error['line'] ?? null).' column '.(int)($error['column'] ?? null).' - ['.($error['code'] ?? null).'#'.(int)($error['level'] ?? null).']: '.trim((string)($error['message'] ?? null))."\n";
 								} //end if
 							} //end if
 						} //end foreach
@@ -859,7 +869,7 @@ final class SmartHtmlParser {
 					@libxml_clear_errors();
 					@libxml_use_internal_errors(false);
 					//-- post fixes
-					$this->html = (string) str_replace('&Prime;', '&quot;', (string)$this->html); // fix back &quot;
+					$this->html = (string) str_replace('&Prime;', '&quot;', (string)$this->html); // fix back &quot; {{{SYNC-DOMDOCUMENT-ISSUE-QUOT-FIX}}}
 					$this->html = (string) $this->extract_body_contents_from_html((string)$this->html);
 					if($y_comments === false) {
 						$this->html = $this->remove_comments((string)$this->html); // remove comments, for safety this must be done after DOMDocument processing due to the too many new empty lines between tags that breaks html code in DOMDocument (don't now why ...)
@@ -1069,6 +1079,25 @@ final class SmartHtmlParser {
 		return (array) $res;
 		//--
 
+	} //END FUNCTION
+	//=========================================================================
+
+
+	//=========================================================================
+	private function getOverrideValidatorLogLevel(int $max_err_level) {
+		//--
+		if(defined('SMART_HTML_CLEANER_VALIDATOR_LOG_LEVEL')) {
+			if(is_int(SMART_HTML_CLEANER_VALIDATOR_LOG_LEVEL)) {
+				if((int)SMART_HTML_CLEANER_VALIDATOR_LOG_LEVEL >= 0) {
+					if((int)SMART_HTML_CLEANER_VALIDATOR_LOG_LEVEL <= 3) {
+						return (int) SMART_HTML_CLEANER_VALIDATOR_LOG_LEVEL;
+					} //end if
+				} //end if
+			} //end if
+		} //end if
+		//--
+		return (int) $max_err_level;
+		//--
 	} //END FUNCTION
 	//=========================================================================
 

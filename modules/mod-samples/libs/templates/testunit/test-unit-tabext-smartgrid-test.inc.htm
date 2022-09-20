@@ -30,7 +30,7 @@
 <script src="lib/js/jquery/slickgrid/slick.grid.js"></script>
 <script src="lib/js/jquery/slickgrid/slick.editors.js"></script>
 <script src="lib/js/jquery/slickgrid/smart-grid.js"></script>
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/simplePagination.css">
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/jquery.simplePagination.css">
 <script src="lib/js/jquery/pager/jquery.simplePagination.js"></script>
 <script>
 
@@ -96,7 +96,7 @@ $(() => {
 				<input type="text" id="filter-src" name="src" placeholder="ISO | Name | ISO3 | Numeric Code" value="" class="ux-input-def" style="width:99%;">
 			</td>
 			<td>
-				<button type="button" class="ux-button ux-button-primary" onClick="TheGrid.loadGridData(0);" title="Filter Table Results">Filter &nbsp; <i class="sfi sfi-search"></i></button>
+				<button type="button" class="ux-button ux-button-details" onClick="TheGrid.loadGridData(0);" title="Filter Table Results">Filter &nbsp; <i class="sfi sfi-search"></i></button>
 			</td>
 			<td>
 				<button type="button" class="ux-button ux-button-secondary" onClick="TheGrid.resetGrid(); TheGrid.loadGridData(0);" title="Remove Filter (display all results)">Reset &nbsp; <i class="sfi sfi-history"></i></button>
