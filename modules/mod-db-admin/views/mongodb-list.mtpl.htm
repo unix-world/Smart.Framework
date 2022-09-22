@@ -40,7 +40,8 @@ jQuery(() => {
 }
 .query-info {
 	font-size: 0.75rem !important;
-	color: #778899 !important;
+	color: #778888 !important;
+	letter-spacing: 0.0625rem;
 }
 .query-builder {
 	background: #FEFEFE;
@@ -50,6 +51,8 @@ jQuery(() => {
 	margin-bottom: 5px;
 }
 #query-error {
+	display: block;
+	margin-top: 7px;
 	color: #ED2839 !important;
 	font-weight: bold !important;
 	white-space: pre !important;
@@ -133,6 +136,7 @@ const theListLocation = '[###PAGE-URL|js###]';
 const theCookieNameCollection = '[###COOKIENAME-COLLECTION|js###]';
 const sortMax = [###SORT-MAX|int###];
 const NumAllRecords = [###TOTAL-RECORDS|int###];
+const theQFormat = '[###QFORMAT|js###]';
 
 const selectCollection = () => {
 	let selected = jQuery('#collections-list').val();
@@ -147,21 +151,41 @@ const handleButtonSelectById = () => {
 	const theID = jQuery('#filter-_id').val();
 	let theLocation = String(theListLocation);
 	if(theID) {
-		theLocation = theLocation + '&id_=' + smartJ$Utils.escape_url(theID);
+		theLocation = theLocation + '&qf=qry' + '&id_=' + smartJ$Utils.escape_url(theID);
 	}
 	self.location = String(theLocation);
 };
 
-const handleButtonDeleteQuery = (confirmed) => {
+const handleButtonCmd = () => {
+	reLocation = smartJ$Utils.stringPureVal(getQueryURLParams() || '', true);
+	if(reLocation != '') {
+		self.location = String(theListLocation) + '&qf=cmd' + String(reLocation);
+	} else {
+		return false;
+	}
+};
+
+const handleHideDeleteButton = () => {
+	if(theQFormat != 'qry') {
+		return;
+	}
+	const $bttn = jQuery('#delete-all-selected-records-btn');
+	if($bttn.prop('disabled') === true) {
+		return;
+	}
+	$bttn.attr('onclick', '').prop('disabled', true);
+};
+
+const handleButtonDelete = (confirmed) => {
 	const allRecs = smartJ$Utils.format_number_int(NumAllRecords, false);
 	if(allRecs < 1) {
-		jQuery.alertable.alert('<h4>There are no records available for delete ...</h4>', { html:true }).always(() => {
+		jQuery.alertable.alert('<h4>There are NO selected records to Delete ...</h4>', { html:true }).always(() => {
 			return false;
 		});
 	} else {
 		if(confirmed !== 'confirmed') {
-			jQuery.alertable.confirm('<h4 style="color:#ED2839;">You sure you want to delete `' + smartJ$Utils.escape_html(allRecs) + '` records ?</h4> <br><h5>This action will <i>permanently DELETE</i> all the selected records by the current Query (JSON) from the <i>Collection</i>.</h5>', { html:true }).then(() => {
-				handleButtonDeleteQuery('confirmed');
+			jQuery.alertable.confirm('<h4 style="color:#ED2839;">Confirm you want to delete `' + smartJ$Utils.escape_html(allRecs) + '` records ?</h4> <br><h5>This action will <i>permanently DELETE</i> all the selected records by the current Query (JSON) from the <i>Collection</i>.</h5>', { html:true }).then(() => {
+				handleButtonDelete('confirmed');
 			}, () => {
 				return false;
 			});
@@ -188,12 +212,11 @@ const handleButtonDeleteQuery = (confirmed) => {
 	return false;
 };
 
-const handleButtonQuery = () => {
+const handleButtonFind = () => {
 	reLocation = smartJ$Utils.stringPureVal(getQueryURLParams() || '', true);
 	if(reLocation != '') {
-		self.location = String(theListLocation) + String(reLocation);
+		self.location = String(theListLocation) + '&qf=qry' + String(reLocation);
 	} else {
-		console.warn('ERR # Select Query: Failed handle Query: the query URI is empty');
 		return false;
 	}
 };
@@ -261,30 +284,30 @@ const handleButtonShowJson = () => {
 [%%%/IF:QMODE%%%]
 </script>
 <img src="lib/core/img/db/mongodb-logo.svg" width="48" height="48" align="right" style="margin-right:5px; cursor:help;" title="MongoDB Server @ `[###HOST|html###]:[###PORT|html###]` # Version: `[###SRV-VERSION|html###]` # PHP-EXT: `[###CLI-VERSION|html###]`">
-<h2><span style="color:#778899;">MongoDB :: </span>Database:&nbsp;<span style="color:#5E6885; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@] <a class="ux-button ux-button-special ux-button-spacing" data-smart="open.modal" href="[###URL-DROP-COLLECTION|html###]" title="Drop Collection and Delete All Records"><i class="sfi sfi-bin"></i>&nbsp;&nbsp;Drop&nbsp;Collection</a><a href="[###PAGE-URL|html###]" class="ux-button ux-button-spacing"><i style="color:#444444;" class="sfi sfi-loop"></i> &nbsp; Reload</a></h2>
+<div style="margin-bottom:10px; margin-top:10px;"><div style="display:inline-block; margin-bottom:20px; font-size:1.5rem; font-weight:bold;"><span style="color:#778899;">MongoDB :: </span>Database:&nbsp;<span style="color:#5E6885; cursor:help;" title="MongoDB Server @ [###HOST|html###]:[###PORT|int###]">[###DATABASE|html###]</span> <span style="color:#72C100;">@</span> Collection:&nbsp;</div>[@@@SUB-TEMPLATE:partials/mongodb-collections.mtpl.inc.htm@@@] <a href="[###PAGE-URL|html###]" class="ux-button ux-button-small ux-button-alt ux-button-spacing"><i style="color:#444444;" class="sfi sfi-loop"></i>&nbsp;&nbsp;Reload</a> <a class="ux-button ux-button-small ux-button-info ux-button-spacing" data-smart="open.modal" href="[###URL-NEW-RECORD|html###]" title="Insert New Record"><i class="sfi sfi-plus"></i>&nbsp;&nbsp;New&nbsp;Record</a> <a class="ux-button ux-button-special ux-button-small ux-button-spacing" data-smart="open.modal" href="[###URL-DROP-COLLECTION|html###]" title="Drop Collection and Delete All Records"><i class="sfi sfi-bin"></i>&nbsp;&nbsp;Drop&nbsp;Collection</a></div>
 <div class="query-builder">
 	<table width="96%">
-		<tr>
-			<td>
-				<b>_id:</b> <input id="filter-_id" name="filter[_id]" type="text" maxlength="255" size="65" class="ux-field" value="[###FILTER-ID_|html###]"> <button class="ux-button ux-button-small ux-button-details" onClick="handleButtonSelectById();" title="Find One Record by UID"><i class="sfi sfi-filter"></i>&nbsp;&nbsp;Select&nbsp;by&nbsp;UID</button>
+		<tr valign="middle">
+			<td align="left" width="50%">
+				<b>_id:</b> <input id="filter-_id" name="filter[_id]" type="text" maxlength="255" class="ux-field" value="[###FILTER-ID_|html###]" style="width:70%" placeholder="Filter by UID"> <button class="ux-button ux-button-small ux-button-details" onClick="handleButtonSelectById();" title="Find One Record by UID"><i class="sfi sfi-filter"></i>&nbsp;&nbsp;Find&nbsp;Record</button>
 			</td>
-			<td align="right">
-				<span style="font-size:0.625rem; font-weight:bold;">Server:&nbsp;<span style="color:#FFAA00;">[###HOST|html###]:[###PORT|html###]</span></span>
+			<td align="right" width="50%">
+				<div style="display:inline-block; border:1px solid #EEEEEE; color:#AAAAAA; font-weight:bold; letter-spacing: 0.125rem; padding-left:5px; padding-right:5px;">mongodb://<span style="color:#FFAA00;">[###HOST|html###]</span>:<span style="color:#FFAA00;">[###PORT|html###]</span>/<span style="color:#61B000;">[###DATABASE|html###]</span>.<span style="color:#ED2838;">[###COLLECTION|html###]</span>&nbsp;#&nbsp;<span style="color:##666699; cursor:help;" title="[###COLL-TOT-SIZE-BYTES|html###] Bytes">[###COLL-TOT-SIZE-PRETTY|html###]</span></div>
 			</td>
 		</tr>
 	</table>
 	<table width="96%">
 		<tr valign="top">
-			<td title="Query" onclick="$delManyBtn = jQuery('#delete-many-btn'); $delManyBtn.attr('onclick', '').prop('disabled', true).attr('title', $delManyBtn.attr('title') + ' - ACTION DISABLED - Must Refresh the Select Query ...');">
+			<td title="Query" onclick="handleHideDeleteButton();">
 				[%%%IF:QMODE:==visual;%%%]
 				[@@@SUB-TEMPLATE:partials/json-editor.mtpl.inc.htm@@@]
-				<div id="filter-query" data-mode="visual" style="width: calc(96vw - 720px) !important; min-width:200px !important; height:216px !important;"></div>
+				<div id="filter-query" data-mode="visual" onclick="handleHideDeleteButton();" style="width: calc(96vw - 720px) !important; min-width:200px !important; height:228px !important;"></div>
 				<script>
 					drawJsonEditor('filter-query', '[###QUERY|js###]');
 				</script>
 				[%%%ELSE:QMODE%%%]
-				<div style="width: calc(96vw - 700px) !important; min-width:200px !important; height:188px;">
-					<div id="codeEditorMenuArea"></div>
+				<div style="width: calc(96vw - 700px) !important; min-width:188px !important; height:200px;">
+					<div id="codeEditorMenuArea" onclick="handleHideDeleteButton();"></div>
 					<textarea id="filter-query" data-mode="raw" name="filter[query]" maxlength="65535" class="ux-field" style="width:100%; height:100%;" spellcheck="false" onKeyDown="smartJ$Browser.catchKeyTAB(event);">[###QUERY|html###]</textarea>
 				</div>
 				[%%%/IF:QMODE%%%]
@@ -300,20 +323,21 @@ const handleButtonShowJson = () => {
 			<td>
 				&nbsp;
 			</td>
-			<td valign="middle">
-				<a class="ux-button ux-button-small ux-button-info ux-button-spacing" style="width:100%;" data-smart="open.modal" href="[###URL-NEW-RECORD|html###]" title="Add New Record"><i class="sfi sfi-plus"></i>&nbsp;&nbsp;New&nbsp;Record</a>
+			<td valign="top">
+				<button[%%%IF:QFORMAT:==cmd;%%%] disabled[%%%/IF:QFORMAT%%%] class="ux-button ux-button-small ux-button-primary ux-button-spacing" style="width:100%;" onClick="handleButtonFind();" title="Find and Display the Record(s) that match the Query (JSON)"><i class="sfi sfi-search"></i>&nbsp;&nbsp;Find&nbsp;Records&nbsp;&nbsp;</button>
 				<br>
-				<button id="delete-many-btn" class="ux-button ux-button-small ux-button-special ux-button-spacing" style="width:100%;" onClick="handleButtonDeleteQuery();" title="Delete ALL the Record(s) the match the Query (JSON)"><i class="sfi sfi-bin2"></i>&nbsp;&nbsp;Delete&nbsp;by&nbsp;Query&nbsp;&nbsp;</button>
+				<button[%%%IF:QFORMAT:!=qry;%%%] disabled[%%%/IF:QFORMAT%%%] id="delete-all-selected-records-btn" class="ux-button ux-button-small ux-button-special ux-button-spacing" style="width:100%;" onClick="handleButtonDelete();" title="Delete ALL the Record(s) that match the current Selection / Query (JSON)"><i class="sfi sfi-bin2"></i>&nbsp;&nbsp;Delete&nbsp;Records&nbsp;&nbsp;</button>
+				<br>
+				<button[%%%IF:QFORMAT:==qry;%%%] disabled[%%%/IF:QFORMAT%%%] class="ux-button ux-button-small ux-button-highlight ux-button-spacing" style="width:100%;" onClick="handleButtonCmd();" title="Run a command on MongoDB Server (JSON)"><i class="sfi sfi-cog"></i>&nbsp;&nbsp;Run&nbsp;Command&nbsp;&nbsp;</button>
 				<br>
 				<br>
-				<br>
-				<div style="margin-bottom:5px;"><span title="Switch between Visual Query Editor and Raw Query Editor"><input id="query-mode" type="checkbox" class="ux-field" onClick="setDisplayMode = jQuery(this).is(':checked') ? 'visual' : 'raw';" [%%%IF:QMODE:==visual;%%%]checked[%%%/IF:QMODE%%%]><label for="query-mode" style="cursor:help;">Visual&nbsp;Query&nbsp;Mode</label></span></div>
+				<div style="text-align:center;"><span title="Switch between Visual JSON Mode and Raw JSON Mode"><input id="visual-mode-switch" type="checkbox" class="ux-field" onClick="setDisplayMode = jQuery(this).is(':checked') ? 'visual' : 'raw';" [%%%IF:QMODE:==visual;%%%]checked[%%%/IF:QMODE%%%]><label for="visual-mode-switch" style="cursor:help;">Visual&nbsp;JSON&nbsp;Mode</label></span></div>
 				[%%%IF:QMODE:==visual;%%%]
 				<button class="ux-button ux-button-small ux-button-spacing" style="width:100%;" onClick="handleButtonShowJson();" title="Display the Raw Query JSON (from the Visual JSON Query Editor)"><i style="color:#444444;" class="sfi sfi-stack"></i>&nbsp;&nbsp;Display&nbsp;as&nbsp;JSON</button>
 				[%%%ELSE:QMODE%%%]
 				<!-- visual mode not enabled -->
 				[%%%/IF:QMODE%%%]
-				<button class="ux-button ux-button-small ux-button-primary ux-button-spacing" style="width:100%;" onClick="handleButtonQuery();" title="Find and Display the Record(s) the match the Query (JSON)"><i class="sfi sfi-search"></i>&nbsp;&nbsp;Select&nbsp;by&nbsp;Query&nbsp;&nbsp;</button>
+
 			</td>
 			<td>&nbsp;</td>
 			<td style="padding-left:20px;">
@@ -334,7 +358,7 @@ const handleButtonShowJson = () => {
 [%%%IF:IS-QUERY:!=yes;%%%]
 <div id="operation_info">Use a filter query to select and display records ...</div>
 [%%%ELSE:IS-QUERY%%%]
-<div id="operation_notice">The filter query returned no records ...</div>
+<div id="operation_notice">The [%%%IF:QFORMAT:==cmd;%%%]comand returned no output[%%%ELSE:QFORMAT%%%]filter query returned no records[%%%/IF:QFORMAT%%%] ...</div>
 [%%%/IF:IS-QUERY%%%]
 [%%%ELSE:RECORDS%%%]
 <style>
@@ -373,8 +397,10 @@ const toggleWrap = ($el, $btn) => {
 		<div class="record-id">&nbsp;</div>
 		[%%%/IF:RECORDS.-ID%%%]
 		<span class="record-num">[###RECORDS.-NUM|int###].</span>
+		[%%%IF:QFORMAT:!=cmd;%%%]
 		<a title="Delete Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-special" href="[###URL-DELETE-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-bin2"></i></a>
 		<a title="Edit Record #[###RECORDS.-NUM|int###]" class="ux-button ux-button-xsmall ux-button-regular" href="[###URL-EDIT-RECORD|html###][###RECORDS._ID|url|html###]" data-smart="open.modal"><i class="sfi sfi-file-text2"></i></a>
+		[%%%/IF:QFORMAT%%%]
 		<button title="Wrap ON/OFF" class="ux-button ux-button-xsmall ux-button-secondary" onClick="toggleWrap($(this).parent().find('code'), $(this));"><i class="sfi sfi-paragraph-justify"></i></button>
 		<span style="font-weight:bold;"><span class="json-key">UUID</span>&nbsp;:&nbsp;<span class="json-string" title="Record UID">[###RECORDS._ID|html###]</span></span>
 		<br>

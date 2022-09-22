@@ -5,11 +5,23 @@
 				Cost:&nbsp;<b>[###EXECUTION-TIME|html###]&nbsp;sec.</b>
 			</div>
 			<div class="query-info">
-				[%%%IF:TOTAL-ALL-RECORDS:==###TOTAL-RECORDS###;%%%]
-				All&nbsp;Records&nbsp;<b>[###TOTAL-ALL-RECORDS|int###]</b>
-				[%%%ELSE:TOTAL-ALL-RECORDS%%%]
+	[%%%IF:QFORMAT:!=cmd;%%%]
+		[%%%IF:TOTAL-ALL-RECORDS:==###TOTAL-RECORDS###;(1)%%%]
+				All&nbsp;Records:&nbsp;<b>[###TOTAL-ALL-RECORDS|int###]</b>
+		[%%%ELSE:TOTAL-ALL-RECORDS(1)%%%]
+			[%%%IF:TOTAL-RECORDS:>0;(2)%%%]
 				Filtered&nbsp;Records:&nbsp;<b>[###TOTAL-RECORDS|int###]&nbsp;of&nbsp;[###TOTAL-ALL-RECORDS|int###]</b>
-				[%%%/IF:TOTAL-ALL-RECORDS%%%]
+			[%%%ELSE:TOTAL-RECORDS(2)%%%]
+				[%%%IF:IS-QUERY:==yes;%%%]
+				Matched&nbsp;Records:&nbsp;<b>[###TOTAL-RECORDS|int###]&nbsp;of&nbsp;[###TOTAL-ALL-RECORDS|int###]</b>
+				[%%%ELSE:IS-QUERY%%%]
+				Total&nbsp;Records:&nbsp;<b>[###TOTAL-ALL-RECORDS|int###]</b>
+				[%%%/IF:IS-QUERY%%%]
+			[%%%/IF:TOTAL-RECORDS(2)%%%]
+		[%%%/IF:TOTAL-ALL-RECORDS(1)%%%]
+	[%%%ELSE:QFORMAT%%%]
+				Command Output
+	[%%%/IF:QFORMAT%%%]
 			</div>
 			[%%%IF:PAGES:>0;(101)%%%][%%%IF:TOTAL-RECORDS:>###LIMIT-PER-PAGE###;(101)%%%]
 			<div class="query-info">

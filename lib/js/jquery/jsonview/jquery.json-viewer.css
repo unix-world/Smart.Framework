@@ -1,7 +1,7 @@
 /**
  * jQuery json-viewer @ r.2016.08.22 # https://github.com/abodelot/jquery.json-viewer
  * @author: Alexandre Bodelot <alexandre.bodelot@gmail.com>
- * contains fixes by unixman: r.20220918
+ * contains fixes by unixman: r.20220920
  */
 
 /* fix by unixman */
@@ -11,7 +11,9 @@
 	background: none !important; /* reset, it inherited from code */
 }
 
-.json-render-area li {
+.json-render-area li,
+ul.json-dict li,
+ol.json-array li {
 	margin-top: 0 !important;
 	margin-bottom: 0 !important;
 }

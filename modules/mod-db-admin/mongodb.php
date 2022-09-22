@@ -71,8 +71,6 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		$param_collection = (string) trim((string)$this->RequestVarGet('collection', '', 'string'));
-		//--
 		$the_collection = (string) trim((string)$this->CookieVarGet((string)$the_cookiename_collection));
 		//--
 		$tmp_arr_collections = [];
@@ -136,6 +134,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 			case 'new-form': // Form for Add new Record (OUTPUTS: HTML)
 				//--
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
+				//--
+				$param_collection = (string) trim((string)$this->RequestVarGet('collection', '', 'string'));
 				//--
 				if((string)$param_collection == '@NEW@') {
 					$title = 'Create New Collection & Add New Record';
@@ -463,6 +463,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//--
+				$param_collection = (string) trim((string)$this->RequestVarGet('collection', '', 'string'));
+				//--
 				$title = 'MongoDB '.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbHost().':'.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbPort().' :: '.\SmartModDataModel\DbAdmin\MongoDbAdmin::getDbName().' @ '.$the_collection;
 				//--
 				$message = ''; // {{{SYNC-MOD-AUTH-VALIDATIONS}}}
@@ -503,6 +505,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//--
+				$param_collection = (string) trim((string)$this->RequestVarGet('collection', '', 'string'));
 				$frm = $this->RequestVarGet('frm', [], 'array');
 				if(!is_array($frm)) {
 					$frm = array();
@@ -742,7 +745,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 
 				//--
-				$collection_indexes = (array) $this->getCollectionIndexes((string)$the_collection, (bool)$collection_selected);
+				$the_qf_mode = (string) strtolower((string)trim((string)$this->RequestVarGet('qf', '', 'string')));
+				$is_command = false;
+				if((string)$the_qf_mode == 'cmd') {
+					$is_command = true;
+				} //end if
 				//--
 
 				//--
@@ -754,7 +761,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$query_ = Smart::json_decode((string)$qjson);
 				//--
 				$query = [];
-				if($id_) {
+				if($is_command === true) {
+					$id_ = '';
+				} //end if
+				if((string)$id_ != '') {
 					$query = [ '_id' => (string) $id_ ];
 					$qjson = (string) Smart::json_encode((array)$query);
 					$query_ = [];
@@ -764,116 +774,208 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$query_ = [];
 				} //end if else
 				//--
-				$sorting = $this->RequestVarGet('sorting', [], 'array');
-				if(Smart::array_type_test($sorting) != 2) {
+
+				//--
+				if($is_command === true) {
 					$sorting = [];
-				} //end if
-				if(Smart::array_size($sorting) <= 0) {
-					$sorting = [
-						'_id' => 'ASC'
-					];
+				} else {
+					$sorting = $this->RequestVarGet('sorting', [], 'array');
+					if(Smart::array_type_test($sorting) != 2) {
+						$sorting = [];
+					} //end if
+					if(Smart::array_size($sorting) <= 0) {
+						$sorting = [
+							'_id' => 'ASC'
+						];
+					} //end if
 				} //end if
 				//--
 
 				//--
-				$query = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::convertQueryToRealMongoId((array)$query);
+				if($is_command !== true) {
+					$query = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::convertQueryToRealMongoId((array)$query); // {{{SYNC-MONGODB-CONVERT-$OID-TO-OBJECTID}}}
+				} //end if
 				//--
 
+				//--
+
+				//--
+				$collection_metainfo = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getDbCollectionStats((string)$the_collection);
+				//--
+				$all_meta_count = Smart::array_get_by_key_path((array)$collection_metainfo, '0.count', '.');
+				if(!Smart::is_nscalar($all_meta_count)) {
+					$all_meta_count = 0;
+				} //end if
+				$all_meta_count = (int) $all_meta_count;
+				if((int)$all_meta_count < 0) {
+					$all_meta_count = 0;
+				} //end if
+				//--
+				$error = []; // init errors
+				//--
+				/*
+				if((int)$all_meta_count <= 0) { // an optional FALLBACK, currently unused to get the total records .. it is more costly !
+					try {
+						$all_meta_count = (int) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsCount((string)$the_collection, []);
+					} catch(Exception $e) {
+						$error[] = (string) $e->getMessage();
+						$all_meta_count = 0;
+					} //end try catch
+				} //end if
+				*/
+				//--
+
+				//--
+				$collection_indexes = (array) $this->getCollectionIndexes((string)$the_collection, (bool)$collection_selected);
+				//--
+
+				//--
+				$total_collection_size = Smart::array_get_by_key_path((array)$collection_metainfo, '0.totalSize', '.');
+				if(!Smart::is_nscalar($total_collection_size)) {
+					$total_collection_size = 0;
+				} //end if
+				$total_collection_size = (int) $total_collection_size;
+				if((int)$total_collection_size < 0) {
+					$total_collection_size = 0;
+				} //end if
+				//--
+				$total_collection_pretty_size = (string) SmartUtils::pretty_print_bytes((int)$total_collection_size, 2, ' ', 1024); // for mongodbvalue is 1024 NOT 1000 !
+				//--
+
+				//--
+				$all_count = (int) $all_meta_count;
 				//--
 				$is_empty_collection = false;
-				$count = 0;
-				$all_count = 0;
-				$data = [];
-				$error = [];
-				if((string)$qjson != '') {
-					try {
-						$count = (int) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsCount((string)$the_collection, (array)$query);
-					} catch(Exception $e) {
-						$error[] = (string) $e->getMessage();
-						$query = [];
-						$count = 0;
-					} //end try catch
-				} //end if
-				//--
-				if(((string)$qjson == '') OR (Smart::array_size($query) > 0) OR (Smart::array_size($error) > 0)) {
-					try {
-						$all_count = (int) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsCount((string)$the_collection, []);
-					} catch(Exception $e) {
-						$error[] = (string) $e->getMessage();
-						$all_count = 0;
-					} //end try catch
-					if(((string)$qjson == '') OR (Smart::array_size($error) > 0)) {
-						$count = (int) $all_count;
-					} //end if
-				} else {
-					$all_count = (int) $count;
-				} //end if else
-				//--
-				if(((int)$all_count <= 0) AND ((int)$count <= 0)) {
+				if((int)$all_meta_count <= 0) {
 					$is_empty_collection = true;
 				} //end if
 				//--
 				$time = 0;
-				if(Smart::array_size($error) > 0) {
-					$data = [];
+				$count = 0;
+				$data = [];
+				$records = [];
+				//--
+				$html_sorting = [];
+				$ascdesc = [ 'ASC' => 'ASC', 'DESC' => 'DESC' ];
+				//--
+				if($is_command === true) {
+					//-- this does not depend on $qjson which on empty query is '{}' ; for command it requires a non-empty array
+					if((int)Smart::array_size($query) <= 0) {
+						$error[] = 'WARNING: No Command supplied ... Running `buildinfo` command as default !...';
+						$query = [
+							'buildinfo' => 1,
+						];
+						$query_ = (array) $query;
+						$qjson = (string) Smart::json_encode((array)$query);
+					} //end if
+					$time = microtime(true);
+					$mongo = \SmartModDataModel\DbAdmin\MongoDbAdmin::getInstance();
+					if(!$mongo) {
+						\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+						$error[] = 'ERROR: MongoDB Instance is N/A';
+					} //end if
+					try {
+						$data = $mongo->command((array)$query);
+					} catch(Exception $e) {
+						$error[] = (string) $e->getMessage();
+						$query = [];
+						$data = [];
+					} //end try catch
+					$time = microtime(true) - $time;
+					if(!is_array($data)) {
+						$data = [ 'command:result' => (string)$data ];
+					} elseif((int)Smart::array_size($data) > 0) {
+						$records[] = [
+							'_id' 	=> 'MongoDB-Command:'.sha1((string)Smart::json_encode((array)$data)).'-'.sha1((string)microtime(true)),
+							'-id' 	=> (string) 'MongoDB Command run at: `'.date('Y-m-d H:i:s').'`',
+							'-num' 	=> 1,
+							'-json' => (string) Smart::json_encode((array)$data),
+						];
+						$count = 1;
+					} else { // no data provided by command
+						$count = 0;
+					} //end if else
+					$all_count = (int) $count; // fix
+					//--
 				} else {
+					//--
 					if((string)$qjson != '') {
-						$time = microtime(true);
 						try {
-							$data = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsData((string)$the_collection, (array)$query, (int)$ofs, (int)$limit, (array)$sorting);
+							$count = (int) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsCount((string)$the_collection, (array)$query);
 						} catch(Exception $e) {
 							$error[] = (string) $e->getMessage();
 							$query = [];
-							$data = [];
+							$count = 0;
 						} //end try catch
-						$time = microtime(true) - $time;
 					} //end if
+					//--
+					if(((string)$qjson == '') OR (Smart::array_size($query) > 0) OR (Smart::array_size($error) > 0)) {
+						// there is no filter
+					} else {
+						$all_count = (int) $count; // filtered ... update to reflect the reality
+					} //end if else
+					//--
+					if(Smart::array_size($error) > 0) {
+						$data = [];
+					} else {
+						if((string)$qjson != '') {
+							$time = microtime(true);
+							try {
+								$data = (array) \SmartModDataModel\DbAdmin\MongoDbAdmin::getRecordsData((string)$the_collection, (array)$query, (int)$ofs, (int)$limit, (array)$sorting);
+							} catch(Exception $e) {
+								$error[] = (string) $e->getMessage();
+								$query = [];
+								$data = [];
+							} //end try catch
+							$time = microtime(true) - $time;
+						} //end if
+					} //end if else
+					//--
+					for($i=0; $i<Smart::array_size($data); $i++) {
+						//--
+						if(is_array($data[$i]['_id'])) {
+							$data[$i]['_id'] = (string) 'ObjectId('.($data[$i]['_id']['$oid'] ?? '!Undefined!').')'; // {{{SYNC-MONGODB-CONVERT-$OID-TO-OBJECTID}}}
+						} //end if
+						//--
+						if((string)$data[$i]['_id'] != '') {
+							$tmp_arr = (array) $data[$i];
+						//	unset($tmp_arr['_id']); // {{{SYNC-DB-MONGO-ADMIN-UNSET-_ID}}}
+							$records[] = [
+								'_id' 	=> (string) ($data[$i]['_id'] ?? null),
+								'-id' 	=> (string) ($data[$i]['id'] ?? null),
+								'-num' 	=> (int) ((int)$i + 1 + (int)$ofs),
+								'-json' => (string) Smart::json_encode((array)$tmp_arr)
+							];
+							$tmp_arr = null;
+						} //end if
+						//--
+					} //end if
+					//--
+					if((int)Smart::array_size($sorting) > 0) {
+						$iterator = 0;
+						foreach($sorting as $key => $val) {
+							$key = (string) trim((string)$key);
+							$val = (string) strtoupper((string)trim((string)$val));
+							if(!in_array($val, array_values($ascdesc))) {
+								$val = 'ASC';
+							} //end if
+							if((string)$key != '') {
+								$html_sorting[] = [
+									'id-field' => (string) $key,
+									'html-field' => (string) SmartViewHtmlHelpers::html_select_list_single('sort-m'.(int)$iterator, (string)$val, 'form', (array)$ascdesc, 'sort[m'.(int)$iterator.']', '70/0', '', 'no', 'no', '', 'class:filter-direction')
+								];
+								$iterator++;
+							} //end if
+						} //end foreach
+						$iterator = null;
+					} //end if
+					//--
 				} //end if else
-				//--
-				$records = [];
-				for($i=0; $i<Smart::array_size($data); $i++) {
-					//--
-					if(is_array($data[$i]['_id'])) {
-						$data[$i]['_id'] = (string) 'ObjectId('.$data[$i]['_id']['$oid'].')'; // {{{SYNC-MONGODB-CONVERT-$OID-TO-OBJECTID}}}
-					} //end if
-					//--
-					if((string)$data[$i]['_id'] != '') {
-						$tmp_arr = (array) $data[$i];
-					//	unset($tmp_arr['_id']); // {{{SYNC-DB-MONGO-ADMIN-UNSET-_ID}}}
-						$records[] = [
-							'_id' 	=> (string) ($data[$i]['_id'] ?? null),
-							'-id' 	=> (string) ($data[$i]['id'] ?? null),
-							'-num' 	=> (int) ((int)$i + 1 + (int)$ofs),
-							'-json' => (string) Smart::json_encode((array)$tmp_arr)
-						];
-						$tmp_arr = array();
-					} //end if
-					//--
-				} //end if
 				//--
 
 				//--
-				$ascdesc = [ 'ASC' => 'ASC', 'DESC' => 'DESC' ];
-				//--
-				$html_sorting = [];
-				$i = 0;
-				foreach($sorting as $key => $val) {
-					$key = (string) trim((string)$key);
-					$val = (string) strtoupper((string)trim((string)$val));
-					if(!in_array($val, array_values($ascdesc))) {
-						$val = 'ASC';
-					} //end if
-					if((string)$key != '') {
-						$html_sorting[] = [
-							'id-field' => (string) $key,
-							'html-field' => (string) SmartViewHtmlHelpers::html_select_list_single('sort-m'.(int)$i, (string)$val, 'form', (array)$ascdesc, 'sort[m'.(int)$i.']', '70/0', '', 'no', 'no', '', 'class:filter-direction')
-						];
-						$i++;
-					} //end if
-				} //end foreach
-				//--
 				$sort_size = (int) Smart::array_size($html_sorting);
-				$sort_max = 6;
+				$sort_max = 7;
 				for($i=$sort_size; $i<$sort_max; $i++) {
 					$html_sorting[] = [
 						'id-field' => '',
@@ -901,18 +1003,21 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$navbox_url = (string) Smart::url_add_params((string)$the_base_url, (array)$arr_url_ok_params);
 				$arr_url_ok_params = [];
 				//--
-
-				//--
 				$num_pages = (int) ceil((int)$count / (int)$limit);
 				if($num_pages <= 0) {
 					$num_pages = 1;
 				} //end if
+				//--
+
+				//--
+				$is_query = (bool) ((Smart::array_size($query_) > 0) || ((string)$id_ != ''));
 				//--
 				$this->PageViewSetVars([
 					'title' => 'DB Admin :: MongoDB',
 					'main'  => (string) SmartMarkersTemplating::render_file_template(
 						$this->ControllerGetParam('module-view-path').'mongodb-list.mtpl.htm',
 						[
+							'QFORMAT' 				=> (string) $the_qf_mode,
 							'QMODE' 				=> (string) $mode, // raw | visual
 							'PAGE-URL' 				=> (string) $the_base_url,
 							'URL-DROP-COLLECTION' 	=> (string) $the_base_url.'&action=drop-collection-confirm',
@@ -933,8 +1038,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'COLLINDEXES' 			=> (string) ((Smart::array_size($collection_indexes) > 0) ? Smart::json_encode($collection_indexes) : '{}'),
 							'EXECUTION-TIME' 		=> (string) Smart::format_number_dec($time, 10, '.', ''),
 							'ERROR' 				=> (string) implode("\n", (array)$error),
-							'QUERY' 				=> (string) (  ((string)$id_ != '')  ? (string)Smart::json_encode(['_id' => (string)$id_], true, true, false) : ((Smart::array_size($query_) > 0) ? Smart::json_encode((array)$query_, true, true, false) : '{'."\n"."\n".'}')),
-							'IS-QUERY' 				=> (string) ((Smart::array_size($query_) > 0) || ((string)$id_ != '')) ? 'yes' : 'no',
+							'QUERY' 				=> (string) (((string)$id_ != '')  ? (string)Smart::json_encode(['_id' => (string)$id_], true, true, false) : ((Smart::array_size($query_) > 0) ? Smart::json_encode((array)$query_, true, true, false) : '{'."\n"."\n".'}')),
+							'IS-QUERY' 				=> (string) $is_query ? 'yes' : 'no',
 							'SORT-MAX' 				=> (int)    $sort_max,
 							'LIMIT-PER-PAGE' 		=> (int)    $limit,
 							'OFFSET' 				=> (int)    (ceil((int)$ofs / (int)$limit) + 1),
@@ -944,6 +1049,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							'IS-EMPTY-COLLECTION' 	=> (int)    $is_empty_collection,
 							'FILTER-ID_' 			=> (string) $id_,
 							'SORTING' 				=> (array)  $html_sorting,
+							'COLL-TOT-SIZE-BYTES'	=> (int)    $total_collection_size,
+							'COLL-TOT-SIZE-PRETTY'	=> (string) $total_collection_pretty_size,
 							'NAV-PAGER-HTML' 		=> (string) (((int)Smart::array_size($records) > 0) ? SmartViewHtmlHelpers::html_navpager(
 								(string) $navbox_url,
 								(int) $count,

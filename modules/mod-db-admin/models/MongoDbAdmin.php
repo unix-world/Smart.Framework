@@ -14,7 +14,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
-final class MongoDbAdmin { // v.20220917
+final class MongoDbAdmin { // v.20220921
 
 	// ::
 
@@ -126,6 +126,35 @@ final class MongoDbAdmin { // v.20220917
 				'listCollections' => 1 // 'listDatabases' => 1 (to get databases list ; req to be connected to `admin` db)
 			]
 		);
+		//--
+		return (array) $result;
+		//--
+	} //END FUNCTION
+
+
+	public static function getDbCollectionStats(string $collection) {
+		//--
+		$collection = (string) \trim((string)$collection);
+		if((string)$collection == '') {
+			\Smart::log_warning(__METHOD__.'() MongoDB Collection Name is Empty ...');
+			return array();
+		} //end if
+		//--
+		$mongo = self::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return array();
+		} //end if
+		//--
+		$result = (array) $mongo->igcommand(
+			[
+				'collStats' => (string) $collection
+			]
+		);
+		//--
+		if(!$mongo->is_command_ok($result)) {
+			return [];
+		} //end if
 		//--
 		return (array) $result;
 		//--
@@ -686,10 +715,7 @@ final class MongoDbAdmin { // v.20220917
 	} //END FUNCTION
 
 
-	//===== PRIVATES
-
-
-	private static function getInstance() {
+	public static function getInstance() {
 		//--
 		$cfg = \Smart::get_from_config('mongodb');
 		if(\Smart::array_size($cfg) <= 0) {

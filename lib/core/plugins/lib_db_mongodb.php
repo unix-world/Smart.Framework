@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartComponents
- * @version 	v.20220912
+ * @version 	v.20220921
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -322,11 +322,11 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		//--
 		if((string)$this->srvver == '') {
 			//--
-			$arr_build_info = $this->command(['buildinfo' => true]);
+			$arr_build_info = $this->igcommand(['buildinfo' => true]); // fix: ignore command, not command, no need to try/catch here
 			//--
 			if(is_array($arr_build_info)) {
 				if(is_array($arr_build_info[0])) {
-					$this->srvver = (string) trim((string)$arr_build_info[0]['version']);
+					$this->srvver = (string) trim((string)($arr_build_info[0]['version'] ?? null));
 				} //end if
 			} //end if
 			//--
