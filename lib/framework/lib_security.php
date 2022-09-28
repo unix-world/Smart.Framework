@@ -35,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @depends 	SmartUnicode
  *
- * @version 	v.20210506
+ * @version 	v.20220924
  * @package 	Application
  *
  */
@@ -49,16 +49,16 @@ final class SmartFrameworkSecurity {
 	/**
 	 * Validate an URL variable name
 	 *
-	 * @param 	STRING 		$y_varname 		:: The value to be tested
+	 * @param 	STRING 		$var_name 		:: The value to be tested
 	 *
 	 * @return 	0/1							:: 1 if Valid, 0 if Invalid
 	 */
-	public static function ValidateUrlVariableName(?string $y_varname) {
+	public static function ValidateUrlVariableName(?string $var_name) {
 
-		// VALIDATE INPUT (REQUEST / COOKIES) VARIABLE NAMES .20210413
+		// VALIDATE INPUT (REQUEST / GET / POST / COOKIE) VARIABLE NAMES
 
 		//--
-		$y_varname = (string) $y_varname; // force string
+		$var_name = (string) $var_name; // force string
 		//--
 
 		//--
@@ -68,13 +68,13 @@ final class SmartFrameworkSecurity {
 		//-- init
 		$out = 0;
 		//-- validate characters (variable must not be empty, must not start with an underscore or a number
-		if(((string)$y_varname != '') AND (preg_match((string)$regex_var_name, (string)$y_varname))) {
+		if(((string)$var_name != '') AND (preg_match((string)$regex_var_name, (string)$var_name))) {
 			$out = 1;
 		} //end if else
 		//-- corrections (variable name must be between 1 char and 128 chars)
-		if((int)strlen((string)$y_varname) < 1) {
+		if((int)strlen((string)$var_name) < 1) {
 			$out = 0;
-		} elseif((int)strlen((string)$y_varname) > 128) {
+		} elseif((int)strlen((string)$var_name) > 128) {
 			$out = 0;
 		} //end if
 		//--
@@ -145,12 +145,16 @@ final class SmartFrameworkSecurity {
 	 * @access 		private
 	 * @internal
 	 *
-	 * @param MIXED 						$y_value	the input variable value
+	 * @param MIXED 						$str_val	the input variable value
 	 * @return STRING/NULL								the filtered value (if ARRAY or OBJECT or RESOURCE will return null)
 	 */
-	public static function FilterUnsafeString($y_value) {
-		//-- v.20210413
-		if(is_object($y_value) OR is_resource($y_value) OR is_array($y_value)) { // dissalow here, it always
+	public static function FilterUnsafeString($str_val) { // $str_val is MIXED !
+		//--
+		if($str_val === null) {
+			return null;
+		} //end if
+		//--
+		if(is_object($str_val) OR is_resource($str_val) OR is_array($str_val)) { // dissalow here, it always
 			return null;
 		} //end if
 		//--
@@ -158,8 +162,8 @@ final class SmartFrameworkSecurity {
 		if(defined('SMART_FRAMEWORK_SECURITY_FILTER_INPUT')) {
 			if((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT != '') {
 				$is_filtered = true;
-				if((string)$y_value != '') {
-					$y_value = (string) preg_replace((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT, '', (string)$y_value);
+				if((string)$str_val != '') {
+					$str_val = (string) preg_replace((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT, '', (string)$str_val);
 				} //end if
 			} //end if
 		} //end if
@@ -168,7 +172,7 @@ final class SmartFrameworkSecurity {
 			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() // Could Not Apply Filter, No Filter Defined !', E_USER_WARNING);
 		} //end if
 		//--
-		return (string) $y_value;
+		return (string) $str_val;
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -176,49 +180,49 @@ final class SmartFrameworkSecurity {
 
 	//======================================================================
 	/**
-	 * Return the filtered values for GET/POST/REQUEST/COOKIE variables, using the FilterUnsafeString method
+	 * Return the filtered values for GET/POST/REQUEST variables, using the FilterUnsafeString method
 	 * It may be used for filtering insecure / untrusted string or array variables
 	 * For array variables it also filters the keys
-	 * When using the raw values from $_GET, $_POST, $_REQUEST or $_COOKIE - all the values should be always filtered prior to be used in PHP to avoid insecure characters.
+	 * When using the raw values from $_GET, $_POST, $_REQUEST - all the values should be always filtered prior to be used in PHP to avoid insecure characters.
 	 * Notice: For this to work correctly expects the filter to be provided by SMART_FRAMEWORK_SECURITY_FILTER_INPUT
-	 * Important: All the REQUEST=GET+POST and COOKIE variables from SmartFrameworkRegistry are already filtered, no need to filter them again, but if you are using any raw value from $_GET, $_POST, $_REQUEST or $_COOKIE it must be filtered !
+	 * Important: All the REQUEST=GET+POST variables from SmartFrameworkRegistry are already filtered, no need to filter them again, but if you are using any raw value from $_GET, $_POST, $_REQUEST it must be filtered !
 	 *
-	 * @param MIXED 											$y_var	the input variable value
+	 * @param MIXED 											$value	the input variable value
 	 * @return MIXED											the filtered value (if OBJECT or RESOURCE will return null)
 	 */
-	public static function FilterRequestVar($y_var) {
+	public static function FilterRequestVar($value) { // $value is MIXED !
 		//--
-		if(!isset($y_var)) {
+		if(!isset($value)) {
 			return null; // fix for Illegal string offset
 		} //end if
 		//--
-		if(is_object($y_var) OR is_resource($y_var)) { // objects or resources are not allowed to com from GET/POST/REQUEST/COOKIE
+		if(is_object($value) OR is_resource($value)) { // objects or resources are not allowed to com from GET/POST/REQUEST
 			//--
-			$y_var = null; // invalid !! it comes from request
+			$value = null; // invalid !! it comes from request
 			//--
-		} elseif(is_array($y_var)) { // array
+		} elseif(is_array($value)) { // array
 			//--
-			$narr = [];
-			foreach($y_var as $key => $val) {
-				if(is_object($val) OR is_resource($val)) { // objects or resources are not allowed to com from GET/POST/REQUEST/COOKIE
-					$val = null;
-				} elseif(is_array($val)) { // array
-					$val = (array) self::FilterRequestVar((array)$val);
+			$arr = [];
+			foreach($value as $kk => $vv) {
+				if(is_object($vv) OR is_resource($vv)) { // objects or resources are not allowed to com from GET/POST/REQUEST
+					$vv = null;
+				} elseif(is_array($vv)) { // array
+					$vv = (array) self::FilterRequestVar((array)$vv);
 				} else { // nScalar
-					$val = (string) self::FilterUnsafeString((string)$val);
+					$vv = (string) self::FilterUnsafeString((string)$vv);
 				} //end if else
-				$narr[self::FilterUnsafeString((string)$key)] = $val; // mixed
+				$arr[self::FilterUnsafeString((string)$kk)] = $vv; // mixed
 			} //end foreach
-			$y_var = (array) $narr;
-			$narr = null;
+			$value = (array) $arr;
+			$arr = null;
 			//--
 		} else { // nScalar
 			//--
-			$y_var = (string) self::FilterUnsafeString((string)$y_var);
+			$value = (string) self::FilterUnsafeString((string)$value);
 			//--
 		} //end if
 		//--
-		return $y_var; // mixed
+		return $value; // mixed
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -229,16 +233,16 @@ final class SmartFrameworkSecurity {
 	 * Return the filtered value for a cookie from a COOKIE variable, using the FilterUnsafeString method
 	 * It may be used for filtering the insecure / untrusted raw values from $_COOKIE
 	 *
-	 * @param MIXED 						$y_value	the input variable value
-	 * @return STRING/NULL								the filtered value (if ARRAY or OBJECT or RESOURCE will return null)
+	 * @param STRING/NULL 						$str_val	the input variable value
+	 * @return STRING/NULL									the filtered value (if ARRAY or OBJECT or RESOURCE will return null)
 	 */
-	public static function FilterCookieVar($y_var) {
+	public static function FilterCookieVar(?string $str_val) {
 		//--
-		if(!isset($y_var)) {
-			return null; // fix for Illegal string offset
+		if($str_val === null) {
+			return null;
 		} //end if
 		//--
-		return (string) self::FilterUnsafeString((string)$y_var);
+		return (string) self::FilterUnsafeString((string)$str_val);
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -249,16 +253,16 @@ final class SmartFrameworkSecurity {
 	 * Return the filtered values for PATH_INFO server variable, using the FilterUnsafeString method, and apply trim
 	 * It may be used for filtering the insecure / untrusted raw value of $_SERVER['PATH_INFO']
 	 *
-	 * @param MIXED 						$y_value	the input variable value
+	 * @param MIXED 						$value		the input variable value
 	 * @return STRING/NULL								the filtered value (if ARRAY or OBJECT or RESOURCE will return null)
 	 */
-	public static function FilterRequestPath($y_var) {
+	public static function FilterRequestPath($value) { // $value is MIXED !
 		//--
-		if(!isset($y_var)) {
+		if(!isset($value)) {
 			return null; // fix for Illegal string offset
 		} //end if
 		//--
-		return (string) trim((string)self::FilterUnsafeString((string)$y_var));
+		return (string) trim((string)self::FilterUnsafeString($value));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -270,19 +274,19 @@ final class SmartFrameworkSecurity {
 	 * It may be used ONLY when working with RAW PATH INFO / RAW QUERY URLS !!!
 	 * IMPORTANT: the $_GET and $_REQUEST are already decoded. Using urldecode() on an element in $_GET or $_REQUEST could have unexpected and dangerous results.
 	 *
-	 * @param STRING 				$y_urlencoded_str_var		the input variable
-	 * @param BOOLEAN 				$y_filter 					*Optional* Default to TRUE ; if FALSE will only decode but not filter variable ; DO NOT DISABLE FILTERING EXCEPT WHEN YOU CALL IT LATER EXPLICIT !!!
+	 * @param STRING 				$url_encoded_str_val		the input variable
+	 * @param BOOLEAN 				$filter 					*Optional* Default to TRUE ; if FALSE will only decode but not filter variable ; DO NOT DISABLE FILTERING EXCEPT WHEN YOU CALL IT LATER EXPLICIT !!!
 	 * @return STRING											the decoded +/- filtered value
 	 */
-	public static function DecodeAndFilterUrlVarString(?string $y_urlencoded_str_var, $y_filter=true) {
+	public static function DecodeAndFilterUrlVarString(?string $url_encoded_str_val, bool $filter=true) {
 		//--
-		$y_urlencoded_str_var = (string) urldecode((string)$y_urlencoded_str_var); // use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + !
+		$url_encoded_str_val = (string) urldecode((string)$url_encoded_str_val); // use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + !
 		//--
-		if($y_filter !== false) {
-			$y_urlencoded_str_var = (string) self::FilterUnsafeString((string)$y_urlencoded_str_var);
+		if($filter !== false) {
+			$url_encoded_str_val = (string) self::FilterUnsafeString((string)$url_encoded_str_val);
 		} //end if
 		//--
-		return (string) $y_urlencoded_str_var;
+		return (string) $url_encoded_str_val;
 		//--
 	} //END FUNCTION
 	//======================================================================

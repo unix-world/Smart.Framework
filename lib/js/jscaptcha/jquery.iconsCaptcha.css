@@ -1,9 +1,9 @@
 
 /*
 // Icons Captcha: v1.0
-// (c) 2021 unix-world.org
+// (c) 2021-2022 unix-world.org
 // License: BSD
-// r.20220114
+// r.20220925
 // jquery.iconsCaptcha.css
 */
 
@@ -63,7 +63,7 @@
 	display: inline-block;
 	height: 48px;
 	width: 48px;
-	color: #777777;
+	color: #5E6885;
 	border: 1px dashed #F0F0F0;
 	border-right: none;
 	box-sizing: border-box;

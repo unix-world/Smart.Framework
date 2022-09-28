@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFileSystem {
 
 	// ::
-	// v.20210526
+	// v.20220924
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
 	public static function methodOptions() { // 200
@@ -605,11 +605,15 @@ final class DavFileSystem {
 			//--
 			$nfo_crrpath = (string) $nfo_prefix_crrpath.$dav_request_path;
 			//--
-			$bw = (array) \SmartUtils::get_os_browser_ip();
-			//--
-			if(!\in_array((string)$bw['bw'], (array)\SmartModExtLib\Webdav\DavServer::getSupportedBrowserIds())) {
-				\http_response_code(405); // method not allowed: only files can be GET !
-				return 405;
+			$bwc = (string) \SmartUtils::get_os_browser_ip('bc');
+			if(!\in_array((string)$bwc, (array)\SmartModExtLib\Webdav\DavServer::getSupportedBrowserClasses())) {
+				if((string)$bwc == (string)\SmartUtils::GENERIC_VALUE_OS_BROWSER_IP) {
+					\http_response_code(405); // method not allowed: only files can be GET !
+					return 405;
+				} else { // it is a recognized browser, give a nice answer
+					\http_response_code(403); // browser not allowed: unsupported class
+					die((string)\SmartComponents::http_message_403_forbidden('Browser class not supported: `'.$bwc.'`'));
+				} //end if else
 			} //end if
 			//--
 			\http_response_code(200);

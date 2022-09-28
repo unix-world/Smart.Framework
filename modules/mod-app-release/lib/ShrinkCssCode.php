@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class ShrinkCssCode extends ShrinkCode {
 
 	// ->
-	// v.20220730
+	// v.20220928
 
 
 	//====================================================

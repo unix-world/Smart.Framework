@@ -33,6 +33,7 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
  * DEPENDS:
  * SmartUnicode::
  * Smart::
+ * SmartUtils::
  * SmartFileSysUtils::
  * SmartFileSystem::
  * SmartHashCrypto::
@@ -48,9 +49,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetPackager {
 
 	// ->
-	// v.20220730
+	// v.20220928
 
-	public const APP_NET_PACKAGER_VERSION = 'v.20210527';
+	public const APP_NET_PACKAGER_VERSION = 'z.20220928'; // {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
 
 	//--
 	private $error_log = '';
@@ -65,8 +66,8 @@ final class AppNetPackager {
 	private $num_dirs = 0;
 	private $num_files = 0;
 	private $date_time = '';
-	private $arr_folders = array();
-	private $arr_files = array();
+	private $arr_folders = [];
+	private $arr_files = [];
 	//--
 
 
@@ -197,7 +198,7 @@ final class AppNetPackager {
 		$this->arch_content .= '#Files: '.$this->conform_column($this->num_files)."\n";
 		$this->arch_content .= '#[AppCodePack-Package//END]'."\n";
 		//--
-		$packet = @gzencode((string)$this->arch_content, 9, FORCE_GZIP); // don't make it string, may return false
+		$packet = @gzencode((string)$this->arch_content, 8, FORCE_GZIP); // don't make it string, may return false
 		if(($packet === false) OR ((string)$packet == '')) { // if error
 			return 'AppCodePack.Packager / Save :: ZLib Deflate ERROR ! ... # '.$this->error_log;
 		} //end if
@@ -218,10 +219,12 @@ final class AppNetPackager {
 		$ver_zlib = (string) phpversion('zlib');
 		//--
 		$packet = (string) base64_encode((string)$packet);
+		//--
 		$data  = '';
 		//--
 		$data .= '#AppCodePack-NetArchive'."\n";
-		$data .= '#AppCodePack-Version: '.$this->conform_column(self::APP_NET_PACKAGER_VERSION.' ^ gzenc.9.gzip * (c) 2013-'.date('Y').' <unix-world.org> :: [BSD Licensed] {Smart.Framework}')."\n";
+		$data .= '#AppCodePack-MetaInfo: '.$this->conform_column((string)self::APP_NET_PACKAGER_VERSION.' * z:gzenc.8.gzip * e:base64 * c:sha512')."\n";
+		$data .= '#AppCodePack-License: '.$this->conform_column('(c) 2013-'.date('Y').' <unix-world.org> :: [License BSD] # {Smart.Framework}')."\n";
 		$data .= '#Comment: '.$this->conform_column((string)rawurlencode((string)$this->comment))."\n";
 		$data .= '#File: '.$this->conform_column((string)$this->archive_name)."\n";
 		$data .= '#App-ID: '.$this->conform_column((string)$this->appid)."\n";
@@ -234,7 +237,7 @@ final class AppNetPackager {
 		$data .= '#Checksum-Signature:'.$this->conform_column((string)SmartHashCrypto::sha512($this->arch_content))."\n";
 		$data .= (string) $this->conform_column((string)$packet)."\n";
 		$data .= '#PHP-Version: '.$this->conform_column((string)PHP_VERSION.' / ZLib: '.(string)$ver_zlib)."\n";
-		$data .= '#Client-IP: '.$this->conform_column((string)(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : ''))."\n";
+		$data .= '#Client-IP: '.$this->conform_column((string)SmartUtils::get_ip_client())."\n";
 		$data .= '#END-NetArchive';
 		//--
 		$packet = ''; // free mem

@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20220917
+ * @version     v.20220924
  * @package     @Core
  *
  */
@@ -320,12 +320,12 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The fixed path name
 	 */
-	public static function fix_path_separator(string $y_path) {
+	public static function fix_path_separator(string $y_path, bool $y_force=false) {
 		//--
 		if((string)$y_path != '') {
-			if((string)DIRECTORY_SEPARATOR == '\\') { // if on Windows, Fix Path Separator !!!
+			if(((string)DIRECTORY_SEPARATOR == '\\') OR ($y_force === true)) { // if on Windows, Fix Path Separator !!!
 				if(strpos((string)$y_path, '\\') !== false) {
-					$y_path = (string) str_replace((string)DIRECTORY_SEPARATOR, '/', (string)$y_path); // convert \ to / on paths
+					$y_path = (string) strtr((string)$y_path, [ '\\' => '/' ]); // convert \ to / on paths
 				} //end if
 			} //end if
 		} //end if

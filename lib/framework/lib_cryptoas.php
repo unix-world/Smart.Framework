@@ -19,7 +19,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // NOTICE: This is unicode safe
 //======================================================
 
-// [PHP8] r.20210903
+// [PHP8] r.20220924
 
 
 //=====================================================================================
@@ -1891,7 +1891,7 @@ final class SmartDhKx {
  * @internal
  *
  * @depends     classes: Smart, SmartHashCrypto
- * @version     v.20210825
+ * @version     v.20220924
  *
  */
 final class SmartCryptoCipherHash {
@@ -2180,11 +2180,15 @@ final class SmartCryptoCipherHash {
 		// Collect very random data.
 		// Add as many "pseudo" random sources as you can find.
 		// Possible sources: Memory usage, diskusage, file and directory content...
-		$iv =  (string) Smart::random_number();
-		$iv .= (string) Smart::unique_entropy();
+		$iv =  (string) Smart::random_number(); // this first and last must be not guess !
 		$iv .= (string) SmartUtils::get_visitor_tracking_uid();
-		$iv .= (string) implode("\r", (array)$_SERVER);
-		$iv .= (string) implode("\r", (array)$_COOKIE);
+		$iv .= (string) SmartUtils::get_visitor_useragent();
+		$iv .= (string) implode("\r", (array)SmartFrameworkRegistry::getServerVars());
+		$iv .= (string) implode("\r", (array)SmartFrameworkRegistry::getCookieVars());
+		$iv .= (string) SmartUtils::get_server_current_request_uri();
+		$iv .= (string) SmartUtils::get_server_current_request_method();
+		$iv .= (string) SmartUtils::get_server_current_full_script();
+		$iv .= (string) Smart::unique_entropy(); // this first and last must be not guess !
 
 		return $this->_hash($iv);
 

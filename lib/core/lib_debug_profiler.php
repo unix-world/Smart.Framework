@@ -37,6 +37,9 @@ final class SmartDebugProfiler {
 
 	// ::
 
+	private const TXT_PROTECT_PASS = '******* (passwords are not revealed)';
+	private const TXT_PROTECT_KEYS = '+++++++ (keys are not revealed)';
+
 	private static $extraDebuggers = [];
 
 
@@ -188,8 +191,8 @@ public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 			$arr['env-req-filtered'] = (string) base64_encode(Smart::seryalize((array)SmartFrameworkRegistry::getRequestVars()));
 			$arr['env-get'] = (string) base64_encode(Smart::seryalize(is_array($_GET) ? (array)$_GET : []));
 			$arr['env-post'] = (string) base64_encode(Smart::seryalize(is_array($_POST) ? (array)$_POST : []));
-			$arr['env-cookies'] = (string) base64_encode(Smart::seryalize(is_array($_COOKIE) ? (array)$_COOKIE : []));
-			$arr['env-server'] = (string) base64_encode(Smart::seryalize(is_array($_SERVER) ? (array)$_SERVER : []));
+			$arr['env-cookies'] = (string) base64_encode(Smart::seryalize((array)SmartFrameworkRegistry::getCookieVars())); // reflect also cookies set in this request
+			$arr['env-server'] = (string) base64_encode(Smart::seryalize((array)SmartFrameworkRegistry::getServerVars()));
 			if(@session_status() === PHP_SESSION_ACTIVE) {
 				$arr['php-session'] = (string) base64_encode(Smart::seryalize(is_array($_SESSION) ? (array)$_SESSION : []));
 			} else {
@@ -751,9 +754,9 @@ private static function print_log_configs() {
 			$j=0;
 			foreach($val as $k => $v) {
 				if(stripos((string)$k, 'pass') !== false) {
-					$v = '******* (passwords are not revealed)'; // avoid display passwords as clear text
+					$v = (string) self::TXT_PROTECT_PASS; // avoid display passwords as clear text
 				} elseif(stripos((string)$k, 'key') !== false) {
-					$v = '['.(int)strlen((string)$v).']'.'+++++++ (keys are not revealed)'; // avoid display keys as clear text
+					$v = '['.(int)strlen((string)$v).']'.self::TXT_PROTECT_KEYS; // avoid display keys as clear text
 				} //end if
 				$j++;
 				if($j % 2) {
@@ -766,9 +769,9 @@ private static function print_log_configs() {
 			$log .= '</table>';
 		} else {
 			if(stripos((string)$key, 'pass') !== false) {
-				$val = '******* (passwords are not revealed)'; // avoid display passwords as clear text
+				$val = (string) self::TXT_PROTECT_PASS; // avoid display passwords as clear text
 			} elseif(stripos((string)$key, 'key') !== false) {
-				$val = '['.(int)strlen((string)$val).']'.'+++++++ (keys are not revealed)'; // avoid display keys as clear text
+				$val = '['.(int)strlen((string)$val).']'.self::TXT_PROTECT_KEYS; // avoid display keys as clear text
 			} //end if
 			$log .= '<pre>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html((string)$val), true).'</pre>';
 		} //end if else
@@ -829,9 +832,9 @@ private static function print_log_configs() {
 			} //end if
 	//	} elseif((string)$key == 'APP_AUTH_ADMIN_PASSWORD') {
 		} elseif(stripos((string)$key, 'PASS') !== false) {
-			$val = '******* (passwords are not revealed)'; // avoid display passwords as clear text
+			$val = (string) self::TXT_PROTECT_PASS; // avoid display passwords as clear text
 		} elseif(stripos((string)$key, 'KEY') !== false) {
-			$val = '['.(int)strlen((string)$val).']'.'+++++++ (keys are not revealed)'; // avoid display keys as clear text
+			$val = '['.(int)strlen((string)$val).']'.self::TXT_PROTECT_KEYS; // avoid display keys as clear text
 		} //end if
 		//--
 		$log .= '<table cellspacing="0" cellpadding="2" width="100%">';
@@ -979,7 +982,7 @@ private static function print_log_environment($req_filtered, $cookies_arr, $get_
 		$log .= '<table cellspacing="0" cellpadding="2">';
 		foreach($server_arr as $debug_key => $debug_val) {
 			if((string)$debug_key == 'PHP_AUTH_PW') {
-				$debug_val = '******* (passwords are not revealed)';
+				$debug_val = (string) self::TXT_PROTECT_PASS;
 			} //end if
 			$log .= '<tr valign="top"><td style="min-width: 200px;"><div class="smartframework_debugbar_inforow"><b>'.Smart::escape_html($debug_key).'</b></div></td><td><div class="smartframework_debugbar_inforow"><font color="#000000">'.($debug_val ? SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html($debug_val), true) : '&nbsp;').'</font></div></td></tr>';
 		} //end foreach
@@ -1045,9 +1048,9 @@ private static function print_log_auth($auth_arr) {
 				$log .= '<pre>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html(SmartUtils::pretty_print_var($debug_val)), true).'</pre>';
 			} else {
 				if((string)$debug_key == 'login-password') {
-					$debug_val = '******* (passwords are not revealed)'; // avoid display pass as clear text
+					$debug_val = (string) self::TXT_PROTECT_PASS; // avoid display pass as clear text
 				} elseif((string)$debug_key == 'login-privkey') {
-					$debug_val = '['.(int)strlen((string)$debug_val).']'.'+++++++ (keys are not revealed)'; // avoid display pass as clear text
+					$debug_val = '['.(int)strlen((string)$debug_val).']'.self::TXT_PROTECT_KEYS; // avoid display pass as clear text
 				} //end if
 				$log .= SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html((string)$debug_val), true);
 			} //end if else

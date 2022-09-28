@@ -33,7 +33,7 @@ define('SMART_FRAMEWORK__INFO__TEXT_TRANSLATIONS_ADAPTER', 'YAML: File based');
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils, SmartYamlConverter, SmartTextTranslations ; constants: SMART_FRAMEWORK_RELEASE_VERSION, SMART_FRAMEWORK_RELEASE_TAGVERSION, SMART_APP_MODULES_RELEASE, SMART_FRAMEWORK__INFO__TEXT_TRANSLATIONS_ADAPTER
- * @version 	v.20210513
+ * @version 	v.20220924
  * @package 	Application
  *
  */
@@ -205,7 +205,7 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 		//--
 		@file_put_contents(
 			(string) $logpath,
-			(string) '1'."\t".$the_lang."\t".$y_area."\t".$y_subarea."\t".$y_textkey."\t".str_replace(["\t", "\n", "\r"], ' ', (string)'['.(isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '').']'.(isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : ''))."\n",
+			(string) '1'."\t".$the_lang."\t".$y_area."\t".$y_subarea."\t".$y_textkey."\t".str_replace(["\t", "\n", "\r"], ' ', (string)'['.SmartUtils::get_server_current_request_method().']'.SmartUtils::get_server_current_request_uri())."\n",
 			FILE_APPEND | LOCK_EX
 		);
 		//--

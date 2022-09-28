@@ -11,20 +11,20 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //----------------------------------------------------- v.20210526
 
 //======================================================
-// App Authenticate Middleware / Admin Area Overall Authentication (admin.php)
+// App Authenticate Middleware / Admin Area Overall Authentication (admin.php and task.php)
 // This file must NOT USE Namespaces.
 // The functionality of this Middleware is to:
 //	* ask for overall authentication for Admin Area and set if successful
 //	* if not authenticated, display the login form
 //======================================================
-// This code will be loaded into the App Boostrap automatically, to provide the Authentication for the admin.php ...
+// This code will be loaded into the App Boostrap automatically, to provide the Authentication for the admin.php / task.php ...
 // By default this code does not contain any classes or functions.
 // If you include classes or functions here they must be called to run here as the app boostrap just include this file at runtime
 //======================================================
 
 //-------------------------------------------
 // This file can be customized as you need.
-// It will set an overall authentication for the Admin Area.
+// It will set an overall authentication for the Admin Area and Task Area.
 // Choose from below: Simple or Advanced Authentication, or implement your own ...
 //-------------------------------------------
 

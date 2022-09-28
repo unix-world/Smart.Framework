@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Captcha :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* v.20210527 */
+/* v.20220925 */
 
 /* ----------------------------- */
 
@@ -168,7 +168,7 @@ div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input {
 }
 
 div.Smart-Captcha-Area div.Smart-Captcha-Container div.Smart-Captcha-Input span {
-	color: #333333 !important;
+	color: #555555 !important;
 	font-weight: bold;
 }
 

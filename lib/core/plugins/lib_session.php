@@ -209,13 +209,11 @@ final class SmartSession {
 		//--
 		$browser_os_ip_identification = SmartUtils::get_os_browser_ip(); // get browser and os identification
 		//--
-		if((string)$browser_os_ip_identification['bw'] == '@s#') {
+		if((string)$browser_os_ip_identification['bw'] == '@s#') { // class 'rb' is handled below
 			return; // this must be before identify bot ; in this case start no session for the self browser (session is blocked before a request to finalize thus it cannot be used !!!)
-		} //end if
-		//--
-		if((string)$browser_os_ip_identification['bw'] == 'bot') {
-			if(!defined('SMART_FRAMEWORK_SESSION_ROBOTS') OR (SMART_FRAMEWORK_SESSION_ROBOTS !== true)) {
-				return; // in this case start no session for robots (as they do not need to share info between many visits)
+		} elseif((string)$browser_os_ip_identification['bc'] == 'rb') { // CAN USE here the 'rb' class instead of 'bot' as the self-robot is in the same class but handled above ...
+			if(!defined('SMART_FRAMEWORK_SESSION_ROBOTS') OR (SMART_FRAMEWORK_SESSION_ROBOTS !== true)) { // to enable session for robots define the SMART_FRAMEWORK_SESSION_ROBOTS constant and set to TRUE
+				return; // in this case start no session for robots (as they do not need normally to share info between many visits and can generate a lot of traffic)
 			} //end if
 		} //end if
 		//--
@@ -300,9 +298,9 @@ final class SmartSession {
 		} //end if
 		$sf_sess_dpfx = (string) substr((string)$the_sess_hash_pub_key, 0, 1).'-'.substr((string)$the_sess_hash_priv_key, 0, 1); // this come from hexa so 3 chars are 16x16x16=4096 dirs
 		//--
-		if((string)$browser_os_ip_identification['bw'] == '@s#') {
+		if((string)$browser_os_ip_identification['bw'] == '@s#') { // class 'rb' is handled below
 			$sf_sess_ns = '@sr-'.$sf_sess_dpfx;
-		} elseif((string)$browser_os_ip_identification['bw'] == 'bot') {
+		} elseif((string)$browser_os_ip_identification['bc'] == 'rb') { // CAN USE here the 'rb' class instead of 'bot' as the self-robot is in the same class but handled above ...
 			$sf_sess_ns = 'r0-'.$sf_sess_dpfx; // we just need a short prefix for robots (on disk is costly for GC to keep separate folders, but of course, not so safe)
 		} elseif((string)$browser_os_ip_identification['bw'] == (string)SmartUtils::GENERIC_VALUE_OS_BROWSER_IP) {
 			$sf_sess_ns = 'c-'.'_x_'.'-'.$sf_sess_dpfx; // unidentified browser
@@ -515,7 +513,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20220419
+ * @version 	v.20220924
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {

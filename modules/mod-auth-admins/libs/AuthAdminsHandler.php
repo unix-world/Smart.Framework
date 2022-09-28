@@ -132,7 +132,7 @@ final class AuthAdminsHandler {
 		//--
 
 		//-- do auth except of login page
-		if(isset($_SERVER['PATH_INFO']) AND (!empty($_SERVER['PATH_INFO']))) {
+		if(isset($_SERVER['PATH_INFO']) AND (!empty($_SERVER['PATH_INFO']))) { // use raw value not from registry, it is safer in the auth context !
 			$try_auth = 'yes';
 		} elseif(!empty($_GET)) {
 			$try_auth = 'yes';

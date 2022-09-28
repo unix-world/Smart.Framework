@@ -13,7 +13,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 // @ignore		THIS FILE IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
 
 //======================================================
-// Smart-Framework - App Request Handler :: r.20210530
+// Smart-Framework - App Request Handler :: r.20220924
 // DEPENDS: SmartFramework, SmartFrameworkRuntime
 //======================================================
 // This file can be customized per App ...
@@ -26,14 +26,15 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //####################
 
 
-//-- EXTRACT, FILTER AND REGISTER INPUT VARIABLES: GET, POST, COOKIE and SERVER[PATH_INFO]
-SmartFrameworkRuntime::Parse_Semantic_URL(); 																	// extract the Special PathInfo handled by Smart.Framework using $_SERVER['PATH_INFO'] (the path after the first occurence of `/~` if any, and register it to registry) - ONLY if PathInfo is enabled ; Handle also Smart.Framework Semantic URLs
-SmartFrameworkRuntime::Extract_Filtered_Request_Get_Post_Vars((array)(is_array($_GET)  ? $_GET  : []), 'GET'); 	// extract and filter $_GET
-SmartFrameworkRuntime::Extract_Filtered_Request_Get_Post_Vars((array)(is_array($_POST) ? $_POST : []), 'POST'); // extract and filter $_POST
-SmartFrameworkRuntime::Extract_Filtered_Cookie_Vars((array)(is_array($_COOKIE) ? $_COOKIE : [])); 				// extract and filter $_COOKIE
-SmartFrameworkRuntime::Lock_Request_Processing(); 																// lock request registry and prevent re-process Request or Cookie variables after they were processed 1st time (this is mandatory from security point of view)
-//--
-// $_SERVER will not be processed, use $_SERVER['some-key'] for reading server variables, except $_SERVER['PATH_INFO']
+//-- EXTRACT, FILTER AND REGISTER INPUT VARIABLES: SERVER, SEMANTIC-URL, GET, POST, COOKIE and SERVER[PATH_INFO] # {{{SYNC-SF-EXTRACT-VARS}}}
+SmartFrameworkRuntime::Extract_Filtered_Server_Vars((array)(is_array($_SERVER) ? $_SERVER 		: [])); 			// extract and filter $_SERVER ; must be above the line which extracts te PATH_INFO
+SmartFrameworkRuntime::Lock_Server_Processing();																	// lock request vars registry and prevent re-process the Server vars
+// the parse semantic URL will decide if it is a path or just a semantic URL ; if path it will register it
+SmartFrameworkRuntime::Parse_Semantic_URL(); 																		// extract the Special PathInfo handled by Smart.Framework using $_SERVER['PATH_INFO'] (the path after the first occurence of `/~` if any, and register it to registry) - ONLY if PathInfo is enabled ; Handle also Smart.Framework Semantic URLs
+SmartFrameworkRuntime::Extract_Filtered_Request_Get_Post_Vars((array)(is_array($_GET)  ? $_GET 	: []), 'GET'); 		// extract and filter $_GET
+SmartFrameworkRuntime::Extract_Filtered_Request_Get_Post_Vars((array)(is_array($_POST) ? $_POST : []), 'POST'); 	// extract and filter $_POST
+SmartFrameworkRuntime::Extract_Filtered_Cookie_Vars((array)(is_array($_COOKIE) ? $_COOKIE 		: [])); 			// extract and filter $_COOKIE
+SmartFrameworkRuntime::Lock_Request_Processing(); 																	// lock request registry and prevent re-process Request or Cookie variables after they were processed 1st time (this is mandatory from security point of view)
 //--
 
 // end of php code

@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartHashCrypto, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20220603
+ * @version		v.20220924
  * @package 	Application
  *
  */
@@ -45,7 +45,8 @@ final class SmartFrameworkRuntime {
 	private static $HttpStatusCodesRDR 		= [301, 302]; 											// list of framework available HTTP Redirect Status Codes (sync with middlewares)
 	private static $HttpStatusCodesERR 		= [400, 401, 403, 404, 410, 429, 500, 502, 503, 504]; 	// list of framework available HTTP Error Status Codes (sync with middlewares)
 
-	private static $RequestProcessed 		= false; // after all request variables are processed this will be set to true to avoid re-process request variables which can be a huge security issue if re-process is called by mistake !
+	private static $ServerProcessed 		= false; // after all server variables are processed this will be set to true to avoid re-process server variables which can be a security or performance issue if re-process is called by mistake !
+	private static $RequestProcessed 		= false; // after all request variables are processed this will be set to true to avoid re-process request variables which can be a security or performance issue if re-process is called by mistake !
 
 	private static $HighLoadMonitorStats 	= null;  // register the high load monitor caches
 	private static $RedirectionMonitorOn 	= false; // after the redirection monitor have been started this will be set to true to avoid re-run it
@@ -619,14 +620,22 @@ final class SmartFrameworkRuntime {
 			} //end if else
 		} //end if else
 		//--
-		if(((string)$url_redirect == '') AND (isset($_SERVER['PATH_INFO']))) {
-			if((string)SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']) != '') {
+
+		$pathinfo = null;
+		if(SmartFrameworkRegistry::issetServerVar('PATH_INFO') === true) {
+			$pathinfo = (string) SmartFrameworkRegistry::getServerVar('PATH_INFO'); // is already trimmed
+		} //end if
+
+		//--
+		if(((string)$url_redirect == '') AND ((string)$pathinfo != '')) {
+			$fix_pathinfo = (string) SmartFrameworkSecurity::FilterRequestPath((string)$pathinfo); // variables from PathInfo are already URL Decoded, so must be ONLY Filtered ; actually they are filtered + trim when registered in Server's registry but in future the method FilterRequestPath may apply extra filters (currently only maps to filter string + trim)
+			if((string)$fix_pathinfo != '') {
 				if(self::PathInfo_Enabled() === true) {
-					if(((string)SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']) != '/') AND (strpos((string)SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']), '/~') !== false)) { // avoid common mistake to use just a / after script.php + detect tilda path
+					if(((string)$fix_pathinfo != '/') AND (strpos((string)$fix_pathinfo, '/~') !== false)) { // avoid common mistake to use just a / after script.php + detect tilda path
 						return;
 					} //end if
 				} //end if
-				$url_redirect = (string) $the_current_url.$the_current_script.'?'.SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']);
+				$url_redirect = (string) $the_current_url.$the_current_script.'?'.$fix_pathinfo;
 			} //end if
 		} //end if
 		//--
@@ -921,12 +930,11 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	// This will run before loading the Smart.Framework and must not depend on it's classes
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
 	public static function Parse_Semantic_URL() {
 
-		// PARSE SEMANTIC URL VIA GET v.180818
-		// it limits the URL to 65535 and vars to 1000
+		// PARSE SEMANTIC URL VIA GET
+		// it limits the URL to 8192 and vars to 1000
 
 		//-- check if can run
 		if(self::$RequestProcessed !== false) {
@@ -942,22 +950,27 @@ final class SmartFrameworkRuntime {
 		//--
 
 		//--
-		if((self::PathInfo_Enabled() === true) AND (isset($_SERVER['PATH_INFO'])) AND ((string)SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']) != '')) {
+		$pathinfo = null;
+		if(SmartFrameworkRegistry::issetServerVar('PATH_INFO') === true) {
+			$pathinfo = (string) SmartFrameworkRegistry::getServerVar('PATH_INFO'); // is already trimmed
+		} //end if
+		//--
+		if((self::PathInfo_Enabled() === true) AND ((string)$pathinfo != '')) {
 			$semantic_url = '';
-			$fix_pathinfo = (string) SmartFrameworkSecurity::FilterRequestPath((string)$_SERVER['PATH_INFO']); // variables from PathInfo are already URL Decoded, so must be ONLY Filtered !
+			$fix_pathinfo = (string) SmartFrameworkSecurity::FilterRequestPath((string)$pathinfo); // variables from PathInfo are already URL Decoded, so must be ONLY Filtered ; actually they are filtered + trim when registered in Server's registry but in future the method FilterRequestPath may apply extra filters (currently only maps to filter string + trim)
 			$sem_path_pos = strpos((string)$fix_pathinfo, '/~');
 			if(($sem_path_pos !== false) AND ((int)$sem_path_pos >= 0)) {
 				$semantic_url = (string) '?'.substr((string)$fix_pathinfo, 0, (int)$sem_path_pos);
 			} //end if
 			SmartFrameworkRegistry::setRequestPath(
-				(string) ($_SERVER['PATH_INFO'] ?? '')
+				(string) $pathinfo
 			) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Failed to register !path-info! variable', E_USER_WARNING);
 		} else {
-			$semantic_url = (string) (isset($_SERVER['REQUEST_URI']) ? SmartFrameworkSecurity::FilterUnsafeString((string)$_SERVER['REQUEST_URI']) : '');
+			$semantic_url = (string) SmartFrameworkRegistry::getServerVar('REQUEST_URI');
 		} //end if
 		//--
-		if(strlen($semantic_url) > 65535) { // limit according with Firefox standard which is 65535 ; Apache standard is much lower as 8192
-			$semantic_url = (string) substr($semantic_url, 0, 65535);
+		if((int)strlen($semantic_url) > 8192) { // standard limit is 2048 chars ; Apache limit is higher as of 8192 chars
+			$semantic_url = (string) substr($semantic_url, 0, 8192);
 		} //end if
 		//--
 		if(strpos($semantic_url, '?/') === false) {
@@ -1008,7 +1021,21 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	// This will run before loading the Smart.Framework and must not depend on it's classes
+	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
+	public static function Extract_Filtered_Server_Vars($arr) {
+		//-- check if can run
+		if(self::$ServerProcessed !== false) {
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Register Server Vars, Registry is already locked !', E_USER_WARNING);
+			return; // avoid run after it was already processed
+		} //end if
+		//--
+		SmartFrameworkRegistry::registerFilteredServerVars((array)$arr);
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
 	public static function Extract_Filtered_Request_Get_Post_Vars($arr, $info) {
 		//-- check if can run
@@ -1024,7 +1051,6 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	// This will run before loading the Smart.Framework and must not depend on it's classes
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
 	// FILTER AND REGISTER THE INPUT COOKIES VARIABLES
 	public static function Extract_Filtered_Cookie_Vars($arr) {
@@ -1041,8 +1067,24 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	// This will run before loading the Smart.Framework and must not depend on it's classes
-	// After all Request are processed this have to be called to lock and avoid re-processing the Request variables
+	// After all Server vars are processed this have to be called to lock and avoid re-processing the Server variables
+	public static function Lock_Server_Processing() {
+		//--
+		if(self::$ServerProcessed !== false) {
+			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Registry is already locked !', E_USER_WARNING);
+			return; // avoid run after it was already processed
+		} //end if
+		//--
+		self::$ServerProcessed = true; // this will lock the Server vars processing
+		//--
+		SmartFrameworkRegistry::lockServerRegistry(); // this will lock the server vars registry
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
+	// After all Request vars are processed this have to be called to lock and avoid re-processing the Request variables
 	public static function Lock_Request_Processing() {
 		//--
 		if(self::$RequestProcessed !== false) {
@@ -1050,9 +1092,9 @@ final class SmartFrameworkRuntime {
 			return; // avoid run after it was already processed
 		} //end if
 		//--
-		self::$RequestProcessed = true; // this will lock the Request processing
+		self::$RequestProcessed = true; // this will lock the Request vars processing
 		//--
-		SmartFrameworkRegistry::lockRequestRegistry(); // this will lock the request registry
+		SmartFrameworkRegistry::lockRequestRegistry(); // this will lock the request vars registry
 		//--
 	} //END FUNCTION
 	//======================================================================

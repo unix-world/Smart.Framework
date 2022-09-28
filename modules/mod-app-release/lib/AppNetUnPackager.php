@@ -32,6 +32,7 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
  *
  * DEPENDS:
  * Smart::
+ * SmartUtils::
  * SmartFileSysUtils::
  * SmartFileSystem::
  * SmartHashCrypto::
@@ -45,9 +46,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetUnPackager {
 
 	// ::
-	// v.20220730
+	// v.20220928
 
-	public const APP_NET_UNPACKAGER_VERSION = 'v.20210720';
+	public const APP_NET_UNPACKAGER_VERSION = 'z.20220928';// {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
 
 	public const APP_NET_UNPACKAGER_MIN_PACK_SIZE = 777; // min 777 bytes by the headers
 
@@ -397,6 +398,7 @@ Options -Indexes
 			case 'private':
 			case 'sig':
 			case 'cert':
+			case 'cer':
 			case 'crt':
 			case 'key':
 			case 'pem':
@@ -1027,7 +1029,7 @@ Options -Indexes
 			//--
 			$the_log_txt = [];
 			$the_log_txt[] = '##### AppCodePack/Unpack ('.self::APP_NET_UNPACKAGER_VERSION.') - Log (for AppID: '.(string)APPCODEPACK_APP_ID.') @ '.$the_tmp_netarch_versions_hash;
-			$the_log_txt[] = '##### IP: '.trim((string)(isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0').' ; '.(isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : '').' ; '.(isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : ''), '; ').' @ Client-Signature: '.(string)(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '-');
+			$the_log_txt[] = '##### IP: '.trim((string) SmartUtils::get_ip_client().' ; '.SmartUtils::get_ip_proxyclient(), '; ').' @ Client-Signature: '.SmartUtils::get_visitor_useragent();
 			$the_log_txt[] = '### NetArchive Package: '.$the_pack_name;
 			if(Smart::array_size($not_restored_files) > 0) {
 				$the_log_txt[] = '### NOT OK: There are some Not Restored Files / Dirs ('.Smart::array_size($not_restored_files).'): '.'['."\n".implode("\n", (array)$not_restored_files)."\n".']';

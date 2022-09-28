@@ -2,6 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+September 28, 2022
+	* Refactoring Registry for pre-register $_SERVEr filtered variables
+	* implement SMART_FRAMEWORK_SRVPROXY_SERVER_IP and SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN to be used when SMART_FRAMEWORK_SRVPROXY_ENABLED = true
+	* small improvements, optimizations and fixes
+
 September 16, 2022
 	* Refactoring CSS file name for jQuery Pager + UI Fixes for: Mod Auth Admins, Mod DB Admin
 	* Markdown extend: add support for ??cite term?? as CITE

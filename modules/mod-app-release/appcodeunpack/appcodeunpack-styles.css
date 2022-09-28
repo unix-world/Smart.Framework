@@ -3,19 +3,17 @@
 // AppJs CSS Local Styles
 // (c) 2013-2022 unix-world.org
 // License: BSD
-// v.20220730
+// v.20220928
 */
 
 #gritter-notice-wrapper {
 	min-width: 700px !important;
-	max-width: 700px !important;
 	width: 700px !important;
+	max-width: 48vw !important;
 }
-@media all and (max-width:639px) {
+@media all and (max-width:767px) {
 	#gritter-notice-wrapper {
-		min-width: 275px !important;
-		max-width: 550px !important;
-		width: 96% !important;
+		width: 88vw !important;
 	}
 }
 

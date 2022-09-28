@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20220916 # this should be loaded from app web root only
+// # r.20220928 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2022.09.16'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2022.09.28'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -209,23 +209,29 @@ if(SMART_FRAMEWORK_SRVPROXY_ENABLED === true) {
 		(!defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_IP')) OR (!defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP'))
 		OR
 		(!defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO')) OR (!defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PORT'))
+		OR
+		(!defined('SMART_FRAMEWORK_SRVPROXY_SERVER_IP')) OR (!defined('SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN'))
 	) {
 		@http_response_code(500);
-		die('The following constants must be defined when SMART_FRAMEWORK_SRVPROXY_ENABLED is set to TRUE: SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT');
+		die('The following constants must be defined when SMART_FRAMEWORK_SRVPROXY_ENABLED is set to TRUE: SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN');
 	} //end if
 } else {
 	if(
 		(defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_IP')) OR (defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP'))
 		OR
 		(defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO')) OR (defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PORT'))
+		OR
+		(defined('SMART_FRAMEWORK_SRVPROXY_SERVER_IP')) OR (defined('SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN'))
 	) {
 		@http_response_code(500);
-		die('The following constants must NOT be defined when SMART_FRAMEWORK_SRVPROXY_ENABLED is NOT SET to TRUE: SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT');
+		die('The following constants must NOT be defined when SMART_FRAMEWORK_SRVPROXY_ENABLED is NOT SET to TRUE: SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN');
 	} //end if
 	define('SMART_FRAMEWORK_SRVPROXY_CLIENT_IP', 'REMOTE_ADDR');
-	define('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP', '<HTTP_X_FORWARDED_FOR>,<HTTP_CLIENT_IP>,<HTTP_X_REAL_IP>');
-	define('SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO', '');
+	define('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP', '<HTTP_X_FORWARDED_FOR>,<HTTP_CLIENT_IP>,<HTTP_X_REAL_IP>,<HTTP_VIA>');
+	define('SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO', null);
 	define('SMART_FRAMEWORK_SRVPROXY_SERVER_PORT', false);
+	define('SMART_FRAMEWORK_SRVPROXY_SERVER_IP', null);
+	define('SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN', null);
 } //end if else
 //--
 if(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP')) {
@@ -420,13 +426,44 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 			$is_supressed = true;
 		} //end if
 	} //end if
-	//--
+	//-- {{{SYNC-SF-ERR-CLIENT-IP-PROXIES}}}
+	$clientip = '';
+	if(
+		(defined('SMART_FRAMEWORK_SRVPROXY_ENABLED') AND (SMART_FRAMEWORK_SRVPROXY_ENABLED === true))
+		AND
+		defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_IP')
+	) {
+		if((string)trim((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP) != '') {
+			$clientip = (string) trim((string)($_SERVER[(string)trim((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP)] ?? ''));
+		} //end if
+	} else {
+		$clientip = (string) trim((string)($_SERVER['REMOTE_ADDR'] ?? ''));
+	} //end if else
+	$proxies = [];
+	if( // must not check if SMART_FRAMEWORK_SRVPROXY_ENABLED because this have always use the values set in SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP
+		defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP')
+	) {
+		$tmp_proxies = (string) strtoupper((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP);
+		$tmp_proxies = (string) strtr((string)$tmp_proxies, [ '<' => '', '>' => '' ]);
+		$tmp_proxies = (array) explode(',', (string)$tmp_proxies);
+		foreach($tmp_proxies as $key => $val) {
+			$val = (string) trim((string)$val);
+			if($val != '') {
+				if(isset($_SERVER[(string)$val])) {
+					$proxies[] = (string) trim((string)$_SERVER[(string)$val]);
+				} //end if
+			} //end if
+		} //end if
+		$tmp_proxies = null;
+	} //end if
+	$proxies = (string) implode(' ; ', (array)$proxies);
+	//-- #end sync
 	if(($is_supressed !== true) OR ($is_fatal === true)) {
 		$log_message = (string) "\n".
 			'==================================='."\n".
 			'PHP '.PHP_VERSION.' [SMART-ERR-HANDLER:'.strtoupper((string)SMART_FRAMEWORK_ENV).'] #'.$errno.' ['.$ferr.']'.$app_halted.' @ '.date('Y-m-d H:i:s O')."\n".
 			'-----------------'."\n".
-			'HTTP-METHOD: '.($_SERVER['REQUEST_METHOD'] ?? '').' # '.'CLIENT: '.trim((string)($_SERVER['REMOTE_ADDR'] ?? '').' ; '.($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '').' ; '.($_SERVER['HTTP_CLIENT_IP'] ?? '').' ; '.($_SERVER['HTTP_X_REAL_IP'] ?? ''), '; ').' @ '.($_SERVER['HTTP_USER_AGENT'] ?? '')."\n".
+			'HTTP-METHOD: '.($_SERVER['REQUEST_METHOD'] ?? '').' # '.'CLIENT: '.trim((string)$clientip.' ; '.$proxies, '; ').' @ '.($_SERVER['HTTP_USER_AGENT'] ?? '')."\n".
 			'URI: ['.SMART_ERROR_AREA.'] @ '.($_SERVER['SERVER_NAME'] ?? '').':'.($_SERVER['SERVER_PORT'] ?? '').($_SERVER['REQUEST_URI'] ?? '')."\n".
 			'-----------------'."\n".
 			'Script: '.$errfile."\n".
@@ -556,11 +593,43 @@ register_shutdown_function(function(){
 			case E_PARSE:
 			case E_CORE_ERROR:
 			case E_COMPILE_ERROR:
+				//-- {{{SYNC-SF-ERR-CLIENT-IP-PROXIES}}}
+				$clientip = '';
+				if(
+					(defined('SMART_FRAMEWORK_SRVPROXY_ENABLED') AND (SMART_FRAMEWORK_SRVPROXY_ENABLED === true))
+					AND
+					defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_IP')
+				) {
+					if((string)trim((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP) != '') {
+						$clientip = (string) trim((string)($_SERVER[(string)trim((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP)] ?? ''));
+					} //end if
+				} else {
+					$clientip = (string) trim((string)($_SERVER['REMOTE_ADDR'] ?? ''));
+				} //end if else
+				$proxies = [];
+				if( // must not check if SMART_FRAMEWORK_SRVPROXY_ENABLED because this have always use the values set in SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP
+					defined('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP')
+				) {
+					$tmp_proxies = (string) strtoupper((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP);
+					$tmp_proxies = (string) strtr((string)$tmp_proxies, [ '<' => '', '>' => '' ]);
+					$tmp_proxies = (array) explode(',', (string)$tmp_proxies);
+					foreach($tmp_proxies as $key => $val) {
+						$val = (string) trim((string)$val);
+						if($val != '') {
+							if(isset($_SERVER[(string)$val])) {
+								$proxies[] = (string) trim((string)$_SERVER[(string)$val]);
+							} //end if
+						} //end if
+					} //end if
+					$tmp_proxies = null;
+				} //end if
+				$proxies = (string) implode(' ; ', (array)$proxies);
+				//-- #end sync
 				$log_message = (string) "\n".
 					'==================================='."\n".
 					'PHP '.PHP_VERSION.' [SMART-ERR-HANDLER:'.strtoupper((string)SMART_FRAMEWORK_ENV).'] #0 [APP-SHUTDOWN-ERROR] :: Execution COMPLETED ! @ '.date('Y-m-d H:i:s O')."\n".
 					'-----------------'."\n".
-					'HTTP-METHOD: '.($_SERVER['REQUEST_METHOD'] ?? '').' # '.'CLIENT: '.trim((string)($_SERVER['REMOTE_ADDR'] ?? '').' ; '.($_SERVER['HTTP_X_FORWARDED_FOR'] ?? '').' ; '.($_SERVER['HTTP_CLIENT_IP'] ?? '').' ; '.($_SERVER['HTTP_X_REAL_IP'] ?? ''), '; ').' @ '.($_SERVER['HTTP_USER_AGENT'] ?? '')."\n".
+					'HTTP-METHOD: '.($_SERVER['REQUEST_METHOD'] ?? '').' # '.'CLIENT: '.trim((string)$clientip.' ; '.$proxies, '; ').' @ '.($_SERVER['HTTP_USER_AGENT'] ?? '')."\n".
 					'URI: ['.SMART_ERROR_AREA.'] @ '.($_SERVER['SERVER_NAME'] ?? '').':'.($_SERVER['SERVER_PORT'] ?? '').($_SERVER['REQUEST_URI'] ?? '')."\n".
 					'-----------------'."\n".
 					'Script: '.$error['file']."\n".
@@ -569,6 +638,7 @@ register_shutdown_function(function(){
 					'Error-Message: '.$error['message']."\n".
 					'==================================='."\n"
 				; // {{{SYNC-SF-ERR-LOG-FORMAT}}}
+				//--
 				if((is_dir((string)SMART_ERROR_LOGDIR)) && (is_writable((string)SMART_ERROR_LOGDIR))) { // here must be is_dir(), is_writable() and file_put_contents() as the smart framework libs are not yet initialized in this phase ...
 					error_log(
 						(string) $log_message,
@@ -581,6 +651,7 @@ register_shutdown_function(function(){
 						4 // send the message to the SAPI (server) logging handler to avoid lost
 					);
 				} //end if else
+				//--
 				break;
 			default:
 				// don't handle

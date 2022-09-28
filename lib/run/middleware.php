@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20220411
+ * @version		20220924
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -455,8 +455,10 @@ abstract class SmartAbstractAppMiddleware {
 		//--
 		$area = (string) $area;
 		$is_main = (bool) $is_main;
-		$req_with = (string) SmartUtils::get_server_current_request_with();
-		if(((int)http_response_code() > 299) OR ((string)$req_with != '')) {
+		if(
+			((int)http_response_code() > 299) OR // TODO: is this condition ok !? ... perhaps to avoid erros, not sure ... have to re-analyze this condition
+			(SmartUtils::is_ajax_request() === true)
+		) {
 			$is_main = false;
 		} //end if
 		//--

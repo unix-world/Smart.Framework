@@ -14,7 +14,7 @@ if(!defined('APPCODEPACK_APP_ID')) { // this must be defined in the first line o
 //-----------------------------------------------------
 
 //=====
-// AppCodePack Upgrade Script, v.20220730
+// AppCodePack Upgrade Script, v.20220928
 //=====
 
 //--
@@ -35,7 +35,7 @@ if((string)trim((string)$server_id) == '') {
 AppCodePackUpgrade::RemoveAppFile('tmp/logs/index.html');
 //-- remove a dir after release (sample)
 AppCodePackUpgrade::RemoveAppDir('tmp/cache/');
-AppCodePackUpgrade::CreateAppDir('tmp/cache/');
+AppCodePackUpgrade::CreateAppDir('tmp/cache/', true);
 //--
 
 //-- release the maintenance.html file (may need to release maintenance mode before runing commands that may hit via http, not the case here but this is a sample)
@@ -54,17 +54,17 @@ AppCodePackUpgrade::RunCmd('date'); // throws if unsuccessful
 final class AppCodePackUpgrade {
 
 	// ::
-	// v.20220712
+	// v.20220928
 
 
-	public static function GetVisitorIpAddr() {
+	public static function GetVisitorIpAddr() : string {
 		//--
 		return (string) SmartUtils::get_ip_client();
 		//--
 	} //END FUNCTION
 
 
-	public static function GetWebsiteInstanceId() {
+	public static function GetWebsiteInstanceId() : string {
 		//--
 		if((!defined('APPCODEPACK_APP_ID')) OR ((string)APPCODEPACK_APP_ID == '')) {
 			throw new Exception(__METHOD__.'() # Empty or Undefined APPCODEPACK_APP_ID');
@@ -81,7 +81,7 @@ final class AppCodePackUpgrade {
 	} //END FUNCTION
 
 
-	public static function IsValidWebsiteInstanceId() {
+	public static function IsValidWebsiteInstanceId() : bool {
 		//--
 		$appid = '';
 		try {
@@ -97,7 +97,7 @@ final class AppCodePackUpgrade {
 
 	// run a command and if not successful throw error
 	// returns: array ; Throws Error if not successful
-	public static function RunCmd($cmd) {
+	public static function RunCmd(?string $cmd) : array {
 		//--
 		$parr = (array) SmartUtils::run_proc_cmd(
 			(string) $cmd,
@@ -108,9 +108,9 @@ final class AppCodePackUpgrade {
 		$exitcode = $parr['exitcode']; // don't make it INT !!!
 		$stdout = (string) $parr['stdout'];
 		$stderr = (string) $parr['stderr'];
+		//--
 		if(($exitcode !== 0) OR ((string)$stderr != '')) { // exitcode is zero (0) on success and no stderror
 			throw new Exception(__METHOD__.'() # FAILED to run command ['.$cmd.'] # ExitCode: '.$exitcode.' ; Errors: '.$stderr);
-			return (array) $parr;
 		} //end if
 		//--
 		return (array) $parr;
@@ -120,7 +120,7 @@ final class AppCodePackUpgrade {
 
 	// clear the maintenance.html file (may be needed if need to run a command after maintenance has been disabled ...)
 	// returns: true/false ; Throws Error if not successful
-	public static function ReleaseMaintenanceFile() {
+	public static function ReleaseMaintenanceFile() : bool {
 		//--
 		$test = (string) AppCodeUnpack::releaseMaintenanceFile();
 		if((string)$test != '') {
@@ -134,8 +134,9 @@ final class AppCodePackUpgrade {
 
 
 	// remove a file inside app base folder (may be needed for some upgrades to remove temporary task files ...)
+	// works with protected paths because operates from outside app dir thus paths will not start with #
 	// returns: true/false ; Throws Error if not successful
-	public static function RemoveAppFile($file_path) {
+	public static function RemoveAppFile(?string $file_path) : bool {
 		//--
 		if(!self::IsValidWebsiteInstanceId()) {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
@@ -146,7 +147,7 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$file_path = Smart::safe_pathname((string)$file_path);
+		$file_path = (string) Smart::safe_pathname((string)$file_path);
 		if((string)$file_path == '') {
 			throw new Exception(__METHOD__.'() # Empty FilePath');
 			return false;
@@ -172,8 +173,9 @@ final class AppCodePackUpgrade {
 
 
 	// remove a folder inside app base folder (may be needed for some upgrades to remove temporary dirs ...)
+	// works with protected paths because operates from outside app dir thus paths will not start with #
 	// returns: true/false ; Throws Error if not successful
-	public static function RemoveAppDir($dir_path) {
+	public static function RemoveAppDir(?string $dir_path) : bool {
 		//--
 		if(!self::IsValidWebsiteInstanceId()) {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
@@ -184,7 +186,7 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$dir_path = Smart::safe_pathname((string)$dir_path);
+		$dir_path = (string) Smart::safe_pathname((string)$dir_path);
 		if((string)$dir_path == '') {
 			throw new Exception(__METHOD__.'() # Empty DirPath');
 			return false;
@@ -210,8 +212,9 @@ final class AppCodePackUpgrade {
 
 
 	// create a folder inside app base folder (may be needed for some upgrades to create temporary dirs ...)
+	// works with protected paths because operates from outside app dir thus paths will not start with #
 	// returns: true/false ; Throws Error if not successful
-	public static function CreateAppDir($dir_path) {
+	public static function CreateAppDir(?string $dir_path, bool $recursive=false) : bool {
 		//--
 		if(!self::IsValidWebsiteInstanceId()) {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
@@ -222,7 +225,7 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$dir_path = Smart::safe_pathname((string)$dir_path);
+		$dir_path = (string) Smart::safe_pathname((string)$dir_path);
 		if((string)$dir_path == '') {
 			throw new Exception(__METHOD__.'() # Empty DirPath');
 			return false;
@@ -234,10 +237,12 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		SmartFileSystem::dir_create((string)$dir_app_path);
-		//--
-		if(!SmartFileSystem::is_type_dir((string)$dir_app_path)) {
+		if(!SmartFileSystem::dir_create((string)$dir_app_path, (bool)$recursive)) {
 			throw new Exception(__METHOD__.'() # Failed to Create Dir: '.$dir_app_path);
+			return false;
+		} //end if
+		if(!SmartFileSystem::is_type_dir((string)$dir_app_path)) {
+			throw new Exception(__METHOD__.'() # Cannot Find the Created Dir: '.$dir_app_path);
 			return false;
 		} //end if
 		//--
@@ -247,8 +252,9 @@ final class AppCodePackUpgrade {
 
 
 	// test if a folder exists inside app base folder (may be needed for some upgrades to test temporary dirs ...)
+	// works with protected paths because operates from outside app dir thus paths will not start with #
 	// returns: true/false ; Throws Error if any issue
-	public static function ExistsAppDir($dir_path) {
+	public static function ExistsAppDir(?string $dir_path) : bool {
 		//--
 		if(!self::IsValidWebsiteInstanceId()) {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
@@ -259,7 +265,7 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$dir_path = Smart::safe_pathname((string)$dir_path);
+		$dir_path = (string) Smart::safe_pathname((string)$dir_path);
 		if((string)$dir_path == '') {
 			throw new Exception(__METHOD__.'() # Empty DirPath');
 			return false;
@@ -277,8 +283,9 @@ final class AppCodePackUpgrade {
 
 
 	// test if a path exists inside app base folder (may be needed for some upgrades to test temporary paths ...)
+	// works with protected paths because operates from outside app dir thus paths will not start with #
 	// returns: true/false ; Throws Error if any issue
-	public static function ExistsAppPath($path) {
+	public static function ExistsAppPath(?string $path) : bool {
 		//--
 		if(!self::IsValidWebsiteInstanceId()) {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
@@ -289,7 +296,7 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$path = Smart::safe_pathname((string)$path);
+		$path = (string) Smart::safe_pathname((string)$path);
 		if((string)$path == '') {
 			throw new Exception(__METHOD__.'() # Empty Path');
 			return false;
@@ -307,8 +314,9 @@ final class AppCodePackUpgrade {
 
 
 	// test if a file exists inside app base folder (may be needed for some upgrades to test temporary files ...)
+	// works with protected paths because operates from outside app dir thus paths will not start with #
 	// returns: true/false ; Throws Error if any issue
-	public static function ExistsAppFile($file_path) {
+	public static function ExistsAppFile(?string $file_path) : bool {
 		//--
 		if(!self::IsValidWebsiteInstanceId()) {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
@@ -319,7 +327,7 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$file_path = Smart::safe_pathname((string)$file_path);
+		$file_path = (string) Smart::safe_pathname((string)$file_path);
 		if((string)$file_path == '') {
 			throw new Exception(__METHOD__.'() # Empty FilePath');
 			return false;

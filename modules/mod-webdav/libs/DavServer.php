@@ -28,11 +28,11 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20220307
+	// v.20220924
 
-	const DAV_RESOURCE_TYPE_COLLECTION = 'collection';
-	const DAV_RESOURCE_TYPE_NONCOLLECTION = 'noncollection';
-	const DAV_RESOURCE_TYPE_NOTFOUND = 'notfound';
+	const DAV_RESOURCE_TYPE_COLLECTION 		= 'collection';
+	const DAV_RESOURCE_TYPE_NONCOLLECTION 	= 'noncollection';
+	const DAV_RESOURCE_TYPE_NOTFOUND 		= 'notfound';
 
 	private static $httpRequestHeaders = null; // must init to null
 	private static $httpRequestBody = null; // must init to null
@@ -40,9 +40,9 @@ final class DavServer {
 	private static $tpl_path = 'modules/mod-webdav/libs/templates/'; // trailing slash req.
 
 
-	public static function getSupportedBrowserIds() {
+	public static function getSupportedBrowserClasses() {
 		//--
-		return array('fox', 'smk', 'crm', 'iee', 'sfr', 'eph', 'wkt', 'opr', 'nsf');
+		return [ 'gk', 'bk', 'wk' ]; // 'fox', 'smk' ; 'crm', 'iee', 'opr', 'knq' ; 'sfr', 'eph', 'wkt'
 		//--
 	} //END FUNCTION;
 
@@ -250,7 +250,9 @@ final class DavServer {
 			//--
 			self::$httpRequestHeaders = [];
 			//--
-			foreach((array)$_SERVER as $key => $value) {
+			$srv_vars = (array) \SmartFrameworkRegistry::getServerVars();
+			//--
+			foreach((array)$srv_vars as $key => $value) {
 				//--
 				switch((string)\strtoupper((string)$key)) {
 					case 'CONTENT_LENGTH':

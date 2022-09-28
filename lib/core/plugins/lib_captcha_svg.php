@@ -72,7 +72,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version 	v.20220114
+ * @version 	v.20220925
  * @package 	development:Captcha
  */
 final class SmartSVGCaptcha {
@@ -1848,7 +1848,7 @@ final class SmartSVGCaptcha {
  * @access 		private
  * @internal
  *
- * @version 	v.20210825
+ * @version 	v.20220925
  *
  */
 final class SmartSvgCaptchaPoint {

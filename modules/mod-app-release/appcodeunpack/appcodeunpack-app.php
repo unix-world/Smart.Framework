@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20220730
+// [AppCodeUnpack / APP] v.20220928 s.20220928.1034
 // (c) 2013-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,7 +94,7 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20220406
+	// v.20220924
 
 	private const APPCODEUNPACK_VERSION = 's.20220406.1654';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
@@ -829,6 +829,34 @@ final class AppCodeUnpack {
 			die('ERR:'.__METHOD__.': SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER should be disabled');
 		} //end if
 		//--
+		if(!function_exists('apache_get_version')) {
+			self::raiseXXXError(500, ' # This script requires PHP and Apache HTTP/S Server');
+			die(__METHOD__.' # No Apache HTTPD Environment Detected ...');
+		} //end if
+		//-- EXTRACT, FILTER AND REGISTER INPUT VARIABLES: SERVER, GET, POST, COOKIE and SERVER[PATH_INFO] # {{{SYNC-SF-EXTRACT-VARS}}}
+		SmartFrameworkRegistry::registerFilteredServerVars((array)(is_array($_SERVER) ? $_SERVER 			: [])); 			// extract and filter $_SERVER ; must be above the line which extracts te PATH_INFO
+		SmartFrameworkRegistry::lockServerRegistry();																			// lock request vars registry and prevent re-process the Server vars
+		// no support for parse semantic URL in this context, but need path info (as set below, which is handled internally by parse semantic URL ...)
+		SmartFrameworkRegistry::setRequestPath((string)SmartFrameworkRegistry::getServerVar('PATH_INFO')); 						// extract the Special PathInfo handled by Smart.Framework using $_SERVER['PATH_INFO'] (the path after the first occurence of `/~` if any, and register it to registry)
+		SmartFrameworkRegistry::registerFilteredRequestVars((array)(is_array($_GET)   ? $_GET 				: []), 'GET'); 		// extract and filter $_GET
+		SmartFrameworkRegistry::registerFilteredRequestVars((array)(is_array($_POST)  ? $_POST 				: []), 'POST'); 	// extract and filter $_POST
+		SmartFrameworkRegistry::registerFilteredCookieVars((array)(is_array($_COOKIE) ? $_COOKIE 			: [])); 			// extract and filter $_COOKIE
+		SmartFrameworkRegistry::lockRequestRegistry(); 																			// lock request vars registry and prevent re-process Request or Cookie variables after they were processed 1st time (this is mandatory from security point of view)
+		//--
+		if(!defined('APP_AUTH_ADMIN_ENFORCE_HTTPS')) { // this is mandatory ...
+			define('APP_AUTH_ADMIN_ENFORCE_HTTPS', true); // just in case ...
+		} //end if
+		$enforce_https = false;
+		if(APP_AUTH_ADMIN_ENFORCE_HTTPS !== false) {
+			$enforce_https = true;
+		} //end if
+		if($enforce_https === true) {
+			if((string)SmartUtils::get_server_current_protocol() !== 'https://') {
+				self::raiseXXXError(403, 'This Area require HTTPS'."\n".'Switch from http:// to https:// in order to use this Web Area');
+				die('ERR:'.__METHOD__.':403#NotHTTPS');
+			} //end if
+		} //end if
+		//--
 		if(defined('SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS') AND ((string)trim((string)SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS) != '')) {
 			if(strpos((string)SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS, '<'.SmartUtils::get_ip_client().'>') === false) {
 				self::raiseXXXError(403, 'Allowed IP Address list does not contain this IP ...');
@@ -867,8 +895,9 @@ final class AppCodeUnpack {
 				'APPCODEUNPACK_LOGO_SF_SVG', 'APPCODEUNPACK_LOADING_SVG',
 				'APPCODEUNPACK_CSS_LOCAL_FX', 'APPCODEUNPACK_JS_LOCAL_FX',
 				'APPCODEUNPACK_HTML_DEPLOY',
-				'APP_AUTH_ADMIN_ENFORCE_HTTPS', 'APP_AUTH_ADMIN_USERNAME', 'APP_AUTH_ADMIN_PASSWORD',
+				'APP_AUTH_ADMIN_USERNAME', 'APP_AUTH_ADMIN_PASSWORD',
 				'APPCODEPACK_DEPLOY_SECRET', 'APPCODEPACK_DEPLOY_APPLIST',
+				'SMART_FRAMEWORK_SRVPROXY_ENABLED',
 			]
 		);
 		//--
@@ -898,17 +927,6 @@ final class AppCodeUnpack {
 			} //end if
 		} //end if
 		//--
-		$enforce_https = false;
-		if(APP_AUTH_ADMIN_ENFORCE_HTTPS !== false) {
-			$enforce_https = true;
-		} //end if
-		if($enforce_https === true) {
-			if((string)SmartUtils::get_server_current_protocol() !== 'https://') {
-				self::raiseXXXError(403, 'This Area require HTTPS'."\n".'Switch from http:// to https:// in order to use this Web Area');
-				die('ERR:'.__METHOD__.':403#NotHTTPS');
-			} //end if
-		} //end if
-		//--
 		if(SmartAuth::validate_auth_username(
 			(string) APP_AUTH_ADMIN_USERNAME,
 			true // check for reasonable length, as 5 chars
@@ -928,17 +946,6 @@ final class AppCodeUnpack {
 			self::raiseXXXError(403, 'Init Settings ERROR: Invalid Password');
 			die('ERR:'.__METHOD__.':403#InitAuthPassError');
 		} //end if
-		//--
-		if(!function_exists('apache_get_version')) {
-			self::raiseXXXError(500, ' # This script requires PHP and Apache HTTP/S Server');
-			die(__METHOD__.' # No Apache HTTPD Environment Detected ...');
-		} //end if
-		//--
-		SmartFrameworkRegistry::setRequestPath((string)(isset($_SERVER['PATH_INFO'])  ? $_SERVER['PATH_INFO'] : '')); 			// extract the Special PathInfo handled by Smart.Framework using $_SERVER['PATH_INFO'] (the path after the first occurence of `/~` if any, and register it to registry)
-		SmartFrameworkRegistry::registerFilteredRequestVars((array)(is_array($_GET)   ? $_GET                 : []), 'GET'); 	// extract and filter $_GET
-		SmartFrameworkRegistry::registerFilteredRequestVars((array)(is_array($_POST)  ? $_POST                : []), 'POST'); 	// extract and filter $_POST
-		SmartFrameworkRegistry::registerFilteredCookieVars((array)(is_array($_COOKIE) ? $_COOKIE              : [])); 			// extract and filter $_COOKIE
-		SmartFrameworkRegistry::lockRequestRegistry(); 																			// lock request registry and prevent re-process Request or Cookie variables after they were processed 1st time (this is mandatory from security point of view)
 		//--
 		return '';
 		//--
