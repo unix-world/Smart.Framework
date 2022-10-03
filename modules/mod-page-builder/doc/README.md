@@ -191,8 +191,8 @@ PROPS:
 ## Sample YAML Data for Settings Segment:
 ```yaml
 SETTINGS:
-		a: 200
-		b: 'this is'
+	a: 200
+	b: 'this is'
 ```
 
 ## Sample code with extra markers and/or if/else (the extra markers or if vars have to be supplied on render page/segment) as [ 'SAMPLE-MARKER1' => 'this is a sample marker that have been post-rendered (will be html escaped in code)', 'SAMPLE-MARKER2' => 'other marker (will be js escaped in code)', ... ]

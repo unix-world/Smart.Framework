@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220915
+ * @version 	v.20221001
  * @package 	PageBuilder
  *
  */
@@ -34,9 +34,9 @@ final class Utils {
 
 	// ::
 
-	const REGEX_XPLACEHOLDERS 	= '/\{\{\:[^\:]*\:\}\}/';
-	const REGEX_PLACEHOLDERS 	= '/\{\{\:[A-Z0-9_\-\.]+\:\}\}/'; // {{{SYNC-PAGEBUILDER-REGEX-MARKERS-INT}}}
-	const REGEX_MARKERS 		= '/\{\{\=\#[A-Z0-9_\-\.]+(\|[a-z0-9]+)*\#\=\}\}/';
+	private const REGEX_XPLACEHOLDERS 	= '/\{\{\:[^\:]*\:\}\}/';
+	private const REGEX_PLACEHOLDERS 	= '/\{\{\:[A-Z0-9_\-\.]+\:\}\}/'; // {{{SYNC-PAGEBUILDER-REGEX-MARKERS-INT}}}
+	private const REGEX_MARKERS 			= '/\{\{\=\#[A-Z0-9_\-\.]+(\|[a-z0-9]+)*\#\=\}\}/';
 
 
 	public static function getDbType() {

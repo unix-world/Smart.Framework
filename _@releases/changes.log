@@ -2,6 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+October 02, 2022
+	* Fix jsRate: to work with multiple instances, malformed SVG ; add extra smart-jRate
+	* Page Builder work: SVG changes, internal optimizations, fix Tags Filter Hint
+	* Extend UX-Toolkit with Navy-Menu
+
 September 28, 2022
 	* Refactoring Registry for pre-register $_SERVEr filtered variables
 	* implement SMART_FRAMEWORK_SRVPROXY_SERVER_IP and SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN to be used when SMART_FRAMEWORK_SRVPROXY_ENABLED = true

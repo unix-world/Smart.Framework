@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman (stable.20220918), (c) 2015-2022 unix-world.org
+	extended by unixman (stable.20221001), (c) 2015-2022 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -193,6 +193,61 @@ License: BSD
 }
 
 @media (hover: none), all and (max-width:767px) { /* touchscreens or screens with a width lower than 768 */
+
+	/* Responsive Simple Navs (by Unixman) */
+
+	nav.ux-navy label {
+		cursor: crosshair !important;
+	}
+
+	nav.ux-navy > ul {
+		padding: 0 !important;
+		padding-left: 0 !important;
+		padding-right: 0 !important;
+		padding-top: 1rem !important;
+		padding-bottom: 1rem !important;
+	}
+	nav.ux-navy > ul li {
+		float: none !important;
+		display: block !important;
+		width: 100% !important;
+		padding: 0 !important;
+		margin: 0 !important;
+		margin-bottom: 0.625rem !important;
+	}
+
+	nav.ux-navy > ul li.a-right {
+		float: none !important;
+	}
+	nav.ux-navy > ul li.w-space {
+		display: none !important;
+	}
+
+	nav.ux-navy > ul li a,
+	nav.ux-navy > ul li span {
+		margin: 0 !important;
+		padding-left: 1.25rem !important;
+		padding-right: 1.25rem !important;
+		text-align: left !important;
+		width: 100% !important;
+	}
+	nav.ux-navy > ul li span.img img {
+		margin-left: calc(100vw - 88px) !important;
+		margin-top: -7px !important;
+	}
+	nav.ux-navy > ul li dfn {
+		display: inline-block !important;
+	}
+	nav.ux-navy > ul li .icon {
+		margin-right: 0 !important;
+	}
+
+	nav.ux-navy > ul li a {
+		display: none !important;
+	}
+	nav.ux-navy input:checked ~ ul li a {
+		display: inline-block !important;
+	}
 
 	/* Responsive NavBar Menu (by Unixman) */
 

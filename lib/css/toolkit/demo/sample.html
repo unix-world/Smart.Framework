@@ -33,7 +33,7 @@
 <div style="width:100% !important; padding-left:10px; padding-top:2px; padding-right:10px; box-sizing: border-box !important; -moz-box-sizing: border-box !important; -webkit-box-sizing: border-box !important;">
 
 	<div class="ux-section">
-		<h1 class="lightSpeedIn animated delay-1s">UX Toolkit <span style="color:#CCCCCC!important; font-weight:normal!important; font-size:75%!important;">r.20220918</span> - Overview</h1>
+		<h1 class="lightSpeedIn animated delay-1s">UX Toolkit <span style="color:#CCCCCC!important; font-weight:normal!important; font-size:75%!important;">r.20221001</span> - Overview</h1>
 	</div>
 
 	<br>
@@ -1059,6 +1059,43 @@
 	<br>
 	<br>
 
+<!-- Simple Navs -->
+
+	<div class="ux-subsection"><h2>Simple Navs</h2></div>
+
+	<br>
+
+	<nav class="ux-navy">
+		<input type="checkbox" id="navy-checkbox">
+		<ul class="horizontal">
+			<li><span class="img"><img id="img-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaWQ9InNtYXJ0LmZyYW1ld29yay1sb2dvIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBoZWlnaHQ9IjEyOHB4IiB3aWR0aD0iMTI4cHgiPgo8ZGVmcyBpZD0iZGVmczE0NjYiLz4KPGcgaWQ9ImxheWVyMSI+CiAgICA8ZyBpZD0iZzMzNDYiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQ7c3Ryb2tlOm5vbmUiIHRyYW5zZm9ybT0ibWF0cml4KDEuNjg5NTgwMywwLDAsMS42ODk1ODAzLDIuOTY0ODQ2OSwyLjk2NDg0NzcpIj4KICAgICAgICA8cGF0aCBzdHlsZT0iZmlsbDojRUQyODM5O2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpldmVub2RkO3N0cm9rZTojRUQyODM5O3N0cm9rZS13aWR0aDoxNC4xMjEwODUxNztzdHJva2Utb3BhY2l0eToxIiBpZD0icGF0aDMwMTEiIGQ9Im0gNjIuOTMwNTczLDM2LjEyNDQ0NiBhIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgLTUzLjYxMjI1MzEsMCAyNi44MDYxMjgsMjYuODA2MTI4IDAgMSAxIDUzLjYxMjI1MzEsMCB6Ii8+CiAgICAgICAgPGcgaWQ9InRleHQzNzU4IiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lIi8+CiAgICAgICAgPGcgaWQ9InRleHQxNDQyIiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiB0cmFuc2Zvcm09InNjYWxlKDAuOTI4ODEwNjYsMS4wNzY2NDU3KSIgYXJpYS1sYWJlbD0iUzpmIj4KICAgICAgICAgICAgPHBhdGggaWQ9InBhdGgxNDQ0IiBzdHlsZT0iZmlsbDojZmZmZmZmO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiBkPSJNIDEyLjEzNTgzNSw0Ni45MTY5NzUgViA0MC4zNDYgbCAyLjIyMjUzNSwwLjAxOTMzIHEgMC4wOTY2MywzLjI4NTQ4NyAxLjg5Mzk4Nyw0Ljg3MDI1MSAxLjgxNjY4MSwxLjU2NTQzOSA1LjUwODAyMywxLjU2NTQzOSAzLjQ0MDA5OSwwIDUuMjM3NDU0LC0xLjM1Mjg0OCAxLjgxNjY4MSwtMS4zNzIxNzQgMS44MTY2ODEsLTMuOTgxMjM4IDAsLTIuMDg3MjUxIC0xLjEwMTYwNSwtMy4yMDgxODIgLTEuMDgyMjc4LC0xLjEyMDkzMSAtNC41OTk2ODIsLTIuMTgzODgyIGwgLTMuODA3MywtMS4xNDAyNTggcSAtNC4xMzU4NDksLTEuMjU2MjE1IC01LjgzNjU3MiwtMy4xMzA4NzYgLTEuNjgxMzk2LC0xLjg3NDY2IC0xLjY4MTM5NiwtNS4xNDA4MjEgMCwtMy42NzIwMTYgMi42MDkwNjMsLTUuNzAxMjg3IDIuNjA5MDY0LC0yLjAyOTI3MiA3LjMyNDcwNCwtMi4wMjkyNzIgMi4wMDk5NDYsMCA0LjQwNjQxOSwwLjQ0NDUwNyAyLjM5NjQ3MywwLjQyNTE4MSA1LjEwMjE2OCwxLjI1NjIxNiB2IDYuMTQ1Nzk0IGggLTIuMTgzODgyIHEgLTAuMzI4NTQ5LC0zLjA1MzU3MSAtMi4wNDg1OTgsLTQuNDA2NDE4IC0xLjcwMDcyMywtMS4zNzIxNzQgLTUuMTk4ODAxLC0xLjM3MjE3NCAtMy4wNTM1NzEsMCAtNC42NTc2NjIsMS4yNTYyMTUgLTEuNTg0NzY0LDEuMjM2ODkgLTEuNTg0NzY0LDMuNjE0MDM2IDAsMi4wNjc5MjUgMS4xOTgyMzcsMy4yNDY4MzUgMS4xOTgyMzYsMS4xNzg5MSA1LjA4Mjg0MiwyLjMzODQ5NCBsIDMuNTc1MzgzLDEuMDYyOTUyIHEgMy45MjMyNTgsMS4xNzg5MSA1LjU4NTMyOSwzLjAxNDkxOCAxLjY4MTM5NiwxLjgxNjY4MSAxLjY4MTM5Niw0Ljg4OTU3OCAwLDQuMTkzODI4IC0yLjY4NjM2OSw2LjMxOTczMSAtMi42ODYzNjksMi4xMjU5MDQgLTguMDAxMTI4LDIuMTI1OTA0IC0yLjM3NzE0NywwIC00Ljg1MDkyNiwtMC40ODMxNiAtMi40NTQ0NTIsLTAuNDgzMTYgLTUuMDA1NTM2LC0xLjQ2ODgwNiB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0NiIgc3R5bGU9ImZpbGw6I0MyMjAzRjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSAzOS43MTQ2MDIsNDYuMjk4NTMgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MzYwMDcgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjA4MjI3OCwwIDEuODE2NjgxLDAuNzUzNzMgMC43NTM3MywwLjc1MzcyOSAwLjc1MzczLDEuODM2MDA3IDAsMS4wODIyNzggLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMTAxNjA1LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6IG0gMCwtMTIuNjAwODEgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MTY2ODEgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjEwMTYwNCwwIDEuODM2MDA3LDAuNzM0NDAzIDAuNzM0NDA0LDAuNzM0NDAzIDAuNzM0NDA0LDEuODM2MDA4IDAsMS4xMDE2MDQgLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMDgyMjc4LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0OCIgc3R5bGU9ImZpbGw6IzIyMjIyMjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSA2NS45OTg1LDIzLjA4NzUyOCBoIC0xLjg3NDY2MSBxIC0wLjAxOTMzLC0xLjQ0OTQ3OSAtMC44MzEwMzUsLTIuMjAzMjA5IC0wLjc5MjM4MiwtMC43NTM3MjkgLTIuMzE5MTY3LC0wLjc1MzcyOSAtMS45OTA2MTksMCAtMi44MDIzMjgsMS4xMDE2MDQgLTAuODExNzA4LDEuMDgyMjc4IC0wLjgxMTcwOCwzLjg4NDYwNiB2IDIuNjQ3NzE2IGggNS43Mzk5MzkgdiAyLjA2NzkyNSBoIC01LjczOTkzOSB2IDE2LjQyNzQzNiBoIDQuNTYxMDI5IHYgMi4wNDg1OTggSCA1MC40MDIwOTggdiAtMi4wNDg1OTggaCAzLjQwMTQ0NiBWIDI5LjgzMjQ0MSBoIC0zLjQwMTQ0NiB2IC0yLjA2NzkyNSBoIDMuNDAxNDQ2IHYgLTIuNTcwNDEgcSAwLC0zLjQ0MDA5OSAxLjc3ODAyOCwtNS4xOTg4MDEgMS43OTczNTUsLTEuNzU4NzAyIDUuMjU2NzgsLTEuNzU4NzAyIDEuMjk0ODY5LDAgMi41ODk3MzcsMC4yMzE5MTcgMS4yOTQ4NjksMC4yMzE5MTYgMi41NzA0MTEsMC43MTUwNzYgeiIvPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9nPgo8L3N2Zz4=" alt="App.Logo" title="App.Logo" width="44" height="44"></span></li>
+			<li><label for="navy-checkbox"><span class="toggle"><var>&#9776;</var></span></label></li>
+			<li><a href="#">Home<i class="icon sfi sfi-home"></i></a></li>
+			<li><a href="#">News</a></li>
+			<li class="w-space"><div></div></li>
+			<li><a href="#" class="active">About</a></li>
+			<li class="a-right"><a href="#">Contact</a></li>
+		</ul>
+	</nav>
+
+	<br>
+
+	<nav class="ux-navy alt-navy">
+		<input type="checkbox" id="navy-checkbox2">
+		<ul class="horizontal">
+			<li><span class="img"><img id="img-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOmNjPSJodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9ucyMiIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgaWQ9InNtYXJ0LmZyYW1ld29yay1sb2dvIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMjggMTI4IiBoZWlnaHQ9IjEyOHB4IiB3aWR0aD0iMTI4cHgiPgo8ZGVmcyBpZD0iZGVmczE0NjYiLz4KPGcgaWQ9ImxheWVyMSI+CiAgICA8ZyBpZD0iZzMzNDYiIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7ZmlsbC1ydWxlOmV2ZW5vZGQ7c3Ryb2tlOm5vbmUiIHRyYW5zZm9ybT0ibWF0cml4KDEuNjg5NTgwMywwLDAsMS42ODk1ODAzLDIuOTY0ODQ2OSwyLjk2NDg0NzcpIj4KICAgICAgICA8cGF0aCBzdHlsZT0iZmlsbDojRUQyODM5O2ZpbGwtb3BhY2l0eToxO2ZpbGwtcnVsZTpldmVub2RkO3N0cm9rZTojRUQyODM5O3N0cm9rZS13aWR0aDoxNC4xMjEwODUxNztzdHJva2Utb3BhY2l0eToxIiBpZD0icGF0aDMwMTEiIGQ9Im0gNjIuOTMwNTczLDM2LjEyNDQ0NiBhIDI2LjgwNjEyOCwyNi44MDYxMjggMCAxIDEgLTUzLjYxMjI1MzEsMCAyNi44MDYxMjgsMjYuODA2MTI4IDAgMSAxIDUzLjYxMjI1MzEsMCB6Ii8+CiAgICAgICAgPGcgaWQ9InRleHQzNzU4IiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lIi8+CiAgICAgICAgPGcgaWQ9InRleHQxNDQyIiBzdHlsZT0iZmlsbDojMDAwMDAwO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiB0cmFuc2Zvcm09InNjYWxlKDAuOTI4ODEwNjYsMS4wNzY2NDU3KSIgYXJpYS1sYWJlbD0iUzpmIj4KICAgICAgICAgICAgPHBhdGggaWQ9InBhdGgxNDQ0IiBzdHlsZT0iZmlsbDojZmZmZmZmO3N0cm9rZS13aWR0aDowLjU0OTcyODYzIiBkPSJNIDEyLjEzNTgzNSw0Ni45MTY5NzUgViA0MC4zNDYgbCAyLjIyMjUzNSwwLjAxOTMzIHEgMC4wOTY2MywzLjI4NTQ4NyAxLjg5Mzk4Nyw0Ljg3MDI1MSAxLjgxNjY4MSwxLjU2NTQzOSA1LjUwODAyMywxLjU2NTQzOSAzLjQ0MDA5OSwwIDUuMjM3NDU0LC0xLjM1Mjg0OCAxLjgxNjY4MSwtMS4zNzIxNzQgMS44MTY2ODEsLTMuOTgxMjM4IDAsLTIuMDg3MjUxIC0xLjEwMTYwNSwtMy4yMDgxODIgLTEuMDgyMjc4LC0xLjEyMDkzMSAtNC41OTk2ODIsLTIuMTgzODgyIGwgLTMuODA3MywtMS4xNDAyNTggcSAtNC4xMzU4NDksLTEuMjU2MjE1IC01LjgzNjU3MiwtMy4xMzA4NzYgLTEuNjgxMzk2LC0xLjg3NDY2IC0xLjY4MTM5NiwtNS4xNDA4MjEgMCwtMy42NzIwMTYgMi42MDkwNjMsLTUuNzAxMjg3IDIuNjA5MDY0LC0yLjAyOTI3MiA3LjMyNDcwNCwtMi4wMjkyNzIgMi4wMDk5NDYsMCA0LjQwNjQxOSwwLjQ0NDUwNyAyLjM5NjQ3MywwLjQyNTE4MSA1LjEwMjE2OCwxLjI1NjIxNiB2IDYuMTQ1Nzk0IGggLTIuMTgzODgyIHEgLTAuMzI4NTQ5LC0zLjA1MzU3MSAtMi4wNDg1OTgsLTQuNDA2NDE4IC0xLjcwMDcyMywtMS4zNzIxNzQgLTUuMTk4ODAxLC0xLjM3MjE3NCAtMy4wNTM1NzEsMCAtNC42NTc2NjIsMS4yNTYyMTUgLTEuNTg0NzY0LDEuMjM2ODkgLTEuNTg0NzY0LDMuNjE0MDM2IDAsMi4wNjc5MjUgMS4xOTgyMzcsMy4yNDY4MzUgMS4xOTgyMzYsMS4xNzg5MSA1LjA4Mjg0MiwyLjMzODQ5NCBsIDMuNTc1MzgzLDEuMDYyOTUyIHEgMy45MjMyNTgsMS4xNzg5MSA1LjU4NTMyOSwzLjAxNDkxOCAxLjY4MTM5NiwxLjgxNjY4MSAxLjY4MTM5Niw0Ljg4OTU3OCAwLDQuMTkzODI4IC0yLjY4NjM2OSw2LjMxOTczMSAtMi42ODYzNjksMi4xMjU5MDQgLTguMDAxMTI4LDIuMTI1OTA0IC0yLjM3NzE0NywwIC00Ljg1MDkyNiwtMC40ODMxNiAtMi40NTQ0NTIsLTAuNDgzMTYgLTUuMDA1NTM2LC0xLjQ2ODgwNiB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0NiIgc3R5bGU9ImZpbGw6I0MyMjAzRjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSAzOS43MTQ2MDIsNDYuMjk4NTMgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MzYwMDcgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjA4MjI3OCwwIDEuODE2NjgxLDAuNzUzNzMgMC43NTM3MywwLjc1MzcyOSAwLjc1MzczLDEuODM2MDA3IDAsMS4wODIyNzggLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMTAxNjA1LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6IG0gMCwtMTIuNjAwODEgcSAwLC0xLjA4MjI3OCAwLjczNDQwMywtMS44MTY2ODEgMC43NTM3MywtMC43NTM3MyAxLjgzNjAwOCwtMC43NTM3MyAxLjEwMTYwNCwwIDEuODM2MDA3LDAuNzM0NDAzIDAuNzM0NDA0LDAuNzM0NDAzIDAuNzM0NDA0LDEuODM2MDA4IDAsMS4xMDE2MDQgLTAuNzM0NDA0LDEuODM2MDA4IC0wLjczNDQwMywwLjczNDQwMyAtMS44MzYwMDcsMC43MzQ0MDMgLTEuMDgyMjc4LDAgLTEuODM2MDA4LC0wLjczNDQwMyAtMC43MzQ0MDMsLTAuNzUzNzMgLTAuNzM0NDAzLC0xLjgzNjAwOCB6Ii8+CiAgICAgICAgICAgIDxwYXRoIGlkPSJwYXRoMTQ0OCIgc3R5bGU9ImZpbGw6IzIyMjIyMjtzdHJva2Utd2lkdGg6MC41NDk3Mjg2MyIgZD0ibSA2NS45OTg1LDIzLjA4NzUyOCBoIC0xLjg3NDY2MSBxIC0wLjAxOTMzLC0xLjQ0OTQ3OSAtMC44MzEwMzUsLTIuMjAzMjA5IC0wLjc5MjM4MiwtMC43NTM3MjkgLTIuMzE5MTY3LC0wLjc1MzcyOSAtMS45OTA2MTksMCAtMi44MDIzMjgsMS4xMDE2MDQgLTAuODExNzA4LDEuMDgyMjc4IC0wLjgxMTcwOCwzLjg4NDYwNiB2IDIuNjQ3NzE2IGggNS43Mzk5MzkgdiAyLjA2NzkyNSBoIC01LjczOTkzOSB2IDE2LjQyNzQzNiBoIDQuNTYxMDI5IHYgMi4wNDg1OTggSCA1MC40MDIwOTggdiAtMi4wNDg1OTggaCAzLjQwMTQ0NiBWIDI5LjgzMjQ0MSBoIC0zLjQwMTQ0NiB2IC0yLjA2NzkyNSBoIDMuNDAxNDQ2IHYgLTIuNTcwNDEgcSAwLC0zLjQ0MDA5OSAxLjc3ODAyOCwtNS4xOTg4MDEgMS43OTczNTUsLTEuNzU4NzAyIDUuMjU2NzgsLTEuNzU4NzAyIDEuMjk0ODY5LDAgMi41ODk3MzcsMC4yMzE5MTcgMS4yOTQ4NjksMC4yMzE5MTYgMi41NzA0MTEsMC43MTUwNzYgeiIvPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9nPgo8L3N2Zz4=" alt="App.Logo" title="App.Logo" width="44" height="44"></span></li>
+			<li><label for="navy-checkbox2"><span class="toggle"><var>&#9776;</var></span></label></li>
+			<li><a href="#">Home<i class="icon sfi sfi-home"></i></a></li>
+			<li><a href="#">News</a></li>
+			<li class="w-space"><div></div></li>
+			<li><a href="#" class="active">About</a></li>
+			<li class="a-right"><a href="#">Contact</a></li>
+		</ul>
+	</nav>
+
+	<br>
+	<br>
+
 <!-- Menu Bars -->
 
 	<div class="ux-subsection"><h2>Menu Bars</h2></div>
@@ -1209,6 +1246,54 @@
 	</nav>
 
 	<br>
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-navyblue">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="ux-menubar-bar ux-menubar-color-blue">
+		<span class="ux-menubar-bar-item ux-menubar-bar-ctrl"></span>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button"><b>MenuBar Entry One</b></a>
+		<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Two</a>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropDown</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Three</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Four</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Five</a>
+			</div>
+		</div>
+		<div class="ux-menubar-dropdown-hover">
+			<button class="ux-menubar-button ux-menubar-dropbutton">MenuBar Entry DropOther</button>
+			<div class="ux-menubar-dropdown-content ux-menubar-bar-block" style="min-width:239px;">
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Six</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Seven</a>
+				<a href="#" class="ux-menubar-bar-item ux-menubar-button">MenuBar Entry Eight</a>
+			</div>
+		</div>
+	</div>
+
 	<br>
 
 	<div class="ux-menubar-bar ux-menubar-color-darkblue">
