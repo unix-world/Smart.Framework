@@ -1,4 +1,4 @@
-<!-- Js Framework :: r.20210612 -->
+<!-- Js Framework :: r.20221007 -->
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-check.inc.htm!@@@]
 <script>
 const smartJ$Options = {
@@ -37,7 +37,9 @@ window.smartJ$Options = smartJ$Options; // g-exp.
 <script>
 (() => {
 	if(!smartJ$TestBrowser.checkCookies()) {
-		alert('NOTICE: Your browser does not support Cookies !');
+		const errCokkies = 'NOTICE: Your browser does not support Cookies !';
+		console.warn(errCokkies);
+		alert(errCokkies);
 	} //end if
 })();
 </script>

@@ -2,6 +2,15 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+October 14, 2022
+	* app.css -> app.pak.css refactoring
+	* add font-display and text-rendering CSS properties to all CSS containing fonts
+
+October 10, 2022
+	* Templates Refactoring
+	* Fixes and Optimizations
+	* Captcha fixes
+
 October 02, 2022
 	* Fix jsRate: to work with multiple instances, malformed SVG ; add extra smart-jRate
 	* Page Builder work: SVG changes, internal optimizations, fix Tags Filter Hint

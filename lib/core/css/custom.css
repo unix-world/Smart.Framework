@@ -1,5 +1,5 @@
 
-/* -- CSS Start :: Smart.Framework / Extra :: r.20220916 -- */
+/* -- CSS Start :: Smart.Framework / Extra :: r.20221014 -- */
 
 img#shaddow {
 	border: none;
@@ -67,6 +67,23 @@ div.math-render-latex {
 	font-size: 1.063rem;
 	letter-spacing: 3px;
 	margin-top: 1px;
+}
+
+/* -- */
+
+div.img-gallery {
+	display: block !important;
+	margin: 0 !important;
+	margin-top: 10px !important;
+}
+div.img-gallery div {
+	display: inline !important;
+}
+div.img-gallery img {
+	border: 1px solid #ECECEC;
+	margin: 0 !important;
+	margin-right: 10px !important;
+	margin-bottom: 10px !important;
 }
 
 /* -- */

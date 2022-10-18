@@ -1,0 +1,29 @@
+
+/* -- CSS Start :: Smart.Framework / App Core.Plugins :: r.20221013 -- */
+
+/* ----------------------------- */
+
+/* -- Markdown -- */
+
+@import url("markdown.css");
+
+/* -- Email -- */
+
+@import url("email.css");
+
+/* -- Nav Pager -- */
+
+@import url("navpager.css");
+
+/* -- Captcha -- */
+
+@import url("captcha.css");
+
+/* -- Txt-Columns -- */
+
+@import url("txt-columns/style.css");
+@import url("txt-columns/style-responsive.css");
+
+/* ----------------------------- */
+
+/* -- CSS End -- */

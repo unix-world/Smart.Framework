@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20220928
+ * @version 	v.20221004
  * @package 	@Core:Extra
  *
  */
@@ -69,9 +69,9 @@ final class SmartUtils {
 		]
 	];
 
-	private const VALID_HEADERS_SERVER_PORT 	= [ 'HTTP_X_FORWARDED_PORT', 	'HTTP_X_PORT' ];
-	private const VALID_HEADERS_SERVER_DOMAIN 	= [ 'HTTP_X_FORWARDED_DOMAIN', 	'HTTP_X_DOMAIN' ];
-	private const VALID_HEADERS_SERVER_IP 		= [ 'HTTP_X_FORWARDED_IP', 		'HTTP_X_IP' ];
+	private const VALID_HEADERS_SERVER_PORT 	= [ 'SERVER_PORT', 'HTTP_X_FORWARDED_PORT',   'HTTP_X_PORT' ]; 		// can be on the same port on a different IP/domain thus can use by default: 	'SERVER_PORT'
+	private const VALID_HEADERS_SERVER_DOMAIN 	= [ 'SERVER_NAME', 'HTTP_X_FORWARDED_DOMAIN', 'HTTP_X_DOMAIN' ]; 	// if on the same domain can use by default: 									'SERVER_NAME'
+	private const VALID_HEADERS_SERVER_IP 		= [ 'SERVER_ADDR', 'HTTP_X_FORWARDED_IP',     'HTTP_X_IP' ]; 		// if on the same IP can use by default: 										'SERVER_ADDR'
 
 	private const FAKE_IP_CLIENT = '0.0.0.0'; 			// must differ from FAKE_IP_SERVER ; must be 0.0.0.0 to show as undetected
 	private const FAKE_IP_SERVER = '256.256.256.256'; 	// must differ from FAKE_IP_CLIENT ; must be 256.256.256.256 that does not exists ... so there is no risk to be solved on something that exists ...
@@ -1606,6 +1606,7 @@ final class SmartUtils {
 			$err = false;
 			//--
 			$skey = '';
+			$hkey = '';
 			//--
 			if(defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO')) {
 				$hkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO));
@@ -1661,7 +1662,7 @@ final class SmartUtils {
 			} //end if
 			//--
 			if($err) {
-				Smart::log_warning('ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO: `'.$skey.'`');
+				Smart::log_warning('ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO: `'.$hkey.'`=`'.$skey.'`');
 				$current_protocol = 'http://'; // fallback to default
 			} //end if
 			//--
@@ -1703,6 +1704,7 @@ final class SmartUtils {
 			$err = false;
 			//--
 			$skey = '';
+			$hkey = '';
 			//--
 			if(defined('SMART_FRAMEWORK_SRVPROXY_SERVER_PORT')) {
 				$hkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_SERVER_PORT));
@@ -1737,7 +1739,7 @@ final class SmartUtils {
 			} //end if
 			//--
 			if($err) {
-				Smart::log_warning('ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PORT: `'.$skey.'`');
+				Smart::log_warning('ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PORT: `'.$hkey.'`=`'.$skey.'`');
 				$current_port = '80'; // fallback to default
 			} //end if
 			//--

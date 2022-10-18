@@ -21,7 +21,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* SmartMailerSend::
 //	* SmartMailerMimeDecode::
 //	* SmartMailerNotes::
+// 	* SmartComponents::
 // REQUIRED CSS:
+//	* default.css
 //	* email.css
 //======================================================
 
@@ -38,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20220802
+ * @version 	v.20221013
  * @package 	Plugins:Mailer
  *
  */
@@ -874,7 +876,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20220802
+ * @version 	v.20221013
  * @package 	Plugins:Mailer
  *
  */
@@ -1504,7 +1506,7 @@ final class SmartMailerMimeParser {
 								if(((string)$val['mode'] == 'text/plain') OR ((string)$y_process_mode == 'print')) {
 									$out .= $val['content'];
 								} else { // for non text/plain parts, implements a sandboxed iframe for the non-print mode ; for print mode the iframe sandbox must be manually set as sandbox="allow-same-origin" to ensure safety !
-									$out .= '<div title="Mime Message HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:5px; left:49vw; opacity:0.25;"><iframe name="'.Smart::escape_html($htmid).'" id="'.Smart::escape_html($htmid).'" width="100%" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="min-height:75vh; height:max-content; border:1px solid #ECECEC;" sandbox="allow-same-origin" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>Mime Message</title><meta charset="'.Smart::escape_html(SMART_FRAMEWORK_CHARSET).'">'.'<style>'."\n".trim((string)SmartFileSystem::read('lib/core/css/base.css'))."\n".'</style>'.'</head><body>'.$val['content'].'<script>alert(\'If you can see this alert the Mime Message iFrame Sandbox is unsafe ...\');</script></body></html>').'"></iframe></div>';
+									$out .= '<div title="Mime Message HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:5px; left:49vw; opacity:0.25;"><iframe name="'.Smart::escape_html($htmid).'" id="'.Smart::escape_html($htmid).'" width="100%" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="min-height:75vh; height:max-content; border:1px solid #ECECEC;" sandbox="allow-same-origin" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>Mime Message</title><meta charset="'.Smart::escape_html((string)SMART_FRAMEWORK_CHARSET).'">'.'<style>'."\n".SmartComponents::app_default_css()."\n".'</style>'.'</head><body>'.$val['content'].'<script>alert(\'If you can see this alert the Mime Message iFrame Sandbox is unsafe ...\');</script></body></html>').'"></iframe></div>';
 								} //end if else
 								$out .= '<br><hr><br>';
 							} //end if

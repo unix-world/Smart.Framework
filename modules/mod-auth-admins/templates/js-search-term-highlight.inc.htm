@@ -1,7 +1,7 @@
-<!-- Highlight SearchTerm :: r.20210612 -->
+<!-- Highlight SearchTerm :: r.20221009 -->
 <style>
 .searchterm_highlight {
-	background-color: #FFCC00 !important;
+	background-color: #FFFFDD !important;
 	color: #222222 !important;
 	padding: 0 !important;
 	padding-left: 4px !important;
@@ -9,8 +9,8 @@
 	border-radius: 3px !important;
 }
 </style>
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.highlight.css?[###RELEASE-HASH|url|html###]">
-<script src="lib/js/jquery/jquery.highlight.js?[###RELEASE-HASH|url|html###]"></script>
+<link rel="stylesheet" type="text/css" href="lib/js/jquery/jquery.highlight.css?[###RELEASE-HASH|url|html###]" media="none" onload="if(media!='all'){media='all';}">
+<script defer src="lib/js/jquery/jquery.highlight.js?[###RELEASE-HASH|url|html###]"></script>
 <script>
 jQuery(() => {
 	if((typeof(searchTerm) != 'undefined') && (searchTerm != null) && (searchTerm != '')) {

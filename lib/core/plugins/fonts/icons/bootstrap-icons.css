@@ -2,12 +2,14 @@
 /*
 // Bootstrap Icons # github@head.1cb1392 # https://github.com/twbs/icons
 // Original Hash-ID: 856008caa5eb66df68595e734e59580d
-// r.20210617
+// r.20221014
 */
 
 @font-face {
 	font-family: "bootstrap-icons";
 	src: url("bootstrap-icons.woff2?1cb1392") format("woff2"), url("bootstrap-icons.ttf?1cb1392") format("truetype");
+	font-display: block;
+	text-rendering: auto;
 }
 
 [class^="bi-"]::before,

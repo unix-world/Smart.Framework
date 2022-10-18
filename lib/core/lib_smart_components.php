@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20220905
+ * @version 	v.20221013
  * @package 	Application:ViewComponents
  *
  */
@@ -69,6 +69,33 @@ final class SmartComponents {
 		'footer',				// page footer section
 	];
 
+	private static $default_css = null;
+
+
+	//================================================================
+	/**
+	 * Return App Default CSS
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public static function app_default_css() : string {
+		//--
+		if(self::$default_css !== null) {
+			return (string) self::$default_css;
+		} //end if
+		//--
+		self::$default_css = (string) trim((string)SmartFileSystem::read('lib/css/default.css'));
+		if((string)self::$default_css == '') {
+			Smart::log_warning(__METHOD__.' # The Default CSS `default.css` is not accessible or empty !');
+		} //end if
+		//--
+		return (string) self::$default_css;
+		//--
+	} //END FUNCTION
+	//================================================================
+
 
 	//================================================================
 	/**
@@ -78,7 +105,7 @@ final class SmartComponents {
 	 * @internal
 	 *
 	 */
-	public static function app_error_message(?string $y_title, ?string $y_name, ?string $y_mode, ?string $y_type, ?string $y_logo, ?int $y_width, ?string $y_area, ?string $y_errmsg, ?string $y_area_one, ?string $y_area_two) {
+	public static function app_error_message(?string $y_title, ?string $y_name, ?string $y_mode, ?string $y_type, ?string $y_logo, ?int $y_width, ?string $y_area, ?string $y_errmsg, ?string $y_area_one, ?string $y_area_two) : string {
 		//--
 		$y_width = (int) $y_width;
 		if($y_width < 250) {
@@ -120,7 +147,7 @@ final class SmartComponents {
 	 * @internal
 	 *
 	 */
-	public static function http_status_message(?string $y_title, ?string $y_message='', ?string $y_html_message='') {
+	public static function http_status_message(?string $y_title, ?string $y_message='', ?string $y_html_message='') : string {
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			'lib/core/templates/http-message-status.htm',
@@ -147,7 +174,7 @@ final class SmartComponents {
 	 * @internal
 	 *
 	 */
-	public static function http_error_message(?string $y_title, ?string $y_message='', ?string $y_html_message='') {
+	public static function http_error_message(?string $y_title, ?string $y_message='', ?string $y_html_message='') : string {
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			'lib/core/templates/http-message-error.htm',
@@ -168,20 +195,20 @@ final class SmartComponents {
 
 	//================================================================
 	// 400 Bad Request :: The server cannot or will not process the request due to something that is perceived to be a client error (e.g., malformed request syntax, invalid request message framing, or deceptive request routing).
-	public static function http_message_400_badrequest(?string $y_message, ?string $y_html_message='') {
+	public static function http_message_400_badrequest(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
 			//--
 			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'400.php')) {
 				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'400.php');
 				if(function_exists('custom_http_message_400_badrequest')) {
-					return custom_http_message_400_badrequest((string)$y_message, (string)$y_html_message);
+					return (string) custom_http_message_400_badrequest((string)$y_message, (string)$y_html_message);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
-		return self::http_error_message('400 Bad Request', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('400 Bad Request', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -189,20 +216,20 @@ final class SmartComponents {
 
 	//================================================================
 	// 401 Unauthorized :: Similar to 403 Forbidden, but specifically for use when authentication is required and has failed or has not yet been provided. The response must include a WWW-Authenticate header field containing a challenge applicable to the requested resource. See Basic access authentication and Digest access authentication.
-	public static function http_message_401_unauthorized(?string $y_message, ?string $y_html_message='') {
+	public static function http_message_401_unauthorized(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
 			//--
 			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'401.php')) {
 				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'401.php');
 				if(function_exists('custom_http_message_401_unauthorized')) {
-					return custom_http_message_401_unauthorized((string)$y_message, (string)$y_html_message);
+					return (string) custom_http_message_401_unauthorized((string)$y_message, (string)$y_html_message);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
-		return self::http_error_message('401 Unauthorized', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('401 Unauthorized', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -210,20 +237,20 @@ final class SmartComponents {
 
 	//================================================================
 	// 403 Forbidden :: The request was a valid request, but the server is refusing to respond to it. Unlike a 401 Unauthorized response, authenticating will make no difference.
-	public static function http_message_403_forbidden(?string $y_message, ?string $y_html_message='') {
+	public static function http_message_403_forbidden(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
 			//--
 			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'403.php')) {
 				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'403.php');
 				if(function_exists('custom_http_message_403_forbidden')) {
-					return custom_http_message_403_forbidden((string)$y_message, (string)$y_html_message);
+					return (string) custom_http_message_403_forbidden((string)$y_message, (string)$y_html_message);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
-		return self::http_error_message('403 Forbidden', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('403 Forbidden', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -231,20 +258,20 @@ final class SmartComponents {
 
 	//================================================================
 	// 404 Not Found :: The requested resource could not be found but may be available again in the future. Subsequent requests by the client are permissible.
-	public static function http_message_404_notfound(?string $y_message, ?string $y_html_message='') {
+	public static function http_message_404_notfound(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
 			//--
 			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'404.php')) {
 				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'404.php');
 				if(function_exists('custom_http_message_404_notfound')) {
-					return custom_http_message_404_notfound((string)$y_message, (string)$y_html_message);
+					return (string) custom_http_message_404_notfound((string)$y_message, (string)$y_html_message);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
-		return self::http_error_message('404 Not Found', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('404 Not Found', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -252,20 +279,20 @@ final class SmartComponents {
 
 	//================================================================
 	// 410 Gone :: A 410 is more permanent than a 404; it means that the page is gone. To be used for limited-time / promotional services.
-	public static function http_message_410_gone(?string $y_message, ?string $y_html_message='') {
+	public static function http_message_410_gone(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
 			//--
 			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'410.php')) {
 				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'410.php');
 				if(function_exists('custom_http_message_410_gone')) {
-					return custom_http_message_410_gone((string)$y_message, (string)$y_html_message);
+					return (string) custom_http_message_410_gone((string)$y_message, (string)$y_html_message);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
-		return self::http_error_message('410 Gone', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('410 Gone', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -273,20 +300,20 @@ final class SmartComponents {
 
 	//================================================================
 	// 429 Too Many Requests :: The user has sent too many requests in a given amount of time. Intended for use with rate-limiting schemes.
-	public static function http_message_429_toomanyrequests(?string $y_message, ?string $y_html_message='') {
+	public static function http_message_429_toomanyrequests(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
 			//--
 			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'429.php')) {
 				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'429.php');
 				if(function_exists('custom_http_message_429_toomanyrequests')) {
-					return custom_http_message_429_toomanyrequests((string)$y_message, (string)$y_html_message);
+					return (string) custom_http_message_429_toomanyrequests((string)$y_message, (string)$y_html_message);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
-		return self::http_error_message('429 Too Many Requests', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('429 Too Many Requests', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -294,20 +321,20 @@ final class SmartComponents {
 
 	//================================================================
 	// 500 Internal Server Error :: A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
-	public static function http_message_500_internalerror(?string $y_message, ?string $y_html_message='') {
+	public static function http_message_500_internalerror(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
 			//--
 			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'500.php')) {
 				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'500.php');
 				if(function_exists('custom_http_message_500_internalerror')) {
-					return custom_http_message_500_internalerror((string)$y_message, (string)$y_html_message);
+					return (string) custom_http_message_500_internalerror((string)$y_message, (string)$y_html_message);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
-		return self::http_error_message('500 Internal Server Error', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('500 Internal Server Error', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -315,20 +342,20 @@ final class SmartComponents {
 
 	//================================================================
 	// 502 Bad Gateway :: The server was acting as a gateway or proxy and received an invalid response from the upstream server.
-	public static function http_message_502_badgateway(?string $y_message, ?string $y_html_message='') {
+	public static function http_message_502_badgateway(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
 			//--
 			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'502.php')) {
 				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'502.php');
 				if(function_exists('custom_http_message_502_badgateway')) {
-					return custom_http_message_502_badgateway((string)$y_message, (string)$y_html_message);
+					return (string) custom_http_message_502_badgateway((string)$y_message, (string)$y_html_message);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
-		return self::http_error_message('502 Bad Gateway', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('502 Bad Gateway', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -336,20 +363,20 @@ final class SmartComponents {
 
 	//================================================================
 	// 503 Service Unavailable :: The server is currently unavailable (because it is overloaded or down for maintenance). Generally, this is a temporary state.
-	public static function http_message_503_serviceunavailable(?string $y_message, ?string $y_html_message='') {
+	public static function http_message_503_serviceunavailable(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
 			//--
 			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'503.php')) {
 				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'503.php');
 				if(function_exists('custom_http_message_503_serviceunavailable')) {
-					return custom_http_message_503_serviceunavailable((string)$y_message, (string)$y_html_message);
+					return (string) custom_http_message_503_serviceunavailable((string)$y_message, (string)$y_html_message);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
-		return self::http_error_message('503 Service Unavailable', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('503 Service Unavailable', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -357,83 +384,83 @@ final class SmartComponents {
 
 	//================================================================
 	// 504 Gateway Timeout :: The server was acting as a gateway or proxy and did not receive a timely response from the upstream server.
-	public static function http_message_504_gatewaytimeout(?string $y_message, ?string $y_html_message='') {
+	public static function http_message_504_gatewaytimeout(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
 			//--
 			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'504.php')) {
 				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'504.php');
 				if(function_exists('custom_http_message_504_gatewaytimeout')) {
-					return custom_http_message_504_gatewaytimeout((string)$y_message, (string)$y_html_message);
+					return (string) custom_http_message_504_gatewaytimeout((string)$y_message, (string)$y_html_message);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
-		return self::http_error_message('504 Gateway Timeout', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('504 Gateway Timeout', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	public static function operation_question(?string $y_html, ?string $y_width='') {
+	public static function operation_question(?string $y_html, ?string $y_width='') : string {
 		//--
-		return self::notifications_template((string)$y_html, 'operation_question', (string)$y_width); // question
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	public static function operation_notice(?string $y_html, ?string $y_width='') {
-		//--
-		return self::notifications_template((string)$y_html, 'operation_notice', (string)$y_width); // notice
+		return (string) self::notifications_template((string)$y_html, 'operation_question', (string)$y_width); // question
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	public static function operation_ok(?string $y_html, ?string $y_width='') {
+	public static function operation_notice(?string $y_html, ?string $y_width='') : string {
 		//--
-		return self::notifications_template((string)$y_html, 'operation_info', (string)$y_width); // info (ok)
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	public static function operation_warn(?string $y_html, ?string $y_width='') {
-		//--
-		return self::notifications_template((string)$y_html, 'operation_warn', (string)$y_width); // warn
+		return (string) self::notifications_template((string)$y_html, 'operation_notice', (string)$y_width); // notice
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	public static function operation_error(?string $y_html, ?string $y_width='') {
+	public static function operation_ok(?string $y_html, ?string $y_width='') : string {
 		//--
-		return self::notifications_template((string)$y_html, 'operation_error', (string)$y_width); // error
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	public static function operation_success(?string $y_html, ?string $y_width='') {
-		//--
-		return self::notifications_template((string)$y_html, 'operation_success', (string)$y_width); // success
+		return (string) self::notifications_template((string)$y_html, 'operation_info', (string)$y_width); // info (ok)
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	public static function operation_important(?string $y_html, ?string $y_width='') {
+	public static function operation_warn(?string $y_html, ?string $y_width='') : string {
 		//--
-		return self::notifications_template((string)$y_html, 'operation_important', (string)$y_width); // success
+		return (string) self::notifications_template((string)$y_html, 'operation_warn', (string)$y_width); // warn
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	public static function operation_error(?string $y_html, ?string $y_width='') : string {
+		//--
+		return (string) self::notifications_template((string)$y_html, 'operation_error', (string)$y_width); // error
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	public static function operation_success(?string $y_html, ?string $y_width='') : string {
+		//--
+		return (string) self::notifications_template((string)$y_html, 'operation_success', (string)$y_width); // success
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	public static function operation_important(?string $y_html, ?string $y_width='') : string {
+		//--
+		return (string) self::notifications_template((string)$y_html, 'operation_important', (string)$y_width); // success
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -443,14 +470,14 @@ final class SmartComponents {
 	/**
 	 * Function: Notifications Message Template
 	 */
-	private static function notifications_template(?string $y_html, ?string $y_idcss, ?string $y_width) {
+	private static function notifications_template(?string $y_html, ?string $y_idcss, ?string $y_width) : string {
 		//--
 		$style = '';
 		if((string)$y_width != '') {
 			$style = (string) 'width:'.self::fix_css_elem_dim((string)$y_width).';';
 		} //end if else
 		//--
-		return '<!-- require: notifications.css --><div id="'.Smart::escape_html($y_idcss).'" style="'.Smart::escape_html((string)$style).'">'.$y_html.'</div>';
+		return (string) '<!-- require: notifications.css --><div id="'.Smart::escape_html($y_idcss).'" style="'.Smart::escape_html((string)$style).'">'.$y_html.'</div>';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -462,9 +489,9 @@ final class SmartComponents {
 	 * If no unit is specified then assume px (pixels)
 	 * If number is < 0, will assume 1 to avoid hide element
 	 * Allowed Units: %, vw, vh, pt, pc, px
-	 * Returns the CSS safe formated dimension
+	 * Returns STRING the CSS safe formated dimension
 	 */
-	private static function fix_css_elem_dim(?string $css_w_or_h) {
+	private static function fix_css_elem_dim(?string $css_w_or_h) : string {
 		//--
 		$css_w_or_h = (string) Smart::normalize_spaces((string)$css_w_or_h); // $css_w_or_h = str_replace([' ', "\t", "\n", "\r"], '', (string)$css_w_or_h);
 		$css_w_or_h = (string) trim((string)$css_w_or_h);
@@ -527,7 +554,7 @@ final class SmartComponents {
 	 * @internal
 	 *
 	 */
-	public static function app_powered_info(?string $y_show_versions='no', array $y_plugins=[], bool $exclude_db_plugins=false, bool $display_clock=false, bool $display_app_logo=true) {
+	public static function app_powered_info(?string $y_show_versions='no', array $y_plugins=[], bool $exclude_db_plugins=false, bool $display_clock=false, bool $display_app_logo=true) : string {
 		//--
 		global $configs;
 		//--
@@ -706,7 +733,7 @@ final class SmartComponents {
 
 	//================================================================
 	// This conform the var names to lowercase and set the meta vars into a template array context (by default this is used by ::render_app_template() but can be used outside if needed ...
-	public static function set_app_template_conform_metavars(array $arr_data=[]) {
+	public static function set_app_template_conform_metavars(array $arr_data=[]) : array {
 		//--
 		if(!is_array($arr_data)) {
 			return array();
@@ -800,7 +827,7 @@ final class SmartComponents {
 
 	//================================================================
 	// This renders the App Main Template (should be used only on custom developments ...)
-	public static function render_app_template(?string $template_path, ?string $template_file, array $arr_data) { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
+	public static function render_app_template(?string $template_path, ?string $template_file, array $arr_data) : string { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 
 		//--
 		$template_path = (string) Smart::safe_pathname((string)SmartFileSysUtils::add_dir_last_slash((string)trim((string)$template_path)));
@@ -810,7 +837,7 @@ final class SmartComponents {
 				'App Template Render ERROR :: (See Error Log for More Details)'
 			);
 			die();
-			return;
+			return (string) '';
 		} //end if
 		//--
 		$template_file = (string) Smart::safe_filename((string)trim((string)$template_file));
@@ -820,7 +847,7 @@ final class SmartComponents {
 				'App Template Render ERROR :: (See Error Log for More Details)'
 			);
 			die();
-			return;
+			return (string) '';
 		} //end if
 		//--
 		if(!SmartFileSysUtils::check_if_safe_path($template_path.$template_file)) {
@@ -829,7 +856,7 @@ final class SmartComponents {
 				'App Template Render ERROR :: (See Error Log for More Details)'
 			);
 			die();
-			return;
+			return (string) '';
 		} //end if
 		//--
 
@@ -848,7 +875,7 @@ final class SmartComponents {
 				'App Template Render ERROR :: (See Error Log for More Details)'
 			);
 			die();
-			return;
+			return (string) '';
 		} //end if
 		//-- add html performance profiling in TPL
 		if(defined('SMART_FRAMEWORK_PROFILING_HTML_PERF') AND (SMART_FRAMEWORK_PROFILING_HTML_PERF === true)) {
@@ -892,7 +919,7 @@ final class SmartComponents {
 	 * @internal
 	 *
 	 */
-	public static function get_imgdesc_by_bw_id(?string $y_bw) {
+	public static function get_imgdesc_by_bw_id(?string $y_bw) : array {
 		//--
 		switch((string)strtolower((string)$y_bw)) { // {{{SYNC-CLI-BW-ID}}}
 			case '@s#':
@@ -960,10 +987,10 @@ final class SmartComponents {
 				$pict = 'browser/xxx';
 		} //end switch
 		//--
-		return (array) [
+		return array(
 			'img'  => (string) 'lib/core/img/'.Smart::safe_pathname($pict).'.svg',
 			'desc' => (string) $desc.' :: Web Browser'
-		];
+		);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -980,7 +1007,7 @@ final class SmartComponents {
 	 * @internal
 	 *
 	 */
-	public static function get_imgdesc_by_os_id(?string $y_os_id) {
+	public static function get_imgdesc_by_os_id(?string $y_os_id) : array {
 		//--
 		switch((string)strtolower((string)$y_os_id)) { // {{{SYNC-SRV-OS-ID}}} ; {{{SYNC-CLI-OS-ID}}}
 			//-

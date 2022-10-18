@@ -315,10 +315,12 @@ const handleButtonShowJson = () => {
 			<td>
 				&nbsp;
 			</td>
-			<td style="min-width:200px;">
+			<td style="min-width:200px;[%%%IF:QFORMAT:==cmd;%%%]cursor:not-allowed;[%%%/IF:QFORMAT%%%]">
+				<div style="[%%%IF:QFORMAT:==cmd;%%%]opacity:0.28;pointer-events:none;[%%%/IF:QFORMAT%%%]">
 				[%%%LOOP:SORTING%%%]
 				<input id="sort-f[###SORTING._-ITERATOR-_|int###]" name="sort[f[###SORTING._-ITERATOR-_|int###]]" type="text" maxlength="255" size="10" class="ux-field filter-field" value="[###SORTING.ID-FIELD|html###]">&nbsp;[###SORTING.HTML-FIELD###]<br>
 				[%%%/LOOP:SORTING%%%]
+				</div>
 			</td>
 			<td>
 				&nbsp;

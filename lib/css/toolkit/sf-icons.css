@@ -1,8 +1,8 @@
 
 /*
 Smart.Framework - r.8.7 / smart.framework.v.8.7 - Icons (Iconic Font)
-version: 1.7 # r.20220916
-(c) 2019-2021 unix-world.org
+version: 1.7 # r.20221014
+(c) 2019-2022 unix-world.org
 License: BSD
 
 Font Metrics:
@@ -17,6 +17,8 @@ Font Metrics:
 	src: url('fonts/sf-icons.woff2?v.1.7') format('woff2'), url('fonts/sf-icons.ttf?v.1.7') format('truetype');
 	font-weight: normal;
 	font-style: normal;
+	font-display: block;
+	text-rendering: auto;
 }
 
 /* Default SFI Style / Default Size: sfi-1x */

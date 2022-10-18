@@ -12,17 +12,17 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 //--------------------------------------- Templates and Home Page (admin)
-$configs['app']['admin-domain'] 					= 'localhost.local'; 		// admin domain as yourdomain.ext
-$configs['app']['admin-home'] 						= 'samples.welcome';		// admin home page action
-$configs['app']['admin-default-module'] 			= 'samples';				// admin default module
-$configs['app']['admin-template-path'] 				= 'default';				// default admin template folder from etc/templates/
-$configs['app']['admin-template-file'] 				= 'template.htm';			// default admin template file
+$configs['app']['admin-domain'] 					= 'localhost.local'; 					// admin domain as yourdomain.ext
+$configs['app']['admin-home'] 						= 'samples.welcome';					// admin home page action
+$configs['app']['admin-default-module'] 			= 'samples';							// admin default module
+$configs['app']['admin-template-path'] 				= 'default';							// default admin template folder from etc/templates/ will auto-set the path as etc/templates/default/
+$configs['app']['admin-template-file'] 				= 'template.htm';						// default admin template file
 //--------------------------------------- Templates and Home Page (task)
-$configs['app']['task-domain'] 						= 'localhost.local'; 		// task domain as yourdomain.ext
-$configs['app']['task-home'] 						= 'auth-admins.tasks';		// task home page action
-$configs['app']['task-default-module'] 				= 'auth-admins';			// task default module
-$configs['app']['task-template-path'] 				= 'default';				// default task template folder from etc/templates/
-$configs['app']['task-template-file'] 				= 'template-simple.htm';	// default task template file
+$configs['app']['task-domain'] 						= 'localhost.local'; 					// task domain as yourdomain.ext
+$configs['app']['task-home'] 						= 'auth-admins.tasks';					// task home page action
+$configs['app']['task-default-module'] 				= 'auth-admins';						// task default module
+$configs['app']['task-template-path'] 				= 'modules/mod-auth-admins/templates/'; // default task template path set to modules/mod-auth-admins/templates/
+$configs['app']['task-template-file'] 				= 'template-simple.htm';				// default task template file
 //---------------------------------------
 
 //-- sample auth credentials for the admin area (admin.php / task.php) ; change them !!!

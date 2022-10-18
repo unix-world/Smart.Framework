@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20220928
+ * @version 	v.20221013
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -183,8 +183,8 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		];
 		//--
 		$arr_css = [
+			'APPCODEUNPACK_BASE_STYLES' 		=> 'lib/css/default.css',
 			'APPCODEUNPACK_TOOLKIT_STYLES' 		=> [ 'lib/css/toolkit/ux-toolkit.css', 'lib/css/toolkit/ux-toolkit-responsive.css' ],
-			'APPCODEUNPACK_BASE_STYLES' 		=> 'lib/core/css/base.css',
 			'APPCODEUNPACK_NOTIFICATION_STYLES' => 'lib/core/css/notifications.css',
 			'APPCODEUNPACK_CSS_GRITTER' 		=> 'lib/js/jquery/growl/jquery.gritter.css',
 			'APPCODEUNPACK_CSS_ALERTABLE' 		=> 'lib/js/jquery/jquery.alertable.css',

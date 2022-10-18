@@ -1,4 +1,4 @@
-<!-- CSS APP (Custom) :: r.20220910 -->
+<!-- CSS APP (default) :: r.20220913 -->
 [%%%COMMENT%%%] Hint: css with fonts speedup loading page: replace the attribute 'media="all"' for link tag with: 'media="none" onload="if(media!='all'){media='all';}"' [%%%/COMMENT%%%]
 <!-- Font -->
 [%%%IF:SEMAPHORE:&*<load:font:serif>;(16)%%%]
@@ -14,9 +14,22 @@
 [%%%/IF:SEMAPHORE(17)%%%]
 [%%%/IF:SEMAPHORE(16)%%%]
 <!-- Default Styles -->
-<link rel="stylesheet" type="text/css" href="etc/templates/default/styles.css?[###RELEASE-HASH|url|html###]">
-<!-- UX Css -->
-<link rel="stylesheet" type="text/css" href="lib/css/ux.css?[###RELEASE-HASH|url|html###]">
-<!-- App Css -->
-<link rel="stylesheet" type="text/css" href="lib/core/css/app.css?[###RELEASE-HASH|url|html###]">
+<link rel="stylesheet" type="text/css" href="etc/templates/default/styles.css?[###RELEASE-HASH|url|html###]" media="all">
+<!-- SF-Icons Css -->
+<link rel="stylesheet" type="text/css" href="lib/css/toolkit/sf-icons.css?[###RELEASE-HASH|url|html###]" media="all">
+[%%%IF:APP-REALM:==ADM;(87)%%%]
+<!-- App UX Css -->
+<link rel="stylesheet" type="text/css" href="lib/css/app.css?[###RELEASE-HASH|url|html###]" media="all">
+<!-- App Core Css -->
+<link rel="stylesheet" type="text/css" href="lib/core/css/app.css?[###RELEASE-HASH|url|html###]" media="all">
+<!-- App Plugins Css -->
+<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/app.css?[###RELEASE-HASH|url|html###]" media="all">
+[%%%ELSE:APP-REALM(87)%%%]
+<!-- App UX Css (pak) -->
+<link rel="stylesheet" type="text/css" href="lib/css/app.pak.css?[###RELEASE-HASH|url|html###]" media="all">
+<!-- App Core Css (pak) -->
+<link rel="stylesheet" type="text/css" href="lib/core/css/app.pak.css?[###RELEASE-HASH|url|html###]" media="all">
+<!-- App Plugins Css (pak) -->
+<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/app.pak.css?[###RELEASE-HASH|url|html###]" media="all">
+[%%%/IF:APP-REALM(87)%%%]
 <!-- # -->

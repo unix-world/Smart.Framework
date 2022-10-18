@@ -14,7 +14,7 @@
 
 /*
 // (c) 2021-2022 unix-world.org
-// fixes by unixman r.20220920:
+// fixes by unixman r.20221016:
 // 	* Added renders: darknote, notice
 //	* Change the color theme
 */
@@ -96,11 +96,11 @@ button.toast-close-button { /* Additional properties for button version iOS requ
 	width: 100%;
 }
 .toast-top-left {
-	top: 12px;
+	top: 6px;
 	left: 12px;
 }
 .toast-top-right {
-	top: 12px;
+	top: 6px;
 	right: 12px;
 }
 .toast-bottom-right {

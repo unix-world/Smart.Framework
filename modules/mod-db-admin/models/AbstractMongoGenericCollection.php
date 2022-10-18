@@ -14,7 +14,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
-abstract class AbstractMongoGenericCollection { // v.20220915
+abstract class AbstractMongoGenericCollection { // v.20221011
 
 	// ::
 
@@ -101,7 +101,7 @@ abstract class AbstractMongoGenericCollection { // v.20220915
 			]
 		);
 		$arr = [];
-		if(($mongo->is_command_ok($result)) AND (\Smart::array_size($result[0]) > 0) AND isset($result[0]['values']) AND is_array($result[0]['values'])) {
+		if(($mongo->is_command_ok($result)) AND isset($result[0]) AND \is_array($result[0]) AND ((int)\Smart::array_size($result[0]) > 0) AND isset($result[0]['values']) AND is_array($result[0]['values'])) {
 			$arr = (array) $result[0]['values'];
 		} //end if
 		//--
@@ -137,7 +137,7 @@ abstract class AbstractMongoGenericCollection { // v.20220915
 	} //END FUNCTION
 
 
-	final public static function getRecordsList(string $area='', int $limit=0, int $offset=0, string $sortby='', string $sortdir='') : array {
+	final public static function getRecordsList(string $area='', int $limit=0, int $offset=0, string $sortby='', string $sortdir='', array $extra_sort=[], array $extra_filter=[]) : array {
 		//--
 		$mongo = static::getInstance();
 		if(!$mongo) {
@@ -149,9 +149,18 @@ abstract class AbstractMongoGenericCollection { // v.20220915
 		//--
 		$filter = [];
 		if((string)$area != '') {
-			$filter = [
-				'area' => (string) $area,
-			];
+			$filter['area'] = (string) $area;
+		} //end if
+		if((int)\Smart::array_size($extra_filter) > 0) { // {{{SYNC-DB-ADMIN-MONGO-APPLY-EXTRA-FILTER}}}
+			foreach($extra_filter as $key => $val) {
+				$key = (string) \trim((string)$key);
+				$val = \Smart::json_decode(\Smart::json_encode($val)); // force discard objects, resources and keep just nScalar and Array
+				if((string)$key != '') {
+					if((string)$key != 'area') {
+						$filter[(string)$key] = $val;
+					} //end if
+				} //end if
+			} //end foreach
 		} //end if
 		//--
 		$sortby = (string) \trim((string)$sortby);
@@ -164,9 +173,24 @@ abstract class AbstractMongoGenericCollection { // v.20220915
 		} else { // ASC
 			$sortdir = 1;
 		} //end if
-		$options = [
-			'sort' 	=> [ (string)$sortby => (int)$sortdir ]
-		];
+		$sort_arr = [ (string)$sortby => (int)$sortdir ];
+		if((int)\Smart::array_size($extra_sort) > 0) {
+			foreach($extra_sort as $key => $val) {
+				$key = (string) \trim((string)$key);
+				$val = (string) \strtoupper((string)\trim((string)$val));
+				if((string)$val == 'DESC') {
+					$val = -1;
+				} else { // ASC
+					$val = 1;
+				} //end if
+				if((string)$key != '') {
+					if(!\array_key_exists((string)$key, (array)$sort_arr)) {
+						$sort_arr[(string)$key] = (int) $val;
+					} //end if
+				} //end if
+			} //end foreach
+		} //end if
+		$options = [ 'sort' => (array)$sort_arr ];
 		if((int)$limit > 0) {
 			$options['limit'] = (int) $limit;  // limit
 			$options['skip']  = (int) $offset; // offset
@@ -184,7 +208,10 @@ abstract class AbstractMongoGenericCollection { // v.20220915
 	} //END FUNCTION
 
 
-	final public static function getRecord(string $area, string $id) : array {
+	// with the default indexes the combination of area/id is unique and single area or single id are not ...
+	// for the default scenario to get a unique field both: area and id must be provided and non-empty
+	// {{{SYNC-GenericCollection-FILTER-ONE-RECORD}}}
+	final public static function getRecord(?string $area, ?string $id, array $extra_filter=[]) : array {
 		//--
 		$mongo = static::getInstance();
 		if(!$mongo) {
@@ -195,16 +222,28 @@ abstract class AbstractMongoGenericCollection { // v.20220915
 		$area = (string) \trim((string)$area);
 		$id = (string) \trim((string)$id);
 		//--
-		if((string)$area == '') {
-			$filter = [ // {{{SYNC-GenericCollection-FILTER-ONE-RECORD-ONLY-BY-ID}}} ; this is possible if the id field is marked as unique in the indexes ...
-				'id' 	=> (string) $id
-			];
-		} else {
-			$filter = [ // {{{SYNC-GenericCollection-FILTER-ONE-RECORD}}}
-				'area' 	=> (string) $area,
-				'id' 	=> (string) $id
-			];
-		} //end if else
+		$filter = [];
+		if((string)$area != '') { // at insert empty area is not possible thus searching for an empty area also is not possible
+			$filter['area'] = (string) $area; // by default area is not unique ... but can be when redefine indexes
+		} //end if
+		if((string)$id != '') { // at insert empty id is not possible thus searching for an empty id also is not possible
+			$filter['id'] = (string) $id; // by default id is not unique ... but can be when redefine indexes
+		} //end if
+		if((int)\Smart::array_size($extra_filter) > 0) { // {{{SYNC-DB-ADMIN-MONGO-APPLY-EXTRA-FILTER}}}
+			foreach($extra_filter as $key => $val) {
+				$key = (string) \trim((string)$key);
+				$val = \Smart::json_decode(\Smart::json_encode($val)); // force discard objects, resources and keep just nScalar and Array
+				if((string)$key != '') {
+					if(((string)$key != 'area') AND ((string)$key != 'id')) {
+						$filter[(string)$key] = $val;
+					} //end if
+				} //end if
+			} //end foreach
+		} //end if
+		//--
+		if((int)\Smart::array_size($filter) <= 0) {
+			return []; // unsupported
+		} //end if
 		//--
 		return (array) $mongo->findone(
 			(string) static::getCollection(),

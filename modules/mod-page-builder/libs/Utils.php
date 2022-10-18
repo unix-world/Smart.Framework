@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221001
+ * @version 	v.20221014
  * @package 	PageBuilder
  *
  */
@@ -264,7 +264,7 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function renderMarkdown(?string $markdown_code, ?string $option_validate_html='', ?string $relative_url_prefix='', bool $log_render_notices=true) : string {
+	public static function renderMarkdown(?string $markdown_code, ?string $option_validate_html='', ?string $relative_url_prefix='', bool $log_render_notices=true, bool $y_lazyLoadImgDisabled=false) : string {
 		//--
 		// The default options are used on frontend rendering
 		// as default should use '' not null for $option_validate_html
@@ -275,7 +275,7 @@ final class Utils {
 		//--
 		$syntax_pagebuiler = (array) self::extractPageBuilderSyntax((string)$markdown_code);
 		//-- TODO: add constant to override compatibility mode ; by default is disabled here ...
-		return (string) (new \SmartMarkdownToHTML(true, true, false, (string)$option_validate_html, (string)$relative_url_prefix, (bool)$log_render_notices, (array)$syntax_pagebuiler, false))->parse((string)$markdown_code); // C:0
+		return (string) (new \SmartMarkdownToHTML(true, true, (bool)$y_lazyLoadImgDisabled, (string)$option_validate_html, (string)$relative_url_prefix, (bool)$log_render_notices, (array)$syntax_pagebuiler, false))->parse((string)$markdown_code); // C:0
 		//--
 	} //END FUNCTION
 

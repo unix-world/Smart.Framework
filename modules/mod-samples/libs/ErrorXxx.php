@@ -33,7 +33,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20221015
  *
  */
 abstract class ErrorXxx extends \SmartAbstractAppController {
@@ -117,13 +117,16 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 					(string)\Smart::json_encode([
 						'status' => 'ERROR',
 						'message' => (string) ((int)$this->errcode.' '.$this->errtext),
-						'details' => (string) 'Json / Page Error: '.$the_errmsg
+						'details' => (string) 'JSON / Page Error: '.$the_errmsg
 					])
 				);
 				return;
 				break;
 			case 'wsdl':
 			case 'xml':
+			case 'rdf':
+			case 'rss':
+			case 'atom':
 				$this->PageViewResetVars();
 				$this->PageViewSetCfg('rawpage', true);
 				$this->PageViewSetCfg('rawmime', 'application/xml');

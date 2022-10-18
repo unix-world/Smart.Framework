@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.2.2.8-r.20220918 */
+/* Smart.Markdown.parser # v.2.2.8-r.20221003 */
 
 /* ----------------------------- */
 
@@ -189,6 +189,7 @@
 	white-space: pre;
 }
 .markdown code.mkdw-inline-code { /* be consistent with custom style */
+	font-size: inherit;
 	display: inline !important;
 	background: #DDDDEE;
 	color: #111111;
@@ -203,16 +204,15 @@
 .markdown mark,
 .markdown cite,
 .markdown var {
+	font-size: inherit; /* em not rem, need to be relative to parent not to root */
 	display: inline !important;
 	padding: 0;
 	padding-left: 4px;
 	padding-right: 4px;
-	font-size: inherit; /* em not rem, need to be relative to parent not to root */
 }
 .markdown q {
 	background: #444444;
 	color: #F0F0F0;
-	font-size: inherit; /* em not rem, need to be relative to parent not to root */
 }
 .markdown q:before {
 	content: '˝';
@@ -236,7 +236,7 @@
 }
 .markdown mark {
 	background: #FFFFC7;
-	color: #444444;
+	color: #333333;
 	font-weight: bold;
 	font-style: normal;
 }
@@ -250,9 +250,9 @@
 /* -- */
 
 .markdown dfn {
+	font-size: inherit;
 	background: #E9EDCA;
 	color: #444444;
-	font-size: inherit;
 	padding: 1px;
 	font-weight: bold;
 	font-style: italic; /* normal */

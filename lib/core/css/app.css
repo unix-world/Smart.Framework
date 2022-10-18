@@ -1,26 +1,20 @@
 
-/* -- CSS Start :: Smart.Framework / App :: r.20220910 -- */
+/* -- CSS Start :: Smart.Framework / App Core :: r.20220913 -- */
 
 /* ----------------------------- */
 
-/* -- core -- */
+/* -- Custom -- */
 
-@import url("../../../lib/core/css/custom.css");
+@import url("custom.css");
 
-@import url("../../../lib/core/css/notifications.css");
-@import url("../../../lib/core/css/notifications-icons.css");
+/* -- Notifications -- */
 
-@import url("../../../lib/core/css/tpl-highlight.css");
+@import url("notifications.css");
+@import url("notifications-icons.css");
 
-/* -- plugins -- */
+/* -- Tpl -- */
 
-@import url("../../../lib/core/plugins/css/markdown.css");
-
-@import url("../../../lib/core/plugins/css/navpager.css");
-
-@import url("../../../lib/core/plugins/css/email.css");
-
-@import url("../../../lib/core/plugins/css/captcha.css");
+@import url("tpl-highlight.css");
 
 /* ----------------------------- */
 

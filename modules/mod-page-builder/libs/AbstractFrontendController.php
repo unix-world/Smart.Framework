@@ -25,20 +25,19 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20220915
+ * @version 	v.20221007
  * @package 	development:modules:PageBuilder
  *
  */
 abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\AbstractFrontendPageBuilder {
 
+	private const REGEX_TPL_MARKER_KEY = '/^[A-Z0-9_\-\.@]+$/'; 	// regex for TPL markers
+	private const REGEX_PBS_MARKER_KEY 	= '/^[A-Z0-9_\-\.]+$/'; 	// regex for internal markers {{{SYNC-PAGEBUILDER-REGEX-MARKERS-INT}}}
 
 	private $max_depth 			= 2; 						// 0=page, 1=segment, 2=sub-segment (max allow depth)
 	private $cache_time 		= 3600; 					// cache time in seconds ; can be overriden by define('SMART_PAGEBUILDER_RENDER_CACHE_TIME', 7200); // min 1 minute ; max 1 year
 
 	private $crr_lang 			= '';						// current language
-
-	private $regex_tpl_marker 	= '/^[A-Z0-9_\-\.@]+$/'; 	// regex for tpl markers
-	private $regex_marker 		= '/^[A-Z0-9_\-\.]+$/'; 	// regex for internal markers {{{SYNC-PAGEBUILDER-REGEX-MARKERS-INT}}}
 
 	private $auth_required 		= 0; 						// 0: no auth ; if > 0, will req. auth
 	private $recursion_control 	= 0; 						// initialize
@@ -117,7 +116,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 			if(\strpos((string)$this->page_markers[$i], 'TEMPLATE@') === 0) {
 				$tmp_marker = (string) \substr((string)$this->page_markers[$i], \strlen('TEMPLATE@'));
 				if((string)\trim((string)$tmp_marker) != '') {
-					if(\preg_match((string)$this->regex_marker, (string)$tmp_marker)) {
+					if(\preg_match((string)self::REGEX_PBS_MARKER_KEY, (string)$tmp_marker)) {
 						if($this->IfDebug()) {
 							$this->SetDebugData('Frontend PageBuilder Controller Initialize PageView Variable, No Overwrite', (string)$tmp_marker);
 						} //end if
@@ -503,7 +502,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 		for($i=0; $i<$cnt_tmp_arr; $i++) {
 			$tmp_arr[$i] = (string) \strtoupper((string)\trim((string)$tmp_arr[$i]));
 			if((string)$tmp_arr[$i] != '') {
-				if(\preg_match((string)$this->regex_marker, (string)$tmp_arr[$i])) {
+				if(\preg_match((string)self::REGEX_PBS_MARKER_KEY, (string)$tmp_arr[$i])) {
 					if(!\in_array((string)$tmp_arr[$i], [ 'MAIN' ])) {
 						$markers[] = 'TEMPLATE@'.$tmp_arr[$i];
 					} //end if
@@ -1511,7 +1510,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 					//--
 					$is_self_content = false;
 					//--
-					if(((string)$key != '') AND (\preg_match((string)$this->regex_tpl_marker, (string)$key))) {
+					if(((string)$key != '') AND (\preg_match((string)self::REGEX_TPL_MARKER_KEY, (string)$key))) {
 						//--
 						if((string)$key == '@') {
 							$is_self_content = true;
@@ -1678,7 +1677,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												$plugin_exp_vars = (array) $plugin_obj->getPluginExportVars();
 												if((\Smart::array_size($plugin_exp_vars) > 0) AND (\Smart::array_type_test($plugin_exp_vars) == 2)) {
 													foreach($plugin_exp_vars as $export_key => $export_var) {
-														if(\preg_match((string)$this->regex_marker, (string)$export_key)) {
+														if(\preg_match((string)self::REGEX_PBS_MARKER_KEY, (string)$export_key)) {
 															$this->plugin_markers[(string)$export_key] = (string) $export_var; // later values will rewrite previous ones if any
 														} //end if
 													} //end foreach
@@ -1692,7 +1691,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 													} //end if
 													$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) (isset($plugin_exec['content']) ? $plugin_exec['content'] : ''); // append is mandatory here else will not render correctly more than one sub-segment/plugin
 													//--
-												} elseif(\preg_match((string)$this->regex_marker, (string)$key)) {
+												} elseif(\preg_match((string)self::REGEX_PBS_MARKER_KEY, (string)$key)) {
 													//--
 													if(\strpos((string)$data_arr['code'], '{{:'.(string)$key) !== false) {
 														//-- replace these markers, they are page markers
@@ -1762,7 +1761,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 									} //end if
 									$data_arr['smart-markers'][(string)\substr((string)$key, \strlen('TEMPLATE@'))] .= (string) $val[$i]['code']; // append is mandatory here else will not render correctly more than one sub-segment/plugin
 									//--
-								} elseif(\preg_match((string)$this->regex_marker, (string)$key)) {
+								} elseif(\preg_match((string)self::REGEX_PBS_MARKER_KEY, (string)$key)) {
 									//--
 									if(\strpos((string)$data_arr['code'], '{{:'.(string)$key) !== false) {
 										//-- replace these markers, they are page markers

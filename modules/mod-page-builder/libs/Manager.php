@@ -52,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20221001
+ * @version 	v.20221014
  * @package 	PageBuilder
  *
  */
@@ -882,14 +882,17 @@ final class Manager {
 							$out .= '</div>'."\n";
 							$the_editor_styles = '';
 							if((string)$query['mode'] == 'markdown') {
-								$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/markdown.css">';
-								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], '', '', false); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_HTML_VALIDATOR ; no need for validation here ; do not log notices
+							//	$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/markdown.css">'; // includded in lib/core/plugins/css/app{.pak}.css
+								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], '', '', false, true); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_HTML_VALIDATOR ; no need for validation here ; do not log notices
 							} else {
 							//	$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/js/jsedithtml/cleditor/jquery.cleditor.smartframeworkcomponents.css">'; // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
 								$query['code'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$query['code']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
 							} //end if else
-							// TODO: test using: '<style>'."\n".\trim((string)\SmartFileSystem::read('lib/core/css/base.css'))."\n".'</style>'
-							$the_website_styles = '<style>* { font-family: \'IBM Plex Sans\', \'Noto Sans\', arial, sans-serif; font-smooth: always; } a, th, td, div, span, p, blockquote, pre, code { font-size:13px; }</style>';
+							$the_website_styles = "\n".'<style>'."\n".\SmartComponents::app_default_css()."\n".'</style>'."\n";
+							$the_website_styles .= '<link rel="stylesheet" type="text/css" href="lib/css/toolkit/sf-icons.css">';
+							$the_website_styles .= '<link rel="stylesheet" type="text/css" href="lib/css/app.pak.css">';
+							$the_website_styles .= '<link rel="stylesheet" type="text/css" href="lib/core/css/app.pak.css">';
+							$the_website_styles .= '<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/app.pak.css">'; // includes lib/core/plugins/css/markdown.css
 							$out .= \SmartViewHtmlHelpers::html_js_preview_iframe('pbld_code_editor', '<!DOCTYPE html><html><head>'.$the_website_styles.$the_editor_styles.'</head><body style="background:#FFFFFF;">'.$query['code'].'</body></html></html>', $y_width='90vw', $y_height='70vh');
 						} //end if else
 						//--

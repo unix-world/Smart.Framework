@@ -85,7 +85,7 @@ if(
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20220406
+ * @version 	v.20221015
  * @package 	@Core:FileSystem
  *
  */
@@ -887,6 +887,19 @@ final class SmartFileSysUtils {
 			case 'ui': // qt ui XML file
 				$type = 'application/xml';
 				$disp = 'attachment';
+				break;
+			//-------------- rss / atom / rdf
+			case 'rdf':
+				$type = 'application/rdf+xml';
+				$disp = 'inline';
+				break;
+			case 'rss':
+				$type = 'application/rss+xml';
+				$disp = 'inline';
+				break;
+			case 'atom':
+				$type = 'application/atom+xml';
+				$disp = 'inline';
 				break;
 			//-------------- plain text and development
 			case 'tex': // TeX

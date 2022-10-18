@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Components / NavPager :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* v.20220910 */
+/* v.20221006 */
 
 /* ----------------------------- */
 
@@ -9,6 +9,7 @@
 
 #nav-pager-box {
 	margin-top: 5px;
+	margin-bottom: 5px;
 }
 
 #nav-pager-box * {
@@ -22,8 +23,7 @@
 #nav-pager-box span#nav-pager-dsbl-item {
 	text-decoration: none;
 	display: inline-block;
-	margin-right: 5px;
-	margin-bottom: 5px;
+	margin: 2px;
 	padding-top: 2px;
 	padding-bottom: 2px;
 	padding-left: 9px;
@@ -59,6 +59,7 @@
 /* NavBox Arrows */
 table.nav-arrows-tbl {
 	margin-top: 5px;
+	margin-bottom: 5px;
 }
 table.nav-arrows-tbl td {
 	background: #FFFFFF;

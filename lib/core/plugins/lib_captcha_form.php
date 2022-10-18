@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
- * @version 	v.20220925
+ * @version 	v.20221010
  * @package 	development:Captcha
  *
  */
@@ -92,7 +92,7 @@ final class SmartCaptcha {
 			return false;
 		} //end if
 		//--
-		$ok = (bool) SmartUtils::set_cookie(self::cookie_name_chk($y_form_name), (string)sha1((string)$y_form_name.self::private_key()));
+		$ok = (bool) SmartUtils::set_cookie((string)self::cookie_name_chk($y_form_name), (string)sha1((string)$y_form_name.self::private_key()));
 		if(!$ok) {
 			return false;
 		} //end if
@@ -352,9 +352,10 @@ final class SmartCaptcha {
 	 *
 	 * @param $y_form_name 		STRING the name of the HTML form to bind to ; This must be unique on a page with multiple forms
 	 * @param $y_mode 			ENUM the storage mode ; Can be set to 'cookie' or 'session' ; default is 'cookie'
+	 * @param $y_nodelete 		*OPTIONAL* ; DEFAULT is FALSE ; if set to TRUE will just clear the cookie values, not delete the cookies
 	 * @return BOOLEAN 			TRUE on success or FALSE on failure
 	 */
-	public static function clearCaptcha($y_form_name, $y_mode='cookie') {
+	public static function clearCaptcha($y_form_name, $y_mode='cookie', $y_nodelete=false) {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		//--
@@ -372,8 +373,13 @@ final class SmartCaptcha {
 			//--
 		} else {
 			//--
-			SmartUtils::unset_cookie((string)$var_name); // unset cookie
-			$ok = (bool) SmartUtils::unset_cookie((string)$cookie_name); // unset cookie
+			if($y_nodelete === true) { // sometimes this method may be called before captcha to allow single captcha solve per many actions and if cookie is deleted a warning will appear in firefox console that cookie is already expired ; to avoid this warning, because later on the same page captcha is draw, just clear values of the cookies not delete
+				SmartUtils::set_cookie((string)$var_name, ' '); // reset ; set a space, empty value will delete
+				$ok = (bool) SmartUtils::set_cookie((string)$cookie_name, ' '); // reset ; set a space, empty value will delete
+			} else {
+				SmartUtils::unset_cookie((string)$var_name); // unset cookie
+				$ok = (bool) SmartUtils::unset_cookie((string)$cookie_name); // unset cookie
+			} //end if
 			//--
 		} //end if else
 		//--
@@ -395,7 +401,7 @@ final class SmartCaptcha {
 		//--
 		self::$securityKey = '';
 		if((defined('SMART_FRAMEWORK_SECURITY_KEY')) AND ((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) != '')) {
-			self::$securityKey = (string) SMART_FRAMEWORK_SECURITY_KEY;
+			self::$securityKey = (string) SMART_FRAMEWORK_SECURITY_KEY.'@'.date('Y-m-d'); // use date to be sure next day the captcha data is invalidated ... as the captcha cookies expire session not a fixed time
 		} else {
 			Smart::log_warning(__METHOD__.' # Empty or Undefined Security Private Key: SMART_FRAMEWORK_SECURITY_KEY');
 		} //end if
@@ -441,7 +447,7 @@ final class SmartCaptcha {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		//--
-		return (string) 'SmartCaptcha_DATA_'.sha1($y_form_name.self::private_key());
+		return (string) 'SmartCaptcha_DATA_'.sha1((string)$y_form_name.self::private_key());
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -452,7 +458,7 @@ final class SmartCaptcha {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		//--
-		return (string) 'SmartCaptcha_CHK_'.sha1($y_form_name.self::private_key());
+		return (string) 'SmartCaptcha_CHK_'.sha1((string)$y_form_name.self::private_key());
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -463,7 +469,7 @@ final class SmartCaptcha {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		//--
-		return (string) 'SmartCaptcha_CODE_'.sha1($y_form_name.self::private_key());
+		return (string) 'SmartCaptcha_CODE_'.sha1((string)$y_form_name.self::private_key());
 		//--
 	} //END FUNCTION
 	//================================================================
