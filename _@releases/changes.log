@@ -2,6 +2,13 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+October 20, 2022
+	* add String Ends With CS/CI to Smart JS Utils
+	* add MimeTypes: RDF and Atom near RSS
+	* fix math latex css styles
+	* fix SmartHTML log level for custom SMART_HTML_CLEANER_USE_VALIDATOR
+	* fix growl position
+
 October 14, 2022
 	* app.css -> app.pak.css refactoring
 	* add font-display and text-rendering CSS properties to all CSS containing fonts

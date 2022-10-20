@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20220817
+ * @version 	v.20221020
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -1085,6 +1085,10 @@ final class SmartHtmlParser {
 
 	//=========================================================================
 	private function getOverrideValidatorLogLevel(int $max_err_level) {
+		//--
+		if(defined('SMART_HTML_CLEANER_USE_VALIDATOR')) {
+			return 1; // for custom validator set always to 1 because this is done per controller only and the global SMART_HTML_CLEANER_VALIDATOR_LOG_LEVEL may be unapropriate as log too much (ex: w3s.docs)
+		} //end if
 		//--
 		if(defined('SMART_HTML_CLEANER_VALIDATOR_LOG_LEVEL')) {
 			if(is_int(SMART_HTML_CLEANER_VALIDATOR_LOG_LEVEL)) {

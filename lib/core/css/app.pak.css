@@ -6,7 +6,7 @@
 
 /* ===== core/custom.css */
 
-/* -- CSS Start :: Smart.Framework / Extra :: r.20221014 -- */
+/* -- CSS Start :: Smart.Framework / Extra :: r.20221020 -- */
 
 img#shaddow {
 	border: none;
@@ -68,12 +68,11 @@ div.math-render-latex {
 	margin: 3px;
 	display: block;
 	width: max-content;
-}
-div.math-render-latex {
 	font-weight: bold;
 	font-size: 1.063rem;
 	letter-spacing: 3px;
 	margin-top: 1px;
+	cursor: help !important;
 }
 
 /* -- */
