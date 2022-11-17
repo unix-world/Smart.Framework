@@ -37,8 +37,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	Smart, SmartUnicode, SmartUtils
- * @version 	v.20220918
+ * @depends 	Smart, SmartUnicode, SmartUtils, SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG
+ * @version 	v.20221108
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +53,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20220918';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20221108';
 
 	//===================================
 
@@ -1759,7 +1759,11 @@ final class SmartMarkdownToHTML {
 		} //end if else
 		//--
 		if($use_lazyload) {
-			$src = '';
+			if(defined('SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG')) {
+				$src = (string) trim((string)SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG);
+			} else {
+				$src = '';
+			} //end if
 			$datasrc = (string) $media_src;
 		} else {
 			$src = (string) $media_src;

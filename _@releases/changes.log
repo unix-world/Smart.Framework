@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+November 05, 2022
+	* SmartBrowser JS: fallback HTTP Status code in ajax
+
 October 20, 2022
 	* add String Ends With CS/CI to Smart JS Utils
 	* add MimeTypes: RDF and Atom near RSS

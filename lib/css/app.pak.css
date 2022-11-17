@@ -9,7 +9,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20221001), (c) 2015-2022 unix-world.org
+	extended by unixman, (stable.20221114), (c) 2015-2022 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -1139,6 +1139,44 @@ nav.ux-navy > ul li span.toggle {
 	background: #2A3140;
 }
 
+nav.ux-navy.green-navy > ul {
+	background: #6A9D4E;
+}
+nav.ux-navy.green-navy > ul li a,
+nav.ux-navy.green-navy > ul li span {
+	color: #FFFFFF;
+}
+nav.ux-navy.green-navy > ul li a:hover:not(.active) {
+	background: #487B2C;
+}
+nav.ux-navy.green-navy > ul li a.active {
+	color: #FFFFFF;
+	background: #7BAE5F;
+}
+nav.ux-navy.green-navy > ul li span.toggle {
+	color: #FFFFFF;
+	background: #598C3D;
+}
+
+nav.ux-navy.blue-navy > ul {
+	background: #48578E;
+}
+nav.ux-navy.blue-navy > ul li a,
+nav.ux-navy.blue-navy > ul li span {
+	color: #FFFFFF;
+}
+nav.ux-navy.blue-navy > ul li a:hover:not(.active) {
+	background: #212C58;
+}
+nav.ux-navy.blue-navy > ul li a.active {
+	color: #FFFFFF;
+	background: #6171A9;
+}
+nav.ux-navy.blue-navy > ul li span.toggle {
+	color: #FFFFFF;
+	background: #334173;
+}
+
 nav.ux-navy.alt-navy > ul {
 	background: #EEEEEE;
 }
@@ -1147,11 +1185,11 @@ nav.ux-navy.alt-navy > ul li span {
 	color: #0164C7;
 }
 nav.ux-navy.alt-navy > ul li a:hover:not(.active) {
-	background: #DDDDDD;
+	background: #FEFEFE;
 }
 nav.ux-navy.alt-navy > ul li a.active {
-	color: #6C757D;
-	background: #E0E0E0;
+	color: #5B646C;
+	background: #F8F8F8;
 }
 nav.ux-navy.alt-navy > ul li span.toggle {
 	color: #6C757D;
@@ -1310,7 +1348,7 @@ nav.ux-navbar input[id^=drop] {
 nav.ux-navbar {
 	margin: 0;
 	padding: 0;
-	background: #3F51B5;
+	background: #48578E;
 }
 nav.ux-navbar span.detail-s {
 	display: none;
@@ -1359,7 +1397,7 @@ nav.ux-navbar ul li {
 	margin: 0px;
 	display: inline-block;
 	float: left;
-	background: #3F51B5;
+	background: #48578E;
 }
 nav.ux-navbar a, nav.ux-navbar label.notoggle {
 	display: block;
@@ -1370,11 +1408,11 @@ nav.ux-navbar a, nav.ux-navbar label.notoggle {
 	text-decoration: none;
 }
 nav.ux-navbar ul li ul li:hover {
-	background: #2E40A4;
+	background: #334173;
 }
 nav.ux-navbar a:hover {
 	color: #FFFFFF;
-	background: #1D3093;
+	background: #212C58;
 }
 nav.ux-navbar ul ul {
 	display: none;
@@ -2130,7 +2168,7 @@ nav.ux-navbar.navbar-black a:hover {
 
 /*
 License: BSD
-	extended by unixman (stable.20221001), (c) 2015-2022 unix-world.org
+	extended by unixman (stable.20221114), (c) 2015-2022 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */

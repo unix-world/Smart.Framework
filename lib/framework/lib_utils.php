@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20221004
+ * @version 	v.20221105
  * @package 	@Core:Extra
  *
  */
@@ -55,8 +55,11 @@ final class SmartUtils {
 		'REMOTE_ADDR', // the REMOTE_ADDR must be the 1st in this list, ALWAYS ; it will be used if set so ONLY when behind a proxy and the SMART_FRAMEWORK_SRVPROXY_ENABLED is enabled, but should not be missing !!!
 		'HTTP_X_FORWARDED_CLIENT_IP', // this is non-standard but can be used by haproxy without interfere with standard headers to be trusted as the Visitor Real IP !
 		'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'HTTP_FORWARDED_FOR_IP', // the HTTP_X_FORWARDED_FOR is de facto standard # see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For
-		'HTTP_X_CLIENT_IP', 'HTTP_X_REAL_IP', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_CLIENT_IP', 'CLIENT_IP',
-		'X_FORWARDED_FOR', 'X_FORWARDED', 'FORWARDED_FOR', 'FORWARDED', 'FORWARDED_FOR_IP', 'HTTP_VIA',
+		'HTTP_X_CLIENT_IP', 'HTTP_X_REAL_IP', 'HTTP_CLIENT_IP', 'HTTP_VIA',
+		'HTTP_X_CLUSTER_CLIENT_IP', // rackspace
+		'HTTP_TRUE_CLIENT_IP', // akamai / cloudflare
+		'HTTP_CF_CONNECTING_IP', // cloudflare
+		'HTTP_INCAP_CLIENT_IP', // Incapsula
 	];
 
 	private const VALID_HEADERS_SERVER_PROTO = [
@@ -65,8 +68,8 @@ final class SmartUtils {
 			'http' 	=> 'http' ],
 		'HTTP_X_FORWARDED_HTTPS' => [
 			'on' 	=> 'https',
-			'off' 	=> 'http'
-		]
+			'off' 	=> 'http',
+		],
 	];
 
 	private const VALID_HEADERS_SERVER_PORT 	= [ 'SERVER_PORT', 'HTTP_X_FORWARDED_PORT',   'HTTP_X_PORT' ]; 		// can be on the same port on a different IP/domain thus can use by default: 	'SERVER_PORT'
@@ -775,6 +778,7 @@ final class SmartUtils {
 		if($clear_numbers === true) {
 			$ytxt = (string) self::cleanup_numbers_from_text((string)$ytxt); // do after strip tags to avoid break html
 		} //end if
+		$ytxt = (string) self::cleanup_extra_spaces_from_text((string)$ytxt);
 		//--
 		$ytxt = (string) trim((string)$ytxt);
 		if((string)$ytxt == '') {
@@ -818,6 +822,7 @@ final class SmartUtils {
 		if($clear_numbers === true) {
 			$ytxt = (string) self::cleanup_numbers_from_text((string)$ytxt); // do after strip tags to avoid break html
 		} //end if
+		$ytxt = (string) self::cleanup_extra_spaces_from_text((string)$ytxt);
 		//--
 		return (string) trim((string)Smart::text_cut_by_limit((string)$ytxt, (int)$y_limit, false, ''));
 		//--
@@ -900,10 +905,18 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function cleanup_numbers_from_text($ytxt) {
+	public static function cleanup_extra_spaces_from_text($ytxt) {
 		//--
-		$ytxt = ' '.$ytxt.' '; // add prefix and suffix spaces to allow remove first or last numeric expr too
-		return (string) trim((string)preg_replace('/(\s[0-9\(?\)?\-?\:?\+?\#?.?_? ?]+\s)/', ' ', (string)$ytxt)); // remove numbers from a text
+		return (string) trim((string)preg_replace('/\s+/', ' ', (string)$ytxt)); // remove extra spaces from a text and replace them with single space
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	public static function cleanup_numbers_from_text($ytxt) {
+		//-- TODO: keep version: '/(v|r)[0-9\.]+(x|X|y|Y|z|Z)?/'
+		return (string) trim((string)preg_replace('/(\b|\#)[0-9\(\)\[\]\-\:\+\.]+(\b|\#)/', ' ', ' '.$ytxt.' ')); // remove numbers from a text
 		//--
 	} //END FUNCTION
 	//================================================================

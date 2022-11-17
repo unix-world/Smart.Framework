@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN
- * @version 	v.20220719
+ * @version 	v.20221116
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -2117,6 +2117,7 @@ final class SmartMarkersTemplating {
 					//--
 					//$loop_orig = (string) rtrim((string)$part_loop);
 					$loop_orig = (string) trim((string)$part_loop, "\n\r\0\x0B"); // Fix: trim parts {{{SYNC-TPL-FIX-TRIM-PARTS}}}
+					$loop_orig = (string) ltrim((string)$part_loop); // fix
 					//--
 					$line = '';
 					//--

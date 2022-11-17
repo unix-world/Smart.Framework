@@ -14,7 +14,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
-abstract class AbstractMongoGenericCollection { // v.20221011
+abstract class AbstractMongoGenericCollection { // v.20221114
 
 	// ::
 
@@ -365,7 +365,7 @@ abstract class AbstractMongoGenericCollection { // v.20221011
 	} //END FUNCTION
 
 
-	final public static function deleteRecords(string $area='') : array {
+	final public static function deleteRecords(string $area='', array $extra_filter=[]) : array {
 		//--
 		$mongo = static::getInstance();
 		if(!$mongo) {
@@ -376,10 +376,19 @@ abstract class AbstractMongoGenericCollection { // v.20221011
 		$area = (string) \trim((string)$area);
 		//--
 		$filter = [];
-		if((string)$area != '') {
-			$filter = [
-				'area' => (string) $area,
-			];
+		if((string)$area != '') { // at insert empty area is not possible thus searching for an empty area also is not possible
+			$filter['area'] = (string) $area; // by default area is not unique ... but can be when redefine indexes
+		} //end if
+		if((int)\Smart::array_size($extra_filter) > 0) { // {{{SYNC-DB-ADMIN-MONGO-APPLY-EXTRA-FILTER}}}
+			foreach($extra_filter as $key => $val) {
+				$key = (string) \trim((string)$key);
+				$val = \Smart::json_decode(\Smart::json_encode($val)); // force discard objects, resources and keep just nScalar and Array
+				if((string)$key != '') {
+					if((string)$key != 'area') {
+						$filter[(string)$key] = $val;
+					} //end if
+				} //end if
+			} //end foreach
 		} //end if
 		//--
 		return (array) $mongo->delete(
