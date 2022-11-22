@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+November 18, 2022
+	* PageBuilder Data: EXTRA field
+	* Fixes and optimizations
+
 November 05, 2022
 	* SmartBrowser JS: fallback HTTP Status code in ajax
 

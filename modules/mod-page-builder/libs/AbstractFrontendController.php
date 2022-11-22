@@ -961,13 +961,13 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 					} //end if else
 				} //end if
 			} elseif((string)$data_arr['mode'] == 'text') {
-				//Smart::log_warning('rendering text on ID='.$arr['id']);
+				//\Smart::log_warning('rendering text on ID='.$arr['id']);
 				$data_arr['mode'] = 'text:rendered';
 				if((string)\trim((string)$data_arr['code']) != '') {
 					$data_arr['code'] = (string) \Smart::escape_html((string)$data_arr['code']);
 				} //end if
 			} elseif((string)$data_arr['mode'] == 'markdown') {
-				//Smart::log_warning('rendering markdown on ID='.$arr['id']);
+				//\Smart::log_warning('rendering markdown on ID='.$arr['id']);
 				$data_arr['mode'] = 'markdown:safe';
 				if((string)\trim((string)$data_arr['code']) != '') {
 					if($skip_rendering === true) { // the case of @ self content objects: for these type of objects the content is not quite need to be rendeed in this stage, but mostly validated with data keys only ; the content of this objects will be later rewritten with another referred object and the content of this objects will be used there not here in this context ...
@@ -1227,11 +1227,11 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 												\Smart::log_notice((string)__METHOD__.' # Invalid Field `'.$v['id'].'` on Page/Segment: ['.\implode(';', $this->current_page).']'.'/'.(string)$id.'] for referenced segment: '.$arr_tmp_item['id']);
 										} //end switch
 										//--
-										$arr_tmp_item = (array) $this->loadValue((string)$id, (array)$v['config'], (array)$arr_tmp_item, []);
+										$arr_tmp_item = (array) $this->loadValue((string)$id, (array)($v['config'] ?? []), (array)$arr_tmp_item, []);
 										//--
 									} elseif((string)$v['type'] == 'value') {
 										//--
-										$arr_tmp_item = (array) $this->loadValue((string)$id, (array)$v['config'], (array)$arr_tmp_item, (array)((isset($v['translations']) && \is_array($v['translations'])) ? $v['translations'] : []));
+										$arr_tmp_item = (array) $this->loadValue((string)$id, (array)($v['config'] ?? []), (array)$arr_tmp_item, (array)((isset($v['translations']) && \is_array($v['translations'])) ? $v['translations'] : []));
 										//--
 									} elseif((string)$v['type'] == 'translation') {
 										//--

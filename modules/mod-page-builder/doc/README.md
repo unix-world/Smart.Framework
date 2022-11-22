@@ -1,5 +1,5 @@
 
-# Using the Smart PageBuilder Module for Smart.Framework, rev.20220915
+# Using the Smart PageBuilder Module for Smart.Framework, rev.20221118
 
 ## required settings in etc/config.php
 ```php
@@ -127,6 +127,9 @@ RENDER:
 
 ## Sample YAML Data for a @SELF@ Page or Segment ( {{:TTL1:}}, {{:TTL2:}} ):
 ```yaml
+EXTRA:
+	META-DESCRIPTION:
+		value: This is a free sample ; under the EXTRA key any sub-keys can be used ; the purpose is it can be used out of render context by a plugin
 RENDER:
 	TTL1:
 		content:

@@ -1,16 +1,9 @@
 
-/* -- CSS Start :: Smart.Framework / App :: r.20220913 -- */
+/* -- CSS Start :: Smart.Framework / App :: r.20221119 -- */
 
 /* -- UX Toolkit -- */
 
 @import url("toolkit/ux-toolkit.css");
 @import url("toolkit/ux-toolkit-responsive.css");
-
-/* -- UI Extras -- */
-
-@import url("animate/animate.css");
-
-@import url("v-timeline/style.css");
-@import url("v-timeline/style-responsive.css");
 
 /* -- CSS End -- */

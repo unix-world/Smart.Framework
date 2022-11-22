@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# PAK: Combine all required App Core CSS scripts from lib/core/css/app.css into one package CSS file: lib/core/css/app.pak.css # r.20221013
+# PAK: Combine all required App Core CSS scripts from lib/core/css/app.css into one package CSS file: lib/core/css/app.pak.css # r.20221119
 
 THE_FILE=../lib/core/css/app.pak.css
 

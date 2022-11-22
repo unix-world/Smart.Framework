@@ -1,15 +1,11 @@
 
-/* -- CSS Start :: Smart.Framework / App Core.Plugins :: r.20221013 -- */
+/* -- CSS Start :: Smart.Framework / App Core.Plugins :: r.20221119 -- */
 
 /* ----------------------------- */
 
 /* -- Markdown -- */
 
 @import url("markdown.css");
-
-/* -- Email -- */
-
-@import url("email.css");
 
 /* -- Nav Pager -- */
 
@@ -19,7 +15,14 @@
 
 @import url("captcha.css");
 
-/* -- Txt-Columns -- */
+/* -- Email -- */
+
+@import url("email.css");
+
+/* -- UI Extras -- */
+
+@import url("v-timeline/style.css");
+@import url("v-timeline/style-responsive.css");
 
 @import url("txt-columns/style.css");
 @import url("txt-columns/style-responsive.css");

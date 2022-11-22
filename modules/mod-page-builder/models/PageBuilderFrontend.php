@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20220915
+	// v.20221118
 
 
 	private static $db = null;
@@ -429,9 +429,9 @@ final class PageBuilderFrontend {
 			$qr_suffix = '';
 		} elseif((string)$y_mode == 'get') {
 			if((string)self::dbType() == 'pgsql') {
-				$select_what = '"id", "name", "mode", "auth", "ctrl", "modified", "published", "admin"';
+				$select_what = '"id", "name", "mode", "auth", "ctrl", "modified", "published", "admin", "data"';
 			} elseif((string)self::dbType() == 'sqlite') {
-				$select_what = '`id`, `name`, `mode`, `auth`, `ctrl`, `modified`, `published`, `admin`';
+				$select_what = '`id`, `name`, `mode`, `auth`, `ctrl`, `modified`, `published`, `admin`, `data`';
 			} else {
 				return $default_return;
 			} //end if else

@@ -266,6 +266,36 @@ abstract class AbstractFrontendPageBuilder extends \SmartAbstractAppController {
 	//=====
 
 
+	//=====
+	final public function getObjectArrExtraData(?string $b64_data) : array {
+		//--
+		$yaml = (string) \base64_decode((string)$b64_data);
+		//--
+		if((string)\trim((string)$yaml) != '') {
+			$ymp = new \SmartYamlConverter(false); // do not log YAML errors
+			$yaml = (array) $ymp->parse((string)$yaml);
+			$yerr = (string) $ymp->getError();
+			if($yerr) {
+				return array();
+			} //end if
+			$ymp = null;
+		} else {
+			$yaml = array();
+		} //end if
+		//--
+		if(!\is_array($yaml)) {
+			$yaml = [];
+		} //end if
+		if((!\array_key_exists('EXTRA', $yaml)) OR (!\is_array($yaml['EXTRA']))) {
+			$yaml['EXTRA'] = [];
+		} //end if
+		//--
+		return (array) $yaml['EXTRA'];
+		//--
+	} //END FUNCTION
+	//=====
+
+
 } //END CLASS
 
 
