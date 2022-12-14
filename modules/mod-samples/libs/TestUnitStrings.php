@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210818
+ * @version 	v.20221205
  *
  */
 final class TestUnitStrings {
@@ -146,7 +146,7 @@ final class TestUnitStrings {
 			$tests[] = $the_test;
 			if((string)\SmartUnicode::html_entities(self::$entities_text) !== (string)self::$entities_html) {
 				$err = 'ERROR: '.$the_test.' FAILED (Encode) ...';
-			} elseif((string)\Smart::striptags(self::$entities_html) !== (string)self::$entities_text) {
+			} elseif((string)\Smart::stripTags((string)self::$entities_html) !== (string)self::$entities_text) {
 				$err = 'ERROR: '.$the_test.' FAILED (Decode) ...';
 			} //end if
 		} //end if

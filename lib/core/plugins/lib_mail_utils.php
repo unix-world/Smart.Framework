@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20221013
+ * @version 	v.20221205
  * @package 	Plugins:Mailer
  *
  */
@@ -876,7 +876,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20221013
+ * @version 	v.20221205
  * @package 	Plugins:Mailer
  *
  */
@@ -1411,7 +1411,7 @@ final class SmartMailerMimeParser {
 							//--
 							$msg['texts'][$key]['content'] = (string) $val['content']; // rewrite back
 							//--
-							$xbuff = (string) SmartUnicode::sub_str(Smart::striptags($val['content']), 0, 16384);
+							$xbuff = (string) SmartUnicode::sub_str((string)Smart::stripTags((string)$val['content']), 0, 16384);
 							$xbuff_id = (string) $key;
 							//--
 							$percent_similar = 0;

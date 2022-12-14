@@ -72,7 +72,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20220924
+ * @version     v.20221205
  * @package     @Core
  *
  */
@@ -1575,15 +1575,14 @@ final class Smart {
 	 * Enhanced strip_tags() :: will revert also special entities like nbsp; and more
 	 *
 	 * @param ARRAY 		$yhtmlcode		:: HTML Code to be stripped of tags
-	 * @param YES/NO 		$y_mode			:: yes to convert <br> to new lines \n, otherwise (if no) will convert <br> to spaces
-	 * @param YES/NO 		$ynormalize 	:: yes to normalize the code as text, otherwise (if no) will do not use extra normalize feature so the code may be re-used for re-encoding as html (ex: extract markdown) ...
+	 * @param BOOL 			$y_mode			:: Default is TRUE to convert <br> to new lines \n, otherwise (if FALSE) will convert <br> to spaces
+	 * @param BOOL 			$ynormalize 	:: Default is TRUE to normalize the code as text, otherwise (if FALSE) will do not use extra normalize feature so the code may be re-used for re-encoding as html (ex: extract markdown) ...
 	 *
 	 * @return STRING 						:: The processed HTML Code
 	 */
-	public static function striptags(?string $yhtmlcode, ?string $ynewline='yes', ?string $ynormalize='yes') { // {{{SYNC-SMART-STRIP-TAGS-LOGIC}}}
+	public static function stripTags(?string $yhtmlcode, bool $ynewline=true, bool $ynormalize=true) { // {{{SYNC-SMART-STRIP-TAGS-LOGIC}}}
 		//--
 		$yhtmlcode = (string) $yhtmlcode;
-		$ynewline = (string) $ynewline;
 		//-- fix xhtml tag ends and add spaces between tags
 		$yhtmlcode = (string) str_replace([' />', '/>', '>'], '> ', (string)$yhtmlcode);
 		//-- remove special tags
@@ -1608,7 +1607,7 @@ final class Smart {
 		$yhtmlcode = (string) preg_replace((array)$html_regex_h, ' ', (string)$yhtmlcode);
 		$yhtmlcode = str_replace(["\r\n", "\r", "\t", "\f"], ["\n", "\n", ' ', ' '], $yhtmlcode);
 		//-- replace new line tags
-		if((string)$ynewline == 'yes') {
+		if($ynewline === true) {
 			$replchr = "\n"; // newline
 		} else {
 			$replchr = ' '; // space
@@ -1617,7 +1616,7 @@ final class Smart {
 		//-- strip the tags
 		$yhtmlcode = (string) strip_tags((string)$yhtmlcode);
 		//-- restore some usual html entities
-		if((string)$ynormalize != 'no') {
+		if($ynormalize === true) {
 			$yhtmlcode = (string) str_ireplace((array)array_keys((array)self::STRIP_HTML_ENTITIES), (array)array_values((array)self::STRIP_HTML_ENTITIES), (string)$yhtmlcode); // must be insensitive replace ... by example &Prime; can be also &prime; ... in this context, using STRIP_HTML_ENTITIES they willnot conflict with wrong entities if using case insensitice since they are unique also in case insensitive
 		} //end if
 		//-- if new tags may appear after strip tags that is natural as they were encoded already with entities ... ; Anyway, the following can't be used as IT BREAKS TEXT THAT COMES AFTER < which was previous encoded as &lt; !!!
@@ -1627,7 +1626,7 @@ final class Smart {
 		//-- try to convert other remaining html entities
 		$yhtmlcode = (string) self::decode_html_entities((string)$yhtmlcode);
 		//-- clean any other remaining html entities
-		if((string)$ynormalize != 'no') {
+		if($ynormalize === true) {
 			$yhtmlcode = (string) preg_replace('/&\#?([0-9a-z]+);/i', ' ', (string)$yhtmlcode);
 		} //end if
 		//-- cleanup multiple spaces with just one space

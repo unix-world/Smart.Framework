@@ -4,7 +4,7 @@
 // Developed by Cory LaViska for A Beautiful Site, LLC
 // Licensed under the MIT license: http://opensource.org/licenses/MIT
 
-// r.20220918
+// r.20221211
 // (c) 2019-2022 unix-world.org
 // License: BSD
 // contains fixes by unixman
@@ -66,8 +66,13 @@
 	overflow-y: auto;
 	overflow-x: hidden;
 }
-.alertable-message-html {
+.alertable-message-html,
+.alertable-message-text {
 	white-space: normal !important;
+}
+.alertable-message-text {
+	font-size: 1.125rem !important;
+	font-weight: bold;
 }
 
 /* Prompt */

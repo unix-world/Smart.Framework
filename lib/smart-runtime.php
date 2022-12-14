@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR (((string)SMART_FRAMEWORK_RUNTI
 //-----------------------------------------------------
 
 
-//====================================================== r.20220924
+//====================================================== r.20221208
 // Smart-Framework - App Runtime (this should be loaded only from app web root)
 // DEPENDS: Smart.Framework + Smart.Framework/Components
 // DO NOT MODIFY THIS FILE OR ANY OTHER FILE(S) UNDER lib/* or index.php or admin.php or task.php [They will be all overwritten on any future framework updates or upgrades] !!!
@@ -299,7 +299,7 @@ define('SMART_FRAMEWORK_APP_RUNTIME', 'SET'); // stop here !
  * @access 		private
  * @internal
  *
- * @version 	v.20210506
+ * @version 	v.20221208
  *
  */
 interface SmartInterfaceAppBootstrap {
@@ -360,7 +360,7 @@ interface SmartInterfaceAppBootstrap {
  * @access 		private
  * @internal
  *
- * @version 	v.20210506
+ * @version 	v.20221208
  *
  */
 interface SmartInterfaceAppInfo {
@@ -373,7 +373,7 @@ interface SmartInterfaceAppInfo {
 	 * Test if a specific App Template Exists
 	 * RETURN: true or false
 	 */
-	public static function TestIfTemplateExists($y_template_name);
+	public static function TestIfTemplateExists(string $y_template_name) : bool;
 	//=====
 
 
@@ -382,7 +382,7 @@ interface SmartInterfaceAppInfo {
 	 * Test if a specific App Module Exists
 	 * RETURN: true or false
 	 */
-	public static function TestIfModuleExists($y_module_name);
+	public static function TestIfModuleExists(string $y_module_name) : bool;
 	//=====
 
 

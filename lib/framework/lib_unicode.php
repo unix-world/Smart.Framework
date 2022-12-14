@@ -117,7 +117,7 @@ if(mb_substitute_character() !== 63) {
  *  //utf8_decode()                 SmartUnicode::utf8_to_iso()             [ok]        it may break strings that are used in unicode environments thus the strings need to be re-encoded ; if not re-encoded back to unicode the regex \u will fail in strange modes ...
  *  //utf8_encode()                 SmartUnicode::iso_to_utf8()             [!!]        there is a risk to double encode the string and break it if is not ISO ; use just for ISO strings !!
  *  //wordwrap()                    SmartUnicode::word_wrap()               [ok]        the PHP wordwrap() is not unicode safe
- *  //strip_tags()                  Smart::striptags()                      [ok+]       the PHP strip_tags() will not replace some extra things like &nbsp; and much other html entities
+ *  //strip_tags()                  Smart::stripTags()                      [ok+]       the PHP strip_tags() will not replace some extra things like &nbsp; and much other html entities
  *  //--
  *  //printf()                      * printf()                              [!+]        Will not take care of real multibyte string length and may return unexpected results
  *  //sprintf()                     * sprintf()                             [!+]        Will not take care of real multibyte string length and may return unexpected results
@@ -150,7 +150,7 @@ if(mb_substitute_character() !== 63) {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET
- * @version     v.20220708
+ * @version     v.20221205
  * @package     @Core
  *
  */

@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //-----------------------------------------------------
 
 //======================================================
-// Smart-Framework - App Bootstrap :: r.20211213
+// Smart-Framework - App Bootstrap :: r.20221208
 // DEPENDS: SmartFramework, SmartFrameworkRuntime
 //======================================================
 // This file can be customized per App ...
@@ -48,7 +48,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20211213
+ * @version 	v.20221208
  *
  */
 final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
@@ -419,7 +419,10 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			} //end if
 		} //end if
 		//--
-		$dir = '#db/'; // {{{SYNC-#DB-FOLDER-HTACCESS}}}
+		if(((int)Smart::array_size(Smart::get_from_config('sqlite', 'array')) <= 0) AND ((int)Smart::array_size(Smart::get_from_config('dba', 'array')) <= 0)) {
+			return;
+		} //end if
+		$dir = '#db/'; // {{{SYNC-#DB-FOLDER-HTACCESS}}} ; for sqlite or dba only
 		if(!SmartFileSystem::is_type_dir($dir)) {
 			SmartFileSystem::dir_create($dir, false, true); // allow protected paths
 		} //end if
@@ -430,7 +433,6 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			);
 			return;
 		} //end if
-		//--
 		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
 			if(@file_put_contents((string)$dir.'.htaccess', (string)'### Smart.Framework // '.__METHOD__.' @ HtAccess Data Protection ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', LOCK_EX)) {
 				SmartFileSystem::fix_file_chmod((string)$dir.'.htaccess'); // apply file chmod
@@ -629,7 +631,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20210526
+ * @version 	v.20221208
  * @package 	Application
  *
  */
@@ -637,7 +639,7 @@ final class SmartAppInfo implements SmartInterfaceAppInfo {
 
 	// ::
 
-	private static $cache = array();
+	private static $cache = [];
 
 
 	//=====
@@ -648,39 +650,24 @@ final class SmartAppInfo implements SmartInterfaceAppInfo {
 	 *
 	 * @return 	BOOLEAN						:: TRUE if template exists, FALSE if not detected
 	 */
-	public static function TestIfTemplateExists($y_template_name) {
+	public static function TestIfTemplateExists(string $y_template_name) : bool {
 		//--
 		$y_template_name = (string) Smart::safe_filename((string)$y_template_name);
 		if((string)$y_template_name == '') {
 			return false;
 		} //end if
 		//--
-		$test_cache = '';
-		if(array_key_exists((string)'TestIfTemplateExists:'.$y_template_name, (array)self::$cache)) {
-			$test_cache = (string) self::$cache['TestIfTemplateExists:'.$y_template_name];
+		$prefix = 'TemplateExists';
+		//--
+		if(!array_key_exists((string)$prefix.':'.$y_template_name, (array)self::$cache)) {
+			if(SmartFileSystem::is_type_dir('etc/templates/'.$y_template_name.'/')) {
+				self::$cache[(string)$prefix.':'.$y_template_name] = true;
+			} else {
+				self::$cache[(string)$prefix.':'.$y_template_name] = false;
+			} //end if
 		} //end if
 		//--
-		if((string)$test_cache != '') { // get cached test
-			//--
-			if((string)$test_cache == 'YES') {
-				$exists = true;
-			} else {
-				$exists = false;
-			} //end if
-			//--
-		} else { // real test
-			//--
-			if(SmartFileSystem::is_type_dir('etc/templates/'.$y_template_name.'/')) {
-				$exists = true;
-				self::$cache['TestIfTemplateExists:'.$y_template_name] = 'YES';
-			} else {
-				$exists = false;
-				self::$cache['TestIfTemplateExists:'.$y_template_name] = 'NO';
-			} //end if
-			//--
-		} //end if else
-		//--
-		return (bool) $exists;
+		return (bool) self::$cache[(string)$prefix.':'.$y_template_name];
 		//--
 	} //END FUNCTION
 	//=====
@@ -694,39 +681,23 @@ final class SmartAppInfo implements SmartInterfaceAppInfo {
 	 *
 	 * @return 	BOOLEAN						:: TRUE if module exists, FALSE if not detected
 	 */
-	public static function TestIfModuleExists($y_module_name) {
+	public static function TestIfModuleExists(string $y_module_name) : bool {
 		//--
 		$y_module_name = (string) Smart::safe_filename((string)$y_module_name);
 		if((string)$y_module_name == '') {
 			return false;
 		} //end if
 		//--
-		$test_cache = '';
-		if(array_key_exists((string)'TestIfModuleExists:'.$y_module_name, self::$cache)) {
-			$test_cache = (string) self::$cache['TestIfModuleExists:'.$y_module_name];
+		$prefix = 'ModuleExists';
+		if(!array_key_exists((string)$prefix.':'.$y_module_name, (array)self::$cache)) {
+			if(SmartFileSystem::is_type_dir('modules/'.$y_module_name.'/')) {
+				self::$cache[(string)$prefix.':'.$y_module_name] = true;
+			} else {
+				self::$cache[(string)$prefix.':'.$y_module_name] = false;
+			} //end if
 		} //end if
 		//--
-		if((string)$test_cache != '') { // get cached test
-			//--
-			if((string)$test_cache == 'YES') {
-				$exists = true;
-			} else {
-				$exists = false;
-			} //end if
-			//--
-		} else { // real test
-			//--
-			if(SmartFileSystem::is_type_dir('modules/'.$y_module_name.'/')) {
-				$exists = true;
-				self::$cache['TestIfModuleExists:'.$y_module_name] = 'YES';
-			} else {
-				$exists = false;
-				self::$cache['TestIfModuleExists:'.$y_module_name] = 'NO';
-			} //end if
-			//--
-		} //end if else
-		//--
-		return (bool) $exists;
+		return (bool) self::$cache[(string)$prefix.':'.$y_module_name];
 		//--
 	} //END FUNCTION
 	//=====

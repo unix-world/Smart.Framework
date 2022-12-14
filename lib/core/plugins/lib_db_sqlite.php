@@ -63,7 +63,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20220708
+ * @version 	v.20221205
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -493,7 +493,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20220708
+ * @version 	v.20221205
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -1868,7 +1868,7 @@ final class SmartSQliteUtilDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20220708
+ * @version 	v.20221205
  * @package 	Plugins:Database:SQLite
  *
  */
@@ -2070,7 +2070,7 @@ final class SmartSQliteFunctions {
 
 	public static function striptags($str) {
 		//--
-		return (string) Smart::striptags($str, 'yes');
+		return (string) Smart::stripTags((string)$str);
 		//--
 	} //END FUNCTION
 

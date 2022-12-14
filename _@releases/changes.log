@@ -2,6 +2,13 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+December 08, 2022
+	* Security: Js Browser Utils PopUp: if different domain don't use bind to parent window or redirect handler to avoid possible XSS injections
+
+December 05, 2022
+	* Change Smart::striptags to Smart::stripTags + change yes/no params to bool
+	* Remove deprecated Passwords v1 support (deprecated since more than 12 months ; it is unsafe ; migrate all passwords to v2)
+
 November 18, 2022
 	* PageBuilder Data: EXTRA field
 	* Fixes and optimizations

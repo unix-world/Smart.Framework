@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20221013
+ * @version 	v.20221213
  * @package 	Application:ViewComponents
  *
  */
@@ -561,7 +561,7 @@ final class SmartComponents {
 		$base_url = (string) SmartUtils::get_server_current_url();
 		//-- framework
 		$software_name = 'Smart.Framework, a PHP / Javascript Web Framework';
-		if((string)$y_show_versions == 'yes') { // expose versions (not recommended in web area, except for auth admins)
+		if(!defined('SMART_SOFTWARE_DISABLE_STATUS_POWERED') OR SMART_SOFTWARE_DISABLE_STATUS_POWERED !== true) {
 			$software_name .= ' :: '.(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') ? SMART_FRAMEWORK_RELEASE_TAGVERSION : '').'-'.(defined('SMART_FRAMEWORK_RELEASE_VERSION') ? SMART_FRAMEWORK_RELEASE_VERSION : '').' @ '.(defined('SMART_SOFTWARE_APP_NAME') ? SMART_SOFTWARE_APP_NAME : '');
 		} //end if
 		$software_logo = $base_url.'lib/framework/img/sf-logo.svg';

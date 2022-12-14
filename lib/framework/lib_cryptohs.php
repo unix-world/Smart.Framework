@@ -54,8 +54,8 @@ if(!function_exists('hash_algos')) {
  * @usage       static object: Class::method() - This class provides only STATIC methods
  *
  * @access      PUBLIC
- * @depends     PHP hash_algos() / hash() ; classes: SmartFrameworkRegistry, Smart
- * @version     v.20211210
+ * @depends     PHP hash_algos() / hash() ; classes: SmartFrameworkRegistry, Smart ; SMART_FRAMEWORK_SECURITY_KEY
+ * @version     v.20221205
  * @package     @Core:Crypto
  *
  */
@@ -65,11 +65,11 @@ final class SmartHashCrypto {
 
 	public const PASSWORD_HASH_LENGTH = 128; // fixed length, if lower then padded {{{SYNC-AUTHADM-PASS-PADD}}}
 
-	private const SALT_SFSIGN = 'Smart Framework';
-	private const SALT_HASHTG = '#';
-	private const SALT_CRYPTO = 'スマート フレームワーク';
+	private const SALT_PREFIX = 'Smart Framework';
+	private const SALT_SEPARATOR = '#';
+	private const SALT_SUFFIX = 'スマート フレームワーク';
 
-	private const PASSWORD_PREFIX_V2 = 'sfpass.v2!';
+	private const PASSWORD_PREFIX_VERSION = 'sfpass.v2!';
 
 	private static $cache = [];
 
@@ -87,7 +87,9 @@ final class SmartHashCrypto {
 		//--
 		$y_custom_salt = (string) trim((string)$y_custom_salt);
 		if((string)$y_custom_salt == '') {
-			$y_custom_salt = (string) SMART_FRAMEWORK_SECURITY_KEY;
+			if(defined('SMART_FRAMEWORK_SECURITY_KEY')) {
+				$y_custom_salt = (string) SMART_FRAMEWORK_SECURITY_KEY;
+			} //end if
 		} //end if
 		//--
 		$hexstr = (string) self::sha256((string)$y_data.'#'.$y_custom_salt);
@@ -106,10 +108,9 @@ final class SmartHashCrypto {
 	 *
 	 * @param STRING $y_pass 			The password
 	 * @param STRING $y_custom_salt 	The salt (default is empty)
-	 * @param ENUM $y_version 			The password version ; v1 = hex password format (old, r.20151216) ; v2 = b64 password format (default, r.20210830)
 	 * @return STRING 					The password hash: for v1 will return a 128 bytes SHA512 (hex) ; for v2 will return a 128 bytes padded with * on right, composed from 98 bytes hash with a prefix and the SHA512 (base64, 88 bytes)
 	 */
-	public static function password(string $y_pass, string $y_custom_salt='', string $y_version='v2') : string { // {{{SYNC-HASH-PASSWORD}}}
+	public static function password(string $y_pass, string $y_custom_salt='') : string { // {{{SYNC-HASH-PASSWORD}}}
 		//--
 		// the password salt must not be too complex related to the password itself # http://stackoverflow.com/questions/5482437/md5-hashing-using-password-as-salt
 		// nn extraordinary good salt + a weak password may increase the risk of colissions
@@ -124,36 +125,12 @@ final class SmartHashCrypto {
 			return '';
 		} //end if
 		//--
-		$salt = '';
-		$pass = '';
-		$prefix = '';
-		switch((string)$y_version) {
-			case 'v2': // r.20210830
-				//--
-				$prefix = (string) self::PASSWORD_PREFIX_V2;
-				//--
-				$salt = (string) self::sha512((string)$y_custom_salt.' '.self::SALT_SFSIGN.' '.self::SALT_HASHTG.' '.self::SALT_CRYPTO); // req. padding if salt is empty, will use a fixed salt
-				$pass = (string) self::safecomposedkey((string)str_pad((string)trim((string)$y_pass), 7, '|', STR_PAD_RIGHT)); // req. padding, if an empty password is sent by auth login tries to avoid fatal error
-				$pass = (string) self::sha512((string)self::sha256((string)$salt).' '.$pass.' '.$salt, true);
-				//--
-				break;
-			case 'v1': // r.20151216
-				//--
-				$prefix = ''; // for v1 there is no prefix
-				//--
-				$salt = '';
-				if((string)$y_custom_salt != '') {
-					$salt = (string) self::md5((string)'$1'.$y_custom_salt.'$2'.$y_pass);
-				} //end if
-				$pass = (string) self::sha512((string)$salt.'@ '.self::SALT_SFSIGN.' :'.$y_pass.': '.self::SALT_CRYPTO.' '.self::SALT_HASHTG.' 170115%!Password.512/($Auth)*'.strtoupper((string)sha1((string)$y_pass.'&$'.$salt)).'^#[?]');
-				//--
-				break;
-			default:
-				//--
-				Smart::raise_error(__METHOD__.' # Internal Error: Invalid Password Version: '.$y_version);
-				return '';
-				//--
-		} //end switch
+		$prefix = (string) self::PASSWORD_PREFIX_VERSION;
+		//--
+		$salt = (string) self::sha512((string)$y_custom_salt.' '.self::SALT_PREFIX.' '.self::SALT_SEPARATOR.' '.self::SALT_SUFFIX); // req. padding if salt is empty, will use a fixed salt
+		//--
+		$pass = (string) self::safecomposedkey((string)str_pad((string)trim((string)$y_pass), 7, '|', STR_PAD_RIGHT)); // req. padding, if an empty password is sent by auth login tries to avoid fatal error
+		$pass = (string) self::sha512((string)self::sha256((string)$salt).' '.$pass.' '.$salt, true);
 		//--
 		$prefix = (string) trim((string)$prefix);
 		$pass = (string) trim((string)$pass);
@@ -182,40 +159,23 @@ final class SmartHashCrypto {
 	 * @param STRING $y_hash 			The password hash to be checked
 	 * @param STRING $y_pass 			The password
 	 * @param STRING $y_custom_salt 	The salt (default is empty)
-	 * @param ENUM $y_version 			The password version ; Default is NULL to autodetect ; if a version (v1 or v2) is specified will check just using that specific version
 	 * @return BOOL 					Will return TRUE if password match or FALSE if not
 	 */
-	public static function checkpassword(string $y_hash, string $y_pass, string $y_custom_salt='', ?string $y_version=null) : bool {
+	public static function checkpassword(string $y_hash, string $y_pass, string $y_custom_salt='') : bool {
 		//--
 		$y_hash = (string) trim((string)$y_hash);
 		if((int)strlen((string)$y_hash) !== (int)self::PASSWORD_HASH_LENGTH) {
 			return false;
 		} //end if
 		//--
-		$ver = '';
-		if($y_version === null) { // autodetect
-			if(strpos((string)$y_hash, (string)self::PASSWORD_PREFIX_V2) === 0) {
-				if(\preg_match('/^[a-zA-Z0-9\+\/\=]+$/', (string)rtrim((string)substr((string)$y_hash, (int)strlen((string)self::PASSWORD_PREFIX_V2)),'*'))) { // b64, except signature and padding
-					$ver = 'v2';
-				} //end if
-			} elseif(strpos((string)$y_hash, '!') === false) {
-				if(\preg_match('/^[a-f0-9]+$/', (string)$y_hash)) { // hex
-					$ver = 'v1';
-				} //end if
-			} //end if
-		} else { // use a specific version
-			$ver = (string) $y_version;
-		} //end if else
+		if(strpos((string)$y_hash, (string)self::PASSWORD_PREFIX_VERSION) !== 0) {
+			return false;
+		} //end if
+		if(!preg_match('/^[a-zA-Z0-9\+\/\=]+$/', (string)rtrim((string)substr((string)$y_hash, (int)strlen((string)self::PASSWORD_PREFIX_VERSION)),'*'))) { // b64, except signature and padding
+			return false;
+		} //end if
 		//--
-		$hash = '';
-		switch((string)$ver) {
-			case 'v2':
-			case 'v1':
-				$hash = (string) self::password((string)$y_pass, (string)$y_custom_salt, (string)$ver);
-				break;
-			default:
-				return false;
-		} //end switch
+		$hash = (string) self::password((string)$y_pass, (string)$y_custom_salt);
 		if(((string)trim((string)$hash) == '') OR ((int)strlen((string)$hash) !== (int)self::PASSWORD_HASH_LENGTH)) { // {{{SYNC-AUTHADM-PASS-PADD}}}
 			return false;
 		} //end if

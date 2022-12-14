@@ -64,6 +64,20 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		} //end if
 		//--
 
+		//--
+		SmartAppInfo::TestIfTemplateExists('default');
+		if(!SmartAppInfo::TestIfTemplateExists('default')) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: The `default` template is missing ...');
+			return;
+		} //end if
+		//--
+		SmartAppInfo::TestIfModuleExists('mod-samples');
+		if(!SmartAppInfo::TestIfModuleExists('mod-samples')) {
+			$this->PageViewSetErrorStatus(500, 'ERROR: The `mod-samples` module is missing ...');
+			return;
+		} //end if
+		//--
+
 		//-- sample page variable from Request (GET/POST)
 		$some_var_from_request = $this->RequestVarGet('extra_text', 'default', 'string');
 		//--

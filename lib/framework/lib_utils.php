@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20221105
+ * @version 	v.20221205
  * @package 	@Core:Extra
  *
  */
@@ -772,7 +772,7 @@ final class SmartUtils {
 	// extract HTML title (must not exceed 128 characters ; recommended is max 65) ; no changes
 	public static function extract_title(?string $ytxt, ?int $y_limit=65, bool $clear_numbers=false) {
 		//--
-		$ytxt = (string) Smart::striptags((string)$ytxt, 'no'); // will do strip tags
+		$ytxt = (string) Smart::stripTags((string)$ytxt, false); // will do strip tags
 		$ytxt = (string) Smart::normalize_spaces((string)$ytxt); // will do normalize spaces
 		//--
 		if($clear_numbers === true) {
@@ -895,7 +895,7 @@ final class SmartUtils {
 	// prepare HTML compliant keywords from a string
 	public static function extract_words_from_text_html(?string $ytxt) {
 		//--
-		$ytxt = Smart::striptags((string)$ytxt, 'no');
+		$ytxt = Smart::stripTags((string)$ytxt, false);
 		$ytxt = Smart::normalize_spaces((string)$ytxt);
 		//--
 		return (array) explode(' ', (string)$ytxt);
