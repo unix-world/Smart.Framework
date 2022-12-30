@@ -43,8 +43,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210616
- * @package 	Plugins:ViewComponents
+ * @version 	v.20221226
+ * @package 	Application:Plugins:ViewComponents
  *
  */
 final class SmartViewHtmlHelpers {
@@ -184,8 +184,6 @@ final class SmartViewHtmlHelpers {
 	 *
 	 */
 	public static function html_js_editarea(?string $yid, ?string $yvarname, ?string $yvalue='', ?string $y_mode='text', bool $y_editable=true, ?string $y_width='720px', ?string $y_height='300px', bool $y_line_numbers=true, ?string $custom_theme='') {
-		//--
-		$the_lang = SmartTextTranslations::getLanguage();
 		//--
 		switch((string)$y_mode) { // {{{SYNC-SMART-CODEMIRROR-MODES}}}
 			case 'json-ld':

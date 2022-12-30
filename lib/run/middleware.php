@@ -46,7 +46,8 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20220924
+ * @version		20221220
+ * @package 	Application
  *
  */
 abstract class SmartAbstractAppMiddleware {
@@ -230,19 +231,19 @@ abstract class SmartAbstractAppMiddleware {
 				return '';
 			} //end if
 			//--
-			if(SmartFileSysUtils::check_if_safe_path($filepath)) {
+			if(SmartFileSysUtils::checkIfSafePath((string)$filepath)) {
 				//--
 				$skip_log = 'no'; // default log
 				if(defined('SMART_FRAMEWORK_DOWNLOAD_SKIP_LOG')) {
 					$skip_log = 'yes'; // do not log if accessed via admin area and user is authenticated
 				} //end if
 				//--
-				$tmp_file_ext  = (string) strtolower((string)SmartFileSysUtils::get_file_extension_from_path($filepath)); // [OK]
-				$tmp_file_name = (string) strtolower((string)SmartFileSysUtils::get_file_name_from_path($filepath));
+				$tmp_file_ext  = (string) strtolower((string)SmartFileSysUtils::extractPathFileExtension((string)$filepath)); // [OK]
+				$tmp_file_name = (string) strtolower((string)SmartFileSysUtils::extractPathFileName((string)$filepath));
 				//--
-				$tmp_eval = (array) SmartFileSysUtils::mime_eval($tmp_file_name);
-				$mime_type = (string) $tmp_eval[0];
-				$mime_disp = (string) $tmp_eval[1];
+				$tmp_eval = (array) SmartFileSysUtils::getArrMimeType((string)$tmp_file_name);
+				$mime_type = (string) $tmp_eval[0]; // the mimeTytpe
+				$mime_disp = (string) $tmp_eval[1]; // 'inline/attachment; filename="file.ext"'
 				//-- the path must not start with / but this is tested below
 				$tmp_arr_paths = (array) explode('/', $filepath, 2); // only need 1st part for testing
 				//-- allow file downloads just from specific folders like wpub/ or wsys/ (this is a very important security fix to dissalow any downloads that are not in the specific folders)
@@ -251,7 +252,7 @@ abstract class SmartAbstractAppMiddleware {
 					AND
 					(
 						( // only: task.php, using tmp/ as prefix
-							(SmartFrameworkRegistry::isAdminArea() AND SmartFrameworkRegistry::isTaskArea()) // is task
+							(SmartEnvironment::isAdminArea() AND SmartEnvironment::isTaskArea()) // is task
 							AND
 							((string)substr((string)$filepath, 0, 4) == 'tmp/') // and the folder starts with tmp/
 						)
@@ -264,15 +265,15 @@ abstract class SmartAbstractAppMiddleware {
 					)
 				) {
 					//--
-					SmartFileSysUtils::raise_error_if_unsafe_path($filepath); // re-test finally
+					SmartFileSysUtils::raiseErrorIfUnsafePath((string)$filepath); // re-test finally
 					//-- no need to clear the stat cache as the following checks will do it
-					if(SmartFileSystem::is_type_file($filepath) AND SmartFileSystem::have_access_read($filepath)) {
+					if(SmartFileSystem::is_type_file((string)$filepath) AND SmartFileSystem::have_access_read((string)$filepath)) {
 						//--
 						if(!headers_sent()) {
 							//--
-							$fsize = (int) SmartFileSystem::get_file_size($filepath);
+							$fsize = (int) SmartFileSystem::get_file_size((string)$filepath);
 							//--
-							if(($fsize <= 0) OR (!SmartFileSystem::have_access_read($filepath))) {
+							if(($fsize <= 0) OR (!SmartFileSystem::have_access_read((string)$filepath))) {
 								//--
 								Smart::log_info('File Download', 'Failed: 404 / The requested File is Empty or Not Readable: '.$filepath.' on Client: '.$client_signature);
 								SmartFrameworkRuntime::Raise404Error('WARNING: The requested File is Empty or Not Readable !');
@@ -348,8 +349,8 @@ abstract class SmartAbstractAppMiddleware {
 	final public static function ServiceStatus($the_midmark) {
 		//--
 		$show_versions = 'no';
-		if(SmartFrameworkRegistry::isAdminArea() === true) {
-			if(SmartFrameworkRegistry::isTaskArea() === true) {
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
 				$txt_area = 'Task';
 				$show_versions = 'yes'; // trusted by custom IP !
 			} else {
@@ -374,7 +375,7 @@ abstract class SmartAbstractAppMiddleware {
 	//======================================================================
 	final public static function DebugInfoCookieSet($area) {
 		//--
-		if(!SmartFrameworkRegistry::ifDebug()) {
+		if(!SmartEnvironment::ifDebug()) {
 			return false;
 		} //end if
 		//--
@@ -412,7 +413,7 @@ abstract class SmartAbstractAppMiddleware {
 	//======================================================================
 	final public static function DebugInfoGet($area) {
 		//--
-		if(!SmartFrameworkRegistry::ifDebug()) {
+		if(!SmartEnvironment::ifDebug()) {
 			return '';
 		} //end if
 		//--
@@ -449,7 +450,7 @@ abstract class SmartAbstractAppMiddleware {
 	//======================================================================
 	final public static function DebugInfoSet($area, $is_main) {
 		//--
-		if(!SmartFrameworkRegistry::ifDebug()) {
+		if(!SmartEnvironment::ifDebug()) {
 			return false;
 		} //end if
 		//--
@@ -494,8 +495,8 @@ abstract class SmartAbstractAppMiddleware {
 		} //end if else
 		$res_time = (float) (microtime(true) - (float)SMART_FRAMEWORK_RUNTIME_READY);
 		//-- #END-SYNC
-		SmartFrameworkRegistry::setDebugMsg('stats', 'memory', $res_memory); // bytes
-		SmartFrameworkRegistry::setDebugMsg('stats', 'time', $res_time); // seconds
+		SmartEnvironment::setDebugMsg('stats', 'memory', $res_memory); // bytes
+		SmartEnvironment::setDebugMsg('stats', 'time', $res_time); // seconds
 		SmartDebugProfiler::save_debug_info((string)$area, (string)$cookie_data, (bool)$is_main);
 		//--
 		return true;

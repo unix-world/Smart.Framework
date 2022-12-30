@@ -28,7 +28,7 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'Redis: Memory based');
  * @access 		PUBLIC
  * @depends 	SmartRedisDb, Smart
  * @version 	v.20210830
- * @package 	Application
+ * @package 	Application:Session
  *
  */
 final class SmartCustomSession extends SmartAbstractCustomSession {

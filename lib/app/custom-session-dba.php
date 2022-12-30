@@ -27,8 +27,8 @@ define('SMART_FRAMEWORK__INFO__CUSTOM_SESSION_ADAPTER', 'DBA: DB file based');
  *
  * @access 		PUBLIC
  * @depends 	SmartDbaDb, Smart, SmartPersistentCache, PHP DBA Extension
- * @version 	v.20210527
- * @package 	Application
+ * @version 	v.20221219
+ * @package 	Application:Session
  *
  */
 final class SmartCustomSession extends SmartAbstractCustomSession {
@@ -62,9 +62,9 @@ final class SmartCustomSession extends SmartAbstractCustomSession {
 		//--
 		$is_fatal_err = false; // for session do not use fatal errors, just log them
 		//-- {{{SYNC-SESSION-FILE_BASED-PREFIX}}}
-		$path_prefix = (string) SmartPersistentCache::cachePathPrefix(2, $this->sess_ns); // this is a safe path
-		$db_path = (string) 'tmp/sessions/'.SmartFileSysUtils::add_dir_last_slash(Smart::safe_filename($this->sess_area)).SmartFileSysUtils::add_dir_last_slash($path_prefix).'db-sess_'.Smart::safe_filename($this->sess_ns).'.dba';
-		SmartFileSysUtils::raise_error_if_unsafe_path($db_path);
+		$path_prefix = (string) SmartPersistentCache::cachePathPrefix(2, (string)$this->sess_ns); // this is a safe path
+		$db_path = (string) 'tmp/sessions/'.SmartFileSysUtils::addPathTrailingSlash((string)Smart::safe_filename((string)$this->sess_area)).SmartFileSysUtils::addPathTrailingSlash((string)$path_prefix).'db-sess_'.Smart::safe_filename((string)$this->sess_ns).'.dba';
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$db_path);
 		//--
 		$this->dba = new SmartDbaDb(
 			(string) $db_path, // avoid prefix with sess_ ; the class will check itself if it is a safe, relative path

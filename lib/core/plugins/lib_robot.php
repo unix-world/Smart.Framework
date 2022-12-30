@@ -14,9 +14,10 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //======================================================
 // Smart-Framework - (HTTP) Robot:
 // DEPENDS:
+//	* SmartUnicode::
 //	* Smart::
-//	* SmartUtils::
 //	* SmartDetectImages::
+//	* SmartUtils::
 //======================================================
 
 
@@ -30,9 +31,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart
- * @version 	v.20220419
- * @package 	Plugins:Network
+ * @depends 	classes: SmartUnicode, Smart, SmartDetectImages, SmartUtils
+ * @version 	v.20221225
+ * @package 	Application:Plugins:Network:HTTP
  *
  */
 final class SmartRobot {
@@ -199,7 +200,7 @@ final class SmartRobot {
 	 * @param STRING 	$y_url_or_path				:: relative/path/to/file (assumes current URL as prefix) | http(s)://some.url:port/path (port is optional) ; works also with Data-URL (Data-Image only)
 	 * @param NUMBER 	$y_timeout					:: timeout in seconds
 	 * @param ENUM 		$y_method 					:: used only for URLs, the browsing method: GET | POST
-	 * @param ENUM		$y_ssl_method				:: SSL Mode: tls | sslv3 | sslv2 | ssl
+	 * @param ENUM		$y_ssl_method				:: SSL Mode: '' (default) ; or specific: 'tls' | 'tls:1.1' | 'tls:1.2'
 	 * @param STRING 	$y_auth_name				:: used only for URLs, the auth user name
 	 * @param STRING 	$y_auth_pass				:: used only for URLs, the auth password
 	 * @param YES/NO	$y_allow_set_credentials	:: DEFAULT IS SET to NO ; if YES must be set just for internal URLs ; if set to AUTO will try to detect if can trust based on task.php / admin.php / index.php local framework scripts ; if the $y_url_or_path to get is detected to be under current URL will send also the Unique / session IDs ; more if detected that is from task.php / admin.php and if this is set to YES will send the HTTP-BASIC Auth credentials if detected (using YES with other URLs than Smart.Framework's current URL can be a serious SECURITY ISSUE, so don't !)
@@ -368,7 +369,7 @@ final class SmartRobot {
 			} //end if
 			$browser->connect_timeout = (int) $y_timeout;
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				$browser->debug = 1;
 			} //end if
 			//--
@@ -387,7 +388,7 @@ final class SmartRobot {
 			$tmp_test_browser_id 	= (array) SmartUtils::get_os_browser_ip();
 			//--
 			$tmp_extra_log = '';
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				$tmp_extra_log .= "\n".'===== # ====='."\n";
 			} //end if
 			//--
@@ -399,20 +400,20 @@ final class SmartRobot {
 				//--
 				$tmp_extra_log .= '[EXTRA]: Send Auth CREDENTIALS set to YES (will check if safe) ...'."\n";
 				//--
-				if(SmartFrameworkRegistry::ifDebug()) {
+				if(SmartEnvironment::ifDebug()) {
 					$tmp_extra_log .= '[EXTRA]: I will try to detect if this is my current Domain and I will check if it is safe to send my sessionID COOKIE and my Auth CREDENTIALS ...'."\n";
 				} //end if
 				//--
 				if(((string)$tmp_current_protocol == (string)$tmp_test_url_arr['protocol']) AND ((string)$tmp_current_server == (string)$tmp_test_url_arr['host']) AND ((string)$tmp_current_port == (string)$tmp_test_url_arr['port'])) {
 					//--
-					if(SmartFrameworkRegistry::ifDebug()) {
+					if(SmartEnvironment::ifDebug()) {
 						$tmp_extra_log .= '[EXTRA]: OK, Seems that the browsed Domain is identical with my current Domain which is: '.$tmp_current_protocol.$tmp_current_server.':'.$tmp_current_port.' and the browsed one is: '.$tmp_test_url_arr['protocol'].$tmp_test_url_arr['host'].':'.$tmp_test_url_arr['port']."\n";
 						$tmp_extra_log .= '[EXTRA]: I will also check if my current script and path are identical with the browsed ones ...'."\n";
 					} //end if
 					//--
 					if(((string)$tmp_current_script == (string)$tmp_test_url_arr['path']) AND (substr($tmp_current_path, 0, strlen($tmp_current_script)) == (string)$tmp_test_url_arr['path'])) {
 						//--
-						if(SmartFrameworkRegistry::ifDebug()) {
+						if(SmartEnvironment::ifDebug()) {
 							$tmp_extra_log .= '[EXTRA]: OK, Seems that the current script is identical with the browsed one :: '.'Current Path is: \''.$tmp_current_script.'\' / Browsed Path is: \''.$tmp_test_url_arr['path'].'\' !'."\n";
 							$tmp_extra_log .= '[EXTRA]: I will check if I have to send my SessionID so I will check the browserID ...'."\n";
 						} //end if
@@ -421,7 +422,7 @@ final class SmartRobot {
 						//--
 						if(SmartFrameworkRuntime::IsVisitorEntropyIDCookieAvaliable() === true) { // {{{SYNC-SMART-UNIQUE-COOKIE}}}
 							if(defined('SMART_APP_VISITOR_COOKIE') AND ((string)trim((string)SMART_APP_VISITOR_COOKIE) != '')) { // {{{SYNC-SMART-UNIQUE-VAL-COOKIE}}}
-								if(SmartFrameworkRegistry::ifDebug()) {
+								if(SmartEnvironment::ifDebug()) {
 									$tmp_extra_log .= '[EXTRA]: OK, I will send the current UUID Cookie ID as it is set and not empty ...'."\n";
 								} //end if
 								$cookies[(string)SMART_FRAMEWORK_UUID_COOKIE_NAME] = (string) SMART_APP_VISITOR_COOKIE; // this is a requirement
@@ -440,7 +441,7 @@ final class SmartRobot {
 							)
 						) {
 							//--
-							if(SmartFrameworkRegistry::ifDebug()) {
+							if(SmartEnvironment::ifDebug()) {
 								$tmp_extra_log .= '[EXTRA]: HTTP-BASIC Auth method detected / Allowed to pass the Credentials - as the browsed URL belongs to this ADMIN or TASK Server as I run, the Auth credentials are set but passed as empty - everything seems to be safe I will send my credentials: USERNAME = \''.SmartAuth::get_login_id().'\' ; PASS = *****'."\n";
 							} //end if
 							//--
@@ -451,7 +452,7 @@ final class SmartRobot {
 						//--
 					} else {
 						//--
-						if(SmartFrameworkRegistry::ifDebug()) {
+						if(SmartEnvironment::ifDebug()) {
 							$tmp_extra_log .= '[EXTRA]: Seems that the scripts are NOT identical :: '.'Current Script is: \''.$tmp_current_script.'\' / Browsed Script is: \''.$tmp_test_url_arr['path'].'\' !'."\n";
 							$tmp_extra_log .= '[EXTRA]: This is the diff for having a comparation: '.substr($tmp_current_path, 0, strlen($tmp_current_script))."\n";
 						} //end if
@@ -482,7 +483,7 @@ final class SmartRobot {
 							$redirect_code = (int) $data['code'];
 							//--
 							$data = array(); // clear data
-							$data = (array) self::load_url_content($redirect_url, $y_timeout, $y_method, $y_ssl_method, '', '', 'no', (int)((int)$y_allow_num_redirects - 1)); // ALLOW FINITE NUMBER OF REDIRECTS TO AVOID INFINITE LOOPS BY BUGGY HTTP(S) SERVERS
+							$data = (array) self::load_url_content($redirect_url, $y_timeout, $y_method, $y_ssl_method, '', '', 'no', (int)((int)$y_allow_num_redirects - 1)); // DISALLOW CREDENTIALS ; ALLOW FINITE NUMBER OF REDIRECTS TO AVOID INFINITE LOOPS BY BUGGY HTTP(S) SERVERS
 							//--
 							$prev_redirect = (string) (isset($data['browse-url-info']['redirect']) ? $data['browse-url-info']['redirect'] : '');
 							//--
@@ -546,43 +547,43 @@ final class SmartRobot {
 			//--
 			if((string)substr($y_url_or_path, 0, 10) == 'admin.php?') {
 				$y_url_or_path = (string) SmartUtils::get_server_current_url().$y_url_or_path;
-				if(SmartFrameworkRegistry::isAdminArea() === true) {
+				if(SmartEnvironment::isAdminArea() === true) {
 					$allow_credentials = 'yes'; // send only if admin
 				} //end if
 				$trust_headers = 'yes';
 			} elseif((string)substr($y_url_or_path, 0, 9) == 'task.php?') {
 				$y_url_or_path = (string) SmartUtils::get_server_current_url().$y_url_or_path;
-				if(SmartFrameworkRegistry::isAdminArea() === true) {
-					if(SmartFrameworkRegistry::isTaskArea() === true) {
+				if(SmartEnvironment::isAdminArea() === true) {
+					if(SmartEnvironment::isTaskArea() === true) {
 						$allow_credentials = 'yes'; // send only if admin
 					} //end if
 				} //end if
 				$trust_headers = 'yes';
 			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'admin.php?')) == (string)SmartUtils::get_server_current_url().'admin.php?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
-				if(SmartFrameworkRegistry::isAdminArea() === true) {
+				if(SmartEnvironment::isAdminArea() === true) {
 					$allow_credentials = 'yes'; // send only if admin
 				} //end if
 				$trust_headers = 'yes';
 			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'task.php?')) == (string)SmartUtils::get_server_current_url().'task.php?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
-				if(SmartFrameworkRegistry::isAdminArea() === true) {
-					if(SmartFrameworkRegistry::isTaskArea() === true) {
+				if(SmartEnvironment::isAdminArea() === true) {
+					if(SmartEnvironment::isTaskArea() === true) {
 						$allow_credentials = 'yes'; // send only if admin
 					} //end if
 				} //end if
 				$trust_headers = 'yes';
 			} elseif(((string)substr($y_url_or_path, 0, 10) == 'index.php?') OR ((string)substr($y_url_or_path, 0, 1) == '?')) {
 				$y_url_or_path = (string) SmartUtils::get_server_current_url().$y_url_or_path;
-				if(SmartFrameworkRegistry::isAdminArea() !== true) {
+				if(SmartEnvironment::isAdminArea() !== true) {
 					$allow_credentials = 'yes'; // send only if not admin
 				} //end if
 				$trust_headers = 'yes';
 			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'index.php?')) == (string)SmartUtils::get_server_current_url().'index.php?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
-				if(SmartFrameworkRegistry::isAdminArea() !== true) {
+				if(SmartEnvironment::isAdminArea() !== true) {
 					$allow_credentials = 'yes'; // send only if not admin
 				} //end if
 				$trust_headers = 'yes';
 			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'?')) == (string)SmartUtils::get_server_current_url().'?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
-				if(SmartFrameworkRegistry::isAdminArea() !== true) {
+				if(SmartEnvironment::isAdminArea() !== true) {
 					$allow_credentials = 'yes'; // send only if not admin
 				} //end if
 				$trust_headers = 'yes';

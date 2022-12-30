@@ -59,8 +59,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
- * @version 	v.20221010
- * @package 	development:Captcha
+ * @version 	v.20221220
+ * @package 	Application:Plugins:Captcha
  *
  */
 final class SmartCaptcha {
@@ -269,7 +269,7 @@ final class SmartCaptcha {
 			'yes' // export to cache
 		);
 		//--
-		if(SmartFrameworkRegistry::ifProdEnv()) {
+		if(SmartEnvironment::ifDevMode() !== true) {
 			$tpl = str_replace(["\r\n", "\r", "\n", "\t"], ' ', $tpl);
 		} //end if
 		//--

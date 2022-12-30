@@ -31,11 +31,11 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //======================================================
 
 //-- defines the modules version (required for AppReleaseHash and modules identification)
-define('SMART_APP_MODULES_RELEASE', 'm.sf.2022-12-14'); // this can be used for tracking changes to custom app modules
+define('SMART_APP_MODULES_RELEASE', 'm.sf.2022-12-28'); // this can be used for tracking changes to custom app modules
 //--
 
-//-- checks the minimum version of the Smart.Framework to run on # v.20221214
-define('SMART_APP_MODULES_MIN_FRAMEWORK_VER', 'v.8.7.r.2022.12.14'); // this must be used to validate the required minimum framework version
+//-- checks the minimum version of the Smart.Framework to run on # v.20221228
+define('SMART_APP_MODULES_MIN_FRAMEWORK_VER', 'v.8.7.r.2022.12.28'); // this must be used to validate the required minimum framework version
 if(version_compare((string)SMART_FRAMEWORK_RELEASE_TAGVERSION.(string)SMART_FRAMEWORK_RELEASE_VERSION, (string)SMART_APP_MODULES_MIN_FRAMEWORK_VER) < 0) {
 	@http_response_code(500);
 	die('The Custom App Modules require the Smart.Framework '.SMART_APP_MODULES_MIN_FRAMEWORK_VER.' or later !');
@@ -59,7 +59,7 @@ if(version_compare((string)SMART_FRAMEWORK_RELEASE_TAGVERSION.(string)SMART_FRAM
 // 	* 3rd param: if TRUE will redirect all other subdomains (except 'www' and the 'en' subdomains), to 'www' (1st parameter)
 //--
 /*
-if(SmartFrameworkRegistry::isAdminArea() !== true) { // just for index, not for admin
+if(SmartEnvironment::isAdminArea() !== true) { // just for index, not for admin
 	SmartAppBootstrap::AppSetLanguageBySubdomain('www', true, true); // Handles the Language Detection by SubDomain
 } //end if
 */

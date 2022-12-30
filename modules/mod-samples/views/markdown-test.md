@@ -1,7 +1,7 @@
 # [%%%IF:TITLE:==;%%%]... ==Title is empty== ...[%%%ELSE:TITLE%%%][###TITLE|html###][%%%/IF:TITLE%%%]
 
 &copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
-Extended Markdown v.II (smart flavour) // Test :: r.20220918
+Extended Markdown v.II (smart flavour) // Test :: r.20221228
 
 # (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old "bad" features have been dropped, and others supported ==only in compatibility mode== ...
 
@@ -384,7 +384,7 @@ Colons can be used to align columns.
 
 |{!DEF!=AUTO-WIDTH;.dbordered;.stripped;#tbl-one} Name   | Description     |
 | ------------- | -----------------------  |
-| Help          | Display the help window. |
+| Help          | Display the help&BREAK;window. |
 | Close         | Closes a window          |
 
 | Name | Description |

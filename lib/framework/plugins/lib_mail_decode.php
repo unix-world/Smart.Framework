@@ -14,7 +14,11 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //======================================================
 // Smart-Framework - Mail Mime Decoder and Parser
 // DEPENDS:
+//	* SmartUnicode::
 //	* Smart::
+//	* SmartFileSysUtils::
+//	* SmartDetectImages::
+//	* SmartMailerNotes::
 //======================================================
 
 // [REGEX-SAFE-OK]
@@ -28,12 +32,12 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * This class is for very advanced use.
  *
  * It just implements the mime decoding to a PHP array by decoding Mime Email Messages.
- * To easy parse mime messages and display them on-the-fly use the class: SmartMailerMimeParser.
+ * To easy parse mime messages and display them on-the-fly use the class: Smart Mailer Mime Parser.
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	classes: Smart
- * @version 	v.20220802
+ * @depends 	classes: SmartUnicode, Smart, SmartFileSysUtils, SmartDetectImages
+ * @version 	v.20221225
  * @package 	Plugins:Mailer
  *
  */
@@ -575,8 +579,7 @@ final class SmartMailerMimeDecode {
 		//--
 		if(is_array($data)) {
 			//--
-			//while(list($key,$value) = @each($data)) {
-			foreach($data as $key => $value) { // Fix: the above is deprecated as of PHP 7.3
+			foreach($data as $key => $value) {
 				//--
 				if(is_object($value)) {
 					//--
@@ -647,7 +650,7 @@ final class SmartMailerMimeDecode {
 								$tmp_img_lfname_ext = '';
 								$tmp_img_bycontent_ext = '';
 								if((string)$this->last_fname != '') {
-									$tmp_img_lfname_ext = (string) SmartFileSysUtils::get_file_extension_from_path($this->last_fname);
+									$tmp_img_lfname_ext = (string) SmartFileSysUtils::extractPathFileExtension((string)$this->last_fname);
 									$tmp_img_bycontent_ext = (string) SmartDetectImages::guess_image_extension_by_img_content((string)$value, false); // do not use GD here, is too expensive ...
 									$tmp_img_bycontent_ext = (string) trim((string)trim((string)$tmp_img_bycontent_ext, '.'));
 									// FIXES BY DOING A QUICK IMG DETECTION HERE:
@@ -809,7 +812,8 @@ final class SmartMailerMimeDecode {
  * @access 		private
  * @internal
  *
- * @version 	v.20220802
+ * @depends 	classes: Smart, SmartUnicode, SmartMailerNotes
+ * @version 	v.20221225
  *
  */
 final class SmartMailerMimeExtract {
@@ -829,6 +833,8 @@ final class SmartMailerMimeExtract {
 		private $_decode_headers;			// Flag to determine whether to decode headers 	:: @var boolean
 		//--
 		private $errors;					// errors log
+		//--
+		private const MIME_ERR_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8.893 1.5c-.183-.31-.52-.5-.887-.5s-.703.19-.886.5L.138 13.499a.98.98 0 0 0 0 1.001c.193.31.53.501.886.501h13.964c.367 0 .704-.19.877-.5a1.03 1.03 0 0 0 .01-1.002L8.893 1.5zm.133 11.497H6.987v-2.003h2.039v2.003zm0-3.004H6.987V5.987h2.039v4.006z"/></svg>';
 		//--
 	//================================================================
 
@@ -954,8 +960,7 @@ final class SmartMailerMimeExtract {
 		//--
 		reset($headers);
 		//--
-		//while(list($key, $value) = @each($headers)) {
-		foreach($headers as $key => $value) { // Fix: the above is deprecated as of PHP 7.3
+		foreach($headers as $key => $value) {
 			//--
 			$headers[(string)$key]['name'] = (string) strtolower($headers[(string)$key]['name']);
 			//--
@@ -970,8 +975,7 @@ final class SmartMailerMimeExtract {
 					$content_type['other'] = $content_type['other'] ?? null;
 					//if(isset($content_type['other'])) {
 					if(is_array($content_type['other'])) {
-						//while(list($p_name, $p_value) = @each($content_type['other'])) {
-						foreach($content_type['other'] as $p_name => $p_value) { // Fix: the above is deprecated as of PHP 7.3
+						foreach($content_type['other'] as $p_name => $p_value) {
 							//--
 							if((string)$p_name == 'charset') {
 								$content_charset = $p_value ; // charset
@@ -988,8 +992,7 @@ final class SmartMailerMimeExtract {
 					$return->disposition = $content_disposition['value'];
 					//if(isset($content_disposition['other'])) {
 					if(is_array($content_disposition['other'])) {
-						//while(list($p_name, $p_value) = @each($content_disposition['other'])) {
-						foreach($content_disposition['other'] as $p_name => $p_value) { // Fix: the above is deprecated as of PHP 7.3
+						foreach($content_disposition['other'] as $p_name => $p_value) {
 							$return->d_parameters[$p_name] = $p_value;
 						} //end while
 					} //end if
@@ -1085,7 +1088,7 @@ final class SmartMailerMimeExtract {
 						$body .= 'Content-Transfer-Encoding: base64'."\r\n";
 						$body .= 'Content-Disposition: inline; filename="mime-decoding-errors.html"'."\r\n";
 						$body .= "\r\n";
-						$body .= (string) $this->_re_encode_part_as_b64('<br><img alt="Mime Decoding Error" title="Mime Decoding Error" align="right" width="96" height="96" src="data:image/svg+xml;base64,'.Smart::escape_html(base64_encode(SmartFileSystem::read('lib/core/plugins/img/email/mime-part-error.svg'))).'"><div title="'.Smart::escape_html(Smart::normalize_spaces($content_type['value'])).'" style="text-align:left; background:#FCFCFC; border: 1px solid #ECECEC; border-radius:3px;"><h1 style="color:#FF3300;">Smart.Framework :: MIME DECODE ERROR :: Encrypted Apple/Note</h1><h2>Failed to decrypt the main part of this note</h2><h3>Technical Info: [&nbsp;Bytes='.(int)$len_body.'&nbsp;/&nbsp;Encoding='.Smart::escape_html(Smart::normalize_spaces($content_transfer_encoding['value'])).'&nbsp;]</h3><pre style="white-space: pre-wrap;">'.Smart::escape_html($errbody).'</pre>')."\r\n";
+						$body .= (string) $this->_re_encode_part_as_b64('<br><img alt="Mime Decoding Error" title="Mime Decoding Error" align="right" width="96" height="96" src="data:image/svg+xml;base64,'.Smart::escape_html((string)base64_encode((string)self::MIME_ERR_SVG)).'"><div title="'.Smart::escape_html((string)Smart::normalize_spaces((string)$content_type['value'])).'" style="text-align:left; background:#FCFCFC; border: 1px solid #ECECEC; border-radius:3px;"><h1 style="color:#FF3300;">Smart.Framework :: MIME DECODE ERROR :: Encrypted Apple/Note</h1><h2>Failed to decrypt the main part of this note</h2><h3>Technical Info: [&nbsp;Bytes='.(int)$len_body.'&nbsp;/&nbsp;Encoding='.Smart::escape_html((string)Smart::normalize_spaces((string)$content_transfer_encoding['value'])).'&nbsp;]</h3><pre style="white-space: pre-wrap;">'.Smart::escape_html((string)$errbody).'</pre>')."\r\n";
 						$body .= "\r\n";
 						$body .= '--'.$newboundary.'--'."\r\n";
 						$errbody = '';
@@ -1237,8 +1240,8 @@ final class SmartMailerMimeExtract {
 		//--
 		if($pos !== false) {
 			//--
-			$return['value'] = (string) trim(SmartUnicode::sub_str($input, 0, $pos));
-			$input = (string) trim(SmartUnicode::sub_str($input, $pos+1));
+			$return['value'] = (string) trim((string)SmartUnicode::sub_str($input, 0, $pos));
+			$input = (string) trim((string)SmartUnicode::sub_str($input, $pos+1));
 			//--
 			if((string)$input != '') {
 				//-- This splits on a semi-colon, if there's no preceeding backslash. Can't handle if it's in double quotes however. (Of course anyone sending that needs a good slap).
@@ -1250,12 +1253,12 @@ final class SmartMailerMimeExtract {
 					//--
 					if($pos !== false) {
 						//--
-						$param_name  = (string) trim(SmartUnicode::sub_str($parameters[$i], 0, $pos)); // added TRIM to fix invalid ' = ' case
-						$param_value = (string) trim(SmartUnicode::sub_str($parameters[$i], $pos + 1)); // added TRIM to fix invalid ' = ' case
+						$param_name  = (string) trim((string)SmartUnicode::sub_str((string)$parameters[$i], 0, $pos)); // added TRIM to fix invalid ' = ' case
+						$param_value = (string) trim((string)SmartUnicode::sub_str((string)$parameters[$i], $pos + 1)); // added TRIM to fix invalid ' = ' case
 						//--
 						/*
 						if((string)$param_value[0] == '"') {
-							$param_value = (string) SmartUnicode::sub_str($param_value, 1, -1);
+							$param_value = (string) SmartUnicode::sub_str((string)$param_value, 1, -1);
 						} //end if
 						*/
 						$param_value = (string) trim((string)$param_value, '"'); // trim quotes on both sides ; this is a bug fix of the above commented code

@@ -2,6 +2,59 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+December 28, 2022
+	* CSS Refactoring
+
+December 25, 2022
+	* Plugins Refactoring
+
+December 24, 2022
+	* Internal Optimizations
+	* STABLE RELEASE
+
+December 23, 2022
+	* Add SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH
+	* Internal optimizations and Fixes
+
+December 20, 2022
+	* SmartUtils::comment_php_code 							-> Smart::commentOutPhpCode
+	* SmartFrameworkRegistry::ifDebug 						-> SmartEnvironment::ifDebug
+	* SmartFrameworkRegistry::ifInternalDebug 				-> SmartEnvironment::ifInternalDebug
+	* SmartFrameworkRegistry::setDebugMsg 					-> SmartEnvironment::setDebugMsg
+	* SmartFrameworkRegistry::getDebugMsgs 					-> SmartEnvironment::getDebugMsgs
+	* SmartFrameworkRegistry::ifProdEnv 					-> ! SmartEnvironment::ifDevMode
+	* SmartAbstractAppController->IfProdEnv 				-> ! SmartAbstractAppController->IfDevMode
+	* SmartFrameworkRegistry::isAdminArea 					-> SmartEnvironment::isAdminArea
+	* SmartFrameworkRegistry::isTaskArea 					-> SmartEnvironment::isTaskArea
+
+December 19, 2022
+	* SmartFileSysUtils::check_if_safe_path 				-> checkIfSafePath
+	* SmartFileSysUtils::check_if_safe_file_or_dir_name		-> checkIfSafeFileOrDirName
+	* SmartFileSysUtils::raise_error_if_unsafe_path 		-> raiseErrorIfUnsafePath
+	* SmartFileSysUtils::max_upload_size 					-> maxUploadFileSize
+	* SmartFileSysUtils::add_dir_last_slash 				-> addPathTrailingSlash
+	* SmartFileSysUtils::get_dir_from_path 					-> extractPathDir
+	* SmartFileSysUtils::get_file_name_from_path 			-> extractPathFileName
+	* SmartFileSysUtils::get_noext_file_name_from_path 		-> extractPathFileNoExtName
+	* SmartFileSysUtils::get_file_extension_from_path 		-> extractPathFileExtension
+	* SmartFileSysUtils::prefixed_uuid10_dir 				-> prefixedUuid10B36Path
+	* SmartFileSysUtils::prefixed_sha1_path 				-> prefixedUuid40B16Path
+	* SmartFileSysUtils::mime_eval 							-> getMimeType | getArrMimeType
+	* SmartFileSysUtils::version_stdmtime 					# DEPRECATED, REMOVED
+	* SmartFileSysUtils::version_add 						-> fnameVersionAdd
+	* SmartFileSysUtils::version_remove 					-> fnameVersionClear
+	* SmartFileSysUtils::version_get 						-> fnameVersionGet
+	* SmartFileSysUtils::version_check 						-> fnameVersionCheck
+
+December 17, 2022
+	* Add MongoDB get/set Error Mode
+	* Fixes for MongoDB Tests and AbstractMongoGenericCollection try/catch in fatalErr mode
+
+December 15, 2022
+	* removed support for PHP 7.3 ; requires PHP 7.4 / 8.0 / 8.1 / 8.2
+	* Fix silenced @trigger_error() to trigger_error() for compatibility with Other Environments
+	* internal classes circular dependencies fix (Smart, SmartUnicode)
+
 December 08, 2022
 	* Security: Js Browser Utils PopUp: if different domain don't use bind to parent window or redirect handler to avoid possible XSS injections
 

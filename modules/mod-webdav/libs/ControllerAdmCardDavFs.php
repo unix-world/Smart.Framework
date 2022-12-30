@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @hint This abstract controller can be used to build a DAV Service / CardDAV over the Admin Middleware service
  *
- * @version		20210526
+ * @version		20221219
  * @package 	development:modules:Webdav
  *
  */
@@ -103,8 +103,8 @@ abstract class ControllerAdmCardDavFs extends \SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$dav_fs_root_path = (string) \SmartFileSysUtils::add_dir_last_slash((string)\SmartModExtLib\Webdav\DavServer::safePathName((string)$dav_fs_root_path));
-		if(\SmartFileSysUtils::check_if_safe_path((string)$dav_fs_root_path) != '1') {
+		$dav_fs_root_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)\SmartModExtLib\Webdav\DavServer::safePathName((string)$dav_fs_root_path));
+		if(\SmartFileSysUtils::checkIfSafePath((string)$dav_fs_root_path) != '1') {
 			\http_response_code(500);
 			echo \SmartComponents::http_message_500_internalerror('FATAL ERROR @ CardDAV: DAV FS Root Path is Invalid: '.$dav_fs_root_path);
 			return;
@@ -130,7 +130,7 @@ abstract class ControllerAdmCardDavFs extends \SmartAbstractAppController {
 				$this->dav_request_back_path = '';
 			} //end if
 			if((string)$this->dav_request_back_path != '') {
-				if(\SmartFileSysUtils::check_if_safe_path($this->dav_request_back_path) != '1') {
+				if(\SmartFileSysUtils::checkIfSafePath((string)$this->dav_request_back_path) != '1') {
 					$this->dav_request_back_path = '';
 				} //end if
 			} //end if

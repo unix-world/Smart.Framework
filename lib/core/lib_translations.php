@@ -35,8 +35,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations, SmartFrameworkRegistry
- * @version 	v.20211214
- * @package 	@Core:Translations
+ * @version 	v.20221220
+ * @package 	Application:Translations
  *
  */
 final class SmartTextTranslations {
@@ -148,9 +148,9 @@ final class SmartTextTranslations {
 	public static function getLanguage() {
 		//--
 		if((array_key_exists('#LANGUAGE#', self::$cache)) AND (strlen((string)self::$cache['#LANGUAGE#']) == 2)) {
-			if(SmartFrameworkRegistry::ifInternalDebug()) {
-				if(SmartFrameworkRegistry::ifDebug()) {
-					SmartFrameworkRegistry::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
+			if(SmartEnvironment::ifInternalDebug()) {
+				if(SmartEnvironment::ifDebug()) {
+					SmartEnvironment::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
 						'title' => 'Get Language from Internal Cache',
 						'data' => 'Content: '.self::$cache['#LANGUAGE#']
 					]);
@@ -164,9 +164,9 @@ final class SmartTextTranslations {
 		$tmp_lang = (string) strtolower((string)Smart::get_from_config('regional.language-id', 'string'));
 		if(self::validateLanguage($tmp_lang)) {
 			$the_lang = (string) $tmp_lang;
-			if(SmartFrameworkRegistry::ifInternalDebug()) {
-				if(SmartFrameworkRegistry::ifDebug()) {
-					SmartFrameworkRegistry::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
+			if(SmartEnvironment::ifInternalDebug()) {
+				if(SmartEnvironment::ifDebug()) {
+					SmartEnvironment::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
 						'title' => 'Get Language from Configs',
 						'data' => 'Content: '.$the_lang
 					]);
@@ -227,11 +227,11 @@ final class SmartTextTranslations {
 								$configs['regional'] = (array) self::getSafeRegionalSettings(); // re-export fixed
 								self::$cache['#LANGUAGE#'] = (string) $tmp_lang;
 								$result = true;
-								if(SmartFrameworkRegistry::ifInternalDebug()) {
-									if(SmartFrameworkRegistry::ifDebug()) {
-										SmartFrameworkRegistry::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
+								if(SmartEnvironment::ifInternalDebug()) {
+									if(SmartEnvironment::ifDebug()) {
+										SmartEnvironment::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
 											'title' => 'Set Language in Configs and Internal Cache',
-											'data' => 'Content: '.$the_lang
+											'data' => 'Content: '.$tmp_lang
 										]);
 									} //end if
 								} //end if
@@ -309,18 +309,18 @@ final class SmartTextTranslations {
 		//--
 		if((!array_key_exists((string)$translator_key, self::$translators)) OR (!is_object(self::$translators[(string)$translator_key]))) {
 			self::$translators[(string)$translator_key] = new SmartTextTranslator((string)$the_lang, (string)$y_area, (string)$y_subarea);
-			if(SmartFrameworkRegistry::ifInternalDebug()) {
-				if(SmartFrameworkRegistry::ifDebug()) {
-					SmartFrameworkRegistry::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
+			if(SmartEnvironment::ifInternalDebug()) {
+				if(SmartEnvironment::ifDebug()) {
+					SmartEnvironment::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
 						'title' => 'Creating a New Translator: '.$translator_key,
 						'data' => 'Content:'."\n".print_r(self::$translators[(string)$translator_key],1) // object
 					]);
 				} //end if
 			} //end if
 		} else {
-			if(SmartFrameworkRegistry::ifInternalDebug()) {
-				if(SmartFrameworkRegistry::ifDebug()) {
-					SmartFrameworkRegistry::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
+			if(SmartEnvironment::ifInternalDebug()) {
+				if(SmartEnvironment::ifDebug()) {
+					SmartEnvironment::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
 						'title' => 'Re-Using an Existing Translator: '.$translator_key,
 						'data' => 'Content:'."\n".print_r(self::$translators[(string)$translator_key],1) // object
 					]);
@@ -651,7 +651,7 @@ final class SmartTextTranslations {
 			$the_lang = (string) self::getLanguage(); // use default language
 		} //end if else
 		//--
-		if(SmartFrameworkRegistry::ifProdEnv() !== true) {
+		if(SmartEnvironment::ifDevMode() === true) {
 			if(self::checkSourceParser() === true) {
 				SmartAdapterTextTranslations::setTranslationsKeyUsageCount($the_lang, $y_area, $y_subarea, $y_textkey);
 			} //end if
@@ -825,9 +825,9 @@ final class SmartTextTranslations {
 			$translations = (array) self::$cache['translations@'.$the_cache_key];
 		} //end if
 		if(Smart::array_size($translations) > 0) {
-			if(SmartFrameworkRegistry::ifInternalDebug()) {
-				if(SmartFrameworkRegistry::ifDebug()) {
-					SmartFrameworkRegistry::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
+			if(SmartEnvironment::ifInternalDebug()) {
+				if(SmartEnvironment::ifDebug()) {
+					SmartEnvironment::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
 						'title' => 'Get Text from Internal Cache for Key: '.$the_cache_key,
 						'data' => 'Content:'."\n".SmartUtils::pretty_print_var($translations)
 					]);
@@ -839,9 +839,9 @@ final class SmartTextTranslations {
 		$version_translations = (string) self::getLatestVersion(); // get translations version
 		$translations = (array) self::getFromPersistentCache((string)$the_cache_key, (string)$version_translations);
 		if(Smart::array_size($translations) > 0) {
-			if(SmartFrameworkRegistry::ifInternalDebug()) {
-				if(SmartFrameworkRegistry::ifDebug()) {
-					SmartFrameworkRegistry::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
+			if(SmartEnvironment::ifInternalDebug()) {
+				if(SmartEnvironment::ifDebug()) {
+					SmartEnvironment::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
 						'title' => 'Get Text from Persistent Cache for Key: '.$the_cache_key,
 						'data' => 'Version:'."\n".$version_translations."\n".'Content:'."\n".SmartUtils::pretty_print_var($translations)
 					]);
@@ -853,9 +853,9 @@ final class SmartTextTranslations {
 		//-- try to get from source
 		$translations = (array) self::getFromSource($y_language, $y_area, $y_subarea);
 		if(Smart::array_size($translations) > 0) {
-			if(SmartFrameworkRegistry::ifInternalDebug()) {
-				if(SmartFrameworkRegistry::ifDebug()) {
-					SmartFrameworkRegistry::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
+			if(SmartEnvironment::ifInternalDebug()) {
+				if(SmartEnvironment::ifDebug()) {
+					SmartEnvironment::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
 						'title' => 'Get Text from Sources for Key: '.$the_cache_key,
 						'data' => 'Content:'."\n".SmartUtils::pretty_print_var($translations)
 					]);
@@ -866,9 +866,9 @@ final class SmartTextTranslations {
 			return (array) $translations;
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifInternalDebug()) {
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
+		if(SmartEnvironment::ifInternalDebug()) {
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('extra', '***REGIONAL-TEXTS***', [
 					'title' => '*** NOT FOUND: the Text from Sources for Key: '.$the_cache_key,
 					'data' => 'Content:'."\n".SmartUtils::pretty_print_var($translations)
 				]);
@@ -876,7 +876,7 @@ final class SmartTextTranslations {
 		} //end if
 		if((string)self::getDefaultLanguage() == (string)$y_language) {
 			Smart::log_warning('Cannot get from source Text Translations for Key: '.$the_cache_key); // show this if default language
-		} elseif(SmartFrameworkRegistry::ifDebug()) {
+		} elseif(SmartEnvironment::ifDebug()) {
 			Smart::log_notice('The Text Translations Key is not available ; will fallback to default language ['.self::getDefaultLanguage().'] for: '.$the_cache_key); // show this if debug
 		} //end if
 		return array(); // this is invalid, means not found in any places
@@ -973,8 +973,8 @@ final class SmartTextTranslations {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartTextTranslations, SmartFrameworkRegistry
- * @version 	v.20211214
- * @package 	@Core:Translations
+ * @version 	v.20221220
+ * @package 	Application:Translations
  *
  */
 final class SmartTextTranslator {
@@ -1085,8 +1085,8 @@ final class SmartTextTranslator {
  * @access 		private
  * @internal
  *
- * @version 	v.20211214
- * @package 	development:@Core
+ * @version 	v.20221220
+ * @package 	development:Application
  *
  */
 interface SmartInterfaceAdapterTextTranslations {
@@ -1122,7 +1122,7 @@ interface SmartInterfaceAdapterTextTranslations {
 	/**
 	 * Register the usage (increment counter or register in logs) for a Regional Text Translation into Source or alternate source by: Language, Area, Subarea, Key
 	 * This function must implement a way to increment or register the usage of every used pair of Language/Area/Subarea/Key as it was used to help the cleanup of unused translations.
-	 * This function will operate only in DEV mode only (SmartFrameworkRegistry::ifProdEnv() !== true) ; for filesystem based adapters must also set in init.php: const SMART_FRAMEWORK__DEBUG__TEXT_TRANSLATIONS = true;
+	 * This function will operate only in DEV mode only (SmartEnvironment::ifDevMode() === true) ; for filesystem based adapters must also set in init.php: const SMART_FRAMEWORK__DEBUG__TEXT_TRANSLATIONS = true;
 	 * It can be implemented to write into one of the variety of sources: Text/CSV, Database, ...
 	 * RETURN: N/A
 	 */

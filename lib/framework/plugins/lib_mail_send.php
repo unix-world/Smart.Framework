@@ -15,6 +15,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Smart-Framework - Mail Send: SendMail / SMTP (SSL/TLS/STARTTLS)
 // DEPENDS:
 //	* Smart::
+// 	* SmartUnicode::
 //======================================================
 
 
@@ -35,12 +36,11 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * It automatically includes the SmartMailerSmtpClient class when sending via SMTP method.
  *
  * This class is a low level message composer and send utility for advanced usage.
- * To easy send email messages use: SmartMailerUtils::send_email() / SmartMailerUtils::send_extended_email() functions.
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	classes: Smart
- * @version 	v.20210605
+ * @depends 	classes: Smart, SmartUnicode
+ * @version 	v.20221223
  * @package 	Plugins:Mailer
  *
  */
@@ -213,7 +213,7 @@ final class SmartMailerSend {
 	 * Ex(text): 'This is the body of the email Message\nAnd a new Line ...' $is_html should be leave as FALSE as default in this case
 	 * Ex(html): 'This is the body of the email Message<br>And a new Line ...' -> $is_html must be set to TRUE if HTML body is sent
 	 * For the case of sending HTML bodies you must assure mprogramatically that all HTML required resources as images, css, ... are embedded (the will not be embedded automatically)
-	 * As an alternative tho this class which is low level, the functions SmartMailerUtils::send_email() / SmartMailerUtils::send_extended_email() may be used and they will automatically resolve the HTML resources embedding ...
+	 * As an alternative tho this class which is low level
 	 * @var STRING
 	 * @default ''
 	 */
@@ -1054,7 +1054,7 @@ final class SmartMailerSend {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20210305
+ * @version 	v.20221223
  * @package 	Plugins:Mailer
  *
  */
@@ -1146,8 +1146,8 @@ final class SmartMailerSmtpClient {
 	public function set_ssl_tls_ca_file($cafile) {
 		//--
 		$this->cafile = '';
-		if(SmartFileSysUtils::check_if_safe_path((string)$cafile) == '1') {
-			if(SmartFileSystem::is_type_file((string)$cafile)) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$cafile) == '1') {
+			if(SmartFileSysUtils::staticFileExists((string)$cafile)) {
 				$this->cafile = (string) $cafile;
 			} //end if
 		} //end if
@@ -1912,9 +1912,7 @@ final class SmartMailerSmtpClient {
 		//--
 		$max_line_length = 800; // used below ; set here for ease in change (we use a lower value than 1000 as we use UTF-8 text)
 		//--
-		//while(list(,$line) = @each($lines)) {
-		//while(list($key,$line) = @each($lines)) { // FIX to be compatible with the upcoming PHP 7
-		foreach($lines as $key => $line) { // Fix: the above is deprecated as of PHP 7.3
+		foreach($lines as $key => $line) {
 			//--
 			//$lines_out = null;
 			$lines_out = array(); // Fix !!
@@ -1937,8 +1935,7 @@ final class SmartMailerSmtpClient {
 			//--
 			$lines_out[] = $line;
 			//-- now send the lines to the server
-			//while(list($key,$line_out) = @each($lines_out)) { // FIX to be compatible with the upcoming PHP 7
-			foreach($lines_out as $key => $line_out) { // Fix: the above is deprecated as of PHP 7.3
+			foreach($lines_out as $key => $line_out) {
 				//--
 				if((string)$line_out != '') {
 					if((string)substr((string)$line_out, 0, 1) == '.') {

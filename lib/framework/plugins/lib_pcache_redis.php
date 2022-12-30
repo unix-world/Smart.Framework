@@ -35,8 +35,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	Smart, SmartRedisDb
- * @version 	v.20210830
+ * @depends 	Smart, SmartUnicode, SmartRedisDb
+ * @version 	v.20221224
  * @package 	Plugins:PersistentCache:Redis
  *
  */
@@ -44,7 +44,7 @@ class SmartRedisPersistentCache extends SmartAbstractPersistentCache {
 
 	// ::
 
-	// !!! THIS CLASS MUST NOT BE MARKED AS FINAL to allow the class SmartPersistentCache@DBA to be extended from this !!!
+	// !!! THIS CLASS MUST NOT BE MARKED AS FINAL to allow the class SmartPersistentCache@REDIS to be extended from this !!!
 	// But this class have all PUBLIC Methods marked as FINAL to avoid being rewritten ...
 
 	private static $redis 		= null; 	// Redis Object ; by default is null

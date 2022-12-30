@@ -14,7 +14,7 @@ if(!defined('APPCODEPACK_APP_ID')) { // this must be defined in the first line o
 //-----------------------------------------------------
 
 //=====
-// AppCodePack Upgrade Script, v.20220928
+// AppCodePack Upgrade Script, v.20221219
 //=====
 
 //--
@@ -54,7 +54,7 @@ AppCodePackUpgrade::RunCmd('date'); // throws if unsuccessful
 final class AppCodePackUpgrade {
 
 	// ::
-	// v.20220928
+	// v.20221219
 
 
 	public static function GetVisitorIpAddr() : string {
@@ -142,7 +142,7 @@ final class AppCodePackUpgrade {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
 			return false;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)APPCODEPACK_APP_ID)) {
 			throw new Exception(__METHOD__.'() # Unsafe APPCODEPACK_APP_ID: '.APPCODEPACK_APP_ID);
 			return false;
 		} //end if
@@ -153,8 +153,8 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$file_app_path = (string) SmartFileSysUtils::add_dir_last_slash((string)APPCODEPACK_APP_ID).$file_path;
-		if(!SmartFileSysUtils::check_if_safe_path((string)$file_app_path)) {
+		$file_app_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)APPCODEPACK_APP_ID).$file_path;
+		if(!SmartFileSysUtils::checkIfSafePath((string)$file_app_path)) {
 			throw new Exception(__METHOD__.'() # Unsafe Path: '.$file_app_path);
 			return false;
 		} //end if
@@ -181,7 +181,7 @@ final class AppCodePackUpgrade {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
 			return false;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)APPCODEPACK_APP_ID)) {
 			throw new Exception(__METHOD__.'() # Unsafe APPCODEPACK_APP_ID: '.APPCODEPACK_APP_ID);
 			return false;
 		} //end if
@@ -192,8 +192,8 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$dir_app_path = (string) SmartFileSysUtils::add_dir_last_slash((string)APPCODEPACK_APP_ID).$dir_path;
-		if(!SmartFileSysUtils::check_if_safe_path((string)$dir_app_path)) {
+		$dir_app_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)APPCODEPACK_APP_ID).$dir_path;
+		if(!SmartFileSysUtils::checkIfSafePath((string)$dir_app_path)) {
 			throw new Exception(__METHOD__.'() # Unsafe Path: '.$dir_app_path);
 			return false;
 		} //end if
@@ -220,7 +220,7 @@ final class AppCodePackUpgrade {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
 			return false;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)APPCODEPACK_APP_ID)) {
 			throw new Exception(__METHOD__.'() # Unsafe APPCODEPACK_APP_ID: '.APPCODEPACK_APP_ID);
 			return false;
 		} //end if
@@ -231,8 +231,8 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$dir_app_path = (string) SmartFileSysUtils::add_dir_last_slash((string)APPCODEPACK_APP_ID).$dir_path;
-		if(!SmartFileSysUtils::check_if_safe_path((string)$dir_app_path)) {
+		$dir_app_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)APPCODEPACK_APP_ID).$dir_path;
+		if(!SmartFileSysUtils::checkIfSafePath((string)$dir_app_path)) {
 			throw new Exception(__METHOD__.'() # Unsafe Path: '.$dir_app_path);
 			return false;
 		} //end if
@@ -260,7 +260,7 @@ final class AppCodePackUpgrade {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
 			return false;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)APPCODEPACK_APP_ID)) {
 			throw new Exception(__METHOD__.'() # Unsafe APPCODEPACK_APP_ID: '.APPCODEPACK_APP_ID);
 			return false;
 		} //end if
@@ -271,8 +271,8 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$dir_app_path = (string) SmartFileSysUtils::add_dir_last_slash((string)APPCODEPACK_APP_ID).$dir_path;
-		if(!SmartFileSysUtils::check_if_safe_path((string)$dir_app_path)) {
+		$dir_app_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)APPCODEPACK_APP_ID).$dir_path;
+		if(!SmartFileSysUtils::checkIfSafePath((string)$dir_app_path)) {
 			throw new Exception(__METHOD__.'() # Unsafe Path: '.$dir_app_path);
 			return false;
 		} //end if
@@ -291,7 +291,7 @@ final class AppCodePackUpgrade {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
 			return false;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)APPCODEPACK_APP_ID)) {
 			throw new Exception(__METHOD__.'() # Unsafe APPCODEPACK_APP_ID: '.APPCODEPACK_APP_ID);
 			return false;
 		} //end if
@@ -302,8 +302,8 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$the_app_path = (string) SmartFileSysUtils::add_dir_last_slash((string)APPCODEPACK_APP_ID).$path;
-		if(!SmartFileSysUtils::check_if_safe_path((string)$the_app_path)) {
+		$the_app_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)APPCODEPACK_APP_ID).$path;
+		if(!SmartFileSysUtils::checkIfSafePath((string)$the_app_path)) {
 			throw new Exception(__METHOD__.'() # Unsafe Path: '.$the_app_path);
 			return false;
 		} //end if
@@ -322,7 +322,7 @@ final class AppCodePackUpgrade {
 			throw new Exception(__METHOD__.'() # Empty or Invalid APPCODEPACK_APP_ID');
 			return false;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)APPCODEPACK_APP_ID)) {
 			throw new Exception(__METHOD__.'() # Unsafe APPCODEPACK_APP_ID: '.APPCODEPACK_APP_ID);
 			return false;
 		} //end if
@@ -333,8 +333,8 @@ final class AppCodePackUpgrade {
 			return false;
 		} //end if
 		//--
-		$file_app_path = (string) SmartFileSysUtils::add_dir_last_slash((string)APPCODEPACK_APP_ID).$file_path;
-		if(!SmartFileSysUtils::check_if_safe_path((string)$file_app_path)) {
+		$file_app_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)APPCODEPACK_APP_ID).$file_path;
+		if(!SmartFileSysUtils::checkIfSafePath((string)$file_app_path)) {
 			throw new Exception(__METHOD__.'() # Unsafe Path: '.$file_app_path);
 			return false;
 		} //end if

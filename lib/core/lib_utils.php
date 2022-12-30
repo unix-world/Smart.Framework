@@ -37,8 +37,8 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20221205
- * @package 	@Core:Extra
+ * @version 	v.20221225
+ * @package 	Application:Utils
  *
  */
 final class SmartUtils {
@@ -497,32 +497,6 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function comment_php_code(?string $y_code, array $y_repl=['tag-start' => '<!--? ', 'tag-end' => ' ?-->']) {
-		//--
-		$y_code = (string) $y_code;
-		$y_repl = (array)  $y_repl;
-		//--
-		$tag_start 	= (string) ($y_repl['tag-start'] ?? '');
-		$tag_end 	= (string) ($y_repl['tag-end']   ?? '');
-		//--
-		$tmp_regex_php = [
-			'<'.'?php',
-			'<'.'?',
-			'?'.'>'
-		];
-		$tmp_regex_htm = [
-			(string) $tag_start,
-			(string) $tag_start,
-			(string) $tag_end
-		];
-		//--
-		return (string) str_ireplace((array)$tmp_regex_php, (array)$tmp_regex_htm, (string)$y_code);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
 	public static function pretty_print_var($y_var, ?int $indent=0) {
 		//--
 		$out = '';
@@ -926,15 +900,7 @@ final class SmartUtils {
 	// The crypto provider will be selected from the init value: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO
 	public static function crypto_blowfish_algo() {
 		//--
-		$cipher = 'blowfish.cbc'; // default: internal
-		//--
-		if(defined('SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO')) {
-			if(SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO === true) {
-				$cipher = 'openssl/blowfish/CBC';
-			} //end if
-		} //end if
-		//--
-		return (string) $cipher;
+		return (string) SmartCipherCrypto::blowfish_algo();
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1057,7 +1023,7 @@ final class SmartUtils {
 		$var_index 	= (int)    $var_index; // can be negative or 0..n
 		$max_size 	= (int)    Smart::format_number_int($max_size,'+');
 		if($max_size <= 0) {
-			$max_size = (int) SmartFileSysUtils::max_upload_size();
+			$max_size = (int) SmartFileSysUtils::maxUploadFileSize();
 		} //end if
 		$allowed_extensions = (string) trim((string)$allowed_extensions);
 		//--
@@ -1127,7 +1093,7 @@ final class SmartUtils {
 		$the_upld_file_name = (string) str_replace('#', '-', $the_upld_file_name); // {{{SYNC-WEBDAV-#-ISSUE}}}
 		$the_upld_file_name = (string) Smart::safe_filename($the_upld_file_name, '-'); // {{{SYNC-SAFE-FNAME-REPLACEMENT}}}
 		//-- remove versioning if any
-		$the_upld_file_name = (string) SmartFileSysUtils::version_remove($the_upld_file_name);
+		$the_upld_file_name = (string) SmartFileSysUtils::fnameVersionClear((string)$the_upld_file_name);
 		//-- remove dangerous characters
 		$the_upld_file_name = (string) trim((string)str_replace(['\\', ' ', '?'], ['-', '-', '-'], (string)$the_upld_file_name));
 		$the_upld_file_name = (string) trim((string)$the_upld_file_name);
@@ -1144,7 +1110,7 @@ final class SmartUtils {
 			$out['msg-code'] = 5;
 			return (array) $out;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$the_upld_file_name)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$the_upld_file_name)) {
 			$out['status'] = 'WARN';
 			$out['message'] = 'Uploaded File Name is Invalid (not Safe): '.$the_upld_file_name;
 			$out['msg-code'] = 6;
@@ -1158,7 +1124,7 @@ final class SmartUtils {
 			return (array) $out;
 		} //end if
 		//--
-		$tmp_fext = (string) strtolower((string)SmartFileSysUtils::get_file_extension_from_path((string)$the_upld_file_name)); // get the extension
+		$tmp_fext = (string) strtolower((string)SmartFileSysUtils::extractPathFileExtension((string)$the_upld_file_name)); // get the extension
 		//-- {{{SYNC-CHK-ALLOWED-DENIED-EXT}}}
 		if((string)$allowed_extensions != '') {
 			if(stripos((string)$allowed_extensions, '<'.$tmp_fext.'>') === false) {
@@ -1287,7 +1253,7 @@ final class SmartUtils {
 		} //end if else
 		$max_size = (int) Smart::format_number_int($max_size,'+');
 		if($max_size <= 0) {
-			$max_size = (int) SmartFileSysUtils::max_upload_size();
+			$max_size = (int) SmartFileSysUtils::maxUploadFileSize();
 		} //end if
 		$allowed_extensions = (string) trim((string)$allowed_extensions);
 		$new_name = (string) $new_name; // an optional override file name (NO extension !!! The extension will be preserved from the uploaded file)
@@ -1303,11 +1269,11 @@ final class SmartUtils {
 			return false; // {{{SYNC-FILE-UPLD-FALSE-RET}}} no files uploads detected ; should return no error ...
 		} //end if
 		//--
-		if(SmartFileSysUtils::check_if_safe_path((string)$dest_dir) != '1') {
+		if(SmartFileSysUtils::checkIfSafePath((string)$dest_dir) != '1') {
 			return 'Invalid Destination Dir: Unsafe DirName';
 		} //end if
-		$dest_dir = (string) SmartFileSysUtils::add_dir_last_slash((string)$dest_dir);
-		if(SmartFileSysUtils::check_if_safe_path((string)$dest_dir) != '1') {
+		$dest_dir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dest_dir);
+		if(SmartFileSysUtils::checkIfSafePath((string)$dest_dir) != '1') {
 			return 'Invalid Destination Dir: Unsafe Path';
 		} //end if
 		if(SmartFileSystem::is_type_dir((string)$dest_dir) !== true) {
@@ -1358,7 +1324,7 @@ final class SmartUtils {
 		$the_upld_file_name = (string) str_replace('#', '-', $the_upld_file_name); // {{{SYNC-WEBDAV-#-ISSUE}}}
 		$the_upld_file_name = (string) Smart::safe_filename($the_upld_file_name, '-'); // {{{SYNC-SAFE-FNAME-REPLACEMENT}}}
 		//-- remove versioning if any
-		$the_upld_file_name = (string) SmartFileSysUtils::version_remove($the_upld_file_name);
+		$the_upld_file_name = (string) SmartFileSysUtils::fnameVersionClear((string)$the_upld_file_name);
 		//-- remove dangerous characters
 		$the_upld_file_name = (string) trim((string)str_replace(['\\', ' ', '?'], ['-', '-', '-'], (string)$the_upld_file_name));
 		$the_upld_file_name = (string) trim((string)$the_upld_file_name);
@@ -1369,7 +1335,7 @@ final class SmartUtils {
 		if(strlen((string)$the_upld_file_name) > 100) {
 			return 'Uploaded File Name is too long (oversize 100 characters): '.$the_upld_file_name;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$the_upld_file_name)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$the_upld_file_name)) {
 			return 'Uploaded File Name is Invalid (not Safe): '.$the_upld_file_name;
 		} //end if
 		//-- protect against dot files .*
@@ -1377,20 +1343,20 @@ final class SmartUtils {
 			return 'Uploaded File Name is Invalid (Dot .Files are not allowed for safety): '.$the_upld_file_name;
 		} //end if
 		//--
-		$tmp_fext = (string) strtolower((string)SmartFileSysUtils::get_file_extension_from_path((string)$the_upld_file_name)); // get the extension
+		$tmp_fext = (string) strtolower((string)SmartFileSysUtils::extractPathFileExtension((string)$the_upld_file_name)); // get the extension
 		if((string)$new_name != '') {
-			if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$new_name)) {
+			if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$new_name)) {
 				return 'Uploaded File New Name: `'.$new_name.'` is Invalid for file name: '.$the_upld_file_name;
 			} //end if
 			if(substr((string)$new_name, 0, 1) == '.') {
 				return 'Uploaded File New Name: `'.$new_name.'` is Invalid (Dot .Files are not allowed for safety): '.$the_upld_file_name;
 			} //end if
-			$the_upld_file_name = (string) SmartFileSysUtils::version_remove((string)trim((string)$new_name)); // since the new name is provided programatically we do not check if > 100 chars ...
+			$the_upld_file_name = (string) SmartFileSysUtils::fnameVersionClear((string)trim((string)$new_name)); // since the new name is provided programatically we do not check if > 100 chars ...
 			if($var_index >= 0) {
 				$the_upld_file_name .= ''.(int)$var_index;
 			} //end if
 			$the_upld_file_name .= '.'.$tmp_fext;
-			if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$the_upld_file_name)) {
+			if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$the_upld_file_name)) {
 				return 'Uploaded New File Name `'.$the_upld_file_name.'` is Invalid (not Safe): '.$the_upld_file_name;
 			} //end if
 		} //end if
@@ -1452,7 +1418,7 @@ final class SmartUtils {
 		//-- if there is an existing file already with the same name
 		if(SmartFileSystem::is_type_file($dest_dir.$the_upld_file_name)) {
 			if((string)$allow_rewrite === 'versioning') {
-				if(!SmartFileSystem::rename($dest_dir.$the_upld_file_name, $dest_dir.SmartFileSysUtils::version_add($the_upld_file_name, SmartFileSysUtils::version_stdmtime()))) {
+				if(!SmartFileSystem::rename($dest_dir.$the_upld_file_name, $dest_dir.SmartFileSysUtils::fnameVersionAdd((string)$the_upld_file_name))) { // use default versioning: stdmtime
 					return 'Upload Failed: Destination File Versioning Failed for file: '.$the_upld_file_name;
 				} //end if
 			} elseif($allow_rewrite === false) {
@@ -2329,16 +2295,16 @@ final class SmartUtils {
 		self::$cache['get_ip_client:validated-header-val'] = (string) $hval; // the header raw value
 		self::$cache['get_ip_client'] = (string) $ip; // the validated client IP
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Client',
 				'data' => 'Validation Header Key: `'.self::$cache['get_ip_client:validated-header-key'].'`'
 			]);
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Client',
 				'data' => 'Validation Header Raw Value: `'.self::$cache['get_ip_client:validated-header-val'].'`'
 			]);
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Client',
 				'data' => 'IP Detected: `'.self::$cache['get_ip_client'].'`'.($custom === true ? ' [SRV-PROXY=true]' : '').(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP') ? ' [UNTRUSTED:true;'.SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP.']' : '')
 			]);
@@ -2458,20 +2424,20 @@ final class SmartUtils {
 		self::$cache['get_ip_proxyclient:validated-header-val'] = (string) $hval; // the header raw value
 		self::$cache['get_ip_proxyclient'] = (string) $proxy;
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Proxy Client',
 				'data' => 'Check Header Keys:'."\n".self::pretty_print_var(self::$cache['get_ip_proxyclient:check-header-keys'])
 			]);
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Proxy Client',
 				'data' => 'Validation Header Key: `'.self::$cache['get_ip_proxyclient:validated-header-key'].'`'
 			]);
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Proxy Client',
 				'data' => 'Validation Header Raw Value: `'.self::$cache['get_ip_proxyclient:validated-header-val'].'`'
 			]);
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-UTILS', [
+			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Proxy Client',
 				'data' => 'IP Proxy Detected: `'.self::$cache['get_ip_proxyclient'].'`'.($custom === true ? ' [SRV-PROXY=true]' : '')
 			]);
@@ -2696,7 +2662,7 @@ final class SmartUtils {
 			return (array) $outarr;
 		} //end if
 		if((string)$cwd != '') {
-			if(!SmartFileSysUtils::check_if_safe_path((string)$cwd, 'yes', 'yes')) { // this is synced with SmartFileSystem::dir_create() ; without this check if non-empty will fail with dir create below
+			if(!SmartFileSysUtils::checkIfSafePath((string)$cwd, true, true)) { // this is synced with SmartFileSystem::dir_create() ; without this check if non-empty will fail with dir create below
 				Smart::log_warning(__METHOD__.' # The CWD Path is not safe: '.$cwd);
 				$outarr['exitcode'] = -797;
 				return (array) $outarr;
@@ -2855,9 +2821,9 @@ final class SmartUtils {
 	 */
 	public static function registerInternalCacheToDebugLog() {
 		//--
-		if(SmartFrameworkRegistry::ifInternalDebug()) {
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
+		if(SmartEnvironment::ifInternalDebug()) {
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
 					'title' => 'SmartUtils // Internal Cache',
 					'data' => 'Dump:'."\n".print_r(self::$cache,1)
 				]);

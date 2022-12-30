@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221014
+ * @version 	v.20221220
  * @package 	PageBuilder
  *
  */
@@ -84,7 +84,7 @@ final class Utils {
 				for($i=0; $i<$cnt_available_layouts; $i++) {
 					$available_layouts[$i] = (string) \trim((string)$available_layouts[$i]);
 					if((string)$available_layouts[$i] != '') {
-						if(\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$available_layouts[$i])) {
+						if(\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$available_layouts[$i])) {
 							$layouts[(string)$available_layouts[$i]] = (string) $available_layouts[$i];
 						} //end if
 					} //end if
@@ -157,16 +157,16 @@ final class Utils {
 	} //END FUNCTION
 
 
-	public static function getMediaFolderContent($y_media_dir) {
+	public static function getMediaFolderContent(?string $y_media_dir) : array {
 		//--
 		$arr_imgs = array();
 		//--
-		if(\SmartFileSysUtils::check_if_safe_path($y_media_dir)) {
-			if(\SmartFileSystem::is_type_dir($y_media_dir)) {
-				$files_n_dirs = (array) (new \SmartGetFileSystem(true))->get_storage($y_media_dir, false, false);
-				if(\Smart::array_size($files_n_dirs['list-files']) > 0) {
+		if(\SmartFileSysUtils::checkIfSafePath((string)$y_media_dir)) {
+			if(\SmartFileSystem::is_type_dir((string)$y_media_dir)) {
+				$files_n_dirs = (array) (new \SmartGetFileSystem(true))->get_storage((string)$y_media_dir, false, false);
+				if((int)\Smart::array_size($files_n_dirs['list-files']) > 0) {
 					for($i=0; $i<\Smart::array_size($files_n_dirs['list-files']); $i++) {
-						$tmp_ext = (string) \SmartFileSysUtils::get_file_extension_from_path((string)$files_n_dirs['list-files'][$i]);
+						$tmp_ext = (string) \SmartFileSysUtils::extractPathFileExtension((string)$files_n_dirs['list-files'][$i]);
 						switch((string)$tmp_ext) {
 							case 'svg':
 							case 'gif':
@@ -197,7 +197,7 @@ final class Utils {
 		//--
 		$y_html = (string) $y_html;
 		//--
-		$y_html = \SmartUtils::comment_php_code($y_html); // avoid PHP code
+		$y_html = \Smart::commentOutPhpCode((string)$y_html); // comment out PHP code
 		$y_html = \str_replace([' />', '/>'], ['>', '>'], $y_html); // cleanup XHTML tag style
 		//--
 		return (string) $y_html;

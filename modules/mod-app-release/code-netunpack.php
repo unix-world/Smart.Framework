@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20221013
+ * @version 	v.20221225
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -97,7 +97,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_APP_DIR';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
 			$this->err = 'The release app folder have an invalid path ...';
 			return;
 		} //end if
@@ -106,7 +106,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
 			$this->err = 'The optimizations folder have an invalid path ...';
 			return;
 		} //end if
@@ -209,18 +209,19 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			//--
 			'lib/framework/lib_unicode.php'									=> true,
 			'lib/framework/lib_security.php'								=> true,
-			'lib/framework/lib_registry.php'								=> true,
 			'lib/framework/lib_smart.php'									=> true,
-			'lib/framework/lib_filesys.php'									=> true,
 			'lib/framework/lib_caching.php'									=> true,
-			//--
 			'lib/framework/lib_cryptohs.php'								=> true,
 			'lib/framework/lib_cryptoas.php'								=> true,
+			'lib/framework/lib_templating.php'								=> true,
+			'lib/framework/lib_valid_parse.php'								=> true,
 			'lib/framework/lib_http_cli.php'								=> true,
 			'lib/framework/lib_auth.php'									=> true,
-			'lib/framework/lib_valid_parse.php'								=> true,
-			'lib/framework/lib_utils.php'									=> true,
-			'lib/framework/lib_templating.php'								=> true,
+			//--
+			'lib/lib_registry.php'											=> true,
+			//--
+			'lib/core/lib_filesys.php'										=> true,
+			'lib/core/lib_utils.php'										=> true,
 			//--
 			'modules/mod-app-release/lib/AppNetUnPackager.php'				=> true,
 			'modules/mod-app-release/appcodeunpack/appcodeunpack-app.php'	=> false, // do not minify !
@@ -274,7 +275,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$tmp_content = '';
 			for($i=0; $i<Smart::array_size($val); $i++) {
 				$tmp_path = (string) $val[$i];
-				if(!SmartFileSysUtils::check_if_safe_path((string)$tmp_path)) {
+				if(!SmartFileSysUtils::checkIfSafePath((string)$tmp_path)) {
 					$this->err = 'Failed to include svg file for key ['.$key.']: `'.$tmp_path.'` ... Path is not safe !';
 					return;
 					break;
@@ -333,7 +334,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$tmp_content = '';
 			for($i=0; $i<Smart::array_size($val); $i++) {
 				$tmp_path = (string) $val[$i];
-				if(!SmartFileSysUtils::check_if_safe_path((string)$tmp_path)) {
+				if(!SmartFileSysUtils::checkIfSafePath((string)$tmp_path)) {
 					$this->err = 'Failed to include tpl file for key ['.$key.']: `'.$tmp_path.'` ... Path is not safe !';
 					return;
 					break;
@@ -396,7 +397,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				} else {
 					$tmp_path = (string) TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.$val[$i]; // should be already minified
 				} //end if else
-				if(!SmartFileSysUtils::check_if_safe_path((string)$tmp_path)) {
+				if(!SmartFileSysUtils::checkIfSafePath((string)$tmp_path)) {
 					$this->err = 'Failed to include css file for key ['.$key.']: `'.$tmp_path.'` ... Path is not safe !';
 					return;
 					break;
@@ -474,7 +475,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				} else {
 					$tmp_path = (string) TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.$val[$i]; // should be already minified
 				} //end if else
-				if(!SmartFileSysUtils::check_if_safe_path((string)$tmp_path)) {
+				if(!SmartFileSysUtils::checkIfSafePath((string)$tmp_path)) {
 					$this->err = 'Failed to include js file for key ['.$key.']: `'.$tmp_path.'` ... Path is not safe !';
 					return;
 					break;
@@ -552,7 +553,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		$tmp_content = null;
 		foreach($arr_php as $key => $val) {
 			$tmp_path = (string) $key;
-			if(!SmartFileSysUtils::check_if_safe_path((string)$tmp_path)) {
+			if(!SmartFileSysUtils::checkIfSafePath((string)$tmp_path)) {
 				$this->err = 'Failed to include php file: `'.$tmp_path.'` ... Path is not safe !';
 				return;
 				break;

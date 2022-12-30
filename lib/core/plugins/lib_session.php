@@ -67,8 +67,8 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20220419
- * @package 	Application:Session
+ * @version 	v.20221220
+ * @package 	Application:Plugins:Session
  *
  */
 final class SmartSession {
@@ -289,7 +289,7 @@ final class SmartSession {
 		$the_sess_id = (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha512($the_sess_hash_pub_key.'^'.$the_sess_client_uuid.'&'.$the_sess_hash_priv_key), 62); // session ID combines the secret client key based on it's IP / Browser and the Client Entropy Cookie ; 64..86 characters long
 		//--
 		$sf_sess_area = (string) Smart::safe_filename((string)SMART_FRAMEWORK_SESSION_PREFIX);
-		if(((string)$sf_sess_area == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$sf_sess_area))) {
+		if(((string)$sf_sess_area == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$sf_sess_area))) {
 			Smart::raise_error(
 				'SESSION // FATAL ERROR: Invalid/Empty Session Area: '.$sf_sess_area
 			);
@@ -308,7 +308,7 @@ final class SmartSession {
 			$sf_sess_ns = 'c-'.substr((string)$browser_os_ip_identification['bw'],0,3).'-'.$sf_sess_dpfx; // we just need a short prefix for clients (on disk is costly for GC to keep separate folders, but of course, not so safe)
 		} //end if else
 		$sf_sess_ns = (string) Smart::safe_filename($sf_sess_ns);
-		if(((string)$sf_sess_ns == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$sf_sess_ns))) {
+		if(((string)$sf_sess_ns == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$sf_sess_ns))) {
 			Smart::raise_error(
 				'SESSION // FATAL ERROR: Invalid/Empty Session NameSpace: '.$sf_sess_ns
 			);
@@ -319,7 +319,8 @@ final class SmartSession {
 		$sf_sess_mode = 'files';
 		//-- {{{SYNC-SESSION-FILE_BASED-PREFIX}}}
 		$path_prefix = (string) SmartPersistentCache::cachePathPrefix(2, $sf_sess_ns); // this is a safe path
-		$sf_sess_dir = 'tmp/sessions/'.SmartFileSysUtils::add_dir_last_slash($sf_sess_area).SmartFileSysUtils::add_dir_last_slash($path_prefix).SmartFileSysUtils::add_dir_last_slash($sf_sess_ns);
+		$sf_sess_dir = 'tmp/sessions/'.SmartFileSysUtils::addPathTrailingSlash((string)$sf_sess_area).SmartFileSysUtils::addPathTrailingSlash((string)$path_prefix).SmartFileSysUtils::addPathTrailingSlash((string)$sf_sess_ns);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$sf_sess_dir);
 		if((string)$detected_session_mode === 'user') {
 			if(class_exists('SmartCustomSession', false)) { // explicit autoload is false
 				if((string)get_parent_class('SmartCustomSession') == 'SmartAbstractCustomSession') {
@@ -334,16 +335,16 @@ final class SmartSession {
 				return;
 			} //end if
 		} //end if
-		$sf_sess_dir = Smart::safe_pathname($sf_sess_dir);
-		SmartFileSysUtils::raise_error_if_unsafe_path($sf_sess_dir);
+		$sf_sess_dir = (string) Smart::safe_pathname((string)$sf_sess_dir);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$sf_sess_dir);
 		//--
-		if(!SmartFileSystem::is_type_dir($sf_sess_dir)) {
-			SmartFileSystem::dir_create($sf_sess_dir, true); // recursive
+		if(!SmartFileSystem::is_type_dir((string)$sf_sess_dir)) {
+			SmartFileSystem::dir_create((string)$sf_sess_dir, true); // recursive
 		} //end if
 		SmartFileSystem::write_if_not_exists('tmp/sessions/'.$sf_sess_area.'/'.'index.html', '');
 		//=====
 		//--
-		@session_save_path($sf_sess_dir);
+		@session_save_path((string)$sf_sess_dir);
 		@session_cache_limiter('nocache');
 		//--
 		$the_name_of_session = (string) SMART_FRAMEWORK_SESSION_NAME.'__Key_'.Smart::base_from_hex_convert((string)$the_sess_hash_pub_key, 62); // protect session name data agains forgers
@@ -450,7 +451,7 @@ final class SmartSession {
 				if(!isset($_SESSION['visit_UPDATE'])) {
 					Smart::log_warning('Session Reset: Session Expiration Time is not set ...');
 				} //end if
-				if(SmartFrameworkRegistry::ifDebug()) {
+				if(SmartEnvironment::ifDebug()) {
 					if((int)((int)$_SESSION['visit_UPDATE'] + (int)$sess_max_expire) < (int)$time_now) {
 						Smart::log_notice('Session Reset: Session Max HardCoded Expiration Time was Reach ; sessionUpdate='.(int)$_SESSION['visit_UPDATE'].' ; maxExpire='.(int)$sess_max_expire.' ; timeNow='.(int)$time_now);
 					} //end if
@@ -513,7 +514,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20220924
+ * @version 	v.20221220
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {

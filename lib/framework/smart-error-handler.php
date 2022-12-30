@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20221214 # this should be loaded from app web root only
+// # r.20221228 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -43,9 +43,9 @@ if((string)trim((string)ini_get('default_mimetype')) != 'text/html') {
 //--
 
 //-- PHP version, 64-bit support and various checks
-if(version_compare((string)phpversion(), '7.3.0') < 0) { // check for PHP 7.3 or later
+if(version_compare((string)phpversion(), '7.4.0') < 0) { // check for PHP 7.4 or later
 	@http_response_code(500);
-	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 7.3 / 7.4 / 8.0 / 8.1 / 8.2 or later');
+	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 7.4 / 8.0 / 8.1 / 8.2 or later');
 } //end if
 //--
 if(((int)PHP_INT_SIZE < 8) OR ((string)(int)PHP_INT_MAX < '9223372036854775807')) {
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2022.12.14'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2022.12.28'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -100,6 +100,14 @@ if(defined('SMART_FRAMEWORK_VERSION')) {
 	die('A Reserved Constant have been already defined: SMART_FRAMEWORK_VERSION');
 } //end if
 define('SMART_FRAMEWORK_VERSION', 'smart.framework.v.8.7'); // major version ; required for the framework libs
+//--
+
+//--
+if(defined('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) {
+	@http_response_code(500);
+	die('A Reserved Constant have been already defined: SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH');
+} //end if
+define('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH', ''); // for the Smart.Framework Environment it must be set to EMPTY STRING as '' to allow only relative paths ; in other environments can be set to something like (string)realpath('./').'/'
 //--
 
 //--
@@ -163,7 +171,7 @@ array_map(function($const){
 	'SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME', 'SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE', 'SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN',
 	'SMART_FRAMEWORK_TIMEZONE', 'SMART_FRAMEWORK_CHARSET', 'SMART_FRAMEWORK_SECURITY_FILTER_INPUT', 'SMART_FRAMEWORK_SQL_CHARSET',
 	'SMART_FRAMEWORK_MEMORY_LIMIT', 'SMART_FRAMEWORK_EXECUTION_TIMEOUT', 'SMART_FRAMEWORK_NETSOCKET_TIMEOUT', 'SMART_FRAMEWORK_NETSERVER_ID',
-	'SMART_FRAMEWORK_SSL_MODE', 'SMART_FRAMEWORK_SSL_CIPHERS', 'SMART_FRAMEWORK_SSL_VFY_HOST', 'SMART_FRAMEWORK_SSL_VFY_PEER', 'SMART_FRAMEWORK_SSL_VFY_PEER_NAME', 'SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED', 'SMART_FRAMEWORK_SSL_DISABLE_COMPRESS', 'SMART_FRAMEWORK_SSL_CA_FILE',
+	'SMART_FRAMEWORK_SSL_MODE', 'SMART_FRAMEWORK_SSL_CIPHERS', 'SMART_FRAMEWORK_SSL_VFY_HOST', 'SMART_FRAMEWORK_SSL_VFY_PEER', 'SMART_FRAMEWORK_SSL_VFY_PEER_NAME', 'SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED', 'SMART_FRAMEWORK_SSL_DISABLE_COMPRESS', // 'SMART_FRAMEWORK_SSL_CA_FILE', is optional
 	'SMART_FRAMEWORK_CHMOD_DIRS', 'SMART_FRAMEWORK_CHMOD_FILES', 'SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS',
 	'SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER', 'SMART_SOFTWARE_MKTPL_DEBUG_LEN',
 	'SMART_FRAMEWORK_IDENT_ROBOTS', 'SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS',
@@ -553,7 +561,7 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 		//--
 	} //end if
 	//--
-	@trigger_error('***** EXCEPTION ***** [#'.$exid.']:'."\n".'Error-Message: '.$message."\n".$details, E_USER_ERROR); // log the exception as ERROR
+	trigger_error('***** EXCEPTION ***** [#'.$exid.']:'."\n".'Error-Message: '.$message."\n".$details, E_USER_ERROR); // log the exception as ERROR
 	//-- below code would be executed only if E_USER_ERROR fails to stop the execution
 	if(!headers_sent()) {
 		@http_response_code(500); // try, if not headers send

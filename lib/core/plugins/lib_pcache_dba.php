@@ -49,8 +49,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, PHP DBA Extension, SmartDbaUtilDb, SmartDbaDb
- * @version 	v.20210527
- * @package 	Plugins:PersistentCache:Dba
+ * @version 	v.20221224
+ * @package 	Application:Plugins:PersistentCache:Dba
  *
  */
 class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
@@ -120,7 +120,7 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 		} //end if
 		//--
 		return (bool) SmartFileSystem::dir_delete(
-			(string) SmartFileSysUtils::add_dir_last_slash(self::DBA_FOLDER),
+			(string) SmartFileSysUtils::addPathTrailingSlash((string)self::DBA_FOLDER),
 			true // recursive delete all p-cache folder
 		);
 		//--
@@ -294,9 +294,9 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 		//--
 		$hash = (string) SmartHashCrypto::crc32b((string)$y_realm);
 		$prefix = (string) substr((string)Smart::safe_filename((string)strtolower((string)$y_realm), '-'), 0, 35);
-		$db_file_folder = (string) SmartFileSysUtils::add_dir_last_slash((string)substr((string)$hash, 0, 3)).SmartFileSysUtils::add_dir_last_slash($prefix.'#'.$hash);
+		$db_file_folder = (string) SmartFileSysUtils::addPathTrailingSlash((string)substr((string)$hash, 0, 3)).SmartFileSysUtils::addPathTrailingSlash((string)$prefix.'#'.$hash);
 		//--
-		return (string) Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash(self::DBA_FOLDER).$db_file_folder, '-');
+		return (string) Smart::safe_pathname((string)SmartFileSysUtils::addPathTrailingSlash((string)self::DBA_FOLDER).$db_file_folder, '-');
 		//--
 	} //END FUNCTION
 
@@ -317,7 +317,7 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 		$cachePathPrefix = (string) implode('-', (array)$arrPathPrefix); // replaces / with - to avoid use sub-folders in this context
 		$dba_fname = (string) substr((string)self::DBA_FILE, 0, -4).'-#-'.Smart::safe_filename($cachePathPrefix).substr((string)self::DBA_FILE, -4, 4); // NOTICE: $y_realm can contain slashes as they are allowed by validateRealm, so must apply Smart::safe_filename() !!
 		//--
-		return (string) Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash((string)$arrPathPrefix[0])).Smart::safe_filename((string)$dba_fname, '-');
+		return (string) Smart::safe_pathname((string)SmartFileSysUtils::addPathTrailingSlash((string)$arrPathPrefix[0])).Smart::safe_filename((string)$dba_fname, '-');
 		//--
 	} //END FUNCTION
 
@@ -330,7 +330,7 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 		} //end if
 		//--
 		$db_file_path = (string) self::getSafeStorageNameDir($y_realm).self::getSafeStorageNameFile($y_realm, $y_key);
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$db_file_path);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$db_file_path);
 		//--
 		$is_fatal_err = false; // for a persistent cache do not use fatal errors, just log them
 		//-- !!! must create each time a new object because reusing a large number of resources / opened files may run out of memory/resources

@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220912
+ * @version 	v.20221217
  *
  */
 final class TestUnitMongoDB {
@@ -64,7 +64,7 @@ final class TestUnitMongoDB {
 		//--
 
 		//--
-		$is_fatal_err = true; // this is default
+		$is_fatal_err = true; // this is default (for below operations wiwth try/catch the get/set Fatal ERR Mode is used)
 		//--
 		$mongo = new \SmartMongoDb((array)$cfg_mongo, $is_fatal_err);
 		//--
@@ -222,6 +222,7 @@ final class TestUnitMongoDB {
 			$doc['name'] = 'Test:'.$comments;
 			$doc['cost'] = 0;
 			$doc['upsert'] = 'update';
+			$modeFatalErr = (bool) $mongo->getFatalErrMode(); // store the current Fatal Mode for MongoDB Class
 			try {
 				$result = $mongo->upsert(
 					'myTestCollection',
@@ -232,6 +233,7 @@ final class TestUnitMongoDB {
 			} catch(\Exception $err) {
 				\Smart::log_warning(__METHOD__.'() # MongoDB Upsert (#1) :: Exception: '.$err->getMessage());
 			} //end try catch
+			$mongo->setFatalErrMode((bool)$modeFatalErr); // restore the previous Fatal Mode for MongoDB Class
 			$doc = array();
 			if($result[1] != 1) {
 				$err = 'The Test: '.$tst.' FAILED ! Expected result of array[1] should be 1 but is: '.\print_r($result,1);
@@ -245,6 +247,7 @@ final class TestUnitMongoDB {
 			$doc['id']  = $uuid;
 			$doc['name'] = 'Test:'.$comments;
 			$doc['cost'] = 0;
+			$modeFatalErr = (bool) $mongo->getFatalErrMode(); // store the current Fatal Mode for MongoDB Class
 			try {
 				$result = $mongo->upsert(
 					'myTestCollection',
@@ -257,6 +260,7 @@ final class TestUnitMongoDB {
 			} catch(\Exception $err) {
 				\Smart::log_warning(__METHOD__.'() # MongoDB Upsert (#2) :: Exception: '.$err->getMessage());
 			} //end try catch
+			$mongo->setFatalErrMode((bool)$modeFatalErr); // restore the previous Fatal Mode for MongoDB Class
 			$doc = array();
 			if($result[1] != 1) {
 				$err = 'The Test: '.$tst.' FAILED ! Expected result of array[1] should be 1 but is: '.\print_r($result,1);

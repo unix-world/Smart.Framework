@@ -2,8 +2,8 @@
 // r.8.7 / smart.framework.v.8.7
 
 /*
- * SmartQUnit 1.3.1 [ES6]
- * @version 20210526
+ * SmartQUnit 1.3.2 [ES6]
+ * @version 20221222
  *
  * (c) 2018-2022 unix-world.org
  * Released under the BSD license
@@ -30,19 +30,50 @@ const SmartQUnit = new class{constructor(){ // STATIC CLASS
 	const $ = jQuery; // jQuery referencing
 
 
-	const runAjaxTest = function(url, method, dataType, assert, testOK, fxDone) {
+	const runAjaxTest = function(url, method, dataType, assert, testOK, fxDone, postData=null, httpHeaders=null, authUser=null, authPass=null, withCredentials=false) {
 		//--
 		const QAsyncTestDone = assert.async(); // qunit async promise
 		const testHtmlDiv = elHtmlDynDiv;
 		//--
-		$.ajax({
+		method = String(method).trim().toUpperCase();
+		switch(method) {
+			case 'OPTIONS':
+			case 'DELETE':
+			case 'PUT':
+			case 'HEAD':
+			case 'POST':
+				break;
+			case 'GET':
+			default:
+				method = 'GET';
+				postData = null;
+		} //end switch
+		//--
+		if(typeof(httpHeaders) != 'object') {
+			httpHeaders = {}; // default
+		} //end if
+		//--
+		let ajxOpts = {
 			async: true,
+			cache: false, // no cache at all for any ajax request !!!
+			timeout: parseInt(QUnit.config.testTimeout) * 1000, // ajax timeout in sec
 			url: String(url),
 			method: String(method),
 			dataType: String(dataType),
-			timeout: parseInt(QUnit.config.testTimeout) * 1000, // ajax timeout in sec
-			cache: false // no cache at all for any ajax request !!!
-		}).done((msg) => {
+			headers: httpHeaders,
+			data: postData,
+		};
+		if(!!authUser && !!authPass) { // don't pass if empty, it works as sandboxed ! ; will fail to auto-send auth in admin/task environments ; set ONLY if explicit set
+			ajxOpts.username = String(authUser);
+			ajxOpts.password = String(authPass);
+		} //end if
+		if(withCredentials === true) {
+			ajxOpts.xhrFields = {
+				withCredentials: true // allow send credentials (CORS): FALSE / TRUE ; Default is FALSE
+			};
+		} //end if
+		//--
+		$.ajax(ajxOpts).done((msg) => {
 			if(typeof(fxDone) == 'function') {
 				fxDone(QAsyncTestDone, testOK, msg, testHtmlDiv);
 			} else {

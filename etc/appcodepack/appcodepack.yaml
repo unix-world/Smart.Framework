@@ -1,5 +1,5 @@
 # [@[#[!SF.DEV-ONLY!]#]@] ; do not remove this line, it is for safety to dissalow this file to be send in a release package
-# appcodepack.yaml s.20220928.1034 ; sample: MINIFY ; (c) 2013-2022 unix-world.org
+# appcodepack.yaml s.20221222.1210 ; sample: MINIFY ; (c) 2013-2022 unix-world.org
 APP-RELEASE:
 	# the app ID
 	smart-framework.local:
@@ -26,6 +26,10 @@ APP-RELEASE:
 			- modules/mod-auth-admins
 			- modules/mod-webdav
 			- modules/mod-samples
+			- modules/mod-dbal-laminas
+			- modules/mod-tpl
+			- modules/mod-tpl-twist
+			- modules/mod-tpl-twig
 		# list of files to include or exclude
 		files:
 			- LICENSE ; !skip

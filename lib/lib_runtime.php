@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartHashCrypto, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20220924
+ * @version		v.20221220
  * @package 	Application
  *
  */
@@ -396,7 +396,7 @@ final class SmartFrameworkRuntime {
 			$err = 'path is too short';
 		} elseif((string)substr((string)$script, -4, 4) !== '.php') {
 			$err = 'path must end with .php file extension';
-		} elseif(!SmartFileSysUtils::check_if_safe_path((string)$script)) {
+		} elseif(!SmartFileSysUtils::checkIfSafePath((string)$script)) {
 			$err = 'path is not relative/safe';
 		} elseif(!SmartFileSystem::is_type_file((string)$script)) {
 			$err = 'was not found';
@@ -422,12 +422,12 @@ final class SmartFrameworkRuntime {
 		$value = (string) SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$value);
 		//--
 		if((string)$value == '') {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Trying to set an empty header (after filtering the value) with original value of: '.$original_value, E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Trying to set an empty header (after filtering the value) with original value of: '.$original_value, E_USER_WARNING);
 			return;
 		} //end if
 		//--
 		if(headers_sent()) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Headers Already Sent while trying to set a header with value of: '.$value, E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Headers Already Sent while trying to set a header with value of: '.$value, E_USER_WARNING);
 			return;
 		} //end if
 		header((string)$value);
@@ -485,7 +485,7 @@ final class SmartFrameworkRuntime {
 			//--
 		} else {
 			//--
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Could not set No-Cache Headers (Expire='.$expiration.' ; Modified='.$modified.'), Headers Already Sent ...', E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Could not set No-Cache Headers (Expire='.$expiration.' ; Modified='.$modified.'), Headers Already Sent ...', E_USER_WARNING);
 			//--
 		} //end if else
 		//--
@@ -547,7 +547,7 @@ final class SmartFrameworkRuntime {
 			//--
 			switch((int)SMART_SOFTWARE_URL_ALLOW_PATHINFO) {
 				case 3: // only index enabled
-					if(!SmartFrameworkRegistry::isAdminArea()) {
+					if(!SmartEnvironment::isAdminArea()) {
 						$status = true;
 					} //end if
 					break;
@@ -555,7 +555,7 @@ final class SmartFrameworkRuntime {
 					$status = true;
 					break;
 				case 1: // only admin enabled
-					if(SmartFrameworkRegistry::isAdminArea()) {
+					if(SmartEnvironment::isAdminArea()) {
 						$status = true;
 					} //end if
 					break;
@@ -672,7 +672,7 @@ final class SmartFrameworkRuntime {
 			Smart::log_warning('Utils / Create Download Link: Empty File Path has been provided. This means the download link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path($y_file)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$y_file)) {
 			Smart::log_warning('Utils / Create Download Link: Invalid File Path has been provided. This means the download link will be unavaliable (empty) to assure security protection. File: '.$y_file);
 			return '';
 		} //end if
@@ -728,7 +728,7 @@ final class SmartFrameworkRuntime {
 		//--
 		$ignore_script = '';
 		$ignore_module = '';
-		if(SmartFrameworkRegistry::isAdminArea() !== true) { // not for admin !
+		if(SmartEnvironment::isAdminArea() !== true) { // not for admin !
 			//--
 			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT')) {
 				if(SMART_FRAMEWORK_SEMANTIC_URL_SKIP_SCRIPT === true) {
@@ -791,7 +791,7 @@ final class SmartFrameworkRuntime {
 		//--
 		$use_rewrite = false;
 		$use_rfc_params = false;
-		if(SmartFrameworkRegistry::isAdminArea() !== true) { // not for admin !
+		if(SmartEnvironment::isAdminArea() !== true) { // not for admin !
 			if(defined('SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE')) {
 				if((string)SMART_FRAMEWORK_SEMANTIC_URL_USE_REWRITE == 'semantic') {
 					$use_rewrite = true;
@@ -938,7 +938,7 @@ final class SmartFrameworkRuntime {
 
 		//-- check if can run
 		if(self::$RequestProcessed !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Re-Parse the Semantic URLs, Registry is already locked !', E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Re-Parse the Semantic URLs, Registry is already locked !', E_USER_WARNING);
 			return; // avoid run after it was already processed
 		} //end if
 		//--
@@ -964,7 +964,7 @@ final class SmartFrameworkRuntime {
 			} //end if
 			SmartFrameworkRegistry::setRequestPath(
 				(string) $pathinfo
-			) OR @trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Failed to register !path-info! variable', E_USER_WARNING);
+			) OR trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Failed to register !path-info! variable', E_USER_WARNING);
 		} else {
 			$semantic_url = (string) SmartFrameworkRegistry::getServerVar('REQUEST_URI');
 		} //end if
@@ -1025,7 +1025,7 @@ final class SmartFrameworkRuntime {
 	public static function Extract_Filtered_Server_Vars($arr) {
 		//-- check if can run
 		if(self::$ServerProcessed !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Register Server Vars, Registry is already locked !', E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Register Server Vars, Registry is already locked !', E_USER_WARNING);
 			return; // avoid run after it was already processed
 		} //end if
 		//--
@@ -1040,7 +1040,7 @@ final class SmartFrameworkRuntime {
 	public static function Extract_Filtered_Request_Get_Post_Vars($arr, $info) {
 		//-- check if can run
 		if(self::$RequestProcessed !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Register Request/'.$info.' Vars, Registry is already locked !', E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Register Request/'.$info.' Vars, Registry is already locked !', E_USER_WARNING);
 			return; // avoid run after it was already processed
 		} //end if
 		//--
@@ -1056,7 +1056,7 @@ final class SmartFrameworkRuntime {
 	public static function Extract_Filtered_Cookie_Vars($arr) {
 		//-- check if can run
 		if(self::$RequestProcessed !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Register Cookie Vars, Registry is already locked !', E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Cannot Register Cookie Vars, Registry is already locked !', E_USER_WARNING);
 			return; // avoid run after it was already processed
 		} //end if
 		//--
@@ -1071,7 +1071,7 @@ final class SmartFrameworkRuntime {
 	public static function Lock_Server_Processing() {
 		//--
 		if(self::$ServerProcessed !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Registry is already locked !', E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Registry is already locked !', E_USER_WARNING);
 			return; // avoid run after it was already processed
 		} //end if
 		//--
@@ -1088,7 +1088,7 @@ final class SmartFrameworkRuntime {
 	public static function Lock_Request_Processing() {
 		//--
 		if(self::$RequestProcessed !== false) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Registry is already locked !', E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Registry is already locked !', E_USER_WARNING);
 			return; // avoid run after it was already processed
 		} //end if
 		//--
@@ -1203,9 +1203,9 @@ final class SmartFrameworkRuntime {
 								$can_unlock_by_ip = true;
 							} //end if
 							if(
-								(((string)$arr['SINGLE-USER-LOCK']['area'] === 'idx') AND (SmartFrameworkRegistry::isAdminArea() !== true)) OR
-								(((string)$arr['SINGLE-USER-LOCK']['area'] === 'adm') AND (SmartFrameworkRegistry::isAdminArea() === true) AND (SmartFrameworkRegistry::isTaskArea() !== true)) OR
-								(((string)$arr['SINGLE-USER-LOCK']['area'] === 'tsk') AND (SmartFrameworkRegistry::isAdminArea() === true) AND (SmartFrameworkRegistry::isTaskArea() === true)) OR
+								(((string)$arr['SINGLE-USER-LOCK']['area'] === 'idx') AND (SmartEnvironment::isAdminArea() !== true)) OR
+								(((string)$arr['SINGLE-USER-LOCK']['area'] === 'adm') AND (SmartEnvironment::isAdminArea() === true) AND (SmartEnvironment::isTaskArea() !== true)) OR
+								(((string)$arr['SINGLE-USER-LOCK']['area'] === 'tsk') AND (SmartEnvironment::isAdminArea() === true) AND (SmartEnvironment::isTaskArea() === true)) OR
 								((string)$arr['SINGLE-USER-LOCK']['area'] == '')
 							) {
 								$can_unlock_by_area = true;
@@ -1390,7 +1390,7 @@ final class SmartFrameworkRuntime {
 	//======================================================================
 	public static function DebugRequestLog($y_message) {
 		//--
-		if(!SmartFrameworkRegistry::ifDebug()) {
+		if(!SmartEnvironment::ifDebug()) {
 			return;
 		} //end if
 		//--

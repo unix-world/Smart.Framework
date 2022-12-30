@@ -52,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20221014
+ * @version 	v.20221220
  * @package 	PageBuilder
  *
  */
@@ -1362,7 +1362,7 @@ final class Manager {
 			$y_name = (string) \trim((string)$y_name);
 			if((string)$y_name != '') {
 				$y_name = (string) \Smart::safe_filename((string)$y_name);
-				$y_name = (string) \SmartFileSysUtils::get_noext_file_name_from_path((string)$y_name);
+				$y_name = (string) \SmartFileSysUtils::extractPathFileNoExtName((string)$y_name);
 				$y_name = (string) \trim((string)\substr((string)\Smart::safe_filename((string)$y_name), 0, 70), '.'); // try to cut the filename at a given length as 70 ; the extension can be no more than 5 characters as of: .svg .gif .png .jpg .webp
 				$y_name = (string) \Smart::safe_filename((string)$y_name.'.'.$img_ext);
 			} //end if
@@ -2389,7 +2389,7 @@ final class Manager {
 		return (string) \SmartMarkersTemplating::render_file_template(
 			self::MODULE_PATH.'libs/views/manager/view-list-tree.mtpl.htm',
 			[
-				'IS-DEV-MODE' 		=> (string) ((\SmartFrameworkRegistry::ifProdEnv() !== true) ? 'yes' : 'no'),
+				'IS-DEV-MODE' 		=> (string) ((\SmartEnvironment::ifDevMode() === true) ? 'yes' : 'no'),
 				'COOKIE-DATASETS' 	=> (string) $cookie_display_datasets,
 				'VALUE-DATASETS' 	=> (string) $cookie_value_datasets,
 				'DISPLAY-DATASETS' 	=> (string) $display_datasets,
@@ -2502,7 +2502,7 @@ final class Manager {
 		return (string) \SmartMarkersTemplating::render_file_template(
 			(string) self::MODULE_PATH.'libs/views/manager/view-list.mtpl.htm',
 			[
-				'IS-DEV-MODE' 		=> (string) ((\SmartFrameworkRegistry::ifProdEnv() !== true) ? 'yes' : 'no'),
+				'IS-DEV-MODE' 		=> (string) ((\SmartEnvironment::ifDevMode() === true) ? 'yes' : 'no'),
 				'SHOW-FILTER-CTRL' 	=> 'yes',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
 				'ALLOW-PAGES' 		=> (string) $allow_pages,
@@ -2796,14 +2796,14 @@ final class Manager {
 									} //end if
 									if((string)$dbg == 'yes') {
 										if($upd < -1) {
-											\SmartFrameworkRegistry::setDebugMsg('extra', 'IMPORT-TRANSLATIONS', [
+											\SmartEnvironment::setDebugMsg('extra', 'IMPORT-TRANSLATIONS', [
 												'title' => '[Import Translations: '.$y_appname.']',
 												'data' => 'ERROR('.$upd.'): Could not Find for Update PageBuilder Translations for text: `'.(string)$data_arr[(string)$def_lang][$i].'`'
 											]);
 										} elseif($upd == -1) {
 											// no translation
 										} elseif($upd == 0) {
-											\SmartFrameworkRegistry::setDebugMsg('extra', 'IMPORT-TRANSLATIONS', [
+											\SmartEnvironment::setDebugMsg('extra', 'IMPORT-TRANSLATIONS', [
 												'title' => '[Import Translations: '.$y_appname.']',
 												'data' => 'WARN: Could not Update PageBuilder Translations for text: `'.(string)$data_arr[(string)$def_lang][$i].'`'
 											]);

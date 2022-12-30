@@ -43,7 +43,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 			return;
 		} //end if
 
-		if(!SmartFileSysUtils::check_if_safe_path((string)$this->download_file)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$this->download_file)) {
 			$this->PageViewSetErrorStatus(403, 'Invalid file name to download (unsafe path) !');
 			return;
 		} //end if

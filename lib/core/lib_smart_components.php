@@ -26,7 +26,7 @@ if(defined('SMART_TPL_COMPONENTS_APP_ERROR_MSG')) {
 	@http_response_code(500);
 	die('The constant SMART_TPL_COMPONENTS_APP_ERROR_MSG must not be previous defined: '.@basename(__FILE__).' ...');
 } //end if
-define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)file_get_contents('lib/core/templates/app-error-message.inc.htm')); // it must not contain any sub-templates
+define('SMART_TPL_COMPONENTS_APP_ERROR_MSG', (string)file_get_contents('lib/core/templates/app-error-message.inc.htm', false)); // it must not contain any sub-templates
 if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMART_TPL_COMPONENTS_APP_ERROR_MSG) == '')) { // file_get_contents will return FALSE on failure, thus check if is string ; must not be empty string if file exists or read was successful
 	@http_response_code(500);
 	die('Wrong Definition for SMART_TPL_COMPONENTS_APP_ERROR_MSG: '.@basename(__FILE__).' ...');
@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20221213
+ * @version 	v.20221222
  * @package 	Application:ViewComponents
  *
  */
@@ -739,8 +739,8 @@ final class SmartComponents {
 			return array();
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::isAdminArea() === true) {
-			if(SmartFrameworkRegistry::isTaskArea() === true) {
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
 				$the_area = 'task';
 				$the_realm = 'TSK';
 			} else {
@@ -779,7 +779,7 @@ final class SmartComponents {
 		$arr_data['client-uid-cookie-lifetime'] = (int)    SmartUtils::cookie_default_expire(); 							// client browser UID Cookie Default Expire (as defined in etc/init.php) ; it may be required to pass the cookie default lifetime to the Javascript ...
 		$arr_data['client-uid-cookie-domain'] 	= (string) SmartUtils::cookie_default_domain(); 							// client browser UID Cookie Default Domain (as defined in etc/init.php) ; it may be required to pass the cookie default domain to the Javascript ...
 		$arr_data['client-uid-cookie-samesite'] = (string) SmartUtils::cookie_default_samesite_policy(); 					// client browser UID Cookie Default SameSite Policy (as defined in etc/init.php) ; it may be required to pass the cookie default SameSite policy to the Javascript ...
-		$arr_data['app-env'] 					= (string) (SmartFrameworkRegistry::ifProdEnv() === true) ? 'prod' : 'dev'; // App Environment: dev | prod :: {{{SYNC-APP-ENV-SETT}}}
+		$arr_data['app-env'] 					= (string) (SmartEnvironment::ifDevMode() !== true) ? 'prod' : 'dev'; 		// App Environment: dev | prod :: {{{SYNC-APP-ENV-SETT}}}
 		$arr_data['app-namespace'] 				= (string) $namespace;														// NameSpace from configs (as defined in etc/init.php)
 		$arr_data['app-realm'] 					= (string) $the_realm; 														// IDX (for index.php area) ; ADM (for admin.php area) ; TSK (for task.php area)
 		$arr_data['app-domain'] 				= (string) Smart::get_from_config('app.'.$the_area.'-domain', 'string'); 	// the domain set in configs, that may differ by area: $configs['app']['index-domain'] | $configs['app']['admin-domain']
@@ -805,7 +805,7 @@ final class SmartComponents {
 		$arr_data['auth-login-alias'] 			= (string) SmartAuth::get_login_alias(); 									// Auth Login Alias (UserName)
 		$arr_data['auth-login-fullname'] 		= (string) SmartAuth::get_login_fullname(); 								// Auth Login FullName
 		$arr_data['auth-login-privileges'] 		= (string) SmartAuth::get_login_privileges(); 								// Auth Login Privileges
-		$arr_data['debug-mode'] 				= (string) (SmartFrameworkRegistry::ifDebug() ? 'yes' : 'no'); 				// yes | no
+		$arr_data['debug-mode'] 				= (string) (SmartEnvironment::ifDebug() ? 'yes' : 'no'); 					// yes | no
 		//-- initialize all missing array keys
 		for($i=0; $i<count((array)self::DEFAULT_PAGE_VARS); $i++) { // {{{SYNC-INIT-MTPL-DEFVARS}}}
 			if(!array_key_exists((string)self::DEFAULT_PAGE_VARS[$i], (array)$arr_data)) { // avoid rewrite a key from above
@@ -830,8 +830,8 @@ final class SmartComponents {
 	public static function render_app_template(?string $template_path, ?string $template_file, array $arr_data) : string { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 
 		//--
-		$template_path = (string) Smart::safe_pathname((string)SmartFileSysUtils::add_dir_last_slash((string)trim((string)$template_path)));
-		if(!SmartFileSysUtils::check_if_safe_path($template_path)) {
+		$template_path = (string) Smart::safe_pathname((string)SmartFileSysUtils::addPathTrailingSlash((string)trim((string)$template_path)));
+		if(!SmartFileSysUtils::checkIfSafePath((string)$template_path)) {
 			Smart::raise_error(
 				'#SMART-FRAMEWORK-RENDER-APP-TEMPLATE#'."\n".'The Template Dir Path is Invalid: '.$template_path,
 				'App Template Render ERROR :: (See Error Log for More Details)'
@@ -841,7 +841,7 @@ final class SmartComponents {
 		} //end if
 		//--
 		$template_file = (string) Smart::safe_filename((string)trim((string)$template_file));
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name($template_file)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$template_file)) {
 			Smart::raise_error(
 				'#SMART-FRAMEWORK-RENDER-APP-TEMPLATE#'."\n".'The Template File Name is Invalid: '.$template_file,
 				'App Template Render ERROR :: (See Error Log for More Details)'
@@ -850,7 +850,7 @@ final class SmartComponents {
 			return (string) '';
 		} //end if
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path($template_path.$template_file)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$template_path.$template_file)) {
 			Smart::raise_error(
 				'#SMART-FRAMEWORK-RENDER-APP-TEMPLATE#'."\n".'The Template File Path is Invalid: '.$template_path.$template_file,
 				'App Template Render ERROR :: (See Error Log for More Details)'
@@ -880,12 +880,12 @@ final class SmartComponents {
 		//-- add html performance profiling in TPL
 		if(defined('SMART_FRAMEWORK_PROFILING_HTML_PERF') AND (SMART_FRAMEWORK_PROFILING_HTML_PERF === true)) {
 			if((stripos((string)$tpl, '</head>') !== false) AND (stripos((string)$tpl, '</body>') !== false)) {
-				$tpl = (string) str_ireplace('</head>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-header.inc.htm', [ 'MODE' => (SmartFrameworkRegistry::ifProdEnv() === true) ? 'prod' : 'dev', 'VERSION' => (STRING) SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION ])."\n".'</head>', (string)$tpl);
-				$tpl = (string) str_ireplace('</body>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-footer.inc.htm', [ 'MODE' => (SmartFrameworkRegistry::ifProdEnv() === true) ? 'prod' : 'dev', 'VERSION' => (STRING) SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION ])."\n".'</body>', (string)$tpl);
+				$tpl = (string) str_ireplace('</head>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-header.inc.htm', [ 'MODE' => (SmartEnvironment::ifDevMode() !== true) ? 'prod' : 'dev', 'VERSION' => (STRING) SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION ])."\n".'</head>', (string)$tpl);
+				$tpl = (string) str_ireplace('</body>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-footer.inc.htm', [ 'MODE' => (SmartEnvironment::ifDevMode() !== true) ? 'prod' : 'dev', 'VERSION' => (STRING) SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION ])."\n".'</body>', (string)$tpl);
 			} //end if
 		} //end if
 		//-- add debug support in TPL
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			if(class_exists('SmartDebugProfiler')) {
 				if((stripos((string)$tpl, '</head>') !== false) AND (stripos((string)$tpl, '</body>') !== false)) {
 					$tpl = (string) str_ireplace('</head>', "\n".SmartDebugProfiler::js_headers_debug(SmartUtils::get_server_current_script().'?smartframeworkservice=debug')."\n".'</head>', (string)$tpl);

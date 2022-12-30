@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220918
+ * @version 	v.20221219
  *
  */
 abstract class AbstractTaskController extends \SmartAbstractAppController {
@@ -182,7 +182,7 @@ abstract class AbstractTaskController extends \SmartAbstractAppController {
 			if(
 				((int)\strlen((string)$this->app_tpl) < 10) OR
 				(\substr((string)$this->app_tpl, -9, 9) != '.mtpl.htm') OR
-				(!\SmartFileSysUtils::check_if_safe_path((string)$this->app_tpl)) OR
+				(!\SmartFileSysUtils::checkIfSafePath((string)$this->app_tpl)) OR
 				(!\SmartFileSystem::is_type_file((string)$this->app_tpl))
 			) {
 				\SmartFrameworkRuntime::Raise500Error(__METHOD__.' # Invalid App TPL Path: `'.$this->app_tpl.'`. Must be a valid and existing relative path to something like this: `path/to/some.mtpl.htm`');

@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //=====================================================================================
 
 /**
- * Class: ASCII Captcha - An ASCII Image Plugin for SmartCaptcha
+ * Class: ASCII Captcha - An ASCII Image Plugin for Smart Captcha
  * Create a Form Captcha Validation ASCII Art Text Image (HTML)
  *
  * @access 		PUBLIC

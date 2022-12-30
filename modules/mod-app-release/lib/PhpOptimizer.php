@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class PhpOptimizer {
 
 	// ::
-	// v.20220928
+	// v.20221222
 
 
 	//====================================================
@@ -47,7 +47,7 @@ final class PhpOptimizer {
 		//--
 		$y_file = (string) $y_file;
 		//--
-		SmartFileSysUtils::raise_error_if_unsafe_path($y_file, 'no');
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_file, false); // allow absolute path
 		//--
 		if(!SmartFileSystem::is_type_file($y_file)) {
 			return '';
@@ -69,6 +69,12 @@ final class PhpOptimizer {
 				'A required PHP Method Not Found: StripCode::strip_php_code() in StripCode.php'
 			);
 		} //end if
+		if(!method_exists('StripCode', 'should_strip_php_code')) {
+			Smart::raise_error(
+				'Method Not Found: StripCode::should_strip_php_code()',
+				'A required PHP Method Not Found: StripCode::should_strip_php_code() in StripCode.php'
+			);
+		} //end if
 		//--
 		return (string) StripCode::strip_php_code((string)$y_file);
 		//--
@@ -88,7 +94,12 @@ final class PhpOptimizer {
 			return '';
 		} //end if
 		//--
-		return (string) php_strip_whitespace((string)$file);
+		$out = (string) php_strip_whitespace((string)$file);
+		if(StripCode::should_strip_php_code((string)$out) === false) { // {{{SYNC-SMART-PHP-OPTIMIZER-TAG-RETURNTYPEWILLCHANGE}}}
+			$out = (string) file_get_contents((string)$file, false); // return the un-min. file
+		} //end if
+		//--
+		return (string) $out; // return min.
 		//--
 	} //END FUNCTION
 	//====================================================

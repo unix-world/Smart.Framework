@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // DEPENDS:
 //	* Smart::
 //	* SmartUnicode::
-//	* SmartUtils::
+//	* SmartFileSysUtils::
 //	* SmartFileSystem::
 //	* SmartComponents::
 // DEPENDS-EXT: PHP SQLite3 Extension
@@ -62,9 +62,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20221205
- * @package 	Plugins:Database:SQLite
+ * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSystem, SmartComponents
+ * @version 	v.20221219
+ * @package 	Application:Plugins:Database:SQLite
  *
  */
 final class SmartSQliteDb {
@@ -99,9 +99,9 @@ final class SmartSQliteDb {
 		//--
 
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+			SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 				'type' => 'metainfo',
 				'data' => 'SQLite App Connector Version: '.SMART_FRAMEWORK_VERSION
 			]);
@@ -492,9 +492,9 @@ final class SmartSQliteDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartUnicode, SmartUtils, SmartFileSystem, SmartComponents
- * @version 	v.20221205
- * @package 	Plugins:Database:SQLite
+ * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, SmartFileSystem, SmartComponents
+ * @version 	v.20221219
+ * @package 	Application:Plugins:Database:SQLite
  *
  */
 final class SmartSQliteUtilDb {
@@ -536,7 +536,7 @@ final class SmartSQliteUtilDb {
 			return;
 		} //end if
 		//--
-		if(SmartFileSysUtils::check_if_safe_path((string)$file_name, 'yes', 'yes') != 1) { 				// deny absolute path access ; allow protected path access (starting with #)
+		if(SmartFileSysUtils::checkIfSafePath((string)$file_name, true, true) != 1) { 				// deny absolute path access ; allow protected path access (starting with #)
 			self::error((string)$file_name, 'OPEN', 'ERROR: DB path is invalid !', '', '');
 			return;
 		} //end if
@@ -551,12 +551,12 @@ final class SmartSQliteUtilDb {
 			self::error((string)$file_name, 'OPEN', 'ERROR: DB folder not defined !', '', '');
 			return;
 		} //end if
-		if(SmartFileSysUtils::check_if_safe_path((string)$dir_of_db, 'yes', 'yes') != 1) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$dir_of_db, true, true) != 1) {
 			self::error((string)$file_name, 'OPEN', 'ERROR: DB folder path is unsafe !', '', '');
 			return;
 		} //end if
-		$dir_of_db = (string) SmartFileSysUtils::add_dir_last_slash((string)$dir_of_db);
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$dir_of_db, 'yes', 'yes'); 					// deny absolute path access ; allow protected path access (starting with #)
+		$dir_of_db = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dir_of_db);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_of_db, true, true); // deny absolute path access ; allow protected path access (starting with #)
 		//--
 		if(!SmartFileSystem::is_type_dir($dir_of_db)) {
 			SmartFileSystem::dir_create($dir_of_db, true, true); // allow protected paths
@@ -571,7 +571,7 @@ final class SmartSQliteUtilDb {
 		} //end if
 		//-- {{{SYNC-#DB-FOLDER-HTACCESS}}}
 		if(!SmartFileSystem::is_type_file((string)$dir_of_db.'.htaccess')) {
-			SmartFileSysUtils::raise_error_if_unsafe_path((string)$dir_of_db.'.htaccess', 'yes', 'yes'); // deny absolute path access ; allow protected path access (starting with #)
+			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_of_db.'.htaccess', true, true); // deny absolute path access ; allow protected path access (starting with #)
 			if(@file_put_contents((string)$dir_of_db.'.htaccess', (string)'### Smart.Framework // '.__METHOD__.' @ HtAccess Data Protection ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', LOCK_EX)) {
 				SmartFileSystem::fix_file_chmod((string)$dir_of_db.'.htaccess'); // apply file chmod
 			} //end if
@@ -581,7 +581,7 @@ final class SmartSQliteUtilDb {
 			} //end if
 		} //end if
 		if(!SmartFileSystem::is_type_file((string)$dir_of_db.'index.html')) {
-			SmartFileSysUtils::raise_error_if_unsafe_path((string)$dir_of_db.'index.html', 'yes', 'yes'); // deny absolute path access ; allow protected path access (starting with #)
+			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_of_db.'index.html', true, true); // deny absolute path access ; allow protected path access (starting with #)
 			if(@file_put_contents((string)$dir_of_db.'index.html', '', LOCK_EX)) {
 				SmartFileSystem::fix_file_chmod((string)$dir_of_db.'index.html'); // apply file chmod
 			} //end if
@@ -597,7 +597,7 @@ final class SmartSQliteUtilDb {
 			//--
 			$db->busyTimeout((int)$timeout_busy_sec * 1000); // the $timeout_busy_sec is in seconds ; we set a busy timeout in miliseconds
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				//--
 				$arr_version = @$db->version(); // mixed
 				//--
@@ -605,7 +605,7 @@ final class SmartSQliteUtilDb {
 					$arr_version = array();
 				} //end if
 				//--
-				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+				SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 					'type' => 'metainfo',
 					'data' => 'SQLite Library Version: '.$arr_version['versionString'].' / '.$arr_version['versionNumber']
 				]);
@@ -622,8 +622,8 @@ final class SmartSQliteUtilDb {
 					self::$slow_time = 0.9999999;
 				} //end if
 				//--
-				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|slow-time', number_format(self::$slow_time, 7, '.', ''), '=');
-				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+				SmartEnvironment::setDebugMsg('db', 'sqlite|slow-time', number_format(self::$slow_time, 7, '.', ''), '=');
+				SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 					'type' => 'metainfo',
 					'data' => 'Fast Query Reference Time < '.self::$slow_time.' seconds'
 				]);
@@ -650,7 +650,7 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		SmartFrameworkRegistry::$Connections['sqlite'][(string)self::get_connection_id($db)] = (string) $file_name;
+		SmartEnvironment::$Connections['sqlite'][(string)self::get_connection_id($db)] = (string) $file_name;
 		//--
 		if(@$db->lastErrorCode() !== 0) {
 			$sqlite_error = 'SQLite3-ERR:: '.@$db->lastErrorMsg();
@@ -658,8 +658,8 @@ final class SmartSQliteUtilDb {
 			return;
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 				'type' => 'open-close',
 				'data' => 'Open SQLite Database: '.$file_name
 			]);
@@ -705,8 +705,8 @@ final class SmartSQliteUtilDb {
 					Smart::log_warning('WARNING: '.__METHOD__.' # Failed to Register Internal Function: `'.(string)$func.'` with SQLite DB');
 				} //end if
 			} //end foreach
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 					'type' => 'nosql',
 					'data' => 'SQLite Registered Extra Functions: '.implode(', ', (array)array_keys((array)$ext_functions))
 				]);
@@ -741,7 +741,7 @@ final class SmartSQliteUtilDb {
 				if((string)$conn != (string)self::$invalid_conn) { // does not make sense to unset default INVALID connection !
 					if((string)$conn != '') {
 						//Smart::log_notice('Unsetting SQLite connection from Registry: '.$conn.' @ '.__METHOD__);
-						unset(SmartFrameworkRegistry::$Connections['sqlite'][(string)$conn]);
+						unset(SmartEnvironment::$Connections['sqlite'][(string)$conn]);
 					} else {
 						Smart::log_warning('Cannot Unset EMPTY SQLite connection from Registry @ '.__METHOD__);
 					} //end if else
@@ -749,9 +749,9 @@ final class SmartSQliteUtilDb {
 				//--
 				@$db->close();
 				//--
-				if(SmartFrameworkRegistry::ifDebug()) {
+				if(SmartEnvironment::ifDebug()) {
 					//--
-					SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+					SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 						'type' => 'open-close',
 						'data' => 'Close SQLite Database: '.$infofile
 					]);
@@ -805,21 +805,19 @@ final class SmartSQliteUtilDb {
 			$ex = (string) $func;
 		} //end if else
 		//--
-		if(SmartFrameworkRegistry::ifInternalDebug()) {
-			if(SmartFrameworkRegistry::ifDebug()) {
-				//--
+		if(SmartEnvironment::ifInternalDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				$time_start = microtime(true);
-				//--
 			} //end if
 		} //end if
 		//--
 		$ok = (bool) $db->createFunction((string)$fx, (string)$ex, (int)$argnum);
 		//--
-		if(SmartFrameworkRegistry::ifInternalDebug()) {
-			if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifInternalDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				//--
 				$time_end = (float) (microtime(true) - (float)$time_start);
-				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
+				SmartEnvironment::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
 				//--
 				$args = [];
 				if((int)$argnum < 0) {
@@ -830,7 +828,7 @@ final class SmartSQliteUtilDb {
 					} //end for
 				} //end if
 				//--
-				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+				SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 					'type' => 'set',
 					'data' => 'SQLite Register PHP Function :: '.$fx.'('.implode(', ', (array)$args).')',
 					'query' => (string) $ex.'() :: '.($ok === true ? 'OK' : 'FAIL'),
@@ -881,10 +879,8 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			//--
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
-			//--
 		} //end if
 		//--
 		if(is_array($qparams)) {
@@ -925,14 +921,14 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if else
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
 			//--
 			$time_end = (float) (microtime(true) - (float)$time_start);
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+			SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 				'type' => 'count',
 				'data' => 'COUNT :: '.$qtitle,
 				'query' => $query,
@@ -959,10 +955,8 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			//--
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
-			//--
 		} //end if
 		//--
 		if(is_array($qparams)) {
@@ -1021,14 +1015,14 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
 			//--
 			$time_end = (float) (microtime(true) - (float)$time_start);
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+			SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 				'type' => 'read',
 				'data' => 'READ [NON-ASSOCIATIVE] :: '.$qtitle,
 				'query' => $query,
@@ -1055,10 +1049,8 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			//--
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
-			//--
 		} //end if
 		//--
 		if(is_array($qparams)) {
@@ -1121,14 +1113,14 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
 			//--
 			$time_end = (float) (microtime(true) - (float)$time_start);
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+			SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 				'type' => 'read',
 				'data' => 'aREAD [ASSOCIATIVE] :: '.$qtitle,
 				'query' => $query,
@@ -1156,10 +1148,8 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			//--
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
-			//--
 		} //end if
 		//--
 		if(is_array($qparams)) {
@@ -1226,14 +1216,14 @@ final class SmartSQliteUtilDb {
 			//--
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
 			//--
 			$time_end = (float) (microtime(true) - (float)$time_start);
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+			SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 				'type' => 'read',
 				'data' => 'asREAD [SINGLE-ROW-ASSOCIATIVE] :: '.$qtitle,
 				'query' => $query,
@@ -1260,10 +1250,8 @@ final class SmartSQliteUtilDb {
 		//--
 		self::check_connection($db);
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			//--
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
-			//--
 		} //end if
 		//--
 		if(is_array($qparams)) {
@@ -1281,19 +1269,19 @@ final class SmartSQliteUtilDb {
 			$sqlite_error = 'SQLite3-ERR:: '.@$db->lastErrorMsg();
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'sqlite|total-queries', 1, '+');
 			//--
 			$time_end = (float) (microtime(true) - (float)$time_start);
-			SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'sqlite|total-time', $time_end, '+');
 			//--
 			if(
 				(stripos((string)trim((string)$query), 'BEGIN') === 0) OR
 				(stripos((string)trim((string)$query), 'COMMIT') === 0) OR
 				(stripos((string)trim((string)$query), 'ROLLBACK') === 0)
 			) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+				SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 					'type' => 'transaction',
 					'data' => 'TRANSACTION :: '.$qtitle,
 					'query' => $query,
@@ -1308,7 +1296,7 @@ final class SmartSQliteUtilDb {
 				(stripos((string)trim((string)$query), 'EXPLAIN ') === 0) OR
 				(stripos((string)trim((string)$query), 'VACUUM') === 0)
 			) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+				SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 					'type' => 'special',
 					'data' => 'COMMAND :: '.$qtitle,
 					'query' => $query,
@@ -1317,7 +1305,7 @@ final class SmartSQliteUtilDb {
 					'connection' => (string) self::get_connection_id($db)
 				]);
 			} else {
-				SmartFrameworkRegistry::setDebugMsg('db', 'sqlite|log', [
+				SmartEnvironment::setDebugMsg('db', 'sqlite|log', [
 					'type' => 'write',
 					'data' => 'WRITE :: '.$qtitle,
 					'query' => $query,
@@ -1788,13 +1776,13 @@ final class SmartSQliteUtilDb {
 		} //end if else
 		//--
 		if(defined('SMART_SOFTWARE_SQLDB_FATAL_ERR') AND (SMART_SOFTWARE_SQLDB_FATAL_ERR === false)) {
-			throw new Exception('#SQLITE-DB@'.SmartFileSysUtils::get_file_name_from_path($the_conn).'# :: Q# // SQLite Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
+			throw new Exception('#SQLITE-DB@'.SmartFileSysUtils::extractPathFileName((string)$the_conn).'# :: Q# // SQLite Client :: EXCEPTION :: '.$y_area."\n".$y_error_message);
 			return;
 		} //end if
 		//--
 		$def_warn = 'Execution Halted !';
 		$y_warning = (string) trim((string)$y_warning);
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$width = 750;
 			$the_area = (string) $y_area;
 			if((string)$y_warning == '') {
@@ -1868,8 +1856,9 @@ final class SmartSQliteUtilDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20221205
- * @package 	Plugins:Database:SQLite
+ * @depends 	classes: Smart, SmartUnicode
+ * @version 	v.20221219
+ * @package 	Application:Plugins:Database:SQLite
  *
  */
 final class SmartSQliteFunctions {

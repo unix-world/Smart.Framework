@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class ShrinkJsCode extends ShrinkCode {
 
 	// ->
-	// v.20220928
+	// v.20221221
 
 
 	private const PROPERTIESANDMETHODS = [ // 13 [ 8 + 5 ]

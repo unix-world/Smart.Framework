@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20220924
+	// v.20221220
 
 	const DAV_RESOURCE_TYPE_COLLECTION 		= 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION 	= 'noncollection';
@@ -56,7 +56,7 @@ final class DavServer {
 
 	public static function safeCheckPathAgainstHtFiles($path) {
 		//--
-		if(\stripos(\SmartFileSysUtils::get_file_name_from_path($path), '.ht') === 0) { // dissalow ^\.ht files as in apache config to prevent access to .htaccess / .htpassword
+		if(\stripos(\SmartFileSysUtils::extractPathFileName((string)$path), '.ht') === 0) { // dissalow ^\.ht files as in apache config to prevent access to .htaccess / .htpassword
 			return false;
 		} //end if
 		//--
@@ -327,7 +327,7 @@ final class DavServer {
 		//--
 		if(\Smart::array_size($errors) > 0) {
 			//--
-			if(\SmartFrameworkRegistry::ifDebug()) {
+			if(\SmartEnvironment::ifDebug()) {
 				$notice_log = '';
 				foreach($errors as $z => $error) {
 					if(\is_object($error)) {

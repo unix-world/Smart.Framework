@@ -17,9 +17,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework v.8.7 # r.20221208
+// Smart-Framework v.8.7 # r.20221228
 //======================================================
-// Requires PHP 7.3 / 7.4 / 8.0 / 8.1 / 8.2 or later
+// Requires PHP 7.4 / 8.0 / 8.1 / 8.2 or later
 //======================================================
 // this library should be loaded from app web root only
 //======================================================
@@ -31,21 +31,18 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //=====================================================================================
 // {{{SYNC-SMART-FRAMEWORK-LIBS-ORDER}}}
 //---------------------------------------------------- all these libs depend on lib runtime that need to be loaded via smart runtime before executing any function from these libs ...
-require('lib/framework/lib_unicode.php'); 		// smart unicode (support)
-require('lib/framework/lib_security.php'); 		// smart security (compliance)
-require('lib/framework/lib_registry.php'); 		// smart registry (data records)
-require('lib/framework/lib_smart.php'); 		// smart (base) core
-require('lib/framework/lib_filesys.php');		// smart file system (utils, fs, get)
-require('lib/framework/lib_caching.php');		// smart cache (non-persistent + abstract persistent)
-//-------
-require('lib/framework/lib_cryptohs.php');		// smart crypto (utils) hash
-require('lib/framework/lib_cryptoas.php');		// smart crypto (utils) symmetric and asymmetric
-require('lib/framework/lib_http_cli.php');		// smart http client
-require('lib/framework/lib_auth.php');			// smart authentication
-require('lib/framework/lib_valid_parse.php');	// smart validators and parsers
-require('lib/framework/lib_utils.php');			// smart utils
-require('lib/framework/lib_templating.php');	// smart templating (req. a persistent cache adapter, derived from abstract persistent ; ex: x-blackhole)
+require('lib/framework/lib_unicode.php'); 			// smart unicode (support)
+require('lib/framework/lib_security.php'); 			// smart security (compliance)
+require('lib/framework/lib_smart.php'); 			// smart (base) core + filesysutils
+require('lib/framework/lib_caching.php');			// smart cache (non-persistent + abstract persistent)
+require('lib/framework/lib_cryptohs.php');			// smart crypto (utils) hash
+require('lib/framework/lib_cryptoas.php');			// smart crypto (utils) symmetric and asymmetric
+require('lib/framework/lib_templating.php');		// smart markers templating engine
+require('lib/framework/lib_valid_parse.php');		// smart validators and parsers
+require('lib/framework/lib_http_cli.php');			// smart http client
+require('lib/framework/lib_auth.php');				// smart authentication
 //----------------------------------------------------
+require('lib/framework/plugins/autoload.php'); 		// auto load  framework plugins # DEPENDS-OPTIONAL: SmartComponents::app_error_message()
 //=====================================================================================
 
 // end of php code

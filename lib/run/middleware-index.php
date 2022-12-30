@@ -41,7 +41,8 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20220603
+ * @version		20221220
+ * @package 	Application
  *
  */
 final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
@@ -62,7 +63,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		} //end if
 		self::$MiddlewareCompleted = true;
 		//--
-		if(SmartFrameworkRegistry::isAdminArea() !== false) {
+		if(SmartEnvironment::isAdminArea() !== false) {
 			Smart::raise_error(
 				'Middleware ERROR: This Middleware can run only for Index Area'
 			);
@@ -103,7 +104,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 					break;
 				case 'debug':
 				case 'debug-tpl':
-				//	if(!SmartFrameworkRegistry::ifDebug()) {
+				//	if(!SmartEnvironment::ifDebug()) {
 				//		$smartframeworkservice = '';
 				//	} //end if
 					break;
@@ -140,7 +141,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		//--
 		if((string)$smartframeworkservice == 'debug') {
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // headers: cache control, force no-cache
 				echo self::DebugInfoGet('idx');
 			} else {
@@ -152,7 +153,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 			//--
 		} elseif((string)$smartframeworkservice == 'debug-tpl') {
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // headers: cache control, force no-cache
 				echo SmartDebugProfiler::display_marker_tpl_debug((string)SmartFrameworkRegistry::getRequestVar('tpl'));
 			} else {
@@ -237,7 +238,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		} //end if
 		//--
 		$the_controller_name = (string) $arr[0].'.'.$arr[1];
-		$the_path_to_module = (string) Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash('modules/mod-'.Smart::safe_filename($arr[0])));
+		$the_path_to_module = (string) Smart::safe_pathname(SmartFileSysUtils::addPathTrailingSlash('modules/mod-'.Smart::safe_filename((string)$arr[0])));
 		$the_controller_file = (string) Smart::safe_pathname($the_path_to_module.Smart::safe_filename($arr[1]).'.php');
 		if(!SmartFileSystem::is_type_file($the_controller_file)) {
 			if((string)$err404 == '') {
@@ -250,7 +251,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 			return;
 		} //end if
 		//--
-		if((!SmartFileSysUtils::check_if_safe_path($the_path_to_module)) OR (!SmartFileSysUtils::check_if_safe_path($the_controller_file))) {
+		if((!SmartFileSysUtils::checkIfSafePath((string)$the_path_to_module)) OR (!SmartFileSysUtils::checkIfSafePath((string)$the_controller_file))) {
 			SmartFrameworkRuntime::Raise400Error('Insecure Module Access for Page: '.$page);
 			return;
 		} //end if
@@ -364,7 +365,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		//== CACHE CONTROL
 		//--
 		if((int)$appStatusCode < 400) { // {{{SYNC-MIDDLEWARE-MIN-ERR-STATUS-CODE}}}
-			if(((int)$appSettings['expires'] > 0) AND (!SmartFrameworkRegistry::ifDebug())) {
+			if(((int)$appSettings['expires'] > 0) AND (!SmartEnvironment::ifDebug())) {
 				SmartFrameworkRuntime::outputHttpHeadersCacheControl((int)$appSettings['expires'], (int)$appSettings['modified'], (string)$appSettings['c-control']); // headers: cache expiration control
 			} elseif((int)$appSettings['expires'] != 304) { // {{{SYNC-MIDDLEWARE-CACHED-STATUS-CODE}}}
 				SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // headers: cache control, force no-cache
@@ -545,7 +546,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 			if((string)$appSettings['template-path'] == '@') { // if template path is set to self (module)
 				$the_template_path = '@'; // this is a special setting
 			} else {
-				$the_template_path = Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash(trim((string)$appSettings['template-path'])));
+				$the_template_path = (string) Smart::safe_pathname((string)SmartFileSysUtils::addPathTrailingSlash((string)trim((string)$appSettings['template-path'])));
 			} //end if else
 		} else { // use default template path
 			$the_template_path = (string) trim((string)Smart::get_from_config('app.index-template-path', 'string'));
@@ -555,7 +556,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 				return;
 			} //end if
 			if((string)$the_template_path != '@') {
-				$the_template_path = Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash($the_template_path));
+				$the_template_path = (string) Smart::safe_pathname((string)SmartFileSysUtils::addPathTrailingSlash((string)$the_template_path));
 			} //end if
 		} //end if else
 		//--
@@ -578,7 +579,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 		} //end if else
 		$the_template_file = (string) $the_template_file; // finally normalize
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path($the_template_path)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$the_template_path)) {
 			Smart::log_warning('Invalid Page Template Path: '.$the_template_path);
 			SmartFrameworkRuntime::Raise500Error('Invalid Page Template Path. See the error log !');
 			return;
@@ -588,7 +589,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 			SmartFrameworkRuntime::Raise500Error('Page Template Path does not Exists. See the error log !');
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path($the_template_path.$the_template_file)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$the_template_path.$the_template_file)) {
 			Smart::log_warning('Invalid Page Template File: '.$the_template_path.$the_template_file);
 			SmartFrameworkRuntime::Raise500Error('Invalid Page Template File. See the error log !');
 			return;
@@ -599,7 +600,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 			return;
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			self::DebugInfoCookieSet('idx');
 		} // end if
 		echo SmartComponents::render_app_template((string)$the_template_path, (string)$the_template_file, (array)$appData);

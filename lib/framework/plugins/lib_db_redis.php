@@ -15,7 +15,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Smart-Framework - Redis Database Client
 // DEPENDS:
 //	* Smart::
-//	* SmartComponents::
+//	* SmartEnvironment
+//	* SmartComponents:: (optional)
 // DEPENDS-EXT: PHP Sockets
 //======================================================
 
@@ -51,8 +52,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints 		for the rest of supported methods take a look at the SmartRedisDb class magic __call method ; Visit: http://redis.io/commands ; Most of the base methods are implemented.
  *
  * @access 		PUBLIC
- * @depends 	extensions: PHP Sockets ; classes: Smart, SmartComponents
- * @version 	v.20210528
+ * @depends 	extensions: PHP Sockets ; classes: Smart, SmartEnvironment, SmartComponents (optional)
+ * @version 	v.20221223
  * @package 	Plugins:Database:Redis
  *
  */
@@ -169,7 +170,7 @@ final class SmartRedisDb {
 			$this->password = '';
 		} //end if else
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
 			if($this->fatal_err === true) {
 				$txt_conn = 'FATAL ERRORS';
@@ -186,8 +187,8 @@ final class SmartRedisDb {
 				$this->slow_time = 0.9999999;
 			} //end if
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'redis|slow-time', number_format($this->slow_time, 7, '.', ''), '=');
-			SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
+			SmartEnvironment::setDebugMsg('db', 'redis|slow-time', number_format($this->slow_time, 7, '.', ''), '=');
+			SmartEnvironment::setDebugMsg('db', 'redis|log', [
 				'type' => 'metainfo',
 				'data' => 'Redis App Connector Version: '.SMART_FRAMEWORK_VERSION.' // Connection Errors are: '.$txt_conn
 			]);
@@ -264,7 +265,7 @@ final class SmartRedisDb {
 	public function __call($method, array $args) {
 		//--
 		if($this->err !== false) {
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				Smart::log_notice('#REDIS-DB# :: Method Call Aborted. Detected Previous Redis Error before calling the method: '.$method.'()');
 			} //end if
 			return null;
@@ -386,7 +387,7 @@ final class SmartRedisDb {
 			case 'QUIT': // always return OK ; ask the server to close the connection ; the connection is closed as soon as all pending replies have been written to the client
 				//--
 				if(!is_resource($this->connect())) { // this have it's own error raise mechanism
-					if(SmartFrameworkRegistry::ifDebug()) {
+					if(SmartEnvironment::ifDebug()) {
 						Smart::log_notice('#REDIS-DB# :: Redis connection FAILED just before calling the method: '.$method.'()');
 					} //end if
 					return null;
@@ -444,22 +445,20 @@ final class SmartRedisDb {
 			//--
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			//--
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
-			//--
 		} //end if
 		//--
 		@fwrite($this->socket, $cmd);
 		//--
 		$response = $this->parse_response($method);
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'redis|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'redis|total-queries', 1, '+');
 			//--
 			$time_end = (float) (microtime(true) - (float)$time_start);
-			SmartFrameworkRegistry::setDebugMsg('db', 'redis|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'redis|total-time', $time_end, '+');
 			//--
 			$dtype = 'nosql';
 			if(in_array(
@@ -550,7 +549,7 @@ final class SmartRedisDb {
 				$isdatalensize = true;
 			} //end if
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
+			SmartEnvironment::setDebugMsg('db', 'redis|log', [
 				'type' 			=> (string) $dtype,
 				'data' 			=> (string) strtoupper($method).' :: '.$this->description,
 				'command' 		=> (string) Smart::text_cut_by_limit((string)implode(' ', (array)$args), 1024, true, '[...data-longer-than-1024-bytes-is-not-logged-all-here...]'),
@@ -650,17 +649,15 @@ final class SmartRedisDb {
 		//--
 		if(!is_resource($this->socket)) { // try to connect or re-use the connection
 			//--
-			if(array_key_exists('redis', SmartFrameworkRegistry::$Connections) AND array_key_exists((string)$this->server.'@'.$this->db, (array)SmartFrameworkRegistry::$Connections['redis']) AND is_resource(SmartFrameworkRegistry::$Connections['redis'][(string)$this->server.'@'.$this->db])) {
+			if(array_key_exists('redis', SmartEnvironment::$Connections) AND array_key_exists((string)$this->server.'@'.$this->db, (array)SmartEnvironment::$Connections['redis']) AND is_resource(SmartEnvironment::$Connections['redis'][(string)$this->server.'@'.$this->db])) {
 				//--
-				$this->socket = SmartFrameworkRegistry::$Connections['redis'][(string)$this->server.'@'.$this->db]; // re-use conection (import)
+				$this->socket = SmartEnvironment::$Connections['redis'][(string)$this->server.'@'.$this->db]; // re-use conection (import)
 				//--
-				if(SmartFrameworkRegistry::ifDebug()) {
-					//--
-					SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
+				if(SmartEnvironment::ifDebug()) {
+					SmartEnvironment::setDebugMsg('db', 'redis|log', [
 						'type' => 'open-close',
 						'data' => 'Redis DB :: Re-Using Connection to: '.$this->server.'@'.$this->db.' :: '.$this->description.' @ Connection-Socket: '.$this->socket
 					]);
-					//--
 				} //end if
 				//--
 				$errno = 0;
@@ -670,19 +667,19 @@ final class SmartRedisDb {
 				//--
 				$this->socket = @stream_socket_client($this->server, $errno, $errstr, $this->timeout);
 				//--
-				if(SmartFrameworkRegistry::ifDebug()) {
+				if(SmartEnvironment::ifDebug()) {
 					//--
-					SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
+					SmartEnvironment::setDebugMsg('db', 'redis|log', [
 						'type' => 'metainfo',
 						'data' => 'Connection Timeout: '.$this->timeout.' seconds'
 					]);
 					//--
-					SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
+					SmartEnvironment::setDebugMsg('db', 'redis|log', [
 						'type' => 'metainfo',
 						'data' => 'Fast Query Reference Time < '.$this->slow_time.' seconds'
 					]);
 					//--
-					SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
+					SmartEnvironment::setDebugMsg('db', 'redis|log', [
 						'type' => 'open-close',
 						'data' => 'Redis DB :: Open Connection to: '.$this->server.'@'.$this->db.' :: '.$this->description.' @ Connection-Socket: '.$this->socket
 					]);
@@ -694,7 +691,7 @@ final class SmartRedisDb {
 					@stream_set_blocking($this->socket, true);
 					@stream_set_timeout($this->socket, (int)SMART_FRAMEWORK_NETSOCKET_TIMEOUT);
 					//--
-					SmartFrameworkRegistry::$Connections['redis'][(string)$this->server.'@'.$this->db] = $this->socket; // export connection
+					SmartEnvironment::$Connections['redis'][(string)$this->server.'@'.$this->db] = $this->socket; // export connection
 					//--
 					if((string)$this->password != '') {
 						$this->run_command('AUTH', array($this->password)); // authenticate
@@ -702,14 +699,12 @@ final class SmartRedisDb {
 					//--
 					$this->run_command('SELECT', array($this->db)); // select database
 					//--
-					if(SmartFrameworkRegistry::ifDebug()) {
-						//--
-						SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
+					if(SmartEnvironment::ifDebug()) {
+						SmartEnvironment::setDebugMsg('db', 'redis|log', [
 							'type' => 'set',
 							'data' => 'Selected Redis Database #'.$this->db.' :: `'.$this->description.'`',
 							'skip-count' => 'yes'
 						]);
-						//--
 					} //end if
 					//--
 				} //end if else
@@ -742,15 +737,17 @@ final class SmartRedisDb {
 		//--
 		if($this->socket) {
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('db', 'redis|log', [
 					'type' => 'open-close',
 					'data' => 'Redis DB :: Close Connection for: '.$this->server.'@'.$this->db.' :: '.$this->description.' @ Connection-Socket: '.$this->socket
 				]);
 			} //end if
 			//--
 			@fclose($this->socket); // closing the local connection (the global might remain opened ...)
-			SmartFrameworkRegistry::$Connections['redis'][(string)$this->server.'@'.$this->db] = null;
+			//--
+			SmartEnvironment::$Connections['redis'][(string)$this->server.'@'.$this->db] = null;
+			//--
 			$this->socket = null; // reset and clear socket
 			$this->err = true; // required, to halt driver, no more allow operations and avoid reconnect, was explicit destroyed
 			//--
@@ -781,8 +778,8 @@ final class SmartRedisDb {
 		$is_fatal = (bool) $this->fatal_err;
 		//--
 		if($is_fatal === false) { // NON-FATAL ERROR
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'redis|log', [
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('db', 'redis|log', [
 					'type' => 'metainfo',
 					'data' => 'Redis (`'.$this->description.'`) :: SILENT WARNING: '.$y_area."\n".'Command: '.$y_query."\n".'Error-Message: '.$y_error_message."\n".'The settings for this Redis instance allow just silent warnings on connection fail.'."\n".'All next method calls to this Redis instance will be discarded silently ...'
 				]);
@@ -793,7 +790,7 @@ final class SmartRedisDb {
 		//--
 		$def_warn = 'Execution Halted !';
 		$y_warning = (string) trim((string)$y_warning);
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$width = 750;
 			$the_area = (string) $y_area;
 			if((string)$y_warning == '') {
@@ -813,18 +810,21 @@ final class SmartRedisDb {
 			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
 		} //end if else
 		//--
-		$out = (string) SmartComponents::app_error_message(
-			'Redis Client',
-			'Redis',
-			'MemDB',
-			'Server',
-			'lib/core/img/db/redis-logo.svg',
-			(int)    $width, // width
-			(string) $the_area, // area
-			(string) $the_error_message, // err msg
-			(string) $the_params, // title or params
-			(string) $the_query_info // command
-		);
+		$out = '';
+		if(class_exists('SmartComponents')) {
+			$out = (string) SmartComponents::app_error_message(
+				'Redis Client',
+				'Redis',
+				'MemDB',
+				'Server',
+				'lib/core/img/db/redis-logo.svg',
+				(int)    $width, // width
+				(string) $the_area, // area
+				(string) $the_error_message, // err msg
+				(string) $the_params, // title or params
+				(string) $the_query_info // command
+			);
+		} //end if
 		//--
 		Smart::raise_error(
 			'#REDIS@'.$this->socket.'# (`'.$this->description.'`) :: Q# // Redis Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Command:'."\n".$y_query,

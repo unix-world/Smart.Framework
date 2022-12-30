@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20220915
+ * @version 	v.20221219
  * @package 	development:modules:PageBuilder
  *
  */
@@ -58,7 +58,7 @@ abstract class AbstractFrontendPlugin extends \SmartModExtLib\PageBuilder\Abstra
 			return false;
 		} //end if
 		//--
-		if(\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$plugin_name)) {
+		if(\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$plugin_name)) {
 			$this->plugin_name = (string) $plugin_name;
 		} //end if
 		//--
@@ -66,7 +66,7 @@ abstract class AbstractFrontendPlugin extends \SmartModExtLib\PageBuilder\Abstra
 			$this->plugin_config = (array) \array_change_key_case((array)$plugin_config, \CASE_LOWER); // plugin config ; force all keys lower case
 		} //end if
 		//--
-		if(\SmartFileSysUtils::check_if_safe_path((string)$plugin_caller_module_path)) {
+		if(\SmartFileSysUtils::checkIfSafePath((string)$plugin_caller_module_path)) {
 			$this->plugin_caller_module_path = (string) $plugin_caller_module_path;
 		} //end if
 		//--

@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20220928
+ * @version 	v.20221219
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -90,7 +90,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_APP_DIR';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
 			$this->err = 'The release app folder have an invalid path ...';
 			return;
 		} //end if
@@ -99,7 +99,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
 			$this->err = 'The optimizations folder have an invalid path ...';
 			return;
 		} //end if
@@ -122,7 +122,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 
 		//--
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR);
 		if(SmartFileSystem::path_exists((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
 			$this->err = 'The optimizations folder already exists, run Cleanup before running Optimize !';
 			return;
@@ -237,18 +237,18 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 						} else {
 							$tmp_nkey = (string) trim((string)$tmp_arr[1]);
 							$tmp_arr = null;
-							if(((string)$tmp_nkey == '') OR (!SmartFileSysUtils::check_if_safe_path((string)$tmp_nkey))) {
+							if(((string)$tmp_nkey == '') OR (!SmartFileSysUtils::checkIfSafePath((string)$tmp_nkey))) {
 								$this->err = 'Invalid File Rename (2): `'.$key.'` ; `'.$val.'`';
 								break;
 							} else {
 								$tmp_fpath = (string) TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.$key;
-								SmartFileSysUtils::raise_error_if_unsafe_path((string)$tmp_fpath);
+								SmartFileSysUtils::raiseErrorIfUnsafePath((string)$tmp_fpath);
 								if(!SmartFileSystem::is_type_file((string)$tmp_fpath)) {
 									$this->err = 'Cannot Rename Inexistent File: `'.$key.'` ; `'.$val.'`';
 									break;
 								} //end if
 								$tmp_nfpath = (string) TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.$tmp_nkey;
-								SmartFileSysUtils::raise_error_if_unsafe_path((string)$tmp_nfpath);
+								SmartFileSysUtils::raiseErrorIfUnsafePath((string)$tmp_nfpath);
 								if(SmartFileSystem::path_exists((string)$tmp_nfpath)) {
 									$this->err = 'Overwrite is not allowed, Cannot Rename File: `'.$key.'` ; `'.$val.'`';
 									break;
@@ -290,18 +290,18 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 						} else {
 							$tmp_nkey = (string) trim((string)$tmp_arr[1]);
 							$tmp_arr = null;
-							if(((string)$tmp_nkey == '') OR (!SmartFileSysUtils::check_if_safe_path((string)$tmp_nkey))) {
+							if(((string)$tmp_nkey == '') OR (!SmartFileSysUtils::checkIfSafePath((string)$tmp_nkey))) {
 								$this->err = 'Invalid Folder Rename (2): `'.$key.'` ; `'.$val.'`';
 								break;
 							} else {
 								$tmp_fpath = (string) TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.$key;
-								SmartFileSysUtils::raise_error_if_unsafe_path((string)$tmp_fpath);
+								SmartFileSysUtils::raiseErrorIfUnsafePath((string)$tmp_fpath);
 								if(!SmartFileSystem::is_type_dir((string)$tmp_fpath)) {
 									$this->err = 'Cannot Rename Inexistent Folder: `'.$key.'` ; `'.$val.'`';
 									break;
 								} //end if
 								$tmp_nfpath = (string) TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.$tmp_nkey;
-								SmartFileSysUtils::raise_error_if_unsafe_path((string)$tmp_nfpath);
+								SmartFileSysUtils::raiseErrorIfUnsafePath((string)$tmp_nfpath);
 								if(SmartFileSystem::path_exists((string)$tmp_nfpath)) {
 									$this->err = 'Overwrite is not allowed, Cannot Rename Folder: `'.$key.'` ; `'.$val.'`';
 									break;
@@ -351,7 +351,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				if(!$this->err) {
 					if(stripos($val, '!skip') !== false) {
 						$tmp_fpath = (string) TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.$key;
-						SmartFileSysUtils::raise_error_if_unsafe_path((string)$tmp_fpath);
+						SmartFileSysUtils::raiseErrorIfUnsafePath((string)$tmp_fpath);
 						if(SmartFileSystem::is_type_file((string)$tmp_fpath)) {
 							if(!SmartFileSystem::delete((string)$tmp_fpath)) {
 								$this->err = 'Cannot Delete File: `'.$key.'`';
@@ -378,7 +378,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				if(!$this->err) {
 					if(stripos($val, '!skip') !== false) {
 						$tmp_fpath = (string) TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR.$key;
-						SmartFileSysUtils::raise_error_if_unsafe_path((string)$tmp_fpath);
+						SmartFileSysUtils::raiseErrorIfUnsafePath((string)$tmp_fpath);
 						if(SmartFileSystem::is_type_dir((string)$tmp_fpath)) {
 							if(!SmartFileSystem::dir_delete((string)$tmp_fpath)) {
 								$this->err = 'Cannot Delete Folder: `'.$key.'`';
@@ -409,7 +409,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 
 		//--
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR);
 		SmartFileSystem::write((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'optimization-errors.log', (string)($this->err ? $this->err : '#NULL'));
 		//--
 
@@ -450,7 +450,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 					} //end if
 					$key = (string) trim((string)$tmp_arr[0]);
 					$tmp_arr = null;
-					if(SmartFileSysUtils::check_if_safe_path((string)$key)) {
+					if(SmartFileSysUtils::checkIfSafePath((string)$key)) {
 						$out_arr[(string)$key] = (string) $val;
 					} //end if
 				} //end if
@@ -473,7 +473,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			return;
 		} //end if
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path((string)$dir)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$dir)) {
 			$this->err = __METHOD__.' # Invalid folder name: `'.$dir.'`';
 			return;
 		} //end if
@@ -510,7 +510,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			return;
 		} //end if
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path((string)$file)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$file)) {
 			$this->err = __METHOD__.' # Invalid file name: `'.$file.'`';
 			return;
 		} //end if

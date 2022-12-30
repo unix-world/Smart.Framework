@@ -54,8 +54,8 @@ if(!function_exists('hash_algos')) {
  * @usage       static object: Class::method() - This class provides only STATIC methods
  *
  * @access      PUBLIC
- * @depends     PHP hash_algos() / hash() ; classes: SmartFrameworkRegistry, Smart ; SMART_FRAMEWORK_SECURITY_KEY
- * @version     v.20221205
+ * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_SECURITY_KEY
+ * @version     v.20221223
  * @package     @Core:Crypto
  *
  */
@@ -89,6 +89,8 @@ final class SmartHashCrypto {
 		if((string)$y_custom_salt == '') {
 			if(defined('SMART_FRAMEWORK_SECURITY_KEY')) {
 				$y_custom_salt = (string) SMART_FRAMEWORK_SECURITY_KEY;
+			} else {
+				$y_custom_salt = (string) self::SALT_PREFIX.' '.self::SALT_SEPARATOR.' '.self::SALT_SUFFIX;
 			} //end if
 		} //end if
 		//--
@@ -211,8 +213,8 @@ final class SmartHashCrypto {
 		$original_key = (string) $key;
 		$key = (string) trim((string)$key); // {{{SYNC-CRYPTO-KEY-TRIM}}}
 		if((string)$original_key !== (string)$key) {
-			if(SmartFrameworkRegistry::ifInternalDebug()) {
-				if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifInternalDebug()) {
+				if(SmartEnvironment::ifDebug()) {
 					Smart::log_notice(__METHOD__.' # Key is invalid, must not contain trailing spaces: `'.$key.'`');
 				} //end if
 			} //end if
@@ -223,8 +225,8 @@ final class SmartHashCrypto {
 		$klen = (int) strlen((string)$key);
 		//--
 		if((int)$klen < 7) { // {{{SYNC-CRYPTO-KEY-MIN}}} ; minimum acceptable secure key is 7 characters long
-			if(SmartFrameworkRegistry::ifInternalDebug()) {
-				if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifInternalDebug()) {
+				if(SmartEnvironment::ifDebug()) {
 					Smart::log_notice(__METHOD__.' # Key is too short: `'.$key.'`');
 				} //end if
 			} //end if
@@ -237,8 +239,8 @@ final class SmartHashCrypto {
 			// SHA-256 produces 256 bits which is 32 bytes, not characters, each byte has 256 possible values ; theoretical safe max colission free is: 32*256 =  8192 bytes
 			// SHA-512 produces 512 bits which is 64 bytes, not characters, each byte has 256 possible values ; theoretical safe max colission free is: 64*256 = 16384 bytes
 			//-- anyway, as a more precaution, combine all hashes thus a key should produce a colission at the same time in all: md5, sha1, sha256 and sha512 ... which in theory, event with bad implementations of the hashing functions this is excluded !
-			if(SmartFrameworkRegistry::ifInternalDebug()) {
-				if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifInternalDebug()) {
+				if(SmartEnvironment::ifDebug()) {
 					Smart::log_notice(__METHOD__.' # Key is too long: `'.$key.'`');
 				} //end if
 			} //end if
@@ -443,9 +445,9 @@ final class SmartHashCrypto {
 	 */
 	public static function registerInternalCacheToDebugLog() {
 		//--
-		if(SmartFrameworkRegistry::ifInternalDebug()) {
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
+		if(SmartEnvironment::ifInternalDebug()) {
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
 					'title' => 'SmartHashCrypto // Internal Cache',
 					'data' => 'Dump:'."\n".print_r(self::$cache,1)
 				]);

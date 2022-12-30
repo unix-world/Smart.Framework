@@ -32,7 +32,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD and *optional* the APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY ; they must be set in set in config-admin.php
  * Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)
  *
- * @version 	v.20220730
+ * @version 	v.20221220
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -49,7 +49,7 @@ final class SimpleAuthAdminsHandler {
 			return;
 		} //end if
 		//--
-		if(\SmartFrameworkRegistry::isAdminArea() !== true) {
+		if(\SmartEnvironment::isAdminArea() !== true) {
 			\SmartFrameworkRuntime::Raise500Error('Authentication system is designed for admin area only ...');
 			die('SimpleAuthAdminsHandler:NotAdminArea');
 			return;

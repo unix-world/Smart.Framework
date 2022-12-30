@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20220928 s.20220928.1034
+// [AppCodeUnpack / APP] v.20221219 s.20221219.1716
 // (c) 2013-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20220924
+	// v.20221219
 
-	private const APPCODEUNPACK_VERSION = 's.20220406.1654';
+	private const APPCODEUNPACK_VERSION = 's.20221219.1716';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -139,14 +139,14 @@ final class AppCodeUnpack {
 					(strlen((string)$appid) > 25) OR
 					((string)AppNetUnPackager::unpack_valid_app_id((string)$appid) != '') OR
 					(strpos((string)APPCODEPACK_DEPLOY_APPLIST, '<'.(string)$appid.'>') === false) OR
-					(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$appid))
+					(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$appid))
 				) {
 					$appid = ''; // reset !
 					$apps_arr = (array) Smart::list_to_array((string)(defined('APPCODEPACK_DEPLOY_APPLIST') ? APPCODEPACK_DEPLOY_APPLIST : ''));
 				} else {
-					$the_app_log_dir = (string) SmartFileSysUtils::add_dir_last_slash((string)$appid).'tmp/logs/';
+					$the_app_log_dir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$appid).'tmp/logs/';
 					if(
-						SmartFileSysUtils::check_if_safe_path($the_app_log_dir)
+						SmartFileSysUtils::checkIfSafePath((string)$the_app_log_dir)
 						AND
 						SmartFileSystem::is_type_dir($the_app_log_dir)
 					) {
@@ -155,9 +155,9 @@ final class AppCodeUnpack {
 						$logs = array();
 						for($i=0; $i<Smart::array_size($tmp_logs); $i++) {
 							if(
-								SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$tmp_logs[$i])
+								SmartFileSysUtils::checkIfSafeFileOrDirName((string)$tmp_logs[$i])
 								AND
-								SmartFileSysUtils::check_if_safe_path((string)$the_app_log_dir.$tmp_logs[$i])
+								SmartFileSysUtils::checkIfSafePath((string)$the_app_log_dir.$tmp_logs[$i])
 							) {
 								$logs[] = [
 									'id' 	=> (string) $tmp_logs[$i],
@@ -199,7 +199,7 @@ final class AppCodeUnpack {
 					(strlen((string)$appid) > 25) OR
 					((string)AppNetUnPackager::unpack_valid_app_id((string)$appid) != '') OR
 					(strpos((string)APPCODEPACK_DEPLOY_APPLIST, '<'.(string)$appid.'>') === false) OR
-					(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$appid))
+					(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$appid))
 				) {
 					self::raiseXXXError(400, ' # Invalid AppID: '.$appid);
 					die(__METHOD__.' # Invalid AppID: '.$appid);
@@ -208,7 +208,7 @@ final class AppCodeUnpack {
 				//--
 				if(
 					((string)trim((string)$logfile) == '') OR
-					(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$logfile)) OR
+					(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$logfile)) OR
 					((string)substr((string)$logfile, -4, 4) != '.log')
 				) {
 					self::raiseXXXError(400, ' # Invalid Log File: '.$logfile);
@@ -216,15 +216,15 @@ final class AppCodeUnpack {
 					return;
 				} //end if
 				//--
-				$the_app_log_dir = (string) SmartFileSysUtils::add_dir_last_slash((string)$appid).'tmp/logs/';
+				$the_app_log_dir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$appid).'tmp/logs/';
 				$the_app_log_file = (string) $the_app_log_dir.$logfile;
 				$log_found = false;
 				if(
-					SmartFileSysUtils::check_if_safe_path($the_app_log_dir)
+					SmartFileSysUtils::checkIfSafePath((string)$the_app_log_dir)
 					AND
 					SmartFileSystem::is_type_dir($the_app_log_dir)
 					AND
-					SmartFileSysUtils::check_if_safe_path($the_app_log_file)
+					SmartFileSysUtils::checkIfSafePath((string)$the_app_log_file)
 					AND
 					SmartFileSystem::is_type_file($the_app_log_file)
 					AND
@@ -296,7 +296,7 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if
 				if(!$err) {
-					if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$frm['appid'])) {
+					if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$frm['appid'])) {
 						$err = true;
 						$status = 'AppID must be allowed';
 						$msg = 'AppID is not allowed by current settings';
@@ -338,19 +338,19 @@ final class AppCodeUnpack {
 				//--
 				$arr_del_files = [];
 				if(!$err) {
-					$the_app_log_dir = (string) SmartFileSysUtils::add_dir_last_slash((string)$frm['appid']).'tmp/logs/';
-					if((is_array($fdata)) AND (SmartFileSysUtils::check_if_safe_path((string)$the_app_log_dir))) {
+					$the_app_log_dir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$frm['appid']).'tmp/logs/';
+					if((is_array($fdata)) AND (SmartFileSysUtils::checkIfSafePath((string)$the_app_log_dir))) {
 						foreach($fdata as $key => $val) {
 							if(Smart::is_nscalar($val)) {
 								$val = (string) trim((string)$val);
 								if((string)$val != '') {
-									if(SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$val)) {
+									if(SmartFileSysUtils::checkIfSafeFileOrDirName((string)$val)) {
 										if(
 											((string)substr($val, -4, 4) == '.log')
 											AND
 											(strpos((string)$the_app_log_dir, '/tmp/logs/') !== false)
 											AND
-											SmartFileSysUtils::check_if_safe_path((string)$the_app_log_dir.$val)
+											SmartFileSysUtils::checkIfSafePath((string)$the_app_log_dir.$val)
 											AND
 											SmartFileSystem::is_type_file((string)$the_app_log_dir.$val)
 										) {
@@ -379,12 +379,12 @@ final class AppCodeUnpack {
 				$deploys = array();
 				//--
 				if(
-					SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
+					SmartFileSysUtils::checkIfSafePath((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
 					AND
 					SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
 				) {
 					if(
-						SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER)
+						SmartFileSysUtils::checkIfSafePath((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER)
 						AND
 						SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER)
 					) {
@@ -473,19 +473,19 @@ final class AppCodeUnpack {
 							if(Smart::is_nscalar($val)) {
 								$val = (string) trim((string)$val);
 								if((string)$val != '') {
-									if(SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$val)) {
+									if(SmartFileSysUtils::checkIfSafeFileOrDirName((string)$val)) {
 										if(
-											SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
+											SmartFileSysUtils::checkIfSafePath((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
 											AND
 											SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
 										) {
 											if(
-												SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER)
+												SmartFileSysUtils::checkIfSafePath((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER)
 												AND
 												SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER)
 											) {
 												if(
-													SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val)
+													SmartFileSysUtils::checkIfSafePath((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val)
 													AND
 													SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val)
 												) {
@@ -494,7 +494,7 @@ final class AppCodeUnpack {
 													} //end if
 												} //end if
 												if(
-													SmartFileSysUtils::check_if_safe_path(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val.'.log')
+													SmartFileSysUtils::checkIfSafePath((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val.'.log')
 													AND
 													SmartFileSystem::is_type_file(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val.'.log')
 												) {
@@ -906,7 +906,7 @@ final class AppCodeUnpack {
 			die('ERR:'.__METHOD__.': Invalid AppCodeUnpack Deploy Secret');
 		} //end if
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)) {
 			Smart::raise_error(__METHOD__.' # Invalid AppCodeUnpack Dir: `'.AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'`');
 			die('ERR:'.__METHOD__.': Invalid AppCodeUnpack Dir');
 		} //end if
@@ -1194,12 +1194,12 @@ final class AppCodeUnpack {
 		$value = (string) SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$value);
 		//--
 		if((string)$value == '') {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Trying to set an empty header (after filtering the value) with original value of: '.$original_value, E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Trying to set an empty header (after filtering the value) with original value of: '.$original_value, E_USER_WARNING);
 			return;
 		} //end if
 		//--
 		if(headers_sent()) {
-			@trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Headers Already Sent while trying to set a header with value of: '.$value, E_USER_WARNING);
+			trigger_error(__CLASS__.'::'.__FUNCTION__.'() # '.'Headers Already Sent while trying to set a header with value of: '.$value, E_USER_WARNING);
 			return;
 		} //end if
 		header((string)$value);
@@ -1211,15 +1211,15 @@ final class AppCodeUnpack {
 		//--
 		// RUN THE AFTER DEPLOYMENT UPGRADE SCRIPT
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path((string)$restoreroot)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$restoreroot)) {
 			return 'Invalid App Root Path: '.$restoreroot;
 		} //end if
-		$path_to_upgrade_script = (string) SmartFileSysUtils::add_dir_last_slash((string)$restoreroot).'appcode-upgrade.php';
-		if(!SmartFileSysUtils::check_if_safe_path((string)$path_to_upgrade_script)) {
+		$path_to_upgrade_script = (string) SmartFileSysUtils::addPathTrailingSlash((string)$restoreroot).'appcode-upgrade.php';
+		if(!SmartFileSysUtils::checkIfSafePath((string)$path_to_upgrade_script)) {
 			return 'Invalid Upgrade Script Path: '.$path_to_upgrade_script;
 		} //end if
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path((string)$the_last_unpack_logfile)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$the_last_unpack_logfile)) {
 			return 'Invalid Upgrade Log Path: '.$the_last_unpack_logfile;
 		} //end if
 		if(!SmartFileSystem::is_type_file((string)$the_last_unpack_logfile)) {
@@ -1270,21 +1270,21 @@ final class AppCodeUnpack {
 		if(!defined('APPCODEPACK_APP_ID')) {
 			return 'APPCODEPACK_APP_ID is not defined';
 		} //end if
-		if(((string)trim((string)APPCODEPACK_APP_ID) == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)APPCODEPACK_APP_ID))) {
+		if(((string)trim((string)APPCODEPACK_APP_ID) == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)APPCODEPACK_APP_ID))) {
 			return 'Invalid AppID Path: '.APPCODEPACK_APP_ID;
 		} //end if
 		//--
 		$restoreroot = (string) Smart::safe_filename((string)APPCODEPACK_APP_ID);
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path((string)$restoreroot)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$restoreroot)) {
 			return 'Invalid App Root Path: '.$restoreroot;
 		} //end if
-		$path_to_maintenance_file = (string) SmartFileSysUtils::add_dir_last_slash((string)$restoreroot).'maintenance.html';
-		if(!SmartFileSysUtils::check_if_safe_path((string)$path_to_maintenance_file)) {
+		$path_to_maintenance_file = (string) SmartFileSysUtils::addPathTrailingSlash((string)$restoreroot).'maintenance.html';
+		if(!SmartFileSysUtils::checkIfSafePath((string)$path_to_maintenance_file)) {
 			return 'Invalid Maintenance File Path: '.$path_to_maintenance_file;
 		} //end if
-		$path_to_maintenance_503_file = (string) SmartFileSysUtils::add_dir_last_slash((string)$restoreroot).'maintenance-503.html';
-		if(!SmartFileSysUtils::check_if_safe_path((string)$path_to_maintenance_503_file)) {
+		$path_to_maintenance_503_file = (string) SmartFileSysUtils::addPathTrailingSlash((string)$restoreroot).'maintenance-503.html';
+		if(!SmartFileSysUtils::checkIfSafePath((string)$path_to_maintenance_503_file)) {
 			return 'Invalid Maintenance 503 File Path: '.$path_to_maintenance_503_file;
 		} //end if
 		//--

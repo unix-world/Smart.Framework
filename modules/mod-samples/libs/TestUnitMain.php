@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20220901
+ * @version 	v.20221220
  *
  */
 final class TestUnitMain {
@@ -110,8 +110,8 @@ final class TestUnitMain {
 		//--
 
 		//--
-		if(\SmartFrameworkRegistry::isAdminArea() === true) {
-			if(\SmartFrameworkRegistry::isTaskArea() === true) {
+		if(\SmartEnvironment::isAdminArea() === true) {
+			if(\SmartEnvironment::isTaskArea() === true) {
 				$info_adm = '[ Task Area ]';
 				$info_pfx = 'tsk';
 			} else {
@@ -164,7 +164,7 @@ final class TestUnitMain {
 			'modules/mod-samples/libs/templates/testunit/test-unit.mtpl.htm',
 			[
 				'@SUB-TEMPLATES@' => [
-					'test-unit-tab-tests.inc.htm' 			=> (string) \SmartFileSysUtils::add_dir_last_slash((string)$tpl_path), 	// directory with trailing slash
+					'test-unit-tab-tests.inc.htm' 			=> (string) \SmartFileSysUtils::addPathTrailingSlash((string)$tpl_path), 	// directory with trailing slash
 					'test-unit-tab-interractions.inc.htm' 	=> (string) $tpl_path, 													// directory without trailing slash
 					'test-unit-tab-forms.inc.htm' 			=> '@', 																// @ (self) path, assumes the same dir
 					'%test-unit-tab-templating%'			=> '@/test-unit-tab-templating.inc.htm'									// variable, with full path, using self @/sub-dir/ instead of $tpl_path/test-unit-tab-misc.htm
@@ -172,7 +172,7 @@ final class TestUnitMain {
 				'MOD-BARCODES-AVAILABLE' 					=> (string) (\SmartAppInfo::TestIfModuleExists('mod-barcodes') ? 'yes' : 'no'),
 				'TEST-URL-UNICODE-STR' 						=> (string) \SmartModExtLib\Samples\TestUnitStrings::testStr(),
 				'TEST-UNIT-AREA' 							=> (string) $info_pfx,
-				'TESTUNIT-TPL-PATH' 						=> (string) \SmartFileSysUtils::add_dir_last_slash((string)$tpl_path), 	// this MUST be with trailing slash
+				'TESTUNIT-TPL-PATH' 						=> (string) \SmartFileSysUtils::addPathTrailingSlash((string)$tpl_path), 	// this MUST be with trailing slash
 				'TESTUNIT_BASE_URL' 						=> (string) \SMART_FRAMEWORK_TESTUNIT_BASE_URL,
 				'NO-CACHE-TIME' 							=> (string) \time(),
 				'CURRENT-DATE-TIME' 						=> (string) \date('Y-m-d H:i:s O'),
@@ -434,7 +434,7 @@ final class TestUnitMain {
 	//============================================================
 	private static function captchaFormPluginUrl() {
 		//--
-		if(\SmartFrameworkRegistry::isAdminArea() !== true) {
+		if(\SmartEnvironment::isAdminArea() !== true) {
 			return ''; // on index display only the Smart.Captcha
 		} //end if
 		//--

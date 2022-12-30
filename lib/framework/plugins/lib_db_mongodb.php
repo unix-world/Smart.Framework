@@ -14,7 +14,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Smart-Framework - MongoDB Client
 // DEPENDS:
 //	* Smart::
-//	* SmartComponents::
+//	* SmartEnvironment
+//	* SmartComponents:: (optional)
 // DEPENDS-EXT: PHP MongoDB / PECL (v.1.1.0 or later)
 //======================================================
 
@@ -52,8 +53,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints 		Important: MongoDB database specifies that max BSON document size is 16 megabytes and supports no more than 100 levels of nesting, thus this limit cannot be exceeded from PHP side when creating new mongodb documents: https://docs.mongodb.com/manual/reference/limits/ ; To store documents larger than the maximum size, MongoDB provides the GridFS API
  *
  * @access 		PUBLIC
- * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartComponents
- * @version 	v.20220921
+ * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartEnvironment, SmartComponents (optional)
+ * @version 	v.20221220
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -201,7 +202,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$this->timeout = 60;
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
 			if($this->fatal_err === true) {
 				$txt_conn = 'FATAL ERRORS';
@@ -209,7 +210,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				$txt_conn = 'IGNORED BUT LOGGED AS WARNINGS';
 			} //end if else
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
+			SmartEnvironment::setDebugMsg('db', 'mongodb|log', [
 				'type' => 'metainfo',
 				'data' => 'MongoDB App Connector Version: '.SMART_FRAMEWORK_VERSION.' // Connection Errors are: '.$txt_conn
 			]);
@@ -225,8 +226,8 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				$this->slow_time = 0.9999999;
 			} //end if
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|slow-time', number_format($this->slow_time, 7, '.', ''), '=');
-			SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
+			SmartEnvironment::setDebugMsg('db', 'mongodb|slow-time', number_format($this->slow_time, 7, '.', ''), '=');
+			SmartEnvironment::setDebugMsg('db', 'mongodb|log', [
 				'type' => 'metainfo',
 				'data' => 'Fast Query Reference Time < '.number_format($this->slow_time, 7, '.', '').' seconds'
 			]);
@@ -343,6 +344,36 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		return (string) $this->srvver;
 		//--
 
+	} //END FUNCTION
+	//======================================================
+
+
+	//======================================================
+	/**
+	 * Set Fatal Error Mode to TRUE/FALSE
+	 *
+	 * @return VOID
+	 */
+	public function setFatalErrMode(bool $is_fatal) : void {
+		//--
+		$this->fatal_err = (bool) $is_fatal;
+		//--
+		return;
+		//--
+	} //END FUNCTION
+	//======================================================
+
+
+	//======================================================
+	/**
+	 * Laminas/DB: Get Fatal Error TRUE/FALSE
+	 *
+	 * @return TRUE/FALSE
+	 */
+	public function getFatalErrMode() : bool {
+		//--
+		return (bool) $this->fatal_err;
+		//--
 	} //END FUNCTION
 	//======================================================
 
@@ -774,7 +805,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		$method = (string) $method;
 		$args = (array) $args;
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -1082,7 +1113,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				} catch(Exception $err) {
 					if((string)$method == 'upsert') {
 						if(stripos((string)trim((string)$err->getMessage()), 'E11000 duplicate key error') === 0) { // avoid log upsert duplicate key errors which may occur in high concurrency when multiple processes try to update the same record exactly in the same time ; if upsert we assume that any process can do insert or update (order can be random)
-							if(SmartFrameworkRegistry::ifDebug()) {
+							if(SmartEnvironment::ifDebug()) {
 								Smart::log_notice('#MongoDB# :: Ignoring Upsert Duplicate Key: '.$err->getMessage());
 							} //end if
 							return array();
@@ -1287,15 +1318,15 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		//--
 
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			if($skipdbg !== true) {
 				if($this->connected === true) { // avoid register pre-connect commands like version)
 					//--
-					SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|total-queries', 1, '+');
+					SmartEnvironment::setDebugMsg('db', 'mongodb|total-queries', 1, '+');
 					//--
 					$time_end = (float) (microtime(true) - (float)$time_start);
 					//--
-					SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|total-time', $time_end, '+');
+					SmartEnvironment::setDebugMsg('db', 'mongodb|total-time', $time_end, '+');
 					//--
 					$dbg_arr_cmd = [];
 					if($this->collection) {
@@ -1306,7 +1337,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 						$dbg_arr_cmd['Options'] = (array) $opts;
 					} //end if
 					//--
-					SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
+					SmartEnvironment::setDebugMsg('db', 'mongodb|log', [
 						'type' 			=> (string) $dcmd,
 						'data' 			=> (string) strtoupper((string)$dmethod),
 						'command' 		=> (array)  $dbg_arr_cmd,
@@ -1384,13 +1415,13 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		//--
 
 		//--
-		if(is_array(SmartFrameworkRegistry::$Connections) AND array_key_exists('mongodb', SmartFrameworkRegistry::$Connections) AND is_array(SmartFrameworkRegistry::$Connections['mongodb']) AND is_object(SmartFrameworkRegistry::$Connections['mongodb'][(string)$this->connex_key])) {
+		if(is_array(SmartEnvironment::$Connections) AND array_key_exists('mongodb', SmartEnvironment::$Connections) AND is_array(SmartEnvironment::$Connections['mongodb']) AND is_object(SmartEnvironment::$Connections['mongodb'][(string)$this->connex_key])) {
 			//--
-			$this->mongodbclient = &SmartFrameworkRegistry::$Connections['mongodb'][(string)$this->connex_key];
+			$this->mongodbclient = &SmartEnvironment::$Connections['mongodb'][(string)$this->connex_key];
 			$this->connected = true;
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('db', 'mongodb|log', [
 					'type' => 'open-close',
 					'data' => 'Re-Using MongoDB Manager Instance :: ServerType ['.$type.']: '.$this->connex_key.$nfo_replica
 				]);
@@ -1409,8 +1440,8 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				return false;
 			} //end try catch
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('db', 'mongodb|log', [
 					'type' => 'open-close',
 					'data' => 'Creating MongoDB Manager Instance :: ServerType ['.$type.']: '.$this->connex_key.$nfo_replica
 				]);
@@ -1424,30 +1455,28 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				return false;
 			} //end if
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
-				//--
-				SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('db', 'mongodb|log', [
 					'type' => 'metainfo',
 					'data' => 'MongoDB Extension Version: '.$this->extver
 				]);
-				//--
-				SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
+				SmartEnvironment::setDebugMsg('db', 'mongodb|log', [
 					'type' => 'metainfo',
 					'data' => 'MongoDB Server Version: '.$this->srvver
 				]);
-				//--
 			} //end if
 			//--
-			SmartFrameworkRegistry::$Connections['mongodb'][(string)$this->connex_key] = &$this->mongodbclient; // export connection
+			SmartEnvironment::$Connections['mongodb'][(string)$this->connex_key] = &$this->mongodbclient; // export connection
+			//--
 			$this->connected = true;
 			//--
 		} //end if else
 		//--
 
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
+			SmartEnvironment::setDebugMsg('db', 'mongodb|log', [
 				'type' => 'set',
 				'data' => 'Using Database: '.$this->db,
 				'connection' => (string) $this->server,
@@ -1475,10 +1504,10 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 */
 	public function disconnect() {
 		//--
-		SmartFrameworkRegistry::$Connections['mongodb'][(string)$this->connex_key] = null; // close connection
+		SmartEnvironment::$Connections['mongodb'][(string)$this->connex_key] = null; // close connection
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('db', 'mongodb|log', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('db', 'mongodb|log', [
 				'type' => 'open-close',
 				'data' => 'Destroying MongoDB Manager Instance: '.$this->connex_key
 			]);
@@ -1526,7 +1555,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$y_query = (string) print_r($y_query,1);
 		} //end if
 		$the_params = '- '.'MongoDB Manager v.'.$this->extver.' -';
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$width = 750;
 			$the_area = (string) $y_area;
 			if((string)$y_warning == '') {
@@ -1544,18 +1573,21 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$the_params = '';
 		} //end if else
 		//--
-		$out = (string) SmartComponents::app_error_message(
-			'MongoDB Manager',
-			'MongoDB',
-			'NoSQL/DB',
-			'Server',
-			'lib/core/img/db/mongodb-logo.svg',
-			(int)    $width, // width
-			(string) $the_area, // area
-			(string) $the_error_message, // err msg
-			(string) $the_params, // title or params
-			(string) $the_query_info // command
-		);
+		$out = '';
+		if(class_exists('SmartComponents')) {
+			$out = (string) SmartComponents::app_error_message(
+				'MongoDB Manager',
+				'MongoDB',
+				'NoSQL/DB',
+				'Server',
+				'lib/core/img/db/mongodb-logo.svg',
+				(int)    $width, // width
+				(string) $the_area, // area
+				(string) $the_error_message, // err msg
+				(string) $the_params, // title or params
+				(string) $the_query_info // command
+			);
+		} //end if
 		//--
 		Smart::raise_error(
 			'#MONGO-DB@'.$y_conhash.' :: Q# // MongoDB Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Statement:'.$y_query,

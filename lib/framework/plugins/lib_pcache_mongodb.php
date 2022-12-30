@@ -35,8 +35,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	Smart, SmartMongoDb
- * @version 	v.20220804
+ * @depends 	Smart, SmartUnicode, SmartHashCrypto, SmartMongoDb
+ * @version 	v.20221224
  * @package 	Plugins:PersistentCache:MongoDB
  *
  */
@@ -44,7 +44,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 
 	// ::
 
-	// !!! THIS CLASS MUST NOT BE MARKED AS FINAL to allow the class SmartPersistentCache@DBA to be extended from this !!!
+	// !!! THIS CLASS MUST NOT BE MARKED AS FINAL to allow the class SmartPersistentCache@MONGODB to be extended from this !!!
 	// But this class have all PUBLIC Methods marked as FINAL to avoid being rewritten ...
 
 	public const COLLECTION 	= 'SmartFrameworkPersistentCache'; 	// The MongoDB Collection ; have to be public, if need to access for other purposes like administration

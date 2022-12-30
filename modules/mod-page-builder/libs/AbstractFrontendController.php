@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @access 		PUBLIC
  *
- * @version 	v.20221007
+ * @version 	v.20221219
  * @package 	development:modules:PageBuilder
  *
  */
@@ -1070,7 +1070,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 				//--
 				if((string)$tmp_arr_props['filename'] != '') {
 					//--
-					$mime_type = (array) \SmartFileSysUtils::mime_eval((string)$tmp_arr_props['filename'], (string)$tmp_arr_props['disposition']);
+					$mime_type = (array) \SmartFileSysUtils::getArrMimeType((string)$tmp_arr_props['filename'], (string)$tmp_arr_props['disposition']);
 					$mime_disp = (string) $mime_type[1];
 					$mime_type = (string) $mime_type[0];
 					//--
@@ -1534,7 +1534,7 @@ abstract class AbstractFrontendController extends \SmartModExtLib\PageBuilder\Ab
 								$plugin_path 	= (string) \Smart::safe_pathname((string)$plugin_modpath.'plugins/'.$plugin_fname.'.php');
 								$plugin_class 	= (string) 'PageBuilderFrontendPlugin'.\SmartModExtLib\PageBuilder\Utils::composePluginClassName($plugin_part_d).\SmartModExtLib\PageBuilder\Utils::composePluginClassName($plugin_part_f);
 								//--
-								if(((string)$plugin_path != '') AND (\SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$plugin_fname)) AND (\SmartFileSysUtils::check_if_safe_path((string)$plugin_modpath)) AND (\SmartFileSysUtils::check_if_safe_path((string)$plugin_path)) AND (\SmartFileSystem::is_type_file((string)$plugin_path))) {
+								if(((string)$plugin_path != '') AND (\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$plugin_fname)) AND (\SmartFileSysUtils::checkIfSafePath((string)$plugin_modpath)) AND (\SmartFileSysUtils::checkIfSafePath((string)$plugin_path)) AND (\SmartFileSystem::is_type_file((string)$plugin_path))) {
 									//--
 									require_once((string)$plugin_path);
 									//--

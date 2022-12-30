@@ -23,7 +23,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20220928
+ * @version 	v.20221221
  *
  */
 final class SmartAppTaskController extends SmartAbstractAppController {

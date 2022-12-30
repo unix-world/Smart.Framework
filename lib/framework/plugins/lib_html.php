@@ -13,8 +13,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - HTML 5 Parser
-// DEPENDS:
-//	* Smart::
 //======================================================
 
 // [REGEX-SAFE-OK]
@@ -29,8 +27,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	classes: Smart
- * @version 	v.20221020
+ * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartValidator ; optional-constant: SMART_FRAMEWORK_SQL_CHARSET
+ * @version 	v.20221224
  * @package 	Plugins:ConvertersAndParsers
  *
  */
@@ -710,7 +708,7 @@ final class SmartHtmlParser {
 						$enable_warns = true;
 					} //end if
 					//--
-					$etidy = (string) strtolower((string)SMART_FRAMEWORK_SQL_CHARSET); // tidy uses utf8 instead of UTF-8
+					$etidy = (string) strtolower((string)(defined('SMART_FRAMEWORK_SQL_CHARSET') ? SMART_FRAMEWORK_SQL_CHARSET : 'UTF8')); // tidy uses utf8 instead of UTF-8
 					//--
 					$ctidy = [ // config options for tidy v5 or later
 						'quiet' => true,
@@ -778,10 +776,10 @@ final class SmartHtmlParser {
 						//--
 					} //end if
 					//--
-					if((SmartFrameworkRegistry::ifDebug()) OR ($this->validate_log_errors === true)) {
+					if((SmartEnvironment::ifDebug()) OR ($this->validate_log_errors === true)) {
 						if((string)$this->validation_errors != '') {
 							Smart::log_notice(__CLASS__.' # Tidy [Result='.$testClean.'] Log:'."\n".$this->validation_errors."\n".'#END'."\n");
-							if(SmartFrameworkRegistry::ifDebug()) {
+							if(SmartEnvironment::ifDebug()) {
 								Smart::log_notice(__CLASS__.' # Debug Tidy [Result='.$testClean.'] Clean HTML-String:'."\n".$this->html."\n".'#END');
 							} //end if
 						} //end if
@@ -841,7 +839,7 @@ final class SmartHtmlParser {
 					//--
 					$errors = (array) Smart::json_decode((string)Smart::json_encode((array)@libxml_get_errors())); // get rid of objects, force array ...
 					if(Smart::array_size($errors) > 0) { // this may be used also in production environments if needed
-						$max_err_level = 1; // for DOMDocument there is no specific option if SmartFrameworkRegistry::ifProdEnv() ... leave as is
+						$max_err_level = 1; // for DOMDocument there is no specific option if dev/prod env ... leave as is
 						$max_err_level = (int) $this->getOverrideValidatorLogLevel((int)$max_err_level);
 						foreach($errors as $z => $error) {
 							if(is_array($error)) {
@@ -857,10 +855,10 @@ final class SmartHtmlParser {
 						$this->validation_errors = (string) '[DOM]'."\n".str_replace(["\r\n", "\r"], "\n", trim((string)$this->validation_errors));
 					} //end if
 					//--
-					if((SmartFrameworkRegistry::ifDebug()) OR ($this->validate_log_errors === true)) {
+					if((SmartEnvironment::ifDebug()) OR ($this->validate_log_errors === true)) {
 						if((string)$this->validation_errors != '') {
 							Smart::log_notice(__CLASS__.' # DOMDocument [Result='.$testClean.'] Log:'."\n".$this->validation_errors."\n".'#END'."\n");
-							if(SmartFrameworkRegistry::ifDebug()) {
+							if(SmartEnvironment::ifDebug()) {
 								Smart::log_notice(__CLASS__.' # Debug DomDocument [Result='.$testClean.'] Clean HTML-String:'."\n".$this->html."\n".'#END');
 							} //end if
 						} //end if

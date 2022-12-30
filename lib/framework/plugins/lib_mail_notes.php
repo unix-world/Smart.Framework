@@ -14,8 +14,11 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //======================================================
 // Smart-Framework - Mail Notes
 // DEPENDS:
+//	* SmartUnicode::
 //	* Smart::
-//	* SmartUtils::
+//	* SmartHashCrypto::
+//	* SmartCipherCrypto::
+//	* SmartAuth::
 //======================================================
 
 // [REGEX-SAFE-OK]
@@ -33,8 +36,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @access 		private
  * @internal
  *
- * @depends 	classes: Smart, SmartUtils
- * @version 	v.20200420
+ * @depends 	classes: SmartUnicode, Smart, SmartHashCrypto, SmartCipherCrypto, SmartAuth
+ * @version 	v.20221225
  * @package 	Plugins:Mailer
  *
  */
@@ -84,13 +87,17 @@ final class SmartMailerNotes {
 			return '[ERROR #4]: Mime Message: Note is Empty after Base64 Decode';
 		} //end if
 		//--
-		$y_eml = (string) SmartUtils::crypto_blowfish_decrypt((string)$y_eml, (string)self::bf_key($auth_username, $auth_privkeys));
+		$y_eml = (string) SmartCipherCrypto::blowfish_decrypt(
+			(string) self::bf_key((string)$auth_username, (string)$auth_privkeys), // key
+			(string) $y_eml, // data
+			(string) SmartCipherCrypto::blowfish_algo() // algo
+		);
 		//--
 		if((string)$y_eml == '') { // do not trim here !
 			return '[ERROR #5]: Mime Message: Note is Empty after Decrypt';
 		} //end if
 		if(strpos((string)$y_eml, (string)self::encrypted_eml_message_as_apple_notes_signature()."\r\n") !== 0) {
-			return '[ERROR #6]: Mime Message: Note contains an Invalid Signature after Decrypt:'."\r\n".str_repeat('-', 100)."\r\n".(string) SmartUnicode::sub_str($y_eml, 0, 1024)."\r\n".str_repeat('-', 100)."\r\n\r\n"; // {{{SYNC-INVALID-APPLENOTE-MAXLEN-BODY-ERR}}} : here is 1024
+			return '[ERROR #6]: Mime Message: Note contains an Invalid Signature after Decrypt:'."\r\n".str_repeat('-', 100)."\r\n".(string) SmartUnicode::sub_str((string)$y_eml, 0, 1024)."\r\n".str_repeat('-', 100)."\r\n\r\n"; // {{{SYNC-INVALID-APPLENOTE-MAXLEN-BODY-ERR}}} : here is 1024
 		} //end if
 		//--
 		return (string) $y_eml;
@@ -107,13 +114,20 @@ final class SmartMailerNotes {
 		$auth_privkeys = (string) SmartAuth::get_login_privkey();
 		//--
 		if(((string)trim((string)$auth_username) == '') OR ((string)trim((string)$auth_password) == '') OR ((string)trim((string)$auth_privkeys) == '')) {
+			Smart::log_warning(__METHOD__.' # ERROR: Failed to Encrypt Note # Auth Params are Empty or Incomplete ...');
 			return '';
 		} //end if
 		//--
 		$y_eml = (string) trim((string)self::encrypted_eml_message_as_apple_notes_signature())."\r\n".trim((string)$y_eml); // add header signature
 		//--
 		$cksum = (string) sha1((string)$y_eml);
-		$y_eml = (string) base64_encode((string)SmartUtils::crypto_blowfish_encrypt((string)$y_eml, (string)self::bf_key($auth_username, $auth_privkeys)));
+		$y_eml = (string) base64_encode(
+			(string) SmartCipherCrypto::blowfish_encrypt(
+				(string) self::bf_key((string)$auth_username, (string)$auth_privkeys), // key
+				(string) $y_eml, // data
+				(string) SmartCipherCrypto::blowfish_algo() // algo
+			)
+		);
 		//--
 		$msg = '';
 		//--
@@ -208,7 +222,7 @@ final class SmartMailerNotes {
 
 
 	//==================================================================
-	private static function bf_key($y_auth_username, $y_auth_privkeys) {
+	private static function bf_key(?string $y_auth_username, ?string $y_auth_privkeys) : string {
 		//--
 		$y_auth_username = (string) trim((string)$y_auth_username);
 		$y_auth_privkeys = (string) trim((string)$y_auth_privkeys);

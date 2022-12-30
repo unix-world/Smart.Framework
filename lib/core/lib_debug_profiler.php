@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
- * @version 	v.20220224
+ * @version 	v.20221220
  * @package 	Application:Development
  *
  */
@@ -74,7 +74,7 @@ public static function register_extra_debug_log($class_name, $method_name) {
 public static function js_headers_debug($y_profiler_url) {
 
 	//--
-	if(!SmartFrameworkRegistry::ifDebug()) {
+	if(!SmartEnvironment::ifDebug()) {
 		return '';
 	} //end if
 	//--
@@ -98,7 +98,7 @@ public static function js_headers_debug($y_profiler_url) {
 public static function div_main_debug() {
 
 	//--
-	if(!SmartFrameworkRegistry::ifDebug()) {
+	if(!SmartEnvironment::ifDebug()) {
 		return '';
 	} //end if
 	//--
@@ -115,7 +115,7 @@ public static function div_main_debug() {
 public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 
 	//-- {{{SYNC-DEBUG-DATA}}}
-	if(!SmartFrameworkRegistry::ifDebug()) {
+	if(!SmartEnvironment::ifDebug()) {
 		return false;
 	} //end if
 	//--
@@ -171,7 +171,7 @@ public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 				} //end foreach
 			} //end if
 			//--
-			$dbg_stats = (array) SmartFrameworkRegistry::getDebugMsgs('stats');
+			$dbg_stats = (array) SmartEnvironment::getDebugMsgs('stats');
 			//--
 			$arr = array();
 			$arr['date-time'] = (string) date('Y-m-d H:i:s O');
@@ -203,21 +203,21 @@ public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 			} else {
 				$arr['auth-data'] = array('is_auth' => false, 'login_data' => []);
 			} //end if else
-			foreach((array)SmartFrameworkRegistry::getDebugMsgs('optimizations') as $key => $val) {
+			foreach((array)SmartEnvironment::getDebugMsgs('optimizations') as $key => $val) {
 				$arr['log-optimizations'][(string)$key] = (string) base64_encode(Smart::seryalize((array)$val));
 			} //end foreach
-			foreach((array)SmartFrameworkRegistry::getDebugMsgs('extra') as $key => $val) {
+			foreach((array)SmartEnvironment::getDebugMsgs('extra') as $key => $val) {
 				$arr['log-extra'][(string)$key] = (string) base64_encode(Smart::seryalize((array)$val));
 			} //end foreach
-			foreach((array)SmartFrameworkRegistry::getDebugMsgs('db') as $key => $val) {
+			foreach((array)SmartEnvironment::getDebugMsgs('db') as $key => $val) {
 				$arr['log-db'][(string)$key] = (string) base64_encode(Smart::seryalize((array)$val));
 			} //end foreach
-			if(Smart::array_size((array)SmartFrameworkRegistry::getDebugMsgs('mail')) > 0) {
-				$arr['log-mail'] = (string) base64_encode(Smart::seryalize((array)SmartFrameworkRegistry::getDebugMsgs('mail')));
+			if(Smart::array_size((array)SmartEnvironment::getDebugMsgs('mail')) > 0) {
+				$arr['log-mail'] = (string) base64_encode(Smart::seryalize((array)SmartEnvironment::getDebugMsgs('mail')));
 			} else {
 				$arr['log-mail'] = '';
 			} //end if else
-			foreach((array)SmartFrameworkRegistry::getDebugMsgs('modules') as $key => $val) {
+			foreach((array)SmartEnvironment::getDebugMsgs('modules') as $key => $val) {
 				$arr['log-modules'][(string)$key] = (string) base64_encode(Smart::seryalize((array)$val));
 			} //end foreach
 			//--
@@ -239,7 +239,7 @@ public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 public static function test_tpl_file_for_debug($y_tpl_file) {
 
 	//--
-	if(!SmartFrameworkRegistry::ifDebug()) {
+	if(!SmartEnvironment::ifDebug()) {
 		return false;
 	} //end if
 	//--
@@ -268,7 +268,7 @@ public static function test_tpl_file_for_debug($y_tpl_file) {
 	} //end if
 	//--
 	if((strpos((string)$y_tpl_file, 'etc/') === 0) OR (strpos((string)$y_tpl_file, 'lib/') === 0) OR (strpos((string)$y_tpl_file, 'modules/') === 0)) {
-		if(SmartFileSysUtils::check_if_safe_path((string)$y_tpl_file)) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$y_tpl_file)) {
 			if(SmartFileSystem::is_type_file((string)$y_tpl_file)) {
 				return true;
 			} //end if
@@ -287,7 +287,7 @@ public static function test_tpl_file_for_debug($y_tpl_file) {
 public static function read_tpl_file_for_debug($y_tpl_file) {
 
 	//--
-	if(!SmartFrameworkRegistry::ifDebug()) {
+	if(!SmartEnvironment::ifDebug()) {
 		return array();
 	} //end if
 	//--
@@ -340,7 +340,7 @@ public static function display_debug_page($title, $content) {
 public static function display_marker_tpl_debug($y_tpl_file, array $y_arr_sub_templates=[], $y_use_decrypt=true) {
 
 	//--
-	if(!SmartFrameworkRegistry::ifDebug()) {
+	if(!SmartEnvironment::ifDebug()) {
 		return '';
 	} //end if
 	//--
@@ -386,7 +386,7 @@ public static function print_debug_info($y_area, $y_debug_token) {
 	global $configs;
 
 	//-- {{{SYNC-DEBUG-DATA}}}
-	if(!SmartFrameworkRegistry::ifDebug()) {
+	if(!SmartEnvironment::ifDebug()) {
 		return '';
 	} //end if
 	//--
@@ -557,8 +557,8 @@ public static function print_debug_info($y_area, $y_debug_token) {
 //==================================================================
 private static function url_tpl_decrypt($y_tpl_file) {
 	//--
-	if(SmartFrameworkRegistry::isAdminArea() === true) {
-		if(SmartFrameworkRegistry::isTaskArea() === true) {
+	if(SmartEnvironment::isAdminArea() === true) {
+		if(SmartEnvironment::isTaskArea() === true) {
 			$the_area = 'task';
 		} else {
 			$the_area = 'admin';
@@ -568,7 +568,7 @@ private static function url_tpl_decrypt($y_tpl_file) {
 	} //end if else
 	//--
 	$y_tpl_file = (string) SmartCipherCrypto::decrypt('hash/sha256', (string)$the_area.' '.SMART_FRAMEWORK_SECURITY_KEY.' '.SMART_SOFTWARE_NAMESPACE, (string)$y_tpl_file);
-	if(!SmartFileSysUtils::check_if_safe_path((string)$y_tpl_file)) {
+	if(!SmartFileSysUtils::checkIfSafePath((string)$y_tpl_file)) {
 		$y_tpl_file = '';
 	} //end if
 	//--
@@ -581,8 +581,8 @@ private static function url_tpl_decrypt($y_tpl_file) {
 //==================================================================
 private static function url_tpl_encrypt($y_tpl_file) {
 	//--
-	if(SmartFrameworkRegistry::isAdminArea() === true) {
-		if(SmartFrameworkRegistry::isTaskArea() === true) {
+	if(SmartEnvironment::isAdminArea() === true) {
+		if(SmartEnvironment::isTaskArea() === true) {
 			$the_area = 'task';
 		} else {
 			$the_area = 'admin';
@@ -641,8 +641,8 @@ private static function print_log_runtime() {
 	//--
 	$log .= '<div class="smartframework_debugbar_status smartframework_debugbar_status_head"><font size="4"><b>Client / Server :: RUNTIME Log</b></font></div>';
 	//--
-	if(SmartFrameworkRegistry::isAdminArea() === true) {
-		if(SmartFrameworkRegistry::isTaskArea() === true) {
+	if(SmartEnvironment::isAdminArea() === true) {
+		if(SmartEnvironment::isTaskArea() === true) {
 			$the_area = 'task';
 		} else {
 			$the_area = 'admin';

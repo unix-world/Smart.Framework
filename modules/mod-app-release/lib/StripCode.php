@@ -37,7 +37,28 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class StripCode {
 
 	// ::
-	// v.20220928
+	// v.20221222
+
+
+	//====================================================
+	public static function should_strip_php_code($phpcode) {
+		//--
+		if(
+			(defined('SMART_APP_RELEASE_PHP_OPTIMIZER_SKIP') AND (SMART_APP_RELEASE_PHP_OPTIMIZER_SKIP === true))
+			OR
+			( // {{{SYNC-SMART-PHP-OPTIMIZER-TAG-RETURNTYPEWILLCHANGE}}} ; fix for PHP8.1 tags when executed by PHP 7.4 or 8.0 the special comment
+				(strpos((string)$phpcode, ' #'.'[\ReturnTypeWillChange] ') !== false)
+				OR
+				(strpos((string)$phpcode, ' #'.'[ReturnTypeWillChange] ') !== false)
+			)
+		) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//====================================================
 
 
 	//====================================================
@@ -45,15 +66,18 @@ final class StripCode {
 		//--
 		if(
 			(self::checkFilePath((string)$filePath) !== true) OR
-			((string)\substr((string)$filePath, -4, 4) != '.php') OR // expects: file.php or path/to/file.php
-			((int)\strlen((string)$filePath) < 5)
+			((string)substr((string)$filePath, -4, 4) != '.php') OR // expects: file.php or path/to/file.php
+			((int)strlen((string)$filePath) < 5)
 		) {
 			return '';
 		} //end if
 		//--
-		$output = (string) file_get_contents($filePath); // must allowabsolute path !!
+		$output = (string) file_get_contents((string)$filePath, false); // must allow absolute path !!
 		if((string)$output == '') {
 			return '';
+		} //end if
+		if(self::should_strip_php_code((string)$output) === false) { // {{{SYNC-SMART-PHP-OPTIMIZER-TAG-RETURNTYPEWILLCHANGE}}}
+			return (string) $output;
 		} //end if
 		//--
 		$strip = [
@@ -118,8 +142,8 @@ final class StripCode {
 		//--
 		if(
 			(self::checkFilePath((string)$filePath) !== true) OR
-			((string)\substr((string)$filePath, -3, 3) != '.js') OR // expects: file.js or path/to/file.js
-			((int)\strlen((string)$filePath) < 4)
+			((string)substr((string)$filePath, -3, 3) != '.js') OR // expects: file.js or path/to/file.js
+			((int)strlen((string)$filePath) < 4)
 		) {
 			return '';
 		} //end if
@@ -143,8 +167,8 @@ final class StripCode {
 		//--
 		if(
 			(self::checkFilePath((string)$filePath) !== true) OR
-			((string)\substr((string)$filePath, -4, 4) != '.css') OR // expects: file.css or path/to/file.css
-			((int)\strlen((string)$filePath) < 5)
+			((string)substr((string)$filePath, -4, 4) != '.css') OR // expects: file.css or path/to/file.css
+			((int)strlen((string)$filePath) < 5)
 		) {
 			return '';
 		} //end if
@@ -169,7 +193,7 @@ final class StripCode {
 	//====================================================
 	private static function checkFilePath(?string $filePath) {
 		//--
-		return (bool) SmartFileSysUtils::check_if_safe_path($filePath, 'no'); // must allow absolute paths
+		return (bool) SmartFileSysUtils::checkIfSafePath((string)$filePath, false); // must allow absolute paths
 		//--
 	} //END FUNCTION
 	//====================================================

@@ -25,7 +25,7 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 	die('ERROR: The PHP ZLIB Extension (gzencode/gzdecode) is required for Smart.Framework / Lib Utils');
 } //end if
 //--
-// OPTIONAL Constant: SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER
+// optional-constant: SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER
 //--
 
 //=====================================================================================
@@ -44,8 +44,8 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	classes: Smart, SmartFrameworkRegistry
- * @version 	v.20220330
+ * @depends 	classes: Smart, SmartEnvironment
+ * @version 	v.20221220
  * @package 	@Core
  *
  */
@@ -118,10 +118,10 @@ final class SmartCache {
 		//--
 		self::$CachedData[(string)$y_realm][(string)$y_key] = $y_value; // mixed
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-CACHE', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('extra', 'SMART-CACHE', [
 				'title' => '[SetKey]: '.$y_realm.' / '.$y_key,
-				'data' => Smart::text_cut_by_limit((string)print_r($y_value,1), 1024, true, '[...data-longer-than-1024-bytes-is-not-logged-all-here...]')
+				'data' => (string) Smart::text_cut_by_limit((string)print_r($y_value,1), 1024, true, '[...data-longer-than-1024-bytes-is-not-logged-all-here...]')
 			]);
 		} //end if
 		//--
@@ -150,8 +150,8 @@ final class SmartCache {
 			//--
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-CACHE', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('extra', 'SMART-CACHE', [
 				'title' => '[INFO] :: UnsetKey: '.$y_realm.' / '.$y_key,
 				'data' => ''
 			]);
@@ -225,8 +225,8 @@ final class SmartCache {
  * @access 		private
  * @internal
  *
- * @depends 	classes: Smart, SmartFrameworkRegistry
- * @version 	v.20220330
+ * @depends 	classes: Smart
+ * @version 	v.20221220
  * @package 	development:Application
  *
  */
@@ -682,7 +682,7 @@ abstract class SmartAbstractPersistentCache {
 //=====================================================================================
 
 
-if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') OR ((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER == '')) {
+if(defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') AND (SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER === false)) {
 
 /**
  * Class: SmartPersistentCache (Default, Blackhole)
@@ -697,7 +697,7 @@ if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') OR ((string)SMART_FRAMEW
  * 1) the built-in SQLite adapter, using small SQLITE DB files across the FileSystem (scale: very small)
  * 2) the built-in DBA adapter, using small DBA files across the FileSystem (scale: medium)
  * 3) the built-in Redis adapter using inMemory Persistent Cache (scale: medium or large)
- * 4) the built-in MongoDB adapter using DB Based Persistent Cache (scale: large)
+ * 4) the built-in MongoDB adapter using DB Based Persistent Cache (scale: medium or large)
  * 5) a custom implementation (that you must develop and set) to use your own custom Persistent Cache adapter (handler) by extending the SmartAbstractPersistentCache abstract class
  * NOTICE: When developing a custom Persistent Cache adapter (handler) if the key expiration is not supported natively, then this functionality must be implemented in a custom way to expire and to delete expired keys.
  * Also, if using by example Memcached assure that the max length of a string that can be stored in Memcached is large enough, by default is 1MB only.
@@ -707,8 +707,8 @@ if(!defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') OR ((string)SMART_FRAMEW
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @access 		PUBLIC
- * @depends 	-
- * @version 	v.20220330
+ * @depends 	classes: SmartAbstractPersistentCache
+ * @version 	v.20221224
  * @package 	Application:Caching
  *
  */

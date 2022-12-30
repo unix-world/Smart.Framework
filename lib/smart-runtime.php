@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR (((string)SMART_FRAMEWORK_RUNTI
 //-----------------------------------------------------
 
 
-//====================================================== r.20221208
+//====================================================== r.20221225
 // Smart-Framework - App Runtime (this should be loaded only from app web root)
 // DEPENDS: Smart.Framework + Smart.Framework/Components
 // DO NOT MODIFY THIS FILE OR ANY OTHER FILE(S) UNDER lib/* or index.php or admin.php or task.php [They will be all overwritten on any future framework updates or upgrades] !!!
@@ -168,6 +168,12 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 	@http_response_code(500);
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
+//--------------------------------------- LOAD SMART REGISTRY
+require('lib/lib_registry.php');
+//--------------------------------------- LOAD SMART FILE SYSTEM
+require('lib/core/lib_filesys.php');
+//--------------------------------------- LOAD SMART UTILS (after: registry, file system)
+require('lib/core/lib_utils.php');
 //--------------------------------------- LOAD SMART TRANSLATIONS SUPPORT ; before smart components, it depends on it
 require('lib/core/lib_translations.php');
 //--------------------------------------- LOAD SMART COMPONENTS ; before plugins, some plugins depend on it
@@ -177,15 +183,17 @@ require('lib/lib_runtime.php');
 //--------------------------------------- REGISTER AUTO-LOAD OF PLUGINS (by dependency injection)
 require('lib/core/plugins/autoload.php');
 //--------------------------------------- CONDITIONAL LOAD THE DEBUG (PROFILER) ; at the end, it depends at least on smart components
-if(SmartFrameworkRegistry::ifDebug()) {
+if(SmartEnvironment::ifDebug()) {
 	//-- load debug profiler
 	require('lib/core/lib_debug_profiler.php');
 	//-- register extra logs from framework
 	SmartDebugProfiler::register_extra_debug_log('SmartMarkersTemplating', 'registerOptimizationHintsToDebugLog');
 	//-- register extra internal logs from framework
-	if(SmartFrameworkRegistry::ifInternalDebug()) {
+	if(SmartEnvironment::ifInternalDebug()) {
 		SmartDebugProfiler::register_extra_debug_log('SmartFrameworkRegistry', 'registerInternalCacheToDebugLog');
+		SmartDebugProfiler::register_extra_debug_log('SmartEnvironment', 'registerInternalCacheToDebugLog');
 		SmartDebugProfiler::register_extra_debug_log('Smart', 'registerInternalCacheToDebugLog');
+		SmartDebugProfiler::register_extra_debug_log('SmartFileSysUtils', 'registerInternalCacheToDebugLog');
 		SmartDebugProfiler::register_extra_debug_log('SmartHashCrypto', 'registerInternalCacheToDebugLog');
 		SmartDebugProfiler::register_extra_debug_log('SmartAuth', 'registerInternalCacheToDebugLog');
 		SmartDebugProfiler::register_extra_debug_log('SmartUtils', 'registerInternalCacheToDebugLog');

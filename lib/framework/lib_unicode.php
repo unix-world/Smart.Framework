@@ -13,7 +13,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - Unicode Strings
-// DEPENDS-PHP: 7.3 or later
+// DEPENDS-PHP: 7.4 or later
 // DEPENDS-EXT: MBString, XML
 //======================================================
 
@@ -44,6 +44,16 @@ if(defined('SMART_FRAMEWORK_CHARSET')) {
 } else {
 	@http_response_code(500);
 	die('The SMART_FRAMEWORK_CHARSET must be set ...');
+} //end if
+//-- Safe String Filter
+if(defined('SMART_FRAMEWORK_SECURITY_FILTER_INPUT')) {
+	if((string)trim((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT) == '') {
+		@http_response_code(500);
+		die('The SMART_FRAMEWORK_SECURITY_FILTER_INPUT cannot be empty, must be a regex ; by default is expected to be set to something similar with: `/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/` ...');
+	} //end if
+} else {
+	@http_response_code(500);
+	die('The SMART_FRAMEWORK_SECURITY_FILTER_INPUT must be set ...');
 } //end if
 //-- the MBString replacement character must be ? to be compatible with utf8_decode()
 if(mb_substitute_character() !== 63) {
@@ -149,7 +159,7 @@ if(mb_substitute_character() !== 63) {
  * @hints       You must make always a difference for what you are goint to do with a string. If you need bytes length, then use strlen() with all strings, includding unicode ! If you need instead the number of characters in a string, then use SmartUnicode::str_len() for all variables / strings you know (or you just suppose) that are unicode.
  *
  * @access      PUBLIC
- * @depends     extensions: PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET
+ * @depends     extensions: PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET, SMART_FRAMEWORK_SECURITY_FILTER_INPUT
  * @version     v.20221205
  * @package     @Core
  *
@@ -885,7 +895,7 @@ final class SmartUnicode {
 			return '';
 		} //end if
 		//--
-		$ystr = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$ystr); // Fix: remove unsafe characters from original string
+		$ystr = (string) self::filter_unsafe_string((string)$ystr); // Fix: remove unsafe characters from original string
 		//--
 		if((string)$y_charset_from == '') { // if empty, try to detect it
 			$y_charset_from = self::detect_encoding((string)$ystr);
@@ -1036,7 +1046,7 @@ final class SmartUnicode {
 			return '';
 		} //end if
 		//--
-		$str = (string) SmartFrameworkSecurity::FilterUnsafeString((string)$str); // Fix: remove unsafe characters from original string
+		$str = (string) self::filter_unsafe_string((string)$str); // Fix: remove unsafe characters from original string
 		//--
 		$str = (string) self::utf8_dec((string)$str);
 		//--
@@ -1214,7 +1224,7 @@ final class SmartUnicode {
 	/**
 	 * Unicode Safe mail() 				:: Send unicode safe mail
 	 * This function is provided just for compatibility.
-	 * It is recommended to use advanced mailer functionalities such as SmartMailerUtils::send_extended_email() instead of this function
+	 * It is recommended to use advanced mailer functionalities such as SMTP mail send instead of this function
 	 *
 	 * @access 		private
 	 * @internal
@@ -1242,6 +1252,37 @@ final class SmartUnicode {
 		} //end if else
 		//--
 		return (bool) $out;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Return a filtered string value for untrusted string (or similar, scalar or null) variables.
+	 * It may be used for filtering insecure / untrusted variables.
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param MIXED 						$str_val	the input variable value
+	 * @return STRING/NULL								the filtered value (if ARRAY or OBJECT or RESOURCE will return null)
+	 */
+	public static function filter_unsafe_string($str_val) { // the param is MIXED !
+		//--
+		if($str_val === null) {
+			return null;
+		} //end if
+		//--
+		if(is_object($str_val) OR is_resource($str_val) OR is_array($str_val)) { // dissalow here, it always
+			return null;
+		} //end if
+		//--
+		if((string)$str_val != '') {
+			$str_val = (string) preg_replace((string)SMART_FRAMEWORK_SECURITY_FILTER_INPUT, '', (string)$str_val);
+		} //end if
+		//--
+		return (string) $str_val;
 		//--
 	} //END FUNCTION
 	//================================================================

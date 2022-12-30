@@ -37,7 +37,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20220730
+ * @version 	v.20221220
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -80,7 +80,7 @@ final class AuthAdminsHandler {
 		//--
 
 		//--
-		if(\SmartFrameworkRegistry::isAdminArea() !== true) {
+		if(\SmartEnvironment::isAdminArea() !== true) {
 			\SmartFrameworkRuntime::Raise500Error('Authentication system is designed for admin area only ...');
 			die('AuthAdminsHandler:NotAdminArea');
 			return;
@@ -291,13 +291,13 @@ final class AuthAdminsHandler {
 				(string) self::$template_path,
 				(string) self::$template_file,
 				[
-					'TITLE' => 'Login to '.((\SmartFrameworkRegistry::isTaskArea() === true) ? 'Task' : 'Admin').' Area',
+					'TITLE' => 'Login to '.((\SmartEnvironment::isTaskArea() === true) ? 'Task' : 'Admin').' Area',
 					'MAIN'  => (string) \SmartMarkersTemplating::render_file_template(
 						(string) self::TPL_INC_PATH.'login.htm',
 						[
-							'LOGIN-SCRIPT' 	=> (string) ((\SmartFrameworkRegistry::isTaskArea() === true) ? 'task.php' : 'admin.php'),
-							'LOGIN-URL' 	=> (string)  \SmartUtils::crypto_blowfish_encrypt((string)'#!'.((\SmartFrameworkRegistry::isTaskArea() === true) ? 'tsk' : 'adm').'/DISPLAY-REALMS'), // {{{SYNC-AUTH-ADMINS-LOGIN-SCRIPT}}}
-							'LOGIN-AREA' 	=> (string) ((\SmartFrameworkRegistry::isTaskArea() === true) ? 'Task' : 'Admin'),
+							'LOGIN-SCRIPT' 	=> (string) ((\SmartEnvironment::isTaskArea() === true) ? 'task.php' : 'admin.php'),
+							'LOGIN-URL' 	=> (string)  \SmartUtils::crypto_blowfish_encrypt((string)'#!'.((\SmartEnvironment::isTaskArea() === true) ? 'tsk' : 'adm').'/DISPLAY-REALMS'), // {{{SYNC-AUTH-ADMINS-LOGIN-SCRIPT}}}
+							'LOGIN-AREA' 	=> (string) ((\SmartEnvironment::isTaskArea() === true) ? 'Task' : 'Admin'),
 							'POWERED-HTML' 	=> (string) \SmartComponents::app_powered_info(
 								'no',
 								[

@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20220928
+ * @version 	v.20221219
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -99,7 +99,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_APP_DIR';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
 			$this->err = 'The release app folder have an invalid path ...';
 			return;
 		} //end if
@@ -108,7 +108,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
 			$this->err = 'The optimizations folder have an invalid path ...';
 			return;
 		} //end if

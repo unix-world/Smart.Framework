@@ -15,6 +15,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Smart-Framework - Mail Get (SSL/TLS): IMAP4 / POP3
 // DEPENDS:
 //	* Smart::
+//	* SmartUnicode::
 //======================================================
 
 // [REGEX-SAFE-OK]
@@ -30,8 +31,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  * @hints 		After each operation on the IMAP4 Server should check the $imap4->error string and if non-empty stop and disconnect to free the socket
  *
- * @depends 	classes: Smart
- * @version 	v.20210305
+ * @depends 	classes: Smart, SmartUnicode
+ * @version 	v.20221223
  * @package 	Plugins:Mailer
  *
  */
@@ -185,8 +186,8 @@ final class SmartMailerImap4Client {
 	public function set_ssl_tls_ca_file($cafile) {
 		//--
 		$this->cafile = '';
-		if(SmartFileSysUtils::check_if_safe_path((string)$cafile) == '1') {
-			if(SmartFileSystem::is_type_file((string)$cafile)) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$cafile) == '1') {
+			if(SmartFileSysUtils::staticFileExists((string)$cafile)) {
 				$this->cafile = (string) $cafile;
 			} //end if
 		} //end if
@@ -1614,8 +1615,8 @@ final class SmartMailerImap4Client {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  * @hints 		After each operation on the POP3 Server should check the $pop3->error string and if non-empty stop and disconnect to free the socket
  *
- * @depends 	classes: Smart
- * @version 	v.20210305
+ * @depends 	classes: Smart, SmartUnicode
+ * @version 	v.20221223
  * @package 	Plugins:Mailer
  *
  */
@@ -1757,8 +1758,8 @@ final class SmartMailerPop3Client {
 	public function set_ssl_tls_ca_file($cafile) {
 		//--
 		$this->cafile = '';
-		if(SmartFileSysUtils::check_if_safe_path((string)$cafile) == '1') {
-			if(SmartFileSystem::is_type_file((string)$cafile)) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$cafile) == '1') {
+			if(SmartFileSysUtils::staticFileExists((string)$cafile)) {
 				$this->cafile = (string) $cafile;
 			} //end if
 		} //end if

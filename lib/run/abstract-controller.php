@@ -123,7 +123,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20220924
+ * @version 	v.20221220
  * @package 	development:Application
  *
  */
@@ -184,7 +184,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 * @param STRING $y_hardcoded_area 	:: *OPTIONAL* If this is provided will supply a hard-coded Area for the Middleware Service, otherwise is detected from current script.php
 	 *
 	 */
-	final public function __construct($y_module_path, $y_controller, $y_url_page, $y_hardcoded_area='') {
+	final public function __construct(?string $y_module_path, ?string $y_controller, ?string $y_url_page, ?string $y_hardcoded_area='') {
 		//--
 		$y_module_path 		= (string) $y_module_path;
 		$y_controller 		= (string) $y_controller;
@@ -229,7 +229,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			);
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)$y_module_path)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$y_module_path)) {
 			Smart::raise_error(
 				__METHOD__.'() :: Unsafe Parameter: Module Path: '.$y_module_path
 			);
@@ -277,7 +277,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 		//--
 		$ctrl_arr = (array) explode('.', (string)$y_controller);
 		//--
-		$this->appenv 			= (string) (SmartFrameworkRegistry::ifProdEnv() === true) ? 'prod' : 'dev'; 		// app environment: dev | prod :: {{{SYNC-APP-ENV-SETT}}}
+		$this->appenv 			= (string) (SmartEnvironment::ifDevMode() !== true) ? 'prod' : 'dev'; 				// app environment: dev | prod :: {{{SYNC-APP-ENV-SETT}}}
 		$this->releasehash 		= (string) SmartUtils::get_app_release_hash(); 										// the release hash based on app framework version, framework release and modules version
 		$this->modulearea 		= (string) $param_area; 															// index | admin | task
 		$this->modulepath 		= (string) $y_module_path; 															// modules/mod-something/
@@ -332,7 +332,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOLEAN					:: TRUE if 'rawpage' is 'yes' or true ; FALSE otherwise
 	 */
-	final public function IsRawPage() {
+	final public function IsRawPage() : bool {
 		//--
 		$is_raw = false;
 		if((string)strtolower((string)$this->pagesettings['rawpage']) == 'yes') {
@@ -347,13 +347,13 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 
 	//=====
 	/**
-	 * Test if Prod Environment is On
+	 * Test if Development Environment is On
 	 *
-	 * @return 	BOOLEAN					:: TRUE if 'prod' environment is ON, FALSE if not (FALSE if 'dev')
+	 * @return 	BOOLEAN					:: TRUE if 'dev' environment is ON, FALSE if not (FALSE if 'prod')
 	 */
-	final public function IfProdEnv() {
+	final public function IfDevMode() : bool {
 		//--
-		return (bool) SmartFrameworkRegistry::ifProdEnv();
+		return (bool) SmartEnvironment::ifDevMode();
 		//--
 	} //END FUNCTION
 	//=====
@@ -365,9 +365,9 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOLEAN					:: TRUE if DEBUG is ON, FALSE if not
 	 */
-	final public function IfDebug() {
+	final public function IfDebug() : bool {
 		//--
-		return (bool) SmartFrameworkRegistry::ifDebug();
+		return (bool) SmartEnvironment::ifDebug();
 		//--
 	} //END FUNCTION
 	//=====
@@ -383,7 +383,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 * @param BOOLEAN $show_output 		:: *Optional* ; Default is FALSE ; If set to TRUE will try to output the contents as HTML ; BEWARE, if the content is binary it should not ...
 	 * @return 	BOOLEAN					:: TRUE if Debug is ON, FALSE if not
 	 */
-	final public function forceRawDebug(bool $show_output=false) {
+	final public function forceRawDebug(bool $show_output=false) : bool {
 		//--
 		if($this->IfDebug() !== true) {
 			Smart::log_warning('ERROR: Page Controller: '.$this->controller.' # '.__FUNCTION__.'(): Method should be called only when Debug Mode is ON ...');
@@ -454,10 +454,10 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOLEAN					:: TRUE if successful, FALSE if not
 	 */
-	final public function SetDebugData(?string $title, $debug_msg) {
+	final public function SetDebugData(?string $title, $debug_msg) : bool {
 		//--
 		if(!$this->IfDebug()) {
-			Smart::log_notice('Page Controller: '.$this->controller.' # NOTICE: Modules/SetDebugData must be set only if Modules/IfDebug() is TRUE ... else will slow down the execution. Consider to Add SetDebugData() in a context as if($this->IfDebug()){ $this->SetDebugData(\'Debug title\', \'A debug message ...\'); } ...');
+			Smart::log_notice('Page Controller: '.$this->controller.' # NOTICE: Modules/SetDebugData must be set in a Controller only if Modules/IfDebug() is TRUE ... else will slow down the execution. Consider to Add SetDebugData() in a context as if($this->IfDebug()){ $this->SetDebugData(\'Debug title\', \'A debug message ...\'); } ...');
 			return false;
 		} //end if
 		//--
@@ -467,7 +467,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			$debug_msg = (string) SmartUtils::pretty_print_var($debug_msg);
 		} //end if
 		//--
-		SmartFrameworkRegistry::setDebugMsg('modules', (string)$this->modulename, [
+		SmartEnvironment::setDebugMsg('modules', (string)$this->modulename, [
 			'title' => (string) $title,
 			'data' => (string) $debug_msg
 		]);
@@ -484,7 +484,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @param 	ENUM 		$param 		:: The selected parameter
 	 * The valid param values are:
-	 * 		app-env 					:: 		ex: dev | prod ; based on: SmartFrameworkRegistry::ifProdEnv()
+	 * 		app-env 					:: 		ex: dev | prod ; based on: SmartEnvironment::ifDevMode()
 	 * 		app-namespace 				:: 		ex: smartframework.default (the app namespace as defined in etc/init.php)
 	 * 		app-domain 					:: 		ex: 127.0.0.1|localhost|sdom.dom.ext|dom.ext (the domain set in configs, that may differ by area: $configs['app']['index-domain'] | $configs['app']['admin-domain'])
 	 * 		release-hash 				:: 		ex: 29bp3w (the release hash based on app framework version, framework release and modules version)
@@ -519,7 +519,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	STRING					:: The value for the selected parameter
 	 */
-	final public function ControllerGetParam(?string $param) {
+	final public function ControllerGetParam(?string $param) : string {
 		//--
 		$param = (string) strtolower((string)$param);
 		//--
@@ -667,7 +667,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	STRING					:: The value of the REQUEST_METHOD HTTP Variable (from server-side)
 	 */
-	final public function RequestMethodGet() {
+	final public function RequestMethodGet() : string {
 		//--
 		return (string) SmartUtils::get_server_current_request_method(); // string
 		//--
@@ -681,7 +681,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	STRING					:: The value of the PATH_INFO Request if Set or Empty String
 	 */
-	final public function RequestPathGet() {
+	final public function RequestPathGet() : string {
 		//--
 		return (string) SmartFrameworkRegistry::getRequestPath(); // string
 		//--
@@ -695,7 +695,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	ARRAY					:: Associative Array of Request Variables
 	 */
-	final public function RequestVarsGet() {
+	final public function RequestVarsGet() : array {
 		//--
 		return (array) SmartFrameworkRegistry::getRequestVars(); // array
 		//--
@@ -752,7 +752,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOLEAN					:: TRUE if Set, FALSE if Not
 	 */
-	final public function CookieVarSet(?string $name, ?string $data, ?int $expire=0, ?string $path='/', ?string $domain='@', ?string $samesite='@', bool $secure=false, bool $httponly=false) {
+	final public function CookieVarSet(?string $name, ?string $data, ?int $expire=0, ?string $path='/', ?string $domain='@', ?string $samesite='@', bool $secure=false, bool $httponly=false) : bool {
 		//--
 		return (bool) SmartUtils::set_cookie((string)$name, (string)$data, (int)$expire, (string)$path, (string)$domain, (string)$samesite, (bool)$secure, (bool)$httponly);
 		//--
@@ -773,7 +773,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOLEAN					:: TRUE if Set, FALSE if Not
 	 */
-	final public function CookieVarUnset(?string $name, ?string $path='/', ?string $domain='@', ?string $samesite='@', bool $secure=false, bool $httponly=false) {
+	final public function CookieVarUnset(?string $name, ?string $path='/', ?string $domain='@', ?string $samesite='@', bool $secure=false, bool $httponly=false) : bool {
 		//--
 		return (bool) SmartUtils::unset_cookie((string)$name, (string)$path, (string)$domain, (string)$samesite, (bool)$secure, (bool)$httponly);
 		//--
@@ -788,7 +788,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	ARRAY					:: an associative array as: [ heads => PageViewGetRawHeaders() ; cfgs => PageViewGetCfgs() ; vars => PageViewGetVars() ]
 	 */
-	final public function PageViewGetData() {
+	final public function PageViewGetData() : array {
 		//--
 		return (array) [
 			'heads' 	=> (array) $this->PageViewGetRawHeaders(),
@@ -809,7 +809,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewSetData($data) { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
+	final public function PageViewSetData($data) : bool { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
@@ -860,7 +860,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	ARRAY					:: an associative array with all controller Page View (Raw) Headers currently set
 	 */
-	final public function PageViewGetRawHeaders() {
+	final public function PageViewGetRawHeaders() : array {
 		//--
 		return (array) $this->pageheaders;
 		//--
@@ -876,7 +876,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewSetRawHeaders($entries) {
+	final public function PageViewSetRawHeaders($entries) : bool { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
@@ -911,14 +911,14 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewSetRawHeader($param, $value) {
+	final public function PageViewSetRawHeader(?string $param, ?string $value) : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
 			return false;
 		} //end if
 		//--
-		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+		if((!Smart::is_nscalar($param)) OR ((string)trim((string)$param) == '')) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return false;
 		} //end if
@@ -957,7 +957,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewResetRawHeaders() {
+	final public function PageViewResetRawHeaders() : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
@@ -980,9 +980,9 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	STRING					:: The value currently set in CFGs if any or an empty string
 	 */
-	final public function PageViewGetCfg($param) {
+	final public function PageViewGetCfg($param) : string {
 		//--
-		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+		if((!Smart::is_nscalar($param)) OR ((string)trim((string)$param) == '')) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return '';
 		} //end if
@@ -1006,7 +1006,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	ARRAY					:: an associative array with all controller Page View Cfgs. (Settings) currently set
 	 */
-	final public function PageViewGetCfgs() {
+	final public function PageViewGetCfgs() : array {
 		//--
 		return (array) $this->pagesettings;
 		//--
@@ -1022,7 +1022,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewSetCfgs($params) { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
+	final public function PageViewSetCfgs($params) : bool { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
@@ -1059,14 +1059,14 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewSetCfg($param, $value) {
+	final public function PageViewSetCfg($param, $value) : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
 			return false;
 		} //end if
 		//--
-		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+		if((!Smart::is_nscalar($param)) OR ((string)trim((string)$param) == '')) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return false;
 		} //end if
@@ -1103,7 +1103,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewResetCfgs() {
+	final public function PageViewResetCfgs() : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
@@ -1126,7 +1126,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	STRING 					:: the ERROR Message if Any
 	 */
-	final public function PageViewGetErrorMessage($errhtml=false) {
+	final public function PageViewGetErrorMessage(bool $errhtml=false) : string {
 		//--
 		$code = (int) $this->PageViewGetStatusCode();
 		//--
@@ -1154,7 +1154,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	ENUM 					:: the HTTP Status Code: 2xx, 3xx, 4xx, 5xx, ... (consult middleware documentation to see what is supported) ; if an invalid error status code is used then 200 will be used instead
 	 */
-	final public function PageViewGetStatusCode() {
+	final public function PageViewGetStatusCode() : int {
 		//--
 		$code = 200; // default
 		//--
@@ -1176,7 +1176,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewSetOkStatus($code) {
+	final public function PageViewSetOkStatus(int $code) : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
@@ -1189,9 +1189,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			$code = 200;
 		} //end if
 		//--
-		return (bool) $this->PageViewSetCfg(
-			'status-code', (int)$code
-		);
+		return (bool) $this->PageViewSetCfg('status-code', (int)$code);
 		//--
 	} //END FUNCTION
 	//=====
@@ -1204,11 +1202,11 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @param 	ENUM 			$code		:: the HTTP Error Status Code: 400, 403, 404, 500, 503, ... (consult middleware documentation to see what is supported) ; if an invalid error status code is used then 500 will be used instead
 	 * @param 	STRING/ARRAY 	$msg 		:: The detailed message that will be displayed public near the status code ; can be string or array [ 0 => message ; 1 => htmlmessage ]
-	 * @param 	BOOLEAN 		$logtype 	:: *Optional* ; Default is '' ; available values: '' | 'WARN' | 'NOTICE'
+	 * @param 	ENUM 			$logtype 	:: *Optional* ; Default is '' ; available values: '' | 'WARN' | 'NOTICE'
 	 *
-	 * @return 	BOOL					:: TRUE if OK, FALSE if not
+	 * @return 	BOOL						:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewSetErrorStatus($code, $msg='', $logtype='') {
+	final public function PageViewSetErrorStatus(?int $code, $msg=null, ?string $logtype='') : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
@@ -1235,7 +1233,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			'errhtml' 		=> (string) $htmlmsg
 		]);
 		//--
-		switch((string)strtoupper((string)$logtype)) {
+		switch((string)strtoupper((string)trim((string)$logtype))) {
 			case 'NOTICE':
 				Smart::log_notice('Page Controller Log NOTICE # ('.$this->controller.'): [Status-Code:'.(int)$code.'] '.(string)$message);
 				break;
@@ -1262,14 +1260,14 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewSetRedirectUrl($url, $code) {
+	final public function PageViewSetRedirectUrl(?string $url, ?int $code) : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
 			return false;
 		} //end if
 		//--
-		$url = (string) $url;
+		$url = (string) trim((string)$url);
 		if((string)$url == '') {
 			return false;
 		} //end if
@@ -1299,14 +1297,14 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 */
 	final public function PageViewGetVar($param) {
 		//--
-		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+		if((!Smart::is_nscalar($param)) OR ((string)trim((string)$param) == '')) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return null;
 		} //end if
 		//--
 		$param = (string) strtolower((string)$param);
 		//--
-		return (array_key_exists((string)$param, $this->pageview) ? $this->pageview[(string)$param] : null); // mixed
+		return (array_key_exists((string)$param, $this->pageview) ? $this->pageview[(string)$param] : null); // mixed ; do not test, it may be an out of bound parameter set in cache
 		//--
 	} //END FUNCTION
 	//=====
@@ -1318,7 +1316,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	ARRAY					:: an associative array with all the controller Page View variables currently set
 	 */
-	final public function PageViewGetVars() {
+	final public function PageViewGetVars() : array {
 		//--
 		return (array) $this->pageview;
 		//--
@@ -1334,7 +1332,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewSetVars($params) { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
+	final public function PageViewSetVars($params) : bool { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
@@ -1372,14 +1370,14 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewSetVar($param, $value, $overwrite=true) {
+	final public function PageViewSetVar($param, $value, bool $overwrite=true) : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
 			return false;
 		} //end if
 		//--
-		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+		if((!Smart::is_nscalar($param)) OR ((string)trim((string)$param) == '')) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return false;
 		} //end if
@@ -1413,14 +1411,14 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewPrependVar($param, $value) {
+	final public function PageViewPrependVar($param, $value) : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
 			return false;
 		} //end if
 		//--
-		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+		if((!Smart::is_nscalar($param)) OR ((string)trim((string)$param) == '')) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return false;
 		} //end if
@@ -1452,14 +1450,14 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewAppendVar($param, $value) {
+	final public function PageViewAppendVar($param, $value) : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
 			return false;
 		} //end if
 		//--
-		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+		if((!Smart::is_nscalar($param)) OR ((string)trim((string)$param) == '')) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return false;
 		} //end if
@@ -1487,7 +1485,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewResetVars() {
+	final public function PageViewResetVars() : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
@@ -1510,14 +1508,14 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if OK, FALSE if not
 	 */
-	final public function PageViewResetVar($param) {
+	final public function PageViewResetVar($param) : bool {
 		//--
 		if($this->directoutput === true) {
 			Smart::log_warning('Page Controller: '.$this->controller.' # '.__METHOD__.'(): This method is not available for Direct Output Mode ...');
 			return false;
 		} //end if
 		//--
-		if((!Smart::is_nscalar($param)) OR ((string)$param == '')) {
+		if((!Smart::is_nscalar($param)) OR ((string)trim((string)$param) == '')) {
 			Smart::log_notice('Page Controller: '.$this->controller.' # '.__METHOD__.'(): Invalid Parameter Type: '.$param);
 			return false;
 		} //end if
@@ -1542,7 +1540,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL					:: TRUE if Active, FALSE if not
 	 */
-	final public function PageCacheisActive() {
+	final public function PageCacheisActive() : bool {
 		//--
 		return (bool) SmartPersistentCache::isActive();
 		//--
@@ -1557,7 +1555,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	STRING					:: The safe prepared Key or Realm
 	 */
-	final public function PageCacheSafeKey($y_key_or_realm) {
+	final public function PageCacheSafeKey(?string $y_key_or_realm) : string {
 		//--
 		return (string) SmartPersistentCache::safeKey((string)$y_key_or_realm);
 		//--
@@ -1574,7 +1572,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	MIXED								:: If the PersistentCache is active and value was set will return a single (STRING) or multiple (ARRAY) Page Settings / Page Values ; otherwise will return a NULL value.
 	 */
-	final public function PageGetFromCache($storage_namespace, $unique_key) {
+	final public function PageGetFromCache(?string $storage_namespace, ?string $unique_key) {
 		//--
 		if(!SmartPersistentCache::isActive()) {
 			return null;
@@ -1606,7 +1604,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL								:: TRUE if the PersistentCache is active and value was set ; FALSE in the rest of the cases
 	 */
-	final public function PageSetInCache($storage_namespace, $unique_key, $content, $expiration) {
+	final public function PageSetInCache(?string $storage_namespace, ?string $unique_key, $content, int $expiration) : bool {
 		//--
 		if($content === null) { // must allow empty array ; dissalow null as null is the returned result by get key if key not found
 			return false;
@@ -1641,7 +1639,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return 	BOOL								:: TRUE if the PersistentCache is active and value was unset ; FALSE in the rest of the cases
 	 */
-	final public function PageUnsetFromCache($storage_namespace, $unique_key) {
+	final public function PageUnsetFromCache(?string $storage_namespace, ?string $unique_key) : bool {
 		//--
 		return (bool) SmartPersistentCache::unsetKey(
 			(string) $storage_namespace,
@@ -1663,7 +1661,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	 *
 	 * @return VOID	:: This function does not return anything
 	 */
-	final public function InstantFlush() {
+	final public function InstantFlush() : void {
 		//--
 		if($this->directoutput === true) { // OK
 			//--
@@ -1674,6 +1672,8 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			Smart::log_warning('Page Controller: '.$this->controller.' # Using the InstantFlush() in controllers that are not using direct output is not allowed as will break the middleware output chain ...');
 			//--
 		} //end if
+		//--
+		return;
 		//--
 	} //END FUNCTION
 	//=====

@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20220928
+ * @version 	v.20221219
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -54,7 +54,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				$str_ofs = (int) strlen('/'.$appid.'/'); // mixed
 				if((int)$str_ofs >= 7) { // min app id len is 5 + 2 slashes ; {{{SYNC-APPCODEPACK-ID-SIZE}}}
 					if((string)substr((string)TASK_APP_RELEASE_CODEPACK_APP_DIR, -1 * (int)$str_ofs, (int)$str_ofs) == (string)'/'.$appid.'/') { // must end in it
-						if(SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
+						if(SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
 							$ok = true;
 						} //end if
 					} //end if

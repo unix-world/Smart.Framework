@@ -16,7 +16,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // DEPENDS:
 //	* Smart::
 //	* SmartUnicode::
-//	* SmartUtils::
 //	* SmartHtmlParser::
 // REQUIRED CSS:
 //	* markdown.css
@@ -37,8 +36,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	Smart, SmartUnicode, SmartUtils, SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG
- * @version 	v.20221108
+ * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartHtmlParser ; optional-constants: SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG
+ * @version 	v.20221228
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -53,7 +52,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20221108';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20221228';
 
 	//===================================
 
@@ -182,6 +181,8 @@ final class SmartMarkdownToHTML {
 
 	//-- supported html entities (the most usual)
 	private const HTML_ENTITIES_REPLACEMENTS = [
+		//-- non-standard
+		'&BREAK;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/BREAK/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // non-standard, will be converted back to <br>
 		//-- html
 		'&nbsp;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/nbsp/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // non breakable space
 		'&amp;' 	=> self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/amp/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // & ampersand
@@ -395,7 +396,7 @@ final class SmartMarkdownToHTML {
 		//-- fix charset
 		$markup = (string) SmartUnicode::fix_charset($markup); // fix by unixman (in case that broken UTF-8 characters are detected just try to fix them to avoid break JSON)
 		//-- Comment Out PHP tags
-		$markup = (string) SmartUtils::comment_php_code((string)$markup, ['tag-start' => '&lt;&quest;', 'tag-end' => '&quest;&gt;']); // fix PHP tags if any remaining ...
+		$markup = (string) Smart::commentOutPhpCode((string)$markup, ['tag-start' => '&lt;&quest;', 'tag-end' => '&quest;&gt;']); // fix PHP tags if any remaining ...
 		//-- Dissalow Marker TPL Syntax if not specified so
 		if($this->optionAllowMarkerTplSyntax !== true) {
 			$markup = (string) SmartMarkersTemplating::prepare_nosyntax_html_template((string)$markup);
@@ -446,7 +447,7 @@ final class SmartMarkdownToHTML {
 		//--
 		$this->NoticesLog[] = (string) $message;
 		//--
-		if(SmartFrameworkRegistry::ifProdEnv()) {
+		if(!SmartEnvironment::ifDevMode()) {
 			return; // do not log in production environments
 		} //end if
 		//--
@@ -487,6 +488,10 @@ final class SmartMarkdownToHTML {
 			$info_validatehtml = 'V:0';
 		} //end if
 		//--
+		$markup = (string) strtr($markup, [
+			'&BREAK;' => '<br>',
+		]);
+		//--
 		$markup = "\n".'<!-- HTML/Markdown :: ( '.Smart::escape_html($info_compat.' '.$info_linebreaks.' '.$info_sbreaks.' '.$info_entities.' '.$info_validatehtml.' T:'.date('YmdHi')).' ) -->'."\n".'<div id="markdown-'.sha1((string)$markup).'-'.Smart::uuid_10_num().'" class="markdown">'."\n".$markup."\n".'</div>'."\n".'<!-- # HTML/Markdown # '.Smart::escape_html((string)self::MKDW_VERSION).'  -->'."\n"; // if parsed and contain HTML Tags, add div and comments
 		//--
 		if((string)$this->optionValidateHtml != '') {
@@ -495,7 +500,7 @@ final class SmartMarkdownToHTML {
 			$validerrs = (string) $htmlparser->getValidationErrors();
 			if((string)$validerrs != '') {
 				$this->NoticesLog[] = (array) explode("\n", (string)$validerrs);
-				if(!SmartFrameworkRegistry::ifProdEnv()) { // do not log in production environments
+				if(SmartEnvironment::ifDevMode()) { // log only in dev environments
 					if($this->log_render_notices === true) {
 						Smart::log_notice(__METHOD__.' # HTML Validator['.$this->optionValidateHtml.']: '.(string)$validerrs);
 					} //end if
@@ -777,7 +782,7 @@ final class SmartMarkdownToHTML {
 					$repls++;
 					//--
 					if((int)$repls > 8192) { // {{{SYNC-MKDW-LOOP-INLINE-EVEN-TAGS}}} ; also this number must be even: 8192
-						if(SmartFrameworkRegistry::ifDebug()) {
+						if(SmartEnvironment::ifDebug()) {
 							self::notice_log((string)__METHOD__, 'Too many replacements in a single line, line is too long ...');
 						} //end if
 						break;
@@ -1123,20 +1128,20 @@ final class SmartMarkdownToHTML {
 								$tmp_attr[0] = (string) $tmp_alternate;
 								$arr['alternate'] = (array) $tmp_attr;
 							} else {
-								if(SmartFrameworkRegistry::ifDebug()) {
+								if(SmartEnvironment::ifDebug()) {
 									self::notice_log((string)__METHOD__, 'Parser Notice: Wrong Attribute (2): `'.$attribute.'` in: `'.$attributeString.'`'); // this can occur with converted markdown ... (Ex: perl docs)
 								} //end if
 							} //end if else
 							$tmp_alternate = null;
 							$tmp_attr = null;
 						} else {
-							if(SmartFrameworkRegistry::ifDebug()) {
+							if(SmartEnvironment::ifDebug()) {
 								self::notice_log((string)__METHOD__, 'Parser Notice: Wrong Attribute (1): `'.$attribute.'` in: `'.$attributeString.'`'); // this can occur with converted markdown ... (Ex: perl docs)
 							} //end if
 						} //end if else
 					} //end if else
 				} else { // invalid attribute
-					if(SmartFrameworkRegistry::ifDebug()) {
+					if(SmartEnvironment::ifDebug()) {
 						self::notice_log((string)__METHOD__, 'Parser Notice: Invalid Attribute: `'.$attribute.'` in: `'.$attributeString.'`'); // this can occur with converted markdown ... (Ex: perl docs)
 					} //end if
 				} //end if else
@@ -1494,13 +1499,13 @@ final class SmartMarkdownToHTML {
 		//--
 		$arr = (array) $this->decodeListNodeArray($arr);
 		if(!isset($arr['@'])) {
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				Smart::log_notice(__METHOD__.' # List Data Conversion Failed: @');
 			} //end if
 			return (string) '';
 		} //end if
 		if((int)Smart::array_size($arr['@']) <= 0) {
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				Smart::log_notice(__METHOD__.' # List Data Conversion Failed: [..]');
 			} //end if
 			return (string) '';

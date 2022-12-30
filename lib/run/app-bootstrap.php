@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //-----------------------------------------------------
 
 //======================================================
-// Smart-Framework - App Bootstrap :: r.20221208
+// Smart-Framework - App Bootstrap :: r.20221224
 // DEPENDS: SmartFramework, SmartFrameworkRuntime
 //======================================================
 // This file can be customized per App ...
@@ -48,7 +48,8 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20221208
+ * @version 	v.20221224
+ * @package 	Application
  *
  */
 final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
@@ -240,7 +241,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			);
 			return;
 		} //end if
-		if(!SmartFrameworkRegistry::ifDebug()) {
+		if(!SmartEnvironment::ifDebug()) {
 			if(SmartFileSystem::is_type_file('tmp/SMART-FRAMEWORK__DEBUG-ON')) {
 				if(SmartFileSystem::is_type_dir('tmp/logs/idx/')) {
 					SmartFileSystem::dir_delete('tmp/logs/idx/', true);
@@ -471,7 +472,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			return;
 		} //end if
 		//--
-		if(defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') AND ((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER != '')) {
+		if(defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') AND is_string(SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER) AND ((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER != '')) {
 			//--
 			switch((string)SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER) {
 				case 'redis': // Redis is significant faster than DBA or SQLite but needs RAM memory which could not be available ...
@@ -529,7 +530,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			return;
 		} //end if
 		//--
-		if(defined('SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM') AND ((string)trim((string)SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM) != '')) {
+		if(defined('SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM') AND is_string(SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM) AND ((string)trim((string)SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM) != '')) {
 			//--
 			SmartFrameworkRuntime::requirePhpScript((string)SMART_FRAMEWORK_TRANSLATIONS_ADAPTER_CUSTOM, 'Custom Translations Adapter');
 			if(!class_exists('SmartAdapterTextTranslations', false)) { // explicit autoload is false
@@ -556,7 +557,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			return;
 		} //end if
 		//--
-		if(defined('SMART_FRAMEWORK_SESSION_HANDLER') AND ((string)SMART_FRAMEWORK_SESSION_HANDLER !== 'files')) {
+		if(defined('SMART_FRAMEWORK_SESSION_HANDLER') AND is_string(SMART_FRAMEWORK_SESSION_HANDLER) AND ((string)SMART_FRAMEWORK_SESSION_HANDLER !== 'files')) {
 			//--
 			switch((string)SMART_FRAMEWORK_SESSION_HANDLER) {
 				case 'redis': // Redis is significant faster than DBA or SQLite but needs RAM memory which could not be available ...
@@ -631,7 +632,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20221208
+ * @version 	v.20221220
  * @package 	Application
  *
  */

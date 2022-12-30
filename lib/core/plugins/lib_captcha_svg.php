@@ -15,8 +15,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Captcha SVG (Vector) Image
 // DEPENDS:
 //	* Smart::
+//	* SmartMarkersTemplating::
 // REQUIRED TEMPLATES:
-//	* captcha-svg.inc.htm
+//	* captcha-plugin-svg-image.inc.htm
 //======================================================
 
 
@@ -71,8 +72,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * Create a Form Captcha Validation Vector Image (SVG)
  *
  * @access 		PUBLIC
- * @depends 	classes: Smart, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version 	v.20220925
+ * @depends 	classes: Smart, SmartMarkersTemplating, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY
+ * @version 	v.20221225
  * @package 	development:Captcha
  */
 final class SmartSVGCaptcha {
@@ -1848,7 +1849,7 @@ final class SmartSVGCaptcha {
  * @access 		private
  * @internal
  *
- * @version 	v.20220925
+ * @version 	v.20221225
  *
  */
 final class SmartSvgCaptchaPoint {

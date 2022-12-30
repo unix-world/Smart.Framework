@@ -50,15 +50,15 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, PHP SQLite3 Extension, SmartSQliteDb
- * @version 	v.20210527
- * @package 	Plugins:PersistentCache:SQlite
+ * @version 	v.20221224
+ * @package 	Application:Plugins:PersistentCache:SQlite
  *
  */
 class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 
 	// ::
 
-	// !!! THIS CLASS MUST NOT BE MARKED AS FINAL to allow the class SmartPersistentCache@SQlite to be extended from this !!!
+	// !!! THIS CLASS MUST NOT BE MARKED AS FINAL to allow the class SmartPersistentCache@SQLITE to be extended from this !!!
 	// But this class have all PUBLIC Methods marked as FINAL to avoid being rewritten ...
 
 	private const SQLITE_FOLDER 	= 'tmp/cache/pcache#sqlite/'; 	// base cached folder
@@ -121,7 +121,7 @@ class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 		} //end if
 		//--
 		return (bool) SmartFileSystem::dir_delete(
-			(string) SmartFileSysUtils::add_dir_last_slash(self::SQLITE_FOLDER),
+			(string) SmartFileSysUtils::addPathTrailingSlash((string)self::SQLITE_FOLDER),
 			true // recursive delete all p-cache folder
 		);
 		//--
@@ -253,7 +253,7 @@ class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 		$data = null;
 		if(Smart::array_size($rd) > 0) {
 			if(((string)$rd['key'] === (string)$y_key) AND ((string)$rd['realm'] === (string)$y_realm)) {
-				$data = (string) SmartPersistentCache::varUncompress((string)$rd['data']);
+				$data = (string) self::varUncompress((string)$rd['data']);
 			} //end if
 		} //end if
 		//--
@@ -311,7 +311,7 @@ class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 			'modified' 	=> (int)    $now,
 			'expire' 	=> (int)    $expire,
 			'expire_at' => (int)    $expiration,
-			'data' 		=> (string) SmartPersistentCache::varCompress((string)$y_value)
+			'data' 		=> (string) self::varCompress((string)$y_value)
 		];
 		//--
 		$wr = (array) $sqlite_obj->write_data(
@@ -383,9 +383,9 @@ class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 		//--
 		$hash = (string) SmartHashCrypto::crc32b((string)$y_realm);
 		$prefix = (string) substr((string)Smart::safe_filename((string)strtolower((string)$y_realm), '-'), 0, 35);
-		$db_file_folder = (string) SmartFileSysUtils::add_dir_last_slash((string)substr((string)$hash, 0, 3)).SmartFileSysUtils::add_dir_last_slash($prefix.'#'.$hash);
+		$db_file_folder = (string) SmartFileSysUtils::addPathTrailingSlash((string)substr((string)$hash, 0, 3)).SmartFileSysUtils::addPathTrailingSlash((string)$prefix.'#'.$hash);
 		//--
-		return (string) Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash(self::SQLITE_FOLDER).$db_file_folder, '-');
+		return (string) Smart::safe_pathname((string)SmartFileSysUtils::addPathTrailingSlash((string)self::SQLITE_FOLDER).$db_file_folder, '-');
 		//--
 	} //END FUNCTION
 
@@ -406,7 +406,7 @@ class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 		$cachePathPrefix = (string) implode('-', (array)$arrPathPrefix); // replaces / with - to avoid use sub-folders in this context
 		$sqlite_fname = (string) substr((string)self::SQLITE_FILE, 0, -7).'-#-'.Smart::safe_filename($cachePathPrefix).substr((string)self::SQLITE_FILE, -7, 7); // NOTICE: $y_realm can contain slashes as they are allowed by validateRealm, so must apply Smart::safe_filename() !!
 		//--
-		return (string) Smart::safe_pathname(SmartFileSysUtils::add_dir_last_slash((string)$arrPathPrefix[0])).Smart::safe_filename((string)$sqlite_fname, '-');
+		return (string) Smart::safe_pathname((string)SmartFileSysUtils::addPathTrailingSlash((string)$arrPathPrefix[0])).Smart::safe_filename((string)$sqlite_fname, '-');
 		//--
 	} //END FUNCTION
 
@@ -419,7 +419,7 @@ class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 		} //end if
 		//--
 		$db_file_path = (string) self::getSafeStorageNameDir($y_realm).self::getSafeStorageNameFile($y_realm, $y_key);
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$db_file_path);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$db_file_path);
 		//--
 		$sqlite_cfg = (array) Smart::get_from_config('sqlite');
 		//-- !!! must create each time a new object because reusing a large number of resources / opened files may run out of memory/resources

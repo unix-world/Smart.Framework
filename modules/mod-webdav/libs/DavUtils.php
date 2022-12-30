@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavUtils {
 
 	// ::
-	// v.20220330
+	// v.20221219
 
 
 	//============================================================
@@ -68,7 +68,7 @@ final class DavUtils {
 	//============================================================
 	public static function getFileTypeIcon($path) {
 		//--
-		$file = (string) \SmartFileSysUtils::get_file_name_from_path($path);
+		$file = (string) \SmartFileSysUtils::extractPathFileName((string)$path);
 		//--
 		if(\in_array((string)\strtolower((string)$file), [
 			'.htaccess',
@@ -93,7 +93,7 @@ final class DavUtils {
 			return 'text';
 		} //end if
 		//--
-		$ext = (string) \SmartFileSysUtils::get_file_extension_from_path($path);
+		$ext = (string) \SmartFileSysUtils::extractPathFileExtension((string)$path);
 		$type = '';
 		switch((string)\strtolower((string)$ext)) {
 			case 'text': // text

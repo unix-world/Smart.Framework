@@ -33,8 +33,8 @@ define('SMART_FRAMEWORK__INFO__TEXT_TRANSLATIONS_ADAPTER', 'YAML: File based');
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartFileSystem, SmartFileSysUtils, SmartYamlConverter, SmartTextTranslations ; constants: SMART_FRAMEWORK_RELEASE_VERSION, SMART_FRAMEWORK_RELEASE_TAGVERSION, SMART_APP_MODULES_RELEASE, SMART_FRAMEWORK__INFO__TEXT_TRANSLATIONS_ADAPTER
- * @version 	v.20220924
- * @package 	Application
+ * @version 	v.20221220
+ * @package 	Application:Translations:Adapters:Yaml
  *
  */
 final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTranslations {
@@ -66,19 +66,19 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 	public static function getTranslationsFromSource(?string $the_lang, ?string $y_area, ?string $y_subarea) {
 		//--
 		$the_lang = (string) strtolower((string)Smart::safe_varname((string)$the_lang)); // from camelcase to lower
-		if(((string)$the_lang == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$the_lang))) {
+		if(((string)$the_lang == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$the_lang))) {
 			Smart::log_warning(__METHOD__.'() :: Invalid/Empty parameter for Translation Language: '.$the_lang);
 			return array();
 		} //end if
 		//--
 		$y_area = (string) Smart::safe_filename((string)$y_area);
-		if(((string)$y_area == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$y_area))) {
+		if(((string)$y_area == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$y_area))) {
 			Smart::log_warning(__METHOD__.'() :: Invalid/Empty parameter for Translation Area: '.$y_area);
 			return array();
 		} //end if
 		//--
 		$y_subarea = (string) Smart::safe_filename((string)$y_subarea);
-		if(((string)$y_subarea == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$y_subarea))) {
+		if(((string)$y_subarea == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$y_subarea))) {
 			Smart::log_warning(__METHOD__.'() :: Invalid/Empty parameter for Translation SubArea: '.$y_subarea);
 			return array();
 		} //end if
@@ -103,9 +103,9 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 		} //end if else
 		//--
 		$fdb_file = (string) $fdb_dir.$fdb_template.'.yaml';
-		SmartFileSysUtils::raise_error_if_unsafe_path($fdb_file);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$fdb_file);
 		//--
-		if(!SmartFileSystem::is_type_dir($fdb_dir)) {
+		if(!SmartFileSystem::is_type_dir((string)$fdb_dir)) {
 			//--
 			// INFO: To be able to fallback to the default language, don't make this error FATAL ERROR except if this is the default language selected
 			//--
@@ -166,7 +166,7 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 	// This will register the usage of every translation as pair of language, area and sub-area, key ; if not dev mode will not register
 	public static function setTranslationsKeyUsageCount(?string $the_lang, ?string $y_area, ?string $y_subarea, ?string $y_textkey) {
 		//--
-		if(SmartFrameworkRegistry::ifProdEnv() === true) {
+		if(SmartEnvironment::ifDevMode() !== true) {
 			return; // this can be used only in DEV mode
 		} //end if
 		//--
@@ -180,7 +180,7 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 		if(((string)trim((string)SMART_ERROR_LOGDIR) == '') OR ((string)SMART_ERROR_LOGDIR == '/')) { // must not be empty or root path
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)SMART_ERROR_LOGDIR, 'no')) { // allow absolute paths here as the SMART_ERROR_LOGDIR is absolute
+		if(!SmartFileSysUtils::checkIfSafePath((string)SMART_ERROR_LOGDIR, false)) { // allow absolute paths here as the SMART_ERROR_LOGDIR is absolute
 			return;
 		} //end if
 		if((string)substr((string)SMART_ERROR_LOGDIR, -1, 1) != '/') { // must end in slash
@@ -188,8 +188,8 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 		} //end if
 		//--
 		$the_translations_area = '';
-		if(SmartFrameworkRegistry::isAdminArea() === true) {
-			if(SmartFrameworkRegistry::isTaskArea() === true) {
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
 				$the_translations_area = 'tsk/';
 			} else {
 				$the_translations_area = 'adm/';
@@ -199,7 +199,7 @@ final class SmartAdapterTextTranslations implements SmartInterfaceAdapterTextTra
 		} //end if else
 		//--
 		$logpath = (string) SMART_ERROR_LOGDIR.$the_translations_area.Smart::safe_filename('yaml-translations-usage-'.date('Y-m-d@H').'.tab.tsv');
-		if(!SmartFileSysUtils::check_if_safe_path((string)$logpath, 'no')) { // allow absolute paths here as the SMART_ERROR_LOGDIR is absolute
+		if(!SmartFileSysUtils::checkIfSafePath((string)$logpath, false)) { // allow absolute paths here as the SMART_ERROR_LOGDIR is absolute
 			return;
 		} //end if
 		//--

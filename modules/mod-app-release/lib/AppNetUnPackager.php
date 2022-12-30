@@ -46,9 +46,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetUnPackager {
 
 	// ::
-	// v.20220928
+	// v.20221222
 
-	public const APP_NET_UNPACKAGER_VERSION = 'z.20220928';// {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
+	public const APP_NET_UNPACKAGER_VERSION = 'z.20221222';// {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
 
 	public const APP_NET_UNPACKAGER_MIN_PACK_SIZE = 777; // min 777 bytes by the headers
 
@@ -94,7 +94,7 @@ Options -Indexes
 			((string)trim((string)$appid) == '') OR
 			((int)strlen((string)$appid) < 5) OR // {{{SYNC-APPCODEPACK-ID-SIZE}}}
 			((int)strlen((string)$appid) > 25) OR
-			(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$appid))
+			(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$appid))
 		) {
 			return 'INVALID APP ID: '.$appid.' # must be between 5 and 25 characters';
 		} //end if
@@ -140,7 +140,7 @@ Options -Indexes
 			return 'INVALID APP ID: '.$appid.' # special name';
 		} //end if
 		//--
-		$fext = (string) SmartFileSysUtils::get_file_extension_from_path((string)$appid);
+		$fext = (string) SmartFileSysUtils::extractPathFileExtension((string)$appid);
 		if(self::unpack_test_dissalowed_ext((string)$fext) === true) {
 			return 'INVALID APP ID: '.$appid.' # reserved name extension: '.$fext;
 		} //end if
@@ -185,7 +185,7 @@ Options -Indexes
 	public static function unpack_create_basefolder() {
 		//--
 		$unpack_basefolder = (string) self::APP_NET_UNPACKAGER_FOLDER;
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$unpack_basefolder);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$unpack_basefolder);
 		//--
 		clearstatcache(true, (string)$unpack_basefolder);
 		//--
@@ -239,11 +239,11 @@ Options -Indexes
 		$tmp_ppfx = (string) self::APP_NET_UNPACKAGER_FOLDER.'#TMP-UNPACK-@'.Smart::safe_filename((string)APPCODEPACK_APP_ID);
 		//--
 		$the_tmp_netarch_lock = (string) rtrim((string)$tmp_ppfx, '/').'.LOCK'; // the lock file ; {{{SYNC-NETARCH-DENIED-PATHS}}}
-		if(SmartFileSysUtils::check_if_safe_path((string)$the_tmp_netarch_lock) != 1) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$the_tmp_netarch_lock) != 1) {
 			return 'ERROR: Invalid TMP Package Lock File Path: '.$the_tmp_netarch_lock;
 		} //end if
-		$the_tmp_netarch_folder = (string) SmartFileSysUtils::add_dir_last_slash($tmp_ppfx); // must end with trailing slash ; {{{SYNC-NETARCH-DENIED-PATHS}}}
-		if(SmartFileSysUtils::check_if_safe_path((string)$the_tmp_netarch_folder) != 1) {
+		$the_tmp_netarch_folder = (string) SmartFileSysUtils::addPathTrailingSlash((string)$tmp_ppfx); // must end with trailing slash ; {{{SYNC-NETARCH-DENIED-PATHS}}}
+		if(SmartFileSysUtils::checkIfSafePath((string)$the_tmp_netarch_folder) != 1) {
 			return 'ERROR: Invalid TMP Package Unpack Folder Path: '.$the_tmp_netarch_folder;
 		} //end if
 		//--
@@ -540,13 +540,13 @@ Options -Indexes
 			return 'A required constant (APPCODEPACK_APP_ID) has not been defined and must be used as the restore root / validations';
 		} //end if
 		$restoreroot = (string) Smart::safe_filename((string)APPCODEPACK_APP_ID);
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$restoreroot);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$restoreroot);
 		//-- DEFINE @ TMP NETARCH FOLDERS
 		$unpack_versionsfolder = (string) self::APP_NET_UNPACKAGER_FOLDER.self::APP_NET_UNPACKAGER_DEPLOYS_FOLDER; // must have trailing slash
 		$the_tmp_netarch_data_hash = (string) SmartHashCrypto::sha512((string)$y_content);
 		//-- CHECK SAFE NAME @ TMP NETARCH FOLDER
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$the_tmp_netarch_folder);
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$unpack_versionsfolder);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$the_tmp_netarch_folder);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$unpack_versionsfolder);
 		//--
 		if(!$testonly) { // IF NOT TEST: CREATE NEW @ TMP NETARCH FOLDER
 			//--
@@ -574,7 +574,7 @@ Options -Indexes
 			//--
 			$tmp_chk_last_data_hash = '';
 			$tmp_the_package_logfile_path = (string) $unpack_versionsfolder.'package-@'.Smart::safe_filename((string)APPCODEPACK_APP_ID).'.log'; // package-@APP_ID.log registers the checksum of last uploaded package to avoid re-upload many times the same package ; but will alow restore from older or newer non-identical packages
-			SmartFileSysUtils::raise_error_if_unsafe_path((string)$tmp_the_package_logfile_path);
+			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$tmp_the_package_logfile_path);
 			if(SmartFileSystem::is_type_file((string)$tmp_the_package_logfile_path)) {
 				$tmp_chk_last_data_hash = (string) trim((string)SmartFileSystem::read((string)$tmp_the_package_logfile_path));
 			} //end if
@@ -645,19 +645,19 @@ Options -Indexes
 		if((string)$the_pack_name == '') {
 			return 'ERROR: Empty Package File Name !';
 		} //end if
-		if(SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$the_pack_name) != 1) {
+		if(SmartFileSysUtils::checkIfSafeFileOrDirName((string)$the_pack_name) != 1) {
 			return 'ERROR: Invalid Package File Name: '.$the_pack_name;
 		} //end if
 		if((string)$the_pack_appid == '') {
 			return 'ERROR: Empty Package AppID !';
 		} //end if
-		if(SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$the_pack_appid) != 1) {
+		if(SmartFileSysUtils::checkIfSafeFileOrDirName((string)$the_pack_appid) != 1) {
 			return 'ERROR: Invalid Package AppID: '.$the_pack_appid;
 		} //end if
 		if((string)$the_pack_dir == '') {
 			return 'ERROR: Empty Package Dir !';
 		} //end if
-		if(SmartFileSysUtils::check_if_safe_path((string)$the_pack_dir) != 1) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$the_pack_dir) != 1) {
 			return 'ERROR: Invalid Package Path: '.$the_pack_dir;
 		} //end if
 		if((int)$the_pack_items <= 0) {
@@ -745,11 +745,11 @@ Options -Indexes
 							return 'ERROR: DirName Checksum Failed on: '.$tmp_fname;
 						} //end if
 						//--
-						if(!SmartFileSysUtils::check_if_safe_path((string)$tmp_fname)) {
+						if(!SmartFileSysUtils::checkIfSafePath((string)$tmp_fname)) {
 							return 'ERROR: Invalid Folder Name in archive: '.$tmp_fname;
 						} //end if
-						$the_new_dir = (string) SmartFileSysUtils::add_dir_last_slash((string)$the_tmp_netarch_folder).$tmp_fname;
-						if(!SmartFileSysUtils::check_if_safe_path((string)$the_new_dir)) {
+						$the_new_dir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$the_tmp_netarch_folder).$tmp_fname;
+						if(!SmartFileSysUtils::checkIfSafePath((string)$the_new_dir)) {
 							return 'ERROR: Invalid Folder Path to unarchive: '.$the_new_dir;
 						} //end if
 						//--
@@ -794,12 +794,12 @@ Options -Indexes
 						if((string)trim((string)$the_new_dir) == '') {
 							return 'ERROR: Empty Folder Prefix for File Name to unarchive: '.$tmp_fname;
 						} //end if
-						$the_new_dir = (string) SmartFileSysUtils::add_dir_last_slash((string)$the_tmp_netarch_folder).$the_new_dir;
-						if(!SmartFileSysUtils::check_if_safe_path((string)$the_new_dir)) {
+						$the_new_dir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$the_tmp_netarch_folder).$the_new_dir;
+						if(!SmartFileSysUtils::checkIfSafePath((string)$the_new_dir)) {
 							return 'ERROR: Invalid Folder Path of File to unarchive: '.$the_new_dir.' @ '.$tmp_fname;
 						} //end if
-						$the_new_file = (string) SmartFileSysUtils::add_dir_last_slash((string)$the_tmp_netarch_folder).$tmp_fname;
-						if(!SmartFileSysUtils::check_if_safe_path((string)$the_new_file)) {
+						$the_new_file = (string) SmartFileSysUtils::addPathTrailingSlash((string)$the_tmp_netarch_folder).$tmp_fname;
+						if(!SmartFileSysUtils::checkIfSafePath((string)$the_new_file)) {
 							return 'ERROR: Invalid File Path to unarchive: '.$the_new_file;
 						} //end if
 						//--
@@ -853,10 +853,10 @@ Options -Indexes
 		$arr = array();
 		//--
 		if(($folders_pak <= 0) OR ($folders_pak != $folders_num)) {
-			return 'ERROR: Invalid Folders Number: '.SmartFileSysUtils::add_dir_last_slash($folders_pak).$folders_num;
+			return 'ERROR: Invalid Folders Number: '.SmartFileSysUtils::addPathTrailingSlash((string)$folders_pak).$folders_num;
 		} //end if else
 		if(($files_pak <= 0) OR ($files_pak != $files_num)) {
-			return 'ERROR: Invalid Files Number: '.SmartFileSysUtils::add_dir_last_slash($files_pak).$files_num;
+			return 'ERROR: Invalid Files Number: '.SmartFileSysUtils::addPathTrailingSlash((string)$files_pak).$files_num;
 		} //end if else
 		if((int)Smart::array_size($the_pack_files_n_dirs) !== (int)$the_pack_items) {
 			return 'ERROR: Invalid Archive Total Items: [Registered='.(int)$the_pack_items.';Detected='.(int)Smart::array_size($the_pack_files_n_dirs).']';
@@ -865,7 +865,7 @@ Options -Indexes
 		if((string)$basefoldername == '') {
 			return 'ERROR: Failed to detect the Base Folder of Archive';
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$basefoldername)) {
+		if(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$basefoldername)) {
 			return 'ERROR: Invalid Base Folder Name of Archive (check): '.$basefoldername;
 		} //end if
 		if((string)$the_pack_appid !== (string)$basefoldername) {
@@ -874,9 +874,9 @@ Options -Indexes
 		//--
 		if(!$testonly) {
 			//--
-			$basefolderpath = (string) SmartFileSysUtils::add_dir_last_slash((string)$the_tmp_netarch_folder.$basefoldername);
+			$basefolderpath = (string) SmartFileSysUtils::addPathTrailingSlash((string)$the_tmp_netarch_folder.$basefoldername);
 			//--
-			if(!SmartFileSysUtils::check_if_safe_path((string)$basefolderpath)) {
+			if(!SmartFileSysUtils::checkIfSafePath((string)$basefolderpath)) {
 				return 'ERROR: Invalid Base Folder Path of Archive (Invalid Path): '.$basefolderpath;
 			} //end if
 			if(!SmartFileSystem::is_type_dir((string)$basefolderpath)) {
@@ -913,9 +913,9 @@ Options -Indexes
 					return 'ERROR: The NetArchive Restore (Root) Folder does not match the AppID: [Registered='.$the_pack_appid.';Detected='.$restoreroot.']';
 				} //end if
 				//--
-				$restoreroot = SmartFileSysUtils::add_dir_last_slash($restoreroot); // add the trailing slash
+				$restoreroot = SmartFileSysUtils::addPathTrailingSlash((string)$restoreroot); // add the trailing slash
 				//--
-				if(SmartFileSysUtils::check_if_safe_path((string)$restoreroot)) {
+				if(SmartFileSysUtils::checkIfSafePath((string)$restoreroot)) {
 					SmartFileSystem::dir_create((string)$restoreroot, false); // not recursive
 					if(!SmartFileSystem::is_type_dir((string)$restoreroot)) {
 						return 'ERROR: Failed to create the NetArchive Restore (Root) Folder: '.$restoreroot;
@@ -967,11 +967,11 @@ Options -Indexes
 						(self::unpack_valid_file_name((string)$file) === true)
 					) {
 						$found_files_total++;
-						if(SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$file)) {
+						if(SmartFileSysUtils::checkIfSafeFileOrDirName((string)$file)) {
 							$fpath = (string) $basefolderpath.$file;
-							if(SmartFileSysUtils::check_if_safe_path((string)$fpath)) {
+							if(SmartFileSysUtils::checkIfSafePath((string)$fpath)) {
 								if((SmartFileSystem::is_type_dir((string)$fpath)) OR (SmartFileSystem::is_type_file((string)$fpath))) { // dir or file
-									if(!SmartFileSysUtils::check_if_safe_path((string)$restoreroot.$file)) {
+									if(!SmartFileSysUtils::checkIfSafePath((string)$restoreroot.$file)) {
 										return 'ERROR: Invalid NetArchive Restore Path: '.$restoreroot.$file;
 									} //end if
 									if(SmartFileSystem::path_exists((string)$restoreroot.$file)) {
@@ -1063,10 +1063,10 @@ Options -Indexes
 			return -2;
 		} //end if
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path((string)$path)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$path)) {
 			return -3;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)$newpath)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$newpath)) {
 			return -4;
 		} //end if
 		//--

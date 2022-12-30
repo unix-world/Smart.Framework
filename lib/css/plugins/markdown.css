@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.2.2.8-r.20221003 */
+/* Smart.Markdown.parser # v.2.2.8-r.20221228 */
 
 /* ----------------------------- */
 
@@ -223,10 +223,14 @@
 .markdown del {
 	background: #C2203F;
 	color: #FFFFFF;
+	text-decoration: line-through;
+	text-decoration-color: #D3314F;
 }
 .markdown ins {
 	background: #C2D140;
 	color: #333333;
+	text-decoration: overline;
+	text-decoration-color: #B1C030;
 }
 .markdown var {
 	background: #F4F4F4;

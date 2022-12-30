@@ -29,7 +29,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @ignore
  *
- * @version 	v.20220730
+ * @version 	v.20221220
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -42,11 +42,11 @@ final class AuthNameSpaces {
 		//--
 		$areas = [];
 		//--
-		if(\SmartFrameworkRegistry::isAdminArea() === true) {
+		if(\SmartEnvironment::isAdminArea() === true) {
 			//--
 			$available_areas = array();
 			//--
-			if(\SmartFrameworkRegistry::isTaskArea() === true) {
+			if(\SmartEnvironment::isTaskArea() === true) {
 				$available_areas = (array) \Smart::get_from_config('app-auth.tsk-namespaces', 'array');
 			} else {
 				$available_areas = (array) \Smart::get_from_config('app-auth.adm-namespaces', 'array');
@@ -69,7 +69,7 @@ final class AuthNameSpaces {
 			} //end if
 			//--
 			if(\Smart::array_size($areas) <= 0) {
-				if(\SmartFrameworkRegistry::isTaskArea() === true) {
+				if(\SmartEnvironment::isTaskArea() === true) {
 					$areas = [
 						'Tasks' => 'task.php?page=auth-admins.tasks'
 					];

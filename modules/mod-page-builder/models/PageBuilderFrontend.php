@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderFrontend {
 
 	// ::
-	// v.20221118
+	// v.20221220
 
 
 	private static $db = null;
@@ -39,7 +39,7 @@ final class PageBuilderFrontend {
 				//--
 				$sqlitedbfile = '#db/page-builder.sqlite';
 				//--
-				if(!\SmartFileSysUtils::check_if_safe_path((string)$sqlitedbfile, 'yes', 'yes')) { // dissalow absolute ; allow protected
+				if(!\SmartFileSysUtils::checkIfSafePath((string)$sqlitedbfile, true, true)) { // dissalow absolute ; allow protected
 					\Smart::raise_error(
 						__CLASS__.': SQLite DB PATH is UNSAFE !',
 						'PageBuilder ERROR: UNSAFE DB ACCESS (1)'
@@ -196,7 +196,7 @@ final class PageBuilderFrontend {
 			return array();
 		} //end if else
 		//--
-		if(\SmartFrameworkRegistry::ifProdEnv() !== true) {
+		if(\SmartEnvironment::ifDevMode() === true) {
 			if((string)self::dbType() == 'pgsql') {
 				\SmartPgsqlDb::write_data(
 					'UPDATE "web"."page_builder" SET "counter" = "counter" + 1 WHERE (("id" = $1) AND ("active" = 1))',
@@ -256,7 +256,7 @@ final class PageBuilderFrontend {
 			return array();
 		} //end if else
 		//--
-		if(\SmartFrameworkRegistry::ifProdEnv() !== true) {
+		if(\SmartEnvironment::ifDevMode() === true) {
 			if((string)self::dbType() == 'pgsql') {
 				\SmartPgsqlDb::write_data(
 					'UPDATE "web"."page_builder" SET "counter" = "counter" + 1 WHERE ("id" = $1)',

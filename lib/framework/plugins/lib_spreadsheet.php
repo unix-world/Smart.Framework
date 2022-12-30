@@ -167,7 +167,7 @@ final class SmartSpreadSheetExport {
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart
+ * @depends 	classes: Smart, SmartXmlParser
  * @version 	v.20210526
  * @package 	Plugins:ExportAndImport
  *

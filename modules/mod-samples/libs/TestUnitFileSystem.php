@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20221220
  *
  */
 final class TestUnitFileSystem {
@@ -65,9 +65,9 @@ final class TestUnitFileSystem {
 
 		//--
 		$test_string = '#START#'."\n".'グッド'."\n".'SmartFramework/Test/FileSystem'."\n".\time()."\n".\SMART_FRAMEWORK_HTACCESS_NOINDEXING.\SMART_FRAMEWORK_HTACCESS_FORBIDDEN.\SMART_FRAMEWORK_HTACCESS_NOEXECUTION."\n".'#END#';
-		$test_str_cksum = \SmartHashCrypto::sha512($test_string);
-		$long_prefixed = \SmartFileSysUtils::prefixed_sha1_path(\sha1(\time()));
-		$short_prefixed = \SmartFileSysUtils::prefixed_uuid10_dir(\Smart::uuid_10_seq());
+		$test_str_cksum = \SmartHashCrypto::sha512((string)$test_string);
+		$long_prefixed  = \SmartFileSysUtils::prefixedUuid40B16Path((string)\sha1((string)\time()));
+		$short_prefixed = \SmartFileSysUtils::prefixedUuid10B36Path((string)\Smart::uuid_10_seq());
 		//--
 		$the_base_folder = 'tmp/tests/';
 		$the_sufx_folder = 'Folder1';
@@ -79,10 +79,10 @@ final class TestUnitFileSystem {
 		$the_extra_folder = $the_folder.'extra/';
 		$the_file = $the_folder.$the_base_file;
 		//--
-		$get_folder = \SmartFileSysUtils::add_dir_last_slash(\SmartFileSysUtils::get_dir_from_path($the_folder));
-		$get_file = \SmartFileSysUtils::get_file_name_from_path($the_file);
-		$get_xfile = \SmartFileSysUtils::get_noext_file_name_from_path($the_file);
-		$get_ext = \SmartFileSysUtils::get_file_extension_from_path($the_file);
+		$get_folder 	= (string) \SmartFileSysUtils::addPathTrailingSlash((string)\SmartFileSysUtils::extractPathDir((string)$the_folder));
+		$get_file 		= (string) \SmartFileSysUtils::extractPathFileName((string)$the_file);
+		$get_xfile 		= (string) \SmartFileSysUtils::extractPathFileNoExtName((string)$the_file);
+		$get_ext 		= (string) \SmartFileSysUtils::extractPathFileExtension((string)$the_file);
 		//--
 		$the_sufx_copy = '.copy.txt';
 		$the_copy_file = $the_file.$the_sufx_copy;
@@ -103,7 +103,7 @@ final class TestUnitFileSystem {
 
 		//--
 		if((string)$err == '') {
-			$max_upload_size = (int) \SmartFileSysUtils::max_upload_size();
+			$max_upload_size = (int) \SmartFileSysUtils::maxUploadFileSize();
 			$the_test = 'CHECK MAX UPLOAD SIZE from php.ini: '.$max_upload_size.' Bytes (parsed) / `'.trim((string)ini_get('upload_max_filesize')).'` (original)';
 			$tests[] = $the_test;
 			if(
@@ -120,8 +120,8 @@ final class TestUnitFileSystem {
 			if(
 				((string)\Smart::safe_pathname((string)$get_folder) !== (string)$get_folder) OR
 				((string)\Smart::safe_pathname((string)$the_copy_file) !== (string)$the_copy_file) OR
-				((string)\Smart::safe_pathname((string)\SmartFileSysUtils::get_dir_from_path($the_copy_file)) !== (string)\rtrim($the_folder,'/')) OR
-				((string)\Smart::safe_filename((string)\SmartFileSysUtils::get_file_name_from_path($the_copy_file)) !== (string)$the_base_file.$the_sufx_copy) OR
+				((string)\Smart::safe_pathname((string)\SmartFileSysUtils::extractPathDir((string)$the_copy_file)) !== (string)\rtrim($the_folder,'/')) OR
+				((string)\Smart::safe_filename((string)\SmartFileSysUtils::extractPathFileName((string)$the_copy_file)) !== (string)$the_base_file.$the_sufx_copy) OR
 				((string)\Smart::safe_pathname('.') !== '') OR
 				((string)\Smart::safe_filename('.') !== '') OR
 				((string)\Smart::safe_validname('.') !== '') OR
@@ -162,24 +162,24 @@ final class TestUnitFileSystem {
 			$the_test = 'CHECK TEST VARIOUS ABSOLUTE AND BACKWARD PATHS ...';
 			$tests[] = $the_test;
 			if(
-				(!\SmartFileSysUtils::check_if_safe_path('/this/is/absolute', 'no')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/absolute')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/../backward/path')) OR
-				(\SmartFileSysUtils::check_if_safe_path('../backward/path'))
+				(!\SmartFileSysUtils::checkIfSafePath('/this/is/absolute', false)) OR
+				(\SmartFileSysUtils::checkIfSafePath('/this/is/absolute')) OR
+				(\SmartFileSysUtils::checkIfSafePath('/this/is/../backward/path')) OR
+				(\SmartFileSysUtils::checkIfSafePath('../backward/path'))
 			) {
 				$err = 'ERROR: CHECK TEST ABSOLUTE / BACKWARD PATHS ... FAILED !!!';
 			} //end if
 		} //end if
 		//--
-		if(\SmartFrameworkRegistry::isTaskArea() !== true) { // skip if task area, tasks have access to protected paths !
+		if(\SmartEnvironment::isTaskArea() !== true) { // skip if task area, tasks have access to protected paths !
 			if((string)$err == '') {
 				$the_test = 'CHECK TEST VARIOUS PROTECTED PATHS ...';
 				$tests[] = $the_test;
 				if(
-					(\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'yes', 'no')) OR
-					(!\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'yes', 'yes')) OR
-					(\SmartFileSysUtils::check_if_safe_path('#this/is/protected', 'no')) OR
-					(\SmartFileSysUtils::check_if_safe_path('#this/is/protected'))
+					(\SmartFileSysUtils::checkIfSafePath('#this/is/protected', true, false)) OR
+					(!\SmartFileSysUtils::checkIfSafePath('#this/is/protected', true, true)) OR
+					(\SmartFileSysUtils::checkIfSafePath('#this/is/protected', false)) OR
+					(\SmartFileSysUtils::checkIfSafePath('#this/is/protected'))
 				) {
 					$err = 'ERROR: CHECK TEST PROTECTED PATHS ... FAILED !!!';
 				} //end if
@@ -190,13 +190,13 @@ final class TestUnitFileSystem {
 			$the_test = 'CHECK TEST ABSOLUTE INVALID PATHS ...';
 			$tests[] = $the_test;
 			if(
-				(\SmartFileSysUtils::check_if_safe_path('some/path:/this/is/absolute', 'no')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/absolute:some/path', 'no')) OR
-				(\SmartFileSysUtils::check_if_safe_path('c:/this/is/absolute', 'no')) OR
-				(\SmartFileSysUtils::check_if_safe_path(':/this/is/absolute', 'no')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso|lute', 'no')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso lute', 'no')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso:lute', 'no'))
+				(\SmartFileSysUtils::checkIfSafePath('some/path:/this/is/absolute', false)) OR
+				(\SmartFileSysUtils::checkIfSafePath('/this/is/absolute:some/path', false)) OR
+				(\SmartFileSysUtils::checkIfSafePath('c:/this/is/absolute', false)) OR
+				(\SmartFileSysUtils::checkIfSafePath(':/this/is/absolute', false)) OR
+				(\SmartFileSysUtils::checkIfSafePath('/this/is/abso|lute', false)) OR
+				(\SmartFileSysUtils::checkIfSafePath('/this/is/abso lute', false)) OR
+				(\SmartFileSysUtils::checkIfSafePath('/this/is/abso:lute', false))
 			) {
 				$err = 'ERROR: CHECK TEST ABSOLUTE : INVALID / PROTECTED PATHS ... FAILED !!!';
 			} //end if
@@ -206,35 +206,35 @@ final class TestUnitFileSystem {
 			$the_test = 'CHECK TEST INVALID / DANGEROUS PATHS ...';
 			$tests[] = $the_test;
 			if(
-				(\SmartFileSysUtils::check_if_safe_path('some/path:/this/is/absolute')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/absolute:some/path')) OR
-				(\SmartFileSysUtils::check_if_safe_path('c:/this/is/absolute')) OR
-				(\SmartFileSysUtils::check_if_safe_path(':/this/is/absolute')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso|lute')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso lute')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/this/is/abso:lute')) OR
-				(\SmartFileSysUtils::check_if_safe_file_or_dir_name('')) OR
-				(\SmartFileSysUtils::check_if_safe_path('')) OR
-				(\SmartFileSysUtils::check_if_safe_file_or_dir_name(' ')) OR
-				(\SmartFileSysUtils::check_if_safe_path(' ')) OR
-				(\SmartFileSysUtils::check_if_safe_file_or_dir_name('some fname with spaces')) OR
-				(\SmartFileSysUtils::check_if_safe_path('some/path with spaces')) OR
-				(\SmartFileSysUtils::check_if_safe_file_or_dir_name('.')) OR
-				(\SmartFileSysUtils::check_if_safe_path('.')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/.')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/. ')) OR
-				(\SmartFileSysUtils::check_if_safe_path(' /.')) OR
-				(\SmartFileSysUtils::check_if_safe_path('relative/.')) OR
-				(\SmartFileSysUtils::check_if_safe_path('relative/. ')) OR
-				(\SmartFileSysUtils::check_if_safe_file_or_dir_name('..')) OR
-				(\SmartFileSysUtils::check_if_safe_path('..')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/..')) OR
-				(\SmartFileSysUtils::check_if_safe_path('/.. ')) OR
-				(\SmartFileSysUtils::check_if_safe_path(' /..')) OR
-				(\SmartFileSysUtils::check_if_safe_path('relative/..')) OR
-				(\SmartFileSysUtils::check_if_safe_path('relative/.. ')) OR
-				(\SmartFileSysUtils::check_if_safe_path('.../test')) OR
-				(\SmartFileSysUtils::check_if_safe_path('a\\path\\with\\backslashes'))
+				(\SmartFileSysUtils::checkIfSafePath('some/path:/this/is/absolute')) OR
+				(\SmartFileSysUtils::checkIfSafePath('/this/is/absolute:some/path')) OR
+				(\SmartFileSysUtils::checkIfSafePath('c:/this/is/absolute')) OR
+				(\SmartFileSysUtils::checkIfSafePath(':/this/is/absolute')) OR
+				(\SmartFileSysUtils::checkIfSafePath('/this/is/abso|lute')) OR
+				(\SmartFileSysUtils::checkIfSafePath('/this/is/abso lute')) OR
+				(\SmartFileSysUtils::checkIfSafePath('/this/is/abso:lute')) OR
+				(\SmartFileSysUtils::checkIfSafeFileOrDirName('')) OR
+				(\SmartFileSysUtils::checkIfSafePath('')) OR
+				(\SmartFileSysUtils::checkIfSafeFileOrDirName(' ')) OR
+				(\SmartFileSysUtils::checkIfSafePath(' ')) OR
+				(\SmartFileSysUtils::checkIfSafeFileOrDirName('some fname with spaces')) OR
+				(\SmartFileSysUtils::checkIfSafePath('some/path with spaces')) OR
+				(\SmartFileSysUtils::checkIfSafeFileOrDirName('.')) OR
+				(\SmartFileSysUtils::checkIfSafePath('.')) OR
+				(\SmartFileSysUtils::checkIfSafePath('/.')) OR
+				(\SmartFileSysUtils::checkIfSafePath('/. ')) OR
+				(\SmartFileSysUtils::checkIfSafePath(' /.')) OR
+				(\SmartFileSysUtils::checkIfSafePath('relative/.')) OR
+				(\SmartFileSysUtils::checkIfSafePath('relative/. ')) OR
+				(\SmartFileSysUtils::checkIfSafeFileOrDirName('..')) OR
+				(\SmartFileSysUtils::checkIfSafePath('..')) OR
+				(\SmartFileSysUtils::checkIfSafePath('/..')) OR
+				(\SmartFileSysUtils::checkIfSafePath('/.. ')) OR
+				(\SmartFileSysUtils::checkIfSafePath(' /..')) OR
+				(\SmartFileSysUtils::checkIfSafePath('relative/..')) OR
+				(\SmartFileSysUtils::checkIfSafePath('relative/.. ')) OR
+				(\SmartFileSysUtils::checkIfSafePath('.../test')) OR
+				(\SmartFileSysUtils::checkIfSafePath('a\\path\\with\\backslashes'))
 			) {
 				$err = 'ERROR: CHECK TEST INVALID / PROTECTED PATHS ... FAILED !!!';
 			} //end if
@@ -243,15 +243,15 @@ final class TestUnitFileSystem {
 		if((string)$err == '') {
 			$the_test = 'CHECK EXTRACT FOLDER FROM PATH ...';
 			$tests[] = $the_test;
-			if((string)$get_folder != (string)\SmartFileSysUtils::add_dir_last_slash(\Smart::dir_name($the_folder))) {
-				$err = 'ERROR: Path Extraction FAILED: Dir='.$get_folder.' ; DirName='.\SmartFileSysUtils::add_dir_last_slash(\Smart::dir_name($the_folder));
+			if((string)$get_folder != (string)\SmartFileSysUtils::addPathTrailingSlash((string)\Smart::dir_name((string)$the_folder))) {
+				$err = 'ERROR: Path Extraction FAILED: Dir='.$get_folder.' ; DirName='.\SmartFileSysUtils::addPathTrailingSlash((string)\Smart::dir_name((string)$the_folder));
 			} //end if
 		} //end if
 		if((string)$err == '') {
 			$the_test = 'CHECK EXTRACT FILE AND EXTENSION FROM PATH (1) ...';
 			$tests[] = $the_test;
-			if((string)$get_folder.\SmartFileSysUtils::add_dir_last_slash($the_sufx_folder).$get_file != $the_file) {
-				$err = 'ERROR :: Path Extraction FAILED: Re-Composed-File='.$get_folder.\SmartFileSysUtils::add_dir_last_slash($the_sufx_folder).$get_file.' ; File='.$the_file;
+			if((string)$get_folder.\SmartFileSysUtils::addPathTrailingSlash((string)$the_sufx_folder).$get_file != (string)$the_file) {
+				$err = 'ERROR :: Path Extraction FAILED: Re-Composed-File='.$get_folder.\SmartFileSysUtils::addPathTrailingSlash((string)$the_sufx_folder).$get_file.' ; File='.$the_file;
 			} //end if
 		} //end if
 		if((string)$err == '') {
@@ -262,20 +262,20 @@ final class TestUnitFileSystem {
 			} //end if
 		} //end if
 		//--
-		\SmartFileSysUtils::raise_error_if_unsafe_path($the_folder);
+		\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$the_folder);
 		if((string)$err == '') {
-			$the_test = 'CHECK PATH NAME DIR: check_if_safe_path() : '.$the_folder;
+			$the_test = 'CHECK PATH NAME DIR: checkIfSafePath() : '.$the_folder;
 			$tests[] = $the_test;
-			$result = \SmartFileSysUtils::check_if_safe_path($the_folder);
+			$result = \SmartFileSysUtils::checkIfSafePath((string)$the_folder);
 			if($result !== 1) {
 				$err = 'ERROR :: '.$the_test.' #RESULT='.$result;
 			} //end if
 		} //end if
-		\SmartFileSysUtils::raise_error_if_unsafe_path($the_file);
+		\SmartFileSysUtils::raiseErrorIfUnsafePath((string)$the_file);
 		if((string)$err == '') {
-			$the_test = 'CHECK PATH NAME FILE: check_if_safe_path() : '.$the_file;
+			$the_test = 'CHECK PATH NAME FILE: checkIfSafePath() : '.$the_file;
 			$tests[] = $the_test;
-			$result = \SmartFileSysUtils::check_if_safe_path($the_file);
+			$result = \SmartFileSysUtils::checkIfSafePath((string)$the_file);
 			if($result !== 1) {
 				$err = 'ERROR :: '.$the_test.' #RESULT='.$result;
 			} //end if
@@ -284,7 +284,7 @@ final class TestUnitFileSystem {
 
 		//--
 		if((string)$err == '') {
-			$parent_folder = \SmartFileSysUtils::add_dir_last_slash('');
+			$parent_folder = \SmartFileSysUtils::addPathTrailingSlash('');
 			$the_test = 'Check Add Dir Last (trailing) Slash: Empty Folder Name';
 			$tests[] = $the_test;
 			if((string)$parent_folder != './') {
@@ -292,7 +292,7 @@ final class TestUnitFileSystem {
 			} //end if
 		} //end if
 		if((string)$err == '') {
-			$parent_folder = \SmartFileSysUtils::add_dir_last_slash('.');
+			$parent_folder = \SmartFileSysUtils::addPathTrailingSlash('.');
 			$the_test = 'Check Add Dir Last (trailing) Slash: Dot Folder Name: '.$parent_folder;
 			$tests[] = $the_test;
 			if((string)$parent_folder != './') {
@@ -300,7 +300,7 @@ final class TestUnitFileSystem {
 			} //end if
 		} //end if
 		if((string)$err == '') {
-			$parent_folder = \SmartFileSysUtils::add_dir_last_slash('./');
+			$parent_folder = \SmartFileSysUtils::addPathTrailingSlash('./');
 			$the_test = 'Check Add Dir Last (trailing) Slash: DotSlash Folder Name: '.$parent_folder;
 			$tests[] = $the_test;
 			if((string)$parent_folder != './') {
@@ -308,7 +308,7 @@ final class TestUnitFileSystem {
 			} //end if
 		} //end if
 		if((string)$err == '') {
-			$parent_folder = \SmartFileSysUtils::add_dir_last_slash(\Smart::dir_name($the_base_folder));
+			$parent_folder = \SmartFileSysUtils::addPathTrailingSlash((string)\Smart::dir_name((string)$the_base_folder));
 			$the_test = 'Check Parent Dir Name with Add Dir Last (trailing) Slash: '.$parent_folder.' # from: '.$the_base_folder;
 			$tests[] = $the_test;
 			if((string)$parent_folder != 'tmp/') {

@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20220928
+ * @version 	v.20221219
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -80,7 +80,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_APP_DIR';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
 			$this->err = 'The release app folder have an invalid path ...';
 			return;
 		} //end if
@@ -89,7 +89,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
 			$this->err = 'The optimizations folder have an invalid path ...';
 			return;
 		} //end if
@@ -123,11 +123,11 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		$min_len_id = 5 + 2; // {{{SYNC-APPCODEPACK-ID-SIZE}}} ; min app id len is 5 + 2 slashes
 		if((int)$str_ofs > (int)$min_len_id) {
 			if((string)substr((string)TASK_APP_RELEASE_CODEPACK_APP_DIR, -1 * (int)$str_ofs, (int)$str_ofs) == (string)'/'.$appid.'/') { // must end in it
-				if(SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
+				if(SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
 					$str_ofs = (int) strlen('/'.$appid.'/'.AppCodeUtils::APPCODEPACK_SUFFIX_OPTIMIZATIONS); // mixed
 					if((int)$str_ofs > (int)$min_len_id) {
 						if((string)substr((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR, -1 * (int)$str_ofs, (int)$str_ofs) == (string)'/'.$appid.'/'.AppCodeUtils::APPCODEPACK_SUFFIX_OPTIMIZATIONS) { // must end in it
-							if(SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
+							if(SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
 								$ok = true;
 							} //end if
 						} //end if
@@ -168,7 +168,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 
 		//--
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR);
 		SmartFileSystem::write((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'package-errors.log', (string)($this->err ? $this->err : '#NULL'));
 		//--
 

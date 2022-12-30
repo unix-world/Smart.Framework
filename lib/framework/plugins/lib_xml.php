@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     extensions: PHP XML ; classes: Smart
- * @version     v.20210615
+ * @version     v.20221220
  * @package     Plugins:ConvertersAndParsers
  *
  */
@@ -146,7 +146,7 @@ final class SmartXmlParser {
 		//--
 
 		//-- log errors if any
-		if((SmartFrameworkRegistry::ifDebug()) OR ($log_parse_err_warns === true)) { // log errors if set
+		if((SmartEnvironment::ifDebug()) OR ($log_parse_err_warns === true)) { // log errors if set
 			$errors = (array) @libxml_get_errors();
 			if(Smart::array_size($errors) > 0) {
 				$notice_log = '';
@@ -158,7 +158,7 @@ final class SmartXmlParser {
 				if((string)$notice_log != '') {
 					Smart::log_notice(__METHOD__.' # NOTICE [XML-Format('.$this->mode.') / Encoding: '.$this->encoding.']:'."\n".$notice_log."\n".'#END'."\n");
 				} //end if
-				if(SmartFrameworkRegistry::ifDebug()) {
+				if(SmartEnvironment::ifDebug()) {
 					Smart::log_notice(__METHOD__.' # DEBUG [XML-Format('.$this->mode.') / Encoding: '.$this->encoding.'] @ XML-String:'."\n".$xml_str."\n".'#END');
 				} //end if
 			} //end if
@@ -248,7 +248,7 @@ final class SmartXmlParser {
 		//--
 
 		//-- log errors if any
-		if((SmartFrameworkRegistry::ifDebug()) OR ($log_parse_err_warns === true)) { // log errors if set
+		if((SmartEnvironment::ifDebug()) OR ($log_parse_err_warns === true)) { // log errors if set
 			$errors = (array) @libxml_get_errors();
 			if(Smart::array_size($errors) > 0) {
 				$notice_log = '';
@@ -260,7 +260,7 @@ final class SmartXmlParser {
 				if((string)$notice_log != '') {
 					Smart::log_notice(__METHOD__.' # NOTICE [XML-Process('.$this->mode.') / Encoding: '.$this->encoding.']:'."\n".$notice_log."\n".'#END'."\n");
 				} //end if
-				if(SmartFrameworkRegistry::ifDebug()) {
+				if(SmartEnvironment::ifDebug()) {
 					Smart::log_notice(__METHOD__.' # DEBUG [XML-Process('.$this->mode.') / Encoding: '.$this->encoding.'] @ XML-String:'."\n".$xml_str."\n".'#END');
 				} //end if
 			} //end if
@@ -621,7 +621,7 @@ final class SmartXmlParser {
  *
  * @access      PUBLIC
  * @depends     classes: Smart
- * @version     v.20210615
+ * @version     v.20221220
  * @package     Plugins:ConvertersAndParsers
  *
  */
@@ -736,7 +736,7 @@ final class SmartXmlComposer {
  * @access 		private
  * @internal
  *
- * @version 	v.20210615
+ * @version 	v.20221220
  *
  */
 final class SmartDomUtils {

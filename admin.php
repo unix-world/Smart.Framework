@@ -7,7 +7,7 @@
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //####################
 
-//== v.20220730
+//== v.20221220
 //--
 ini_set('display_errors', '1'); 											// temporary enable this to display bootstrap errors if any ; will be managed later by Smart Error Handler
 error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 			// on bootstrap show real-time errors (sync with Smart Error Handler)
@@ -64,7 +64,7 @@ $output = '';
 //--
 $run = SmartAppAdminMiddleware::Run(); // Handle the Admin service
 ob_start();
-if(SmartFrameworkRegistry::ifDebug()) {
+if(SmartEnvironment::ifDebug()) {
 	if($run !== false) {
 		SmartAppAdminMiddleware::DebugInfoSet('adm', (bool)$run);
 	} //end if
@@ -77,7 +77,7 @@ if((string)$output != '') {
 $output = '';
 //--
 if((string)setlocale(LC_ALL, 0) != 'C') { // {{{SYNC-LOCALES-CHECK}}}
-	@trigger_error(
+	trigger_error(
 		'#SMART-FRAMEWORK-LOCALES-NOTICE#'."\n".
 		'Invalid PHP Locales (other than C) detected: ['.setlocale(LC_ALL, 0).'].'."\n".
 		'The locale information is maintained per process, not per thread'."\n".

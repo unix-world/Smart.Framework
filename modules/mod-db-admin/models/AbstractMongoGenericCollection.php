@@ -14,7 +14,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
-abstract class AbstractMongoGenericCollection { // v.20221114
+abstract class AbstractMongoGenericCollection { // v.20221217
 
 	// ::
 
@@ -101,7 +101,7 @@ abstract class AbstractMongoGenericCollection { // v.20221114
 			]
 		);
 		$arr = [];
-		if(($mongo->is_command_ok($result)) AND isset($result[0]) AND \is_array($result[0]) AND ((int)\Smart::array_size($result[0]) > 0) AND isset($result[0]['values']) AND is_array($result[0]['values'])) {
+		if(($mongo->is_command_ok($result)) AND isset($result[0]) AND \is_array($result[0]) AND ((int)\Smart::array_size($result[0]) > 0) AND isset($result[0]['values']) AND \is_array($result[0]['values'])) {
 			$arr = (array) $result[0]['values'];
 		} //end if
 		//--
@@ -137,7 +137,7 @@ abstract class AbstractMongoGenericCollection { // v.20221114
 	} //END FUNCTION
 
 
-	final public static function getRecordsList(string $area='', int $limit=0, int $offset=0, string $sortby='', string $sortdir='', array $extra_sort=[], array $extra_filter=[]) : array {
+	final public static function getRecordsList(string $area='', int $limit=0, int $offset=0, string $sortby='', string $sortdir='', array $extra_sort=[], array $extra_filter=[], array $projection=[]) : array {
 		//--
 		$mongo = static::getInstance();
 		if(!$mongo) {
@@ -198,11 +198,9 @@ abstract class AbstractMongoGenericCollection { // v.20221114
 		//--
 		return (array) $mongo->find(
 			(string) static::getCollection(),
-			(array) $filter, // filter
-			[
-				// projection: all
-			],
-			(array) $options // options
+			(array) $filter, 		// filter
+			(array) $projection, 	// projection (if empty array, will get all fields)
+			(array) $options 		// options
 		);
 		//--
 	} //END FUNCTION
@@ -210,8 +208,7 @@ abstract class AbstractMongoGenericCollection { // v.20221114
 
 	// with the default indexes the combination of area/id is unique and single area or single id are not ...
 	// for the default scenario to get a unique field both: area and id must be provided and non-empty
-	// {{{SYNC-GenericCollection-FILTER-ONE-RECORD}}}
-	final public static function getRecord(?string $area, ?string $id, array $extra_filter=[]) : array {
+	final public static function getRecord(?string $area, ?string $id, array $extra_filter=[], array $projection=[]) : array {
 		//--
 		$mongo = static::getInstance();
 		if(!$mongo) {
@@ -229,7 +226,7 @@ abstract class AbstractMongoGenericCollection { // v.20221114
 		if((string)$id != '') { // at insert empty id is not possible thus searching for an empty id also is not possible
 			$filter['id'] = (string) $id; // by default id is not unique ... but can be when redefine indexes
 		} //end if
-		if((int)\Smart::array_size($extra_filter) > 0) { // {{{SYNC-DB-ADMIN-MONGO-APPLY-EXTRA-FILTER}}}
+		if((int)\Smart::array_size($extra_filter) > 0) { // {{{SYNC-DB-ADMIN-MONGO-APPLY-EXTRA-FILTER-WITH-ID}}}
 			foreach($extra_filter as $key => $val) {
 				$key = (string) \trim((string)$key);
 				$val = \Smart::json_decode(\Smart::json_encode($val)); // force discard objects, resources and keep just nScalar and Array
@@ -248,17 +245,17 @@ abstract class AbstractMongoGenericCollection { // v.20221114
 		return (array) $mongo->findone(
 			(string) static::getCollection(),
 			(array) $filter, // filter
-			(array) [], // projection: all fields
+			(array) $projection, // projection (if empty array, will get all fields)
 			[
-				'limit' => (int) 1,  // limit
-				'skip' 	=> (int) 0 // offset
+				'limit' => (int) 1, // limit
+				'skip' 	=> (int) 0 	// offset
 			]
 		);
 		//--
 	} //END FUNCTION
 
 
-	final public static function insertRecord(string $area, string $id, array $doc, bool $overwrite=false) : array {
+	final public static function insertRecord(string $area, string $id, array $doc, bool $overwrite=false, bool $logexceptions=true) : array {
 		//--
 		// $doc must NOT contain the following keys: _id, id, area, date
 		//--
@@ -314,7 +311,8 @@ abstract class AbstractMongoGenericCollection { // v.20221114
 		} //end if
 		//--
 		$arr = [];
-		try {
+		$modeFatalErr = (bool) $mongo->getFatalErrMode(); // store the current Fatal Mode for MongoDB Class
+		try { // this should work also in fatal mode as a catcheable exception ...
 			$filter = [ // filter by Unique
 				'area'		=> (string) $area,
 				'id' 		=> (string) $id,
@@ -334,9 +332,112 @@ abstract class AbstractMongoGenericCollection { // v.20221114
 			} //end if else
 		} catch(\Exception $err) {
 			// only log notice, not warning ... as in production this may occur on high concurrency over big data, there is no DB lock, just record lock !!
-			\Smart::log_warning(__METHOD__.'() # MongoDB Insert Record :: Upsert Exception: '.$err->getMessage());
-			$arr = array();
+			if($logexceptions === true) { // do not log warning/notice if logging is disabled for compatibility with external frameworks (ex: Ll.)
+				$logMsg = (string) __METHOD__.'() # MongoDB '.(($overwrite === true) ? 'Upsert' : 'Insert').' Record :: Exception: '.$err->getMessage();
+				if($modeFatalErr === false) {
+					\Smart::log_notice((string)$logMsg); // log as notice in non-fatal mode
+				} else {
+					\Smart::log_warning((string)$logMsg); // log as warning in fatal mode
+				} //end if
+			} //end if
+			$arr = [ // the [0] is ussual 'oknosqlwriteoperation' or an error message
+				0 => (string) 'Exception: MongoDB '.(($overwrite === true) ? 'Upsert' : 'Insert').': '.$err->getMessage(),
+			];
 		} //end try catch
+		$mongo->setFatalErrMode((bool)$modeFatalErr); // restore the previous Fatal Mode for MongoDB Class
+		//--
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+
+
+	// allow update just one
+	final public static function updateRecord(string $area, string $id, array $doc, array $extra_filter=[], bool $logexceptions=true) : array {
+		//--
+		if(!static::getInstance()) { // do not use connection, just test !
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return '';
+		} //end if
+		//--
+		$area = (string) \trim((string)$area);
+		$id = (string) \trim((string)$id);
+		if(((string)$area == '') OR ((string)$id == '')) {
+			return [
+				0 => 'ERR: The Area/ID as unique key is mandatory and cannot be empty', // ensure the non-empty area/id combination, to enforce to match zero or one (not many) field(s)
+			];
+		} //end if
+		//--
+		$extra_filter['id'] = (string) $id;
+		//--
+		return (array) static::updateRecords((string)$area, (array)$doc, (array)$extra_filter, (bool)$logexceptions);
+		//--
+	} //END FUNCTION
+
+
+	// allow update many
+	final public static function updateRecords(?string $area, array $doc, array $extra_filter=[], bool $logexceptions=true) : array {
+		//--
+		$mongo = static::getInstance();
+		if(!$mongo) {
+			\Smart::log_warning(__METHOD__.'() MongoDB Instance is not available ...');
+			return '';
+		} //end if
+		//--
+		if(!\is_array($doc)) {
+			$doc = [];
+		} //end if
+		unset($doc['_id']); 	// dissalow update, protected field
+		unset($doc['id']); 		// dissalow update, protected field
+		unset($doc['area']); 	// dissalow update, protected field
+		unset($doc['dt']); 		// dissalow update, protected field
+		if((int)\Smart::array_size($doc) <= 0) {
+			return [
+				0 => 'ERR: No Fields Provided for Update'
+			];
+		} //end if
+		$doc['dt'] = (string) \date('Y-m-d H:i:s'); // always enforce this format for this field, and update it on each update operation
+		//--
+		$area = (string) \trim((string)$area);
+		//--
+		$filter = [];
+		if((string)$area != '') { // at insert empty area is not possible thus searching for an empty area also is not possible
+			$filter['area'] = (string) $area; // by default area is not unique ... but can be when redefine indexes
+		} //end if
+		if((int)\Smart::array_size($extra_filter) > 0) { // {{{SYNC-DB-ADMIN-MONGO-APPLY-EXTRA-FILTER}}}
+			foreach($extra_filter as $key => $val) {
+				$key = (string) \trim((string)$key);
+				$val = \Smart::json_decode(\Smart::json_encode($val)); // force discard objects, resources and keep just nScalar and Array
+				if((string)$key != '') {
+					if((string)$key != 'area') {
+						$filter[(string)$key] = $val;
+					} //end if
+				} //end if
+			} //end foreach
+		} //end if
+		//--
+		$arr = [];
+		$modeFatalErr = (bool) $mongo->getFatalErrMode(); // store the current Fatal Mode for MongoDB Class
+		try {
+			$arr = (array) $mongo->update(
+				(string) static::getCollection(),
+				(array) $filter, 	// filter
+				'$set', 			// operation
+				(array) $doc 		// update array
+			);
+		} catch(\Exception $err) {
+			if($logexceptions === true) { // do not log warning/notice if logging is disabled for compatibility with external frameworks (ex: Ll.)
+				$logMsg = (string) __METHOD__.'() # MongoDB Update Record :: Exception: '.$err->getMessage();
+				if($modeFatalErr === false) {
+					\Smart::log_notice((string)$logMsg); // log as notice in non-fatal mode
+				} else {
+					\Smart::log_warning((string)$logMsg); // log as warning in fatal mode
+				} //end if
+			} //end if
+			$arr = [ // the [0] is ussual 'oknosqlwriteoperation' or an error message
+				0 => (string) 'Exception: MongoDB Update: '.$err->getMessage(),
+			];
+		} //end try catch
+		$mongo->setFatalErrMode((bool)$modeFatalErr); // restore the previous Fatal Mode for MongoDB Class
 		//--
 		return (array) $arr;
 		//--
@@ -353,10 +454,15 @@ abstract class AbstractMongoGenericCollection { // v.20221114
 		//--
 		$area = (string) \trim((string)$area);
 		$id  = (string) \trim((string)$id);
+		if(((string)$area == '') OR ((string)$id == '')) {
+			return [
+				0 => 'ERR: The Area/ID as unique key is mandatory and cannot be empty', // ensure the non-empty area/id combination, to enforce to match zero or one (not many) field(s)
+			];
+		} //end if
 		//--
 		return (array) $mongo->delete(
 			(string) static::getCollection(),
-			[ // {{{SYNC-GenericCollection-FILTER-ONE-RECORD}}}
+			[
 				'area' 	=> (string) $area,
 				'id' 	=> (string) $id
 			] // filter

@@ -22,8 +22,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // DEPENDS:
 //	* Smart::
 //	* SmartUnicode::
-//	* SmartUtils::
-//	* SmartComponents::
+//	* SmartComponents:: (optional)
 // DEPENDS-EXT: PHP MySQLi Extension
 //======================================================
 // NOTICE: For MySQLi driver all queries are using MYSQLI_STORE_RESULT (buffered queries) which is the best for data safety
@@ -72,8 +71,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20220119
+ * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
+ * @version 	v.20221223
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -156,7 +155,7 @@ final class SmartMysqliDb {
 		//--
 
 		//-- debug settings
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
 			$y_debug_sql_slowtime = (float) $y_debug_sql_slowtime;
 			if($y_debug_sql_slowtime <= 0) {
@@ -175,13 +174,13 @@ final class SmartMysqliDb {
 		//--
 
 		//-- debug inits
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|slow-time', number_format(self::$slow_time, 7, '.', ''), '=');
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('db', 'mysqli|slow-time', number_format(self::$slow_time, 7, '.', ''), '=');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'metainfo',
 				'data' => 'Database Server: MySQLi ('.$y_type.') / App Connector Version: '.SMART_FRAMEWORK_VERSION.' / Connection Charset: '.SMART_FRAMEWORK_SQL_CHARSET
 			]);
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+			SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'metainfo',
 				'data' => 'Connection Timeout: '.$timeout.' seconds / Fast Query Reference Time < '.self::$slow_time.' seconds'
 			]);
@@ -226,8 +225,8 @@ final class SmartMysqliDb {
 			return;
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'open-close',
 				'data' => 'Connected to Server: '.$the_conn_key.' ; Error Reporting: MYSQLI_REPORT_OFF',
 				'connection' => (string) self::get_connection_id($connection)
@@ -243,8 +242,8 @@ final class SmartMysqliDb {
 				self::error(self::get_connection_id($connection), 'Encoding-Charset', 'Failed to set Encoding on Server', 'Error='.@mysqli_error($connection), 'Set=utf8mb4');
 				return;
 			} //end if else
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'set',
 					'data' => 'SET Character Set to: utf8mb4',
 					'connection' => (string) self::get_connection_id($connection),
@@ -257,8 +256,8 @@ final class SmartMysqliDb {
 				self::error(self::get_connection_id($connection), 'Encoding-Collation', 'Failed to set Collation on Server', 'Error='.@mysqli_error($connection), 'Set=utf8mb4_bin');
 				return;
 			} //end if else
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'set',
 					'data' => 'SET Connection Collation to: utf8mb4_bin',
 					'connection' => (string) self::get_connection_id($connection),
@@ -284,8 +283,8 @@ final class SmartMysqliDb {
 					self::error(self::get_connection_id($connection), 'Set-Session-Transaction-Level', 'Failed to Set Session Transaction Level as '.$transact, 'Error='.@mysqli_error($connection), 'DB='.$ydb);
 					return;
 				} //end if else
-				if(SmartFrameworkRegistry::ifDebug()) {
-					SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+				if(SmartEnvironment::ifDebug()) {
+					SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 						'type' => 'set',
 						'data' => 'SET Session Transaction Isolation Level to: '.$transact,
 						'connection' => (string) self::get_connection_id($connection),
@@ -310,7 +309,7 @@ final class SmartMysqliDb {
 		//--
 
 		//-- export only at the end (after all settings)
-		SmartFrameworkRegistry::$Connections['mysqli'][(string)$the_conn_key] = &$connection; // export connection
+		SmartEnvironment::$Connections['mysqli'][(string)$the_conn_key] = &$connection; // export connection
 		//--
 
 		//-- OUTPUT
@@ -434,7 +433,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -474,7 +473,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -488,11 +487,11 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|total-time', $time_end, '+');
 			//--
 			if(is_array($params_or_title)) {
 				$dbg_query_params = (array) $params_or_title;
@@ -500,7 +499,7 @@ final class SmartMysqliDb {
 				$dbg_query_params = '';
 			} //end if else
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+			SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'count',
 				'data' => 'COUNT :: '.$the_query_title,
 				'query' => $queryval,
@@ -558,7 +557,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -598,7 +597,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -613,11 +612,11 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|total-time', $time_end, '+');
 			//--
 			if(is_array($params_or_title)) {
 				$dbg_query_params = (array) $params_or_title;
@@ -625,7 +624,7 @@ final class SmartMysqliDb {
 				$dbg_query_params = '';
 			} //end if else
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+			SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'read',
 				'data' => 'READ [NON-ASSOCIATIVE] :: '.$the_query_title,
 				'query' => $queryval,
@@ -701,7 +700,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -741,7 +740,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -756,11 +755,11 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|total-time', $time_end, '+');
 			//--
 			if(is_array($params_or_title)) {
 				$dbg_query_params = (array) $params_or_title;
@@ -768,7 +767,7 @@ final class SmartMysqliDb {
 				$dbg_query_params = '';
 			} //end if else
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+			SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'read',
 				'data' => 'aREAD [ASSOCIATIVE] :: '.$the_query_title,
 				'query' => $queryval,
@@ -863,7 +862,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -903,7 +902,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
@@ -918,11 +917,11 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|total-time', $time_end, '+');
 			//--
 			if(is_array($params_or_title)) {
 				$dbg_query_params = (array) $params_or_title;
@@ -930,7 +929,7 @@ final class SmartMysqliDb {
 				$dbg_query_params = '';
 			} //end if else
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+			SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'read',
 				'data' => 'asREAD [SINGLE-ROW-ASSOCIATIVE] :: '.$the_query_title,
 				'query' => $queryval,
@@ -1020,7 +1019,7 @@ final class SmartMysqliDb {
 
 		//--
 		$time_start = 0;
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_start = microtime(true);
 		} //end if
 		//--
@@ -1059,17 +1058,17 @@ final class SmartMysqliDb {
 
 		//--
 		$time_end = 0;
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$time_end = (float) (microtime(true) - (float)$time_start);
 		} //end if
 		//--
 
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|total-queries', 1, '+');
 			//--
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|total-time', $time_end, '+');
+			SmartEnvironment::setDebugMsg('db', 'mysqli|total-time', $time_end, '+');
 			//--
 			if(is_array($params_or_title)) {
 				$dbg_query_params = (array) $params_or_title;
@@ -1083,7 +1082,7 @@ final class SmartMysqliDb {
 				(stripos((string)trim((string)$queryval), 'COMMIT') === 0) OR
 				(stripos((string)trim((string)$queryval), 'ROLLBACK') === 0)
 			) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+				SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'transaction',
 					'data' => 'TRANSACTION :: '.$the_query_title,
 					'query' => $queryval,
@@ -1092,7 +1091,7 @@ final class SmartMysqliDb {
 					'connection' => (string) self::get_connection_id($y_connection)
 				]);
 			} elseif(stripos((string)trim((string)$queryval), 'SET ') === 0) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+				SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'set',
 					'data' => 'SET :: '.$the_query_title,
 					'query' => $queryval,
@@ -1109,7 +1108,7 @@ final class SmartMysqliDb {
 				(stripos((string)trim((string)$queryval), 'OPTIMIZE ') === 0) OR
 				(stripos((string)trim((string)$queryval), 'EXPLAIN ') === 0)
 			) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+				SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'special',
 					'data' => 'COMMAND :: '.$the_query_title,
 					'query' => $queryval,
@@ -1119,7 +1118,7 @@ final class SmartMysqliDb {
 					'connection' => (string) self::get_connection_id($y_connection)
 				]);
 			} else {
-				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+				SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'write',
 					'data' => 'WRITE :: '.$the_query_title,
 					'query' => $queryval,
@@ -1549,8 +1548,8 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 				'type' => 'metainfo',
 				'data' => 'Server Version: '.$mysql_num_version,
 				'connection' => (string) self::get_connection_id($y_connection),
@@ -1682,14 +1681,14 @@ final class SmartMysqliDb {
 				} //end if
 				//-- {{{SYNC-CONNECTIONS-IDS}}}
 				$the_conn_key = (string) $cfg['server-host'].':'.$cfg['server-port'].'@'.$cfg['dbname'].'#'.$cfg['username'];
-				if((array_key_exists('mysqli', (array)SmartFrameworkRegistry::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['mysqli']))) { // if the connection was made before using the SmartMysqliExtDb
+				if((array_key_exists('mysqli', (array)SmartEnvironment::$Connections)) AND (array_key_exists((string)$the_conn_key, (array)SmartEnvironment::$Connections['mysqli']))) { // if the connection was made before using the SmartMysqliExtDb
 					//--
-					$y_connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)$the_conn_key];
+					$y_connection = &SmartEnvironment::$Connections['mysqli'][(string)$the_conn_key];
 					//--
 					self::$default_connection = (string) $the_conn_key;
 					//--
-					if(SmartFrameworkRegistry::ifDebug()) {
-						SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+					if(SmartEnvironment::ifDebug()) {
+						SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 							'type' => 'open-close',
 							'data' => 'Re-Using Connection to Server as DEFAULT: '.$the_conn_key,
 							'connection' => (string) self::get_connection_id($y_connection)
@@ -1726,7 +1725,7 @@ final class SmartMysqliDb {
 				//--
 			} else {
 				//-- re-use the default connection
-				$y_connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)self::$default_connection];
+				$y_connection = &SmartEnvironment::$Connections['mysqli'][(string)self::$default_connection];
 				//--
 			} //end if
 			//--
@@ -1806,7 +1805,7 @@ final class SmartMysqliDb {
 		//--
 		$def_warn = 'Execution Halted !';
 		$y_warning = (string) trim((string)$y_warning);
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$width = 750;
 			$the_area = (string) $y_area;
 			if((string)$y_warning == '') {
@@ -1832,18 +1831,21 @@ final class SmartMysqliDb {
 			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
 		} //end if else
 		//--
-		$out = (string) SmartComponents::app_error_message(
-			'MySQLi Client',
-			'MariaDB / MySQL',
-			'SQL/DB',
-			'Server',
-			'lib/core/img/db/mysql-logo.svg',
-			(int)    $width, // width
-			(string) $the_area, // area
-			(string) $the_error_message, // err msg
-			(string) $the_params, // title or params
-			(string) $the_query_info // sql statement
-		);
+		$out = '';
+		if(class_exists('SmartComponents')) {
+			$out = (string) SmartComponents::app_error_message(
+				'MySQLi Client',
+				'MariaDB / MySQL',
+				'SQL/DB',
+				'Server',
+				'lib/core/img/db/mysql-logo.svg',
+				(int)    $width, // width
+				(string) $the_area, // area
+				(string) $the_error_message, // err msg
+				(string) $the_params, // title or params
+				(string) $the_query_info // sql statement
+			);
+		} //end if
 		//--
 		Smart::raise_error(
 			'#MYSQLi-DB@'.$y_connection_id.' :: Q# // MySQLi Client :: ERROR :: '.$err_log, // err to register
@@ -1897,8 +1899,8 @@ final class SmartMysqliDb {
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
- * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartUnicode, SmartUtils, SmartComponents
- * @version 	v.20220119
+ * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
+ * @version 	v.20221223
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -1930,14 +1932,14 @@ final class SmartMysqliExtDb {
 				((string)$y_configs_arr['dbname'] != '') AND
 				((string)$y_configs_arr['username'] != '')
 			) AND
-			(array_key_exists('mysqli', (array)SmartFrameworkRegistry::$Connections)) AND
-			(array_key_exists((string)$the_conn_key, (array)SmartFrameworkRegistry::$Connections['mysqli']))
+			(array_key_exists('mysqli', (array)SmartEnvironment::$Connections)) AND
+			(array_key_exists((string)$the_conn_key, (array)SmartEnvironment::$Connections['mysqli']))
 		) {
 			//-- try to reuse the connection :: only check if array key exists, not if it is a valid resource ; this should be as so to avoid mismatching connection mixings (if by example will re-use the connection of another server, and connection is broken in the middle of a transaction, it will fail ugly ;) and out of any control !
-			$this->connection = &SmartFrameworkRegistry::$Connections['mysqli'][(string)$the_conn_key];
+			$this->connection = &SmartEnvironment::$Connections['mysqli'][(string)$the_conn_key];
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('db', 'mysqli|log', [
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'open-close',
 					'data' => 'Re-Using Connection to Server: '.$the_conn_key,
 					'connection' => (string) SmartMysqliDb::get_connection_id($this->connection)

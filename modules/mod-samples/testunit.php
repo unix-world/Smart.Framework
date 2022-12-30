@@ -1,7 +1,7 @@
 <?php
 // Controller: Samples/Testunit
 // Route: ?/page/samples.testunit (?page=samples.testunit)
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -12,6 +12,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 //-----------------------------------------------------
 
 //-- this is just for testing purposes (lint) ; otherwise you should prefere to autoload classes by dependency injection only whey are needed !
+require_once('lib/framework/plugins/staticload.php');
 require_once('lib/core/plugins/staticload.php');
 if(SmartFileSystem::is_type_file('modules/smart-extra-libs/staticload.php')) {
 	require_once('modules/smart-extra-libs/staticload.php');
@@ -21,7 +22,7 @@ if(SmartFileSystem::is_type_file('modules/smart-extra-libs/staticload.php')) {
 define('SMART_APP_MODULE_AREA', 'SHARED'); // INDEX, ADMIN, TASK, SHARED
 
 define('SMART_FRAMEWORK_TESTUNIT_BASE_URL', '?/page/samples.testunit/op/');
-if((SmartFrameworkRegistry::isAdminArea() === true) OR (SmartFrameworkRegistry::isTaskArea() === true)) {
+if((SmartEnvironment::isAdminArea() === true) OR (SmartEnvironment::isTaskArea() === true)) {
 	define('SMART_FRAMEWORK_TESTUNIT_CAPTCHA_MODE', 'session');
 } else {
 	define('SMART_FRAMEWORK_TESTUNIT_CAPTCHA_MODE', 'cookie');
@@ -69,7 +70,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if((SmartFrameworkRegistry::isAdminArea() === true) OR (SmartFrameworkRegistry::isTaskArea() === true)) {
+		if((SmartEnvironment::isAdminArea() === true) OR (SmartEnvironment::isTaskArea() === true)) {
 			SmartSession::start(); // start the session
 		} //end if
 		//--
@@ -81,6 +82,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
+		$main = '';
 		$extra_main = '';
 		//--
 		$release_hash = (string) $this->ControllerGetParam('release-hash');
@@ -474,7 +476,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$method == '') {
 					$method = 'get';
 				} //end if
-				$robot = (array) SmartRobot::load_url_content('https://www.unix-world.org', 20, (string)strtoupper((string)$method), (string)SMART_FRAMEWORK_SSL_MODE);
+				$robot = (array) SmartRobot::load_url_content('https://www.unix-world.org', 20, (string)strtoupper((string)$method));
 				if(($robot['result'] != 1) OR ($robot['code'] != 200)) {
 					$this->PageViewSetErrorStatus(502, 'Browsing failed for the given URL :: Result: '.$robot['result'].' ; Status-Code: '.(int)$robot['code']);
 					$robot = null; // free mem
@@ -517,7 +519,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//--
 
 		//--
-		if((SmartFrameworkRegistry::isAdminArea() === true) OR (SmartFrameworkRegistry::isTaskArea() === true)) {
+		if((SmartEnvironment::isAdminArea() === true) OR (SmartEnvironment::isTaskArea() === true)) {
 			if(rand(0,1) == 1) {
 				$semaphores[] = 'skip:growl';
 			} //end if
@@ -530,7 +532,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$semaphores[] = 'load:code-highlight-js';
 			} //end if
 		} //end if
-		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SmartFrameworkRegistry::isAdminArea() === true) && (SmartFrameworkRegistry::isTaskArea() === false)) {
+		if((SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) && (SmartEnvironment::isAdminArea() === true) && (SmartEnvironment::isTaskArea() === false)) {
 			//-- skip load the default JS-UI and load jQueryUI if is available and is admin area
 			$semaphores[] = 'skip:js-ui';
 			$semaphores[] = 'load:jqueryui';

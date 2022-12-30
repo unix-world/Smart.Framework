@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class JsOptimizer {
 
 	// ::
-	// v.20220928
+	// v.20221219
 
 
 	//====================================================
@@ -47,7 +47,7 @@ final class JsOptimizer {
 		//--
 		$y_file = (string) trim((string)$y_file);
 		//--
-		SmartFileSysUtils::raise_error_if_unsafe_path($y_file, 'no');
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_file, false); // allow absolute paths
 		//--
 		if(!SmartFileSystem::is_type_file($y_file)) {
 			return '';

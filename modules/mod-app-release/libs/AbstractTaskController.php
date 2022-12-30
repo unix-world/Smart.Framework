@@ -30,7 +30,7 @@ if(!\SmartAppInfo::TestIfModuleExists('mod-auth-admins')) {
  * @access 		private
  * @internal
  *
- * @version 	v.20220928
+ * @version 	v.20221221
  *
  */
 abstract class AbstractTaskController extends \SmartModExtLib\AuthAdmins\AbstractTaskController {

@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFileSystem {
 
 	// ::
-	// v.20220924
+	// v.20221219
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
 	public static function methodOptions() { // 200
@@ -53,7 +53,7 @@ final class DavFileSystem {
 		//--
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($dav_vfs_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_path)) {
 			\http_response_code(415); // unsupported media type
 			return 415;
 		} //end if
@@ -158,24 +158,24 @@ final class DavFileSystem {
 		$dir_name = (string) \SmartUnicode::deaccent_str($dir_name);
 		$dir_name = (string) \SmartModExtLib\Webdav\DavServer::safeFileName($dir_name); // {{{SYNC-SAFE-FNAME-REPLACEMENT}}}
 		//--
-		if(\SmartFileSysUtils::check_if_safe_path($dav_vfs_path) != '1') {
+		if(\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_path) != '1') {
 			echo self::answerPostErr400('Create Directory ERROR: Invalid Directory Name (2)', (string)$dav_url);
 			return 400;
 		} //end if
 		//--
-		if(\SmartFileSysUtils::check_if_safe_file_or_dir_name($dir_name) != '1') {
+		if(\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$dir_name) != '1') {
 			echo self::answerPostErr400('Create Directory ERROR: Invalid Directory Name (3)', (string)$dav_url);
 			return 400;
 		} //end if
 		//--
-		$mkdir_path = (string) \SmartFileSysUtils::add_dir_last_slash($dav_vfs_path);
+		$mkdir_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$dav_vfs_path);
 		if(!\SmartFileSystem::path_exists($mkdir_path)) {
 			echo self::answerPostErr400('Create Directory ERROR: Invalid Directory Name (4)', (string)$dav_url);
 			return 400;
 		} //end if
 		$mkdir_path .= (string) $dir_name;
-		$mkdir_path = (string) \SmartFileSysUtils::add_dir_last_slash($mkdir_path);
-		if(\SmartFileSysUtils::check_if_safe_path($mkdir_path) != '1') {
+		$mkdir_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$mkdir_path);
+		if(\SmartFileSysUtils::checkIfSafePath((string)$mkdir_path) != '1') {
 			echo self::answerPostErr400('Create Directory ERROR: Invalid Directory Name (5)', (string)$dav_url);
 			return 400;
 		} //end if
@@ -210,7 +210,7 @@ final class DavFileSystem {
 			} //end if
 		} //end if
 		//--
-		$the_fname = (string) \trim((string)\SmartFileSysUtils::get_file_name_from_path((string)$dav_vfs_path));
+		$the_fname = (string) \trim((string)\SmartFileSysUtils::extractPathFileName((string)$dav_vfs_path));
 		if(((string)$the_fname == '') OR (\substr($the_fname, 0, 1) == '.')) {
 			\http_response_code(415); // unsupported media type (empty or dot dirs not allowed)
 			return 415;
@@ -389,24 +389,24 @@ final class DavFileSystem {
 			return 406; // this check must be performed after checking the content length header
 		} //end if
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($dav_vfs_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_path)) {
 			\http_response_code(415); // unsupported media type
 			return 415;
 		} //end if
 		//--
-		$the_dname = (string) \trim((string)\SmartFileSysUtils::get_dir_from_path((string)$dav_vfs_path));
-		if(((string)$the_dname == '') OR (!\SmartFileSysUtils::check_if_safe_path($the_dname))) {
+		$the_dname = (string) \trim((string)\SmartFileSysUtils::extractPathDir((string)$dav_vfs_path));
+		if(((string)$the_dname == '') OR (!\SmartFileSysUtils::checkIfSafePath((string)$the_dname))) {
 			\http_response_code(415); // do not allow: (empty / unsafe dir paths are not allowed)
 			return 415;
 		} //end if
-		$the_dname = (string) \SmartFileSysUtils::add_dir_last_slash((string)$the_dname);
-		if((!\SmartFileSysUtils::check_if_safe_path($the_dname)) OR (!\SmartFileSystem::is_type_dir($the_dname))) {
+		$the_dname = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$the_dname);
+		if((!\SmartFileSysUtils::checkIfSafePath((string)$the_dname)) OR (!\SmartFileSystem::is_type_dir($the_dname))) {
 			\http_response_code(409); // conflict: cannot PUT a resource if all ancestors do not already exist
 			return 409;
 		} //end if
 		//--
-		$the_fname = (string) \trim((string)\SmartFileSysUtils::get_file_name_from_path((string)$dav_vfs_path));
-		if(((string)$the_fname == '') OR (\substr($the_fname, 0, 1) == '.') OR (!\SmartFileSysUtils::check_if_safe_file_or_dir_name($the_fname))) {
+		$the_fname = (string) \trim((string)\SmartFileSysUtils::extractPathFileName((string)$dav_vfs_path));
+		if(((string)$the_fname == '') OR ((string)\substr($the_fname, 0, 1) == '.') OR (!\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$the_fname))) {
 			\http_response_code(415); // unsupported media type (empty / dot / unsafe file names are not allowed)
 			return 415;
 		} //end if
@@ -417,7 +417,7 @@ final class DavFileSystem {
 			return 406;
 		} //end if
 		//--
-		$the_ext = (string) \strtolower((string)\trim((string)\SmartFileSysUtils::get_file_extension_from_path((string)$dav_vfs_path)));
+		$the_ext = (string) \strtolower((string)\trim((string)\SmartFileSysUtils::extractPathFileExtension((string)$dav_vfs_path)));
 		if(!\defined('\\SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS')) {
 			\http_response_code(415); // unsupported media type
 			return 415;
@@ -452,7 +452,7 @@ final class DavFileSystem {
 		} //end if
 		//--
 		$tmp_vfs_path = (string) $the_dname.'.'.$the_fname.'__.TMP@-'.\Smart::uuid_10_seq().'-'.\Smart::uuid_10_num().'-'.\Smart::uuid_10_str(); // temporary file will start with a dot ; supposed that dir name ends with a slash ; !IMPORTANT! because dot files are restricted in this DAV env and thus cannot be overwritten by other processes ; more, the dot files are not listed by GET in this DAV env
-		if(!\SmartFileSysUtils::check_if_safe_path($tmp_vfs_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$tmp_vfs_path)) {
 			\Smart::log_warning(__METHOD__.'() : Unsafe temporary file: '.$tmp_vfs_path);
 			\http_response_code(415); // unsupported media type
 			return 415;
@@ -541,7 +541,7 @@ final class DavFileSystem {
 		//--
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($dav_vfs_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_path)) {
 			\http_response_code(415); // unsupported media type
 			return 415;
 		} //end if
@@ -590,7 +590,7 @@ final class DavFileSystem {
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		$dav_vfs_root = (string) $dav_vfs_root; // safe on .ht* names
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($dav_vfs_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_path)) {
 			\http_response_code(415); // unsupported media type
 			return 415;
 		} //end if
@@ -619,7 +619,7 @@ final class DavFileSystem {
 			\http_response_code(200);
 			$arr_quota = (array) self::getQuotaAndUsageInfo($dav_vfs_root);
 			$files_n_dirs = (array) (new \SmartGetFileSystem(true))->get_storage($dav_vfs_path, false, false, ''); // non-recuring, no dot files
-			$fixed_vfs_dir = (string) \SmartFileSysUtils::add_dir_last_slash($dav_vfs_path);
+			$fixed_vfs_dir = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$dav_vfs_path);
 			$fixed_dav_url = (string) \rtrim((string)$dav_url, '/').'/';
 			$base_url = (string) \SmartUtils::get_server_current_url();
 			$arr_f_dirs = array();
@@ -685,7 +685,7 @@ final class DavFileSystem {
 					'BACK-PATH' 		=> (string) $detect_dav_url_back,
 					'DISPLAY-QUOTA' 	=> (string) (\defined('\\SMART_WEBDAV_SHOW_USAGE_QUOTA') AND (\SMART_WEBDAV_SHOW_USAGE_QUOTA === true)) ? 'yes' : 'no',
 					'DIR-NEW-INFO' 		=> (string) 'INFO: For safety the creation of new directories is enforced as this: .dot directories are not allowed and all directory names will be converted using a '.$info_restr_charset.' only.',
-					'MAX-UPLOAD-INFO' 	=> (string) 'INFO: Can upload a max. of 10 files at once with a max total size of '.\SmartUtils::pretty_print_bytes(\SmartFileSysUtils::max_upload_size(), 0, '').'. For safety the .dot files are not allowed and all file names will be converted using a '.$info_restr_charset.' only. '.$info_extensions_list.'.',
+					'MAX-UPLOAD-INFO' 	=> (string) 'INFO: Can upload a max. of 10 files at once with a max total size of '.\SmartUtils::pretty_print_bytes((int)\SmartFileSysUtils::maxUploadFileSize(), 0, '').'. For safety the .dot files are not allowed and all file names will be converted using a '.$info_restr_charset.' only. '.$info_extensions_list.'.',
 					'SHOW-POST-FORM' 	=> 'yes' // support POST
 				],
 				'yes' // cache
@@ -828,9 +828,9 @@ final class DavFileSystem {
 			} //end if else
 		} elseif(\SmartFileSystem::is_type_file($dav_vfs_path)) {
 			if((string)$dav_method == 'COPY') {
-				$ok = \SmartFileSystem::copy($dav_vfs_path, $path_dest, false, true);
+				$ok = \SmartFileSystem::copy((string)$dav_vfs_path, (string)$path_dest, false, true);
 			} elseif((string)$dav_method == 'MOVE') {
-				$tmp_fext = (string) \strtolower((string)\SmartFileSysUtils::get_file_extension_from_path($path_dest)); // get the extension
+				$tmp_fext = (string) \strtolower((string)\SmartFileSysUtils::extractPathFileExtension((string)$path_dest)); // get the extension
 				if(!\defined('\\SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS')) { // {{{SYNC-CHK-ALLOWED-DENIED-EXT}}}
 					\http_response_code(500); // internal server error
 					return 500;
@@ -878,7 +878,7 @@ final class DavFileSystem {
 	//-- SECURITY CHECK: OK @ safe against .ht* names
 	private static function getQuotaAndUsageInfo($dav_vfs_root) {
 		//--
-		if(!\SmartFileSysUtils::check_if_safe_path($dav_vfs_root)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_root)) {
 			return array();
 		} //end if
 		//--
@@ -922,7 +922,7 @@ final class DavFileSystem {
 		if(((string)$dav_request_path == '') OR ((string)$dav_vfs_path == '')) {
 			return array();
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($dav_vfs_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_path)) {
 			return array();
 		} //end if
 		//--
@@ -958,9 +958,7 @@ final class DavFileSystem {
 	//-- SECURITY CHECK: OK @ safe against .ht* names
 	private static function mimeTypeFile($dav_vfs_path) {
 		//--
-		$dav_vfs_path = (string) $dav_vfs_path;
-		//--
-		return (string) \SmartFileSysUtils::mime_eval($dav_vfs_path, false);
+		return (string) \SmartFileSysUtils::getMimeType((string)$dav_vfs_path); // safe on .ht* names
 		//--
 	} //END FUNCTION
 
@@ -973,12 +971,12 @@ final class DavFileSystem {
 		//--
 		if(\Smart::array_size($subitems) > 0) {
 			for($i=0; $i<\Smart::array_size($subitems); $i++) {
-				if(\SmartFileSysUtils::check_if_safe_file_or_dir_name($subitems[$i])) {
-					if(\SmartFileSysUtils::check_if_safe_path($subitems[$i])) { // will dissalow #paths
+				if(\SmartFileSysUtils::checkIfSafeFileOrDirName((string)$subitems[$i])) {
+					if(\SmartFileSysUtils::checkIfSafePath((string)$subitems[$i])) { // will dissalow #paths
 						if(\SmartModExtLib\Webdav\DavServer::safeCheckPathAgainstHtFiles($subitems[$i])) { // dissalow .ht*
 							$tmp_new_req_path = (string) \rtrim((string)$dav_request_path, '/').'/'.$subitems[$i];
-							$tmp_new_vfs_path = (string) \SmartFileSysUtils::add_dir_last_slash((string)$dav_vfs_path).$subitems[$i];
-							if(\SmartFileSysUtils::check_if_safe_path($tmp_new_vfs_path)) {
+							$tmp_new_vfs_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)$dav_vfs_path).$subitems[$i];
+							if(\SmartFileSysUtils::checkIfSafePath((string)$tmp_new_vfs_path)) {
 								if(((string)$type == 'dirs') AND (\SmartFileSystem::is_type_dir($tmp_new_vfs_path))) {
 									$tmp_new_arr = (array) self::getItemTypeCollection(
 										(string) $tmp_new_req_path,
@@ -1015,7 +1013,7 @@ final class DavFileSystem {
 		if(((string)$dav_request_path == '') OR ((string)$dav_vfs_path == '')) {
 			return array();
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($dav_vfs_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_path)) {
 			return array();
 		} //end if
 		if(!\SmartFileSystem::is_type_file($dav_vfs_path)) {
@@ -1067,7 +1065,7 @@ final class DavFileSystem {
 		if(((string)$dav_request_path == '') OR ((string)$dav_vfs_path == '')) {
 			return array();
 		} //end if
-		if(!\SmartFileSysUtils::check_if_safe_path($dav_vfs_path)) {
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_path)) {
 			return array();
 		} //end if
 		if(!\SmartFileSystem::is_type_dir($dav_vfs_path)) {

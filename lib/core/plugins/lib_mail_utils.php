@@ -40,8 +40,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20221205
- * @package 	Plugins:Mailer
+ * @version 	v.20221220
+ * @package 	Application:Plugins:Mailer
  *
  */
 final class SmartMailerUtils {
@@ -378,9 +378,9 @@ final class SmartMailerUtils {
 		//--
 		if((string)$logsend_dir != '') {
 			//--
-			$logsend_dir = (string) SmartFileSysUtils::add_dir_last_slash($logsend_dir); // if the last / if not present
+			$logsend_dir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$logsend_dir); // if the last / if not present
 			$logsend_dir .= (string) $stmp_y.'/'.$stmp_y.'-'.$stmp_m.'/'.$stmp_y.'-'.$stmp_m.'-'.$stmp_d; // add the time stamps
-			$logsend_dir = (string) SmartFileSysUtils::add_dir_last_slash($logsend_dir); // add the last slash finally
+			$logsend_dir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$logsend_dir); // add the last slash finally
 			//--
 			SmartFileSystem::dir_create($logsend_dir, true); // recursive
 			//--
@@ -515,19 +515,19 @@ final class SmartMailerUtils {
 		//--
 		if((string)$server_name == '@mail') {
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', 'Send eMail Method Selected: [MAIL]');
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('mail', 'SEND', 'Send eMail Method Selected: [MAIL]');
 			} //end if
 			//-- mail method
 			$mail->method = 'mail';
 			//--
 		} elseif((string)$server_name != '') {
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', 'Send eMail Method Selected: [SMTP]');
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('mail', 'SEND', 'Send eMail Method Selected: [SMTP]');
 			} //end if
 			//-- debug
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				$mail->debuglevel = 1; // default is 1
 			} else {
 				$mail->debuglevel = 0; // no debug
@@ -552,8 +552,8 @@ final class SmartMailerUtils {
 			//--
 		} else {
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', 'Send eMail Method Selected: [NONE] !!!');
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('mail', 'SEND', 'Send eMail Method Selected: [NONE] !!!');
 			} //end if
 			//--
 			$mail->method = 'skip';
@@ -643,9 +643,9 @@ final class SmartMailerUtils {
 					if(((string)$tmp_fcontent != '') AND ((string)$tmp_fake_fname != '') AND (((string)$tmp_img_ext == '.svg') OR ((string)$tmp_img_ext == '.png') OR ((string)$tmp_img_ext == '.gif') OR ((string)$tmp_img_ext == '.jpg') OR ((string)$tmp_img_ext == '.webp'))) {
 						//--
 						$tmp_arr_fmime = array();
-						$tmp_arr_fmime = (array) SmartFileSysUtils::mime_eval($tmp_fake_fname);
+						$tmp_arr_fmime = (array) SmartFileSysUtils::getArrMimeType((string)$tmp_fake_fname);
 						$tmp_fmime = (string) $tmp_arr_fmime[0];
-						if(strpos($tmp_fmime, 'image/') !== 0) {
+						if(strpos((string)$tmp_fmime, 'image/') !== 0) {
 							$tmp_fmime = 'image'; // in the case of CIDS we already pre-validated the images
 						} //end if
 						$tmp_fname = (string) 'cid_'.$uniq_id.'__'.$tmp_cid.$tmp_img_ext;
@@ -690,10 +690,11 @@ final class SmartMailerUtils {
 		if(Smart::array_size($attachments) > 0) {
 			foreach($attachments as $key => $val) {
 				//--
-				$tmp_arr_fmime = array();
-				$tmp_arr_fmime = (array) SmartFileSysUtils::mime_eval((string)$key);
+				$tmp_arr_fmime = (array) SmartFileSysUtils::getArrMimeType((string)$key);
 				//--
 				$mail->add_attachment((string)$val, (string)$key, (string)$tmp_arr_fmime[0], 'attachment', '', 'yes'); // embed as attachment
+				//--
+				$tmp_arr_fmime = array();
 				//--
 			} //end while
 		} //end if
@@ -752,15 +753,15 @@ final class SmartMailerUtils {
 						//-- real send
 						if(((string)$mail->method == 'mail') OR ((string)$mail->method == 'smtp')) {
 							$err = $mail->send('yes');
-							if(SmartFrameworkRegistry::ifDebug()) {
-								SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', '[----- Send eMail Log #'.($i+1).': '.date('Y-m-d H:i:s').' -----]');
+							if(SmartEnvironment::ifDebug()) {
+								SmartEnvironment::setDebugMsg('mail', 'SEND', '[----- Send eMail Log #'.($i+1).': '.date('Y-m-d H:i:s').' -----]');
 							} //end if
 						} else {
 							$err = 'WARNING: SMTP Server or Mail Method IS NOT SET in CONFIG. Send eMail - Operation ABORTED !';
 						} //end if else
 						//--
-						if(SmartFrameworkRegistry::ifDebug()) {
-							SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', '========== SEND TO: '.$arr_to[$i].' =========='."\n".'ERRORS: '.$err."\n".'=========='."\n".$mail->log."\n".'========== # ==========');
+						if(SmartEnvironment::ifDebug()) {
+							SmartEnvironment::setDebugMsg('mail', 'SEND', '========== SEND TO: '.$arr_to[$i].' =========='."\n".'ERRORS: '.$err."\n".'=========='."\n".$mail->log."\n".'========== # ==========');
 						} //end if
 						//--
 						if((string)$err != '') {
@@ -783,8 +784,8 @@ final class SmartMailerUtils {
 				} //end if
 				//--
 				$tmp_send_log .= str_repeat('-', 100)."\n\n";
-				if(SmartFrameworkRegistry::ifDebug()) {
-					SmartFrameworkRegistry::setDebugMsg('mail', 'SEND', 'Send eMail Operations Log: '.$tmp_send_log);
+				if(SmartEnvironment::ifDebug()) {
+					SmartEnvironment::setDebugMsg('mail', 'SEND', 'Send eMail Operations Log: '.$tmp_send_log);
 				} //end if
 				//--
 				if((string)$y_mode == 'send-return') {
@@ -876,8 +877,8 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20221205
- * @package 	Plugins:Mailer
+ * @version 	v.20221220
+ * @package 	Application:Plugins:Mailer
  *
  */
 final class SmartMailerMimeParser {
@@ -901,7 +902,7 @@ final class SmartMailerMimeParser {
 			Smart::log_warning('Mail-Utils / Encode Mime File URL: Empty Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path($y_msg_file)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$y_msg_file)) {
 			Smart::log_warning('Mail-Utils / Encode Mime File URL: Invalid Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection. Message File: '.$y_msg_file);
 			return '';
 		} //end if
@@ -953,7 +954,7 @@ final class SmartMailerMimeParser {
 			Smart::log_warning('Mail-Utils / Decode Mime File URL: Empty Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path($y_enc_msg_file)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$y_enc_msg_file)) {
 			Smart::log_warning('Mail-Utils / Decode Mime File URL: Invalid Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection. Message File: '.$y_enc_msg_file);
 			return '';
 		} //end if
@@ -1000,12 +1001,12 @@ final class SmartMailerMimeParser {
 		$arr['bw-unique-key'] 	= (string) trim((string)($dec_arr[3] ?? ''));
 		$arr['sf-robot-key']	= (string) trim((string)($dec_arr[4] ?? ''));
 		//-- check if file path is valid
-		if((string)$arr['message-file'] == '') {
+		if((string)trim((string)($arr['message-file'] ?? null)) == '') {
 			$arr = array();
 			$arr['error'] = 'ERROR: Empty Message Path ...';
 			return (array) $arr;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path($arr['message-file'])) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$arr['message-file'])) {
 			$arr = array();
 			$arr['error'] = 'ERROR: Unsafe Message Path Access ...';
 			return (array) $arr;
@@ -1324,15 +1325,18 @@ final class SmartMailerMimeParser {
 							//--
 							$cnt += 1;
 							//--
-							$eval_arr = SmartFileSysUtils::mime_eval((string)$tmp_arr['filename']);
-							$tmp_att_name = Smart::escape_html((string)$tmp_arr['filename']);
-							$tmp_att_size = Smart::escape_html((string)SmartUtils::pretty_print_bytes((int)$tmp_arr['filesize'], 1));
+							$eval_arr = (array) SmartFileSysUtils::getArrMimeType((string)$tmp_arr['filename']);
+							//--
+							$tmp_att_name = (string) Smart::escape_html((string)$tmp_arr['filename']);
+							$tmp_att_size = (string) Smart::escape_html((string)SmartUtils::pretty_print_bytes((int)$tmp_arr['filesize'], 1));
 							//--
 							$reg_atts_num += 1;
 							$reg_atts_list .= str_replace(array("\r", "\n", "\t"), array('', '', ''), (string)$tmp_arr['filename'])."\n";
 							//--
 							$atts .= '<div align="left"><table border="0" cellpadding="2" cellspacing="0" title="Attachment #'.$cnt.'"><tr><td>'.$tmp_att_img.'</td><td>&nbsp;</td><td><a href="'.self::mime_link($y_ctrl_key, $the_message_eml, $key, $y_link, $eval_arr[0], $eval_arr[1]).'" target="'.$y_target.'__mimepart" data-smart="open.popup"><span style="font-size:0.875rem;"><b>'.$tmp_att_name.'</b></span></a></td><td><span style="font-size:0.875rem;"> &nbsp;<b><i>'.$tmp_att_size.'</i></b></span></td></tr></table></div>';
 							$xatts .= '<div align="left">'.$tmp_att_img.'&nbsp;&nbsp;<span style="font-size:0.875rem;">'.$tmp_att_name.'&nbsp;&nbsp;<i>'.$tmp_att_size.'</i></span></div>';
+							//--
+							$eval_arr = array();
 							//--
 						} //end if
 						//--
@@ -1481,10 +1485,12 @@ final class SmartMailerMimeParser {
 						//--
 						$cnt += 1;
 						//--
-						$eval_arr = array();
-						$eval_arr = SmartFileSysUtils::mime_eval('part_'.$cnt.'.html', 'inline');
+						$eval_arr = (array) SmartFileSysUtils::getArrMimeType('part_'.$cnt.'.html', 'inline');
 						//--
 						$tmp_link_pre = '<span title="Mime Part #'.$cnt.' ( '.Smart::escape_html(strtolower($val['mode']).' : '.strtoupper($val['charset'])).' )"><a href="'.self::mime_link($y_ctrl_key, $the_message_eml, $key, $y_link, $eval_arr[0], $eval_arr[1], 'partial').'" target="'.$y_target.'__mimepart" data-smart="open.popup">';
+						//--
+						$eval_arr = array();
+						//--
 						$tmp_link_pst = '</a></span>';
 						//--
 						if((!isset($skips[$key])) OR ((string)$skips[$key] == '')) { // print part if not skipped by similarity ...

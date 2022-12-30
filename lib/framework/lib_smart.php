@@ -13,7 +13,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 //======================================================
 // Smart-Framework - Base
-// DEPENDS-PHP: 7.3 or later
+// DEPENDS-PHP: 7.4 or later
 // DEPENDS-EXT: PHP XML, PHP JSON
 //======================================================
 
@@ -31,6 +31,11 @@ if(!function_exists('hex2bin')) {
 if(!function_exists('bin2hex')) {
 	@http_response_code(500);
 	die('ERROR: The PHP bin2hex Function is required for Smart.Framework / Base');
+} //end if
+//================================================================
+if((!defined('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) OR (!is_string(SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH))) {
+	@http_response_code(500);
+	die('The SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH was not set or is invalid (must be string) ...');
 } //end if
 //================================================================
 
@@ -71,8 +76,8 @@ if((string)$var == 'some-string') {
  * @hints       It is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.
  *
  * @access      PUBLIC
- * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkRegistry ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20221205
+ * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
+ * @version     v.20221227
  * @package     @Core
  *
  */
@@ -230,13 +235,13 @@ final class Smart {
 	 *
 	 * @return 	BOOL						:: FALSE if array, object or resource ; TRUE for the rest
 	 */
-	public static function is_nscalar($val) {
+	public static function is_nscalar($val) : bool {
 		//--
 		if(is_scalar($val) OR is_null($val)) {
 			return true;
-		} else {
-			return false;
-		} //end if else
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -251,7 +256,7 @@ final class Smart {
 	 *
 	 * @return 	MIXED						:: The value for the selected parameter. If the Config parameter does not exists, will return an empty string.
 	 */
-	public static function get_from_config(?string $param, ?string $type='') {
+	public static function get_from_config(?string $param, ?string $type='') { // mixed
 		//--
 		global $configs;
 		//--
@@ -320,7 +325,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The fixed path name
 	 */
-	public static function fix_path_separator(string $y_path, bool $y_force=false) {
+	public static function fix_path_separator(string $y_path, bool $y_force=false) : string {
 		//--
 		if((string)$y_path != '') {
 			if(((string)DIRECTORY_SEPARATOR == '\\') OR ($y_force === true)) { // if on Windows, Fix Path Separator !!!
@@ -344,7 +349,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The real path
 	 */
-	public static function real_path(?string $y_path) {
+	public static function real_path(?string $y_path) : string {
 		//--
 		$the_path = (string) @realpath((string)$y_path);
 		//--
@@ -362,7 +367,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The dirname or . or empty string
 	 */
-	public static function dir_name(?string $y_path) {
+	public static function dir_name(?string $y_path) : string {
 		//--
 		$dir_name = (string) dirname((string)$y_path);
 		//--
@@ -382,7 +387,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The basename
 	 */
-	public static function base_name(?string $y_path, ?string $y_suffix='') {
+	public static function base_name(?string $y_path, ?string $y_suffix='') : string {
 		//--
 		if((string)$y_suffix != '') {
 			$base_name = (string) basename((string)$y_path, (string)$y_suffix);
@@ -404,7 +409,7 @@ final class Smart {
 	 *
 	 * @return 	ARRAY						:: The pathinfo array
 	 */
-	public static function path_info(?string $y_path) {
+	public static function path_info(?string $y_path) : array {
 		//--
 		$path_info = pathinfo((string)$y_path, PATHINFO_DIRNAME | PATHINFO_BASENAME | PATHINFO_EXTENSION | PATHINFO_FILENAME); // mixed return ... do not cast to array !!
 		//-- PHP8 fix
@@ -436,7 +441,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: This function returns a string with the replaced value only on first occurence if search value is found
 	 */
-	public static function str_replace_first(?string $search, ?string $replace, ?string $str) {
+	public static function str_replace_first(?string $search, ?string $replace, ?string $str) : string {
 		//--
 		if((string)$str != '') {
 			if((string)$search != '') {
@@ -463,7 +468,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: This function returns a string with the replaced value only on last occurence if search value is found
 	 */
-	public static function str_replace_last(?string $search, ?string $replace, ?string $str) {
+	public static function str_replace_last(?string $search, ?string $replace, ?string $str) : string {
 		//--
 		if((string)$str != '') {
 			if((string)$search != '') {
@@ -481,7 +486,7 @@ final class Smart {
 
 
 	//================================================================
-	private static function url_encode_value(?string $value, bool $y_allow_late_binding_params) {
+	private static function url_encode_value(?string $value, bool $y_allow_late_binding_params) : string {
 		//--
 		if(
 			($y_allow_late_binding_params === true) AND
@@ -504,7 +509,7 @@ final class Smart {
 
 	//================================================================
 	// on init this function $suffix must be set to ''
-	private static function url_encode_params(?string $name, $value, bool $y_allow_late_binding_params, ?string $suffix='') {
+	private static function url_encode_params(?string $name, $value, bool $y_allow_late_binding_params, ?string $suffix='') : string {
 		//--
 		$ret = [];
 		//--
@@ -546,9 +551,9 @@ final class Smart {
 	 * @param 	ARRAY		$y_params 						:: Associative array as [param1 => value1, Param2 => Value2]
 	 * @param 	BOOLEAN 	$y_allow_late_binding_params	:: Allow late binding params ex: a={{{param}}}&b=true
 	 *
-	 * @return 	STRING							:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
+	 * @return 	STRING										:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
 	 */
-	public static function url_build_query(?array $y_params, bool $y_allow_late_binding_params) {
+	public static function url_build_query(?array $y_params, bool $y_allow_late_binding_params) : string {
 		//--
 		if(self::array_size($y_params) <= 0) {
 			return '';
@@ -579,7 +584,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
 	 */
-	public static function url_add_params(?string $y_url, ?array $y_params) {
+	public static function url_add_params(?string $y_url, ?array $y_params) : string {
 		//--
 		if(self::array_size($y_params) <= 0) {
 			return (string) $y_url;
@@ -587,15 +592,11 @@ final class Smart {
 		//--
 		$url = (string) trim((string)$y_url);
 		//--
-		if(is_array($y_params)) {
-			foreach($y_params as $key => $val) {
-				if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
-					$url = (string) self::url_add_suffix((string)$url, (string)self::url_build_query([ (string)$key => $val ], true));
-				} //end if
-			} //end foreach
-		} else {
-			self::log_notice('[URL Add Params] WARNING: The parameters must be Array !');
-		} //end if
+		foreach($y_params as $key => $val) {
+			if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
+				$url = (string) self::url_add_suffix((string)$url, (string)self::url_build_query([ (string)$key => $val ], true));
+			} //end if
+		} //end foreach
 		//--
 		return (string) $url;
 		//--
@@ -612,7 +613,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
 	 */
-	public static function url_add_suffix(?string $y_url, ?string $y_suffix) {
+	public static function url_add_suffix(?string $y_url, ?string $y_suffix) : string {
 		//--
 		$y_url = (string) trim((string)$y_url);
 		$y_suffix = (string) trim((string)$y_suffix);
@@ -654,7 +655,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The prepared URL as script.php?a=b&c=d&e=%20d#myAnchor
 	 */
-	public static function url_add_anchor(?string $y_url, ?string $y_anchor) {
+	public static function url_add_anchor(?string $y_url, ?string $y_anchor) : string {
 		//--
 		$y_url = (string) trim((string)$y_url);
 		$y_anchor = (string) trim((string)$y_anchor);
@@ -686,7 +687,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The escaped URL variable using the RFC3986 standard format (this variable can be appended to URL, by example: ?variable={escaped-value-returned-by-this-method}
 	 */
-	public static function escape_url(?string $y_string) {
+	public static function escape_url(?string $y_string) : string {
 		//--
 		return (string) rawurlencode((string)$y_string);
 		//--
@@ -703,7 +704,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The escaped string using htmlspecialchars() standards with Unicode-Safe control
 	 */
-	public static function escape_html(?string $y_string) {
+	public static function escape_html(?string $y_string) : string {
 		//-- v.181203
 		// Default is: ENT_HTML401 | ENT_COMPAT
 		// keep the ENT_HTML401 instead of ENT_HTML5 to avoid troubles with misc. HTML Parsers (robots, htmldoc, ...)
@@ -725,7 +726,7 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The escaped string using the WD-CSS21-20060411 standard
 	 */
-	public static function escape_css(?string $y_string) {
+	public static function escape_css(?string $y_string) : string {
 		//-- http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q6
 		return (string) addcslashes((string)$y_string, "\x00..\x1F!\"#$%&'()*+,./:;<=>?@[\\]^`{|}~"); // inspired from Latte Templating
 		//--
@@ -741,7 +742,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The escaped string using a json_encode() standard to be injected between single quotes '' or double quotes ""
 	 */
-	public static function escape_js(?string $str) {
+	public static function escape_js(?string $str) : string {
 		//-- v.20200605
 		// Prepare a string to pass in JavaScript Single or Double Quotes
 		// By The Situation:
@@ -770,8 +771,8 @@ final class Smart {
 	 *
 	 * @return 	STRING							:: The JSON encoded string
 	 */
-	public static function json_encode($data, bool $prettyprint=false, bool $unescaped_unicode=true, bool $htmlsafe=true) {
-		// encode json v.20200605
+	public static function json_encode($data, bool $prettyprint=false, bool $unescaped_unicode=true, bool $htmlsafe=true) : string {
+		//--
 		$options = 0;
 		if(!$unescaped_unicode) {
 			if($prettyprint) {
@@ -803,7 +804,7 @@ final class Smart {
 			} //end if else
 		} //end if else
 		//--
-		$json = (string) @json_encode($data, $options); // Fix: must return a string ; mixed data ; depth was added in PHP 5.5 only !
+		$json = (string) @json_encode($data, $options, 512); // Fix: must return a string ; mixed data ; depth was added since PHP 5.5
 		if((string)$json == '') { // fix if json encode returns FALSE
 			self::log_warning('Invalid Encoded Json in '.__METHOD__.' for input: '.print_r($data,1));
 			$json = 'null';
@@ -824,8 +825,8 @@ final class Smart {
 	 *
 	 * @return 	MIXED						:: The PHP native Variable: NULL ; INT ; NUMERIC ; STRING ; ARRAY
 	 */
-	public static function json_decode(?string $json, bool $return_array=true) {
-		//-- decode json v.170503
+	public static function json_decode(?string $json, bool $return_array=true) { // mixed
+		//--
 		return @json_decode((string)$json, (bool)$return_array, 512, JSON_BIGINT_AS_STRING); // as json decode depth is added just in PHP 5.5 use the default depth = 512 by now ...
 		//--
 	} //END FUNCTION
@@ -841,7 +842,7 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The JSON encoded string
 	 */
-	public static function seryalize($data) {
+	public static function seryalize($data) : string {
 		//-- seryalize json v.170503
 		return (string) self::json_encode($data, false, false, false); // no pretty print, escaped unicode is safer for Redis, no html safe, depth 512
 		//--
@@ -858,7 +859,7 @@ final class Smart {
 	 *
 	 * @return 	MIXED						:: The PHP native Variable
 	 */
-	public static function unseryalize(?string $y_json) {
+	public static function unseryalize(?string $y_json) { // mixed
 		//-- unseryalize json v.170503
 		return self::json_decode((string)$y_json, true);
 		//--
@@ -877,7 +878,7 @@ final class Smart {
 	 *
 	 * @return BOOLEAN 									:: TRUE if overflows the max safe integer ; FALSE if is OK (not overflow maximum)
 	 */
-	public static function check_int_number_overflow($y_number) { // do not enforce a type, will check to be nscalar and numeric !
+	public static function check_int_number_overflow($y_number) : bool { // do not enforce a type, will check to be nscalar and numeric !
 		//--
 		if(!self::is_nscalar($y_number)) {
 			return false; // like a string which will be zero if cast to float
@@ -909,7 +910,7 @@ final class Smart {
 	 *
 	 * @return BOOLEAN 									:: TRUE if overflows the max safe decimal ; FALSE if is OK (not overflow maximum)
 	 */
-	public static function check_dec_number_overflow($y_number) { // do not enforce a type, will check to be nscalar and numeric !
+	public static function check_dec_number_overflow($y_number) : bool { // do not enforce a type, will check to be nscalar and numeric !
 		//--
 		if(!self::is_nscalar($y_number)) {
 			return false; // like a string which will be zero if cast to float
@@ -935,7 +936,7 @@ final class Smart {
 	 *
 	 * @return 	FLOAT						:: An float number
 	 */
-	public static function format_number_float($y_number, ?string $y_signed=null) { // do not make strongtype on number, it may come as string
+	public static function format_number_float($y_number, ?string $y_signed=null) : float { // do not make strongtype on number, it may come as string
 		//--
 		// must be notice not warning ; in production environments cannot control values that come from request ...
 		//--
@@ -1000,7 +1001,7 @@ final class Smart {
 	 *
 	 * @return 	INTEGER						:: An integer number
 	 */
-	public static function format_number_int($y_number, ?string $y_signed=null) { // do not make strongtype on number, it may come as string
+	public static function format_number_int($y_number, ?string $y_signed=null) : int { // do not make strongtype on number, it may come as string
 		//--
 		// must be notice not warning ; in production environments cannot control values that come from request ...
 		//--
@@ -1071,14 +1072,14 @@ final class Smart {
 	 * Because of the precision, it supports values between -999999999999.9900 and 999999999999.9900 ; If a value overflows limits will return -limit / +limit depends if value is negative or positive
 	 * This is a better replacement for the PHP's number_format() which throws a warning if first argument passed is a string since PHP 5.3
 	 *
-	 * @param 	NUMERIC 	$y_number			:: A numeric value
-	 * @param 	INTEGER+	$y_decimals			:: The number of decimal to use (safe value is between 1..13, keeping in mind the 14 max precision) ; Default is 2
-	 * @param 	STRING		$y_sep_decimals 	:: The decimal separator symbol as: 	. or , (default is .)
-	 * @param 	STRING 		$y_sep_thousands	:: The thousand separator symbol as: 	, or . (default is [none])
+	 * @param 	NUMERIC 			$y_number			:: A numeric value
+	 * @param 	INTEGER+			$y_decimals			:: The number of decimal to use (safe value is between 1..13, keeping in mind the 14 max precision) ; Default is 2
+	 * @param 	STRING				$y_sep_decimals 	:: The decimal separator symbol as: 	. or , (default is .)
+	 * @param 	STRING 				$y_sep_thousands	:: The thousand separator symbol as: 	, or . (default is [none])
 	 *
-	 * @return 	DECIMAL							:: A decimal number
+	 * @return 	DECIMAL DECIMAL							:: A decimal number as string
 	 */
-	public static function format_number_dec($y_number, $y_decimals=2, ?string $y_sep_decimals='.', ?string $y_sep_thousands='') { // do not make strongtype on number or decimals, it may come as string
+	public static function format_number_dec($y_number, $y_decimals=2, ?string $y_sep_decimals='.', ?string $y_sep_thousands='') : string { // do not make strongtype on number or decimals, it may come as string
 		//--
 		// must be notice not warning ; in production environments cannot control values that come from request ...
 		//--
@@ -1113,11 +1114,11 @@ final class Smart {
 	/**
 	 * Safe array count(), for safety, with array type check ; this should be used instead of count() because count(string) returns a non-zero value and can confuse if a string is passed to count instead of an array
 	 *
-	 * @param ARRAY 		$y_arr			:: The array to count elements on
+	 * @param ARRAY/MIXED 		$y_arr			:: The array to count elements on ; can be a mixed variable ; if non-array will return zero
 	 *
-	 * @return INTEGER 						:: The array COUNT of elements, or zero if array is empty or non-array is provided
+	 * @return INTEGER 							:: The array COUNT of elements, or zero if array is empty or non-array is provided
 	 */
-	public static function array_size($y_arr) { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO TEST ALSO NON-ARRAY VARS !!!
+	public static function array_size($y_arr) : int { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO TEST ALSO NON-ARRAY VARS !!!
 		//--
 		if(is_array($y_arr)) {
 			return (int) count($y_arr);
@@ -1138,7 +1139,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 						:: The sorted array
 	 */
-	public static function array_sort(?array $y_arr, ?string $y_mode) {
+	public static function array_sort(?array $y_arr, ?string $y_mode) : array {
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return array();
@@ -1188,7 +1189,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 						:: The sorted array
 	 */
-	public static function array_shuffle(?array $y_arr) {
+	public static function array_shuffle(?array $y_arr) : array {
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return array();
@@ -1212,7 +1213,7 @@ final class Smart {
 	 *
 	 * @return MIXED 		:: The value from the specified array by the specific key path or NULL if the value does not exists
 	 */
-	public static function array_get_by_key_path(?array $y_arr, ?string $y_key_path, ?string $y_path_separator) {
+	public static function array_get_by_key_path(?array $y_arr, ?string $y_key_path, ?string $y_path_separator) { // mixed
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return null;
@@ -1266,7 +1267,7 @@ final class Smart {
 	 *
 	 * @return BOOL 								:: TRUE if Key Exist / FALSE if NOT
 	 */
-	public static function array_test_key_by_path_exists(?array $y_arr, ?string $y_key_path, ?string $y_path_separator) {
+	public static function array_test_key_by_path_exists(?array $y_arr, ?string $y_key_path, ?string $y_path_separator) : bool {
 		//--
 		if(self::array_size($y_arr) <= 0) {
 			return false;
@@ -1314,7 +1315,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 								:: The modified array
 	 */
-	public static function array_change_key_case_recursive(?array $y_arr, ?string $y_mode) {
+	public static function array_change_key_case_recursive(?array $y_arr, ?string $y_mode) : array {
 		//--
 		if(self::array_size($y_arr) <= 0) { // fix bug if empty array / max nested level
 			return array();
@@ -1349,12 +1350,12 @@ final class Smart {
 	/**
 	 * Array Initialize Keys
 	 *
-	 * @param ARRAY 		$y_arr 					:: The input array
-	 * @param ENUM 			$y_keys 				:: The array keys to initialize: will add these keys to the array assigned with a NULL value only if the key does not exists ; the existing keys will be preserved with their existing values ; must be a non-associative array, as: [ 'key1', 'key2', '', ...] ; a key can be also an empty string
+	 * @param ARRAY/MIXED 		$y_arr 					:: The input array
+	 * @param LIST/ARRAY 		$y_keys 				:: The array keys to initialize: will add these keys to the array assigned with a NULL value only if the key does not exists ; the existing keys will be preserved with their existing values ; must be a non-associative array, as: [ 'key1', 'key2', '', ...] ; a key can be also an empty string
 	 *
 	 * @return ARRAY 								:: The modified array
 	 */
-	public static function array_init_keys($y_arr, $y_keys) { // do not enforce parameters type, it have a wide usage and detects !
+	public static function array_init_keys($y_arr, $y_keys) : array { // do not enforce parameters type, it have a wide usage and detects !
 		//--
 		if(!is_array($y_arr)) {
 			$y_arr = array();
@@ -1389,9 +1390,9 @@ final class Smart {
 	 *
 	 * @param ARRAY 		$y_arr			:: The array to test
 	 *
-	 * @return ENUM 						:: The array type as: 0 = not an array ; 1 = non-associative (sequential) array or empty array ; 2 = associative array or non-sequential, must be non-empty
+	 * @return INT/ENUM 					:: The array type as: 0 = not an array ; 1 = non-associative (sequential) array or empty array ; 2 = associative array or non-sequential, must be non-empty
 	 */
-	public static function array_type_test($y_arr) { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO TEST ALSO NON-ARRAY VARS !!!
+	public static function array_type_test($y_arr) : int { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO TEST ALSO NON-ARRAY VARS !!!
 		//--
 		if(!is_array($y_arr)) {
 			return 0; // not an array
@@ -1424,7 +1425,7 @@ final class Smart {
 	 *
 	 * @return ARRAY
 	 */
-	public static function array_diff_assoc_recursive(array $array1, array $array2) {
+	public static function array_diff_assoc_recursive(array $array1, array $array2) : array {
 		//--
 		if(!is_array($array1)) {
 			self::log_warning('WARNING: '.__METHOD__.' # array1 is not array !');
@@ -1453,7 +1454,7 @@ final class Smart {
 	 *
 	 * @return ARRAY
 	 */
-	public static function array_diff_assoc_oneway_recursive(array $array1, array $array2) {
+	public static function array_diff_assoc_oneway_recursive(array $array1, array $array2) : array {
 		//--
 		if(!is_array($array1)) {
 			self::log_warning('WARNING: '.__METHOD__.' # array1 is not array !');
@@ -1500,23 +1501,23 @@ final class Smart {
 	 *
 	 * @return 	STRING						:: The processed string (text)
 	 */
-	public static function text_cut_by_limit(?string $ytxt, ?int $ylen, bool $y_cut_words=true, ?string $y_suffix='...') {
+	public static function text_cut_by_limit(?string $ytxt, ?int $ylen, bool $y_cut_words=true, ?string $y_suffix='...') : string {
 		//--
 		$ytxt = (string) trim((string)$ytxt);
-		$ylen = self::format_number_int($ylen, '+');
+		$ylen = (int) self::format_number_int($ylen, '+');
 		//--
 		if((string)$y_suffix == '') {
 			$cutoff = (int) $ylen;
 		} else {
-			$cutoff = (int) self::format_number_int(($ylen - SmartUnicode::str_len($y_suffix)), '+');
+			$cutoff = (int) self::format_number_int(((int)$ylen - (int)SmartUnicode::str_len((string)$y_suffix)), '+');
 		} //end if else
 		if($cutoff <= 0) {
 			$cutoff = 1;
 		} //end if
 		//--
-		if(SmartUnicode::str_len($ytxt) > $cutoff) {
+		if((int)SmartUnicode::str_len((string)$ytxt) > (int)$cutoff) {
 			//--
-			$ytxt = (string) SmartUnicode::sub_str($ytxt, 0, $cutoff);
+			$ytxt = (string) SmartUnicode::sub_str((string)$ytxt, 0, (int)$cutoff);
 			//--
 			if($y_cut_words === false) {
 				//-- {{{SYNC-REGEX-TEXT-CUTOFF}}}
@@ -1542,7 +1543,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The formatted string
 	 */
-	public static function nl_2_br(?string $y_code, bool $y_trim=true) {
+	public static function nl_2_br(?string $y_code, bool $y_trim=true) : string {
 		//--
 		if($y_trim !== false) {
 			$y_code = (string) trim((string)$y_code);
@@ -1562,7 +1563,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The processed Code
 	 */
-	public static function decode_html_entities(?string $str) {
+	public static function decode_html_entities(?string $str) : string {
 		//--
 		return (string) html_entity_decode((string)$str, ENT_HTML5 | ENT_QUOTES, (string)SMART_FRAMEWORK_CHARSET);
 		//--
@@ -1580,11 +1581,13 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The processed HTML Code
 	 */
-	public static function stripTags(?string $yhtmlcode, bool $ynewline=true, bool $ynormalize=true) { // {{{SYNC-SMART-STRIP-TAGS-LOGIC}}}
-		//--
-		$yhtmlcode = (string) $yhtmlcode;
+	public static function stripTags(?string $yhtmlcode, bool $ynewline=true, bool $ynormalize=true) : string { // {{{SYNC-SMART-STRIP-TAGS-LOGIC}}}
 		//-- fix xhtml tag ends and add spaces between tags
-		$yhtmlcode = (string) str_replace([' />', '/>', '>'], '> ', (string)$yhtmlcode);
+		$yhtmlcode = (string) strtr((string)$yhtmlcode, [
+			' />' 	=> '> ',
+			'/>' 	=> '> ',
+			'>' 	=> '> ',
+		]);
 		//-- remove special tags
 		$html_regex_h = [
 			'#<head[^>]*?'.'>.*?</head[^>]*?'.'>#si',				// head
@@ -1654,7 +1657,7 @@ final class Smart {
 	 * @return STRING 						:: The fixed (filesys) safe string
 	 *
 	 */
-	public static function safe_fix_invalid_filesys_names(?string $y_fsname) {
+	public static function safe_fix_invalid_filesys_names(?string $y_fsname) : string {
 		//-- v.190105
 		$y_fsname = (string) trim((string)$y_fsname);
 		//-- {{{SYNC-SAFE-PATH-CHARS}}} {{{SYNC-CHK-SAFE-PATH}}}
@@ -1695,7 +1698,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The safe path ; if invalid will return empty value
 	 */
-	public static function safe_pathname(?string $y_path, ?string $ysupresschar='') {
+	public static function safe_pathname(?string $y_path, ?string $ysupresschar='') : string {
 		//-- v.170920
 		$y_path = (string) trim((string)$y_path); // force string and trim
 		if((string)$y_path == '') {
@@ -1745,7 +1748,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The safe file or dir name ; if invalid will return empty value
 	 */
-	public static function safe_filename(?string $y_fname, ?string $ysupresschar='') {
+	public static function safe_filename(?string $y_fname, ?string $ysupresschar='') : string {
 		//-- v.170920
 		$y_fname = (string) trim((string)$y_fname); // force string and trim
 		if((string)$y_fname == '') {
@@ -1787,7 +1790,7 @@ final class Smart {
 	 *
 	 * @return STRING 							:: The safe variable name ; if invalid should return empty value
 	 */
-	public static function safe_varname(?string $y_name, bool $y_allow_upper=true) {
+	public static function safe_varname(?string $y_name, bool $y_allow_upper=true) : string {
 		//-- v.20210302
 		$y_name = (string) trim((string)$y_name); // force string and trim
 		if((string)$y_name == '') {
@@ -1823,7 +1826,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The safe name ; if invalid should return empty value
 	 */
-	public static function safe_validname(?string $y_name, ?string $ysupresschar='') {
+	public static function safe_validname(?string $y_name, ?string $ysupresschar='') : string {
 		//-- v.170920
 		$y_name = (string) trim((string)$y_name); // force string and trim
 		if((string)$y_name == '') {
@@ -1864,7 +1867,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The safe name ; if invalid should return empty value
 	 */
-	public static function safe_username(?string $y_name) {
+	public static function safe_username(?string $y_name) : string {
 		//-- v.170920
 		$y_name = (string) trim((string)$y_name); // force string and trim
 		if((string)$y_name == '') {
@@ -1895,7 +1898,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The slug which will contain only: a-z 0-9 _ - (A-Z will be converted to a-z if lowercase is enforced)
 	 */
-	public static function create_slug(?string $y_str, bool $y_lowercase=false, ?int $y_maxlen=0) {
+	public static function create_slug(?string $y_str, bool $y_lowercase=false, ?int $y_maxlen=0) : string {
 		//--
 		$y_str = (string) SmartUnicode::deaccent_str((string)trim((string)$y_str));
 		$y_str = (string) preg_replace('/[^a-zA-Z0-9_\-]/', '-', (string)$y_str);
@@ -1926,7 +1929,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The HTML-ID which will contain only: a-z A-Z 0-9 _ -
 	 */
-	public static function create_htmid(?string $y_str) {
+	public static function create_htmid(?string $y_str) : string {
 		//--
 		return (string) trim((string)preg_replace('/[^a-zA-Z0-9_\-]/', '', (string)$y_str));
 		//--
@@ -1942,7 +1945,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The Js-Var which will contain only: a-z A-Z 0-9 _ $
 	 */
-	public static function create_jsvar(?string $y_str) {
+	public static function create_jsvar(?string $y_str) : string {
 		//--
 		return (string) trim((string)preg_replace('/[^a-zA-Z0-9_\$]/', '', (string)$y_str));
 		//--
@@ -1959,7 +1962,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: The normalized text
 	 */
-	public static function normalize_spaces(?string $y_txt) {
+	public static function normalize_spaces(?string $y_txt) : string {
 		//-- {{{SYNC-NORMALIZE-SPACES}}}
 		return (string) str_replace(["\r\n", "\r", "\n", "\t", "\x0B", "\0", "\f"], ' ', (string)$y_txt);
 		//--
@@ -1976,7 +1979,7 @@ final class Smart {
 	 *
 	 * @return INTEGER 						:: An integer random number
 	 */
-	public static function random_number($y_min=0, $y_max=-1, bool $y_seed=false) {
+	public static function random_number($y_min=0, $y_max=-1, bool $y_seed=false) : int {
 		//-- PHP 8.1 Fix to avoid deprecation notice float to int conversion
 		$y_min = (int) $y_min;
 		$y_max = (int) $y_max;
@@ -2006,7 +2009,7 @@ final class Smart {
 
 	//================================================================
 	// based on idea by: https://github.com/tuupola/base62 # License MIT
-	private static function base_asciihex_convert(array $source, int $sourceBase, int $targetBase) {
+	private static function base_asciihex_convert(array $source, int $sourceBase, int $targetBase) : array {
 		//--
 		$result = [];
 		//--
@@ -2045,7 +2048,7 @@ final class Smart {
 	 * @param INTEGER 		$currentBase		:: The base to convert ; Available source base: 32, 36, 58, 62, 85, 92
 	 * @return STRING 							:: The decoded string (as hex) from the selected base or empty string on error
 	 */
-	public static function base_to_hex_convert(string $encoded, int $currentBase) {
+	public static function base_to_hex_convert(string $encoded, int $currentBase) : string {
 		//--
 		$encoded = (string) trim((string)$encoded);
 		if((string)$encoded == '') {
@@ -2128,7 +2131,7 @@ final class Smart {
 	 * @param INTEGER 		$targetBase		:: The base to convert ; Available target base: 32, 36, 58, 62, 85, 92
 	 * @return STRING 						:: The encoded string in the selected base or empty string on error
 	 */
-	public static function base_from_hex_convert(string $hexstr, int $targetBase) {
+	public static function base_from_hex_convert(string $hexstr, int $targetBase) : string {
 		//--
 		$hexstr = (string) trim((string)$hexstr); // req. hex to allow converting also integer values not only strings as bin2hex($string) ; passing an integer can be done using dechex($integer) will use a different compression, making a shorter converted string ; Ex: bin2hex('2') = 3132 / dec2hex(2) = c !!
 		if((string)$hexstr == '') {
@@ -2195,7 +2198,7 @@ final class Smart {
 			);
 		} //end if
 		//--
-		return implode('', array_map(function($val) use($baseCharset) {
+		return (string) implode('', (array)array_map(function($val) use($baseCharset) {
 			return (string) $baseCharset[$val];
 		}, (array)$result));
 		//--
@@ -2212,7 +2215,7 @@ final class Smart {
 	 * @param INTEGER+ $num
 	 * @return STRING
 	 */
-	 public static function hex_to_int10(?string $hex) {
+	 public static function hex_to_int10(?string $hex) : int {
 		//--
 		$hex = (string) strtolower((string)trim((string)$hex));
 		//-- standardize for comparing
@@ -2243,7 +2246,7 @@ final class Smart {
 	 * @param INTEGER+ $num
 	 * @return STRING
 	 */
-	 public static function int10_to_hex(?int $num) {
+	 public static function int10_to_hex(?int $num) : string {
 		//--
 		$num = (int) $num;
 		if($num < 0) {
@@ -2273,7 +2276,7 @@ final class Smart {
 	 * @param INTEGER+ $num
 	 * @return STRING
 	 */
-	public static function int10_to_base62_str(?int $num) {
+	public static function int10_to_base62_str(?int $num) : string {
 		//--
 		$num = (int) $num;
 		if($num < 0) {
@@ -2296,7 +2299,7 @@ final class Smart {
 	 * Returns the valid Net Server ID (to be used in a cluster)
 	 * Valid values are 0..1295 (or 00..ZZ if BASE36)
 	 */
-	public static function net_server_id(bool $base36=false) { // {{{SYNC-MIN-MAX-NETSERVER-ID}}}
+	public static function net_server_id(bool $base36=false) : string { // {{{SYNC-MIN-MAX-NETSERVER-ID}}}
 		//--
 		$netserverid = (int) 0;
 		if(defined('SMART_FRAMEWORK_NETSERVER_ID')) {
@@ -2327,14 +2330,22 @@ final class Smart {
 	 *
 	 * @return STRING 						:: variable length Unique Entropy string
 	 */
-	public static function unique_entropy(?string $y_suffix='', bool $y_use_net_server_id=true) {
+	public static function unique_entropy(?string $y_suffix='', bool $y_use_net_server_id=true) : string {
 		//--
 		$netserverid = '';
 		if($y_use_net_server_id !== false) {
 			$netserverid = (string) self::net_server_id();
 		} //end if
 		//--
-		return (string) 'Namespace:'.SMART_SOFTWARE_NAMESPACE.'NetServer#'.$netserverid.'UUIDUSequence='.self::uuid_13_seq().';UUIDSequence='.self::uuid_10_seq().';UUIDRandStr='.self::uuid_10_str().';UUIDRandNum='.self::uuid_10_num().';'.$y_suffix;
+		$namespace = '';
+		if(defined('SMART_SOFTWARE_NAMESPACE')) {
+			$namespace = (string) trim((string)SMART_SOFTWARE_NAMESPACE);
+		} //end if
+		if((string)$namespace == '') {
+			$namespace = 'default';
+		} //end if
+		//--
+		return (string) 'Namespace:'.$namespace.'NetServer#'.$netserverid.'UUIDUSequence='.self::uuid_13_seq().';UUIDSequence='.self::uuid_10_seq().';UUIDRandStr='.self::uuid_10_str().';UUIDRandNum='.self::uuid_10_num().';'.$y_suffix;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2350,7 +2361,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_10_num() {
+	public static function uuid_10_num() : string {
 		//--
 		$uid = '';
 		for($i=0; $i<9; $i++) {
@@ -2376,7 +2387,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_10_str() {
+	public static function uuid_10_str() : string {
 		//--
 		$toggle = self::random_number(0,1);
 		//--
@@ -2423,7 +2434,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_10_seq() { // v7
+	public static function uuid_10_seq() : string { // v7
 		//-- 00 .. RR
 		$b10_thousands_year = (int) substr(date('Y'), -3, 3); // get last 3 digits from year 000 .. 999
 		$b36_thousands_year = (string) sprintf('%02s', base_convert($b10_thousands_year, 10, 36));
@@ -2464,7 +2475,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_12_seq() { // v7
+	public static function uuid_12_seq() : string { // v7
 		//--
 		return (string) self::uuid_10_seq().self::net_server_id(true);
 		//--
@@ -2499,7 +2510,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_13_seq() { // v1
+	public static function uuid_13_seq() : string { // v1
 		//-- YEAR: 0 .. 9999999 in base62 is 0000 .. FXsj
 		$b10_10milion_year = (int) substr(date('Y'), -7, 7); // get last 7 digits of year
 		$b62_10milion_year = (string) sprintf('%04s', self::int10_to_base62_str($b10_10milion_year));
@@ -2538,7 +2549,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_15_seq() { // v1
+	public static function uuid_15_seq() : string { // v1
 		//--
 		return (string) self::uuid_13_seq().self::net_server_id(true);
 		//--
@@ -2554,7 +2565,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_32() {
+	public static function uuid_32() : string {
 		//--
 		return (string) self::uuid_10_seq().'-'.self::uuid_10_num().'-'.self::uuid_10_str();
 		//--
@@ -2570,7 +2581,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_34() {
+	public static function uuid_34() : string {
 		//--
 		return (string) self::uuid_12_seq().'-'.self::uuid_10_num().'-'.self::uuid_10_str();
 		//--
@@ -2586,7 +2597,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_35() {
+	public static function uuid_35() : string {
 		//--
 		return (string) self::uuid_13_seq().'-'.self::uuid_10_num().'-'.self::uuid_10_str();
 		//--
@@ -2602,7 +2613,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_37() {
+	public static function uuid_37() : string {
 		//--
 		return (string) self::uuid_15_seq().'-'.self::uuid_10_num().'-'.self::uuid_10_str();
 		//--
@@ -2622,7 +2633,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_36(string $prefix='') {
+	public static function uuid_36(string $prefix='') : string {
 		//--
 		$hash = (string) md5($prefix.self::unique_entropy('uid36', false)); // by default use no reference to net server id, which can be passed via prefix
 		//--
@@ -2650,7 +2661,7 @@ final class Smart {
 	 *
 	 * @return STRING 						:: the UUID
 	 */
-	public static function uuid_45(string $prefix='') {
+	public static function uuid_45(string $prefix='') : string {
 		//--
 		$hash = (string) sha1($prefix.self::unique_entropy('uid45', false)); // by default use no reference to net server id, which can be passed via prefix
 		//--
@@ -2675,7 +2686,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 					:: The separed URL (associative array) as: protocol, server, port, path, scriptname
 	 */
-	public static function url_parse(?string $y_url) {
+	public static function url_parse(?string $y_url) : array {
 		//--
 		$y_url = (string) $y_url;
 		//--
@@ -2740,7 +2751,16 @@ final class Smart {
 			$suffix = '/'; // FIX: this is required as default http path for HTTP Cli requests !!
 		} //end if
 		//--
-		return array('protocol' => $protocol, 'scheme' => $scheme, 'host' => $server, 'port' => $port, 'path' => $path, 'query' => $query, 'fragment' => $fragment, 'suffix' => $suffix); // script must be compatible with: parse_url() but may have extra entries
+		return [ // must be compatible with: PHP's parse_url() but may have extra entries
+			'protocol' 	=> (string) $protocol,
+			'scheme' 	=> (string) $scheme,
+			'host' 		=> (string) $server,
+			'port' 		=> (string) $port,
+			'path' 		=> (string) $path,
+			'query' 	=> (string) $query,
+			'fragment' 	=> (string) $fragment,
+			'suffix' 	=> (string) $suffix,
+		];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2754,7 +2774,7 @@ final class Smart {
 	 *
 	 * @return STRING 					:: The List String: '<elem1>, <elem2>, ..., <elemN>'
 	 */
-	public static function array_to_list($y_arr) { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
+	public static function array_to_list($y_arr) : string { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO WORK ALSO NON-ARRAY VARS !!!
 		//--
 		$out = '';
 		//--
@@ -2800,7 +2820,7 @@ final class Smart {
 	 *
 	 * @return ARRAY 					:: The Array: Array(elem1, elem2, ..., elemN)
 	 */
-	public static function list_to_array(?string $y_list, bool $y_trim=true) {
+	public static function list_to_array(?string $y_list, bool $y_trim=true) : array {
 		//--
 		if((string)trim((string)$y_list) == '') {
 			return array(); // empty list
@@ -2841,7 +2861,7 @@ final class Smart {
 	 * @param STRING 	$str 				:: The string to be encoded
 	 * @return STRING 						:: The safe URL Base64 encoded string
 	 */
-	public static function b64s_enc(?string $str) {
+	public static function b64s_enc(?string $str) : string {
 		//--
 		if((string)$str == '') {
 			return '';
@@ -2866,7 +2886,7 @@ final class Smart {
 	 * @param STRING 	$str 				:: The safe URL Base64 encoded string
 	 * @return STRING 						:: The decoded string
 	 */
-	public static function b64s_dec(?string $str) {
+	public static function b64s_dec(?string $str) : string {
 		//--
 		$str = (string) trim((string)$str);
 		if((string)$str == '') {
@@ -2889,10 +2909,10 @@ final class Smart {
 	 *
 	 * @return -						:: This function does not return anything
 	 */
-	public static function log_info(?string $title, ?string $message) {
+	public static function log_info(?string $title, ?string $message) : void {
 		//--
-		if((defined('SMART_FRAMEWORK_INFO_LOG')) AND (is_dir(self::dir_name((string)SMART_FRAMEWORK_INFO_LOG)))) { // must use is_dir here to avoid dependency with smart file system lib
-			@file_put_contents((string)SMART_FRAMEWORK_INFO_LOG, '[INF]'."\t".date('Y-m-d H:i:s O')."\t".self::normalize_spaces($title)."\t".self::normalize_spaces($message)."\n", FILE_APPEND | LOCK_EX);
+		if((defined('SMART_FRAMEWORK_INFO_LOG')) AND is_string(SMART_FRAMEWORK_INFO_LOG) AND ((string)trim((string)SMART_FRAMEWORK_INFO_LOG) != '') AND (is_dir((string)self::dir_name((string)trim((string)SMART_FRAMEWORK_INFO_LOG))))) { // must use is_dir here to avoid dependency with smart file system lib
+			@file_put_contents((string)trim((string)SMART_FRAMEWORK_INFO_LOG), '[INF]'."\t".date('Y-m-d H:i:s O')."\t".self::normalize_spaces($title)."\t".self::normalize_spaces($message)."\n", FILE_APPEND | LOCK_EX);
 		} else {
 			self::log_notice('INFO-LOG NOT SET :: Logging to Notices ... # Message: '.$title."\n".$message);
 		} //end if else
@@ -2912,13 +2932,13 @@ final class Smart {
 	 *
 	 * @return -						:: This function does not return anything
 	 */
-	public static function log_notice(?string $message) {
+	public static function log_notice(?string $message) : void {
 		//--
-		if(SmartFrameworkRegistry::ifProdEnv() === true) {
+		if(SmartEnvironment::ifDevMode() === false) {
 			return; // use this only in DEV mode
 		} //end if
 		//--
-		@trigger_error('#SMART-FRAMEWORK.NOTICE# '.$message, E_USER_NOTICE);
+		trigger_error('#SMART-FRAMEWORK.NOTICE# '.$message, E_USER_NOTICE);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2934,9 +2954,9 @@ final class Smart {
 	 *
 	 * @return -						:: This function does not return anything
 	 */
-	public static function log_warning(?string $message) {
+	public static function log_warning(?string $message) : void {
 		//--
-		@trigger_error('#SMART-FRAMEWORK.WARNING# '.$message, E_USER_WARNING);
+		trigger_error('#SMART-FRAMEWORK.WARNING# '.$message, E_USER_WARNING);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2953,7 +2973,7 @@ final class Smart {
 	 *
 	 * @return -								:: This function does not return anything
 	 */
-	public static function raise_error(?string $message_to_log, ?string $message_to_display='', bool $is_html_message_to_display=false) {
+	public static function raise_error(?string $message_to_log, ?string $message_to_display='', bool $is_html_message_to_display=false) : void {
 		//--
 		global $smart_____framework_____last__error;
 		global $smart_____framework_____is_html_last__error;
@@ -2964,7 +2984,7 @@ final class Smart {
 		} //end if
 		$smart_____framework_____last__error = (string) $message_to_display;
 		$smart_____framework_____is_html_last__error = (bool) $is_html_message_to_display;
-		@trigger_error('#SMART-FRAMEWORK.ERROR# '.$message_to_log, E_USER_ERROR);
+		trigger_error('#SMART-FRAMEWORK.ERROR# '.$message_to_log, E_USER_ERROR);
 		die('App Level Raise ERROR. Execution Halted. '.$message_to_display); // normally this line will never be executed because the E_USER_ERROR via Smart Error Handler will die() before ... but this is just in case, as this is a fatal error and the execution should be halted here !
 		//--
 	} //END FUNCTION
@@ -2972,7 +2992,7 @@ final class Smart {
 
 
 	//================================================================
-	public static function InstantFlush() {
+	public static function InstantFlush() : void {
 		//--
 		$output_buffering_status = @ob_get_status();
 		//-- type: 0 = PHP_OUTPUT_HANDLER_INTERNAL ; 1 = PHP_OUTPUT_HANDLER_USER
@@ -2983,6 +3003,43 @@ final class Smart {
 		} //end if
 		//--
 		@flush();
+		//--
+		return;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Comment out PHP Code from a string
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @return STRING
+	 *
+	 */
+	public static function commentOutPhpCode(?string $y_code, array $y_repl=['tag-start' => '<!--? ', 'tag-end' => ' ?-->']) : string {
+		//--
+		$y_code = (string) $y_code;
+		$y_repl = (array)  $y_repl;
+		//--
+		$tag_start 	= (string) ($y_repl['tag-start'] ?? '');
+		$tag_end 	= (string) ($y_repl['tag-end']   ?? '');
+		//--
+		$tmp_regex_php = [
+			'<'.'?php',
+			'<'.'?',
+			'?'.'>'
+		];
+		$tmp_regex_htm = [
+			(string) $tag_start,
+			(string) $tag_start,
+			(string) $tag_end
+		];
+		//--
+		return (string) str_ireplace((array)$tmp_regex_php, (array)$tmp_regex_htm, (string)$y_code);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2998,7 +3055,7 @@ final class Smart {
 	 * @return STRING 						:: A regex expression
 	 *
 	 */
-	public static function lower_unsafe_characters() {
+	public static function lower_unsafe_characters() : string {
 		//--
 		return '/[\x00-\x08\x0B-\x0C\x0E-\x1F]/'; // all lower dangerous characters: x00 - x1F except: \t = x09 \n = 0A \r = 0D
 		//--
@@ -3016,16 +3073,1572 @@ final class Smart {
 	 * @internal
 	 *
 	 */
-	public static function registerInternalCacheToDebugLog() {
+	public static function registerInternalCacheToDebugLog() : void {
 		//--
-		if(SmartFrameworkRegistry::ifInternalDebug()) {
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
+		if(SmartEnvironment::ifInternalDebug()) {
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
 					'title' => 'Smart (Base) // Internal Cache',
 					'data' => 'Dump of Cfgs:'."\n".print_r(self::$Cfgs,1)
 				]);
 			} //end if
 		} //end if
+		//--
+		return;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+} //END CLASS
+
+
+//=====================================================================================
+//===================================================================================== CLASS END
+//=====================================================================================
+
+
+
+//=====================================================================================
+//===================================================================================== CLASS START
+//=====================================================================================
+
+
+/**
+ * Class: SmartFileSysUtils - provides the File System Util functions.
+ *
+ * This class enforces the use of RELATIVE PATHS to force using correct path access in a web environment application.
+ * Relative paths must be relative to the web application folder as folder: `some-folder/` or file: `some-folder/my-file.txt`.
+ * Absolute paths are denied by internal checks as they are NOT SAFE in a Web Application from the security point of view ...
+ * Also the backward path access like `../some-file-or-folder` is denied from the above exposed reasons.
+ * Files and Folders must contain ONLY safe characters as: `[a-z] [A-Z] [0-9] _ - . @ #` ; folders can also contain slashes `/` (as path separators); no spaces are allowed in paths !!
+ *
+ * NOTICE: To use paths in a safe manner, never add manually a / at the end of a path variable, because if it is empty will result in accessing the root of the file system (/).
+ * To handle this in an easy and safe manner, use the function SmartFileSysUtils::addPathTrailingSlash((string)$my_dir) so it will add the trailing slash ONLY if misses but NOT if the $my_dir is empty to avoid root access !
+ *
+ * <code>
+ *
+ * // Usage example:
+ * SmartFileSysUtils::some_method_of_this_class(...);
+ *
+ *  //-----------------------------------------------------------------------------------------------------
+ *  //-----------------------------------------------------------------------------------------------------
+ *  // SAFE REPLACEMENTS:
+ *  // In order to supply a common framework for Unix / Linux but also on Windows,
+ *  // because on Windows dir separator is \ instead of / the following functions must be used as replacements:
+ *  //-----------------------------------------------------------------------------------------------------
+ *  // Smart::real_path()        instead of:        realpath()
+ *  // Smart::dir_name()         instead of:        dirname()
+ *  // Smart::path_info()        instead of:        pathinfo()
+ *  //-----------------------------------------------------------------------------------------------------
+ *  // Also, when folders are get from external environments and are not certified if they have
+ *  // been converted from \ to / on Windows, those paths have to be fixed using: Smart::fix_path_separator()
+ *  //-----------------------------------------------------------------------------------------------------
+ *
+ * </code>
+ *
+ * @usage  		static object: Class::method() - This class provides only STATIC methods
+ *
+ * @depends 	classes: Smart, SmartEnvironment
+ * @version 	v.20221223
+ * @package 	@Core:FileSystem
+ *
+ */
+final class SmartFileSysUtils {
+
+	// ::
+
+	private static $cachedStaticFilePaths = [];
+
+
+	//================================================================
+	/**
+	 * FAST CHECK IF A STATIC FILE EXISTS AND IS READABLE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).
+	 * It should be used just with static files which does not changes between executions
+	 *
+	 * @param 	STRING 		$file_relative_path 				:: The relative path of file to be read (can be a symlink to a file)
+	 *
+	 * @return 	BOOL											:: TRUE if file exists and path is safe ; FALSE otherwise
+	 */
+	public static function staticFileExists(?string $file_relative_path) : bool {
+		//--
+		if((string)trim((string)$file_relative_path) == '') {
+			return false;
+		} //end if
+		//--
+		if(!is_array(self::$cachedStaticFilePaths)) {
+			self::$cachedStaticFilePaths = [];
+		} //end if
+		if(array_key_exists((string)$file_relative_path, (array)self::$cachedStaticFilePaths)) {
+			self::$cachedStaticFilePaths[(string)$file_relative_path]++; // keep number ou accesses
+			return (bool) self::$cachedStaticFilePaths[(string)$file_relative_path];
+		} //end if
+		//--
+		$staticRootPath = (string) self::getStaticFilesRootPath();
+		//--
+		$ok = true;
+		if(self::checkIfSafePath((string)$file_relative_path) != 1) {
+			$ok = false;
+		} elseif(!is_file((string)$staticRootPath.$file_relative_path)) { // do not use clearstatcache(), this is intended for STATIC FILES ONLY
+			$ok = false;
+		} elseif(!is_readable((string)$staticRootPath.$file_relative_path)) { // do not use clearstatcache(), this is intended for STATIC FILES ONLY
+			$ok = false;
+		} //end if
+		//--
+		self::$cachedStaticFilePaths[(string)$file_relative_path] = (int) $ok; // 0 or 1 (will increment above, if more than 1 access)
+		//--
+		return (bool) self::$cachedStaticFilePaths[(string)$file_relative_path];
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * FAST READ A STATIC FILE CONTENTS. ALSO CHECKS IF THE FILE EXISTS AND IS READABLE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).
+	 * It should be used just with static files which does not changes between executions
+	 *
+	 * @param 	STRING 		$file_relative_path 				:: The relative path of file to be read (can be a symlink to a file)
+	 * @param 	INTEGER+	$length 							:: :: DEFAULT is 0 (zero) ; If zero will read the entire file ; If > 0 (ex: 100) will read only the first 100 bytes fro the file or less if the file size is under 100 bytes
+	 *
+	 * @return 	STRING											:: The file contents or an empty string if file not found or cannot read file or other error cases
+	 */
+	public static function readStaticFile(?string $file_relative_path, ?int $length=null) : string {
+		//--
+		if(self::staticFileExists((string)$file_relative_path) !== true) {
+			Smart::log_warning(__METHOD__.' # File Path is Invalid: Empty / Unsafe / Not Found / Not Readable');
+			return '';
+		} //end if
+		//--
+		$length = (int) $length;
+		if((int)$length <= 0) {
+			$length = null;
+		} //end if
+		//--
+		self::raiseErrorIfUnsafePath((string)$file_relative_path);
+		//--
+		// do not use clearstatcache(), this is intended for STATIC FILES ONLY
+		//--
+		$staticRootPath = (string) self::getStaticFilesRootPath();
+		//--
+		$fcontent = null;
+		if((int)$length > 0) {
+			$fcontent = @file_get_contents(
+				(string) $staticRootPath.$file_relative_path,
+				false, // don't use include path
+				null, // context resource
+				0, // start from begining (negative offsets still don't work)
+				(int) $length // max length to read ; if zero, read the entire file
+			);
+		} else {
+			$fcontent = @file_get_contents(
+				(string) $staticRootPath.$file_relative_path,
+				false, // don't use include path
+				null, // context resource
+				0 // start from begining (negative offsets still don't work)
+				// max length to read ; don't use this parameter here ...
+			);
+		} //end if else
+		//--
+		if($fcontent === false) { // check
+			Smart::log_warning(__METHOD__.' # Failed to Read a File: `'.$file_relative_path.'`');
+			return '';
+		} //end if
+		//--
+		return (string) $fcontent;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public static function getStaticFilesRootPath() : string {
+		//--
+		if(!defined('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) {
+			Smart::raise_error(
+				__METHOD__.' # The Static Root Path was not defined',
+				'Smart.Framework / FileSystem Utils / [SECURITY]: UNDEFINED ROOT PATH !' // msg to display
+			);
+			return '';
+		} //end if
+		//--
+		if((string)trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH) == '') {
+			return '';
+		} //end if
+		//--
+		if((string)trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH) == '/') {
+			Smart::raise_error(
+				__METHOD__.' # The Static Root Path is disallowed: `/`',
+				'Smart.Framework / FileSystem Utils / [SECURITY]: DISSALOWED ROOT PATH !' // msg to display
+			);
+			return '';
+		} //end if
+		//--
+		if((string)substr((string)trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH), -1, 1) != '/') {
+			Smart::raise_error(
+				__METHOD__.' # The Static Root Path is invalid: `'.SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH.'`',
+				'Smart.Framework / FileSystem Utils / [SECURITY]: INVALID ROOT PATH !' // msg to display
+			);
+			return '';
+		} //end if
+		//--
+		return (string) trim((string)SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Return the MAXIMUM allowed Upload Size
+	 *
+	 * @return INTEGER								:: the Max Upload Size in Bytes
+	 */
+	public static function maxUploadFileSize() : int {
+		//--
+		$inival = (string) trim((string)ini_get('upload_max_filesize'));
+		if((string)$inival == '') {
+			return 0;
+		} //end if
+		//--
+		$last = (string) strtoupper((string)substr((string)$inival, -1, 1));
+		$value = (int) intval((string)$inival);
+		//--
+		if((string)$last === 'K') { // kilo
+			$value *= 1000;
+		} elseif((string)$last === 'M') { // mega
+			$value *= 1000 * 1000;
+		} elseif((string)$last === 'G') { // giga
+			$value *= 1000 * 1000 * 1000;
+		} elseif((string)$last === 'T') { // tera
+			$value *= 1000 * 1000 * 1000 * 1000;
+		} elseif((string)$last === 'P') { // peta
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000;
+		/* the below unit of measures may overflow the max 64-bit integer value with higher values set in php.ini ... anyway there is no case to upload such large files ...
+		} elseif((string)$last === 'E') { // exa
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
+		} elseif((string)$last === 'Z') { // zetta
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
+		} elseif((string)$last === 'Y') { // yotta
+			$value *= 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
+		*/
+		} //end if else
+		//--
+		return (int) Smart::format_number_int((int)$value, '+');
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Check a Name of a File or Directory (not a path containing /) if contain valid characters (to avoid filesystem path security injections)
+	 * Security: provides check if unsafe filenames or dirnames are accessed.
+	 *
+	 * @param 	STRING 	$y_fname 								:: The dirname or filename, (not path containing /) to validate
+	 *
+	 * @return 	0/1												:: returns 1 if VALID ; 0 if INVALID
+	 */
+	public static function checkIfSafeFileOrDirName(?string $y_fname) : int {
+		//-- test empty filename
+		if((string)trim((string)$y_fname) == '') {
+			return 0;
+		} //end if else
+		//-- test valid characters in filename or dirname (must not contain / (slash), it is not a path)
+		if(!preg_match((string)Smart::REGEX_SAFE_FILE_NAME, (string)$y_fname)) { // {{{SYNC-CHK-SAFE-FILENAME}}}
+			return 0;
+		} //end if
+		//-- test valid path (should pass all tests from valid, especially: must not be equal with: / or . or .. (and they are includded in valid path)
+		if(self::testIfValidPath((string)$y_fname) !== 1) {
+			return 0;
+		} //end if
+		//--
+		if((int)strlen((string)$y_fname) > 255) {
+			return 0;
+		} //end if
+		//--
+		// IMPORTANT: it should not test if filenames or dirnames start with a # (protected) as they are not paths !!!
+		//--
+		return 1;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Check a Path (to a Directory or to a File) if contain valid characters (to avoid filesystem path security injections)
+	 * Security: provides check if unsafe paths are accessed.
+	 *
+	 * @param 	STRING 	$path 									:: The path (dir or file) to validate
+	 * @param 	BOOL 	$deny_absolute_path 					:: *Optional* If TRUE will dissalow absolute paths
+	 * @param 	BOOL 	$allow_protected_relative_paths 		:: *Optional* ! This is for very special case usage only so don't set it to TRUE except if you know what you are really doing ! If set to TRUE will allow access to special protected paths of this framework which may have impact on security ... ; this parameter is intended just for relative paths only (not absolute paths) as: #dir/.../file.ext ; #file.ext ; for task area this is always hardcoded to TRUE and cannot be overrided
+	 *
+	 * @return 	0/1												:: returns 1 if VALID ; 0 if INVALID
+	 */
+	public static function checkIfSafePath(?string $path, bool $deny_absolute_path=true, bool $allow_protected_relative_paths=false) : int { // {{{SYNC-FS-PATHS-CHECK}}}
+		//-- override
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
+				$allow_protected_relative_paths = true; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
+		//-- dissalow empty paths
+		if((string)trim((string)$path) == '') {
+			return 0;
+		} //end if else
+		//-- test valid path
+		if(self::testIfValidPath((string)$path) !== 1) {
+			return 0;
+		} //end if
+		//-- test backward path
+		if(self::testIfBackwardPath((string)$path) !== 1) {
+			return 0;
+		} //end if
+		//-- test absolute path and protected path
+		if($deny_absolute_path !== false) {
+			if(self::testIfAbsolutePath((string)$path) !== 1) {
+				return 0;
+			} //end if
+		} //end if
+		//-- test protected path
+		if($allow_protected_relative_paths !== true) {
+			if(self::testIfProtectedPath((string)$path) !== 1) { // check protected path only if deny absolute path access, otherwise n/a
+				return 0;
+			} //end if
+		} //end if
+		//-- test max path length
+		if(((int)strlen((string)$path) > 1024) OR ((int)strlen((string)$path) > (int)PHP_MAXPATHLEN)) { // IMPORTANT: this also protects against cycled loops that can occur when scanning linked folders
+			return 0; // path is longer than the allowed path max length by PHP_MAXPATHLEN between 512 to 4096 (safe is 1024)
+		} //end if
+		//--
+		return 1; // valid
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================ CHECK ABSOLUTE PATH ACCESS
+	/**
+	 * Function: Raise Error if Unsafe Path.
+	 * Security: implements protection if unsafe paths are accessed.
+	 *
+	 * @param 	STRING 	$path 									:: The path (dir or file) to validate
+	 * @param 	BOOL 	$deny_absolute_path 					:: *Optional* If TRUE will dissalow absolute paths
+	 * @param 	BOOL 	$allow_protected_relative_paths 		:: *Optional* ! This is for very special case usage only so don't set it to TRUE except if you know what you are really doing ! If set to TRUE will allow access to special protected paths of this framework which may have impact on security ... ; this parameter is intended just for relative paths only (not absolute paths) as: #dir/.../file.ext ; #file.ext ; for task area this is always hardcoded to TRUE and cannot be overrided
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public static function raiseErrorIfUnsafePath(?string $path, bool $deny_absolute_path=true, bool $allow_protected_relative_paths=false) : void { // {{{SYNC-FS-PATHS-CHECK}}}
+		//--
+		if(self::checkIfSafePath((string)$path, (bool)$deny_absolute_path, (bool)$allow_protected_relative_paths) !== 1) {
+			Smart::raise_error(
+				__METHOD__.' # Unsafe Path Usage Detected in code: `'.$path.'`',
+				'Smart.Framework / FileSystem Utils / [SECURITY]: UNSAFE PATH USAGE DETECTED !' // msg to display
+			);
+			return;
+		} //end if
+		//--
+		return;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================ TEST IF PROTECTED (SPECIAL) PATH
+	// special protected paths (only relative) start with '#'
+	// returns 1 if OK
+	private static function testIfProtectedPath(?string $y_path) : int {
+		//--
+		$y_path = (string) $y_path;
+		//--
+		if((string)substr((string)trim($y_path), 0, 1) == '#') {
+			return 0;
+		} //end if
+		//--
+		return 1; // valid
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================ TEST IF VALID PATH
+	// test if path is valid ; on windows paths must use the / instead of backslash (and without drive letter prefix c:) to comply
+	// path should not contain SPACE, BACKSLASH, :, |, ...
+	// the : is denied also on unix because can lead to unpredictable paths behaviours
+	// the | is denied because old MacOS is not supported
+	// path should not be EMPTY or equal with: / . .. ./ ../ ./.
+	// path should contain just these characters _ a-z A-Z 0-9 - . @ # /
+	// returns 1 if OK
+	private static function testIfValidPath(?string $y_path) : int {
+		//--
+		$y_path = (string) $y_path;
+		//--
+		if(!preg_match((string)Smart::REGEX_SAFE_PATH_NAME, (string)$y_path)) { // {{{SYNC-SAFE-PATH-CHARS}}} {{{SYNC-CHK-SAFE-PATH}}} only ISO-8859-1 characters are allowed in paths (unicode paths are unsafe for the network environments !!!)
+			return 0;
+		} //end if
+		//--
+		if(
+			((string)trim($y_path) == '') OR 							// empty path: error
+			((string)trim($y_path) == '.') OR 							// special: protected
+			((string)trim($y_path) == '..') OR 							// special: protected
+			((string)trim($y_path) == '/') OR 							// root dir: security
+			(strpos($y_path, ' ') !== false) OR 						// no space allowed
+			(strpos($y_path, '\\') !== false) OR 						// no backslash allowed
+			(strpos($y_path, '://') !== false) OR 						// no protocol access allowed
+			(strpos($y_path, ':') !== false) OR 						// no dos/win disk access allowed
+			(strpos($y_path, '|') !== false) OR 						// no macos disk access allowed
+			((string)trim($y_path) == './') OR 							// this must not be used - dissalow FS operations to the app root path, enforce use relative paths such as path/to/something
+			((string)trim($y_path) == '../') OR 						// backward path access denied: security
+			((string)trim($y_path) == './.') OR 						// this is a risk that can lead to unpredictable results
+			(strpos($y_path, '...') !== false) OR 						// this is a risk that can lead to unpredictable results
+			((string)substr((string)trim($y_path), -2, 2) == '/.') OR 	// special: protected ; this may lead to rewrite/delete the special protected . in a directory if refered as a filename or dirname that may break the filesystem
+			((string)substr((string)trim($y_path), -3, 3) == '/..')  	// special: protected ; this may lead to rewrite/delete the special protected .. in a directory if refered as a filename or dirname that may break the filesystem
+		) {
+			return 0;
+		} //end if else
+		//--
+		return 1; // valid
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================ TEST IF BACKWARD PATH
+	// test backpath or combinations against crafted paths to access backward paths on filesystem
+	// will test only combinations allowed by testIfValidPath()
+	// returns 1 if OK
+	private static function testIfBackwardPath(?string $y_path) : int {
+		//--
+		$y_path = (string) $y_path;
+		//--
+		if(
+			(strpos($y_path, '/../') !== false) OR
+			(strpos($y_path, '/./') !== false) OR
+			(strpos($y_path, '/..') !== false) OR
+			(strpos($y_path, '../') !== false)
+		) {
+			return 0;
+		} //end if else
+		//--
+		return 1; // valid
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================ TEST IF ABSOLUTE PATH
+	// test against absolute path access
+	// will test only combinations allowed by testIfValidPath() and testIfBackwardPath()
+	// the first character should not be / ; path must not contain :, :/
+	// returns 1 if OK
+	private static function testIfAbsolutePath(?string $y_path) : int {
+		//--
+		$y_path = (string) trim((string)$y_path);
+		//--
+		$c1 = (string) substr((string)$y_path, 0, 1);
+		$c2 = (string) substr((string)$y_path, 1, 1);
+		//--
+		if(
+			((string)$c1 == '/') OR // unix/linux # /path/to/
+			((string)$c1 == ':') OR // windows # :/path/to/
+			((string)$c2 == ':')    // windows # c:/path/to
+		) {
+			return 0;
+		} //end if
+		//--
+		return 1; // valid
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Safe add a trailing slash to a path if not already have it, with safe detection and avoid root access.
+	 *
+	 * Adding a trailing slash to a path is not a simple task as if path is empty, adding the trailing slash will result in accessing the root file system as will be: /.
+	 * Otherwise it have to detect if the trailing slash exists already to avoid double slash.
+	 *
+	 * @param 	STRING 	$y_path 					:: The path to add the trailing slash to
+	 *
+	 * @return 	STRING								:: The fixed path with a trailing
+	 */
+	public static function addPathTrailingSlash(?string $y_path) : string {
+		//--
+		$y_path = (string) trim((string)Smart::fix_path_separator((string)trim((string)$y_path)));
+		//--
+		if(((string)$y_path == '') OR ((string)$y_path == '.') OR ((string)$y_path == './')) {
+			return './'; // this is a mandatory security fix for the cases when used with dirname() which may return empty or just .
+		} //end if
+		//--
+		if(((string)$y_path == '/') OR ((string)trim((string)str_replace(['/', '.'], ['', ''], (string)$y_path)) == '') OR (strpos((string)$y_path, '\\') !== false)) {
+			Smart::log_warning(__METHOD__.' # Add Last Dir Slash: Invalid Path: ['.$y_path.'] ; Returned: tmp/invalid/');
+			return 'tmp/invalid/'; // Security Fix: avoid make the path as root: / (if the path is empty, adding a trailing slash is a huge security risk)
+		} //end if
+		//--
+		if((string)substr((string)$y_path, -1, 1) != '/') {
+			$y_path = (string) $y_path.'/';
+		} //end if
+		//--
+		self::raiseErrorIfUnsafePath((string)$y_path, true, true); // deny absolute paths ; allow #special paths
+		//--
+		return (string) $y_path;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Remove the versioning from a file name
+	 * Ex: myfile.@1505240360@.ext will become: myfile.ext
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param 	STRING 	$file 						:: The file name (with version or not) to be processed
+	 *
+	 * @return 	STRING								:: The fixed file name without the version
+	 */
+	public static function fnameVersionClear(?string $file) : string {
+		//--
+		$file = (string) $file;
+		//--
+		if((strpos($file, '.@') !== false) AND (strpos($file, '@.') !== false)) {
+			//--
+			$arr = (array) explode('.@', (string)$file);
+			if(!array_key_exists(0, $arr)) {
+				$arr[0] = null;
+			} //end if
+			if(!array_key_exists(1, $arr)) {
+				$arr[1] = null;
+			} //end if
+			//--
+			$arr2 = (array) explode('@.', (string)$arr[1]);
+			if(!array_key_exists(0, $arr2)) {
+				$arr2[0] = null;
+			} //end if
+			if(!array_key_exists(1, $arr2)) {
+				$arr2[1] = null;
+			} //end if
+			//--
+			if((string)trim((string)$arr[0]) == '') {
+				$arr[0] = '_empty-filename_';
+			} //end if
+			if(((string)$arr2[1] === '_no-ext_') OR ((string)$arr2[1] === '')) { // {{{SYNC-FILE-VER-NOEXT}}}
+				$file = (string) $arr[0];
+			} else {
+				$file = (string) $arr[0].'.'.$arr2[1];
+			} //end if else
+			//--
+		} //end if
+		//--
+		return (string) $file;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Add the version to a file name. The file name MUST have a valid extension (do not use on file names without extension)
+	 * Ex: myfile.ext will become: myfile.@1505240360@.ext OR myfile.@a1-32_zx@.ext
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param 	STRING 	$file 						:: The file name (with version or not) to be processed ; if version detected will be preserved
+	 * @param 	STRING 	$version 					:: The version to be added ; if the version is empty, a stdmtime version will be used (microtime: 1517576620.6128 as 15175766206128) ; if version is invalid, will NOT add a version: allowed characters for version (as safe valid name): [a-z0-9] _ - (except the . @ which are allowed but will be removed)
+	 *
+	 * @return 	STRING								:: The fixed file name with a version
+	 */
+	public static function fnameVersionAdd(?string $file, ?string $version=null) : string {
+		//--
+		$file = (string) self::fnameVersionClear((string)trim((string)$file)); // clear any previous version ...
+		if((string)$file == '') {
+			return '';
+		} //end if
+		//--
+		if((string)trim((string)$version) == '') {
+			$version = (string) strtr((string)microtime(true), [ '.' => '' ]); // version stdmtime
+		} //end if
+		$version = (string) trim((string)strtolower((string)str_replace(['.', '@'], ['', ''], (string)Smart::safe_validname((string)$version))));
+		if((string)$version == '') {
+			return (string) $file; // just in case
+		} //end if
+		//--
+		$file_no_ext = (string) self::extractPathFileNoExtName((string)$file); // fix: removed strtolower()
+		$file_ext = (string) self::extractPathFileExtension((string)$file); // fix: removed strtolower()
+		//--
+		if((string)$file_ext == '') { // because file versioning expects a valid file extension, to avoid break when version remove will find no extension and would consider the version as extension, add something as extension
+			$file_ext = '_no-ext_'; // {{{SYNC-FILE-VER-NOEXT}}}
+		} //end if
+		//--
+		$fwithver = (string) $file_no_ext.'.@'.$version.'@.'.$file_ext;
+		//--
+		$test_ver = (string) self::fnameVersionGet((string)$fwithver);
+		if((string)$test_ver == '') {
+			Smart::log_warning(__METHOD__.' # Failed to get the FileName Version from: `'.$fwithver.'` [`'.$file.'`, `'.$version.'`]');
+		} //end if
+		//--
+		return (string) $fwithver;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the version from a file name.
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param 	STRING 	$file 						:: The file name to be processed
+	 *
+	 * @return 	STRING								:: The version from filename or ''
+	 */
+	public static function fnameVersionGet(?string $file) : string {
+		//--
+		$file = (string) $file;
+		//--
+		$version = '';
+		//--
+		if((strpos($file, '.@') !== false) AND (strpos($file, '@.') !== false)) {
+			//--
+			$arr = (array) explode('.@', (string)$file);
+			if(!array_key_exists(0, $arr)) {
+				$arr[0] = null;
+			} //end if
+			if(!array_key_exists(1, $arr)) {
+				$arr[1] = null;
+			} //end if
+			//--
+			$arr2 = (array) explode('@.', (string)$arr[1]);
+			if(!array_key_exists(0, $arr2)) {
+				$arr2[0] = null;
+			} //end if
+			if(!array_key_exists(1, $arr2)) {
+				$arr2[1] = null;
+			} //end if
+			//--
+			$version = (string) $arr2[0];
+			//--
+		} //end if
+		//--
+		return (string) $version;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Check a file name for a specific version.
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param 	STRING 	$file 						:: The file name to be checked
+	 * @param 	STRING 	$version 					:: The version to be checked
+	 *
+	 * @return 	0/1									:: returns 1 if the version is detected ; otherwise returns 0 if version not detected
+	 */
+	public static function fnameVersionCheck(?string $file, ?string $version) : int {
+		//--
+		$file = (string) trim((string)$file);
+		$version = (string) trim((string)strtolower((string)str_replace(array('.', '@'), array('', ''), Smart::safe_validname((string)$version))));
+		//--
+		if(stripos($file, '.@'.$version.'@.') !== false) {
+			return 1;
+		} //end if
+		//--
+		return 0;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Return the folder name from a path (except last trailing slash: /)
+	 *
+	 * @param STRING 	$y_path						:: the path (dir or file)
+	 * @return STRING 								:: a directory path [FOLDER NAME]
+	 */
+	public static function extractPathDir(?string $y_path) : string {
+		//--
+		$y_path = (string) Smart::safe_pathname((string)$y_path);
+		//--
+		if((string)$y_path == '') {
+			return '';
+		} //end if
+		//--
+		$arr = (array) Smart::path_info((string)$y_path);
+		//--
+		return (string) trim((string)Smart::safe_pathname((string)$arr['dirname'])); // this may contain /
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Return the file name (includding extension) from path
+	 * WARNING: path_info('c:\\file.php') will not work correct on unix, but on windows will work correct both: path_info('c:\\file.php') and path_info('path/file.php'
+	 * @param STRING 	$y_path			path or file
+	 * @return STRING 					[FILE NAME]
+	 */
+	public static function extractPathFileName(?string $y_path) : string {
+		//--
+		$y_path = (string) Smart::safe_pathname((string)$y_path);
+		//--
+		if((string)$y_path == '') {
+			return '';
+		} //end if
+		//--
+		$arr = (array) Smart::path_info((string)$y_path);
+		//--
+		return (string) trim((string)Smart::safe_filename((string)$arr['basename']));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Return the file name (WITHOUT extension) from path
+	 *
+	 * @param STRING 	$y_path			path or file
+	 * @return STRING 					[FILE NAME]
+	 */
+	public static function extractPathFileNoExtName(?string $y_path) : string {
+		//--
+		$y_path = (string) Smart::safe_pathname((string)$y_path);
+		//--
+		if((string)$y_path == '') {
+			return '';
+		} //end if
+		//--
+		$arr = (array) Smart::path_info((string)$y_path);
+		//--
+		$tmp_ext = (string) $arr['extension'];
+		$tmp_file = (string) $arr['basename'];
+		//--
+		$str_len = (int) ((int)strlen($tmp_file) - (int)strlen($tmp_ext) - 1);
+		//--
+		if((int)strlen($tmp_ext) > 0) {
+			// with .extension
+			$tmp_xfile = (string) substr((string)$tmp_file, 0, (int)$str_len);
+		} else {
+			// no extension
+			$tmp_xfile = (string) $tmp_file;
+		} //end if else
+		//--
+		return (string) trim((string)Smart::safe_filename((string)$tmp_xfile));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Return the file extension (without .) from path
+	 *
+	 * @param STRING 	$y_path			path or file
+	 * @return STRING 					[FILE EXTENSION]
+	 */
+	public static function extractPathFileExtension(?string $y_path) : string {
+		//--
+		$y_path = (string) Smart::safe_pathname((string)$y_path);
+		//--
+		if((string)$y_path == '') {
+			return '';
+		} //end if
+		//--
+		$arr = (array) Smart::path_info((string)$y_path);
+		//--
+		return (string) trim((string)strtolower((string)Smart::safe_filename((string)$arr['extension'])));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Generate a prefixed dir from a base36 UUID, 10 chars length : [0-9A-Z].
+	 * It does include also the UUID as final folder segment.
+	 * Example: for ID ABCDEFGHIJ09 will return: 9T/5B/0B/9M/9T5B0B9M8M/ as the generated prefixed path.
+	 * This have to be used for large folder storage structure to avoid limitations on some filesystems (ext3 / ntfs) where max sub-dirs per dir is 32k.
+	 *
+	 * The prefixed path will be grouped by each 2 characters (max sub-folders per folder: 36 x 36 = 1296).
+	 * If a lower length than 10 chars is provided will pad with 0 on the left.
+	 * If a higher length or an invalid ID is provided will reset the ID to 000000..00 (10 chars) for the given length, but also drop a warning.
+	 *
+	 * @param STRING 		$y_id		10 chars id (uuid10)
+	 * @return STRING 					Prefixed Path
+	 */
+	public static function prefixedUuid10B36Path(?string $y_id) : string { // check len is default 10 as set in lib core uuid 10s
+		//--
+		$y_id = (string) strtoupper((string)trim((string)$y_id));
+		//--
+		if(((int)strlen((string)$y_id) != 10) OR (!preg_match('/^[A-Z0-9]+$/', (string)$y_id))) {
+			Smart::log_warning(__METHOD__.' # Invalid ID ['.$y_id.']');
+			$y_id = '0000000000'; // str-10.B36 (uuid10)
+		} //end if
+		//--
+		$dir = (string) self::addPathTrailingSlash((string)self::addPathTrailingSlash((string)implode('/', (array)str_split((string)substr((string)$y_id, 0, 8), 2))).$y_id); // split by 2 grouping except last 2 chars
+		//--
+		if(!self::checkIfSafePath((string)$dir)) {
+			Smart::log_warning(__METHOD__.' # Invalid Dir Path: ['.$dir.'] :: From ID: ['.$y_id.']');
+			return 'tmp/invalid/pfx-uid10b36-path/'; // this error should not happen ...
+		} //end if
+		//--
+		return (string) $dir;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Generate a prefixed dir from a base16 UUID (sha1), 40 chars length : [0-9a-f].
+	 * It does NOT include the ID final folder.
+	 * Example: for ID df3a808b2bf20aaab4419c43d9f3a6143bd6b4bb will return: d/f3a/808/b2b/f20/aaa/b44/19c/43d/9f3/a61/43b/d6b/ as the generated prefixed path.
+	 * This have to be used for large folder storage structure to avoid limitations on some filesystems (ext3 / ntfs) where max sub-dirs per dir is 32k.
+	 *
+	 * The prefixed folder will be grouped by each 3 characters (max sub-folders per folder: 16 x 16 x 16 = 4096).
+	 * If a lower length than 40 chars is provided will pad with 0 on the left.
+	 * If a higher length than 40 chars or an invalid ID is provided will reset the ID to 000000..00 (40 chars) for the given length, but also drop a warning.
+	 *
+	 * @param STRING 		$y_id		40 chars id (sha1)
+	 * @return STRING 					Prefixed Path
+	 */
+	public static function prefixedUuid40B16Path(?string $y_id) : string { // here the number of levels does not matter too much as at the end will be a cache file
+		//--
+		$y_id = (string) strtolower((string)trim((string)$y_id));
+		//--
+		if(((int)strlen((string)$y_id) != 40) OR (!preg_match('/^[a-f0-9]+$/', (string)$y_id))) {
+			Smart::log_warning(__METHOD__.' # Invalid ID ['.$y_id.']');
+			$y_id = '0000000000000000000000000000000000000000'; // str-40.hex (sha1)
+		} //end if
+		//--
+		$dir = (string) self::addPathTrailingSlash((string)substr((string)$y_id, 0, 1).'/'.implode('/', (array)str_split((string)substr((string)$y_id, 1, 36), 3))); // split by 3 grouping
+		//--
+		if(!self::checkIfSafePath((string)$dir)) {
+			Smart::log_warning(__METHOD__.' # Invalid Dir Path: ['.$dir.'] :: From ID: ['.$y_id.']');
+			return 'tmp/invalid/pfx-b16sha-path/'; // this error should not happen ...
+		} //end if
+		//--
+		return (string) $dir;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the File MimeType
+	 *
+	 * @param STRING 		$file_name_or_path			the filename or path (includding file extension) ; Ex: file.ext or path/to/file.ext
+	 * @return STRING 									the mime type by extension (will also detect some standard files without extension: ex: readme)
+	 */
+	public static function getMimeType(?string $file_name_or_path) : string {
+		//--
+		return (string) self::mimeEval((string)$file_name_or_path, false);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Get the File MimeType
+	 *
+	 * @param STRING 		$file_name_or_path			the filename or path (includding file extension) ; Ex: file.ext or path/to/file.ext
+	 * @param MIXED 		$disposition 				EMPTY STRING (leave as is) ; ENUM: attachment | inline - to force a disposition type
+	 * @return ARRAY 									Example: ARRAY [ 0 => 'text/plain' ; 1 => 'inline; filename="file.ext"' ; 2 => 'inline' ] OR [ 0 => 'application/octet-stream' ; 1 => 'attachment; filename="file.ext"' ; 2 => 'attachment' ]
+	 */
+	public static function getArrMimeType(?string $file_name_or_path, ?string $disposition='') : array {
+		//--
+		return (array) self::mimeEval((string)$file_name_or_path, (string)$disposition);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Evaluate and return the File MimeType (and *Optional* the Disposition by File Extension).
+	 *
+	 * @param STRING 		$yfile			the filename or path (includding file extension) ; Ex: file.ext or path/to/file.ext
+	 * @param MIXED 		$ydisposition 	NULL or EMPTY STRING (leave as is) ; ENUM: attachment | inline - to force a disposition type ; BOOLEAN: FALSE to get just Mime Type (TRUE is currently not used)
+	 * @return MIXED 						ARRAY [ 0 => mimeType ; 1 => inline/attachment; filename="file.ext" ; 2 => inline/attachment ] ; IF $ydisposition == FALSE will return STRING: mimeType
+	 */
+	private static function mimeEval(?string $yfile, $ydisposition=null) { // mixed type: STRING | ARRAY
+		//--
+		$yfile = (string) Smart::safe_pathname((string)$yfile);
+		//--
+		$file = (string) self::extractPathFileName((string)$yfile); // bug fixed: if a full path is sent, try to get just the file name to return
+		$lfile = (string) strtolower((string)$file);
+		//--
+		$type = '';
+		$disp = '';
+		//--
+		if(in_array((string)$lfile, [ // all lowercase as file is already strtolower
+			'#release',
+			'license',
+			'license-bsd',
+			'license-gplv3',
+			'changelog',
+			'changes',
+			'readme',
+			'makefile',
+			'cmake',
+			'meson.build',
+			'go.mod', // go module
+			'go.sum', // go checksum
+			'mime.types', // apache
+			'magic', // apache
+			'manifest', // github
+			'exports',
+			'fstab',
+			'group',
+			'hosts',
+			'machine-id',
+			'.htaccess',
+			'.htpasswd',
+			'.gitignore',
+			'.gitattributes',
+			'.gitmodules',
+			'.properties',
+		])) {
+			$extension = (string) $lfile;
+		} else {
+			$extension = (string) strtolower((string)self::extractPathFileExtension((string)$yfile)); // [OK]
+		} //end if else
+		//--
+		switch((string)$extension) {
+			//-------------- html / css
+			case 'htm':
+			case 'html':
+			case 'mtpl': // marker tpl templating
+			case 'tpl':  // tpl templating
+			case 'twist': // tpl twist
+			case 'twig': // twig templating
+			case 't3fluid': // typo3 fluid templating
+			case 'django': // django templating
+				$type = 'text/html';
+				$disp = 'attachment';
+				break;
+			case 'css':
+			case 'less':
+			case 'scss':
+			case 'sass':
+				$type = 'text/css';
+				$disp = 'attachment';
+				break;
+			//-------------- php
+			case 'php':
+				$type = 'application/x-php';
+				$disp = 'attachment';
+				break;
+			//-------------- javascript
+			case 'js':
+				$type = 'application/javascript';
+				$disp = 'attachment';
+				break;
+			case 'json':
+				$type = 'application/json';
+				$disp = 'attachment';
+				break;
+			//-------------- xml
+			case 'xhtml':
+			case 'xml':
+			case 'xsl':
+			case 'dtd':
+			case 'sgml': // Standard Generalized Markup Language
+			case 'glade': // glade UI XML file
+			case 'ui': // qt ui XML file
+				$type = 'application/xml';
+				$disp = 'attachment';
+				break;
+			//-------------- rss / atom / rdf
+			case 'rdf':
+				$type = 'application/rdf+xml';
+				$disp = 'inline';
+				break;
+			case 'rss':
+				$type = 'application/rss+xml';
+				$disp = 'inline';
+				break;
+			case 'atom':
+				$type = 'application/atom+xml';
+				$disp = 'inline';
+				break;
+			//-------------- plain text and development
+			case 'tex': // TeX
+			case 'txt': // text
+			case 'log': // log file
+			case 'sql': // sql file
+			case 'cf': // config file
+			case 'cfg': // config file
+			case 'conf': // config file
+			case 'config': // config file
+			case 'sh': // shell script
+			case 'bash': // bash (shell) script
+			case 'awk': // AWK script
+			case 'll': // llvm IR assembler
+			case 's': // llvm IR assembler
+			case 'asm': // assembler (x86)
+			case 'aasm': // assembler (arm)
+			case 'masm': // assembler (mips)
+			case 'cmd': // windows command file
+			case 'bat': // windows batch file
+			case 'ps1': // windows powershell
+			case 'psm1': // windows powershell
+			case 'psd1': // windows powershell
+			case 'asp': // active server page
+			case 'csharp': // C#
+			case 'cs': // C#
+			case 'm': // Objective C Method
+			case 'c': // C
+			case 'h': // C header
+			case 'y': // Yacc source code file
+			case 'f': // Fortran
+			case 'fs': // Fortran Sharp
+			case 'fsharp': // Fortran Sharp
+			case 'r': // R language
+			case 'd': // D language
+			case 'diff': // Diff File
+			case 'patch': // Diff Patch
+			case 'pro': // QT project file
+			case 'cpp': // C++
+			case 'hpp': // C++ header
+			case 'ypp': // Bison source code file
+			case 'cxx': // C++
+			case 'hxx': // C++ header
+			case 'yxx': // Bison source code file
+			case 'csh': // C-Shell script
+			case 'tcl': // TCL
+			case 'tk': // Tk
+			case 'lua': // Lua
+			case 'gjs': // gnome js
+			case 'toml': // Tom's Obvious, Minimal Language (used with Cargo / Rust definitions)
+			case 'rs': // Rust Language
+			case 'go': // Go Lang
+			case 'go.mod': // Go Module
+			case 'go.sum': // Go Module Checksum
+			case 'coffee': // Coffee Script
+			case 'cson': // Coffee Script
+			case 'ocaml': // Ocaml
+			case 'ml': // Ocaml ML
+			case 'mli': // Ocaml MLI (plain signature)
+			case 'erl': // Erlang
+			case 'hrl': // Erlang macro
+			case 'pl': // perl
+			case 'pm': // perl module
+			case 'py': // python
+			case 'phps': // php source, assign text/plain !
+			case 'hh': // hip-hop (a kind of PHP for HipHop VM)
+			case 'swift': // apple swift language
+			case 'vala': // vala language
+			case 'vapi': // vala vapi
+			case 'deps': // vala deps
+			case 'hx': // haxe
+			case 'hxml': // haxe compiler arguments
+			case 'hs': // haskell
+			case 'lhs': // haskell literate
+			case 'jsp': // java server page (html + syntax)
+			case 'java': // java source code
+			case 'groovy': // apache groovy language
+			case 'gvy': // apache groovy language
+			case 'gy': // apache groovy language
+			case 'gsh': // apache groovy language, shell script
+			case 'kotlin': // kotlin language
+			case 'kt': // kotlin language
+			case 'ktm': // kotlin language module
+			case 'kts': // kotlin language script, shell script
+			case 'scala': // Scala
+			case 'sc': // scala
+			case 'gradle': // automation tool for java like languages
+			case 'pas': // Delphi / Pascal
+			case 'as': // action script
+			case 'ts': // type script
+			case 'tsx': // type script
+			case 'basic': // Basic
+			case 'bas': // basic
+			case 'vb': // visual basic - vbnet
+			case 'vbs': // visual basic script - vbnet
+			case 'openscad': // openscad
+			case 'jscad': // openscad (js version)
+			case 'scad': // openscad
+			case 'stl': // openscad
+			case 'obj': // openscad
+			case 'inc': // include file
+			case 'ins': // install config file
+			case 'inf': // info file
+			case 'ini': // ini file
+			case 'yml': // yaml file
+			case 'yaml': // yaml file
+			case 'md': // markdown
+			case 'markdown': // markdown
+			case 'protobuf': // protocol buffers
+			case 'pb': // protocol buffers
+			case 'vhd': // vhdl
+			case '#release': // release
+			case 'license': // license
+			case 'license-bsd': // license
+			case 'license-gplv3': // license
+			case 'changelog': // changelog
+			case 'changes': // changes
+			case 'readme': // license
+			case 'makefile': // makefile
+			case 'cmake': // cmake file
+			case 'meson.build': // meson build file
+			case 'mime.types': // apache
+			case 'magic': // apache
+			case 'manifest': // github
+			case 'exports': // linux exports
+			case 'fstab': // linux fstab
+			case 'group': // linux group
+			case 'hosts': // linux hosts
+			case 'machine-id': // openbsd machine-id
+			case '.htaccess': // .htaccess
+			case '.htpasswd': // .htpasswd
+			case '.gitignore': // git ignore
+			case '.gitattributes': // git attributes
+			case '.gitmodules': // git modules
+			case '.properties': // properties file
+			case 'pem': // PEM Certificate File
+			case 'crl': // Certificate Revocation List
+			case 'crt': // Certificate File
+			case 'key': // Certificate Key File
+			case 'keys': // Bind DNS keys
+			case 'dns': // DNS Config
+			case 'csp': // Content Security Policy
+			case 'httph': // HTTP Header
+			case 'dist': // .dist files are often configuration files which do not contain the real-world deploy-specific parameters
+			case 'lock': // ex: yarn.lock
+				$type = 'text/plain';
+				$disp = 'attachment';
+				break;
+			//-------------- web images
+			case 'svg':
+				$type = 'image/svg+xml';
+				$disp = 'inline';
+				break;
+			case 'png':
+				$type = 'image/png';
+				$disp = 'inline';
+				break;
+			case 'gif':
+				$type = 'image/gif';
+				$disp = 'inline';
+				break;
+			case 'jpg':
+			case 'jpe':
+			case 'jpeg':
+				$type = 'image/jpeg';
+				$disp = 'inline';
+				break;
+			case 'webp':
+				$type = 'image/webp';
+				$disp = 'inline';
+				break;
+			//-------------- other images
+			case 'tif':
+			case 'tiff':
+				$type = 'image/tiff';
+				$disp = 'attachment';
+				break;
+			case 'wmf':
+				$type = 'application/x-msmetafile';
+				$disp = 'attachment';
+				break;
+			case 'bmp':
+				$type = 'image/bmp';
+				$disp = 'attachment';
+				break;
+			//-------------- fonts
+			case 'ttf':
+				$type = 'application/x-font-ttf';
+				$disp = 'attachment';
+				break;
+			case 'woff':
+				$type = 'application/x-font-woff';
+				$disp = 'attachment';
+				break;
+			case 'woff2':
+				$type = 'application/x-font-woff2';
+				$disp = 'attachment';
+				break;
+			//-------------- portable documents
+			case 'pdf':
+				$type = 'application/pdf';
+				$disp = 'inline'; // 'attachment';
+				break;
+			case 'xfdf':
+				$type = 'application/vnd.adobe.xfdf';
+				$disp = 'attachment';
+				break;
+			case 'epub':
+				$type = 'application/epub+zip';
+				$disp = 'attachment';
+				break;
+			//-------------- email / calendar / addressbook
+			case 'eml':
+				$type = 'message/rfc822';
+				$disp = 'attachment';
+				break;
+			case 'ics':
+				$type = 'text/calendar';
+				$disp = 'attachment';
+				break;
+			case 'vcf':
+				$type = 'text/x-vcard';
+				$disp = 'attachment';
+				break;
+			case 'vcs':
+				$type = 'text/x-vcalendar';
+				$disp = 'attachment';
+				break;
+			case 'ldif':
+				$type = 'text/ldif';
+				$disp = 'attachment';
+				break;
+			//-------------- data
+			case 'csv': // csv comma
+			case 'tab': // csv tab
+				$type = 'text/csv';
+				$disp = 'attachment';
+				break;
+			//-------------- specials
+			case 'asc':
+			case 'sig':
+				$type = 'application/pgp-signature';
+				$disp = 'attachment';
+				break;
+			case 'curl':
+				$type = 'application/vnd.curl';
+				$disp = 'attachment';
+				break;
+			//-------------- graphics
+			case 'psd': // photoshop file
+			case 'xcf': // gimp file
+				$type = 'image/x-xcf';
+				$disp = 'attachment';
+				break;
+			case 'ai': // illustrator file
+			case 'eps':
+			case 'ps':
+				$type = 'application/postscript';
+				$disp = 'attachment';
+				break;
+			//-------------- web video
+			case 'ogg': // theora audio
+			case 'oga':
+				$type = 'audio/ogg';
+				$disp = 'inline';
+				break;
+			case 'ogv': // theora video
+				$type = 'video/ogg';
+				$disp = 'inline';
+				break;
+			case 'webm': // google vp8
+				$type = 'video/webm';
+				$disp = 'inline';
+				break;
+			//-------------- other video
+			case 'mpeg':
+			case 'mpg':
+			case 'mpe':
+			case 'mpv':
+			case 'mp4':
+				$type = 'video/mpeg';
+				$disp = 'attachment';
+				break;
+			case 'mpga':
+			case 'mp2':
+			case 'mp3':
+			case 'mp4a':
+				$type = 'audio/mpeg';
+				$disp = 'attachment';
+				break;
+			case 'qt':
+			case 'mov':
+				$type = 'video/quicktime';
+				$disp = 'attachment';
+				break;
+			case 'flv':
+				$type = 'video/x-flv';
+				$disp = 'attachment';
+				break;
+			case 'avi':
+				$type = 'video/x-msvideo';
+				$disp = 'attachment';
+				break;
+			case 'wm':
+			case 'wmv':
+			case 'wmx':
+			case 'wvx':
+				$type = 'video/x-ms-'.$extension;
+				$disp = 'attachment';
+				break;
+			//-------------- flash
+			case 'swf':
+				$type = 'application/x-shockwave-flash';
+				$disp = 'attachment';
+				break;
+			//-------------- rich text
+			case 'rtf':
+				$type = 'application/rtf';
+				$disp = 'attachment';
+				break;
+			case 'abw': // Abi Word
+				$type = 'application/x-abiword';
+				$disp = 'attachment';
+				break;
+			//-------------- openoffice / libreoffice
+			case 'odc':
+				$type = 'application/vnd.oasis.opendocument.chart';
+				$disp = 'attachment';
+				break;
+			case 'otc':
+				$type = 'application/vnd.oasis.opendocument.chart-template';
+				$disp = 'attachment';
+				break;
+			case 'odf':
+			case 'sxm':
+				$type = 'application/vnd.oasis.opendocument.formula';
+				$disp = 'attachment';
+				break;
+			case 'otf':
+				$type = 'application/vnd.oasis.opendocument.formula-template';
+				$disp = 'attachment';
+				break;
+			case 'odg':
+			case 'fodg':
+			case 'sxd':
+				$type = 'application/vnd.oasis.opendocument.graphics';
+				$disp = 'attachment';
+				break;
+			case 'otg':
+				$type = 'application/vnd.oasis.opendocument.graphics-template';
+				$disp = 'attachment';
+				break;
+			case 'odi':
+				$type = 'application/vnd.oasis.opendocument.image';
+				$disp = 'attachment';
+				break;
+			case 'oti':
+				$type = 'application/vnd.oasis.opendocument.image-template';
+				$disp = 'attachment';
+				break;
+			case 'odp':
+			case 'fodp':
+			case 'sxi':
+				$type = 'application/vnd.oasis.opendocument.presentation';
+				$disp = 'attachment';
+				break;
+			case 'otp':
+			case 'sti':
+				$type = 'application/vnd.oasis.opendocument.presentation-template';
+				$disp = 'attachment';
+				break;
+			case 'ods':
+			case 'fods':
+			case 'sxc':
+				$type = 'application/vnd.oasis.opendocument.spreadsheet';
+				$disp = 'attachment';
+				break;
+			case 'ots':
+			case 'stc':
+				$type = 'application/vnd.oasis.opendocument.spreadsheet-template';
+				$disp = 'attachment';
+				break;
+			case 'odt':
+			case 'fodt':
+			case 'sxw':
+				$type = 'application/vnd.oasis.opendocument.text';
+				$disp = 'attachment';
+				break;
+			case 'ott':
+			case 'stw':
+				$type = 'application/vnd.oasis.opendocument.text-template';
+				$disp = 'attachment';
+				break;
+			case 'otm':
+				$type = 'application/vnd.oasis.opendocument.text-master';
+				$disp = 'attachment';
+				break;
+			case 'oth':
+				$type = 'application/vnd.oasis.opendocument.text-web';
+				$disp = 'attachment';
+				break;
+			case 'odb':
+				$type = 'application/vnd.oasis.opendocument.database';
+				$disp = 'attachment';
+				break;
+			//-------------- ms office
+			case 'doc':
+			case 'dot':
+				$type = 'application/msword';
+				$disp = 'attachment';
+				break;
+			case 'docx':
+			case 'dotx':
+				$type = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+				$disp = 'attachment';
+				break;
+			case 'xla':
+			case 'xlc':
+			case 'xlm':
+			case 'xls':
+			case 'xlt':
+			case 'xlw':
+				$type = 'application/vnd.ms-excel';
+				$disp = 'attachment';
+				break;
+			case 'xlsx':
+			case 'xltx':
+				$type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+				$disp = 'attachment';
+				break;
+			case 'pot':
+			case 'pps':
+			case 'ppt':
+				$type = 'application/vnd.ms-powerpoint';
+				$disp = 'attachment';
+				break;
+			case 'potx':
+			case 'ppsx':
+			case 'pptx':
+				$type = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+				$disp = 'attachment';
+				break;
+			case 'mdb':
+				$type = 'application/x-msaccess';
+				$disp = 'attachment';
+				break;
+			//-------------- archives
+			case '7z':
+				$type = 'application/x-7z-compressed';
+				$disp = 'attachment';
+				break;
+			case 'xz':
+				$type = 'application/x-xz';
+				$disp = 'attachment';
+				break;
+			case 'tar':
+				$type = 'application/x-tar';
+				$disp = 'attachment';
+				break;
+			case 'tgz':
+			case 'tbz':
+				$type = 'application/x-compressed';
+				$disp = 'attachment';
+				break;
+			case 'gz':
+				$type = 'application/x-gzip';
+				$disp = 'attachment';
+				break;
+			case 'bz2':
+				$type = 'application/x-bzip2';
+				$disp = 'attachment';
+				break;
+			case 'z':
+				$type = 'application/x-compress';
+				$disp = 'attachment';
+				break;
+			case 'zip':
+				$type = 'application/zip';
+				$disp = 'attachment';
+				break;
+			case 'rar':
+				$type = 'application/x-rar-compressed';
+				$disp = 'attachment';
+				break;
+			case 'sit':
+				$type = 'application/x-stuffit';
+				$disp = 'attachment';
+				break;
+			//-------------- executables
+			case 'exe':
+			case 'msi':
+			case 'dll':
+			case 'com':
+				$type = 'application/x-msdownload';
+				$disp = 'attachment';
+				break;
+			//-------------- others, default
+			default:
+				$type = 'application/octet-stream';
+				$disp = 'attachment';
+			//--------------
+		} //end switch
+		//--
+		if($ydisposition === false) {
+			//--
+			return (string) $type; // mime type
+			//--
+		} else {
+			//--
+			switch((string)$ydisposition) {
+				case 'inline':
+					$disp = 'inline'; // rewrite display mode
+					break;
+				case 'attachment':
+					$disp = 'attachment'; // rewrite display mode
+					break;
+				default:
+					// nothing
+			} //end switch
+			//--
+			return [
+				(string) $type, // mime type
+				(string) $disp.'; filename="'.Smart::safe_filename((string)$file, '-').'"', // mime header disposition suffix
+				(string) $disp // mime disposition
+			];
+			//--
+		} //end if else
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public static function registerInternalCacheToDebugLog() : void {
+		//--
+		if(SmartEnvironment::ifInternalDebug()) {
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
+					'title' => 'Smart (FileSysUtils) // Required Settings',
+					'data' => 'FileSysUtils RootPath : `'.(defined('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH') ? print_r(SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH,1) : '').'`'
+				]);
+				SmartEnvironment::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
+					'title' => 'Smart (FileSysUtils) // Internal Cache',
+					'data' => 'Dump of Cached Static Paths:'."\n".print_r(self::$cachedStaticFilePaths,1)
+				]);
+			} //end if
+		} //end if
+		//--
+		return;
 		//--
 	} //END FUNCTION
 	//================================================================

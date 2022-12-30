@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20220928
+ * @version 	v.20221222
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -107,7 +107,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_APP_DIR';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
 			$this->err = 'The release app folder have an invalid path ...';
 			return;
 		} //end if
@@ -116,7 +116,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'A required constant is missing: TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR';
 			return;
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR)) {
 			$this->err = 'The optimizations folder have an invalid path ...';
 			return;
 		} //end if
@@ -156,7 +156,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 		$last_path_package = (string) TASK_APP_RELEASE_CODEPACK_APP_DIR.$last_package;
 		//--
-		if(!SmartFileSysUtils::check_if_safe_path((string)$last_path_package)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$last_path_package)) {
 			$this->err = 'The Release Package path is unsafe !';
 			return;
 		} //end if
@@ -304,7 +304,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 
 		//--
-		$httpcli = new SmartHttpClient('1.0'); // HTTP 1.0 to avoid continue method !
+		$httpcli = new SmartHttpClient(); // HTTP 1.0 to avoid continue method !
 		$httpcli->connect_timeout = 20;
 		//--
 		$httpcli->postfiles = [
@@ -352,7 +352,8 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 		$result = (array) $httpcli->browse_url(
 			(string) $deploy_selected_url,
-			'POST', 'tls',
+			'POST',
+			'', // leave as set by SMART_FRAMEWORK_SSL_MODE
 			(string)APP_DEPLOY_AUTH_USERNAME, (string)APP_DEPLOY_AUTH_PASSWORD
 		);
 		//--
@@ -435,7 +436,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			return;
 		} //end if
 		//--
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)TASK_APP_RELEASE_CODEPACK_APP_DIR);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR);
 		SmartFileSystem::write(
 			(string) $json_log_fpath,
 			(string) Smart::json_encode([

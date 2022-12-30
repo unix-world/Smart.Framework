@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20220915
+	// v.20221220
 
 
 	private static $db = null;
@@ -39,7 +39,7 @@ final class PageBuilderBackend {
 				//--
 				$sqlitedbfile = '#db/page-builder.sqlite';
 				//--
-				if(!\SmartFileSysUtils::check_if_safe_path((string)$sqlitedbfile, 'yes', 'yes')) { // dissalow absolute ; allow protected
+				if(!\SmartFileSysUtils::checkIfSafePath((string)$sqlitedbfile, true, true)) { // dissalow absolute ; allow protected
 					\Smart::raise_error(
 						__CLASS__.': SQLite DB PATH is UNSAFE !',
 						'PageBuilder ERROR: UNSAFE DB ACCESS (1)'

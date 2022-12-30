@@ -18,6 +18,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // 	* Apply Watermark
 // DEPENDS:
 //	* Smart::
+//	* SmartFileSysUtils
 // DEPENDS-EXT:
 //	* PHP GD (with TrueColor + CreateFromString + GetImgSizeFromString)
 //======================================================
@@ -72,8 +73,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @access 		PUBLIC
- * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring
- * @version 	v.20211126
+ * @depends     PHP GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring ; classes: Smart, SmartFileSysUtils
+ * @version 	v.20221223
  * @package 	Plugins:Image
  *
  */
@@ -804,8 +805,8 @@ final class SmartImageGdProcess {
 
 		//--
 		$isttf = false;
-		if(((string)$font != '') AND (SmartFileSysUtils::check_if_safe_path($font)) AND (SmartFileSystem::is_type_file($font))) {
-			if(function_exists('imagettfbbox') AND (substr($font, -4, 4) == '.ttf')) {
+		if(((string)$font != '') AND (SmartFileSysUtils::checkIfSafePath((string)$font)) AND (SmartFileSysUtils::staticFileExists((string)$font))) {
+			if(function_exists('imagettfbbox') AND ((string)substr((string)$font, -4, 4) == '.ttf')) {
 				$isttf = true;
 			} //end if
 		} //end if else
@@ -972,8 +973,8 @@ final class SmartImageGdProcess {
 
 		//--
 		$isttf = false;
-		if(((string)$font != '') AND (SmartFileSysUtils::check_if_safe_path($font)) AND (SmartFileSystem::is_type_file($font))) {
-			if(function_exists('imagettfbbox') AND (substr($font, -4, 4) == '.ttf')) {
+		if(((string)$font != '') AND (SmartFileSysUtils::checkIfSafePath((string)$font)) AND (SmartFileSysUtils::staticFileExists((string)$font))) {
+			if(function_exists('imagettfbbox') AND ((string)substr((string)$font, -4, 4) == '.ttf')) {
 				$isttf = true;
 			} //end if
 		} //end if else
@@ -1091,8 +1092,8 @@ final class SmartImageGdProcess {
 		$isttf = false;
 		if(is_int($font) AND ($font > 0)) {
 			$font = (int) $font;
-		} elseif(((string)$font != '') AND (SmartFileSysUtils::check_if_safe_path($font)) AND (SmartFileSystem::is_type_file($font))) {
-			if(function_exists('imagettftext') AND (substr($font, -4, 4) == '.ttf')) {
+		} elseif(((string)$font != '') AND (SmartFileSysUtils::checkIfSafePath((string)$font)) AND (SmartFileSysUtils::staticFileExists((string)$font))) {
+			if(function_exists('imagettftext') AND ((string)substr((string)$font, -4, 4) == '.ttf')) {
 				$font = (string) $font;
 				$isttf = true;
 			} else { // gdf font

@@ -21,7 +21,7 @@ if(!function_exists('stream_context_create')) {
 	die('ERROR: The PHP stream_context_create is required for Smart.Framework / Lib HTTP Cli');
 } //end if
 //--
-array_map(function($const){ if(!defined((string)$const)) { @http_response_code(500); die('A required INIT constant has not been defined: '.$const); } }, ['SMART_FRAMEWORK_SSL_MODE', 'SMART_FRAMEWORK_SSL_CIPHERS', 'SMART_FRAMEWORK_SSL_VFY_HOST', 'SMART_FRAMEWORK_SSL_VFY_PEER', 'SMART_FRAMEWORK_SSL_VFY_PEER_NAME', 'SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED', 'SMART_FRAMEWORK_SSL_DISABLE_COMPRESS', 'SMART_FRAMEWORK_SSL_CA_FILE']);
+array_map(function($const){ if(!defined((string)$const)) { @http_response_code(500); die('A required INIT constant has not been defined: '.$const); } }, ['SMART_FRAMEWORK_SSL_MODE', 'SMART_FRAMEWORK_SSL_CIPHERS', 'SMART_FRAMEWORK_SSL_VFY_HOST', 'SMART_FRAMEWORK_SSL_VFY_PEER', 'SMART_FRAMEWORK_SSL_VFY_PEER_NAME', 'SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED', 'SMART_FRAMEWORK_SSL_DISABLE_COMPRESS']); // 'SMART_FRAMEWORK_SSL_CA_FILE' is OPTIONAL
 //--
 
 
@@ -43,7 +43,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * $browser = new SmartHttpClient(); // HTTP 1.0
  * $browser->connect_timeout = 20;
  * print_r(
- * 		$browser->browse_url('https://some-website.ext:443/some-path/', 'GET', 'tls')
+ * 		$browser->browse_url('https://some-website.ext:443/some-path/', 'GET')
  * );
  *
  * // Sample POST, with optional Files and Cookies ; If Files, will send multipart form data
@@ -66,7 +66,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * 		'sessionID' => '12345'
  * ];
  * print_r(
- * 		$browser->browse_url('https://some-website.ext:443/some-path/', 'POST', 'tls')
+ * 		$browser->browse_url('https://some-website.ext:443/some-path/', 'POST')
  * );
  *
  * // Sample PUT
@@ -77,14 +77,14 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * //$browser->putbodyres = '123'; // alternate can use a string
  * //$browser->putbodymode = 'string';
  * print_r(
- * 		$browser->browse_url('https://some-website.ext:443/some-path/~/some-file.txt', 'PUT', 'tls', 'admin', 'pass')
+ * 		$browser->browse_url('https://some-website.ext:443/some-path/~/some-file.txt', 'PUT', '', 'admin', 'pass')
  * );
  * </code>
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS, SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20220910
+ * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE
+ * @version 	v.20221224
  * @package 	@Core:Network
  *
  */
@@ -235,7 +235,7 @@ final class SmartHttpClient {
 	 *
 	 * @param ENUM $http_protocol The HTTP protocol version to use ; can be set to 1.0 or 1.1 ; default is 1.0 (HTTP 1.0) which is fastest for single requests, especially in simple situations like GET or POST ; can be set to 1.1 (HTTP 1.1) which may be required in special situations for more complex requests ; HTTP 1.1 mostly will serve transfer content chunked on GET/POST so for GET/POST is better to sue 1.0 if supported by server
 	 */
-	public function __construct($http_protocol='1.0') {
+	public function __construct($http_protocol='1.0') { // HTTP 1.0 by default to avoid CONTINUE method !
 
 		//-- signature (fake) as NetSurf Browser - which is a real browser but have no default support for Javascript
 		$this->useragent = 'NetSurf/3.10 ('.'Smart.Framework '.SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.SMART_FRAMEWORK_RELEASE_VERSION.'; '.php_uname('s').' '.php_uname('r').' '.php_uname('m').'; '.'PHP/'.PHP_VERSION.')';
@@ -287,13 +287,13 @@ final class SmartHttpClient {
 	//==============================================
 	/**
 	 * This is only for special cases and can be used before calling the browse_url() for the cases when the client requires a custom SSL Certificate to be set
-	 * Set a SSL/TLS Certificate Authority File ; by default will use the SMART_FRAMEWORK_SSL_CA_FILE
+	 * Set a SSL/TLS Certificate Authority File ; by default will use the SMART_FRAMEWORK_SSL_CA_FILE (if defined, and non-empty)
 	 */
 	public function set_ssl_tls_ca_file($cafile) {
 		//--
 		$this->cafile = '';
-		if(SmartFileSysUtils::check_if_safe_path((string)$cafile) == '1') {
-			if(SmartFileSystem::is_type_file((string)$cafile)) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$cafile) == '1') {
+			if(SmartFileSysUtils::staticFileExists((string)$cafile)) {
 				$this->cafile = (string) $cafile;
 			} //end if
 		} //end if
@@ -753,7 +753,7 @@ final class SmartHttpClient {
 			} //end if
 			//--
 			if((string)$cafile != '') {
-				@stream_context_set_option($stream_context, 'ssl', 'cafile', Smart::real_path((string)$cafile));
+				@stream_context_set_option($stream_context, 'ssl', 'cafile', (string)Smart::real_path((string)$cafile));
 			} //end if
 			//--
 			@stream_context_set_option($stream_context, 'ssl', 'ciphers', 				(string)SMART_FRAMEWORK_SSL_CIPHERS); // allow only high ciphers
@@ -899,8 +899,8 @@ final class SmartHttpClient {
 			if((string)strtoupper($this->method) == 'PUT') {
 				$this->raw_headers['Accept'] = (string) '*/*';
 				if((string)$this->putbodymode == 'file') {
-					if((SmartFileSysUtils::check_if_safe_path((string)$this->putbodyres) == '1') AND (SmartFileSystem::is_type_file((string)$this->putbodyres) == true) AND (SmartFileSystem::have_access_read((string)$this->putbodyres) == true)) {
-						$this->put_body_len = (int) SmartFileSystem::get_file_size((string)$this->putbodyres);
+					if((SmartFileSysUtils::checkIfSafePath((string)$this->putbodyres) == '1') AND (SmartFileSysUtils::staticFileExists((string)$this->putbodyres) == true)) {
+						$this->put_body_len = (int) @filesize((string)$this->putbodyres); // avoid use smart file system class just for this ...
 						if($this->debug) {
 							$this->log .= '[INF] '.$this->method.' resource file: '.(string)$this->putbodyres.' @ Length: '.$this->put_body_len."\n";
 						} //end if
@@ -1050,7 +1050,7 @@ final class SmartHttpClient {
 			//--
 			if((string)$this->putbodymode == 'file') {
 				//--
-				if((SmartFileSysUtils::check_if_safe_path((string)$this->putbodyres) == '1') AND (SmartFileSystem::is_type_file((string)$this->putbodyres) == true) AND (SmartFileSystem::have_access_read((string)$this->putbodyres) == true)) {
+				if((SmartFileSysUtils::checkIfSafePath((string)$this->putbodyres) == '1') AND (SmartFileSysUtils::staticFileExists((string)$this->putbodyres) == true)) {
 					//--
 					$fp = @fopen((string)$this->putbodyres, 'rb');
 					//--
@@ -1143,7 +1143,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20210528
+ * @version 	v.20221224
  * @package 	@Core:Network
  *
  */

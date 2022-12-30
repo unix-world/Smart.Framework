@@ -33,7 +33,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221015
+ * @version 	v.20221220
  *
  */
 abstract class ErrorXxx extends \SmartAbstractAppController {
@@ -56,7 +56,7 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 		$uri = (array)  \explode('?', (string)$uri);
 		$uri = (string) \trim((string)(isset($uri[0]) ? $uri[0] : ''));
 		if(((string)$uri != '') AND ((string)\substr((string)$uri, -1, 1) != '/')) {
-			$ext = (string) \SmartFileSysUtils::get_file_extension_from_path($uri);
+			$ext = (string) \SmartFileSysUtils::extractPathFileExtension((string)$uri);
 			$lext = (string) \strtolower((string)$ext);
 		} else {
 			$ext = (string) $this->RequestVarGet('page', '', 'string');
@@ -225,10 +225,10 @@ abstract class ErrorXxx extends \SmartAbstractAppController {
 		if((string)$template_path == '@') {
 			$template_path = (string) $this->ControllerGetParam('module-tpl-path');
 		} else {
-			$template_path = (string) \SmartFileSysUtils::add_dir_last_slash(\SMART_APP_TEMPLATES_DIR.$template_path);
+			$template_path = (string) \SmartFileSysUtils::addPathTrailingSlash((string)\SMART_APP_TEMPLATES_DIR.$template_path);
 		} //end if
 		//--
-		if($this->IfProdEnv() === true) { // avoid display details on prod env
+		if($this->IfDevMode() !== true) { // avoid display details on prod env
 			$y_message = '';
 			$y_html_message = '';
 		} //end if

@@ -1,0 +1,34 @@
+{
+	"name": "unixman/smart-framework-base",
+	"type": "library",
+	"description": "Smart.Framework base libraries",
+	"license": "BSD-3-Clause",
+	"homepage": "https://codeberg.org/unixman/smart-framework-base",
+	"authors": [
+		{
+			"name": "Radu Ovidiu Ilies",
+			"email": "iradu@unix-world.org"
+		}
+	],
+	"keywords": [
+		"smart framework",
+		"php"
+	],
+	"homepage": "https://codeberg.org/unixman/smart-framework-base",
+	"require": {
+		"php": ">=7.4",
+		"ext-pcre": 		"*",
+		"ext-zlib": 		"*",
+		"ext-mbstring": 	"*",
+		"ext-hash": 		"*",
+		"ext-json": 		"*",
+		"ext-xml": 			"*",
+		"ext-SimpleXML": 	"*"
+	},
+	"autoload": {
+		"files": {
+			"files": [ "bootstrap.php" ]
+		}
+	},
+	"minimum-stability": "dev"
+}

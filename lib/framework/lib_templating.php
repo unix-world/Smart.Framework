@@ -47,8 +47,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartUnicode, SmartFileSystem, SmartFileSysUtils, SmartFrameworkRegistry ; optional-constants: SMART_SOFTWARE_MKTPL_DEBUG_LEN
- * @version 	v.20221116
+ * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
+ * @version 	v.20221220
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -102,11 +102,8 @@ final class SmartMarkersTemplating {
 		//--
 		$y_file_path = (string) $y_file_path;
 		//--
-		if(SmartFileSysUtils::check_if_safe_path($y_file_path) != 1) {
+		if(self::is_a_valid_relative_file_path_and_exists((string)$y_file_path) !== true) {
 			return '<h1>{### ERROR: Invalid Marker-TPL File Path ['.Smart::escape_html($y_file_path).'] ###}</h1>';
-		} //end if
-		if(!SmartFileSystem::is_type_file($y_file_path)) {
-			return '<h1>{### ERROR: Invalid Marker-TPL File Type ['.Smart::escape_html($y_file_path).'] ###}</h1>';
 		} //end if
 		//--
 		$y_arr_sub_templates = (array) $y_arr_sub_templates;
@@ -134,7 +131,7 @@ final class SmartMarkersTemplating {
 			$arr_sub_templates = (array) self::detect_subtemplates($mtemplate);
 		} //end if else
 		if(Smart::array_size($arr_sub_templates) > 0) {
-			$tpl_basepath = (string) SmartFileSysUtils::add_dir_last_slash(SmartFileSysUtils::get_dir_from_path($y_file_path));
+			$tpl_basepath = (string) SmartFileSysUtils::addPathTrailingSlash((string)SmartFileSysUtils::extractPathDir((string)$y_file_path));
 			$mtemplate = (string) self::load_subtemplates('no', (string)$tpl_basepath, (string)$mtemplate, (array)$arr_sub_templates); // load sub-templates before template processing and use caching also for sub-templates if set
 			$mtemplate = (string) str_replace(['⁅@@@¦', '¦@@@⁆'], ['[@@@', '@@@]'], (string)$mtemplate); // FIX: revert protect against undefined sub-templates {{{SYNC-SUBTPL-PROTECT}}}
 		} //end if
@@ -274,8 +271,8 @@ final class SmartMarkersTemplating {
 		//-- make all keys upper
 		$y_arr_vars = (array) array_change_key_case((array)$y_arr_vars, CASE_UPPER); // make all keys upper (only 1st level, not nested)
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 				'title' => '[TPL-Render.START] :: Marker-TPL / Render ; Ignore if Empty: '.$y_ignore_if_empty,
 				'data' => '* Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit($mtemplate)
 			]);
@@ -345,13 +342,9 @@ final class SmartMarkersTemplating {
 		//--
 		$y_file_path = (string) $y_file_path;
 		//--
-		if(SmartFileSysUtils::check_if_safe_path($y_file_path) != 1) {
+		if(self::is_a_valid_relative_file_path_and_exists((string)$y_file_path) !== true) {
 			Smart::log_warning('Invalid Marker-TPL File Path: '.$y_file_path);
 			return (string) '{### ERROR: Invalid Marker-TPL File Path ###}';
-		} //end if
-		if(!SmartFileSystem::is_type_file($y_file_path)) {
-			Smart::log_warning('Invalid Marker-TPL File Type: '.$y_file_path);
-			return (string) '{### ERROR: Invalid Marker-TPL File ###}';
 		} //end if
 		//--
 		$y_use_caching = (string) $y_use_caching;
@@ -362,8 +355,8 @@ final class SmartMarkersTemplating {
 			return (string) '{### ERROR: Empty or Un-Readable Marker-TPL File ###}';
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 				'title' => '[TPL-Render.START] :: Marker-TPL / File-Render: '.$y_file_path,
 				'data' => 'Caching: '.$y_use_caching
 			]);
@@ -397,9 +390,9 @@ final class SmartMarkersTemplating {
 			} //end foreach
 		} //end if else
 		if(Smart::array_size($arr_sub_templates) > 0) {
-			$tpl_basepath = (string) SmartFileSysUtils::add_dir_last_slash((string)SmartFileSysUtils::get_dir_from_path((string)$y_file_path));
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+			$tpl_basepath = (string) SmartFileSysUtils::addPathTrailingSlash((string)SmartFileSysUtils::extractPathDir((string)$y_file_path));
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 					'title' => '[TPL-Render.LOAD-SUBTEMPLATES] :: Marker-TPL / File-Render: '.$y_file_path.' ; Sub-Templates Load Base Path: '.$tpl_basepath,
 					'data' => 'Sub-Templates: '."\n".print_r($arr_sub_templates,1)
 				]);
@@ -461,8 +454,8 @@ final class SmartMarkersTemplating {
 		//-- make all keys upper
 		$y_arr_vars = (array) array_change_key_case((array)$y_arr_vars, CASE_UPPER); // make all keys upper (only 1st level, not nested)
 		//-- process sub-templates if any
-		if(SmartFrameworkRegistry::ifDebug()) {
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+		if(SmartEnvironment::ifDebug()) {
+			SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 				'title' => '[TPL-Render.START] :: Marker-TPL / Mixed Render ; Ignore if Empty: '.$y_ignore_if_empty.' ; Sub-Templates Load Base Path: '.$y_sub_templates_base_path,
 				'data' => 'Caching: '.$y_use_caching.' ; * Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit($mtemplate)
 			]);
@@ -474,8 +467,8 @@ final class SmartMarkersTemplating {
 		//--
 		$arr_sub_templates = (array) self::detect_subtemplates($mtemplate);
 		if(Smart::array_size($arr_sub_templates) > 0) {
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 					'title' => '[TPL-Render.LOAD-SUBTEMPLATES] :: Marker-TPL / Mixed Render ; Ignore if Empty: '.$y_ignore_if_empty.' ; Sub-Templates Load Base Path: '.$y_sub_templates_base_path,
 					'data' => 'Caching: '.$y_use_caching.' ; '.'Sub-Templates: '."\n".print_r($arr_sub_templates,1)."\n".'* Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit($mtemplate)
 				]);
@@ -1097,7 +1090,7 @@ final class SmartMarkersTemplating {
 		//-- ending
 		$html .= '</div><h2 style="display:inline;background:#777788;color:#FFFFFF;padding:3px;">Marker-TPL Source - with ALL:[Level 1..n] Sub-Templates Includded (if any)</h2><div id="tpl-display-for-highlight"><pre id="'.'__marker__template__analyzer-tpl_'.Smart::escape_html($hash).'"><code class="debug-tpl" data-syntax="markertpl">'.Smart::escape_html($mtemplate).'</code></pre></div><hr>'."\n".'<!-- #END: Marker-TPL Analysis @ '.Smart::escape_html($hash).' -->';
 		//-- ast
-	//	if(SmartFrameworkRegistry::ifInternalDebug()) {
+	//	if(SmartEnvironment::ifInternalDebug()) {
 		//--
 		$html .= '</div><h2 style="display:inline;background:#777788;color:#FFFFFF;padding:3px;">Marker-TPL AST Nodes Syntax Tree - with ALL:[Level 1..n] Sub-Templates Includded (if any)</h2>';
 		//--
@@ -1267,7 +1260,7 @@ final class SmartMarkersTemplating {
 	// $y_arr_vars must be a prepared ARRAY with all keys UPPERCASE
 	private static function template_renderer(string $mtemplate, array $y_arr_vars) : string {
 		//-- debug start
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$bench = microtime(true);
 		} //end if
 		//-- if have syntax, process it
@@ -1292,10 +1285,10 @@ final class SmartMarkersTemplating {
 			$mtemplate = (string) str_replace(['[###', '###]'], ['⁅###¦', '¦###⁆'], (string)$mtemplate); // finally protect against undefined variables
 		} //end if
 		//-- debug end
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			$bench = Smart::format_number_dec((float)(microtime(true) - (float)$bench), 9, '.', '');
 			self::$MkTplVars['**TPL-RENDER: ['.sha1((string)$mtemplate).']'][] = 'Time = '.$bench.' sec.';
-			SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+			SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 				'title' => '[TPL-Parsing:Render.DONE] :: Marker-TPL / Processing ; Time = '.$bench.' sec.',
 				'data' => '* Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit($mtemplate)
 			]);
@@ -1776,7 +1769,7 @@ final class SmartMarkersTemplating {
 				//--
 				if(((string)$bind_var_key != '') AND ($detect_var == 1 OR $detect_var == 2)) { // if the IF is binded to a non-empty KEY and an existing (which is mandatory to avoid mixing levels which will break this syntax in complex blocks !!!)
 					//--
-					if(SmartFrameworkRegistry::ifDebug()) {
+					if(SmartEnvironment::ifDebug()) {
 						if((string)$y_context != '') {
 							self::$MkTplVars['%IF:'.$part_var][] = 'Processing IF Syntax in Context: '.$y_context;
 						} else {
@@ -2111,7 +2104,7 @@ final class SmartMarkersTemplating {
 				//--
 				if(((string)$bind_var_key != '') AND (array_key_exists((string)$bind_var_key, $y_arr_vars)) AND (is_array($y_arr_vars[(string)$bind_var_key]))) { // if the LOOP is binded to an existing Array Variable and a non-empty KEY
 					//--
-					if(SmartFrameworkRegistry::ifDebug()) {
+					if(SmartEnvironment::ifDebug()) {
 						self::$MkTplVars['%LOOP:'.$bind_var_key][] = 'Processing LOOP Syntax: '.Smart::array_size($y_arr_vars[(string)$bind_var_key]);
 					} //end if
 					//--
@@ -2369,7 +2362,7 @@ final class SmartMarkersTemplating {
 		//--
 		if(self::have_subtemplate((string)$mtemplate) === true) {
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				$bench = microtime(true);
 			} //end if
 			//--
@@ -2407,9 +2400,9 @@ final class SmartMarkersTemplating {
 				//--
 			} //end if
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				$bench = Smart::format_number_dec((float)(microtime(true) - (float)$bench), 9, '.', '');
-				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+				SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 					'title' => '[TPL-Parsing:Evaluate] :: Marker-TPL / Detecting Sub-Templates ; Time = '.$bench.' sec.',
 					'data' => 'Sub-Templates Detected: '.print_r($arr_detected_sub_templates,1)
 				]);
@@ -2460,7 +2453,7 @@ final class SmartMarkersTemplating {
 			//--
 			$sub_levels++;
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				$bench = microtime(true);
 			} //end if
 			//--
@@ -2487,8 +2480,8 @@ final class SmartMarkersTemplating {
 							(string) $mtemplate
 						);
 						//--
-						if(SmartFrameworkRegistry::ifDebug()) {
-							SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+						if(SmartEnvironment::ifDebug()) {
+							SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 								'title' => '[TPL-Parsing:Load] :: Marker-TPL / Skipping Sub-Template File: Key='.$key.' ; *Path='.$val.' ; Sub-TPLs Loaded='.$sub_tpls_loaded.' ; Sub-Levels='.$sub_levels,
 								'data' => 'Unset based on empty Path value ...'
 							]);
@@ -2536,12 +2529,12 @@ final class SmartMarkersTemplating {
 						} //end if
 						//--
 						if(((string)substr($key, 0, 1) == '%') AND ((string)substr($key, -1, 1) == '%')) { // {{{SYNC-TPLS-VARIABLE-SUB-TPL-CONDITION}}} variable, only can be set programatically, full path to the template file is specified
-							if(SmartFileSysUtils::check_if_safe_path($val) != 1) {
+							if(SmartFileSysUtils::checkIfSafePath((string)$val) != 1) {
 								Smart::raise_error('Invalid Marker-TPL Sub-Template Path [%] as: `'.$key.'` # `'.$val.'` '.'['.$y_base_path.']'.' detected in Template:'."\n".self::log_template($mtemplate));
 								return (string) 'ERROR: (704) in '.__CLASS__;
 							} //end if
-							if((string)substr($val, 0, 2) == '@/') { // use a path suffix relative path to parent template, starting with @/ ; otherwise the full relative path is expected
-								$val = (string) SmartFileSysUtils::add_dir_last_slash((string)$y_base_path).substr($val, 2);
+							if((string)substr((string)$val, 0, 2) == '@/') { // use a path suffix relative path to parent template, starting with @/ ; otherwise the full relative path is expected
+								$val = (string) SmartFileSysUtils::addPathTrailingSlash((string)$y_base_path).substr((string)$val, 2);
 							} //end if
 							$stpl_path = (string) $val;
 							$is_variable = true;
@@ -2554,21 +2547,21 @@ final class SmartMarkersTemplating {
 							Smart::raise_error('Invalid Marker-TPL Sub-Template Syntax [!] as: `'.$key.'` # `'.$val.'` '.'['.$y_base_path.']'.' detected in Template:'."\n".self::log_template($mtemplate));
 							return (string) 'ERROR: (706) in '.__CLASS__;
 						} else {
-							if(SmartFileSysUtils::check_if_safe_path($val) != 1) {
+							if(SmartFileSysUtils::checkIfSafePath((string)$val) != 1) {
 								Smart::raise_error('Invalid Marker-TPL Sub-Template Path [*] as: `'.$key.'` # `'.$val.'` '.'['.$y_base_path.']'.' detected in Template:'."\n".self::log_template($mtemplate));
 								return (string) 'ERROR: (707) in '.__CLASS__;
 							} //end if
 							if((string)$val == '@') { // use the same dir as parent
 								$val = (string) $y_base_path;
-							} elseif((string)substr($val, 0, 2) == '@/') { // use a path suffix relative to parent template, starting with @/
-								$val = (string) SmartFileSysUtils::add_dir_last_slash((string)$y_base_path).substr($val, 2);
+							} elseif((string)substr((string)$val, 0, 2) == '@/') { // use a path suffix relative to parent template, starting with @/
+								$val = (string) SmartFileSysUtils::addPathTrailingSlash((string)$y_base_path).substr((string)$val, 2);
 							} //end if
-							$stpl_path = (string) SmartFileSysUtils::add_dir_last_slash($val).$key;
+							$stpl_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)$val).$key;
 						} //end if else
 						//--
 						if(($is_optional === true) OR (self::$MkTplAnalyzeLdDbg === true)) { // for Analyze Make just TRY TO Load Sub-TPLs to avoid load errors if the paths are defined in the TPL-Load Array not in the TPL
 							$stemplate = '';
-							if(SmartFileSystem::is_type_file((string)$stpl_path)) {
+							if(self::is_a_valid_relative_file_path_and_exists((string)$stpl_path) === true) {
 								$stemplate = (string) self::read_from_optimal_place_the_template_file((string)$stpl_path, (string)$y_use_caching); // read
 							} elseif(self::$MkTplAnalyzeLdDbg === true) {
 								if($is_variable === true) {
@@ -2580,7 +2573,7 @@ final class SmartMarkersTemplating {
 								} //end if else
 							} //end if else
 						} else {
-							if(!SmartFileSystem::is_type_file((string)$stpl_path)) {
+							if(self::is_a_valid_relative_file_path_and_exists((string)$stpl_path) !== true) {
 								Smart::raise_error('Invalid Marker-TPL Sub-Template File for key: `'.$key.'` # `'.$stpl_path.'` '.'['.$y_base_path.']'.' detected in Template:'."\n".self::log_template($mtemplate));
 								return (string) 'ERROR: (708) in '.__CLASS__;
 							} //end if
@@ -2642,8 +2635,8 @@ final class SmartMarkersTemplating {
 						$arr_sub_sub_templates = array();
 						$num_sub_sub_templates = 0;
 						//--
-						if(SmartFrameworkRegistry::ifDebug()) {
-							SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+						if(SmartEnvironment::ifDebug()) {
+							SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 								'title' => '[TPL-Parsing:Load] :: Marker-TPL / INCLUDE Sub-Template File: Key='.$key.' ; Path='.$stpl_path.' ; Sub-TPLs Loaded='.$sub_tpls_loaded.' ; Sub-Levels='.$sub_levels,
 								'data' => '* Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit($stemplate)
 							]);
@@ -2667,9 +2660,9 @@ final class SmartMarkersTemplating {
 				//--
 			} //end foreach
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				$bench = Smart::format_number_dec((float)(microtime(true) - (float)$bench), 9, '.', '');
-				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+				SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 					'title' => '[TPL-Parsing:Load.DONE] :: Marker-TPL / INCLUDE Sub-Templates Completed ; Time = '.$bench.' sec.',
 					'data' => 'Total Sub-TPLs Loaded: '.$sub_tpls_loaded
 				]);
@@ -2698,6 +2691,15 @@ final class SmartMarkersTemplating {
 
 
 	//================================================================
+	private static function is_a_valid_relative_file_path_and_exists(string $y_file_path) : bool {
+		//--
+		return (bool) SmartFileSysUtils::staticFileExists((string)$y_file_path);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	private static function read_from_fs_the_template_file(string $y_file_path) : string {
 		//--
 		if((strpos((string)$y_file_path, '.php.') !== false) OR (substr((string)$y_file_path, -4, 4) == '.php')) {
@@ -2705,7 +2707,7 @@ final class SmartMarkersTemplating {
 			return (string) 'ERROR: (401) in '.__CLASS__;
 		} //end if
 		//--
-		return (string) SmartFileSystem::read((string)$y_file_path);
+		return (string) SmartFileSysUtils::readStaticFile((string)$y_file_path);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2727,9 +2729,9 @@ final class SmartMarkersTemplating {
 		//--
 		if(array_key_exists((string)$cached_key, (array)self::$MkTplCache)) {
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				self::$MkTplVars['@SUB-TEMPLATE:'.$y_file_path][] = 'Includding a Sub-Template from VCache';
-				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+				SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 					'title' => '[TPL-ReadFileTemplate-From-VCache] :: Marker-TPL / File-Read ; Serving from VCache the File Template: '.$y_file_path.' ; VCacheFlag: '.$y_use_caching,
 					'data' => '* Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit(self::$MkTplCache[(string)$cached_key])
 				]);
@@ -2739,7 +2741,7 @@ final class SmartMarkersTemplating {
 			//--
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			if(!array_key_exists((string)$cached_key, self::$MkTplFCount)) {
 				self::$MkTplFCount[(string)$cached_key] = 0;
 			} //end if
@@ -2750,9 +2752,9 @@ final class SmartMarkersTemplating {
 			//--
 			self::$MkTplCache[(string)$cached_key] = (string) self::read_from_fs_the_template_file($y_file_path);
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				self::$MkTplVars['@SUB-TEMPLATE:'.$y_file_path][] = 'Reading a Sub-Template from FS ; VCacheFlag: '.$y_use_caching;
-				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+				SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 					'title' => '[TPL-ReadFileTemplate-From-FS-Register-In-VCache] :: Marker-TPL / Registering to VCache the File Template: '.$y_file_path.' ;',
 					'data' => '* Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit(self::$MkTplCache[(string)$cached_key])
 				]);
@@ -2764,9 +2766,9 @@ final class SmartMarkersTemplating {
 			//--
 			$mtemplate = (string) self::read_from_fs_the_template_file($y_file_path);
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				self::$MkTplVars['@SUB-TEMPLATE:'.$y_file_path][] = 'Reading a Sub-Template from FS ; VCacheFlag: '.$y_use_caching;
-				SmartFrameworkRegistry::setDebugMsg('extra', 'SMART-TEMPLATING', [
+				SmartEnvironment::setDebugMsg('extra', 'SMART-TEMPLATING', [
 					'title' => '[TPL-ReadFileTemplate-From-FS] :: Marker-TPL / File-Read ; Serving from FS the File Template: '.$y_file_path.' ;',
 					'data' => '* Content SubStr[0-'.(int)self::debug_tpl_length().']: '."\n".self::debug_tpl_cut_by_limit($mtemplate)
 				]);
@@ -2785,14 +2787,14 @@ final class SmartMarkersTemplating {
 	//================================================================
 	private static function log_template(string $mtemplate) : string {
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			return (string) $mtemplate;
 		} //end if
 		//--
-		if(SmartFrameworkRegistry::ifProdEnv()) {
+		if(!SmartEnvironment::ifDevMode()) {
 			$maxlen = 255;
 			$txt = 'If the TPL is longer switch to Dev Mode to increase the size logged or even turn on Debugging to have the full size logged ...';
-		} else {
+		} else { // dev mode
 			$maxlen = 65535;
 			$txt = 'If the TPL is longer turn on Debugging to have the full size logged ...';
 		} //end if
@@ -2845,7 +2847,7 @@ final class SmartMarkersTemplating {
 	 */
 	public static function registerOptimizationHintsToDebugLog() : void {
 		//--
-		if(SmartFrameworkRegistry::ifDebug()) {
+		if(SmartEnvironment::ifDebug()) {
 			//--
 			$optim_msg = [];
 			foreach(self::$MkTplFCount as $key => $val) {
@@ -2880,7 +2882,7 @@ final class SmartMarkersTemplating {
 					} //end if else
 				} //end if
 			} //end foreach
-			SmartFrameworkRegistry::setDebugMsg('optimizations', '*SMART-CLASSES:OPTIMIZATION-HINTS*', [
+			SmartEnvironment::setDebugMsg('optimizations', '*SMART-CLASSES:OPTIMIZATION-HINTS*', [
 				'title' => 'SmartMarkersTemplating // Optimization Hints @ Number of FS Reads for Rendering the current Template incl. Sub-Templates',
 				'data' => (array) $optim_msg
 			]);
@@ -2898,7 +2900,7 @@ final class SmartMarkersTemplating {
 					];
 				} //end if
 			} //end foreach
-			SmartFrameworkRegistry::setDebugMsg('optimizations', '*SMART-CLASSES:OPTIMIZATION-HINTS*', [
+			SmartEnvironment::setDebugMsg('optimizations', '*SMART-CLASSES:OPTIMIZATION-HINTS*', [
 				'title' => 'SmartMarkersTemplating // Optimization Notices @ Rendering Details of the current Template incl. Sub-Templates',
 				'data' => (array) $optim_msg
 			]);
@@ -2922,9 +2924,9 @@ final class SmartMarkersTemplating {
 	 */
 	public static function registerInternalCacheToDebugLog() : void {
 		//--
-		if(SmartFrameworkRegistry::ifInternalDebug()) {
-			if(SmartFrameworkRegistry::ifDebug()) {
-				SmartFrameworkRegistry::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
+		if(SmartEnvironment::ifInternalDebug()) {
+			if(SmartEnvironment::ifDebug()) {
+				SmartEnvironment::setDebugMsg('extra', '***SMART-CLASSES:INTERNAL-CACHE***', [
 					'title' => 'SmartMarkersTemplating // Internal Cache',
 					'data' => 'Dump of Cached Templates / Sub-Templates:'."\n".print_r(self::$MkTplCache,1)
 				]);

@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class AppCodeOptimizer {
 
 	// ->
-	// v.20220928
+	// v.20221219
 
 	private $debug;
 
@@ -111,16 +111,16 @@ final class AppCodeOptimizer {
 		} //end if
 		//--
 		$dirdest = (string) trim((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR);
-		if(!SmartFileSysUtils::check_if_safe_path((string)$dirdest)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$dirdest)) {
 			$this->err = 'ERROR: Destination Folder of File: '.$filesource.' IS NOT VALID ! TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR=`'.$dirdest.'`';
 			return;
 		} //end if
-		$dirdest = (string) SmartFileSysUtils::add_dir_last_slash((string)$dirdest);
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$dirdest); // must be relative path
+		$dirdest = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dirdest);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dirdest); // must be relative path
 		//--
-		$dir_of_file = (string) SmartFileSysUtils::get_dir_from_path($filesource);
+		$dir_of_file = (string) SmartFileSysUtils::extractPathDir((string)$filesource);
 		if((string)$dir_of_file != '') {
-			SmartFileSysUtils::raise_error_if_unsafe_path((string)$dir_of_file); // must be relative path
+			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_of_file); // must be relative path
 			if(!SmartFileSystem::is_type_dir($dirdest.$dir_of_file)) {
 				SmartFileSystem::dir_create((string)$dirdest.$dir_of_file, true);
 			} //end if
@@ -131,11 +131,11 @@ final class AppCodeOptimizer {
 		} //end if
 		//--
 		$destfile = (string) $dirdest.$filesource;
-		if(!SmartFileSysUtils::check_if_safe_path((string)$destfile)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$destfile)) {
 			$this->err = 'ERROR: Destination File: '.$destfile.' IS NOT VALID !';
 			return;
 		} //end if
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$destfile); // must be relative path
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$destfile); // must be relative path
 		//--
 		if(SmartFileSystem::is_type_dir($filesource)) {
 			$this->err = 'ERROR: The source FILE is A DIRECTORY: '.$filesource;
@@ -266,21 +266,21 @@ final class AppCodeOptimizer {
 		//--
 		$err = '';
 		//--
-		if(SmartFileSystem::is_type_dir($path_original_file)) {
+		if(SmartFileSystem::is_type_dir((string)$path_original_file)) {
 			$err = 'ERROR: The source FILE is A DIRECTORY: '.$path_original_file;
 			return (string) $err;
 		} //end if
-		if(!SmartFileSystem::is_type_file($path_original_file)) {
+		if(!SmartFileSystem::is_type_file((string)$path_original_file)) {
 			$err = 'ERROR: The source FILE does NOT EXIST: '.$path_original_file;
 			return (string) $err;
 		} //end if
 		//-- file or link
-		if(SmartFileSystem::path_exists($path_destination_file)) {
+		if(SmartFileSystem::path_exists((string)$path_destination_file)) {
 			$err = 'ERROR: The destination FILE PATH already exists: '.$path_original_file;
 			return (string) $err;
 		} //end if
 		//--
-		$fname = (string) SmartFileSysUtils::get_file_name_from_path((string)$path_original_file);
+		$fname = (string) SmartFileSysUtils::extractPathFileName((string)$path_original_file);
 		//--
 		$tmp_read_file_head = '';
 		$tmp_is_a_file_and_is_devonly = false;
@@ -645,29 +645,29 @@ final class AppCodeOptimizer {
 
 		//--
 		$dirdest = (string) trim((string)TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR);
-		if(!SmartFileSysUtils::check_if_safe_path((string)$dirdest)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$dirdest)) {
 			$this->err = 'ERROR: Destination Folder (1): '.$dirdest.' IS NOT VALID ! TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR=`'.$dirdest.'`';
 			return;
 		} //end if
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$dirdest); // must be relative path
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dirdest); // must be relative path
 		//--
-		$dirdest = (string) SmartFileSysUtils::add_dir_last_slash(SmartFileSysUtils::add_dir_last_slash((string)$dirdest).trim((string)$dirsource, '/'));
-		if(!SmartFileSysUtils::check_if_safe_path((string)$dirdest)) {
+		$dirdest = (string) SmartFileSysUtils::addPathTrailingSlash((string)SmartFileSysUtils::addPathTrailingSlash((string)$dirdest).trim((string)$dirsource, '/'));
+		if(!SmartFileSysUtils::checkIfSafePath((string)$dirdest)) {
 			$this->err = 'ERROR: Destination Folder (2): '.$dirdest.' IS NOT VALID ! TASK_APP_RELEASE_CODEPACK_DESTINATION_DIR=`'.$dirdest.'`';
 			return;
 		} //end if
-		SmartFileSysUtils::raise_error_if_unsafe_path((string)$dirdest); // must be relative path
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dirdest); // must be relative path
 		//--
 
 		//--
 		$originaldirsource = (string) $dirsource; // preserve this for recurring
 		$originalsubdir = '';
 		if((string)$subdir != '') {
-			$originalsubdir = (string) SmartFileSysUtils::add_dir_last_slash($subdir); // relative path
-			$dirdest = (string) SmartFileSysUtils::add_dir_last_slash($dirdest).$subdir; // relative path
-			SmartFileSysUtils::raise_error_if_unsafe_path($dirdest); // must be relative path
-			$dirsource = (string) SmartFileSysUtils::add_dir_last_slash(SmartFileSysUtils::add_dir_last_slash((string)$dirsource).trim((string)$subdir, '/')); // absolute path
-			SmartFileSysUtils::raise_error_if_unsafe_path($dirsource); // must be relative path
+			$originalsubdir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$subdir); // relative path
+			$dirdest = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dirdest).$subdir; // relative path
+			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dirdest); // must be relative path
+			$dirsource = (string) SmartFileSysUtils::addPathTrailingSlash((string)SmartFileSysUtils::addPathTrailingSlash((string)$dirsource).trim((string)$subdir, '/')); // absolute path
+			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dirsource); // must be relative path
 		} //end if
 		//--
 
@@ -720,20 +720,20 @@ final class AppCodeOptimizer {
 					(AppNetUnPackager::unpack_valid_file_name((string)$file) === true)
 				) { // fix empty
 					//--
-					$tmp_path = (string) SmartFileSysUtils::add_dir_last_slash($dirsource).$file; // absolute path
-					$tmp_dest = (string) SmartFileSysUtils::add_dir_last_slash($dirdest).$file; // relative path
+					$tmp_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dirsource).$file; // absolute path
+					$tmp_dest = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dirdest).$file; // relative path
 					//--
-					SmartFileSysUtils::raise_error_if_unsafe_path($tmp_path, 'no'); // allow absolute paths
-					SmartFileSysUtils::raise_error_if_unsafe_path($tmp_dest); // must be relative path
+					SmartFileSysUtils::raiseErrorIfUnsafePath((string)$tmp_path, false); // allow absolute paths
+					SmartFileSysUtils::raiseErrorIfUnsafePath((string)$tmp_dest); // must be relative path
 					//--
-					if(SmartFileSystem::path_exists($tmp_path)) {
+					if(SmartFileSystem::path_exists((string)$tmp_path)) {
 						//--
-						if(SmartFileSystem::path_exists($tmp_path.'/'.'sf-dev-only.nopack')) { // absolute path
+						if(SmartFileSystem::path_exists((string)$tmp_path.'/'.'sf-dev-only.nopack')) { // absolute path
 							//--
 							$this->counters['dir-nopack']++; // SKIP !!!
 							$this->sfnopack[] = (string) $tmp_path;
 							//--
-							echo '<span title="NO-PACK*DIR: '.Smart::escape_html($tmp_path).'" style="color:#FF3300;cursor:default;">&laquo;&cross;&raquo;</span>'."\n";
+							echo '<span title="NO-PACK*DIR: '.Smart::escape_html((string)$tmp_path).'" style="color:#FF3300;cursor:default;">&laquo;&cross;&raquo;</span>'."\n";
 							Smart::InstantFlush();
 							//--
 							if($this->debug) {
@@ -742,7 +742,7 @@ final class AppCodeOptimizer {
 							//--
 						} else {
 							//--
-							if(!SmartFileSystem::is_type_dir($tmp_path)) { // FILE
+							if(!SmartFileSystem::is_type_dir((string)$tmp_path)) { // FILE
 								//--
 								$this->err = (string) $this->optimize_file((string)$tmp_path, (string)$tmp_dest);
 								if((string)$this->err != '') {

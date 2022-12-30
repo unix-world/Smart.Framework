@@ -49,9 +49,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetPackager {
 
 	// ->
-	// v.20220928
+	// v.20221222
 
-	public const APP_NET_PACKAGER_VERSION = 'z.20220928'; // {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
+	public const APP_NET_PACKAGER_VERSION = 'z.20221222'; // {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
 
 	//--
 	private $error_log = '';
@@ -102,12 +102,12 @@ final class AppNetPackager {
 			} //end if
 		} //end if
 		$this->date_time = (string) $y_date_time_markup;
-		$this->arch_dir = (string) SmartFileSysUtils::add_dir_last_slash((string)$y_dir);
+		$this->arch_dir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$y_dir);
 		$this->archive_name = (string) Smart::safe_filename((string)$y_archive_name);
 		$this->archive_file = (string) Smart::safe_pathname((string)$this->arch_dir.$this->archive_name);
 		//--
-		SmartFileSysUtils::raise_error_if_unsafe_path($this->arch_dir);
-		SmartFileSysUtils::raise_error_if_unsafe_path($this->archive_file);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$this->arch_dir);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$this->archive_file);
 		//--
 		if(!SmartFileSystem::is_type_dir($this->arch_dir)) {
 			SmartFileSystem::dir_create($this->arch_dir);
@@ -190,7 +190,7 @@ final class AppNetPackager {
 			return 'AppCodePack.Packager / Save :: Packaging # '.$this->error_log;
 		} //end if
 		//--
-		if(((string)trim((string)$this->appid) == '') OR (!SmartFileSysUtils::check_if_safe_file_or_dir_name((string)$this->appid))) {
+		if(((string)trim((string)$this->appid) == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$this->appid))) {
 			return 'AppID is empty or invalid: '.$this->appid;
 		} //end if
 		//--
@@ -313,7 +313,7 @@ final class AppNetPackager {
 			$this->error_log = 'ERROR: Empty Dir Name to Pack !';
 			return '';
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)$tmp_path)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$tmp_path)) {
 			$this->error_log = 'ERROR: Invalid Dir Name to Pack: '.$tmp_path;
 			return '';
 		} //end if
@@ -327,7 +327,7 @@ final class AppNetPackager {
 		$base_dir = (string) Smart::dir_name((string)$fixed_path);
 		$base_sdir = (string) Smart::base_name((string)$fixed_path);
 		if((string)substr((string)$base_sdir, 0, 1) == '#') {
-			if(!SmartFileSystem::is_type_file((string)SmartFileSysUtils::add_dir_last_slash((string)$tmp_path).'.htaccess')) {
+			if(!SmartFileSystem::is_type_file((string)SmartFileSysUtils::addPathTrailingSlash((string)$tmp_path).'.htaccess')) {
 				$this->error_log = 'ERROR: Protected Dir Security: Missing `.htaccess` in: `'.$fixed_path.'`';
 				return '';
 			} //end if
@@ -381,7 +381,7 @@ final class AppNetPackager {
 			$this->error_log = 'ERROR: Empty File Name to Pack !';
 			return '';
 		} //end if
-		if(!SmartFileSysUtils::check_if_safe_path((string)$tmp_path)) {
+		if(!SmartFileSysUtils::checkIfSafePath((string)$tmp_path)) {
 			$this->error_log = 'ERROR: Invalid File Name to Pack: '.$tmp_path;
 			return '';
 		} //end if
@@ -442,7 +442,7 @@ final class AppNetPackager {
 	// [PRIVATE]
 	private function path_take_out_opt_folder(?string $tmp_path) {
 		//--
-		return (string) SmartFileSysUtils::add_dir_last_slash((string)$this->appid).ltrim((string)substr((string)$tmp_path, (int)strlen((string)$this->optimizations_dir)), '/');
+		return (string) SmartFileSysUtils::addPathTrailingSlash((string)$this->appid).ltrim((string)substr((string)$tmp_path, (int)strlen((string)$this->optimizations_dir)), '/');
 		//--
 	} //END FUNCTION
 	//=====================================================================================
@@ -467,27 +467,27 @@ final class AppNetPackager {
 	//--
 
 	//-- protection
-	SmartFileSysUtils::raise_error_if_unsafe_path($dirsource);
+	SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dirsource);
 	//--
 
 	//--
-	if(strlen($dirsource) <= 0) {
+	if((int)strlen((string)$dirsource) <= 0) {
 		$this->error_log = 'Packager // ERROR: The Archive FileName and Source DirName must not be empty !';
 		return;
 	} //end if
 	//--
 
 	//--
-	if(!SmartFileSystem::is_type_dir($dirsource)) {
+	if(!SmartFileSystem::is_type_dir((string)$dirsource)) {
 		$this->error_log = 'Packager // ERROR: Source is not a Dir ! \''.$dirsource.'\'';
 		return;
 	} //end if else
 	//--
 
 	//--
-	if($handle = opendir($dirsource)) {
+	if($handle = opendir((string)$dirsource)) {
 		//--
-		$this->arch_content .= $this->dir_pack($dirsource);
+		$this->arch_content .= $this->dir_pack((string)$dirsource);
 		//--
 		if((string)$this->error_log == '') {
 			//--
@@ -498,15 +498,15 @@ final class AppNetPackager {
 					(AppNetUnPackager::unpack_valid_file_name((string)$file) === true)
 				) { // fix empty
 					//--
-					$tmp_path = SmartFileSysUtils::add_dir_last_slash($dirsource).$file;
-					SmartFileSysUtils::raise_error_if_unsafe_path($tmp_path);
+					$tmp_path = SmartFileSysUtils::addPathTrailingSlash((string)$dirsource).$file;
+					SmartFileSysUtils::raiseErrorIfUnsafePath((string)$tmp_path);
 					//--
-					if(SmartFileSystem::path_exists($tmp_path)) {
+					if(SmartFileSystem::path_exists((string)$tmp_path)) {
 						//--
-						if(SmartFileSystem::is_type_dir($tmp_path)) {
-							$this->dir_recursive_pack($tmp_path);
-						} elseif(SmartFileSystem::is_type_file($tmp_path)) {
-							$this->arch_content .= $this->file_pack($tmp_path);
+						if(SmartFileSystem::is_type_dir((string)$tmp_path)) {
+							$this->dir_recursive_pack((string)$tmp_path);
+						} elseif(SmartFileSystem::is_type_file((string)$tmp_path)) {
+							$this->arch_content .= $this->file_pack((string)$tmp_path);
 						} else {
 							$this->error_log = 'Packager // ERROR: A broken Link detected: '.$tmp_path;
 						} //end if

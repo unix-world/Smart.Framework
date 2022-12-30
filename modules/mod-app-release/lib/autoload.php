@@ -22,7 +22,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
  * @internal
  *
  */
-function autoload__SmartFrameworkLibModulesAppRelease($classname) { // v.20220928
+function autoload__SmartFrameworkLibModulesAppRelease($classname) { // v.20221221
 	//--
 	switch((string)$classname) {
 		//--

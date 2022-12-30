@@ -15,7 +15,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // Smart-Framework - Detect Images:
 // DEPENDS:
 //	* Smart::
-//	* SmartUtils::
+//	* SmartFileSysUtils::
 // DEPENDS-EXT:
 //	* PHP GD *optional*
 //======================================================
@@ -31,8 +31,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart
- * @version 	v.20210605
+ * @depends 	classes: Smart, SmartFileSysUtils
+ * @version 	v.20221220
  * @package 	Plugins:Image
  *
  */
@@ -55,7 +55,7 @@ final class SmartDetectImages {
 		//--
 		if(($use_gd === true) AND (!function_exists('getimagesizefromstring'))) {
 			//--
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				Smart::log_notice(__METHOD__.'(): GD / getimagesizefromstring() is not available, fall back to quick detection ...');
 			} //end if
 			//--
@@ -158,7 +158,7 @@ final class SmartDetectImages {
 				$temp_guess_extension = (string) trim((string)($temp_guess_extension[1] ?? ''));
 				$temp_guess_extension = (array)  explode('"', (string)$temp_guess_extension);
 				$temp_guess_extension = (string) trim((string)($temp_guess_extension[1] ?? ''));
-				$temp_guess_extension = (string) trim(strtolower(SmartFileSysUtils::get_file_extension_from_path((string)$temp_guess_extension))); // [OK]
+				$temp_guess_extension = (string) trim((string)strtolower((string)SmartFileSysUtils::extractPathFileExtension((string)$temp_guess_extension))); // [OK]
 				$temp_guess_ext_tmp = array();
 				//-- test
 				if((string)$temp_guess_extension == 'jpeg') {
@@ -167,9 +167,9 @@ final class SmartDetectImages {
 				if(((string)$temp_guess_extension == 'svg') OR ((string)$temp_guess_extension == 'png') OR ((string)$temp_guess_extension == 'gif') OR ((string)$temp_guess_extension == 'jpg') OR ((string)$temp_guess_extension == 'webp')) {
 					// OK, we guess it
 					$temp_where_was_detected = '[content-disposition]: \''.$temp_guess_extension.'\'';
-					$temp_image_extension = Smart::safe_validname($temp_guess_extension); // make it safe
+					$temp_image_extension = (string) Smart::safe_validname((string)$temp_guess_extension); // make it safe
 					if((string)$temp_image_extension != '') {
-						$temp_image_extension = '.'.strtolower($temp_image_extension); // add the point only if non-empty to avoid issues
+						$temp_image_extension = '.'.strtolower((string)$temp_image_extension); // add the point only if non-empty to avoid issues
 					} //end if
 				} else {
 					//-- try to guess by the content type (strategy 2)
@@ -239,7 +239,7 @@ final class SmartDetectImages {
 		//--
 		$pict = (string) $pict;
 		if(strlen($pict) < 16) {
-			if(SmartFrameworkRegistry::ifDebug()) {
+			if(SmartEnvironment::ifDebug()) {
 				Smart::log_notice(__METHOD__.'(): expects the first 16 bytes for detection (but have only '.strlen($pict).' bytes) ...');
 			} //end if
 			return '';
