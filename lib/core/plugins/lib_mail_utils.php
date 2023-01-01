@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20221220
+ * @version 	v.20230101
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -265,7 +265,7 @@ final class SmartMailerUtils {
 					AND
 					((string)trim((string)$def_mail_cfg['auth-password']['data']) != '')
 				) {
-					$def_mail_cfg['auth-password'] = (string) \SmartUtils::crypto_blowfish_decrypt((string)$def_mail_cfg['auth-password']['data']);
+					$def_mail_cfg['auth-password'] = (string) SmartUtils::crypto_blowfish_decrypt((string)$def_mail_cfg['auth-password']['data']);
 				} else {
 					$def_mail_cfg['auth-password'] = ''; // INVALID
 					Smart::log_warning(__METHOD__.' # Invalid definition for config value: sendmail.auth-password !');
@@ -324,7 +324,7 @@ final class SmartMailerUtils {
 	public static function send_custom_email($mail_config, $logsend_dir, $to, $cc, $bcc, $subj, $message, $is_html, array $attachments=[], $replytoaddr='', $inreplyto='', $priority='3', $charset='UTF-8') {
 
 		//--
-		$mail_config = (array) \Smart::array_init_keys(
+		$mail_config = (array) Smart::array_init_keys(
 			$mail_config,
 			[
 				'server-mx-domain',
@@ -460,7 +460,7 @@ final class SmartMailerUtils {
 	public static function send_extended_email($y_server_settings, $y_mode, $to, $cc, $bcc, $subj, $message, $is_html, array $attachments=[], $replytoaddr='', $inreplyto='', $priority=3, $charset='UTF-8') {
 
 		//--
-		$y_server_settings = (array) \Smart::array_init_keys(
+		$y_server_settings = (array) Smart::array_init_keys(
 			$y_server_settings,
 			[
 				'smtp_mxdomain',
@@ -877,13 +877,17 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20221220
+ * @version 	v.20230101
  * @package 	Application:Plugins:Mailer
  *
  */
 final class SmartMailerMimeParser {
 
 	// ::
+
+
+	private const EMAIL_TOKEN_COOKIE_NAME = 'SmartMailParseToken';
+	private const EMAIL_CRYPTO_PREFIX_KEY = 'Smart.Framework//MailMimeLink';
 
 
 	//==================================================================
@@ -918,19 +922,34 @@ final class SmartMailerMimeParser {
 		} //end if
 		$y_ctrl_key = (string) SMART_ERROR_AREA.'/'.$y_ctrl_key; // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
 		//--
+		if((string)trim((string)SMART_APP_VISITOR_COOKIE) == '') {
+			Smart::log_warning('Mail-Utils / Empty Visitor ID (cookie).');
+			return '';
+		} //end if
+		$access_token = (string) SmartHashCrypto::sha512((string)trim((string)SMART_APP_VISITOR_COOKIE), true).'#'.SmartHashCrypto::md5((string)trim((string)SMART_APP_VISITOR_COOKIE), true);
+		SmartUtils::set_cookie(
+			(string) self::EMAIL_TOKEN_COOKIE_NAME,
+			(string) $access_token,
+			0, // session expire
+			'/', // path
+			'@', // domain
+			'None' // same site policy # fix: required for iFrame srcdoc, will not send cookies if Lax or Strict (Firefox impl.)
+		);
+		//--
 		$crrtime = (int) time();
 		//--
-		$access_key     = (string) SmartHashCrypto::checksum('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$y_msg_file.'>'.$y_ctrl_key);
+		$access_key     = (string) SmartHashCrypto::checksum('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_token.':'.$y_msg_file.'>'.$y_ctrl_key);
 		$unique_key     = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$y_msg_file.'>'.$y_ctrl_key);
 		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_login_id().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SmartUtils::get_selfrobot_useragent_name().'$'.$access_key.':'.$y_msg_file.'>'.$y_ctrl_key);
 		//-- {{{SYNC-MIME-ENCRYPT-ARR}}}
 		$safe_link = SmartUtils::crypto_encrypt(
-			(string) trim((string)$crrtime)."\n". 			// current time stamp
-			(string) trim((string)$y_msg_file)."\n". 		// file
-			(string) trim((string)$access_key)."\n". 		// access key based on UniqueID cookie
-			(string) trim((string)$unique_key)."\n". 		// unique key based on: AuthUserID, User-Agent and IP
-			(string) trim((string)$self_robot_key)."\n", 	// self robot browser UserAgentName/ID key
-			(string) 'Smart.Framework//MimeLink'.SMART_FRAMEWORK_SECURITY_KEY
+			(string) trim((string)$crrtime)."\n". 										// current time stamp
+			(string) trim((string)$y_msg_file)."\n". 									// file
+			(string) trim((string)$access_key)."\n". 									// access key based on UniqueID cookie
+			(string) trim((string)$unique_key)."\n". 									// unique key based on: AuthUserID, User-Agent and IP
+			(string) trim((string)$self_robot_key)."\n". 								// self robot browser UserAgentName/ID key
+			(string) sha1((string)trim((string)$access_token))."\n", 					// control: hash of current token
+			(string) self::EMAIL_CRYPTO_PREFIX_KEY."\t".SMART_FRAMEWORK_SECURITY_KEY
 		);
 		//--
 		return (string) $safe_link;
@@ -947,26 +966,34 @@ final class SmartMailerMimeParser {
 	 * @param STRING $y_ctrl_key The decryption private key
 	 * @return ARRAY with the decoded and decrypted url segment containing all required information to validate the email message path
 	 */
-	public static function decode_mime_fileurl($y_enc_msg_file, $y_ctrl_key) {
+	public static function decode_mime_fileurl($y_enc_msg_file, $y_ctrl_key) : array {
+		//--
+		$arr = array(); // {{{SYNC-MIME-ENCRYPT-ARR}}}
+		$arr['error'] = ''; // by default, no error
 		//--
 		$y_enc_msg_file = (string) trim((string)$y_enc_msg_file);
 		if((string)$y_enc_msg_file == '') {
-			Smart::log_warning('Mail-Utils / Decode Mime File URL: Empty Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
-			return '';
+			$arr = array();
+			$arr['error'] = 'Empty Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection.';
+			return (array) $arr;
 		} //end if
 		if(!SmartFileSysUtils::checkIfSafePath((string)$y_enc_msg_file)) {
-			Smart::log_warning('Mail-Utils / Decode Mime File URL: Invalid Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection. Message File: '.$y_enc_msg_file);
-			return '';
+			Smart::log_warning(__METHOD__.' # Invalid Message File Path: `'.$y_enc_msg_file.'`');
+			$arr = array();
+			$arr['error'] = 'Invalid Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection.';
+			return (array) $arr;
 		} //end if
 		//--
 		$y_ctrl_key = (string) trim((string)$y_ctrl_key);
 		if((string)$y_ctrl_key == '') {
-			Smart::log_warning('Mail-Utils / Decode Mime File URL: Empty Controller Key has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
-			return '';
+			$arr = array();
+			$arr['error'] = 'Empty Controller Key has been provided. This means the URL link will be unavaliable (empty) to assure security protection.';
+			return (array) $arr;
 		} //end if
 		if(!defined('SMART_ERROR_AREA')) {
-			Smart::log_warning('Mail-Utils / Decode Mime File URL: Missing SMART_ERROR_AREA. This means the URL link will be unavaliable (empty) to assure security protection.');
-			return '';
+			$arr = array();
+			$arr['error'] = 'Missing SMART_ERROR_AREA. This means the URL link will be unavaliable (empty) to assure security protection.';
+			return (array) $arr;
 		} //end if
 		$y_ctrl_key = (string) SMART_ERROR_AREA.'/'.$y_ctrl_key; // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
 		//--
@@ -975,11 +1002,10 @@ final class SmartMailerMimeParser {
 		$the_msg_part = (string) $the_sep_arr['part'];
 		$the_sep_arr = null;
 		//--
-		$arr = array(); // {{{SYNC-MIME-ENCRYPT-ARR}}}
-		$arr['error'] = ''; // by default, no error
-		//--
-		if((string)SMART_APP_VISITOR_COOKIE == '') {
-			$arr['error'] = 'WARNING: Access Forbidden ... No Visitor ID set ...!';
+		$access_token = (string) trim((string)SmartUtils::get_cookie((string)self::EMAIL_TOKEN_COOKIE_NAME));
+		if((string)$access_token == '') {
+			$arr = array();
+			$arr['error'] = 'WARNING: Access Forbidden ... Empty Access Token ...!';
 			return (array) $arr;
 		} //end if
 		//--
@@ -987,10 +1013,15 @@ final class SmartMailerMimeParser {
 			$the_msg_part = (string) strtolower((string)trim((string)SmartUtils::url_obfs_decode((string)$the_msg_part)));
 		} //end if
 		//--
-		$decoded_link =  trim((string)SmartUtils::crypto_decrypt(
+		$decoded_link = (string) trim((string)SmartUtils::crypto_decrypt(
 			(string)$y_enc_msg_file,
-			'Smart.Framework//MimeLink'.SMART_FRAMEWORK_SECURITY_KEY
+			self::EMAIL_CRYPTO_PREFIX_KEY."\t".SMART_FRAMEWORK_SECURITY_KEY
 		));
+		if((string)$decoded_link == '') {
+			$arr = array();
+			$arr['error'] = 'WARNING: Access Forbidden ... Empty MimeURL Data ...!';
+			return (array) $arr;
+		} //end if
 		$dec_arr = (array) explode("\n", trim((string)$decoded_link));
 		//print_r($dec_arr);
 		//--
@@ -1000,6 +1031,7 @@ final class SmartMailerMimeParser {
 		$arr['access-key'] 		= (string) trim((string)($dec_arr[2] ?? ''));
 		$arr['bw-unique-key'] 	= (string) trim((string)($dec_arr[3] ?? ''));
 		$arr['sf-robot-key']	= (string) trim((string)($dec_arr[4] ?? ''));
+		$arr['hash-token'] 		= (string) trim((string)($dec_arr[5] ?? ''));
 		//-- check if file path is valid
 		if((string)trim((string)($arr['message-file'] ?? null)) == '') {
 			$arr = array();
@@ -1012,11 +1044,17 @@ final class SmartMailerMimeParser {
 			return (array) $arr;
 		} //end if
 		//--
+		if((string)$arr['hash-token'] != (string)sha1((string)$access_token)) {
+			$arr = array();
+			$arr['error'] = 'ERROR: Invalid Access Token (cookie) ; This issue can be if the SandBox iFrame is not receiving the cookies from parent window. With default browser settings regarding cookie policy it should be receiving the access token cookie ...';
+			return (array) $arr;
+		} //end if
+		//--
 		$browser_os_ip_identification = (array) SmartUtils::get_os_browser_ip(); // get browser and os identification
 		//-- re-compose the access key
 		$crrtime = (int) $arr['creation-time'];
 		//--
-		$access_key     = (string) SmartHashCrypto::checksum('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$arr['message-file'].'>'.$y_ctrl_key);
+		$access_key     = (string) SmartHashCrypto::checksum('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_token.':'.$arr['message-file'].'>'.$y_ctrl_key);
 		$uniq_key       = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$arr['message-file'].'>'.$y_ctrl_key);
 		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_login_id().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.trim((string)$browser_os_ip_identification['signature']).'$'.$access_key.':'.$arr['message-file'].'>'.$y_ctrl_key);
 		//-- check access key
@@ -1107,11 +1145,14 @@ final class SmartMailerMimeParser {
 		$msg_decode_arr = (array) self::decode_mime_fileurl((string)$y_enc_msg_file, (string)$y_ctrl_key);
 		//--
 		if((string)$msg_decode_arr['error'] != '') {
+			return (string) SmartComponents::operation_error('MIME Parser // ERROR: '.$msg_decode_arr['error']);
+			/*
 			Smart::raise_error(
 				'ERROR: MIME Parser // Mesage File Decode: '.$msg_decode_arr['error'],
 				'ERROR: MIME Parser // Mesage File Decode // See error log for details ...'
 			);
 			return '';
+			*/
 		} //end if
 		//--
 

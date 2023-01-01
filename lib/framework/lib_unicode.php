@@ -81,7 +81,7 @@ if(mb_substitute_character() !== 63) {
 /**
  * Class: SmartUnicode - provides the string util functions to work safe with Unicode (Multibyte) Strings / Characters.
  *
- * Compatbile with: UTF-8 (Unicode) - all latin based character sets ; ISO-8859-1 (latin base) - usa, uk, irish, italian, sweden, norway, denmark, spanish, portugal, dutch ; ISO-8859-* (latin extended) - german, austrian, finland, czech, slovak, poland, hungary, romania, slovenia, croatia, serbia, bosnia, albania
+ * Compatbile with: UTF-8 (Unicode), ISO-8859-1 (latin base), ISO-8859-* (latin extended, greek, cyrillic, ...), Japanese, ...
  *
  * Take a look at the replacement table below.
  *
@@ -160,7 +160,7 @@ if(mb_substitute_character() !== 63) {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP MBString, PHP XML ; constants: SMART_FRAMEWORK_CHARSET, SMART_FRAMEWORK_SECURITY_FILTER_INPUT
- * @version     v.20221205
+ * @version     v.20230101
  * @package     @Core
  *
  */
@@ -524,6 +524,14 @@ final class SmartUnicode {
 		'Ž' => '&#381;'
 	];
 
+	// a restricted list with the allowed charsets used for implicit detection (for explicit detection any charset can be used) ; using a restricted list is a safety measure against malformed or broken strings ; ex: avoid a broken UTF-8 string to be detected as GB18030 if contains weird characters
+	private const CONVERSION_IMPLICIT_CHARSETS = 'UTF-8, ISO-8859-1, ASCII'; // starting with PHP 8.1 the UTF-7 should no more be used in the list because it misbehaves: if the (plus) + character is present in a string will always detect string as being UTF-7 instead of UTF-8
+
+	// fix charset list, for implicit detection
+	private const CONVERSION_FALLBACK_IMPLICIT_CHARSETS = [
+		'UTF-7' => 'ISO-8859-1', // fix for PHP 8.1 and later ; UTF-7 is a very special charset ; from PHP 8.1, converting 'A + B' from 'UTF-7' to 'UTF-8' gives 'A  B' instead of 'A + B' like expected and like in PHP 5.6, 7.x, 8.0
+	];
+
 
 	//================================================================
 	/**
@@ -533,7 +541,7 @@ final class SmartUnicode {
 	 *
 	 * @return INTEGER			:: The number of characters in a string
 	 */
-	public static function str_len($ytext) {
+	public static function str_len(?string $ytext) : int {
 		//--
 		return (int) mb_strlen((string)$ytext);
 		//--
@@ -551,7 +559,7 @@ final class SmartUnicode {
 	 *
 	 * @return STRING					:: The sub-string
 	 */
-	public static function sub_str($ystr, $ystart, $ylen=null) {
+	public static function sub_str(?string $ystr, ?int $ystart, ?int $ylen=null) : string {
 		//--
 		if($ylen === null) { // fixed bug that incorrectly interpret the last (optional) argument
 			return (string) mb_substr((string)$ystr, (int)$ystart); // without optional param (len)
@@ -568,13 +576,13 @@ final class SmartUnicode {
 	 * Unicode Safe substr_count()	:: Count the number of substring occurrences
 	 *
 	 * @param STRING 	$ystr		:: The string being checked
-	 * @param STRING 	$ypiece		:: The string to be found
+	 * @param STRING 	$ysubstr	:: The string to be found
 	 *
 	 * @return INTEGER				:: The number of times the piece sub-string occurs in the string being checked
 	 */
-	public static function substr_count($ystr, $ypiece) {
+	public static function substr_count(?string $ystr, ?string $ysubstr) : int {
 		//--
-		return (int) mb_substr_count((string)$ystr, (string)$ypiece);
+		return (int) mb_substr_count((string)$ystr, (string)$ysubstr);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -591,7 +599,7 @@ final class SmartUnicode {
 	 *
 	 * @return STRING				:: The processed string with replacements if the needle is found
 	 */
-	public static function str_limit_replace($needle, $replace, $haystack, $count) {
+	public static function str_limit_replace(?string $needle, ?string $replace, ?string $haystack, int $count) : string {
 		//--
 		return (string) implode((string)$replace, (array)explode((string)$needle, (string)$haystack, ((int)$count + 1)));
 		//--
@@ -604,14 +612,14 @@ final class SmartUnicode {
 	 * Unicode Safe strpos()		:: Find position of first occurrence of string in a string, Case Sensitive
 	 *
 	 * @param STRING 	$ystr		:: The string to search in
-	 * @param STRING 	$ypiece		:: The sub-string to be found
+	 * @param STRING 	$ysubstr	:: The sub-string to be found
 	 * @param INTEGER 	$offset 	:: The search offset. If it is not specified, 0 is used
 	 *
 	 * @return INTEGER / FALSE		:: The numeric position of the first occurrence of piece in the string. If not found, it returns FALSE
 	 */
-	public static function str_pos($ystr, $ypiece, $offset=0) {
+	public static function str_pos(?string $ystr, ?string $ysubstr, int $offset=0) { // mixed
 		//--
-		return mb_strpos((string)$ystr, (string)$ypiece, (int)$offset); // return MIXED !
+		return mb_strpos((string)$ystr, (string)$ysubstr, (int)$offset); // return MIXED !
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -622,14 +630,14 @@ final class SmartUnicode {
 	 * Unicode Safe stripos()		:: Find position of first occurrence of string in a string, Case Insensitive
 	 *
 	 * @param STRING 	$ystr		:: The string to search in
-	 * @param STRING 	$ypiece		:: The sub-string to be found
+	 * @param STRING 	$ysubstr	:: The sub-string to be found
 	 * @param INTEGER 	$offset 	:: The search offset. If it is not specified, 0 is used
 	 *
 	 * @return INTEGER / FALSE		:: The numeric position of the first occurrence of piece in the string. If not found, it returns FALSE
 	 */
-	public static function str_ipos($ystr, $ypiece, $offset=0) {
+	public static function str_ipos(?string $ystr, ?string $ysubstr, int $offset=0) { // mixed
 		//--
-		return mb_stripos((string)$ystr, (string)$ypiece, (int)$offset); // return MIXED !
+		return mb_stripos((string)$ystr, (string)$ysubstr, (int)$offset); // return MIXED !
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -640,14 +648,14 @@ final class SmartUnicode {
 	 * Unicode Safe strrpos()		:: Find position of last occurrence of string in a string, Case Sensitive
 	 *
 	 * @param STRING 	$ystr		:: The string to search in
-	 * @param STRING 	$ypiece		:: The sub-string to be found
+	 * @param STRING 	$ysubstr	:: The sub-string to be found
 	 * @param INTEGER 	$offset 	:: The search offset. If it is not specified, 0 is used
 	 *
 	 * @return INTEGER / FALSE		:: The numeric position of the last occurrence of piece in the string. If not found, it returns FALSE
 	 */
-	public static function str_rpos($ystr, $ypiece, $offset=0) {
+	public static function str_rpos(?string $ystr, ?string $ysubstr, int $offset=0) { // mixed
 		//--
-		return mb_strrpos((string)$ystr, (string)$ypiece, (int)$offset); // return MIXED !
+		return mb_strrpos((string)$ystr, (string)$ysubstr, (int)$offset); // return MIXED !
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -658,14 +666,14 @@ final class SmartUnicode {
 	 * Unicode Safe strripos()		:: Find position of last occurrence of string in a string, Case Insensitive
 	 *
 	 * @param STRING 	$ystr		:: The string to search in
-	 * @param STRING 	$ypiece		:: The sub-string to be found
+	 * @param STRING 	$ysubstr	:: The sub-string to be found
 	 * @param INTEGER 	$offset 	:: The search offset. If it is not specified, 0 is used
 	 *
 	 * @return INTEGER / FALSE		:: The numeric position of the last occurrence of piece in the string or FALSE if not found
 	 */
-	public static function str_ripos($ystr, $ypiece, $offset=0) {
+	public static function str_ripos(?string $ystr, ?string $ysubstr, int $offset=0) { // mixed
 		//--
-		return mb_strripos((string)$ystr, (string)$ypiece, (int)$offset); // return MIXED !
+		return mb_strripos((string)$ystr, (string)$ysubstr, (int)$offset); // return MIXED !
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -680,7 +688,7 @@ final class SmartUnicode {
 	 *
 	 * @return STRING / FALSE		:: Returns the portion of string starting with first match or FALSE if not found
 	 */
-	public static function str_str($ystring, $ypart, $ybefore_needle=false) {
+	public static function str_str(?string $ystring, ?string $ypart, bool $ybefore_needle=false) { // mixed
 		//--
 		return mb_strstr((string)$ystring, (string)$ypart, (bool)$ybefore_needle); // return MIXED !
 		//--
@@ -697,7 +705,7 @@ final class SmartUnicode {
 	 *
 	 * @return STRING / FALSE		:: Returns the portion of string starting with first match or FALSE if not found
 	 */
-	public static function stri_str($ystring, $ypart, $ybefore_needle=false) {
+	public static function stri_str(?string $ystring, ?string $ypart, bool $ybefore_needle=false) { // mixed
 		//--
 		return mb_stristr((string)$ystring, (string)$ypart, (bool)$ybefore_needle); // return MIXED !
 		//--
@@ -714,7 +722,7 @@ final class SmartUnicode {
 	 *
 	 * @return BOOLEAN				:: Returns TRUE if found or FALSE if not found
 	 */
-	public static function str_contains($ystring, $ypart) {
+	public static function str_contains(?string $ystring, ?string $ypart) : bool {
 		//--
 		if(((string)$ystring == '') OR ((string)$ypart == '')) {
 			return false;
@@ -722,9 +730,9 @@ final class SmartUnicode {
 		//--
 		if(self::str_pos((string)$ystring, (string)$ypart) !== false) { // we don't need unicode here because not using the count, just return very fast if string contains or not the sub-string
 			return true;
-		} else {
-			return false;
-		} //end if else
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -739,7 +747,7 @@ final class SmartUnicode {
 	 *
 	 * @return BOOLEAN				:: Returns TRUE if found or FALSE if not found
 	 */
-	public static function str_icontains($ystring, $ypart) {
+	public static function str_icontains(?string $ystring, ?string $ypart) : bool {
 		//--
 		if(((string)$ystring == '') OR ((string)$ypart == '')) {
 			return false;
@@ -747,9 +755,9 @@ final class SmartUnicode {
 		//--
 		if(self::str_ipos((string)$ystring, (string)$ypart) !== false) { // we don't need unicode here because not using the count, just return very fast if string contains or not the sub-string
 			return true;
-		} else {
-			return false;
-		} //end if else
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -763,7 +771,7 @@ final class SmartUnicode {
 	 *
 	 * @return INTEGER				:: Returns the number of words found
 	 */
-	public static function str_wordcount($str) {
+	public static function str_wordcount(?string $str) : int {
 		//--
 		$arr = preg_split('/\s+/', (string)$str, -1, PREG_SPLIT_NO_EMPTY); // mixed ; don't cast to array no need to trim with this flag
 		if(is_array($arr)) {
@@ -784,14 +792,27 @@ final class SmartUnicode {
 	 * @internal
 	 *
 	 * @param STRING 	$ystr		:: The string
-	 * @param STRING 	$csetlist 	:: The comma separed list of allowed charsets
+	 * @param STRING 	$csetlist 	:: The comma separed list of allowed charsets or NULL to detect ; DEFAULT is NULL
 	 *
-	 * @return MIXED				:: The detected charset if any as string or bool FALSE if could not detect
+	 * @return STRING				:: The detected charset if any as string or empty string if could not detect
 	 */
-	//public static function detect_encoding($ystr, $csetlist='UTF-8, ISO-8859-1, ISO-8859-15, ISO-8859-2, ISO-8859-9, ISO-8859-3, ISO-8859-4, ISO-8859-5, ISO-8859-6, ISO-8859-7, ISO-8859-8, ISO-8859-10, ISO-8859-11, ISO-8859-13, ISO-8859-14, ISO-8859-16, UTF-7, ASCII, SJIS, EUC-JP, JIS, ISO-2022-JP, EUC-CN, GB18030, ISO-2022-KR, KOI8-R, KOI8-U') {
-	public static function detect_encoding($ystr, $csetlist='UTF-8, ISO-8859-1, ISO-8859-15, ISO-8859-2, ISO-8859-9, ISO-8859-3, ISO-8859-4, ISO-8859-5, ISO-8859-6, ISO-8859-7, ISO-8859-8, ISO-8859-10, ISO-8859-13, ISO-8859-14, ISO-8859-16, UTF-7, ASCII, SJIS, EUC-JP, JIS, ISO-2022-JP, EUC-CN, GB18030, ISO-2022-KR, KOI8-R, KOI8-U') { // Fix: starting from PHP 7.1 it warns about illegal argument if using: ISO-8859-11
+	public static function detect_encoding(?string $ystr, ?string $csetlist=null, bool $safefallback=false) : string {
 		//--
-		return @mb_detect_encoding((string)$ystr, (string)$csetlist, true); // mixed: (bool) FALSE or (string) 'CHARSET'
+		if($csetlist === null) {
+			$csetlist = (string) self::CONVERSION_IMPLICIT_CHARSETS;
+		} //end if
+		//--
+		$charset = (string) strtoupper((string)trim((string)@mb_detect_encoding((string)$ystr, (string)$csetlist, true)));
+		//--
+		if($safefallback === true) {
+			if((string)$charset != '') {
+				if(array_key_exists((string)$charset, (array)self::CONVERSION_FALLBACK_IMPLICIT_CHARSETS)) {
+					$charset = (string) self::CONVERSION_FALLBACK_IMPLICIT_CHARSETS[(string)$charset]; // re-map {{{SYNC-UNICODE-FIX-CHARSET-FALLBACK}}}
+				} //end if
+			} //end if
+		} //end if
+		//--
+		return (string) $charset;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -799,19 +820,19 @@ final class SmartUnicode {
 
 	//================================================================
 	/**
-	 * Unicode Safe strtolower() 	:: Make a Unicode string lowercase ; works with any of these encodings: UTF-8, ISO-8859-1, ISO-8859-2
+	 * Unicode Safe strtolower() 	:: Make a Unicode string lowercase
 	 *
 	 * @param STRING 	$ystr		:: The string
 	 *
 	 * @return STRING				:: The processed string as lowercase string
 	 */
-	public static function str_tolower($ystr) {
+	public static function str_tolower(?string $ystr) : string {
 		//--
 		if((string)$ystr == '') {
 			return '';
 		} //end if
 		//--
-		return (string) @mb_convert_case((string)$ystr, MB_CASE_LOWER, self::detect_encoding((string)$ystr, 'UTF-8, ISO-8859-1, ISO-8859-2')); // much better than mb_strtolower($ystr);
+		return (string) @mb_convert_case((string)$ystr, MB_CASE_LOWER, (string)SMART_FRAMEWORK_CHARSET); // much better than mb_strtolower($ystr);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -819,13 +840,50 @@ final class SmartUnicode {
 
 	//================================================================
 	/**
-	 * Unicode Safe ucfirst() 		:: Make a Unicode string uppercase on first character ; works with any of these encodings: UTF-8, ISO-8859-1, ISO-8859-2
+	 * Unicode Safe strtoupper() 	:: Make a Unicode string uppercase
+	 *
+	 * @param STRING 	$ystr		:: The string
+	 *
+	 * @return STRING				:: The processed string as uppercase string
+	 */
+	public static function str_toupper(?string $ystr) : string {
+		//--
+		if((string)$ystr == '') {
+			return '';
+		} //end if
+		//--
+		return (string) @mb_convert_case((string)$ystr, MB_CASE_UPPER, (string)SMART_FRAMEWORK_CHARSET); // much better than mb_strtoupper($ystr);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Unicode Safe ucwords() 		:: Make a Unicode string uppercase on each word
+	 * Notice: this is only partial compatible with PHP ucwords() as it makes first letter of each word Upper while force lowercase on the rest of the word letters as it complies with MB_CASE_TITLE
+	 *
+	 * @param STRING 	$ystr		:: The string
+	 *
+	 * @return STRING				:: The processed string as uppercase on each word
+	 */
+	public static function uc_words(?string $ystr) : string {
+		//--
+		return (string) @mb_convert_case((string)$ystr, MB_CASE_TITLE, (string)SMART_FRAMEWORK_CHARSET);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Unicode Safe ucfirst() 		:: Make a Unicode string uppercase on first character
 	 *
 	 * @param STRING 	$ystr		:: The string
 	 *
 	 * @return STRING				:: The processed string as uppercase of first character string
 	 */
-	public static function uc_first($ystr) {
+	public static function uc_first(?string $ystr) : string {
 		//--
 		if((string)$ystr == '') {
 			return '';
@@ -833,44 +891,8 @@ final class SmartUnicode {
 		//--
 		$first = self::sub_str((string)$ystr, 0, 1);
 		$rest = self::sub_str((string)$ystr, 1, self::str_len((string)$ystr));
+		//--
 		return (string) self::str_toupper((string)$first).$rest;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Unicode Safe ucwords() 		:: Make a Unicode string uppercase on each word ; works with any of these encodings: UTF-8, ISO-8859-1, ISO-8859-2
-	 * Notice: this is only partial compatible with PHP ucwords() as it makes first letter of each word Upper while force lowercase on the rest of the word letters as it complies with MB_CASE_TITLE
-	 *
-	 * @param STRING 	$ystr		:: The string
-	 *
-	 * @return STRING				:: The processed string as uppercase on each word
-	 */
-	public static function uc_words($ystr) {
-		//--
-		return (string) @mb_convert_case($ystr, MB_CASE_TITLE, self::detect_encoding((string)$ystr, 'UTF-8, ISO-8859-1, ISO-8859-2'));
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Unicode Safe strtoupper() 	:: Make a Unicode string uppercase ; works with any of these encodings: UTF-8, ISO-8859-1, ISO-8859-2
-	 *
-	 * @param STRING 	$ystr		:: The string
-	 *
-	 * @return STRING				:: The processed string as uppercase string
-	 */
-	public static function str_toupper($ystr) {
-		//--
-		if((string)$ystr == '') {
-			return '';
-		} //end if
-		//--
-		return (string) @mb_convert_case((string)$ystr, MB_CASE_UPPER, self::detect_encoding((string)$ystr, 'UTF-8, ISO-8859-1, ISO-8859-2')); // much better than mb_strtoupper($ystr);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -883,13 +905,13 @@ final class SmartUnicode {
 	 * NOTICE: If used to convert to HTML-ENTITIES charset this function will consume a lot of memory and may run out of memory for large strings > 10% of memory_limit set in init.php
 	 *
 	 * @param STRING 	$ystr			:: The string
-	 * @param ENUM 		$ychar_from		:: Empty to detect / Select one of the: UTF-8, ISO-8859-1, ISO-8859-15, ISO-8859-2, ISO-8859-9, ISO-8859-3, ISO-8859-4, ISO-8859-5, ISO-8859-6, ISO-8859-7, ISO-8859-8, ISO-8859-10, ISO-8859-11, ISO-8859-13, ISO-8859-14, ISO-8859-16, UTF-7, ASCII, SJIS, EUC-JP, JIS, ISO-2022-JP, EUC-CN, ISO-2022-KR, KOI8-R, KOI8-U
+	 * @param ENUM 		$ychar_from		:: Empty to detect / Select one or many from the list of: class::CONVERSION_IMPLICIT_CHARSETS
 	 * @param ENUM 		$ychar_to		:: Empty to use the framework internal charset defined in SMART_FRAMEWORK_CHARSET / Select one of the: UTF-8, HTML-ENTITIES or another valid charset
 	 * @param BOOLEAN	$normalize		:: Normalize (Default is TRUE) - will normalize the string into the default framework charset else the string will be incompatible with the current encoding ... ; Using this to false must be use with very much attention !!!
 	 *
 	 * @return STRING					:: The processed string
 	 */
-	public static function convert_charset($ystr, $y_charset_from='', $y_charset_to='', $normalize=true) {
+	public static function convert_charset(?string $ystr, ?string $y_charset_from='', ?string $y_charset_to='', bool $normalize=true) : string {
 		//--
 		if((string)$ystr == '') {
 			return '';
@@ -898,30 +920,27 @@ final class SmartUnicode {
 		$ystr = (string) self::filter_unsafe_string((string)$ystr); // Fix: remove unsafe characters from original string
 		//--
 		if((string)$y_charset_from == '') { // if empty, try to detect it
-			$y_charset_from = self::detect_encoding((string)$ystr);
+			$y_charset_from = (string) self::detect_encoding((string)$ystr, null, true); // use restricted list for implicit detection + safe fallback
 		} //end if else
+		if((string)$y_charset_from == '') {
+			$y_charset_from = (string) SMART_FRAMEWORK_CHARSET;
+		} //end if
 		//--
 		if((string)$y_charset_to == '') { // if no charset provided use the default
 			$y_charset_to = (string) SMART_FRAMEWORK_CHARSET; // if default is defined is checked in the top of this lib
 		} //end if
 		//--
-		if($y_charset_from) { // avoid make it string if bool FALSE !!
-			$y_charset_from = (string) strtoupper((string)$y_charset_from);
-		} //end if
+		$y_charset_from = (string) strtoupper((string)$y_charset_from);
 		$y_charset_to = (string) strtoupper((string)$y_charset_to);
 		//--
-		if(($y_charset_from) AND ((string)$y_charset_to != '')) {
-			//--
-			$ystr = (string) @mb_convert_encoding((string)$ystr, (string)$y_charset_to, $y_charset_from);
-			//--
-			if((string)SMART_FRAMEWORK_CHARSET == 'UTF-8') {
-				if((string)$y_charset_to != (string)SMART_FRAMEWORK_CHARSET) {
-					if($normalize) {
-						$ystr = (string) self::utf8_enc((string)$ystr); // fix: this is needed to normalize the strings into the framework's current charset
-					} //end if
+		$ystr = (string) @mb_convert_encoding((string)$ystr, (string)$y_charset_to, $y_charset_from);
+		//--
+		if((string)SMART_FRAMEWORK_CHARSET == 'UTF-8') {
+			if((string)$y_charset_to != (string)SMART_FRAMEWORK_CHARSET) {
+				if($normalize) {
+					$ystr = (string) self::utf8_enc((string)$ystr); // fix: this is needed to normalize the strings into the framework's current charset
 				} //end if
 			} //end if
-			//--
 		} //end if
 		//--
 		return (string) $ystr;
@@ -937,16 +956,24 @@ final class SmartUnicode {
 	 * This is not necessary after SmartUnicode::convert_charset() as it will already fix it
 	 *
 	 * @param STRING 	$str			:: The string
+	 * @param BOOL 		$detect 		:: If set to TRUE will force from the same unicode ; Default is FALSE
 	 *
 	 * @return STRING					:: The fixed string
 	 */
-	public static function fix_charset($str) {
+	public static function fix_charset(?string $str, bool $detect=false) : string {
 		//--
 		if((string)$str == '') {
 			return '';
 		} //end if
 		//--
-		return (string) self::convert_charset((string)$str, '', (string)SMART_FRAMEWORK_CHARSET); // charset from is EMPTY to try to detect it
+		// https://stackoverflow.com/questions/1401317/remove-non-utf8-characters-from-string
+		// using the mb_convert_encoding('text', 'UTF-8', 'UTF-8'); // will remove invalid UTF-8 characters from a string
+		$from_charset = (string) SMART_FRAMEWORK_CHARSET; // by default don't try to detect ; only if set explicit to detect ; since PHP 8.1 (and later) with newer iconv/mbstring versions will run in trouble ; assume all internal strings in PHP scripts are UTF-8
+		if($detect === true) {
+			$from_charset = '';
+		} //end if
+		//--
+		return (string) self::convert_charset((string)$str, (string)$from_charset, (string)SMART_FRAMEWORK_CHARSET); // charset from is EMPTY to try to detect it
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -961,7 +988,7 @@ final class SmartUnicode {
 	 *
 	 * @return STRING					:: The UTF-8 encoded string
 	 */
-	public static function utf8_enc($str) {
+	public static function utf8_enc(?string $str) : string {
 		//--
 		if((string)$str == '') {
 			return '';
@@ -983,7 +1010,7 @@ final class SmartUnicode {
 	 *
 	 * @return STRING					:: The decoded string as ISO-8859-1 having all invalid characters replaced with ?
 	 */
-	public static function utf8_dec($str) {
+	public static function utf8_dec(?string $str) : string {
 		//--
 		if((string)$str == '') {
 			return '';
@@ -1009,7 +1036,7 @@ final class SmartUnicode {
 	 *
 	 * @return STRING					:: The processed string
 	 */
-	public static function iso_to_utf8($str, $normalize=false) {
+	public static function iso_to_utf8(?string $str, bool $normalize=false) : string {
 		//--
 		if((string)$str == '') {
 			return '';
@@ -1019,9 +1046,7 @@ final class SmartUnicode {
 			$str = (string) self::utf8_dec((string)$str);
 		} //end if
 		//--
-		$str = (string) self::utf8_enc((string)$str);
-		//--
-		return (string) $str;
+		return (string) self::utf8_enc((string)$str);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1040,7 +1065,7 @@ final class SmartUnicode {
 	 *
 	 * @return STRING					:: The processed string
 	 */
-	public static function utf8_to_iso($str, $normalize=true) {
+	public static function utf8_to_iso(?string $str, bool $normalize=true) : string {
 		//--
 		if((string)$str == '') {
 			return '';
@@ -1069,7 +1094,7 @@ final class SmartUnicode {
 	 *
 	 * @return STRING							:: The processed string
 	 */
-	public static function deaccent_str($str, $normalize=true) {
+	public static function deaccent_str(?string $str, bool $normalize=true) : string {
 		//--
 		if((string)$str == '') {
 			return '';
@@ -1096,7 +1121,7 @@ final class SmartUnicode {
 	 *
 	 * @return STRING					:: The processed string
 	 */
-	public static function html_entities($str, $encoding='', $normalize=false) {
+	public static function html_entities(?string $str, ?string $encoding='', bool $normalize=false) : string {
 		//--
 		if((string)$str == '') {
 			return '';
@@ -1107,9 +1132,9 @@ final class SmartUnicode {
 			$encoding = ''; // fix !
 		} //end if
 		if((string)$encoding == '') {
-			$encoding = self::detect_encoding((string)$str); // mixed
+			$encoding = (string) self::detect_encoding((string)$str, null, true); // use restricted list for implicit detection + safe fallback
 		} //end if
-		if(!$encoding) {
+		if((string)$encoding == '') {
 			$encoding = (string) SMART_FRAMEWORK_CHARSET; // fallback
 		} //end if
 		//--
@@ -1134,14 +1159,15 @@ final class SmartUnicode {
 	/**
 	 * Unicode Safe wordwrap() 				:: Wraps a string to a given number of characters
 	 *
-	 * @param STRING 	$str				:: The string to be wrapped
-	 * @param INTEGER+ 	$width				:: The number of characters at which the string will be wrapped
-	 * @param STRING	$break 	OPTIONAL	:: The line is broken using the optional break parameter ; Default is: \n ; will also add the optional visual break by default '¬'
-	 * @param BOOLEAN 	$cut 	OPTIONAL	:: If the cut is set to TRUE, the string is always wrapped at or before the specified width ; When FALSE the function dose not split the word until the end of the word even if the width is smaller than the word width. Default is FALSE.
+	 * @param STRING 	$str						:: The string to be wrapped
+	 * @param INTEGER+ 	$width			OPTIONAL	:: The number of characters at which the string will be wrapped ; Min:1 ; Max:2048 ; Default:75
+	 * @param STRING	$break 			OPTIONAL	:: The line is broken using the optional break parameter ; Default is: \n ; will also add the optional visual break by default '¬'
+	 * @param BOOLEAN 	$cut 			OPTIONAL	:: If the cut is set to TRUE, the string is always wrapped at or before the specified width ; When FALSE the function dose not split the word until the end of the word even if the width is smaller than the word width. Default is FALSE.
+	 * @param STRING 	$visualbreak 	OPTIONAL 	:: Visual Break String Character ; Default is '¬'
 	 *
 	 * @return STRING						:: The processed string
 	 */
-	public static function word_wrap($str, $width=75, $break="\n", $cut=false, $visualbreak='¬') {
+	public static function word_wrap(?string $str, int $width=75, ?string $break="\n", bool $cut=false, ?string $visualbreak='¬') : string {
 		//-- there is no mb_word_wrap, so this would be like ; an alternative but not well tested on unicode strings and may break them would be: return preg_replace('/([^\s]{'.(int)$width.'})(?=[^\s])/m', '$1` '.$break, (string)$str); // this needs the unicode modifier to avoid break characters
 		if((string)$str == '') {
 			return '';
@@ -1237,7 +1263,7 @@ final class SmartUnicode {
 	 *
 	 * @return BOOLEAN 					:: Returns TRUE on success or FALSE on failure
 	 */
-	public static function mailsend($yto, $ysubj, $ymsg, $yyhead, $yyxtra) {
+	public static function mailsend(?string $yto, ?string $ysubj, ?string $ymsg, ?string $yyhead, ?string $yyxtra) : bool {
 		//--
 		$out = false; // init
 		//--
@@ -1268,7 +1294,7 @@ final class SmartUnicode {
 	 * @param MIXED 						$str_val	the input variable value
 	 * @return STRING/NULL								the filtered value (if ARRAY or OBJECT or RESOURCE will return null)
 	 */
-	public static function filter_unsafe_string($str_val) { // the param is MIXED !
+	public static function filter_unsafe_string($str_val) : ?string { // the param is MIXED !
 		//--
 		if($str_val === null) {
 			return null;

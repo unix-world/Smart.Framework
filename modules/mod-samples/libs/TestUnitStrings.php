@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221205
+ * @version 	v.20221230
  *
  */
 final class TestUnitStrings {
@@ -75,6 +75,27 @@ final class TestUnitStrings {
 		//--
 		$regex_positive = '/^[\w"\:\?]+$/';
 		$regex_negative = '/[^\w"\:\?]/';
+		//--
+
+		//--
+		if((string)$err == '') {
+			$the_test = 'Unicode Characters Encoding Detection';
+			$tests[] = $the_test;
+			$teststr = [
+				'A * B',
+				'A / B',
+				'A - B',
+				'A + B', // expected to fail in PHP 8.1 / 8.2 may fail if detected as UTF-7 (as in new iconv versions)
+				'3 + 4', // expected to fail in PHP 8.1 / 8.2 may fail if detected as UTF-7 (as in new iconv versions)
+			];
+			foreach($teststr as $kk => $vv) {
+				$encoding = \SmartUnicode::detect_encoding((string)$vv);
+				if((string)$encoding !== (string)\SMART_FRAMEWORK_CHARSET) {
+					$err = 'ERROR: '.$the_test.' FAILED with string: `'.$vv.'` ; Encoding is `'.$encoding.'` instead of `'.\SMART_FRAMEWORK_CHARSET.'`';
+					break;
+				} //end if
+			} //end foreach
+		} //end if
 		//--
 
 		//--

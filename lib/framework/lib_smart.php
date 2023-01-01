@@ -77,7 +77,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20221227
+ * @version     v.20221230
  * @package     @Core
  *
  */
@@ -579,12 +579,13 @@ final class Smart {
 	 * Add URL Params (Build a standard RFC3986 URL from script and parameters) as: script.xyz?a=b&param1=value1&param2=value2&param3={{{late-binding}}}
 	 * It allows late binding params such as 'param3' => '{{{late-binding}}}'
 	 *
-	 * @param 	STRING 		$y_url				:: The base URL like: script.php or script.php?a=b or empty
-	 * @param 	ARRAY		$y_params 			:: Associative array as [param1 => value1, Param2 => Value2, param3 => {{{late-binding}}}]
+	 * @param 	STRING 		$y_url							:: The base URL like: script.php or script.php?a=b or empty
+	 * @param 	ARRAY		$y_params 						:: Associative array as [param1 => value1, Param2 => Value2, param3 => {{{late-binding}}}]
+	 * @param 	BOOLEAN 	$y_allow_late_binding_params	:: Allow late binding params ex: a={{{param}}}&b=true
 	 *
-	 * @return 	STRING							:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
+	 * @return 	STRING										:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
 	 */
-	public static function url_add_params(?string $y_url, ?array $y_params) : string {
+	public static function url_add_params(?string $y_url, ?array $y_params, bool $y_allow_late_binding_params=true) : string {
 		//--
 		if(self::array_size($y_params) <= 0) {
 			return (string) $y_url;
@@ -594,7 +595,7 @@ final class Smart {
 		//--
 		foreach($y_params as $key => $val) {
 			if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
-				$url = (string) self::url_add_suffix((string)$url, (string)self::url_build_query([ (string)$key => $val ], true));
+				$url = (string) self::url_add_suffix((string)$url, (string)self::url_build_query([ (string)$key => $val ], (bool)$y_allow_late_binding_params));
 			} //end if
 		} //end foreach
 		//--

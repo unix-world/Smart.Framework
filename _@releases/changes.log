@@ -2,6 +2,13 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+January 01, 2023
+	* Unicode Optimizations and Fixes for PHP 8.1 / 8.2
+	* Extended Charset detection in MailUtils
+
+December 31, 2022
+	* Fixes for issue '+' (in string) with wrong UTF-7 detected encoding (Unicode) for PHP 8.1 / 8.2
+
 December 28, 2022
 	* CSS Refactoring
 

@@ -54,7 +54,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartEnvironment, SmartComponents (optional)
- * @version 	v.20221220
+ * @version 	v.20221231
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -612,7 +612,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		if(is_array($result)) {
 			if(array_key_exists(0, $result)) {
 				if(is_array($result[0])) {
-					if((int)$result[0]['ok'] == 1) {
+					if((int)($result[0]['ok'] ?? null) == 1) {
 						$is_ok = true;
 					} //end if
 				} //end if
@@ -832,13 +832,13 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				//--
 				$dcmd = 'count';
 				//--
-				$this->collection = (string) trim((string)$args[0]); // strCollection
+				$this->collection = (string) trim((string)($args[0] ?? null)); // strCollection
 				if((string)trim((string)$this->collection) == '') {
 					$this->error((string)$this->connex_key, 'MongoDB Count', 'MongoDB->'.$method.'()', 'ERROR: Empty Collection name ...', $args);
 					return 0;
 				} //end if
 				//--
-				$qry = (array) $args[1]; // arrQuery
+				$qry = (array) ($args[1] ?? null); // arrQuery
 				//--
 				if(Smart::array_size($qry) <= 0) { // fix for: BSON field 'count.query' is the wrong type 'array', expected type 'object' when query array is empty
 					$command = new \MongoDB\Driver\Command([
@@ -873,7 +873,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 					if(is_array($tmp_obj[0])) {
 						$tmp_obj = (array) $tmp_obj[0];
 						if(array_key_exists('n', (array)$tmp_obj)) {
-							if((int)$tmp_obj['ok'] == 1) {
+							if((int)($tmp_obj['ok'] ?? null) == 1) {
 								$obj = (int) $tmp_obj['n'];
 								$drows = (int) $obj;
 							} //end if
@@ -892,13 +892,13 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				//--
 				$dcmd = 'read';
 				//--
-				$this->collection = (string) trim((string)$args[0]); // strCollection
+				$this->collection = (string) trim((string)($args[0] ?? null)); // strCollection
 				if((string)trim((string)$this->collection) == '') {
 					$this->error((string)$this->connex_key, 'MongoDB Read', 'MongoDB->'.$method.'()', 'ERROR: Empty Collection name ...', $args);
 					return array();
 				} //end if
 				//--
-				$qry = (array) $args[1]; // arrQuery
+				$qry = (array) ($args[1] ?? null); // arrQuery
 				//--
 				if(array_key_exists(3, $args) AND (is_array($args[3]))) {
 					$opts = (array) $args[3]; // arrOptions
@@ -995,7 +995,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				//--
 				$dcmd = 'write';
 				//--
-				$this->collection = (string) trim((string)$args[0]); // strCollection
+				$this->collection = (string) trim((string)($args[0] ?? null)); // strCollection
 				if((string)trim((string)$this->collection) == '') {
 					$this->error((string)$this->connex_key, 'MongoDB Write', 'MongoDB->'.$method.'()', 'ERROR: Empty Collection name ...', $args);
 					return array();
@@ -1005,6 +1005,10 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				if(!is_object($write)) {
 					$this->error((string)$this->connex_key, 'MongoDB Write', 'MongoDB->'.$method.'() :: '.$this->collection, 'ERROR: Write Object is null ...', $args);
 					return array();
+				} //end if
+				//--
+				if(!array_key_exists(1, $args)) {
+					$args[1] = [];
 				} //end if
 				//--
 				$num_docs = 0;
@@ -1167,7 +1171,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				//--
 				$dcmd = 'write';
 				//--
-				$this->collection = (string) trim((string)$args[0]); // strCollection
+				$this->collection = (string) trim((string)($args[0] ?? null)); // strCollection
 				if((string)trim((string)$this->collection) == '') {
 					$this->error((string)$this->connex_key, 'MongoDB Write', 'MongoDB->'.$method.'()', 'ERROR: Empty Collection name ...', $args);
 					return array();
@@ -1179,7 +1183,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 					return array();
 				} //end if
 				//--
-				if(!is_array($args[1])) {
+				if(!is_array(($args[1] ?? null))) {
 					$this->error((string)$this->connex_key, 'MongoDB Write', 'MongoDB->'.$method.'() :: '.$this->collection, 'ERROR: Invalid Filter provided ...', $args);
 					return array();
 				} //end if
@@ -1231,7 +1235,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			case 'command': 	// ARGS [ arrCmd ]
 			case 'igcommand': 	// ARGS [ arrCmd ]
 				//-- dbg types: 'count', 'read', 'write', 'special', 'transaction', 'set', 'metainfo'
-				$qry = (array) $args[0]; // arrQuery
+				$qry = (array) ($args[0] ?? null); // arrQuery
 				foreach($qry as $kk => $vv) {
 					if((string)strtolower((string)$kk) == 'buildinfo') {
 						$dcmd = (string) 'metainfo';
@@ -1307,7 +1311,6 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 				//print_r($obj); die();
 				//--
 				break;
-
 			//--
 			default:
 				//--

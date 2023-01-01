@@ -37,7 +37,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20211216
+ * @version 	v.20221230
  *
  */
 final class TestUnitSQLite3Model {
@@ -213,6 +213,14 @@ final class TestUnitSQLite3Model {
 
 	//============================================================
 	private function custom_functions_tests() {
+
+		//-- Test encoding
+		$test = (array) $this->connection->read_asdata('SELECT ? AS test', ['abc']);
+		$encoding = (string) \SmartUnicode::detect_encoding((string)$test['test']);
+		if((string)$encoding != (string)\SMART_FRAMEWORK_CHARSET) {
+			\Smart::raise_error('Invalid SQLite3 Encoding Test (1): `'.$encoding.'` instead of `'.\SMART_FRAMEWORK_CHARSET.'`');
+		} //end if
+		//--
 
 		//--
 		if((string)$this->connection->json_encode([]) != '[]') {

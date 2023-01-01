@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221217
+ * @version 	v.20221230
  *
  */
 final class TestUnitMongoDB {
@@ -489,8 +489,14 @@ final class TestUnitMongoDB {
 					'limit' => 2 // trying to fake the limit
 				]
 			);
-			if((\Smart::array_size($result) <= 0) OR ((int)$result['cost'] != 7)) {
+			if((\Smart::array_size($result) <= 0) OR ((int)$result['cost'] != 7) OR ((string)\trim((string)$result['name']) == '')) {
 				$err = 'The Test: '.$tst.' FAILED ! Expected result of one specific document but is different: '.\print_r($result,1);
+			} //end if
+			if((string)$err == '') {
+				$encoding = (string) \SmartUnicode::detect_encoding((string)$result['name']);
+				if((string)$encoding != (string)\SMART_FRAMEWORK_CHARSET) {
+					$err = 'The Test: '.$tst.' FAILED ! Expected encoding is: `'.$encoding.'` instead of `'.\SMART_FRAMEWORK_CHARSET.'`';
+				} //end if
 			} //end if
 		} //end if
 		//--

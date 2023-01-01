@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20221230
  *
  */
 final class TestUnitPCache {
@@ -250,36 +250,47 @@ final class TestUnitPCache {
 		//--
 		if((string)$err == '') {
 			$tests[] = 'Get Persistent Cache Key';
-			$pcache_cached_value = \SmartPersistentCache::varUncompress(\SmartPersistentCache::getKey($the_test_realm, $pcache_test_key));
-			if(\Smart::array_size($pcache_cached_value) > 0) {
-				$tests[] = 'Check if Persistent Cache Key is valid (array-keys)';
-				if(((string)$pcache_cached_value['unicode-test'] != '') AND ((string)$pcache_cached_value['big-key-test'] != '')) {
-					$tests[] = 'Check if Persistent Cache Key is valid (checksum)';
-					if((string)\SmartHashCrypto::sha1(\implode("\n", (array)$pcache_cached_value)) == (string)$pcache_test_checkum) {
-						if($pcache_test_value === $pcache_cached_value) {
-							$tests[] = 'Unset Persistent Cache Key';
-							$pcache_unset_key = \SmartPersistentCache::unsetKey($the_test_realm, $pcache_test_key);
-							if($pcache_unset_key === true) {
-								$tests[] = 'Check if Persistent Cache Key exists (after unset)';
-								if(\SmartPersistentCache::keyExists($the_test_realm, $pcache_test_key)) {
-									$err = 'Persistent Cache Key does exists (after unset) and should not: '."\n".$pcache_test_key;
+			$getval = (string) \SmartPersistentCache::getKey($the_test_realm, $pcache_test_key);
+			$encoding = (string) \SmartUnicode::detect_encoding((string)$getval);
+			if((string)$encoding != (string)\SMART_FRAMEWORK_CHARSET) {
+				$err = 'Persistent Cache Key Encoding Check FAILED (1) ! Expected encoding is: `'.$encoding.'` instead of `'.\SMART_FRAMEWORK_CHARSET.'`';
+			} else {
+				$pcache_cached_value = \SmartPersistentCache::varUncompress((string)$getval);
+				if(\Smart::array_size($pcache_cached_value) > 0) {
+					$tests[] = 'Check if Persistent Cache Key is valid (array-keys)';
+					$encoding = (string) \SmartUnicode::detect_encoding((string)$pcache_cached_value['unicode-test']);
+					if((string)$encoding != (string)\SMART_FRAMEWORK_CHARSET) {
+						$err = 'Persistent Cache Key Encoding Check FAILED (2) ! Expected encoding is: `'.$encoding.'` instead of `'.\SMART_FRAMEWORK_CHARSET.'`';
+					} else {
+						if(((string)$pcache_cached_value['unicode-test'] != '') AND ((string)$pcache_cached_value['big-key-test'] != '')) {
+							$tests[] = 'Check if Persistent Cache Key is valid (checksum)';
+							if((string)\SmartHashCrypto::sha1((string)\implode("\n", (array)$pcache_cached_value)) == (string)$pcache_test_checkum) {
+								if($pcache_test_value === $pcache_cached_value) {
+									$tests[] = 'Unset Persistent Cache Key';
+									$pcache_unset_key = \SmartPersistentCache::unsetKey($the_test_realm, $pcache_test_key);
+									if($pcache_unset_key === true) {
+										$tests[] = 'Check if Persistent Cache Key exists (after unset)';
+										if(\SmartPersistentCache::keyExists($the_test_realm, $pcache_test_key)) {
+											$err = 'Persistent Cache Key does exists (after unset) and should not: '."\n".$pcache_test_key;
+										} else {
+											// OK
+										} //end if
+									} else {
+										$err = 'Persistent Cache UnSetKey returned a non-true result: '."\n".$pcache_test_key;
+									} //end if else
 								} else {
-									// OK
-								} //end if
+									$err = 'Persistent Cache Cached Value is broken: comparing stored value with original value failed on key: '."\n".$pcache_test_key;
+								} //end if else
 							} else {
-								$err = 'Persistent Cache UnSetKey returned a non-true result: '."\n".$pcache_test_key;
+								$err = 'Persistent Cache Cached Value is broken: checksum failed on key: '."\n".$pcache_test_key;
 							} //end if else
 						} else {
-							$err = 'Persistent Cache Cached Value is broken: comparing stored value with original value failed on key: '."\n".$pcache_test_key;
-						} //end if else
-					} else {
-						$err = 'Persistent Cache Cached Value is broken: checksum failed on key: '."\n".$pcache_test_key;
+							$err = 'Persistent Cache Cached Value is broken: array-key is missing after Cache-Variable-Unarchive on key: '."\n".$pcache_test_key;
+						} //end if
 					} //end if else
 				} else {
-					$err = 'Persistent Cache Cached Value is broken: array-key is missing after Cache-Variable-Unarchive on key: '."\n".$pcache_test_key;
+					$err = 'Persistent Cache Cached Value is broken: non-array value was returned after Cache-Variable-Unarchive on key: '."\n".$pcache_test_key;
 				} //end if
-			} else {
-				$err = 'Persistent Cache Cached Value is broken: non-array value was returned after Cache-Variable-Unarchive on key: '."\n".$pcache_test_key;
 			} //end if
 		} //end if
 		//--

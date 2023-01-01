@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210526
+ * @version 	v.20221230
  *
  */
 final class TestUnitMySQLi {
@@ -232,8 +232,20 @@ final class TestUnitMySQLi {
 		if((string)$err == '') {
 			$tests[] = 'Read [ Associative: One-Row ]';
 			$data = \SmartMysqliDb::read_asdata($quer_str, [ $variable ]);
-			if((string)\trim($data['comments']) !== (string)$comments) {
-				$err = 'Read / Associative / One-Row Test Failed, should return `'.$comments.'` but returned `'.$data['comments'].'`';
+
+			if(\Smart::array_size($data) <= 0) {
+				$err = 'Read / Associative / One-Row Test Returns No Data';
+			} //end if
+			if((string)$err == '') {
+				$encoding = (string) \SmartUnicode::detect_encoding((string)$data['comments']);
+				if((string)$encoding != (string)\SMART_FRAMEWORK_CHARSET) {
+					$err = 'Read / Associative / One-Row Test w. Params and Title Failed, encoding is `'.$encoding.'` instead of `'.\SMART_FRAMEWORK_CHARSET.'`';
+				} //end if
+			} //end if
+			if((string)$err == '') {
+				if((string)\trim((string)$data['comments']) !== (string)$comments) {
+					$err = 'Read / Associative / One-Row Test Failed, should return `'.$comments.'` but returned `'.$data['comments'].'`';
+				} //end if
 			} //end if
 			if((string)$err == '') {
 				if(!\array_key_exists('a_null_column', (array)$data)) {
@@ -250,12 +262,12 @@ final class TestUnitMySQLi {
 		if((string)$err == '') {
 			$tests[] = 'Read [ Associative: Multi-Rows ]';
 			$data = \SmartMysqliDb::read_adata($quer_str, [ $variable ]);
-			if((string)\trim($data[0]['comments']) !== (string)$comments) {
-				$err = 'Read / Associative / Multi-Rows Test Failed, should return `'.$comments.'` but returned `'.$data[0]['comments'].'`';
+			if(!\array_key_exists('0', (array)$data)) {
+				$err = 'Read / Associative / Multi-Rows Test Failed by testing 1st line';
 			} //end if
 			if((string)$err == '') {
-				if(!\array_key_exists('0', (array)$data)) {
-					$err = 'Read / Associative / Multi-Rows Test Failed by testing 1st line';
+				if((string)\trim((string)$data[0]['comments']) !== (string)$comments) {
+					$err = 'Read / Associative / Multi-Rows Test Failed, should return `'.$comments.'` but returned `'.$data[0]['comments'].'`';
 				} //end if
 			} //end if
 			if((string)$err == '') {

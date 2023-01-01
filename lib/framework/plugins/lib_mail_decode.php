@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: SmartUnicode, Smart, SmartFileSysUtils, SmartDetectImages
- * @version 	v.20221225
+ * @version 	v.20230101
  * @package 	Plugins:Mailer
  *
  */
@@ -69,6 +69,10 @@ final class SmartMailerMimeDecode {
 	private $cycle;
 	//-- set
 	private $local_charset = 'ISO-8859-1';
+	//--
+
+	//-- a restricted list with the allowed charsets used for implicit detection (for explicit detection any charset can be used) ; using a restricted list is a safety measure against malformed or broken strings ; ex: avoid a broken UTF-8 string to be detected as GB18030 if contains weird characters
+	private const CONVERSION_IMPLICIT_CHARSETS = 'UTF-8, ISO-8859-1, ISO-8859-15, ISO-8859-2, ISO-8859-9, ISO-8859-3, ISO-8859-4, ISO-8859-5, ISO-8859-6, ISO-8859-7, ISO-8859-8, ISO-8859-10, ISO-8859-13, ISO-8859-14, ISO-8859-16, ASCII, SJIS, EUC-JP, JIS, ISO-2022-JP, EUC-CN, GB18030, ISO-2022-KR, KOI8-R, KOI8-U'; // Fixes: starting with PHP 7.1 it warns about illegal argument if using: ISO-8859-11 ; starting with PHP 8.1 the UTF-7 should no more be used in the list because it misbehaves: if the (plus) + character is present in a string will always detect string as being UTF-7 instead of UTF-8
 	//--
 
 
@@ -593,7 +597,7 @@ final class SmartMailerMimeDecode {
 						//--
 						if((string)trim($value['charset']) != '') {
 							//--
-							$tmp_charset = SmartUnicode::str_tolower($value['charset']);
+							$tmp_charset = (string) trim((string)SmartUnicode::str_tolower((string)($value['charset'] ?? null)));
 							//--
 							if(((string)$tmp_charset == '') OR ((string)$tmp_charset == 'us-ascii')) {
 								$tmp_charset = 'iso-8859-1'; // correction :: {{{SYNC-CHARSET-FIX}}}
@@ -703,7 +707,13 @@ final class SmartMailerMimeDecode {
 								//--
 								// TEXT / HTML PART
 								//--
-								$value = (string) SmartUnicode::convert_charset((string)$value, $this->last_charset, $this->local_charset); // {{{SYNC-CHARSET-CONVERT}}}
+								if((string)trim((string)$this->last_charset) == '') {
+									$this->last_charset = (string) strtolower((string)SmartUnicode::detect_encoding((string)$value, (string)self::CONVERSION_IMPLICIT_CHARSETS, true)); // use an extended list than default used on SmartUnicode as this can really match a large variety ; fallback on UTF-7 when detecting !
+								} //end if
+								if((string)trim((string)$this->last_charset) == '') {
+									$this->last_charset = (string) SMART_FRAMEWORK_CHARSET; // don't leave empty to re-detect as SmartUnicode::CONVERSION_IMPLICIT_CHARSETS is just a subset of self::CONVERSION_IMPLICIT_CHARSETS
+								} //end if
+								$value = (string) SmartUnicode::convert_charset((string)$value, (string)$this->last_charset, (string)$this->local_charset); // {{{SYNC-CHARSET-CONVERT}}}
 								//--
 								if(((string)$vxf_mail_part_type == 'application') AND ((string)$vxf_mail_part_stype == 'pgp-encrypted')) { // {{{SYNC-EMAIL-DECODE-SMIME}}}
 									$value = '----- S/MIME: '.$vxf_mail_part_type.'/'.$vxf_mail_part_stype.' -----'."\n".$value;
@@ -813,7 +823,7 @@ final class SmartMailerMimeDecode {
  * @internal
  *
  * @depends 	classes: Smart, SmartUnicode, SmartMailerNotes
- * @version 	v.20221225
+ * @version 	v.20230101
  *
  */
 final class SmartMailerMimeExtract {
@@ -1338,12 +1348,12 @@ final class SmartMailerMimeExtract {
 			switch(strtoupper($encoding)) {
 				case 'B':
 					$text = (string) base64_decode($text);
-					$text = (string) SmartUnicode::convert_charset($text, $charset, $this->charset); // {{{SYNC-CHARSET-CONVERT}}}
+					$text = (string) SmartUnicode::convert_charset((string)$text, (string)$charset, (string)$this->charset); // {{{SYNC-CHARSET-CONVERT}}}
 					break;
 				case 'Q':
 					$text = (string) str_replace('_', ' ', $text); // // {{{SYNC-QUOTED-PRINTABLE-FIX}}} Fix: for google mail subjects ; normally on QP the _ must be encoded as =5F ; because google mail use the _ instead of space in all emails subject, it is considered a major enforcement to support this replacement
 					$text = (string) quoted_printable_decode($text);
-					$text = (string) SmartUnicode::convert_charset($text, $charset, $this->charset); // {{{SYNC-CHARSET-CONVERT}}}
+					$text = (string) SmartUnicode::convert_charset((string)$text, (string)$charset, (string)$this->charset); // {{{SYNC-CHARSET-CONVERT}}}
 					break;
 				default:
 					// as is
