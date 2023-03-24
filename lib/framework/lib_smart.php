@@ -3387,6 +3387,7 @@ final class SmartFileSysUtils {
 	/**
 	 * Check a Path (to a Directory or to a File) if contain valid characters (to avoid filesystem path security injections)
 	 * Security: provides check if unsafe paths are accessed.
+	 * Absolute paths on windows if checked as intended must be previous be converted using slash instead of backslash using Smart::fix_path_separator()
 	 *
 	 * @param 	STRING 	$path 									:: The path (dir or file) to validate
 	 * @param 	BOOL 	$deny_absolute_path 					:: *Optional* If TRUE will dissalow absolute paths
@@ -3406,7 +3407,17 @@ final class SmartFileSysUtils {
 			return 0;
 		} //end if else
 		//-- test valid path
-		if(self::testIfValidPath((string)$path) !== 1) {
+		$vpath = (string) $path; // linux/unix compatible operating systems, use as is
+		if((string)DIRECTORY_SEPARATOR == '\\') { // Fix: just for Windows OS, remove the `c:` to avoid change rules ; this is not as safe as on other platforms, but Windows support is intended just for development purposes ...
+			if($deny_absolute_path === false) { // only if absolute paths are not denied
+				if(strpos((string)$vpath, ':') === 1) { // 2nd character must be `:` (colon)
+					if(preg_match('/^[a-zA-Z]{1}/', (string)$vpath)) { // 1st character must be a-z A-Z (drive letter)
+						$vpath = (string) substr((string)$vpath, 2); // important: do not fix path separator here, must be fixed prior to pass to this function to ensure correct usage
+					} //end if
+				} //end if
+			} //end if
+		} //end if
+		if(self::testIfValidPath((string)$vpath) !== 1) {
 			return 0;
 		} //end if
 		//-- test backward path

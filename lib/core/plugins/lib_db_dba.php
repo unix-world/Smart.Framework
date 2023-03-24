@@ -1127,7 +1127,7 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-		$this->dba = @dba_open((string)$this->file, (string)$this->omode.$this->lock, (string)$this->handler, (defined('SMART_FRAMEWORK_CHMOD_FILES') ? SMART_FRAMEWORK_CHMOD_FILES : 0664)); // open connection
+		$this->dba = @dba_open((string)$the_abs_path_to_db, (string)$this->omode.$this->lock, (string)$this->handler, (defined('SMART_FRAMEWORK_CHMOD_FILES') ? SMART_FRAMEWORK_CHMOD_FILES : 0664)); // open connection
 		//--
 		SmartEnvironment::$Connections['dba'][(string)$this->handler.'#'.$this->file.'#'.$this->omode.$this->lock] = (bool) $this->dba; // just register true if openend ...
 		//--
