@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221220
+ * @version 	v.20230324
  *
  */
 final class TestUnitFileSystem {
@@ -192,7 +192,7 @@ final class TestUnitFileSystem {
 			if(
 				(\SmartFileSysUtils::checkIfSafePath('some/path:/this/is/absolute', false)) OR
 				(\SmartFileSysUtils::checkIfSafePath('/this/is/absolute:some/path', false)) OR
-				(\SmartFileSysUtils::checkIfSafePath('c:/this/is/absolute', false)) OR
+				((\SmartFileSysUtils::checkIfSafePath('c:/this/is/absolute', false)) AND ((string)DIRECTORY_SEPARATOR != '\\')) OR // skip this test on windows, it should be valid there ...
 				(\SmartFileSysUtils::checkIfSafePath(':/this/is/absolute', false)) OR
 				(\SmartFileSysUtils::checkIfSafePath('/this/is/abso|lute', false)) OR
 				(\SmartFileSysUtils::checkIfSafePath('/this/is/abso lute', false)) OR
