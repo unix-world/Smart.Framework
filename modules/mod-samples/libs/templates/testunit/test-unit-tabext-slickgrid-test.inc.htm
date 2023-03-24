@@ -2,26 +2,20 @@
 <b>Big Data Grid holding <span style="color:#FF5500;">1 Million Rows</span> at once using Virtual &amp; Async Post Rendering</b> (based on SlickGrid, with some fixes and improvements)
 <br>
 <!-- req. just for column reordering -->
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/ui-interractions/jquery.ui-interractions.css">
-<script src="lib/js/jquery/ui-interractions/jquery.ui-interractions.js"></script>
-<!-- req. by slickgrid -->
-<script src="lib/js/jquery/jquery.event.drag.js"></script>
-<script src="lib/js/jquery/jquery.event.drop.js"></script>
-<script src="lib/js/jquery/jquery.simulate.js"></script>
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid.css">
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid-fixes.css">
-<script src="lib/js/jquery/slickgrid/slick.grid.js"></script>
-<script src="lib/js/jquery/jquery.sparkline.js"></script>
+<link rel="stylesheet" type="text/css" href="modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-interractions.css">
+<script src="modules/mod-auth-admins/views/js/ui-interractions/jquery.ui-interractions.js"></script>
+<!-- req. by slickgrid render column -->
+<script src="modules/mod-auth-admins/views/js/jquery.sparkline.js"></script>
 <style>
-	.myGrid_AlignCenter {
-		text-align: center;
-	}
-	.myGrid_AlignRight {
-		text-align: right;
-	}
-	.myGrid_TheTitle {
-		color: #44619D;
-	}
+.myGrid_AlignCenter {
+	text-align: center;
+}
+.myGrid_AlignRight {
+	text-align: right;
+}
+.myGrid_TheTitle {
+	color: #44619D;
+}
 </style>
 <br>
 <div id="SampleSlickGrid" class="slickgrid-table" style="font-size:10px;width:100%;height:10px;"></div>
@@ -44,7 +38,7 @@ $(function() {
 	function postRenderer_formatter_EffortDriven(cellNode, row, dataContext, colDef) {
 		var value = dataContext["effortDriven"];
 		if(value == true) {
-			$(cellNode).empty().html('<img src="lib/js/jquery/slickgrid/demo/assets/tick.png">');
+			$(cellNode).empty().html('<img src="modules/mod-auth-admins/views/js/slickgrid/demo/assets/tick.png">');
 		} else {
 			$(cellNode).empty();
 		} //end if else

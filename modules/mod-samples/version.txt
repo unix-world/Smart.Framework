@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: Samples r.20221230 #
+# Smart.Framework.Modules: Samples r.20230123 #
 
 // r.8.7 / smart.framework.v.8.7
 

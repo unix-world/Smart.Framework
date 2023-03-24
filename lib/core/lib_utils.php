@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20221225
+ * @version 	v.20230102
  * @package 	Application:Utils
  *
  */
@@ -1656,8 +1656,8 @@ final class SmartUtils {
 		} //end if
 		//--
 		if((string)$current_protocol == '') {
-			Smart::log_warning('ERR: Failed to determine the server current protocol: `http://` or `https://` ...');
 			$current_protocol = 'http://'; // fallback to default
+			Smart::log_warning('ERR: Failed to determine the server current protocol: `http://` or `https://` ...');
 		} //end if
 		//--
 		self::$cache['get_server_current_protocol'] = (string) $current_protocol;
@@ -1735,8 +1735,8 @@ final class SmartUtils {
 		} //end if
 		//--
 		if((string)$current_port == '') {
-			Smart::log_warning('ERR: Failed to determine the server current port: ex: `80` or `443` ...');
 			$current_port = '80'; // fallback to default
+			Smart::log_warning('ERR: Failed to determine the server current port: ex: `80` or `443` ...');
 		} //end if
 		//--
 		self::$cache['get_server_current_port'] = (string) $current_port;
@@ -1773,9 +1773,12 @@ final class SmartUtils {
 		if((string)$ip == '') {
 			if((string)SmartFrameworkRegistry::getServerVar('SERVER_ADDR') != '') {
 				$ip = (string) SmartFrameworkRegistry::getServerVar('SERVER_ADDR');
-			} else {
-				Smart::log_warning('ERR: Failed to get current server IP address');
-				$ip = (string) self::FAKE_IP_SERVER; // return a fake IP, that does not exists {{{SYNC-SRV-DETECTION-FAKE-IP}}}
+			} else { // this is a fix for the PHP built-in web server which does not provide the SERVER_ADDR but only the SERVER_NAME ; if the SERVER_NAME is an IP address use that, otherwise cannot detect it !
+				$ip = (string) trim((string)SmartValidator::validate_filter_ip_address((string)trim((string)SmartFrameworkRegistry::getServerVar('SERVER_NAME'))));
+				if((string)$ip == '') {
+					$ip = (string) self::FAKE_IP_SERVER; // return a fake IP, that does not exists {{{SYNC-SRV-DETECTION-FAKE-IP}}}
+					Smart::log_warning('ERR: Failed to get current server IP address. Fallback to: `'.$ip.'`');
+				} //end if
 			} //end if
 		} //end if
 		//--
@@ -1816,8 +1819,11 @@ final class SmartUtils {
 			if((string)SmartFrameworkRegistry::getServerVar('SERVER_NAME') != '') {
 				$dm = (string) SmartFrameworkRegistry::getServerVar('SERVER_NAME');
 			} else {
-				Smart::log_warning('ERR: Failed to get current server Domain Name');
-				$dm = (string) self::get_server_current_ip(); // fallback to IP, but log
+				$dm = (string) self::get_server_current_ip(); // fallback to IP
+				if((string)trim((string)$dm) == '') { // if still empty, log
+					$dm = (string) self::FAKE_IP_SERVER; // return a fake IP, as a domain name, that does not exists {{{SYNC-SRV-DETECTION-FAKE-IP}}}
+					Smart::log_warning('ERR: Failed to get current server Domain Name. Fallback to: `'.$dm.'`');
+				} //end if
 			} //end if else
 		} //end if
 		//--

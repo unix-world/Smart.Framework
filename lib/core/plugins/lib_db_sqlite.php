@@ -63,7 +63,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20221219
+ * @version 	v.20230324
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -164,6 +164,8 @@ final class SmartSQliteDb {
 			SmartSQliteUtilDb::close($this->db, $this->file);
 			$this->opened = false;
 		} //end if
+		$this->db = null; // reset object
+		$this->file = ''; // reset file
 	} //END FUNCTION
 	//--
 
@@ -493,7 +495,7 @@ final class SmartSQliteDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20221219
+ * @version 	v.20230324
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -748,6 +750,7 @@ final class SmartSQliteUtilDb {
 				} //end if
 				//--
 				@$db->close();
+				$db = null; // reset obj
 				//--
 				if(SmartEnvironment::ifDebug()) {
 					//--
@@ -1857,7 +1860,7 @@ final class SmartSQliteUtilDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20221219
+ * @version 	v.20230324
  * @package 	Application:Plugins:Database:SQLite
  *
  */

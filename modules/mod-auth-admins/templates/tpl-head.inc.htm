@@ -28,6 +28,7 @@
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@]
 [%%%IF:SEMAPHORE:&*<load:utils-js>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-utils.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- Utils: skip -->[%%%/IF:SEMAPHORE%%%]
 [%%%IF:SEMAPHORE:&*<skip:js-ui>;%%%]<!-- LightJS: skip -->[%%%ELSE:SEMAPHORE%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-ui.inc.htm!@@@][%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<load:js-uix>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- UIx: skip -->[%%%/IF:SEMAPHORE%%%]
 <!-- CSS -->
 [%%%IF:HEAD-CSS:==;%%%]<!-- no head css -->[%%%ELSE:HEAD-CSS%%%][###HEAD-CSS###][%%%/IF:HEAD-CSS%%%]
 <!-- JS -->

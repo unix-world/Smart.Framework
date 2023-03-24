@@ -1,0 +1,160 @@
+/* Sense2-Org-Flow v.20230129 (c) unix-world.org */
+
+div.s2org-flow {
+	max-width: 92%;
+	overflow-x: auto;
+}
+
+div.s2org-flow * {
+	margin: 0;
+	padding: 0;
+	color: #222222;
+}
+
+div.s2org-flow ul {
+	padding-top: 1.25rem;
+	position: relative;
+}
+
+/* Make all children "inline" */
+div.s2org-flow li {
+	/*float: left;*/
+	display: inline-block;
+	text-align: center;
+	list-style-type: none;
+	position: relative;
+	padding: 1.25rem 0.3125rem 0 0.3125rem;
+}
+
+/* Add horizontal connector. Note: they are 2 pseudo-elements */
+div.s2org-flow li::before,
+div.s2org-flow li::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	right: 50%;
+	width: 55%;
+	height: 2.625rem;
+	z-index: -1;
+	border-top: 1px solid #CCCCCC;
+}
+
+div.s2org-flow li::after {
+	border-left: 1px solid #CCCCCC;
+	left: 50%;
+	right: auto;
+}
+
+/* Remove left and right connector from a single child */
+div.s2org-flow li:only-child::after,
+div.s2org-flow li:only-child::before {
+	display: none;
+}
+
+div.s2org-flow li:only-child {
+	padding-top: 0;
+}
+
+/* Remove "outer" connector */
+div.s2org-flow li:first-child::before,
+div.s2org-flow li:last-child::after {
+	border: 0 none;
+}
+/* Add back the down connector for last node */
+div.s2org-flow li:last-child::before {
+	border-right: 1px solid #CCCCCC;
+	border-radius: 0 0.3125rem 0 0;
+}
+
+/* Add curve line to the first child's connector */
+div.s2org-flow li:first-child::after {
+	border-radius: 0.3125rem 0 0 0;
+}
+
+
+/* Add down connector from parent */
+div.s2org-flow ul ul::before {
+	content: '';
+	border-left: 1px solid #CCCCCC;
+	z-index: -1;
+	height: 1.25rem;
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 0;
+}
+
+/* Add cosmetic for each item */
+div.s2org-flow li span {
+	font-size: 0.75rem;
+	background-color: #FFFFFF;
+	border: 1px solid #CCCCCC;
+	padding: 0.3125rem 0.625rem;
+	height: 1rem;
+	display: inline-block;
+	margin: 2px;
+	margin-right: 5px;
+	border-radius: 0.25rem;
+}
+
+/* Change bg-color while hovering each item */
+div.s2org-flow li span:hover {
+	background-color: #EEEEFF;
+}
+
+/* EXPERIMENTAL for multiple parents */
+/* Add margin for the parents */
+div.s2org-flow li span:not(:only-of-type) {
+	position: relative;
+	margin-bottom: 0.875rem;
+}
+
+/* Add "down" connector (vertical line) from each multi-parent, EXCEPT the last one */
+div.s2org-flow li > span:not(:last-of-type)::after{
+	content: '';
+	position: absolute;
+	border-left: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	top: 1.25rem;
+	width: 75%;
+	height: 1.25rem;
+	left: 50%;
+	z-index: -1;
+}
+
+/* Special case for the last multiple-parent, using border-right */
+div.s2org-flow li > span:not(:only-of-type):last-of-type::after {
+	content: '';
+	position: absolute;
+	border-right: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	top: 1.25rem;
+	width: 50%;
+	height: 1.25rem;
+	right: 50%;
+	z-index: -1;
+	border-bottom-right-radius: 0.3125rem;
+}
+
+/* Give the curve line to the first multiple parent .... */
+div.s2org-flow li > span:not(:only-of-type):first-child::after {
+	border-bottom-left-radius: 0.3125rem;
+}
+
+/* The middle element of multi-parents*/
+div.s2org-flow li > span:not(:first-child):not(:last-of-type)::before {
+	content: '';
+	position: absolute;
+	border-bottom: 1px solid #CCCCCC;
+	top: 2.5rem;
+	width: 50%;
+	right: 50%;
+	z-index: -1;
+}
+
+div.s2org-flow ul:last-of-type li {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+/* END */

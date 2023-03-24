@@ -962,7 +962,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							if((string)$key != '') {
 								$html_sorting[] = [
 									'id-field' => (string) $key,
-									'html-field' => (string) SmartViewHtmlHelpers::html_select_list_single('sort-m'.(int)$iterator, (string)$val, 'form', (array)$ascdesc, 'sort[m'.(int)$iterator.']', '70/0', '', 'no', 'no', '', 'class:filter-direction')
+									'html-field' => (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('sort-m'.(int)$iterator, (string)$val, 'form', (array)$ascdesc, 'sort[m'.(int)$iterator.']', '70/0', '', 'no', 'no', '', 'class:filter-direction')
 								];
 								$iterator++;
 							} //end if
@@ -979,7 +979,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				for($i=$sort_size; $i<$sort_max; $i++) {
 					$html_sorting[] = [
 						'id-field' => '',
-						'html-field' => (string) SmartViewHtmlHelpers::html_select_list_single('sort-m'.(int)$i, 'ASC', 'form', (array)$ascdesc, 'sort[m'.(int)$i.']', '70/0', '', 'no', 'no', '', 'class:filter-direction')
+						'html-field' => (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('sort-m'.(int)$i, 'ASC', 'form', (array)$ascdesc, 'sort[m'.(int)$i.']', '70/0', '', 'no', 'no', '', 'class:filter-direction')
 					];
 				} //end for
 				//--

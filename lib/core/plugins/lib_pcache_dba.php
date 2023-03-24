@@ -49,7 +49,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, PHP DBA Extension, SmartDbaUtilDb, SmartDbaDb
- * @version 	v.20221224
+ * @version 	v.20230324
  * @package 	Application:Plugins:PersistentCache:Dba
  *
  */

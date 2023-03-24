@@ -216,7 +216,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				[
 					'APP-ID' => (string) $appid,
 					'RELEASE-PACKAGE' => (string) $last_package,
-					'HTML-LIST-SEL' => (string) SmartViewHtmlHelpers::html_select_list_single(
+					'HTML-LIST-SEL' => (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single(
 						'deploy-url-sel',
 						'url',
 						'form',

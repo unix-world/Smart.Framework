@@ -77,7 +77,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20221230
+ * @version     v.20230324
  * @package     @Core
  *
  */
@@ -343,7 +343,9 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Return the FIXED realpath(), also with fix on Windows
+	 * Return the FIXED realpath() as absolute path, also with fix on Windows
+	 * This should be mostly used for existing paths. If path does not exists will return the same path as passed argument.
+	 * It does not support passing empty paths to avoid security issues like rtrim(Smart::real_path(''),'/').'/' which will point to the root folder of the filesystem.
 	 *
 	 * @param 	STRING 	$y_path 			:: The path name from to extract realpath()
 	 *
@@ -351,7 +353,16 @@ final class Smart {
 	 */
 	public static function real_path(?string $y_path) : string {
 		//--
-		$the_path = (string) @realpath((string)$y_path);
+		$y_path = (string) trim((string)$y_path);
+		if((string)$y_path == '') {
+			self::raise_error(__METHOD__.' # Empty Path passed as argument');
+			return 'tmp/invalid-real-path/';
+		} //end if
+		//--
+		$the_path = (string) trim((string)realpath((string)$y_path));
+		if((string)$the_path == '') { // realpath will return false/empty-string if the path does not exists
+			$the_path = (string) $y_path;
+		} //end if
 		//--
 		return (string) self::fix_path_separator($the_path); // FIX: on Windows, is possible to return a backslash \ instead of slash /
 		//--
@@ -3141,7 +3152,7 @@ final class Smart {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment
- * @version 	v.20221223
+ * @version 	v.20230324
  * @package 	@Core:FileSystem
  *
  */
@@ -3492,7 +3503,7 @@ final class SmartFileSysUtils {
 			((string)trim($y_path) == '.') OR 							// special: protected
 			((string)trim($y_path) == '..') OR 							// special: protected
 			((string)trim($y_path) == '/') OR 							// root dir: security
-			(strpos($y_path, ' ') !== false) OR 						// no space allowed
+			(strpos($y_path, ' ') !== false) OR 						// no space allowed ; Windows paths must be re-converted using / instead of \
 			(strpos($y_path, '\\') !== false) OR 						// no backslash allowed
 			(strpos($y_path, '://') !== false) OR 						// no protocol access allowed
 			(strpos($y_path, ':') !== false) OR 						// no dos/win disk access allowed

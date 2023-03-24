@@ -34,7 +34,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * Class: SmartHttpClient - provides a HTTP / HTTPS Client (browser).
  *
  * To work with TLS / SSL (requires the PHP OpenSSL Module).
- * Implemented Methods: Standard (GET / POST / HEAD) ; Extended (PUT / DELETE / MKCOL / OPTIONS / MOVE / COPY / PROPFIND).
+ * Implemented Methods: Standard (GET / POST / HEAD) ; Extended (PUT / PATCH / DELETE / OPTIONS / MKCOL / MOVE / COPY / PROPFIND).
  * The Standard Methods will prefere HTTP 1.0 (which provide a faster access)
  * The Extended Methods will prefere HTTP 1.1 instead of 1.0 because of some additional headers that may validate for error checks ...
  *
@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20221224
+ * @version 	v.20230109
  * @package 	@Core:Network
  *
  */
@@ -222,9 +222,11 @@ final class SmartHttpClient {
 	private $socket = false;								// The Communication Socket
 	private $raw_headers = [];								// Raw-Headers (internals)
 	private $url_parts = [];								// URL Parts
-	private $method = 'GET';								// method: GET / POST / HEAD + WebDAV methods (HTTP 1.1 is recommended): PUT / DELETE / MKCOL / OPTIONS / MOVE / COPY / PROPFIND ...
+	private $method = 'GET';								// method: GET / POST / HEAD + API or WebDAV methods (HTTP 1.1 is recommended): PUT / PATCH / DELETE / OPTIONS / MKCOL / MOVE / COPY / PROPFIND ...
 	//--
 	private $cafile = '';									// Certificate Authority File (instead of using the global SMART_FRAMEWORK_SSL_CA_FILE can use a private cafile
+	//--
+	private const PUTBODY_METHODS = [ 'PUT', 'PATCH', 'DELETE', 'MOVE', 'COPY' ];
 	//--
 	//==============================================
 
@@ -896,7 +898,7 @@ final class SmartHttpClient {
 				$this->log .= '[INF] '.$this->method.' request'."\n";
 			} //end if
 			//--
-			if((string)strtoupper($this->method) == 'PUT') {
+			if(in_array((string)strtoupper((string)$this->method), (array)self::PUTBODY_METHODS)) {
 				$this->raw_headers['Accept'] = (string) '*/*';
 				if((string)$this->putbodymode == 'file') {
 					if((SmartFileSysUtils::checkIfSafePath((string)$this->putbodyres) == '1') AND (SmartFileSysUtils::staticFileExists((string)$this->putbodyres) == true)) {
@@ -1009,7 +1011,7 @@ final class SmartHttpClient {
 				return 0;
 			} //end if
 			//--
-		} elseif((string)strtoupper($this->method) == 'PUT') { // for PUT prefered is to use HTTP 1.1 as we expect an earlier 100 Continue header to validate
+		} elseif(in_array((string)strtoupper((string)$this->method), (array)self::PUTBODY_METHODS)) { // for PUT like similar methods it is prefered to use HTTP 1.1 as we expect an earlier 100 Continue header to validate
 			//--
 			if(!$this->socket) {
 				//--

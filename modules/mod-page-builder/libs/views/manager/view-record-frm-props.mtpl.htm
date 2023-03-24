@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ View Record / Props :: v.20220915 -->
+<!-- Pagebuilder / Manage @ View Record / Props :: v.20230129 -->
 <style>
 ul#lang-list {
 	display: inline;
@@ -12,18 +12,6 @@ ul#lang-list li:after {
 }
 ul#lang-list li:last-child:after {
 	content: "";
-}
-ul#related-objects {
-	padding: 0px !important;
-	margin: 0px !important;
-	list-style-type: [%%%IF:IS-SUBSEGMENT:==1;%%%]disc[%%%ELSE:IS-SUBSEGMENT%%%]square[%%%/IF:IS-SUBSEGMENT%%%] !important;
-}
-ul#related-objects li a {
-	text-decoration: none !important;
-	border-bottom: 1px dotted #777777 !important;
-}
-ul#related-objects li a:hover {
-	border-bottom: 1px dotted #CCCCCC !important;
 }
 </style>
 <table width="100%" border="0">
@@ -172,7 +160,7 @@ ul#related-objects li a:hover {
 	</tr>
 	[%%%/IF:SHOW-TRANSLATIONS%%%]
 [%%%/IF:MODE-PAGETYPE%%%]
-[%%%IF:MODE:!=form;%%%][%%%IF:ARR-REFS:@>0;%%%]
+[%%%IF:MODE:!=form;%%%][%%%IF:NUM-REFS:>0;%%%]
 	<tr>
 		<td colspan="2">
 			<hr>
@@ -182,13 +170,38 @@ ul#related-objects li a:hover {
 		<td>
 			<b>[###TEXT-REFS###]:</b>
 		</td>
-		<td><ul id="related-objects">
-	[%%%LOOP:ARR-REFS%%%]
-		<li><a href="[###URL-REF|html###][###ARR-REFS._-VAL-_|url|html###]">[###ARR-REFS._-VAL-_|html###]</a></li>[%%%|N%%%]
-	[%%%/LOOP:ARR-REFS%%%]
-		</ul></td>
+		<td>
+			<div class="s2org-flow" id="related-objects">
+	[%%%IF:ARR-REFS:@>=1;%%%]
+				<ul>
+				  <li>
+		[%%%LOOP:ARR-REFS%%%]
+					<span><a href="[###URL-REF|html###][###ARR-REFS._-VAL-_|url|html###]">[###ARR-REFS._-VAL-_|html###]</a></span>[%%%|N%%%]
+		[%%%/LOOP:ARR-REFS%%%]
+	[%%%/IF:ARR-REFS%%%]
+					<ul>
+						<li>
+							<span style="background:#EE8908; font-weight:bold;">[###RECORD-ID###]</span>
+	[%%%IF:ARR-XREFS:@>=1;%%%]
+							<ul>
+		[%%%LOOP:ARR-XREFS%%%]
+								<li>
+									<span><a href="[###URL-REF|html###][###ARR-XREFS._-VAL-_|url|html###]">[###ARR-XREFS._-VAL-_|html###]</a></span>[%%%|N%%%]
+								</li>[%%%|N%%%]
+		[%%%/LOOP:ARR-XREFS%%%]
+							</ul>
+	[%%%/IF:ARR-XREFS%%%]
+						</li>
+					</ul>
+				  </li>
+	[%%%IF:ARR-REFS:@>=1;%%%]
+				</ul>
+	[%%%/IF:ARR-REFS%%%]
+			<br>
+			</div>
+		</td>
 	</tr>
-[%%%/IF:ARR-REFS%%%][%%%/IF:MODE%%%]
+[%%%/IF:NUM-REFS%%%][%%%/IF:MODE%%%]
 </table>
 <script>
 jQuery(document).ready(function(){

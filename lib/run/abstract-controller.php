@@ -1,6 +1,6 @@
 <?php
 // Smart.Framework / Abstract Controller
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -123,7 +123,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20221220
+ * @version 	v.20230123
  * @package 	development:Application
  *
  */
@@ -1282,6 +1282,23 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 			'status-code' 	=> (int) $code,
 			'redirect-url' 	=> (string) $url
 		]);
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	/**
+	 * Create a Page View Semaphores List from an Array
+	 * This creates a semaphores list for templating, that can be used with a special variable 'semaphore' to signal templates different semaphore conditions (ex: if a semaphore contains a certain <value> load or not a portion of tpl code)
+	 *
+	 * @param 	ARRAY 		$semaphores		:: Ex: [ 'semaphore1', 'semaphore2' ]
+	 *
+	 * @return 	STRING						:: The list of Semaphores: ex: '<semaphore1>,<semaphore2>'
+	 */
+	final public function PageViewCreateSemaphores(array $semaphores) : string {
+		//--
+		return (string) Smart::array_to_list((array)$semaphores);
 		//--
 	} //END FUNCTION
 	//=====

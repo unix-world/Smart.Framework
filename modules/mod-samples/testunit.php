@@ -182,9 +182,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$semaphores[] = 'load:font:mono';
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				$main = '<script>'.SmartViewHtmlHelpers::js_code_init_away_page().'</script>';
-				$main .= SmartViewHtmlHelpers::html_jsload_htmlarea();
-				$main .= SmartViewHtmlHelpers::html_js_htmlarea('test_html_area', 'test_html_area', '', '920px', '500px');
-				$fmcallback = SmartViewHtmlHelpers::html_js_htmlarea_fm_callback('#', false); // just for test
+				$main .= \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_jsload_htmlarea();
+				$main .= \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_js_htmlarea('test_html_area', 'test_html_area', '', '920px', '500px');
+				$fmcallback = \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_js_htmlarea_fm_callback('#', false); // just for test
 				$main .= '<button class="ux-button" onClick="alert($(\'#test_html_area\').val());">Get HTML Source</button>';
 				//--
 				break;
@@ -302,6 +302,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				break;
 			case 'testunit.main':
 				//--
+				$semaphores[] = 'load:js-uix';
+				//--
 				$unique_entropy 		= (string) sha1(Smart::unique_entropy('testunit', false));
 				$unique_cluster_entropy = (string) sha1(Smart::unique_entropy('testunit', true));
 				//--
@@ -356,7 +358,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$main .= (string) SmartMarkersTemplating::render_template(
 					(string) (new SmartMarkdownToHTML(true, true, false, (string)$mkdw_options, null, true, null, true))->parse((string)SmartFileSystem::read($this->ControllerGetParam('module-view-path').'markdown-test.md')), // C:1
 					[
-						'semaphore' => (string) Smart::array_to_list($semaphores),
+						'semaphore' => (string) $this->PageViewCreateSemaphores((array)$semaphores),
 						'TITLE' 	=> 'Markdown <tpl> demo',
 					]
 				);
@@ -540,9 +542,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		} //end if
 		//--
 		$this->PageViewSetVars([
+			'semaphore' 	=> (string) $this->PageViewCreateSemaphores((array)$semaphores),
 			'title' 		=> 'Smart.Framework Test and Demo Suite '.' / NetServerID: '.Smart::net_server_id().' ('.Smart::net_server_id(true).')',
 			'main' 			=> (string) $main.$extra_main,
-			'semaphore' 	=> (string) Smart::array_to_list($semaphores)
 		]);
 		//--
 

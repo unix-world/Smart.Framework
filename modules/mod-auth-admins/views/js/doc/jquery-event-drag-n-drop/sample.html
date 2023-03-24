@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="icon" href="data:,">
+	<title>jQuery Event Drag and Drop</title>
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../jquery.event.drag.js"></script>
+	<script src="../../jquery.event.drop.js"></script>
+	<style type="text/css">
+	.drag {
+		position: fixed;
+		border: 1px solid #89B;
+		background: #BCE;
+		height: 58px;
+		width: 58px;
+		cursor: move;
+		top: 100px;
+		line-height: 58px;
+		text-align: center;
+	}
+	.drop {
+		position: fixed;
+		width: 291px;
+		height: 299px;
+		padding: 0 4px;
+		border: 1px dashed #888;
+		background: #EEE;
+		font-size: 10px;
+		line-height: 15px;
+		overflow: hidden;
+	}
+	.dropped {
+		background-color: #EBC;
+		border-color: #B89;
+	}
+	</style>
+</head>
+<body>
+<h1>Basic Drag and Drop Demo</h1>
+<p>Drag the blue boxes and drop them inside the dashed line.</p>
+<div class="drop dropped" style="left:500px; top:125px;"></div>
+<div class="drag blue" style="left:300px; top:125px;"></div>
+<div class="drag blue" style="left:100px; top:125px;"></div>
+<div class="drag blue" style="left:200px; top:125px;"></div>
+<script>
+$(function() {
+
+	$('.drag').drag(function( ev, dd ){
+		$(this).css({
+			top:  dd.offsetY,
+			left: dd.offsetX
+		});
+	});
+
+	$('.drop').drop(function(){
+		$(this).toggleClass('dropped');
+	});
+
+});
+</script>
+</body>
+</html>

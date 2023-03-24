@@ -2,6 +2,14 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+January 29, 2023
+	* PageBuilder fix: manage refs also for setting segments
+	* new CSS: 2Sense OrgChart
+
+January 23, 2023
+	* Js Major Refactoring (admin UI js/css moved to modules/mod-auth-admins/views/js and modules/mod-wflow-components/views/jquery)
+	* Keep in lib/js just few, essential jQuery scripts
+
 January 01, 2023
 	* Unicode Optimizations and Fixes for PHP 8.1 / 8.2
 	* Extended Charset detection in MailUtils

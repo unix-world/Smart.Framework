@@ -1,4 +1,4 @@
-<!-- Pagebuilder / Manage @ List / Records :: v.20221001 -->
+<!-- Pagebuilder / Manage @ List / Records :: v.20230123 -->
 <style>
 .smartGrid_AlignCenter {
 	text-align: center;
@@ -43,16 +43,7 @@
 	text-align: center !important;
 }
 </style>
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/pager/jquery.simplePagination.css">
-<script src="lib/js/jquery/pager/jquery.simplePagination.js"></script>
-<script src="lib/js/jquery/jquery.event.drag.js"></script>
-<script src="lib/js/jquery/jquery.event.drop.js"></script>
-<script src="lib/js/jquery/jquery.simulate.js"></script>
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid.css">
-<link rel="stylesheet" type="text/css" href="lib/js/jquery/slickgrid/slick.grid-fixes.css">
-<script src="lib/js/jquery/slickgrid/slick.grid.js"></script>
-<script src="lib/js/jquery/slickgrid/slick.editors.js"></script>
-<script src="lib/js/jquery/slickgrid/smart-grid.js"></script>
+[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@]
 <script>
 const IdOfGrid = 'PageBuilderSlickGrid';
 const TheGrid = new SmartGrid(IdOfGrid, 'infoTotalRows', '[###LIST-JSON-URL|js###]', 'PageBuilder_Smart_Slickgrid_List', 'name', 'ASC', '', 'filtering');

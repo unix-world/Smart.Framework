@@ -1,7 +1,7 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20221219 s.20221219.1716
-// (c) 2013-2022 unix-world.org - all rights reserved
+// [AppCodeUnpack / APP] v.20230324 s.20230324.1826
+// (c) 2013-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20221219
+	// v.20230324
 
-	private const APPCODEUNPACK_VERSION = 's.20221219.1716';
+	private const APPCODEUNPACK_VERSION = 's.20230324.1826';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -1130,7 +1130,7 @@ final class AppCodeUnpack {
 		$out = (string) SmartMarkersTemplating::render_template(
 			(string) (defined('APPCODEUNPACK_HTML_TPL') ? APPCODEUNPACK_HTML_TPL : '{#EMPTY-APPCODEUNPACK-TPL#}'),
 			[
-				'REALPATH-CRR' 			=> (string) rtrim((string)realpath('./'), '/').'/{%-APP-ID-%}/',
+				'REALPATH-CRR' 			=> (string) rtrim((string)Smart::real_path('./'), '/').'/{%-APP-ID-%}/',
 				'SCRIPT' 				=> (string) self::APPCODEUNPACK_SCRIPT,
 				'AUTH-USER-ID' 			=> (string) SmartAuth::get_login_id(),
 				'AUTH-ENF-HTTPS' 		=> (string) (((!defined('APP_AUTH_ADMIN_ENFORCE_HTTPS')) OR (APP_AUTH_ADMIN_ENFORCE_HTTPS !== false)) ? 'yes' : 'no'),

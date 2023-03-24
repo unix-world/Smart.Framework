@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="icon" href="data:,">
+	<title>jQuery TagEdit</title>
+
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.smart.compat.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="../jquery.tagedit.css">
+	<script type="text/javascript" src="../jquery.tagedit.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#the-tags').tagEdit({
+				items: ['First tag', 'Second tag', 'Tag number Three', 'Tag 4Four', 'Tag Five'],
+			});
+		});
+		$(document).ready(function(){
+			$('#the-readonly-tags').tagEdit({
+				items: ['Tag1', 'Tag2', 'Tag3'],
+				readOnly: true
+			});
+		});
+	</script>
+</head>
+<body>
+	<div class="card">
+		<h1>jQuery TagEdit</h1>
+		<p>
+			<label for="Tags">Enter a New Tag:</label>
+			<input id="the-tags" name="frm[tags]" type="text" value="">
+		</p>
+	</div>
+	<hr>
+	<div class="card">
+		ReadOnly Tags: <span id="the-readonly-tags"></span>
+	</div>
+</body>
+</html>

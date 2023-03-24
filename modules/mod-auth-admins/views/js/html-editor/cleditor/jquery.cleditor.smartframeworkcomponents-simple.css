@@ -1,0 +1,36 @@
+/*
+ [@[#[!NO-STRIP!]#]@]
+ this fails to compile with google closure stylesheets (unrecognized: @-moz ...)
+*/
+/* CLEditor / SmartComponents v.20230123 */
+
+@import url("../../../../../../lib/core/plugins/fonts/typo/serif/ibm-plex-serif.css");
+
+* {
+	font-family: 'IBM Plex Serif',sans-serif !important;
+	font-size: 15px !important;
+}
+table {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	border: 1px dotted #F0F0F0;
+}
+td {
+	border: 1px dotted #ECECEC;
+}
+hr {
+	border: none 0;
+	border-top: 1px solid #ECECEC;
+	height: 1px;
+}
+
+/* Fix for Firefox Missing Images PlaceHolder */
+@-moz-document url-prefix(http), url-prefix(file) {
+	img:-moz-broken {
+		-moz-force-broken-image-icon:1;
+		width:24px;
+		height:24px;
+	}
+}
+
+/* END */

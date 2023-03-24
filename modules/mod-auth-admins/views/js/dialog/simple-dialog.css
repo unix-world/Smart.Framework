@@ -1,0 +1,137 @@
+/*
+ * jQuery Simple Dialog (SmartLightUI)
+ * (c) 2015-2023 unix-world.org
+ * License: BSD
+ * v.20230123
+ */
+
+/* Overlay */
+#simpledialog-overlay, .simpledialog-overlay {
+	display: none;
+	position: fixed;
+	top: -50px;
+	left: -50px;
+	width: 1px;
+	height: 1px;
+	z-index: 1;
+/*	opacity: 0.55; */
+	background: rgba(238, 238, 238, 0.7);
+}
+
+/* Container */
+#simpledialog-container {
+	display: none;
+	position: fixed;
+	top: -50px;
+	left: -50px;
+	width: 1px;
+	height: 1px;
+	z-index: 1;
+	font-size: 16px;
+	text-align: left;
+	background: #FFFFFF;
+	border: 1px solid #ECECEC;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
+#simpledialog-container #simpledialog-area-head {
+	height: 35px;
+	overflow: auto;
+}
+#simpledialog-container .header {
+	height: 35px;
+	line-height: 35px;
+	background: #FFFFFF;
+	color: #333333;
+	font-weight: bold;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-bottom: 1px solid #EEEEEE;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+#simpledialog-container .message {
+	color: #333333;
+	font-size: 100%;
+	margin: 0;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 2px;
+	padding-bottom: 27px;
+	overflow: auto;
+	height: 40%;
+	width: 97%;
+	width: calc(100% - 20px);
+}
+
+#simpledialog-container hr {
+	border: 0;
+	height: 0;
+	border-bottom: 1px solid #EEEEEE;
+}
+
+#simpledialog-container h1 {
+	font-size: 2.125rem;
+}
+#simpledialog-container h2 {
+	font-size: 1.875rem;
+}
+#simpledialog-container h3 {
+	font-size: 1.625rem;
+}
+#simpledialog-container h4 {
+	font-size: 1.375rem;
+}
+#simpledialog-container h5 {
+	font-size: 1.125rem;
+}
+#simpledialog-container h6 {
+	font-size: 1rem;
+}
+
+#simpledialog-container .buttons {
+	line-height: 28px;
+	float: right;
+	padding-top: 2px;
+	padding-right: 15px;
+	padding-bottom: 2px;
+	padding-left: 15px;
+}
+#simpledialog-container .buttons div {
+	float: right;
+	margin-left: 8px;
+	height: 28px;
+	color: #555555;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: center;
+	background: #FFFFFF;
+	border: 1px solid #DDDDDD;
+	cursor: pointer;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 6px;
+	border-radius: 3px;
+}
+#simpledialog-container .buttons div:hover {
+	border: 1px solid #888888;
+}
+#simpledialog-container .buttons div span.uicon {
+	width: 16px;
+	height: 16px;
+	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIxMnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxMiAxNiIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4gICAgICAgIDx0aXRsZT5jaGVjazwvdGl0bGU+ICAgIDxkZXNjPkNyZWF0ZWQgd2l0aCBTa2V0Y2guPC9kZXNjPiAgICA8ZGVmcz48L2RlZnM+ICAgIDxnIGlkPSJPY3RpY29ucyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+ICAgICAgICA8ZyBpZD0iY2hlY2siIGZpbGw9IiMwMDAwMDAiPiAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJTaGFwZSIgcG9pbnRzPSIxMiA1IDQgMTMgMCA5IDEuNSA3LjUgNCAxMCAxMC41IDMuNSI+PC9wb2x5Z29uPiAgICAgICAgPC9nPiAgICA8L2c+PC9zdmc+);
+	background-repeat: no-repeat;
+	opacity: 0.5;
+}
+#simpledialog-container .buttons div span.uiconx {
+	width: 16px;
+	height: 16px;
+	background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIHdpZHRoPSIxMnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxMiAxNiIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4gICAgICAgIDx0aXRsZT54PC90aXRsZT4gICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+ICAgIDxkZWZzPjwvZGVmcz4gICAgPGcgaWQ9Ik9jdGljb25zIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4gICAgICAgIDxnIGlkPSJ4IiBmaWxsPSIjMDAwMDAwIj4gICAgICAgICAgICA8cG9seWdvbiBpZD0iU2hhcGUiIHBvaW50cz0iNy40OCA4IDExLjIzIDExLjc1IDkuNzUgMTMuMjMgNiA5LjQ4IDIuMjUgMTMuMjMgMC43NyAxMS43NSA0LjUyIDggMC43NyA0LjI1IDIuMjUgMi43NyA2IDYuNTIgOS43NSAyLjc3IDExLjIzIDQuMjUiPjwvcG9seWdvbj4gICAgICAgIDwvZz4gICAgPC9nPjwvc3ZnPg==);
+	background-repeat: no-repeat;
+	opacity: 0.5;
+}
+
+/* END */

@@ -4,8 +4,8 @@
 // Developed by Cory LaViska for A Beautiful Site, LLC
 // Licensed under the MIT license: http://opensource.org/licenses/MIT
 
-// r.20221211
-// (c) 2019-2022 unix-world.org
+// r.20230123
+// (c) 2019-2023 unix-world.org
 // License: BSD
 // contains fixes by unixman
 */
@@ -73,6 +73,25 @@
 .alertable-message-text {
 	font-size: 1.125rem !important;
 	font-weight: bold;
+}
+
+.alertable-message h1 {
+	font-size: 2.125rem;
+}
+.alertable-message h2 {
+	font-size: 1.875rem;
+}
+.alertable-message h3 {
+	font-size: 1.625rem;
+}
+.alertable-message h4 {
+	font-size: 1.375rem;
+}
+.alertable-message h5 {
+	font-size: 1.125rem;
+}
+.alertable-message h6 {
+	font-size: 1rem;
 }
 
 /* Prompt */

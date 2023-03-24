@@ -226,7 +226,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 				} //end if
 			} //end if
 			//--
-			$html_select = (string) SmartViewHtmlHelpers::html_select_list_single(
+			$html_select = (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single(
 				'task-run-sel',
 				'',
 				'form',
@@ -248,7 +248,7 @@ final class SmartAppTaskController extends SmartAbstractAppController {
 				return;
 			} //end if
 			//--
-			$html_select = (string) SmartViewHtmlHelpers::html_select_list_single(
+			$html_select = (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single(
 				'sel-app',
 				'',
 				'form',

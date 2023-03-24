@@ -52,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20221220
+ * @version 	v.20230128
  * @package 	PageBuilder
  *
  */
@@ -310,7 +310,7 @@ final class Manager {
 		$translator_window = \SmartTextTranslations::getTranslator('@core', 'window');
 		//--
 		$out = '';
-	//	$out .= \SmartViewHtmlHelpers::html_jsload_htmlarea(''); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
+	//	$out .= \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_jsload_htmlarea(''); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
 		$out .= '<link href="lib/js/jquery/jsonview/jquery.json-viewer.css" type="text/css" rel="stylesheet">';
 		$out .= '<script src="lib/js/jquery/jsonview/jquery.json-viewer.js"></script>';
 		$out .= \SmartViewHtmlHelpers::html_jsload_editarea();
@@ -365,6 +365,7 @@ final class Manager {
 		} //end if
 		foreach($q_refs as $key => $val) {
 			if(!\is_array($val)) {
+				$val = (string) \trim((string)$val);
 				if((string)$val != '') {
 					if(!\in_array((string)$val, $arr_refs)) {
 						$arr_refs[] = (string) $val;
@@ -380,15 +381,20 @@ final class Manager {
 			$is_subsegment = true;
 		} //end if
 		//--
+		$arr_xrefs = [];
 		$q_refs = \SmartModDataModel\PageBuilder\PageBuilderBackend::getRecordsByRef($y_id);
 		for($i=0; $i<\Smart::array_size($q_refs); $i++) {
 			if((string)$q_refs[$i]['id'] != '') {
-				if(!\in_array((string)$q_refs[$i]['id'], $arr_refs)) {
-					$arr_refs[] = (string) $q_refs[$i]['id'];
+				if(!\in_array((string)$q_refs[$i]['id'], $arr_xrefs)) {
+					$arr_xrefs[] = (string) $q_refs[$i]['id'];
 				} //end if
 			} //end if
 		} //end if
 		$q_refs = null;
+		$have_childs = false;
+		if(\Smart::array_size($arr_xrefs) > 0) {
+			$have_childs = true;
+		} //end if
 		//--
 		$bttns = '';
 		//--
@@ -413,11 +419,11 @@ final class Manager {
 				unset($arr_pmodes['html']);
 				unset($arr_pmodes['markdown']);
 				unset($arr_pmodes['text']);
-				$fld_pmode = \SmartViewHtmlHelpers::html_select_list_single('pmode', $query['mode'], 'form', $arr_pmodes, 'frm[mode]', '150/0', '', 'no', 'no');
+				$fld_pmode = \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('pmode', $query['mode'], 'form', $arr_pmodes, 'frm[mode]', '150/0', '', 'no', 'no');
 			} else {
 				unset($arr_pmodes['raw']);
 				unset($arr_pmodes['settings']);
-				$fld_pmode = \SmartViewHtmlHelpers::html_select_list_single('pmode', $query['mode'], 'form', $arr_pmodes, 'frm[mode]', '150/0', '', 'no', 'no');
+				$fld_pmode = \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('pmode', $query['mode'], 'form', $arr_pmodes, 'frm[mode]', '150/0', '', 'no', 'no');
 			} //end if else
 			//--
 			$fld_ctrl = self::drawFieldCtrl($query['ctrl'], $is_subsegment, 'form', 'frm[ctrl]');
@@ -461,7 +467,7 @@ final class Manager {
 			} //end if
 			//--
 			$fld_name = (string) \Smart::escape_html($query['name']);
-			$fld_pmode = (string) \SmartViewHtmlHelpers::html_select_list_single('pmode', $query['mode'], 'list', $arr_pmodes);
+			$fld_pmode = (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('pmode', $query['mode'], 'list', $arr_pmodes);
 			$fld_ctrl = (string) self::drawFieldCtrl($query['ctrl'], $is_subsegment, 'list');
 			$fld_special = (string) \Smart::escape_html((int)$query['special']);
 			$fld_active = (string) \SmartViewHtmlHelpers::html_selector_true_false('', $query['active']);
@@ -507,7 +513,7 @@ final class Manager {
 		} //end if
 		if(\Smart::array_size($transl_arr) > 0) {
 			for($i=0; $i<\Smart::array_size($transl_arr); $i++) {
-				$transl_arr[$i] = (string) \SmartViewHtmlHelpers::html_select_list_single('', (string)$transl_arr[$i], 'list', (array)$arr_raw_langs);
+				$transl_arr[$i] = (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('', (string)$transl_arr[$i], 'list', (array)$arr_raw_langs);
 			} //end if
 		} //end if
 		if((string)$query['mode'] == 'settings') {
@@ -522,6 +528,7 @@ final class Manager {
 			(string) $the_template,
 			[
 				'MODE' 						=> (string) $y_mode,
+				'RECORD-ID' 				=> (string) $query['id'],
 				'IS-SEGMENT' 				=> (string) self::testIsSegmentPage($query['id']),
 				'IS-SUBSEGMENT' 			=> (string) $is_subsegment ? 1 : 0,
 				'BUTTONS'					=> (string) $bttns,
@@ -559,7 +566,9 @@ final class Manager {
 				'MODE-PAGETYPE' 			=> (string) $query['mode'],
 				'TEXT-REFS' 				=> (string) self::text('refs'),
 				'ARR-REFS' 					=> (array)  $arr_refs,
-				'URL-REF' 					=> (string) self::composeUrl('op=record-view&id=')
+				'ARR-XREFS' 				=> (array)  $arr_xrefs,
+				'NUM-REFS' 					=> (int) 	(\Smart::array_size($arr_refs) + \Smart::array_size($arr_xrefs)),
+				'URL-REF' 					=> (string) self::composeUrl('op=record-view&id='),
 			]
 		);
 		//--
@@ -605,7 +614,7 @@ final class Manager {
 			$tselmode = 'form';
 		} //end if else
 		if(\Smart::array_size($arr_langs) > 1) {
-			$tselect = (string) \SmartViewHtmlHelpers::html_select_list_single(
+			$tselect = (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single(
 				'language-select',
 				(string) $y_lang,
 				(string) $tselmode,
@@ -685,7 +694,7 @@ final class Manager {
 					} elseif((string)$query['mode'] == 'markdown') {
 						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'markdown', true, '90vw', '70vh', true, (string)$theme_editable);
 					} else {
-					//	$out .= \SmartViewHtmlHelpers::html_js_htmlarea('pbld_code_htmleditor', 'frm[code]', $query['code'], '90vw', '70vh', true); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
+					//	$out .= \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_js_htmlarea('pbld_code_htmleditor', 'frm[code]', $query['code'], '90vw', '70vh', true); // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
 						$out .= \SmartViewHtmlHelpers::html_js_editarea('pbld_code_editor', 'frm[code]', $query['code'], 'html', true, '90vw', '70vh', true, (string)$theme_editable);
 					} //end if else
 					$out .= '<div align="left">';
@@ -882,17 +891,17 @@ final class Manager {
 							$out .= '</div>'."\n";
 							$the_editor_styles = '';
 							if((string)$query['mode'] == 'markdown') {
-							//	$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/markdown.css">'; // includded in lib/core/plugins/css/app{.pak}.css
+							//	$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/css/plugins/markdown.css">'; // includded in lib/core/plugins/css/app{.pak}.css
 								$query['code'] = \SmartModExtLib\PageBuilder\Utils::renderMarkdown((string)$query['code'], '', '', false, true); // render on the fly ; use NULL for options to dissalow override by SMART_PAGEBUILDER_HTML_VALIDATOR ; no need for validation here ; do not log notices
 							} else {
-							//	$the_editor_styles = '<link rel="stylesheet" type="text/css" href="lib/js/jsedithtml/cleditor/jquery.cleditor.smartframeworkcomponents.css">'; // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
+							//	$the_editor_styles = '<link rel="stylesheet" type="text/css" href="modules/mod-auth-admins/views/js/html-editor/cleditor/jquery.cleditor.smartframeworkcomponents.css">'; // {{{SYNC-PAGEBUILDER-HTML-WYSIWYG}}}
 								$query['code'] = (string) \SmartModExtLib\PageBuilder\Utils::fixSafeCode((string)$query['code']); // {{{SYNC-PAGEBUILDER-HTML-SAFETY}}} avoid PHP code + cleanup XHTML tag style
 							} //end if else
 							$the_website_styles = "\n".'<style>'."\n".\SmartComponents::app_default_css()."\n".'</style>'."\n";
 							$the_website_styles .= '<link rel="stylesheet" type="text/css" href="lib/css/toolkit/sf-icons.css">';
 							$the_website_styles .= '<link rel="stylesheet" type="text/css" href="lib/css/app.pak.css">';
 							$the_website_styles .= '<link rel="stylesheet" type="text/css" href="lib/core/css/app.pak.css">';
-							$the_website_styles .= '<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/app.pak.css">'; // includes lib/core/plugins/css/markdown.css
+							$the_website_styles .= '<link rel="stylesheet" type="text/css" href="lib/core/plugins/css/app.pak.css">'; // includes lib/css/plugins/markdown.css
 							$out .= \SmartViewHtmlHelpers::html_js_preview_iframe('pbld_code_editor', '<!DOCTYPE html><html><head>'.$the_website_styles.$the_editor_styles.'</head><body style="background:#FFFFFF;">'.$query['code'].'</body></html></html>', $y_width='90vw', $y_height='70vh');
 						} //end if else
 						//--
@@ -1536,7 +1545,7 @@ final class Manager {
 				'REFRESH-PARENT' 	=> (string) '<script>smartJ$Browser.RefreshParent();</script>',
 				'FORM-NAME' 		=> (string) 'page_form_add',
 				'LABELS-TYPE'		=> (string) self::text('record_syntax'),
-				'CONTROLS-TYPE' 	=> (string) \SmartViewHtmlHelpers::html_select_list_single('ptype', '', 'form', (array)$arr_objects, 'frm[ptype]', '275/0', '', 'no', 'yes'),
+				'CONTROLS-TYPE' 	=> (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('ptype', '', 'form', (array)$arr_objects, 'frm[ptype]', '275/0', '', 'no', 'yes'),
 				'LABELS-ID'			=> (string) self::text('id'),
 				'LABELS-NAME'		=> (string) self::text('name'),
 				'LABELS-CTRL' 		=> (string) self::text('ctrl'),
@@ -2387,8 +2396,9 @@ final class Manager {
 		} //end if else
 		//-- #{{{SYNC-PAGEBUILDER-MANAGER-DEF-LINKS}}}
 		return (string) \SmartMarkersTemplating::render_file_template(
-			self::MODULE_PATH.'libs/views/manager/view-list-tree.mtpl.htm',
+			(string) self::MODULE_PATH.'libs/views/manager/view-list-tree.mtpl.htm',
 			[
+				'RELEASE-HASH' 		=> (string) \SmartUtils::get_app_release_hash(),
 				'IS-DEV-MODE' 		=> (string) ((\SmartEnvironment::ifDevMode() === true) ? 'yes' : 'no'),
 				'COOKIE-DATASETS' 	=> (string) $cookie_display_datasets,
 				'VALUE-DATASETS' 	=> (string) $cookie_value_datasets,
@@ -2502,6 +2512,7 @@ final class Manager {
 		return (string) \SmartMarkersTemplating::render_file_template(
 			(string) self::MODULE_PATH.'libs/views/manager/view-list.mtpl.htm',
 			[
+				'RELEASE-HASH' 		=> (string) \SmartUtils::get_app_release_hash(),
 				'IS-DEV-MODE' 		=> (string) ((\SmartEnvironment::ifDevMode() === true) ? 'yes' : 'no'),
 				'SHOW-FILTER-CTRL' 	=> 'yes',
 				'SHOW-TRANSLATIONS' => (string) $show_translations,
@@ -3151,7 +3162,7 @@ final class Manager {
 	//==================================================================
 	private static function drawFieldLayoutPages($y_mode, $y_listmode, $y_value, $y_htmlvar='') {
 		//--
-		return (string) \SmartViewHtmlHelpers::html_select_list_single('', $y_value, $y_listmode, (array)\SmartModExtLib\PageBuilder\Utils::getAvailableLayouts(), $y_htmlvar, '250', '', 'no', 'no');
+		return (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('', $y_value, $y_listmode, (array)\SmartModExtLib\PageBuilder\Utils::getAvailableLayouts(), $y_htmlvar, '250', '', 'no', 'no');
 		//--
 	} //END FUNCTION
 	//==================================================================

@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20221225
+ * @version 	v.20230123
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -186,8 +186,8 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			'APPCODEUNPACK_BASE_STYLES' 		=> 'lib/css/default.css',
 			'APPCODEUNPACK_TOOLKIT_STYLES' 		=> [ 'lib/css/toolkit/ux-toolkit.css', 'lib/css/toolkit/ux-toolkit-responsive.css' ],
 			'APPCODEUNPACK_NOTIFICATION_STYLES' => 'lib/core/css/notifications.css',
-			'APPCODEUNPACK_CSS_GRITTER' 		=> 'lib/js/jquery/growl/jquery.gritter.css',
 			'APPCODEUNPACK_CSS_ALERTABLE' 		=> 'lib/js/jquery/jquery.alertable.css',
+			'APPCODEUNPACK_CSS_GRITTER' 		=> 'modules/mod-auth-admins/views/js/gritter/jquery.gritter.css',
 			'APPCODEUNPACK_CSS_LOCAL_FX' 		=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-styles.css',
 		];
 		//--
@@ -196,8 +196,8 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			'APPCODEUNPACK_JS_SMART_UTILS' 		=> 'lib/js/framework/src/core_utils.js',
 			'APPCODEUNPACK_JS_SMART_DATE' 		=> 'lib/js/framework/src/date_utils.js',
 			'APPCODEUNPACK_JS_SMART_CRYPTO' 	=> 'lib/js/framework/src/crypt_utils.js',
-			'APPCODEUNPACK_JS_GRITTER' 			=> 'lib/js/jquery/growl/jquery.gritter.js',
 			'APPCODEUNPACK_JS_ALERTABLE' 		=> 'lib/js/jquery/jquery.alertable.js',
+			'APPCODEUNPACK_JS_GRITTER' 			=> 'modules/mod-auth-admins/views/js/gritter/jquery.gritter.js',
 			'APPCODEUNPACK_JS_LOCAL_FX' 		=> 'modules/mod-app-release/appcodeunpack/appcodeunpack-functions.js',
 		];
 		//--

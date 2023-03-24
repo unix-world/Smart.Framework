@@ -1,5 +1,5 @@
 
-/* -- CSS Start :: Smart.Framework / App Core.Plugins :: r.20221228 -- */
+/* -- CSS Start :: Smart.Framework / App Core.Plugins :: r.20230128 -- */
 
 /* ----------------------------- */
 
@@ -19,6 +19,8 @@
 
 @import url("v-timeline/style.css");
 @import url("v-timeline/style-responsive.css");
+
+@import url("s2org-flow/style.css");
 
 @import url("txt-columns/style.css");
 @import url("txt-columns/style-responsive.css");

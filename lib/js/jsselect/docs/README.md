@@ -1,6 +1,6 @@
-# Slim Select 
+# Slim Select
 ## slimselectjs.com
-Slim advanced select dropdown
+Slim advanced select dropdown (for single or multi list)
 
 [![Build Status](https://travis-ci.org/brianvoe/slim-select.svg?branch=master)](https://travis-ci.org/brianvoe/slim-select)
 [![NPM Downloads](https://img.shields.io/npm/dt/slim-select.svg)](https://www.npmjs.com/package/slim-select)
@@ -46,7 +46,7 @@ npm install slim-select
 
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<version>/slimselect.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<version>/slimselect.min.css"> 
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slim-select/<version>/slimselect.min.css">
 ```
 
 ## Usage

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Virtual Keyboard Samples</title>
+	<link rel="stylesheet" href="../../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<link rel="stylesheet" href="../themes/keyboard.css">
+	<link rel="stylesheet" href="../themes/keyboard-light.css">
+	<script src="../jquery.keyboard.js"></script>
+	<script src="../keyboard-layouts-combined.js"></script>
+	<link rel="stylesheet" href="../extensions/css/keyboard-previewkeyset.css">
+	<script src="../extensions/jquery.keyboard.extension-previewkeyset.js"></script>
+	<script src="../extensions/jquery.keyboard.extension-altkeyspopup.js"></script>
+	<style type="text/css">
+	* {
+		font-family: 'IBM Plex Sans',arial,sans-serif;
+		font-smooth: always;
+	}
+	#keyboard-wrapper {
+		width: 300px;
+		margin: 30px auto;
+	}
+	</style>
+</head>
+<body>
+<div id="keyboard-wrapper">
+	<h1>Virtual Keyboard</h1>
+	<input style="display:none;" type="text" id="kblayout" value="querty" readonly>
+	Keyboard Layout:
+	<select id="switcher" autocomplete="off">
+		<option value="qwerty" selected>English-US (Querty)</option>
+		<option value="french-bepo-V1.0rc2">French</option>
+		<option value="spanish-qwerty-sp">Spanish</option>
+		<option value="german-qwertz-1">German</option>
+		<option value="swedish-dvorak">Swedish</option>
+		<option value="romanian">Romanian</option>
+		<option value="hungarian-qwertz-1">Hungarian</option>
+		<option value="sr-mac">Serbian</option>
+		<option value="russian-mac">Russian</option>
+		<option value="japanese-kana">Japanese</option>
+		<option value="chinese">Chinese</option>
+		<option value="hindi">Hindi</option>
+		<option value="Persian">Persian</option>
+		<option value="ethiopic">Ethiopic</option>
+		<option value="burmese">Burmese</option>
+	</select>
+	<br>
+	<br>
+	<textarea style="width:300px; height:150px;" class="vkeyboard" autocomplete="off" spellcheck="false"></textarea>
+</div>
+<script>
+
+jQuery('.vkeyboard').keyboard({
+	layout: 'qwerty',
+	usePreview: false,
+	autoAccept: true
+})
+.previewKeyset({
+	sets : [ 'normal', 'shift', 'alt', 'alt-shift' ]
+})
+.addAltKeyPopup({
+	// time to hold down a button in ms to trigger a popup
+	holdTime : 500,
+	// event triggered when popup is visible
+	// access the overlay from keyboard.altKeyPopup_$overlay
+	// or the keys container from keyboard.altKeyPopup_$overlay.find('.ui-keyboard-popup')
+	// or the keys from keyboard.altKeyPopup_$overlay.find('.ui-keyboard-button')
+	popupVisible : 'popup-visible'
+})
+;
+
+jQuery('#switcher').change(function() {
+	var layout = jQuery(this).val();
+	if(layout) {
+		jQuery('#kblayout').val(String(layout));
+		jQuery('.vkeyboard').each(function() {
+			var kb = jQuery(this).getkeyboard();
+			if(kb) {
+				try {
+					kb.options.layout = String(layout);
+				} catch(err){}
+			//	kb.reveal(true);
+			}
+		});
+	}
+});
+</script>
+</body>
+</html>

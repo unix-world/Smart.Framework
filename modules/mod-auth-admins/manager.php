@@ -283,21 +283,21 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$all_privs = '<superadmin>, '.APP_AUTH_PRIVILEGES;
 				//--
 				if(strpos((string)$select_user['restrict'], '<modify>') !== false) { // {{{SYNC-EDIT-PRIVILEGES}}}
-					$form_edit_priv = '<b>[You cannot edit privileges for this Restricted Account]</b><br>'.SmartViewHtmlHelpers::html_select_list_multi(
+					$form_edit_priv = '<b>[You cannot edit privileges for this Restricted Account]</b><br>'.\SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi(
 						'priv-list', // html element ID
 						(string) $select_user['priv'], // list of selected values
 						'list',
 						(array) SmartAuth::build_arr_privileges((string)$all_privs) // array with all values
 					);;
 				} elseif((string)$select_user['id'] == (string)SmartAuth::get_login_id()) {
-					$form_edit_priv = '<b>[You cannot edit your own privileges]</b><br>'.SmartViewHtmlHelpers::html_select_list_multi(
+					$form_edit_priv = '<b>[You cannot edit your own privileges]</b><br>'.\SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi(
 						'priv-list', // html element ID
 						(string) $select_user['priv'], // list of selected values
 						'list',
 						(array) SmartAuth::build_arr_privileges((string)$all_privs) // array with all values
 					);
 				} else {
-					$form_edit_priv = SmartViewHtmlHelpers::html_select_list_multi(
+					$form_edit_priv = \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi(
 						'priv-list', // html element ID
 						(string) $select_user['priv'], // list of selected values
 						'form',
@@ -313,7 +313,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$restrictions = '';
 				if((string)trim((string)$select_user['restrict']) !== '') {
-					$restrictions = SmartViewHtmlHelpers::html_select_list_multi(
+					$restrictions = \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi(
 						'restrictions-list', // html element ID
 						(string) $select_user['restrict'], // list of selected values
 						'list',
@@ -658,9 +658,12 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					//--
 				} //end if else
 				//--
+				$semaphores = [];
+				$semaphores[] = 'load:js-uix';
 				$this->PageViewSetVars([
-					'title' => $title,
-					'main' => $main
+					'semaphore' 	=> (string) $this->PageViewCreateSemaphores((array)$semaphores),
+					'title' 		=> (string) $title,
+					'main' 			=> (string) $main,
 				]);
 				//--
 

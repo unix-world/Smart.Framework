@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>jQuery Event Drag Reorder</title>
+	<script src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script src="../../jquery.event.drag.js"></script>
+	<script src="../../jquery.event.drop.js"></script>
+	<style type="text/css">
+	ol {
+		float: left;
+		margin: 0 40px 0 0;
+		padding: 0;
+		}
+	li {
+		list-style-position: inside;
+		border: 1px solid #89B;
+		background: #BCE;
+		padding: 2px 5px;
+		margin: 2px 0;
+		width: 275px;
+		cursor: move;
+		}
+	.dragging {
+		background-color: #BEE;
+		border-color: #8BB;
+		}
+	</style>
+</head>
+<body>
+<h1>Reorder Drop Demo</h1>
+<p>Drag any item to a different position in either list.</p>
+<ol>
+	<li>Alpha</li>
+	<li>Bravo</li>
+	<li>Charlie</li>
+	<li>Delta</li>
+	<li>Echo</li>
+	<li>Foxtrot</li>
+	<li>Golf</li>
+</ol>
+<ol>
+	<li>Hotel</li>
+	<li>India</li>
+	<li>Juliet</li>
+	<li>Kilo</li>
+	<li>Lima</li>
+	<li>Mike</li>
+	<li>November</li>
+</ol>
+<script>
+$(function() {
+
+	$('li')
+		.drag("start",function( ev, dd ){
+			$( this ).addClass('dragging');
+		})
+		.drag(function( ev, dd ){
+			var drop = dd.drop[0],
+			method = $.data( drop || {}, "drop+reorder" );
+			if ( drop && ( drop != dd.current || method != dd.method ) ){
+				$( this )[ method ]( drop );
+				dd.current = drop;
+				dd.method = method;
+				dd.update();
+			}
+		})
+		.drag("end",function( ev, dd ){
+			$( this ).removeClass('dragging');
+		})
+		.drop("init",function( ev, dd ){
+			return !( this == dd.drag );
+		});
+	$.drop({
+		tolerance: function( event, proxy, target ){
+			var test = event.pageY > ( target.top + target.height / 2 );
+			$.data( target.elem, "drop+reorder", test ? "insertAfter" : "insertBefore" );
+			return this.contains( target, [ event.pageX, event.pageY ] );
+		}
+	});
+
+});
+</script>
+</body>
+</html>

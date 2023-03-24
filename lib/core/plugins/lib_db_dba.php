@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartComponents, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20221220
+ * @version 	v.20230324
  * @package 	Application:Plugins:Database:Dba
  *
  */
@@ -1075,7 +1075,8 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-		$dir_of_db = (string) Smart::dir_name((string)$this->file);
+		$file_of_db = (string) SmartFileSysUtils::extractPathFileName((string)$this->file);
+		$dir_of_db = (string) SmartFileSysUtils::extractPathDir((string)$this->file);
 		if((string)$dir_of_db == '') {
 			$this->error('OPEN', 'ERROR: DB folder not defined !');
 			return false;
@@ -1117,6 +1118,13 @@ final class SmartDbaDb {
 				$this->error('OPEN', 'ERROR: DB folder index-protection not found !');
 				return false;
 			} //end if
+		} //end if
+		//--
+	//	$the_abs_path_to_db = (string) $this->file;
+		$the_abs_path_to_db = (string) rtrim((string)Smart::real_path((string)$dir_of_db), '/').'/'.$file_of_db; // on Windows requires an absolute path to work ; detect as: ((string)DIRECTORY_SEPARATOR == '\\')
+		if(!SmartFileSysUtils::checkIfSafePath((string)$the_abs_path_to_db, false, true)) { // allow both: absolute and protected paths here
+			$this->error('OPEN', 'ERROR: DB unsafe absolute path: `'.$the_abs_path_to_db.'`'); // this will be an absolute path, bust still must be safe
+			return false;
 		} //end if
 		//--
 		$this->dba = @dba_open((string)$this->file, (string)$this->omode.$this->lock, (string)$this->handler, (defined('SMART_FRAMEWORK_CHMOD_FILES') ? SMART_FRAMEWORK_CHMOD_FILES : 0664)); // open connection
@@ -1296,7 +1304,7 @@ final class SmartDbaDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP DBA Extension ; classes: Smart
- * @version 	v.20221220
+ * @version 	v.20230324
  * @package 	Application:Plugins:Database:Dba
  *
  */

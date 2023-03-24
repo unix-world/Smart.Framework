@@ -3,7 +3,7 @@
 
 /*
  * SmartQUnit 1.3.2 [ES6]
- * @version 20221222
+ * @version 20230109
  *
  * (c) 2018-2022 unix-world.org
  * Released under the BSD license
@@ -39,6 +39,7 @@ const SmartQUnit = new class{constructor(){ // STATIC CLASS
 		switch(method) {
 			case 'OPTIONS':
 			case 'DELETE':
+			case 'PATCH':
 			case 'PUT':
 			case 'HEAD':
 			case 'POST':

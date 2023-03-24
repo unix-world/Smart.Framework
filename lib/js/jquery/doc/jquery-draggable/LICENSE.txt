@@ -1,6 +1,0 @@
-
-PUBLIC DOMAIN LICENSE
-http://www.wtfpl.net/txt/copying/
-
-Original Source: https://css-tricks.com/snippets/jquery/draggable-without-jquery-ui/
-

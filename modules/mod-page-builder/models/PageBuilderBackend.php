@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20221220
+	// v.20230129
 
 
 	private static $db = null;
@@ -1286,46 +1286,87 @@ final class PageBuilderBackend {
 			if((string)$key != '') {
 				if(\Smart::array_size($val) > 0) {
 					foreach($val as $k => $v) {
-						if(((string)\trim((string)$k) != '') AND (\Smart::array_size($val[(string)$k]) > 0) AND (\Smart::array_size($v) > 0) AND isset($v['type']) AND \Smart::is_nscalar($v['type']) AND ((string)$v['type'] == 'segment')) {
-							$v['id'] = (string) \trim((string)($v['id'] ?? ''));
-							if((\strlen((string)$v['id']) >= 2) AND (\strlen((string)$v['id']) <= 63)) {
-								$v['id'] = (string) \Smart::safe_validname($v['id'], ''); // allow: [a-z0-9] _ - . @
+						if(((string)\trim((string)$k) != '') AND (\Smart::array_size($val[(string)$k]) > 0) AND (\Smart::array_size($v) > 0) AND isset($v['type']) AND \Smart::is_nscalar($v['type'])) {
+							if((string)$v['type'] == 'plugin') {
+								$v['id'] = (string) \trim((string)($v['id'] ?? ''));
 								if((string)$v['id'] != '') {
-									$v['id'] = (string) '#'.$v['id']; // ensure is segment
-									if((\strlen((string)$v['id']) >= 2) AND (\strlen((string)$v['id']) <= 63)) { // db id constraint
-										$test_exists = (array) self::getRecordIdsById((string)$v['id']);
-										$tmp_arr_refs = [ (string)$y_id ];
-										if((int)\Smart::array_size($test_exists) <= 0) { // segment does not exists
-											$tmp_new_arr = [
-												'id' 		=> (string) $v['id'],
-												'ref' 		=> (string) \Smart::json_encode((array)$tmp_arr_refs),
-												'name' 		=> (string) \SmartUnicode::sub_str($y_name.': ['.$key.']', 0, 255),
-												'mode' 		=> 'text', // default to text segment
-												'admin' 	=> (string) $y_arr_data['admin'],
-												'modified' 	=> (string) $y_arr_data['modified']
-											];
-											$wr = (int) self::insertRecord((array)$tmp_new_arr, true); // insert with external transaction
-											if($wr != 1) {
-												return -16; // insert sub-segment failed
-											} //end if
-										} else {
-											$wr = (array) self::updateRecordRefsById(
-												(string) $v['id'],
-												(array)  $tmp_arr_refs // array of IDs
-											);
-											if($wr[1] != 1) {
-												return -15; // update sub-segment failed
+									if(isset($v['config']) AND (\Smart::is_nscalar($v['config']))) { // test for config segment
+										$v['config'] = (string) \trim((string)$v['config']);
+										if((\strlen((string)$v['config']) >= 2) AND (\strlen((string)$v['config']) <= 63)) {
+											if((string)$v['config'] != '') {
+												$v['config'] = (string) '#'.$v['config']; // ensure is segment
+												if((\strlen((string)$v['config']) >= 2) AND (\strlen((string)$v['config']) <= 63)) { // db id constraint
+													$test_exists = (array) self::getRecordIdsById((string)$v['config']);
+													$tmp_arr_refs = [ (string)$y_id ];
+													if((int)\Smart::array_size($test_exists) <= 0) { // settings segment does not exists
+														$tmp_new_arr = [
+															'id' 		=> (string) $v['config'],
+															'ref' 		=> (string) \Smart::json_encode((array)$tmp_arr_refs),
+															'name' 		=> (string) \SmartUnicode::sub_str($y_name.': Settings ['.$key.']', 0, 255),
+															'mode' 		=> 'settings', // default to settings segment
+															'admin' 	=> (string) $y_arr_data['admin'],
+															'modified' 	=> (string) $y_arr_data['modified'],
+															'ctrl' 		=> (string) '#settings',
+														];
+														$wr = (int) self::insertRecord((array)$tmp_new_arr, true); // insert with external transaction
+														if($wr != 1) {
+															return -18; // insert sub-segment failed
+														} //end if
+													} else {
+														$wr = (array) self::updateRecordRefsById(
+															(string) $v['config'],
+															(array)  $tmp_arr_refs // array of IDs
+														);
+														if($wr[1] != 1) {
+															return -17; // update sub-segment failed
+														} //end if
+													} //end if else
+												} //end if
 											} //end if
 										} //end if
+									} //end if
+								} //end if
+							} elseif((string)$v['type'] == 'segment') {
+								$v['id'] = (string) \trim((string)($v['id'] ?? ''));
+								if((\strlen((string)$v['id']) >= 2) AND (\strlen((string)$v['id']) <= 63)) {
+									$v['id'] = (string) \Smart::safe_validname($v['id'], ''); // allow: [a-z0-9] _ - . @
+									if((string)$v['id'] != '') {
+										$v['id'] = (string) '#'.$v['id']; // ensure is segment
+										if((\strlen((string)$v['id']) >= 2) AND (\strlen((string)$v['id']) <= 63)) { // db id constraint
+											$test_exists = (array) self::getRecordIdsById((string)$v['id']);
+											$tmp_arr_refs = [ (string)$y_id ];
+											if((int)\Smart::array_size($test_exists) <= 0) { // segment does not exists
+												$tmp_new_arr = [
+													'id' 		=> (string) $v['id'],
+													'ref' 		=> (string) \Smart::json_encode((array)$tmp_arr_refs),
+													'name' 		=> (string) \SmartUnicode::sub_str($y_name.': ['.$key.']', 0, 255),
+													'mode' 		=> 'text', // default to text segment
+													'admin' 	=> (string) $y_arr_data['admin'],
+													'modified' 	=> (string) $y_arr_data['modified'],
+												];
+												$wr = (int) self::insertRecord((array)$tmp_new_arr, true); // insert with external transaction
+												if($wr != 1) {
+													return -16; // insert sub-segment failed
+												} //end if
+											} else {
+												$wr = (array) self::updateRecordRefsById(
+													(string) $v['id'],
+													(array)  $tmp_arr_refs // array of IDs
+												);
+												if($wr[1] != 1) {
+													return -15; // update sub-segment failed
+												} //end if
+											} //end if
+										} else {
+											return -14; // invalid render val content id (3)
+										} //end if
 									} else {
-										return -14; // invalid render val content id (3)
+										return -13; // invalid render val content id (2)
 									} //end if
 								} else {
-									return -13; // invalid render val content id (2)
+									return -12; // invalid render val content id (1)
 								} //end if
-							} else {
-								return -12; // invalid render val content id (1)
-							} //end if
+							} //end if else
 						} //end if
 					} //end foreach
 				} else {

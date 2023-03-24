@@ -28,6 +28,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 /**
  * Provides a persistent Cache (in-SQLite-Files), that can be shared and/or reused between multiple PHP executions.
  * Requires SQlite to be set-up in config properly.
+ * It is not supported yet on Windows OS because of the different locking mechanism used by SQLite and is note released when folders are deleted ...
  *
  * It uses a structure like below:
  * tmp/pcache#sqlite/9af/realm#9afbcde0/z/p-cache-#-z-0-a.sqlite
@@ -50,7 +51,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, PHP SQLite3 Extension, SmartSQliteDb
- * @version 	v.20221224
+ * @version 	v.20230324
  * @package 	Application:Plugins:PersistentCache:SQlite
  *
  */
@@ -412,6 +413,11 @@ class SmartSQlitePersistentCache extends SmartAbstractPersistentCache {
 
 
 	private static function initCacheManager($y_realm, $y_key) {
+		//--
+		if((string)DIRECTORY_SEPARATOR == '\\') { // on Windows this is currently unsupported and will not work because clearData() and unset() with wildcard are failing to delete sqlite files due possible bug on SQLite+Windows
+			Smart::log_warning(__METHOD__.' # This class is currently unsupported on Windows like OSes ...');
+			return '';
+		} //end if
 		//--
 		if(!self::isActive()) {
 			Smart::log_warning(__METHOD__.' # SQLite does not appear to be active in configs');

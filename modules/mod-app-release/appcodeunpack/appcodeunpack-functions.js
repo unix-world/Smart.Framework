@@ -2,7 +2,7 @@
 // AppJs Local Functions
 // (c) 2013-2022 unix-world.org
 // License: BSD
-// v.20220928
+// v.20230109
 
 // DEPENDS: smartJ$Utils, smartJ$Date, smartJ$Base64, smartJ$CryptoHash, smartJ$CryptoBlowfish, jQuery
 
@@ -153,6 +153,7 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 		switch(y_method) {
 			case 'OPTIONS':
 			case 'DELETE':
+			case 'PATCH':
 			case 'PUT':
 			case 'HEAD':
 			case 'POST':
@@ -251,7 +252,7 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 			}
 		}).fail((msg) => {
 			displayAlertDialog(
-				'<h4>HTTP&nbsp;Status: ' + _Utils$.escape_html(msg.status) + '</h4><br>' + '\n' + '<h5>XHR Server Response NOT Validated ...</h5>' + ((msg.status == 401) ? '<h6>If the auth credentials are valid and still getting this message do a full page refresh in the browser and try again, it could be a re-auth issue !</h6>' : ''),
+				'<h4>HTTP&nbsp;Status: ' + _Utils$.escape_html(msg.status) + '</h4><br>' + '\n' + '<h5>XHR Server Response NOT Validated ...</h5><h6>' + ((msg.status == 401) ? 'If the auth credentials are valid and still getting this message do a full page refresh in the browser and try again, it could be a re-auth issue !<br>Status: `' : (msg.statusText ? _Utils$.escape_html(msg.statusText) : 'Unknown')) + '`</h6>',
 				(typeof(evfailcode) === 'function' ?
 					() => {
 						'use strict';
