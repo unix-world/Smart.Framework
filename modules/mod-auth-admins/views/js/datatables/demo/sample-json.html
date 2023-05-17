@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+	<link rel="icon" href="data:,">
+	<title>DataTables example - JSON initialisation</title>
+	<!-- dependencies -->
+	<link rel="stylesheet" type="text/css" href="../../../../../../lib/core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+	<style type="text/css">
+	* {
+		font-family: 'IBM Plex Sans',arial,sans-serif;
+	}
+	</style>
+	<link rel="stylesheet" type="text/css" href="../../../../../../lib/css/toolkit/ux-toolkit.css">
+	<link rel="stylesheet" type="text/css" href="../../../../../../lib/css/toolkit/ux-toolkit-responsive.css">
+	<script type="text/javascript" src="../../../../../../lib/js/jquery/jquery.js"></script>
+	<script type="text/javascript" src="../../../../../../lib/js/framework/smart-framework.pak.js"></script>
+	<!-- responsive -->
+	<link rel="stylesheet" type="text/css" href="../datatables-responsive.css">
+	<script type="text/javascript" src="../datatables-responsive.js"></script>
+</head>
+<body>
+<div align="center">
+	<select onChange="if(this.value) { self.location = this.value; }">
+		<option value="">--- Select a demo from below ---</option>
+		<option value="sample.html">Default, Responsive</option>
+		<option value="sample-json.html" selected>JSON Data</option>
+		<option value="sample-fixed-columns.html">Fixed Columns</option>
+		<option value="sample-fixed-header.html">Fixed Header</option>
+		<option value="sample-column-reorder.html">Column Reorder</option>
+		<option value="sample-row-reorder.html">Row Reorder</option>
+		<option value="sample-row-group.html">Row Group</option>
+		<option value="sample-virtual-scroller.html">Virtual Scroll</option>
+	</select>
+</div>
+<h1>DataTables example - JSON Data</h1>
+<table id="data-tbl1" class="display ux-reflow-table" style="width:100%"></table>
+<script>
+jQuery(document).ready(function() {
+
+	const theColumns = [
+		{
+			data: 'personId',
+			name: 'personId',
+			title: 'Person ID',
+		},
+		{
+			data: 'otherId',
+			name: 'otherId',
+			title: 'Other ID',
+		},
+		{
+			data: 'firstName',
+			name: 'firstName',
+			title: 'First Name',
+		},
+		{
+			data: 'lastName',
+			name: 'lastName',
+			title: 'Last Name',
+		},
+		{
+			data: 'gender',
+			name: 'gender',
+			title: 'Gender',
+		},
+		{
+			data: 'bday',
+			name: 'bday',
+			title: 'Birthday',
+		},
+	];
+
+	const theData = [
+		{
+			'personId': 1,
+			'otherId': 'P001',
+			'firstName': 'John',
+			'lastName': 'Doe',
+			'gender': 'M',
+			'bday': '1977-03-16',
+		},
+		{
+			'personId': 2,
+			'otherId': 'P002',
+			'firstName': 'Jane',
+			'lastName': 'Doe',
+			'gender': 'F',
+			'bday': '1978-01-30',
+		},
+		{
+			'personId': 3,
+			'otherId': 'P003',
+			'firstName': 'Ralph',
+			'lastName': 'Doe',
+			'gender': 'M',
+			'bday': '2004-07-14',
+		},
+		{
+			'personId': 4,
+			'otherId': 'P004',
+			'firstName': 'Will',
+			'lastName': 'Doe',
+			'gender': 'M',
+			'bday': '2007-03-12',
+		},
+	];
+
+	jQuery('table.display').DataTable({
+		data : theData,
+		columns : theColumns,
+	//	responsive: true,
+		bSort: true,
+		bFilter: true,
+		bSortMulti: true,
+		order: [
+			[ 0, 'asc' ],
+		],
+		bPaginate: true,
+		iDisplayLength: 5,
+		aLengthMenu: [ 5, 10, 25, 50, 100 ],
+		uxmHidePagingIfNoMultiPages: true,
+		uxmCssClassLengthField: 'ux-field',
+		uxmCssClassFilterField: 'ux-field',
+		classes: {
+			sPageButton: 'ux-button ux-button-small',
+			sPageButtonActive: 'ux-button-primary'
+		},
+	});
+
+});
+</script>
+</body>
+</html>
