@@ -14,7 +14,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //-----------------------------------------------------
 
 
-abstract class AbstractMongoGenericCollection { // v.20221217
+abstract class AbstractMongoGenericCollection { // v.20230824
 
 	// ::
 
@@ -110,7 +110,7 @@ abstract class AbstractMongoGenericCollection { // v.20221217
 	} //END FUNCTION
 
 
-	final public static function getRecordsCount(string $area='') : int {
+	final public static function getRecordsCount(string $area='', array $extra_filter=[]) : int {
 		//--
 		$mongo = static::getInstance();
 		if(!$mongo) {
@@ -122,9 +122,18 @@ abstract class AbstractMongoGenericCollection { // v.20221217
 		//--
 		$filter = [];
 		if((string)$area != '') {
-			$filter = [
-				'area' => (string) $area,
-			];
+			$filter['area'] = (string) $area;
+		} //end if
+		if((int)\Smart::array_size($extra_filter) > 0) { // {{{SYNC-DB-ADMIN-MONGO-APPLY-EXTRA-FILTER}}}
+			foreach($extra_filter as $key => $val) {
+				$key = (string) \trim((string)$key);
+				$val = \Smart::json_decode(\Smart::json_encode($val)); // force discard objects, resources and keep just nScalar and Array
+				if((string)$key != '') {
+					if((string)$key != 'area') {
+						$filter[(string)$key] = $val;
+					} //end if
+				} //end if
+			} //end foreach
 		} //end if
 		//--
 		$cnt = (int) $mongo->count(
