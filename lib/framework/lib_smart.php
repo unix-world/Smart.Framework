@@ -77,7 +77,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20230324
+ * @version     v.20230914
  * @package     @Core
  *
  */
@@ -2862,7 +2862,57 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Returns the Base64 (Safe URL) Modified Encoding from a string by replacing the standard base64 encoding as follows:
+	 * Converts from Base64 to Base64s (Base64 Safe URL) by replacing characters as follows:
+	 * '+' with '-',
+	 * '/' with '_',
+	 * '=' with '.'
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING 	$str 				:: The Base64 string to be converted
+	 * @return STRING 						:: The Base64s string
+	 */
+	public static function b64_to_b64s(?string $str) : string {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		return (string) strtr((string)$str, (array)self::CHDIFF_BASE_64s);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Converts from Base64s (Base64 Safe URL) to Base64 by replacing characters as follows:
+	 * '-' with '+',
+	 * '_' with '/',
+	 * '.' with '='
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING 	$str 				:: The Base64s string to be converted
+	 * @return STRING 						:: The Base64 string
+	 */
+	public static function b64s_to_b64(?string $str) : string {
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
+		//--
+		return (string) strtr((string)$str, (array)array_flip((array)self::CHDIFF_BASE_64s));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Base64s (Base64 Safe URL) Modified Encoding from a string by replacing the standard base64 encoding as follows:
 	 * '+' with '-',
 	 * '/' with '_',
 	 * '=' with '.'
@@ -2871,7 +2921,7 @@ final class Smart {
 	 * @internal
 	 *
 	 * @param STRING 	$str 				:: The string to be encoded
-	 * @return STRING 						:: The safe URL Base64 encoded string
+	 * @return STRING 						:: The Base64s encoded string
 	 */
 	public static function b64s_enc(?string $str) : string {
 		//--
@@ -2887,7 +2937,7 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Returns the Decoded string from the Base64 (Safe URL) Encoding by replacing back as follows before applying the standard base64 decoding:
+	 * Returns the Decoded string from the Base64s (Base64 Safe URL) Encoding by replacing back as follows before applying the standard base64 decoding:
 	 * '-' with '+',
 	 * '_' with '/',
 	 * '.' with '='
@@ -2895,7 +2945,7 @@ final class Smart {
 	 * @access 		private
 	 * @internal
 	 *
-	 * @param STRING 	$str 				:: The safe URL Base64 encoded string
+	 * @param STRING 	$str 				:: The Base64s encoded string
 	 * @return STRING 						:: The decoded string
 	 */
 	public static function b64s_dec(?string $str) : string {
