@@ -77,7 +77,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20230914
+ * @version     v.20230915
  * @package     @Core
  *
  */
@@ -764,7 +764,7 @@ final class Smart {
 		// WARNING: strings may contain HTML Tags ... which if apply Smart::escape_html() may break them.
 		// str_replace(array("\\", "\n", "\t", "\r", "\b", "\f", "'"), array('\\\\', '\\n', '\\t', '\\r', '', '', '\\\''), $str); // array('\\\\', '', ' ', '', '', '', '\\\'')
 		//-- encode as json
-		$encoded = (string) @json_encode((string)$str, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_INVALID_UTF8_SUBSTITUTE); // encode the string includding unicode chars, with all possible: < > ' " &
+		$encoded = (string) @json_encode((string)$str, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_INVALID_UTF8_SUBSTITUTE, 512); // encode the string includding unicode chars, with all possible: < > ' " &
 		//-- the above will provide a json encoded string as: "mystring" ; we get just what's between double quotes as: mystring
 		return (string) substr((string)trim((string)$encoded), 1, -1);
 		//--

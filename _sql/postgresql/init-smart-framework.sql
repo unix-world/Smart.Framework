@@ -1,5 +1,5 @@
 
--- START :: PostgreSQL Functions and Tables for Smart.Framework :: r.20210526 # smart.framework.v.8.7 ###
+-- START :: PostgreSQL Functions and Tables for Smart.Framework :: UP :: r.20230922 # smart.framework.v.8.7 ###
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -19,11 +19,11 @@ BEGIN;
 -- Smart Runtime Schema
 
 CREATE SCHEMA IF NOT EXISTS smart_runtime;
-COMMENT ON SCHEMA smart_runtime IS 'Smart Framework Runtime r.20190107 (do not delete)';
+COMMENT ON SCHEMA smart_runtime IS 'Smart Framework Runtime r.20230922 (do not delete)';
 
 -- General Functions #####
 
-CREATE FUNCTION smart_str_striptags(text) RETURNS text
+CREATE OR REPLACE FUNCTION smart_str_striptags(text) RETURNS text
 	LANGUAGE sql IMMUTABLE STRICT
 	AS $_$ -- strip html tags (v.170305)
 SELECT COALESCE(
@@ -35,7 +35,7 @@ SELECT COALESCE(
 , '');
 $_$;
 
-CREATE FUNCTION smart_str_deaccent(text) RETURNS text
+CREATE OR REPLACE FUNCTION smart_str_deaccent(text) RETURNS text
 	LANGUAGE sql IMMUTABLE STRICT
 	AS $_$ -- deaccent strings c.176x2 (v.170305)
 SELECT COALESCE(
@@ -51,7 +51,7 @@ SELECT COALESCE(
 , '');
 $_$;
 
-CREATE FUNCTION smart_date_diff(date_start date, date_end date) RETURNS bigint
+CREATE OR REPLACE FUNCTION smart_date_diff(date_start date, date_end date) RETURNS bigint
 	LANGUAGE sql IMMUTABLE STRICT
 	AS $_$ -- return date diff in days (v.190105)
 SELECT COALESCE(
@@ -59,7 +59,7 @@ SELECT COALESCE(
 , 0)
 $_$;
 
-CREATE FUNCTION smart_date_period_diff(date_start date, date_end date) RETURNS bigint
+CREATE OR REPLACE FUNCTION smart_date_period_diff(date_start date, date_end date) RETURNS bigint
 	LANGUAGE sql IMMUTABLE STRICT
 	AS $_$ -- return date period diff in months (v.170325)
 SELECT COALESCE(
@@ -76,7 +76,7 @@ CREATE OR REPLACE FUNCTION smart_agg_first(anyelement, anyelement) RETURNS anyel
 	AS $_$ -- Create a function that always returns the first non-NULL item, to be used with GROUP BY agg_smart_first() aggregate (v.170403)
 SELECT $1;
 $_$;
-CREATE AGGREGATE agg_smart_first (
+CREATE OR REPLACE AGGREGATE agg_smart_first (
 	sfunc 		= smart_agg_first,
 	basetype 	= anyelement,
 	stype 		= anyelement
@@ -89,7 +89,7 @@ CREATE OR REPLACE FUNCTION smart_agg_last(anyelement, anyelement) RETURNS anyele
 	AS $_$ -- Create a function that always returns the last non-NULL item, to be used with GROUP BY agg_smart_last() aggregate (v.170403)
 SELECT $2;
 $_$;
-CREATE AGGREGATE agg_smart_last (
+CREATE OR REPLACE AGGREGATE agg_smart_last (
 	sfunc 		= smart_agg_last,
 	basetype 	= anyelement,
 	stype 		= anyelement
@@ -168,7 +168,7 @@ CREATE TABLE _info (
 	CONSTRAINT _info__check__variable CHECK ((char_length((variable)::text) >= 1))
 );
 ALTER TABLE ONLY _info ADD CONSTRAINT _info__variable PRIMARY KEY (variable);
-COMMENT ON TABLE _info IS 'Smart.Framework MetaInfo v.2018.03.09';
+COMMENT ON TABLE _info IS 'Smart.Framework MetaInfo v.2023.09.22';
 COMMENT ON COLUMN _info.variable IS 'The Variable';
 COMMENT ON COLUMN _info.value IS 'The Value';
 COMMENT ON COLUMN _info.comments IS 'The Comments';

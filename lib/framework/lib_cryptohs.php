@@ -41,7 +41,7 @@ if(!function_exists('hash_algos')) {
 //=====================================================================================
 
 /**
- * Class: SmartHashCrypto - provide various hashes for a string: salted password, sha512, sha256, sha1, md5.
+ * Class: SmartHashCrypto - provide various hashes for a string: salted password, sha512, sha384, sha256, sha1, md5.
  *  Hints:
  *  - hashing passwords: is better to prepend the secret, the input is unknown to attackers so these kind of hashes are safe against length attacks ; they have to be protected against colissions ... where more different inputs can generate the same hash !
  *  - hashing checksum: they MUST append the secret to the text to real protect against length attacks where both the input and the hash are public # https://en.wikipedia.org/wiki/Length_extension_attack
@@ -55,7 +55,7 @@ if(!function_exists('hash_algos')) {
  *
  * @access      PUBLIC
  * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version     v.20221223
+ * @version     v.20230929
  * @package     @Core:Crypto
  *
  */
@@ -78,23 +78,25 @@ final class SmartHashCrypto {
 	/**
 	 * Create a safe checksum of data
 	 * It will append the salt to the end of data to avoid the length extension attack # https://en.wikipedia.org/wiki/Length_extension_attack
+	 * Protected by SHA384 that has 128-bit resistance against the length extension attacks since the attacker needs to guess the 128-bit to perform the attack, due to the truncation
 	 *
 	 * @param STRING $y_data 			The data to be hashed
 	 * @param STRING $y_custom_salt 	The salt (will be trimmed from whitespaces) ; If the salt is empty will use the SMART_FRAMEWORK_SECURITY_KEY as the checksum must use a mandatory salt appended to the data to prevent the length extension attack
-	 * @return STRING 					The checksum hash as B62 using the hex SHA256 as data + 'salt' suffix (append) ; ~ 43 bytes length
+	 * @return STRING 					The checksum hash as B62 using the hex SHA384 as data + 'salt' suffix (append) ; ~ 43 bytes length
 	 */
-	public static function checksum(?string $y_data, ?string $y_custom_salt=null) : string {
+	public static function checksum(?string $y_data, ?string $y_custom_salt=null) : string { // {{{SYNC-HASH-SAFE-CHECKSUM}}}
 		//--
 		$y_custom_salt = (string) trim((string)$y_custom_salt);
 		if((string)$y_custom_salt == '') {
+			$y_custom_salt = (string) self::SALT_PREFIX.' '.self::SALT_SEPARATOR.' '.self::SALT_SUFFIX;
 			if(defined('SMART_FRAMEWORK_SECURITY_KEY')) {
-				$y_custom_salt = (string) SMART_FRAMEWORK_SECURITY_KEY;
-			} else {
-				$y_custom_salt = (string) self::SALT_PREFIX.' '.self::SALT_SEPARATOR.' '.self::SALT_SUFFIX;
+				if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) != '') {
+					$y_custom_salt .= (string) ' '.SMART_FRAMEWORK_SECURITY_KEY;
+				} //end if
 			} //end if
 		} //end if
 		//--
-		$hexstr = (string) self::sha256((string)$y_data.'#'.$y_custom_salt);
+		$hexstr = (string) self::sha384((string)$y_data.'#'.$y_custom_salt); // sha384 is a better choice than sha256/sha512 because is more resistant to length attacks
 		//--
 		return (string) Smart::base_from_hex_convert((string)$hexstr, 62);
 		//--
@@ -105,12 +107,11 @@ final class SmartHashCrypto {
 	//==============================================================
 	/**
 	 * Encrypt (one way) a password by creating a safe password hash
-	 * By default will use the v2 which is more colission resistant, by using a new algorithm to derive the password
-	 * NOTICE: it uses a custom salt + an internally hard-coded salt to avoid rainbow attack
+	 * It uses a custom salt + an internally hard-coded salt to avoid rainbow attack
 	 *
 	 * @param STRING $y_pass 			The password
 	 * @param STRING $y_custom_salt 	The salt (default is empty)
-	 * @return STRING 					The password hash: for v1 will return a 128 bytes SHA512 (hex) ; for v2 will return a 128 bytes padded with * on right, composed from 98 bytes hash with a prefix and the SHA512 (base64, 88 bytes)
+	 * @return STRING 					The password hash: a 128 bytes padded with * on right, composed from 98 bytes hash with a prefix and the SHA512 (base64, 88 bytes)
 	 */
 	public static function password(string $y_pass, string $y_custom_salt='') : string { // {{{SYNC-HASH-PASSWORD}}}
 		//--
@@ -141,7 +142,7 @@ final class SmartHashCrypto {
 			Smart::raise_error(__METHOD__.' # Internal Error: Password hash must be at least: '.(int)$minpasslen.' bytes !');
 			return '';
 		} //end if
-		$pass = (string) $prefix.str_pad((string)$pass, ((int)self::PASSWORD_HASH_LENGTH - (int)strlen((string)$prefix)), '*'); // {{{SYNC-AUTHADM-PASS-PADD}}}
+		$pass = (string) $prefix.str_pad((string)$pass, ((int)self::PASSWORD_HASH_LENGTH - (int)strlen((string)$prefix)), '*', STR_PAD_RIGHT); // {{{SYNC-AUTHADM-PASS-PADD}}}
 		if((int)strlen((string)$pass) !== (int)self::PASSWORD_HASH_LENGTH) {
 			Smart::raise_error(__METHOD__.' # Internal Error: Password hash length must be '.(int)self::PASSWORD_HASH_LENGTH.' bytes !');
 			return '';
@@ -163,7 +164,7 @@ final class SmartHashCrypto {
 	 * @param STRING $y_custom_salt 	The salt (default is empty)
 	 * @return BOOL 					Will return TRUE if password match or FALSE if not
 	 */
-	public static function checkpassword(string $y_hash, string $y_pass, string $y_custom_salt='') : bool {
+	public static function checkpassword(string $y_hash, string $y_pass, string $y_custom_salt='') : bool { // {{{SYNC-HASH-PASSWORD}}}
 		//--
 		$y_hash = (string) trim((string)$y_hash);
 		if((int)strlen((string)$y_hash) !== (int)self::PASSWORD_HASH_LENGTH) {
@@ -202,7 +203,7 @@ final class SmartHashCrypto {
 	 * @param STRING $key 				The key (min 7 bytes ; max 4096 bytes)
 	 * @return STRING 					The safe composed key, 553 bytes (characters) ; contains only an ascii subset of: hexa[01234567890abcdef] + NullByte
 	 */
-	public static function safecomposedkey(?string $key) : string {
+	public static function safecomposedkey(?string $key) : string { // {{{SYNC-CRYPTO-KEY-DERIVE}}}
 		//--
 		// This should be used as the basis for a derived key, will be 100% in theory and practice agains hash colissions (see the comments below)
 		// It implements a safe mechanism that in order that a key to produce a colission must collide at the same time in all hashing mechanisms: md5, sha1, ha256 and sha512 + crc32b control
@@ -288,6 +289,34 @@ final class SmartHashCrypto {
 			return (string) base64_encode((string)hash('sha512', (string)$y_str, true));
 		} else {
 			return (string) hash('sha512', (string)$y_str, false);
+		} //end if else
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Returns the SHA384 hash of a string
+	 * SHA384 is roughly 50% faster than SHA-256 on 64-bit machines
+	 * SHA384 has resistances to length extension attack but SHA512 doesn't have
+	 * SHA384 128-bit resistance against the length extension attacks is because the attacker needs to guess the 128-bit to perform the attack, due to the truncation
+	 *
+	 * @param STRING $y_str 			String to be hashed
+	 * @param BOOLEAN $y_base64 		If set to TRUE will use Base64 Encoding instead of Hexa Encoding
+	 * @return STRING 					The hash: 96 chars length (hex) or 44 chars length (b64)
+	 */
+	public static function sha384(?string $y_str, bool $y_base64=false) : string { // execution cost: 0.21
+		//--
+		if(!self::algo_check('sha384')) {
+			Smart::raise_error(__METHOD__.' # ERROR: Smart.Framework Crypto Hash requires SHA384 Hash/Algo');
+			return '';
+		} //end if
+		//--
+		if($y_base64 === true) {
+			return (string) base64_encode((string)hash('sha384', (string)$y_str, true));
+		} else {
+			return (string) hash('sha384', (string)$y_str, false);
 		} //end if else
 		//--
 	} //END FUNCTION

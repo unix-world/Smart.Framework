@@ -68,7 +68,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartUnicode, SmartComponents (optional) : constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20221223
+ * @version 	v.20230915
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -508,9 +508,15 @@ final class SmartPgsqlDb {
 	 * @return STRING 								:: JSON string
 	 *
 	 */
-	public static function json_encode($y_mixed_content) {
+	public static function json_encode($y_mixed_content, int $y_depth=512) : string {
 		//--
-		$json = (string) @json_encode($y_mixed_content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE); // Fix: must return a string ; depth was added in PHP 5.5 only !
+		if((int)$y_depth <= 0) {
+			$y_depth = 512; // default
+		} elseif((int)$y_depth > 512) {
+			$y_depth = 512; // max
+		} //end if
+		//--
+		$json = (string) @json_encode($y_mixed_content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE, (int)$y_depth); // Fix: must return a string ; depth was added in PHP 5.5 only !
 		if((string)$json == '') {
 			Smart::log_warning('Invalid Encoded Json in '.__METHOD__.'() for input: '.print_r($y_mixed_content,1)); // this should not happen except if PHP's json encode fails !!!
 			$json = '[]'; // FIX: in PostgreSQL JSON/JSON-B fields cannot be empty, thus consider empty array
@@ -1888,7 +1894,7 @@ final class SmartPgsqlDb {
 	 * @return STRING 								:: the generated Unique ID
 	 *
 	 */
-	public static function new_safe_id($y_mode, $y_id_field, $y_table_name, $y_schema='public', $y_connection='DEFAULT') {
+	public static function new_safe_id($y_mode, $y_id_field, $y_table_name, $y_schema='public', $y_connection='DEFAULT') : string {
 
 		//==
 		$y_connection = self::check_connection($y_connection, 'NEW-SAFE-ID');
@@ -2589,7 +2595,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20221223
+ * @version 	v.20230915
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -2760,9 +2766,9 @@ final class SmartPgsqlExtDb {
 	 * @return STRING 								:: JSON string
 	 *
 	 */
-	public function json_encode($y_mixed_content) {
+	public function json_encode($y_mixed_content, int $y_depth=512) : string {
 		//--
-		return SmartPgsqlDb::json_encode($y_mixed_content);
+		return (string) SmartPgsqlDb::json_encode($y_mixed_content, $y_depth);
 		//--
 	} //END FUNCTION
 
@@ -2944,9 +2950,9 @@ final class SmartPgsqlExtDb {
 	 * @return STRING 								:: the generated Unique ID
 	 *
 	 */
-	public function new_safe_id($y_mode, $y_id_field, $y_table_name, $y_schema='public') {
+	public function new_safe_id($y_mode, $y_id_field, $y_table_name, $y_schema='public') : string {
 		//--
-		return SmartPgsqlDb::new_safe_id($y_mode, $y_id_field, $y_table_name, $y_schema, $this->connection);
+		return (string) SmartPgsqlDb::new_safe_id($y_mode, $y_id_field, $y_table_name, $y_schema, $this->connection);
 		//--
 	} //END FUNCTION
 

@@ -41,7 +41,7 @@ The original software architecture of this web framework allows it to deliver a 
 	- caching policies can be controlled to expire based on content / GET or POST variables INPUT even with changing COOKIES
 
 
-#### This software framework is compatible, stable and actively tested with PHP 7.4 / 8.0 / 8.1 / 8.2 versions.
+#### This software framework is compatible, stable and actively tested with PHP 7.4 / 8.0 / 8.1 / 8.2 / 8.3 versions.
 **Prefered PHP version** is: **8.0** (LTS).
 
 &nbsp;

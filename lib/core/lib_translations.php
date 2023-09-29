@@ -35,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations, SmartFrameworkRegistry
- * @version 	v.20221220
+ * @version 	v.20230927
  * @package 	Application:Translations
  *
  */
@@ -560,7 +560,7 @@ final class SmartTextTranslations {
 				case '2': // fixed number of decimal: 2
 				case '3': // fixed number of decimal: 3
 				case '4': // fixed number of decimal: 4
-					$localnum = (string) $intx_part.$separator_dec.str_pad(substr((string)(int)$dec_part, 0, (int)$y_decimals), (int)$y_decimals, '0');
+					$localnum = (string) $intx_part.$separator_dec.str_pad((string)substr((string)(int)$dec_part, 0, (int)$y_decimals), (int)$y_decimals, '0', STR_PAD_RIGHT);
 					break;
 				case '-2': // auto decimals but force at least one
 					$autodec = (int) $dec_part;

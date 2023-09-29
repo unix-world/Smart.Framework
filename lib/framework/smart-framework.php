@@ -17,9 +17,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework v.8.7 # r.20230129
+// Smart-Framework v.8.7 # r.20230929
 //======================================================
-// Requires PHP 7.4 / 8.0 / 8.1 / 8.2 or later
+// Requires PHP 7.4 / 8.0 / 8.1 / 8.2 / 8.3 or later
 //======================================================
 // this library should be loaded from app web root only
 //======================================================
