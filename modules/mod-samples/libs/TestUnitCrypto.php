@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20210903
+ * @version 	v.20231001
  *
  */
 final class TestUnitCrypto {
@@ -233,6 +233,8 @@ if(failures > 0) {
 				'JS-ESCAPED' 				=> (string) \Smart::escape_js($unicode_text),
 				'HASH-SHA512-HEX' 			=> (string) \SmartHashCrypto::sha512($unicode_text), // hex
 				'HASH-SHA512-B64' 			=> (string) \SmartHashCrypto::sha512($unicode_text, true), // b64
+				'HASH-SHA384-HEX' 			=> (string) \SmartHashCrypto::sha384($unicode_text), // hex
+				'HASH-SHA384-B64' 			=> (string) \SmartHashCrypto::sha384($unicode_text, true), // b64
 				'HASH-SHA256-HEX' 			=> (string) \SmartHashCrypto::sha256($unicode_text), // hex
 				'HASH-SHA256-B64' 			=> (string) \SmartHashCrypto::sha256($unicode_text, true), // b64
 				'HASH-SHA1-HEX' 			=> (string) \SmartHashCrypto::sha1($unicode_text), // hex
@@ -261,7 +263,7 @@ if(failures > 0) {
 				'IMG-SIGN' 					=> 'lib/framework/img/sign-info.svg',
 				'IMG-CHECK' 				=> 'modules/mod-samples/libs/templates/testunit/img/test-crypto.svg',
 				'TXT-MAIN-HTML' 			=> '<span style="color:#83B953;">Test OK: PHP / Javascript Unicode Crypto.</span>',
-				'TXT-INFO-HTML' 			=> '<h2><span style="color:#333333;"><span style="color:#83B953;">All</span> the SmartFramework Unicode <span style="color:#83B953;">Tests PASSED on both PHP&nbsp;&amp;&nbsp;Javascript</span>:</span></h2>'.'<span style="font-size:14px;">'.\Smart::nl_2_br(\Smart::escape_html("===== Unicode CRYPTO / TESTS: ===== \n * Unicode support / UTF-8 \n * JS-Escape \n * SHA512 \n * SHA256 \n * SHA1 \n * MD5 \n * CRC32B \n * Base64: Encode / Decode \n * Base[32, 36, 58, 62, 64s, 85, 92]: Encode / Decode \n * Bin2Hex / Hex2Bin \n * Blowfish.448.CBC (v2): Encrypt / Decrypt \n * Blowfish.384.CBC (v1): Decrypt only \n * Custom: Encrypt / Decrypt (** Only for PHP: ".\Smart::escape_html((string)\SmartUtils::crypto_algo()).") \n ===== END TESTS ... =====")).'</span>',
+				'TXT-INFO-HTML' 			=> '<h2><span style="color:#333333;"><span style="color:#83B953;">All</span> the SmartFramework Unicode <span style="color:#83B953;">Tests PASSED on both PHP&nbsp;&amp;&nbsp;Javascript</span>:</span></h2>'.'<span style="font-size:14px;">'.\Smart::nl_2_br(\Smart::escape_html("===== Unicode CRYPTO / TESTS: ===== \n * Unicode support / UTF-8 \n * JS-Escape \n * SHA512 \n * SHA384 (** Only for PHP) \n * SHA256 \n * SHA1 \n * MD5 \n * CRC32B \n * Base64: Encode / Decode \n * Base[32, 36, 58, 62, 64s, 85, 92]: Encode / Decode \n * Bin2Hex / Hex2Bin \n * Blowfish.448.CBC (v2): Encrypt / Decrypt \n * Blowfish.384.CBC (v1): Decrypt only \n * Custom: Encrypt / Decrypt (** Only for PHP: ".\Smart::escape_html((string)\SmartUtils::crypto_algo()).") \n ===== END TESTS ... =====")).'</span>',
 				'TEST-INFO' 				=> (string) 'Crypto Test Suite for SmartFramework: PHP + Javascript'
 				//--
 			]

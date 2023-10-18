@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
- * @version 	v.20221220
+ * @version 	v.20231018
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -684,7 +684,7 @@ final class SmartMarkersTemplating {
 			'MTPL.SYNTAX:COLON' 	=> (array) self::extract_tpl_syntax_colon((string)$mtemplate), // :
 			'MTPL.SYNTAX:NUMSHARP' 	=> (array) self::extract_tpl_syntax_numsharp((string)$mtemplate), // #
 			'MTPL.SYNTAX:PERCENT' 	=> (array) self::extract_tpl_syntax_percent((string)$mtemplate), // %
-			'MTPL.SYNTAX:COMMAT' 	=> (array) (array) self::extract_tpl_syntax_commat((string)$mtemplate), // @
+			'MTPL.SYNTAX:COMMAT' 	=> (array) self::extract_tpl_syntax_commat((string)$mtemplate), // @
 		);
 		//--
 	} //END FUNCTION

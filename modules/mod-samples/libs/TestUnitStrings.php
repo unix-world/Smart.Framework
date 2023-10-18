@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221230
+ * @version 	v.20231007
  *
  */
 final class TestUnitStrings {
@@ -577,6 +577,306 @@ final class TestUnitStrings {
 			} //end foreach
 			//--
 		} //end if
+		//--
+
+
+		//-- Lib Robot Security
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #1';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) 'http://test.loc/admin.php?abc=def';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != 'no')
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'no')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #2';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) 'https://test.loc/admin.php?abc=def';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != 'no')
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'no')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #3';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) 'admin.php?';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			$allow_cred_trusted_ref = (string) ((\SmartEnvironment::isAdminArea() === true) ? 'yes' : 'no');
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)\SmartUtils::get_server_current_url().$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != (string)$allow_cred_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'yes')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #4';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) 'task.php?';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			$allow_cred_trusted_ref = (string) (((\SmartEnvironment::isAdminArea() === true) AND (\SmartEnvironment::isTaskArea() === true)) ? 'yes' : 'no');
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)\SmartUtils::get_server_current_url().$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != (string)$allow_cred_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'yes')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #5';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) 'index.php?';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			$allow_cred_trusted_ref = (string) ((\SmartEnvironment::isAdminArea() !== true) ? 'yes' : 'no');
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)\SmartUtils::get_server_current_url().$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != (string)$allow_cred_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'yes')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #6';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) '?';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			$allow_cred_trusted_ref = (string) ((\SmartEnvironment::isAdminArea() !== true) ? 'yes' : 'no');
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)\SmartUtils::get_server_current_url().$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != (string)$allow_cred_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'yes')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #7';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) \SmartUtils::get_server_current_url().'admin.php?';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			$allow_cred_trusted_ref = (string) ((\SmartEnvironment::isAdminArea() === true) ? 'yes' : 'no');
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != (string)$allow_cred_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'yes')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #8';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) \SmartUtils::get_server_current_url().'task.php?';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			$allow_cred_trusted_ref = (string) (((\SmartEnvironment::isAdminArea() === true) AND (\SmartEnvironment::isTaskArea() === true)) ? 'yes' : 'no');
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != (string)$allow_cred_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'yes')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #9';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) \SmartUtils::get_server_current_url().'index.php?';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			$allow_cred_trusted_ref = (string) ((\SmartEnvironment::isAdminArea() !== true) ? 'yes' : 'no');
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != (string)$allow_cred_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'yes')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #10';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) \SmartUtils::get_server_current_url().'?';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			$allow_cred_trusted_ref = (string) ((\SmartEnvironment::isAdminArea() !== true) ? 'yes' : 'no');
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != (string)$allow_cred_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'yes')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #11';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) 'test.php';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)\SmartUtils::get_server_current_url().$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != 'no')
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'no')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #12';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) \SmartUtils::get_server_current_url().'test.php';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != 'no')
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'no')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #13';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) 'test.php?';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)\SmartUtils::get_server_current_url().$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != 'no')
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'no')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #14';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) \SmartUtils::get_server_current_url().'test.php?';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != 'no')
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'no')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #15';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) 'abc/def/';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)\SmartUtils::get_server_current_url().$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != 'no')
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'no')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'URL Trust Reference Test #16';
+			$tests[] = $the_test;
+			$url_trusted_ref = (string) \SmartUtils::get_server_current_url().'abc/def/';
+			$arr_trusted_ref = (array) \SmartRobot::get_url_or_path_trust_reference((string)$url_trusted_ref);
+			if(
+				((string)$arr_trusted_ref['url-or-path-fixed'] != (string)$url_trusted_ref)
+				OR
+				((string)$arr_trusted_ref['url-or-path-type'] != 'url')
+				OR
+				((string)$arr_trusted_ref['allow-credentials'] != 'no')
+				OR
+				((string)$arr_trusted_ref['trust-headers'] != 'no')
+			) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+		} //end if
+		//-- #end lib robot security
 
 		//--
 		$time = 'TOTAL TIME was: '.(\microtime(true) - $time);

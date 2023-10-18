@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartHashCrypto, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20221220
+ * @version		v.20231007
  * @package 	Application
  *
  */
@@ -219,7 +219,7 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
-	public static function Raise401Prompt(?string $y_msg, ?string $y_htmlmsg, ?string $y_realm) {
+	public static function Raise401Prompt(?string $y_msg, ?string $y_htmlmsg, ?string $y_realm, bool $y_head_auth) {
 		//--
 		$y_realm = (string) trim((string)$y_realm);
 		$y_realm = (string) str_replace(['"', "'", '`'], ' ', (string)$y_realm);
@@ -230,7 +230,9 @@ final class SmartFrameworkRuntime {
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersCacheControl();
-			self::outputHttpSafeHeader('WWW-Authenticate: Basic realm="'.$y_realm.'"');
+			if($y_head_auth !== false) {
+				self::outputHttpSafeHeader('WWW-Authenticate: Basic realm="'.self::outputHttpSafeHeader((string)$y_realm).'"');
+			} //end if
 			self::outputHttpSafeHeader('HTTP/1.0 401 Authorization Required');
 			http_response_code(401);
 		} else {
@@ -666,6 +668,14 @@ final class SmartFrameworkRuntime {
 	//======================================================================
 	// Create a Download Link for the Download Handler
 	public static function Create_Download_Link(?string $y_file, ?string $y_ctrl_key) {
+		//--
+		// TODO: see: {{{TODO-DOWNLOADS-HANDLER-REFACTORING}}}
+		// 		* move this and Decode_Download_Link() to lib utils
+		// 		* unify this with SmartMailerMimeParser::encode_mime_fileurl() as:
+		// 		* use a CSRF Access Token as in method above (see EMAIL_TOKEN_COOKIE_NAME)
+		// 		* add here an option to use the self robot key, if URL is passed instead of file link (as used in email parsing and decoding)
+		// 		* create a method to Unpack the Download Link and return the result as [ error=if-any, file=path/.../ ] ; use this method also in SmartMailerMimeParser::decode_mime_fileurl()
+		// 		* add to Middleware DownloadsHandler() the option to handle also download URLs via SmartRobot !?? (... not sure)
 		//--
 		$y_file = (string) trim((string)$y_file);
 		if((string)$y_file == '') {
@@ -1111,7 +1121,7 @@ final class SmartFrameworkRuntime {
 			defined('SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID')
 		) {
 			if((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID != '') {
-				if((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID !== (string)SmartAuth::get_login_id()) {
+				if((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID !== (string)SmartAuth::get_auth_username()) {
 					self::Raise503Error(
 						(string) SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE,
 						(string) SmartComponents::operation_ok('Single User Lock File: '.Smart::escape_html((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE), '80%').SmartComponents::operation_notice((string)Smart::nl_2_br((string)Smart::escape_html((string)SmartFileSystem::read((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE))), '80%')
@@ -1310,7 +1320,13 @@ final class SmartFrameworkRuntime {
 		$is_available = false;
 		//--
 		if(defined('SMART_FRAMEWORK_UUID_COOKIE_NAME')) {
-			if((string)SMART_FRAMEWORK_UUID_COOKIE_NAME != '') {
+			if( // {{{SYNC-SF-UID-SESS-COOKIE-NAME-LENGTH}}}
+				((string)SMART_FRAMEWORK_UUID_COOKIE_NAME != '')
+				AND
+				(strlen((string)SMART_FRAMEWORK_UUID_COOKIE_NAME) >= 7)
+				AND
+				(strlen((string)SMART_FRAMEWORK_UUID_COOKIE_NAME) <= 25)
+			) {
 				if(SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_UUID_COOKIE_NAME)) { // {{{SYNC-VALIDATE-UID-COOKIE-NAME}}}
 					if(
 						(!defined('SMART_FRAMEWORK_UUID_COOKIE_SKIP')) OR

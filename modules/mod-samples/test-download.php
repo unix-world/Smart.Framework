@@ -38,6 +38,17 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		} //end if
 		//--
 
+		//--
+		if(SmartEnvironment::isAdminArea()) {
+			if(
+				(SmartAuth::test_login_privilege('admin') !== true)
+			) {
+				$this->PageViewSetCfg('error', 'This Area is Restricted by your Account Privileges !');
+				return 403;
+			} //end if
+		} //end if
+		//--
+
 		if((string)$this->download_file == '') {
 			$this->PageViewSetErrorStatus(500, 'Empty file name to download !');
 			return;

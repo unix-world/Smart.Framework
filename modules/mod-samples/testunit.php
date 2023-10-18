@@ -455,6 +455,22 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$result = null; // free mem
 				} //end if else
 				break;
+			case 'test.load-auth-url':
+				//--
+				$method = 'get';
+				$url = (string) SmartUtils::get_server_current_url(false).SmartUtils::get_server_current_script().'?/page/samples.test-download';
+				$robot = (array) SmartRobot::load_url_content((string)$url, 20, (string)strtoupper((string)$method), '', '', '', 'yes');
+				if(($robot['result'] != 1) OR ($robot['code'] != 200)) {
+					$this->PageViewSetErrorStatus(502, 'Browsing failed for the given URL :: Result: '.$robot['result'].' ; Status-Code: '.(int)$robot['code']);
+					$robot = null; // free mem
+					return;
+				} else {
+					$this->PageViewSetCfg('rawpage', true);
+					$main = (string) $robot['content'];
+					$robot = null; // free mem
+				} //end if else
+				//--
+				break;
 			case 'test.load-url':
 				//--
 				$method = (string) $this->RequestVarGet('method', 'get', ['get', 'head']);

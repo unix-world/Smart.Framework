@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @hint This abstract controller can be used to build a DAV Service / WebDAV over the Admin Middleware service
  *
- * @version		20221219
+ * @version		20231001
  * @package 	development:modules:Webdav
  *
  */
@@ -98,7 +98,7 @@ abstract class ControllerAdmDavFs extends \SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$this->dav_author = (string) \SmartAuth::get_login_id();
+		$this->dav_author = (string) \SmartAuth::get_auth_username();
 		//--
 
 		//--

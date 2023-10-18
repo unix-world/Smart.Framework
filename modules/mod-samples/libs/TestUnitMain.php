@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221220
+ * @version 	v.20231007
  *
  */
 final class TestUnitMain {
@@ -112,14 +112,14 @@ final class TestUnitMain {
 		//--
 		if(\SmartEnvironment::isAdminArea() === true) {
 			if(\SmartEnvironment::isTaskArea() === true) {
-				$info_adm = '[ Task Area ]';
+				$info_adm = '[ Task Area (Private) ]';
 				$info_pfx = 'tsk';
 			} else {
-				$info_adm = '[ Admin Area ]';
+				$info_adm = '[ Admin Area (Private) ]';
 				$info_pfx = 'adm';
 			} //end if else
 		} else {
-			$info_adm = '[ Index ]';
+			$info_adm = '[ Index Area (Public) ]';
 			$info_pfx = 'idx';
 		} //end if else
 		//--

@@ -1,7 +1,7 @@
 
 /**
- * jQuery Smart MotionCAPTCHA r.20220925
- * (c) 2019-2022 unix-world.org
+ * jQuery Smart MotionCAPTCHA r.20231007
+ * (c) 2019-2023 unix-world.org
  *
  * Based on v0.2 proof of concept of https://github.com/josscrowcroft/MotionCAPTCHA
  * (c) 2011 Joss Crowcroft

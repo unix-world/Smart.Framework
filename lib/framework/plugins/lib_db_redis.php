@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Sockets ; classes: Smart, SmartEnvironment, SmartComponents (optional)
- * @version 	v.20221223
+ * @version 	v.20231003
  * @package 	Plugins:Database:Redis
  *
  */
@@ -665,6 +665,7 @@ final class SmartRedisDb {
 				//--
 			} else {
 				//--
+				// DO NOT DISABLE/RESTORE ERROR LOGS HERE, THIS IS A DB AND ALL ERRORS SHOULD BE LOGGED
 				$this->socket = @stream_socket_client($this->server, $errno, $errstr, $this->timeout);
 				//--
 				if(SmartEnvironment::ifDebug()) {

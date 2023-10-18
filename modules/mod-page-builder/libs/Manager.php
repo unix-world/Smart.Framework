@@ -52,7 +52,7 @@ $administrative_privileges['pagebuilder-delete'] 		= 'WebPages // Delete';
  * @access 		private
  * @internal
  *
- * @version 	v.20230128
+ * @version 	v.20231001
  * @package 	PageBuilder
  *
  */
@@ -1991,7 +1991,7 @@ final class Manager {
 				//--
 				if(\Smart::array_size($data) > 0) {
 					//--
-					$data['admin'] = \SmartAuth::get_login_id();
+					$data['admin'] = \SmartAuth::get_auth_username();
 					$data['modified'] = \date('Y-m-d H:i:s');
 					//--
 					if((string)$proc_mode == 'insert') {
@@ -2796,9 +2796,9 @@ final class Manager {
 									$x_is_diff = false;
 									//--
 									if((string)$y_modelclass != '') {
-										$upd = (int) $y_modelclass::updateTranslationByText((string)$data_arr[(string)$def_lang][$i], (string)$lang, (string)$val[$i], (string)\SmartAuth::get_login_id());
+										$upd = (int) $y_modelclass::updateTranslationByText((string)$data_arr[(string)$def_lang][$i], (string)$lang, (string)$val[$i], (string)\SmartAuth::get_auth_username());
 									} else {
-										$upd = (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::updateTranslationByText((string)$data_arr[(string)$def_lang][$i], (string)$lang, (string)$val[$i], (string)\SmartAuth::get_login_id());
+										$upd = (int) \SmartModDataModel\PageBuilder\PageBuilderBackend::updateTranslationByText((string)$data_arr[(string)$def_lang][$i], (string)$lang, (string)$val[$i], (string)\SmartAuth::get_auth_username());
 									} //end if else
 									//--
 									if($upd > 0) {

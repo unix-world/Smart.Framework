@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //-----------------------------------------------------
 
 //======================================================
-// Smart-Framework - App Bootstrap :: r.20221224
+// Smart-Framework - App Bootstrap :: r.20231008
 // DEPENDS: SmartFramework, SmartFrameworkRuntime
 //======================================================
 // This file can be customized per App ...
@@ -48,7 +48,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20221224
+ * @version 	v.20231008
  * @package 	Application
  *
  */
@@ -420,43 +420,14 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			} //end if
 		} //end if
 		//--
-		if(((int)Smart::array_size(Smart::get_from_config('sqlite', 'array')) <= 0) AND ((int)Smart::array_size(Smart::get_from_config('dba', 'array')) <= 0)) {
-			return;
-		} //end if
-		$dir = '#db/'; // {{{SYNC-#DB-FOLDER-HTACCESS}}} ; for sqlite or dba only
-		if(!SmartFileSystem::is_type_dir($dir)) {
-			SmartFileSystem::dir_create($dir, false, true); // allow protected paths
-		} //end if
-		if(!SmartFileSystem::have_access_write($dir)) {
+		$dir = (string) SmartUtils::APP_DB_FOLDER; // {{{SYNC-APP-DB-FOLDER}}}
+		$err = (string) SmartUtils::create_protected_dir((string)$dir);
+		if((string)$err != '') {
 			Smart::raise_error(
-				__METHOD__."\n".'General ERROR :: `'.$dir.'` is NOT writable !',
+				__METHOD__."\n".'General ERROR :: `'.$dir.'` create: '.$err,
 				'App Init ERROR'
 			);
 			return;
-		} //end if
-		if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
-			if(@file_put_contents((string)$dir.'.htaccess', (string)'### Smart.Framework // '.__METHOD__.' @ HtAccess Data Protection ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', LOCK_EX)) {
-				SmartFileSystem::fix_file_chmod((string)$dir.'.htaccess'); // apply file chmod
-			} //end if
-			if(!SmartFileSystem::is_type_file($dir.'.htaccess')) {
-				Smart::raise_error(
-					'#SMART-FRAMEWORK-CREATE-REQUIRED-FILES#'."\n".'A required file cannot be created in #DB: `'.$dir.'.htaccess`',
-					'App Init ERROR'
-				);
-				return;
-			} //end if
-		} //end if
-		if(!SmartFileSystem::is_type_file($dir.'index.html')) {
-			if(@file_put_contents((string)$dir.'index.html', '', LOCK_EX)) {
-				SmartFileSystem::fix_file_chmod((string)$dir.'index.html'); // apply file chmod
-			} //end if
-			if(!SmartFileSystem::is_type_file($dir.'index.html')) {
-				Smart::raise_error(
-					'#SMART-FRAMEWORK-CREATE-REQUIRED-FILES#'."\n".'A required file cannot be created in #DB: `'.$dir.'index.html`',
-					'App Init ERROR'
-				);
-				return;
-			} //end if
 		} //end if
 		//--
 	} //END FUNCTION
@@ -632,7 +603,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20221220
+ * @version 	v.20231008
  * @package 	Application
  *
  */
@@ -641,37 +612,6 @@ final class SmartAppInfo implements SmartInterfaceAppInfo {
 	// ::
 
 	private static $cache = [];
-
-
-	//=====
-	/**
-	 * Test if Application Template Exists in etc/templates/
-	 *
-	 * @param 	STRING 	$y_template_name 	:: The template dir name (Ex: for 'etc/templates/something', this parameter would be: 'something'
-	 *
-	 * @return 	BOOLEAN						:: TRUE if template exists, FALSE if not detected
-	 */
-	public static function TestIfTemplateExists(string $y_template_name) : bool {
-		//--
-		$y_template_name = (string) Smart::safe_filename((string)$y_template_name);
-		if((string)$y_template_name == '') {
-			return false;
-		} //end if
-		//--
-		$prefix = 'TemplateExists';
-		//--
-		if(!array_key_exists((string)$prefix.':'.$y_template_name, (array)self::$cache)) {
-			if(SmartFileSystem::is_type_dir('etc/templates/'.$y_template_name.'/')) {
-				self::$cache[(string)$prefix.':'.$y_template_name] = true;
-			} else {
-				self::$cache[(string)$prefix.':'.$y_template_name] = false;
-			} //end if
-		} //end if
-		//--
-		return (bool) self::$cache[(string)$prefix.':'.$y_template_name];
-		//--
-	} //END FUNCTION
-	//=====
 
 
 	//=====
@@ -689,7 +629,8 @@ final class SmartAppInfo implements SmartInterfaceAppInfo {
 			return false;
 		} //end if
 		//--
-		$prefix = 'ModuleExists';
+		$prefix = (string) __FUNCTION__;
+		//--
 		if(!array_key_exists((string)$prefix.':'.$y_module_name, (array)self::$cache)) {
 			if(SmartFileSystem::is_type_dir('modules/'.$y_module_name.'/')) {
 				self::$cache[(string)$prefix.':'.$y_module_name] = true;
@@ -699,6 +640,37 @@ final class SmartAppInfo implements SmartInterfaceAppInfo {
 		} //end if
 		//--
 		return (bool) self::$cache[(string)$prefix.':'.$y_module_name];
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	/**
+	 * Test if Application Template Exists in etc/templates/
+	 *
+	 * @param 	STRING 	$y_template_name 	:: The template dir name (Ex: for 'etc/templates/something', this parameter would be: 'something'
+	 *
+	 * @return 	BOOLEAN						:: TRUE if template exists, FALSE if not detected
+	 */
+	public static function TestIfTemplateExists(string $y_template_name) : bool {
+		//--
+		$y_template_name = (string) Smart::safe_filename((string)$y_template_name);
+		if((string)$y_template_name == '') {
+			return false;
+		} //end if
+		//--
+		$prefix = (string) __FUNCTION__;
+		//--
+		if(!array_key_exists((string)$prefix.':'.$y_template_name, (array)self::$cache)) {
+			if(SmartFileSystem::is_type_dir('etc/templates/'.$y_template_name.'/')) {
+				self::$cache[(string)$prefix.':'.$y_template_name] = true;
+			} else {
+				self::$cache[(string)$prefix.':'.$y_template_name] = false;
+			} //end if
+		} //end if
+		//--
+		return (bool) self::$cache[(string)$prefix.':'.$y_template_name];
 		//--
 	} //END FUNCTION
 	//=====

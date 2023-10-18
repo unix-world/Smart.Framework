@@ -31,8 +31,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: SmartUnicode, Smart, SmartDetectImages, SmartUtils
- * @version 	v.20221225
+ * @depends 	classes: SmartUnicode, Smart, SmartDetectImages, SmartUtils, SmartEnvironment, SmartFrameworkSecurity, SmartFrameworkRegistry
+ * @version 	v.20231018
  * @package 	Application:Plugins:Network:HTTP
  *
  */
@@ -49,7 +49,7 @@ final class SmartRobot {
 	 * @param YES/NO	$y_allow_set_credentials	:: DEFAULT IS SET to NO ; if YES must be set just for internal URLs ; if set to AUTO will try to detect if can trust based on task.php / admin.php / index.php local framework scripts ; if the $y_url_or_path to get is detected to be under current URL will send also the Unique / session IDs ; more if detected that is from task.php / admin.php and if this is set to YES will send the HTTP-BASIC Auth credentials if detected (using YES with other URLs than Smart.Framework's current URL can be a serious SECURITY ISSUE, so don't !)
 	 * @return ARRAY
 	 */
-	public static function load_url_img_content($y_img_link, $y_allow_set_credentials='no') {
+	public static function load_url_img_content(?string $y_img_link, string $y_allow_set_credentials='no') : array {
 		//--
 		// ### IMPORTANT ###
 		// BECAUSE OF SECURITY CONCERNS, NEVER USE OR MODIFY THIS FUNCTION TO LOAD A FILE PATH
@@ -86,7 +86,7 @@ final class SmartRobot {
 			//--
 			$tmp_imglink = (string) $tmp_fixed_url_or_path;
 			//--
-			switch((string)$y_allow_set_credentials) {
+			switch((string)strtolower((string)$y_allow_set_credentials)) {
 				case 'no':
 					$tmp_allow_credentials = 'no';
 					break;
@@ -200,14 +200,14 @@ final class SmartRobot {
 	 * @param STRING 	$y_url_or_path				:: relative/path/to/file (assumes current URL as prefix) | http(s)://some.url:port/path (port is optional) ; works also with Data-URL (Data-Image only)
 	 * @param NUMBER 	$y_timeout					:: timeout in seconds
 	 * @param ENUM 		$y_method 					:: used only for URLs, the browsing method: GET | POST
-	 * @param ENUM		$y_ssl_method				:: SSL Mode: '' (default) ; or specific: 'tls' | 'tls:1.1' | 'tls:1.2'
+	 * @param ENUM		$y_ssl_method				:: SSL Mode: '' (default) ; or specific: 'tls' | 'tls:1.1' | 'tls:1.2' | 'tls:1.3'
 	 * @param STRING 	$y_auth_name				:: used only for URLs, the auth user name
 	 * @param STRING 	$y_auth_pass				:: used only for URLs, the auth password
 	 * @param YES/NO	$y_allow_set_credentials	:: DEFAULT IS SET to NO ; if YES must be set just for internal URLs ; if set to AUTO will try to detect if can trust based on task.php / admin.php / index.php local framework scripts ; if the $y_url_or_path to get is detected to be under current URL will send also the Unique / session IDs ; more if detected that is from task.php / admin.php and if this is set to YES will send the HTTP-BASIC Auth credentials if detected (using YES with other URLs than Smart.Framework's current URL can be a serious SECURITY ISSUE, so don't !)
 	 * @param BOOL 		$y_allow_num_redirects 		:: DEFAULT IS SET to 2 ; Between 0..10 ; if > 0 will allow this number of redirects if 301/302, but only if not set to send any auth username/pass/credentials to avoid security leaks) ; if 0 will allow no redirects
 	 * @return ARRAY
 	 */
-	public static function load_url_content($y_url_or_path, $y_timeout=30, $y_method='GET', $y_ssl_method='', $y_auth_name='', $y_auth_pass='', $y_allow_set_credentials='no', $y_allow_num_redirects=2) {
+	public static function load_url_content(?string $y_url_or_path, int $y_timeout=30, string $y_method='GET', string $y_ssl_method='', string $y_auth_name='', string $y_auth_pass='', string $y_allow_set_credentials='no', int $y_allow_num_redirects=2) : array {
 		//--
 		// fixed sessionID with new Dynamic generated
 		// added support for safe redirects if 301/302 if no auth/credentials ; min: 0 ; max: 10 ; {{{SYNC-SAFE-HTTP-REDIRECT-POLICY}}}
@@ -217,7 +217,8 @@ final class SmartRobot {
 		// ALL FILE PATHS WILL BE CONSIDERED AS URL PATHS AND WILL BE PREFIXED WITH CURRENT BASE URL TO FORCE ACCESSING ALL FILES VIA HTTP(S) REQUESTS TO AVOID BYPASS THAT SECURITY !!!
 		// #################
 		//--
-		$y_url_or_path = (string) $y_url_or_path;
+		$y_url_or_path = (string) trim((string)$y_url_or_path);
+		//--
 		$y_allow_num_redirects = (int) $y_allow_num_redirects;
 		if((int)$y_allow_num_redirects < 0) {
 			$y_allow_num_redirects = 0;
@@ -227,7 +228,7 @@ final class SmartRobot {
 		//--
 		if((string)$y_url_or_path == '') {
 			//--
-			return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+			return [ // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
 				'client' => (string) __METHOD__,
 				'log' => 'ERROR: FILE Name is Empty ...',
 				'mode' => 'file', // DO NOT CHANGE !!
@@ -238,7 +239,7 @@ final class SmartRobot {
 				'content' => '',
 				'browse-url-info' => [],
 				'debuglog' => ''
-			);
+			];
 			//--
 		} //end if
 		//-- detect if file or url {{{SYNC-LOAD-URL-OR-FILE-OR-IMG}}}
@@ -251,7 +252,7 @@ final class SmartRobot {
 		//--
 		$y_url_or_path = (string) $tmp_fixed_url_or_path;
 		//--
-		switch((string)$y_allow_set_credentials) {
+		switch((string)strtolower((string)$y_allow_set_credentials)) {
 			case 'no':
 				$tmp_allow_credentials = 'no';
 				break;
@@ -275,7 +276,7 @@ final class SmartRobot {
 			case '!empty!':
 			case '!unknown!':
 			default:
-				return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+				return [ // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
 					'client' => (string) __METHOD__,
 					'log' => 'ERROR: FILE Not Found or Invalid Path or Invalid DataURL ...',
 					'mode' => 'file', // DO NOT CHANGE !!
@@ -286,13 +287,13 @@ final class SmartRobot {
 					'content' => '',
 					'browse-url-info' => [],
 					'debuglog' => ''
-				);
+				];
 		} //end switch
 		//--
 		if((string)$tmp_url_or_path_type == 'data-url') { // DATA-URL
 			//-- try to detect if data:image/ :: {{{SYNC-DATA-IMAGE}}}
 			if(
-				((string)strtolower((string)substr((string)$y_url_or_path, 0, 11)) == 'data:image/')
+				(stripos((string)$y_url_or_path, 'data:image/') === 0)
 				AND
 				(
 					(stripos((string)$y_url_or_path, ';base64,') !== false)
@@ -302,10 +303,10 @@ final class SmartRobot {
 			) { // DATA-URL
 				//--
 				if(stripos((string)$y_url_or_path, 'data:image/svg+xml,') === 0) { // {{{SYNC-DATA-IMG-SVG-URLENCODED}}} ; svg url encode
-					$eimg = (string) substr((string)$y_url_or_path, 19);
+					$eimg = (string) substr((string)$y_url_or_path, (int)strlen('data:image/svg+xml,'));
 					$eimg = (string) trim((string)urldecode((string)$eimg)); // use url decode instead of rawurldecode ; will do the job of rawurldecode + will decode also + as spaces
 				} else { // svg + b64 / png|gif|jpg|webp +b64
-					$eimg = (array) explode(';base64,', (string)$y_url_or_path);
+					$eimg = (array) explode(';base64,', (string)$y_url_or_path, 2);
 					$eimg = (string) isset($eimg[1]) ? base64_decode((string)trim((string)($eimg[1]))) : '';
 				} //end if
 				//--
@@ -320,7 +321,7 @@ final class SmartRobot {
 					} //end if else
 				} //end if
 				//--
-				return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+				return [ // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
 					'client' => (string) __METHOD__,
 					'log' => 'OK: Content decoded from embedded data-url image !',
 					'mode' => 'embedded', // DO NOT CHANGE !!
@@ -331,11 +332,11 @@ final class SmartRobot {
 					'content' => (string) $eimg,
 					'browse-url-info' => [],
 					'debuglog' => ''
-				);
+				];
 				//--
 			} else {
 				//--
-				return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+				return [ // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
 					'client' => (string) __METHOD__,
 					'log' => 'ERROR: Invalid DataURL ...',
 					'mode' => 'file', // DO NOT CHANGE !!
@@ -346,7 +347,7 @@ final class SmartRobot {
 					'content' => '',
 					'browse-url-info' => [],
 					'debuglog' => ''
-				);
+				];
 				//--
 			} //end if
 			//--
@@ -384,8 +385,9 @@ final class SmartRobot {
 			$tmp_current_path 	= (string) SmartUtils::get_server_current_request_uri();
 			$tmp_current_script = (string) SmartUtils::get_server_current_full_script();
 			//--
-			$tmp_test_url_arr 		= (array) Smart::url_parse($y_url_or_path);
-			$tmp_test_browser_id 	= (array) SmartUtils::get_os_browser_ip();
+			$tmp_test_url_arr 		= (array) Smart::url_parse((string)$y_url_or_path);
+			//--
+			$tmp_test_browser_id 	= (array) SmartUtils::get_os_browser_ip(); // unused, just for testing purposes if something fails to be logged ...
 			//--
 			$tmp_extra_log = '';
 			if(SmartEnvironment::ifDebug()) {
@@ -404,35 +406,43 @@ final class SmartRobot {
 					$tmp_extra_log .= '[EXTRA]: I will try to detect if this is my current Domain and I will check if it is safe to send my sessionID COOKIE and my Auth CREDENTIALS ...'."\n";
 				} //end if
 				//--
-				if(((string)$tmp_current_protocol == (string)$tmp_test_url_arr['protocol']) AND ((string)$tmp_current_server == (string)$tmp_test_url_arr['host']) AND ((string)$tmp_current_port == (string)$tmp_test_url_arr['port'])) {
+				if(
+					((string)$tmp_current_protocol == (string)$tmp_test_url_arr['protocol'])
+					AND
+					((string)$tmp_current_server == (string)$tmp_test_url_arr['host'])
+					AND
+					((string)$tmp_current_port == (string)$tmp_test_url_arr['port'])
+				) {
 					//--
 					if(SmartEnvironment::ifDebug()) {
 						$tmp_extra_log .= '[EXTRA]: OK, Seems that the browsed Domain is identical with my current Domain which is: '.$tmp_current_protocol.$tmp_current_server.':'.$tmp_current_port.' and the browsed one is: '.$tmp_test_url_arr['protocol'].$tmp_test_url_arr['host'].':'.$tmp_test_url_arr['port']."\n";
 						$tmp_extra_log .= '[EXTRA]: I will also check if my current script and path are identical with the browsed ones ...'."\n";
 					} //end if
 					//--
-					if(((string)$tmp_current_script == (string)$tmp_test_url_arr['path']) AND (substr($tmp_current_path, 0, strlen($tmp_current_script)) == (string)$tmp_test_url_arr['path'])) {
+					if(
+						((string)$tmp_current_script == (string)$tmp_test_url_arr['path'])
+						AND
+						(strpos((string)$tmp_current_path, (string)$tmp_test_url_arr['path']) === 0)
+					) {
 						//--
 						if(SmartEnvironment::ifDebug()) {
 							$tmp_extra_log .= '[EXTRA]: OK, Seems that the current script is identical with the browsed one :: '.'Current Path is: \''.$tmp_current_script.'\' / Browsed Path is: \''.$tmp_test_url_arr['path'].'\' !'."\n";
-							$tmp_extra_log .= '[EXTRA]: I will check if I have to send my SessionID so I will check the browserID ...'."\n";
+							$tmp_extra_log .= '[EXTRA]: I will also send all the existing cookies ...'."\n";
 						} //end if
 						//--
-						$browser->useragent = (string) SmartUtils::get_selfrobot_useragent_name(); // this must be set just when detected the same path and script ; it is a requirement to detect it as the self-robot [ @s# ] in order to send the credentials or the current
+						$browser->useragent = (string) SmartUtils::get_selfrobot_useragent_name(); // this must be set just when detected the same protocol, host, port, path, script ; it is a requirement to detect it as the self-robot [ @s# ] in order to send the credentials or the current ; this is a special signature
 						//--
-						if(SmartFrameworkRuntime::IsVisitorEntropyIDCookieAvaliable() === true) { // {{{SYNC-SMART-UNIQUE-COOKIE}}}
-							if(defined('SMART_APP_VISITOR_COOKIE') AND ((string)trim((string)SMART_APP_VISITOR_COOKIE) != '')) { // {{{SYNC-SMART-UNIQUE-VAL-COOKIE}}}
-								if(SmartEnvironment::ifDebug()) {
-									$tmp_extra_log .= '[EXTRA]: OK, I will send the current UUID Cookie ID as it is set and not empty ...'."\n";
-								} //end if
-								$cookies[(string)SMART_FRAMEWORK_UUID_COOKIE_NAME] = (string) SMART_APP_VISITOR_COOKIE; // this is a requirement
-							} //end if
+						$cookies = (array) SmartFrameworkRegistry::getCookieVars(); // safe (same protocol, host, port, path, script) ; these are needed for mail-decode/pdf and maybe others (because there is some extra cookie token in mail utils, but this may change anytime ...) ; it is unpredictable to know which cookies to be sent only, send them all
+						//--
+						$is_internal_auth_ok = false;
+						//--
+						$is_logged_in = (bool) SmartAuth::check_login(); // {{{SYNC-ROBOT-AUTH-SELF-BEARER}}}
+						if($is_logged_in === true) {
+							$is_internal_auth_ok = true;
 						} //end if
-						//--
-						$tmp_auth_method = (string) strtoupper((string)SmartAuth::get_login_method());
 						//--
 						if(
-							(((string)$tmp_auth_method == 'HTTP-BASIC') OR (strpos((string)$tmp_auth_method, 'AUTH:HTTP-BASIC:') === 0)) AND // {{{SYNC-AUTH-METHODS-NAME}}}
+							($is_internal_auth_ok === true) AND // {{{SYNC-ROBOT-AUTH-SELF-BEARER}}}
 							((string)$auth_name == '') AND
 							((string)$auth_pass == '') AND
 							(
@@ -442,11 +452,30 @@ final class SmartRobot {
 						) {
 							//--
 							if(SmartEnvironment::ifDebug()) {
-								$tmp_extra_log .= '[EXTRA]: HTTP-BASIC Auth method detected / Allowed to pass the Credentials - as the browsed URL belongs to this ADMIN or TASK Server as I run, the Auth credentials are set but passed as empty - everything seems to be safe I will send my credentials: USERNAME = \''.SmartAuth::get_login_id().'\' ; PASS = *****'."\n";
+								$tmp_extra_log .= '[EXTRA]: HTTP-BASIC Auth method detected / Allowed to pass the Credentials - as the browsed URL belongs to this ADMIN or TASK Server as I run, the Auth credentials are set but passed as empty - everything seems to be safe I will send my credentials: USERNAME = \''.SmartAuth::get_auth_username().'\' ; PASS = *******'."\n";
 							} //end if
 							//--
-							$auth_name = (string) SmartAuth::get_login_id();
-							$auth_pass = (string) SmartAuth::get_login_password();
+							// use HTTP Bearer (SWT) ; the SmartAuth is no more storing plain password, but only hash, thus using the standard HTTP Auth with SmartFramework internal is no more possible, only SWT Tokens with Bearer Auth can be used ...
+							//-- {{{SYNC-AUTH-TOKEN-SWT}}}
+							$arr_user_privs = []; // not restrict to a specific list of allowed privileges, use account defaults ; USE THIS INSTEAD OF NEXT LINE, IT IS MUCH SAFER !
+						//	$arr_user_privs = (array) Smart::list_to_array((string)SmartAuth::get_user_privileges(), true); // use explicit current user privileges
+							$swt_token = (array) SmartAuth::swt_token_create(
+								'A', // bind to adm/tsk area only !
+								(string) SmartAuth::get_auth_username(), // auth user name
+								(string) SmartAuth::get_auth_passhash(),  // password hash
+								(int)    ((int)$y_timeout + 1), // add one second to be sure is never zero
+								(array)  [ (string)SmartUtils::get_server_current_ip() ], // server's own IP Address List (currently just one)
+								(array)  $arr_user_privs // list of allowed privs
+							);
+							//--
+							$auth_name = '';
+							$auth_pass = '';
+							if((string)$swt_token['error'] == '') {
+								$auth_name = (string) SmartHttpUtils::AUTH_USER_BEARER; // {{{SYNC-ROBOT-AUTH-SELF-BEARER}}}
+								$auth_pass = (string) $swt_token['token'];
+							} else {
+								Smart::log_notice(__METHOD__.' # SWT Token Creation Failed with ERROR: '.$swt_token['error']);
+							} //end if else
 							//--
 						} //end if
 						//--
@@ -454,7 +483,7 @@ final class SmartRobot {
 						//--
 						if(SmartEnvironment::ifDebug()) {
 							$tmp_extra_log .= '[EXTRA]: Seems that the scripts are NOT identical :: '.'Current Script is: \''.$tmp_current_script.'\' / Browsed Script is: \''.$tmp_test_url_arr['path'].'\' !'."\n";
-							$tmp_extra_log .= '[EXTRA]: This is the diff for having a comparation: '.substr($tmp_current_path, 0, strlen($tmp_current_script))."\n";
+							$tmp_extra_log .= '[EXTRA]: This is the diff for having a comparation: '.substr((string)$tmp_current_path, 0, (int)strlen((string)$tmp_current_script))."\n";
 						} //end if
 						//--
 					} //end if
@@ -465,7 +494,7 @@ final class SmartRobot {
 			//--
 			$browser->cookies = (array) $cookies;
 			//--
-			$data = (array) $browser->browse_url($y_url_or_path, $y_method, $y_ssl_method, $auth_name, $auth_pass); // do browse
+			$data = (array) $browser->browse_url((string)$y_url_or_path, (string)$y_method, (string)$y_ssl_method, (string)$auth_name, (string)$auth_pass); // {{{SYNC-AUTH-TOKEN-SWT}}}
 			//--
 			$redirect_url = '';
 			$redirect_code = '';
@@ -477,22 +506,28 @@ final class SmartRobot {
 					((string)trim((string)$y_auth_pass) == '')
 				) { // allow only redirects without any auth username/pass/credentials
 					if((string)trim((string)$data['redirect-url']) != '') {
-						if(((string)substr((string)$data['redirect-url'], 0, 7) == 'http://') OR ((string)substr((string)$data['redirect-url'], 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
+						if(
+							(strpos((string)$data['redirect-url'], 'http://') === 0)
+							OR
+							(strpos((string)$data['redirect-url'], 'https://') === 0)
+						) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
 							//--
 							$redirect_url = (string) $data['redirect-url'];
-							$redirect_code = (int) $data['code'];
+							$redirect_code = (int)   $data['code'];
 							//--
 							$data = array(); // clear data
-							$data = (array) self::load_url_content($redirect_url, $y_timeout, $y_method, $y_ssl_method, '', '', 'no', (int)((int)$y_allow_num_redirects - 1)); // DISALLOW CREDENTIALS ; ALLOW FINITE NUMBER OF REDIRECTS TO AVOID INFINITE LOOPS BY BUGGY HTTP(S) SERVERS
+							$data = (array) self::load_url_content((string)$redirect_url, (int)$y_timeout, (string)$y_method, (string)$y_ssl_method, '', '', 'no', (int)((int)$y_allow_num_redirects - 1)); // DISALLOW CREDENTIALS ; ALLOW FINITE NUMBER OF REDIRECTS TO AVOID INFINITE LOOPS BY BUGGY HTTP(S) SERVERS
 							//--
-							$prev_redirect = (string) (isset($data['browse-url-info']['redirect']) ? $data['browse-url-info']['redirect'] : '');
+							if(is_array($data['browse-url-info'])) {
+								$prev_redirect = (string) ($data['browse-url-info']['redirect'] ?? null);
+							} //end if
 							//--
 						} //end if
 					} //end if
 				} //end if
 			} //end if
 			//--
-			return array( // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+			return [ // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
 				'client' 			=> (string) __METHOD__,
 				'log' 				=> (string) $data['log'].$tmp_extra_log,
 				'mode' 				=> (string) $data['mode'], // DO NOT CHANGE !!
@@ -502,17 +537,30 @@ final class SmartRobot {
 				'headers' 			=> (string) $data['headers'],
 				'content' 			=> (string) $data['content'],
 				'browse-url-info' 	=> (array) [
-					'url' 			=> (string) $y_url_or_path,
-					'timeout' 		=> (string) (int)$y_timeout,
-					'method' 		=> (string) $y_method,
-					'auth' 			=> (string) ((strlen((string)$y_auth_name) && strlen((string)$y_auth_pass)) ? ($y_auth_name.':'.str_repeat('*', strlen((string)$y_auth_pass))) : ''),
-					'credentials' 	=> (string) $y_allow_set_credentials,
-					'redirect' 		=> (string) ($prev_redirect ? $prev_redirect.' <- ' : '').trim('['.(int)$y_allow_num_redirects.'] '.(string)$redirect_code.' '.$redirect_url),
+					'url' 				=> (string) $y_url_or_path,
+					'timeout' 			=> (string) (int)$y_timeout,
+					'method' 			=> (string) $y_method,
+					'auth' 				=> (string) ((strlen((string)$y_auth_name) && strlen((string)$y_auth_pass)) ? ($y_auth_name.':'.str_repeat('*', strlen((string)$y_auth_pass))) : ''),
+					'credentials' 		=> (string) $y_allow_set_credentials,
+					'redirect' 			=> (string) ($prev_redirect ? $prev_redirect.' <- ' : '').trim('['.(int)$y_allow_num_redirects.'] '.(string)$redirect_code.' '.$redirect_url),
 				],
 				'debuglog' 			=> (string) $data['debuglog']
-			);
+			];
 			//--
 		} //end if else
+		//--
+		return [ // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
+			'client' => (string) __METHOD__,
+			'log' => 'ERROR: Unknown',
+			'mode' => '?', // DO NOT CHANGE !!
+			'errmsg' => '',
+			'result' => '0',
+			'code' => '777', // this should never happen, there are returns on each if/else, but just in case
+			'headers' => '',
+			'content' => '',
+			'browse-url-info' => [],
+			'debuglog' => ''
+		];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -528,9 +576,9 @@ final class SmartRobot {
 	 * @param $y_url_or_path 	STRING 	:: the absolute URL or RELATIVE URL (as path)
 	 * @return ARRAY					:: fixed URL, reference elements
 	 */
-	public static function get_url_or_path_trust_reference($y_url_or_path) {
+	public static function get_url_or_path_trust_reference(?string $y_url_or_path) : array {
 		//--
-		// v.20210310
+		// v.20231007
 		//--
 		// ### SECURITY: IMPORTANT !!! ###
 		// BECAUSE OF SECURITY CONCERNS, NEVER USE OR MODIFY THIS FUNCTION TO USE WITH A FILE SYSTEM PATH
@@ -545,13 +593,13 @@ final class SmartRobot {
 		//--
 		if((string)$y_url_or_path != '') {
 			//--
-			if((string)substr($y_url_or_path, 0, 10) == 'admin.php?') {
+			if(strpos((string)$y_url_or_path, 'admin.php?') === 0) { // ADMIN
 				$y_url_or_path = (string) SmartUtils::get_server_current_url().$y_url_or_path;
 				if(SmartEnvironment::isAdminArea() === true) {
 					$allow_credentials = 'yes'; // send only if admin
 				} //end if
 				$trust_headers = 'yes';
-			} elseif((string)substr($y_url_or_path, 0, 9) == 'task.php?') {
+			} elseif(strpos((string)$y_url_or_path, 'task.php?') === 0) { // TASK
 				$y_url_or_path = (string) SmartUtils::get_server_current_url().$y_url_or_path;
 				if(SmartEnvironment::isAdminArea() === true) {
 					if(SmartEnvironment::isTaskArea() === true) {
@@ -559,30 +607,56 @@ final class SmartRobot {
 					} //end if
 				} //end if
 				$trust_headers = 'yes';
-			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'admin.php?')) == (string)SmartUtils::get_server_current_url().'admin.php?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
+			} elseif( // ADMIN + URL-Prefix
+				(strpos((string)$y_url_or_path, (string)SmartUtils::get_server_current_url().'admin.php?') === 0)
+				AND
+				(
+					(strpos((string)$y_url_or_path, 'http://') === 0)
+					OR
+					(strpos((string)$y_url_or_path, 'https://') === 0)
+				)
+			) {
 				if(SmartEnvironment::isAdminArea() === true) {
 					$allow_credentials = 'yes'; // send only if admin
 				} //end if
 				$trust_headers = 'yes';
-			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'task.php?')) == (string)SmartUtils::get_server_current_url().'task.php?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
+			} elseif( // TASK + URL-Prefix
+				(strpos((string)$y_url_or_path, (string)SmartUtils::get_server_current_url().'task.php?') === 0)
+				AND
+				(
+					(strpos((string)$y_url_or_path, 'http://') === 0)
+					OR
+					(strpos((string)$y_url_or_path, 'https://') === 0)
+				)
+			) {
 				if(SmartEnvironment::isAdminArea() === true) {
 					if(SmartEnvironment::isTaskArea() === true) {
-						$allow_credentials = 'yes'; // send only if admin
+						$allow_credentials = 'yes'; // send only if admin + task
 					} //end if
 				} //end if
 				$trust_headers = 'yes';
-			} elseif(((string)substr($y_url_or_path, 0, 10) == 'index.php?') OR ((string)substr($y_url_or_path, 0, 1) == '?')) {
+			} elseif( // INDEX
+				(strpos((string)$y_url_or_path, 'index.php?') === 0)
+				OR
+				(strpos((string)$y_url_or_path, '?') === 0)
+			) {
 				$y_url_or_path = (string) SmartUtils::get_server_current_url().$y_url_or_path;
 				if(SmartEnvironment::isAdminArea() !== true) {
 					$allow_credentials = 'yes'; // send only if not admin
 				} //end if
 				$trust_headers = 'yes';
-			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'index.php?')) == (string)SmartUtils::get_server_current_url().'index.php?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
-				if(SmartEnvironment::isAdminArea() !== true) {
-					$allow_credentials = 'yes'; // send only if not admin
-				} //end if
-				$trust_headers = 'yes';
-			} elseif(((string)substr($y_url_or_path, 0, strlen(SmartUtils::get_server_current_url().'?')) == (string)SmartUtils::get_server_current_url().'?') AND (((string)substr($y_url_or_path, 0, 7) == 'http://') OR ((string)substr($y_url_or_path, 0, 8) == 'https://'))) {
+			} elseif( // INDEX + URL-Prefix
+				(
+					(strpos((string)$y_url_or_path, (string)SmartUtils::get_server_current_url().'index.php?') === 0)
+					OR
+					(strpos((string)$y_url_or_path, (string)SmartUtils::get_server_current_url().'?') === 0)
+				)
+				AND
+				(
+					(strpos((string)$y_url_or_path, 'http://') === 0)
+					OR
+					(strpos((string)$y_url_or_path, 'https://') === 0))
+				) {
 				if(SmartEnvironment::isAdminArea() !== true) {
 					$allow_credentials = 'yes'; // send only if not admin
 				} //end if
@@ -592,7 +666,7 @@ final class SmartRobot {
 			$the_url_or_path_type = '!unknown!';
 			//-- {{{SYNC-DATA-IMAGE}}}
 			if(
-				((string)strtolower((string)substr((string)$y_url_or_path, 0, 11)) == 'data:image/')
+				(stripos((string)$y_url_or_path, 'data:image/') === 0)
 				AND
 				(
 					(stripos((string)$y_url_or_path, ';base64,') !== false)
@@ -602,7 +676,11 @@ final class SmartRobot {
 			) { // DATA-URL
 				$the_url_or_path_type = 'data-url'; // it is a data-url
 				$trust_headers = 'yes';
-			} elseif(((string)substr((string)$y_url_or_path, 0, 7) == 'http://') OR ((string)substr((string)$y_url_or_path, 0, 8) == 'https://')) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
+			} elseif(
+				(strpos((string)$y_url_or_path, 'http://') === 0)
+				OR
+				(strpos((string)$y_url_or_path, 'https://') === 0)
+			) { // {{{SYNC-URL-TEST-HTTP-HTTPS}}}
 				$the_url_or_path_type = 'url'; // it is an url
 				// trust the headers, must be preserved as above
 			} else { // !!! it should be considered as a relative path for the security reasons must be accessed via the local URL only since content source may be untrusted !!!
@@ -613,12 +691,12 @@ final class SmartRobot {
 			//--
 		} //end if else
 		//--
-		return array(
+		return [
 			'url-or-path-fixed' => (string) $y_url_or_path, 		// fixed URL (ex: for relative URLs the current URL as prefix will be added)
 			'url-or-path-type' 	=> (string) $the_url_or_path_type, 	// can be URL or Data-URL
 			'allow-credentials' => (string) $allow_credentials, 	// yes/no (yes only for internal ...)
 			'trust-headers' 	=> (string) $trust_headers 			// yes/no
-		);
+		];
 		//--
 	} //END FUNCTION
 	//================================================================

@@ -69,7 +69,7 @@ if(
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
  * @depends 	classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES
- * @version 	v.20221220
+ * @version 	v.20231006
  * @package 	Application:FileSystem
  *
  */
@@ -100,6 +100,9 @@ final class SmartFileSystem {
 			Smart::log_warning(__METHOD__.' # Skip: Empty DirName');
 			return false;
 		} //end if
+		//--
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_name, true, true); // deny absolute paths
+		//--
 		if(!self::is_type_dir($dir_name)) { // not a dir
 			Smart::log_warning(__METHOD__.' # Skip: Not a Directory Type: '.$dir_name);
 			return false;
@@ -137,10 +140,13 @@ final class SmartFileSystem {
 		//--
 		$file_name = (string) $file_name;
 		//--
-		if((string)trim((string)$file_name) == '') {
+		if((string)trim((string)trim((string)$file_name)) == '') {
 			Smart::log_warning(__METHOD__.' # Skip: Empty FileName');
 			return false;
 		} //end if
+		//--
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name, true, true); // deny absolute paths
+		//--
 		if(!self::is_type_file((string)$file_name)) { // not a file
 			Smart::log_warning(__METHOD__.' # Skip: Not a File Type: '.$file_name);
 			return false;
@@ -492,11 +498,18 @@ final class SmartFileSystem {
 	 * @param 	STRING 		$file_name 				:: The relative path of file to be read (can be a symlink to a file)
 	 * @param 	INTEGER+ 	$file_len 				:: DEFAULT is 0 (zero) ; If zero will read the entire file ; If > 0 (ex: 100) will read only the first 100 bytes fro the file or less if the file size is under 100 bytes
 	 * @param 	YES/NO 		$markchmod 				:: DEFAULT is 'no' ; If 'yes' will force a chmod (as defined in SMART_FRAMEWORK_CHMOD_FILES) on the file before trying to read to ensure consistent chmod on all accesible files.
-	 * @param 	BOOLEAN 	$safelock 				:: DEFAULT is 'no' ; If 'yes' will try to get a read shared lock on file prior to read ; If cannot lock the file will return empty string to avoid partial content read where reading a file that have intensive writes (there is always a risk to cannot achieve the lock ... there is no perfect scenario for intensive file operations in multi threaded environments ...)
+	 * @param 	YES/NO 		$safelock 				:: DEFAULT is 'no' ; If 'yes' will try to get a read shared lock on file prior to read ; If cannot lock the file will return empty string to avoid partial content read where reading a file that have intensive writes (there is always a risk to cannot achieve the lock ... there is no perfect scenario for intensive file operations in multi threaded environments ...)
+	 * @param 	BOOLEAN 	$allow_protected_paths 	:: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided
 	 *
 	 * @return 	STRING								:: The file contents (or a part of file contents if $file_len parameter is used) ; if the file does not exists will return an empty string
 	 */
-	public static function read($file_name, $file_len=0, $markchmod='no', $safelock='no') {
+	public static function read(?string $file_name, ?int $file_len=0, ?string $markchmod='no', ?string $safelock='no', bool $allow_protected_paths=false) : string {
+		//-- override (this is actually done automatically in raiseErrorIfUnsafePath() and checkIfSafePath() but reflect also here this as there are logs below ...
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
+				$allow_protected_paths = true; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
 		//--
 		$file_name = (string) $file_name;
 		$file_len = (int) $file_len;
@@ -507,13 +520,13 @@ final class SmartFileSystem {
 			return '';
 		} //end if
 		//--
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name, true, (bool)$allow_protected_paths); // deny absolute paths
 		//--
 		clearstatcache(true, (string)$file_name);
 		//--
 		$fcontent = '';
 		//--
-		if(SmartFileSysUtils::checkIfSafePath((string)$file_name)) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$file_name, true, (bool)$allow_protected_paths)) { // deny absolute paths
 			//--
 			if(!self::is_type_dir((string)$file_name)) {
 				//--
@@ -613,10 +626,17 @@ final class SmartFileSystem {
 	 * @param 	STRING 		$file_name 				:: The relative path of file to be written (can be an existing symlink to a file)
 	 * @param 	STRING 		$file_content 			:: DEFAULT is '' ; The content string to be written to the file (binary safe)
 	 * @param 	ENUM 		$write_mode 			:: DEFAULT is 'w' Write (If file exists then overwrite. If the file does not exist create it) ; If 'a' will use Write-Append by appending the content to a file which can exists or not.
+	 * @param 	BOOLEAN 	$allow_protected_paths 	:: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided
 	 *
 	 * @return 	INTEGER								:: 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)
 	 */
-	public static function write($file_name, $file_content='', $write_mode='w') {
+	public static function write(?string $file_name, ?string $file_content='', ?string $write_mode='w', bool $allow_protected_paths=false) : int {
+		//-- override (this is actually done automatically in raiseErrorIfUnsafePath() and checkIfSafePath() but reflect also here this as there are logs below ...
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
+				$allow_protected_paths = true; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
 		//--
 		$file_name = (string) $file_name;
 		//--
@@ -625,19 +645,19 @@ final class SmartFileSystem {
 			return 0;
 		} //end if
 		//--
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name, true, (bool)$allow_protected_paths); // deny absolute paths
 		//--
 		clearstatcache(true, (string)$file_name);
 		//--
 		$result = false;
 		//--
-		if(SmartFileSysUtils::checkIfSafePath((string)$file_name)) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$file_name, true, (bool)$allow_protected_paths)) { // deny absolute paths
 			//--
 			if(!self::is_type_dir((string)$file_name)) {
 				//--
 				if(self::is_type_link((string)$file_name)) {
 					if(!self::path_real_exists((string)$file_name)) {
-						self::delete((string)$file_name); // delete the link if broken
+						self::delete((string)$file_name, (bool)$allow_protected_paths); // delete the link if broken
 					} //end if
 				} //end if
 				//--
@@ -702,10 +722,17 @@ final class SmartFileSystem {
 	 * @param 	STRING 		$file_name 				:: The relative path of file to be written (can be an existing symlink to a file)
 	 * @param 	STRING 		$file_content 			:: DEFAULT is '' ; The content string to be written to the file (binary safe)
 	 * @param 	YES/NO 		$y_chkcompare 			:: DEFAULT is 'no' ; If 'yes' will check the existing fiile contents and will overwrite if different than the passed contents in $file_content
+	 * @param 	BOOLEAN 	$allow_protected_paths 	:: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided
 	 *
 	 * @return 	INTEGER								:: 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)
 	 */
-	public static function write_if_not_exists($file_name, $file_content, $y_chkcompare='no') {
+	public static function write_if_not_exists(?string $file_name, ?string $file_content, ?string $y_chkcompare='no', bool $allow_protected_paths=false) : int {
+		//-- override (this is actually done automatically in raiseErrorIfUnsafePath() and checkIfSafePath() but reflect also here this as there are logs below ...
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
+				$allow_protected_paths = true; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
 		//--
 		$file_name = (string) $file_name;
 		//--
@@ -718,14 +745,14 @@ final class SmartFileSystem {
 			return 0;
 		} //end if
 		//--
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name, true, (bool)$allow_protected_paths); // deny absolute paths
 		//--
 		$x_ok = 0;
 		//--
 		if((string)$y_chkcompare == 'yes') {
 			//--
-			if((string)self::read((string)$file_name) != (string)$file_content) { // compare content
-				$x_ok = self::write((string)$file_name, (string)$file_content);
+			if((string)self::read((string)$file_name, 0, 'no', 'no', (bool)$allow_protected_paths) != (string)$file_content) { // compare content
+				$x_ok = self::write((string)$file_name, (string)$file_content, 'w', true); // allow protected paths
 			} else {
 				$x_ok = 1;
 			} //end if
@@ -733,7 +760,7 @@ final class SmartFileSystem {
 		} else {
 			//--
 			if(!self::is_type_file((string)$file_name)) {
-				$x_ok = self::write((string)$file_name, (string)$file_content);
+				$x_ok = self::write((string)$file_name, (string)$file_content, 'w', true); // allow protected paths
 			} else {
 				$x_ok = 1;
 			} //end if else
@@ -756,19 +783,26 @@ final class SmartFileSystem {
 	 * @param 	STRING 		$newlocation 			:: The relative path of the destination file (where to copy)
 	 * @param 	BOOLEAN 	$overwrite_destination 	:: DEFAULT is FALSE ; If set to FALSE will FAIL if destination file exists ; If set to TRUE will overwrite the file destination if exists
 	 * @param 	BOOLEAN 	$check_copy_contents 	:: DEFAULT is TRUE ; If set to TRUE (safe mode) will compare the copied content from the destination file with the original file content using sha1-file checksums ; If set to FALSE (non-safe mode) will not do this comparison check (but may save a big amount of time when working with very large files)
+	 * @param 	BOOLEAN 	$allow_protected_paths 	:: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided
 	 *
 	 * @return 	INTEGER								:: 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)
 	 */
-	public static function copy($file_name, $newlocation, $overwrite_destination=false, $check_copy_contents=true) {
+	public static function copy(?string $file_name, ?string $newlocation, bool $overwrite_destination=false, bool $check_copy_contents=true, bool $allow_protected_paths=false) : int {
+		//-- override (this is actually done automatically in raiseErrorIfUnsafePath() and checkIfSafePath() but reflect also here this as there are logs below ...
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
+				$allow_protected_paths = true; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
 		//--
 		$file_name = (string) $file_name;
 		$newlocation = (string) $newlocation;
 		//--
-		if((string)$file_name == '') {
+		if((string)trim((string)$file_name) == '') {
 			Smart::log_warning(__METHOD__.' # Empty Source File Name');
 			return 0;
 		} //end if
-		if((string)$newlocation == '') {
+		if((string)trim((string)$newlocation) == '') {
 			Smart::log_warning(__METHOD__.' # Empty Destination File Name');
 			return 0;
 		} //end if
@@ -777,7 +811,13 @@ final class SmartFileSystem {
 			return 0;
 		} //end if
 		//--
-		if((!self::is_type_file((string)$file_name)) OR ((self::is_type_link((string)$file_name)) AND (!self::is_type_file((string)self::link_get_origin((string)$file_name))))) {
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name, true, (bool)$allow_protected_paths); // deny absolute paths
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$newlocation, true, (bool)$allow_protected_paths); // deny absolute paths
+		//--
+		clearstatcache(true, (string)$file_name);
+		clearstatcache(true, (string)$newlocation);
+		//--
+		if((!self::is_type_file((string)$file_name)) OR ((self::is_type_link((string)$file_name)) AND (!self::is_type_file((string)self::link_get_origin((string)$file_name, (bool)$allow_protected_paths))))) {
 			Smart::log_warning(__METHOD__.' # Source is not a FILE: S='.$file_name.' ; D='.$newlocation);
 			return 0;
 		} //end if
@@ -788,15 +828,15 @@ final class SmartFileSystem {
 			} //end if
 		} //end if
 		//--
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name);
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$newlocation);
-		//--
-		clearstatcache(true, (string)$file_name);
-		clearstatcache(true, (string)$newlocation);
-		//--
 		$result = false;
 		//--
-		if(self::is_type_file((string)$file_name)) {
+		if(
+			(SmartFileSysUtils::checkIfSafePath((string)$file_name, true, (bool)$allow_protected_paths)) // deny absolute paths
+			AND
+			(SmartFileSysUtils::checkIfSafePath((string)$newlocation, true, (bool)$allow_protected_paths)) // deny absolute paths
+			AND
+			(self::is_type_file((string)$file_name))
+		) {
 			//--
 			if(($overwrite_destination === true) OR (!self::path_exists((string)$newlocation))) {
 				//--
@@ -812,14 +852,14 @@ final class SmartFileSystem {
 					//--
 					if((int)self::get_file_size((string)$file_name) !== (int)self::get_file_size((string)$newlocation)) {
 						$result = false; // clear
-						self::delete((string)$newlocation); // remove incomplete copied file
+						self::delete((string)$newlocation, (bool)$allow_protected_paths); // remove incomplete copied file
 						Smart::log_warning(__METHOD__.' # Destination file is not same size as original: '.$newlocation);
 					} //end if
 					//--
 					if($check_copy_contents === true) {
 						if((string)sha1_file((string)$file_name) !== (string)sha1_file((string)$newlocation)) {
 							$result = false; // clear
-							self::delete((string)$newlocation); // remove broken copied file
+							self::delete((string)$newlocation, (bool)$allow_protected_paths); // remove broken copied file
 							Smart::log_warning(__METHOD__.' # Destination file checksum failed: '.$newlocation);
 						} //end if
 					} //end if
@@ -859,19 +899,27 @@ final class SmartFileSystem {
 	 *
 	 * @param 	STRING 		$file_name 				:: The relative path of file to be renamed or moved (can be a symlink to a file)
 	 * @param 	STRING 		$newlocation 			:: The relative path of the destination file (new file name to rename or a new path where to move)
+	 * @param 	BOOL 		$overwrite_destination 	:: DEFAULT is FALSE ; If set to FALSE will FAIL if destination file exists ; If set to TRUE will overwrite the file destination if exists
+	 * @param 	BOOLEAN 	$allow_protected_paths 	:: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided
 	 *
 	 * @return 	INTEGER								:: 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)
 	 */
-	public static function rename($file_name, $newlocation, $overwrite_destination=false) {
+	public static function rename(?string $file_name, ?string $newlocation, bool $overwrite_destination=false, bool $allow_protected_paths=false) : int {
+		//-- override (this is actually done automatically in raiseErrorIfUnsafePath() and checkIfSafePath() but reflect also here this as there are logs below ...
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
+				$allow_protected_paths = true; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
 		//--
 		$file_name = (string) $file_name;
 		$newlocation = (string) $newlocation;
 		//--
-		if((string)$file_name == '') {
+		if((string)trim((string)$file_name) == '') {
 			Smart::log_warning(__METHOD__.' # Empty Source File Name');
 			return 0;
 		} //end if
-		if((string)$newlocation == '') {
+		if((string)trim((string)$newlocation) == '') {
 			Smart::log_warning(__METHOD__.' # Empty Destination File Name');
 			return 0;
 		} //end if
@@ -880,7 +928,13 @@ final class SmartFileSystem {
 			return 0;
 		} //end if
 		//--
-		if((!self::is_type_file((string)$file_name)) OR ((self::is_type_link((string)$file_name)) AND (!self::is_type_file((string)self::link_get_origin((string)$file_name))))) {
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name, true, (bool)$allow_protected_paths); // deny absolute paths
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$newlocation, true, (bool)$allow_protected_paths); // deny absolute paths
+		//--
+		clearstatcache(true, (string)$file_name);
+		clearstatcache(true, (string)$newlocation);
+		//--
+		if((!self::is_type_file((string)$file_name)) OR ((self::is_type_link((string)$file_name)) AND (!self::is_type_file((string)self::link_get_origin((string)$file_name, (bool)$allow_protected_paths))))) {
 			Smart::log_warning(__METHOD__.' # Source is not a FILE: S='.$file_name.' ; D='.$newlocation);
 			return 0;
 		} //end if
@@ -891,21 +945,21 @@ final class SmartFileSystem {
 			} //end if
 		} //end if
 		//--
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name);
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$newlocation);
-		//--
-		clearstatcache(true, (string)$file_name);
-		clearstatcache(true, (string)$newlocation);
-		//--
 		$f_cx = false;
 		//--
-		if(((string)$file_name != (string)$newlocation) AND (SmartFileSysUtils::checkIfSafePath((string)$file_name)) AND (SmartFileSysUtils::checkIfSafePath((string)$newlocation))) {
+		if(
+			((string)$file_name != (string)$newlocation)
+			AND
+			(SmartFileSysUtils::checkIfSafePath((string)$file_name, true, (bool)$allow_protected_paths)) // deny absolute paths
+			AND
+			(SmartFileSysUtils::checkIfSafePath((string)$newlocation, true, (bool)$allow_protected_paths)) // deny absolute paths
+		) {
 			//--
-			if((self::is_type_file((string)$file_name)) OR ((self::is_type_link((string)$file_name)) AND (self::is_type_file((string)self::link_get_origin((string)$file_name))))) { // don't move broken links
+			if((self::is_type_file((string)$file_name)) OR ((self::is_type_link((string)$file_name)) AND (self::is_type_file((string)self::link_get_origin((string)$file_name, (bool)$allow_protected_paths))))) { // don't move broken links
 				//--
 				if(!self::is_type_dir((string)$newlocation)) {
 					//--
-					self::delete((string)$newlocation); // just to be sure
+					self::delete((string)$newlocation, (bool)$allow_protected_paths); // just to be sure
 					//--
 					if(($overwrite_destination !== true) AND (self::path_exists((string)$newlocation))) {
 						//--
@@ -915,7 +969,7 @@ final class SmartFileSystem {
 						//--
 						$f_cx = @rename((string)$file_name, (string)$newlocation); // If renaming a file and newname exists, it will be overwritten. If renaming a directory and newname exists, this function will emit a warning.
 						//--
-						if((self::is_type_file((string)$newlocation)) OR ((self::is_type_link((string)$newlocation)) AND (self::is_type_file((string)self::link_get_origin($newlocation))))) {
+						if((self::is_type_file((string)$newlocation)) OR ((self::is_type_link((string)$newlocation)) AND (self::is_type_file((string)self::link_get_origin($newlocation, (bool)$allow_protected_paths))))) {
 							if(self::is_type_file((string)$newlocation)) {
 								self::fix_file_chmod((string)$newlocation); // apply chmod just if file and not a linked dir
 							} //end if
@@ -1123,10 +1177,17 @@ final class SmartFileSystem {
 	 * It will delete a file (or a symlink) if exists
 	 *
 	 * @param 	STRING 		$file_name 				:: The relative path of file to be deleted (can be a symlink to a file)
+	 * @param 	BOOLEAN 	$allow_protected_paths 	:: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided
 	 *
 	 * @return 	INTEGER								:: 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)
 	 */
-	public static function delete($file_name) {
+	public static function delete(?string $file_name, bool $allow_protected_paths=false) : int {
+		//-- override (this is actually done automatically in raiseErrorIfUnsafePath() and checkIfSafePath() but reflect also here this as there are logs below ...
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
+				$allow_protected_paths = true; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
 		//--
 		$file_name = (string) $file_name;
 		//--
@@ -1135,7 +1196,7 @@ final class SmartFileSystem {
 			return 0; // empty file name
 		} //end if
 		//--
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$file_name, true, (bool)$allow_protected_paths); // deny absolute paths
 		//--
 		clearstatcache(true, (string)$file_name);
 		//--
@@ -1159,7 +1220,7 @@ final class SmartFileSystem {
 		//--
 		$f_cx = false;
 		//--
-		if(SmartFileSysUtils::checkIfSafePath((string)$file_name)) {
+		if(SmartFileSysUtils::checkIfSafePath((string)$file_name, true, (bool)$allow_protected_paths)) { // deny absolute paths
 			//--
 			if((self::is_type_file((string)$file_name)) OR (self::is_type_link((string)$file_name))) {
 				//--
@@ -1206,19 +1267,26 @@ final class SmartFileSystem {
 	 * @internal
 	 *
 	 * @param 	STRING 		$y_link 				:: The relative path of symlink to be analyzed
+	 * @param 	BOOLEAN 	$allow_protected_paths 	:: DEFAULT is FALSE ; If TRUE it may be used to create special protected folders (set to TRUE only if you know what you are really doing and you need to create a folder starting with a `#`, otherwise may lead to security issues ...) ; for task area this is always hardcoded to TRUE and cannot be overrided
 	 *
 	 * @return 	STRING								:: The relative or absolute (or non-safe) path to the symlink origin or empty string if broken link (no path safety checks are implemented over)
 	 */
-	public static function link_get_origin($y_link) {
+	public static function link_get_origin(?string $y_link, bool $allow_protected_paths=false) : string {
+		//-- override (this is actually done automatically in raiseErrorIfUnsafePath() and checkIfSafePath() but reflect also here this as there are logs below ...
+		if(SmartEnvironment::isAdminArea() === true) {
+			if(SmartEnvironment::isTaskArea() === true) {
+				$allow_protected_paths = true; // this is required as default for various tasks that want to access #protected dirs
+			} //end if
+		} //end if
 		//--
 		$y_link = (string) $y_link;
 		//--
-		if((string)$y_link == '') {
+		if((string)trim((string)$y_link) == '') {
 			Smart::log_warning(__METHOD__.' # The Link Name is Empty !');
 			return '';
 		} //end if
 		//--
-		if(!SmartFileSysUtils::checkIfSafePath((string)$y_link)) { // pre-check
+		if(!SmartFileSysUtils::checkIfSafePath((string)$y_link, true, (bool)$allow_protected_paths)) { // pre-check, deny absolute paths
 			Smart::log_warning(__METHOD__.' # Invalid Path Link : '.$y_link);
 			return '';
 		} //end if
@@ -1226,12 +1294,12 @@ final class SmartFileSystem {
 			Smart::log_warning(__METHOD__.' # Link ends with one or many trailing slash(es) / : '.$y_link);
 			$y_link = (string) rtrim((string)$y_link, '/');
 		} //end if
-		if(!SmartFileSysUtils::checkIfSafePath((string)$y_link)) { // post-check
+		if(!SmartFileSysUtils::checkIfSafePath((string)$y_link, true, (bool)$allow_protected_paths)) { // post-check, deny absolute paths
 			Smart::log_warning(__METHOD__.' # Invalid Link Path : '.$y_link);
 			return '';
 		} //end if
 		//--
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_link);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$y_link, true, (bool)$allow_protected_paths); // deny absolute paths
 		//--
 		if(!self::is_type_link((string)$y_link)) {
 			Smart::log_warning(__METHOD__.' # Link does not exists : '.$y_link);
@@ -1965,7 +2033,7 @@ final class SmartFileSystem {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be safe
  *
  * @depends 	classes: Smart
- * @version 	v.20221220
+ * @version 	v.20231006
  * @package 	Application:FileSystem
  *
  */
@@ -1976,6 +2044,7 @@ final class SmartGetFileSystem {
 
 	//================================================================
 	//--
+	private $allow_protected_paths		= false;
 	private $list_files_and_dirs		= false;
 	private $num_size 					= 0;
 	private $num_dirs_size				= 0;
@@ -1996,11 +2065,10 @@ final class SmartGetFileSystem {
 
 
 	//================================================================
-	public function __construct(bool $list_files_and_dirs=false) { // CONSTRUCTOR
+	public function __construct(bool $list_files_and_dirs=false, bool $allow_protected_paths=false) { // CONSTRUCTOR
 		//--
-		if($list_files_and_dirs === true) {
-			$this->list_files_and_dirs = true;
-		} //end if
+		$this->list_files_and_dirs   = (bool) $list_files_and_dirs;
+		$this->allow_protected_paths = (bool) $allow_protected_paths;
 		//--
 		$this->init_vars();
 		//--
@@ -2039,7 +2107,7 @@ final class SmartGetFileSystem {
 		//-- fix invalid path (must end with /)
 		$dir_name = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dir_name);
 		//-- protection
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_name);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_name, true, (bool)$this->allow_protected_paths); // deny absolute paths
 		//--
 		$this->init_vars();
 		//--
@@ -2097,7 +2165,7 @@ final class SmartGetFileSystem {
 		//-- fix invalid path (must end with /)
 		$dir_name = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dir_name);
 		//-- protection
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_name);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_name, true, (bool)$this->allow_protected_paths); // deny absolute paths
 		//--
 		$this->init_vars();
 		//--
@@ -2175,7 +2243,7 @@ final class SmartGetFileSystem {
 		//-- fix invalid path (must end with /)
 		$dir_name = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dir_name);
 		//-- protection
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_name);
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_name, true, (bool)$this->allow_protected_paths); // deny absolute paths
 		//--
 		clearstatcache(true, $dir_name);
 		//--
@@ -2206,14 +2274,14 @@ final class SmartGetFileSystem {
 					//--
 					if(((string)$file != '') AND ((string)$file != '.') AND ((string)$file != '..')) { // fix empty, skip get the unsafe file names to avoid errors
 						//--
-						if(SmartFileSysUtils::checkIfSafeFileOrDirName((string)$file) != 1) {
+						if(SmartFileSysUtils::checkIfSafeFileOrDirName((string)$file, true, (bool)$this->allow_protected_paths) != 1) { // deny absolute paths
 							Smart::log_warning(__METHOD__.' # Skip Unsafe FileName or DirName `'.$file.'` detected in path: '.$dir_name);
 							continue; // skip
 						} //end if
 						//--
 						if(($include_dot_files) OR ((!$include_dot_files) AND (substr($file, 0, 1) != '.'))) {
 							//--
-							SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_name.$file);
+							SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_name.$file, true, (bool)$this->allow_protected_paths); // deny absolute paths
 							//-- params to see if counted or added to pattern matches
 							$tmp_allow_addition = 1;
 							$tmp_add_pattern = 0;
@@ -2334,7 +2402,7 @@ final class SmartGetFileSystem {
 								//-- link: dir or file or broken link
 								if($tmp_allow_addition) {
 									//--
-									$link_origin = (string) SmartFileSystem::link_get_origin($dir_name.$file);
+									$link_origin = (string) SmartFileSystem::link_get_origin((string)$dir_name.$file, (bool)$this->allow_protected_paths); // deny absolute paths
 									//--
 									if(((string)$link_origin == '') OR (!SmartFileSystem::path_exists($link_origin))) {
 										//--

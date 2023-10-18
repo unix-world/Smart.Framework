@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20220730 -->
+<!-- AuthAdmins Login # v.20231018 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -29,17 +29,30 @@ span.info {
 	line-height: 48px !important;
 }
 </style>
+<link rel="stylesheet" type="text/css" href="modules/mod-auth-admins/views/js/pin-login/jquery.pinlogin.css?[###RELEASE-HASH|html###]" media="all">
+<script src="modules/mod-auth-admins/views/js/pin-login/jquery.pinlogin.js?[###RELEASE-HASH|html###]"></script>
 <script>
 const ovID = 'sf-adm-login-overlay';
+const AuthFA2 = { digits: null };
 const AuthAdminsCheck = () => {
 	const url = '[###LOGIN-URL|js###]';
-	const dtime = Date.now();
+	const fa2 = [###USE-2FA|bool###];
 	if((url != undefined) && url) {
-		const params = '&url=' + smartJ$Utils.escape_url(url) + '&time=' + smartJ$Utils.escape_url(dtime);
-		const uri = '[###LOGIN-SCRIPT|js###]?page=auth-admins.manager&action=login-timeout' + params;
-		const chk = '[###LOGIN-SCRIPT|js###]?page=auth-admins.manager&action=login-check' + params;
-		smartJ$Browser.OverlayShow(null, null, null, ovID);
-		smartJ$Browser.SubmitFormByAjax(null, chk, 'yes', () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeOK); }, () => { setTimeout(() => { smartJ$Browser.OverlayHide(ovID); }, smartJ$Browser.param_NotificationTimeERR); }, (fid, u, msg) => { if(msg != undefined) { if(msg.status != undefined) { if(msg.status != 401) { setTimeout(() => { self.location = uri; }, 500); return; } } } setTimeout(() => { smartJ$Browser.OverlayClear(ovID); setTimeout(() => { smartJ$Browser.OverlayHide(ovID); self.location = self.location; }, 750); }, 700); }, true);
+		const _Utils$ = smartJ$Utils;
+		const _Ba$eConv = smartJ$BaseEncode;
+		const _BwUtils$ = smartJ$Browser;
+		const params = '&url=' + _Utils$.escape_url(url) + '&time=' + _Utils$.escape_url(Date.now());
+		const chk = '[###LOGIN-SCRIPT|js###]?page=auth-admins.login&action=check' + String(params || '');
+		const rdr = '[###LOGIN-SCRIPT|js###]?page=auth-admins.login&action=redir' + String(params || '');
+		if(!!fa2) {
+			const regex2fatk = RegExp([###REGEX-2FA###]);
+			const tk2fa = String(_Utils$.stringPureVal(AuthFA2.digits || '', true));
+			if(regex2fatk.test(tk2fa)) {
+				_BwUtils$.setCookie('[###COOKIE-N-2FA|js###]', '#' + _Ba$eConv.base_from_hex_convert(_Utils$.bin2hex('#' + tk2fa + '#'), 4*4*2) + '#', 0, '/', '@', 'Strict');
+			}
+		}
+		_BwUtils$.OverlayShow(null, null, null, ovID);
+		_BwUtils$.SubmitFormByAjax(null, chk, 'yes', () => { setTimeout(() => { _BwUtils$.OverlayHide(ovID); }, _BwUtils$.param_NotificationTimeOK); }, () => { setTimeout(() => { _BwUtils$.OverlayHide(ovID); }, _BwUtils$.param_NotificationTimeERR); }, (fid, u, msg) => { if(msg != undefined) { if(msg.status != undefined) { if(msg.status != 401) { setTimeout(() => { self.location = rdr; }, 500); return; } } } setTimeout(() => { _BwUtils$.OverlayClear(ovID); setTimeout(() => { _BwUtils$.OverlayHide(ovID); self.location = self.location; }, 750); }, 700); }, true);
 	}
 };
 </script>
@@ -61,7 +74,9 @@ const AuthAdminsCheck = () => {
 			<div class="ux-grid-row">
 				<div class="ux-grid-col c12 ux-center">
 					<div id="auth-admins-area-login">
-						<a id="special" title="Click here to Login ..." href="javascript:void(0)" onClick="AuthAdminsCheck();"><span style="color:#7BC043; font-size: 2rem;"><b>Login to :// [###LOGIN-AREA|html###] Area</b></span></a>
+						[%%%IF:ID-USER:!=;%%%]<h6 style="color:#444444; cursor:help;" title="Auth Method: `[###ID-AUTH-MET|html###]`">Auth UserName:&nbsp;`[###ID-USER|html###]` :: [[###ID-AUTH-TYP|html###]]</h6>[%%%ELSE:ID-USER%%%]<!-- Auth UserName/Method/Type: N/A -->[%%%/IF:ID-USER%%%]
+						[%%%IF:USE-2FA:==1;%%%]<div style="color:#667788; font-weight:bold; cursor:help;" title="Two-Factor Authentication is ENABLED">2FA Token</div><div id="fa2-input"></div>[%%%ELSE:USE-2FA%%%]<!-- no FA2 -->[%%%/IF:USE-2FA%%%]
+						<a id="special" title="Click here to Login ..." href="javascript:void(0)" onClick="AuthAdminsCheck();"><span style="color:#7BC043; font-size:2rem;"><b>Login to :// [###LOGIN-AREA|html###] Area</b></span></a>
 					</div>
 				</div>
 				<div class="ux-grid-col c12 ux-center">
@@ -71,7 +86,7 @@ const AuthAdminsCheck = () => {
 				</div>
 				<div class="ux-grid-col c12 ux-center">
 					<div title="Click here to Logout ...">
-						<a id="special" href="[###LOGOUT-URL|html###]"><span style="color:#5E6885; font-size: 1.25rem;"><b>Logout from :// All NameSpaces</b></span></a>
+						<a id="special" href="[###LOGOUT-URL|html###]"><span style="color:#5E6885; font-size:1.25rem;"><b>Logout from :// All NameSpaces</b></span></a>
 					</div>
 				</div>
 			</div>
@@ -79,8 +94,22 @@ const AuthAdminsCheck = () => {
 	</center></div>
 	<br>
 	<div><center>[###POWERED-HTML###]</center></div>
-	<a data-smart="open.modal" href="http://www.unix-world.org" target="unix_world_org" id="copyright"><b>&copy;&nbsp;2006-[###CRR-YEAR|html###]&nbsp;unix-world.org</b></a>
+	<div><a data-smart="open.modal" href="http://www.unix-world.org" target="unix_world_org" id="copyright"><b>&copy;&nbsp;2006-[###CRR-YEAR|html###]&nbsp;unix-world.org</b></a></div>
 </div>
+[%%%IF:USE-2FA:==1;%%%]
+<script>
+(() => {
+	jQuery('#fa2-input').pinlogin({
+		fields: 8,
+		complete: (digits) => {
+			AuthFA2.digits = digits;
+		},
+	});
+})();
+</script>
+[%%%ELSE:USE-2FA%%%]
+<!-- no FA2 js -->
+[%%%/IF:USE-2FA%%%]
 <script>
 (() => {
 	const privateAreaText = [ // [22 langs] :: EN + 21

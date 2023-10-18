@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20230324 s.20230324.1826
+// [AppCodeUnpack / APP] v.20231018 s.20231017.2223
 // (c) 2013-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20230324
+	// v.20231018
 
-	private const APPCODEUNPACK_VERSION = 's.20230324.1826';
+	private const APPCODEUNPACK_VERSION = 's.20231017.2223';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -490,7 +490,7 @@ final class AppCodeUnpack {
 													SmartFileSystem::is_type_dir(AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val)
 												) {
 													if(SmartFileSystem::dir_delete((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val)) {
-														$arr_del_dirs[] = (string) (string) AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val;
+														$arr_del_dirs[] = (string) AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.AppNetUnPackager::APP_NET_UNPACKAGER_DEPLOYS_FOLDER.$val;
 													} //end if
 												} //end if
 												if(
@@ -959,6 +959,8 @@ final class AppCodeUnpack {
 		$username = (string) trim((string)$username);
 		$password = (string) trim((string)$password);
 		//--
+		// {{{SYNC-AUTH-TOKEN-SWT}}}
+		//--
 		if(
 			((string)$logout == '') AND
 			isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']) AND
@@ -973,22 +975,25 @@ final class AppCodeUnpack {
 			);
 			$priv_keys = '';
 			//--
-			SmartAuth::set_login_data(
-				(string) $_SERVER['PHP_AUTH_USER'], 	// this should be always the user login ID (login user name)
-				(string) $_SERVER['PHP_AUTH_USER'], 	// username alias (in this case is the same as the login ID, but may be different)
-				'superadmin@appcodeunpack', 			// user email * Optional * (this may be also redundant if the login ID is actually the user email)
-				'Super Admin', 							// user full name (Title + ' ' + First Name + ' ' + Last name) * Optional *
-				(array) $privileges, 					// login privileges * Optional *
-				0, 										// quota * Optional *
-				[ // metadata
-					'title' => 'Mr.',
-					'name_f' => 'Super',
-					'name_l' => 'Admin'
+			$hash_of_pass = (string) SmartHashCrypto::password((string)$_SERVER['PHP_AUTH_PW'], (string)$_SERVER['PHP_AUTH_USER']);
+			//--
+			SmartAuth::set_login_data( // v.20231018
+				'APPCODEUNPACK-AREA', 						// auth realm
+				'HTTP-BASIC', 								// auth method {{{SYNC-AUTH-METHODS-NAME}}}
+				(string) $hash_of_pass, 					// auth password hash (will be stored as encrypted, in-memory)
+				(string) $_SERVER['PHP_AUTH_USER'], 		// auth ID (on backend must be set exact as the auth username)
+				(string) $_SERVER['PHP_AUTH_USER'], 		// auth user name
+				'superadmin@appcodeunpack', 				// user email * Optional *
+				'Super Admin', 								// user full name (First Name + ' ' + Last name) * Optional *
+				(array) $privileges, 						// user privileges * Optional *
+				(array)  [ 'def-account', 'account' ], 		// user restrictions ; {{{SYNC-AUTH-RESTRICTIONS}}} ; {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-ACC-NO-EDIT-RESTRICTION}}}
+				0, 											// user quota in MB * Optional * ... zero, aka unlimited
+				[ 											// user metadata (array) ; may vary
+					'auth-safe' => 1,
+					'name_f' 	=> 'Super',
+					'name_l' 	=> 'Admin',
 				],
-				'APPCODEUNPACK-AREA', // realm
-				'HTTP-BASIC', // method
-				(string) $_SERVER['PHP_AUTH_PW'], 		// safe store password
-				(string) $priv_keys 					// safe store privacy-keys as encrypted (will be decrypted in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
+				(string) $priv_keys 						// user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
 			);
 			//--
 		} else {
@@ -1110,7 +1115,7 @@ final class AppCodeUnpack {
 				'TITLE' 				=> (string) $title,
 				'CSS-BASE-STYLES' 		=> (string) (defined('APPCODEUNPACK_BASE_STYLES') ? APPCODEUNPACK_BASE_STYLES : ''),
 				'CSS-NOTIF-STYLES' 		=> (string) (defined('APPCODEUNPACK_NOTIFICATION_STYLES') ? APPCODEUNPACK_NOTIFICATION_STYLES : ''),
-				'SIGNATURE-HTML' 		=> (string) '<b>'.self::APPCODEUNPACK_TITLE.'</b><br>'.Smart::escape_html(SmartUtils::get_server_current_protocol().SmartUtils::get_server_current_domain_name().SmartUtils::get_server_current_port().SmartUtils::get_server_current_path()),
+				'SIGNATURE-HTML' 		=> (string) '<b>'.self::APPCODEUNPACK_TITLE.'</b><br>'.Smart::escape_html((string)SmartUtils::get_server_current_url(false)),
 				'APPCODEUNPACK-SVG' 	=> (string) (defined('APPCODEUNPACK_LOGO_SVG') ? APPCODEUNPACK_LOGO_SVG : ''),
 				'MESSAGE-TXT' 			=> (string) $msg_txt,
 				'EXTMSG-TXT' 			=> (string) $extmsg_txt,
@@ -1132,7 +1137,7 @@ final class AppCodeUnpack {
 			[
 				'REALPATH-CRR' 			=> (string) rtrim((string)Smart::real_path('./'), '/').'/{%-APP-ID-%}/',
 				'SCRIPT' 				=> (string) self::APPCODEUNPACK_SCRIPT,
-				'AUTH-USER-ID' 			=> (string) SmartAuth::get_login_id(),
+				'AUTH-USER-ID' 			=> (string) SmartAuth::get_auth_username(),
 				'AUTH-ENF-HTTPS' 		=> (string) (((!defined('APP_AUTH_ADMIN_ENFORCE_HTTPS')) OR (APP_AUTH_ADMIN_ENFORCE_HTTPS !== false)) ? 'yes' : 'no'),
 				'AUTH-IP-LIST' 			=> (string) (defined('SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS') ? SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS : ''),
 				'APP-IDS-LST' 			=> (string) (defined('APPCODEPACK_DEPLOY_APPLIST') ? APPCODEPACK_DEPLOY_APPLIST : ''),

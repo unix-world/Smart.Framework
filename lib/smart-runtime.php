@@ -1,6 +1,6 @@
 <?php
 // [Smart.Framework / App Runtime]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR (((string)SMART_FRAMEWORK_RUNTI
 //-----------------------------------------------------
 
 
-//====================================================== r.20221225
+//====================================================== r.20231007
 // Smart-Framework - App Runtime (this should be loaded only from app web root)
 // DEPENDS: Smart.Framework + Smart.Framework/Components
 // DO NOT MODIFY THIS FILE OR ANY OTHER FILE(S) UNDER lib/* or index.php or admin.php or task.php [They will be all overwritten on any future framework updates or upgrades] !!!
@@ -70,7 +70,7 @@ array_map(function($const){
 //--
 if(!preg_match('/^[_a-z0-9A-Z]+$/', (string)SMART_FRAMEWORK_UUID_COOKIE_NAME)) { // {{{SYNC-REGEX-COOKIE-NAME}}}
 	@http_response_code(500);
-	die('A required INIT constant contains invalid characters: SMART_SOFTWARE_NAMESPACE');
+	die('A required INIT constant contains invalid characters: SMART_FRAMEWORK_UUID_COOKIE_NAME');
 } //end if
 if(!defined('SMART_FRAMEWORK_UUID_COOKIE_SKIP')) {
 	define('SMART_FRAMEWORK_UUID_COOKIE_SKIP', false); // avoid change it later
@@ -258,30 +258,8 @@ SmartCache::setKey('smart-app-runtime', 'visitor-cookie', (string)SMART_APP_VISI
 //========================= APP.BOOTSTRAP: RUN
 SmartAppBootstrap::Run(); // MUST load the modules/app/app-custom-bootstrap.inc.php
 //=========================
-//-- server data: detection tests and caching
-//SmartUtils::get_server_current_request_method();
-//SmartUtils::get_server_current_protocol();
-//SmartUtils::get_server_current_port();
-//SmartUtils::get_server_current_ip();
-//SmartUtils::get_server_current_domain_name();
-//SmartUtils::get_server_current_basedomain_name();
-//SmartUtils::get_server_current_subdomain_name();
-//SmartUtils::get_server_current_request_path();
-//SmartUtils::get_server_current_request_uri();
-//SmartUtils::get_server_current_full_script();
-//SmartUtils::get_server_current_script();
-//SmartUtils::get_server_current_queryurl();
-//SmartUtils::get_server_current_path();
-//SmartUtils::get_server_current_url();
-//SmartUtils::get_webserver_version();
-//SmartUtils::get_server_os();
-//-- client data: detection tests and caching
-//SmartUtils::get_ip_client();
-//SmartUtils::get_ip_proxyclient();
-//SmartUtils::get_visitor_useragent();
-//SmartUtils::get_visitor_signature();
-//SmartUtils::get_visitor_tracking_uid();
-//SmartUtils::get_os_browser_ip();
+//--
+
 //--
 //=========================
 //==

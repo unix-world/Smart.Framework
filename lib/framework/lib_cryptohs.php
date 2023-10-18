@@ -20,16 +20,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 // [PHP8]
 
 //--
-if(!defined('SMART_FRAMEWORK_SECURITY_KEY')) {
-	@http_response_code(500);
-	die('A required INIT constant has not been defined: SMART_FRAMEWORK_SECURITY_KEY');
-} //end if
-if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) == '') {
-	die('Empty INIT constant value for SMART_FRAMEWORK_SECURITY_KEY');
-} //end if
-//--
-
-//--
 if(!function_exists('hash_algos')) {
 	@http_response_code(500);
 	die('PHP Extension Hash is not available');
@@ -54,8 +44,8 @@ if(!function_exists('hash_algos')) {
  * @usage       static object: Class::method() - This class provides only STATIC methods
  *
  * @access      PUBLIC
- * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version     v.20230929
+ * @depends     PHP hash_algos() / hash() ; classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE
+ * @version     v.20231008
  * @package     @Core:Crypto
  *
  */
@@ -81,7 +71,7 @@ final class SmartHashCrypto {
 	 * Protected by SHA384 that has 128-bit resistance against the length extension attacks since the attacker needs to guess the 128-bit to perform the attack, due to the truncation
 	 *
 	 * @param STRING $y_data 			The data to be hashed
-	 * @param STRING $y_custom_salt 	The salt (will be trimmed from whitespaces) ; If the salt is empty will use the SMART_FRAMEWORK_SECURITY_KEY as the checksum must use a mandatory salt appended to the data to prevent the length extension attack
+	 * @param STRING $y_custom_salt 	The salt (will be trimmed from whitespaces) ; If the salt is empty will use a combination of SMART_SOFTWARE_NAMESPACE and SMART_FRAMEWORK_SECURITY_KEY constants as the salt because the checksum must use a mandatory unpredictable salt appended to the data to prevent the length extension attack
 	 * @return STRING 					The checksum hash as B62 using the hex SHA384 as data + 'salt' suffix (append) ; ~ 43 bytes length
 	 */
 	public static function checksum(?string $y_data, ?string $y_custom_salt=null) : string { // {{{SYNC-HASH-SAFE-CHECKSUM}}}
@@ -89,11 +79,18 @@ final class SmartHashCrypto {
 		$y_custom_salt = (string) trim((string)$y_custom_salt);
 		if((string)$y_custom_salt == '') {
 			$y_custom_salt = (string) self::SALT_PREFIX.' '.self::SALT_SEPARATOR.' '.self::SALT_SUFFIX;
-			if(defined('SMART_FRAMEWORK_SECURITY_KEY')) {
-				if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) != '') {
-					$y_custom_salt .= (string) ' '.SMART_FRAMEWORK_SECURITY_KEY;
-				} //end if
-			} //end if
+			if((defined('SMART_SOFTWARE_NAMESPACE')) AND ((string)trim((string)SMART_SOFTWARE_NAMESPACE) != '')) {
+				$y_custom_salt .= (string) ' '.SMART_SOFTWARE_NAMESPACE;
+			} else {
+				Smart::raise_error(__METHOD__.' SMART_SOFTWARE_NAMESPACE is not defined or empty !');
+				return '';
+			} //end if else
+			if((defined('SMART_FRAMEWORK_SECURITY_KEY')) AND ((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) != '')) {
+				$y_custom_salt .= (string) ' '.SMART_FRAMEWORK_SECURITY_KEY;
+			} else {
+				Smart::raise_error(__METHOD__.' SMART_FRAMEWORK_SECURITY_KEY is not defined or empty !');
+				return '';
+			} //end if else
 		} //end if
 		//--
 		$hexstr = (string) self::sha384((string)$y_data.'#'.$y_custom_salt); // sha384 is a better choice than sha256/sha512 because is more resistant to length attacks
@@ -304,7 +301,7 @@ final class SmartHashCrypto {
 	 *
 	 * @param STRING $y_str 			String to be hashed
 	 * @param BOOLEAN $y_base64 		If set to TRUE will use Base64 Encoding instead of Hexa Encoding
-	 * @return STRING 					The hash: 96 chars length (hex) or 44 chars length (b64)
+	 * @return STRING 					The hash: 96 chars length (hex) or 64 chars length (b64)
 	 */
 	public static function sha384(?string $y_str, bool $y_base64=false) : string { // execution cost: 0.21
 		//--

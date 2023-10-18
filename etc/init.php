@@ -1,7 +1,7 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20221006
-// (c) 2006-2022 unix-world.org - all rights reserved
+// [Smart.Framework / INIT] v.20231008
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
 
@@ -29,13 +29,13 @@ const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP
 //--------------------------------------- TASK RUNTIME ALLOWED IP LIST
 const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		''; 										// APP Task service area allowed IPs ; ex: '<127.0.0.1>,<::1>' ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
 //--------------------------------------- SECURITY
-const SMART_FRAMEWORK_SECURITY_KEY =  					'private-key#0987654321'; 					// *** YOU HAVE TO CHANGE IT *** ; This is the Security Key that will be used to generate secure hashes
+const SMART_FRAMEWORK_SECURITY_KEY =  					'private-key#0987654321'; 					// *** YOU HAVE TO CHANGE IT *** ; Must be at least 16 characters ; This is the Security Key that will be used to generate secure hashes
 //const SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO =  	true; 										// *Optional: if defined and set to TRUE will use the OpenSSL cipher openssl/blowfish/CBC (faster) instead of internal one blowfish.cbc (more compatible across platforms)
 //const SMART_FRAMEWORK_SECURITY_CRYPTO = 	 			'openssl/aes256/CBC'; 						// *Optional: the crypto algo for general purpose encryption to be used ; default is hash/sha256 ; other modes: hash/sha512, hash/sha1, hash/md5, openssl/{algo}/{mode} where mode can be: CBC, CFB, OFB ; algo can be: blowfish, aes256, camellia256
 //---------------------------------------
 //============================================================ REVIEW AND CHANGE IF PRODUCTION MODE
 //--------------------------------------- APP NAMESPACE
-const SMART_SOFTWARE_NAMESPACE =  						'smart-framework.default';					// APP Namespace ID :: [ _ a-z 0-9 - . ], length 10..25 :: This should be used as a unique ID identifier for the application (aka application unique ID)
+const SMART_SOFTWARE_NAMESPACE =  						'smart-framework.default';					// APP Namespace ID :: [ _ a-z 0-9 - . ], length 4..63 :: This should be used as a unique ID identifier for the application (aka application unique ID or domain name `inet-dom.ext`)
 //--------------------------------------- RUNTIME ENVIRONMENT :: CHANGE IT with 'prod' for a production environment !
 const SMART_FRAMEWORK_ENV =  							'dev'; 										// APP Environment: can be set to 'dev' or 'prod' ; id set to 'prod' (production environment) will not log E_USER_NOTICE and E_DEPRECATED and will not display in-page error details but just log them ; for development mode set this to 'dev'
 //--------------------------------------- COOKIES
@@ -119,8 +119,8 @@ const SMART_SOFTWARE_TASK_DISABLED = 					false; 										// To Disable Task se
 const SMART_SOFTWARE_DISABLE_STATUS_POWERED = 			false;										// If set to FALSE will disable the status powered info accesible via ?/smartframeworkservice/status
 const SMART_SOFTWARE_SQLDB_FATAL_ERR = 					true;										// If set to false will throw \EXCEPTION which can be catched instead of raise a fatal error on all SQL DB adapters such as PostgreSQL / SQLite / MySQL (NOSQL adapters, ex: MongoDB or Redis can be set per instance and are not affected by this setting) ; WARNING: disabling SQL Fatal Errors is not safe, especially when using SQL transactions ... ; DO NOT modify this parameter unless you know what you are doing !!!
 //--------------------------------------- SESSION AND CLIENT UUID ; SESSION REQUIRES THE: SMART_FRAMEWORK_UUID_COOKIE_NAME for UUID ENTROPY ; IF the SMART_FRAMEWORK_UUID_COOKIE_SKIP is set to TRUE, Session will not start at all (security check) !!
-const SMART_FRAMEWORK_UUID_COOKIE_NAME = 	 			'SmartFramework__UUID';						// The UniqueID Cookie Name (it is recommended to be customized) ; (If the SMART_FRAMEWORK_UUID_COOKIE_SKIP is defined and set to true will not set the SMART_FRAMEWORK_UUID_COOKIE_NAME, which will drop some functionalities that depend on it ...)
-const SMART_FRAMEWORK_SESSION_NAME =  					'SmartFramework__SESS'; 					// Session Name ; *** YOU HAVE TO CHANGE IT *** this must be static and must contain only Letters and _
+const SMART_FRAMEWORK_UUID_COOKIE_NAME = 	 			'Sf_UUID';									// The UniqueID Cookie Name (it is recommended to be customized) ; (If the SMART_FRAMEWORK_UUID_COOKIE_SKIP is defined and set to true will not set the SMART_FRAMEWORK_UUID_COOKIE_NAME, which will drop some functionalities that depend on it ...)
+const SMART_FRAMEWORK_SESSION_NAME =  					'Sf_SESS'; 								// Session Name ; *** YOU HAVE TO CHANGE IT *** this must be static and must contain only Letters and _
 const SMART_FRAMEWORK_SESSION_ROBOTS =  				false;										// Uncomment this to enable session also for robots (robot identified user agents)
 const SMART_FRAMEWORK_SESSION_LIFETIME =  				0;											// Session Lifetime in seconds (0 by default) ; set to 0 for expire on browser close ; must be not higher than SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME
 const SMART_FRAMEWORK_SESSION_DOMAIN =  				'';											// Session (cookie) Domain: set it (empty) `` for the current subdomain as `sdom.domain.tld` ; set it as `*` or explicit `domain.tld` for all sub-domains of domain.tld ; default is `` (empty) if not defined at all ; this is for advanced use of the PHP session cookie management in sensitive production environments where you need per sub-domain encapsulated cookies

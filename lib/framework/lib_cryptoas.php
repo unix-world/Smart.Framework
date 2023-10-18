@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints       Blowfish is a 64-bit (8 bytes) block cipher. Max Key is up to 56 chars length (56 bytes = 448 bits). The CBC mode requires a initialization vector (iv).
  *
  * @depends     classes: Smart, SmartEnvironment, SmartCryptoCipherBlowfishCBC, SmartCryptoOpenSSLCipher, SmartCryptoCipherHash ; optional-constant: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO
- * @version     v.20221225
+ * @version     v.20231018
  * @package     @Core:Crypto
  *
  */
@@ -179,7 +179,7 @@ final class SmartCipherCrypto {
 		//--
 		if($version == 1) { // v1 (only support decrypt)
 			return (string) (new SmartCryptoCipherBlowfishCBC( // blowfish 384 CBC
-				(string) (string) substr((string)SmartHashCrypto::sha512((string)$key), 13, 29).strtoupper((string)substr((string)sha1((string)$key), 13, 10)).substr((string)md5((string)$key), 13, 9),
+				(string) substr((string)SmartHashCrypto::sha512((string)$key), 13, 29).strtoupper((string)substr((string)sha1((string)$key), 13, 10)).substr((string)md5((string)$key), 13, 9),
 				(string) substr((string)base64_encode((string)sha1('@Smart.Framework-Crypto/BlowFish:'.$key.'#'.sha1('BlowFish-iv-SHA1'.$key).'-'.strtoupper((string)md5('BlowFish-iv-MD5'.$key)).'#')), 1, 8),
 				false // use 384bit
 			))->decrypt((string)$data, false, false);
@@ -593,11 +593,15 @@ final class SmartCryptoOpenSSLCipher {
 		$plainText = (string) trim((string)($arr[0] ?? ''));
 		$checksum = (string) trim((string)($arr[1] ?? ''));
 		if((string)$plainText == '') {
-			Smart::log_notice(__METHOD__.' # Decrypt: Data is Empty');
+			if(SmartEnvironment::ifDebug()) {
+				Smart::log_notice(__METHOD__.' # Decrypt: Data is Empty');
+			} //end if
 			return ''; // no checksum
 		} //end if
 		if((string)$checksum == '') {
-			Smart::log_notice(__METHOD__.' # Decrypt: Checksum is Empty');
+			if(SmartEnvironment::ifDebug()) {
+				Smart::log_notice(__METHOD__.' # Decrypt: Checksum is Empty');
+			} //end if
 			return ''; // no checksum
 		} //end if
 		if((string)SmartHashCrypto::sha256((string)$plainText, true) != (string)$checksum) {
@@ -873,11 +877,15 @@ final class SmartCryptoCipherBlowfishCBC {
 		$plainText = (string) trim((string)($arr[0] ?? ''));
 		$checksum = (string) trim((string)($arr[1] ?? ''));
 		if((string)$plainText == '') {
-			Smart::log_notice(__METHOD__.' # Decrypt: Data is Empty');
+			if(SmartEnvironment::ifDebug()) {
+				Smart::log_notice(__METHOD__.' # Decrypt: Data is Empty');
+			} //end if
 			return ''; // no checksum
 		} //end if
 		if((string)$checksum == '') {
-			Smart::log_notice(__METHOD__.' # Decrypt: Checksum is Empty');
+			if(SmartEnvironment::ifDebug()) {
+				Smart::log_notice(__METHOD__.' # Decrypt: Checksum is Empty');
+			} //end if
 			return ''; // no checksum
 		} //end if
 		if($cksum256 === false) { // v1
@@ -1921,7 +1929,7 @@ final class SmartDhKx {
  * @internal
  *
  * @depends     classes: Smart, SmartEnvironment, SmartHashCrypto
- * @version     v.20221220
+ * @version     v.20231001
  *
  */
 final class SmartCryptoCipherHash {
@@ -1935,7 +1943,7 @@ final class SmartCryptoCipherHash {
 	// @ PRIVATE
 	private $hash_length 	= 0;		// @var	int :: String length of hashed values using the current algorithm
 	// @PRIVATE
-	private $mode 			= null;		// @var enum :: md5, sha1, sha256, sha512
+	private $mode 			= null;		// @var enum :: md5, sha1, sha256, sha384 (default), sha512
 	//========================================
 
 
@@ -1994,12 +2002,15 @@ final class SmartCryptoCipherHash {
 			case 'sha1':
 				$this->mode = 'sha1';
 				break;
+			case 'sha256':
+				$this->mode = 'sha256';
+				break;
 			case 'sha512':
 				$this->mode = 'sha512';
 				break;
-			case 'sha256':
+			case 'sha384':
 			default:
-				$this->mode = 'sha256';
+				$this->mode = 'sha384';
 		} //end switch
 
 		// Instead of using the key directly we compress it using a hash function
@@ -2177,6 +2188,9 @@ final class SmartCryptoCipherHash {
 				break;
 			case 'sha256':
 				$result = SmartHashCrypto::sha256($string);
+				break;
+			case 'sha384':
+				$result = SmartHashCrypto::sha384($string);
 				break;
 			case 'sha512':
 				$result = SmartHashCrypto::sha512($string);

@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20221223
+ * @version 	v.20231003
  * @package 	Plugins:Mailer
  *
  */
@@ -1222,6 +1222,11 @@ final class SmartMailerSmtpClient {
 					$start_tls = true;
 					$protocol = ''; // reset because will connect in a different way
 					break;
+				case 'starttls:1.3':
+					$start_tls_version = STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT;
+					$start_tls = true;
+					$protocol = ''; // reset because will connect in a different way
+					break;
 				//--
 				case 'ssl':
 					$protocol = 'ssl://'; // deprecated
@@ -1238,6 +1243,9 @@ final class SmartMailerSmtpClient {
 					break;
 				case 'tls:1.2':
 					$protocol = 'tlsv1.2://';
+					break;
+				case 'tls:1.3':
+					$protocol = 'tlsv1.3://';
 					break;
 				case 'tls':
 				default:
@@ -1279,7 +1287,14 @@ final class SmartMailerSmtpClient {
 			@stream_context_set_option($stream_context, 'ssl', 'disable_compression', 	(bool)SMART_FRAMEWORK_SSL_DISABLE_COMPRESS); // help mitigate the CRIME attack vector
 			//--
 		} //end if else
+		//--
+		if(!$this->debug) {
+			Smart::disableErrLog(); // skip log, except debug, SMTP connection errors
+		} //end if
 		$sock = @stream_socket_client($protocol.$server.':'.$port, $errno, $errstr, $this->timeout, STREAM_CLIENT_CONNECT, $stream_context);
+		if(!$this->debug) {
+			Smart::restoreErrLog(); // restore the original log handlers
+		} //end if
 		//--
 		if(!is_resource($sock)) {
 			$this->error = '[ERR] Could not open connection. Error: '.$errno.' :: '.$errstr;

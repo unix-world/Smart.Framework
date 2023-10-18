@@ -2,7 +2,7 @@
 // jQuery Smart DataTables
 // (c) 2006-2023 unix-world.org
 // License: BSD
-// v.20230123
+// v.20231012
 
 // DEPENDS: jQuery, smartJ$Utils, DataTable (datatables-responsive.js)
 // REQUIRES-CSS: datatables-responsive.css
@@ -70,7 +70,10 @@ const SmartDataTables = new class{constructor(){ // STATIC CLASS
 	 * //</table>
 	 * //--
 	 * SmartDataTables.DataTableInit('myTable', {
-	 * 		responsive: false, // if TRUE on responsive mode columns may become fluid on small screens
+	 *		columns: null, // or array of column definitions ; see as example in mod auth admins / manage tokens view
+	 *		data: null, // or array of data ; see as example in mod auth admins / manage tokens view
+	 * 		responsive: false, // if TRUE on responsive mode columns may become fluid on small screens and have a clickable expand
+	 * 		insensitive: false, // by default will do case insensitive search ; set this to true to use case sensitive search
 	 *		filter: true,
 	 *		sort: true,
 	 *		paginate: true,
@@ -82,11 +85,11 @@ const SmartDataTables = new class{constructor(){ // STATIC CLASS
 	 *		colorder: [
 	 *			[ 0, 'asc' ], // [ 1, 'desc' ]
 	 *		],
-	 *		coldefs: [
+	 *		coldefs: [ // these can be set also by columns option above !
 	 *			{ // column one
 	 *				targets: 0,
 	 *				width: '25px',
-	 * 				render: (data, type, row) => {
+	 * 				render: (data, type, row) => { // 4th param is: meta
 	 * 					if(type === 'type' || type === 'sort' || type === 'filter') { // preserve special objects from column render
 	 * 						return data;
 	 * 					} else { // customize the appearance of the 1st column
@@ -135,6 +138,12 @@ const SmartDataTables = new class{constructor(){ // STATIC CLASS
 			options['responsive'] = false; // default not responsive (here responsive is something else ... will collapse rows under header with a + sign)
 		} else {
 			options['responsive'] = !(!options['responsive']); // force boolean
+		} //end if
+		//--
+		if(!options.hasOwnProperty('insensitive')) {
+			options['insensitive'] = true; // by default
+		} else {
+			options['insensitive'] = !(!options['insensitive']); // force boolean
 		} //end if
 		//--
 		if(!options.hasOwnProperty('filter')) {
@@ -203,11 +212,17 @@ const SmartDataTables = new class{constructor(){ // STATIC CLASS
 		} //end if else
 		//--
 		const opts = {
+			columns: 						null,
+			data: 							null,
 			responsive: 					!!options.responsive,
 			bFilter: 						!!options.filter,
 			bSort: 							!!options.sort,
 			bSortMulti: 					!!options.sort,
 			order: 							Array.from(options.colorder),
+			search: 						{
+				caseInsensitive: 			!!options.insensitive, // defaults will do insensitive case search
+				regex: 						false,
+			},
 			bPaginate: 						!!options.paginate,
 			iDisplayLength: 				_Utils$.format_number_int(options.pagesize),
 			aLengthMenu: 					Array.from(options.pagesizes), // , x => _Utils$.format_number_int(x)
@@ -220,6 +235,12 @@ const SmartDataTables = new class{constructor(){ // STATIC CLASS
 			},
 			columnDefs: 					Array.from(options.coldefs)
 		};
+		if(options.hasOwnProperty('columns') && options.hasOwnProperty('data')) { // columns
+			if(Array.isArray(options['columns']) && Array.isArray(options['data'])) {
+				opts.columns = Array.from(options.columns);
+				opts.data = Array.from(options.data);
+			} //end if
+		} //emd if
 		//--
 		let HtmlElement = $('table#' + elem_id);
 		//--

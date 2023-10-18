@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	classes: SmartUnicode, Smart, SmartHashCrypto, SmartCipherCrypto, SmartAuth
- * @version 	v.20221225
+ * @version 	v.20231001
  * @package 	Plugins:Mailer
  *
  */
@@ -62,20 +62,15 @@ final class SmartMailerNotes {
 			return '';
 		} //end if
 		//--
-		$auth_username = (string) SmartAuth::get_login_id();
-		$auth_password = (string) SmartAuth::get_login_password();
-		$auth_privkeys = (string) SmartAuth::get_login_privkey();
+		$auth_username = (string) SmartAuth::get_auth_username();
+		$auth_privkeys = (string) SmartAuth::get_user_privkey();
 		//--
 		if((string)trim((string)$auth_username) == '') {
 			return '[ERROR #1]: WARNING: Cannot Decrypt: Auth UserName is Empty';
 		} //end if
 		//--
-		if((string)trim((string)$auth_password) == '') {
-			return '[ERROR #1]: WARNING: Cannot Decrypt: Auth Password is Empty';
-		} //end if
-		//--
 		if((string)trim((string)$auth_privkeys) == '') {
-			return '[ERROR #2]: Cannot Decrypt: Auth Privacy Key is Empty or Invalid';
+			return '[ERROR #2]: Cannot Decrypt: Auth PrivateKey is Empty';
 		} //end if
 		//--
 		if((string)trim((string)$y_eml) == '') {
@@ -109,12 +104,11 @@ final class SmartMailerNotes {
 	//==================================================================
 	public static function encrypt_eml_message_as_apple_notes($y_uuid, $y_date, $y_from, $y_subj, $y_eml) {
 		//--
-		$auth_username = (string) SmartAuth::get_login_id();
-		$auth_password = (string) SmartAuth::get_login_password();
-		$auth_privkeys = (string) SmartAuth::get_login_privkey();
+		$auth_username = (string) SmartAuth::get_auth_username();
+		$auth_privkeys = (string) SmartAuth::get_user_privkey();
 		//--
-		if(((string)trim((string)$auth_username) == '') OR ((string)trim((string)$auth_password) == '') OR ((string)trim((string)$auth_privkeys) == '')) {
-			Smart::log_warning(__METHOD__.' # ERROR: Failed to Encrypt Note # Auth Params are Empty or Incomplete ...');
+		if(((string)trim((string)$auth_username) == '') OR ((string)trim((string)$auth_privkeys) == '')) {
+			Smart::log_warning(__METHOD__.' # ERROR: Failed to Encrypt Note # Auth UserName or Auth PrivateKey is Empty ...');
 			return '';
 		} //end if
 		//--

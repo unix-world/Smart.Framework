@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20221220
+ * @version		20231004
  * @package 	Application
  *
  */

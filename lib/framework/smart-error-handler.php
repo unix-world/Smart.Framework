@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20230929 # this should be loaded from app web root only
+// # r.20231018 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2023.09.29'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2023.10.18'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -182,13 +182,20 @@ if((string)date_default_timezone_get() != (string)SMART_FRAMEWORK_TIMEZONE) {
 	die('The current PHP local TimeZone `'.date_default_timezone_get().'` is different than what is set in SMART_FRAMEWORK_TIMEZONE: `'.SMART_FRAMEWORK_TIMEZONE.'`');
 } //end if
 //--
-if((strlen((string)SMART_SOFTWARE_NAMESPACE) < 10) OR (strlen((string)SMART_SOFTWARE_NAMESPACE) > 25)) {
+if(((int)strlen((string)SMART_SOFTWARE_NAMESPACE) < 4) OR ((int)strlen((string)SMART_SOFTWARE_NAMESPACE) > 63)) { // {{{SYNC-SMART-NAMESPACE-LENGTH}}}
 	@http_response_code(500);
-	die('A required INIT constant must have a length between 10 and 25 characters: SMART_SOFTWARE_NAMESPACE');
+	die('A required INIT constant must have a length between 4 and 63 characters: SMART_SOFTWARE_NAMESPACE');
 } //end if
-if(!preg_match('/^[_a-z0-9\-\.]+$/', (string)SMART_SOFTWARE_NAMESPACE)) { // regex namespace
+if(!preg_match('/^[_a-z0-9\-\.]+$/', (string)SMART_SOFTWARE_NAMESPACE)) { // regex namespace ; {{{SYNC-SMART-NAMESPACE-REGEX}}}
 	@http_response_code(500);
 	die('A required INIT constant contains invalid characters: SMART_SOFTWARE_NAMESPACE');
+} //end if
+//--
+if((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) != (string)SMART_FRAMEWORK_SECURITY_KEY) {
+	die('A required INIT constant contains invalid characters, must not start or end with spaces: SMART_FRAMEWORK_SECURITY_KEY');
+} //end if
+if(((int)strlen((string)SMART_FRAMEWORK_SECURITY_KEY) < 16) OR ((int)strlen((string)SMART_FRAMEWORK_SECURITY_KEY) > 255)) { // {{{SYNC-SMART-SECURITY-KEY-LENGTH}}}
+	die('A required INIT constant must have a length between 16 and 255 characters: SMART_FRAMEWORK_SECURITY_KEY');
 } //end if
 //--
 if(((int)SMART_FRAMEWORK_NETSERVER_ID < 0) OR ((int)SMART_FRAMEWORK_NETSERVER_ID > 1295)) { // {{{SYNC-MIN-MAX-NETSERVER-ID}}}

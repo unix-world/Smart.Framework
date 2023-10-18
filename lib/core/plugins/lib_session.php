@@ -67,7 +67,7 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20221220
+ * @version 	v.20231007
  * @package 	Application:Plugins:Session
  *
  */
@@ -248,11 +248,11 @@ final class SmartSession {
 			Smart::log_warning('FATAL ERROR: Invalid Session Name :: SMART_FRAMEWORK_SESSION_NAME');
 			return;
 		} //end if
-		if((strlen(SMART_FRAMEWORK_SESSION_NAME) < 10) OR (strlen(SMART_FRAMEWORK_SESSION_NAME) > 25)) {
-			Smart::log_warning('WARNING: Session Name must have a length between 10 and 25 characters :: SMART_FRAMEWORK_SESSION_NAME');
+		if((strlen(SMART_FRAMEWORK_SESSION_NAME) < 7) OR (strlen(SMART_FRAMEWORK_SESSION_NAME) > 25)) { // {{{SYNC-SF-UID-SESS-COOKIE-NAME-LENGTH}}}
+			Smart::log_warning('WARNING: Session Name must have a length between 7 and 25 characters :: SMART_FRAMEWORK_SESSION_NAME');
 			return;
 		} //end if
-		if(!SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_SESSION_NAME)) {
+		if(!SmartFrameworkSecurity::ValidateVariableName((string)SMART_FRAMEWORK_SESSION_NAME)) { // {{{SYNC-VALIDATE-UID-COOKIE-NAME}}}
 			Smart::log_warning('WARNING: Session Name have an invalid value :: SMART_FRAMEWORK_SESSION_NAME');
 			return;
 		} //end if
@@ -278,7 +278,7 @@ final class SmartSession {
 		//--
 		//=====
 		//--  generate a the client private key based on it's IP and Browser
-		$the_sess_client_uuid = (string) SmartUtils::unique_client_private_key(); // SHA512 key to protect session data agains forgers
+		$the_sess_client_uuid = (string) SmartUtils::unique_client_private_key(); // SHA512 B64 key to protect session data agains forgers
 		//-- a very secure approach based on a chain, derived with a secret salt from the framework security key:
 		// (1) an almost unique client private key hash based on it's IP and Browser and the Unique Visitor Tracking Cookie
 		// (2) an almost unique client public key hash based on it's IP and Browser (1) and Session Name
@@ -347,7 +347,7 @@ final class SmartSession {
 		@session_save_path((string)$sf_sess_dir);
 		@session_cache_limiter('nocache');
 		//--
-		$the_name_of_session = (string) SMART_FRAMEWORK_SESSION_NAME.'__Key_'.Smart::base_from_hex_convert((string)$the_sess_hash_pub_key, 62); // protect session name data agains forgers
+		$the_name_of_session = (string) SMART_FRAMEWORK_SESSION_NAME.'__ID_'.Smart::base_from_hex_convert((string)$the_sess_hash_pub_key, 62); // protect session name data agains forgers
 		//--
 		@session_id((string)$the_sess_id);
 		@session_name((string)$the_name_of_session);
@@ -514,7 +514,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20221220
+ * @version 	v.20231007
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {

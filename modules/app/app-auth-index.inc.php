@@ -1,6 +1,6 @@
 <?php
 // [Smart.Framework / App - Authenticate / Index]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -8,7 +8,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	@http_response_code(500);
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
-//----------------------------------------------------- v.20210526
+//----------------------------------------------------- v.20231010
 
 //======================================================
 // App Authenticate Middleware / Index Area Overall Authentication (index.php)
@@ -38,7 +38,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 if(defined('APP_INDEX_IPRANGE_PRIVILEGED')) {
 	die('The constant `APP_INDEX_IPRANGE_PRIVILEGED` MUST NOT BE Defined outside AppAuthIndex');
 } //end if
-if((string)SmartUtils::get_ip_client() === '127.0.0.1') {
+if(((string)SmartUtils::get_ip_client() === '127.0.0.1') OR ((string)SmartUtils::get_ip_client() === '::1')) { // IPv4 or IPv6 localhost IP's
 	define('APP_INDEX_IPRANGE_PRIVILEGED', false);
 } else {
 	define('APP_INDEX_IPRANGE_PRIVILEGED', true);

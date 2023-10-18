@@ -59,7 +59,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
- * @version 	v.20221220
+ * @version 	v.20231018
  * @package 	Application:Plugins:Captcha
  *
  */
@@ -81,10 +81,10 @@ final class SmartCaptcha {
 	 * @param $y_mode 			ENUM the storage mode ; Can be set to 'cookie' or 'session' ; default is 'cookie'
 	 * @return BOOLEAN 			TRUE on success or FALSE on failure
 	 */
-	public static function initCaptchaPlugin(?string $y_form_name, ?string $y_captcha_word, $y_mode='cookie') {
+	public static function initCaptchaPlugin(?string $y_form_name, ?string $y_captcha_word, ?string $y_mode='cookie') : bool {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
-		if(self::validate_form_name($y_form_name) !== true) {
+		if(self::validate_form_name((string)$y_form_name) !== true) {
 			return false;
 		} //end if
 		//--
@@ -92,20 +92,20 @@ final class SmartCaptcha {
 			return false;
 		} //end if
 		//--
-		$ok = (bool) SmartUtils::set_cookie((string)self::cookie_name_chk($y_form_name), (string)sha1((string)$y_form_name.self::private_key()));
+		$ok = (bool) SmartUtils::set_cookie((string)self::cookie_name_chk((string)$y_form_name), (string)self::hash_sh1b62((string)$y_form_name.self::private_key()));
 		if(!$ok) {
 			return false;
 		} //end if
 		//--
 		if((string)$y_mode == 'session') {
-			if(SmartFrameworkRuntime::IsVisitorEntropyIDCookieAvaliable() === true) { // {{{SYNC-SMART-UNIQUE-COOKIE}}}
-				$ok = (bool) SmartSession::set(self::cookie_name_frm($y_form_name), self::cksum_hash($y_captcha_word));
-			} else {
+			if((string)trim((string)SMART_APP_VISITOR_COOKIE) == '') { // {{{SYNC-SMART-UNIQUE-COOKIE}}}
 				$ok = false; // session can't run without the UUID Cookie
-				Smart::log_warning(__METHOD__.' # Captcha Session Mode: requires the UUID Cookie to be enabled as the session can\'t run without the UUID Cookie ...');
+				Smart::log_warning(__METHOD__.' # Captcha Session Mode: requires the UUID Cookie to be enabled as the session can not run without the UUID Cookie ...');
+			} else {
+				$ok = (bool) SmartSession::set(self::cookie_name_frm((string)$y_form_name), self::cksum_hash((string)$y_captcha_word));
 			} //end if else
 		} else { // cookie
-			$ok = (bool) SmartUtils::set_cookie(self::cookie_name_frm($y_form_name), self::cksum_hash($y_captcha_word));
+			$ok = (bool) SmartUtils::set_cookie(self::cookie_name_frm((string)$y_form_name), self::cksum_hash((string)$y_captcha_word));
 		} //end if else
 		//--
 		return (bool) $ok;
@@ -133,14 +133,14 @@ final class SmartCaptcha {
 	 * @param $y_use_absolute_url 	BOOL 	If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
 	 * @return 						STRING 	The partial captcha HTML to include in a form
 	 */
-	public static function drawCaptchaForm(?string $y_form_name, ?string $y_captcha_image_url='', ?string $y_mode='cookie', bool $y_use_absolute_url=false) {
+	public static function drawCaptchaForm(?string $y_form_name, ?string $y_captcha_image_url='', ?string $y_mode='cookie', bool $y_use_absolute_url=false) : string {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		if(self::validate_form_name($y_form_name) !== true) {
 			return 'ERROR: Invalid Captcha Form Name';
 		} //end if
 		//--
-		$js_cookie_name = (string) self::cookie_name_jsc($y_form_name);
+		$js_cookie_name = (string) self::cookie_name_jsc((string)$y_form_name);
 		//--
 		$release_time = (int) time();
 		//--
@@ -153,8 +153,8 @@ final class SmartCaptcha {
 		$dhkx = (string) $dhkxdata['idz'];
 		$dhkxdata = null;
 		//--
-		$js_exports = 'const u$ = smartJ$Utils; const d$ = smartJ$Date; const e$ = smartJ$Base64; const h$ = smartJ$CryptoHash; const c$ = smartJ$CryptoBlowfish; const c$d = c$.decrypt; const x$ = smartJ$DhKx; const b$ = smartJ$Browser; const subtle$CryptoDigest = (s,hash) => { data = String(e$.encode(c$.encrypt(e$.decode(s),hash + u$.stringTrim(b$.getCookie('."'".Smart::escape_js(self::cookie_name_chk($y_form_name))."') || '')".' + \''.Smart::escape_js((string)'_'.Smart::create_jsvar((string)$uuid.'__'.$y_form_name)).'\'))); b$.setCookie(\''.Smart::escape_js($js_cookie_name).'\', data); return data; };';
-		$js_solver = 'let SmartCaptchaChecksum = u$.addcslashes(u$.stringTrim(b$.getCookie('."'".Smart::escape_js(self::cookie_name_chk($y_form_name))."') || ''), '\\x00..\\x1F'); if(!!!SmartCaptchaChecksum) { SmartCaptchaChecksum = 'invalid-captcha'; alert('".Smart::escape_js($translator_core_captcha->text('error'))."'); } let smartCaptchaTimerCookie = new Date(); let smartCaptchaCookie = ".'u$.bin2hex('.'c$.encrypt('.'e$.encode('."smartCaptchaTimerCookie.getTime() + '\\u0021' + (+[![]]) + '\\u0023' + String(".'c$.decrypt('."fldVal,String(kZ)))), ".'u$.stringTrim('."SmartCaptchaChecksum))); ".'b$.setCookie('."'".Smart::escape_js($js_cookie_name)."', smartCaptchaCookie);";
+		$js_exports = 'const u$ = smartJ$Utils; const d$ = smartJ$Date; const e$ = smartJ$Base64; const z$ = smartJ$BaseEncode; const h$ = smartJ$CryptoHash; const c$ = smartJ$CryptoBlowfish; const c$d = c$.decrypt; const x$ = smartJ$DhKx; const b$ = smartJ$Browser; const subtle$CryptoDigest = (s,hash) => { data = String(e$.encode(c$.encrypt(e$.decode(s),hash + u$.stringTrim(b$.getCookie('."'".Smart::escape_js((string)self::cookie_name_chk((string)$y_form_name))."') || '')".' + \''.Smart::escape_js((string)'_'.Smart::create_jsvar((string)$uuid.'__'.$y_form_name)).'\'))); b$.setCookie(\''.Smart::escape_js((string)$js_cookie_name).'\', data); return data; };';
+		$js_solver = 'let SmartCaptchaChecksum = u$.addcslashes(u$.stringTrim(b$.getCookie('."'".Smart::escape_js((string)self::cookie_name_chk((string)$y_form_name))."') || ''), '\\x00..\\x1F'); if(!!!SmartCaptchaChecksum) { SmartCaptchaChecksum = 'invalid-captcha'; alert('".Smart::escape_js((string)$translator_core_captcha->text('error'))."'); } let smartCaptchaTimerCookie = new Date(); let smartCaptchaCookie = ".'z$.base_from_hex_convert('.'u$.bin2hex('.'c$.encrypt('.'e$.encode('."smartCaptchaTimerCookie.getTime() + '\\u0021' + (+[![]]) + '\\u0023' + String(".'c$.decrypt('."fldVal,String(kZ)))), ".'u$.stringTrim('."SmartCaptchaChecksum))), 62); ".'b$.setCookie('."'".Smart::escape_js((string)$js_cookie_name)."', smartCaptchaCookie);";
 		//--
 		if($y_use_absolute_url !== true) {
 			$the_abs_url = '';
@@ -166,9 +166,9 @@ final class SmartCaptcha {
 		if(((string)$y_captcha_image_url != '') AND (strpos((string)$y_captcha_image_url, '#') !== 0)) {
 			//--
 			$captcha_url = (string) $y_captcha_image_url;
-			$captcha_url = (string) Smart::url_add_suffix($captcha_url, 'captcha_form='.Smart::escape_url((string)$y_form_name));
-			$captcha_url = (string) Smart::url_add_suffix($captcha_url, 'captcha_mode=image');
-			$captcha_url = (string) Smart::url_add_suffix($captcha_url, 'new=');
+			$captcha_url = (string) Smart::url_add_suffix((string)$captcha_url, 'captcha_form='.Smart::escape_url((string)$y_form_name));
+			$captcha_url = (string) Smart::url_add_suffix((string)$captcha_url, 'captcha_mode=image');
+			$captcha_url = (string) Smart::url_add_suffix((string)$captcha_url, 'new=');
 			//--
 			$captcha_qurl = ''; // n/a in this context
 			//--
@@ -218,7 +218,7 @@ final class SmartCaptcha {
 			} //end if
 			$captcha_url = (string) base64_encode((string)$captcha_url);
 			$js_interractive_solver = (string) 'shiftPointerCovariance(crrPointerPos.x, crrPointerPos.y); $entropy = h$.crc32b($form + \'#\' + subtle$CryptoDigest(JSON.stringify(b$.parseCurrentUrlGetParams()), d$.getIsoDate(new Date(), true))); $dhkx = \''.base64_encode((string)$dhks).'\';';
-			$captcha_url = (string) base64_encode((string)SmartUtils::crypto_blowfish_encrypt('(() => { mFx = () => { if((typeof(jQuery) == \'undefined\') || (typeof(smartJ$Utils) == \'undefined\') || (typeof(u$) == \'undefined\') || (typeof(b$) == \'undefined\') || (typeof(e$) == \'undefined\') || (typeof(c$) == \'undefined\') || (typeof(mFy) == \'undefined\') || (typeof(sq) == \'undefined\') || (typeof(mTan) == \'undefined\') || (typeof(zSVG) == \'undefined\') || (typeof(Covariance$Observer) != \'function\')) { console.warn(\'Captcha context is missing !\'); return; } if(!!Covariance$Observer(mFy)) { let mX = 0, mY = 0; try { mX = u$.format_number_float(event.clientX); mY = u$.format_number_float(event.clientY); } catch(fail){} mTan = u$.format_number_float(Math.abs(Math.atan(Math.PI + Math.E + Math.sin(Math.abs(sq)) * (Math.pow(Math.tan(mX), 2) * Math.pow(Math.tan(mY), 2)))), false) + 1/100; let fldVal = \''.Smart::escape_js(SmartUtils::crypto_blowfish_encrypt((string)$captcha_code, (string)strtoupper((string)$uuid))).'\'; let kZ = String(jQuery(\'#Smart-Captcha-Container-'.Smart::escape_js(Smart::create_htmid((string)$uuid)).'\').find(\'input\').data(\'id\')).toUpperCase(); '.$js_solver.' } else { zSVG = \''.Smart::escape_js($captcha_url).'\'; } }; })();', 'setInterval(() => { '.$js_exports.' '.$js_interractive_solver.' }, 700);'));
+			$captcha_url = (string) base64_encode((string)SmartUtils::crypto_blowfish_encrypt('(() => { mFx = () => { if((typeof(jQuery) == \'undefined\') || (typeof(smartJ$Utils) == \'undefined\') || (typeof(u$) == \'undefined\') || (typeof(b$) == \'undefined\') || (typeof(e$) == \'undefined\') || (typeof(c$) == \'undefined\') || (typeof(mFy) == \'undefined\') || (typeof(sq) == \'undefined\') || (typeof(mTan) == \'undefined\') || (typeof(zSVG) == \'undefined\') || (typeof(Covariance$Observer) != \'function\')) { console.warn(\'Captcha context is missing !\'); return; } if(!!Covariance$Observer(mFy)) { let mX = 0, mY = 0; try { mX = u$.format_number_float(event.clientX); mY = u$.format_number_float(event.clientY); } catch(fail){} mTan = u$.format_number_float(Math.abs(Math.atan(Math.PI + Math.E + Math.sin(Math.abs(sq)) * (Math.pow(Math.tan(mX), 2) * Math.pow(Math.tan(mY), 2)))), false) + 1/100; let fldVal = \''.Smart::escape_js((string)SmartUtils::crypto_blowfish_encrypt((string)$captcha_code, (string)strtoupper((string)$uuid))).'\'; let kZ = String(jQuery(\'#Smart-Captcha-Container-'.Smart::escape_js((string)Smart::create_htmid((string)$uuid)).'\').find(\'input\').data(\'id\')).toUpperCase(); '.$js_solver.' } else { zSVG = \''.Smart::escape_js((string)$captcha_url).'\'; } }; })();', 'setInterval(() => { '.$js_exports.' '.$js_interractive_solver.' }, 700);'));
 			//-- perfect scores are not for humans, but neither too low scores ...
 			$captcha_qurl = (string) (new SmartQR2DBarcode('L'))->renderAsSVG((string)$captcha_code, ['cm'=>'#888888','wq'=>0]);
 			$captcha_qurl = (string) base64_encode((string)SmartUtils::crypto_blowfish_encrypt('(() => { if((typeof(qSVG) == \'undefined\') || qSVG) { return; } qSVG = \''.Smart::escape_js((string)base64_encode((string)$captcha_qurl)).'\'; })();', 'setInterval(() => { '.$js_exports.' '.$js_interractive_solver.' }, 800);'));
@@ -258,8 +258,8 @@ final class SmartCaptcha {
 				'CAPTCHA-TXT-QRCODE' 		=> (string) $translator_core_captcha->text('qrcode'),
 				'CAPTCHA-TXT-ACCESSIBILITY' => (string) $translator_core_captcha->text('accessibility'),
 				'CAPTCHA-JS-EXPORTS' 		=> (string) $js_exports,
-				'CAPTCHA-IM-URL' 			=> (string) (string) $captcha_url,
-				'CAPTCHA-CHKSUM' 			=> (string) SmartHashCrypto::sha512((string)'#'.$y_form_name.'#'.$uuid.'#'.$captcha_url.'#'.$captcha_qurl.'#'),
+				'CAPTCHA-IM-URL' 			=> (string) $captcha_url,
+				'CAPTCHA-CHKSUM' 			=> (string) self::hash_sh512b64s((string)'#'.$y_form_name.'#'.$uuid.'#'.$captcha_url.'#'.$captcha_qurl.'#'),
 				'CAPTCHA-INPUT-STYLE' 		=> (string) $input_style,
 				'CAPTCHA-JS-FIELD-BLUR' 	=> (string) SmartUtils::crypto_blowfish_encrypt('((fld) => { '.$js_exports.' if(typeof(jQuery) == \'undefined\') { console.warn(\'Captcha Field: jQuery N/A\'); return; } if(typeof(fld) == \'undefined\') { console.warn(\'Invalid Captcha Input Field\'); return; } '.'try { let kZ = u$.stringPureVal(fld.data(\'id\')).toUpperCase(); let fldVal = c$.encrypt('.'fld.val().toUpperCase(),u$.stringPureVal(kZ)); '.$js_solver.' } catch(err) { console.error(\'Captcha Input ERROR\'); }'.' if(fld.val()) { fld.val(\'*******\'); } })(fld);', (string)strtolower('Object'.'.'.'ID').'_'.((string)(int)$release_time).'==\''.bin2hex((string)$dhks).'\''),
 				'CAPTCHA-UA-BC' 			=> (string) SmartUtils::get_os_browser_ip('bc'), // browser class
@@ -288,16 +288,17 @@ final class SmartCaptcha {
 	 * @param $y_mode 			ENUM the storage mode ; Can be set to 'cookie' or 'session' ; default is 'cookie'
 	 * @return BOOLEAN 			TRUE on success or FALSE on failure
 	 */
-	public static function verifyCaptcha($y_form_name, $y_clear=true, $y_mode='cookie') {
+	public static function verifyCaptcha(?string $y_form_name, bool $y_clear=true, ?string $y_mode='cookie') : bool {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		//--
-		if(self::validate_form_name($y_form_name) !== true) {
+		if(self::validate_form_name((string)$y_form_name) !== true) {
 			return false; // invalid form name
 		} //end if
 		//--
-		$cookie_name = (string) self::cookie_name_frm($y_form_name);
+		$cookie_name = (string) self::cookie_name_frm((string)$y_form_name);
 		//--
+		$cookie_value = '';
 		if((string)$y_mode == 'session') {
 			//--
 			$cookie_value = (string) SmartSession::get((string)$cookie_name);
@@ -310,7 +311,7 @@ final class SmartCaptcha {
 			//--
 		} //end if else
 		//--
-		$var_name = (string) self::cookie_name_jsc($y_form_name);
+		$var_name = (string) self::cookie_name_jsc((string)$y_form_name);
 		$var_value = (string) trim((string)SmartUtils::get_cookie((string)$var_name));
 		//--
 		$float   = (string) 'e';
@@ -324,17 +325,19 @@ final class SmartCaptcha {
 		//--
 		$arr_value = array();
 		if((string)$var_value != '') {
-			$arr_value = (array) explode((string)rawurldecode((string)hex2bin($prefix.$middle.$suffix.$control.$float.$shift.$control.$float.$prefix.$middle.$suffix.$suffix)), (string)base64_decode((string)SmartUtils::crypto_blowfish_decrypt(hex2bin((string)$var_value), (string)sha1((string)$y_form_name.self::private_key()))));
+			//-- use here rawurldecode instead of urldecode, because is a special context and this is how should be
+			$arr_value = (array) explode((string)rawurldecode((string)hex2bin((string)$prefix.$middle.$suffix.$control.$float.$shift.$control.$float.$prefix.$middle.$suffix.$suffix)), (string)base64_decode((string)SmartUtils::crypto_blowfish_decrypt((string)hex2bin((string)Smart::base_to_hex_convert((string)$var_value, 62)), (string)self::hash_sh1b62((string)$y_form_name.self::private_key()))), 2);
+			//--
 		} //end if
 		//--
 		$ok = false; // error check by default
 		//--
-		if((strlen($var_value) > 0) AND ((string)$cookie_value == (string)self::cksum_hash((string)trim((string)(isset($arr_value[1]) ? $arr_value[1] : ''))))) {
+		if(((int)strlen((string)$var_value) > 0) AND ((string)$cookie_value == (string)self::cksum_hash((string)trim((string)($arr_value[1] ?? null))))) {
 			//--
 			$ok = true;
 			//--
 			if($y_clear === true) { // clear is optional (there are situations when after veryfying captcha, even if OK, other code must be run and if that code returns error, still captcha must be active, not cleared (so clearing it manually is a solution ...)
-				self::clearCaptcha($y_form_name, $y_mode);
+				self::clearCaptcha((string)$y_form_name, (string)$y_mode);
 			} //end if
 			//--
 		} //end if
@@ -355,16 +358,16 @@ final class SmartCaptcha {
 	 * @param $y_nodelete 		*OPTIONAL* ; DEFAULT is FALSE ; if set to TRUE will just clear the cookie values, not delete the cookies
 	 * @return BOOLEAN 			TRUE on success or FALSE on failure
 	 */
-	public static function clearCaptcha($y_form_name, $y_mode='cookie', $y_nodelete=false) {
+	public static function clearCaptcha(?string $y_form_name, ?string $y_mode='cookie', bool $y_nodelete=false) : bool {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		//--
-		if(self::validate_form_name($y_form_name) !== true) {
+		if(self::validate_form_name((string)$y_form_name) !== true) {
 			return false; // invalid form name
 		} //end if
 		//--
-		$var_name = (string) self::cookie_name_jsc($y_form_name);
-		$cookie_name = (string) self::cookie_name_frm($y_form_name);
+		$var_name = (string) self::cookie_name_jsc((string)$y_form_name);
+		$cookie_name = (string) self::cookie_name_frm((string)$y_form_name);
 		//--
 		if((string)$y_mode == 'session') {
 			//--
@@ -393,27 +396,7 @@ final class SmartCaptcha {
 
 
 	//================================================================
-	private static function private_key() {
-		//--
-		if(self::$securityKey !== null) {
-			return (string) self::$securityKey;
-		} //end if
-		//--
-		self::$securityKey = '';
-		if((defined('SMART_FRAMEWORK_SECURITY_KEY')) AND ((string)trim((string)SMART_FRAMEWORK_SECURITY_KEY) != '')) {
-			self::$securityKey = (string) SMART_FRAMEWORK_SECURITY_KEY.'@'.date('Y-m-d'); // use date to be sure next day the captcha data is invalidated ... as the captcha cookies expire session not a fixed time
-		} else {
-			Smart::log_warning(__METHOD__.' # Empty or Undefined Security Private Key: SMART_FRAMEWORK_SECURITY_KEY');
-		} //end if
-		//--
-		return (string) self::$securityKey;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	private static function validate_form_name($y_form_name) {
+	private static function validate_form_name(?string $y_form_name) : bool {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		//--
@@ -434,42 +417,84 @@ final class SmartCaptcha {
 
 
 	//================================================================
-	private static function cksum_hash($y_code) {
+	private static function private_key() : string {
 		//--
-		return (string) sha1('Captcha#Code'.$y_code.self::private_key());
+		if(self::$securityKey !== null) {
+			return (string) self::$securityKey;
+		} //end if
 		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	private static function cookie_name_jsc($y_form_name) {
+		self::$securityKey = (string) SmartHashCrypto::checksum((string)__CLASS__.'@'.date('Y-m-d'));
 		//--
-		$y_form_name = (string) trim((string)$y_form_name);
-		//--
-		return (string) 'SmartCaptcha_DATA_'.sha1((string)$y_form_name.self::private_key());
+		return (string) self::$securityKey;
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	private static function cookie_name_chk($y_form_name) {
+	private static function cksum_hash(?string $y_code) : string {
 		//--
-		$y_form_name = (string) trim((string)$y_form_name);
-		//--
-		return (string) 'SmartCaptcha_CHK_'.sha1((string)$y_form_name.self::private_key());
+		return (string) self::hash_sh1b62('Captcha#Code'.$y_code.self::private_key());
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	private static function cookie_name_frm($y_form_name) {
+	private static function cookie_name_jsc(?string $y_form_name) : string {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		//--
-		return (string) 'SmartCaptcha_CODE_'.sha1((string)$y_form_name.self::private_key());
+		return (string) 'SfCaptcha_DATA_'.self::hash_m5b62((string)$y_form_name.self::private_key());
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function cookie_name_chk(?string $y_form_name) : string {
+		//--
+		$y_form_name = (string) trim((string)$y_form_name);
+		//--
+		return (string) 'SfCaptcha_CHK_'.self::hash_m5b62((string)$y_form_name.self::private_key());
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function cookie_name_frm(?string $y_form_name) : string {
+		//--
+		$y_form_name = (string) trim((string)$y_form_name);
+		//--
+		return (string) 'SfCaptcha_CODE_'.self::hash_m5b62((string)$y_form_name.self::private_key());
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function hash_m5b62(?string $y_str) : string {
+		//--
+		return (string) Smart::base_from_hex_convert((string)SmartHashCrypto::md5((string)$y_str), 62);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function hash_sh1b62(?string $y_str) : string {
+		//--
+		return (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha1((string)$y_str), 62);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function hash_sh512b64s(?string $y_str) : string {
+		//--
+		return (string) Smart::b64_to_b64s((string)SmartHashCrypto::sha512((string)$y_str, true));
 		//--
 	} //END FUNCTION
 	//================================================================

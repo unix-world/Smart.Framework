@@ -29,6 +29,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 // [REGEX-SAFE-OK]
 
+// To test email decoding, use: {{{SYNC-TEST-EMAIL-FILE}}}
+
 //=====================================================================================
 //===================================================================================== CLASS START
 //=====================================================================================
@@ -40,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20230101
+ * @version 	v.20231007
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -55,12 +57,12 @@ final class SmartMailerUtils {
 	 * [PUBLIC]
 	 *
 	 * @param STRING $email					:: eMail Address
-	 * @param ENUM $ycheckdomain			:: 'no' = only validate if email address is in the form of text@texte.xt | 'yes' = check email with MX + SMTP validation
+	 * @param BOOL $checkdomain				:: FALSE = only validate if email address is in the form of text@texte.xt | TRUE = check email with MX + SMTP validation
 	 * @param STRING $helo					:: SMTP HELO (if check MX + Domain will be used, cannot be empty)
-	 * @param NUMBER $y_smtp_port			:: SMTP Port (normal is '25')
+	 * @param NUMBER $smtp_port				:: SMTP Port (normal is '25')
 	 * @return ARRAY 						:: ['status'] = ok / notok ; ['message'] = validation message
 	 */
-	public static function check_email_address($email, $ycheckdomain='no', $helo='', $y_smtp_port='25') {
+	public static function check_email_address(?string $email, bool $checkdomain=false, string $helo='', int $smtp_port=25) : array {
 
 		//--
 		$out = 'notok';
@@ -70,34 +72,35 @@ final class SmartMailerUtils {
 		//--
 		$email = (string) trim((string)$email);
 		//--
-
-		//--
-		$regex = SmartValidator::regex_stringvalidation_expression('email').'i'; // insensitive, without /u modifier as it does not decodes to punnycode and must contain only ISO-8859-1 charset
-		//--
-		if((string)$email != '') {
-			if(!preg_match((string)$regex, (string)$email)) { // check if address is valid (match pattern 'email@domain.tld')
-				$msg .= 'The e-mail address does NOT match the pattern \'email@domain.tld\''."\n";
+		if(
+			((string)$email == '')
+			OR
+			((int)strlen((string)$email) > 255) // {{{SYNC-MAILCHECK-MAXLEN}}}
+		) {
+			$msg .= 'The e-mail address is empty or too long !'."\n";
+		} else {
+			$regex = (string) SmartValidator::regex_stringvalidation_expression('email').'i'; // insensitive, without /u modifier as it does not decodes to punnycode and must contain only ISO-8859-1 charset
+			if(!preg_match((string)$regex, (string)$email)) { // {{{SYNC-MAILCHECK-FORMAT}}} check if address is valid (match pattern 'email@domain.tld')
+				$msg .= 'The e-mail address does NOT match the pattern `email@domain.tld`'."\n";
 			} else {
 				$out = 'ok';
 			} //end if else
-		} else {
-			$msg .= 'The e-mail address is empty !'."\n";
 		} //end if else
 		//--
 
 		//--
 		if((string)$out == 'ok') {
 			//--
-			if((string)$ycheckdomain == 'yes') {
+			if($checkdomain === true) {
 				//--
 				$out = 'notok'; // reset
 				//--
 				if((string)$helo == '') {
-					$helo = '127.0.0.1';
+					$helo = 'localhost';
 				} //end if else
 				//--
-				$msg .= "\n".'Now we CHECK if this is a real email address ...'."\n\n";
-				$chk = self::validate_mx_email_address($helo, $email, $y_smtp_port);
+				$msg .= "\n".'CHECK if this is a real email address ...'."\n\n";
+				$chk = (array) self::validate_mx_email_address((string)$email, (string)$helo, (int)$smtp_port);
 				//--
 				if((string)$chk['status'] == 'ok') {
 					$out = 'ok';
@@ -111,7 +114,10 @@ final class SmartMailerUtils {
 		//--
 
 		//--
-		return array('status'=>(string)$out, 'message'=>(string)$msg);
+		return [
+			'status' 	=> (string) $out,
+			'message' 	=> (string) $msg
+		];
 		//--
 
 	} //END FUNCTION
@@ -125,24 +131,71 @@ final class SmartMailerUtils {
 	 *
 	 * @param STRING $helo					:: SMTP HELO
 	 * @param STRING $email					:: eMail Address
-	 * @param NUMBER $y_smtp_port			:: SMTP Port (normal is '25')
+	 * @param NUMBER $smtp_port				:: SMTP Port (normal is '25')
 	 * @return STRING
 	 */
-	public static function validate_mx_email_address($helo, $email, $y_smtp_port) {
+	private static function validate_mx_email_address(string $email, string $helo, int $smtp_port) : array {
 
+		//--
 		// will check all available MX servers from DNS
+		//--
 
 		//------------
 		$out = 'notok';
 		$msg = '';
 		//------------
 
+		//--
+		$email = (string) trim((string)$email);
+		if((string)$email == '') {
+			return [
+				'status' 	=> (string) $out,
+				'message' 	=> (string) 'Email address is empty',
+			];
+		} //end if
+		//--
+		if((int)strlen((string)$email) > 255) { // {{{SYNC-MAILCHECK-MAXLEN}}}
+			return [
+				'status' 	=> (string) $out,
+				'message' 	=> (string) 'Email address is too long',
+			];
+		} //end if
+		//--
+		$regex = (string) SmartValidator::regex_stringvalidation_expression('email').'i'; // insensitive, without /u modifier as it does not decodes to punnycode and must contain only ISO-8859-1 charset
+		if(!preg_match((string)$regex, (string)$email)) { // {{{SYNC-MAILCHECK-FORMAT}}} check if address is valid (match pattern 'email@domain.tld')
+			return [
+				'status' 	=> (string) $out,
+				'message' 	=> (string) 'Email address format is wrong, expects something similar with: `email@domain.tld` but have: `'.$email.'`',
+			];
+		} //end if
+		//--
+
+		//--
+		if(
+			((int)$smtp_port <= 0)
+			OR
+			((int)$smtp_port > 65535)
+		) {
+			return [
+				'status' 	=> (string) $out,
+				'message' 	=> (string) 'Invalid IP Port: '.(int)$smtp_port,
+			];
+		} //end if
+		//--
+
 		//------------
 		$tmp_arr = array();
-		$tmp_arr = (array) explode('@', (string)$email);
-		$domain = (string) trim((string)(isset($tmp_arr[1]) ? $tmp_arr[1] : ''));
+		$tmp_arr = (array)  explode('@', (string)$email);
+		$domain  = (string) trim((string)($tmp_arr[1] ?? null));
 		$safedom = (string) Smart::safe_validname($domain);
 		$tmp_arr = array();
+		//------------
+		if(((string)$domain == '') OR (strpos((string)$domain, '.') === false)) {
+			return [
+				'status' 	=> (string) $out,
+				'message' 	=> (string) 'Invalid Domain for this email address ... local domains are not supported, must contain at least a dot',
+			];
+		} //end if
 		//------------
 		if(function_exists('getmxrr')) {
 			if((string)$safedom != '') {
@@ -154,9 +207,9 @@ final class SmartMailerUtils {
 			$msg .= 'WARNING: PHP getmxrr is not implemented on this platform ...';
 		} //end if
 		//------------
-		if(Smart::array_size($tmp_arr) <= 0) {
+		if((int)Smart::array_size($tmp_arr) <= 0) {
 			//-- ERR
-			$msg .= 'WARNING: Invalid MX Records for Domain \''.$safedom.'\''."\n";
+			$msg .= 'WARNING: No MX Records found for Domain \''.$safedom.'\''."\n";
 			//--
 		} else {
 			//--
@@ -176,7 +229,7 @@ final class SmartMailerUtils {
 		//------------
 		for($i=0; $i<Smart::array_size($tmp_arr); $i++) {
 			//--
-			$domain = (string) trim((string)$tmp_arr[$i]);
+			$domain    = (string) trim((string)$tmp_arr[$i]);
 			$domain_ip = (string) @gethostbyname((string)$domain);
 			//--
 			$msg .= 'Start MX checking for domain: \''.$domain.'\' :: \''.$domain_ip.'\' ... '."\n";
@@ -185,7 +238,7 @@ final class SmartMailerUtils {
 			$smtp->timeout = 10;
 			$smtp->debug = true;
 			$smtp->dbglevel = 1;
-			$smtp->connect((string)$helo, (string)$domain_ip, (int)$y_smtp_port);
+			$smtp->connect((string)$helo, (string)$domain_ip, (int)$smtp_port);
 			$vfy = $smtp->mail((string)$email);
 			if($vfy) {
 				$vfy = $smtp->recipient($email);
@@ -213,7 +266,10 @@ final class SmartMailerUtils {
 		//------------
 
 		//--
-		return array('status'=>(string)$out, 'message'=>(string)$msg);
+		return [
+			'status' 	=> (string) $out,
+			'message' 	=> (string) $msg,
+		];
 		//--
 
 	} //END FUNCTION
@@ -632,7 +688,7 @@ final class SmartMailerUtils {
 					$tmp_fake_fname = '';
 					$tmp_img_ext = ''; // extension
 					//--
-					$tmp_getimg_arr = (array) SmartRobot::load_url_img_content($tmp_imglink, 'auto'); // {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
+					$tmp_getimg_arr = (array) SmartRobot::load_url_img_content((string)$tmp_imglink, 'auto'); // {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
 					if($tmp_getimg_arr['result'] == 1) {
 						$tmp_fcontent = (string) $tmp_getimg_arr['content'];
 						$tmp_fake_fname = (string) $tmp_getimg_arr['filename'];
@@ -877,7 +933,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20230101
+ * @version 	v.20231008
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -885,10 +941,15 @@ final class SmartMailerMimeParser {
 
 	// ::
 
+	//--
+	// TODO: unify the encode_mime_fileurl/decode_mime_fileurl with SmartFrameworkRuntime::Create_Download_Link() ; see: {{{TODO-DOWNLOADS-HANDLER-REFACTORING}}}
+	//--
 
-	private const EMAIL_TOKEN_COOKIE_NAME = 'SmartMailParseToken';
+
+	private const EMAIL_TOKEN_COOKIE_NAME = 'SfMailParse_Csrf'; // mai decode CSRF cookie
 	private const EMAIL_CRYPTO_PREFIX_KEY = 'Smart.Framework//MailMimeLink';
 
+	private const ERR_MSG_TEXT_DECODE = 'ERROR: MIME Parser // Mesage File Decode :: See error log for details ...';
 
 	//==================================================================
 	/**
@@ -903,44 +964,44 @@ final class SmartMailerMimeParser {
 		//--
 		$y_msg_file = (string) trim((string)$y_msg_file);
 		if((string)$y_msg_file == '') {
-			Smart::log_warning('Mail-Utils / Encode Mime File URL: Empty Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
+			Smart::log_warning(__METHOD__.' # Encode Mime File URL: Empty Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
 		if(!SmartFileSysUtils::checkIfSafePath((string)$y_msg_file)) {
-			Smart::log_warning('Mail-Utils / Encode Mime File URL: Invalid Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection. Message File: '.$y_msg_file);
+			Smart::log_warning(__METHOD__.' # Encode Mime File URL: Invalid Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection. Message File: '.$y_msg_file);
 			return '';
 		} //end if
 		//--
 		$y_ctrl_key = (string) trim((string)$y_ctrl_key);
 		if((string)$y_ctrl_key == '') {
-			Smart::log_warning('Mail-Utils / Encode Mime File URL: Empty Controller Key has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
+			Smart::log_warning(__METHOD__.' # Encode Mime File URL: Empty Controller Key has been provided. This means the URL link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
 		if(!defined('SMART_ERROR_AREA')) {
-			Smart::log_warning('Mail-Utils / Encode Mime File URL: Missing SMART_ERROR_AREA. This means the URL link will be unavaliable (empty) to assure security protection.');
+			Smart::log_warning(__METHOD__.' # Encode Mime File URL: Missing SMART_ERROR_AREA. This means the URL link will be unavaliable (empty) to assure security protection.');
 			return '';
 		} //end if
 		$y_ctrl_key = (string) SMART_ERROR_AREA.'/'.$y_ctrl_key; // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
 		//--
-		if((string)trim((string)SMART_APP_VISITOR_COOKIE) == '') {
-			Smart::log_warning('Mail-Utils / Empty Visitor ID (cookie).');
+		if((string)trim((string)SMART_APP_VISITOR_COOKIE) == '') { // {{{SYNC-SMART-UNIQUE-COOKIE}}}
+			Smart::log_warning(__METHOD__.' # Empty Visitor ID (cookie). Parts decoding feature are not available without it ...');
 			return '';
 		} //end if
-		$access_token = (string) SmartHashCrypto::sha512((string)trim((string)SMART_APP_VISITOR_COOKIE), true).'#'.SmartHashCrypto::md5((string)trim((string)SMART_APP_VISITOR_COOKIE), true);
+		$access_token = (string) SmartHashCrypto::checksum('eMime#'.SmartUtils::get_visitor_tracking_uid()); // visitor tracking UID is using: SMART_APP_VISITOR_COOKIE, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_SECURITY_KEY and SmartUtils::client_ident_private_key()
 		SmartUtils::set_cookie(
 			(string) self::EMAIL_TOKEN_COOKIE_NAME,
 			(string) $access_token,
 			0, // session expire
 			'/', // path
 			'@', // domain
-			'None' // same site policy # fix: required for iFrame srcdoc, will not send cookies if Lax or Strict (Firefox impl.)
+			'None' // {{{SYNC-COOKIE-POLICY-NONE}}} ; same site policy: None # Safety: OK, the token cookie is bind to visitor ID, incl. IP address, thus is not important if revealed to 3rd party ... # this is a fix (required for iFrame srcdoc, will not send cookies if Lax or Strict on Firefox impl.)
 		);
 		//--
 		$crrtime = (int) time();
-		//--
+		//-- {{{SYNC-MAIL-UTILS-ENC/DEC-KEYS}}}
 		$access_key     = (string) SmartHashCrypto::checksum('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_token.':'.$y_msg_file.'>'.$y_ctrl_key);
 		$unique_key     = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$y_msg_file.'>'.$y_ctrl_key);
-		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_login_id().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SmartUtils::get_selfrobot_useragent_name().'$'.$access_key.':'.$y_msg_file.'>'.$y_ctrl_key);
+		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_auth_username().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SmartUtils::get_selfrobot_useragent_name().'$'.$access_key.':'.$y_msg_file.'>'.$y_ctrl_key);
 		//-- {{{SYNC-MIME-ENCRYPT-ARR}}}
 		$safe_link = SmartUtils::crypto_encrypt(
 			(string) trim((string)$crrtime)."\n". 										// current time stamp
@@ -1053,10 +1114,10 @@ final class SmartMailerMimeParser {
 		$browser_os_ip_identification = (array) SmartUtils::get_os_browser_ip(); // get browser and os identification
 		//-- re-compose the access key
 		$crrtime = (int) $arr['creation-time'];
-		//--
+		//-- {{{SYNC-MAIL-UTILS-ENC/DEC-KEYS}}}
 		$access_key     = (string) SmartHashCrypto::checksum('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_token.':'.$arr['message-file'].'>'.$y_ctrl_key);
 		$uniq_key       = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$arr['message-file'].'>'.$y_ctrl_key);
-		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_login_id().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.trim((string)$browser_os_ip_identification['signature']).'$'.$access_key.':'.$arr['message-file'].'>'.$y_ctrl_key);
+		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_auth_username().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.trim((string)$browser_os_ip_identification['signature']).'$'.$access_key.':'.$arr['message-file'].'>'.$y_ctrl_key);
 		//-- check access key
 		if((string)$arr['error'] == '') {
 			if((string)$access_key != (string)$arr['access-key']) {
@@ -1148,8 +1209,8 @@ final class SmartMailerMimeParser {
 			return (string) SmartComponents::operation_error('MIME Parser // ERROR: '.$msg_decode_arr['error']);
 			/*
 			Smart::raise_error(
-				'ERROR: MIME Parser // Mesage File Decode: '.$msg_decode_arr['error'],
-				'ERROR: MIME Parser // Mesage File Decode // See error log for details ...'
+				(string) __METHOD__.' # DECODE ERROR: '.$msg_decode_arr['error'],
+				(string) self::ERR_MSG_TEXT_DECODE
 			);
 			return '';
 			*/
@@ -1160,20 +1221,22 @@ final class SmartMailerMimeParser {
 		$the_message_eml = (string) trim((string)$msg_decode_arr['message-file']);
 		$the_part_id = (string) trim((string)$msg_decode_arr['message-part']);
 		//--
+//$the_message_eml = 'tmp/test-emails/test_uxm_multi_mimes.eml'; // EMAIL TEST FILE ... (uncomment for tests) ; {{{SYNC-TEST-EMAIL-FILE}}}
+		//--
 
 		//--
 		if(((string)$the_message_eml == '') OR (!SmartFileSystem::is_type_file((string)$the_message_eml))) {
 			Smart::raise_error(
-				'ERROR: MIME Parser // Message File EMPTY or NOT FOUND !: '.$the_message_eml,
-				'ERROR: MIME Parser // Mesage File Decode // See error log for details ...'
+				(string) __METHOD__.' # ERROR: Message File EMPTY or NOT FOUND: `'.$the_message_eml.'`',
+				(string) self::ERR_MSG_TEXT_DECODE
 			);
 			return '';
 		} //end if
 		//--
-		if(substr((string)$the_message_eml, -4, 4) != '.eml') {
+		if((string)substr((string)$the_message_eml, -4, 4) != '.eml') {
 			Smart::raise_error(
-				'ERROR: MIME Parser // Message File Extension is not .eml !: '.$the_message_eml,
-				'ERROR: MIME Parser // Mesage File Decode // See error log for details ...'
+				(string) __METHOD__.' # ERROR: Message File Extension is not .eml: `'.$the_message_eml.'`',
+				(string) self::ERR_MSG_TEXT_DECODE
 			);
 			return '';
 		} //end if
@@ -1553,7 +1616,7 @@ final class SmartMailerMimeParser {
 								if(((string)$val['mode'] == 'text/plain') OR ((string)$y_process_mode == 'print')) {
 									$out .= $val['content'];
 								} else { // for non text/plain parts, implements a sandboxed iframe for the non-print mode ; for print mode the iframe sandbox must be manually set as sandbox="allow-same-origin" to ensure safety !
-									$out .= '<div title="Mime Message HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:5px; left:49vw; opacity:0.25;"><iframe name="'.Smart::escape_html($htmid).'" id="'.Smart::escape_html($htmid).'" width="100%" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="min-height:75vh; height:max-content; border:1px solid #ECECEC;" sandbox="allow-same-origin" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>Mime Message</title><meta charset="'.Smart::escape_html((string)SMART_FRAMEWORK_CHARSET).'">'.'<style>'."\n".SmartComponents::app_default_css()."\n".'</style>'.'</head><body>'.$val['content'].'<script>alert(\'If you can see this alert the Mime Message iFrame Sandbox is unsafe ...\');</script></body></html>').'"></iframe></div>';
+									$out .= '<div title="Mime Message HTML Safe SandBox / iFrame" style="position:relative;"><img height="16" src="lib/core/plugins/img/email/safe.svg" style="cursor:help; position:absolute; top:5px; left:49vw; opacity:0.25;"><iframe name="'.Smart::escape_html((string)$htmid).'" id="'.Smart::escape_html((string)$htmid).'" width="100%" scrolling="auto" marginwidth="5" marginheight="5" hspace="0" vspace="0" frameborder="0" style="min-height:25vh; height:max-content; border:1px solid #ECECEC;" sandbox="allow-same-origin" srcdoc="'.Smart::escape_html('<!DOCTYPE html><html><head><title>Mime Message</title><meta charset="'.Smart::escape_html((string)SMART_FRAMEWORK_CHARSET).'">'.'<style>'."\n".SmartComponents::app_default_css()."\n".'</style>'.'</head><body>'.$val['content'].'<script>alert(\'If you can see this alert the Mime Message iFrame Sandbox is unsafe ...\');</script></body></html>').'" onload="setTimeout(() => { const $ifrm = jQuery(\'#'.Smart::escape_html((string)$htmid).'\'); const ifrmH = $ifrm.contents().height(); const iHeight = ifrmH + 15 + \'px\'; $ifrm.height(iHeight); }, 100);"></iframe></div>';
 								} //end if else
 								$out .= '<br><hr><br>';
 							} //end if
@@ -1663,7 +1726,7 @@ final class SmartMailerMimeParser {
 				// if they are trusted by robot, they are UNSAFE because they can fool the robot to replace them back as a CID attachment when an email message is re-composed (ex: reply to a message, can embedd an unwanted image or other unwanted things ...)
 				// to avoid any hack that can fool the robot, simply disable below any image link that can be trusted by robot !
 				//--
-				$arr_robot_test = (array) SmartRobot::get_url_or_path_trust_reference($tmp_link); // {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
+				$arr_robot_test = (array) SmartRobot::get_url_or_path_trust_reference((string)$tmp_link); // {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
 				//--
 				if(((string)$arr_robot_test['allow-credentials'] == 'yes') OR ((string)$arr_robot_test['trust-headers'] == 'yes')) {
 					//-- replace robot trusted img links
@@ -1701,21 +1764,21 @@ final class SmartMailerMimeParser {
 			$tmp_replace_cid_link = (string) str_replace(
 				["\r\n", "\n", "\r", "\t"],
 				' ',
-				(string) $matches[$i][0]
+				(string) ($matches[$i][0] ?? null)
 			);
 			$tmp_replace_cid_link = (string) str_replace(
-				(string) $matches[$i][1].$matches[$i][2],
-				(string) self::mime_link($y_ctrl_key, $y_msg_file, 'cid_'.$matches[$i][2], $y_link, 'image', 'inline'), // for cids send a generic type as image and later before servibg try to detect the real mime type {{{SYNC-BETTER-CID-IMGS-DETECTION-OF-MIMETYPE}}} ; why need fixing ? SVGs don't function with mime type 'image', they need 'image/svg+xml'
+				(string) ($matches[$i][1] ?? null).($matches[$i][2] ?? null),
+				(string) self::mime_link($y_ctrl_key, $y_msg_file, 'cid_'.($matches[$i][2] ?? null), $y_link, 'image', 'inline'), // for cids send a generic type as image and later before servibg try to detect the real mime type {{{SYNC-BETTER-CID-IMGS-DETECTION-OF-MIMETYPE}}} ; why need fixing ? SVGs don't function with mime type 'image', they need 'image/svg+xml'
 				(string) $tmp_replace_cid_link
 			);
 			$y_mime_part = (string) str_replace(
-				(string) $matches[$i][0],
+				(string) ($matches[$i][0] ?? null),
 				(string) $tmp_replace_cid_link,
 				(string) $y_mime_part
 			);
 		} //end for
 		//--
-		$matches = array(); // free mem
+		$matches = null; // free mem
 		//--
 		return (string) $y_mime_part;
 		//--

@@ -32,7 +32,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD and *optional* the APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY ; they must be set in set in config-admin.php
  * Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)
  *
- * @version 	v.20221220
+ * @version 	v.20231018
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -41,17 +41,17 @@ final class SimpleAuthAdminsHandler {
 	// ::
 
 	//================================================================
-	public static function Authenticate(bool $enforce_https=false) {
+	public static function Authenticate(bool $enforce_https=false, bool $disable_tokens=false) {
 		//--
 		if(\headers_sent()) {
 			\SmartFrameworkRuntime::Raise500Error('Authentication Failed, Headers Already Sent ...');
-			die('SimpleAuthAdminsHandler:headersSent');
+			die((string)self::getClassName().':headersSent');
 			return;
 		} //end if
 		//--
 		if(\SmartEnvironment::isAdminArea() !== true) {
-			\SmartFrameworkRuntime::Raise500Error('Authentication system is designed for admin area only ...');
-			die('SimpleAuthAdminsHandler:NotAdminArea');
+			\SmartFrameworkRuntime::Raise500Error('Authentication system is designed for admin/task areas only ...');
+			die((string)self::getClassName().':NotAdminArea');
 			return;
 		} //end if
 		//--
@@ -65,22 +65,22 @@ final class SimpleAuthAdminsHandler {
 		if($enforce_https === true) {
 			if((string)\SmartUtils::get_server_current_protocol() !== 'https://') {
 				\SmartFrameworkRuntime::Raise403Error('This Web Area require HTTPS.'."\n".'Switch from http:// to https:// in order to use this Web Area');
-				die('SimpleAuthAdminsHandler:NotHTTPS');
+				die((string)self::getClassName().':NotHTTPS');
 				return;
 			} //end if
 		} //end if
 		//--
-		if(!\defined('\\APP_AUTH_ADMIN_USERNAME') OR !defined('\\APP_AUTH_ADMIN_PASSWORD')) {
+		if(!\defined('\\APP_AUTH_ADMIN_USERNAME') OR !\defined('\\APP_AUTH_ADMIN_PASSWORD')) {
 			\SmartFrameworkRuntime::Raise503Error('Authentication APP_AUTH_ADMIN_USERNAME / APP_AUTH_ADMIN_PASSWORD not set in config ...'); // must be set in config-admin.php
-			die('SimpleAuthAdminsHandler:UserOrPasswordNotSet');
+			die((string)self::getClassName().':UserOrPasswordNotSet');
 			return;
 		} elseif((string)\trim((string)\APP_AUTH_ADMIN_USERNAME) == '') {
 			\SmartFrameworkRuntime::Raise503Error('Authentication APP_AUTH_ADMIN_USERNAME was set but is Empty ...');
-			die('SimpleAuthAdminsHandler:UserIsEmpty');
+			die((string)self::getClassName().':UserIsEmpty');
 			return;
 		} elseif((string)\trim((string)\APP_AUTH_ADMIN_PASSWORD) == '') {
 			\SmartFrameworkRuntime::Raise503Error('Authentication APP_AUTH_ADMIN_PASSWORD was set but is Empty ...');
-			die('SimpleAuthAdminsHandler:PasswordIsEmpty');
+			die((string)self::getClassName().':PasswordIsEmpty');
 			return;
 		} //end if
 		//--
@@ -88,33 +88,74 @@ final class SimpleAuthAdminsHandler {
 			(string) \APP_AUTH_ADMIN_USERNAME,
 			true // check for reasonable length, as 5 chars
 		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
-			\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: `APP_AUTH_ADMIN_USERNAME` !'."\n".'The `APP_AUTH_ADMIN_USERNAME` set in config must be at least 5 characters long ! Manually REFRESH this page after by pressing F5 ...');
-			die('SimpleAuthAdminsHandler:CHECK-CREDENTIALS:UserName');
+			\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: `APP_AUTH_ADMIN_USERNAME` !'."\n".'The `APP_AUTH_ADMIN_USERNAME` set in config must be valid and at least 5 characters long ! Manually REFRESH this page after by pressing F5 ...');
+			die((string)self::getClassName().':CHECK-CREDENTIALS:UserName');
 			return;
 		} //end if
+		//--
+		$real_plain_password = (string) \SmartAuth::decrypt_privkey((string)\APP_AUTH_ADMIN_PASSWORD, (string)\APP_AUTH_ADMIN_USERNAME);
+		//--
 		if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
-			(string) \APP_AUTH_ADMIN_PASSWORD,
+			(string) $real_plain_password,
 			(bool) ((\defined('\\APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (\APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false)
 		) !== true) {
 			\SmartFrameworkRuntime::Raise503Error('Invalid value set in config for: `APP_AUTH_ADMIN_PASSWORD` ... need to be changed !'."\n".'THE PASSWORD IS TOO SHORT OR DOES NOT MEET THE REQUIRED COMPLEXITY CRITERIA.'."\n".'Must be min 7 or 8 chars and max 30 chars.'."\n".'Must contain at least 1 character A-Z, 1 character a-z, one digit 0-9, one special character such as: ! @ # $ % ^ & * ( ) _ - + = [ { } ] / | . , ; ? ...'."\n".'Manually REFRESH this page after by pressing F5 ...');
-			die('SimpleAuthAdminsHandler:CHECK-CREDENTIALS:Password');
+			die((string)self::getClassName().':CHECK-CREDENTIALS:Password');
 			return;
 		} //end if
 		//--
-		$auth_data = (array) \SmartModExtLib\AuthAdmins\AuthProviderHttpBasic::GetCredentials((bool)$enforce_https);
+		$auth_data = (array) \SmartModExtLib\AuthAdmins\AuthProviderHttp::GetCredentials((bool)$enforce_https, (bool)(!$disable_tokens));
 		$auth_method = (string) $auth_data['auth-mode'];
+		$use_www_auth_prompt = true;
+		if(stripos((string)$auth_method, (string)\SmartModExtLib\AuthAdmins\AuthProviderHttp::AUTH_MODE_PREFIX_AUTHEN.\SmartModExtLib\AuthAdmins\AuthProviderHttp::AUTH_MODE_PREFIX_HTTP_BEARER) === 0) { // {{{SYNC-AUTH-PROVIDER-BEARER-SKIP-401-AUTH-PROMPT}}}
+			$use_www_auth_prompt = false; // hide the www-auth header for bearer
+		} //end if
 		$auth_safe = (int) $auth_data['auth-safe'];
 		//--
 		$auth_user_name = (string) \strtolower((string)$auth_data['auth-user']);
-		$auth_user_pass = (string) $auth_data['auth-pass'];
+		$auth_user_pass = (string) $auth_data['auth-pass']; // plain pass
+		$auth_user_hash = (string) $auth_data['auth-hash']; // hash pass ; irreversible hash of pass
+		$auth_user_priv = (array)  $auth_data['auth-priv']; // array of privs
 		//--
-		$auth_data = null;
+		$auth_error     = (string) $auth_data['auth-error'];
+		//--
+		$auth_data = null; // no more needed
+		//--
+		$is_swt_token_auth = false;
+		//--
+		$hash_of_pass = ''; // {{{SYNC-AUTH-LOGIC-HASH-VS-PASS}}} ; {{{SYNC-AUTH-TOKEN-SWT}}}
+		if((string)trim((string)$auth_user_name) != '') {
+			if((string)trim((string)$auth_user_pass) == '') {
+				if( // SWT Token
+					((string)$auth_error == '')
+					AND
+					((string)trim((string)$auth_user_pass) == '')
+					AND
+					((string)\trim((string)$auth_user_hash) != '')
+					AND
+					((int)strlen((string)$auth_user_hash) == (int)\SmartHashCrypto::PASSWORD_HASH_LENGTH) // {{{SYNC-AUTH-HASHPASS-LENGTH}}}
+				) {
+					//-- SWT Token Login ; will provide only the pass hash, ireversible, for security
+					$is_swt_token_auth = true;
+					$hash_of_pass = (string) $auth_user_hash;
+					//--
+				} //end if
+			} else { // Plain Pass (Standard Basic Auth)
+				$hash_of_pass = (string) \SmartHashCrypto::password((string)$auth_user_pass, (string)$auth_user_name);
+			} //end if else
+		} //end if
+		//--
+		$auth_user_pass = ''; // no more needed !
+		$auth_user_hash = ''; // no more needed !
 		//--
 		if(
-			((string)trim((string)$auth_user_name) != '') AND
-			((string)trim((string)$auth_user_pass) != '') AND
-			((string)$auth_user_name === (string)\APP_AUTH_ADMIN_USERNAME) AND
-			((string)$auth_user_pass === (string)\APP_AUTH_ADMIN_PASSWORD)
+			((string)trim((string)$auth_user_name) != '')
+			AND
+			((string)trim((string)$hash_of_pass) != '')
+			AND
+			((string)$auth_user_name === (string)\APP_AUTH_ADMIN_USERNAME)
+			AND
+			(\SmartHashCrypto::checkpassword((string)$hash_of_pass, (string)$real_plain_password, (string)\APP_AUTH_ADMIN_USERNAME) === true)
 		) {
 			//-- OK, logged in
 			$privileges = '<superadmin>,<admin>';
@@ -125,30 +166,42 @@ final class SimpleAuthAdminsHandler {
 				(string) $privileges,
 				true
 			);
-			$priv_keys = '';
-			if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) { // need to be stored as encrypted
-				if((string)\trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY) != '') {
-					$priv_keys = (string)\trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY);
+			//--
+			$restrictions = [ 'def-account', 'account' ]; // {{{SYNC-AUTH-RESTRICTIONS}}} ; {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-ACC-NO-EDIT-RESTRICTION}}}
+			//--
+			if($is_swt_token_auth === true) {
+				$restrictions = [ 'def-account', 'account', 'token' ]; // {{{SYNC-AUTH-TOKEN-RESTRICTIONS}}} ; {{{SYNC-AUTH-RESTRICTIONS}}} ; {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-ACC-NO-EDIT-RESTRICTION}}}
+				if((int)\Smart::array_size($auth_user_priv) > 0) { // {{{SYNC-AUTH-TOKEN-PRIVS-INTERSECT}}}
+					$privileges = (array) \array_values((array)\array_intersect((array)$privileges, (array)$auth_user_priv)); // {{{SYNC-SWT-IMPLEMENT-PRIVILEGES}}}
 				} //end if
 			} //end if
 			//--
-			\SmartAuth::set_login_data(
-				(string) $auth_user_name, 														// this should be always the user login ID (login user name)
-				(string) \ucwords((string)\str_replace('.', ' ', (string)$auth_user_name)), 	// alias, make a nice alias from the login ID
-				'admin@smart.framework', 														// user email * Optional * (this may be also redundant if the login ID is actually the user email)
-				'Default Admin', 																// user full name (First Name + ' ' + Last name) * Optional *
-				(array) $privileges, 															// login privileges * Optional *
-				0, 																				// quota * Optional * ... zero, aka unlimited
-				[ // metadata
+			$priv_keys = '';
+			if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) { // need to be stored as encrypted, use \SmartAuth::encrypt_privkey() using hash pass as key
+				if((string)\trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY) != '') {
+					$priv_keys = (string) \trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY); // will be decrypted by lib auth, see: \SmartAuth::decrypt_privkey() using hash pass as key
+				} //end if
+			} //end if
+			//--
+			\SmartAuth::set_login_data( // v.20231018
+				'ADMINS-AREA-SIMPLE', 						// auth realm
+				(string) $auth_method, 						// auth method
+				(string) $hash_of_pass, 					// auth password hash (will be stored as encrypted, in-memory)
+				(string) $auth_user_name, 					// auth ID (on backend must be set exact as the auth username)
+				(string) $auth_user_name, 					// auth user name
+				'admin@smart.framework', 					// user email * Optional *
+				'Default Admin', 							// user full name (First Name + ' ' + Last name) * Optional *
+				(array)  $privileges, 						// user privileges * Optional *
+				(array)  $restrictions, 					// user restrictions
+				0, 											// user quota in MB * Optional * ... zero, aka unlimited
+				[ 											// user metadata (array) ; may vary
 					'auth-safe' => (int) $auth_safe,
 					'name_f' 	=> 'Default',
 					'name_l' 	=> 'Admin',
 				],
-				'ADMINS-AREA-SIMPLE', // realm
-				(string) $auth_method, // method
-				(string) $auth_user_pass, 				// safe store password
-				(string) $priv_keys 					// safe store privacy-keys as encrypted (will be decrypted in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
+				(string) $priv_keys 						// user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
 			);
+			//print_r(\SmartAuth::get_login_data()); die();
 			//--
 			\SmartFrameworkRuntime::SingleUser_Mode_AuthBreakPoint();
 			//--
@@ -165,12 +218,22 @@ final class SimpleAuthAdminsHandler {
 			\SmartFrameworkRuntime::Raise401Prompt(
 				'Authorization Required',
 				(string) \SmartComponents::http_message_401_unauthorized('Authorization Required', \SmartComponents::operation_notice('Login Failed. Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.')),
-				'Default Private Area'
+				'Default Private Area',
+				(bool) $use_www_auth_prompt
 			);
-			die('SimpleAuthAdminsHandler:401Prompt');
+			die((string)self::getClassName().':401Prompt');
 			return;
 			//--
 		} //end if
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function getClassName() : string {
+		//--
+		return (string) \Smart::getClassNameWithoutNamespacePrefix((string)__CLASS__);
 		//--
 	} //END FUNCTION
 	//================================================================

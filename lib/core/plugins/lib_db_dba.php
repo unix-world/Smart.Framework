@@ -30,6 +30,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * It supports the following handlers: gdbm, qdbm, db4 which do not have limits on the record size.
  * The handler will be locked using LockFile as it is supported on all platforms and all handlers.
  *
+ * The DBA file path should be starting with '#db/' or 'tmp/', which are protected via HtAccess files or by config.
+ * Do not use other dir prefixes unless you know what you are doing ...
+ *
  * <code>
  * // Example (must be set in etc/config.php)
  * $configs['dba']['handler'] = 'gdbm';
@@ -41,7 +44,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartComponents, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20230324
+ * @version 	v.20231008
  * @package 	Application:Plugins:Database:Dba
  *
  */
@@ -1076,48 +1079,24 @@ final class SmartDbaDb {
 		} //end if
 		//--
 		$file_of_db = (string) SmartFileSysUtils::extractPathFileName((string)$this->file);
-		$dir_of_db = (string) SmartFileSysUtils::extractPathDir((string)$this->file);
-		if((string)$dir_of_db == '') {
-			$this->error('OPEN', 'ERROR: DB folder not defined !');
+	//	$dir_of_db = (string) SmartFileSysUtils::extractPathDir((string)$this->file);
+		$dir_of_db = (string) Smart::dir_name((string)$this->file); // sync with SQLite, this method is better as if empty, the checks are below in create
+		//--
+		if(SmartFileSysUtils::checkIfSafeFileOrDirName((string)$file_of_db, true, true) != 1) {
+			$this->error('OPEN', 'ERROR: DB file name is unsafe !');
 			return false;
 		} //end if
+		//--
+		$err = (string) SmartUtils::create_protected_dir((string)$dir_of_db); // {{{SYNC-APP-DB-FOLDER}}} ; this checks also if safe path of dir
+		if((string)$err != '') {
+			$this->error('OPEN', 'ERROR: DB path creation failed # '.$err);
+			return;
+		} //end if
+		//--
+		$dir_of_db = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dir_of_db);
 		if(SmartFileSysUtils::checkIfSafePath((string)$dir_of_db, true, true) != 1) {
 			$this->error('OPEN', 'ERROR: DB folder path is unsafe !');
 			return false;
-		} //end if
-		$dir_of_db = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dir_of_db);
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_of_db, true, true); // deny absolute path access ; allow protected path access (starting with #)
-		//--
-		if(!SmartFileSystem::is_type_dir($dir_of_db)) {
-			SmartFileSystem::dir_create($dir_of_db, true, true); // allow protected paths
-		} //end if
-		if(!SmartFileSystem::is_type_dir($dir_of_db)) {
-			$this->error('OPEN', 'ERROR: DB folder does not exists !');
-			return false;
-		} //end if
-		if(!SmartFileSystem::have_access_write($dir_of_db)) {
-			$this->error('OPEN', 'ERROR: DB folder is not writable !');
-			return false;
-		} //end if
-		if(!SmartFileSystem::is_type_file((string)$dir_of_db.'.htaccess')) {
-			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_of_db.'.htaccess', true, true); // deny absolute path access ; allow protected path access (starting with #)
-			if(!@file_put_contents((string)$dir_of_db.'.htaccess', (string)'### Smart.Framework // '.__METHOD__.' @ HtAccess Data Protection ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', LOCK_EX)) {
-				$this->error('OPEN', 'ERROR: DB folder access-protection not initialized !');
-				return false;
-			} //end if
-			SmartFileSystem::fix_file_chmod((string)$dir_of_db.'.htaccess'); // apply file chmod
-			if(!SmartFileSystem::is_type_file((string)$dir_of_db.'.htaccess')) {
-				$this->error('OPEN', 'ERROR: DB folder access-protection not found !');
-				return false;
-			} //end if
-		} //end if
-		if(!SmartFileSystem::is_type_file((string)$dir_of_db.'index.html')) {
-			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_of_db.'index.html', true, true); // deny absolute path access ; allow protected path access (starting with #)
-			@file_put_contents((string)$dir_of_db.'index.html', '', LOCK_EX);
-			if(!SmartFileSystem::is_type_file((string)$dir_of_db.'index.html')) {
-				$this->error('OPEN', 'ERROR: DB folder index-protection not found !');
-				return false;
-			} //end if
 		} //end if
 		//--
 	//	$the_abs_path_to_db = (string) $this->file;
@@ -1304,7 +1283,7 @@ final class SmartDbaDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP DBA Extension ; classes: Smart
- * @version 	v.20230324
+ * @version 	v.20231008
  * @package 	Application:Plugins:Database:Dba
  *
  */

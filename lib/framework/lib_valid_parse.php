@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode
- * @version     v.20221224
+ * @version     v.20231012
  * @package     @Core:Extra
  *
  */
@@ -84,6 +84,16 @@ final class SmartValidator {
 		switch((string)strtolower((string)$y_mode)) { // WARNING: Never use class modifiers like [:print:] with /u modifier as it fails with some versions of PHP / Regex / PCRE
 			//--
 			//== #EXTERNAL USE
+			//--
+			case 'date':
+				$regex = '/'.$rxs.'([0-9]{4,}\-[0-9]{2}\-[0-9]{2})'.$rxe.'/'; // example: `2023-10-12`
+				break;
+			case 'date-time':
+				$regex = '/'.$rxs.'([0-9]{4,}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2})'.$rxe.'/'; // example: `2023-10-12 22:33:44`
+				break;
+			case 'date-time-tzofs':
+				$regex = '/'.$rxs.'([0-9]{4,}\-[0-9]{2}\-[0-9]{2} [0-9]{2}\:[0-9]{2}\:[0-9]{2} (\+|\-)[0-9]{4})'.$rxe.'/'; // example: `2023-10-12 22:33:44 +0000`
+				break;
 			//--
 			case 'number-integer': 										// strict validation
 				$regex = '/'.$rxs.'(\-)?[0-9]+?'.$rxe.'/'; 				// before was: '/([0-9\-])+/' but was not good enough as a strict rule
@@ -332,7 +342,7 @@ final class SmartValidator {
 			$ip = '';
 		} //end if
 		//--
-		return (string) $ip;
+		return (string) Smart::ip_addr_compress((string)$ip);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -418,13 +428,43 @@ final class SmartValidator {
  *
  * @access      PUBLIC
  * @depends     classes: Smart, SmartUnicode, SmartValidator ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS
- * @version     v.20221224
+ * @version     v.20231003
  * @package     @Core:Extra
  *
  */
 final class SmartParser {
 
 	// ::
+
+
+	//================================================================
+	public static function extract_base_domain_from_domain(?string $domain) : string {
+		//--
+		$domain = (string) strtolower((string)trim((string)$domain));
+		if((string)$domain == '') {
+			return '';
+		} //end if
+		//--
+		if(
+			preg_match('/^[0-9\.]+$/', (string)$domain) // IPv4
+			OR
+			(strpos((string)$domain, ':') !== false)
+		) { // IPv6
+			if((string)trim((string)SmartValidator::validate_filter_ip_address((string)$domain)) != '') { // if IP address
+				return (string) $domain; // domain is IP v4/v6, return as it is
+			} //end if
+		} //end if
+		//--
+		if(strpos((string)$domain, '.') === false) { // ex: localhost
+			return (string) $domain; // domain cannot be split by .
+		} //end if
+		//-- ex: subdomain.domain.ext or subdomain.domain
+		$domain = (array) explode('.', (string)$domain);
+		$domain = (array) array_reverse((array)$domain);
+		return (string) ($domain[1] ?? null).'.'.($domain[0] ?? null); // PHP8 OK, as it tests if . exists
+		//--
+	} //END fUNCTION
+	//================================================================
 
 
 	//================================================================
@@ -435,7 +475,7 @@ final class SmartParser {
 	 *
 	 * @return 	ARRAY						:: A non-associative array with the URL links detected in the string
 	 */
-	public static function get_arr_urls(?string $string) {
+	public static function get_arr_urls(?string $string) : array {
 		//--
 		$string = (string) $string;
 		$expr = SmartValidator::regex_stringvalidation_expression('url', 'partial');
@@ -464,7 +504,7 @@ final class SmartParser {
 	 *
 	 * @return 	STRING						:: The HTML processed text with URLs replaced with real tags
 	 */
-	public static function text_urls(?string $string, ?string $ytarget='_blank', ?string $ypict='', ?int $y_lentrim=100) {
+	public static function text_urls(?string $string, ?string $ytarget='_blank', ?string $ypict='', ?int $y_lentrim=100) : string {
 		//--
 		$string = (string) $string;
 		$expr = (string) SmartValidator::regex_stringvalidation_expression('url', 'partial');
@@ -494,7 +534,7 @@ final class SmartParser {
 	 *
 	 * @return 	ARRAY						:: A non-associative array with the EMAIL addresses detected in the string
 	 */
-	public static function get_arr_emails(?string $string) {
+	public static function get_arr_emails(?string $string) : array {
 		//--
 		$string = (string) $string;
 		$expr = SmartValidator::regex_stringvalidation_expression('email', 'partial');
@@ -523,7 +563,7 @@ final class SmartParser {
 	 *
 	 * @return 	STRING						:: The HTML processed text with EMAIL addresses replaced with real tags as links
 	 */
-	public static function text_emails(?string $string, ?string $yaction='mailto:', ?string $ytarget='', ?int $y_lentrim=100) {
+	public static function text_emails(?string $string, ?string $yaction='mailto:', ?string $ytarget='', ?int $y_lentrim=100) : string {
 		//--
 		$string = (string) $string;
 		$expr = (string) SmartValidator::regex_stringvalidation_expression('email', 'partial');
@@ -550,7 +590,7 @@ final class SmartParser {
 	 *
 	 * @return 	ARRAY						:: A non-associative array with the FAX numbers detected in the string
 	 */
-	public static function get_arr_faxnums(?string $string) {
+	public static function get_arr_faxnums(?string $string) : array {
 		//--
 		$string = (string) $string;
 		$expr = SmartValidator::regex_stringvalidation_expression('fax', 'partial');
@@ -579,7 +619,7 @@ final class SmartParser {
 	 *
 	 * @return 	STRING						:: The HTML processed text with FAX numbers replaced with real tags as links
 	 */
-	public static function text_faxnums(?string $string, ?string $yaction='efax:', ?string $ytarget='_blank', ?int $y_lentrim=100) {
+	public static function text_faxnums(?string $string, ?string $yaction='efax:', ?string $ytarget='_blank', ?int $y_lentrim=100) : string {
 		//--
 		$string = (string) $string;
 		$expr = (string) SmartValidator::regex_stringvalidation_expression('fax', 'partial');

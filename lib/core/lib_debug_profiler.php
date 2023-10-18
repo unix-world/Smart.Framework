@@ -29,7 +29,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	css: tpl-highlight.css ; classes: Smart, SmartComponents
- * @version 	v.20221220
+ * @version 	v.20231001
  * @package 	Application:Development
  *
  */
@@ -199,7 +199,7 @@ public static function save_debug_info($y_area, $y_debug_token, $is_main) {
 				$arr['php-session'] = (string) base64_encode(Smart::seryalize(''));
 			} //end if else
 			if(SmartAuth::check_login() === true) {
-				$arr['auth-data'] = array('is_auth' => true, 'login_data' => (array)SmartAuth::get_login_data(), '#login-pass#', SmartAuth::get_login_password());
+				$arr['auth-data'] = array('is_auth' => true, 'login_data' => (array)SmartAuth::get_login_data(), '#login-pass-hash#', SmartAuth::get_auth_passhash());
 			} else {
 				$arr['auth-data'] = array('is_auth' => false, 'login_data' => []);
 			} //end if else
@@ -830,7 +830,6 @@ private static function print_log_configs() {
 			} else {
 				$val = (string) $val.' (!!! Warning, Invalid ... Must be NUMERIC / OCTAL !!!)';
 			} //end if
-	//	} elseif((string)$key == 'APP_AUTH_ADMIN_PASSWORD') {
 		} elseif(stripos((string)$key, 'PASS') !== false) {
 			$val = (string) self::TXT_PROTECT_PASS; // avoid display passwords as clear text
 		} elseif(stripos((string)$key, 'KEY') !== false) {
@@ -1047,9 +1046,9 @@ private static function print_log_auth($auth_arr) {
 			if(is_array($debug_val)) {
 				$log .= '<pre>'.SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html(SmartUtils::pretty_print_var($debug_val)), true).'</pre>';
 			} else {
-				if((string)$debug_key == 'login-password') {
+				if((string)$debug_key == 'auth:passhash') {
 					$debug_val = (string) self::TXT_PROTECT_PASS; // avoid display pass as clear text
-				} elseif((string)$debug_key == 'login-privkey') {
+				} elseif((string)$debug_key == 'user:privkey') {
 					$debug_val = '['.(int)strlen((string)$debug_val).']'.self::TXT_PROTECT_KEYS; // avoid display pass as clear text
 				} //end if
 				$log .= SmartMarkersTemplating::prepare_nosyntax_html_template(Smart::escape_html((string)$debug_val), true);

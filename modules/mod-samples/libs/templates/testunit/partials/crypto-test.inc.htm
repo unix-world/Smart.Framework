@@ -1,4 +1,4 @@
-<!-- Partial Template: TestUnit.Partials.CryptoTest r.20220918 -->
+<!-- Partial Template: TestUnit.Partials.CryptoTest r.20231010 -->
 <style>
 div.crypto-test-results {
 	white-space: nowrap !important;
@@ -15,6 +15,8 @@ Unicode@String:&nbsp;<span id="unicode-string" style="color:#FF5500;">[###UNICOD
 Escaped@JS:&nbsp;<span id="jsescaped-string" style="color:#778899;">[###JS-ESCAPED|html###]</span><br>
 SHA512&nbsp;(hex):&nbsp;<span id="sha512-hash-hex" style="color:#888888;">[###HASH-SHA512-HEX|html###]</span><br>
 SHA512&nbsp;(b64):&nbsp;<span id="sha512-hash-b64" style="color:#888888;">[###HASH-SHA512-B64|html###]</span><br>
+SHA384&nbsp;(hex):&nbsp;<span id="sha384-hash-hex" style="color:#888888;">[###HASH-SHA384-HEX|html###]</span><br>
+SHA384&nbsp;(b64):&nbsp;<span id="sha384-hash-b64" style="color:#888888;">[###HASH-SHA384-B64|html###]</span><br>
 SHA256&nbsp;(hex):&nbsp;<span id="sha256-hash-hex" style="color:#888888;">[###HASH-SHA256-HEX|html###]</span><br>
 SHA256&nbsp;(b64):&nbsp;<span id="sha256-hash-b64" style="color:#888888;">[###HASH-SHA256-B64|html###]</span><br>
 SHA1&nbsp;(hex):&nbsp;<span id="sha1-hash-hex" style="color:#999999;">[###HASH-SHA1-HEX|html###]</span><br>
@@ -46,6 +48,23 @@ CustomCipher@Options:&nbsp;<span style="color:#CCCCCC;">PHP:[###HASHCRYPT-OPTION
 <div id="testunit-partial-crypto" class="crypto-test-results"></div>
 <script>
 (() => {
+	//--
+	const strToBeTrimmed = '\n' + '	 some' + '\n' + ' text	 ' + '\r';
+	const strTrimmed = smartJ$Utils.stringTrim(strToBeTrimmed);
+	const strLTrimmed = smartJ$Utils.stringLeftTrim(strToBeTrimmed);
+	const strRTrimmed = smartJ$Utils.stringRightTrim(strToBeTrimmed);
+	const strCompTrimmed = 'some' + '\n' + ' text';
+	const strCompLTrimmed = 'some' + '\n' + ' text	 ' + '\r';
+	const strCompRTrimmed = '\n' + '	 some' + '\n' + ' text';
+	if(strTrimmed !== strCompTrimmed) {
+		alert('String Trim FAILED. Expected `' + strCompTrimmed + '` but have `' + strTrimmed + '`');
+	} //end if
+	if(strLTrimmed !== strCompLTrimmed) {
+		alert('String Left Trim FAILED. Expected `' + strCompLTrimmed + '` but have `' + strLTrimmed + '`');
+	} //end if
+	if(strRTrimmed !== strCompRTrimmed) {
+		alert('String Right Trim FAILED. Expected `' + strCompRTrimmed + '` but have `' + strRTrimmed + '`');
+	} //end if
 	//--
 	let the_error = 0;
 	//--
@@ -142,6 +161,14 @@ CustomCipher@Options:&nbsp;<span style="color:#CCCCCC;">PHP:[###HASHCRYPT-OPTION
 	htmlcode += 'Blowfish@Options:&nbsp;<span style="color:#CCCCCC;">JS:blowfish/CBC</span>' + '<br>';
 	$('#testunit-partial-crypto').html(htmlcode);
 	//-- JS Tests
+	if(smartJ$BaseEncode.b64s_dec(smartJ$BaseEncode.b64_to_b64s(smartJ$Base64.encode(unicodeText))) !== unicodeText) {
+		alert('ERROR: Base64 conversion to Base64s Failed ...');
+		the_error++;
+	} //end if
+	if(smartJ$Base64.decode(smartJ$BaseEncode.b64s_to_b64(smartJ$BaseEncode.b64s_enc(unicodeText))) !== unicodeText) {
+		alert('ERROR: Base64s conversion to Base64 Failed ...');
+		the_error++;
+	} //end if
 	if((b64dec !== unicodeText) || (smartJ$CryptoHash.sha1(b64dec) !== the_hex_sha1)) {
 		alert('ERROR: Base64 Encode/Decode Test Failed:\n' + 'Before: `' + unicodeText + '` / ' + the_hex_sha1 + '\n' + 'After: `' + b64dec + '` / ' + smartJ$CryptoHash.sha1(b64dec));
 		the_error++;

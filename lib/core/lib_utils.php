@@ -36,14 +36,16 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20230102
+ * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
+ * @version 	v.20231018
  * @package 	Application:Utils
  *
  */
 final class SmartUtils {
 
 	// ::
+
+	public const APP_DB_FOLDER = '#db/'; // {{{SYNC-APP-DB-FOLDER}}}
 
 	public const GENERIC_VALUE_OS_BROWSER_IP = '[?]';
 
@@ -236,7 +238,9 @@ final class SmartUtils {
 		} //end if
 		switch((string)$cookie_samesite) {
 			case 'None':
-				$cookie_secure = true; // new browsers require this if SameSite cookie policy is set explicit to None !!
+				if((string)self::get_server_current_protocol() == 'https://') { // fix: try to not set COOKIE SECURE except if over HTTPS ; some new browsers, ex: Chromium will not accept None policy cookies over plain HTTP but only over HTTPS ; but if on HTTP and not HTTPS with Chromium a None policy cookie is useless even with COOKIE SECURE set ON if already on HTTP plain ...
+					$cookie_secure = true; // {{{SYNC-COOKIE-POLICY-NONE}}} ; new browsers (ex: Chromium) require this if SameSite cookie policy is set explicit to None ; but anyway, if not already on a secure protocol try to not set this, will still work in Firefox
+				} //end if
 				break;
 			case 'Lax':
 			case 'Strict':
@@ -302,19 +306,6 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function check_ip_in_range(?string $lower_range_ip_address, ?string $upper_range_ip_address, ?string $needle_ip_address) {
-			//-- Get the numeric reprisentation of the IP Address with IP2long
-			$min 	= ip2long($lower_range_ip_address);
-			$max 	= ip2long($upper_range_ip_address);
-			$needle = ip2long($needle_ip_address);
-			//-- Then it's as simple as checking whether the needle falls between the lower and upper ranges
-			return (($needle >= $min) AND ($needle <= $max));
-			//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
 	// will return the time interval in days between 2 dates (negative = past ; positive = future)
 	public static function date_interval_days(?string $y_date_now, ?string $y_date_past) {
 		//--
@@ -366,7 +357,7 @@ final class SmartUtils {
 		$out = @gzdeflate((string)$y_str, -1, ZLIB_ENCODING_RAW); // don't make it string, may return false ; -1 = default compression of the zlib library is used which is 6
 		//-- check for possible deflate errors
 		if(($out === false) OR ((string)$out == '')) {
-			Smart::log_warning('Smart.Framework Utils / Data Archive :: ZLib Deflate ERROR ! ...');
+			Smart::log_warning(__METHOD__.' # ZLib Deflate ERROR');
 			return '';
 		} //end if
 		$len_data = (int) strlen((string)$y_str);
@@ -377,11 +368,11 @@ final class SmartUtils {
 			$ratio = 0;
 		} //end if
 		if((float)$ratio <= 0) { // check for empty input / output !
-			Smart::log_warning('Smart.Framework Utils / Data Archive :: ZLib Data Ratio is zero ! ...');
+			Smart::log_warning(__METHOD__.' #  ZLib Data Ratio is zero');
 			return '';
 		} //end if
 		if((float)$ratio > 32768) { // check for this bug in ZLib {{{SYNC-GZ-ARCHIVE-ERR-CHECK}}}
-			Smart::log_warning('Smart.Framework Utils / Data Archive :: ZLib Data Ratio is higher than 32768 ! ...');
+			Smart::log_warning(__METHOD__.' # ZLib Data Ratio is higher than 32768');
 			return '';
 		} //end if
 		//--
@@ -391,7 +382,7 @@ final class SmartUtils {
 		//-- test unarchive
 		$unarch_checksum = (string) SmartHashCrypto::sha256((string)self::data_unarchive($out));
 		if((string)$chksum != (string)$unarch_checksum) { // check: if there is a serious bug with ZLib or PHP we can't tolerate, so test decompress here !!
-			Smart::log_warning('Smart.Framework Utils / Data Archive :: Data Encode Check Failed ! ...');
+			Smart::log_warning(__METHOD__.' # Data Encode Check Failed');
 			return '';
 		} //end if
 		//-- if all test pass, return archived data
@@ -650,76 +641,81 @@ final class SmartUtils {
 
 
 	//================================================================
-	// min: 0 ; max: MMMMCMXCIX
-	public static function number_to_roman($num) {
-		//-- Make sure that we only use the integer portion of the value
-		$n = intval($num);
+	// min: 0 ; max: 4999
+	public static function number_to_roman(?int $num) : string {
 		//--
-		if($n == 0) {
-			return 0;
+		$n = (int) $num;
+		//--
+		if((int)$n === 0) {
+			return (string) '0';
 		} //end if
-		if($n < 0) {
+		if((int)$n < 0) {
 			return 'ERR:MIN:0';
 		} //end if
-		if($n > 4999) {
+		if((int)$n > 4999) {
 			return 'ERR:MAX:4999';
 		} //end if
 		//--
 		$result = '';
-		//-- Declare a lookup array that we will use to traverse the number:
-		$lookup = array('M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400, 'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40, 'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1);
+		//-- declare a lookup array that we will use to traverse the number:
+		$lookup = [ 'M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400, 'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40, 'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1 ];
 		//--
-		foreach ($lookup as $roman => $value) {
-			//-- Determine the number of matches
-			$matches = intval($n / $value);
-			//-- Store that many characters
-			$result .= str_repeat($roman, $matches);
-			//-- Substract that from the number
-			$n = $n % $value;
+		foreach($lookup as $roman => $value) {
+			//--
+			if((int)$value <= 0) {
+				return 'ERR:DIV:0'; // avoid division by zero
+			} //end if
+			//-- determine the number of matches
+			$matches = (int) intval((int)$n / (int)$value);
+			//-- store that many characters
+			$result .= (string) str_repeat((string)$roman, (int)$matches);
+			//-- substract that from the number
+			$n = (int) ((int)$n % (int)$value);
 			//--
 		} //end foreach
-		//-- The Roman numeral should be built, return it
-		return $result;
+		//--
+		return (string) $result; // the roman numeral should be built, return it
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	// based on PHP roman to number, author: Sterling Hughes <sterling@php.net>
 	// min: 0 ; max: MMMMCMXCIX
-	public static function roman_to_number(?string $roman) {
+	public static function roman_to_number(?string $roman) : int {
+		//--
+		// based on PHP roman to number, author: Sterling Hughes
 		//--
 		$roman = (string) $roman;
 		//--
-		if(!preg_match('/^(?i:(?=[MDCLXVI])((M{0,4})((C[DM])|(D?C{0,3}))?((X[LC])|(L?XX{0,2})|L)?((I[VX])|(V?(II{0,2}))|V)?))$/i', $roman)) {
-			return 0;
+		if(!preg_match('/^(?i:(?=[MDCLXVI])((M{0,4})((C[DM])|(D?C{0,3}))?((X[LC])|(L?XX{0,2})|L)?((I[VX])|(V?(II{0,2}))|V)?))$/i', (string)$roman)) {
+			return (int) 0;
 		} //end if
 		//--
-		$conv = array(
-			array('letter' => 'I', 'number' => 1),
-			array('letter' => 'V', 'number' => 5),
-			array('letter' => 'X', 'number' => 10),
-			array('letter' => 'L', 'number' => 50),
-			array('letter' => 'C', 'number' => 100),
-			array('letter' => 'D', 'number' => 500),
-			array('letter' => 'M', 'number' => 1000),
-			array('letter' => 0, 'number' => 0)
-		);
+		$conv = [
+			[ 'letter' => 'I', 'number' =>    1 ],
+			[ 'letter' => 'V', 'number' =>    5 ],
+			[ 'letter' => 'X', 'number' =>   10 ],
+			[ 'letter' => 'L', 'number' =>   50 ],
+			[ 'letter' => 'C', 'number' =>  100 ],
+			[ 'letter' => 'D', 'number' =>  500 ],
+			[ 'letter' => 'M', 'number' => 1000 ],
+			[ 'letter' => '0', 'number' =>    0 ],
+		];
 		//--
 		$arabic = 0;
 		$state = 0;
 		$sidx = 0;
-		$len = strlen($roman) - 1;
+		$len = (int) ((int)strlen((string)$roman) - 1);
 		//--
-		while($len >= 0) {
+		while((int)$len >= 0) {
 			//--
 			$i = 0;
-			$sidx = $len;
+			$sidx = (int) $len;
 			//--
 			while($conv[$i]['number'] > 0) {
 				//--
-				if(strtoupper($roman[$sidx]) == $conv[$i]['letter']) {
+				if((string)strtoupper((string)$roman[$sidx]) == (string)$conv[$i]['letter']) {
 					if($state > $conv[$i]['number']) {
 						$arabic -= $conv[$i]['number'];
 					} else {
@@ -736,7 +732,7 @@ final class SmartUtils {
 			//--
 		} //end while
 		//--
-		return($arabic);
+		return (int) $arabic;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -744,7 +740,7 @@ final class SmartUtils {
 
 	//================================================================
 	// extract HTML title (must not exceed 128 characters ; recommended is max 65) ; no changes
-	public static function extract_title(?string $ytxt, ?int $y_limit=65, bool $clear_numbers=false) {
+	public static function extract_title(?string $ytxt, ?int $y_limit=65, bool $clear_numbers=false) : string {
 		//--
 		$ytxt = (string) Smart::stripTags((string)$ytxt, false); // will do strip tags
 		$ytxt = (string) Smart::normalize_spaces((string)$ytxt); // will do normalize spaces
@@ -774,7 +770,7 @@ final class SmartUtils {
 
 	//================================================================
 	// extract HTML meta description (must not exceed 256 characters ; recommended is max 155 characters)
-	public static function extract_description(?string $ytxt, ?int $y_limit=155, bool $clear_numbers=false) {
+	public static function extract_description(?string $ytxt, ?int $y_limit=155, bool $clear_numbers=false) : string {
 		//--
 		$ytxt = (string) trim((string)$ytxt);
 		if((string)$ytxt == '') {
@@ -810,7 +806,7 @@ final class SmartUtils {
 	// will find the keywords listed descending by the occurence number
 	// keywords with higher frequency will be listed first
 	// We add Strategy: Max 2% up to 7% of keywords from existing text (SEO req.)
-	public static function extract_keywords(?string $ytxt, ?int $y_count=97, bool $clear_numbers=true) {
+	public static function extract_keywords(?string $ytxt, ?int $y_count=97, bool $clear_numbers=true) : string {
 		//--
 		$ytxt = (string) trim((string)$ytxt);
 		if((string)$ytxt == '') {
@@ -867,7 +863,7 @@ final class SmartUtils {
 
 	//================================================================
 	// prepare HTML compliant keywords from a string
-	public static function extract_words_from_text_html(?string $ytxt) {
+	public static function extract_words_from_text_html(?string $ytxt) : array {
 		//--
 		$ytxt = Smart::stripTags((string)$ytxt, false);
 		$ytxt = Smart::normalize_spaces((string)$ytxt);
@@ -951,7 +947,7 @@ final class SmartUtils {
 	//================================================================
 	public static function crypto_algo() {
 		//--
-		$cipher = 'hash/sha256'; // default: internal
+		$cipher = 'hash/sha384'; // default: internal
 		//--
 		if(defined('SMART_FRAMEWORK_SECURITY_CRYPTO')) {
 			if((string)trim((string)SMART_FRAMEWORK_SECURITY_CRYPTO) != '') {
@@ -1460,7 +1456,7 @@ final class SmartUtils {
 	// This key should never be exposed to the public, it is used to check signed data (which may be paired with visitor unique track id)
 	public static function unique_client_private_key() {
 		//--
-		return SmartHashCrypto::sha512('*'.self::client_ident_private_key());
+		return SmartHashCrypto::sha512('*'.self::client_ident_private_key(), true);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1471,7 +1467,7 @@ final class SmartUtils {
 	// This key should never be exposed to the public, it is used to check signed data (which may be paired with visitor unique track id)
 	public static function unique_auth_client_private_key() {
 		//--
-		return SmartHashCrypto::sha512('*'.SmartAuth::get_login_id().self::client_ident_private_key());
+		return SmartHashCrypto::sha512('*'.SmartAuth::get_auth_username().self::client_ident_private_key(), true);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1510,8 +1506,8 @@ final class SmartUtils {
 
 
 	//================================================================
-	// This is the visitor UID as SHA512/B62 (86 bytes) calculated using the visitor private key and visitor public key
-	// This should be used just for tracking purposes and can be really trusted if the SMART_APP_VISITOR_COOKIE is defined as it came from internal as the value of the SMART_FRAMEWORK_UUID_COOKIE_NAME which is optional
+	// This is the visitor UID as SHA512/B62 (86 bytes) calculated using the visitor private key, visitor public key (cookie) and the internal secret
+	// This can be public exposed and used for tracking purposes other than SMART_APP_VISITOR_COOKIE as it is a derivation of it, where another UID related with SMART_APP_VISITOR_COOKIE is needed ; can be really trusted, but the SMART_APP_VISITOR_COOKIE does not
 	public static function get_visitor_tracking_uid() {
 		//--
 		$uuid = '#';
@@ -1574,8 +1570,8 @@ final class SmartUtils {
 	// Ex: http:// or https:// ; must not return an empty protocol if not set but fallback to default: http://
 	public static function get_server_current_protocol() {
 		//--
-		if(array_key_exists('get_server_current_protocol', self::$cache)) {
-			return (string) self::$cache['get_server_current_protocol'];
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (string) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//--
 		$current_protocol = '';
@@ -1641,7 +1637,7 @@ final class SmartUtils {
 			} //end if
 			//--
 			if($err) {
-				Smart::log_warning('ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO: `'.$hkey.'`=`'.$skey.'`');
+				Smart::log_warning(__METHOD__.' # ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO: `'.$hkey.'`=`'.$skey.'`');
 				$current_protocol = 'http://'; // fallback to default
 			} //end if
 			//--
@@ -1657,12 +1653,12 @@ final class SmartUtils {
 		//--
 		if((string)$current_protocol == '') {
 			$current_protocol = 'http://'; // fallback to default
-			Smart::log_warning('ERR: Failed to determine the server current protocol: `http://` or `https://` ...');
+			Smart::log_warning(__METHOD__.' # ERR: Failed to determine the server current protocol: `http://` or `https://` ...');
 		} //end if
 		//--
-		self::$cache['get_server_current_protocol'] = (string) $current_protocol;
+		self::$cache[(string)__FUNCTION__] = (string) $current_protocol;
 		//--
-		return (string) self::$cache['get_server_current_protocol'];
+		return (string) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1672,8 +1668,8 @@ final class SmartUtils {
 	// Ex: 80 or 443 or ... ; must not return an empty port if not set but fallback to default: 80
 	public static function get_server_current_port() {
 		//--
-		if(array_key_exists('get_server_current_port', self::$cache)) {
-			return (string) self::$cache['get_server_current_port'];
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (string) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//--
 		$current_port = '';
@@ -1718,7 +1714,7 @@ final class SmartUtils {
 			} //end if
 			//--
 			if($err) {
-				Smart::log_warning('ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PORT: `'.$hkey.'`=`'.$skey.'`');
+				Smart::log_warning(__METHOD__.' # ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_PORT: `'.$hkey.'`=`'.$skey.'`');
 				$current_port = '80'; // fallback to default
 			} //end if
 			//--
@@ -1736,12 +1732,12 @@ final class SmartUtils {
 		//--
 		if((string)$current_port == '') {
 			$current_port = '80'; // fallback to default
-			Smart::log_warning('ERR: Failed to determine the server current port: ex: `80` or `443` ...');
+			Smart::log_warning(__METHOD__.' # ERR: Failed to determine the server current port: ex: `80` or `443` ...');
 		} //end if
 		//--
-		self::$cache['get_server_current_port'] = (string) $current_port;
+		self::$cache[(string)__FUNCTION__] = (string) $current_port;
 		//--
-		return (string) self::$cache['get_server_current_port'];
+		return (string) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1750,10 +1746,11 @@ final class SmartUtils {
 	//================================================================
 	// Ex: 127.0.0.1 ; must not return an empty value ; in case of failure must log and return a fake, inexistent IP
 	// IMPORTANT: if proxy mode enabled this can be override by setting: SMART_FRAMEWORK_SRVPROXY_SERVER_IP
+	// for IPv6 will return the compressed format
 	public static function get_server_current_ip() {
 		//--
-		if(array_key_exists('get_server_current_ip', self::$cache)) {
-			return (string) self::$cache['get_server_current_ip'];
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (string) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//--
 		$ip = '';
@@ -1765,7 +1762,7 @@ final class SmartUtils {
 				} elseif((string)trim((string)SmartValidator::validate_filter_ip_address((string)trim((string)SMART_FRAMEWORK_SRVPROXY_SERVER_IP))) != '') {
 					$ip = (string)  SmartFrameworkRegistry::getServerVar((string)trim((string)SMART_FRAMEWORK_SRVPROXY_SERVER_IP));
 				} elseif((string)SMART_FRAMEWORK_SRVPROXY_SERVER_IP != '') {
-					Smart::log_warning('ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_IP: `'.SMART_FRAMEWORK_SRVPROXY_SERVER_IP.'`');
+					Smart::log_warning(__METHOD__.' # ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_IP: `'.SMART_FRAMEWORK_SRVPROXY_SERVER_IP.'`');
 				} //end if
 			} //end if
 		} //end if
@@ -1777,14 +1774,20 @@ final class SmartUtils {
 				$ip = (string) trim((string)SmartValidator::validate_filter_ip_address((string)trim((string)SmartFrameworkRegistry::getServerVar('SERVER_NAME'))));
 				if((string)$ip == '') {
 					$ip = (string) self::FAKE_IP_SERVER; // return a fake IP, that does not exists {{{SYNC-SRV-DETECTION-FAKE-IP}}}
-					Smart::log_warning('ERR: Failed to get current server IP address. Fallback to: `'.$ip.'`');
+					Smart::log_warning(__METHOD__.' # ERR: Failed to get current server IP address. Fallback to: `'.$ip.'`');
 				} //end if
 			} //end if
 		} //end if
 		//--
-		self::$cache['get_server_current_ip'] = (string) $ip;
+		$ip = (string) Smart::ip_addr_compress((string)$ip); // {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
+		if((string)$ip == '') {
+			Smart::raise_error(__METHOD__.' # IP compression Failed');
+			return '';
+		} //end if
 		//--
-		return (string) self::$cache['get_server_current_ip'];
+		self::$cache[(string)__FUNCTION__] = (string) $ip;
+		//--
+		return (string) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1795,8 +1798,10 @@ final class SmartUtils {
 	// IMPORTANT: if proxy mode enabled this can be override by setting: SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN
 	public static function get_server_current_domain_name() {
 		//--
-		if(array_key_exists('get_server_current_domain_name', self::$cache)) {
-			return (string) self::$cache['get_server_current_domain_name'];
+		// for IPv6 will return ex: [2001:0:6dcd:8c74::] ; {{{SYNC-SMART-SERVER-DOMAIN-IPV6-BRACKETS}}} ; {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
+		//--
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (string) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//--
 		$dm = '';
@@ -1810,7 +1815,7 @@ final class SmartUtils {
 				} elseif((string)trim((string)SmartValidator::validate_filter_ip_address((string)trim((string)SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN))) != '') { // domain can be also an IP
 					$dm = (string)  SmartFrameworkRegistry::getServerVar((string)trim((string)SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN));
 				} elseif((string)SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN != '') {
-					Smart::log_warning('ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN: `'.SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN.'`');
+					Smart::log_warning(__METHOD__.' # ERR: Invalid definition or value for SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN: `'.SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN.'`');
 				} //end if
 			} //end if
 		} //end if
@@ -1822,14 +1827,25 @@ final class SmartUtils {
 				$dm = (string) self::get_server_current_ip(); // fallback to IP
 				if((string)trim((string)$dm) == '') { // if still empty, log
 					$dm = (string) self::FAKE_IP_SERVER; // return a fake IP, as a domain name, that does not exists {{{SYNC-SRV-DETECTION-FAKE-IP}}}
-					Smart::log_warning('ERR: Failed to get current server Domain Name. Fallback to: `'.$dm.'`');
+					Smart::log_warning(__METHOD__.' # ERR: Failed to get current server Domain Name. Fallback to: `'.$dm.'`');
 				} //end if
 			} //end if else
 		} //end if
 		//--
-		self::$cache['get_server_current_domain_name'] = (string) strtolower((string)$dm);
+		if(strpos((string)$dm, ':') !== false) { // {{{SYNC-SMART-SERVER-DOMAIN-IPV6-BRACKETS}}} ; {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
+			//-- IPv6 addresses contain colons, they cannot be directly used in URLs because the colons would conflict with both the protocol declaration (http:// or https://) and port numbers
+			$dm = (string) Smart::ip_addr_compress((string)$dm); // {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
+			if((string)$dm == '') {
+				Smart::raise_error(__METHOD__.' # IP compression Failed');
+				return '';
+			} //end if
+			$dm = (string) '['.$dm.']'; // when a literal IPv6 address is used, it is encased in a bracket
+			//--
+		} //end if
 		//--
-		return (string) self::$cache['get_server_current_domain_name'];
+		self::$cache[(string)__FUNCTION__] = (string) strtolower((string)$dm);
+		//--
+		return (string) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1840,28 +1856,28 @@ final class SmartUtils {
 	// IMPORTANT: if proxy mode enabled this can be override by setting: SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN
 	public static function get_server_current_basedomain_name() {
 		//--
-		if(array_key_exists('get_server_current_basedomain_name', self::$cache)) {
-			return (string) self::$cache['get_server_current_basedomain_name'];
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (string) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//--
-		$domain = (string) self::get_server_current_domain_name();
+		$domain = (string) Smart::ip_domain_to_ip_addr((string)self::get_server_current_domain_name()); // remove [] from IPv6 as domain
 		//--
-		$xout = '';
-		if(preg_match('/^[0-9\.]+$/', $domain) OR (strpos($domain, ':') !== false)) { // if IPv4 or IPv6
-			$xout = (string) $domain;
-		} else { // assume is domain
-			if(strpos($domain, '.') !== false) { // ex: subdomain.domain.ext or subdomain.domain
-				$domain = (array) explode('.', (string)$domain);
-				$domain = (array) array_reverse($domain);
-				$xout = (string) $domain[1].'.'.$domain[0]; // PHP8 OK, as it tests if . exists
-			} else { // ex: localhost
-				$xout = (string) $domain;
-			} //end if else
+		$xout = (string) SmartParser::extract_base_domain_from_domain((string)$domain);
+		//--
+		if(strpos((string)$xout, ':') !== false) { // {{{SYNC-SMART-SERVER-DOMAIN-IPV6-BRACKETS}}} {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
+			//-- IPv6 addresses contain colons, they cannot be directly used in URLs because the colons would conflict with both the protocol declaration (http:// or https://) and port numbers
+			$xout = (string) Smart::ip_addr_compress((string)$xout); // {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
+			if((string)$xout == '') {
+				Smart::raise_error(__METHOD__.' # IP compression Failed');
+				return '';
+			} //end if
+			$xout = (string) '['.$xout.']'; // when a literal IPv6 address is used, it is encased in a bracket
+			//--
 		} //end if
 		//--
-		self::$cache['get_server_current_basedomain_name'] = (string) $xout;
+		self::$cache[(string)__FUNCTION__] = (string) $xout;
 		//--
-		return (string) self::$cache['get_server_current_basedomain_name'];
+		return (string) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1872,8 +1888,8 @@ final class SmartUtils {
 	// IMPORTANT: if proxy mode enabled this can be override by setting: SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN
 	public static function get_server_current_subdomain_name() {
 		//--
-		if(array_key_exists('get_server_current_subdomain_name', self::$cache)) {
-			return (string) self::$cache['get_server_current_subdomain_name'];
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (string) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//--
 		$sdom = '';
@@ -1888,9 +1904,9 @@ final class SmartUtils {
 			//--
 		} //end if
 		//--
-		self::$cache['get_server_current_subdomain_name'] = (string) $sdom;
+		self::$cache[(string)__FUNCTION__] = (string) $sdom;
 		//--
-		return (string) self::$cache['get_server_current_subdomain_name'];
+		return (string) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1930,8 +1946,8 @@ final class SmartUtils {
 	// Ex: script.php ; can return empty on failure
 	public static function get_server_current_script() {
 		//--
-		if(array_key_exists('get_server_current_script', self::$cache)) {
-			return (string) self::$cache['get_server_current_script'];
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (string) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//--
 		$current_script = '';
@@ -1939,12 +1955,12 @@ final class SmartUtils {
 			$current_script = (string) basename((string)self::get_server_current_full_script());
 		} //end if
 		if((string)$current_script == '') {
-			Smart::log_warning('Cannot Determine Current WebServer Script'); // do not return here, must be cached
+			Smart::log_warning(__METHOD__.' # Cannot Determine Current Server Script'); // do not return here, must be cached
 		} //end if
 		//--
-		self::$cache['get_server_current_script'] = (string) $current_script;
+		self::$cache[(string)__FUNCTION__] = (string) $current_script;
 		//--
-		return (string) self::$cache['get_server_current_script'];
+		return (string) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1953,10 +1969,6 @@ final class SmartUtils {
 	//================================================================
 	// Ex: ?param1=one&param2=two ; if empty can return just ? or empty string if 2nd param is set to true
 	public static function get_server_current_queryurl(bool $use_blank_if_empty=false) {
-		//--
-		if(array_key_exists('get_server_current_queryurl', self::$cache)) {
-			return (string) self::$cache['get_server_current_queryurl'];
-		} //end if
 		//--
 		$url_query = (string) SmartFrameworkRegistry::getServerVar('QUERY_STRING'); // will get without the prefix '?' as: page=one&subpage=two
 		//--
@@ -1968,9 +1980,7 @@ final class SmartUtils {
 			$url_query = '?'.$url_query;
 		} //end if else
 		//--
-		self::$cache['get_server_current_queryurl'] = (string) $url_query;
-		//--
-		return (string) self::$cache['get_server_current_queryurl'];
+		return (string) $url_query;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1980,8 +1990,8 @@ final class SmartUtils {
 	// Ex: /sites/test/
 	public static function get_server_current_path() {
 		//--
-		if(array_key_exists('get_server_current_path', self::$cache)) {
-			return (string) self::$cache['get_server_current_path'];
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (string) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//--
 		$current_path = '/'; // this is default
@@ -1999,52 +2009,61 @@ final class SmartUtils {
 			} //end if
 		} //end if
 		if((string)$current_path == '') {
-			Smart::log_warning('Cannot Determine Current WebServer URL / Path'); // do not return here, must be cached
+			Smart::log_warning(__METHOD__.' # Cannot Determine Current Server URL / Path'); // do not return here, must be cached
 		} //end if
 		//--
-		self::$cache['get_server_current_path'] = (string) $current_path;
+		self::$cache[(string)__FUNCTION__] = (string) $current_path;
 		//--
-		return (string) self::$cache['get_server_current_path'];
+		return (string) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	// Ex: http(s)://domain(:port)/sites/test/
-	public static function get_server_current_url() {
+	// Ex: http(s)://domain(:port)/sites/test/ (skip port if 80 or 443) if skip port default is set to TRUE (default behaviour) ; or http(s)://domain:port/sites/test/ if skip port default is set to FALSE
+	public static function get_server_current_url(bool $skip_port_if_default=true) : string {
 		//--
-		if(array_key_exists('get_server_current_url', self::$cache)) {
-			return (string) self::$cache['get_server_current_url'];
+		$cache_key = (string)__FUNCTION__.'#with-port';
+		if($skip_port_if_default === true) {
+			$cache_key = (string)__FUNCTION__.'#skip-default-port';
+		} //end if
+		//--
+		if(array_key_exists((string)$cache_key, self::$cache)) {
+			return (string) self::$cache[(string)$cache_key];
 		} //end if
 		//--
 		$current_port = (string) self::get_server_current_port(); // this shoud not return an empty value, but just in case
 		if((string)$current_port == '') {
-			Smart::log_warning('ERR: Cannot Determine Current WebServer URL / Port');
+			Smart::log_warning(__METHOD__.' # Cannot Determine Current Server URL / Port');
 			$current_port = '80'; // fallback on default
 		} //end if
 		$used_port = ':'.$current_port;
 		//--
 		$current_domain = self::get_server_current_domain_name(); // this shoud not return an empty value, but just in case
 		if((string)$current_domain == '') {
-			Smart::log_warning('Cannot Determine Current WebServer URL / Domain');
+			Smart::log_warning(__METHOD__.' # Cannot Determine Current Server URL / Domain');
 			$current_domain = (string) self::FAKE_IP_SERVER; // use a fake IP, that does not exists {{{SYNC-SRV-DETECTION-FAKE-IP}}}
 		} //end if
 		//--
 		$current_prefix = 'http://';
 		if((string)$current_port == '80') {
-			$used_port = ''; // avoid specify port if default, 80 on http://
+			if($skip_port_if_default === true) {
+				$used_port = ''; // avoid specify port if default, 80 on http://
+			} //end if
 		} //end if
 		if((string)self::get_server_current_protocol() == 'https://') {
 			$current_prefix = 'https://';
 			if((string)$current_port == '443') {
-				$used_port = ''; // avoid specify port if default, 443 on https://
+				if($skip_port_if_default === true) {
+					$used_port = ''; // avoid specify port if default, 443 on https://
+				} //end if
 			} //end if
 		} //end if
 		//--
-		self::$cache['get_server_current_url'] = (string) $current_prefix.$current_domain.$used_port.self::get_server_current_path();
+		self::$cache[(string)$cache_key] = (string) $current_prefix.$current_domain.$used_port.self::get_server_current_path();
 		//--
-		return (string) self::$cache['get_server_current_url'];
+		return (string) self::$cache[(string)$cache_key];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2053,8 +2072,8 @@ final class SmartUtils {
 	//================================================================
 	public static function get_webserver_version() {
 		//--
-		if(array_key_exists('get_webserver_version', self::$cache)) {
-			return (array) self::$cache['get_webserver_version'];
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (array) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//-- it may be hidden: ex: 'Apache'
 		$tmp_srv_software = (string) SmartFrameworkRegistry::getServerVar('SERVER_SOFTWARE');
@@ -2065,13 +2084,13 @@ final class SmartUtils {
 		$tmp_version_arr = (array) explode(' ', (string)$tmp_out);
 		$tmp_version_str = (string) trim((string)($tmp_version_arr[0] ?? ''));
 		//--
-		self::$cache['get_webserver_version'] = [
+		self::$cache[(string)__FUNCTION__] = [
 			'signature'	=> (string) $tmp_srv_software,
 			'name' 		=> (string) $tmp_name_str,
 			'version' 	=> (string) $tmp_version_str,
 		];
 		//--
-		return (array) self::$cache['get_webserver_version'];
+		return (array) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2080,10 +2099,10 @@ final class SmartUtils {
 	//================================================================
 	public static function get_server_os() {
 		//--
-		if(!array_key_exists('get_server_os', self::$cache)) {
-			self::$cache['get_server_os'] = null; // fix for PHP8
+		if(!array_key_exists((string)__FUNCTION__, self::$cache)) {
+			self::$cache[(string)__FUNCTION__] = null; // fix for PHP8
 		} //end if
-		$out = (string) self::$cache['get_server_os'];
+		$out = (string) self::$cache[(string)__FUNCTION__];
 		//--
 		if((string)$out == '') {
 			//-- Notice: if Apache Tokens OS may be hidden ... so this is only an approximate guess of the server OS, not accurate !
@@ -2163,7 +2182,7 @@ final class SmartUtils {
 					$out = (string) strtoupper((string)self::GENERIC_VALUE_OS_BROWSER_IP.' '.PHP_OS);
 			} //end switch
 			//--
-			self::$cache['get_server_os'] = (string) $out;
+			self::$cache[(string)__FUNCTION__] = (string) $out;
 			//--
 		} //end if
 		//--
@@ -2211,12 +2230,12 @@ final class SmartUtils {
 		// if custom IP detection was set and the custom IP detection fails (ex: missing the specific header defined in SMART_FRAMEWORK_SRVPROXY_CLIENT_IP) than the SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP will be set internally and some features of Smart.Framework that depend on a trusted client IP detection will not be available (ex: session)
 		// # !!! NEVER define the SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP in any config or custom development context, it is reserved for internal usage only !!!
 		//--
-		if(array_key_exists('get_ip_client', self::$cache)) {
-			return (string) self::$cache['get_ip_client'];
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (string) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//--
 		if(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP')) { // this should be fatal error !
-			Smart::log_warning('The constant SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP is reserved for internal usage only ... should never be defined outside this method: '.__METHOD__);
+			Smart::log_warning(__METHOD__.' # The constant SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP is reserved for internal usage only ... should never be defined outside this method: '.__METHOD__);
 			// do not return here, let it go, at least will determine as much as it can and since this is already defined will be anyway marked as untrusted ...
 		} //end if
 		//--
@@ -2261,7 +2280,7 @@ final class SmartUtils {
 		//--
 		if($err) {
 			//--
-			Smart::log_warning('Invalid definition for SMART_FRAMEWORK_SRVPROXY_CLIENT_IP : `'.SMART_FRAMEWORK_SRVPROXY_CLIENT_IP.'`', 'Cannot Determine Current Client IP Address');
+			Smart::log_warning(__METHOD__.' # Invalid definition for SMART_FRAMEWORK_SRVPROXY_CLIENT_IP : `'.SMART_FRAMEWORK_SRVPROXY_CLIENT_IP.'`', 'Cannot Determine Current Client IP Address');
 			$ip = ''; // must be empty, will fallback below on a fake ip and set as untrusted
 			//--
 		} else {
@@ -2293,30 +2312,36 @@ final class SmartUtils {
 			if(!defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP')) {
 				define('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP', 'CUSTOM-IP-DETECTION-FALLBACK:['.$hkey.']'); // this is important, some Smart.Framework features will not be enabled when this set, but this is how it should be from the security point of view ... with an untrusted client IP that could not be properly detected !
 			} //end if
-			Smart::log_warning('Invalid Client IP Address. Fallback to: '.SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP.' ; IP='.$ip);
+			Smart::log_warning(__METHOD__.' # Invalid Client IP Address. Fallback to: '.SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP.' ; IP='.$ip);
 			//--
 		} //end if
 		//--
-		self::$cache['get_ip_client:validated-header-key'] = (string) $hkey; // the header key
-		self::$cache['get_ip_client:validated-header-val'] = (string) $hval; // the header raw value
-		self::$cache['get_ip_client'] = (string) $ip; // the validated client IP
+		$ip = (string) Smart::ip_addr_compress((string)$ip); // {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
+		if((string)$ip == '') {
+			Smart::raise_error(__METHOD__.' # IP compression Failed');
+			return '';
+		} //end if
+		//--
+		self::$cache[(string)__FUNCTION__] = (string) $ip; // the validated client IP ; {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
 		//--
 		if(SmartEnvironment::ifDebug()) {
+			self::$cache[(string)__FUNCTION__.':validated-header-key'] = (string) $hkey; // the header key
+			self::$cache[(string)__FUNCTION__.':validated-header-val'] = (string) $hval; // the header raw value
 			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Client',
-				'data' => 'Validation Header Key: `'.self::$cache['get_ip_client:validated-header-key'].'`'
+				'data' => 'Validation Header Key: `'.self::$cache[(string)__FUNCTION__.':validated-header-key'].'`'
 			]);
 			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Client',
-				'data' => 'Validation Header Raw Value: `'.self::$cache['get_ip_client:validated-header-val'].'`'
+				'data' => 'Validation Header Raw Value: `'.self::$cache[(string)__FUNCTION__.':validated-header-val'].'`'
 			]);
 			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Client',
-				'data' => 'IP Detected: `'.self::$cache['get_ip_client'].'`'.($custom === true ? ' [SRV-PROXY=true]' : '').(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP') ? ' [UNTRUSTED:true;'.SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP.']' : '')
+				'data' => 'IP Detected: `'.self::$cache[(string)__FUNCTION__].'`'.($custom === true ? ' [SRV-PROXY=true]' : '').(defined('SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP') ? ' [UNTRUSTED:true;'.SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP.']' : '')
 			]);
 		} //end if
 		//--
-		return (string) self::$cache['get_ip_client'];
+		return (string) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2331,8 +2356,8 @@ final class SmartUtils {
 	 */
 	public static function get_ip_proxyclient() {
 		//--
-		if(array_key_exists('get_ip_proxyclient', self::$cache)) {
-			return (string) self::$cache['get_ip_proxyclient'];
+		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
+			return (string) self::$cache[(string)__FUNCTION__];
 		} //end if
 		//--
 		$arr_valid_hdrs = (array) self::VALID_HEADERS_CLIENT_OR_PROXY_IP;
@@ -2359,7 +2384,7 @@ final class SmartUtils {
 						$use_remote_addr = true;
 					} //end if
 				} else { // this should be just warning
-					Smart::log_warning('The SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP must not contain REMOTE_ADDR when SMART_FRAMEWORK_SRVPROXY_ENABLED is not set to TRUE !');
+					Smart::log_warning(__METHOD__.' # The SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP must not contain REMOTE_ADDR when SMART_FRAMEWORK_SRVPROXY_ENABLED is not set to TRUE !');
 					return ''; // proxy can be empty if not proper detected
 				} //end if
 			} //end if
@@ -2384,7 +2409,7 @@ final class SmartUtils {
 		} //end if
 		//--
 		if($err) {
-			Smart::log_warning('Invalid definition for SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP');
+			Smart::log_warning(__METHOD__.' # Invalid definition for SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP');
 			return ''; // proxy can be empty if not proper detected
 		} //end if
 		//--
@@ -2392,7 +2417,7 @@ final class SmartUtils {
 		if($custom === true) {
 			$chkey = (string) strtoupper((string)trim((string)SMART_FRAMEWORK_SRVPROXY_CLIENT_IP));
 			if(((string)trim((string)$chkey) == '') OR (!in_array((string)$chkey, (array)self::VALID_HEADERS_CLIENT_OR_PROXY_IP))) {
-				Smart::log_warning('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition must be validated against SMART_FRAMEWORK_SRVPROXY_CLIENT_IP which contains an invalid value');
+				Smart::log_warning(__METHOD__.' # SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition must be validated against SMART_FRAMEWORK_SRVPROXY_CLIENT_IP which contains an invalid value');
 				return ''; // proxy can be empty if not proper detected
 			} //end if
 		} //end if
@@ -2406,7 +2431,7 @@ final class SmartUtils {
 			if((string)$hkey != '') {
 				if((string)$chkey != '') {
 					if((string)$hkey == (string)$chkey) {
-						Smart::log_warning('SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition cannot contain the same key as defined in SMART_FRAMEWORK_SRVPROXY_CLIENT_IP', 'Failed to register Current Client Proxy IP Address');
+						Smart::log_warning(__METHOD__.' # SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP definition cannot contain the same key as defined in SMART_FRAMEWORK_SRVPROXY_CLIENT_IP', 'Failed to register Current Client Proxy IP Address');
 						return ''; // proxy can be empty if not proper detected
 					} //end if
 				} //end if
@@ -2425,31 +2450,39 @@ final class SmartUtils {
 			$hval = ''; // must reset each cycle, except break
 		} //end for
 		//--
-		self::$cache['get_ip_proxyclient:check-header-keys'] = (array) $arr_hdrs; // the header keys
-		self::$cache['get_ip_proxyclient:validated-header-key'] = (string) $hkey; // the validated header key
-		self::$cache['get_ip_proxyclient:validated-header-val'] = (string) $hval; // the header raw value
-		self::$cache['get_ip_proxyclient'] = (string) $proxy;
+		if((string)$proxy != '') { // this may be empty, compress and check below just if not empty
+			$proxy = (string) Smart::ip_addr_compress((string)$proxy); // {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
+			if((string)$proxy == '') {
+				Smart::raise_error(__METHOD__.' # IP compression Failed');
+				return '';
+			} //end if
+		} //end if
+		//--
+		self::$cache[(string)__FUNCTION__] = (string) $proxy; // the validated proxy-client IP ; {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
 		//--
 		if(SmartEnvironment::ifDebug()) {
+			self::$cache[(string)__FUNCTION__.':check-header-keys'] 	= (array)  $arr_hdrs; // the header keys
+			self::$cache[(string)__FUNCTION__.':validated-header-key'] 	= (string) $hkey; // the validated header key
+			self::$cache[(string)__FUNCTION__.':validated-header-val'] 	= (string) $hval; // the header raw value
 			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Proxy Client',
-				'data' => 'Check Header Keys:'."\n".self::pretty_print_var(self::$cache['get_ip_proxyclient:check-header-keys'])
+				'data' => 'Check Header Keys:'."\n".self::pretty_print_var(self::$cache[(string)__FUNCTION__.':check-header-keys'])
 			]);
 			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Proxy Client',
-				'data' => 'Validation Header Key: `'.self::$cache['get_ip_proxyclient:validated-header-key'].'`'
+				'data' => 'Validation Header Key: `'.self::$cache[(string)__FUNCTION__.':validated-header-key'].'`'
 			]);
 			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Proxy Client',
-				'data' => 'Validation Header Raw Value: `'.self::$cache['get_ip_proxyclient:validated-header-val'].'`'
+				'data' => 'Validation Header Raw Value: `'.self::$cache[(string)__FUNCTION__.':validated-header-val'].'`'
 			]);
 			SmartEnvironment::setDebugMsg('extra', 'SMART-UTILS', [
 				'title' => 'SmartUtils // Get IP Proxy Client',
-				'data' => 'IP Proxy Detected: `'.self::$cache['get_ip_proxyclient'].'`'.($custom === true ? ' [SRV-PROXY=true]' : '')
+				'data' => 'IP Proxy Detected: `'.self::$cache[(string)__FUNCTION__].'`'.($custom === true ? ' [SRV-PROXY=true]' : '')
 			]);
 		} //end if
 		//--
-		return (string) self::$cache['get_ip_proxyclient'];
+		return (string) self::$cache[(string)__FUNCTION__];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2460,11 +2493,11 @@ final class SmartUtils {
 	// This will be used only once
 	public static function get_os_browser_ip(?string $y_mode='') {
 		//--
-		if((!array_key_exists('get_os_browser_ip', self::$cache)) OR (!is_array(self::$cache['get_os_browser_ip']))) {
-			self::$cache['get_os_browser_ip'] = []; // fix for PHP8
+		if((!array_key_exists((string)__FUNCTION__, self::$cache)) OR (!is_array(self::$cache[(string)__FUNCTION__]))) {
+			self::$cache[(string)__FUNCTION__] = []; // fix for PHP8
 		} //end if
 		//--
-		$arr = (array) self::$cache['get_os_browser_ip'];
+		$arr = (array) self::$cache[(string)__FUNCTION__];
 		//--
 		if(Smart::array_size($arr) <= 0) {
 			//--
@@ -2581,21 +2614,21 @@ final class SmartUtils {
 				$wp_class = 'rb'; // bot class
 			} //end if
 			//-- identify ip addr
-			$wp_ip = self::get_ip_client();
+			$wp_ip = (string) self::get_ip_client();
 			//-- identify proxy ip if any
-			$wp_px = self::get_ip_proxyclient();
+			$wp_px = (string) self::get_ip_proxyclient();
 			//-- out data arr
-			$arr = array(
+			$arr = [
 				'signature'	=> (string) $the_srv_signature,
 				'mobile' 	=> (string) $wp_mb,
 				'os' 		=> (string) $wp_os,
 				'bw' 		=> (string) $wp_browser,
 				'bc' 		=> (string) $wp_class,
 				'ip' 		=> (string) $wp_ip,
-				'px' 		=> (string) $wp_px
-			);
+				'px' 		=> (string) $wp_px,
+			];
 			//--
-			self::$cache['get_os_browser_ip'] = (array) $arr;
+			self::$cache[(string)__FUNCTION__] = (array) $arr;
 			//--
 		} //end if
 		//--
@@ -2610,6 +2643,75 @@ final class SmartUtils {
 
 
 	//##### NON-PUBLICS
+
+
+	//================================================================
+	/**
+	 * Create a Protected Directory (Folder)
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public static function create_protected_dir(?string $protected_dir_path) : string {
+		//--
+		if((string)trim((string)$protected_dir_path) == '') {
+			return 'ERR: Protected Folder not defined !';
+		} //end if
+		//--
+		if(SmartFileSysUtils::checkIfSafePath((string)$protected_dir_path, true, true) != 1) { // deny absolute paths, allow protected paths
+			return 'ERR: Protected Folder path is unsafe (1) !';
+		} //end if
+		//--
+		$protected_dir_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)$protected_dir_path);
+		if(SmartFileSysUtils::checkIfSafePath((string)$protected_dir_path, true, true) != 1) { // deny absolute paths, allow protected paths
+			return 'ERR: Protected Folder path is unsafe (2) !';
+		} //end if
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$protected_dir_path, true, true); // deny absolute path access ; allow protected path access (starting with #)
+		//--
+		if(!SmartFileSystem::is_type_dir((string)$protected_dir_path)) {
+			SmartFileSystem::dir_create((string)$protected_dir_path, true, true); // allow protected paths
+		} //end if
+		if(!SmartFileSystem::is_type_dir((string)$protected_dir_path)) {
+			return 'ERR: Protected Folder does not exists !';
+		} //end if
+		if(!SmartFileSystem::have_access_write((string)$protected_dir_path)) {
+			return 'ERR: Protected Folder is not writable !';
+		} //end if
+		//--
+		$write_check_compare = 'yes';
+		if((string)$protected_dir_path != (string)self::APP_DB_FOLDER) { // {{{SYNC-APP-DB-FOLDER}}}
+			$write_check_compare = 'no'; // if different folder than APP_DB_FOLDER do not overwrite the htaccess file, it may be different
+		} //end if
+		if((int)SmartFileSystem::write_if_not_exists(
+			(string)$protected_dir_path.'.htaccess', // file name
+			(string)'### Smart.Framework // '.__FUNCTION__.' @ HtAccess Protected Folder :: `'.$protected_dir_path.'` ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', // file content
+			(string) $write_check_compare, // check compare will be yes just on APP_DB_FOLDER
+			true // allow protected paths
+		) != 1) {
+			return 'ERR: Protected Folder access-protection write failed !';
+		} //end if
+		if(!SmartFileSystem::is_type_file((string)$protected_dir_path.'.htaccess')) {
+			return 'ERR: Protected Folder access-protection not found !';
+		} //end if
+		if((int)SmartFileSystem::get_file_size((string)$protected_dir_path.'.htaccess') <= 0) {
+			return 'ERR: Protected Folder access-protection size is zero !';
+		} //end if
+		//--
+		if(!SmartFileSystem::is_type_file((string)$protected_dir_path.'index.html')) {
+			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$protected_dir_path.'index.html', true, true); // deny absolute path access ; allow protected path access (starting with #)
+			if(SmartFileSystem::write((string)$protected_dir_path.'index.html', '', 'w', true) != 1) { // allow protected paths
+				return 'ERR: Protected Folder index-protection write failed !';
+			} //end if
+			if(!SmartFileSystem::is_type_file((string)$protected_dir_path.'index.html')) {
+				return 'ERR: Protected Folder index-protection not found !';
+			} //end if
+		} //end if
+		//--
+		return '';
+		//--
+	} //END FUNCTION
+	//================================================================
 
 
 	//================================================================
@@ -2657,19 +2759,19 @@ final class SmartUtils {
 			return (array) $outarr;
 		} //end if
 		if((int)strlen((string)$cmd) > (int)PHP_MAXPATHLEN) {
-			Smart::log_warning(__METHOD__.' # The CMD Path is too long: '.$cmd);
+			Smart::log_warning(__METHOD__.' # The CMD Path is too long: `'.$cmd.'`');
 			$outarr['exitcode'] = -799;
 			return (array) $outarr;
 		} //end if
 		//--
 		if((int)strlen((string)$cwd) > (int)PHP_MAXPATHLEN) {
-			Smart::log_warning(__METHOD__.' # The CWD Path is too long: '.$cwd);
+			Smart::log_warning(__METHOD__.' # The CWD Path is too long: `'.$cwd.'`');
 			$outarr['exitcode'] = -798;
 			return (array) $outarr;
 		} //end if
 		if((string)$cwd != '') {
 			if(!SmartFileSysUtils::checkIfSafePath((string)$cwd, true, true)) { // this is synced with SmartFileSystem::dir_create() ; without this check if non-empty will fail with dir create below
-				Smart::log_warning(__METHOD__.' # The CWD Path is not safe: '.$cwd);
+				Smart::log_warning(__METHOD__.' # The CWD Path is not safe: `'.$cwd.'`');
 				$outarr['exitcode'] = -797;
 				return (array) $outarr;
 			} //end if
@@ -2683,7 +2785,7 @@ final class SmartUtils {
 			} //end if
 			if(!SmartFileSystem::is_type_dir((string)$cwd)) {
 				//--
-				Smart::log_warning(__METHOD__.' # The Proc Open CWD Path: ['.$cwd.'] cannot be created and is not available !', 'See Error Log for more details ...');
+				Smart::log_warning(__METHOD__.' # The Proc Open CWD Path: `'.$cwd.'` cannot be created and is not available !');
 				//--
 				$outarr['stdout'] 	= '';
 				$outarr['stderr'] 	= '';

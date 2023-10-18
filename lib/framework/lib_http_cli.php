@@ -83,8 +83,8 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  *
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
- * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20230109
+ * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFrameworkSecurity, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE
+ * @version 	v.20231003
  * @package 	@Core:Network
  *
  */
@@ -314,7 +314,7 @@ final class SmartHttpClient {
 	 * @param STRING $pwd  *Optional* If Basic Auth credentials have to be used, set the login password here, otherwise leave empty
 	 * @return ARRAY The result of browsing ; If The connection was Successful will return the ARRAY['result'] = 1 ; The HTTP Status Code returned by server will be stored in ARRAY['code'] (by default a 200 Status OK is considered successful but other codes may be also OK in certain circumstances)
 	 */
-	public function browse_url($url, $method='GET', $ssl_version='', $user='', $pwd='') {
+	public function browse_url($url, $method='GET', $ssl_version='', $user='', $pwd='') { // {{{SYNC-AUTH-TOKEN-SWT}}}
 		//--
 		$url = (string) trim((string)$url);
 		//--
@@ -410,7 +410,7 @@ final class SmartHttpClient {
 		//-- set raw headers
 		if(is_array($this->rawheaders)) {
 			foreach($this->rawheaders as $key => $val) {
-				$this->raw_headers[(string)$key] = (string) $val;
+				$this->raw_headers[(string)$key] = (string) SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$val);
 			} //end foreach
 		} //end if
 		//--
@@ -419,7 +419,7 @@ final class SmartHttpClient {
 		if((string)$this->protocol == '1.1') {
 			$this->raw_headers['Connection'] = 'close'; // fix for HTTP 1.1: by default on HTTP 1.1 connection is: keep-alive and must be set to explicit: close
 		} //end if
-		$this->raw_headers['User-Agent'] = (string) $this->useragent;
+		$this->raw_headers['User-Agent'] = (string) SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$this->useragent);
 		//--
 
 		//-- log action
@@ -693,6 +693,9 @@ final class SmartHttpClient {
 				case 'tls:1.2':
 					$browser_protocol = 'tlsv1.2://';
 					break;
+				case 'tls:1.3':
+					$browser_protocol = 'tlsv1.3://';
+					break;
 				case 'tls':
 				default: // other cases
 					$browser_protocol = 'tls://';
@@ -766,7 +769,14 @@ final class SmartHttpClient {
 			@stream_context_set_option($stream_context, 'ssl', 'disable_compression', 	(bool)SMART_FRAMEWORK_SSL_DISABLE_COMPRESS); // help mitigate the CRIME attack vector
 			//--
 		} //end if else
+		//--
+		if(!$this->debug) {
+			Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+		} //end if
 		$this->socket = @stream_socket_client($browser_protocol.$host.':'.$port, $errno, $errstr, $this->connect_timeout, STREAM_CLIENT_CONNECT, $stream_context);
+		if(!$this->debug) {
+			Smart::restoreErrLog(); // restore the original log handlers
+		} //end if
 		//--
 		if(!is_resource($this->socket)) {
 			$this->log .= '[ERR] Could not open connection. Error: '.$errno.': '.$errstr."\n";
@@ -800,7 +810,7 @@ final class SmartHttpClient {
 		//--
 
 		//--
-		$this->raw_headers['Host'] = $host.':'.$port;
+		$this->raw_headers['Host'] = SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$host.':'.$port);
 		//--
 
 		//-- auth
@@ -810,7 +820,12 @@ final class SmartHttpClient {
 				$this->log .= '[INF] Authentication will be attempted for USERNAME = \''.$user.'\' ; PASSWORD('.strlen($pwd).') *****'."\n";
 			} //end if
 			//--
-			$this->raw_headers['Authorization'] = 'Basic '.base64_encode($user.':'.$pwd);
+			if((string)$user === (string)SmartHttpUtils::AUTH_USER_BEARER) {
+//die('a');
+				$this->raw_headers['Authorization'] = 'Bearer '.SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$pwd);
+			} else { // auth basic
+				$this->raw_headers['Authorization'] = 'Basic '.base64_encode($user.':'.$pwd);
+			} //end if else
 			//--
 		} //end if
 		//--
@@ -829,7 +844,7 @@ final class SmartHttpClient {
 			} //end foreach
 			//--
 			if((string)$send_cookies != '') {
-				$this->raw_headers['Cookie'] = $send_cookies;
+				$this->raw_headers['Cookie'] = SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$send_cookies);
 				if($this->debug) {
 					$this->log .= '[INF] Cookies will be SET: '.$send_cookies."\n";
 				} //end if
@@ -883,9 +898,9 @@ final class SmartHttpClient {
 			$request = $this->method.' '.$path.' HTTP/'.$this->protocol."\r\n";
 			//--
 			if(((string)$post_string != '') AND ((string)$header_form_type != '')) {
-			//	$this->raw_headers[' Content-Type'] = 'text/html; charset=UTF-8'; // trick: to add duplicate header values the keys can be preceded by one or more spaces
-				$this->raw_headers['Content-Type'] = (string) $header_form_type;
-				$this->raw_headers['Content-Length'] = (int) strlen((string)$post_string);
+			//	$this->raw_headers[' Content-Type']  = 'text/html; charset=UTF-8'; // trick: to add duplicate header values the keys can be preceded by one or more spaces
+				$this->raw_headers['Content-Type']   = (string) SmartFrameworkSecurity::PrepareSafeHeaderValue((string)$header_form_type);
+				$this->raw_headers['Content-Length'] = (int)    strlen((string)$post_string);
 			} //end if
 			//--
 		} else { // other request: HEAD / GET / PUT ...
@@ -899,7 +914,7 @@ final class SmartHttpClient {
 			} //end if
 			//--
 			if(in_array((string)strtoupper((string)$this->method), (array)self::PUTBODY_METHODS)) {
-				$this->raw_headers['Accept'] = (string) '*/*';
+				$this->raw_headers['Accept'] = '*/*';
 				if((string)$this->putbodymode == 'file') {
 					if((SmartFileSysUtils::checkIfSafePath((string)$this->putbodyres) == '1') AND (SmartFileSysUtils::staticFileExists((string)$this->putbodyres) == true)) {
 						$this->put_body_len = (int) @filesize((string)$this->putbodyres); // avoid use smart file system class just for this ...
@@ -917,7 +932,7 @@ final class SmartHttpClient {
 						$this->log .= '[INF] '.$this->method.' resource string @ Length: '.$this->put_body_len."\n";
 					} //end if
 				} //end if else
-				$this->raw_headers['Content-Length'] 	= (string) $this->put_body_len;
+				$this->raw_headers['Content-Length'] 	= (int)    $this->put_body_len;
 				$this->raw_headers['Expect'] 			= (string) '100-continue';
 			} //end if
 			//--
@@ -1145,13 +1160,17 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20221224
+ * @version 	v.20231003
  * @package 	@Core:Network
  *
  */
 final class SmartHttpUtils {
 
 	// ::
+
+
+	public const AUTH_USER_BEARER = ':BEARER';
+
 
 	//==============================================
 	// encode a COOKIE variable ; returns the HTTP Cookie string

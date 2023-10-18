@@ -76,8 +76,8 @@ if((string)$var == 'some-string') {
  * @hints       It is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.
  *
  * @access      PUBLIC
- * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20230915
+ * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
+ * @version     v.20231017
  * @package     @Core
  *
  */
@@ -93,10 +93,12 @@ final class Smart {
 	public const REGEX_SAFE_VALID_NAME 	= '/^[_a-z0-9\-\.@]+$/';
 	public const REGEX_SAFE_USERNAME 	= '/^[a-z0-9\.]+$/';
 
+	public const REGEX_SAFE_HEX_STR 	= '/^[0-9a-f]+$/'; // TODO: match even number of characters only, not odd
+
 	public const DECIMAL_NUM_PRECISION 	= '9999999999999.9'; // DECIMAL I[13].D[1] ; if I + D > 14 looses some decimal precision ; by example: 99999999999999.9900 becomes 99999999999999.98 with 2 decimals and 100000000000000.0 with one decimal on number format ! ; no higher decimal numbers than this are safe using a precision like 14, the max in PHP
 
 	public const CHARSET_BASE_16 = '0123456789abcdef';
-	public const CHARSET_BASE_32 = '0123456789ABCDEFGHIJKLMNOPQRSTUV';
+	public const CHARSET_BASE_32 = '0123456789ABCDEFGHIJKLMNOPQRSTUV'; // cs09AV
 	public const CHARSET_BASE_36 = '0123456789abcdefghijklmnopqrstuvwxyz';
 	public const CHARSET_BASE_58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; // compatible with smartgo
 	public const CHARSET_BASE_62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -224,6 +226,7 @@ final class Smart {
 
 	private static $Cfgs = []; // registry of cached config data
 
+	private static $SemaphoreAreLogHandlersDisabled = false; // by default they are supposed to be not
 	//--
 
 
@@ -308,7 +311,7 @@ final class Smart {
 				// return as is (raw, unformatted) ...
 				break;
 			default:
-				self::log_warning(__METHOD__.' # Invalid Type to get from Config for Parameter ['.$param.'] Type: '.$type);
+				self::log_warning(__METHOD__.' # Invalid Type to get from Config for: Parameter ['.$param.'] ; Type ['.$type.']');
 		} //end switch
 		//--
 		return $value; // mixed
@@ -641,7 +644,7 @@ final class Smart {
 		} //end if
 		//--
 		if((strpos((string)$y_suffix, '?') !== false) OR (strpos((string)$y_suffix, '&') === 0)) {
-			self::log_notice('[URL Add Suffix] WARNING: The URL Suffix should not contain ? or start with & :: [URL: '.$y_url.' :: Suffix: '.$y_suffix.']');
+			self::log_notice(__METHOD__.' # The URL Suffix should not contain `?` or start with `&` :: URL: `'.$y_url.'` ; Suffix: `'.$y_suffix.'`');
 		} //end if
 		//--
 		if(((string)substr((string)$y_url, -1, 1) == '?') OR ((string)substr((string)$y_url, -1, 1) == '&')) {
@@ -681,7 +684,7 @@ final class Smart {
 		} //end if
 		//--
 		if(strpos((string)$y_suffix, '#') !== false) {
-			self::log_notice('[URL Add Anchor] WARNING: The URL Anchor should not contain # :: [URL: '.$y_url.' :: Suffix: '.$y_anchor.']');
+			self::log_notice(__METHOD__.' # The URL Anchor should not contain `#` :: URL: `'.$y_url.'` ; Suffix: `'.$y_anchor.'`');
 		} //end if
 		//--
 		return (string) $y_url.'#'.self::escape_url((string)$y_anchor);
@@ -818,7 +821,7 @@ final class Smart {
 		//--
 		$json = (string) @json_encode($data, $options, 512); // Fix: must return a string ; mixed data ; depth was added since PHP 5.5
 		if((string)$json == '') { // fix if json encode returns FALSE
-			self::log_warning('Invalid Encoded Json in '.__METHOD__.' for input: '.print_r($data,1));
+			self::log_warning(__METHOD__.' # Invalid Encoded JSON for input: '.print_r($data,1));
 			$json = 'null';
 		} //end if
 		//--
@@ -953,7 +956,7 @@ final class Smart {
 		// must be notice not warning ; in production environments cannot control values that come from request ...
 		//--
 		if(!self::is_nscalar($y_number)) { // array, object or resource
-			self::log_notice(__METHOD__.' # A value that should be numeric is not nScalar ; fixed as ZERO [0] : '.print_r($y_number,1));
+			self::log_notice(__METHOD__.' # The expected (numeric) input value is not nScalar ; fixed as ZERO [0] : '.print_r($y_number,1));
 			$y_number = 0;
 		} //end if
 		if(is_null($y_number)) { // NULL
@@ -966,7 +969,7 @@ final class Smart {
 			$y_number = 0; // cast to 0
 		} //end if
 		if(is_nan((float)$y_number)) { // must cast to float ; ex: 0/0
-			self::log_notice(__METHOD__.' # A value that should be numeric is NAN ; fixed as ZERO [0] : '.$y_number);
+			self::log_notice(__METHOD__.' # The expected (numeric) input value is NAN ; fixed as ZERO [0] : '.$y_number);
 			$y_number = 0; // NAN is considered overflow
 		} //end if
 		if(!is_numeric($y_number)) { // must check after check for null and nan ; it returns true also for number as strings ; ex: a non-numeric string
@@ -974,13 +977,13 @@ final class Smart {
 		} //end if
 		if(is_infinite((float)$y_number)) { // must cast to float ; ex: log(0) = -INF ; -1 * log(0) = INF
 			if((float)$y_number < 0) {
-				self::log_notice(__METHOD__.' # A float number is not finite ; fixed as ['.(float)PHP_FLOAT_MIN.'] : '.$y_number);
+				self::log_notice(__METHOD__.' # The expected (numeric) input value is INFINITE[-] ; fixed as ['.(float)PHP_FLOAT_MIN.'] : '.$y_number);
 				$y_number = (float) PHP_FLOAT_MIN;
 			} elseif((float)$y_number > 0) {
-				self::log_notice(__METHOD__.' # A float number is not finite ; fixed as ['.(float)PHP_FLOAT_MAX.'] : '.$y_number);
+				self::log_notice(__METHOD__.' # The expected (numeric) input value is INFINITE[+] ; fixed as ['.(float)PHP_FLOAT_MAX.'] : '.$y_number);
 				$y_number = (float) PHP_FLOAT_MAX;
 			} else {
-				self::log_notice(__METHOD__.' # A float number is not finite ; fixed as ZERO [0] : '.$y_number);
+				self::log_notice(__METHOD__.' # The expected (numeric) input value is INFINITE ; fixed as ZERO [0] : '.$y_number);
 				$y_number = 0;
 			} //end if else
 		} //end if
@@ -1018,7 +1021,7 @@ final class Smart {
 		// must be notice not warning ; in production environments cannot control values that come from request ...
 		//--
 		if(!self::is_nscalar($y_number)) { // array, object or resource
-			self::log_notice(__METHOD__.' # A value that should be numeric is not nScalar ; fixed as ZERO [0] : '.print_r($y_number,1));
+			self::log_notice(__METHOD__.' # The expected (numeric) input value is not nScalar ; fixed as ZERO [0] : '.print_r($y_number,1));
 			$y_number = 0;
 		} //end if
 		if(is_null($y_number)) { // NULL
@@ -1031,7 +1034,7 @@ final class Smart {
 			$y_number = 0; // cast to 0
 		} //end if
 		if(is_nan((float)$y_number)) { // must cast to float ; ex 0/0 = NAN
-			self::log_notice(__METHOD__.' # A value that should be numeric is NAN ; fixed as ZERO [0] : '.$y_number);
+			self::log_notice(__METHOD__.' # The expected (numeric) input value is NAN ; fixed as ZERO [0] : '.$y_number);
 			$y_number = 0; // NAN is considered overflow
 		} //end if
 		if(!is_numeric($y_number)) { // must check after check for null and nan ; it returns true also for number as strings ; ex: a non-numeric string
@@ -1039,25 +1042,25 @@ final class Smart {
 		} //end if
 		if(is_infinite((float)$y_number)) { // must cast to float ; ex: log(0) = -INF ; -1 * log(0) = INF
 			if((float)$y_number < 0) {
-				self::log_notice(__METHOD__.' # An integer number is not finite ; fixed as ['.(int)PHP_INT_MIN.'] : '.$y_number);
+				self::log_notice(__METHOD__.' # The expected (numeric) input value is INFINITE[-] ; fixed as ['.(int)PHP_INT_MIN.'] : '.$y_number);
 				$y_number = (int) PHP_INT_MIN;
 			} elseif((float)$y_number > 0) {
-				self::log_notice(__METHOD__.' # An integer number is not finite ; fixed as ['.(int)PHP_INT_MAX.'] : '.$y_number);
+				self::log_notice(__METHOD__.' # The expected (numeric) input value is INFINITE[+] ; fixed as ['.(int)PHP_INT_MAX.'] : '.$y_number);
 				$y_number = (int) PHP_INT_MAX;
 			} else {
-				self::log_notice(__METHOD__.' # An integer number is not finite ; fixed as ZERO [0] : '.$y_number);
+				self::log_notice(__METHOD__.' # The expected (numeric) input value is INFINITE ; fixed as ZERO [0] : '.$y_number);
 				$y_number = 0;
 			} //end if else
 		} //end if
 		if(self::check_int_number_overflow($y_number) === true) { // must bind to be in limits
 			if((float)$y_number < 0) {
-				self::log_notice(__METHOD__.' # An integer number overflows the limits ; fixed as ['.(int)PHP_INT_MIN.'] : '.$y_number);
+				self::log_notice(__METHOD__.' # The expected (numeric) input value OVERFLOWS[-] the limits ; fixed as ['.(int)PHP_INT_MIN.'] : '.$y_number);
 				$y_number = (int) PHP_INT_MIN;
 			} elseif((float)$y_number > 0) {
-				self::log_notice(__METHOD__.' # An integer number overflows the limits ; fixed as ['.(int)PHP_INT_MAX.'] : '.$y_number);
+				self::log_notice(__METHOD__.' # The expected (numeric) input value OVERFLOWS[+] the limits ; fixed as ['.(int)PHP_INT_MAX.'] : '.$y_number);
 				$y_number = (int) PHP_INT_MAX;
 			} else {
-				self::log_notice(__METHOD__.' # An integer number overflows the limits ; fixed as ZERO [0] : '.$y_number);
+				self::log_notice(__METHOD__.' # The expected (numeric) input value OVERFLOWS the limits ; fixed as ZERO [0] : '.$y_number);
 				$y_number = 0;
 			} //end if else
 		} //end if
@@ -1107,11 +1110,14 @@ final class Smart {
 		} //end if
 		if(self::check_dec_number_overflow($y_number) === true) {
 			if((float)$y_number < 0) {
-				self::log_notice(__METHOD__.' # A decimal number overflows the limits ; fixed as [-'.self::DECIMAL_NUM_PRECISION.'] : '.$y_number); // must be notice not warning ; in production environments cannot control values that come from request ...
+				self::log_notice(__METHOD__.' # The expected (numeric) input value OVERFLOWS[-] the limits ; fixed as [-'.self::DECIMAL_NUM_PRECISION.'] : '.$y_number); // must be notice not warning ; in production environments cannot control values that come from request ...
 				$y_number = (float) (-1 * (float)self::DECIMAL_NUM_PRECISION);
 			} elseif((float)$y_number > 0) {
-				self::log_notice(__METHOD__.' # A decimal number overflows the limits ; fixed as ['.self::DECIMAL_NUM_PRECISION.'] : '.$y_number); // must be notice not warning ; in production environments cannot control values that come from request ...
+				self::log_notice(__METHOD__.' # The expected (numeric) input value OVERFLOWS[+] the limits ; fixed as ['.self::DECIMAL_NUM_PRECISION.'] : '.$y_number); // must be notice not warning ; in production environments cannot control values that come from request ...
 				$y_number = (float) self::DECIMAL_NUM_PRECISION;
+			} else {
+				self::log_notice(__METHOD__.' # The expected (numeric) input value OVERFLOWS the limits ; fixed as ZERO [0] : '.$y_number); // must be notice not warning ; in production environments cannot control values that come from request ...
+				$y_number = 0;
 			} //end if
 		} //end if
 		$y_number = (float) self::format_number_float($y_number);
@@ -1183,7 +1189,7 @@ final class Smart {
 				@krsort($y_arr);
 				break;
 			default:
-				self::log_warning('WARNING: Invalid Sort Mode in '.__METHOD__.' # '.$y_mode);
+				self::log_warning(__METHOD__.' # Invalid Sort Mode: `'.$y_mode.'`');
 				return (array) $y_arr;
 		} //end switch
 		//--
@@ -1382,12 +1388,12 @@ final class Smart {
 							$y_arr[(string)$y_keys[$i]] = null;
 						} //end if
 					} else {
-						self::log_warning('WARNING: '.__METHOD__.' # array key is not nScalar: '.print_r($y_keys[$i]));
+						self::log_warning(__METHOD__.' # Array init key is not nScalar: '.print_r($y_keys[$i],1));
 					} //end if else
 				} //end for
 			} //end if
 		} else {
-			self::log_warning('WARNING: '.__METHOD__.' # array keys is not compliant ... must be non-associative array: '.print_r($y_keys[$i]));
+			self::log_warning(__METHOD__.' # Array init keys are not compliant ... must be non-associative type: '.print_r($y_keys,1));
 		} //end if
 		//--
 		return (array) $y_arr;
@@ -1439,19 +1445,10 @@ final class Smart {
 	 */
 	public static function array_diff_assoc_recursive(array $array1, array $array2) : array {
 		//--
-		if(!is_array($array1)) {
-			self::log_warning('WARNING: '.__METHOD__.' # array1 is not array !');
-			return array();
-		} //end if
-		if(!is_array($array2)) {
-			self::log_warning('WARNING: '.__METHOD__.' # array2 is not array !');
-			return array();
-		} //end if
+		$diff1 = (array) self::array_diff_assoc_oneway_recursive((array)$array1, (array)$array2);
+		$diff2 = (array) self::array_diff_assoc_oneway_recursive((array)$array2, (array)$array1);
 		//--
-		$diff_1 = (array) self::array_diff_assoc_oneway_recursive($array1, $array2);
-		$diff_2 = (array) self::array_diff_assoc_oneway_recursive($array2, $array1);
-		//--
-		return (array) array_merge_recursive((array)$diff_1, (array)$diff_2);
+		return (array) array_merge_recursive((array)$diff1, (array)$diff2);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1468,15 +1465,6 @@ final class Smart {
 	 */
 	public static function array_diff_assoc_oneway_recursive(array $array1, array $array2) : array {
 		//--
-		if(!is_array($array1)) {
-			self::log_warning('WARNING: '.__METHOD__.' # array1 is not array !');
-			return array();
-		} //end if
-		if(!is_array($array2)) {
-			self::log_warning('WARNING: '.__METHOD__.' # array2 is not array !');
-			return array();
-		} //end if
-		//--
 		$difference = array();
 		//--
 		foreach($array1 as $key => $value) {
@@ -1489,7 +1477,7 @@ final class Smart {
 						$difference[$key] = $new_diff;
 					} //end if
 				} //end if else
-			} elseif(!array_key_exists($key, $array2) || $array2[$key] != $value) { // !==
+			} elseif(!array_key_exists($key, $array2) || ($array2[$key] != $value)) { // !==
 				$difference[$key] = $value;
 			} //end if else
 		} //end foreach
@@ -2058,40 +2046,45 @@ final class Smart {
 	 *
 	 * @param STRING 		$encoded			:: A string (baseXX encoded) that was previous encoded using Smart::base_from_hex_convert()
 	 * @param INTEGER 		$currentBase		:: The base to convert ; Available source base: 32, 36, 58, 62, 85, 92
+	 * @param STRING 		$charset 			:: *OPTIONAL* an alternate charset if non-empty ; if empty (default) the built-in charset will be used
 	 * @return STRING 							:: The decoded string (as hex) from the selected base or empty string on error
 	 */
-	public static function base_to_hex_convert(string $encoded, int $currentBase) : string {
+	public static function base_to_hex_convert(string $encoded, int $currentBase, string $charset='') : string {
 		//--
 		$encoded = (string) trim((string)$encoded);
 		if((string)$encoded == '') {
-			self::log_warning(__METHOD__.' # Empty Input');
+		//	self::log_notice(__METHOD__.' # Empty Input');
 			return '';
 		} //end if
 		//--
 		$currentBase = (int) $currentBase;
 		$baseCharset = '';
-		switch((int)$currentBase) {
-			case 32:
-				$baseCharset = (string) self::CHARSET_BASE_32;
-				break;
-			case 36:
-				$baseCharset = (string) self::CHARSET_BASE_36;
-				break;
-			case 58:
-				$baseCharset = (string) self::CHARSET_BASE_58;
-				break;
-			case 62:
-				$baseCharset = (string) self::CHARSET_BASE_62;
-				break;
-			case 85:
-				$baseCharset = (string) self::CHARSET_BASE_85;
-				break;
-			case 92:
-				$baseCharset = (string) self::CHARSET_BASE_92;
-				break;
-			default:
-				break;
-		} //end switch
+		if((string)trim((string)$charset) != '') {
+			$baseCharset = (string) $charset;
+		} else {
+			switch((int)$currentBase) { // {{{SYNC-SMART-BASE-CONV-INTERNAL-CHARSETS}}}
+				case 32:
+					$baseCharset = (string) self::CHARSET_BASE_32;
+					break;
+				case 36:
+					$baseCharset = (string) self::CHARSET_BASE_36;
+					break;
+				case 58:
+					$baseCharset = (string) self::CHARSET_BASE_58;
+					break;
+				case 62:
+					$baseCharset = (string) self::CHARSET_BASE_62;
+					break;
+				case 85:
+					$baseCharset = (string) self::CHARSET_BASE_85;
+					break;
+				case 92:
+					$baseCharset = (string) self::CHARSET_BASE_92;
+					break;
+				default:
+					break;
+			} //end switch
+		} //end if
 		$baseCharset = (string) trim((string)$baseCharset);
 		if((string)$baseCharset == '') {
 			self::log_warning(__METHOD__.' # Invalid Current Base: `'.(int)$currentBase.'`');
@@ -2139,42 +2132,47 @@ final class Smart {
 	 * Safe convert from hex to any of the following bases: 32, 36, 58, 62, 85, 92
 	 * In case of error will return an empty string.
 	 *
-	 * @param STRING 		$hexstr			:: A hexadecimal string (base16) ; can be from bin2hex($string) or from dechex($integer) but in the case of using dechex must use also left padding with zeros to have an even length of the hex data
-	 * @param INTEGER 		$targetBase		:: The base to convert ; Available target base: 32, 36, 58, 62, 85, 92
-	 * @return STRING 						:: The encoded string in the selected base or empty string on error
+	 * @param STRING 		$hexstr				:: A hexadecimal string (base16) ; can be from bin2hex($string) or from dechex($integer) but in the case of using dechex must use also left padding with zeros to have an even length of the hex data
+	 * @param INTEGER 		$targetBase			:: The base to convert ; Available target base: 32, 36, 58, 62, 85, 92
+	 * @param STRING 		$charset 			:: *OPTIONAL* an alternate charset if non-empty ; if empty (default) the built-in charset will be used
+	 * @return STRING 							:: The encoded string in the selected base or empty string on error
 	 */
-	public static function base_from_hex_convert(string $hexstr, int $targetBase) : string {
+	public static function base_from_hex_convert(string $hexstr, int $targetBase, string $charset='') : string {
 		//--
 		$hexstr = (string) trim((string)$hexstr); // req. hex to allow converting also integer values not only strings as bin2hex($string) ; passing an integer can be done using dechex($integer) will use a different compression, making a shorter converted string ; Ex: bin2hex('2') = 3132 / dec2hex(2) = c !!
 		if((string)$hexstr == '') {
-			self::log_warning(__METHOD__.' # Empty Input');
+		//	self::log_notice(__METHOD__.' # Empty Input');
 			return '';
 		} //end if
 		//--
 		$targetBase = (int) $targetBase;
 		$baseCharset = '';
-		switch((int)$targetBase) {
-			case 32:
-				$baseCharset = (string) self::CHARSET_BASE_32;
-				break;
-			case 36:
-				$baseCharset = (string) self::CHARSET_BASE_36;
-				break;
-			case 58:
-				$baseCharset = (string) self::CHARSET_BASE_58;
-				break;
-			case 62:
-				$baseCharset = (string) self::CHARSET_BASE_62;
-				break;
-			case 85:
-				$baseCharset = (string) self::CHARSET_BASE_85;
-				break;
-			case 92:
-				$baseCharset = (string) self::CHARSET_BASE_92;
-				break;
-			default:
-				break;
-		} //end switch
+		if((string)trim((string)$charset) != '') {
+			$baseCharset = (string) $charset;
+		} else {
+			switch((int)$targetBase) { // {{{SYNC-SMART-BASE-CONV-INTERNAL-CHARSETS}}}
+				case 32:
+					$baseCharset = (string) self::CHARSET_BASE_32;
+					break;
+				case 36:
+					$baseCharset = (string) self::CHARSET_BASE_36;
+					break;
+				case 58:
+					$baseCharset = (string) self::CHARSET_BASE_58;
+					break;
+				case 62:
+					$baseCharset = (string) self::CHARSET_BASE_62;
+					break;
+				case 85:
+					$baseCharset = (string) self::CHARSET_BASE_85;
+					break;
+				case 92:
+					$baseCharset = (string) self::CHARSET_BASE_92;
+					break;
+				default:
+					break;
+			} //end switch
+		} //end if
 		$baseCharset = (string) trim((string)$baseCharset);
 		if((string)$baseCharset == '') {
 			self::log_warning(__METHOD__.' # Invalid Target Base: `'.(int)$targetBase.'`');
@@ -2350,11 +2348,18 @@ final class Smart {
 		} //end if
 		//--
 		$namespace = '';
+		//--
 		if(defined('SMART_SOFTWARE_NAMESPACE')) {
-			$namespace = (string) trim((string)SMART_SOFTWARE_NAMESPACE);
+			$namespace .= (string) ' `'.trim((string)SMART_SOFTWARE_NAMESPACE).'` ';
 		} //end if
+		if(defined('SMART_FRAMEWORK_SECURITY_KEY')) {
+			$namespace .= (string) ' `'.trim((string)SMART_FRAMEWORK_SECURITY_KEY).'` ';
+		} //end if
+		//--
+		$namespace = (string) trim((string)$namespace);
+		//--
 		if((string)$namespace == '') {
-			$namespace = 'default';
+			$namespace = (string) __METHOD__.'#'.microtime();
 		} //end if
 		//--
 		return (string) 'Namespace:'.$namespace.'NetServer#'.$netserverid.'UUIDUSequence='.self::uuid_13_seq().';UUIDSequence='.self::uuid_10_seq().';UUIDRandStr='.self::uuid_10_str().';UUIDRandNum='.self::uuid_10_num().';'.$y_suffix;
@@ -2457,10 +2462,7 @@ final class Smart {
 		$b36_second_of_year = (string) sprintf('%05s', base_convert($b10_second_of_year, 10, 36));
 		//-- 00 .. RR
 		$microtime = (array) explode('.', (string)microtime(true));
-		if(!array_key_exists(1, $microtime)) {
-			$microtime[1] = null;
-		} //end if
-		$b10_microseconds = (int) substr((string)trim((string)$microtime[1]), 0, 3); // 0 .. 999
+		$b10_microseconds = (int) substr((string)trim((string)($microtime[1] ?? null)), 0, 3); // 0 .. 999
 		$b36_microseconds = (string) sprintf('%02s', base_convert($b10_microseconds, 10, 36));
 		//-- 1 .. Z
 		$rand = self::random_number(1, 35); // trick: avoid 0000000000
@@ -2533,10 +2535,7 @@ final class Smart {
 		$b62_second_of_year = (string) sprintf('%05s', self::int10_to_base62_str($b10_second_of_year));
 		//-- MICROSECOND: 0 .. 9999999 in base62 is 0000 .. FXsj
 		$microtime = (array) explode('.', (string)microtime(true));
-		if(!array_key_exists(1, $microtime)) {
-			$microtime[1] = null;
-		} //end if
-		$b10_microseconds = (string) sprintf('%04s', (int)substr((string)trim((string)$microtime[1]), 0, 4)); // 0000 .. 9999
+		$b10_microseconds = (string) sprintf('%04s', (int)substr((string)trim((string)($microtime[1] ?? null)), 0, 4)); // 0000 .. 9999
 		$rand = self::random_number(1, 999); // trick: avoid 0000000000000
 		$b10_randomizer = (string) sprintf('%03s', $rand);
 		$b10_microseconds .= $b10_randomizer; // append 0000 .. 9999 with 3 more digits 000 .. 999
@@ -2703,11 +2702,10 @@ final class Smart {
 		$y_url = (string) $y_url;
 		//--
 		$parts = array();
-		$parts = parse_url((string)$y_url);
+		$parts = parse_url((string)$y_url); // do not cast
 		if(!is_array($parts)) {
-			$parts = array();
+			$parts = [];
 		} //end if
-		//print_r($parts); die();
 		//--
 		$scheme = '';
 		if(array_key_exists('scheme', $parts)) {
@@ -2963,6 +2961,111 @@ final class Smart {
 
 	//================================================================
 	/**
+	 * Remove brackets [] from IPv6 domain for using it as IPv6 address
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING 	$domipv4orv6 		:: The IPv6 domain as [::ffff:127.0.0.1]
+	 * @return STRING 						:: The IPv6 address as ::ffff:127.0.0.1
+	 */
+	public static function ip_domain_to_ip_addr(?string $domipv4orv6) : string {
+		//--
+		return (string) strtr((string)$domipv4orv6, [ '[' => '', ']' => '' ]); // {{{SYNC-SMART-SERVER-DOMAIN-IPV6-BRACKETS}}}
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Compress an IPv6 address to shortest form, lowercase ; they are also validated
+	 * The IPv4 will be returned as they are, they are only validated
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING 	$ipv4orv6 			:: The IP address ; IPv4 (ex: 127.0.0.1) or IPv6 (ex: ::ffff:127.0.0.1)
+	 * @return STRING 						:: The validated (IPV6 also compressed) IP address ; will return an empty string if invalid IP
+	 */
+	public static function ip_addr_compress(?string $ipv4orv6) : string {
+		//--
+		// {{{SYNC-IPV6-STORE-SHORTEST-POSSIBLE}}} ; IPV6 addresses may vary .. find a standard form, ex: shortest
+		// For IPv4 it returns exact the same ; for IPv6 it returns as, ex: 2001::6dcd:8c74:0:0:0:0 as 2001:0:6dcd:8c74::
+		// This should be used when comparing 2 ip addresses because the IPv6 may be in short or long form, so compressing them both before comparing is the best !
+		//--
+		$ipv4orv6 = (string) trim((string)$ipv4orv6);
+		if((string)$ipv4orv6 == '') {
+			return '';
+		} //end if
+		//--
+		return (string) trim((string)inet_ntop((string)inet_pton((string)strtolower((string)$ipv4orv6))));
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Compare 2 IP addresses if they are identical
+	 * Works for IPv4 / IPv6 (any form, will standardize it using compression)
+	 * Will compare them using numeric translation format IP to INTEGER
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING 	$ip1 				:: The first  IP address to compare
+	 * @param STRING 	$ip2 				:: The second IP address to compare
+	 * @return BOOL 						:: Will return TRUE if they are identical, valid, non-empty ; FALSE if not identical OR not valid OR empty
+	 */
+	public static function ip_addr_compare(?string $ip1, ?string $ip2) : bool {
+		//--
+		// {{{SYNC-IPV6-STORE-SHORTEST-POSSIBLE}}} ; IPV6 addresses may vary .. find a standard form, ex: shortest
+		//--
+		$ip1 = (string) self::ip_addr_compress((string)$ip1);
+		$ip2 = (string) self::ip_addr_compress((string)$ip2);
+		//--
+		if(((string)$ip1 == '') OR ((string)$ip2 == '')) {
+			return false;
+		} //end if
+		//--
+		if((int)ip2long((string)$ip1) !== (int)ip2long((string)$ip2)) {
+			return false;
+		} //end if
+		//--
+		return true;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Check if an IPv4 or IPv6 is in range ; doesn't matter what form IPv6 is, will do numeric validation
+	 * Works for IPv4 / IPv6 (any form, will standardize it using compression)
+	 * Will compare the range and IP using numeric translation format IP to INTEGER
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param STRING 	$lower_range_ip_address 	:: The lower range IP
+	 * @param STRING 	$upper_range_ip_address 	:: The upper range IP
+	 * @return BOOL 								:: Will return TRUE if the IP is in range ; FALSE if not
+	 */
+	public static function ip_addr_in_range(?string $lower_range_ip_address, ?string $upper_range_ip_address, ?string $needle_ip_address) : bool {
+			//-- get the numeric reprisentation of the IP Address with IP2long
+			$min 	= ip2long((string)$lower_range_ip_address);
+			$max 	= ip2long((string)$upper_range_ip_address);
+			$needle = ip2long((string)$needle_ip_address);
+			//-- then it is as simple as checking whether the needle falls between the lower and upper ranges
+			return (bool) (($needle >= $min) AND ($needle <= $max));
+			//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
 	 * The Info logger.
 	 * This will add messages to the App Info Log. (depending if on admin or index, will output into 'tmp/logs/adm/' or 'tmp/logs/idx/')
 	 *
@@ -3054,6 +3157,53 @@ final class Smart {
 
 
 	//================================================================
+	/**
+	 * Disable the current Error/Exception Handlers, for temporary use
+	 *
+	 * @access 		private
+	 * @internal
+	 */
+	public static function disableErrLog() : void {
+		//--
+		// TO AVOID call this method twice without calling restoreErrLog(), a semaphore below is used
+		if(self::$SemaphoreAreLogHandlersDisabled !== false) {
+			return;
+		} //end if
+		//--
+		set_exception_handler(function(){return true;});
+		set_error_handler(function(){return true;});
+		//--
+		self::$SemaphoreAreLogHandlersDisabled = true; // semaphore ON
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Restore the previous Error/Exception Handlers, for temporary use
+	 *
+	 * @access 		private
+	 * @internal
+	 */
+	public static function restoreErrLog() : void {
+		//--
+		// TO AVOID call this method twice without calling disableErrLog(), a semaphore below is used
+		//--
+		if(self::$SemaphoreAreLogHandlersDisabled !== true) {
+			return;
+		} //end if
+		//--
+		restore_error_handler();
+		restore_exception_handler();
+		//--
+		self::$SemaphoreAreLogHandlersDisabled = false; // semaphore OFF
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	public static function InstantFlush() : void {
 		//--
 		$output_buffering_status = @ob_get_status();
@@ -3120,6 +3270,44 @@ final class Smart {
 	public static function lower_unsafe_characters() : string {
 		//--
 		return '/[\x00-\x08\x0B-\x0C\x0E-\x1F]/'; // all lower dangerous characters: x00 - x1F except: \t = x09 \n = 0A \r = 0D
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the PHP Class Name from a Namespace Prefixed Class Name
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @return STRING 						:: The Class Name
+	 *
+	 */
+	public static function getClassNameWithoutNamespacePrefix(string $class) : string {
+		//--
+		$class = (string) trim((string)$class);
+		//--
+		if((string)$class != '') {
+			if(strpos((string)$class, '\\') !== false) {
+				$arr = (array) explode('\\', (string)$class);
+				$class = (string) array_pop($arr);
+				$arr = null;
+			} //end if
+		} //end if
+		//--
+		if((string)$class != '') {
+			if(!SmartFrameworkSecurity::ValidateVariableName((string)$class)) {
+				$class = '';
+			} //end if
+		} //end if
+		//--
+		if((string)$class != '') {
+			return (string) $class;
+		} //end if
+		//--
+		return '_UNDEFINED_CLASS_';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -3202,7 +3390,7 @@ final class Smart {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment
- * @version 	v.20230324
+ * @version 	v.20231008
  * @package 	@Core:FileSystem
  *
  */
@@ -3948,17 +4136,74 @@ final class SmartFileSysUtils {
 
 	//================================================================
 	/**
-	 * Generate a prefixed dir from a base36 UUID, 10 chars length : [0-9A-Z].
+	 * Generate a prefixed dir from a base62 (also supports: base58 / base36 / base32 / base16 / base10) UID, 8..72 chars length : [a-zA-Z0-9].
+	 * It does include also the UID as final folder segment.
+	 * Example: for ID 8iAz0WtTuV72QZ72Re5X0PlIgB23M6 will return: 8/8iAz0WtTuV72QZ72Re5X0PlIgB23M6/ as the generated prefixed path.
+	 * This have to be used for large folder storage structure to avoid limitations on some filesystems (ext3 / ntfs) where max sub-dirs per dir is 32k.
+	 *
+	 * The prefixed path will be grouped by each 1 character (max sub-folders per folder: 62).
+	 * If a shorther length than 8 chars is provided will pad with 0 on the left.
+	 * If a longer length than 72 or an invalid ID is provided will reset the ID to 00000000 (8 chars) for the given length, but also drop a warning.
+	 *
+	 * @param STRING 		$y_id			8..72 chars id (uid)
+	 * @param INTEGER		$y_spectrum 	1..7 the expanding levels spectrum
+	 * @return STRING 						Prefixed Path
+	 */
+	public static function prefixedUidB62Path(?string $y_id, int $y_spectrum) : string {
+		//--
+		$y_id = (string) trim((string)$y_id);
+		if(
+			((int)strlen((string)$y_id) < 8)
+			OR
+			((int)strlen((string)$y_id) > 72)
+			OR
+			(!preg_match('/^[a-zA-Z0-9]+$/', (string)$y_id))
+		) {
+			Smart::log_warning(__METHOD__.' # Invalid ID (min length is 8 ; max length is 72 ; may contain only [a-zA-Z0-9] characters) ['.$y_id.']');
+			$y_id = '00000000'; // 8 chars long
+		} //end if
+		//--
+		$y_spectrum = (int) $y_spectrum;
+		if((int)$y_spectrum < 1) {
+			Smart::log_warning(__METHOD__.' # Invalid Spectrum (min is 1): ['.(int)$y_spectrum.']');
+			$y_spectrum = 1;
+		} elseif((int)$y_spectrum > 7) {
+			Smart::log_warning(__METHOD__.' # Invalid Spectrum (max is 7): ['.(int)$y_spectrum.']');
+			$y_spectrum = 7;
+		} //end if else
+		//--
+		$arr = [];
+		for($i=0; $i<(int)$y_spectrum; $i++) {
+			$arr[] = (string) substr((string)$y_id, (int)$i, 1);
+		} //end for
+		$arr[] = (string) $y_id; // this have to be the last entry
+		//--
+		$dir = (string) implode('/', (array)$arr).'/';
+		//--
+		if(!self::checkIfSafePath((string)$dir)) {
+			Smart::log_warning(__METHOD__.' # Invalid Dir Path: ['.$dir.'] :: From ID: ['.$y_id.']');
+			return 'tmp/invalid/pfx-uidb62-path/'; // this error should not happen ...
+		} //end if
+		//--
+		return (string) $dir;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Generate a prefixed dir from a base36 UUID, 10 chars length : [A-Z0-9].
 	 * It does include also the UUID as final folder segment.
 	 * Example: for ID ABCDEFGHIJ09 will return: 9T/5B/0B/9M/9T5B0B9M8M/ as the generated prefixed path.
 	 * This have to be used for large folder storage structure to avoid limitations on some filesystems (ext3 / ntfs) where max sub-dirs per dir is 32k.
 	 *
 	 * The prefixed path will be grouped by each 2 characters (max sub-folders per folder: 36 x 36 = 1296).
-	 * If a lower length than 10 chars is provided will pad with 0 on the left.
-	 * If a higher length or an invalid ID is provided will reset the ID to 000000..00 (10 chars) for the given length, but also drop a warning.
+	 * If a shorther length than 10 chars is provided will pad with 0 on the left.
+	 * If a longer length or an invalid ID is provided will reset the ID to 000000..00 (10 chars) for the given length, but also drop a warning.
 	 *
-	 * @param STRING 		$y_id		10 chars id (uuid10)
-	 * @return STRING 					Prefixed Path
+	 * @param STRING 		$y_id			10 chars id (uuid10)
+	 * @return STRING 						Prefixed Path
 	 */
 	public static function prefixedUuid10B36Path(?string $y_id) : string { // check len is default 10 as set in lib core uuid 10s
 		//--
@@ -3973,7 +4218,7 @@ final class SmartFileSysUtils {
 		//--
 		if(!self::checkIfSafePath((string)$dir)) {
 			Smart::log_warning(__METHOD__.' # Invalid Dir Path: ['.$dir.'] :: From ID: ['.$y_id.']');
-			return 'tmp/invalid/pfx-uid10b36-path/'; // this error should not happen ...
+			return 'tmp/invalid/pfx-uuid10b36-path/'; // this error should not happen ...
 		} //end if
 		//--
 		return (string) $dir;
@@ -3984,17 +4229,17 @@ final class SmartFileSysUtils {
 
 	//================================================================
 	/**
-	 * Generate a prefixed dir from a base16 UUID (sha1), 40 chars length : [0-9a-f].
+	 * Generate a prefixed dir from a base16 UUID (sha1), 40 chars length : [a-f0-9].
 	 * It does NOT include the ID final folder.
 	 * Example: for ID df3a808b2bf20aaab4419c43d9f3a6143bd6b4bb will return: d/f3a/808/b2b/f20/aaa/b44/19c/43d/9f3/a61/43b/d6b/ as the generated prefixed path.
 	 * This have to be used for large folder storage structure to avoid limitations on some filesystems (ext3 / ntfs) where max sub-dirs per dir is 32k.
 	 *
 	 * The prefixed folder will be grouped by each 3 characters (max sub-folders per folder: 16 x 16 x 16 = 4096).
-	 * If a lower length than 40 chars is provided will pad with 0 on the left.
-	 * If a higher length than 40 chars or an invalid ID is provided will reset the ID to 000000..00 (40 chars) for the given length, but also drop a warning.
+	 * If a shorther length than 40 chars is provided will pad with 0 on the left.
+	 * If a longer length than 40 chars or an invalid ID is provided will reset the ID to 000000..00 (40 chars) for the given length, but also drop a warning.
 	 *
-	 * @param STRING 		$y_id		40 chars id (sha1)
-	 * @return STRING 					Prefixed Path
+	 * @param STRING 		$y_id			40 chars id (sha1)
+	 * @return STRING 						Prefixed Path
 	 */
 	public static function prefixedUuid40B16Path(?string $y_id) : string { // here the number of levels does not matter too much as at the end will be a cache file
 		//--
@@ -4009,7 +4254,7 @@ final class SmartFileSysUtils {
 		//--
 		if(!self::checkIfSafePath((string)$dir)) {
 			Smart::log_warning(__METHOD__.' # Invalid Dir Path: ['.$dir.'] :: From ID: ['.$y_id.']');
-			return 'tmp/invalid/pfx-b16sha-path/'; // this error should not happen ...
+			return 'tmp/invalid/pfx-uuid40b16-path/'; // this error should not happen ...
 		} //end if
 		//--
 		return (string) $dir;

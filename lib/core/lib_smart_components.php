@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20221222
+ * @version 	v.20231018
  * @package 	Application:ViewComponents
  *
  */
@@ -155,7 +155,7 @@ final class SmartComponents {
 				'CHARSET' 			=> SmartUtils::get_encoding_charset(),
 				'BASE-URL' 			=> SmartUtils::get_server_current_url(),
 				'TITLE' 			=> (string) $y_title,
-				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp</b><br>'.Smart::escape_html(SmartUtils::get_server_current_protocol().SmartUtils::get_server_current_domain_name().':'.SmartUtils::get_server_current_port().SmartUtils::get_server_current_path()),
+				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp</b><br>'.Smart::escape_html((string)SmartUtils::get_server_current_url(false)),
 				'MESSAGE-HTML' 		=> ((string)trim((string)$y_message) != '') ? self::operation_important(Smart::nl_2_br(Smart::escape_html((string)$y_message)), '100%') : '',
 				'EXTMSG-HTML' 		=> (string) $y_html_message
 			],
@@ -801,10 +801,10 @@ final class SmartComponents {
 		$arr_data['time-date-start'] 			= (string) date('Y-m-d H:i:s O'); 											// date time start
 		$arr_data['time-date-year'] 			= (string) date('Y'); 														// date time Year
 		$arr_data['auth-login-ok'] 				= (string) (SmartAuth::check_login() === true ? 'yes' : 'no'); 				// Auth Login OK: yes/no
-		$arr_data['auth-login-id'] 				= (string) SmartAuth::get_login_id(); 										// Auth Login ID
-		$arr_data['auth-login-alias'] 			= (string) SmartAuth::get_login_alias(); 									// Auth Login Alias (UserName)
-		$arr_data['auth-login-fullname'] 		= (string) SmartAuth::get_login_fullname(); 								// Auth Login FullName
-		$arr_data['auth-login-privileges'] 		= (string) SmartAuth::get_login_privileges(); 								// Auth Login Privileges
+		$arr_data['auth-login-id'] 				= (string) SmartAuth::get_auth_id(); 										// Auth ID (can be the same as UserName or Different)
+		$arr_data['auth-login-username'] 		= (string) SmartAuth::get_auth_username(); 									// Auth UserName
+		$arr_data['auth-login-fullname'] 		= (string) SmartAuth::get_user_fullname(); 									// (Auth) User FullName
+		$arr_data['auth-login-privileges'] 		= (string) SmartAuth::get_user_privileges(); 								// (Auth) User Privileges
 		$arr_data['debug-mode'] 				= (string) (SmartEnvironment::ifDebug() ? 'yes' : 'no'); 					// yes | no
 		//-- initialize all missing array keys
 		for($i=0; $i<count((array)self::DEFAULT_PAGE_VARS); $i++) { // {{{SYNC-INIT-MTPL-DEFVARS}}}
@@ -813,7 +813,7 @@ final class SmartComponents {
 			} else {
 				if(!Smart::is_nscalar($arr_data[(string)self::DEFAULT_PAGE_VARS[$i]])) {
 					$arr_data[(string)self::DEFAULT_PAGE_VARS[$i]] = ''; // reset key, the value is wrong, must be scalar
-					Smart::log_warning(__METHOD__.' # Invalid, non-scalar value for page variable `'.strtoupper((string)(string)self::DEFAULT_PAGE_VARS[$i]));
+					Smart::log_warning(__METHOD__.' # Invalid, non-scalar value for page variable `'.strtoupper((string)self::DEFAULT_PAGE_VARS[$i]));
 				} //end if
 				$arr_data[(string)self::DEFAULT_PAGE_VARS[$i]] = (string) $arr_data[(string)self::DEFAULT_PAGE_VARS[$i]]; // force string
 			} //end if

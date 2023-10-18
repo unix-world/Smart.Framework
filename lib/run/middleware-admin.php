@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A][T]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20221220
+ * @version		20231004
  * @package 	Application
  *
  */
@@ -88,7 +88,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 					return;
 				} //end if
 			} else {
-				SmartFrameworkRuntime::Raise503Error('Tasks: The access to this service is disabled. The IP: `'.SmartUtils::get_ip_client().'` is not allowed by current IP Address list ...');
+				SmartFrameworkRuntime::Raise503Error('Tasks: The access to this service is disabled. The IP: `'.SmartUtils::get_ip_client().'` is not allowed by current IP Address list ...'.(SmartEnvironment::ifDevMode() ? "\n".'Review the settings for SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS in: etc/init.php' : ''));
 				return;
 			} //end if else
 		} else {
@@ -315,7 +315,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 				return;
 			} //end if
 			if(defined('SMART_APP_MODULE_REALM_AUTH')) {
-				if((string)SmartAuth::get_login_realm() !== (string)SMART_APP_MODULE_REALM_AUTH) {
+				if((string)SmartAuth::get_auth_realm() !== (string)SMART_APP_MODULE_REALM_AUTH) {
 					SmartFrameworkRuntime::Raise403Error('Page Access Denied ! Invalid Login Realm: '.$page);
 					return;
 				} //end if

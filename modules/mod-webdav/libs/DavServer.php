@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20221220
+	// v.20231007
 
 	const DAV_RESOURCE_TYPE_COLLECTION 		= 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION 	= 'noncollection';
@@ -93,20 +93,19 @@ final class DavServer {
 		if(\strpos((string)$url, (string)$base_url) !== 0) {
 			return ''; // URL must start with the current server base URL ; this is important to avoid wrong path extract if /~ occurs before php script !!!
 		} //end if
-		$url_path = (string) \substr($url, \strlen($base_url));
+		$url_path = (string) \substr((string)$url, (int)\strlen((string)$base_url));
 		//--
 		$sem_path_pos = \strpos((string)$url_path, '/~');
 		if($sem_path_pos !== false) {
-			$path_url = (string) \substr((string)$url_path, ($sem_path_pos + 2));
+			$path_url = (string) \substr((string)$url_path, ((int)$sem_path_pos + 2));
 		} else {
 			$path_url = '';
 		} //end if
 		//--
 		if($urldecode === true) {
-		//	$path_url = (string) \rawurldecode($path_url); // fix (below)
-			$path_url = (string) \SmartFrameworkSecurity::DecodeAndFilterUrlVarString($path_url, true); // fix: use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + ! ; DecodeAndFilterUrlVarString also apply filter
+			$path_url = (string) \SmartFrameworkSecurity::DecodeAndFilterUrlVarString((string)$path_url, true); // fix: use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + ! ; DecodeAndFilterUrlVarString also apply filter
 		} //end if
-		$path_url = (string) \ltrim($path_url, '/');
+		$path_url = (string) \ltrim((string)$path_url, '/');
 		//--
 		return (string) $path_url;
 		//--

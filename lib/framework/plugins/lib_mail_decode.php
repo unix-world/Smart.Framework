@@ -1351,7 +1351,7 @@ final class SmartMailerMimeExtract {
 					$text = (string) SmartUnicode::convert_charset((string)$text, (string)$charset, (string)$this->charset); // {{{SYNC-CHARSET-CONVERT}}}
 					break;
 				case 'Q':
-					$text = (string) str_replace('_', ' ', $text); // // {{{SYNC-QUOTED-PRINTABLE-FIX}}} Fix: for google mail subjects ; normally on QP the _ must be encoded as =5F ; because google mail use the _ instead of space in all emails subject, it is considered a major enforcement to support this replacement
+					$text = (string) str_replace('_', ' ', $text); // {{{SYNC-QUOTED-PRINTABLE-FIX}}} Fix: for google mail subjects ; normally on QP the _ must be encoded as =5F ; because google mail use the _ instead of space in all emails subject, it is considered a major enforcement to support this replacement
 					$text = (string) quoted_printable_decode($text);
 					$text = (string) SmartUnicode::convert_charset((string)$text, (string)$charset, (string)$this->charset); // {{{SYNC-CHARSET-CONVERT}}}
 					break;

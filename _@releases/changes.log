@@ -2,9 +2,42 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+October 18, 2023
+	* bug fix: TPL Debug (was broken)
+	* Fix SmartHashCrypto::checksum : add much more security using 128 bit SHA384 which is extremely more secure ; SHA384 has resistances to length extension attack but SHA512 doesn't have
+	* implement new method: getClassNameWithoutNamespacePrefix()
+	* IPv6 work ; now is 100% compatible ; Smart IP various methods to work OK with IPv6
+	* default configs: admins default user name is `superadmin` ; enabled passwords complexity by default
+	* Major refactoring of Lib Auth, implemented SWT Tokens
+	* Major refactoring of Mod Auth Admins with STK Tokens and Two-Factor Authentication (2FA TOTP)
+	* Security Enhance Smart Auth encrypt/decrypt priv key
+	* Lib Smart: Fixes and Optimizations ; Add Custom Charset Option to Base Encode/Decode ; new methods: b64_to_b64s ; b64s_to_b64
+	* Lib Auth Refactoring: Safe Privileges List
+	* Fix: rename SmartUtils create_protect_dir() to create_protected_dir()
+	* Mail Utils :: fix CSSRF cookie name ; make Cookie value to be more secure
+	* Lib FileSystem refactoring, allow protected paths as parameter for many methods
+	* Lib Markdown, minor fixes ; use urldecode() instead of rawurldecode()
+	* Lib Robot optimizations ; Add Method Signatures ; switch to SWT instead of Basic Auth
+	* refactoring of class AuthProviderHttpBasic as AuthProviderHttp + support for more security and Auth Bearer / Tokens
+	* WebDAV, minor code fixes
+	* Add Extra Filter to Mongo Abstract getCount
+	* Fix captcha cookie name to use md5
+	* fix htaccess message in create protected folder
+	* Captcha Refactoring: security enhancements + optimizations
+	* Upgrade jQuery to 3.7.1 + uxm fixes
+	* Optimize and Clean jquery alertable ; get rid of default form embedded and fix using different methods just for prompt
+	* Smart Data Tables, extend with options, STABLE ; Update DataTables from 1.10.19 to 1.10.21
+	* Add Js Utils Left/Right Trim ; Optimize Js String Trim ; add tests for all 3
+	* Smart Framework JS: add b64_to_b64s() and b64s_to_b64()
+
+March 24, 2023
+	* Fix DBA to work also on Windows ; Fix Absolute path validations to work also on Windows
+	* Disable SQLite PCache on Windows ; Fix DBA to work also on Windows
+	* Fix RealPath + Make Safe also on Windows
+
 January 29, 2023
 	* PageBuilder fix: manage refs also for setting segments
-	* new CSS: 2Sense OrgChart
+	* new CSS: 2Sense OrgChart ; use this for PageBuilder
 
 January 23, 2023
 	* Js Major Refactoring (admin UI js/css moved to modules/mod-auth-admins/views/js and modules/mod-wflow-components/views/jquery)

@@ -32,6 +32,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 /**
  * Class: SmartSQliteDb - provides a Dynamic SQLite Database Client.
  *
+ * The SLQLite file path should be starting with '#db/' or 'tmp/', which are protected via HtAccess files or by config.
+ * Do not use other dir prefixes unless you know what you are doing ...
+ *
  * Tested and Stable on SQLite versions: 3.x
  *
  * <code>
@@ -63,7 +66,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20230324
+ * @version 	v.20231008
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -446,7 +449,7 @@ final class SmartSQliteDb {
 	 */
 	private function check_exists() {
 		$exists = false;
-		if(((string)$this->get_filename() != '') AND (SmartFileSystem::is_type_file($this->get_filename()))) {
+		if(((string)$this->get_filename() != '') AND (SmartFileSystem::is_type_file((string)$this->get_filename()))) {
 			$exists = true;
 		} //end if
 		return $exists;
@@ -494,8 +497,8 @@ final class SmartSQliteDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20230324
+ * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, SmartFileSystem, SmartComponents, SmartUtils
+ * @version 	v.20231008
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -549,48 +552,11 @@ final class SmartSQliteUtilDb {
 		} //end if
 		//--
 		$dir_of_db = (string) Smart::dir_name((string)$file_name);
-		if((string)$dir_of_db == '') {
-			self::error((string)$file_name, 'OPEN', 'ERROR: DB folder not defined !', '', '');
-			return;
-		} //end if
-		if(SmartFileSysUtils::checkIfSafePath((string)$dir_of_db, true, true) != 1) {
-			self::error((string)$file_name, 'OPEN', 'ERROR: DB folder path is unsafe !', '', '');
-			return;
-		} //end if
-		$dir_of_db = (string) SmartFileSysUtils::addPathTrailingSlash((string)$dir_of_db);
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_of_db, true, true); // deny absolute path access ; allow protected path access (starting with #)
 		//--
-		if(!SmartFileSystem::is_type_dir($dir_of_db)) {
-			SmartFileSystem::dir_create($dir_of_db, true, true); // allow protected paths
-		} //end if
-		if(!SmartFileSystem::is_type_dir($dir_of_db)) {
-			self::error((string)$file_name, 'OPEN', 'ERROR: DB folder does not exists !', '', '');
+		$err = (string) SmartUtils::create_protected_dir((string)$dir_of_db); // {{{SYNC-APP-DB-FOLDER}}} ; this checks also if safe path of dir
+		if((string)$err != '') {
+			self::error((string)$file_name, 'OPEN', 'ERROR: DB path creation failed # '.$err, '', '');
 			return;
-		} //end if
-		if(!SmartFileSystem::have_access_write($dir_of_db)) {
-			self::error((string)$file_name, 'OPEN', 'ERROR: DB folder is not writable !', '', '');
-			return;
-		} //end if
-		//-- {{{SYNC-#DB-FOLDER-HTACCESS}}}
-		if(!SmartFileSystem::is_type_file((string)$dir_of_db.'.htaccess')) {
-			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_of_db.'.htaccess', true, true); // deny absolute path access ; allow protected path access (starting with #)
-			if(@file_put_contents((string)$dir_of_db.'.htaccess', (string)'### Smart.Framework // '.__METHOD__.' @ HtAccess Data Protection ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', LOCK_EX)) {
-				SmartFileSystem::fix_file_chmod((string)$dir_of_db.'.htaccess'); // apply file chmod
-			} //end if
-			if(!SmartFileSystem::is_type_file((string)$dir_of_db.'.htaccess')) {
-				self::error((string)$file_name, 'OPEN', 'ERROR: DB folder access-protection not found !', '', '');
-				return;
-			} //end if
-		} //end if
-		if(!SmartFileSystem::is_type_file((string)$dir_of_db.'index.html')) {
-			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$dir_of_db.'index.html', true, true); // deny absolute path access ; allow protected path access (starting with #)
-			if(@file_put_contents((string)$dir_of_db.'index.html', '', LOCK_EX)) {
-				SmartFileSystem::fix_file_chmod((string)$dir_of_db.'index.html'); // apply file chmod
-			} //end if
-			if(!SmartFileSystem::is_type_file((string)$dir_of_db.'index.html')) {
-				self::error((string)$file_name, 'OPEN', 'ERROR: DB folder index-protection not found !', '', '');
-				return;
-			} //end if
 		} //end if
 		//-- open DB connection
 		try {
@@ -686,6 +652,7 @@ final class SmartSQliteUtilDb {
 				'md5' 						=>  1,
 				'sha1' 						=>  1,
 				'sha256' 					=>  1,
+				'sha384' 					=>  1,
 				'sha512' 					=>  1,
 				'strlen' 					=>  1,
 				'charlen' 					=>  1, // mbstring
@@ -1860,7 +1827,7 @@ final class SmartSQliteUtilDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20230324
+ * @version 	v.20231008
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -2014,6 +1981,13 @@ final class SmartSQliteFunctions {
 	public static function sha256($str) {
 		//--
 		return (string) SmartHashCrypto::sha256((string)$str);
+		//--
+	} //END FUNCTION
+
+
+	public static function sha384($str) {
+		//--
+		return (string) SmartHashCrypto::sha384((string)$str);
 		//--
 	} //END FUNCTION
 

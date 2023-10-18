@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartHtmlParser ; optional-constants: SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG
- * @version 	v.20221228
+ * @version 	v.20231018
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -52,7 +52,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20221228';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20231018';
 
 	//===================================
 
@@ -559,7 +559,7 @@ final class SmartMarkdownToHTML {
 	private function fixDecodeUrlEncSyntax(?string $text) : string { // this will postfix special situations with weird characters in links and media
 		//--
 		return (string) preg_replace_callback('/(\?URL@ENC\:)(.*)(\:URL@ENC\?)/U', function($matches) {
-			return (string) Smart::escape_html((string)rawurldecode($matches[2] ?? ''));
+			return (string) Smart::escape_html((string)urldecode((string)($matches[2] ?? null))); // use url decode instead of rawurldecode ; will do the job of rawurldecode + will decode also + as spaces
 		}, (string)$text); // replace all ?URL-ENC:...:URL-ENC? syntax
 		//--
 	} //END FUNCTION
@@ -1954,7 +1954,7 @@ final class SmartMarkdownToHTML {
 		//--
 		$line_is_unparsed = true;
 		//--
-		$level = (int) strspn((string)(string)$line_crr, '#', 0, 10); // fix by unixman ; find up to 10 levels of #, we only use 8
+		$level = (int) strspn((string)$line_crr, '#', 0, 10); // fix by unixman ; find up to 10 levels of #, we only use 8
 		if(((int)$level >= 1) AND ((int)$level <= 6)) { // h1..h6
 			if(strpos((string)$line_crr, '# ') === (int)((int)$level-1)) { // h1..h6
 				$line_crr = (string) $this->createHtmlInline((string)substr((string)$line_crr, (int)((int)$level+1)), 'h'.(int)$level, true); // avoid circular reference between createHtmlInline and this (renderLineHeadings) as renderLineHeadings is called inside createHtmlInline thus must explicit set last param to true, just in case ... anyway there is a double control !
@@ -2212,7 +2212,7 @@ final class SmartMarkdownToHTML {
 						//--
 						$is_sdiv = true;
 						//--
-						$sdiv_atts = (array) (array) $this->parseAttributeData('div', (string)ltrim((string)$arr[$i], ':'));
+						$sdiv_atts = (array) $this->parseAttributeData('div', (string)ltrim((string)$arr[$i], ':'));
 						//--
 						$arr[$i] = '<!-- sdiv --><div'.(isset($sdiv_atts['id']) ? ' id="'.Smart::escape_html((string)$sdiv_atts['id']).'"' : '').(isset($sdiv_atts['class']) ? ' class="'.Smart::escape_html((string)$sdiv_atts['class']).'"' : '').$this->buildAttributeData((array)$sdiv_atts, [ 'id' => false, 'class' => false ]).'>'; // do not parse inline: id, class
 						$line_is_unparsed = false;

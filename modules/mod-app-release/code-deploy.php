@@ -350,6 +350,8 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			],
 		];
 		//--
+		// {{{SYNC-AUTH-TOKEN-SWT}}}
+		//--
 		$result = (array) $httpcli->browse_url(
 			(string) $deploy_selected_url,
 			'POST',

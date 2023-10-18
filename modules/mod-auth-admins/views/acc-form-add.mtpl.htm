@@ -1,9 +1,9 @@
-<!-- v.20220915 -->
-[@@@SUB-TEMPLATE:admin-form-styles.mtpl.htm@@@]
+<!-- v.20231018 -->
+[@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
 <center><div><table><tr><td>
 <form id="add_form" name="add_form" class="ux-form ux-form-aligned" onSubmit="return false;">
-<input type="text" name="username" style="background:#FFCC00; display:none;"><!-- fake field to avoid autocomplete -->
-<input type="password" name="password" style="background:#FF3300; display:none;"><!-- fake field to avoid autocomplete -->
+	<input type="text" name="username" style="background:#FFCC00; display:none;"><!-- fake field to avoid autocomplete -->
+	<input type="password" name="password" style="background:#FF3300; display:none;"><!-- fake field to avoid autocomplete -->
 	<legend><h1>Add New Account</h1></legend>
 	<br>
 	<div class="ux-control-group">
@@ -32,8 +32,8 @@
 	</div>
 	<legend>&nbsp;</legend>
 	<div class="ux-controls">
-		<button type="button" class="ux-button ux-button-spacing" onClick="smartJ$Browser.CloseDelayedModalPopUp();"> Cancel &nbsp; <i style="color:#555555;" class="sfi sfi-spinner11"></i></button>
-		<button type="button" class="ux-button ux-button-info ux-button-spacing" onClick="smartJ$Browser.SubmitFormByAjax('add_form', '[###ACTIONS-URL|js|html###]', 'yes');"> Save &nbsp; <i class="sfi sfi-checkmark"></i></button>
+		<button type="button" class="ux-button ux-button-alt ux-button-spacing" onClick="smartJ$Browser.CloseDelayedModalPopUp(); return false;"> Cancel &nbsp; <i style="color:#555555;" class="sfi sfi-spinner11"></i></button>
+		<button type="button" class="ux-button ux-button-info ux-button-spacing" onClick="smartJ$Browser.SubmitFormByAjax('add_form', '[###ACTIONS-URL|js|html###]', 'yes');"> Create &nbsp; <i class="sfi sfi-checkmark"></i></button>
 	</div>
 </form>
 </td></tr></table></div></center>

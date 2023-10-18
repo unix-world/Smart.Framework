@@ -34,7 +34,7 @@
 	button:hover,
 	button:focus,
 	button:active {
-		background-color: #08c;
+		background-color: #EEEEEE;
 		outline: none;
 	}
 	button + button {
@@ -94,7 +94,7 @@
 		// Confirm
 		$('.confirm').on('click', function() {
 			$.alertable.confirm('You sure?').then(function() {
-				console.log('Confirmation submitted');
+				console.log('Confirmation ok');
 			}, function() {
 				console.log('Confirmation canceled');
 			});
@@ -102,8 +102,8 @@
 
 		// Prompt
 		$('.prompt').on('click', function() {
-			$.alertable.prompt('How many?').then(function(data) {
-				console.log('Prompt submitted', JSON.stringify(data));
+			$.alertable.prompt('How many?', { value: 'a default prompt val ...' }).then(function(data) {
+				console.log('Prompt ok', JSON.stringify(data));
 			}, function() {
 				console.log('Prompt canceled');
 			});
@@ -114,7 +114,7 @@
 			$.alertable.confirm('Are you <em>really</em> sure?', {
 				html: true
 			}).then(function() {
-				console.log('Confirmation submitted');
+				console.log('Confirmation ok');
 			}, function() {
 				console.log('Confirmation canceled');
 			});
@@ -124,10 +124,10 @@
 		$('.login').on('click', function() {
 			$.alertable.prompt('Login to continue', {
 				prompt:
-				'<input type="text" class="alertable-input" name="username" placeholder="Username">' +
-				'<input type="password" class="alertable-input" name="password" placeholder="Password">'
+				'<input type="text" class="alertable-input" name="username" value="" maxlength="100" autocomplete="off" placeholder="Username">' +
+				'<input type="password" class="alertable-input" name="password" value="" maxlength="255" autocomplete="off" placeholder="Password">'
 			}).then(function(data) {
-				console.log('Login submitted', JSON.stringify(data));
+				console.log('Login ok', JSON.stringify(data));
 			}, function() {
 				console.log('Login canceled');
 			});
