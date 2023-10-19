@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartFrameworkSecurity        final class \ SmartFrameworkSecurity    {   } ::    Class Smart.Framework Security It may be used anywhere inside">
-<meta name="keywords" content="smartframeworksecurity, final, class, smart.framework, security, it, may, be, used, anywhere, inside, or, by, plugins, and, application, modules, language, php, located, at, lib framework lib security.php, package, namespace, name, version, v.20210506, depends, smartunicode, hints, this, is, generally, intended, for, advanced, usage, static, object, class::method, provides, only, methods, public, function, validateurlvariablename, string, y varname, return, if, valid, invalid, param, the, value, to, tested, validate, an, url, variable, validatevariablename, bool, y allow upper letters, true, boolean, default, set, false, will, dissalow, upper, case, letters, a, filterrequestvar, mixed, y var, filtered, resource, null, input, values, get post request cookie, variables, using, filterunsafestring, method, filtering, insecure, untrusted, array, also, filters, keys, when, raw">
+<meta name="description" content="\SmartFrameworkSecurity final class \ SmartFrameworkSecurity { } :: Class Smart.Framework Security It may be used anywhere inside Smart.Framework or by">
+<meta name="keywords" content="smartframeworksecurity, final, class, smart framework, security, it, may, be, used, anywhere, inside, or, by, plugins, and, application, modules, language, php, located, at, lib framework lib security php, package, namespace, name, version, v, depends, smartunicode, hints, this, is, generally, intended, for, advanced, usage, static, object, class method, provides, only, methods, public, function, validateurlvariablename, string, var name, return, if, valid, invalid, param, the, value, to, tested, validate, an, url, variable, validatevariablename, y varname, bool, y allow upper letters, true, boolean, default, set, false, will, dissalow, upper, case, letters, a, filterrequestvar, mixed, filtered, resource, null, input, values, get post request, variables, using, filterunsafestring, method, filtering, insecure, untrusted, array, also, filters, keys, when, raw">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartFrameworkSecurity">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartFrameworkSecurity</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -707,7 +707,7 @@ It may be used anywhere inside Smart.Framework or by Plugins and Application Mod
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartFrameworkSecurity</span></li>
 		
-		<li><b>Version:</b> v.20210506</li>
+		<li><b>Version:</b> v.20221215</li>
 		<li><b>Depends:</b> SmartUnicode</li>
 		<li><b>Hints:</b> This  is generally intended for advanced usage !</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -723,23 +723,24 @@ It may be used anywhere inside Smart.Framework or by Plugins and Application Mod
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--ValidateUrlVariableName">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ValidateUrlVariableName</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_varname` Parameter is REQUIRED">$y_varname</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$var_name` Parameter is REQUIRED">$var_name</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;0/1
 	
 	
 			<div class="doc-method-ret-params">@return: {0/1} 1 if Valid, 0 if Invalid<br>
-@param: {STRING} $y_varname: The value to be tested</div>
+@param: {STRING} $var_name: The value to be tested</div>
 	
 			<div class="doc-method-comments">Validate an URL variable name</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--ValidateVariableName">
+</div>
+<div class="doc-container" id="Method--ValidateVariableName">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ValidateVariableName</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_varname` Parameter is REQUIRED">$y_varname</span></b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_upper_letters` Parameter is OPTIONAL, with the Default Value: true">$y_allow_upper_letters</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_varname` Parameter is REQUIRED">$y_varname</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_upper_letters` Parameter is OPTIONAL, with the Default Value: true">$y_allow_upper_letters</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;0/1
@@ -753,70 +754,74 @@ It may be used anywhere inside Smart.Framework or by Plugins and Application Mod
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `FilterUnsafeString()` --><div class="doc-container" id="Method--FilterRequestVar">
+</div>
+<!-- Skip Internal-Priv Method: `FilterUnsafeString()` -->
+<div class="doc-container" id="Method--FilterRequestVar">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>FilterRequestVar</b></span>&nbsp;(
-				<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_var` Parameter is REQUIRED">$y_var</span></b></span>
+		<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
 	
 	
 			<div class="doc-method-ret-params">@return: {MIXED} the filtered value (if OBJECT or RESOURCE will return null)<br>
-@param: {MIXED} $y_var: the input variable value</div>
+@param: {MIXED} $value: the input variable value</div>
 	
-			<div class="doc-method-comments">Return the filtered values for GET/POST/REQUEST/COOKIE variables, using the FilterUnsafeString method<br>
+			<div class="doc-method-comments">Return the filtered values for GET/POST/REQUEST variables, using the FilterUnsafeString method<br>
 It may be used for filtering insecure / untrusted string or array variables<br>
 For array variables it also filters the keys<br>
-When using the raw values from $_GET, $_POST, $_REQUEST or $_COOKIE - all the values should be always filtered prior to be used in PHP to avoid insecure characters.<br>
-Notice: For this to work correctly expects the filter to be provided by SMART_FRAMEWORK_SECURITY_FILTER_INPUT<br>
-Important: All the REQUEST=GET+POST and COOKIE variables from SmartFrameworkRegistry are already filtered, no need to filter them again, but if you are using any raw value from $_GET, $_POST, $_REQUEST or $_COOKIE it must be filtered !</div>
+When using the raw values from $_GET, $_POST, $_REQUEST - all the values should be always filtered prior to be used in PHP to avoid insecure characters.<br>
+Important: All the REQUEST=GET+POST variables from Smart Framework Registry are already filtered, no need to filter them again, but if you are using any raw value from $_GET, $_POST, $_REQUEST it must be filtered !</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--FilterCookieVar">
+</div>
+<div class="doc-container" id="Method--FilterCookieVar">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>FilterCookieVar</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$y_var` Parameter is REQUIRED">$y_var</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$str_val` Parameter is REQUIRED">$str_val</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING/NULL
 	
 	
 			<div class="doc-method-ret-params">@return: {STRING/NULL} the filtered value (if ARRAY or OBJECT or RESOURCE will return null)<br>
-@param: {MIXED} $y_value: the input variable value</div>
+@param: {STRING/NULL} $str_val: the input variable value</div>
 	
 			<div class="doc-method-comments">Return the filtered value for a cookie from a COOKIE variable, using the FilterUnsafeString method<br>
 It may be used for filtering the insecure / untrusted raw values from $_COOKIE</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--FilterRequestPath">
+</div>
+<div class="doc-container" id="Method--FilterRequestPath">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>FilterRequestPath</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$y_var` Parameter is REQUIRED">$y_var</span></b></span>
+		<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING/NULL
 	
 	
 			<div class="doc-method-ret-params">@return: {STRING/NULL} the filtered value (if ARRAY or OBJECT or RESOURCE will return null)<br>
-@param: {MIXED} $y_value: the input variable value</div>
+@param: {MIXED} $value: the input variable value</div>
 	
 			<div class="doc-method-comments">Return the filtered values for PATH_INFO server variable, using the FilterUnsafeString method, and apply trim<br>
 It may be used for filtering the insecure / untrusted raw value of $_SERVER['PATH_INFO']</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--DecodeAndFilterUrlVarString">
+</div>
+<div class="doc-container" id="Method--DecodeAndFilterUrlVarString">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>DecodeAndFilterUrlVarString</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_urlencoded_str_var` Parameter is REQUIRED">$y_urlencoded_str_var</span></b></span>, 
-			<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_filter` Parameter is OPTIONAL, with the Default Value: true">$y_filter</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$url_encoded_str_val` Parameter is REQUIRED">$url_encoded_str_val</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$filter` Parameter is OPTIONAL, with the Default Value: true">$filter</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 			<div class="doc-method-ret-params">@return: {STRING} the decoded +/- filtered value<br>
-@param: {STRING} $y_urlencoded_str_var: the input variable<br>
-@param: {BOOLEAN} $y_filter: *Optional* Default to TRUE ; if FALSE will only decode but not filter variable ; DO NOT DISABLE FILTERING EXCEPT WHEN YOU CALL IT LATER EXPLICIT !!!</div>
+@param: {STRING} $url_encoded_str_val: the input variable<br>
+@param: {BOOLEAN} $filter: *Optional* Default to TRUE ; if FALSE will only decode but not filter variable ; DO NOT DISABLE FILTERING EXCEPT WHEN YOU CALL IT LATER EXPLICIT !!!</div>
 	
 			<div class="doc-method-comments">Return the url decoded (+/- filtered) variable from RAWURLENCODE / URLENCODE<br>
 It may be used ONLY when working with RAW PATH INFO / RAW QUERY URLS !!!<br>
@@ -824,9 +829,10 @@ IMPORTANT: the $_GET and $_REQUEST are already decoded. Using urldecode() on an 
 	
 	
 	
-</div><div class="doc-container" id="Method--PrepareSafeHeaderValue">
+</div>
+<div class="doc-container" id="Method--PrepareSafeHeaderValue">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PrepareSafeHeaderValue</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -842,6 +848,7 @@ It willalso trim the string thus it may return an empty string if the passed val
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -897,27 +904,27 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--ValidateUrlVariableName"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ValidateUrlVariableName()</option>
+						<option value="Method--ValidateUrlVariableName"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ValidateUrlVariableName()</option>
 			
 			
-									<option value="Method--ValidateVariableName"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ValidateVariableName()</option>
+						<option value="Method--ValidateVariableName"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ValidateVariableName()</option>
 			
 			
-						
-			
-									<option value="Method--FilterRequestVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;FilterRequestVar()</option>
 			
 			
-									<option value="Method--FilterCookieVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;FilterCookieVar()</option>
+						<option value="Method--FilterRequestVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;FilterRequestVar()</option>
 			
 			
-									<option value="Method--FilterRequestPath"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;FilterRequestPath()</option>
+						<option value="Method--FilterCookieVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;FilterCookieVar()</option>
 			
 			
-									<option value="Method--DecodeAndFilterUrlVarString"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;DecodeAndFilterUrlVarString()</option>
+						<option value="Method--FilterRequestPath"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;FilterRequestPath()</option>
 			
 			
-									<option value="Method--PrepareSafeHeaderValue"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PrepareSafeHeaderValue()</option>
+						<option value="Method--DecodeAndFilterUrlVarString"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;DecodeAndFilterUrlVarString()</option>
+			
+			
+						<option value="Method--PrepareSafeHeaderValue"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PrepareSafeHeaderValue()</option>
 			
 			
 			
@@ -940,13 +947,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:38 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:24 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

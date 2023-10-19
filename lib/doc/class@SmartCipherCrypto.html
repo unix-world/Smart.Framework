@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartCipherCrypto        final class \ SmartCipherCrypto    {   } ::    Class: SmartCipherCrypto Provides a built-in based feature to handle the Blowfish">
-<meta name="keywords" content="smartciphercrypto, final, class, provides, a, built-in, based, feature, to, handle, the, blowfish, cbc, encryption, decryption, this, an, advanced, crypto, handler, for, algorithm, language, php, located, at, lib framework lib cryptoas.php, package, core:crypto, namespace, name, version, v.20210825, depends, classes, smartframeworkregistry, smart, smartcryptocipherblowfishcbc, smartcryptoopensslcipher, smartcryptocipherhash, hints, is, 64-bit, bytes, block, cipher, max, key, up, chars, length, bits, mode, requires, initialization, vector, iv, usage, static, object, class::method, only, methods, public, function, encrypt, string, data, return, encrypted, as, b64s, or, empty, on, error, param, enum, selected, hash  mode, blowfish.cbc, openssl cipher mode, must, be, between, and, plain, encrypts, using, algo, decrypt, decrypted, decrypts, properties, constants, sample, code">
+<meta name="description" content="\SmartCipherCrypto final class \ SmartCipherCrypto { } :: Class: SmartCipherCrypto Provides a built-in based feature to handle the Blowfish (CBC)">
+<meta name="keywords" content="smartciphercrypto, final, class, provides, a, built in, based, feature, to, handle, the, blowfish, cbc, encryption, decryption, this, an, advanced, crypto, handler, for, algorithm, language, php, located, at, lib framework lib cryptoas php, package, core crypto, namespace, name, version, v, depends, classes, smart, smartenvironment, smartcryptocipherblowfishcbc, smartcryptoopensslcipher, smartcryptocipherhash, optional constant, smart framework security opensslbfcrypto, hints, is, bit, bytes, block, cipher, max, key, up, chars, length, bits, mode, requires, initialization, vector, iv, usage, static, object, class method, only, methods, public, function, encrypt, string, data, return, encrypted, as, b64s, or, empty, on, error, param, enum, selected, hash  mode, blowfish cbc, openssl cipher mode, must, be, between, and, plain, encrypts, using, algo, decrypt, decrypted, decrypts, properties, constants">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartCipherCrypto">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartCipherCrypto</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -708,8 +708,8 @@ This provides an advanced crypto handler for Blowfish CBC algorithm.</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartCipherCrypto</span></li>
 		
-		<li><b>Version:</b> v.20210825</li>
-		<li><b>Depends:</b> classes:  SmartFrameworkRegistry, Smart, SmartCryptoCipherBlowfishCBC, SmartCryptoOpenSSLCipher, SmartCryptoCipherHash</li>
+		<li><b>Version:</b> v.20231018</li>
+		<li><b>Depends:</b> classes:  Smart, SmartEnvironment, SmartCryptoCipherBlowfishCBC, SmartCryptoOpenSSLCipher, SmartCryptoCipherHash ; optional-constant: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO</li>
 		<li><b>Hints:</b> Blowfish  is a 64-bit (8 bytes) block cipher. Max Key is up to 56 chars length (56 bytes = 448 bits). The CBC mode requires a initialization vector (iv).</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -724,9 +724,9 @@ This provides an advanced crypto handler for Blowfish CBC algorithm.</div><br>
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--encrypt">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encrypt</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cipher` Parameter is REQUIRED">$cipher</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cipher` Parameter is REQUIRED">$cipher</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -741,11 +741,12 @@ This provides an advanced crypto handler for Blowfish CBC algorithm.</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--decrypt">
+</div>
+<div class="doc-container" id="Method--decrypt">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decrypt</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cipher` Parameter is REQUIRED">$cipher</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cipher` Parameter is REQUIRED">$cipher</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -760,7 +761,11 @@ This provides an advanced crypto handler for Blowfish CBC algorithm.</div><br>
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `blowfish_encrypt()` --><!-- Skip Internal-Priv Method: `blowfish_decrypt()` -->
+</div>
+<!-- Skip Internal-Priv Method: `blowfish_encrypt()` -->
+<!-- Skip Internal-Priv Method: `blowfish_decrypt()` -->
+<!-- Skip Internal-Priv Method: `blowfish_algo()` -->
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -816,15 +821,17 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--encrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;encrypt()</option>
+						<option value="Method--encrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;encrypt()</option>
 			
 			
-									<option value="Method--decrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decrypt()</option>
+						<option value="Method--decrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decrypt()</option>
 			
 			
-						
 			
-						
+			
+			
+			
+			
 			
 			
 		</optgroup>
@@ -846,13 +853,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:39 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:26 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

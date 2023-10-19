@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartAbstractCustomSession        abstract class \ SmartAbstractCustomSession    {   } @-&gt;    Abstract Class Smart Custom Session This is the abstract">
-<meta name="keywords" content="smartabstractcustomsession, abstract, class, smart, custom, session, this, is, the, for, extending, smartcustomsession, language, php, located, at, lib core plugins lib session.php, package, development:application, namespace, name, version, v.20210830, methods, final, public, function, construct, open, close, write, id, data, read, destroy, gc, lifetime, properties, sess area, sess ns, sess expire, constants, documentation, index, definition, list, var, generated, on">
+<meta name="description" content="\SmartAbstractCustomSession abstract class \ SmartAbstractCustomSession { } @-&gt; Abstract Class Smart Custom Session This is the abstract for extending the">
+<meta name="keywords" content="smartabstractcustomsession, abstract, class, smart, custom, session, this, is, the, for, extending, smartcustomsession, language, php, located, at, lib core plugins lib session php, package, development application, namespace, name, version, v, methods, final, public, function, construct, open, close, write, id, data, read, destroy, gc, lifetime, properties, sess area, sess ns, sess expire, constants, documentation, index, definition, list, var, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartAbstractCustomSession">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartAbstractCustomSession</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -707,7 +707,7 @@ This is the abstract for extending the class SmartCustomSession</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartAbstractCustomSession</span></li>
 		
-		<li><b>Version:</b> v.20210830</li>
+		<li><b>Version:</b> v.20231007</li>
 		
 		
 		
@@ -732,7 +732,8 @@ This is the abstract for extending the class SmartCustomSession</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--open">
+</div>
+<div class="doc-container" id="Method--open">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>open</b></span>&nbsp;(
 		
 	
@@ -743,7 +744,8 @@ This is the abstract for extending the class SmartCustomSession</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--close">
+</div>
+<div class="doc-container" id="Method--close">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>close</b></span>&nbsp;(
 		
 	
@@ -754,46 +756,11 @@ This is the abstract for extending the class SmartCustomSession</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--write">
+</div>
+<div class="doc-container" id="Method--write">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>write</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--read">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--destroy">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>destroy</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--gc">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>gc</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$lifetime` Parameter is REQUIRED">$lifetime</span></b></span>
+		<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -804,6 +771,46 @@ This is the abstract for extending the class SmartCustomSession</div><br>
 	
 	
 </div>
+<div class="doc-container" id="Method--read">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--destroy">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>destroy</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--gc">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>gc</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$lifetime` Parameter is REQUIRED">$lifetime</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -813,13 +820,16 @@ This is the abstract for extending the class SmartCustomSession</div><br>
 <div class="doc-container" id="Property--sess_area">
 	<span class="doc-modifiers">public</span> <b>$sess_area</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--sess_ns">
+</div>
+<div class="doc-container" id="Property--sess_ns">
 	<span class="doc-modifiers">public</span> <b>$sess_ns</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
-</div><div class="doc-container" id="Property--sess_expire">
+</div>
+<div class="doc-container" id="Property--sess_expire">
 	<span class="doc-modifiers">public</span> <b>$sess_expire</b>&nbsp;<span title="Object Property"><b>-&gt;</b></span>
 	
 </div>
+
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
@@ -859,36 +869,36 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--open"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;open()</option>
+						<option value="Method--open"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;open()</option>
 			
 			
-									<option value="Method--close"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;close()</option>
+						<option value="Method--close"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;close()</option>
 			
 			
-									<option value="Method--write"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write()</option>
+						<option value="Method--write"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write()</option>
 			
 			
-									<option value="Method--read"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read()</option>
+						<option value="Method--read"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read()</option>
 			
 			
-									<option value="Method--destroy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;destroy()</option>
+						<option value="Method--destroy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;destroy()</option>
 			
 			
-									<option value="Method--gc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;gc()</option>
+						<option value="Method--gc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;gc()</option>
 			
 			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
-									<option value="Property--sess_area"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$sess_area</option>
+						<option value="Property--sess_area"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$sess_area</option>
 			
-									<option value="Property--sess_ns"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$sess_ns</option>
+						<option value="Property--sess_ns"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$sess_ns</option>
 			
-									<option value="Property--sess_expire"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$sess_expire</option>
+						<option value="Property--sess_expire"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$sess_expire</option>
 			
 			
 		</optgroup>
@@ -903,13 +913,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:44 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:38 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

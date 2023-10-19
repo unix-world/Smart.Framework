@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartSVGCaptcha        final class \ SmartSVGCaptcha    {   } -&gt;    Class: SVG Captcha - A SVG Image Plugin for SmartCaptcha Create a Form Captcha">
-<meta name="keywords" content="smartsvgcaptcha, final, class, svg, captcha, a, image, plugin, for, smartcaptcha, create, form, validation, vector, language, php, located, at, lib core plugins lib captcha svg.php, package, development:captcha, namespace, name, version, v.20220114, depends, classes, smart, smartsvgcaptchapoint, constants, smart framework security key, methods, public, function, construct, int, numchars, width, height, mixed, difficulty, null, param, the, number, of, glyphs, characters, will, contain, to, generate, valid, values, are, very, easy, default, moderate, hard, alternate, can, be, an, array, settings, constructor, draw image, string, return, code, and, get code, generated, get, must, call, only, after, properties, documentation, index, definition, list, on">
+<meta name="description" content="\SmartSVGCaptcha final class \ SmartSVGCaptcha { } -&gt; Class: SVG Captcha - A SVG Image Plugin for SmartCaptcha Create a Form Captcha Validation Vector">
+<meta name="keywords" content="smartsvgcaptcha, final, class, svg, captcha, a, image, plugin, for, smartcaptcha, create, form, validation, vector, language, php, located, at, lib core plugins lib captcha svg php, package, development captcha, namespace, name, version, v, depends, classes, smart, smartmarkerstemplating, smartsvgcaptchapoint, constants, smart framework security key, methods, public, function, construct, int, numchars, width, height, mixed, difficulty, null, param, the, number, of, glyphs, characters, will, contain, to, generate, valid, values, are, very, easy, default, moderate, hard, alternate, can, be, an, array, settings, constructor, draw image, string, return, code, and, get code, generated, get, must, call, only, after, properties, documentation, index, definition, list, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartSVGCaptcha">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartSVGCaptcha</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -707,8 +707,8 @@ Create a Form Captcha Validation Vector Image (SVG)</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartSVGCaptcha</span></li>
 		
-		<li><b>Version:</b> v.20220114</li>
-		<li><b>Depends:</b> classes:  Smart, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY</li>
+		<li><b>Version:</b> v.20231020</li>
+		<li><b>Depends:</b> classes:  Smart, SmartMarkersTemplating, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY</li>
 		
 		
 		
@@ -723,10 +723,10 @@ Create a Form Captcha Validation Vector Image (SVG)</div><br>
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$numchars` Parameter is REQUIRED">$numchars</span></b></span>, 
-			<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$width` Parameter is REQUIRED">$width</span></b></span>, 
-			<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$height` Parameter is REQUIRED">$height</span></b></span>, 
-			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$difficulty` Parameter is OPTIONAL, with the Default Value: null">$difficulty</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
+		<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$numchars` Parameter is REQUIRED">$numchars</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$width` Parameter is REQUIRED">$width</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$height` Parameter is REQUIRED">$height</span></b></span>, 
+	<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$difficulty` Parameter is OPTIONAL, with the Default Value: null">$difficulty</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -741,7 +741,8 @@ Create a Form Captcha Validation Vector Image (SVG)</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--draw_image">
+</div>
+<div class="doc-container" id="Method--draw_image">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>draw_image</b></span>&nbsp;(
 		
 	
@@ -754,7 +755,8 @@ Create a Form Captcha Validation Vector Image (SVG)</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--get_code">
+</div>
+<div class="doc-container" id="Method--get_code">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_code</b></span>&nbsp;(
 		
 	
@@ -769,6 +771,7 @@ Must be call only after draw_image()</div>
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -815,13 +818,13 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--draw_image"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;draw_image()</option>
+						<option value="Method--draw_image"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;draw_image()</option>
 			
 			
-									<option value="Method--get_code"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_code()</option>
+						<option value="Method--get_code"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_code()</option>
 			
 			
 			
@@ -841,13 +844,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:43 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:38 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

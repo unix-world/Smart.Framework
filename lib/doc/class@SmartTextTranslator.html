@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartTextTranslator        final class \ SmartTextTranslator    {   } -&gt;    Class Smart Text Translator Object     Language: PHP  Located at:">
-<meta name="keywords" content="smarttexttranslator, final, class, smart, text, translator, object, language, php, located, at, lib core lib translations.php, package, core:translations, namespace, name, version, v.20211214, depends, classes, smarttexttranslations, smartframeworkregistry, hints, do, not, use, this, directly, by, creating, a, new, instance, you, should, obtain, as, smarttexttranslations::gettranslator  area, subarea, for, current, or, custom language, custom, usage, dynamic, class method, provides, only, methods, public, function, string, y textkey, y fallback language, default, bool, y ignore empty, false, return, the, translated, fallback, to, get, translation, properties, constants, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartTextTranslator final class \ SmartTextTranslator { } -&gt; Class Smart Text Translator Object Language: PHP Located at: lib/core/lib_translations.php">
+<meta name="keywords" content="smarttexttranslator, final, class, smart, text, translator, object, language, php, located, at, lib core lib translations php, package, application translations, namespace, name, version, v, depends, classes, smarttexttranslations, smartframeworkregistry, hints, do, not, use, this, directly, by, creating, a, new, instance, you, should, obtain, as, smarttexttranslations gettranslator  area, subarea, for, current, or, custom language, custom, usage, dynamic, class   - method, provides, only, methods, public, function, string, y textkey, y fallback language, default, bool, y ignore empty, false, return, the, translated, fallback, to, get, translation, properties, constants, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartTextTranslator">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartTextTranslator</title>
@@ -461,14 +461,14 @@ nav.ux-navbar li > a:only-child::after {
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 		<ul class="menu">
-		<li><a href="index.html#Package--CoreTranslations-" title="return to Index">return to Index</a></li>
+		<li><a href="index.html#Package--ApplicationTranslations-" title="return to Index">return to Index</a></li>
 	</ul>
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -702,11 +702,11 @@ select#select-summary {
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
 		<li><span class="doc-located"><b>Located at:</b> lib/core/lib_translations.php</span></li>
-		<li><span class="doc-package"><b>Package:</b> @Core:Translations</span></li>
+		<li><span class="doc-package"><b>Package:</b> Application:Translations</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartTextTranslator</span></li>
 		
-		<li><b>Version:</b> v.20211214</li>
+		<li><b>Version:</b> v.20221220</li>
 		<li><b>Depends:</b> classes:  Smart, SmartTextTranslations, SmartFrameworkRegistry</li>
 		<li><b>Hints:</b> Do  not use this object directly by creating a new instance ; You should obtain this object as SmartTextTranslations::getTranslator($area, $subarea) for current language or as SmartTextTranslations::getTranslator($area, $subarea, $custom_language) for a custom language</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -720,11 +720,13 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<!-- Skip Internal-Priv Method: `__construct()` --><!-- Skip Internal-Priv Method: `getinfo()` --><div class="doc-container" id="Method--text">
+<!-- Skip Internal-Priv Method: `__construct()` -->
+<!-- Skip Internal-Priv Method: `getinfo()` -->
+<div class="doc-container" id="Method--text">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>text</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_textkey` Parameter is REQUIRED">$y_textkey</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_fallback_language` Parameter is OPTIONAL, with the Default Value: &quot;@default&quot;">$y_fallback_language</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@default&quot;</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ignore_empty` Parameter is OPTIONAL, with the Default Value: false">$y_ignore_empty</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_textkey` Parameter is REQUIRED">$y_textkey</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_fallback_language` Parameter is OPTIONAL, with the Default Value: &quot;@default&quot;">$y_fallback_language</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@default&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_ignore_empty` Parameter is OPTIONAL, with the Default Value: false">$y_ignore_empty</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -737,6 +739,7 @@ select#select-summary {
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -783,11 +786,11 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-						
 			
-						
 			
-									<option value="Method--text"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;text()</option>
+			
+			
+						<option value="Method--text"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;text()</option>
 			
 			
 			
@@ -807,13 +810,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:40 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:35 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

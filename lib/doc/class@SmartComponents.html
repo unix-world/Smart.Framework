@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartComponents        final class \ SmartComponents    {   } ::    Class: SmartComponents - provides various components for Smart.Framework">
-<meta name="keywords" content="smartcomponents, final, class, provides, various, components, for, smart.framework, language, php, located, at, lib core lib smart components.php, package, application:viewcomponents, namespace, name, version, v.20220126, depends, css, notifications.css, classes, smart, smartutils, smartfilesystem, smarttexttranslations, smartmarkerstemplating, usage, static, object, class::method, this, only, methods, public, function, http message badrequest, string, y message, y html message, http message unauthorized, http message forbidden, http message notfound, http message toomanyrequests, http message internalerror, http message badgateway, http message serviceunavailable, http message gatewaytimeout, operation question, y html, y width, operation notice, operation ok, operation warn, operation error, operation success, operation important, set app template conform metavars, array, arr data, render app template, template path, template file, properties, constants, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartComponents final class \ SmartComponents { } :: Class: SmartComponents - provides various components for Smart.Framework Language: PHP Located at:">
+<meta name="keywords" content="smartcomponents, final, class, provides, various, components, for, smart framework, language, php, located, at, lib core lib smart components php, package, application viewcomponents, namespace, name, version, v, depends, css, notifications css, classes, smart, smartutils, smartfilesystem, smarttexttranslations, smartmarkerstemplating, usage, static, object, class method, this, only, methods, public, function, http message   badrequest, string, y message, y html message, http message   unauthorized, http message   forbidden, http message   notfound, http message   gone, http message   toomanyrequests, http message   internalerror, http message   badgateway, http message   serviceunavailable, http message   gatewaytimeout, operation question, y html, y width, operation notice, operation ok, operation warn, operation error, operation success, operation important, operation result, operation display, bool, y use icon, true, operation hint, set app template conform metavars, array, arr data, render app template, template path, template file, properties, constants, const, default page vars, semaphore, struct schema, canonical url, title, meta description, meta keywords, head meta, head css, head js, header, nav, main, aside, footer, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartComponents">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartComponents</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartComponents</span></li>
 		
-		<li><b>Version:</b> v.20220126</li>
+		<li><b>Version:</b> v.20231020</li>
 		<li><b>Depends:</b> css:  notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -720,241 +720,323 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<!-- Skip Internal-Priv Method: `app_error_message()` --><!-- Skip Internal-Priv Method: `http_status_message()` --><!-- Skip Internal-Priv Method: `http_error_message()` --><div class="doc-container" id="Method--http_message_400_badrequest">
+<!-- Skip Internal-Priv Method: `app_default_css()` -->
+<!-- Skip Internal-Priv Method: `app_error_message()` -->
+<!-- Skip Internal-Priv Method: `http_status_message()` -->
+<!-- Skip Internal-Priv Method: `http_error_message()` -->
+<div class="doc-container" id="Method--http_message_400_badrequest">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_400_badrequest</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--http_message_401_unauthorized">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_401_unauthorized">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_401_unauthorized</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--http_message_403_forbidden">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_403_forbidden">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_403_forbidden</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--http_message_404_notfound">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_404_notfound">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_404_notfound</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--http_message_429_toomanyrequests">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_410_gone">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_410_gone</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_429_toomanyrequests">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_429_toomanyrequests</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--http_message_500_internalerror">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_500_internalerror">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_500_internalerror</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--http_message_502_badgateway">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_502_badgateway">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_502_badgateway</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--http_message_503_serviceunavailable">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_503_serviceunavailable">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_503_serviceunavailable</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--http_message_504_gatewaytimeout">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_504_gatewaytimeout">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_504_gatewaytimeout</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--operation_question">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--operation_question">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>operation_question</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--operation_notice">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--operation_notice">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>operation_notice</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--operation_ok">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--operation_ok">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>operation_ok</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--operation_warn">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--operation_warn">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>operation_warn</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--operation_error">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--operation_error">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>operation_error</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--operation_success">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--operation_success">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>operation_success</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><div class="doc-container" id="Method--operation_important">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--operation_important">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>operation_important</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `app_powered_info()` --><div class="doc-container" id="Method--set_app_template_conform_metavars">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--operation_result">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>operation_result</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--operation_display">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>operation_display</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_use_icon` Parameter is OPTIONAL, with the Default Value: true">$y_use_icon</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--operation_hint">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>operation_hint</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html` Parameter is REQUIRED">$y_html</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_width` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `app_powered_info()` -->
+<div class="doc-container" id="Method--set_app_template_conform_metavars">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>set_app_template_conform_metavars</b></span>&nbsp;(
-				<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arr_data` Parameter is OPTIONAL, with the Default Value: []">$arr_data</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+		<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arr_data` Parameter is OPTIONAL, with the Default Value: []">$arr_data</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
 	
 	
 	
-</div><div class="doc-container" id="Method--render_app_template">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--render_app_template">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>render_app_template</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$template_path` Parameter is REQUIRED">$template_path</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$template_file` Parameter is REQUIRED">$template_file</span></b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$arr_data` Parameter is REQUIRED">$arr_data</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$template_path` Parameter is REQUIRED">$template_path</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$template_file` Parameter is REQUIRED">$template_file</span></b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$arr_data` Parameter is REQUIRED">$arr_data</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `get_imgdesc_by_bw_id()` --><!-- Skip Internal-Priv Method: `get_imgdesc_by_os_id()` -->
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `get_imgdesc_by_bw_id()` -->
+<!-- Skip Internal-Priv Method: `get_imgdesc_by_os_id()` -->
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -968,6 +1050,10 @@ select#select-summary {
 	<h2 class="doc-header">class Constants</h2>
 </div>
 <!-- constants r.20200121 -->
+<div class="doc-container" id="Constant--DEFAULT_PAGE_VARS">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>DEFAULT_PAGE_VARS</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[0 =&gt; &quot;template-path&quot;, 1 =&gt; &quot;template-file&quot;, 2 =&gt; &quot;semaphore&quot;, 3 =&gt; &quot;struct-schema&quot;, 4 =&gt; &quot;canonical-url&quot;, 5 =&gt; &quot;title&quot;, 6 =&gt; &quot;meta-description&quot;, 7 =&gt; &quot;meta-keywords&quot;, 8 =&gt; &quot;head-meta&quot;, 9 =&gt; &quot;head-css&quot;, 10 =&gt; &quot;head-js&quot;, 11 =&gt; &quot;header&quot;, 12 =&gt; &quot;nav&quot;, 13 =&gt; &quot;main&quot;, 14 =&gt; &quot;aside&quot;, 15 =&gt; &quot;footer&quot;]</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
 
 <!-- Sample Code -->
 
@@ -1001,71 +1087,85 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-						
-			
-						
-			
-						
-			
-									<option value="Method--http_message_400_badrequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_400_badrequest()</option>
 			
 			
-									<option value="Method--http_message_401_unauthorized"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_401_unauthorized()</option>
 			
 			
-									<option value="Method--http_message_403_forbidden"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_403_forbidden()</option>
 			
 			
-									<option value="Method--http_message_404_notfound"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_404_notfound()</option>
 			
 			
-									<option value="Method--http_message_429_toomanyrequests"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_429_toomanyrequests()</option>
+						<option value="Method--http_message_400_badrequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_400_badrequest()</option>
 			
 			
-									<option value="Method--http_message_500_internalerror"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_500_internalerror()</option>
+						<option value="Method--http_message_401_unauthorized"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_401_unauthorized()</option>
 			
 			
-									<option value="Method--http_message_502_badgateway"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_502_badgateway()</option>
+						<option value="Method--http_message_403_forbidden"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_403_forbidden()</option>
 			
 			
-									<option value="Method--http_message_503_serviceunavailable"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_503_serviceunavailable()</option>
+						<option value="Method--http_message_404_notfound"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_404_notfound()</option>
 			
 			
-									<option value="Method--http_message_504_gatewaytimeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_504_gatewaytimeout()</option>
+						<option value="Method--http_message_410_gone"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_410_gone()</option>
 			
 			
-									<option value="Method--operation_question"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_question()</option>
+						<option value="Method--http_message_429_toomanyrequests"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_429_toomanyrequests()</option>
 			
 			
-									<option value="Method--operation_notice"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_notice()</option>
+						<option value="Method--http_message_500_internalerror"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_500_internalerror()</option>
 			
 			
-									<option value="Method--operation_ok"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_ok()</option>
+						<option value="Method--http_message_502_badgateway"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_502_badgateway()</option>
 			
 			
-									<option value="Method--operation_warn"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_warn()</option>
+						<option value="Method--http_message_503_serviceunavailable"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_503_serviceunavailable()</option>
 			
 			
-									<option value="Method--operation_error"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_error()</option>
+						<option value="Method--http_message_504_gatewaytimeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_504_gatewaytimeout()</option>
 			
 			
-									<option value="Method--operation_success"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_success()</option>
+						<option value="Method--operation_question"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_question()</option>
 			
 			
-									<option value="Method--operation_important"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_important()</option>
+						<option value="Method--operation_notice"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_notice()</option>
 			
 			
-						
-			
-									<option value="Method--set_app_template_conform_metavars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set_app_template_conform_metavars()</option>
+						<option value="Method--operation_ok"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_ok()</option>
 			
 			
-									<option value="Method--render_app_template"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;render_app_template()</option>
+						<option value="Method--operation_warn"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_warn()</option>
 			
 			
-						
+						<option value="Method--operation_error"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_error()</option>
 			
-						
+			
+						<option value="Method--operation_success"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_success()</option>
+			
+			
+						<option value="Method--operation_important"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_important()</option>
+			
+			
+						<option value="Method--operation_result"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_result()</option>
+			
+			
+						<option value="Method--operation_display"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_display()</option>
+			
+			
+						<option value="Method--operation_hint"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;operation_hint()</option>
+			
+			
+			
+			
+						<option value="Method--set_app_template_conform_metavars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set_app_template_conform_metavars()</option>
+			
+			
+						<option value="Method--render_app_template"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;render_app_template()</option>
+			
+			
+			
+			
+			
 			
 			
 		</optgroup>
@@ -1075,6 +1175,8 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
+						<option value="Constant--DEFAULT_PAGE_VARS">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;DEFAULT_PAGE_VARS</option>
+			
 			
 		</optgroup>
 		
@@ -1084,13 +1186,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:40 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:35 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

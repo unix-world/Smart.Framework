@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartValidator        final class \ SmartValidator    {   } ::    Class: SmartValidator - provides misc validating methods.     Language: PHP  Located">
-<meta name="keywords" content="smartvalidator, final, class, provides, misc, validating, methods, language, php, located, at, lib framework lib valid parse.php, package, core:extra, namespace, name, version, v.20210506, depends, classes, smart, smartunicode, usage, static, object, class::method, this, only, public, function, regex stringvalidation expression, enum, y mode, y match, full, string, return, the, regex, expression, or, empty, if, invalid, mode, is, provided, param, to, be, returned, valid, modes, match, type, partial, expressions, for, text, parsing, of, numbers, ip, addresses, email, address, with, tld, domain, phone, us, unicode, utf-8, number-integer, number, integer, as, number-decimal, decimal, number-list-integer, list, separed, by, semicolon, number-list-decimal, ipv4, v4, ipv6, 2a00:1450:400c:c01::68, email address.tld, must, contain, a, can, letters, long, well">
+<meta name="description" content="\SmartValidator final class \ SmartValidator { } :: Class: SmartValidator - provides misc validating methods. Language: PHP Located at:">
+<meta name="keywords" content="smartvalidator, final, class, provides, misc, validating, methods, language, php, located, at, lib framework lib valid parse php, package, core extra, namespace, name, version, v, depends, classes, smart, smartunicode, usage, static, object, class method, this, only, public, function, regex stringvalidation expression, enum, y mode, y match, full, string, return, the, regex, expression, or, empty, if, invalid, mode, is, provided, param, to, be, returned, valid, modes, match, type, partial, expressions, for, text, parsing, of, numbers, ip, addresses, email, address, with, tld, domain, phone, us, unicode, utf, number integer, number, integer, as, number decimal, decimal, number list integer, list, separed, by, semicolon, number list decimal, ipv4, v4, ipv6, 2a00 400c c01, email address tld, must, contain, a, can, letters, long, well">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartValidator">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartValidator</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartValidator</span></li>
 		
-		<li><b>Version:</b> v.20210506</li>
+		<li><b>Version:</b> v.20231012</li>
 		<li><b>Depends:</b> classes:  Smart, SmartUnicode</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -722,8 +722,8 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--regex_stringvalidation_expression">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>regex_stringvalidation_expression</b></span>&nbsp;(
-				<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mode` Parameter is REQUIRED">$y_mode</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_match` Parameter is OPTIONAL, with the Default Value: &quot;full&quot;">$y_match</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;full&quot;</b></span>
+		<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mode` Parameter is REQUIRED">$y_mode</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_match` Parameter is OPTIONAL, with the Default Value: &quot;full&quot;">$y_match</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;full&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -746,10 +746,12 @@ utf8-text 				:: Unicode (UTF-8) Text</div>
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `regex_stringvalidation_segment()` --><div class="doc-container" id="Method--validate_string">
+</div>
+<!-- Skip Internal-Priv Method: `regex_stringvalidation_segment()` -->
+<div class="doc-container" id="Method--validate_string">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_string</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mode` Parameter is REQUIRED">$y_mode</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mode` Parameter is REQUIRED">$y_mode</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -763,9 +765,10 @@ utf8-text 				:: Unicode (UTF-8) Text</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--validate_numeric_integer_or_decimal_values">
+</div>
+<div class="doc-container" id="Method--validate_numeric_integer_or_decimal_values">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_numeric_integer_or_decimal_values</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$val` Parameter is REQUIRED">$val</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$val` Parameter is REQUIRED">$val</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
@@ -779,9 +782,10 @@ This will not check if the number is finite or overflowing !!</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--validate_numeric_pure_valid_values">
+</div>
+<div class="doc-container" id="Method--validate_numeric_pure_valid_values">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_numeric_pure_valid_values</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$val` Parameter is REQUIRED">$val</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$val` Parameter is REQUIRED">$val</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
@@ -794,9 +798,10 @@ This will not check if the number is finite or overflowing !!</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--validate_integer_pure_valid_values">
+</div>
+<div class="doc-container" id="Method--validate_integer_pure_valid_values">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_integer_pure_valid_values</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$val` Parameter is REQUIRED">$val</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$val` Parameter is REQUIRED">$val</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
@@ -809,9 +814,10 @@ This will not check if the number is finite or overflowing !!</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--validate_html_or_xml_code">
+</div>
+<div class="doc-container" id="Method--validate_html_or_xml_code">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_html_or_xml_code</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html_or_xml_code` Parameter is REQUIRED">$y_html_or_xml_code</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_html_or_xml_code` Parameter is REQUIRED">$y_html_or_xml_code</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -824,9 +830,10 @@ This will not check if the number is finite or overflowing !!</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--validate_filter_ip_address">
+</div>
+<div class="doc-container" id="Method--validate_filter_ip_address">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_filter_ip_address</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$ip` Parameter is REQUIRED">$ip</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$ip` Parameter is REQUIRED">$ip</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -839,9 +846,10 @@ This will not check if the number is finite or overflowing !!</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--validate_mime_disposition">
+</div>
+<div class="doc-container" id="Method--validate_mime_disposition">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_mime_disposition</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_disp` Parameter is REQUIRED">$y_disp</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_disp` Parameter is REQUIRED">$y_disp</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -854,9 +862,10 @@ This will not check if the number is finite or overflowing !!</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--validate_mime_type">
+</div>
+<div class="doc-container" id="Method--validate_mime_type">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>validate_mime_type</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_type` Parameter is REQUIRED">$y_type</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_type` Parameter is REQUIRED">$y_type</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -870,6 +879,7 @@ This will not check if the number is finite or overflowing !!</div>
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -925,33 +935,33 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--regex_stringvalidation_expression"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;regex_stringvalidation_expression()</option>
+						<option value="Method--regex_stringvalidation_expression"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;regex_stringvalidation_expression()</option>
 			
 			
-						
-			
-									<option value="Method--validate_string"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_string()</option>
 			
 			
-									<option value="Method--validate_numeric_integer_or_decimal_values"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_numeric_integer_or_decimal_values()</option>
+						<option value="Method--validate_string"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_string()</option>
 			
 			
-									<option value="Method--validate_numeric_pure_valid_values"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_numeric_pure_valid_values()</option>
+						<option value="Method--validate_numeric_integer_or_decimal_values"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_numeric_integer_or_decimal_values()</option>
 			
 			
-									<option value="Method--validate_integer_pure_valid_values"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_integer_pure_valid_values()</option>
+						<option value="Method--validate_numeric_pure_valid_values"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_numeric_pure_valid_values()</option>
 			
 			
-									<option value="Method--validate_html_or_xml_code"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_html_or_xml_code()</option>
+						<option value="Method--validate_integer_pure_valid_values"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_integer_pure_valid_values()</option>
 			
 			
-									<option value="Method--validate_filter_ip_address"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_filter_ip_address()</option>
+						<option value="Method--validate_html_or_xml_code"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_html_or_xml_code()</option>
 			
 			
-									<option value="Method--validate_mime_disposition"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_mime_disposition()</option>
+						<option value="Method--validate_filter_ip_address"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_filter_ip_address()</option>
 			
 			
-									<option value="Method--validate_mime_type"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_mime_type()</option>
+						<option value="Method--validate_mime_disposition"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_mime_disposition()</option>
+			
+			
+						<option value="Method--validate_mime_type"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;validate_mime_type()</option>
 			
 			
 			
@@ -974,13 +984,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:39 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:27 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

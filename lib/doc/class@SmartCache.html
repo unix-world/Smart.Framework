@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartCache        final class \ SmartCache    {   } ::    Class: SmartCache - Provides per Execution, Volatille Cache (in-PHP-Memory). This cache type is">
-<meta name="keywords" content="smartcache, final, class, provides, per, execution, volatille, cache, in-php-memory, this, type, is, not, persistent, and, will, reset, after, each, php, because, kind, of, per-execution, the, key, values, be, shared, between, executions, it, intended, to, used, on, optimizations, avoid, repetitive, complex, high-cost, methods, that, would, output, same, result, under, conditions, as, environment, parameters, client, language, located, at, lib framework lib caching.php, package, core, namespace, name, version, v.20211209, depends, classes, smart, smartframeworkregistry, usage, static, object, class::method, only, public, function, keyexists, string, y realm, y key, boolean, return, true, if, exists, or, false, param, realm, check, a, in, non-persistent, getkey, mixed, value, stored, null, found">
+<meta name="description" content="\SmartCache final class \ SmartCache { } :: Class: SmartCache - Provides per Execution, Volatille Cache (in-PHP-Memory). This cache type is volatille, not">
+<meta name="keywords" content="smartcache, final, class, provides, per, execution, volatille, cache, in php memory, this, type, is, not, persistent, and, will, reset, after, each, php, because, kind, of, per execution, the, key, values, be, shared, between, executions, it, intended, to, used, on, optimizations, avoid, repetitive, complex, high cost, methods, that, would, output, same, result, under, conditions, as, environment, parameters, client, language, located, at, lib framework lib caching php, package, core, namespace, name, version, v, depends, classes, smart, smartenvironment, usage, static, object, class method, only, public, function, keyexists, string, y realm, y key, bool, return, boolean, true, if, exists, or, false, param, realm, check, a, in, non persistent, getkey, mixed, value, stored, null">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartCache">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartCache</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -711,8 +711,8 @@ the same execution conditions as: same environment / same parameters / same clie
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartCache</span></li>
 		
-		<li><b>Version:</b> v.20211209</li>
-		<li><b>Depends:</b> classes:  Smart, SmartFrameworkRegistry</li>
+		<li><b>Version:</b> v.20221220</li>
+		<li><b>Depends:</b> classes:  Smart, SmartEnvironment</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -727,11 +727,11 @@ the same execution conditions as: same environment / same parameters / same clie
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--keyExists">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>keyExists</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if Key Exists or FALSE if not<br>
@@ -742,10 +742,11 @@ the same execution conditions as: same environment / same parameters / same clie
 	
 	
 	
-</div><div class="doc-container" id="Method--getKey">
+</div>
+<div class="doc-container" id="Method--getKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getKey</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
@@ -759,14 +760,15 @@ the same execution conditions as: same environment / same parameters / same clie
 	
 	
 	
-</div><div class="doc-container" id="Method--setKey">
+</div>
+<div class="doc-container" id="Method--setKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setKey</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>, 
-			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_value` Parameter is REQUIRED">$y_value</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>, 
+	<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_value` Parameter is REQUIRED">$y_value</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} Always returns true<br>
@@ -778,13 +780,14 @@ the same execution conditions as: same environment / same parameters / same clie
 	
 	
 	
-</div><div class="doc-container" id="Method--unsetKey">
+</div>
+<div class="doc-container" id="Method--unsetKey">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>unsetKey</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} Always returns true<br>
@@ -795,7 +798,10 @@ the same execution conditions as: same environment / same parameters / same clie
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `getAll()` --><!-- Skip Internal-Priv Method: `clearData()` -->
+</div>
+<!-- Skip Internal-Priv Method: `getAll()` -->
+<!-- Skip Internal-Priv Method: `clearData()` -->
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -842,21 +848,21 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--keyExists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;keyExists()</option>
+						<option value="Method--keyExists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;keyExists()</option>
 			
 			
-									<option value="Method--getKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getKey()</option>
+						<option value="Method--getKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getKey()</option>
 			
 			
-									<option value="Method--setKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setKey()</option>
+						<option value="Method--setKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setKey()</option>
 			
 			
-									<option value="Method--unsetKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unsetKey()</option>
+						<option value="Method--unsetKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unsetKey()</option>
 			
 			
-						
 			
-						
+			
+			
 			
 			
 		</optgroup>
@@ -875,13 +881,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:40 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:25 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

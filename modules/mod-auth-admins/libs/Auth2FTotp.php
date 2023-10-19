@@ -51,7 +51,7 @@ if(!function_exists('random_bytes')) {
  * @ignore
  *
  * @depends     PHP hash_hmac_algos() / hash_hmac() ; classes: Smart
- * @version 	v.20231010
+ * @version 	v.20231020
  * @package 	development:modules:AuthAdmins
  *
  */

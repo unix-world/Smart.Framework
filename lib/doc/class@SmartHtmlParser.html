@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartHtmlParser        final class \ SmartHtmlParser    {   } -&gt;    Class: SmartHtmlParser - provides a HTML Parser and Cleaner that will sanitize and">
-<meta name="keywords" content="smarthtmlparser, final, class, provides, a, html, parser, and, cleaner, that, will, sanitize, parse, the, code, language, php, located, at, lib core plugins lib html.php, package, plugins:convertersandparsers, namespace, name, version, v.20220210, depends, classes, smart, usage, dynamic, object, new, class method, this, only, methods, public, function, construct, string, y html, bool, y signature, true, y html validate, y log validation warn err, false, get comments, get all tags, get tags, tag, get std html, get clean html, y comments, array, y extra tags remove, y extra tags clean, y allowed tags, y allow media tags, y allow iframes, getvalidationerrors, properties, constants, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartHtmlParser final class \ SmartHtmlParser { } -&gt; Class: SmartHtmlParser - provides a HTML Parser and Cleaner that will sanitize and parse the HTML">
+<meta name="keywords" content="smarthtmlparser, final, class, provides, a, html, parser, and, cleaner, that, will, sanitize, parse, the, code, language, php, located, at, lib framework plugins lib html php, package, plugins convertersandparsers, namespace, name, version, v, depends, classes, smart, smartenvironment, smartunicode, smartvalidator, optional constant, smart framework sql charset, usage, dynamic, object, new, class   - method, this, only, methods, public, function, construct, string, y html, bool, y signature, true, y html validate, y log validation warn err, false, get comments, get all tags, get tags, tag, get std html, get clean html, y comments, array, y extra tags remove, y extra tags clean, y allowed tags, y allow media tags, y allow iframes, getvalidationerrors, properties, constants, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartHtmlParser">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartHtmlParser</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -701,13 +701,13 @@ select#select-summary {
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_html.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_html.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:ConvertersAndParsers</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartHtmlParser</span></li>
 		
-		<li><b>Version:</b> v.20220210</li>
-		<li><b>Depends:</b> classes:  Smart</li>
+		<li><b>Version:</b> v.20221224</li>
+		<li><b>Depends:</b> classes:  Smart, SmartEnvironment, SmartUnicode, SmartValidator ; optional-constant: SMART_FRAMEWORK_SQL_CHARSET</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -722,10 +722,10 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_signature` Parameter is OPTIONAL, with the Default Value: true">$y_signature</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_validate` Parameter is OPTIONAL, with the Default Value: true">$y_html_validate</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_log_validation_warn_err` Parameter is OPTIONAL, with the Default Value: false">$y_log_validation_warn_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_signature` Parameter is OPTIONAL, with the Default Value: true">$y_signature</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_validate` Parameter is OPTIONAL, with the Default Value: true">$y_html_validate</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_log_validation_warn_err` Parameter is OPTIONAL, with the Default Value: false">$y_log_validation_warn_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -735,7 +735,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--get_comments">
+</div>
+<div class="doc-container" id="Method--get_comments">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_comments</b></span>&nbsp;(
 		
 	
@@ -746,7 +747,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--get_all_tags">
+</div>
+<div class="doc-container" id="Method--get_all_tags">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_all_tags</b></span>&nbsp;(
 		
 	
@@ -757,9 +759,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--get_tags">
+</div>
+<div class="doc-container" id="Method--get_tags">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_tags</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$tag` Parameter is REQUIRED">$tag</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$tag` Parameter is REQUIRED">$tag</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -769,7 +772,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--get_std_html">
+</div>
+<div class="doc-container" id="Method--get_std_html">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_std_html</b></span>&nbsp;(
 		
 	
@@ -780,14 +784,15 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--get_clean_html">
+</div>
+<div class="doc-container" id="Method--get_clean_html">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_clean_html</b></span>&nbsp;(
-				<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_comments` Parameter is OPTIONAL, with the Default Value: true">$y_comments</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_extra_tags_remove` Parameter is OPTIONAL, with the Default Value: []">$y_extra_tags_remove</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_extra_tags_clean` Parameter is OPTIONAL, with the Default Value: []">$y_extra_tags_clean</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allowed_tags` Parameter is OPTIONAL, with the Default Value: []">$y_allowed_tags</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_media_tags` Parameter is OPTIONAL, with the Default Value: false">$y_allow_media_tags</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_iframes` Parameter is OPTIONAL, with the Default Value: false">$y_allow_iframes</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_comments` Parameter is OPTIONAL, with the Default Value: true">$y_comments</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_extra_tags_remove` Parameter is OPTIONAL, with the Default Value: []">$y_extra_tags_remove</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_extra_tags_clean` Parameter is OPTIONAL, with the Default Value: []">$y_extra_tags_clean</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allowed_tags` Parameter is OPTIONAL, with the Default Value: []">$y_allowed_tags</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_media_tags` Parameter is OPTIONAL, with the Default Value: false">$y_allow_media_tags</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_allow_iframes` Parameter is OPTIONAL, with the Default Value: false">$y_allow_iframes</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -797,7 +802,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--getValidationErrors">
+</div>
+<div class="doc-container" id="Method--getValidationErrors">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getValidationErrors</b></span>&nbsp;(
 		
 	
@@ -809,6 +815,7 @@ select#select-summary {
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -855,25 +862,25 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--get_comments"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_comments()</option>
+						<option value="Method--get_comments"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_comments()</option>
 			
 			
-									<option value="Method--get_all_tags"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_all_tags()</option>
+						<option value="Method--get_all_tags"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_all_tags()</option>
 			
 			
-									<option value="Method--get_tags"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_tags()</option>
+						<option value="Method--get_tags"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_tags()</option>
 			
 			
-									<option value="Method--get_std_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_std_html()</option>
+						<option value="Method--get_std_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_std_html()</option>
 			
 			
-									<option value="Method--get_clean_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_clean_html()</option>
+						<option value="Method--get_clean_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_clean_html()</option>
 			
 			
-									<option value="Method--getValidationErrors"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getValidationErrors()</option>
+						<option value="Method--getValidationErrors"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getValidationErrors()</option>
 			
 			
 			
@@ -893,13 +900,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:42 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:28 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

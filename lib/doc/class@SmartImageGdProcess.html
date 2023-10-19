@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartImageGdProcess        final class \ SmartImageGdProcess    {   } -&gt;    Class: Smart Image GD Process - provide a class for GD image processing for:">
-<meta name="keywords" content="smartimagegdprocess, final, class, smart, image, gd, process, provide, a, for, processing, safe, filter, convert, format, resize, resample, apply, watermark, gif, png, jpg, webp, just, construct, this, and, then, getimagedata, an, use, resizeimage, over, applywatermark, language, php, located, at, lib core plugins lib imgd.php, package, plugins:image, namespace, name, version, v.20211126, depends, extension, with, support, imagecreatetruecolor, imagecreatefromstring, getimagesizefromstring, usage, dynamic, object, new, class method, provides, only, methods, public, function, imgdata, string, imginfo, param, mixed, imgstr, the, data, of, or, array, definition, width, height, bgcolor, optional, identifier, ex, used, error, log, debug, messages, constructor, destruct, destructor, setdebug, bool, if, true, set, on, else, off, by">
+<meta name="description" content="\SmartImageGdProcess final class \ SmartImageGdProcess { } -&gt; Class: Smart Image GD Process - provide a class for GD image processing for: Safe Filter,">
+<meta name="keywords" content="smartimagegdprocess, final, class, smart, image, gd, process, provide, a, for, processing, safe, filter, convert, format, resize, resample, apply, watermark, gif, png, jpg, webp, just, construct, this, and, then, getimagedata, an, use, resizeimage, over, applywatermark, language, php, located, at, lib framework plugins lib imgd php, package, plugins image, namespace, name, version, v, depends, extension, with, support, imagecreatetruecolor, imagecreatefromstring, getimagesizefromstring, classes, smartfilesysutils, usage, dynamic, object, new, class   - method, provides, only, methods, public, function, imgdata, string, imginfo, param, mixed, imgstr, the, data, of, or, array, definition, width, height, bgcolor, optional, identifier, ex, used, error, log, debug, messages, constructor, destruct, destructor, setdebug, bool, if, true, set, on, else">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartImageGdProcess">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartImageGdProcess</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -705,13 +705,13 @@ For Apply an image watermark over an image use: -&gt;applyWatermark()</div><br>
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_imgd.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_imgd.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:Image</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartImageGdProcess</span></li>
 		
-		<li><b>Version:</b> v.20211126</li>
-		<li><b>Depends:</b> PHP  GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring</li>
+		<li><b>Version:</b> v.20221223</li>
+		<li><b>Depends:</b> PHP  GD extension with support for: imagecreatetruecolor / imagecreatefromstring / getimagesizefromstring ; classes: Smart, SmartFileSysUtils</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -726,8 +726,8 @@ For Apply an image watermark over an image use: -&gt;applyWatermark()</div><br>
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$imgdata` Parameter is REQUIRED">$imgdata</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$imginfo` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$imginfo</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<span class="doc-param-name"><b><span title="`$imgdata` Parameter is REQUIRED">$imgdata</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$imginfo` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$imginfo</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -740,7 +740,8 @@ For Apply an image watermark over an image use: -&gt;applyWatermark()</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--__destruct">
+</div>
+<div class="doc-container" id="Method--__destruct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__destruct</b></span>&nbsp;(
 		
 	
@@ -752,9 +753,10 @@ For Apply an image watermark over an image use: -&gt;applyWatermark()</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--setDebug">
+</div>
+<div class="doc-container" id="Method--setDebug">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setDebug</b></span>&nbsp;(
-				<i>BOOL</i>&nbsp;<span class="doc-param-name"><b><span title="`$debug` Parameter is REQUIRED">$debug</span></b></span>
+		<i>BOOL</i>&nbsp;<span class="doc-param-name"><b><span title="`$debug` Parameter is REQUIRED">$debug</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -766,7 +768,8 @@ For Apply an image watermark over an image use: -&gt;applyWatermark()</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--getStatusOk">
+</div>
+<div class="doc-container" id="Method--getStatusOk">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getStatusOk</b></span>&nbsp;(
 		
 	
@@ -779,7 +782,8 @@ For Apply an image watermark over an image use: -&gt;applyWatermark()</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--getLastMessage">
+</div>
+<div class="doc-container" id="Method--getLastMessage">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getLastMessage</b></span>&nbsp;(
 		
 	
@@ -792,7 +796,8 @@ For Apply an image watermark over an image use: -&gt;applyWatermark()</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--getImageWidth">
+</div>
+<div class="doc-container" id="Method--getImageWidth">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getImageWidth</b></span>&nbsp;(
 		
 	
@@ -807,7 +812,8 @@ On error will return -1</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--getImageHeight">
+</div>
+<div class="doc-container" id="Method--getImageHeight">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getImageHeight</b></span>&nbsp;(
 		
 	
@@ -822,7 +828,8 @@ On error will return -1</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--getImageType">
+</div>
+<div class="doc-container" id="Method--getImageType">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getImageType</b></span>&nbsp;(
 		
 	
@@ -841,12 +848,13 @@ Possible errors when detecting an image type:<br>
 	
 	
 	
-</div><div class="doc-container" id="Method--getImageData">
+</div>
+<div class="doc-container" id="Method--getImageData">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getImageData</b></span>&nbsp;(
-				<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$type` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$type</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$quality` Parameter is OPTIONAL, with the Default Value: 100">$quality</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>100</b></span>, 
-			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$compression` Parameter is OPTIONAL, with the Default Value: 6">$compression</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>6</b></span>, 
-			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$filters` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$filters</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$type` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$type</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$quality` Parameter is OPTIONAL, with the Default Value: 100">$quality</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>100</b></span>, 
+	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$compression` Parameter is OPTIONAL, with the Default Value: 6">$compression</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>6</b></span>, 
+	<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$filters` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$filters</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -862,13 +870,14 @@ Possible errors when detecting an image type:<br>
 	
 	
 	
-</div><div class="doc-container" id="Method--resizeImage">
+</div>
+<div class="doc-container" id="Method--resizeImage">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>resizeImage</b></span>&nbsp;(
-				<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$resize_width` Parameter is REQUIRED">$resize_width</span></b></span>, 
-			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$resize_height` Parameter is REQUIRED">$resize_height</span></b></span>, 
-			<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$crop` Parameter is OPTIONAL, with the Default Value: 0">$crop</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: 0">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bg_color_rgb` Parameter is OPTIONAL, with the Default Value: [0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0]">$bg_color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0]</b></span>
+		<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$resize_width` Parameter is REQUIRED">$resize_width</span></b></span>, 
+	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span title="`$resize_height` Parameter is REQUIRED">$resize_height</span></b></span>, 
+	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$crop` Parameter is OPTIONAL, with the Default Value: 0">$crop</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: 0">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bg_color_rgb` Parameter is OPTIONAL, with the Default Value: [0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0]">$bg_color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -886,12 +895,13 @@ Possible errors when detecting an image type:<br>
 	
 	
 	
-</div><div class="doc-container" id="Method--applyWatermark">
+</div>
+<div class="doc-container" id="Method--applyWatermark">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>applyWatermark</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$wtistr` Parameter is REQUIRED">$wtistr</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$gravity` Parameter is REQUIRED">$gravity</span></b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offsx` Parameter is OPTIONAL, with the Default Value: 0">$offsx</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offsy` Parameter is OPTIONAL, with the Default Value: 0">$offsy</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$wtistr` Parameter is REQUIRED">$wtistr</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$gravity` Parameter is REQUIRED">$gravity</span></b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offsx` Parameter is OPTIONAL, with the Default Value: 0">$offsx</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offsy` Parameter is OPTIONAL, with the Default Value: 0">$offsy</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -908,12 +918,13 @@ Possible errors when detecting an image type:<br>
 	
 	
 	
-</div><div class="doc-container" id="Method--calculateTextBBox">
+</div>
+<div class="doc-container" id="Method--calculateTextBBox">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>calculateTextBBox</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$angle` Parameter is REQUIRED">$angle</span></b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$size` Parameter is REQUIRED">$size</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$font` Parameter is OPTIONAL, with the Default Value: &quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;">$font</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$angle` Parameter is REQUIRED">$angle</span></b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$size` Parameter is REQUIRED">$size</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$font` Parameter is OPTIONAL, with the Default Value: &quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;">$font</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
@@ -930,14 +941,15 @@ Possible errors when detecting an image type:<br>
 	
 	
 	
-</div><div class="doc-container" id="Method--prepareTextLines">
+</div>
+<div class="doc-container" id="Method--prepareTextLines">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>prepareTextLines</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$angle` Parameter is REQUIRED">$angle</span></b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$size` Parameter is REQUIRED">$size</span></b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$width` Parameter is REQUIRED">$width</span></b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$margin` Parameter is REQUIRED">$margin</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$font` Parameter is REQUIRED">$font</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$angle` Parameter is REQUIRED">$angle</span></b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$size` Parameter is REQUIRED">$size</span></b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$width` Parameter is REQUIRED">$width</span></b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$margin` Parameter is REQUIRED">$margin</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$font` Parameter is REQUIRED">$font</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
@@ -956,17 +968,18 @@ Possible errors when detecting an image type:<br>
 	
 	
 	
-</div><div class="doc-container" id="Method--applyWrapText">
+</div>
+<div class="doc-container" id="Method--applyWrapText">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>applyWrapText</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$align` Parameter is OPTIONAL, with the Default Value: &quot;left&quot;">$align</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;left&quot;</b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$margin` Parameter is OPTIONAL, with the Default Value: 0">$margin</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$top` Parameter is OPTIONAL, with the Default Value: 0">$top</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$vlinespace` Parameter is OPTIONAL, with the Default Value: 5">$vlinespace</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>5</b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$angle` Parameter is OPTIONAL, with the Default Value: 0">$angle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$size` Parameter is OPTIONAL, with the Default Value: 10">$size</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>10</b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$font` Parameter is OPTIONAL, with the Default Value: &quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;">$font</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;</b></span>, 
-			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$color_rgb` Parameter is OPTIONAL, with the Default Value: [0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]">$color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$align` Parameter is OPTIONAL, with the Default Value: &quot;left&quot;">$align</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;left&quot;</b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$margin` Parameter is OPTIONAL, with the Default Value: 0">$margin</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$top` Parameter is OPTIONAL, with the Default Value: 0">$top</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$vlinespace` Parameter is OPTIONAL, with the Default Value: 5">$vlinespace</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>5</b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$angle` Parameter is OPTIONAL, with the Default Value: 0">$angle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$size` Parameter is OPTIONAL, with the Default Value: 10">$size</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>10</b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$font` Parameter is OPTIONAL, with the Default Value: &quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;">$font</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;</b></span>, 
+	<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$color_rgb` Parameter is OPTIONAL, with the Default Value: [0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]">$color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -988,15 +1001,16 @@ Possible errors when detecting an image type:<br>
 	
 	
 	
-</div><div class="doc-container" id="Method--applyText">
+</div>
+<div class="doc-container" id="Method--applyText">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>applyText</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offsx` Parameter is OPTIONAL, with the Default Value: 0">$offsx</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offsy` Parameter is OPTIONAL, with the Default Value: 0">$offsy</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$angle` Parameter is OPTIONAL, with the Default Value: 0">$angle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$size` Parameter is OPTIONAL, with the Default Value: 10">$size</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>10</b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$font` Parameter is OPTIONAL, with the Default Value: &quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;">$font</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;</b></span>, 
-			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$color_rgb` Parameter is OPTIONAL, with the Default Value: [0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]">$color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offsx` Parameter is OPTIONAL, with the Default Value: 0">$offsx</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$offsy` Parameter is OPTIONAL, with the Default Value: 0">$offsy</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$angle` Parameter is OPTIONAL, with the Default Value: 0">$angle</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$size` Parameter is OPTIONAL, with the Default Value: 10">$size</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>10</b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$font` Parameter is OPTIONAL, with the Default Value: &quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;">$font</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;lib/core/plugins/fonts/typo/sans/ibm-plex-sans-regular.ttf&quot;</b></span>, 
+	<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$color_rgb` Parameter is OPTIONAL, with the Default Value: [0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]">$color_rgb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[0 =&gt; 0, 1 =&gt; 0, 2 =&gt; 0, 3 =&gt; 0]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -1017,6 +1031,7 @@ Possible errors when detecting an image type:<br>
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -1072,49 +1087,49 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--__destruct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__destruct()</option>
+						<option value="Method--__destruct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__destruct()</option>
 			
 			
-									<option value="Method--setDebug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setDebug()</option>
+						<option value="Method--setDebug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setDebug()</option>
 			
 			
-									<option value="Method--getStatusOk"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getStatusOk()</option>
+						<option value="Method--getStatusOk"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getStatusOk()</option>
 			
 			
-									<option value="Method--getLastMessage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getLastMessage()</option>
+						<option value="Method--getLastMessage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getLastMessage()</option>
 			
 			
-									<option value="Method--getImageWidth"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getImageWidth()</option>
+						<option value="Method--getImageWidth"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getImageWidth()</option>
 			
 			
-									<option value="Method--getImageHeight"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getImageHeight()</option>
+						<option value="Method--getImageHeight"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getImageHeight()</option>
 			
 			
-									<option value="Method--getImageType"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getImageType()</option>
+						<option value="Method--getImageType"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getImageType()</option>
 			
 			
-									<option value="Method--getImageData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getImageData()</option>
+						<option value="Method--getImageData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getImageData()</option>
 			
 			
-									<option value="Method--resizeImage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;resizeImage()</option>
+						<option value="Method--resizeImage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;resizeImage()</option>
 			
 			
-									<option value="Method--applyWatermark"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;applyWatermark()</option>
+						<option value="Method--applyWatermark"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;applyWatermark()</option>
 			
 			
-									<option value="Method--calculateTextBBox"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;calculateTextBBox()</option>
+						<option value="Method--calculateTextBBox"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;calculateTextBBox()</option>
 			
 			
-									<option value="Method--prepareTextLines"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prepareTextLines()</option>
+						<option value="Method--prepareTextLines"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prepareTextLines()</option>
 			
 			
-									<option value="Method--applyWrapText"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;applyWrapText()</option>
+						<option value="Method--applyWrapText"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;applyWrapText()</option>
 			
 			
-									<option value="Method--applyText"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;applyText()</option>
+						<option value="Method--applyText"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;applyText()</option>
 			
 			
 			
@@ -1137,13 +1152,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:42 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:34 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

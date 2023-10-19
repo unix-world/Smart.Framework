@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartPunycode        final class \ SmartPunycode    {   } -&gt;    Class: SmartPunycode - provides a IDN Converter using the Punycode implementation as">
-<meta name="keywords" content="smartpunycode, final, class, provides, a, idn, converter, using, the, punycode, implementation, as, described, in, rfc, http:  tools.ietf.org html rfc3492, language, php, located, at, lib core plugins lib idn punycode.php, package, plugins:convertersandparsers, namespace, name, version, v.20211127, depends, classes, smartunicode, usage, dynamic, object, new, class method, this, only, methods, public, function, construct, param, string, encoding, character, constructor, encode, input, return, representation, ascii, domain, unicode, to, be, encoded, or, email, address, its, decode, counterpart, properties, constants, sample, code, domain iso, jösefsson.tßst123.org, outputs, xn-jsefsson-n4a.xn-tst123-bta.org, domain unicode, email iso, räksmörgås jösefsson.tßst123.org, xn-rksmrgs jsefsson-vnbx43ag.xn-tst123-bta.org, email unicode, end, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartPunycode final class \ SmartPunycode { } -&gt; Class: SmartPunycode - provides a IDN Converter using the Punycode implementation as described in RFC">
+<meta name="keywords" content="smartpunycode, final, class, provides, a, idn, converter, using, the, punycode, implementation, as, described, in, rfc, http:  tools ietf org html rfc3492, language, php, located, at, lib framework plugins lib idn punycode php, package, plugins convertersandparsers, namespace, name, version, v, depends, classes, smartunicode, usage, dynamic, object, new, class   - method, this, only, methods, public, function, construct, param, string, encoding, character, constructor, encode, input, return, representation, ascii, domain, unicode, to, be, encoded, or, email, address, its, decode, counterpart, properties, constants, sample, code, domain iso, jösefsson tßst123 org, outputs, xn jsefsson n4a xn tst123 bta org, domain unicode, email iso, räksmörgås jösefsson tßst123 org, xn rksmrgs jsefsson vnbx43ag xn tst123 bta org, email unicode, end, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartPunycode">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartPunycode</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -701,7 +701,7 @@ select#select-summary {
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_idn_punycode.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_idn_punycode.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:ConvertersAndParsers</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartPunycode</span></li>
@@ -733,12 +733,13 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--encode">
+</div>
+<div class="doc-container" id="Method--encode">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encode</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$input` Parameter is REQUIRED">$input</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$input` Parameter is REQUIRED">$input</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;string
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
 	
 	
 			<div class="doc-method-ret-params">@return: {string} Punycode representation in ASCII<br>
@@ -748,12 +749,13 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--decode">
+</div>
+<div class="doc-container" id="Method--decode">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decode</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$input` Parameter is REQUIRED">$input</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$input` Parameter is REQUIRED">$input</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;string
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
 	
 	
 			<div class="doc-method-ret-params">@return: {string} Unicode domain name<br>
@@ -764,6 +766,7 @@ select#select-summary {
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -819,13 +822,13 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;encode()</option>
+						<option value="Method--encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;encode()</option>
 			
 			
-									<option value="Method--decode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decode()</option>
+						<option value="Method--decode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decode()</option>
 			
 			
 			
@@ -848,13 +851,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:41 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:29 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

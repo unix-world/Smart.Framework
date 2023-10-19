@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartHttpClient        final class \ SmartHttpClient    {   } -&gt;    Class: SmartHttpClient - provides a HTTP / HTTPS Client (browser). To work with TLS /">
-<meta name="keywords" content="smarthttpclient, final, class, provides, a, http, https, client, browser, to, work, with, tls, ssl, requires, the, php, openssl, module, implemented, methods, standard, get, post, head, extended, put, delete, mkcol, options, move, copy, propfind, will, prefere, which, provide, faster, access, instead, of, because, some, additional, headers, that, may, validate, for, error, checks, language, located, at, lib framework lib http cli.php, package, core:network, namespace, name, version, v.20220125, depends, extensions, optional, just, classes, smart, smartfilesysutils, smartfilesystem, smarthttputils, constants, smart framework ssl mode, smart framework ssl ciphers, smart framework ssl vfy host, smart framework ssl vfy peer, smart framework ssl vfy peer name, smart framework ssl allow self signed, smart framework ssl disable compress, smart framework ssl ca file, usage, dynamic, object, new, class method, this, only, public, function, construct, enum, http protocol, param, protocol, use, can, be, set">
+<meta name="description" content="\SmartHttpClient final class \ SmartHttpClient { } -&gt; Class: SmartHttpClient - provides a HTTP / HTTPS Client (browser). To work with TLS / SSL (requires">
+<meta name="keywords" content="smarthttpclient, final, class, provides, a, http, https, client, browser, to, work, with, tls, ssl, requires, the, php, openssl, module, implemented, methods, standard, get, post, head, extended, put, patch, delete, options, mkcol, move, copy, propfind, will, prefere, which, provide, faster, access, instead, of, because, some, additional, headers, that, may, validate, for, error, checks, language, located, at, lib framework lib http cli php, package, core network, namespace, name, version, v, depends, extensions, optional, just, classes, smart, smartframeworksecurity, smartfilesysutils, smarthttputils, constants, smart framework ssl mode, smart framework ssl ciphers, smart framework ssl vfy host, smart framework ssl vfy peer, smart framework ssl vfy peer name, smart framework ssl allow self signed, smart framework ssl disable compress, optional constant, smart framework ssl ca file, usage, dynamic, object, new, class   - method, this, only, public, function, construct, enum, http protocol, param, protocol, use, can">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartHttpClient">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartHttpClient</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -698,7 +698,7 @@ select#select-summary {
 <!-- Description -->
 <div class="doc-comments">Class: SmartHttpClient - provides a HTTP / HTTPS Client (browser).<br>
 To work with TLS / SSL (requires the PHP OpenSSL Module).<br>
-Implemented Methods: Standard (GET / POST / HEAD) ; Extended (PUT / DELETE / MKCOL / OPTIONS / MOVE / COPY / PROPFIND).<br>
+Implemented Methods: Standard (GET / POST / HEAD) ; Extended (PUT / PATCH / DELETE / OPTIONS / MKCOL / MOVE / COPY / PROPFIND).<br>
 The Standard Methods will prefere HTTP 1.0 (which provide a faster access)<br>
 The Extended Methods will prefere HTTP 1.1 instead of 1.0 because of some additional headers that may validate for error checks ...</div><br>
 <!-- Metainfo -->
@@ -710,8 +710,8 @@ The Extended Methods will prefere HTTP 1.1 instead of 1.0 because of some additi
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartHttpClient</span></li>
 		
-		<li><b>Version:</b> v.20220125</li>
-		<li><b>Depends:</b> extensions:  PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFileSysUtils, SmartFileSystem, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS, SMART_FRAMEWORK_SSL_CA_FILE</li>
+		<li><b>Version:</b> v.20231003</li>
+		<li><b>Depends:</b> extensions:  PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFrameworkSecurity, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -726,7 +726,7 @@ The Extended Methods will prefere HTTP 1.1 instead of 1.0 because of some additi
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$http_protocol` Parameter is OPTIONAL, with the Default Value: &quot;1.0&quot;">$http_protocol</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;1.0&quot;</b></span>
+		<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$http_protocol` Parameter is OPTIONAL, with the Default Value: &quot;1.0&quot;">$http_protocol</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;1.0&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -738,9 +738,10 @@ The Extended Methods will prefere HTTP 1.1 instead of 1.0 because of some additi
 	
 	
 	
-</div><div class="doc-container" id="Method--set_ssl_tls_ca_file">
+</div>
+<div class="doc-container" id="Method--set_ssl_tls_ca_file">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>set_ssl_tls_ca_file</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$cafile` Parameter is REQUIRED">$cafile</span></b></span>
+		<span class="doc-param-name"><b><span title="`$cafile` Parameter is REQUIRED">$cafile</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -748,17 +749,18 @@ The Extended Methods will prefere HTTP 1.1 instead of 1.0 because of some additi
 	
 	
 			<div class="doc-method-comments">This is only for special cases and can be used before calling the browse_url() for the cases when the client requires a custom SSL Certificate to be set<br>
-Set a SSL/TLS Certificate Authority File ; by default will use the SMART_FRAMEWORK_SSL_CA_FILE</div>
+Set a SSL/TLS Certificate Authority File ; by default will use the SMART_FRAMEWORK_SSL_CA_FILE (if defined, and non-empty)</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--browse_url">
+</div>
+<div class="doc-container" id="Method--browse_url">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>browse_url</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$method` Parameter is OPTIONAL, with the Default Value: &quot;GET&quot;">$method</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;GET&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ssl_version` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$ssl_version</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$user` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$user</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$pwd` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$pwd</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$method` Parameter is OPTIONAL, with the Default Value: &quot;GET&quot;">$method</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;GET&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ssl_version` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$ssl_version</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$user` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$user</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$pwd` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$pwd</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -769,6 +771,7 @@ Set a SSL/TLS Certificate Authority File ; by default will use the SMART_FRAMEWO
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -776,62 +779,80 @@ Set a SSL/TLS Certificate Authority File ; by default will use the SMART_FRAMEWO
 </div>
 <!-- properties r.20200121 -->
 <div class="doc-container" id="Property--useragent">
-	<span class="doc-modifiers">public</span> <b>$useragent</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'NetSurf/3.9  (Smart.Framework {version}; {OS} {Release} {Arch}; PHP/{php-ver})'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>STRING</i>
+	<span class="doc-modifiers">public</span> <b>$useragent</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'NetSurf/3.10  (Smart.Framework {version}; {OS} {Release} {Arch}; PHP/{php-ver})'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>STRING</i>
 			<div class="doc-method-comments">User agent (if used as robot, it must have the robot in the name to avoid start un-necessary sessions)</div>
 	
-</div><div class="doc-container" id="Property--connect_timeout">
+</div>
+<div class="doc-container" id="Property--connect_timeout">
 	<span class="doc-modifiers">public</span> <b>$connect_timeout</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>30</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>INTEGER+</i>
 			<div class="doc-method-comments">Connect timeout in seconds</div>
 	
-</div><div class="doc-container" id="Property--rawheaders">
+</div>
+<div class="doc-container" id="Property--rawheaders">
 	<span class="doc-modifiers">public</span> <b>$rawheaders</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[]</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>ARRAY</i>
 			<div class="doc-method-comments">Array of RawHeaders (to send)</div>
 	
-</div><div class="doc-container" id="Property--cookies">
+</div>
+<div class="doc-container" id="Property--cookies">
 	<span class="doc-modifiers">public</span> <b>$cookies</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[]</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>ARRAY</i>
 			<div class="doc-method-comments">Array of Cookies (to send)</div>
 	
-</div><div class="doc-container" id="Property--poststring">
+</div>
+<div class="doc-container" id="Property--posttype">
+	<span class="doc-modifiers">public</span> <b>$posttype</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>STRING</i>
+			<div class="doc-method-comments">Pre-Built Post Type (used to set the Content-Type header) ; Example: 'application/json'<br>
+This should be used just with $poststring to set a different content type than default which is 'application/x-www-form-urlencoded'</div>
+	
+</div>
+<div class="doc-container" id="Property--poststring">
 	<span class="doc-modifiers">public</span> <b>$poststring</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>STRING</i>
 			<div class="doc-method-comments">Pre-Built Post String (as alternative to PostVars) ; must not contain unencoded \r\n ; must use the RFC 3986 standard.<br>
 If $poststring is used the $postvars and $postfiles are ignored</div>
 	
-</div><div class="doc-container" id="Property--postvars">
+</div>
+<div class="doc-container" id="Property--postvars">
 	<span class="doc-modifiers">public</span> <b>$postvars</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[]</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>ARRAY</i>
 			<div class="doc-method-comments">Array of PostVars (to send)</div>
 	
-</div><div class="doc-container" id="Property--postfiles">
+</div>
+<div class="doc-container" id="Property--postfiles">
 	<span class="doc-modifiers">public</span> <b>$postfiles</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[]</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>ARRAY</i>
 			<div class="doc-method-comments">Array of PostFiles (to send) ; This can be used only in combination with $postvars ; Example [ 'filename' =&gt; 'file.txt', 'content' =&gt; 'the contents go here' ]</div>
 	
-</div><div class="doc-container" id="Property--putbodymode">
+</div>
+<div class="doc-container" id="Property--putbodymode">
 	<span class="doc-modifiers">public</span> <b>$putbodymode</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'string'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>ENUM</i>
 			<div class="doc-method-comments">PUT Request Mode (used for $putbodyres)<br>
 Can have one of the values: 'string' or 'file'</div>
 	
-</div><div class="doc-container" id="Property--putbodyres">
+</div>
+<div class="doc-container" id="Property--putbodyres">
 	<span class="doc-modifiers">public</span> <b>$putbodyres</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>MIXED</i>
 			<div class="doc-method-comments">PUT Request (to send)<br>
 If $putbodymode is set to 'string', this string will be sent as put<br>
 If $putbodymode is set to 'file', the content of this file will be sent as put ; this must be a valid relative path to a file (ex: tmp/file-to-put.txt)</div>
 	
-</div><div class="doc-container" id="Property--skipcontentif401">
+</div>
+<div class="doc-container" id="Property--skipcontentif401">
 	<span class="doc-modifiers">public</span> <b>$skipcontentif401</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>true</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>BOOLEAN</i>
 			<div class="doc-method-comments">Return no Content (empty response body) if Not Auth (401)<br>
 If the response HTTP Status will return 401, if this is set to TRUE, will return empty content body ; else will return the HTML response body that server response set for 401 (irrelevant but in some cases may be important to parse)</div>
 	
-</div><div class="doc-container" id="Property--skip100continue">
+</div>
+<div class="doc-container" id="Property--skip100continue">
 	<span class="doc-modifiers">public</span> <b>$skip100continue</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>false</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>BOOLEAN</i>
 			<div class="doc-method-comments">If set to TRUE will disable expect-100-continue and will skip parsing 100-continue header from server<br>
 Applies just for HTTP 1.1 and<br>
 This is a fix for those servers that does not comply with situations where 100-continue is required on HTTP 1.1</div>
 	
-</div><div class="doc-container" id="Property--debug">
+</div>
+<div class="doc-container" id="Property--debug">
 	<span class="doc-modifiers">public</span> <b>$debug</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>false</b></span>&nbsp;;&nbsp;&nbsp;<span title="Object Property"><b>-&gt;</b></span>&nbsp;<i>BOOLEAN</i>
 			<div class="doc-method-comments">Enable or Disable Debug for this class and the HTTP Request<br>
 If set to TRUE will enable debug</div>
 	
 </div>
+
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
@@ -846,7 +867,7 @@ If set to TRUE will enable debug</div>
 </div>
 <div class="doc-code">
 	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Sample&nbsp;GET<br>&nbsp;</span><span style="color: #FFFFFF">$browser&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartHttpClient</span><span style="color: #FFCC00; font-weight: bold">();&nbsp;</span><span style="color: #999999">//&nbsp;HTTP&nbsp;1.0<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">connect_timeout&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">20</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">browse_url</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'https://some-website.ext:443/some-path/'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'GET'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'tls'</span><span style="color: #FFCC00; font-weight: bold">)<br>&nbsp;);<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;Sample&nbsp;POST,&nbsp;with&nbsp;optional&nbsp;Files&nbsp;and&nbsp;Cookies&nbsp;;&nbsp;If&nbsp;Files,&nbsp;will&nbsp;send&nbsp;multipart&nbsp;form&nbsp;data<br>&nbsp;</span><span style="color: #FFFFFF">$browser&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartHttpClient</span><span style="color: #FFCC00; font-weight: bold">();<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">postvars&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'var1'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'val1'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'var2'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'val2'<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">];<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">postfiles&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;[&nbsp;</span><span style="color: #999999">//&nbsp;optional<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'my_file'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'filename'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'sample.txt'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'content'&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'this&nbsp;is&nbsp;the&nbsp;content&nbsp;of&nbsp;the&nbsp;file'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'my_other_file'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'filename'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'sample.xml'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'content'&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'&lt;xml&gt;test&lt;/xml&gt;'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]<br>&nbsp;];<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">cookies&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;[&nbsp;</span><span style="color: #999999">//&nbsp;optional<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'sessionID'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'12345'<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">];<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">browse_url</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'https://some-website.ext:443/some-path/'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'POST'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'tls'</span><span style="color: #FFCC00; font-weight: bold">)<br>&nbsp;);<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;Sample&nbsp;PUT<br>&nbsp;</span><span style="color: #FFFFFF">$browser&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartHttpClient</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'1.1'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;HTTP&nbsp;1.1<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">connect_timeout&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">20</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">putbodyres&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">'tmp/test-file.txt'</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;</span><span style="color: #999999">//&nbsp;using&nbsp;a&nbsp;file<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">putbodymode&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">'file'</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #999999">//$browser-&gt;putbodyres&nbsp;=&nbsp;'123';&nbsp;//&nbsp;alternate&nbsp;can&nbsp;use&nbsp;a&nbsp;string<br>&nbsp;//$browser-&gt;putbodymode&nbsp;=&nbsp;'string';<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">browse_url</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'https://some-website.ext:443/some-path/~/some-file.txt'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'PUT'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'tls'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'admin'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'pass'</span><span style="color: #FFCC00; font-weight: bold">)<br>&nbsp;);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Sample&nbsp;GET<br>&nbsp;</span><span style="color: #FFFFFF">$browser&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartHttpClient</span><span style="color: #FFCC00; font-weight: bold">();&nbsp;</span><span style="color: #999999">//&nbsp;HTTP&nbsp;1.0<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">connect_timeout&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">20</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">browse_url</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'https://some-website.ext:443/some-path/'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'GET'</span><span style="color: #FFCC00; font-weight: bold">)<br>&nbsp;);<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;Sample&nbsp;POST,&nbsp;with&nbsp;optional&nbsp;Files&nbsp;and&nbsp;Cookies&nbsp;;&nbsp;If&nbsp;Files,&nbsp;will&nbsp;send&nbsp;multipart&nbsp;form&nbsp;data<br>&nbsp;</span><span style="color: #FFFFFF">$browser&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartHttpClient</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'1.1'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;HTTP&nbsp;1.1<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">postvars&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'var1'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'val1'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'var2'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'val2'<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">];<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">postfiles&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;[&nbsp;</span><span style="color: #999999">//&nbsp;optional<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'my_file'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'filename'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'sample.txt'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'content'&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'this&nbsp;is&nbsp;the&nbsp;content&nbsp;of&nbsp;the&nbsp;file'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">],<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'my_other_file'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'filename'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'sample.xml'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'content'&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'&lt;xml&gt;test&lt;/xml&gt;'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]<br>&nbsp;];<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">cookies&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;[&nbsp;</span><span style="color: #999999">//&nbsp;optional<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'sessionID'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'12345'<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">];<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">browse_url</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'https://some-website.ext:443/some-path/'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'POST'</span><span style="color: #FFCC00; font-weight: bold">)<br>&nbsp;);<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;Sample&nbsp;PUT<br>&nbsp;</span><span style="color: #FFFFFF">$browser&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartHttpClient</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'1.1'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;HTTP&nbsp;1.1<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">connect_timeout&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">20</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">putbodyres&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">'tmp/test-file.txt'</span><span style="color: #FFCC00; font-weight: bold">;&nbsp;</span><span style="color: #999999">//&nbsp;using&nbsp;a&nbsp;file<br>&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">putbodymode&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #5F9CCE">'file'</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;</span><span style="color: #999999">//$browser-&gt;putbodyres&nbsp;=&nbsp;'123';&nbsp;//&nbsp;alternate&nbsp;can&nbsp;use&nbsp;a&nbsp;string<br>&nbsp;//$browser-&gt;putbodymode&nbsp;=&nbsp;'string';<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$browser</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">browse_url</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'https://some-website.ext:443/some-path/~/some-file.txt'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'PUT'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'admin'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'pass'</span><span style="color: #FFCC00; font-weight: bold">)<br>&nbsp;);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
 </span>
 </code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
@@ -880,42 +901,44 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--set_ssl_tls_ca_file"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set_ssl_tls_ca_file()</option>
+						<option value="Method--set_ssl_tls_ca_file"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set_ssl_tls_ca_file()</option>
 			
 			
-									<option value="Method--browse_url"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;browse_url()</option>
+						<option value="Method--browse_url"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;browse_url()</option>
 			
 			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
-									<option value="Property--useragent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$useragent</option>
+						<option value="Property--useragent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$useragent</option>
 			
-									<option value="Property--connect_timeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$connect_timeout</option>
+						<option value="Property--connect_timeout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$connect_timeout</option>
 			
-									<option value="Property--rawheaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$rawheaders</option>
+						<option value="Property--rawheaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$rawheaders</option>
 			
-									<option value="Property--cookies"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$cookies</option>
+						<option value="Property--cookies"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$cookies</option>
 			
-									<option value="Property--poststring"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$poststring</option>
+						<option value="Property--posttype"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$posttype</option>
 			
-									<option value="Property--postvars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$postvars</option>
+						<option value="Property--poststring"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$poststring</option>
 			
-									<option value="Property--postfiles"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$postfiles</option>
+						<option value="Property--postvars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$postvars</option>
 			
-									<option value="Property--putbodymode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$putbodymode</option>
+						<option value="Property--postfiles"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$postfiles</option>
 			
-									<option value="Property--putbodyres"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$putbodyres</option>
+						<option value="Property--putbodymode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$putbodymode</option>
 			
-									<option value="Property--skipcontentif401"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$skipcontentif401</option>
+						<option value="Property--putbodyres"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$putbodyres</option>
 			
-									<option value="Property--skip100continue"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$skip100continue</option>
+						<option value="Property--skipcontentif401"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$skipcontentif401</option>
 			
-									<option value="Property--debug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug</option>
+						<option value="Property--skip100continue"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$skip100continue</option>
+			
+						<option value="Property--debug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;$debug</option>
 			
 			
 		</optgroup>
@@ -933,13 +956,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:39 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:28 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

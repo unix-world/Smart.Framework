@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartMongoDb        final class \ SmartMongoDb    {   } -&gt;    Class Smart MongoDB Client (for PHP MongoDB extension v.1.1.0 or later) Tested and Stable">
-<meta name="keywords" content="smartmongodb, final, class, smart, mongodb, client, for, php, extension, v.1.1.0, or, later, tested, and, stable, on, server, versions, language, located, at, lib core plugins lib db mongodb.php, package, plugins:database:mongodb, namespace, name, throws, exception, depending, how, this, it, is, constructed, may, throw, raise, fatal, error, version, v.20210616, depends, extensions, classes, smartcomponents, hints, important, database, specifies, that, max, bson, document, size, megabytes, supports, no, more, than, levels, of, nesting, thus, limit, cannot, be, exceeded, from, side, when, creating, new, documents, https:  docs.mongodb.com manual reference limits, to, store, larger, the, maximum, provides, gridfs, api, usage, dynamic, object, class method, only, methods, public, function, construct, array, y configs arr, bool, y fatal err, true, param">
+<meta name="description" content="\SmartMongoDb final class \ SmartMongoDb { } -&gt; Class Smart MongoDB Client (for PHP MongoDB extension v.1.1.0 or later) Tested and Stable on MongoDB">
+<meta name="keywords" content="smartmongodb, final, class, smart, mongodb, client, for, php, extension, v, or, later, tested, and, stable, on, server, versions, language, located, at, lib framework plugins lib db mongodb php, package, plugins database mongodb, namespace, name, throws, exception, depending, how, this, it, is, constructed, may, throw, raise, fatal, error, version, depends, extensions, classes, smartenvironment, smartcomponents, optional, hints, important, database, specifies, that, max, bson, document, size, megabytes, supports, no, more, than, levels, of, nesting, thus, limit, cannot, be, exceeded, from, side, when, creating, new, documents, https:  docs mongodb com manual reference limits, to, store, larger, the, maximum, provides, gridfs, api, usage, dynamic, object, class   - method, only, methods, public, function, construct, array, y configs arr, bool, y fatal err, true">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMongoDb">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartMongoDb</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -697,18 +697,18 @@ select#select-summary {
 </h1>
 <!-- Description -->
 <div class="doc-comments">Class Smart MongoDB Client (for PHP MongoDB extension v.1.1.0 or later)<br>
-Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 / 4.3</div><br>
+Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 / 4.3 / 4.4 / 5.0 / 5.1 / 5.2</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_db_mongodb.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_db_mongodb.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:Database:MongoDB</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartMongoDb</span></li>
 		<li><span class="doc-throws"><b>Throws:</b> Exception  : Depending how this class it is constructed it may throw Exception or Raise Fatal Error</span></li>
-		<li><b>Version:</b> v.20210616</li>
-		<li><b>Depends:</b> extensions:  PHP MongoDB ; classes: Smart, SmartComponents</li>
+		<li><b>Version:</b> v.20221231</li>
+		<li><b>Depends:</b> extensions:  PHP MongoDB ; classes: Smart, SmartEnvironment, SmartComponents (optional)</li>
 		<li><b>Hints:</b> Important:  MongoDB database specifies that max BSON document size is 16 megabytes and supports no more than 100 levels of nesting, thus this limit cannot be exceeded from PHP side when creating new mongodb documents: https://docs.mongodb.com/manual/reference/limits/ ; To store documents larger than the maximum size, MongoDB provides the GridFS API</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -723,8 +723,8 @@ Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_configs_arr` Parameter is OPTIONAL, with the Default Value: []">$y_configs_arr</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_fatal_err` Parameter is OPTIONAL, with the Default Value: true">$y_fatal_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+		<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_configs_arr` Parameter is OPTIONAL, with the Default Value: []">$y_configs_arr</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_fatal_err` Parameter is OPTIONAL, with the Default Value: true">$y_fatal_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -738,7 +738,8 @@ Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 
 	
 	
 	
-</div><div class="doc-container" id="Method--assign_uuid">
+</div>
+<div class="doc-container" id="Method--assign_uuid">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>assign_uuid</b></span>&nbsp;(
 		
 	
@@ -751,7 +752,8 @@ Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 
 	
 	
 	
-</div><div class="doc-container" id="Method--get_ext_version">
+</div>
+<div class="doc-container" id="Method--get_ext_version">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_ext_version</b></span>&nbsp;(
 		
 	
@@ -764,7 +766,8 @@ Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 
 	
 	
 	
-</div><div class="doc-container" id="Method--get_server_version">
+</div>
+<div class="doc-container" id="Method--get_server_version">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_server_version</b></span>&nbsp;(
 		
 	
@@ -777,9 +780,39 @@ Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 
 	
 	
 	
-</div><div class="doc-container" id="Method--getObjectId">
+</div>
+<div class="doc-container" id="Method--setFatalErrMode">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setFatalErrMode</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$is_fatal` Parameter is REQUIRED">$is_fatal</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;VOID
+	
+	
+			<div class="doc-method-ret-params">@return: {VOID}</div>
+	
+			<div class="doc-method-comments">Set Fatal Error Mode to TRUE/FALSE</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getFatalErrMode">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getFatalErrMode</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {TRUE/FALSE}</div>
+	
+			<div class="doc-method-comments">Laminas/DB: Get Fatal Error TRUE/FALSE</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getObjectId">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getObjectId</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$id` Parameter is REQUIRED">$id</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -791,9 +824,10 @@ Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 
 	
 	
 	
-</div><div class="doc-container" id="Method--getFtsDictionaryByLang">
+</div>
+<div class="doc-container" id="Method--getFtsDictionaryByLang">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getFtsDictionaryByLang</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$lang` Parameter is REQUIRED">$lang</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$lang` Parameter is REQUIRED">$lang</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -805,9 +839,12 @@ Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 
 	
 	
 	
-</div><div class="doc-container" id="Method--escapeFtsText">
+</div>
+<!-- Skip Internal-Priv Method: `isFtsSearchPhrase()` -->
+<!-- Skip Internal-Priv Method: `prepareFtsSearchKeywords()` -->
+<div class="doc-container" id="Method--escapeFtsText">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escapeFtsText</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -819,9 +856,10 @@ Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 
 	
 	
 	
-</div><div class="doc-container" id="Method--escapeRegexText">
+</div>
+<div class="doc-container" id="Method--escapeRegexText">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escapeRegexText</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -833,9 +871,10 @@ Tested and Stable on MongoDB Server versions: 3.2 / 3.4 / 3.6 / 4.0 / 4.1 / 4.2 
 	
 	
 	
-</div><div class="doc-container" id="Method--is_command_ok">
+</div>
+<div class="doc-container" id="Method--is_command_ok">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_command_ok</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$result` Parameter is REQUIRED">$result</span></b></span>
+		<span class="doc-param-name"><b><span title="`$result` Parameter is REQUIRED">$result</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -848,7 +887,8 @@ Notice: not all MongoDB commands will return this standard answer, but majority<
 	
 	
 	
-</div><div class="doc-container" id="Method--__call">
+</div>
+<div class="doc-container" id="Method--__call">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__call</b></span>&nbsp;(
 	
 	)&nbsp;{}&nbsp;<span title="* Special * Magic * Method"><b>@</b></span>&nbsp;
@@ -859,7 +899,7 @@ Notice: not all MongoDB commands will return this standard answer, but majority<
 			<div class="doc-method-comments">This is the Magic Method (Call) that maps the PHP class extra methods to MongoDB methods.<br>
 It have variadic parameters mapped to MongoDB sub-calls.</div>
 	
-			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs syntax php"><span class="hljs-meta">&lt;?php</span>
 
  <span class="hljs-comment">// Sample Count Records</span>
  $count = $mongo-&gt;count(
@@ -988,192 +1028,192 @@ It have variadic parameters mapped to MongoDB sub-calls.</div>
 <span class="hljs-comment">// #end php code</span></code></pre>
 	
 			<br>
-					<div class="doc-container" id="Method-Sub--count">
+		<div class="doc-container" id="Method-Sub--count">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>count</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrQuery` Parameter is REQUIRED">$arrQuery</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrQuery` Parameter is REQUIRED">$arrQuery</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $strCollection<br>
-							@param {ARRAY} $arrQuery<br>
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrQuery<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">count documents in a collection</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--find">
+		<div class="doc-container" id="Method-Sub--find">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>find</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrQuery` Parameter is REQUIRED">$arrQuery</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrProjFields` Parameter is REQUIRED">$arrProjFields</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrOptions` Parameter is OPTIONAL">$arrOptions</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrQuery` Parameter is REQUIRED">$arrQuery</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrProjFields` Parameter is REQUIRED">$arrProjFields</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrOptions` Parameter is OPTIONAL">$arrOptions</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $strCollection<br>
-							@param {ARRAY} $arrQuery<br>
-							@param {ARRAY} $arrProjFields<br>
-							@param {ARRAY} $arrOptions<br>
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrQuery<br>
+			@param {ARRAY} $arrProjFields<br>
+			@param {ARRAY} $arrOptions<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">find single or multiple documents in a collection with optional filter criteria / limit</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--findone">
+		<div class="doc-container" id="Method-Sub--findone">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>findone</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrQuery` Parameter is REQUIRED">$arrQuery</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrProjFields` Parameter is REQUIRED">$arrProjFields</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrOptions` Parameter is OPTIONAL">$arrOptions</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrQuery` Parameter is REQUIRED">$arrQuery</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrProjFields` Parameter is REQUIRED">$arrProjFields</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrOptions` Parameter is OPTIONAL">$arrOptions</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $strCollection<br>
-							@param {ARRAY} $arrQuery<br>
-							@param {ARRAY} $arrProjFields<br>
-							@param {ARRAY} $arrOptions<br>
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrQuery<br>
+			@param {ARRAY} $arrProjFields<br>
+			@param {ARRAY} $arrOptions<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">find single document in a collection with optional filter criteria / limit</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--bulkinsert">
+		<div class="doc-container" id="Method-Sub--bulkinsert">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>bulkinsert</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrMultiDocs` Parameter is REQUIRED">$arrMultiDocs</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrMultiDocs` Parameter is REQUIRED">$arrMultiDocs</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $strCollection<br>
-							@param {ARRAY} $arrMultiDocs<br>
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrMultiDocs<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">add multiple documents to a collection</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--insert">
+		<div class="doc-container" id="Method-Sub--insert">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>insert</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrDoc` Parameter is REQUIRED">$arrDoc</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrDoc` Parameter is REQUIRED">$arrDoc</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $strCollection<br>
-							@param {ARRAY} $arrDoc<br>
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrDoc<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">add single document to a collection</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--upsert">
+		<div class="doc-container" id="Method-Sub--upsert">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>upsert</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrFilter` Parameter is REQUIRED">$arrFilter</span></b></span>, 
-							<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$strUpdOpOrArrUpd` Parameter is REQUIRED">$strUpdOpOrArrUpd</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrUpd` Parameter is OPTIONAL">$arrUpd</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrFilter` Parameter is REQUIRED">$arrFilter</span></b></span>, 
+			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$strUpdOpOrArrUpd` Parameter is REQUIRED">$strUpdOpOrArrUpd</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrUpd` Parameter is OPTIONAL">$arrUpd</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $strCollection<br>
-							@param {ARRAY} $arrFilter<br>
-							@param {MIXED} $strUpdOpOrArrUpd<br>
-							@param {ARRAY} $arrUpd<br>
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrFilter<br>
+			@param {MIXED} $strUpdOpOrArrUpd<br>
+			@param {ARRAY} $arrUpd<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">insert single or modify single or multi documents in a collection that are matching the filter criteria</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--update">
+		<div class="doc-container" id="Method-Sub--update">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>update</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrFilter` Parameter is REQUIRED">$arrFilter</span></b></span>, 
-							<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$strUpdOpOrArrUpd` Parameter is REQUIRED">$strUpdOpOrArrUpd</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrUpd` Parameter is OPTIONAL">$arrUpd</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrFilter` Parameter is REQUIRED">$arrFilter</span></b></span>, 
+			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$strUpdOpOrArrUpd` Parameter is REQUIRED">$strUpdOpOrArrUpd</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$arrUpd` Parameter is OPTIONAL">$arrUpd</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $strCollection<br>
-							@param {ARRAY} $arrFilter<br>
-							@param {MIXED} $strUpdOpOrArrUpd<br>
-							@param {ARRAY} $arrUpd<br>
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrFilter<br>
+			@param {MIXED} $strUpdOpOrArrUpd<br>
+			@param {ARRAY} $arrUpd<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">modify single or many documents in a collection that are matching the filter criteria</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--delete">
+		<div class="doc-container" id="Method-Sub--delete">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>delete</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
-							<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrFilter` Parameter is REQUIRED">$arrFilter</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$strCollection` Parameter is REQUIRED">$strCollection</span></b></span>, 
+			<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrFilter` Parameter is REQUIRED">$arrFilter</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $strCollection<br>
-							@param {ARRAY} $arrFilter<br>
+			@param {STRING} $strCollection<br>
+			@param {ARRAY} $arrFilter<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">delete single or many documents from a collection that are matching the filter criteria</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--command">
+		<div class="doc-container" id="Method-Sub--command">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>command</b></span>&nbsp;(
-							<span class="doc-param-name"><b><span title="`$arrCmd` Parameter is REQUIRED">$arrCmd</span></b></span>
+			<span class="doc-param-name"><b><span title="`$arrCmd` Parameter is REQUIRED">$arrCmd</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param  $arrCmd<br>
+			@param  $arrCmd<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">run a command over database like: aggregate, distinct, mapReduce, create Collection, drop Collection, ...</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--igcommand">
+		<div class="doc-container" id="Method-Sub--igcommand">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>igcommand</b></span>&nbsp;(
-							<span class="doc-param-name"><b><span title="`$arrCmd` Parameter is REQUIRED">$arrCmd</span></b></span>
+			<span class="doc-param-name"><b><span title="`$arrCmd` Parameter is REQUIRED">$arrCmd</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param  $arrCmd<br>
+			@param  $arrCmd<br>
 			
 			
 			</div>
@@ -1183,7 +1223,9 @@ It have variadic parameters mapped to MongoDB sub-calls.</div>
 		
 		
 	
-</div><!-- Skip Internal-Priv Method: `disconnect()` -->
+</div>
+<!-- Skip Internal-Priv Method: `disconnect()` -->
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -1239,48 +1281,58 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--assign_uuid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;assign_uuid()</option>
+						<option value="Method--assign_uuid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;assign_uuid()</option>
 			
 			
-									<option value="Method--get_ext_version"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_ext_version()</option>
+						<option value="Method--get_ext_version"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_ext_version()</option>
 			
 			
-									<option value="Method--get_server_version"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_version()</option>
+						<option value="Method--get_server_version"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_server_version()</option>
 			
 			
-									<option value="Method--getObjectId"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getObjectId()</option>
+						<option value="Method--setFatalErrMode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setFatalErrMode()</option>
 			
 			
-									<option value="Method--getFtsDictionaryByLang"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getFtsDictionaryByLang()</option>
+						<option value="Method--getFatalErrMode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getFatalErrMode()</option>
 			
 			
-									<option value="Method--escapeFtsText"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escapeFtsText()</option>
+						<option value="Method--getObjectId"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getObjectId()</option>
 			
 			
-									<option value="Method--escapeRegexText"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escapeRegexText()</option>
+						<option value="Method--getFtsDictionaryByLang"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getFtsDictionaryByLang()</option>
 			
 			
-									<option value="Method--is_command_ok"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_command_ok()</option>
 			
 			
-									<option value="Method--__call"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__call()</option>
-			
-									<option value="Method-Sub--count">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;count()</option>
-						<option value="Method-Sub--find">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;find()</option>
-						<option value="Method-Sub--findone">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findone()</option>
-						<option value="Method-Sub--bulkinsert">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bulkinsert()</option>
-						<option value="Method-Sub--insert">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;insert()</option>
-						<option value="Method-Sub--upsert">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;upsert()</option>
-						<option value="Method-Sub--update">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;update()</option>
-						<option value="Method-Sub--delete">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;delete()</option>
-						<option value="Method-Sub--command">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;command()</option>
-						<option value="Method-Sub--igcommand">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;igcommand()</option>
 			
 			
-						
+						<option value="Method--escapeFtsText"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escapeFtsText()</option>
+			
+			
+						<option value="Method--escapeRegexText"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escapeRegexText()</option>
+			
+			
+						<option value="Method--is_command_ok"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is_command_ok()</option>
+			
+			
+						<option value="Method--__call"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__call()</option>
+			
+						<option value="Method-Sub--count">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;count()</option>
+			<option value="Method-Sub--find">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;find()</option>
+			<option value="Method-Sub--findone">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;findone()</option>
+			<option value="Method-Sub--bulkinsert">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bulkinsert()</option>
+			<option value="Method-Sub--insert">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;insert()</option>
+			<option value="Method-Sub--upsert">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;upsert()</option>
+			<option value="Method-Sub--update">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;update()</option>
+			<option value="Method-Sub--delete">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;delete()</option>
+			<option value="Method-Sub--command">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;command()</option>
+			<option value="Method-Sub--igcommand">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;igcommand()</option>
+			
+			
+			
 			
 			
 		</optgroup>
@@ -1302,13 +1354,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:44 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:32 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

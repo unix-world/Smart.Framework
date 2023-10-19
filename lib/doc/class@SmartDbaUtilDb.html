@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartDbaUtilDb        final class \ SmartDbaUtilDb    {   } ::    Class: SmartDbaUtilDb - provides a Static Utility for the DBA Database Client.">
-<meta name="keywords" content="smartdbautildb, final, class, provides, a, static, utility, for, the, dba, database, client, language, php, located, at, lib core plugins lib db dba.php, package, plugins:database:dba, namespace, name, version, v.20210830, depends, extensions, extension, classes, smart, usage, object, class::method, this, only, methods, public, function, isdbaandhandleravailable, string, handler, boolean, return, will, true, if, is, available, and, false, not, param, optional, to, check, leave, it, empty, from, configs, dba.handler, with, given, or, set, in, getdbahandler, get, current, getdbahandlers, array, list, of, handlers, found, datapack, mixed, originaldata, packed, data, be, can, number, pack, using, safe, serialized, format, dataunpack, packeddata, unpacked, previous, unpack, it s, original, state, properties, constants, documentation">
+<meta name="description" content="\SmartDbaUtilDb final class \ SmartDbaUtilDb { } :: Class: SmartDbaUtilDb - provides a Static Utility for the DBA Database Client. Language: PHP Located">
+<meta name="keywords" content="smartdbautildb, final, class, provides, a, static, utility, for, the, dba, database, client, language, php, located, at, lib core plugins lib db dba php, package, application plugins database dba, namespace, name, version, v, depends, extensions, extension, classes, smart, usage, object, class method, this, only, methods, public, function, isdbaandhandleravailable, string, handler, boolean, return, will, true, if, is, available, and, false, not, param, optional, to, check, leave, it, empty, from, configs, dba handler, with, given, or, set, in, getdbahandler, get, current, getdbahandlers, array, list, of, handlers, found, datapack, mixed, originaldata, packed, data, be, can, number, pack, using, safe, serialized, format, dataunpack, packeddata, unpacked, previous, unpack, it s, original, state, properties, constants, documentation">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartDbaUtilDb">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartDbaUtilDb</title>
@@ -461,14 +461,14 @@ nav.ux-navbar li > a:only-child::after {
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 		<ul class="menu">
-		<li><a href="index.html#Package--PluginsDatabaseDba-" title="return to Index">return to Index</a></li>
+		<li><a href="index.html#Package--ApplicationPluginsDatabaseDba-" title="return to Index">return to Index</a></li>
 	</ul>
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -702,11 +702,11 @@ select#select-summary {
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
 		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_db_dba.php</span></li>
-		<li><span class="doc-package"><b>Package:</b> Plugins:Database:Dba</span></li>
+		<li><span class="doc-package"><b>Package:</b> Application:Plugins:Database:Dba</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartDbaUtilDb</span></li>
 		
-		<li><b>Version:</b> v.20210830</li>
+		<li><b>Version:</b> v.20231008</li>
 		<li><b>Depends:</b> extensions:  PHP DBA Extension ; classes: Smart</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -722,7 +722,7 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--isDbaAndHandlerAvailable">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isDbaAndHandlerAvailable</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$handler` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$handler</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$handler` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$handler</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -735,7 +735,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--getDbaHandler">
+</div>
+<div class="doc-container" id="Method--getDbaHandler">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getDbaHandler</b></span>&nbsp;(
 		
 	
@@ -748,7 +749,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--getDbaHandlers">
+</div>
+<div class="doc-container" id="Method--getDbaHandlers">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getDbaHandlers</b></span>&nbsp;(
 		
 	
@@ -761,9 +763,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--dataPack">
+</div>
+<div class="doc-container" id="Method--dataPack">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>dataPack</b></span>&nbsp;(
-				<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$originalData` Parameter is REQUIRED">$originalData</span></b></span>
+		<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$originalData` Parameter is REQUIRED">$originalData</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -776,9 +779,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--dataUnpack">
+</div>
+<div class="doc-container" id="Method--dataUnpack">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>dataUnpack</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$packedData` Parameter is REQUIRED">$packedData</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$packedData` Parameter is REQUIRED">$packedData</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
@@ -792,6 +796,7 @@ select#select-summary {
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -838,19 +843,19 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--isDbaAndHandlerAvailable"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isDbaAndHandlerAvailable()</option>
+						<option value="Method--isDbaAndHandlerAvailable"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isDbaAndHandlerAvailable()</option>
 			
 			
-									<option value="Method--getDbaHandler"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDbaHandler()</option>
+						<option value="Method--getDbaHandler"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDbaHandler()</option>
 			
 			
-									<option value="Method--getDbaHandlers"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDbaHandlers()</option>
+						<option value="Method--getDbaHandlers"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDbaHandlers()</option>
 			
 			
-									<option value="Method--dataPack"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dataPack()</option>
+						<option value="Method--dataPack"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dataPack()</option>
 			
 			
-									<option value="Method--dataUnpack"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dataUnpack()</option>
+						<option value="Method--dataUnpack"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dataUnpack()</option>
 			
 			
 			
@@ -870,13 +875,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:43 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:38 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

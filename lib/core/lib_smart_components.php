@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20231018
+ * @version 	v.20231020
  * @package 	Application:ViewComponents
  *
  */
@@ -114,14 +114,14 @@ final class SmartComponents {
 			$y_width = 750;
 		} //end if
 		//--
-		$y_area = (string) trim((string)$y_area); // if this is empty will simply not be displayed
+		$y_area     = (string) trim((string)$y_area); // if this is empty will simply not be displayed
 		$y_area_one = (string) trim((string)$y_area_one); // if this is empty will display: DEBUG OFF
 		$y_area_two = (string) trim((string)$y_area_two); // if this is empty will display: View App Log for more details ...
 		//--
 		return (string) SmartMarkersTemplating::render_template(
 			(string) SMART_TPL_COMPONENTS_APP_ERROR_MSG,
 			[
-				'WIDTH' 	=> (int) $y_width,
+				'WIDTH' 	=> (int)    $y_width,
 				'TITLE' 	=> (string) $y_title,
 				'AREA' 		=> (string) $y_area,
 				'LOGO' 		=> (string) $y_logo,
@@ -147,16 +147,43 @@ final class SmartComponents {
 	 * @internal
 	 *
 	 */
-	public static function http_status_message(?string $y_title, ?string $y_message='', ?string $y_html_message='') : string {
+	public static function http_status_message(?string $y_title, ?string $y_message='', ?string $y_html_message='', ?string $y_opstyle='') : string {
+		//--
+		$y_opstyle = (string) strtolower((string)trim((string)$y_opstyle));
+		//--
+		$msg_html = (string) Smart::nl_2_br((string)Smart::escape_html((string)$y_message));
+		//--
+		switch((string)$y_opstyle) {
+			case '200':
+			case 'display':
+				$msg_html = (string) self::operation_display((string)$msg_html, '100%', true); // default, with icon
+				break;
+			case '3xx':
+			case 'displayx':
+				$msg_html = (string) self::operation_display((string)$msg_html, '100%', false); // without icon
+				break;
+			case '208':
+			case 'hint':
+				$msg_html = (string) self::operation_hint((string)$msg_html, '100%');
+				break;
+			case '203':
+			case 'result':
+				$msg_html = (string) self::operation_result((string)$msg_html, '100%');
+				break;
+			case '202':
+			case 'important':
+			default:
+				$msg_html = (string) self::operation_important((string)$msg_html, '100%');
+		} //end switch
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			'lib/core/templates/http-message-status.htm',
 			[
-				'CHARSET' 			=> SmartUtils::get_encoding_charset(),
-				'BASE-URL' 			=> SmartUtils::get_server_current_url(),
+				'CHARSET' 			=> (string) SmartUtils::get_encoding_charset(),
+				'BASE-URL' 			=> (string) SmartUtils::get_server_current_url(),
 				'TITLE' 			=> (string) $y_title,
-				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp</b><br>'.Smart::escape_html((string)SmartUtils::get_server_current_url(false)),
-				'MESSAGE-HTML' 		=> ((string)trim((string)$y_message) != '') ? self::operation_important(Smart::nl_2_br(Smart::escape_html((string)$y_message)), '100%') : '',
+				'SIGNATURE-HTML' 	=> (string) '<b>Smart.Framework :: WebApp</b><br>'.Smart::escape_html((string)SmartUtils::get_server_current_url(false)),
+				'MESSAGE-HTML' 		=> (string) (((string)trim((string)$y_message) != '') ? $msg_html : ''),
 				'EXTMSG-HTML' 		=> (string) $y_html_message
 			],
 			'no'
@@ -424,7 +451,7 @@ final class SmartComponents {
 	//================================================================
 	public static function operation_ok(?string $y_html, ?string $y_width='') : string {
 		//--
-		return (string) self::notifications_template((string)$y_html, 'operation_info', (string)$y_width); // info (ok)
+		return (string) self::notifications_template((string)$y_html, 'operation_info', (string)$y_width); // ok
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -460,7 +487,34 @@ final class SmartComponents {
 	//================================================================
 	public static function operation_important(?string $y_html, ?string $y_width='') : string {
 		//--
-		return (string) self::notifications_template((string)$y_html, 'operation_important', (string)$y_width); // success
+		return (string) self::notifications_template((string)$y_html, 'operation_important', (string)$y_width); // important
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	public static function operation_result(?string $y_html, ?string $y_width='') : string {
+		//--
+		return (string) self::notifications_template((string)$y_html, 'operation_result', (string)$y_width); // result
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	public static function operation_display(?string $y_html, ?string $y_width='', bool $y_use_icon=true) : string {
+		//--
+		return (string) self::notifications_template((string)$y_html, 'operation_display', (string)$y_width, (string)(!!$y_use_icon ? 'icon' : '')); // display
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	public static function operation_hint(?string $y_html, ?string $y_width='') : string {
+		//--
+		return (string) self::notifications_template((string)$y_html, 'operation_hint', (string)$y_width); // display
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -470,14 +524,19 @@ final class SmartComponents {
 	/**
 	 * Function: Notifications Message Template
 	 */
-	private static function notifications_template(?string $y_html, ?string $y_idcss, ?string $y_width) : string {
+	private static function notifications_template(?string $y_html, ?string $y_notification_class, ?string $y_width, ?string $y_css_classes='') : string {
 		//--
 		$style = '';
 		if((string)$y_width != '') {
 			$style = (string) 'width:'.self::fix_css_elem_dim((string)$y_width).';';
 		} //end if else
 		//--
-		return (string) '<!-- require: notifications.css --><div id="'.Smart::escape_html($y_idcss).'" style="'.Smart::escape_html((string)$style).'">'.$y_html.'</div>';
+		$y_css_classes = (string) trim((string)$y_css_classes);
+		if((string)$y_css_classes != '') {
+			$y_css_classes = ' '.$y_css_classes;
+		} //end if
+		//--
+		return (string) '<!-- require: notifications.css --><div class="'.Smart::escape_html((string)$y_notification_class.$y_css_classes).'" style="'.Smart::escape_html((string)$style).'">'.$y_html.'</div>';
 		//--
 	} //END FUNCTION
 	//================================================================

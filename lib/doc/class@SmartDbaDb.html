@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartDbaDb        final class \ SmartDbaDb    {   } -&gt;    Class: SmartDbaDb - provides a Client for DBA Databases. By default this class will just log">
-<meta name="keywords" content="smartdbadb, final, class, provides, a, client, for, dba, databases, by, default, this, will, just, log, the, errors, it, supports, following, handlers, gdbm, qdbm, db4, which, do, not, have, limits, on, record, size, handler, be, locked, using, lockfile, as, is, supported, all, platforms, and, language, php, located, at, lib core plugins lib db dba.php, package, plugins:database:dba, namespace, name, version, v.20210830, depends, extensions, extension, classes, smart, smarthashcrypto, smartcomponents, hints, mainly, written, to, used, with, key value, store, usage, dynamic, object, new, class method, only, methods, public, function, construct, string, file, y description, boolean, y fatal err, false, float, y debug exch slowtime, param, db, path, if, does, exists, created, but, re-suffixed, see">
+<meta name="description" content="\SmartDbaDb final class \ SmartDbaDb { } -&gt; Class: SmartDbaDb - provides a Client for DBA Databases. By default this class will just log the errors. It">
+<meta name="keywords" content="smartdbadb, final, class, provides, a, client, for, dba, databases, by, default, this, will, just, log, the, errors, it, supports, following, handlers, gdbm, qdbm, db4, which, do, not, have, limits, on, record, size, handler, be, locked, using, lockfile, as, is, supported, all, platforms, and, file, path, should, starting, with, db, or, tmp, are, protected, via, htaccess, files, config, use, other, dir, prefixes, unless, you, know, what, doing, language, php, located, at, lib core plugins lib db dba php, package, application plugins database dba, namespace, name, version, v, depends, extensions, extension, classes, smart, smartenvironment, smarthashcrypto, smartcomponents, smartfilesysutils, smartfilesystem, hints, mainly, written, to, used, key value, store, usage, dynamic, object">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartDbaDb">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartDbaDb</title>
@@ -461,14 +461,14 @@ nav.ux-navbar li > a:only-child::after {
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 		<ul class="menu">
-		<li><a href="index.html#Package--PluginsDatabaseDba-" title="return to Index">return to Index</a></li>
+		<li><a href="index.html#Package--ApplicationPluginsDatabaseDba-" title="return to Index">return to Index</a></li>
 	</ul>
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -699,18 +699,20 @@ select#select-summary {
 <div class="doc-comments">Class: SmartDbaDb - provides a Client for DBA Databases.<br>
 By default this class will just log the errors.<br>
 It supports the following handlers: gdbm, qdbm, db4 which do not have limits on the record size.<br>
-The handler will be locked using LockFile as it is supported on all platforms and all handlers.</div><br>
+The handler will be locked using LockFile as it is supported on all platforms and all handlers.<br>
+The DBA file path should be starting with '#db/' or 'tmp/', which are protected via HtAccess files or by config.<br>
+Do not use other dir prefixes unless you know what you are doing ...</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
 		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_db_dba.php</span></li>
-		<li><span class="doc-package"><b>Package:</b> Plugins:Database:Dba</span></li>
+		<li><span class="doc-package"><b>Package:</b> Application:Plugins:Database:Dba</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartDbaDb</span></li>
 		
-		<li><b>Version:</b> v.20210830</li>
-		<li><b>Depends:</b> extensions:  PHP DBA Extension ; classes: Smart, SmartHashCrypto, SmartComponents</li>
+		<li><b>Version:</b> v.20231008</li>
+		<li><b>Depends:</b> extensions:  PHP DBA Extension ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartComponents, SmartFileSysUtils, SmartFileSystem</li>
 		<li><b>Hints:</b> This  class is mainly written to be used with DBA Key/Value store</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -725,10 +727,10 @@ The handler will be locked using LockFile as it is supported on all platforms an
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file` Parameter is REQUIRED">$file</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_description` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_description</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>, 
-			<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_fatal_err` Parameter is OPTIONAL, with the Default Value: false">$y_fatal_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<i>FLOAT</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_debug_exch_slowtime` Parameter is OPTIONAL, with the Default Value: 0">$y_debug_exch_slowtime</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file` Parameter is REQUIRED">$file</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_description` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_description</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>, 
+	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_fatal_err` Parameter is OPTIONAL, with the Default Value: false">$y_fatal_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>FLOAT</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_debug_exch_slowtime` Parameter is OPTIONAL, with the Default Value: 0">$y_debug_exch_slowtime</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -743,7 +745,8 @@ The handler will be locked using LockFile as it is supported on all platforms an
 	
 	
 	
-</div><div class="doc-container" id="Method--__destruct">
+</div>
+<div class="doc-container" id="Method--__destruct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__destruct</b></span>&nbsp;(
 		
 	
@@ -756,7 +759,8 @@ Will randomly optimize the DB prior to close connection</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--isAvailable">
+</div>
+<div class="doc-container" id="Method--isAvailable">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAvailable</b></span>&nbsp;(
 		
 	
@@ -769,7 +773,8 @@ Will randomly optimize the DB prior to close connection</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--getDbRealPath">
+</div>
+<div class="doc-container" id="Method--getDbRealPath">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getDbRealPath</b></span>&nbsp;(
 		
 	
@@ -784,9 +789,10 @@ Ex: tmp/my-db.dba will be actually be: tmp/my-db.gdbm.dba (for the gdbm hanlder)
 	
 	
 	
-</div><div class="doc-container" id="Method--getTtl">
+</div>
+<div class="doc-container" id="Method--getTtl">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getTtl</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INTEGER
@@ -800,9 +806,10 @@ If will try to get the TTL for an expired key will automatically unset it and wi
 	
 	
 	
-</div><div class="doc-container" id="Method--getKey">
+</div>
+<div class="doc-container" id="Method--getKey">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -816,11 +823,12 @@ If will try to get an expired key will automatically unset it and will return a 
 	
 	
 	
-</div><div class="doc-container" id="Method--setKey">
+</div>
+<div class="doc-container" id="Method--setKey">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>, 
-			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$expire` Parameter is OPTIONAL, with the Default Value: 0">$expire</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>, 
+	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$expire` Parameter is OPTIONAL, with the Default Value: 0">$expire</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -836,9 +844,10 @@ If Key Exists will replace it's value with new one</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--keyExists">
+</div>
+<div class="doc-container" id="Method--keyExists">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>keyExists</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -852,9 +861,10 @@ If will check an expired key will automatically unset it and will return a resul
 	
 	
 	
-</div><div class="doc-container" id="Method--unsetKey">
+</div>
+<div class="doc-container" id="Method--unsetKey">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>unsetKey</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -868,9 +878,10 @@ Will randomly optimize the DB</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--optimizeDb">
+</div>
+<div class="doc-container" id="Method--optimizeDb">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>optimizeDb</b></span>&nbsp;(
-				<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$randomly` Parameter is OPTIONAL, with the Default Value: false">$randomly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$randomly` Parameter is OPTIONAL, with the Default Value: false">$randomly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -883,7 +894,8 @@ Will randomly optimize the DB</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--getKeysList">
+</div>
+<div class="doc-container" id="Method--getKeysList">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getKeysList</b></span>&nbsp;(
 		
 	
@@ -898,9 +910,10 @@ Will optimize the DB</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--clearExpiredKeys">
+</div>
+<div class="doc-container" id="Method--clearExpiredKeys">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>clearExpiredKeys</b></span>&nbsp;(
-				<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$limit` Parameter is OPTIONAL, with the Default Value: 0">$limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+		<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$limit` Parameter is OPTIONAL, with the Default Value: 0">$limit</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -915,9 +928,10 @@ Will optimize the DB</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--truncateDb">
+</div>
+<div class="doc-container" id="Method--truncateDb">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>truncateDb</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$testFirstKey` Parameter is OPTIONAL, with the Default Value: false">$testFirstKey</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$testFirstKey` Parameter is OPTIONAL, with the Default Value: false">$testFirstKey</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
@@ -931,6 +945,7 @@ This may break current transactions if called</div>
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -986,43 +1001,43 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--__destruct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__destruct()</option>
+						<option value="Method--__destruct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__destruct()</option>
 			
 			
-									<option value="Method--isAvailable"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAvailable()</option>
+						<option value="Method--isAvailable"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAvailable()</option>
 			
 			
-									<option value="Method--getDbRealPath"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDbRealPath()</option>
+						<option value="Method--getDbRealPath"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDbRealPath()</option>
 			
 			
-									<option value="Method--getTtl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getTtl()</option>
+						<option value="Method--getTtl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getTtl()</option>
 			
 			
-									<option value="Method--getKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getKey()</option>
+						<option value="Method--getKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getKey()</option>
 			
 			
-									<option value="Method--setKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setKey()</option>
+						<option value="Method--setKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setKey()</option>
 			
 			
-									<option value="Method--keyExists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;keyExists()</option>
+						<option value="Method--keyExists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;keyExists()</option>
 			
 			
-									<option value="Method--unsetKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unsetKey()</option>
+						<option value="Method--unsetKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unsetKey()</option>
 			
 			
-									<option value="Method--optimizeDb"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;optimizeDb()</option>
+						<option value="Method--optimizeDb"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;optimizeDb()</option>
 			
 			
-									<option value="Method--getKeysList"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getKeysList()</option>
+						<option value="Method--getKeysList"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getKeysList()</option>
 			
 			
-									<option value="Method--clearExpiredKeys"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;clearExpiredKeys()</option>
+						<option value="Method--clearExpiredKeys"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;clearExpiredKeys()</option>
 			
 			
-									<option value="Method--truncateDb"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;truncateDb()</option>
+						<option value="Method--truncateDb"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;truncateDb()</option>
 			
 			
 			
@@ -1045,13 +1060,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:43 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:38 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

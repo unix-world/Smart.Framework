@@ -1,4 +1,31 @@
-<!-- Partial Template: Plugins.CaptchaForm r.20231007 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
+<!-- Partial Template: Plugins.CaptchaForm r.20231020 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
+[%%%IF:ALL-REQUIREMENTS:==yes;%%%]
+<!-- Sf.Icons --><link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/css/toolkit/sf-icons.css?[###RELEASE-HASH|url|html###]">
+<!-- jQuery --><script src="[###BASE-URL|html###]lib/js/jquery/jquery.js?[###RELEASE-HASH|url|html###]"></script><script>jQuery.ajaxSetup({ timeout: 0, cache: false });</script><script src="[###BASE-URL|html###]lib/js/jquery/jquery.smart.compat.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Notifications Growl (toastr) --><link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jquery/growl/jquery.toastr.css?[###RELEASE-HASH|url|html###]"><script src="[###BASE-URL|html###]lib/js/jquery/growl/jquery.toastr.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Notifications Dialog --><link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jquery/jquery.alertable.css?[###RELEASE-HASH|url|html###]"><script src="[###BASE-URL|html###]lib/js/jquery/jquery.alertable.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- Js Framework -->
+<script>
+const smartJ$Options = {
+	BrowserUtils: {
+		LanguageId: '[###LANG|js###]',
+		Charset: '[###CHARSET|js###]',
+		CookieLifeTime: [###CLIENT-UID-COOKIE-LIFETIME|int###],
+		CookieDomain: '[###CLIENT-UID-COOKIE-DOMAIN|js###]',
+		CookieSameSitePolicy: '[###CLIENT-UID-COOKIE-SAMESITE|js###]',
+		Notifications: 'growl',
+		NotificationDialogType: 'alertable',
+		ModalBoxProtected: true,
+		NotifyLoadError: true,
+	},
+};
+Object.freeze(smartJ$Options); // sec.
+window.smartJ$Options = smartJ$Options; // g-exp.
+</script>
+<script src="[###BASE-URL|html###]lib/js/framework/smart-framework.pak.js?[###RELEASE-HASH|url|html###]"></script>
+<!-- # -->
+[%%%/IF:ALL-REQUIREMENTS%%%]
+<link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/core/plugins/templates/captcha.css?[###RELEASE-HASH|html###]">
 <link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jscaptcha/jquery.iconsCaptcha.css?[###RELEASE-HASH|html###]">
 <script src="[###BASE-URL|html###]lib/js/jscaptcha/jquery.iconsCaptcha.js?[###RELEASE-HASH|html###]"></script>
 <link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jscaptcha/jquery.motionCaptcha.css?[###RELEASE-HASH|html###]">

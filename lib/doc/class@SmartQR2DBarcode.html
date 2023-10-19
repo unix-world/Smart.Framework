@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartQR2DBarcode        final class \ SmartQR2DBarcode    {   } -&gt;    Class: QRCode - A minimalist QRCode Implementation (supports only binary encoding)">
-<meta name="keywords" content="smartqr2dbarcode, final, class, qrcode, a, minimalist, implementation, supports, only, binary, encoding, creates, svg, language, php, located, at, lib core plugins lib qrcode.php, package, plugins:barcodes, namespace, name, version, v.20210825, depends, classes, smart, methods, public, function, construct, mode, renderassvg, code, options, properties, constants, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartQR2DBarcode final class \ SmartQR2DBarcode { } -&gt; Class: QRCode - A minimalist QRCode Implementation (supports only binary encoding) Creates a SVG">
+<meta name="keywords" content="smartqr2dbarcode, final, class, qrcode, a, minimalist, implementation, supports, only, binary, encoding, creates, svg, language, php, located, at, lib framework plugins lib qrcode php, package, plugins barcodes, namespace, name, version, v, depends, classes, smart, methods, public, function, construct, mode, renderassvg, code, options, properties, constants, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartQR2DBarcode">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartQR2DBarcode</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -702,7 +702,7 @@ Creates a SVG QRCode</div><br>
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_qrcode.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_qrcode.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:Barcodes</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartQR2DBarcode</span></li>
@@ -723,7 +723,7 @@ Creates a SVG QRCode</div><br>
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -733,10 +733,11 @@ Creates a SVG QRCode</div><br>
 	
 	
 	
-</div><div class="doc-container" id="Method--renderAsSVG">
+</div>
+<div class="doc-container" id="Method--renderAsSVG">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>renderAsSVG</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$options` Parameter is OPTIONAL, with the Default Value: []">$options</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
+		<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$options` Parameter is OPTIONAL, with the Default Value: []">$options</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>[]</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -747,6 +748,7 @@ Creates a SVG QRCode</div><br>
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -793,10 +795,10 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--renderAsSVG"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderAsSVG()</option>
+						<option value="Method--renderAsSVG"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderAsSVG()</option>
 			
 			
 			
@@ -816,13 +818,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:43 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:33 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 // Controller: AuthAdmins/MetaInfo
 // Route: admin.php?page=auth-admins.metainfo.stml
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION
@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20231005
+	// v.20231020
 
 
 	public function Initialize() {

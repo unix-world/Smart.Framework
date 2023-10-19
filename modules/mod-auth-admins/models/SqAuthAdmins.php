@@ -25,13 +25,12 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20231018
+	// v.20231020
 
 	private $db;
 
 	public const MAX_ADMIN_ACCOUNTS = 16384; // actually the 16384 is the max supported by the current auth tokens B36 ID system (stored on disk) which supports no more than max number of sub-dirs per dir ; many operating systems still have a limit as of 32k ; storing on a case-sensitive FS as `i/id/`, on B36 limit is 36 * 36 = 1296 ; on case-insensitive limit is 62 * 62 = 3844 ; thus having a 16384 limit is fair than reasonable for admin accounts
 	public const MAX_TOKENS_PER_ACCOUNT = 50;
-	public const FAIL_LOGIN_LIMITS = 10;
 
 	private const ERR_NO_CONNECTION = 'Invalid AUTH DB Connection !';
 
@@ -60,7 +59,7 @@ final class SqAuthAdmins {
 		//--
 		$init_schema = $this->initDBSchema(); // null or string
 		if($init_schema !== null) { // create default schema if not exists (and a default account)
-			throw new \Exception('DB Init Schema Failed with Message: '.$init_schema);
+			throw new \Exception('AUTH DB Init Schema Failed with Message: '.$init_schema);
 		} //end if
 		//--
 	} //END FUNCTION
@@ -121,156 +120,6 @@ final class SqAuthAdmins {
 		} //end if
 		//--
 		return (array) $arr; // OK
-		//--
-	} //END FUNCTION
-
-
-	public function checkFailLoginData(string $auth_user_name, string $auth_pass_hash, string $ip) : int {
-		//--
-		$auth_user_name = (string) \trim((string)$auth_user_name);
-		$auth_pass_hash = (string) \trim((string)$auth_pass_hash);
-		$ip = (string) \Smart::ip_addr_compress((string)\trim((string)$ip));
-		//--
-		$arr = (array) $this->db->read_asdata(
-			'SELECT SUM(`tries`) AS `tot_tries`, MAX(`trytime`) AS `max_trytime` FROM `authfail` WHERE (`ip_addr` = ?) LIMIT 1 OFFSET 0',
-			[
-				(string) $ip
-			]
-		);
-		//--
-		if(\Smart::array_size($arr) <= 0) {
-			return 0;
-		} //end if
-		//--
-		if((int)$arr['tot_tries'] <= (int)self::FAIL_LOGIN_LIMITS) {
-			return 0;
-		} //end if
-		if((int)$arr['max_trytime'] <= 0) {
-			return 0;
-		} //end if
-		//--
-		$test_arr = (array) $this->getLoginData((string)$auth_user_name, (string)$auth_pass_hash);
-		if((int)\Smart::array_size($test_arr) > 0) { // successful login after a timeout
-			return 0;
-		} //end if
-		$test_arr = null;
-		//--
-		$nowtime 	= (int) \time();
-		$allowtime 	= (int) ((int)$arr['max_trytime'] + (((int)$arr['tot_tries'] - (int)self::FAIL_LOGIN_LIMITS) * 60));
-		if((int)$nowtime >= (int)$allowtime) {
-			return 0;
-		} //end if
-		//--
-		return (int) $allowtime;
-		//--
-	} //END FUNCTION
-
-
-	public function logSuccessfulLoginData(string $id, string $ip) : bool {
-		//--
-		$id = (string) \trim((string)$id);
-		$ip = (string) \Smart::ip_addr_compress((string)\trim((string)$ip));
-		//--
-		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::log_warning(__METHOD__.' # '.self::ERR_NO_CONNECTION);
-			return false;
-		} //end if
-		//-- get by id
-		$arr = (array) $this->db->read_asdata(
-			'SELECT SUM(`tries`) AS `tot_tries`, MAX(`trytime`) AS `max_trytime` FROM `authfail` WHERE (`id` = ?) LIMIT 1 OFFSET 0',
-			[
-				(string) $id
-			]
-		);
-		//-- delete by ip or expired time
-		$this->db->write_data(
-			'DELETE FROM `authfail` WHERE ((`ip_addr` = ?) OR (`trytime` <= ?))',
-			[
-				(string) $ip,
-				(int)    ((int)\time() - (int)(60 * 60 * 24)), // cleanup old entries, older than 24 hours
-			]
-		);
-		//-- upd by id
-		$upd = [];
-		if((int)$arr['tot_tries'] > 0) {
-			$upd = (array) $this->db->write_data(
-				'UPDATE `admins` SET `ip_addr` = ?, `logintime` = ?, `tries` = ?, `trytime` = ? WHERE (`id` = ?)',
-				[
-					(string) $ip,
-					(int)    \time(),
-					(int)    $arr['tot_tries'],
-					(int)    $arr['max_trytime'],
-					(string) $id
-				]
-			);
-		} else {
-			$upd = (array) $this->db->write_data(
-				'UPDATE `admins` SET `ip_addr` = ?, `logintime` = ? WHERE ((`id` = ?) AND (`logintime` < ?))',
-				[
-					(string) $ip,
-					(int)    \time(),
-					(string) $id,
-					(int)    (\time() - 60) // log just once per minute
-				]
-			);
-		} //end if else
-		//--
-		return (bool) (((int)($upd[1] ?? null) == 1) ? true : false);
-		//--
-	} //END FUNCTION
-
-
-	public function logUnsuccessfulLoginData(string $id, string $ip, string $ua) : bool {
-		//--
-		$ip = (string) \Smart::ip_addr_compress((string)\trim((string)$ip));
-		$ua = (string) \trim((string)$ua);
-		//--
-		if(!$this->db instanceof \SmartSQliteDb) {
-			\Smart::log_warning(__METHOD__.' # '.self::ERR_NO_CONNECTION);
-			return false;
-		} //end if
-		//--
-		$id = (string) \trim((string)$id);
-		if(\SmartAuth::validate_auth_username(
-			(string) $id,
-			true // check for reasonable length, as 5 chars
-		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
-			$id = '';
-		} else {
-			$arr = (array) $this->getById((string)$id);
-			if((int)\Smart::array_size($arr) <= 0) {
-				$id = '';
-			} //end if
-			$arr = null;
-		} //end if
-		//--
-		\SmartFileSystem::write(
-			'tmp/logs/adm/'.\Smart::safe_filename('smart-auth-fail-'.\date('Y-m-d@H').'.log'),
-			'[FAIL]'."\t".\Smart::normalize_spaces((string)\date('Y-m-d H:i:s O'))."\t".\Smart::normalize_spaces((string)$id)."\t".\Smart::normalize_spaces((string)$ip)."\t".\Smart::normalize_spaces((string)$ua)."\n",
-			'a'
-		);
-		//--
-		$this->db->write_data('INSERT OR IGNORE INTO `authfail`'.$this->db->prepare_statement(
-			[
-				'id' 		=> (string) $id,
-				'ip_addr' 	=> (string) $ip,
-				'tries' 	=> 0,
-				'trytime' 	=> 0,
-				'ua' 		=> ''
-			],
-			'insert'
-		));
-		$upd = (array) $this->db->write_data(
-			'UPDATE `authfail` SET `tries` = `tries` + 1, `trytime` = ?, `ua` = ? WHERE ((`id` = ?) AND (`ip_addr` = ?))',
-			[
-				(int)    \time(),
-				(string) $ua,
-				(string) $id,
-				(string) $ip
-			]
-		);
-		//--
-		return (bool) (($upd[1] == 1) ? true : false);
 		//--
 	} //END FUNCTION
 
@@ -517,6 +366,7 @@ final class SqAuthAdmins {
 						'created' 	=> (int)    \time(),
 						'active' 	=> (int)    $active,
 						'fa2' 		=> (string) $this->encrypt2FAKey((string)\SmartModExtLib\AuthAdmins\Auth2FTotp::GenerateSecret(), (string)$data['id']),
+						'ip_addr' 	=> (string) \SmartUtils::get_ip_client(),
 					],
 					'insert'
 				)
@@ -557,8 +407,9 @@ final class SqAuthAdmins {
 		$wr = (array) $this->db->write_data(
 			'UPDATE `admins` '.$this->db->prepare_statement(
 				(array) [
-					'modif' 	=> \time(),
-					'active' 	=> (int) $status
+					'ip_addr' 	=> (string) \SmartUtils::get_ip_client(),
+					'modif' 	=> (int)    \time(),
+					'active' 	=> (int)    $status,
 				],
 				'update'
 			).' '.$this->db->prepare_param_query(
@@ -598,9 +449,6 @@ final class SqAuthAdmins {
 		$data['priv'] = ($data['priv'] ?? null); // mixed: array or string
 		$data['upd-keys'] = (string) ($data['upd-keys'] ?? null);
 		$data['keys'] = (string) \trim((string)($data['keys'] ?? null));
-		if(\array_key_exists('ip_addr', (array)$data)) {
-			$data['ip_addr'] = (string) \Smart::ip_addr_compress((string)\trim((string)($data['ip_addr'] ?? null)));
-		} //end if
 		//-- {{{SYNC-MOD-AUTH-EMAIL-VALIDATION}}}
 		if((\strlen((string)$data['email']) < 6) OR (\strlen((string)$data['email']) > 96) OR (!\preg_match((string)\SmartValidator::regex_stringvalidation_expression('email'), (string)$data['email']))) {
 			$data['email'] = null; // NULL, as the email is invalid
@@ -626,6 +474,7 @@ final class SqAuthAdmins {
 				$out = -3; // invalid account id
 			} else {
 				$arr = [
+					'ip_addr' 	=> (string) \SmartUtils::get_ip_client(),
 					'modif' 	=> (int)    \time(),
 					'name_f' 	=> (string) $data['name_f'],
 					'name_l' 	=> (string) $data['name_l'],
@@ -635,13 +484,10 @@ final class SqAuthAdmins {
 					if((string)$data['upd-keys'] == 'yes') {
 						$arr['keys'] = (string) $this->encryptPrivKey((string)$data['keys']); // avoid update keys for other user since the password of other users is completely unknown, it is stored in an ireversible hash format
 					} //end if
-					// disallow self user edit ip_addr !
-				} else { // for editing other users, if they have no restrict modify on privileges (superadmin have restrict modify !!!), update the privileges
+					// disallow self user edit privileges !
+				} else { // for editing other users, if they have superadmin privileges, they can except if is the default account
 					if(\SmartAuth::test_login_restriction('def-account', (string)($test['restrict'] ?? null)) !== true) { // {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-AUTH-RESTRICTIONS}}}
 						$arr['priv'] = (array) $data['priv'];
-					} //end if
-					if(\array_key_exists('ip_addr', (array)$data)) {
-						$arr['priv'] = (string) $data['ip_addr'];
 					} //end if
 				} //end if
 				$wr = [];
@@ -719,6 +565,7 @@ final class SqAuthAdmins {
 		} //end if
 		//--
 		$arr = [
+			'ip_addr' 	=> (string) \SmartUtils::get_ip_client(),
 			'modif' 	=> (int)    \time(),
 			'pass' 		=> (string) $hash
 		];
@@ -1251,49 +1098,29 @@ final class SqAuthAdmins {
 			//--
 		} //end if
 		//--
-		if($this->db->check_if_table_exists('authfail') != 1) {
-			$this->db->write_data('BEGIN');
-			$this->db->create_table( // {{{SYNC-TABLE-AUTH_TEMPLATE}}}
-				'authfail',
-				"-- #START: table schema: authfail @ 20231018
-				`id` character varying(25) NOT NULL,
-				`ip_addr` character varying(39) NOT NULL,
-				`tries` bigint NOT NULL,
-				`trytime` bigint NOT NULL,
-				`ua` text NOT NULL,
-				PRIMARY KEY (`id`, `ip_addr`)
-				-- #END: table schema",
-				[ // indexes
-					'authfail_id' 		=> '`id` ASC',
-					'authfail_ip_addr' 	=> '`ip_addr`',
-					'authfail_tries' 	=> '`tries`',
-					'authfail_trytime' 	=> '`trytime` DESC',
-				//	'authfail_uuid' 	=> [ 'mode' => 'unique', 'index' => '`id` ASC, `ip_addr` ASC' ], // not necessary as they are primary key
-				]
-			);
-			$this->db->write_data('COMMIT');
-		} //end if
-		//--
 		if($this->db->check_if_table_exists('authtokens') != 1) {
 			$this->db->write_data('BEGIN');
 			$this->db->create_table( // {{{SYNC-TABLE-AUTH_TEMPLATE}}}
 				'authtokens',
-				"-- #START: table schema: authtokens @ 20231018
+				"-- #START: table schema: authtokens @ 20231020
 				`id` character varying(25) NOT NULL,
 				`active` smallint DEFAULT 0 NOT NULL,
-				`expires` INTEGER DEFAULT 0 NOT NULL,
+				`expires` bigint DEFAULT 0 NOT NULL,
 				`token_hash` character varying(128) NOT NULL,
 				`token_cksum` character varying(48) NOT NULL,
 				`token_data` text NOT NULL,
 				`token_name` character varying(50) NOT NULL,
-				`created` INTEGER DEFAULT 0 NOT NULL,
+				`created` bigint DEFAULT 0 NOT NULL,
 				PRIMARY KEY (`id`, `token_hash`)
 				-- #END: table schema",
 				[ // indexes
 					'authtokens_id' 			=> '`id` ASC',
 					'authtokens_active' 		=> '`active` DESC',
+					'authtokens_expires' 		=> '`expires` ASC',
+					'authtokens_token_hash' 	=> '`token_hash` ASC',
+					'authtokens_token_name' 	=> '`token_name` ASC',
 					'authtokens_created' 		=> '`created` DESC',
-					'authtokens_token_hash' 	=> '`token_hash`',
+					'authtokens_uuid' 			=> [ 'mode' => 'unique', 'index' => '`id` ASC, `token_hash` ASC' ],
 				]
 			);
 			$this->db->write_data('COMMIT');
@@ -1305,12 +1132,20 @@ final class SqAuthAdmins {
 
 
 	private function dbDefaultSchema() : string { // {{{SYNC-TABLE-AUTH_TEMPLATE}}}
+		//--
+		if(!$this->db instanceof \SmartSQliteDb) {
+			\Smart::log_warning(__METHOD__.' # '.self::ERR_NO_CONNECTION);
+			return 'UNESCAPED-SQL:CAN NOT CONTINUE';
+		} //end if
+		//--
 //-- default schema
 $version = (string) $this->db->escape_str((string)\SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.\SMART_FRAMEWORK_RELEASE_VERSION);
+$ipadr = (string) $this->db->escape_str((string)\SmartUtils::get_ip_client());
 $passlen = (int) \SmartHashCrypto::PASSWORD_HASH_LENGTH;
 $schema = <<<SQL
--- #START: tables schema: _smartframework_metadata / admins @ 20231018
+-- #START: tables schema: _smartframework_metadata / admins @ 20231020
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@auth-admins', '{$version}');
+INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('init-ip@auth-admins', '{$ipadr}');
 CREATE TABLE 'admins' (
 	`id` character varying(25) PRIMARY KEY NOT NULL,
 	`pass` character varying({$passlen}) NOT NULL,
@@ -1321,10 +1156,10 @@ CREATE TABLE 'admins' (
 	`name_f` character varying(64) DEFAULT '' NOT NULL,
 	`name_l` character varying(64) DEFAULT '' NOT NULL,
 	`address` character varying(64) DEFAULT '' NOT NULL,
+	`zip` character varying(64) DEFAULT '' NOT NULL,
 	`city` character varying(64) DEFAULT '' NOT NULL,
 	`region` character varying(64) DEFAULT '' NOT NULL,
 	`country` character varying(2) DEFAULT '' NOT NULL,
-	`zip` character varying(64) DEFAULT '' NOT NULL,
 	`phone` character varying(32) DEFAULT '' NOT NULL,
 	`priv` text DEFAULT '' NOT NULL,
 	`restrict` text DEFAULT '' NOT NULL,
@@ -1333,15 +1168,20 @@ CREATE TABLE 'admins' (
 	`fa2` text DEFAULT '' NOT NULL,
 	`ip_restr` text DEFAULT '' NOT NULL,
 	`ip_addr` character varying(39) DEFAULT '' NOT NULL,
-	`logintime` bigint DEFAULT 0 NOT NULL,
-	`tries` smallint DEFAULT 0 NOT NULL,
-	`trytime` bigint DEFAULT 0 NOT NULL,
-	`modif` INTEGER DEFAULT 0 NOT NULL,
-	`created` INTEGER DEFAULT 0 NOT NULL
+	`modif` bigint DEFAULT 0 NOT NULL,
+	`created` bigint DEFAULT 0 NOT NULL
 );
 CREATE UNIQUE INDEX 'admins_id' ON `admins` (`id` ASC);
-CREATE UNIQUE INDEX 'admins_email' ON `admins` (`email`);
-CREATE INDEX 'admins_active' ON `admins` (`active`);
+CREATE INDEX 'admins_active' ON `admins` (`active` DESC);
+CREATE INDEX 'admins_quota' ON `admins` (`quota` DESC);
+CREATE UNIQUE INDEX 'admins_email' ON `admins` (`email` ASC);
+CREATE INDEX 'admins_name_f' ON `admins` (`name_f`);
+CREATE INDEX 'admins_name_l' ON `admins` (`name_l`);
+CREATE INDEX 'admins_zip' ON `admins` (`zip`);
+CREATE INDEX 'admins_city' ON `admins` (`city`);
+CREATE INDEX 'admins_region' ON `admins` (`region`);
+CREATE INDEX 'admins_country' ON `admins` (`country`);
+CREATE INDEX 'admins_ip_addr' ON `admins` (`ip_addr`);
 CREATE INDEX 'admins_modif' ON `admins` (`modif`);
 CREATE INDEX 'admins_created' ON `admins` (`created`);
 -- #END: tables schema

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartAbstractAppController        abstract class \ SmartAbstractAppController    {   } @-&gt;    Class: SmartAbstractAppController - Abstract Application">
-<meta name="keywords" content="smartabstractappcontroller, abstract, class, application, controller, provides, the, definitions, to, create, controllers, in, modules, language, php, located, at, lib run abstract-controller.php, package, development:application, namespace, name, version, v.20211210, depends, hints, needs, be, extended, as, smartappindexcontroller, a, of, index.php, or, smartappadmincontroller, admin.php, smartapptaskcontroller, task.php, usage, dynamic, object, new, class method, this, only, methods, final, public, function, construct, string, y module path, y controller, y url page, y hardcoded area, param, relative, path, followed, by, trailing, slash, current, module, containing, served, middleware, service, ex, modules mod-mytest, serve, action, for, mytest.some-controller, referring, file, modules mod-mytest some-controller.php, real, url, parameter, page, it, comes, from, some-controller, if, mytest, is, set, default, mytest.some-controller.html, anything, that, can, refere, when">
+<meta name="description" content="\SmartAbstractAppController abstract class \ SmartAbstractAppController { } @-&gt; Class: SmartAbstractAppController - Abstract Application Controller,">
+<meta name="keywords" content="smartabstractappcontroller, abstract, class, application, controller, provides, the, definitions, to, create, controllers, in, modules, language, php, located, at, lib run abstract controller php, package, development application, namespace, name, version, v, depends, hints, needs, be, extended, as, smartappindexcontroller, a, of, index php, or, smartappadmincontroller, admin php, smartapptaskcontroller, task php, usage, dynamic, object, new, class   - method, this, only, methods, final, public, function, construct, string, y module path, y controller, y url page, y hardcoded area, param, relative, path, followed, by, trailing, slash, current, module, containing, served, middleware, service, ex, modules mod mytest, serve, action, for, mytest some controller, referring, file, modules mod mytest some controller php, real, url, parameter, page, it, comes, from, some controller, if, mytest, is, set, default, mytest some controller html, anything, that, can, refere, when">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartAbstractAppController">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartAbstractAppController</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartAbstractAppController</span></li>
 		
-		<li><b>Version:</b> v.20211210</li>
+		<li><b>Version:</b> v.20230123</li>
 		<li><b>Depends:</b> -</li>
 		<li><b>Hints:</b> needs  to be extended as: SmartAppIndexController (as a controller of index.php) or SmartAppAdminController (as a controller of admin.php) or SmartAppTaskController (as a controller of task.php)</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -722,10 +722,10 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_module_path` Parameter is REQUIRED">$y_module_path</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_controller` Parameter is REQUIRED">$y_controller</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_url_page` Parameter is REQUIRED">$y_url_page</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_hardcoded_area` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_hardcoded_area</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_module_path` Parameter is REQUIRED">$y_module_path</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_controller` Parameter is REQUIRED">$y_controller</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_url_page` Parameter is REQUIRED">$y_url_page</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_hardcoded_area` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_hardcoded_area</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -741,7 +741,8 @@ This is used to construct a middleware controller service</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--__destruct">
+</div>
+<div class="doc-container" id="Method--__destruct">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__destruct</b></span>&nbsp;(
 		
 	
@@ -757,11 +758,12 @@ See the comments from ShutDown() function in this class !</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--IsRawPage">
+</div>
+<div class="doc-container" id="Method--IsRawPage">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>IsRawPage</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if 'rawpage' is 'yes' or true ; FALSE otherwise</div>
@@ -770,24 +772,26 @@ See the comments from ShutDown() function in this class !</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--IfProdEnv">
-	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>IfProdEnv</b></span>&nbsp;(
+</div>
+<div class="doc-container" id="Method--IfDevMode">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>IfDevMode</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
 	
 	
-			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if 'prod' environment is ON, FALSE if not (FALSE if 'dev')</div>
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if 'dev' environment is ON, FALSE if not (FALSE if 'prod')</div>
 	
-			<div class="doc-method-comments">Test if Prod Environment is On</div>
+			<div class="doc-method-comments">Test if Development Environment is On</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--IfDebug">
+</div>
+<div class="doc-container" id="Method--IfDebug">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>IfDebug</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if DEBUG is ON, FALSE if not</div>
@@ -796,12 +800,13 @@ See the comments from ShutDown() function in this class !</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--forceRawDebug">
+</div>
+<div class="doc-container" id="Method--forceRawDebug">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>forceRawDebug</b></span>&nbsp;(
-				<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$show_output` Parameter is OPTIONAL, with the Default Value: false">$show_output</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$show_output` Parameter is OPTIONAL, with the Default Value: false">$show_output</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if Debug is ON, FALSE if not<br>
@@ -814,13 +819,14 @@ This is not available for direct Direct Output pages (which can be integrated in
 	
 	
 	
-</div><div class="doc-container" id="Method--SetDebugData">
+</div>
+<div class="doc-container" id="Method--SetDebugData">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>SetDebugData</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$title` Parameter is REQUIRED">$title</span></b></span>, 
-			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$debug_msg` Parameter is REQUIRED">$debug_msg</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$title` Parameter is REQUIRED">$title</span></b></span>, 
+	<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$debug_msg` Parameter is REQUIRED">$debug_msg</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if successful, FALSE if not<br>
@@ -832,9 +838,10 @@ If Debug is turned on, this area of Debug messages will be displayed in Modules 
 	
 	
 	
-</div><div class="doc-container" id="Method--ControllerGetParam">
+</div>
+<div class="doc-container" id="Method--ControllerGetParam">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ControllerGetParam</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -845,7 +852,7 @@ If Debug is turned on, this area of Debug messages will be displayed in Modules 
 	
 			<div class="doc-method-comments">Get the value for a Controller parameter<br>
 The valid param values are:<br>
-app-env 					:: 		ex: dev | prod ; based on: SmartFrameworkRegistry::ifProdEnv()<br>
+app-env 					:: 		ex: dev | prod ; based on: SmartEnvironment::ifDevMode()<br>
 app-namespace 				:: 		ex: smartframework.default (the app namespace as defined in etc/init.php)<br>
 app-domain 					:: 		ex: 127.0.0.1|localhost|sdom.dom.ext|dom.ext (the domain set in configs, that may differ by area: $configs['app']['index-domain'] | $configs['app']['admin-domain'])<br>
 release-hash 				:: 		ex: 29bp3w (the release hash based on app framework version, framework release and modules version)<br>
@@ -880,10 +887,11 @@ timezone 					:: 		ex: UTC</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--ConfigParamGet">
+</div>
+<div class="doc-container" id="Method--ConfigParamGet">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ConfigParamGet</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$type` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$type</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$type` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$type</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -897,7 +905,8 @@ timezone 					:: 		ex: UTC</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--RequestMethodGet">
+</div>
+<div class="doc-container" id="Method--RequestMethodGet">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RequestMethodGet</b></span>&nbsp;(
 		
 	
@@ -910,7 +919,8 @@ timezone 					:: 		ex: UTC</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--RequestPathGet">
+</div>
+<div class="doc-container" id="Method--RequestPathGet">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RequestPathGet</b></span>&nbsp;(
 		
 	
@@ -923,7 +933,8 @@ timezone 					:: 		ex: UTC</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--RequestVarsGet">
+</div>
+<div class="doc-container" id="Method--RequestVarsGet">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RequestVarsGet</b></span>&nbsp;(
 		
 	
@@ -936,11 +947,12 @@ timezone 					:: 		ex: UTC</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--RequestVarGet">
+</div>
+<div class="doc-container" id="Method--RequestVarGet">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RequestVarGet</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$defval` Parameter is OPTIONAL, with the Default Value: null">$defval</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$type` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$type</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+	<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$defval` Parameter is OPTIONAL, with the Default Value: null">$defval</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$type` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$type</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -955,9 +967,10 @@ timezone 					:: 		ex: UTC</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--CookieVarGet">
+</div>
+<div class="doc-container" id="Method--CookieVarGet">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CookieVarGet</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -970,19 +983,20 @@ timezone 					:: 		ex: UTC</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--CookieVarSet">
+</div>
+<div class="doc-container" id="Method--CookieVarSet">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CookieVarSet</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
-			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$expire` Parameter is OPTIONAL, with the Default Value: 0">$expire</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$secure` Parameter is OPTIONAL, with the Default Value: false">$secure</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$httponly` Parameter is OPTIONAL, with the Default Value: false">$httponly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$expire` Parameter is OPTIONAL, with the Default Value: 0">$expire</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$secure` Parameter is OPTIONAL, with the Default Value: false">$secure</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$httponly` Parameter is OPTIONAL, with the Default Value: false">$httponly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if Set, FALSE if Not<br>
@@ -999,17 +1013,18 @@ timezone 					:: 		ex: UTC</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--CookieVarUnset">
+</div>
+<div class="doc-container" id="Method--CookieVarUnset">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CookieVarUnset</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$secure` Parameter is OPTIONAL, with the Default Value: false">$secure</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$httponly` Parameter is OPTIONAL, with the Default Value: false">$httponly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$path` Parameter is OPTIONAL, with the Default Value: &quot;/&quot;">$path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;/&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$domain` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$domain</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$samesite` Parameter is OPTIONAL, with the Default Value: &quot;@&quot;">$samesite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;@&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$secure` Parameter is OPTIONAL, with the Default Value: false">$secure</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$httponly` Parameter is OPTIONAL, with the Default Value: false">$httponly</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if Set, FALSE if Not<br>
@@ -1024,7 +1039,8 @@ timezone 					:: 		ex: UTC</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewGetData">
+</div>
+<div class="doc-container" id="Method--PageViewGetData">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetData</b></span>&nbsp;(
 		
 	
@@ -1038,9 +1054,10 @@ The general purpose of this function is to get all Page Data at once to export i
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewSetData">
+</div>
+<div class="doc-container" id="Method--PageViewSetData">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetData</b></span>&nbsp;(
-				<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
+		<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1054,7 +1071,8 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewGetRawHeaders">
+</div>
+<div class="doc-container" id="Method--PageViewGetRawHeaders">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetRawHeaders</b></span>&nbsp;(
 		
 	
@@ -1067,9 +1085,10 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewSetRawHeaders">
+</div>
+<div class="doc-container" id="Method--PageViewSetRawHeaders">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetRawHeaders</b></span>&nbsp;(
-				<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$entries` Parameter is REQUIRED">$entries</span></b></span>
+		<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$entries` Parameter is REQUIRED">$entries</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1082,10 +1101,11 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewSetRawHeader">
+</div>
+<div class="doc-container" id="Method--PageViewSetRawHeader">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetRawHeader</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1099,7 +1119,8 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewResetRawHeaders">
+</div>
+<div class="doc-container" id="Method--PageViewResetRawHeaders">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewResetRawHeaders</b></span>&nbsp;(
 		
 	
@@ -1112,9 +1133,10 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewGetCfg">
+</div>
+<div class="doc-container" id="Method--PageViewGetCfg">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetCfg</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -1127,7 +1149,8 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewGetCfgs">
+</div>
+<div class="doc-container" id="Method--PageViewGetCfgs">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetCfgs</b></span>&nbsp;(
 		
 	
@@ -1140,9 +1163,10 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewSetCfgs">
+</div>
+<div class="doc-container" id="Method--PageViewSetCfgs">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetCfgs</b></span>&nbsp;(
-				<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$params` Parameter is REQUIRED">$params</span></b></span>
+		<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$params` Parameter is REQUIRED">$params</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1155,10 +1179,11 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewSetCfg">
+</div>
+<div class="doc-container" id="Method--PageViewSetCfg">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetCfg</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1172,7 +1197,8 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewResetCfgs">
+</div>
+<div class="doc-container" id="Method--PageViewResetCfgs">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewResetCfgs</b></span>&nbsp;(
 		
 	
@@ -1185,9 +1211,10 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewGetErrorMessage">
+</div>
+<div class="doc-container" id="Method--PageViewGetErrorMessage">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetErrorMessage</b></span>&nbsp;(
-				<i>BOOL</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$errhtml` Parameter is OPTIONAL, with the Default Value: false">$errhtml</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$errhtml` Parameter is OPTIONAL, with the Default Value: false">$errhtml</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -1200,11 +1227,12 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewGetStatusCode">
+</div>
+<div class="doc-container" id="Method--PageViewGetStatusCode">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetStatusCode</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ENUM
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
 	
 	
 			<div class="doc-method-ret-params">@return: {ENUM} the HTTP Status Code: 2xx, 3xx, 4xx, 5xx, ... (consult middleware documentation to see what is supported) ; if an invalid error status code is used then 200 will be used instead</div>
@@ -1213,9 +1241,10 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewSetOkStatus">
+</div>
+<div class="doc-container" id="Method--PageViewSetOkStatus">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetOkStatus</b></span>&nbsp;(
-				<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>
+		<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1228,11 +1257,12 @@ The general purpose of this function is to set all Page Data at once when import
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewSetErrorStatus">
+</div>
+<div class="doc-container" id="Method--PageViewSetErrorStatus">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetErrorStatus</b></span>&nbsp;(
-				<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>, 
-			<i>STRING/ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$msg` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$msg</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$logtype` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$logtype</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>, 
+	<i>STRING/ARRAY</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$msg` Parameter is OPTIONAL, with the Default Value: null">$msg</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$logtype` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$logtype</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1241,17 +1271,18 @@ The general purpose of this function is to set all Page Data at once when import
 			<div class="doc-method-ret-params">@return: {BOOL} TRUE if OK, FALSE if not<br>
 @param: {ENUM} $code: the HTTP Error Status Code: 400, 403, 404, 500, 503, ... (consult middleware documentation to see what is supported) ; if an invalid error status code is used then 500 will be used instead<br>
 @param: {STRING/ARRAY} $msg: The detailed message that will be displayed public near the status code ; can be string or array [ 0 =&gt; message ; 1 =&gt; htmlmessage ]<br>
-@param: {BOOLEAN} $logtype: *Optional* ; Default is '' ; available values: '' | 'WARN' | 'NOTICE'</div>
+@param: {ENUM} $logtype: *Optional* ; Default is '' ; available values: '' | 'WARN' | 'NOTICE'</div>
 	
 			<div class="doc-method-comments">Set Error Status and Optional Message for a controller page<br>
 The Controller should stop the execution after calling this function using 'return;' or ending the 'Run()' main function</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewSetRedirectUrl">
+</div>
+<div class="doc-container" id="Method--PageViewSetRedirectUrl">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetRedirectUrl</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$url` Parameter is REQUIRED">$url</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$code` Parameter is REQUIRED">$code</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1266,9 +1297,27 @@ The Controller should stop the execution after calling this function using 'retu
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewGetVar">
+</div>
+<div class="doc-container" id="Method--PageViewCreateSemaphores">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewCreateSemaphores</b></span>&nbsp;(
+		<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$semaphores` Parameter is REQUIRED">$semaphores</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The list of Semaphores: ex: '&lt;semaphore1&gt;,&lt;semaphore2&gt;'<br>
+@param: {ARRAY} $semaphores: Ex: [ 'semaphore1', 'semaphore2' ]</div>
+	
+			<div class="doc-method-comments">Create a Page View Semaphores List from an Array<br>
+This creates a semaphores list for templating, that can be used with a special variable 'semaphore' to signal templates different semaphore conditions (ex: if a semaphore contains a certain &lt;value&gt; load or not a portion of tpl code)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--PageViewGetVar">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetVar</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -1281,7 +1330,8 @@ The Controller should stop the execution after calling this function using 'retu
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewGetVars">
+</div>
+<div class="doc-container" id="Method--PageViewGetVars">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewGetVars</b></span>&nbsp;(
 		
 	
@@ -1294,9 +1344,10 @@ The Controller should stop the execution after calling this function using 'retu
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewSetVars">
+</div>
+<div class="doc-container" id="Method--PageViewSetVars">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetVars</b></span>&nbsp;(
-				<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$params` Parameter is REQUIRED">$params</span></b></span>
+		<i>ARRAY</i>&nbsp;<span class="doc-param-name"><b><span title="`$params` Parameter is REQUIRED">$params</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1309,11 +1360,12 @@ The Controller should stop the execution after calling this function using 'retu
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewSetVar">
+</div>
+<div class="doc-container" id="Method--PageViewSetVar">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewSetVar</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>, 
-			<i>BOOL</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$overwrite` Parameter is OPTIONAL, with the Default Value: true">$overwrite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$overwrite` Parameter is OPTIONAL, with the Default Value: true">$overwrite</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1328,10 +1380,11 @@ The Controller should stop the execution after calling this function using 'retu
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewPrependVar">
+</div>
+<div class="doc-container" id="Method--PageViewPrependVar">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewPrependVar</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1345,10 +1398,11 @@ The Controller should stop the execution after calling this function using 'retu
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewAppendVar">
+</div>
+<div class="doc-container" id="Method--PageViewAppendVar">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewAppendVar</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1362,7 +1416,8 @@ The Controller should stop the execution after calling this function using 'retu
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewResetVars">
+</div>
+<div class="doc-container" id="Method--PageViewResetVars">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewResetVars</b></span>&nbsp;(
 		
 	
@@ -1375,9 +1430,10 @@ The Controller should stop the execution after calling this function using 'retu
 	
 	
 	
-</div><div class="doc-container" id="Method--PageViewResetVar">
+</div>
+<div class="doc-container" id="Method--PageViewResetVar">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageViewResetVar</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$param` Parameter is REQUIRED">$param</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1390,7 +1446,8 @@ The Controller should stop the execution after calling this function using 'retu
 	
 	
 	
-</div><div class="doc-container" id="Method--PageCacheisActive">
+</div>
+<div class="doc-container" id="Method--PageCacheisActive">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageCacheisActive</b></span>&nbsp;(
 		
 	
@@ -1404,9 +1461,10 @@ This is based on PersistentCache</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--PageCacheSafeKey">
+</div>
+<div class="doc-container" id="Method--PageCacheSafeKey">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageCacheSafeKey</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$y_key_or_realm` Parameter is REQUIRED">$y_key_or_realm</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key_or_realm` Parameter is REQUIRED">$y_key_or_realm</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -1419,10 +1477,11 @@ This is based on PersistentCache</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--PageGetFromCache">
+</div>
+<div class="doc-container" id="Method--PageGetFromCache">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageGetFromCache</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$storage_namespace` Parameter is REQUIRED">$storage_namespace</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$unique_key` Parameter is REQUIRED">$unique_key</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$storage_namespace` Parameter is REQUIRED">$storage_namespace</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$unique_key` Parameter is REQUIRED">$unique_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -1436,12 +1495,13 @@ This is based on PersistentCache</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--PageSetInCache">
+</div>
+<div class="doc-container" id="Method--PageSetInCache">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageSetInCache</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$storage_namespace` Parameter is REQUIRED">$storage_namespace</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$unique_key` Parameter is REQUIRED">$unique_key</span></b></span>, 
-			<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$content` Parameter is REQUIRED">$content</span></b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$expiration` Parameter is REQUIRED">$expiration</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$storage_namespace` Parameter is REQUIRED">$storage_namespace</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$unique_key` Parameter is REQUIRED">$unique_key</span></b></span>, 
+	<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span title="`$content` Parameter is REQUIRED">$content</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$expiration` Parameter is REQUIRED">$expiration</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1457,10 +1517,11 @@ This is based on PersistentCache</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--PageUnsetFromCache">
+</div>
+<div class="doc-container" id="Method--PageUnsetFromCache">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageUnsetFromCache</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$storage_namespace` Parameter is REQUIRED">$storage_namespace</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$unique_key` Parameter is REQUIRED">$unique_key</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$storage_namespace` Parameter is REQUIRED">$storage_namespace</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$unique_key` Parameter is REQUIRED">$unique_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
@@ -1474,7 +1535,9 @@ This is based on PersistentCache</div>
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `InstantFlush()` --><div class="doc-container" id="Method--Initialize">
+</div>
+<!-- Skip Internal-Priv Method: `InstantFlush()` -->
+<div class="doc-container" id="Method--Initialize">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>Initialize</b></span>&nbsp;(
 		
 	
@@ -1488,7 +1551,8 @@ This function will be called before Run()</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--ShutDown">
+</div>
+<div class="doc-container" id="Method--ShutDown">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ShutDown</b></span>&nbsp;(
 		
 	
@@ -1512,20 +1576,22 @@ Because of the PHP Bug #31570, the __destruct() can't operate on relative paths 
 	
 	
 	
-</div><div class="doc-container" id="Method--Run">
+</div>
+<div class="doc-container" id="Method--Run">
 	<span class="doc-modifiers">abstract public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-abstract-name"><b>Run</b></span>&nbsp;(
 		
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 	
 	
-			<div class="doc-method-ret-params">@return: {MIXED} *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 202/203/208 (OK with notice/warning/error messages - used only for REST/APIs), 301 (Permanent Redirect), 302 (Temporary Redirect), 404 (Not Found), 403 (Forbidden), 401 (Authentication Required), 400 (Error), 429 (Too many Requests), 500 (Internal Error), 502 (Bad Gateway), 503 (Service Unavailable) ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this-&gt;PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code) ; It also can return VOID or TRUE as HTTP Status 200 or return FALSE as HTTP Status 500</div>
+			<div class="doc-method-ret-params">@return: {MIXED} *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 202/203/208 (OK with notice/warning/error messages - used only for REST/APIs), 301 (Permanent Redirect), 302 (Temporary Redirect), 404 (Not Found), 403 (Forbidden), 401 (Authentication Required), 400 (Bad Request), 410 (Gone), 429 (Too many Requests), 500 (Internal Error), 502 (Bad Gateway), 503 (Service Unavailable), 504 (Gateway Timeout) ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this-&gt;PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code) ; It also can return VOID or TRUE as HTTP Status 200 or return FALSE as HTTP Status 500</div>
 	
 			<div class="doc-method-comments">The Controller Runtime - This function is required to be re-defined in all controllers</div>
 	
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -1547,7 +1613,7 @@ Because of the PHP Bug #31570, the __destruct() can't operate on relative paths 
 </div>
 <div class="doc-code">
 	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:&nbsp;Create&nbsp;a&nbsp;new&nbsp;Index&nbsp;Controller&nbsp;(modules/my-module/my-controller.php)<br>&nbsp;//&nbsp;Will&nbsp;be&nbsp;accessible&nbsp;via:&nbsp;index.php?/page/my-module.my-controller&nbsp;(index.php?page=my-module.my-controller)<br>&nbsp;//&nbsp;or&nbsp;you&nbsp;can&nbsp;use&nbsp;short&nbsp;type&nbsp;as&nbsp;just:&nbsp;?/page/my-module.my-controller&nbsp;(?page=my-module.my-controller)<br><br>&nbsp;</span><span style="color: #FFFFFF">define</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SMART_APP_MODULE_AREA'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'INDEX'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;controller&nbsp;will&nbsp;run&nbsp;ONLY&nbsp;in&nbsp;index.php<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">class&nbsp;</span><span style="color: #FFFFFF">SmartAppIndexController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">extends&nbsp;</span><span style="color: #FFFFFF">SmartAbstractAppController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">{&nbsp;</span><span style="color: #999999">//&nbsp;or&nbsp;it&nbsp;can&nbsp;extend&nbsp;from&nbsp;any&nbsp;of&nbsp;SmartAppAdminController&nbsp;or&nbsp;SmartAppTaskController&nbsp;if&nbsp;define('SMART_APP_MODULE_AREA',&nbsp;'SHARED');<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">public&nbsp;function&nbsp;</span><span style="color: #FFFFFF">Run</span><span style="color: #FFCC00; font-weight: bold">()&nbsp;{<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$op&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">RequestVarGet</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'op'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'string'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;get&nbsp;variable&nbsp;'op'&nbsp;from&nbsp;Request&nbsp;GET/POST<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetCfg</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'template-path'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'my-template'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;will&nbsp;be&nbsp;using&nbsp;the&nbsp;template&nbsp;in&nbsp;the&nbsp;folder:&nbsp;etc/templates/my-template/<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetCfg</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'template-file'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'template-one.htm'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;will&nbsp;be&nbsp;using&nbsp;the&nbsp;template&nbsp;file:&nbsp;template-one.htm&nbsp;(located&nbsp;in:&nbsp;etc/templates/my-template/)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//$this-&gt;PageViewSetCfg('template-file',&nbsp;'template-modal.htm');&nbsp;//&nbsp;or&nbsp;using&nbsp;the&nbsp;modal&nbsp;template<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;the&nbsp;template&nbsp;'template-one.htm'&nbsp;contains&nbsp;several&nbsp;markers&nbsp;as):&nbsp;'title',&nbsp;'left-column',&nbsp;'main',&nbsp;'right-column',&nbsp;so&nbsp;we&nbsp;set&nbsp;them&nbsp;as:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetVars</span><span style="color: #FFCC00; font-weight: bold">([<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'title'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'Hello&nbsp;World'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;marker&nbsp;is&nbsp;like&nbsp;&lt;title&gt;<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;###</span>TITLE|html<span class="sf__tpl__highlight__marker" title="TPL Marker: End">###&rbrack;</span>&lt;/title&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'left-column'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'Some&nbsp;content&nbsp;in&nbsp;the&nbsp;left&nbsp;column'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;the&nbsp;marker&nbsp;will&nbsp;be&nbsp;put&nbsp;anywhere&nbsp;in&nbsp;the&nbsp;template&nbsp;html&nbsp;as:&nbsp;<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;###</span>LEFT-COLUMN<span class="sf__tpl__highlight__marker" title="TPL Marker: End">###&rbrack;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'main'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'&lt;h1&gt;Some&nbsp;content&nbsp;in&nbsp;the&nbsp;main&nbsp;area&lt;/h1&gt;'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;the&nbsp;'main'&nbsp;area&nbsp;must&nbsp;always&nbsp;be&nbsp;defined&nbsp;in&nbsp;a&nbsp;template&nbsp;as:&nbsp;<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;###</span>MAIN<span class="sf__tpl__highlight__marker" title="TPL Marker: End">###&rbrack;</span>&nbsp;;&nbsp;when&nbsp;no&nbsp;template&nbsp;this&nbsp;variable&nbsp;will&nbsp;be&nbsp;redirected&nbsp;to&nbsp;the&nbsp;main&nbsp;output&nbsp;in&nbsp;the&nbsp;case&nbsp;of&nbsp;RAW&nbsp;pages&nbsp;(see&nbsp;the&nbsp;below&nbsp;example).<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'right-column'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'Some&nbsp;content&nbsp;in&nbsp;the&nbsp;&lt;b&gt;right&nbsp;area&lt;/b&gt;.&nbsp;Current&nbsp;Operation&nbsp;is:&nbsp;'</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">escape_html</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$op</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;</span><span style="color: #999999">//&nbsp;the&nbsp;marker&nbsp;will&nbsp;be&nbsp;put&nbsp;anywhere&nbsp;in&nbsp;the&nbsp;template&nbsp;html&nbsp;as:&nbsp;<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;###</span>RIGHT-COLUMN<span class="sf__tpl__highlight__marker" title="TPL Marker: End">###&rbrack;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;HINT&nbsp;-&nbsp;Escaping&nbsp;HTML:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;is&nbsp;better&nbsp;to&nbsp;use:&nbsp;Smart::escape_html($var);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;than&nbsp;htmlspecialchars($var,&nbsp;ENT_HTML401&nbsp;|&nbsp;ENT_COMPAT&nbsp;|&nbsp;ENT_SUBSTITUTE,&nbsp;'UTF-8',&nbsp;true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;if&nbsp;using&nbsp;htmlspecialchars($var);&nbsp;with&nbsp;no&nbsp;extra&nbsp;parameters&nbsp;is&nbsp;not&nbsp;safe&nbsp;for&nbsp;unicode&nbsp;environments<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;HINT&nbsp;-&nbsp;Escaping&nbsp;JS&nbsp;(Safe&nbsp;exchanging&nbsp;variables&nbsp;between&nbsp;PHP&nbsp;and&nbsp;Javascript&nbsp;in&nbsp;HTML&nbsp;templates):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;when&nbsp;you&nbsp;have&nbsp;to&nbsp;pass&nbsp;a&nbsp;javascript&nbsp;variable,&nbsp;in&nbsp;a&nbsp;marker&nbsp;like&nbsp;&lt;script&gt;my_js_var&nbsp;=&nbsp;'<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;###</span>JS-VAR|js<span class="sf__tpl__highlight__marker" title="TPL Marker: End">###&rbrack;</span>';&lt;/script&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;use:&nbsp;Smart::escape_js('a&nbsp;value&nbsp;exchanged&nbsp;between&nbsp;PHP&nbsp;and&nbsp;Javascript&nbsp;in&nbsp;a&nbsp;safe&nbsp;mode');<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">}&nbsp;</span><span style="color: #999999">//END&nbsp;FUNCTION<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">}&nbsp;</span><span style="color: #999999">//END&nbsp;CLASS<br><br>&nbsp;//========================================================================================================<br><br>&nbsp;//&nbsp;Another&nbsp;usage&nbsp;example:&nbsp;Create&nbsp;a&nbsp;new&nbsp;Admin&nbsp;Controller&nbsp;(modules/my-module/my-other-controller.php)<br>&nbsp;//&nbsp;Will&nbsp;be&nbsp;accessible&nbsp;via:&nbsp;admin.php?/page/my-module.my-other-controller&nbsp;(admin.php?page=my-module.my-other-controller)<br><br>&nbsp;</span><span style="color: #FFFFFF">define</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SMART_APP_MODULE_AREA'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'ADMIN'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;controller&nbsp;will&nbsp;run&nbsp;ONLY&nbsp;in&nbsp;admin.php<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">class&nbsp;</span><span style="color: #FFFFFF">SmartAppAdminController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">extends&nbsp;</span><span style="color: #FFFFFF">SmartAbstractAppController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">{&nbsp;</span><span style="color: #999999">//&nbsp;or&nbsp;it&nbsp;can&nbsp;extend&nbsp;from&nbsp;any&nbsp;of&nbsp;SmartAppIndexController&nbsp;or&nbsp;SmartAppTaskController&nbsp;if&nbsp;define('SMART_APP_MODULE_AREA',&nbsp;'SHARED');<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">public&nbsp;function&nbsp;</span><span style="color: #FFFFFF">Run</span><span style="color: #FFCC00; font-weight: bold">()&nbsp;{<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetCfg</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'rawpage'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;do&nbsp;a&nbsp;raw&nbsp;output,&nbsp;no&nbsp;templates&nbsp;are&nbsp;loaded&nbsp;(this&nbsp;example&nbsp;does&nbsp;a&nbsp;json&nbsp;output&nbsp;/&nbsp;an&nbsp;image&nbsp;or&nbsp;other&nbsp;non-html&nbsp;content&nbsp;;&nbsp;can&nbsp;be&nbsp;used&nbsp;also&nbsp;for&nbsp;output&nbsp;of&nbsp;an&nbsp;image:&nbsp;jpg/gif/jpeg&nbsp;with&nbsp;the&nbsp;appropriate&nbsp;content&nbsp;headers)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetCfg</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'rawmime'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'text/javascript'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;set&nbsp;the&nbsp;content&nbsp;(mime)&nbsp;type&nbsp;;&nbsp;this&nbsp;can&nbsp;also&nbsp;be&nbsp;for&nbsp;this&nbsp;example:&nbsp;'application/json'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//$this-&gt;PageViewSetCfg('rawdisp',&nbsp;'inline');&nbsp;//&nbsp;(optional,&nbsp;set&nbsp;the&nbsp;content&nbsp;disposition&nbsp;;&nbsp;for&nbsp;pdf&nbsp;mime&nbsp;type&nbsp;you&nbsp;maybe&nbsp;would&nbsp;set&nbsp;this&nbsp;to&nbsp;'attachment'&nbsp;instead&nbsp;on&nbsp;'inline'<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetVar</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'main'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">json_encode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Hello&nbsp;World,&nbsp;this&nbsp;is&nbsp;my&nbsp;json&nbsp;string'</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;case&nbsp;have&nbsp;no&nbsp;marker&nbsp;template,&nbsp;but&nbsp;there&nbsp;is&nbsp;always&nbsp;a&nbsp;'main'&nbsp;output&nbsp;variable&nbsp;even&nbsp;when&nbsp;no&nbsp;template&nbsp;is&nbsp;used<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span><span style="color: #999999">//END&nbsp;FUNCTION<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">public&nbsp;function&nbsp;</span><span style="color: #FFFFFF">ShutDown</span><span style="color: #FFCC00; font-weight: bold">()&nbsp;{<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;This&nbsp;function&nbsp;is&nbsp;OPTIONAL&nbsp;in&nbsp;controllers&nbsp;and&nbsp;must&nbsp;be&nbsp;used&nbsp;only&nbsp;when&nbsp;needed&nbsp;as&nbsp;a&nbsp;destructor&nbsp;for&nbsp;any&nbsp;of:&nbsp;SmartAppTaskController,&nbsp;SmartAppAdminController&nbsp;or&nbsp;SmartAppIndexController.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;NOTICE:&nbsp;The&nbsp;PHP&nbsp;class&nbsp;destructor&nbsp;__destruct()&nbsp;have&nbsp;some&nbsp;bugs,&nbsp;is&nbsp;not&nbsp;always&nbsp;100%&nbsp;safe.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;See&nbsp;the&nbsp;PHP&nbsp;Bug&nbsp;#31570&nbsp;for&nbsp;example&nbsp;(which&nbsp;is&nbsp;very&nbsp;old&nbsp;and&nbsp;not&nbsp;yet&nbsp;fixed&nbsp;...).<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;thus,&nbsp;use&nbsp;always&nbsp;ShutDown()&nbsp;instead&nbsp;of&nbsp;__destruct()&nbsp;in&nbsp;all&nbsp;controllers&nbsp;when&nbsp;you&nbsp;need&nbsp;a&nbsp;destructor<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">}&nbsp;</span><span style="color: #999999">//END&nbsp;FUNCTION<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">}&nbsp;</span><span style="color: #999999">//END&nbsp;CLASS<br><br>&nbsp;//========================================================================================================<br><br>&nbsp;//&nbsp;Another&nbsp;usage&nbsp;example:&nbsp;Create&nbsp;a&nbsp;new&nbsp;Task&nbsp;Controller&nbsp;(modules/my-module/my-task-controller.php)<br>&nbsp;//&nbsp;Will&nbsp;be&nbsp;accessible&nbsp;via:&nbsp;task.php?/page/my-module.my-task-controller&nbsp;(task.php?page=my-module.my-task-controller)<br>&nbsp;//&nbsp;This&nbsp;example&nbsp;shows&nbsp;a&nbsp;special&nbsp;example&nbsp;with&nbsp;direct&nbsp;output&nbsp;enabled&nbsp;;&nbsp;by&nbsp;default&nbsp;Smart.Framework&nbsp;disabled&nbsp;the&nbsp;direct&nbsp;output&nbsp;in&nbsp;controllers&nbsp;...&nbsp;it&nbsp;is&nbsp;very&nbsp;inefficient,&nbsp;but&nbsp;it&nbsp;can&nbsp;be&nbsp;enabled&nbsp;in&nbsp;any&nbsp;of&nbsp;index&nbsp;/&nbsp;admin&nbsp;/&nbsp;task&nbsp;just&nbsp;like&nbsp;this&nbsp;example&nbsp;...<br><br>&nbsp;</span><span style="color: #FFFFFF">define</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SMART_APP_MODULE_AREA'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'TASK'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;controller&nbsp;will&nbsp;run&nbsp;ONLY&nbsp;in&nbsp;task.php<br>&nbsp;</span><span style="color: #FFFFFF">define</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SMART_APP_MODULE_DIRECT_OUTPUT'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;enable&nbsp;direct&nbsp;output<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">class&nbsp;</span><span style="color: #FFFFFF">SmartAppTaskController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">extends&nbsp;</span><span style="color: #FFFFFF">SmartAbstractAppController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">{&nbsp;</span><span style="color: #999999">//&nbsp;or&nbsp;it&nbsp;can&nbsp;extend&nbsp;from&nbsp;any&nbsp;of&nbsp;SmartAppIndexController&nbsp;or&nbsp;SmartAppAdminController&nbsp;if&nbsp;define('SMART_APP_MODULE_AREA',&nbsp;'SHARED');<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">public&nbsp;function&nbsp;</span><span style="color: #FFFFFF">Run</span><span style="color: #FFCC00; font-weight: bold">()&nbsp;{<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span style="color: #5F9CCE">'Hello&nbsp;world,&nbsp;I&nbsp;am&nbsp;a&nbsp;task'</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">InstantFlush</span><span style="color: #FFCC00; font-weight: bold">();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span><span style="color: #999999">//END&nbsp;FUNCTION<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">}&nbsp;</span><span style="color: #999999">//END&nbsp;CLASS<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:&nbsp;Create&nbsp;a&nbsp;new&nbsp;Index&nbsp;Controller&nbsp;(modules/my-module/my-controller.php)<br>&nbsp;//&nbsp;Will&nbsp;be&nbsp;accessible&nbsp;via:&nbsp;index.php?/page/my-module.my-controller&nbsp;(index.php?page=my-module.my-controller)<br>&nbsp;//&nbsp;or&nbsp;you&nbsp;can&nbsp;use&nbsp;short&nbsp;type&nbsp;as&nbsp;just:&nbsp;?/page/my-module.my-controller&nbsp;(?page=my-module.my-controller)<br><br>&nbsp;</span><span style="color: #FFFFFF">define</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SMART_APP_MODULE_AREA'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'INDEX'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;controller&nbsp;will&nbsp;run&nbsp;ONLY&nbsp;in&nbsp;index.php<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">class&nbsp;</span><span style="color: #FFFFFF">SmartAppIndexController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">extends&nbsp;</span><span style="color: #FFFFFF">SmartAbstractAppController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">{&nbsp;</span><span style="color: #999999">//&nbsp;or&nbsp;it&nbsp;can&nbsp;extend&nbsp;from&nbsp;any&nbsp;of&nbsp;SmartAppAdminController&nbsp;or&nbsp;SmartAppTaskController&nbsp;if&nbsp;define('SMART_APP_MODULE_AREA',&nbsp;'SHARED');<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">public&nbsp;function&nbsp;</span><span style="color: #FFFFFF">Run</span><span style="color: #FFCC00; font-weight: bold">()&nbsp;{<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$op&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">RequestVarGet</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'op'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">''</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'string'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;get&nbsp;variable&nbsp;'op'&nbsp;from&nbsp;Request&nbsp;GET/POST<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetCfg</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'template-path'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'my-template'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;will&nbsp;be&nbsp;using&nbsp;the&nbsp;template&nbsp;in&nbsp;the&nbsp;folder:&nbsp;etc/templates/my-template/<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetCfg</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'template-file'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'template-one.htm'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;will&nbsp;be&nbsp;using&nbsp;the&nbsp;template&nbsp;file:&nbsp;template-one.htm&nbsp;(located&nbsp;in:&nbsp;etc/templates/my-template/)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//$this-&gt;PageViewSetCfg('template-file',&nbsp;'template-modal.htm');&nbsp;//&nbsp;or&nbsp;using&nbsp;the&nbsp;modal&nbsp;template<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;the&nbsp;template&nbsp;'template-one.htm'&nbsp;contains&nbsp;several&nbsp;markers&nbsp;as):&nbsp;'title',&nbsp;'left-column',&nbsp;'main',&nbsp;'right-column',&nbsp;so&nbsp;we&nbsp;set&nbsp;them&nbsp;as:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetVars</span><span style="color: #FFCC00; font-weight: bold">([<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'title'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'Hello&nbsp;World'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;marker&nbsp;is&nbsp;like&nbsp;&lt;title&gt;<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;&num;&num;&num;</span>TITLE|html<span class="sf__tpl__highlight__marker" title="TPL Marker: End">&num;&num;&num;&rbrack;</span>&lt;/title&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'left-column'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'Some&nbsp;content&nbsp;in&nbsp;the&nbsp;left&nbsp;column'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;the&nbsp;marker&nbsp;will&nbsp;be&nbsp;put&nbsp;anywhere&nbsp;in&nbsp;the&nbsp;template&nbsp;html&nbsp;as:&nbsp;<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;&num;&num;&num;</span>LEFT-COLUMN<span class="sf__tpl__highlight__marker" title="TPL Marker: End">&num;&num;&num;&rbrack;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'main'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'&lt;h1&gt;Some&nbsp;content&nbsp;in&nbsp;the&nbsp;main&nbsp;area&lt;/h1&gt;'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #999999">//&nbsp;the&nbsp;'main'&nbsp;area&nbsp;must&nbsp;always&nbsp;be&nbsp;defined&nbsp;in&nbsp;a&nbsp;template&nbsp;as:&nbsp;<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;&num;&num;&num;</span>MAIN<span class="sf__tpl__highlight__marker" title="TPL Marker: End">&num;&num;&num;&rbrack;</span>&nbsp;;&nbsp;when&nbsp;no&nbsp;template&nbsp;this&nbsp;variable&nbsp;will&nbsp;be&nbsp;redirected&nbsp;to&nbsp;the&nbsp;main&nbsp;output&nbsp;in&nbsp;the&nbsp;case&nbsp;of&nbsp;RAW&nbsp;pages&nbsp;(see&nbsp;the&nbsp;below&nbsp;example).<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'right-column'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'Some&nbsp;content&nbsp;in&nbsp;the&nbsp;&lt;b&gt;right&nbsp;area&lt;/b&gt;.&nbsp;Current&nbsp;Operation&nbsp;is:&nbsp;'</span><span style="color: #FFCC00; font-weight: bold">.</span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">escape_html</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$op</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;</span><span style="color: #999999">//&nbsp;the&nbsp;marker&nbsp;will&nbsp;be&nbsp;put&nbsp;anywhere&nbsp;in&nbsp;the&nbsp;template&nbsp;html&nbsp;as:&nbsp;<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;&num;&num;&num;</span>RIGHT-COLUMN<span class="sf__tpl__highlight__marker" title="TPL Marker: End">&num;&num;&num;&rbrack;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">]);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;HINT&nbsp;-&nbsp;Escaping&nbsp;HTML:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;is&nbsp;better&nbsp;to&nbsp;use:&nbsp;Smart::escape_html($var);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;than&nbsp;htmlspecialchars($var,&nbsp;ENT_HTML401&nbsp;|&nbsp;ENT_COMPAT&nbsp;|&nbsp;ENT_SUBSTITUTE,&nbsp;'UTF-8',&nbsp;true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;if&nbsp;using&nbsp;htmlspecialchars($var);&nbsp;with&nbsp;no&nbsp;extra&nbsp;parameters&nbsp;is&nbsp;not&nbsp;safe&nbsp;for&nbsp;unicode&nbsp;environments<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;HINT&nbsp;-&nbsp;Escaping&nbsp;JS&nbsp;(Safe&nbsp;exchanging&nbsp;variables&nbsp;between&nbsp;PHP&nbsp;and&nbsp;Javascript&nbsp;in&nbsp;HTML&nbsp;templates):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;when&nbsp;you&nbsp;have&nbsp;to&nbsp;pass&nbsp;a&nbsp;javascript&nbsp;variable,&nbsp;in&nbsp;a&nbsp;marker&nbsp;like&nbsp;&lt;script&gt;my_js_var&nbsp;=&nbsp;'<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;&num;&num;&num;</span>JS-VAR|js<span class="sf__tpl__highlight__marker" title="TPL Marker: End">&num;&num;&num;&rbrack;</span>';&lt;/script&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;use:&nbsp;Smart::escape_js('a&nbsp;value&nbsp;exchanged&nbsp;between&nbsp;PHP&nbsp;and&nbsp;Javascript&nbsp;in&nbsp;a&nbsp;safe&nbsp;mode');<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">}&nbsp;</span><span style="color: #999999">//END&nbsp;FUNCTION<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">}&nbsp;</span><span style="color: #999999">//END&nbsp;CLASS<br><br>&nbsp;//========================================================================================================<br><br>&nbsp;//&nbsp;Another&nbsp;usage&nbsp;example:&nbsp;Create&nbsp;a&nbsp;new&nbsp;Admin&nbsp;Controller&nbsp;(modules/my-module/my-other-controller.php)<br>&nbsp;//&nbsp;Will&nbsp;be&nbsp;accessible&nbsp;via:&nbsp;admin.php?/page/my-module.my-other-controller&nbsp;(admin.php?page=my-module.my-other-controller)<br><br>&nbsp;</span><span style="color: #FFFFFF">define</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SMART_APP_MODULE_AREA'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'ADMIN'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;controller&nbsp;will&nbsp;run&nbsp;ONLY&nbsp;in&nbsp;admin.php<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">class&nbsp;</span><span style="color: #FFFFFF">SmartAppAdminController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">extends&nbsp;</span><span style="color: #FFFFFF">SmartAbstractAppController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">{&nbsp;</span><span style="color: #999999">//&nbsp;or&nbsp;it&nbsp;can&nbsp;extend&nbsp;from&nbsp;any&nbsp;of&nbsp;SmartAppIndexController&nbsp;or&nbsp;SmartAppTaskController&nbsp;if&nbsp;define('SMART_APP_MODULE_AREA',&nbsp;'SHARED');<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">public&nbsp;function&nbsp;</span><span style="color: #FFFFFF">Run</span><span style="color: #FFCC00; font-weight: bold">()&nbsp;{<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetCfg</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'rawpage'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;do&nbsp;a&nbsp;raw&nbsp;output,&nbsp;no&nbsp;templates&nbsp;are&nbsp;loaded&nbsp;(this&nbsp;example&nbsp;does&nbsp;a&nbsp;json&nbsp;output&nbsp;/&nbsp;an&nbsp;image&nbsp;or&nbsp;other&nbsp;non-html&nbsp;content&nbsp;;&nbsp;can&nbsp;be&nbsp;used&nbsp;also&nbsp;for&nbsp;output&nbsp;of&nbsp;an&nbsp;image:&nbsp;jpg/gif/jpeg&nbsp;with&nbsp;the&nbsp;appropriate&nbsp;content&nbsp;headers)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetCfg</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'rawmime'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'text/javascript'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;set&nbsp;the&nbsp;content&nbsp;(mime)&nbsp;type&nbsp;;&nbsp;this&nbsp;can&nbsp;also&nbsp;be&nbsp;for&nbsp;this&nbsp;example:&nbsp;'application/json'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//$this-&gt;PageViewSetCfg('rawdisp',&nbsp;'inline');&nbsp;//&nbsp;(optional,&nbsp;set&nbsp;the&nbsp;content&nbsp;disposition&nbsp;;&nbsp;for&nbsp;pdf&nbsp;mime&nbsp;type&nbsp;you&nbsp;maybe&nbsp;would&nbsp;set&nbsp;this&nbsp;to&nbsp;'attachment'&nbsp;instead&nbsp;on&nbsp;'inline'<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">PageViewSetVar</span><span style="color: #FFCC00; font-weight: bold">(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'main'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">json_encode</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Hello&nbsp;World,&nbsp;this&nbsp;is&nbsp;my&nbsp;json&nbsp;string'</span><span style="color: #FFCC00; font-weight: bold">)&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;case&nbsp;have&nbsp;no&nbsp;marker&nbsp;template,&nbsp;but&nbsp;there&nbsp;is&nbsp;always&nbsp;a&nbsp;'main'&nbsp;output&nbsp;variable&nbsp;even&nbsp;when&nbsp;no&nbsp;template&nbsp;is&nbsp;used<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span><span style="color: #999999">//END&nbsp;FUNCTION<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">public&nbsp;function&nbsp;</span><span style="color: #FFFFFF">ShutDown</span><span style="color: #FFCC00; font-weight: bold">()&nbsp;{<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//&nbsp;This&nbsp;function&nbsp;is&nbsp;OPTIONAL&nbsp;in&nbsp;controllers&nbsp;and&nbsp;must&nbsp;be&nbsp;used&nbsp;only&nbsp;when&nbsp;needed&nbsp;as&nbsp;a&nbsp;destructor&nbsp;for&nbsp;any&nbsp;of:&nbsp;SmartAppTaskController,&nbsp;SmartAppAdminController&nbsp;or&nbsp;SmartAppIndexController.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;NOTICE:&nbsp;The&nbsp;PHP&nbsp;class&nbsp;destructor&nbsp;__destruct()&nbsp;have&nbsp;some&nbsp;bugs,&nbsp;is&nbsp;not&nbsp;always&nbsp;100%&nbsp;safe.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;See&nbsp;the&nbsp;PHP&nbsp;Bug&nbsp;#31570&nbsp;for&nbsp;example&nbsp;(which&nbsp;is&nbsp;very&nbsp;old&nbsp;and&nbsp;not&nbsp;yet&nbsp;fixed&nbsp;...).<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;thus,&nbsp;use&nbsp;always&nbsp;ShutDown()&nbsp;instead&nbsp;of&nbsp;__destruct()&nbsp;in&nbsp;all&nbsp;controllers&nbsp;when&nbsp;you&nbsp;need&nbsp;a&nbsp;destructor<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">}&nbsp;</span><span style="color: #999999">//END&nbsp;FUNCTION<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">}&nbsp;</span><span style="color: #999999">//END&nbsp;CLASS<br><br>&nbsp;//========================================================================================================<br><br>&nbsp;//&nbsp;Another&nbsp;usage&nbsp;example:&nbsp;Create&nbsp;a&nbsp;new&nbsp;Task&nbsp;Controller&nbsp;(modules/my-module/my-task-controller.php)<br>&nbsp;//&nbsp;Will&nbsp;be&nbsp;accessible&nbsp;via:&nbsp;task.php?/page/my-module.my-task-controller&nbsp;(task.php?page=my-module.my-task-controller)<br>&nbsp;//&nbsp;This&nbsp;example&nbsp;shows&nbsp;a&nbsp;special&nbsp;example&nbsp;with&nbsp;direct&nbsp;output&nbsp;enabled&nbsp;;&nbsp;by&nbsp;default&nbsp;Smart.Framework&nbsp;disabled&nbsp;the&nbsp;direct&nbsp;output&nbsp;in&nbsp;controllers&nbsp;...&nbsp;it&nbsp;is&nbsp;very&nbsp;inefficient,&nbsp;but&nbsp;it&nbsp;can&nbsp;be&nbsp;enabled&nbsp;in&nbsp;any&nbsp;of&nbsp;index&nbsp;/&nbsp;admin&nbsp;/&nbsp;task&nbsp;just&nbsp;like&nbsp;this&nbsp;example&nbsp;...<br><br>&nbsp;</span><span style="color: #FFFFFF">define</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SMART_APP_MODULE_AREA'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'TASK'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;controller&nbsp;will&nbsp;run&nbsp;ONLY&nbsp;in&nbsp;task.php<br>&nbsp;</span><span style="color: #FFFFFF">define</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SMART_APP_MODULE_DIRECT_OUTPUT'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;enable&nbsp;direct&nbsp;output<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">class&nbsp;</span><span style="color: #FFFFFF">SmartAppTaskController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">extends&nbsp;</span><span style="color: #FFFFFF">SmartAbstractAppController&nbsp;</span><span style="color: #FFCC00; font-weight: bold">{&nbsp;</span><span style="color: #999999">//&nbsp;or&nbsp;it&nbsp;can&nbsp;extend&nbsp;from&nbsp;any&nbsp;of&nbsp;SmartAppIndexController&nbsp;or&nbsp;SmartAppAdminController&nbsp;if&nbsp;define('SMART_APP_MODULE_AREA',&nbsp;'SHARED');<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">public&nbsp;function&nbsp;</span><span style="color: #FFFFFF">Run</span><span style="color: #FFCC00; font-weight: bold">()&nbsp;{<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span style="color: #5F9CCE">'Hello&nbsp;world,&nbsp;I&nbsp;am&nbsp;a&nbsp;task'</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$this</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">InstantFlush</span><span style="color: #FFCC00; font-weight: bold">();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;</span><span style="color: #999999">//END&nbsp;FUNCTION<br><br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">}&nbsp;</span><span style="color: #999999">//END&nbsp;CLASS<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
 </span>
 </code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
@@ -1581,150 +1647,153 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--__destruct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__destruct()</option>
+						<option value="Method--__destruct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__destruct()</option>
 			
 			
-									<option value="Method--IsRawPage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IsRawPage()</option>
+						<option value="Method--IsRawPage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IsRawPage()</option>
 			
 			
-									<option value="Method--IfProdEnv"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IfProdEnv()</option>
+						<option value="Method--IfDevMode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IfDevMode()</option>
 			
 			
-									<option value="Method--IfDebug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IfDebug()</option>
+						<option value="Method--IfDebug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IfDebug()</option>
 			
 			
-									<option value="Method--forceRawDebug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;forceRawDebug()</option>
+						<option value="Method--forceRawDebug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;forceRawDebug()</option>
 			
 			
-									<option value="Method--SetDebugData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;SetDebugData()</option>
+						<option value="Method--SetDebugData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;SetDebugData()</option>
 			
 			
-									<option value="Method--ControllerGetParam"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ControllerGetParam()</option>
+						<option value="Method--ControllerGetParam"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ControllerGetParam()</option>
 			
 			
-									<option value="Method--ConfigParamGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ConfigParamGet()</option>
+						<option value="Method--ConfigParamGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ConfigParamGet()</option>
 			
 			
-									<option value="Method--RequestMethodGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestMethodGet()</option>
+						<option value="Method--RequestMethodGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestMethodGet()</option>
 			
 			
-									<option value="Method--RequestPathGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestPathGet()</option>
+						<option value="Method--RequestPathGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestPathGet()</option>
 			
 			
-									<option value="Method--RequestVarsGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestVarsGet()</option>
+						<option value="Method--RequestVarsGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestVarsGet()</option>
 			
 			
-									<option value="Method--RequestVarGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestVarGet()</option>
+						<option value="Method--RequestVarGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestVarGet()</option>
 			
 			
-									<option value="Method--CookieVarGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarGet()</option>
+						<option value="Method--CookieVarGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarGet()</option>
 			
 			
-									<option value="Method--CookieVarSet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarSet()</option>
+						<option value="Method--CookieVarSet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarSet()</option>
 			
 			
-									<option value="Method--CookieVarUnset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarUnset()</option>
+						<option value="Method--CookieVarUnset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarUnset()</option>
 			
 			
-									<option value="Method--PageViewGetData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetData()</option>
+						<option value="Method--PageViewGetData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetData()</option>
 			
 			
-									<option value="Method--PageViewSetData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetData()</option>
+						<option value="Method--PageViewSetData"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetData()</option>
 			
 			
-									<option value="Method--PageViewGetRawHeaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetRawHeaders()</option>
+						<option value="Method--PageViewGetRawHeaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetRawHeaders()</option>
 			
 			
-									<option value="Method--PageViewSetRawHeaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetRawHeaders()</option>
+						<option value="Method--PageViewSetRawHeaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetRawHeaders()</option>
 			
 			
-									<option value="Method--PageViewSetRawHeader"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetRawHeader()</option>
+						<option value="Method--PageViewSetRawHeader"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetRawHeader()</option>
 			
 			
-									<option value="Method--PageViewResetRawHeaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetRawHeaders()</option>
+						<option value="Method--PageViewResetRawHeaders"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetRawHeaders()</option>
 			
 			
-									<option value="Method--PageViewGetCfg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetCfg()</option>
+						<option value="Method--PageViewGetCfg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetCfg()</option>
 			
 			
-									<option value="Method--PageViewGetCfgs"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetCfgs()</option>
+						<option value="Method--PageViewGetCfgs"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetCfgs()</option>
 			
 			
-									<option value="Method--PageViewSetCfgs"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetCfgs()</option>
+						<option value="Method--PageViewSetCfgs"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetCfgs()</option>
 			
 			
-									<option value="Method--PageViewSetCfg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetCfg()</option>
+						<option value="Method--PageViewSetCfg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetCfg()</option>
 			
 			
-									<option value="Method--PageViewResetCfgs"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetCfgs()</option>
+						<option value="Method--PageViewResetCfgs"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetCfgs()</option>
 			
 			
-									<option value="Method--PageViewGetErrorMessage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetErrorMessage()</option>
+						<option value="Method--PageViewGetErrorMessage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetErrorMessage()</option>
 			
 			
-									<option value="Method--PageViewGetStatusCode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetStatusCode()</option>
+						<option value="Method--PageViewGetStatusCode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetStatusCode()</option>
 			
 			
-									<option value="Method--PageViewSetOkStatus"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetOkStatus()</option>
+						<option value="Method--PageViewSetOkStatus"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetOkStatus()</option>
 			
 			
-									<option value="Method--PageViewSetErrorStatus"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetErrorStatus()</option>
+						<option value="Method--PageViewSetErrorStatus"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetErrorStatus()</option>
 			
 			
-									<option value="Method--PageViewSetRedirectUrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetRedirectUrl()</option>
+						<option value="Method--PageViewSetRedirectUrl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetRedirectUrl()</option>
 			
 			
-									<option value="Method--PageViewGetVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetVar()</option>
+						<option value="Method--PageViewCreateSemaphores"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewCreateSemaphores()</option>
 			
 			
-									<option value="Method--PageViewGetVars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetVars()</option>
+						<option value="Method--PageViewGetVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetVar()</option>
 			
 			
-									<option value="Method--PageViewSetVars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetVars()</option>
+						<option value="Method--PageViewGetVars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewGetVars()</option>
 			
 			
-									<option value="Method--PageViewSetVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetVar()</option>
+						<option value="Method--PageViewSetVars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetVars()</option>
 			
 			
-									<option value="Method--PageViewPrependVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewPrependVar()</option>
+						<option value="Method--PageViewSetVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewSetVar()</option>
 			
 			
-									<option value="Method--PageViewAppendVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewAppendVar()</option>
+						<option value="Method--PageViewPrependVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewPrependVar()</option>
 			
 			
-									<option value="Method--PageViewResetVars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetVars()</option>
+						<option value="Method--PageViewAppendVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewAppendVar()</option>
 			
 			
-									<option value="Method--PageViewResetVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetVar()</option>
+						<option value="Method--PageViewResetVars"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetVars()</option>
 			
 			
-									<option value="Method--PageCacheisActive"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageCacheisActive()</option>
+						<option value="Method--PageViewResetVar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageViewResetVar()</option>
 			
 			
-									<option value="Method--PageCacheSafeKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageCacheSafeKey()</option>
+						<option value="Method--PageCacheisActive"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageCacheisActive()</option>
 			
 			
-									<option value="Method--PageGetFromCache"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageGetFromCache()</option>
+						<option value="Method--PageCacheSafeKey"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageCacheSafeKey()</option>
 			
 			
-									<option value="Method--PageSetInCache"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageSetInCache()</option>
+						<option value="Method--PageGetFromCache"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageGetFromCache()</option>
 			
 			
-									<option value="Method--PageUnsetFromCache"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageUnsetFromCache()</option>
+						<option value="Method--PageSetInCache"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageSetInCache()</option>
 			
 			
-						
+						<option value="Method--PageUnsetFromCache"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageUnsetFromCache()</option>
 			
-									<option value="Method--Initialize"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Initialize()</option>
 			
 			
-									<option value="Method--ShutDown"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ShutDown()</option>
 			
+						<option value="Method--Initialize"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Initialize()</option>
 			
-									<option value="Method--Run"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Run()</option>
+			
+						<option value="Method--ShutDown"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ShutDown()</option>
+			
+			
+						<option value="Method--Run"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Run()</option>
 			
 			
 			
@@ -1747,13 +1816,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:41 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:36 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

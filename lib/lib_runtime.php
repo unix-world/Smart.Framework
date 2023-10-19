@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartHashCrypto, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20231007
+ * @version		v.20231020
  * @package 	Application
  *
  */
@@ -126,6 +126,21 @@ final class SmartFrameworkRuntime {
 
 
 	//======================================================================
+	public static function Raise200Status(?string $y_msg, ?string $y_title='', ?string $y_htmlmsg='') {
+		//--
+		if(!headers_sent()) {
+			self::outputHttpHeadersCacheControl();
+			http_response_code(200);
+		} else {
+			Smart::log_warning(__METHOD__.' # Headers Already Sent before 200 ...');
+		} //end if else
+		die((string)SmartComponents::http_status_message((string)($y_title ?? '200 '.self::GetStatusMessageByStatusCode(200)), (string)$y_msg, (string)$y_htmlmsg, '200'));
+		//--
+	} //END FUNCTION
+	//======================================================================
+
+
+	//======================================================================
 	public static function Raise202Status(?string $y_msg, ?string $y_title='', ?string $y_htmlmsg='') {
 		//--
 		if(!headers_sent()) {
@@ -134,7 +149,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 202 ...');
 		} //end if else
-		die(SmartComponents::http_status_message((string)($y_title ?? '202 '.self::GetStatusMessageByStatusCode(202)), (string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_status_message((string)($y_title ?? '202 '.self::GetStatusMessageByStatusCode(202)), (string)$y_msg, (string)$y_htmlmsg, '202'));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -149,7 +164,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 203 ...');
 		} //end if else
-		die(SmartComponents::http_status_message((string)($y_title ?? '203 '.self::GetStatusMessageByStatusCode(203)), (string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_status_message((string)($y_title ?? '203 '.self::GetStatusMessageByStatusCode(203)), (string)$y_msg, (string)$y_htmlmsg, '203'));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -164,7 +179,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 208 ...');
 		} //end if else
-		die(SmartComponents::http_status_message((string)($y_title ?? '208 '.self::GetStatusMessageByStatusCode(208)), (string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_status_message((string)($y_title ?? '208 '.self::GetStatusMessageByStatusCode(208)), (string)$y_msg, (string)$y_htmlmsg, '208'));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -173,10 +188,7 @@ final class SmartFrameworkRuntime {
 	//======================================================================
 	public static function Raise3xxRedirect(int $y_code, string $y_location) {
 		//--
-		if((string)$y_location == '') {
-			Smart::log_warning(__METHOD__.' # Empty 3xx Location ...');
-			return;
-		} //end if
+		$y_location = (string) trim((string)$y_location);
 		//--
 		switch((int)$y_code) {
 			case 302:
@@ -186,18 +198,22 @@ final class SmartFrameworkRuntime {
 				$y_code = 301;
 				break;
 			default:
-				Smart::log_warning(__METHOD__.' # Invalid ('.$y_code.') as 3xx status ...');
-				return;
+				Smart::log_warning(__METHOD__.' # Invalid ('.$y_code.') as 3xx status ; Used 301 instead ...');
+				$y_code = 301;
 		} //end switch
 		//--
 		if(!headers_sent()) {
 			self::outputHttpHeadersCacheControl();
 			http_response_code((int)$y_code); // redirect
-			self::outputHttpSafeHeader('Location: '.$y_location); // force redirect
+			if((string)$y_location != '') {
+				self::outputHttpSafeHeader('Location: '.$y_location); // force redirect
+			} else {
+				Smart::log_warning(__METHOD__.' # Empty 3xx Location ...');
+			} //end if
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 3xx ('.$y_code.') ...');
 		} //end if else
-		die(SmartComponents::http_status_message((string)$y_code.' '.self::GetStatusMessageByStatusCode((int)$y_code), (string)$y_location));
+		die((string)SmartComponents::http_status_message((string)$y_code.' '.self::GetStatusMessageByStatusCode((int)$y_code), (string)'HTTP Status Code '.$y_code.': Redirect to (a different) Location', '<hr><a style="font-size:1.5rem;" href="'.Smart::escape_html((string)$y_location).'" title="'.Smart::escape_html((string)$y_location).'">Click here if you are not redirected automatically ...</a>', '3xx'));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -212,7 +228,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 400 ...');
 		} //end if else
-		die(SmartComponents::http_message_400_badrequest((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_400_badrequest((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -242,7 +258,7 @@ final class SmartFrameworkRuntime {
 		if((string)trim((string)$y_htmlmsg) != '') {
 			die((string)$y_htmlmsg."\n".'<!-- 401 Message: '.Smart::escape_html((string)$y_msg).' -->');
 		} //end if
-		die(SmartComponents::http_message_401_unauthorized((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_401_unauthorized((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -257,7 +273,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 401 ...');
 		} //end if else
-		die(SmartComponents::http_message_401_unauthorized((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_401_unauthorized((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -272,7 +288,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 403 ...');
 		} //end if else
-		die(SmartComponents::http_message_403_forbidden((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_403_forbidden((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -287,7 +303,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 404 ...');
 		} //end if else
-		die(SmartComponents::http_message_404_notfound((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_404_notfound((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -302,7 +318,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 410 ...');
 		} //end if else
-		die(SmartComponents::http_message_410_gone((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_410_gone((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -317,7 +333,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 429 ...');
 		} //end if else
-		die(SmartComponents::http_message_429_toomanyrequests((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_429_toomanyrequests((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -332,7 +348,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 500 ...');
 		} //end if else
-		die(SmartComponents::http_message_500_internalerror((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_500_internalerror((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -347,7 +363,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 502 ...');
 		} //end if else
-		die(SmartComponents::http_message_502_badgateway((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_502_badgateway((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -362,7 +378,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 503 ...');
 		} //end if else
-		die(SmartComponents::http_message_503_serviceunavailable((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_503_serviceunavailable((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -377,7 +393,7 @@ final class SmartFrameworkRuntime {
 		} else {
 			Smart::log_warning(__METHOD__.' # Headers Already Sent before 504 ...');
 		} //end if else
-		die(SmartComponents::http_message_504_gatewaytimeout((string)$y_msg, (string)$y_htmlmsg));
+		die((string)SmartComponents::http_message_504_gatewaytimeout((string)$y_msg, (string)$y_htmlmsg));
 		//--
 	} //END FUNCTION
 	//======================================================================

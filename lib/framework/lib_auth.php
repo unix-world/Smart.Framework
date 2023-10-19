@@ -160,7 +160,7 @@ final class SmartAuth {
 	 *
 	 * @param 	STRING 			$y_realm 					:: *OPTIONAL* The user Authentication Realm(s)
 	 * @param 	ENUM 			$y_method 					:: *OPTIONAL* The authentication method used, as description only: HTTP-BASIC / OTHER / ...
-	 * @param 	STRING 			$y_pass						:: *OPTIONAL* The user login password (will be stored in memory as encrypted to avoid exposure)
+	 * @param 	STRING 			$y_pass						:: *OPTIONAL* The user login password hash (will be stored in memory as encrypted to avoid exposure)
 	 * @param 	STRING 			$y_user_id 					:: The user (login) ID ; can be the Username or Email (on backend this should be always set with the same value as Username)
 	 * @param 	STRING 			$y_user_name				:: The user username ; Mandatory ; must be valid safe username
 	 * @param 	STRING 			$y_user_email 				:: *OPTIONAL* The user Email ; if email is used as login ID this may be redundant !
@@ -169,7 +169,7 @@ final class SmartAuth {
 	 * @param   ARRAY/STRING 	$y_user_restrictions_list 	:: *OPTIONAL* The user Restrictions List as string '<restr-a>,<restr-b>,...' or array ['restr-a','restr-b'] that list all the current user restrictions ; a restriction key must have 3..28 characters and can contain only: a-z -
 	 * @param 	STRING 			$y_user_quota 				:: *OPTIONAL* The user (storage) Quota
 	 * @param 	ARRAY 			$y_user_metadata 			:: *OPTIONAL* The user metainfo, associative array key => value ; Ex: [ 'auth-safe' => 101 ]
-	 * @param 	STRING 			$y_keys 					:: *OPTIONAL* The encrypted user privacy-keys (will be stored in memory as encrypted to avoid exposure)
+	 * @param 	STRING 			$y_keys 					:: *OPTIONAL* The user Private Key (will be stored in memory as encrypted to avoid exposure)
 	 *
 	 * @return 	BOOLEAN									:: TRUE if all data is OK, FALSE if not or try to reauthenticate under the same execution (which is not allowed ; must be just once per execution)
 	 */
@@ -234,10 +234,8 @@ final class SmartAuth {
 		if((string)trim((string)$y_pass) != '') {
 			$the_privkey = (string) trim((string)$y_keys);
 			if((string)$the_privkey != '') {
-				$the_privkey = (string) self::decrypt_privkey($y_keys, $y_pass);
-				if((string)trim((string)$the_privkey) != '') { // store the pkey only if non-empty string
-					$the_privkey = (string) SmartCipherCrypto::encrypt('hash/sha512', (string)$the_key, (string)$the_privkey);
-				} else {
+				$the_privkey = (string) SmartCipherCrypto::encrypt('hash/sha512', (string)$the_key, (string)$the_privkey);
+				if((string)trim((string)$the_privkey) == '') { // be sure is really empty
 					$the_privkey = '';
 				} //end if else
 			} else {

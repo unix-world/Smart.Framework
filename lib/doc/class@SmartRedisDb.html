@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartRedisDb        final class \ SmartRedisDb    {   } -&gt;    Class: SmartRedisDb - provides a Client for Redis MemDB Server. By default this class will">
-<meta name="keywords" content="smartredisdb, final, class, provides, a, client, for, redis, memdb, server, by, default, this, will, just, log, the, errors, tested, and, stable, on, versions, 2.6.x, 2.8.x, 3.0.x, 3.2.x, 4.x, 5.x, language, php, located, at, lib core plugins lib db redis.php, package, plugins:database:redis, namespace, name, version, v.20210528, depends, extensions, sockets, classes, smart, smartcomponents, hints, rest, of, supported, methods, take, look, magic, call, method, visit, http:  redis.io commands, most, base, are, implemented, usage, dynamic, object, new, class method, only, public, function, construct, string, y description, boolean, y fatal err, false, host, integer, port, db, password, timeout, float, y debug exch slowtime, param, optional, is, description, connection, to, make, easy, debug, if, fatal, or, not">
+<meta name="description" content="\SmartRedisDb final class \ SmartRedisDb { } -&gt; Class: SmartRedisDb - provides a Client for Redis MemDB Server. By default this class will just log the">
+<meta name="keywords" content="smartredisdb, final, class, provides, a, client, for, redis, memdb, server, by, default, this, will, just, log, the, errors, tested, and, stable, on, versions, x, language, php, located, at, lib framework plugins lib db redis php, package, plugins database redis, namespace, name, version, v, depends, extensions, sockets, classes, smart, smartenvironment, smartcomponents, optional, hints, rest, of, supported, methods, take, look, magic, call, method, visit, http:  redis io commands, most, base, are, implemented, usage, dynamic, object, new, class   - method, only, public, function, construct, string, y description, boolean, y fatal err, false, host, integer, port, db, password, timeout, float, y debug exch slowtime, param, is, description, connection, to, make, easy, debug, if, fatal, or, not, set, parameter, true, you">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartRedisDb">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartRedisDb</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -703,13 +703,13 @@ Tested and Stable on Redis versions: 2.6.x / 2.8.x / 3.0.x / 3.2.x / 4.x / 5.x</
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_db_redis.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_db_redis.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:Database:Redis</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartRedisDb</span></li>
 		
-		<li><b>Version:</b> v.20210528</li>
-		<li><b>Depends:</b> extensions:  PHP Sockets ; classes: Smart, SmartComponents</li>
+		<li><b>Version:</b> v.20231003</li>
+		<li><b>Depends:</b> extensions:  PHP Sockets ; classes: Smart, SmartEnvironment, SmartComponents (optional)</li>
 		<li><b>Hints:</b> for  the rest of supported methods take a look at the SmartRedisDb class magic __call method ; Visit: http://redis.io/commands ; Most of the base methods are implemented.</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -724,14 +724,14 @@ Tested and Stable on Redis versions: 2.6.x / 2.8.x / 3.0.x / 3.2.x / 4.x / 5.x</
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_description` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_description</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>, 
-			<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_fatal_err` Parameter is OPTIONAL, with the Default Value: false">$y_fatal_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$host` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$host</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$port` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$port</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$db` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$db</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$password` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$password</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$timeout` Parameter is OPTIONAL, with the Default Value: 5">$timeout</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>5</b></span>, 
-			<i>FLOAT</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_debug_exch_slowtime` Parameter is OPTIONAL, with the Default Value: 0.0005">$y_debug_exch_slowtime</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0.0005</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_description` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_description</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>, 
+	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_fatal_err` Parameter is OPTIONAL, with the Default Value: false">$y_fatal_err</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$host` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$host</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$port` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$port</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$db` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$db</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$password` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$password</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>INTEGER+</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$timeout` Parameter is OPTIONAL, with the Default Value: 5">$timeout</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>5</b></span>, 
+	<i>FLOAT</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_debug_exch_slowtime` Parameter is OPTIONAL, with the Default Value: 0.0005">$y_debug_exch_slowtime</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0.0005</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -749,7 +749,7 @@ Tested and Stable on Redis versions: 2.6.x / 2.8.x / 3.0.x / 3.2.x / 4.x / 5.x</
 			<div class="doc-method-comments">Object Constructor<br>
 If no value is provided for Host, Port and DbNum it will use the values from the config[redis]</div>
 	
-			<pre><b>Sample code: PHP</b><br><code class="hljs php"><span class="hljs-meta">&lt;?php</span>
+			<pre><b>Sample code: PHP</b><br><code class="hljs syntax php"><span class="hljs-meta">&lt;?php</span>
 
  <span class="hljs-comment">// Sample Redis configuration of Default Instance (must be set in etc/config.php)</span>
  $configs[<span class="hljs-string">'redis'</span>][<span class="hljs-string">'server-host'</span>]	= <span class="hljs-string">'127.0.0.1'</span>;							<span class="hljs-comment">// redis host</span>
@@ -762,7 +762,9 @@ If no value is provided for Host, Port and DbNum it will use the values from the
 <span class="hljs-comment">// #end php code</span></code></pre>
 	
 	
-</div><!-- Skip Internal-Priv Method: `setRecvBuf()` --><div class="doc-container" id="Method--__call">
+</div>
+<!-- Skip Internal-Priv Method: `setRecvBuf()` -->
+<div class="doc-container" id="Method--__call">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__call</b></span>&nbsp;(
 	
 	)&nbsp;{}&nbsp;<span title="* Special * Magic * Method"><b>@</b></span>&nbsp;
@@ -777,7 +779,7 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 	
 	
 			<br>
-					<div class="doc-container" id="Method-Sub--ping">
+		<div class="doc-container" id="Method-Sub--ping">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>ping</b></span>&nbsp;(
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -791,23 +793,23 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 							<div class="doc-method-comments">Ping the Redis server ; returns: the test answer which is always PONG</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--watch">
+		<div class="doc-container" id="Method-Sub--watch">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>watch</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$keys` Parameter is REQUIRED">$keys</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$keys` Parameter is REQUIRED">$keys</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {STRING}<br>
 			
-							@param {STRING} $keys<br>
+			@param {STRING} $keys<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Must be used before starting the transaction (MULTI) ; Marks the given key(s) to be watched for conditional execution of a transaction ; A single key can be passed as 'key1'; If multiple keys have to be passed they have to be separed by comma as: 'key1, key2' ; This method always return: OK</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--unwatch">
+		<div class="doc-container" id="Method-Sub--unwatch">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>unwatch</b></span>&nbsp;(
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -821,7 +823,7 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 							<div class="doc-method-comments">Can be used after ending the transaction (EXEC) ; Flushes all the previously watched keys for a transaction ; If EXEC or DISCARD, there's not mandatory to manually call UNWATCH ; This method always return: OK</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--multi">
+		<div class="doc-container" id="Method-Sub--multi">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>multi</b></span>&nbsp;(
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -835,7 +837,7 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 							<div class="doc-method-comments">Marks the start of a transaction block. Subsequent commands will be queued for atomic execution using EXEC ; This method always return: OK ; NOTICE: all subsequent commands when used in a transaction block will return: QUEUED (instead of OK, 1, ... or other responses)</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--exec">
+		<div class="doc-container" id="Method-Sub--exec">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>exec</b></span>&nbsp;(
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
@@ -849,7 +851,7 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 							<div class="doc-method-comments">Executes all previously queued commands in a transaction started by MULTI ; When using WATCH before MULTI, EXEC will execute commands only if the watched keys were not modified, allowing for a check-and-set mechanism ; if using DISCARD all the statements before DISCARD will be discarded and will not be executed ; When using WATCH, EXEC can return a Null reply if the execution was aborted ; If not a Null reply the returned array looks like [ 0 =&gt; OK, 1 =&gt; OK, ..., 2 =&gt; 1, ..., 5 =&gt; OK ] (non-associative array), each entry represent the result of each statement after EXEC</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--discard">
+		<div class="doc-container" id="Method-Sub--discard">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>discard</b></span>&nbsp;(
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -863,293 +865,293 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 							<div class="doc-method-comments">Flushes all previously queued commands in a transaction ; If required, must be called withing transaction (after MULTI and before EXEC) ; This method always return: OK</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--exists">
+		<div class="doc-container" id="Method-Sub--exists">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>exists</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {INT}<br>
 			
-							@param {STRING} $key<br>
+			@param {STRING} $key<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Determine if a key exists ; returns 1 if the key exists or 0 if does not exists</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--get">
+		<div class="doc-container" id="Method-Sub--get">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>get</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $key<br>
+			@param {STRING} $key<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Get a Redis Key ; returns: the value of key as STRING or NULL if not exists</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--set">
+		<div class="doc-container" id="Method-Sub--set">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>set</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $key<br>
-							@param {STRING} $value<br>
+			@param {STRING} $key<br>
+			@param {STRING} $value<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Set a Redis Key ; returns: OK on success or NULL on failure</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--append">
+		<div class="doc-container" id="Method-Sub--append">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>append</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $key<br>
-							@param {STRING} $value<br>
+			@param {STRING} $key<br>
+			@param {STRING} $value<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Append a Redis Key ; returns: OK on success or NULL on failure</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--incr">
+		<div class="doc-container" id="Method-Sub--incr">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>incr</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $key<br>
+			@param {STRING} $key<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Increments a key that have an integer value with 1 ; max is 64-bit int ; if the value is non integer returns error ; returns the value after increment</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--incrby">
+		<div class="doc-container" id="Method-Sub--incrby">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>incrby</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-							<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $key<br>
-							@param {INTEGER} $value<br>
+			@param {STRING} $key<br>
+			@param {INTEGER} $value<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Increments a key that have an integer value with the given int value ; max is 64-bit int ; if the value is non integer returns error ; returns the value after increment</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--decr">
+		<div class="doc-container" id="Method-Sub--decr">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>decr</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $key<br>
+			@param {STRING} $key<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Decrements a key that have an integer value with 1 ; min is 64-bit int ; if the value is non integer returns error ; returns the value after decrement</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--decrby">
+		<div class="doc-container" id="Method-Sub--decrby">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>decrby</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-							<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+			<i>INTEGER</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $key<br>
-							@param {INTEGER} $value<br>
+			@param {STRING} $key<br>
+			@param {INTEGER} $value<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Decrements a key that have an integer value with the given int value ; min is 64-bit int ; if the value is non integer returns error ; returns the value after decrement</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--rename">
+		<div class="doc-container" id="Method-Sub--rename">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>rename</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$newkey` Parameter is REQUIRED">$newkey</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$newkey` Parameter is REQUIRED">$newkey</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {STRING}<br>
 			
-							@param {STRING} $key<br>
-							@param {STRING} $newkey<br>
+			@param {STRING} $key<br>
+			@param {STRING} $newkey<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Renames key to newkey. It returns an error when key does not exist or OK. If newkey already exists it is overwritten</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--del">
+		<div class="doc-container" id="Method-Sub--del">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>del</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {INT}<br>
 			
-							@param {STRING} $key<br>
+			@param {STRING} $key<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Delete a Redis Key ; returns: 0 if not successful or 1 if successful</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--ttl">
+		<div class="doc-container" id="Method-Sub--ttl">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>ttl</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {INT}<br>
 			
-							@param {STRING} $key<br>
+			@param {STRING} $key<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Get the TTL in seconds for a key ; -1 if the key does not expire ; -2 if the key does not exists</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--expire">
+		<div class="doc-container" id="Method-Sub--expire">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>expire</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-							<i>INT</i>&nbsp;<span class="doc-param-name"><b><span title="`$expireinseconds` Parameter is REQUIRED">$expireinseconds</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+			<i>INT</i>&nbsp;<span class="doc-param-name"><b><span title="`$expireinseconds` Parameter is REQUIRED">$expireinseconds</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {INT}<br>
 			
-							@param {STRING} $key<br>
-							@param {INT} $expireinseconds<br>
+			@param {STRING} $key<br>
+			@param {INT} $expireinseconds<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Set the Expiration time for a Redis Key in seconds ; returns: 0 if not successful or 1 if successful</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--expireat">
+		<div class="doc-container" id="Method-Sub--expireat">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>expireat</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-							<i>INT</i>&nbsp;<span class="doc-param-name"><b><span title="`$expirationtime` Parameter is REQUIRED">$expirationtime</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
+			<i>INT</i>&nbsp;<span class="doc-param-name"><b><span title="`$expirationtime` Parameter is REQUIRED">$expirationtime</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {INT}<br>
 			
-							@param {STRING} $key<br>
-							@param {INT} $expirationtime<br>
+			@param {STRING} $key<br>
+			@param {INT} $expirationtime<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Set the Expiration time for a Redis Key at unixtimestamp ; returns: 0 if not successful or 1 if successful</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--persist">
+		<div class="doc-container" id="Method-Sub--persist">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>persist</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {INT}<br>
 			
-							@param {STRING} $key<br>
+			@param {STRING} $key<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Remove the existing expiration timeout on a key ; returns: 0 if not successful or 1 if successful</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--type">
+		<div class="doc-container" id="Method-Sub--type">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>type</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {STRING}<br>
 			
-							@param {STRING} $key<br>
+			@param {STRING} $key<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Returns the string representation of the type of the value stored at key (string, list, set, zset, hash and stream)</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--strlen">
+		<div class="doc-container" id="Method-Sub--strlen">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>strlen</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {INT}<br>
 			
-							@param {STRING} $key<br>
+			@param {STRING} $key<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Returns the length of the string value stored at key. An error is returned when key holds a non-string value</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--keys">
+		<div class="doc-container" id="Method-Sub--keys">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>keys</b></span>&nbsp;(
-							<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$pattern` Parameter is REQUIRED">$pattern</span></b></span>
+			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$pattern` Parameter is REQUIRED">$pattern</span></b></span>
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 			<div class="doc-method-ret-params">
 			@magic __call()<br>
 										@return {MIXED}<br>
 			
-							@param {STRING} $pattern<br>
+			@param {STRING} $pattern<br>
 			
 			
 			</div>
 							<div class="doc-method-comments">Get all keys matching a pattern ; return array of all keys matching a pattern or null if no key</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--randomkey">
+		<div class="doc-container" id="Method-Sub--randomkey">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>randomkey</b></span>&nbsp;(
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
@@ -1163,7 +1165,7 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 							<div class="doc-method-comments">Return a random key from the currently selected database ; if no key exist, returns NULL</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--info">
+		<div class="doc-container" id="Method-Sub--info">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>info</b></span>&nbsp;(
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -1177,7 +1179,7 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 							<div class="doc-method-comments">Returns information and statistics about the server</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--dbsize">
+		<div class="doc-container" id="Method-Sub--dbsize">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>dbsize</b></span>&nbsp;(
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;INT
@@ -1191,7 +1193,7 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 							<div class="doc-method-comments">Return the number of keys in the currently-selected database</div>
 			
 			</div>
-					<div class="doc-container" id="Method-Sub--flushdb">
+		<div class="doc-container" id="Method-Sub--flushdb">
 			<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-sub-name"><b>flushdb</b></span>&nbsp;(
 			
 			)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -1208,7 +1210,9 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 		
 		
 	
-</div><!-- Skip Internal-Priv Method: `disconnect()` -->
+</div>
+<!-- Skip Internal-Priv Method: `disconnect()` -->
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -1216,6 +1220,7 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 </div>
 <!-- properties r.20200121 -->
 <!-- Skip Internal-Priv Property: `$recvbuf` -->
+
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
@@ -1264,49 +1269,49 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-						
-			
-									<option value="Method--__call"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__call()</option>
-			
-									<option value="Method-Sub--ping">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ping()</option>
-						<option value="Method-Sub--watch">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;watch()</option>
-						<option value="Method-Sub--unwatch">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unwatch()</option>
-						<option value="Method-Sub--multi">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;multi()</option>
-						<option value="Method-Sub--exec">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;exec()</option>
-						<option value="Method-Sub--discard">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;discard()</option>
-						<option value="Method-Sub--exists">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;exists()</option>
-						<option value="Method-Sub--get">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get()</option>
-						<option value="Method-Sub--set">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set()</option>
-						<option value="Method-Sub--append">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;append()</option>
-						<option value="Method-Sub--incr">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;incr()</option>
-						<option value="Method-Sub--incrby">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;incrby()</option>
-						<option value="Method-Sub--decr">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decr()</option>
-						<option value="Method-Sub--decrby">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decrby()</option>
-						<option value="Method-Sub--rename">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;rename()</option>
-						<option value="Method-Sub--del">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;del()</option>
-						<option value="Method-Sub--ttl">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ttl()</option>
-						<option value="Method-Sub--expire">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;expire()</option>
-						<option value="Method-Sub--expireat">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;expireat()</option>
-						<option value="Method-Sub--persist">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;persist()</option>
-						<option value="Method-Sub--type">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;type()</option>
-						<option value="Method-Sub--strlen">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;strlen()</option>
-						<option value="Method-Sub--keys">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;keys()</option>
-						<option value="Method-Sub--randomkey">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;randomkey()</option>
-						<option value="Method-Sub--info">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;info()</option>
-						<option value="Method-Sub--dbsize">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dbsize()</option>
-						<option value="Method-Sub--flushdb">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;flushdb()</option>
 			
 			
-						
+						<option value="Method--__call"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__call()</option>
+			
+						<option value="Method-Sub--ping">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ping()</option>
+			<option value="Method-Sub--watch">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;watch()</option>
+			<option value="Method-Sub--unwatch">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unwatch()</option>
+			<option value="Method-Sub--multi">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;multi()</option>
+			<option value="Method-Sub--exec">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;exec()</option>
+			<option value="Method-Sub--discard">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;discard()</option>
+			<option value="Method-Sub--exists">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;exists()</option>
+			<option value="Method-Sub--get">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get()</option>
+			<option value="Method-Sub--set">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set()</option>
+			<option value="Method-Sub--append">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;append()</option>
+			<option value="Method-Sub--incr">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;incr()</option>
+			<option value="Method-Sub--incrby">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;incrby()</option>
+			<option value="Method-Sub--decr">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decr()</option>
+			<option value="Method-Sub--decrby">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decrby()</option>
+			<option value="Method-Sub--rename">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;rename()</option>
+			<option value="Method-Sub--del">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;del()</option>
+			<option value="Method-Sub--ttl">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ttl()</option>
+			<option value="Method-Sub--expire">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;expire()</option>
+			<option value="Method-Sub--expireat">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;expireat()</option>
+			<option value="Method-Sub--persist">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;persist()</option>
+			<option value="Method-Sub--type">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;type()</option>
+			<option value="Method-Sub--strlen">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;strlen()</option>
+			<option value="Method-Sub--keys">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;keys()</option>
+			<option value="Method-Sub--randomkey">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;randomkey()</option>
+			<option value="Method-Sub--info">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;info()</option>
+			<option value="Method-Sub--dbsize">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;dbsize()</option>
+			<option value="Method-Sub--flushdb">&nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;flushdb()</option>
+			
+			
+			
 			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
-						
+			
 			
 		</optgroup>
 		<optgroup label="Class Constants">
@@ -1323,13 +1328,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:43 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:32 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

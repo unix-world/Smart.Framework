@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartParser        final class \ SmartParser    {   } ::    Class: SmartParser - Provides misc parsing methods.     Language: PHP  Located at:">
-<meta name="keywords" content="smartparser, final, class, provides, misc, parsing, methods, language, php, located, at, lib framework lib valid parse.php, package, core:extra, namespace, name, version, v.20210609, depends, classes, smart, smartunicode, usage, static, object, class::method, this, only, public, function, get arr urls, string, array, return, a, non-associative, with, the, url, links, detected, in, param, text, to, be, processed, detect, text urls, ytarget, blank, ypict, int, y lentrim, html, urls, replaced, real, tags, target, default, is, can, self, or, specific, window, mywindow, image, path, display, as, link, integer, length, of, displayed, into, detectedurl, used, if, no, has, been, provided, replace, href detectedurl, target target detectedurl a, get arr emails, email, addresses, text emails, yaction, mailto, action, append, but">
+<meta name="description" content="\SmartParser final class \ SmartParser { } :: Class: SmartParser - Provides misc parsing methods. Language: PHP Located at:">
+<meta name="keywords" content="smartparser, final, class, provides, misc, parsing, methods, language, php, located, at, lib framework lib valid parse php, package, core extra, namespace, name, version, v, depends, classes, smart, smartunicode, smartvalidator, constants, smart framework err pcre settings, usage, static, object, class method, this, only, public, function, extract base domain from domain, string, domain, get arr urls, array, return, a, non associative, with, the, url, links, detected, in, param, text, to, be, processed, detect, text urls, ytarget, blank, ypict, int, y lentrim, html, urls, replaced, real, tags, target, default, is, can, self, or, specific, window, mywindow, image, path, display, as, link, integer, length, of, displayed, into, detectedurl, used, if, no, has, been, provided, replace, href   detectedurl, target   target    detectedurl   a, get arr emails, email, addresses, text emails">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartParser">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartParser</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -706,8 +706,8 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartParser</span></li>
 		
-		<li><b>Version:</b> v.20210609</li>
-		<li><b>Depends:</b> classes:  Smart, SmartUnicode</li>
+		<li><b>Version:</b> v.20231003</li>
+		<li><b>Depends:</b> classes:  Smart, SmartUnicode, SmartValidator ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -720,9 +720,22 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
+<div class="doc-container" id="Method--extract_base_domain_from_domain">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>extract_base_domain_from_domain</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$domain` Parameter is REQUIRED">$domain</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
 <div class="doc-container" id="Method--get_arr_urls">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_arr_urls</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -735,12 +748,13 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--text_urls">
+</div>
+<div class="doc-container" id="Method--text_urls">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>text_urls</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ytarget` Parameter is OPTIONAL, with the Default Value: &quot;_blank&quot;">$ytarget</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;_blank&quot;</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ypict` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$ypict</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_lentrim` Parameter is OPTIONAL, with the Default Value: 100">$y_lentrim</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>100</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ytarget` Parameter is OPTIONAL, with the Default Value: &quot;_blank&quot;">$ytarget</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;_blank&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ypict` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$ypict</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_lentrim` Parameter is OPTIONAL, with the Default Value: 100">$y_lentrim</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>100</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -756,9 +770,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--get_arr_emails">
+</div>
+<div class="doc-container" id="Method--get_arr_emails">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_arr_emails</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -771,12 +786,13 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--text_emails">
+</div>
+<div class="doc-container" id="Method--text_emails">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>text_emails</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$yaction` Parameter is OPTIONAL, with the Default Value: &quot;mailto:&quot;">$yaction</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;mailto:&quot;</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ytarget` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$ytarget</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_lentrim` Parameter is OPTIONAL, with the Default Value: 100">$y_lentrim</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>100</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$yaction` Parameter is OPTIONAL, with the Default Value: &quot;mailto:&quot;">$yaction</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;mailto:&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ytarget` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$ytarget</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_lentrim` Parameter is OPTIONAL, with the Default Value: 100">$y_lentrim</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>100</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -792,9 +808,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--get_arr_faxnums">
+</div>
+<div class="doc-container" id="Method--get_arr_faxnums">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_arr_faxnums</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -807,12 +824,13 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--text_faxnums">
+</div>
+<div class="doc-container" id="Method--text_faxnums">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>text_faxnums</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$yaction` Parameter is OPTIONAL, with the Default Value: &quot;efax:&quot;">$yaction</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;efax:&quot;</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ytarget` Parameter is OPTIONAL, with the Default Value: &quot;_blank&quot;">$ytarget</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;_blank&quot;</b></span>, 
-			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_lentrim` Parameter is OPTIONAL, with the Default Value: 100">$y_lentrim</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>100</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$string` Parameter is REQUIRED">$string</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$yaction` Parameter is OPTIONAL, with the Default Value: &quot;efax:&quot;">$yaction</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;efax:&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$ytarget` Parameter is OPTIONAL, with the Default Value: &quot;_blank&quot;">$ytarget</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;_blank&quot;</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_lentrim` Parameter is OPTIONAL, with the Default Value: 100">$y_lentrim</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>100</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -829,6 +847,7 @@ select#select-summary {
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -884,22 +903,25 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--get_arr_urls"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_arr_urls()</option>
+						<option value="Method--extract_base_domain_from_domain"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;extract_base_domain_from_domain()</option>
 			
 			
-									<option value="Method--text_urls"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;text_urls()</option>
+						<option value="Method--get_arr_urls"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_arr_urls()</option>
 			
 			
-									<option value="Method--get_arr_emails"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_arr_emails()</option>
+						<option value="Method--text_urls"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;text_urls()</option>
 			
 			
-									<option value="Method--text_emails"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;text_emails()</option>
+						<option value="Method--get_arr_emails"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_arr_emails()</option>
 			
 			
-									<option value="Method--get_arr_faxnums"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_arr_faxnums()</option>
+						<option value="Method--text_emails"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;text_emails()</option>
 			
 			
-									<option value="Method--text_faxnums"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;text_faxnums()</option>
+						<option value="Method--get_arr_faxnums"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_arr_faxnums()</option>
+			
+			
+						<option value="Method--text_faxnums"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;text_faxnums()</option>
 			
 			
 			
@@ -922,13 +944,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:39 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:27 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="smartJ$Utils        static class smartJ$Utils  {  } .    CLASS :: Smart CoreUtils (ES6, Strict Mode) The class provides the core methods for JavaScript">
-<meta name="keywords" content="smartj utils, static, class, smart, coreutils, es6, strict, mode, the, provides, core, methods, for, javascript, api, of, smart.framework, language, located, at, lib js framework smart-framework.pak.js, core utils.js, package, sf.javascript:core, name, frozen, yes, version, usage, smartj utils.method, public, evaljsfxcode, string, fxcontext, js-code, jscode, boolean, alerterr, return, true, if, successful, false, otherwise, param, fx, context, where, is, executed, used, just, logging, fails, to, know, which, js, callable, method, or, plain, code, optional, default, set, eval, will, display, an, alert, message, evaluate, mixed, in, a, evalute, and, execute, within, try catch, log, errors, console, so, it, can, isfinitenumber, number, num, finite, nan, be, tested, check, valid, must">
+<meta name="description" content="smartJ$Utils static class smartJ$Utils { } . CLASS :: Smart CoreUtils (ES6, Strict Mode) The class provides the core methods for JavaScript API of">
+<meta name="keywords" content="smartj utils, static, class, smart, coreutils, es6, strict, mode, the, provides, core, methods, for, javascript, api, of, smart framework, language, located, at, lib js framework smart framework pak js, core utils js, package, sf javascript core, name, frozen, yes, version, usage, smartj utils method, public, evaljsfxcode, string, fxcontext, js code, jscode, boolean, alerterr, return, true, if, successful, false, otherwise, param, fx, context, where, is, executed, used, just, logging, fails, to, know, which, js, callable, method, or, plain, code, optional, default, set, eval, will, display, an, alert, message, evaluate, mixed, in, a, evalute, and, execute, within, try catch, log, errors, console, so, it, can, isfinitenumber, number, num, finite, nan, be, tested, check, valid, must">
 <meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$Utils">
 <link rel="icon" href="data:,">
 <title>JS Documentation for: smartJ$Utils</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210417 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -703,7 +703,7 @@ The class provides the core methods for JavaScript API of Smart.Framework</div><
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Core</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$Utils</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20210822</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20231010</span></li>
 		<li><b>Usage:</b> smartJ$Utils.method();</li>
 		
 		
@@ -720,9 +720,9 @@ The class provides the core methods for JavaScript API of Smart.Framework</div><
 <!-- methods r.20210414 -->
 <div class="doc-container" id="Method--evalJsFxCode">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>evalJsFxCode</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`fxContext` Parameter">fxContext</span></b></span>, 
-			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`jsCode` Parameter">jsCode</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`alertErr` Parameter">alertErr</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`fxContext` Parameter">fxContext</span></b></span>, 
+	<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`jsCode` Parameter">jsCode</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`alertErr` Parameter">alertErr</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
@@ -732,9 +732,9 @@ The class provides the core methods for JavaScript API of Smart.Framework</div><
 	
 	
 	
-			@param: {String} fxContext The Fx context where is executed, used just for logging if fails to know which context is<br>
-			@param: {JS-Code} jsCode Js callable method or Js plain code<br>
-			@param: {Boolean} alertErr *Optional* Default is FALSE ; If set to TRUE if eval fails will display an alert message<br>
+	@param: {String} fxContext The Fx context where is executed, used just for logging if fails to know which context is<br>
+	@param: {JS-Code} jsCode Js callable method or Js plain code<br>
+	@param: {Boolean} alertErr *Optional* Default is FALSE ; If set to TRUE if eval fails will display an alert message<br>
 	
 	
 	</div>
@@ -743,9 +743,10 @@ Will evalute and execute mixed Js Code (Js callable method or Js plain code) wit
 If fails, will log errors to the console and optional if set so it can display an alert message</div>
 	
 	
-</div><div class="doc-container" id="Method--isFiniteNumber">
+</div>
+<div class="doc-container" id="Method--isFiniteNumber">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>isFiniteNumber</b></span>&nbsp;=&nbsp;(
-			<i>{Number}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>
+	<i>{Number}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
@@ -755,17 +756,18 @@ If fails, will log errors to the console and optional if set so it can display a
 	
 	
 	
-			@param: {Number} num The number to be tested<br>
+	@param: {Number} num The number to be tested<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Check if a number is valid: must be Number, Finite and !NaN</div>
 	
 	
-</div><div class="doc-container" id="Method--stringPureVal">
+</div>
+<div class="doc-container" id="Method--stringPureVal">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringPureVal</b></span>&nbsp;=&nbsp;(
-			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`input` Parameter">input</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`trim` Parameter">trim</span></b></span>
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`input` Parameter">input</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`trim` Parameter">trim</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -775,8 +777,8 @@ If fails, will log errors to the console and optional if set so it can display a
 	
 	
 	
-			@param: {Mixed} input The input<br>
-			@param: {Boolean} trim If TRUE will trim the output result<br>
+	@param: {Mixed} input The input<br>
+	@param: {Boolean} trim If TRUE will trim the output result<br>
 	
 	
 	</div>
@@ -788,9 +790,10 @@ RULES:<br>
 - Numerioc values will be casted to string as they are</div>
 	
 	
-</div><div class="doc-container" id="Method--stringTrim">
+</div>
+<div class="doc-container" id="Method--stringTrim">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringTrim</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -800,16 +803,57 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to be trimmed<br>
+	@param: {String} str The string to be trimmed<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Trim a string (at begining or end by any whitespace: space \ n \ r \ t)</div>
+			<div class="doc-method-comments">Trim a string for whitespaces (at begining and/or end) ; whitespaces: space \ n \ r \ t)</div>
 	
 	
-</div><div class="doc-container" id="Method--stringUcFirst">
+</div>
+<div class="doc-container" id="Method--stringLeftTrim">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringLeftTrim</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The trimmed string (left only)<br>
+	
+	
+	
+	@param: {String} str The string to be trimmed on Left<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Left Trim a string for whitespaces (at begining and/or end) ; whitespaces: space \ n \ r \ t)</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringRightTrim">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringRightTrim</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The trimmed string (right only)<br>
+	
+	
+	
+	@param: {String} str The string to be trimmed on Right<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Right Trim a string for whitespaces (at begining and/or end) ; whitespaces: space \ n \ r \ t)</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringUcFirst">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringUcFirst</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -820,16 +864,17 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to be processed<br>
+	@param: {String} str The string to be processed<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Make uppercase the first character of a string</div>
 	
 	
-</div><div class="doc-container" id="Method--stringUcWords">
+</div>
+<div class="doc-container" id="Method--stringUcWords">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringUcWords</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -840,18 +885,19 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to be processed<br>
+	@param: {String} str The string to be processed<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Make uppercase the first character of each word in a string while making lowercase the others</div>
 	
 	
-</div><div class="doc-container" id="Method--stringReplaceAll">
+</div>
+<div class="doc-container" id="Method--stringReplaceAll">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringReplaceAll</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`token` Parameter">token</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`newToken` Parameter">newToken</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`token` Parameter">token</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`newToken` Parameter">newToken</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -861,20 +907,21 @@ RULES:<br>
 	
 	
 	
-			@param: {String} token The string part to be replaced<br>
-			@param: {String} newToken The string part replacement<br>
-			@param: {String} str The string where to do the replacements<br>
+	@param: {String} token The string part to be replaced<br>
+	@param: {String} newToken The string part replacement<br>
+	@param: {String} str The string where to do the replacements<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Replace all occurences in a string - Case Sensitive</div>
 	
 	
-</div><div class="doc-container" id="Method--stringIReplaceAll">
+</div>
+<div class="doc-container" id="Method--stringIReplaceAll">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringIReplaceAll</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`token` Parameter">token</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`newToken` Parameter">newToken</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`token` Parameter">token</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`newToken` Parameter">newToken</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -884,19 +931,20 @@ RULES:<br>
 	
 	
 	
-			@param: {String} token The string part to be replaced<br>
-			@param: {String} newToken The string part replacement<br>
-			@param: {String} str The string where to do the replacements<br>
+	@param: {String} token The string part to be replaced<br>
+	@param: {String} newToken The string part replacement<br>
+	@param: {String} str The string where to do the replacements<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Replace all occurences in a string - Case Insensitive</div>
 	
 	
-</div><div class="doc-container" id="Method--stringRegexMatchAll">
+</div>
+<div class="doc-container" id="Method--stringRegexMatchAll">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stringRegexMatchAll</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
-			<i>{Regex}</i>&nbsp;<span class="doc-param-name"><b><span title="`regexp` Parameter">regexp</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{Regex}</i>&nbsp;<span class="doc-param-name"><b><span title="`regexp` Parameter">regexp</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
 	<div class="doc-method-ret-params">
@@ -907,19 +955,20 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to be searched<br>
-			@param: {Regex} regexp A valid regular expression<br>
+	@param: {String} str The string to be searched<br>
+	@param: {Regex} regexp A valid regular expression<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Regex Match All occurences.</div>
 	
 	
-</div><div class="doc-container" id="Method--stringContains">
+</div>
+<div class="doc-container" id="Method--stringContains">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringContains</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`pos` Parameter">pos</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`pos` Parameter">pos</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
@@ -929,20 +978,21 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to search in (haystack)<br>
-			@param: {String} search The string to search for in haystack (needle)<br>
-			@param: {Integer} pos *Optional* ; Default is zero ; The position to start (0 ... n)<br>
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
+	@param: {Integer} pos *Optional* ; Default is zero ; The position to start (0 ... n)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Find if a string contains another sub-string, case sensitive</div>
 	
 	
-</div><div class="doc-container" id="Method--stringIContains">
+</div>
+<div class="doc-container" id="Method--stringIContains">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringIContains</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`pos` Parameter">pos</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`pos` Parameter">pos</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
@@ -952,60 +1002,107 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to search in (haystack)<br>
-			@param: {String} search The string to search for in haystack (needle)<br>
-			@param: {Integer} pos *Optional* ; Default is zero ; The position to start (0 ... n)<br>
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
+	@param: {Integer} pos *Optional* ; Default is zero ; The position to start (0 ... n)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Find if a string contains another sub-string, case insensitive</div>
 	
 	
-</div><div class="doc-container" id="Method--stringStartsWith">
+</div>
+<div class="doc-container" id="Method--stringStartsWith">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringStartsWith</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
 	
 	
-			@return: {Boolean} TRUE if the str starts with the search begining from the pos<br>
+			@return: {Boolean} TRUE if the str starts with the search<br>
 	
 	
 	
-			@param: {String} str The string to search in (haystack)<br>
-			@param: {String} search The string to search for in haystack (needle)<br>
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Find if a string starts with another sub-string, case sensitive</div>
 	
 	
-</div><div class="doc-container" id="Method--stringIStartsWith">
+</div>
+<div class="doc-container" id="Method--stringIStartsWith">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringIStartsWith</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
 	
 	
-			@return: {Boolean} TRUE if the str starts with the search begining from the pos<br>
+			@return: {Boolean} TRUE if the str starts with the search<br>
 	
 	
 	
-			@param: {String} str The string to search in (haystack)<br>
-			@param: {String} search The string to search for in haystack (needle)<br>
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Find if a string starts with another sub-string, case insensitive</div>
 	
 	
-</div><div class="doc-container" id="Method--preg_quote">
+</div>
+<div class="doc-container" id="Method--stringEndsWith">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringEndsWith</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if the str ends with the search<br>
+	
+	
+	
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Find if a string ends with another sub-string, case sensitive</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--stringIEndsWith">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringIEndsWith</b></span>&nbsp;=&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`search` Parameter">search</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Boolean} TRUE if the str ends with the search<br>
+	
+	
+	
+	@param: {String} str The string to search in (haystack)<br>
+	@param: {String} search The string to search for in haystack (needle)<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Find if a string ends with another sub-string, case insensitive</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--preg_quote">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>preg_quote</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1016,16 +1113,17 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to be processed<br>
+	@param: {String} str The string to be processed<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Quote regular expression characters in a string.</div>
 	
 	
-</div><div class="doc-container" id="Method--stringSplitbyEqual">
+</div>
+<div class="doc-container" id="Method--stringSplitbyEqual">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbyEqual</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
 	<div class="doc-method-ret-params">
@@ -1035,16 +1133,17 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to be splitted by = (equal)<br>
+	@param: {String} str The string to be splitted by = (equal)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Split string by equal (=) with trimming prefix/suffix</div>
 	
 	
-</div><div class="doc-container" id="Method--stringSplitbyColon">
+</div>
+<div class="doc-container" id="Method--stringSplitbyColon">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbyColon</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
 	<div class="doc-method-ret-params">
@@ -1054,16 +1153,17 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to be splitted by : (colon)<br>
+	@param: {String} str The string to be splitted by : (colon)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Split string by colon (:) with trimming prefix/suffix</div>
 	
 	
-</div><div class="doc-container" id="Method--stringSplitbySemicolon">
+</div>
+<div class="doc-container" id="Method--stringSplitbySemicolon">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbySemicolon</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
 	<div class="doc-method-ret-params">
@@ -1073,16 +1173,17 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to be splitted by ; (semicolon)<br>
+	@param: {String} str The string to be splitted by ; (semicolon)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Split string by semicolon (;) with trimming prefix/suffix</div>
 	
 	
-</div><div class="doc-container" id="Method--stringSplitbyComma">
+</div>
+<div class="doc-container" id="Method--stringSplitbyComma">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stringSplitbyComma</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Array}
 	<div class="doc-method-ret-params">
@@ -1092,16 +1193,17 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to be splitted by , (comma)<br>
+	@param: {String} str The string to be splitted by , (comma)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Split string by comma (,) with trimming prefix/suffix</div>
 	
 	
-</div><div class="doc-container" id="Method--arrayGetFirst">
+</div>
+<div class="doc-container" id="Method--arrayGetFirst">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>arrayGetFirst</b></span>&nbsp;=&nbsp;(
-			<i>{Array}</i>&nbsp;<span class="doc-param-name"><b><span title="`arr` Parameter">arr</span></b></span>
+	<i>{Array}</i>&nbsp;<span class="doc-param-name"><b><span title="`arr` Parameter">arr</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
 	<div class="doc-method-ret-params">
@@ -1111,16 +1213,17 @@ RULES:<br>
 	
 	
 	
-			@param: {Array} arr The array to be used<br>
+	@param: {Array} arr The array to be used<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Get the first element from an Array</div>
 	
 	
-</div><div class="doc-container" id="Method--arrayGetLast">
+</div>
+<div class="doc-container" id="Method--arrayGetLast">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>arrayGetLast</b></span>&nbsp;=&nbsp;(
-			<i>{Array}</i>&nbsp;<span class="doc-param-name"><b><span title="`arr` Parameter">arr</span></b></span>
+	<i>{Array}</i>&nbsp;<span class="doc-param-name"><b><span title="`arr` Parameter">arr</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
 	<div class="doc-method-ret-params">
@@ -1130,17 +1233,18 @@ RULES:<br>
 	
 	
 	
-			@param: {Array} arr The array to be used<br>
+	@param: {Array} arr The array to be used<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Get the last element from an Array</div>
 	
 	
-</div><div class="doc-container" id="Method--format_number_float">
+</div>
+<div class="doc-container" id="Method--format_number_float">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_float</b></span>&nbsp;=&nbsp;(
-			<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`allow_negatives` Parameter">allow_negatives</span></b></span>
+	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`allow_negatives` Parameter">allow_negatives</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Float}
 	<div class="doc-method-ret-params">
@@ -1150,18 +1254,19 @@ RULES:<br>
 	
 	
 	
-			@param: {Numeric} num A numeric value<br>
-			@param: {Boolean} allow_negatives *Optional* ; default is TRUE ; If set to FALSE will disallow negative values and if negative value detected will reset it to zero<br>
+	@param: {Numeric} num A numeric value<br>
+	@param: {Boolean} allow_negatives *Optional* ; default is TRUE ; If set to FALSE will disallow negative values and if negative value detected will reset it to zero<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Format a number as FLOAT</div>
 	
 	
-</div><div class="doc-container" id="Method--format_number_int">
+</div>
+<div class="doc-container" id="Method--format_number_int">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_int</b></span>&nbsp;=&nbsp;(
-			<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_number` Parameter">y_number</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_allow_negatives` Parameter">y_allow_negatives</span></b></span>
+	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_number` Parameter">y_number</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_allow_negatives` Parameter">y_allow_negatives</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
 	<div class="doc-method-ret-params">
@@ -1171,20 +1276,21 @@ RULES:<br>
 	
 	
 	
-			@param: {Numeric} y_number A numeric value<br>
-			@param: {Boolean} y_allow_negatives If TRUE will allow negative values else will return just positive (unsigned) values<br>
+	@param: {Numeric} y_number A numeric value<br>
+	@param: {Boolean} y_allow_negatives If TRUE will allow negative values else will return just positive (unsigned) values<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Format a number as INTEGER</div>
 	
 	
-</div><div class="doc-container" id="Method--format_number_dec">
+</div>
+<div class="doc-container" id="Method--format_number_dec">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_dec</b></span>&nbsp;=&nbsp;(
-			<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_number` Parameter">y_number</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_decimals` Parameter">y_decimals</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_allow_negatives` Parameter">y_allow_negatives</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_discard_trailing_zeroes` Parameter">y_discard_trailing_zeroes</span></b></span>
+	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_number` Parameter">y_number</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_decimals` Parameter">y_decimals</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_allow_negatives` Parameter">y_allow_negatives</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_discard_trailing_zeroes` Parameter">y_discard_trailing_zeroes</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1194,19 +1300,20 @@ RULES:<br>
 	
 	
 	
-			@param: {Numeric} y_number A numeric value as Number or String<br>
-			@param: {Integer} y_decimals *Optional* Default is 2 ; The number of decimal to use (between 1 and 13)<br>
-			@param: {Boolean} y_allow_negatives *Optional* Default is TRUE ; If FALSE will disallow negative (will return just positive / unsigned values)<br>
-			@param: {Boolean} y_discard_trailing_zeroes *Optional* Default is FALSE ; If set to TRUE will discard trailing zeroes<br>
+	@param: {Numeric} y_number A numeric value as Number or String<br>
+	@param: {Integer} y_decimals *Optional* Default is 2 ; The number of decimal to use (between 1 and 13)<br>
+	@param: {Boolean} y_allow_negatives *Optional* Default is TRUE ; If FALSE will disallow negative (will return just positive / unsigned values)<br>
+	@param: {Boolean} y_discard_trailing_zeroes *Optional* Default is FALSE ; If set to TRUE will discard trailing zeroes<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Format a number as DECIMAL</div>
 	
 	
-</div><div class="doc-container" id="Method--stripslashes">
+</div>
+<div class="doc-container" id="Method--stripslashes">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>stripslashes</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1217,7 +1324,7 @@ RULES:<br>
 	
 	
 	
-			@param: {String} str The string to be processed<br>
+	@param: {String} str The string to be processed<br>
 	
 	
 	</div>
@@ -1225,10 +1332,11 @@ RULES:<br>
 It will remove double / quoted slashes.</div>
 	
 	
-</div><div class="doc-container" id="Method--addcslashes">
+</div>
+<div class="doc-container" id="Method--addcslashes">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>addcslashes</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`charlist` Parameter">charlist</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`charlist` Parameter">charlist</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1239,17 +1347,18 @@ It will remove double / quoted slashes.</div>
 	
 	
 	
-			@param: {String} str The string to be escaped<br>
-			@param: {String} charlist A list of characters to be escaped. If charlist contains characters \n, \r etc., they are converted in C-like style, while other non-alphanumeric characters with ASCII codes lower than 32 and higher than 126 converted to octal representation<br>
+	@param: {String} str The string to be escaped<br>
+	@param: {String} charlist A list of characters to be escaped. If charlist contains characters \n, \r etc., they are converted in C-like style, while other non-alphanumeric characters with ASCII codes lower than 32 and higher than 126 converted to octal representation<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Quote string with slashes in a C style.</div>
 	
 	
-</div><div class="doc-container" id="Method--escape_css">
+</div>
+<div class="doc-container" id="Method--escape_css">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>escape_css</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1260,16 +1369,17 @@ It will remove double / quoted slashes.</div>
 	
 	
 	
-			@param: {String} str The string to be escaped<br>
+	@param: {String} str The string to be escaped<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Convert special characters to HTML entities.</div>
 	
 	
-</div><div class="doc-container" id="Method--escape_html">
+</div>
+<div class="doc-container" id="Method--escape_html">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>escape_html</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1280,7 +1390,7 @@ It will remove double / quoted slashes.</div>
 	
 	
 	
-			@param: {String} str The string to be escaped<br>
+	@param: {String} str The string to be escaped<br>
 	
 	
 	</div>
@@ -1288,9 +1398,10 @@ It will remove double / quoted slashes.</div>
 These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</div>
 	
 	
-</div><div class="doc-container" id="Method--escape_js">
+</div>
+<div class="doc-container" id="Method--escape_js">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_js</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1301,16 +1412,17 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 	
-			@param: {String} str The string to be escaped<br>
+	@param: {String} str The string to be escaped<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Convert special characters to escaped entities for safe use with Javascript Strings.</div>
 	
 	
-</div><div class="doc-container" id="Method--escape_url">
+</div>
+<div class="doc-container" id="Method--escape_url">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>escape_url</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1321,16 +1433,17 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 	
-			@param: {String} str The URL variable value to be escaped<br>
+	@param: {String} str The URL variable value to be escaped<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Safe escape URL Variable (using RFC3986 standards to be full Unicode compliant).</div>
 	
 	
-</div><div class="doc-container" id="Method--nl2br">
+</div>
+<div class="doc-container" id="Method--nl2br">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>nl2br</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1341,16 +1454,17 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 	
-			@param: {String} str The string to be processed<br>
+	@param: {String} str The string to be processed<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Replace new lines \ r \ n ; \ n with the &lt;br&gt; html tag.</div>
 	
 	
-</div><div class="doc-container" id="Method--utf8_encode">
+</div>
+<div class="doc-container" id="Method--utf8_encode">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8_encode</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1360,16 +1474,17 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 	
-			@param: {String} str The string to be processed<br>
+	@param: {String} str The string to be processed<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Encodes an ISO-8859-1 string to UTF-8</div>
 	
 	
-</div><div class="doc-container" id="Method--utf8_decode">
+</div>
+<div class="doc-container" id="Method--utf8_decode">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8_decode</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`utftext` Parameter">utftext</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`utftext` Parameter">utftext</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1379,16 +1494,17 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 	
-			@param: {String} utftext The string to be processed<br>
+	@param: {String} utftext The string to be processed<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Decodes an UTF-8 string to ISO-8859-1</div>
 	
 	
-</div><div class="doc-container" id="Method--deaccent_str">
+</div>
+<div class="doc-container" id="Method--deaccent_str">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>deaccent_str</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`strIn` Parameter">strIn</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`strIn` Parameter">strIn</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1399,7 +1515,7 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 	
-			@param: {String} strIn The string to be de-accented<br>
+	@param: {String} strIn The string to be de-accented<br>
 	
 	
 	</div>
@@ -1407,10 +1523,11 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccented versions into ISO-8859-1</div>
 	
 	
-</div><div class="doc-container" id="Method--bin2hex">
+</div>
+<div class="doc-container" id="Method--bin2hex">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>bin2hex</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`bin` Parameter">bin</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`bin` Parameter">bin</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1421,18 +1538,19 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	
-			@param: {String} s The string to be processed<br>
-			@param: {Boolean} bin Set to TRUE if the string is binary to avoid re-encode to UTF-8<br>
+	@param: {String} s The string to be processed<br>
+	@param: {Boolean} bin Set to TRUE if the string is binary to avoid re-encode to UTF-8<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Convert binary data into hexadecimal representation.</div>
 	
 	
-</div><div class="doc-container" id="Method--hex2bin">
+</div>
+<div class="doc-container" id="Method--hex2bin">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>hex2bin</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`hex` Parameter">hex</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`bin` Parameter">bin</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`hex` Parameter">hex</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`bin` Parameter">bin</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1443,15 +1561,16 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	
-			@param: {String} hex The string to be processed<br>
-			@param: {Boolean} bin Set to TRUE if the string is binary to avoid re-decode as UTF-8<br>
+	@param: {String} hex The string to be processed<br>
+	@param: {Boolean} bin Set to TRUE if the string is binary to avoid re-decode as UTF-8<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Decodes a hexadecimally encoded binary string.</div>
 	
 	
-</div><div class="doc-container" id="Method--uuid">
+</div>
+<div class="doc-container" id="Method--uuid">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>uuid</b></span>&nbsp;(
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
@@ -1468,10 +1587,11 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 			<div class="doc-method-comments">Generate a base36 10-chars length UUID</div>
 	
 	
-</div><div class="doc-container" id="Method--textSort">
+</div>
+<div class="doc-container" id="Method--textSort">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>textSort</b></span>&nbsp;(
-			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`property` Parameter">property</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`useLocale` Parameter">useLocale</span></b></span>
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`property` Parameter">property</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`useLocale` Parameter">useLocale</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Method}
 	<div class="doc-method-ret-params">
@@ -1481,17 +1601,18 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	
-			@param: {Mixed} property The stack to be sorted<br>
-			@param: {Boolean} useLocale *Optional* default is FALSE ; if TRUE will try sort using locales and if fail will fallback on raw string comparison ; if FALSE will use the default string comparison<br>
+	@param: {Mixed} property The stack to be sorted<br>
+	@param: {Boolean} useLocale *Optional* default is FALSE ; if TRUE will try sort using locales and if fail will fallback on raw string comparison ; if FALSE will use the default string comparison<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Sort a stack (array / object / property) using String Sort algorithm</div>
 	
 	
-</div><div class="doc-container" id="Method--numericSort">
+</div>
+<div class="doc-container" id="Method--numericSort">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>numericSort</b></span>&nbsp;=&nbsp;(
-			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`property` Parameter">property</span></b></span>
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`property` Parameter">property</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Method}
 	<div class="doc-method-ret-params">
@@ -1501,17 +1622,18 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	
-			@param: {Mixed} property The stack to be sorted<br>
+	@param: {Mixed} property The stack to be sorted<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Sort a stack (array / object / property) using Numeric Sort algorithm</div>
 	
 	
-</div><div class="doc-container" id="Method--url_add_suffix">
+</div>
+<div class="doc-container" id="Method--url_add_suffix">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>url_add_suffix</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`url` Parameter">url</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`suffix` Parameter">suffix</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`url` Parameter">url</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`suffix` Parameter">suffix</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1521,19 +1643,20 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	
-			@param: {String} url The base URL to use as prefix like: script.php or script.php?a=b&amp;c=d or empty<br>
-			@param: {String} suffix A RFC3986 URL segment like: a=b or E=%20d (without ? or not starting with &amp; as they will be detected if need append ? or &amp;; variable values must be encoded using escape_url() RFC3986)<br>
+	@param: {String} url The base URL to use as prefix like: script.php or script.php?a=b&amp;c=d or empty<br>
+	@param: {String} suffix A RFC3986 URL segment like: a=b or E=%20d (without ? or not starting with &amp; as they will be detected if need append ? or &amp;; variable values must be encoded using escape_url() RFC3986)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Add URL Suffix (to a standard RFC3986 URL) as: script.php?a=b&amp;C=D&amp;e=%20d</div>
 	
 	
-</div><div class="doc-container" id="Method--create_slug">
+</div>
+<div class="doc-container" id="Method--create_slug">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>create_slug</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`lowercase` Parameter">lowercase</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`maxlen` Parameter">maxlen</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`lowercase` Parameter">lowercase</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`maxlen` Parameter">maxlen</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1543,18 +1666,19 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	
-			@param: {String} str The string to be processed<br>
-			@param: {Boolean} lowercase *OPTIONAL* If TRUE will return the slug with enforced lowercase characters ; DEFAULT is FALSE<br>
-			@param: {Integer} maxlen *OPTIONAL* If a positive value greater than zero is supplied here the slug max length will be constrained to the value<br>
+	@param: {String} str The string to be processed<br>
+	@param: {Boolean} lowercase *OPTIONAL* If TRUE will return the slug with enforced lowercase characters ; DEFAULT is FALSE<br>
+	@param: {Integer} maxlen *OPTIONAL* If a positive value greater than zero is supplied here the slug max length will be constrained to the value<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Creates a Slug (URL safe slug) from a string</div>
 	
 	
-</div><div class="doc-container" id="Method--create_htmid">
+</div>
+<div class="doc-container" id="Method--create_htmid">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>create_htmid</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1564,16 +1688,17 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	
-			@param: {String} str The string to be processed<br>
+	@param: {String} str The string to be processed<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Creates a compliant HTML-ID (HTML ID used for HTML elements) from a string</div>
 	
 	
-</div><div class="doc-container" id="Method--create_jsvar">
+</div>
+<div class="doc-container" id="Method--create_jsvar">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>create_jsvar</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1583,52 +1708,53 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	
-			@param: {String} str The string to be processed<br>
+	@param: {String} str The string to be processed<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Creates a compliant Js-Var (JavaScript Variable Name) from a string</div>
 	
 	
-</div><div class="doc-container" id="Method--renderMarkersTpl">
+</div>
+<div class="doc-container" id="Method--renderMarkersTpl">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>renderMarkersTpl</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`template` Parameter">template</span></b></span>, 
-			<i>{ArrayObj}</i>&nbsp;<span class="doc-param-name"><b><span title="`arrobj` Parameter">arrobj</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isEncoded` Parameter">isEncoded</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`revertSyntax` Parameter">revertSyntax</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`template` Parameter">template</span></b></span>, 
+	<i>{ArrayObj}</i>&nbsp;<span class="doc-param-name"><b><span title="`arrobj` Parameter">arrobj</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isEncoded` Parameter">isEncoded</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`revertSyntax` Parameter">revertSyntax</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: To be used together with the server-side Marker-TPL templating (ex; PHP), to avoid the server-side markers to be rendered ; ex: `&lbrack;###MARKER###&rbrack;` will need the template to be escape_url+escape_js ; for this purpose the 3rd param can be set to true: isEncoded = TRUE<br>
+			@hint: To be used together with the server-side Marker-TPL templating (ex; PHP), to avoid the server-side markers to be rendered ; ex: `&lbrack;&num;&num;&num;MARKER&num;&num;&num;&rbrack;` will need the template to be escape_url+escape_js ; for this purpose the 3rd param can be set to true: isEncoded = TRUE<br>
 	
 	
 			@return: {String} The processed string<br>
 	
 	
 	
-			@param: {String} template The string template with markers<br>
-			@param: {ArrayObj} arrobj The Object-Array with marker replacements as { 'MAR.KER_1' =&gt; 'Value 1', 'MARKER-2' =&gt; 'Value 2', ... }<br>
-			@param: {Boolean} isEncoded If TRUE will do a decoding over template string (apply if TPL is sent as encoded from server-side or directly in html page)<br>
-			@param: {Boolean} revertSyntax If TRUE will do a revertNosyntaxContentMarkersTpl() over template string (apply if TPLs is sent with syntax escaped)<br>
+	@param: {String} template The string template with markers<br>
+	@param: {ArrayObj} arrobj The Object-Array with marker replacements as { 'MAR.KER_1' =&gt; 'Value 1', 'MARKER-2' =&gt; 'Value 2', ... }<br>
+	@param: {Boolean} isEncoded If TRUE will do a decoding over template string (apply if TPL is sent as encoded from server-side or directly in html page)<br>
+	@param: {Boolean} revertSyntax If TRUE will do a revertNosyntaxContentMarkersTpl() over template string (apply if TPLs is sent with syntax escaped)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Render Simple Marker-TPL Template + Comments + Specials (only markers replacements with escaping or processing syntax and support for comments and special replacements: SPACE, TAB, R, N ; no support for IF / LOOP / INCLUDE syntax since the js regex is too simplistic and it can be implemented using real js code)<br>
 It is compatible just with the REPLACE MARKERS of Smart.Framework PHP server-side Marker-TPL Templating for substitutions on client-side, except the extended syntax as IF/LOOP/INCLUDE.</div>
 	
-			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> <span class="hljs-comment">// sample client side MarkersTPL rendering</span>
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-comment">// sample client side MarkersTPL rendering</span>
  <span class="hljs-comment">// HINTS on using |js escaping:</span>
- <span class="hljs-comment">// - never use a marker inside javascript backticks (`) ; ex: don't do this: const test = `&lbrack;###TEST|js###&rbrack;`; // it will raise js code compile errors if a string contains a backtick (`) ... this is because the backticks are not escaped by json escaping ...</span>
- <span class="hljs-comment">// - when using TPL markers inside javascript single quotes (') or double quotes (&quot;) just use the escaping: |js ; ex: const test = '&lbrack;###TEST|js###&rbrack;'; const test2 = &quot;&lbrack;###TEST|js###&rbrack;&quot;;</span>
- <span class="hljs-comment">// - if the context of javascript is using escaped single quotes ('\'\'') or escaped double quotes (&quot;\&quot;\&quot;&quot;), if possible use (&quot;''&quot;) or ('&quot;&quot;') as (&quot;'&lbrack;###TEST|js###&rbrack;'&quot;) or ('&quot;&lbrack;###TEST|js###&rbrack;&quot;') is OK ; but ('\'&lbrack;###TEST|js###&rbrack;\'') or (&quot;\&quot;&lbrack;###TEST|js###&rbrack;\&quot;&quot;) IS NOT OK because the js code will compile but when the js will evaluate the context will raise an error as the strings will terminate premature if they contain a single or double quote ; also using backticks like (`'&lbrack;###TEST|js###&rbrack;'`) or (`&quot;&lbrack;###TEST|js###&rbrack;&quot;`) is wrong, it is explained above ...</span>
- <span class="hljs-comment">// - if the javascript context is using escaped single quotes, have to use: ('\'&lbrack;###TEST|js|js###&rbrack;\''), which is OK</span>
- <span class="hljs-comment">// - if the javascript context is using escaped double quotes, have to use: (&quot;\&quot;&lbrack;###TEST|js|js###&rbrack;&quot;') + &quot;\&quot;&quot;), which is OK</span>
+ <span class="hljs-comment">// - never use a marker inside javascript backticks (`) ; ex: don't do this: const test = `&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;`; // it will raise js code compile errors if a string contains a backtick (`) ... this is because the backticks are not escaped by json escaping ...</span>
+ <span class="hljs-comment">// - when using TPL markers inside javascript single quotes (') or double quotes (&quot;) just use the escaping: |js ; ex: const test = '&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;'; const test2 = &quot;&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;&quot;;</span>
+ <span class="hljs-comment">// - if the context of javascript is using escaped single quotes ('\'\'') or escaped double quotes (&quot;\&quot;\&quot;&quot;), if possible use (&quot;''&quot;) or ('&quot;&quot;') as (&quot;'&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;'&quot;) or ('&quot;&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;&quot;') is OK ; but ('\'&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;\'') or (&quot;\&quot;&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;\&quot;&quot;) IS NOT OK because the js code will compile but when the js will evaluate the context will raise an error as the strings will terminate premature if they contain a single or double quote ; also using backticks like (`'&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;'`) or (`&quot;&lbrack;&num;&num;&num;TEST|js&num;&num;&num;&rbrack;&quot;`) is wrong, it is explained above ...</span>
+ <span class="hljs-comment">// - if the javascript context is using escaped single quotes, have to use: ('\'&lbrack;&num;&num;&num;TEST|js|js&num;&num;&num;&rbrack;\''), which is OK</span>
+ <span class="hljs-comment">// - if the javascript context is using escaped double quotes, have to use: (&quot;\&quot;&lbrack;&num;&num;&num;TEST|js|js&num;&num;&num;&rbrack;&quot;') + &quot;\&quot;&quot;), which is OK</span>
  <span class="hljs-comment">// see below a real life situation when have to use this:</span>
- <span class="hljs-keyword">const</span> question = <span class="hljs-string">'&lbrack;###QUESTION|js###&rbrack;'</span>; <span class="hljs-comment">// OK</span>
+ <span class="hljs-keyword">const</span> question = <span class="hljs-string">'&lbrack;&num;&num;&num;QUESTION|js&num;&num;&num;&rbrack;'</span>; <span class="hljs-comment">// OK</span>
  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Question:'</span>, question);
- <span class="hljs-keyword">const</span> tpl = <span class="hljs-string">'&lt;div onclick=&quot;let Question=\'&lbrack;###QUESTION|js|js###&rbrack;\'; alert(Question);&quot;&gt;&lbrack;###TITLE|html|js###&rbrack;&lt;/div&gt;'</span>; <span class="hljs-comment">// the TPL ; OK because is using double |js escaping with single quotes escaping to avoid js errors when js is evaluating the string ...</span>
- <span class="hljs-keyword">const</span> tpl2 = <span class="hljs-string">'&lt;div onclick=&quot;alert(question);&quot;&gt;&lbrack;###TITLE|html|js###&rbrack;&lt;/div&gt;'</span>; <span class="hljs-comment">// alternate TPL ; OK, will use the global variable / constant question so making like this avoid adding escaped single or double quotes</span>
- <span class="hljs-comment">// it is a common situation when building html syntax with javascript to have combined single quotes (javascript) with double quotes (html), so adding in a html attribute another javascript have no other solution than using again single quotes but escaped like \' and if a marker is placed, must add like: let html = '&lt;button onClick=&quot;let test = \'&lbrack;###TEST|js|js###&rbrack;\';&quot;&gt;Test&lt;/button&gt;'; // notice the double escaping</span>
+ <span class="hljs-keyword">const</span> tpl = <span class="hljs-string">'&lt;div onclick=&quot;let Question=\'&lbrack;&num;&num;&num;QUESTION|js|js&num;&num;&num;&rbrack;\'; alert(Question);&quot;&gt;&lbrack;&num;&num;&num;TITLE|html|js&num;&num;&num;&rbrack;&lt;/div&gt;'</span>; <span class="hljs-comment">// the TPL ; OK because is using double |js escaping with single quotes escaping to avoid js errors when js is evaluating the string ...</span>
+ <span class="hljs-keyword">const</span> tpl2 = <span class="hljs-string">'&lt;div onclick=&quot;alert(question);&quot;&gt;&lbrack;&num;&num;&num;TITLE|html|js&num;&num;&num;&rbrack;&lt;/div&gt;'</span>; <span class="hljs-comment">// alternate TPL ; OK, will use the global variable / constant question so making like this avoid adding escaped single or double quotes</span>
+ <span class="hljs-comment">// it is a common situation when building html syntax with javascript to have combined single quotes (javascript) with double quotes (html), so adding in a html attribute another javascript have no other solution than using again single quotes but escaped like \' and if a marker is placed, must add like: let html = '&lt;button onClick=&quot;let test = \'&lbrack;&num;&num;&num;TEST|js|js&num;&num;&num;&rbrack;\';&quot;&gt;Test&lt;/button&gt;'; // notice the double escaping</span>
  <span class="hljs-keyword">let</span> html = smartJ$Utils.renderMarkersTpl( <span class="hljs-comment">// render TPL</span>
  		tpl,
  		{
@@ -1638,6 +1764,7 @@ It is compatible just with the REPLACE MARKERS of Smart.Framework PHP server-sid
  jQuery(<span class="hljs-string">'body'</span>).append(html); <span class="hljs-comment">// display TPL</span></code></pre>
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -1684,91 +1811,99 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--evalJsFxCode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;evalJsFxCode()</option>
+						<option value="Method--evalJsFxCode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;evalJsFxCode()</option>
 			
-									<option value="Method--isFiniteNumber"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;isFiniteNumber()</option>
+						<option value="Method--isFiniteNumber"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;isFiniteNumber()</option>
 			
-									<option value="Method--stringPureVal"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringPureVal()</option>
+						<option value="Method--stringPureVal"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringPureVal()</option>
 			
-									<option value="Method--stringTrim"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringTrim()</option>
+						<option value="Method--stringTrim"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringTrim()</option>
 			
-									<option value="Method--stringUcFirst"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringUcFirst()</option>
+						<option value="Method--stringLeftTrim"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringLeftTrim()</option>
 			
-									<option value="Method--stringUcWords"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringUcWords()</option>
+						<option value="Method--stringRightTrim"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringRightTrim()</option>
 			
-									<option value="Method--stringReplaceAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringReplaceAll()</option>
+						<option value="Method--stringUcFirst"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringUcFirst()</option>
 			
-									<option value="Method--stringIReplaceAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringIReplaceAll()</option>
+						<option value="Method--stringUcWords"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringUcWords()</option>
 			
-									<option value="Method--stringRegexMatchAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringRegexMatchAll()</option>
+						<option value="Method--stringReplaceAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringReplaceAll()</option>
 			
-									<option value="Method--stringContains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringContains()</option>
+						<option value="Method--stringIReplaceAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringIReplaceAll()</option>
 			
-									<option value="Method--stringIContains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringIContains()</option>
+						<option value="Method--stringRegexMatchAll"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stringRegexMatchAll()</option>
 			
-									<option value="Method--stringStartsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringStartsWith()</option>
+						<option value="Method--stringContains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringContains()</option>
 			
-									<option value="Method--stringIStartsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringIStartsWith()</option>
+						<option value="Method--stringIContains"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringIContains()</option>
 			
-									<option value="Method--preg_quote"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;preg_quote()</option>
+						<option value="Method--stringStartsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringStartsWith()</option>
 			
-									<option value="Method--stringSplitbyEqual"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyEqual()</option>
+						<option value="Method--stringIStartsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringIStartsWith()</option>
 			
-									<option value="Method--stringSplitbyColon"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyColon()</option>
+						<option value="Method--stringEndsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringEndsWith()</option>
 			
-									<option value="Method--stringSplitbySemicolon"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbySemicolon()</option>
+						<option value="Method--stringIEndsWith"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringIEndsWith()</option>
 			
-									<option value="Method--stringSplitbyComma"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyComma()</option>
+						<option value="Method--preg_quote"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;preg_quote()</option>
 			
-									<option value="Method--arrayGetFirst"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;arrayGetFirst()</option>
+						<option value="Method--stringSplitbyEqual"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyEqual()</option>
 			
-									<option value="Method--arrayGetLast"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;arrayGetLast()</option>
+						<option value="Method--stringSplitbyColon"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyColon()</option>
 			
-									<option value="Method--format_number_float"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_float()</option>
+						<option value="Method--stringSplitbySemicolon"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbySemicolon()</option>
 			
-									<option value="Method--format_number_int"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_int()</option>
+						<option value="Method--stringSplitbyComma"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stringSplitbyComma()</option>
 			
-									<option value="Method--format_number_dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_dec()</option>
+						<option value="Method--arrayGetFirst"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;arrayGetFirst()</option>
 			
-									<option value="Method--stripslashes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stripslashes()</option>
+						<option value="Method--arrayGetLast"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;arrayGetLast()</option>
 			
-									<option value="Method--addcslashes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addcslashes()</option>
+						<option value="Method--format_number_float"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_float()</option>
 			
-									<option value="Method--escape_css"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_css()</option>
+						<option value="Method--format_number_int"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_int()</option>
 			
-									<option value="Method--escape_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_html()</option>
+						<option value="Method--format_number_dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_dec()</option>
 			
-									<option value="Method--escape_js"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_js()</option>
+						<option value="Method--stripslashes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stripslashes()</option>
 			
-									<option value="Method--escape_url"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_url()</option>
+						<option value="Method--addcslashes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addcslashes()</option>
 			
-									<option value="Method--nl2br"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;nl2br()</option>
+						<option value="Method--escape_css"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_css()</option>
 			
-									<option value="Method--utf8_encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8_encode()</option>
+						<option value="Method--escape_html"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_html()</option>
 			
-									<option value="Method--utf8_decode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8_decode()</option>
+						<option value="Method--escape_js"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_js()</option>
 			
-									<option value="Method--deaccent_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;deaccent_str()</option>
+						<option value="Method--escape_url"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;escape_url()</option>
 			
-									<option value="Method--bin2hex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bin2hex()</option>
+						<option value="Method--nl2br"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;nl2br()</option>
 			
-									<option value="Method--hex2bin"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hex2bin()</option>
+						<option value="Method--utf8_encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8_encode()</option>
 			
-									<option value="Method--uuid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;uuid()</option>
+						<option value="Method--utf8_decode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8_decode()</option>
 			
-									<option value="Method--textSort"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;textSort()</option>
+						<option value="Method--deaccent_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;deaccent_str()</option>
 			
-									<option value="Method--numericSort"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;numericSort()</option>
+						<option value="Method--bin2hex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bin2hex()</option>
 			
-									<option value="Method--url_add_suffix"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;url_add_suffix()</option>
+						<option value="Method--hex2bin"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hex2bin()</option>
 			
-									<option value="Method--create_slug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_slug()</option>
+						<option value="Method--uuid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;uuid()</option>
 			
-									<option value="Method--create_htmid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_htmid()</option>
+						<option value="Method--textSort"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;textSort()</option>
 			
-									<option value="Method--create_jsvar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_jsvar()</option>
+						<option value="Method--numericSort"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;numericSort()</option>
 			
-									<option value="Method--renderMarkersTpl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderMarkersTpl()</option>
+						<option value="Method--url_add_suffix"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;url_add_suffix()</option>
+			
+						<option value="Method--create_slug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_slug()</option>
+			
+						<option value="Method--create_htmid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_htmid()</option>
+			
+						<option value="Method--create_jsvar"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;create_jsvar()</option>
+			
+						<option value="Method--renderMarkersTpl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderMarkersTpl()</option>
 			
 			
 		</optgroup>
@@ -1787,13 +1922,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:47 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:50:38 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

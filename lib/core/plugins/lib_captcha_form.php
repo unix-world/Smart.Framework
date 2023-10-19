@@ -19,9 +19,10 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //	* SmartTextTranslations::
 // REQUIRED CSS:
 //	* captcha.css
+//	* sf-icons.css
 // REQUIRED JS:
 //	* jquery.js
-//	* smart-framework.pak.js
+//	* smart-framework.pak.js + [growl, alertable]
 // REQUIRED TEMPLATES:
 //	* captcha-form.inc.htm
 //======================================================
@@ -58,8 +59,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @hints 		To render captcha, SmartCaptcha::drawCaptchaForm() and a captcha plugin is required. To verify, use SmartCaptcha::verifyCaptcha() ; SmartCaptcha::clearCaptcha() is optional to be call after verify, depending how SmartCaptcha::verifyCaptcha() is called
  *
  * @access 		PUBLIC
- * @depends 	classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js ; css: captcha.css
- * @version 	v.20231018
+ * @depends 	classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js
+ * @version 	v.20231020
  * @package 	Application:Plugins:Captcha
  *
  */
@@ -133,7 +134,7 @@ final class SmartCaptcha {
 	 * @param $y_use_absolute_url 	BOOL 	If TRUE will use full URL prefix to load CSS and Javascripts ; Default is FALSE
 	 * @return 						STRING 	The partial captcha HTML to include in a form
 	 */
-	public static function drawCaptchaForm(?string $y_form_name, ?string $y_captcha_image_url='', ?string $y_mode='cookie', bool $y_use_absolute_url=false) : string {
+	public static function drawCaptchaForm(?string $y_form_name, ?string $y_captcha_image_url='', ?string $y_mode='cookie', bool $y_use_absolute_url=false, bool $y_include_js_requirements=false) : string {
 		//--
 		$y_form_name = (string) trim((string)$y_form_name);
 		if(self::validate_form_name($y_form_name) !== true) {
@@ -232,39 +233,48 @@ final class SmartCaptcha {
 		$tpl = (string) SmartMarkersTemplating::render_file_template(
 			(string) $tpl,
 			[
-				'BASE-URL' 					=> (string) $the_abs_url,
-				'RELEASE-HASH' 				=> (string) SmartUtils::get_app_release_hash(),
-				'RELEASE-UUID' 				=> (string) $uuid,
-				'RELEASE-DHKX' 				=> (string) $dhkx,
-				'RELEASE-TIME' 				=> (int)    $release_time,
-				'CAPTCHA-FORM' 				=> (string) $y_form_name,
-				'CAPTCHA-RAND' 				=> (string) '0'.Smart::random_number(10,99), // must start with zero to avoid toFixed(0) roundUp
-				'CAPTCHA-IQ-URL' 			=> (string) $captcha_qurl,
-				'CAPTCHA-PASSED' 			=> (string) $translator_core_captcha->text('passed'),
-				'CAPTCHA-QR-HELPER' 		=> (string) $translator_core_captcha->text('helper'),
-				'CAPTCHA-TXT-IMG' 			=> (string) $translator_core_captcha->text('image'),
-				'CAPTCHA-TXT-CONFIRM' 		=> (string) $translator_core_captcha->text('confirm'),
-				'CAPTCHA-IMG-TITLE' 		=> (string) $translator_core_captcha->text('click'),
-				'CAPTCHA-TXT-VERIFY' 		=> (string) $translator_core_captcha->text('verify'),
-				'CAPTCHA-TXT-ENTER' 		=> (string) $translator_core_captcha->text('enter'),
-				'CAPTCHA-TXT-EASY' 			=> (string) $translator_core_captcha->text('easy'),
-				'CAPTCHA-TXT-TICK' 			=> (string) $translator_core_captcha->text('tick'),
-				'CAPTCHA-TXT-ICONS' 		=> (string) $translator_core_captcha->text('icons'),
-				'CAPTCHA-TXT-ICONS-DONE' 	=> (string) $translator_core_captcha->text('iconsdone'),
-				'CAPTCHA-TXT-MOTION' 		=> (string) $translator_core_captcha->text('motion'),
-				'CAPTCHA-TXT-MOTION-ERR' 	=> (string) $translator_core_captcha->text('motionerr'),
-				'CAPTCHA-TXT-MOTION-WARN' 	=> (string) $translator_core_captcha->text('motionwarn'),
-				'CAPTCHA-TXT-MOTION-DONE' 	=> (string) $translator_core_captcha->text('motiondone'),
-				'CAPTCHA-TXT-QRCODE' 		=> (string) $translator_core_captcha->text('qrcode'),
-				'CAPTCHA-TXT-ACCESSIBILITY' => (string) $translator_core_captcha->text('accessibility'),
-				'CAPTCHA-JS-EXPORTS' 		=> (string) $js_exports,
-				'CAPTCHA-IM-URL' 			=> (string) $captcha_url,
-				'CAPTCHA-CHKSUM' 			=> (string) self::hash_sh512b64s((string)'#'.$y_form_name.'#'.$uuid.'#'.$captcha_url.'#'.$captcha_qurl.'#'),
-				'CAPTCHA-INPUT-STYLE' 		=> (string) $input_style,
-				'CAPTCHA-JS-FIELD-BLUR' 	=> (string) SmartUtils::crypto_blowfish_encrypt('((fld) => { '.$js_exports.' if(typeof(jQuery) == \'undefined\') { console.warn(\'Captcha Field: jQuery N/A\'); return; } if(typeof(fld) == \'undefined\') { console.warn(\'Invalid Captcha Input Field\'); return; } '.'try { let kZ = u$.stringPureVal(fld.data(\'id\')).toUpperCase(); let fldVal = c$.encrypt('.'fld.val().toUpperCase(),u$.stringPureVal(kZ)); '.$js_solver.' } catch(err) { console.error(\'Captcha Input ERROR\'); }'.' if(fld.val()) { fld.val(\'*******\'); } })(fld);', (string)strtolower('Object'.'.'.'ID').'_'.((string)(int)$release_time).'==\''.bin2hex((string)$dhks).'\''),
-				'CAPTCHA-UA-BC' 			=> (string) SmartUtils::get_os_browser_ip('bc'), // browser class
-				'CAPTCHA-UA-BW' 			=> (string) SmartUtils::get_os_browser_ip('bw'), // browser type
-				'CAPTCHA-UA-MOBILE' 		=> (string) SmartUtils::get_os_browser_ip('mobile'), // browser is mobile
+				//--
+				'ALL-REQUIREMENTS' 				=> (string) (!!$y_include_js_requirements ? 'yes' : 'no'),
+				'LANG' 							=> (string) SmartTextTranslations::getLanguage(),
+				'CHARSET' 						=> (string) SmartUtils::get_encoding_charset(),
+				'CLIENT-UID-COOKIE-LIFETIME' 	=> (int)    SmartUtils::cookie_default_expire(),
+				'CLIENT-UID-COOKIE-DOMAIN' 		=> (string) SmartUtils::cookie_default_domain(),
+				'CLIENT-UID-COOKIE-SAMESITE' 	=> (string) SmartUtils::cookie_default_samesite_policy(),
+				//--
+				'BASE-URL' 						=> (string) $the_abs_url,
+				'RELEASE-HASH' 					=> (string) SmartUtils::get_app_release_hash(),
+				'RELEASE-UUID' 					=> (string) $uuid,
+				'RELEASE-DHKX' 					=> (string) $dhkx,
+				'RELEASE-TIME' 					=> (int)    $release_time,
+				'CAPTCHA-FORM' 					=> (string) $y_form_name,
+				'CAPTCHA-RAND' 					=> (string) '0'.Smart::random_number(10,99), // must start with zero to avoid toFixed(0) roundUp
+				'CAPTCHA-IQ-URL' 				=> (string) $captcha_qurl,
+				'CAPTCHA-PASSED' 				=> (string) $translator_core_captcha->text('passed'),
+				'CAPTCHA-QR-HELPER' 			=> (string) $translator_core_captcha->text('helper'),
+				'CAPTCHA-TXT-IMG' 				=> (string) $translator_core_captcha->text('image'),
+				'CAPTCHA-TXT-CONFIRM' 			=> (string) $translator_core_captcha->text('confirm'),
+				'CAPTCHA-IMG-TITLE' 			=> (string) $translator_core_captcha->text('click'),
+				'CAPTCHA-TXT-VERIFY' 			=> (string) $translator_core_captcha->text('verify'),
+				'CAPTCHA-TXT-ENTER' 			=> (string) $translator_core_captcha->text('enter'),
+				'CAPTCHA-TXT-EASY' 				=> (string) $translator_core_captcha->text('easy'),
+				'CAPTCHA-TXT-TICK' 				=> (string) $translator_core_captcha->text('tick'),
+				'CAPTCHA-TXT-ICONS' 			=> (string) $translator_core_captcha->text('icons'),
+				'CAPTCHA-TXT-ICONS-DONE' 		=> (string) $translator_core_captcha->text('iconsdone'),
+				'CAPTCHA-TXT-MOTION' 			=> (string) $translator_core_captcha->text('motion'),
+				'CAPTCHA-TXT-MOTION-ERR' 		=> (string) $translator_core_captcha->text('motionerr'),
+				'CAPTCHA-TXT-MOTION-WARN' 		=> (string) $translator_core_captcha->text('motionwarn'),
+				'CAPTCHA-TXT-MOTION-DONE' 		=> (string) $translator_core_captcha->text('motiondone'),
+				'CAPTCHA-TXT-QRCODE' 			=> (string) $translator_core_captcha->text('qrcode'),
+				'CAPTCHA-TXT-ACCESSIBILITY' 	=> (string) $translator_core_captcha->text('accessibility'),
+				'CAPTCHA-JS-EXPORTS' 			=> (string) $js_exports,
+				'CAPTCHA-IM-URL' 				=> (string) $captcha_url,
+				'CAPTCHA-CHKSUM' 				=> (string) self::hash_sh512b64s((string)'#'.$y_form_name.'#'.$uuid.'#'.$captcha_url.'#'.$captcha_qurl.'#'),
+				'CAPTCHA-INPUT-STYLE' 			=> (string) $input_style,
+				'CAPTCHA-JS-FIELD-BLUR' 		=> (string) SmartUtils::crypto_blowfish_encrypt('((fld) => { '.$js_exports.' if(typeof(jQuery) == \'undefined\') { console.warn(\'Captcha Field: jQuery N/A\'); return; } if(typeof(fld) == \'undefined\') { console.warn(\'Invalid Captcha Input Field\'); return; } '.'try { let kZ = u$.stringPureVal(fld.data(\'id\')).toUpperCase(); let fldVal = c$.encrypt('.'fld.val().toUpperCase(),u$.stringPureVal(kZ)); '.$js_solver.' } catch(err) { console.error(\'Captcha Input ERROR\'); }'.' if(fld.val()) { fld.val(\'*******\'); } })(fld);', (string)strtolower('Object'.'.'.'ID').'_'.((string)(int)$release_time).'==\''.bin2hex((string)$dhks).'\''),
+				'CAPTCHA-UA-BC' 				=> (string) SmartUtils::get_os_browser_ip('bc'), // browser class
+				'CAPTCHA-UA-BW' 				=> (string) SmartUtils::get_os_browser_ip('bw'), // browser type
+				'CAPTCHA-UA-MOBILE' 			=> (string) SmartUtils::get_os_browser_ip('mobile'), // browser is mobile
+				//--
 			],
 			'yes' // export to cache
 		);

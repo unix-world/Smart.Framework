@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartDetectImages        final class \ SmartDetectImages    {   } ::    Class: SmartDetectImages - Easy Detect Images (SVG / PNG / GIF / JPG / WEBP)">
-<meta name="keywords" content="smartdetectimages, final, class, easy, detect, images, svg, png, gif, jpg, webp, language, php, located, at, lib core plugins lib detect img.php, package, plugins:image, namespace, name, version, v.20210605, depends, classes, smart, usage, static, object, class::method, this, provides, only, methods, public, function, guess image extension by img content, pict, use gd, false, guess image extension by url head, y headers, properties, constants, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartDetectImages final class \ SmartDetectImages { } :: Class: SmartDetectImages - Easy Detect Images (SVG / PNG / GIF / JPG / WEBP) Language: PHP">
+<meta name="keywords" content="smartdetectimages, final, class, easy, detect, images, svg, png, gif, jpg, webp, language, php, located, at, lib framework plugins lib detect img php, package, plugins image, namespace, name, version, v, depends, classes, smart, smartfilesysutils, usage, static, object, class method, this, provides, only, methods, public, function, guess image extension by img content, pict, use gd, false, guess image extension by url head, y headers, properties, constants, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartDetectImages">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartDetectImages</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -701,13 +701,13 @@ select#select-summary {
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_detect_img.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_detect_img.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:Image</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartDetectImages</span></li>
 		
-		<li><b>Version:</b> v.20210605</li>
-		<li><b>Depends:</b> classes:  Smart</li>
+		<li><b>Version:</b> v.20221220</li>
+		<li><b>Depends:</b> classes:  Smart, SmartFileSysUtils</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -722,20 +722,8 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--guess_image_extension_by_img_content">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>guess_image_extension_by_img_content</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$pict` Parameter is REQUIRED">$pict</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$use_gd` Parameter is OPTIONAL, with the Default Value: false">$use_gd</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--guess_image_extension_by_url_head">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>guess_image_extension_by_url_head</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$y_headers` Parameter is REQUIRED">$y_headers</span></b></span>
+		<span class="doc-param-name"><b><span title="`$pict` Parameter is REQUIRED">$pict</span></b></span>, 
+	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$use_gd` Parameter is OPTIONAL, with the Default Value: false">$use_gd</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -746,6 +734,20 @@ select#select-summary {
 	
 	
 </div>
+<div class="doc-container" id="Method--guess_image_extension_by_url_head">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>guess_image_extension_by_url_head</b></span>&nbsp;(
+		<span class="doc-param-name"><b><span title="`$y_headers` Parameter is REQUIRED">$y_headers</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -792,10 +794,10 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--guess_image_extension_by_img_content"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;guess_image_extension_by_img_content()</option>
+						<option value="Method--guess_image_extension_by_img_content"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;guess_image_extension_by_img_content()</option>
 			
 			
-									<option value="Method--guess_image_extension_by_url_head"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;guess_image_extension_by_url_head()</option>
+						<option value="Method--guess_image_extension_by_url_head"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;guess_image_extension_by_url_head()</option>
 			
 			
 			
@@ -815,13 +817,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:42 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:29 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 <?php
 // Smart.Framework / Abstract Middleware
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -46,7 +46,7 @@ define('SMART_APP_TEMPLATES_DIR', 'etc/templates/'); // App Templates Dir
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20231004
+ * @version		20231020
  * @package 	Application
  *
  */
@@ -65,7 +65,7 @@ abstract class SmartAbstractAppMiddleware {
 
 
 	//=====
-	public static function Run() {
+	public static function Run() { // return mixed: true (main request) ; false (child request) ; null/void (other cases)
 		// THIS HAVE TO IMPLEMENT THE MIDDLEWARE SERVICE HANDLER (MANDATORY)
 		// return mixed: true (main request) ; false (child request) ; null/void (other cases)
 	} //END FUNCTION
@@ -73,7 +73,7 @@ abstract class SmartAbstractAppMiddleware {
 
 
 	//======================================================================
-	final public static function SetRawHeaders($headers) {
+	final public static function SetRawHeaders($headers) : bool {
 		//--
 		if(!is_array($headers)) {
 			$headers = array();
@@ -94,14 +94,18 @@ abstract class SmartAbstractAppMiddleware {
 			//--
 			Smart::log_warning('WARNING: AppMiddleware :: Headers Already Sent before RawHeaders');
 			//--
+			return false;
+			//--
 		} //end if else
+		//--
+		return true;
 		//--
 	} //END FUNCTION
 	//======================================================================
 
 
 	//======================================================================
-	final public static function DetectInputLanguage() {
+	final public static function DetectInputLanguage() : bool {
 		//--
 		if(self::$LANGUAGE_DETECTED !== null) {
 			return (bool) self::$LANGUAGE_DETECTED;
@@ -165,7 +169,7 @@ abstract class SmartAbstractAppMiddleware {
 	// when used, the execution script must die('') after to avoid injections of extra content ...
 	// the nocache headers must be set before using this
 	// it returns the downloaded file path on success or empty string on error.
-	final public static function DownloadsHandler($encrypted_download_pack, $controller_key) {
+	final public static function DownloadsHandler($encrypted_download_pack, $controller_key) : string {
 		//--
 		$encrypted_download_pack = (string) $encrypted_download_pack;
 		$controller_key = (string) $controller_key;
@@ -346,7 +350,7 @@ abstract class SmartAbstractAppMiddleware {
 
 
 	//======================================================================
-	final public static function ServiceStatus($the_midmark) {
+	final public static function ServiceStatus($the_midmark) : string {
 		//--
 		$show_versions = 'no';
 		if(SmartEnvironment::isAdminArea() === true) {
@@ -366,14 +370,14 @@ abstract class SmartAbstractAppMiddleware {
 			$html_status_powered_info = (string) SmartComponents::app_powered_info((string)$show_versions);
 		} //end if else
 		//--
-		return (string) SmartComponents::http_status_message('Smart.Framework :: '.Smart::escape_html($the_midmark), 'Service Available', '<script>setTimeout(function(){ self.location = self.location; }, 60000);</script><img height="32" src="lib/framework/img/loading-bars.svg"><div><h2 style="display:inline;">'.date('Y-m-d H:i:s O').' // '.Smart::escape_html((string)$txt_area).' Area</h2></div><br>'.$html_status_powered_info.'<br>');
+		return (string) SmartComponents::http_status_message('Smart.Framework :: '.Smart::escape_html($the_midmark), 'Service Available', '<script>setTimeout(function(){ self.location = self.location; }, 60000);</script><img height="32" src="lib/framework/img/loading-bars.svg"><div><h2 style="display:inline;">'.date('Y-m-d H:i:s O').' // '.Smart::escape_html((string)$txt_area).' Area</h2></div><br>'.$html_status_powered_info.'<br>', '202');
 		//--
 	} //END FUNCTION
 	//======================================================================
 
 
 	//======================================================================
-	final public static function DebugInfoCookieSet($area) {
+	final public static function DebugInfoCookieSet($area) : bool {
 		//--
 		if(!SmartEnvironment::ifDebug()) {
 			return false;
@@ -411,7 +415,7 @@ abstract class SmartAbstractAppMiddleware {
 
 
 	//======================================================================
-	final public static function DebugInfoGet($area) {
+	final public static function DebugInfoGet($area) : ?string {
 		//--
 		if(!SmartEnvironment::ifDebug()) {
 			return '';
@@ -430,7 +434,7 @@ abstract class SmartAbstractAppMiddleware {
 				$cookie_name = (string) self::DEBUG_COOKIE_TSK;
 				break;
 			default:
-				return false;
+				return null;
 		} //end switch
 		if((string)$cookie_name == '') {
 			return '';
@@ -448,7 +452,7 @@ abstract class SmartAbstractAppMiddleware {
 
 
 	//======================================================================
-	final public static function DebugInfoSet($area, $is_main) {
+	final public static function DebugInfoSet($area, $is_main) : bool {
 		//--
 		if(!SmartEnvironment::ifDebug()) {
 			return false;

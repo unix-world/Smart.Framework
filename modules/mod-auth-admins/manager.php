@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20231018
+	// v.20231020
 
 	// TODO:
 	// 	* Edit: support to bind to a specific IP address list, for extra security

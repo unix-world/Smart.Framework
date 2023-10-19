@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartModExtLib\AuthAdmins\AuthAdminsHandler        final class \SmartModExtLib\AuthAdmins\ AuthAdminsHandler    {   } ::    Multi-Account Auth Admins">
-<meta name="keywords" content="smartmodextlib authadmins authadminshandler, final, class, smartmodextlib authadmins, authadminshandler, multi-account, auth, admins, handler, this, provide, a, complex, authentication, for, admin, area, admin.php task.php, using, multi-accounts, system, with, sqlite, db, required, constants, app auth admin username, app auth admin password, app auth privileges, must, be, set, in, config-admin.php, configuration, configs  app-auth adm-namespaces, manager, admin.php page auth-admins.manager.stml, language, php, located, at, modules mod-auth-admins libs authadminshandler.php, package, development:modules:authadmins, namespace, name, version, v.20210830, methods, public, static, function, authenticate, bool, enforce https, false, string, tpl path, tpl file, properties, documentation, index, definition, list, generated, on">
-<meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
+<meta name="description" content="\SmartEnvironment final class \ SmartEnvironment { } :: Class: Smart Environment - provides the methods for the Smart.Framework environment. Language: PHP">
+<meta name="keywords" content="smartenvironment, final, class, smart, environment, provides, the, methods, for, smart framework, language, php, located, at, lib framework lib security php, package, core, namespace, name, version, v, depends, optional constants, smart framework debug mode, smart framework internal debug, smart framework env, smart framework admin area, smart framework runtime mode, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, and, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class method, only, public, function, isadminarea, boolean, return, admin, area, true, else, false, test, service, services, running, admin php, task php, index php, istaskarea, task, implies, also, as, well, an, with, some, unrestricted, features, must, restricted">
+<meta name="summary" content="Smart.Framework : PHP Documentation: \SmartEnvironment">
 <link rel="icon" href="data:,">
-<title>PHP Documentation for: \SmartModExtLib\AuthAdmins\AuthAdminsHandler</title>
+<title>PHP Documentation for: \SmartEnvironment</title>
 <!-- CSS and Fonts -->
 <!-- skip fonts -->
 <style type="text/css">
@@ -456,16 +456,19 @@ nav.ux-navbar li > a:only-child::after {
 						&#9776;
 			
 		</span>
-		<span style="margin-left:10px;">Smart.Framework.Modules : PHP Documentation</span>
+		<span style="margin-left:10px;">Smart.Framework : PHP Documentation</span>
 	</div>
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
+		<ul class="menu">
+		<li><a href="index.html#Package--Core-" title="return to Index">return to Index</a></li>
+	</ul>
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -684,8 +687,8 @@ select#select-summary {
 
 </style>
 <!-- Headings -->
-<h1 title="PHP class: `\SmartModExtLib\AuthAdmins\AuthAdminsHandler` @ PHP Namespace: `\SmartModExtLib\AuthAdmins\`" id="Class--Summary-">
-	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\SmartModExtLib\AuthAdmins\</span><span class="doc-name">AuthAdminsHandler</span><br>
+<h1 title="PHP class: `\SmartEnvironment` @ PHP Namespace: `\`" id="Class--Summary-">
+	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\</span><span class="doc-name">SmartEnvironment</span><br>
 	
 	
 	{
@@ -693,23 +696,20 @@ select#select-summary {
 	}&nbsp;::
 </h1>
 <!-- Description -->
-<div class="doc-comments">Multi-Account Auth Admins Handler<br>
-This class provide a complex authentication for admin area (admin.php|task.php) using multi-accounts system with SQLite DB<br>
-Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)<br>
-Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' =&gt; 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)</div><br>
+<div class="doc-comments">Class: Smart Environment - provides the methods for the Smart.Framework environment.</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> modules/mod-auth-admins/libs/AuthAdminsHandler.php</span></li>
-		<li><span class="doc-package"><b>Package:</b> development:modules:AuthAdmins</span></li>
-		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\AuthAdmins\</span></li>
-		<li><span class="doc-name"><b>Class Name:</b> AuthAdminsHandler</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/lib_security.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> @Core</span></li>
+		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> SmartEnvironment</span></li>
 		
-		<li><b>Version:</b> v.20210830</li>
-		
-		
-		
+		<li><b>Version:</b> v.20221224</li>
+		<li><b>Depends:</b> optional-constants:  SMART_FRAMEWORK_DEBUG_MODE, SMART_FRAMEWORK_INTERNAL_DEBUG, SMART_FRAMEWORK_ENV, SMART_FRAMEWORK_ADMIN_AREA, SMART_FRAMEWORK_RUNTIME_MODE</li>
+		<li><b>Hints:</b> It  is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.</li>
+		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
 		
 	</ul>
@@ -720,27 +720,82 @@ Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager'
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<div class="doc-container" id="Method--Authenticate">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>Authenticate</b></span>&nbsp;(
-				<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$enforce_https` Parameter is OPTIONAL, with the Default Value: false">$enforce_https</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$tpl_path` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$tpl_path</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$tpl_file` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$tpl_file</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+<div class="doc-container" id="Method--isAdminArea">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAdminArea</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+			<div class="doc-method-ret-params">@return: {BOOLEAN} if is ADMIN area will return TRUE else will return FALSE</div>
 	
-	
-	
+			<div class="doc-method-comments">Test if Admin (service) Area<br>
+For services running over admin.php / task.php will return TRUE ; for services running over index.php will return FALSE</div>
 	
 	
 	
 </div>
+<div class="doc-container" id="Method--isTaskArea">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isTaskArea</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} if is TASK area will return TRUE else will return FALSE</div>
+	
+			<div class="doc-method-comments">Test if Task (service) Area (implies also to be isAdminArea() as well)<br>
+Task area is an Admin area with some unrestricted features ; it must be restricted by IP to avoid security issues ; it is designed to be used mostly in development but can be used in production by restricting the access to this area using the init setting: SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS<br>
+For services running over task.php will return TRUE ; for services running over admin.php / index.php will return FALSE</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--ifDevMode">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ifDevMode</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} if is Production Environment will return TRUE else will return FALSE (if FALSE it is always considered the Development Environment)</div>
+	
+			<div class="doc-method-comments">Test if Production Environment as set in init.php by SMART_FRAMEWORK_ENV<br>
+Production Environment (SMART_FRAMEWORK_ENV = 'prod') differ from Development Environment (SMART_FRAMEWORK_ENV = 'dev') especially by the fact that Production Environment avoids to display any error (will just log errors and warnings and will not log notices)<br>
+Using this method to detect if Production or Development Environment the code can have a dual behaviour Production vs Development</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--ifDebug">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ifDebug</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} if Debug is ON will return TRUE, else will return FALSE</div>
+	
+			<div class="doc-method-comments">Test if DEBUG is ON<br>
+Debug can be enabled on both: Production or Development Environments, by setting; define('SMART_FRAMEWORK_DEBUG_MODE', true); // init.php<br>
+Using Debug in Production Environment must be enabled per one IP only that can have access to that feature to avoid expose sensitive data to the world !!!<br>
+Ex: if(myIPIsDetected()) { define('SMART_FRAMEWORK_DEBUG_MODE', true); } // in init.php, for a Production Environment</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `ifInternalDebug()` -->
+<!-- Skip Internal-Priv Method: `setDebugMsg()` -->
+<!-- Skip Internal-Priv Method: `getDebugMsgs()` -->
+<!-- Skip Internal-Priv Method: `registerInternalCacheToDebugLog()` -->
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
 	<h2 class="doc-header">class Properties</h2>
 </div>
 <!-- properties r.20200121 -->
+<!-- Skip Internal-Priv Property: `$Connections` -->
 
 <!-- Constants -->
 <br>
@@ -750,7 +805,16 @@ Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager'
 <!-- constants r.20200121 -->
 
 <!-- Sample Code -->
-
+<br>
+<div class="doc-container" id="SAMPLE--Code-">
+	<h2 class="doc-header">Sample code: PHP</h2>
+</div>
+<div class="doc-code">
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+</span>
+</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+</div>
 <!-- Summary List -->
 <br>
 <!-- summary r.20210420 -->
@@ -775,13 +839,30 @@ function smartHandleDocSelector(obj) {
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
-		<option value="" selected>* PHP Class \SmartModExtLib\AuthAdmins\AuthAdminsHandler # Documentation Index *</option>
-		<optgroup label="Class \SmartModExtLib\AuthAdmins\AuthAdminsHandler">
+		<option value="" selected>* PHP Class \SmartEnvironment # Documentation Index *</option>
+		<optgroup label="Class \SmartEnvironment">
 			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--Authenticate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Authenticate()</option>
+						<option value="Method--isAdminArea"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAdminArea()</option>
+			
+			
+						<option value="Method--isTaskArea"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isTaskArea()</option>
+			
+			
+						<option value="Method--ifDevMode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ifDevMode()</option>
+			
+			
+						<option value="Method--ifDebug"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ifDebug()</option>
+			
+			
+			
+			
+			
+			
+			
+			
 			
 			
 			
@@ -789,10 +870,14 @@ function smartHandleDocSelector(obj) {
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
 			
+			
 		</optgroup>
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
 			
+		</optgroup>
+				<optgroup label="Class Sample usage">
+			<option value="SAMPLE--Code-">Sample code</option>
 		</optgroup>
 		
 	</select>
@@ -801,13 +886,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:33 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:24 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

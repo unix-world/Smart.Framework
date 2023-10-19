@@ -29,10 +29,12 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Simple Auth Admins Handler
  * This class provide a very simple authentication for admin area (admin.php|task.php) using a single account with username/password set in config-admin.php
  *
+ * Supports: HTTP Basic Auth ; HTTP Bear Auth (SWT) *optional*
+ *
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD and *optional* the APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY ; they must be set in set in config-admin.php
  * Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)
  *
- * @version 	v.20231018
+ * @version 	v.20231020
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -177,9 +179,12 @@ final class SimpleAuthAdminsHandler {
 			} //end if
 			//--
 			$priv_keys = '';
-			if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) { // need to be stored as encrypted, use \SmartAuth::encrypt_privkey() using hash pass as key
+			if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) { // need to be stored as encrypted, use \SmartAuth::encrypt_privkey('key', 'pass-hash')
 				if((string)\trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY) != '') {
-					$priv_keys = (string) \trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY); // will be decrypted by lib auth, see: \SmartAuth::decrypt_privkey() using hash pass as key
+					$priv_keys = (string) \trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY);
+					if((string)$priv_keys != '') {
+						$priv_keys = (string) \SmartAuth::decrypt_privkey((string)$priv_keys, (string)$hash_of_pass);
+					} //end if
 				} //end if
 			} //end if
 			//--

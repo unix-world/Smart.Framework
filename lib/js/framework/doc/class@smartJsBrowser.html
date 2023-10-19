@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="smartJ$Browser        static class smartJ$Browser  {  } .    CLASS :: Smart BrowserUtils (ES6) The JavaScript class provides methods to simplify the">
-<meta name="keywords" content="smartj browser, static, class, smart, browserutils, es6, the, javascript, provides, methods, to, simplify, interraction, with, browser, ajax, xhr, requests, forms, message, alerts, and, dialogs, growl, provide, many, useful, for, language, located, at, lib js framework smart-framework.pak.js, browser utils.js, package, sf.javascript:browser, name, frozen, yes, version, usage, smartj browser.method, depends, smartj utils, smartj date, smartj base64, smartj cryptohash, smartj cryptoblowfish, smartj testbrowser, jquery, smartj modalbox, jquery.gritter, jquery.toastr, jquery.alertable, smartsimpledialog, smartj ui, public, setflag, string, flag, mixed, value, boolean, return, true, if, success, false, not, param, set, of, that, an, internal, available, flags, are, pageunloadconfirm, pageaway, refreshstate, refreshurl, getflag, get, getrefpopup, null, or, object, popup, window, reference, any, getcurrentisodatetime, current, iso, date, time, as">
+<meta name="description" content="smartJ$Browser static class smartJ$Browser { } . CLASS :: Smart BrowserUtils (ES6) The JavaScript class provides methods to simplify the interraction with">
+<meta name="keywords" content="smartj browser, static, class, smart, browserutils, es6, the, javascript, provides, methods, to, simplify, interraction, with, browser, ajax, xhr, requests, forms, message, alerts, and, dialogs, growl, provide, many, useful, for, language, located, at, lib js framework smart framework pak js, browser utils js, package, sf javascript browser, name, frozen, yes, version, usage, smartj browser method, depends, smartj utils, smartj date, smartj base64, smartj cryptohash, smartj cryptoblowfish, smartj testbrowser, jquery, smartj modalbox, jquery toastr, jquery alertable, smartj ui, optional, smartj ui growladd, smartj ui growlremove, smartj ui dialogalert, smartj ui dialogconfirm, smartj ui overlaycssclass, public, setflag, string, flag, mixed, value, boolean, return, true, if, success, false, not, param, set, of, that, an, internal, available, flags, are, pageunloadconfirm, pageaway, refreshstate, refreshurl, getflag, get, getrefpopup, null, or, object, popup, window, reference, any, getcurrentisodatetime, current">
 <meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$Browser">
 <link rel="icon" href="data:,">
 <title>JS Documentation for: smartJ$Browser</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210417 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -703,12 +703,12 @@ The JavaScript class provides methods to simplify the interraction with the Brow
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Browser</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$Browser</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20211210</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20230123</span></li>
 		<li><b>Usage:</b> smartJ$Browser.method();</li>
 		
 		
 		
-		<li><b>Depends:</b> smartJ$Utils, smartJ$Date, smartJ$Base64, smartJ$CryptoHash, smartJ$CryptoBlowfish, smartJ$TestBrowser, jQuery, *smartJ$ModalBox, *jQuery.gritter, *jQuery.toastr, *jQuery.alertable, *SmartSimpleDialog, *smartJ$UI</li>
+		<li><b>Depends:</b> smartJ$Utils, smartJ$Date, smartJ$Base64, smartJ$CryptoHash, smartJ$CryptoBlowfish, smartJ$TestBrowser, jQuery, *smartJ$ModalBox, *jQuery.toastr, *jQuery.alertable, *smartJ$UI  (optional) [ smartJ$UI.GrowlAdd ; smartJ$UI.GrowlRemove ; smartJ$UI.DialogAlert ; smartJ$UI.DialogConfirm ; smartJ$UI.overlayCssClass ]</li>
 		
 	</ul>
 </div>
@@ -720,8 +720,8 @@ The JavaScript class provides methods to simplify the interraction with the Brow
 <!-- methods r.20210414 -->
 <div class="doc-container" id="Method--setFlag">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>setFlag</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`flag` Parameter">flag</span></b></span>, 
-			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`value` Parameter">value</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`flag` Parameter">flag</span></b></span>, 
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`value` Parameter">value</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
@@ -731,8 +731,8 @@ The JavaScript class provides methods to simplify the interraction with the Brow
 	
 	
 	
-			@param: {String} flag The flag to set<br>
-			@param: {Mixed} value The value of that flag<br>
+	@param: {String} flag The flag to set<br>
+	@param: {Mixed} value The value of that flag<br>
 	
 	
 	</div>
@@ -744,9 +744,10 @@ RefreshState 		{0/1}<br>
 RefreshURL 			{String} || ''</div>
 	
 	
-</div><div class="doc-container" id="Method--getFlag">
+</div>
+<div class="doc-container" id="Method--getFlag">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>getFlag</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`flag` Parameter">flag</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`flag` Parameter">flag</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
 	<div class="doc-method-ret-params">
@@ -756,7 +757,7 @@ RefreshURL 			{String} || ''</div>
 	
 	
 	
-			@param: {String} flag The flag to return<br>
+	@param: {String} flag The flag to return<br>
 	
 	
 	</div>
@@ -768,7 +769,8 @@ RefreshState 		{0/1}<br>
 RefreshURL 			{String} || ''</div>
 	
 	
-</div><div class="doc-container" id="Method--getRefPopup">
+</div>
+<div class="doc-container" id="Method--getRefPopup">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>getRefPopup</b></span>&nbsp;=&nbsp;(
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Mixed}
@@ -785,7 +787,8 @@ RefreshURL 			{String} || ''</div>
 			<div class="doc-method-comments">Get the popUp Window Object Reference if any</div>
 	
 	
-</div><div class="doc-container" id="Method--getCurrentIsoDateTime">
+</div>
+<div class="doc-container" id="Method--getCurrentIsoDateTime">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>getCurrentIsoDateTime</b></span>&nbsp;=&nbsp;(
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
@@ -802,9 +805,10 @@ RefreshURL 			{String} || ''</div>
 			<div class="doc-method-comments">Get the Current ISO Date and Time</div>
 	
 	
-</div><div class="doc-container" id="Method--blowfishEncrypt">
+</div>
+<div class="doc-container" id="Method--blowfishEncrypt">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>blowfishEncrypt</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -814,16 +818,17 @@ RefreshURL 			{String} || ''</div>
 	
 	
 	
-			@param: {String} str The plain string to be encoded<br>
+	@param: {String} str The plain string to be encoded<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Blowfish (CBC) Encrypt</div>
 	
 	
-</div><div class="doc-container" id="Method--blowfishDecrypt">
+</div>
+<div class="doc-container" id="Method--blowfishDecrypt">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>blowfishDecrypt</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`enc` Parameter">enc</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`enc` Parameter">enc</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -833,16 +838,17 @@ RefreshURL 			{String} || ''</div>
 	
 	
 	
-			@param: {String} enc The Blowfish Encrypted string<br>
+	@param: {String} enc The Blowfish Encrypted string<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Blowfish (CBC) Decrypt</div>
 	
 	
-</div><div class="doc-container" id="Method--stripTags">
+</div>
+<div class="doc-container" id="Method--stripTags">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>stripTags</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`html` Parameter">html</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`html` Parameter">html</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -852,16 +858,17 @@ RefreshURL 			{String} || ''</div>
 	
 	
 	
-			@param: {String} html The html code to be processed<br>
+	@param: {String} html The html code to be processed<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Strip HTML Tags and return plain text from HTML Code</div>
 	
 	
-</div><div class="doc-container" id="Method--parseCurrentUrlGetParams">
+</div>
+<div class="doc-container" id="Method--parseCurrentUrlGetParams">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>parseCurrentUrlGetParams</b></span>&nbsp;(
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`semantic_sf_url` Parameter">semantic_sf_url</span></b></span>
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`semantic_sf_url` Parameter">semantic_sf_url</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
@@ -871,15 +878,16 @@ RefreshURL 			{String} || ''</div>
 	
 	
 	
-			@param: {Boolean} semantic_sf_url *Optional* ; Default is TRUE ; If set to FALSE will not post-process the semantic URL parts from Smart.Framework such as: `/page/one/something/else`<br>
+	@param: {Boolean} semantic_sf_url *Optional* ; Default is TRUE ; If set to FALSE will not post-process the semantic URL parts from Smart.Framework such as: `/page/one/something/else`<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Parse Current URL to extract GET Params</div>
 	
-			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> <span class="hljs-string">'http(s)://some.url/?param1=value1&amp;param2=value%202'</span> <span class="hljs-comment">// sample URL</span></code></pre>
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-string">'http(s)://some.url/?param1=value1&amp;param2=value%202'</span> <span class="hljs-comment">// sample URL</span></code></pre>
 	
-</div><div class="doc-container" id="Method--PrintPage">
+</div>
+<div class="doc-container" id="Method--PrintPage">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>PrintPage</b></span>&nbsp;=&nbsp;(
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
@@ -896,11 +904,13 @@ RefreshURL 			{String} || ''</div>
 			<div class="doc-method-comments">Print current Browser Page</div>
 	
 	
-</div><div class="doc-container" id="Method--CountDown">
+</div>
+<div class="doc-container" id="Method--CountDown">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CountDown</b></span>&nbsp;(
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`counter` Parameter">counter</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elID` Parameter">elID</span></b></span>, 
-			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`counter` Parameter">counter</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elID` Parameter">elID</span></b></span>, 
+	<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`prettyFormat` Parameter">prettyFormat</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -910,18 +920,20 @@ RefreshURL 			{String} || ''</div>
 			@fires: A custom event set in the Js Code to execute when done<br>
 	
 	
-			@param: {Integer} counter The countdown counter, Min value is 1<br>
-			@param: {String} elID The HTML Element ID to bind to or NULL<br>
-			@param: {JS-Code} evcode *Optional* the JS Code to execute on countdown complete (when countdown to zero)<br>
+	@param: {Integer} counter The countdown counter, Min value is 1<br>
+	@param: {String} elID The HTML Element ID to bind to or NULL<br>
+	@param: {JS-Code} evcode *Optional* the JS Code to execute on countdown complete (when countdown to zero)<br>
+	@param: {Boolean} prettyFormat *Optional* if set to TRUE instead to display the left time in seconds will display as pretty format like: Days, Hours, Minutes, Seconds<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Count Down handler that bind to a HTML Element</div>
 	
 	
-</div><div class="doc-container" id="Method--windowFocus">
+</div>
+<div class="doc-container" id="Method--windowFocus">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>windowFocus</b></span>&nbsp;=&nbsp;(
-			<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`wnd` Parameter">wnd</span></b></span>
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`wnd` Parameter">wnd</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -931,14 +943,15 @@ RefreshURL 			{String} || ''</div>
 			@fires: activate Focus on a PopUp window<br>
 	
 	
-			@param: {Object} wnd The window (reference) object ; which ? self, window, ...<br>
+	@param: {Object} wnd The window (reference) object ; which ? self, window, ...<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Focus a browser window by reference</div>
 	
 	
-</div><div class="doc-container" id="Method--WindowIsiFrame">
+</div>
+<div class="doc-container" id="Method--WindowIsiFrame">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>WindowIsiFrame</b></span>&nbsp;=&nbsp;(
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
@@ -955,7 +968,8 @@ RefreshURL 			{String} || ''</div>
 			<div class="doc-method-comments">Detect if a Browser Window is an iFrame</div>
 	
 	
-</div><div class="doc-container" id="Method--WindowIsPopup">
+</div>
+<div class="doc-container" id="Method--WindowIsPopup">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>WindowIsPopup</b></span>&nbsp;=&nbsp;(
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
@@ -972,9 +986,10 @@ RefreshURL 			{String} || ''</div>
 			<div class="doc-method-comments">Detect if a Browser Window is a PopUp</div>
 	
 	
-</div><div class="doc-container" id="Method--PageAwayControl">
+</div>
+<div class="doc-container" id="Method--PageAwayControl">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PageAwayControl</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`the_question` Parameter">the_question</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`the_question` Parameter">the_question</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -985,16 +1000,17 @@ RefreshURL 			{String} || ''</div>
 	
 			@listens: Browser Page Unload<br>
 	
-			@param: {String} the_question The Question to confirm for navigate away of the page<br>
+	@param: {String} the_question The Question to confirm for navigate away of the page<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Page Away control handler. Take control over the events as onbeforeunload to prevent leaving the browser page in unattended mode</div>
 	
 	
-</div><div class="doc-container" id="Method--RedirectToURL">
+</div>
+<div class="doc-container" id="Method--RedirectToURL">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>RedirectToURL</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yURL` Parameter">yURL</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yURL` Parameter">yURL</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1004,17 +1020,18 @@ RefreshURL 			{String} || ''</div>
 			@fires: Browser Location Redirect or Location Reload<br>
 	
 	
-			@param: {String} yURL The URL (relative or absolute) to redirect to ; if = '@' will just autorefresh the page<br>
+	@param: {String} yURL The URL (relative or absolute) to redirect to ; if = '@' will just autorefresh the page<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Redirect to a new URL or Reload the current browser location</div>
 	
 	
-</div><div class="doc-container" id="Method--RedirectDelayedToURL">
+</div>
+<div class="doc-container" id="Method--RedirectDelayedToURL">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RedirectDelayedToURL</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yURL` Parameter">yURL</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`ytime` Parameter">ytime</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yURL` Parameter">yURL</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`ytime` Parameter">ytime</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1025,17 +1042,18 @@ RefreshURL 			{String} || ''</div>
 	
 			@listens: TimeOut counter on Set as Delay<br>
 	
-			@param: {String} yURL The URL (relative or absolute) to redirect to<br>
-			@param: {Integer} ytime The time delay in milliseconds<br>
+	@param: {String} yURL The URL (relative or absolute) to redirect to<br>
+	@param: {Integer} ytime The time delay in milliseconds<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Delayed Redirect to URL current browser window</div>
 	
 	
-</div><div class="doc-container" id="Method--RedirectParent">
+</div>
+<div class="doc-container" id="Method--RedirectParent">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RedirectParent</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yURL` Parameter">yURL</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yURL` Parameter">yURL</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1045,16 +1063,17 @@ RefreshURL 			{String} || ''</div>
 			@fires: Redirect Browser to a new URL<br>
 	
 	
-			@param: {String} yURL The URL (relative or absolute) to redirect to<br>
+	@param: {String} yURL The URL (relative or absolute) to redirect to<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Redirect to URL the browser parent window</div>
 	
 	
-</div><div class="doc-container" id="Method--RefreshParent">
+</div>
+<div class="doc-container" id="Method--RefreshParent">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>RefreshParent</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yURL` Parameter">yURL</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yURL` Parameter">yURL</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1065,7 +1084,7 @@ RefreshURL 			{String} || ''</div>
 			@fires: Refresh Parent Window direct (instant) / or indirect (after closing modal)<br>
 	
 	
-			@param: {String} yURL *Optional* The URL (relative or absolute) to redirect to ; if the parameter is not specified will just reload the parent window with the same URL<br>
+	@param: {String} yURL *Optional* The URL (relative or absolute) to redirect to ; if the parameter is not specified will just reload the parent window with the same URL<br>
 	
 	
 	</div>
@@ -1073,7 +1092,8 @@ RefreshURL 			{String} || ''</div>
 The method is different than RedirectParent() because will be executed just after the child (modal iFrame / PopUp) is closed.</div>
 	
 	
-</div><div class="doc-container" id="Method--CloseModalPopUp">
+</div>
+<div class="doc-container" id="Method--CloseModalPopUp">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CloseModalPopUp</b></span>&nbsp;(
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
@@ -1092,9 +1112,10 @@ The method is different than RedirectParent() because will be executed just afte
 If a parent refresh is pending will execute it after.</div>
 	
 	
-</div><div class="doc-container" id="Method--CloseDelayedModalPopUp">
+</div>
+<div class="doc-container" id="Method--CloseDelayedModalPopUp">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CloseDelayedModalPopUp</b></span>&nbsp;(
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`timeout` Parameter">timeout</span></b></span>
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`timeout` Parameter">timeout</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1106,7 +1127,7 @@ If a parent refresh is pending will execute it after.</div>
 	
 			@listens: TimeOut counter on Set<br>
 	
-			@param: {Integer} timeout The time delay in milliseconds ; If is NULL or 0 (zero) will use the default timeout<br>
+	@param: {Integer} timeout The time delay in milliseconds ; If is NULL or 0 (zero) will use the default timeout<br>
 	
 	
 	</div>
@@ -1114,10 +1135,11 @@ If a parent refresh is pending will execute it after.</div>
 If a parent refresh is pending will execute it after.</div>
 	
 	
-</div><div class="doc-container" id="Method--getCurrentPointerEventXY">
+</div>
+<div class="doc-container" id="Method--getCurrentPointerEventXY">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getCurrentPointerEventXY</b></span>&nbsp;(
-			<i>{Event}</i>&nbsp;<span class="doc-param-name"><b><span title="`evt` Parameter">evt</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`viwePortOnly` Parameter">viwePortOnly</span></b></span>
+	<i>{Event}</i>&nbsp;<span class="doc-param-name"><b><span title="`evt` Parameter">evt</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`viwePortOnly` Parameter">viwePortOnly</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
@@ -1127,8 +1149,8 @@ If a parent refresh is pending will execute it after.</div>
 	
 	
 	
-			@param: {Event} evt The EVENT Object Reference (must be a pointer event: mouse or touch)<br>
-			@param: {Boolean} viwePortOnly Default is FALSE ; if TRUE will return clientX / clientY instead of pageX / pageY<br>
+	@param: {Event} evt The EVENT Object Reference (must be a pointer event: mouse or touch)<br>
+	@param: {Boolean} viwePortOnly Default is FALSE ; if TRUE will return clientX / clientY instead of pageX / pageY<br>
 	
 	
 	</div>
@@ -1139,7 +1161,8 @@ On mouse devices directly to: event<br>
 The pageX/Y coordinates are relative to the top left corner of the whole rendered page (including parts hidden by scrolling), while clientX/Y coordinates are relative to the top left corner of the visible part of the page (aka ViewPort)</div>
 	
 	
-</div><div class="doc-container" id="Method--getHighestZIndex">
+</div>
+<div class="doc-container" id="Method--getHighestZIndex">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getHighestZIndex</b></span>&nbsp;(
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
@@ -1157,10 +1180,11 @@ The pageX/Y coordinates are relative to the top left corner of the whole rendere
 It will ignore non-visible layers for speed-up, as they have anyway no Z-Index assigned.</div>
 	
 	
-</div><div class="doc-container" id="Method--createMaxContainer">
+</div>
+<div class="doc-container" id="Method--createMaxContainer">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>createMaxContainer</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`id` Parameter">id</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`maximized` Parameter">maximized</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`id` Parameter">id</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`maximized` Parameter">maximized</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1170,8 +1194,8 @@ It will ignore non-visible layers for speed-up, as they have anyway no Z-Index a
 	
 	
 	
-			@param: {String} id The HTML id of the HTML element to bind to<br>
-			@param: {Boolean} maximized *Optional* Default is FALSE ; If set to TRUE the element will be auto-maximized when bind to it<br>
+	@param: {String} id The HTML id of the HTML element to bind to<br>
+	@param: {Boolean} maximized *Optional* Default is FALSE ; If set to TRUE the element will be auto-maximized when bind to it<br>
 	
 	
 	</div>
@@ -1179,13 +1203,14 @@ It will ignore non-visible layers for speed-up, as they have anyway no Z-Index a
 It will add a maximize / un-maximize button and the handler for it to be able to maximize the element to match full window width and height.</div>
 	
 	
-</div><div class="doc-container" id="Method--OverlayShow">
+</div>
+<div class="doc-container" id="Method--OverlayShow">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>OverlayShow</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`text` Parameter">text</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`title` Parameter">title</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`css_class` Parameter">css_class</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`overlay_id` Parameter">overlay_id</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`clear` Parameter">clear</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`text` Parameter">text</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`title` Parameter">title</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`css_class` Parameter">css_class</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`overlay_id` Parameter">overlay_id</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`clear` Parameter">clear</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
@@ -1196,11 +1221,11 @@ It will add a maximize / un-maximize button and the handler for it to be able to
 	
 	
 	
-			@param: {String} text *Optional* a text to display in overlay as notification<br>
-			@param: {String} title *Optional* a title to display for overlay as notification<br>
-			@param: {String} css_class *Optional* a CSS class name for the notification (if any)<br>
-			@param: {String} overlay_id *Optional* the overlay ID ; default is null and will use a hard-coded ID<br>
-			@param: {Boolean} clear *Optional* clear the overlay from loading img<br>
+	@param: {String} text *Optional* a text to display in overlay as notification<br>
+	@param: {String} title *Optional* a title to display for overlay as notification<br>
+	@param: {String} css_class *Optional* a CSS class name for the notification (if any)<br>
+	@param: {String} overlay_id *Optional* the overlay ID ; default is null and will use a hard-coded ID<br>
+	@param: {Boolean} clear *Optional* clear the overlay from loading img<br>
 	
 	
 	</div>
@@ -1208,9 +1233,10 @@ It will add a maximize / un-maximize button and the handler for it to be able to
 All page elements that must be visible over the overlay must have zIndex in range: 2147401000 - 214740999</div>
 	
 	
-</div><div class="doc-container" id="Method--OverlayClear">
+</div>
+<div class="doc-container" id="Method--OverlayClear">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>OverlayClear</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`overlay_id` Parameter">overlay_id</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`overlay_id` Parameter">overlay_id</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1219,14 +1245,15 @@ All page elements that must be visible over the overlay must have zIndex in rang
 	
 	
 	
-			@param: {String} overlay_id *Optional* the overlay ID ; default is null and will use a hard-coded ID<br>
+	@param: {String} overlay_id *Optional* the overlay ID ; default is null and will use a hard-coded ID<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Clear all notifications from the page overlay in the current browser window</div>
 	
 	
-</div><div class="doc-container" id="Method--OverlayHide">
+</div>
+<div class="doc-container" id="Method--OverlayHide">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>OverlayHide</b></span>&nbsp;(
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
@@ -1242,15 +1269,16 @@ All page elements that must be visible over the overlay must have zIndex in rang
 			<div class="doc-method-comments">Hide (destroy) the page overlay in the current browser window</div>
 	
 	
-</div><div class="doc-container" id="Method--GrowlNotificationAdd">
+</div>
+<div class="doc-container" id="Method--GrowlNotificationAdd">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>GrowlNotificationAdd</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`title` Parameter">title</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`text` Parameter">text</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`image` Parameter">image</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`time` Parameter">time</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`sticky` Parameter">sticky</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`css_class` Parameter">css_class</span></b></span>, 
-			<i>{Array-Obj}</i>&nbsp;<span class="doc-param-name"><b><span title="`options` Parameter">options</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`title` Parameter">title</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`text` Parameter">text</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`image` Parameter">image</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`time` Parameter">time</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`sticky` Parameter">sticky</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`css_class` Parameter">css_class</span></b></span>, 
+	<i>{Array-Obj}</i>&nbsp;<span class="doc-param-name"><b><span title="`options` Parameter">options</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
@@ -1260,13 +1288,13 @@ All page elements that must be visible over the overlay must have zIndex in rang
 	
 	
 	
-			@param: {String} title a title for the notification (HTML) ; it can be empty string<br>
-			@param: {String} text the main notification message (HTML) ; it is mandatory<br>
-			@param: {String} image the URL link to a notification icon image (svg/gif/png/jpg/webp) or null<br>
-			@param: {Integer} time the notification display time in milliseconds ; use 0 for sticky ; between 0 (0 sec) and 60000 (60 sec)<br>
-			@param: {Boolean} sticky *Optional* FALSE by default (will auto-close after the display time expire) ; TRUE to set sticky (require manual close, will not auto-close)<br>
-			@param: {Enum} css_class *Optional* a CSS class name for the notification or empty string to use default one: darknote (black), notice (white), info (blue), success (green), warning (yellow), error (red)<br>
-			@param: {Array-Obj} options *Optional* Extra Growl Properties:<br>
+	@param: {String} title a title for the notification (HTML) ; it can be empty string<br>
+	@param: {String} text the main notification message (HTML) ; it is mandatory<br>
+	@param: {String} image the URL link to a notification icon image (svg/gif/png/jpg/webp) or null<br>
+	@param: {Integer} time the notification display time in milliseconds ; use 0 for sticky ; between 0 (0 sec) and 60000 (60 sec)<br>
+	@param: {Boolean} sticky *Optional* FALSE by default (will auto-close after the display time expire) ; TRUE to set sticky (require manual close, will not auto-close)<br>
+	@param: {Enum} css_class *Optional* a CSS class name for the notification or empty string to use default one: darknote (black), notice (white), info (blue), success (green), warning (yellow), error (red)<br>
+	@param: {Array-Obj} options *Optional* Extra Growl Properties:<br>
 	
 	
 	</div>
@@ -1279,7 +1307,8 @@ after_close: 	() =&gt; {}<br>
 }</div>
 	
 	
-</div><div class="doc-container" id="Method--GrowlNotificationRemove">
+</div>
+<div class="doc-container" id="Method--GrowlNotificationRemove">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>GrowlNotificationRemove</b></span>&nbsp;(
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
@@ -1296,14 +1325,15 @@ after_close: 	() =&gt; {}<br>
 			<div class="doc-method-comments">Remove all Growl Notifications from the current browser window (page)</div>
 	
 	
-</div><div class="doc-container" id="Method--AlertDialog">
+</div>
+<div class="doc-container" id="Method--AlertDialog">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>AlertDialog</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_message` Parameter">y_message</span></b></span>, 
-			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_title` Parameter">y_title</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_width` Parameter">y_width</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_height` Parameter">y_height</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`dialogType` Parameter">dialogType</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_message` Parameter">y_message</span></b></span>, 
+	<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_title` Parameter">y_title</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_width` Parameter">y_width</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_height` Parameter">y_height</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`dialogType` Parameter">dialogType</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1313,12 +1343,12 @@ after_close: 	() =&gt; {}<br>
 			@fires: open an Alert Dialog (custom or default, depends on settings)<br>
 	
 	
-			@param: {String} y_message The message to display (HTML)<br>
-			@param: {JS-Code} evcode *Optional* the JS Code to execute on closing the alert / Dialog by pressing the OK button (the alert / Dialog can be closed only if OK button is clicked)<br>
-			@param: {String} y_title *Optional* a title for the alert / Dialog (HTML)<br>
-			@param: {Integer} y_width *Optional* the width of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default width will be used<br>
-			@param: {Integer} y_height *Optional* the height of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default height will be used<br>
-			@param: {String} dialogType *Optional* The Dialog Type ; default is 'auto'<br>
+	@param: {String} y_message The message to display (HTML)<br>
+	@param: {JS-Code} evcode *Optional* the JS Code to execute on closing the alert / Dialog by pressing the OK button (the alert / Dialog can be closed only if OK button is clicked)<br>
+	@param: {String} y_title *Optional* a title for the alert / Dialog (HTML)<br>
+	@param: {Integer} y_width *Optional* the width of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default width will be used<br>
+	@param: {Integer} y_height *Optional* the height of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default height will be used<br>
+	@param: {String} dialogType *Optional* The Dialog Type ; default is 'auto'<br>
 	
 	
 	</div>
@@ -1328,14 +1358,15 @@ Otherwise will try to detect if SimpleDialog is available and will use it if UID
 If none of the above are available will try to use jQuery.alertable/alert else just display a simple alert() - fallback.</div>
 	
 	
-</div><div class="doc-container" id="Method--ConfirmDialog">
+</div>
+<div class="doc-container" id="Method--ConfirmDialog">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>ConfirmDialog</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_question` Parameter">y_question</span></b></span>, 
-			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_title` Parameter">y_title</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_width` Parameter">y_width</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_height` Parameter">y_height</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`dialogType` Parameter">dialogType</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_question` Parameter">y_question</span></b></span>, 
+	<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_title` Parameter">y_title</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_width` Parameter">y_width</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_height` Parameter">y_height</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`dialogType` Parameter">dialogType</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1345,12 +1376,12 @@ If none of the above are available will try to use jQuery.alertable/alert else j
 			@fires: open a Confirmation Dialog (custom or default, depends on settings)<br>
 	
 	
-			@param: {String} y_question The question / message to display (HTML)<br>
-			@param: {JS-Code} evcode *Optional* the JS Code to execute on closing the confirm / Dialog by pressing the OK button (the confirm / Dialog can be closed by either OK button clicked or Cancel button clicked ; the code will be not executed on Cancel button click / close)<br>
-			@param: {String} y_title *Optional* a title for the confirm / Dialog (HTML)<br>
-			@param: {Integer} y_width *Optional* the width of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default width will be used<br>
-			@param: {Integer} y_height *Optional* the height of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default height will be used<br>
-			@param: {String} dialogType *Optional* The Dialog Type ; default is 'auto'<br>
+	@param: {String} y_question The question / message to display (HTML)<br>
+	@param: {JS-Code} evcode *Optional* the JS Code to execute on closing the confirm / Dialog by pressing the OK button (the confirm / Dialog can be closed by either OK button clicked or Cancel button clicked ; the code will be not executed on Cancel button click / close)<br>
+	@param: {String} y_title *Optional* a title for the confirm / Dialog (HTML)<br>
+	@param: {Integer} y_width *Optional* the width of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default width will be used<br>
+	@param: {Integer} y_height *Optional* the height of the Dialog (will be used just if UIDialog / SimpleDialog are detected) ; if not set the default height will be used<br>
+	@param: {String} dialogType *Optional* The Dialog Type ; default is 'auto'<br>
 	
 	
 	</div>
@@ -1360,14 +1391,15 @@ Otherwise will try to detect if SimpleDialog is available and will use it if UID
 If none of the above are available will try to use jQuery.alertable/confirm else display a simple confirm() - fallback.</div>
 	
 	
-</div><div class="doc-container" id="Method--MessageNotification">
+</div>
+<div class="doc-container" id="Method--MessageNotification">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>MessageNotification</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`ytitle` Parameter">ytitle</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`ymessage` Parameter">ymessage</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yredirect` Parameter">yredirect</span></b></span>, 
-			<i>{Yes/No}</i>&nbsp;<span class="doc-param-name"><b><span title="`growl` Parameter">growl</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`class_growl` Parameter">class_growl</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`timeout` Parameter">timeout</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`ytitle` Parameter">ytitle</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`ymessage` Parameter">ymessage</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`yredirect` Parameter">yredirect</span></b></span>, 
+	<i>{Yes/No}</i>&nbsp;<span class="doc-param-name"><b><span title="`growl` Parameter">growl</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`class_growl` Parameter">class_growl</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`timeout` Parameter">timeout</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1376,27 +1408,28 @@ If none of the above are available will try to use jQuery.alertable/confirm else
 	
 	
 	
-			@param: {String} ytitle The Title<br>
-			@param: {String} ymessage The Message (HTML code)<br>
-			@param: {String} yredirect *Optional* The URL to redirect<br>
-			@param: {Yes/No} growl *Optional* If 'yes' will use the Growl notifications otherwise (default: if 'no') will use Dialog notification<br>
-			@param: {Enum} class_growl *Optional* If Growl is used, a CSS class for Growl is required<br>
-			@param: {Integer} timeout *Optional* If Growl is used, the Growl timeout in milliseconds<br>
+	@param: {String} ytitle The Title<br>
+	@param: {String} ymessage The Message (HTML code)<br>
+	@param: {String} yredirect *Optional* The URL to redirect<br>
+	@param: {Yes/No} growl *Optional* If 'yes' will use the Growl notifications otherwise (default: if 'no') will use Dialog notification<br>
+	@param: {Enum} class_growl *Optional* If Growl is used, a CSS class for Growl is required<br>
+	@param: {Integer} timeout *Optional* If Growl is used, the Growl timeout in milliseconds<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Create a Message (Dialog or Growl) Notification</div>
 	
 	
-</div><div class="doc-container" id="Method--confirmSubmitForm">
+</div>
+<div class="doc-container" id="Method--confirmSubmitForm">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>confirmSubmitForm</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_confirm` Parameter">y_confirm</span></b></span>, 
-			<i>{Html-Form}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_form` Parameter">y_form</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_target` Parameter">y_target</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowWidth` Parameter">windowWidth</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowHeight` Parameter">windowHeight</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forcePopUp` Parameter">forcePopUp</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forceDims` Parameter">forceDims</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_confirm` Parameter">y_confirm</span></b></span>, 
+	<i>{Html-Form}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_form` Parameter">y_form</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_target` Parameter">y_target</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowWidth` Parameter">windowWidth</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowHeight` Parameter">windowHeight</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forcePopUp` Parameter">forcePopUp</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forceDims` Parameter">forceDims</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1408,13 +1441,13 @@ If none of the above are available will try to use jQuery.alertable/confirm else
 	
 			@listens: form submit event<br>
 	
-			@param: {String} y_confirm The question / message to display for confirmation (HTML)<br>
-			@param: {Html-Form} y_form The HTML Form Object to bind to<br>
-			@param: {String} y_target The window target to send the form to<br>
-			@param: {Integer} windowWidth *Optional* the width of the new Modal/PopUp child window if new window target is used ; if not set the default width will be used<br>
-			@param: {Integer} windowHeight *Optional* the height of the new Modal/PopUp child window if new window target is used ; if not set the default height will be used<br>
-			@param: {Enum} forcePopUp *Optional* if a new target window is required, 0 = default, use modal/iFrame if set by smartJ$Browser.param_ModalBoxActive, 1 = force PopUp ; -1 force modal/iFrame<br>
-			@param: {Enum} forceDims *Optional* if set to 1 will try force set the width/height for the new modal/iFrame or PopUp<br>
+	@param: {String} y_confirm The question / message to display for confirmation (HTML)<br>
+	@param: {Html-Form} y_form The HTML Form Object to bind to<br>
+	@param: {String} y_target The window target to send the form to<br>
+	@param: {Integer} windowWidth *Optional* the width of the new Modal/PopUp child window if new window target is used ; if not set the default width will be used<br>
+	@param: {Integer} windowHeight *Optional* the height of the new Modal/PopUp child window if new window target is used ; if not set the default height will be used<br>
+	@param: {Enum} forcePopUp *Optional* if a new target window is required, 0 = default, use modal/iFrame if set by smartJ$Browser.param_ModalBoxActive, 1 = force PopUp ; -1 force modal/iFrame<br>
+	@param: {Enum} forceDims *Optional* if set to 1 will try force set the width/height for the new modal/iFrame or PopUp<br>
 	
 	
 	</div>
@@ -1422,15 +1455,16 @@ If none of the above are available will try to use jQuery.alertable/confirm else
 The form will be submitted just if OK button is clicked.</div>
 	
 	
-</div><div class="doc-container" id="Method--PopUpSendForm">
+</div>
+<div class="doc-container" id="Method--PopUpSendForm">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PopUpSendForm</b></span>&nbsp;(
-			<i>{Html-Form}</i>&nbsp;<span class="doc-param-name"><b><span title="`objForm` Parameter">objForm</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`strTarget` Parameter">strTarget</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowWidth` Parameter">windowWidth</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowHeight` Parameter">windowHeight</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forcePopUp` Parameter">forcePopUp</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forceDims` Parameter">forceDims</span></b></span>, 
-			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>
+	<i>{Html-Form}</i>&nbsp;<span class="doc-param-name"><b><span title="`objForm` Parameter">objForm</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`strTarget` Parameter">strTarget</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowWidth` Parameter">windowWidth</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowHeight` Parameter">windowHeight</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forcePopUp` Parameter">forcePopUp</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forceDims` Parameter">forceDims</span></b></span>, 
+	<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1442,13 +1476,13 @@ The form will be submitted just if OK button is clicked.</div>
 	
 			@listens: form submit event<br>
 	
-			@param: {Html-Form} objForm The HTML Form Object reference<br>
-			@param: {String} strTarget The child window target to post the form to<br>
-			@param: {Integer} windowWidth *Optional* the width of the new Modal/PopUp child window if new window target is used ; if not set the default width will be used<br>
-			@param: {Integer} windowHeight *Optional* the height of the new Modal/PopUp child window if new window target is used ; if not set the default height will be used<br>
-			@param: {Enum} forcePopUp *Optional* if a new target window is required, 0 = default, use modal/iFrame if set by smartJ$Browser.param_ModalBoxActive, 1 = force PopUp ; -1 force modal/iFrame<br>
-			@param: {Enum} forceDims *Optional* if set to 1 will try force uwing the width/height set for the new modal/iFrame or PopUp<br>
-			@param: {JS-Code} evcode *Optional* the JS Code to execute after submit the form<br>
+	@param: {Html-Form} objForm The HTML Form Object reference<br>
+	@param: {String} strTarget The child window target to post the form to<br>
+	@param: {Integer} windowWidth *Optional* the width of the new Modal/PopUp child window if new window target is used ; if not set the default width will be used<br>
+	@param: {Integer} windowHeight *Optional* the height of the new Modal/PopUp child window if new window target is used ; if not set the default height will be used<br>
+	@param: {Enum} forcePopUp *Optional* if a new target window is required, 0 = default, use modal/iFrame if set by smartJ$Browser.param_ModalBoxActive, 1 = force PopUp ; -1 force modal/iFrame<br>
+	@param: {Enum} forceDims *Optional* if set to 1 will try force uwing the width/height set for the new modal/iFrame or PopUp<br>
+	@param: {JS-Code} evcode *Optional* the JS Code to execute after submit the form<br>
 	
 	
 	</div>
@@ -1457,14 +1491,16 @@ It will get the form URL and form method GET/POST directly from the objForm.<br>
 The function must be called by a form button onClick followed by 'return false;' not by classic submit to avoid fire the form send twice 1st before (in a _blank window) and 2nd after opening the child popup/modal.</div>
 	
 	
-</div><div class="doc-container" id="Method--PopUpLink">
+</div>
+<div class="doc-container" id="Method--PopUpLink">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>PopUpLink</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`strUrl` Parameter">strUrl</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`strTarget` Parameter">strTarget</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowWidth` Parameter">windowWidth</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowHeight` Parameter">windowHeight</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forcePopUp` Parameter">forcePopUp</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forceDims` Parameter">forceDims</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`strUrl` Parameter">strUrl</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`strTarget` Parameter">strTarget</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowWidth` Parameter">windowWidth</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`windowHeight` Parameter">windowHeight</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forcePopUp` Parameter">forcePopUp</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`forceDims` Parameter">forceDims</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`handlerMode` Parameter">handlerMode</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1475,21 +1511,23 @@ The function must be called by a form button onClick followed by 'return false;'
 			@fires: open a Modal Box or a PopUp Window<br>
 	
 	
-			@param: {String} strUrl The URL link to be opened in a new browser child window target or modal iframe (modalbox)<br>
-			@param: {String} strTarget The child window target to post the form to ; name ; do not use _self or _blank here, and try ensure a compliant name<br>
-			@param: {Integer} windowWidth *Optional* the width of the new Modal/PopUp child window if new window target is used ; if not set the default width will be used<br>
-			@param: {Integer} windowHeight *Optional* the height of the new Modal/PopUp child window if new window target is used ; if not set the default height will be used<br>
-			@param: {Enum} forcePopUp *Optional* if a new target window is required, 0 = default, use modal/iFrame if set by smartJ$Browser.param_ModalBoxActive, 1 = force PopUp ; -1 force modal/iFrame<br>
-			@param: {Enum} forceDims *Optional* if set to 1 will try force uwing the width/height set for the new modal/iFrame or PopUp<br>
+	@param: {String} strUrl The URL link to be opened in a new browser child window target or modal iframe (modalbox)<br>
+	@param: {String} strTarget The child window target to post the form to ; name ; do not use _self or _blank here, and try ensure a compliant name<br>
+	@param: {Integer} windowWidth *Optional* the width of the new Modal/PopUp child window if new window target is used ; if not set the default width will be used<br>
+	@param: {Integer} windowHeight *Optional* the height of the new Modal/PopUp child window if new window target is used ; if not set the default height will be used<br>
+	@param: {Enum} forcePopUp *Optional* if a new target window is required, 0 = default, use modal/iFrame if set by smartJ$Browser.param_ModalBoxActive, 1 = force PopUp ; -1 force modal/iFrame<br>
+	@param: {Enum} forceDims *Optional* if set to 1 will try force uwing the width/height set for the new modal/iFrame or PopUp<br>
+	@param: {Enum} handlerMode *Optional* If explicit set to 1 or 2 will use only a simple modal/popup without binding to the parent window ; if set to 2, the popup will not use redirect handler in addition to no binding ; if set to -1 the popup will not use redirect handler, but will use binding ; if set to -2 (default) will use same domain detection<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Open a Modal/iFrame or PopUp child window with a new target to open a URL link within.</div>
 	
 	
-</div><div class="doc-container" id="Method--getCookie">
+</div>
+<div class="doc-container" id="Method--getCookie">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getCookie</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`name` Parameter">name</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`name` Parameter">name</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1499,22 +1537,23 @@ The function must be called by a form button onClick followed by 'return false;'
 	
 	
 	
-			@param: {String} name The cookie Name ; must be a valid cookie name<br>
+	@param: {String} name The cookie Name ; must be a valid cookie name<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Get a Cookie from Browser by Name and return it's Value</div>
 	
 	
-</div><div class="doc-container" id="Method--setCookie">
+</div>
+<div class="doc-container" id="Method--setCookie">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>setCookie</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`name` Parameter">name</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`value` Parameter">value</span></b></span>, 
-			<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`expire` Parameter">expire</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`path` Parameter">path</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`domain` Parameter">domain</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`samesite` Parameter">samesite</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`secure` Parameter">secure</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`name` Parameter">name</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`value` Parameter">value</span></b></span>, 
+	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`expire` Parameter">expire</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`path` Parameter">path</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`domain` Parameter">domain</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`samesite` Parameter">samesite</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`secure` Parameter">secure</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
@@ -1524,26 +1563,27 @@ The function must be called by a form button onClick followed by 'return false;'
 	
 	
 	
-			@param: {String} name The cookie Name<br>
-			@param: {String} value The cookie Value<br>
-			@param: {Numeric} expire *Optional* The cookie expire time in seconds since now ; if set to zero will expire by session ; if set to -1 will be unset (deleted) ; if set to NULL will use the value from smartJ$Browser.param_CookieLifeTime ; default is 0<br>
-			@param: {String} path *Optional* The cookie path (default is /)<br>
-			@param: {String} domain *Optional* The cookie domain (default is @ and will use '@' to use the smartJ$Browser.param_CookieDomain)<br>
-			@param: {Enum} samesite *Optional* The SameSite cookie policy ; Can be: None, Lax, Strict ; (default is @ and will use '@' to use the smartJ$Browser.param_CookieSameSitePolicy)<br>
-			@param: {Boolean} secure *Optional* Force Cookie Secure Mode (default is FALSE)<br>
+	@param: {String} name The cookie Name<br>
+	@param: {String} value The cookie Value<br>
+	@param: {Numeric} expire *Optional* The cookie expire time in seconds since now ; if set to zero will expire by session ; if set to -1 will be unset (deleted) ; if set to NULL will use the value from smartJ$Browser.param_CookieLifeTime ; default is 0<br>
+	@param: {String} path *Optional* The cookie path (default is /)<br>
+	@param: {String} domain *Optional* The cookie domain (default is @ and will use '@' to use the smartJ$Browser.param_CookieDomain)<br>
+	@param: {Enum} samesite *Optional* The SameSite cookie policy ; Can be: None, Lax, Strict ; (default is @ and will use '@' to use the smartJ$Browser.param_CookieSameSitePolicy)<br>
+	@param: {Boolean} secure *Optional* Force Cookie Secure Mode (default is FALSE)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Set a Cookie in Browser by Name and Value</div>
 	
 	
-</div><div class="doc-container" id="Method--deleteCookie">
+</div>
+<div class="doc-container" id="Method--deleteCookie">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>deleteCookie</b></span>&nbsp;=&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`name` Parameter">name</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`path` Parameter">path</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`domain` Parameter">domain</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`samesite` Parameter">samesite</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`secure` Parameter">secure</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`name` Parameter">name</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`path` Parameter">path</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`domain` Parameter">domain</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`samesite` Parameter">samesite</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`secure` Parameter">secure</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
 	<div class="doc-method-ret-params">
@@ -1553,21 +1593,22 @@ The function must be called by a form button onClick followed by 'return false;'
 	
 	
 	
-			@param: {String} name The cookie Name<br>
-			@param: {String} path *Optional* The cookie path (default is /)<br>
-			@param: {String} domain *Optional* The cookie domain (default is @ and will use '@' to use the smartJ$Browser.param_CookieDomain)<br>
-			@param: {Enum} samesite *Optional* The SameSite cookie policy ; Can be: None, Lax, Strict ; (default is @ and will use '@' to use the smartJ$Browser.param_CookieSameSitePolicy)<br>
-			@param: {Boolean} secure *Optional* Force Cookie Secure Mode (default is FALSE)<br>
+	@param: {String} name The cookie Name<br>
+	@param: {String} path *Optional* The cookie path (default is /)<br>
+	@param: {String} domain *Optional* The cookie domain (default is @ and will use '@' to use the smartJ$Browser.param_CookieDomain)<br>
+	@param: {Enum} samesite *Optional* The SameSite cookie policy ; Can be: None, Lax, Strict ; (default is @ and will use '@' to use the smartJ$Browser.param_CookieSameSitePolicy)<br>
+	@param: {Boolean} secure *Optional* Force Cookie Secure Mode (default is FALSE)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Delete a Cookie from Browser by Name</div>
 	
 	
-</div><div class="doc-container" id="Method--TextAreaAddLimit">
+</div>
+<div class="doc-container" id="Method--TextAreaAddLimit">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>TextAreaAddLimit</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elemID` Parameter">elemID</span></b></span>, 
-			<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`maxChars` Parameter">maxChars</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elemID` Parameter">elemID</span></b></span>, 
+	<i>{Integer+}</i>&nbsp;<span class="doc-param-name"><b><span title="`maxChars` Parameter">maxChars</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1578,17 +1619,18 @@ The function must be called by a form button onClick followed by 'return false;'
 	
 			@listens: typing text in a text area, paste or other input methods<br>
 	
-			@param: {String} elemID The TextArea field name<br>
-			@param: {Integer+} maxChars The max limit of characters to accept in the TextArea<br>
+	@param: {String} elemID The TextArea field name<br>
+	@param: {Integer+} maxChars The max limit of characters to accept in the TextArea<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Force a text limit on a TextArea (will also attach a CounterField)</div>
 	
 	
-</div><div class="doc-container" id="Method--catchKeyENTER">
+</div>
+<div class="doc-container" id="Method--catchKeyENTER">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>catchKeyENTER</b></span>&nbsp;(
-			<i>{Event}</i>&nbsp;<span class="doc-param-name"><b><span title="`evt` Parameter">evt</span></b></span>
+	<i>{Event}</i>&nbsp;<span class="doc-param-name"><b><span title="`evt` Parameter">evt</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1600,17 +1642,18 @@ The function must be called by a form button onClick followed by 'return false;'
 	
 			@listens: ENTER Key press event<br>
 	
-			@param: {Event} evt The EVENT Object Reference<br>
+	@param: {Event} evt The EVENT Object Reference<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Catch ENTER Key in an Input[type=text] or other compatible input field</div>
 	
-			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> &lt;input type=<span class="hljs-string">&quot;text&quot;</span> onKeyDown=<span class="hljs-string">&quot;smartJ$Browser.catchKeyENTER(event);&quot;</span>&gt;</code></pre>
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> &lt;input type=<span class="hljs-string">&quot;text&quot;</span> onKeyDown=<span class="hljs-string">&quot;smartJ$Browser.catchKeyENTER(event);&quot;</span>&gt;</code></pre>
 	
-</div><div class="doc-container" id="Method--catchKeyTAB">
+</div>
+<div class="doc-container" id="Method--catchKeyTAB">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>catchKeyTAB</b></span>&nbsp;(
-			<i>{Event}</i>&nbsp;<span class="doc-param-name"><b><span title="`evt` Parameter">evt</span></b></span>
+	<i>{Event}</i>&nbsp;<span class="doc-param-name"><b><span title="`evt` Parameter">evt</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1622,20 +1665,21 @@ The function must be called by a form button onClick followed by 'return false;'
 	
 			@listens: TAB Key press event<br>
 	
-			@param: {Event} evt The EVENT Object Reference<br>
+	@param: {Event} evt The EVENT Object Reference<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Catch TAB Key and insert a TAB character (\t) at the cursor instead to switch to next input field as default in html<br>
 It works on TextArea or other compatible input fields ...</div>
 	
-			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> &lt;textarea id=<span class="hljs-string">&quot;txt&quot;</span> onKeyDown=<span class="hljs-string">&quot;smartJ$Browser.catchKeyTAB(event);&quot;</span>&gt;</code></pre>
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> &lt;textarea id=<span class="hljs-string">&quot;txt&quot;</span> onKeyDown=<span class="hljs-string">&quot;smartJ$Browser.catchKeyTAB(event);&quot;</span>&gt;</code></pre>
 	
-</div><div class="doc-container" id="Method--CheckAllCheckBoxes">
+</div>
+<div class="doc-container" id="Method--CheckAllCheckBoxes">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CheckAllCheckBoxes</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_form_name` Parameter">y_form_name</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_element_id` Parameter">y_element_id</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_element_checked` Parameter">y_element_checked</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_form_name` Parameter">y_form_name</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_element_id` Parameter">y_element_id</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_element_checked` Parameter">y_element_checked</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1645,21 +1689,22 @@ It works on TextArea or other compatible input fields ...</div>
 			@fires: check/uncheck all the checkboxes inside a form<br>
 	
 	
-			@param: {String} y_form_name The form name (if empty string will operate on all checkboxes in the page otherwise just inside the form)<br>
-			@param: {String} y_element_id The checkboxes element ID<br>
-			@param: {Boolean} y_element_checked If TRUE will do check ; If FALSE will do uncheck ; otherwise will just inverse check<br>
+	@param: {String} y_form_name The form name (if empty string will operate on all checkboxes in the page otherwise just inside the form)<br>
+	@param: {String} y_element_id The checkboxes element ID<br>
+	@param: {Boolean} y_element_checked If TRUE will do check ; If FALSE will do uncheck ; otherwise will just inverse check<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Check or Uncheck all checkboxes in a form element</div>
 	
 	
-</div><div class="doc-container" id="Method--CloneElement">
+</div>
+<div class="doc-container" id="Method--CloneElement">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>CloneElement</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elID` Parameter">elID</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`containerID` Parameter">containerID</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`elType` Parameter">elType</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`maxLimit` Parameter">maxLimit</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elID` Parameter">elID</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`containerID` Parameter">containerID</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`elType` Parameter">elType</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`maxLimit` Parameter">maxLimit</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1668,31 +1713,32 @@ It works on TextArea or other compatible input fields ...</div>
 	
 	
 	
-			@param: {String} elID The element ID to be cloned<br>
-			@param: {String} containerID The destination container ID<br>
-			@param: {Enum} elType The type of the element to be cloned: text-input ; text-area ; file-input ; html-element<br>
-			@param: {Integer} maxLimit The max limit number of elements includding the element itself and the cloned elements: between 1 and 255<br>
+	@param: {String} elID The element ID to be cloned<br>
+	@param: {String} containerID The destination container ID<br>
+	@param: {Enum} elType The type of the element to be cloned: text-input ; text-area ; file-input ; html-element<br>
+	@param: {Integer} maxLimit The max limit number of elements includding the element itself and the cloned elements: between 1 and 255<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Clone a HTML Element</div>
 	
-			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> &lt;div id=<span class="hljs-string">&quot;multifile_list&quot;</span> style=<span class="hljs-string">&quot;text-align:left; max-width:550px;&quot;</span>&gt;
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> &lt;div id=<span class="hljs-string">&quot;multifile_list&quot;</span> style=<span class="hljs-string">&quot;text-align:left; max-width:550px;&quot;</span>&gt;
  		<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;multifile_uploader&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;file&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;myvar[]&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;width:90%;&quot;</span>&gt;</span>
  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span>
  <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span>
  		smartJ$Browser.CloneElement('multifile_uploader', 'multifile_list', 'file-input', 10);
  <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span></code></pre>
 	
-</div><div class="doc-container" id="Method--SubmitFormByAjax">
+</div>
+<div class="doc-container" id="Method--SubmitFormByAjax">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>SubmitFormByAjax</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`the_form_id` Parameter">the_form_id</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`url` Parameter">url</span></b></span>, 
-			<i>{Yes/No}</i>&nbsp;<span class="doc-param-name"><b><span title="`growl` Parameter">growl</span></b></span>, 
-			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
-			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`everrcode` Parameter">everrcode</span></b></span>, 
-			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evfailcode` Parameter">evfailcode</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`failalertable` Parameter">failalertable</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`the_form_id` Parameter">the_form_id</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`url` Parameter">url</span></b></span>, 
+	<i>{Yes/No}</i>&nbsp;<span class="doc-param-name"><b><span title="`growl` Parameter">growl</span></b></span>, 
+	<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>, 
+	<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`everrcode` Parameter">everrcode</span></b></span>, 
+	<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evfailcode` Parameter">evfailcode</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`failalertable` Parameter">failalertable</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1704,20 +1750,20 @@ It works on TextArea or other compatible input fields ...</div>
 	
 			@listens: fire a form submit<br>
 	
-			@param: {String} the_form_id The form ID ; Set it to FALSE/NULL/'' (to use without a real form by emulating a form like XHR request from URL)<br>
-			@param: {String} url The destination URL where form or XHR request will be sent to<br>
-			@param: {Yes/No} growl *Optional* If 'yes' will use the Growl notifications otherwise (if 'no') will use Dialog notifications ; default is set to 'auto'<br>
-			@param: {JS-Code} evcode *Optional* the JS Code to execute on SUCCESS answer (before anything else) ; params: the_form_id, url, msg<br>
-			@param: {JS-Code} everrcode *Optional* the JS Code to execute on ERROR answer (before anything else) ; params: the_form_id, url, msg<br>
-			@param: {JS-Code} evfailcode *Optional* the JS Code to execute on REQUEST FAIL answer ; params: the_form_id, url, msg<br>
-			@param: {Boolean} failalertable *Optional* if set to TRUE will set the fail dialog to 'alertable' instead of 'auto' if alertable is available<br>
+	@param: {String} the_form_id The form ID ; Set it to FALSE/NULL/'' (to use without a real form by emulating a form like XHR request from URL)<br>
+	@param: {String} url The destination URL where form or XHR request will be sent to<br>
+	@param: {Yes/No} growl *Optional* If 'yes' will use the Growl notifications otherwise (if 'no') will use Dialog notifications ; default is set to 'auto'<br>
+	@param: {JS-Code} evcode *Optional* the JS Code to execute on SUCCESS answer (before anything else) ; params: the_form_id, url, msg<br>
+	@param: {JS-Code} everrcode *Optional* the JS Code to execute on ERROR answer (before anything else) ; params: the_form_id, url, msg<br>
+	@param: {JS-Code} evfailcode *Optional* the JS Code to execute on REQUEST FAIL answer ; params: the_form_id, url, msg<br>
+	@param: {Boolean} failalertable *Optional* if set to TRUE will set the fail dialog to 'alertable' instead of 'auto' if alertable is available<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Submit a Form by Ajax via POST and Handle the Answer<br>
 The function expects a json answer with the following structure: see more in framework PHP lib SmartComponents::js_ajax_replyto_html_form()</div>
 	
-			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> <span class="hljs-comment">// Json Structure for Answer</span>
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-comment">// Json Structure for Answer</span>
  		{
  			<span class="hljs-string">'completed'</span>: 	<span class="hljs-string">'DONE'</span>,
  			<span class="hljs-string">'status'</span>: 		<span class="hljs-string">'OK|ERROR'</span>,
@@ -1731,11 +1777,12 @@ The function expects a json answer with the following structure: see more in fra
  		}
  <span class="hljs-comment">// #END Json Structure</span></code></pre>
 	
-</div><div class="doc-container" id="Method--AjaxRequestByForm">
+</div>
+<div class="doc-container" id="Method--AjaxRequestByForm">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>AjaxRequestByForm</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`the_form_id` Parameter">the_form_id</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`url` Parameter">url</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`data_type` Parameter">data_type</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`the_form_id` Parameter">the_form_id</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`url` Parameter">url</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`data_type` Parameter">data_type</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
@@ -1745,30 +1792,32 @@ The function expects a json answer with the following structure: see more in fra
 	
 	
 	
-			@param: {String} the_form_id The element ID of the form to be create the Ajax XHR Request for<br>
-			@param: {String} url The URL to send form to via POST<br>
-			@param: {Enum} data_type The type of Data served back by the Request: json | html | text<br>
+	@param: {String} the_form_id The element ID of the form to be create the Ajax XHR Request for<br>
+	@param: {String} url The URL to send form to via POST<br>
+	@param: {Enum} data_type The type of Data served back by the Request: json | html | text<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Create an Ajax XHR Request (POST) by Form<br>
 It supports simple forms or complex forms with multipart/form-data and file attachments.</div>
 	
-			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> <span class="hljs-keyword">let</span> ajax = smartJ$Browser.AjaxRequestByForm(<span class="hljs-string">'my-form'</span>, <span class="hljs-string">'http(s);//url-to'</span>, <span class="hljs-string">'json'</span>)
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-keyword">let</span> ajax = smartJ$Browser.AjaxRequestByForm(<span class="hljs-string">'my-form'</span>, <span class="hljs-string">'http(s);//url-to'</span>, <span class="hljs-string">'json'</span>)
  		.done: 		<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg</span>) </span>{}
  		.fail: 		<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg</span>) </span>{}
  		.always: 	<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg</span>) </span>{}</code></pre>
 	
-</div><!-- Skip Internal-Priv Method: `AjaxPostMultiPartToURL()` --><div class="doc-container" id="Method--AjaxRequestFromURL">
+</div>
+<!-- Skip Internal-Priv Method: `AjaxPostMultiPartToURL()` -->
+<div class="doc-container" id="Method--AjaxRequestFromURL">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>AjaxRequestFromURL</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_url` Parameter">y_url</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_method` Parameter">y_method</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_type` Parameter">y_data_type</span></b></span>, 
-			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_arr_or_serialized` Parameter">y_data_arr_or_serialized</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_AuthUser` Parameter">y_AuthUser</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_AuthPass` Parameter">y_AuthPass</span></b></span>, 
-			<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_Headers` Parameter">y_Headers</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_withCredentials` Parameter">y_withCredentials</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_url` Parameter">y_url</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_method` Parameter">y_method</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_type` Parameter">y_data_type</span></b></span>, 
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_arr_or_serialized` Parameter">y_data_arr_or_serialized</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_AuthUser` Parameter">y_AuthUser</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_AuthPass` Parameter">y_AuthPass</span></b></span>, 
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_Headers` Parameter">y_Headers</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_withCredentials` Parameter">y_withCredentials</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Object}
 	<div class="doc-method-ret-params">
@@ -1779,14 +1828,14 @@ It supports simple forms or complex forms with multipart/form-data and file atta
 	
 	
 	
-			@param: {String} y_url The URL to send the Request to<br>
-			@param: {Enum} y_method The Request Method: GET / POST / PUT / DELETE / OPTIONS / HEAD<br>
-			@param: {Enum} y_data_type The type of Data served back by the Request: json | jsonp | script | html | xml | text<br>
-			@param: {Mixed} y_data_arr_or_serialized The Data to be sent: a serialized string via serialize() such as: '&amp;var1=value1&amp;var2=value2' or an associative array (Object) as: { var1: &quot;value1&quot;, var2: &quot;value2&quot; }<br>
-			@param: {String} y_AuthUser *Optional* The Authentication UserName (if custom Authentication need to be used)<br>
-			@param: {String} y_AuthPass *Optional* The Authentication Password (if custom Authentication need to be used)<br>
-			@param: {Object} y_Headers *Optional* Extra Headers to be sent with the Request ; Default is NULL (ex: { 'X-Head1': 'Test1', ... })<br>
-			@param: {Boolean} y_withCredentials *Optional* Send Credentials (CORS Only) ; default is FALSE ; set to TRUE to send XHR Credentials<br>
+	@param: {String} y_url The URL to send the Request to<br>
+	@param: {Enum} y_method The Request Method: GET / POST / PUT / DELETE / OPTIONS / HEAD<br>
+	@param: {Enum} y_data_type The type of Data served back by the Request: json | jsonp | script | html | xml | text<br>
+	@param: {Mixed} y_data_arr_or_serialized The Data to be sent: a serialized string via serialize() such as: '&amp;var1=value1&amp;var2=value2' or an associative array (Object) as: { var1: &quot;value1&quot;, var2: &quot;value2&quot; }<br>
+	@param: {String} y_AuthUser *Optional* The Authentication UserName (if custom Authentication need to be used)<br>
+	@param: {String} y_AuthPass *Optional* The Authentication Password (if custom Authentication need to be used)<br>
+	@param: {Object} y_Headers *Optional* Extra Headers to be sent with the Request ; Default is NULL (ex: { 'X-Head1': 'Test1', ... })<br>
+	@param: {Boolean} y_withCredentials *Optional* Send Credentials (CORS Only) ; default is FALSE ; set to TRUE to send XHR Credentials<br>
 	
 	
 	</div>
@@ -1796,21 +1845,22 @@ smartJ$Browser.AjaxRequestByForm(); 		// basic, will detect the form type if mus
 or even much better use:<br>
 smartJ$Browser.SubmitFormByAjax(); 	// advanced, will handle the XHR form request and the answer</div>
 	
-			<pre><b>Sample code: JavaScript</b><br><code class="hljs javascript"> <span class="hljs-keyword">let</span> ajax = smartJ$Browser.AjaxRequestFromURL(<span class="hljs-string">'http(s);//url'</span>, <span class="hljs-string">'POST'</span>, <span class="hljs-string">'json'</span>, <span class="hljs-string">'&amp;var1=value1&amp;var2=value2'</span>)
+			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-keyword">let</span> ajax = smartJ$Browser.AjaxRequestFromURL(<span class="hljs-string">'http(s);//url'</span>, <span class="hljs-string">'POST'</span>, <span class="hljs-string">'json'</span>, <span class="hljs-string">'&amp;var1=value1&amp;var2=value2'</span>)
  		.done: 		<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg</span>) </span>{}
  		.fail: 		<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg</span>) </span>{}
  		.always: 	<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">msg</span>) </span>{}</code></pre>
 	
-</div><div class="doc-container" id="Method--LoadElementContentByAjax">
+</div>
+<div class="doc-container" id="Method--LoadElementContentByAjax">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>LoadElementContentByAjax</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_elemID` Parameter">y_elemID</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_img_loader` Parameter">y_img_loader</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_url` Parameter">y_url</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_method` Parameter">y_method</span></b></span>, 
-			<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_type` Parameter">y_data_type</span></b></span>, 
-			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_arr_or_serialized` Parameter">y_data_arr_or_serialized</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_replace` Parameter">y_replace</span></b></span>, 
-			<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_notifyerr` Parameter">y_notifyerr</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_elemID` Parameter">y_elemID</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_img_loader` Parameter">y_img_loader</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_url` Parameter">y_url</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_method` Parameter">y_method</span></b></span>, 
+	<i>{Enum}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_type` Parameter">y_data_type</span></b></span>, 
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_data_arr_or_serialized` Parameter">y_data_arr_or_serialized</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_replace` Parameter">y_replace</span></b></span>, 
+	<i>{Mixed}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_notifyerr` Parameter">y_notifyerr</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1821,24 +1871,25 @@ smartJ$Browser.SubmitFormByAjax(); 	// advanced, will handle the XHR form reques
 			@fires: load the div content by ajax in the background and if successful will replace the div content with what comes by ajax<br>
 	
 	
-			@param: {String} y_elemID The ID of the Div (or other compatible) HTML Element(s) to bind to<br>
-			@param: {String} y_img_loader If non-empty, a pre-loader image that will be displayed while loading ; if set to TRUE will use smartJ$Browser.param_LoaderImg;<br>
-			@param: {String} y_url The URL to send the Request to<br>
-			@param: {Enum} y_method The Request Method: GET / POST<br>
-			@param: {Enum} y_data_type The type of Data served back by the Request: html | text | json (div_content_html)<br>
-			@param: {Mixed} y_data_arr_or_serialized The Data to be sent: a serialized string via serialize() such as: '&amp;var1=value1&amp;var2=value2' or an associative array as: { var1: &quot;value1&quot;, var2: &quot;value2&quot; }<br>
-			@param: {Boolean} y_replace *Optional* Default is FALSE ; If set to TRUE will use the jQuery method .replaceWith() instead of .empty().html()<br>
-			@param: {Mixed} y_notifyerr *Optional* Default is NULL ; If set to TRUE or FALSE will override the general setting for notification error ; if TRUE on Error loading the content will display a message Dialog instead of logging the errros to console<br>
+	@param: {String} y_elemID The ID of the Div (or other compatible) HTML Element(s) to bind to<br>
+	@param: {String} y_img_loader If non-empty, a pre-loader image that will be displayed while loading ; if set to TRUE will use smartJ$Browser.param_LoaderImg;<br>
+	@param: {String} y_url The URL to send the Request to<br>
+	@param: {Enum} y_method The Request Method: GET / POST<br>
+	@param: {Enum} y_data_type The type of Data served back by the Request: html | text | json (div_content_html)<br>
+	@param: {Mixed} y_data_arr_or_serialized The Data to be sent: a serialized string via serialize() such as: '&amp;var1=value1&amp;var2=value2' or an associative array as: { var1: &quot;value1&quot;, var2: &quot;value2&quot; }<br>
+	@param: {Boolean} y_replace *Optional* Default is FALSE ; If set to TRUE will use the jQuery method .replaceWith() instead of .empty().html()<br>
+	@param: {Mixed} y_notifyerr *Optional* Default is NULL ; If set to TRUE or FALSE will override the general setting for notification error ; if TRUE on Error loading the content will display a message Dialog instead of logging the errros to console<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Loads the contents for a Div (or other compatible) HTML Element(s) by Ajax using a GET / POST Ajax Request</div>
 	
 	
-</div><div class="doc-container" id="Method--windwScrollDown">
+</div>
+<div class="doc-container" id="Method--windwScrollDown">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>windwScrollDown</b></span>&nbsp;=&nbsp;(
-			<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`wnd` Parameter">wnd</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`offset` Parameter">offset</span></b></span>
+	<i>{Object}</i>&nbsp;<span class="doc-param-name"><b><span title="`wnd` Parameter">wnd</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`offset` Parameter">offset</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1848,8 +1899,8 @@ smartJ$Browser.SubmitFormByAjax(); 	// advanced, will handle the XHR form reques
 			@fires: Scroll Down a Browser window<br>
 	
 	
-			@param: {Object} wnd The window (reference) object<br>
-			@param: {Integer} offset The offset in pixels to scroll down ; use -1 to scroll to the end of document<br>
+	@param: {Object} wnd The window (reference) object<br>
+	@param: {Integer} offset The offset in pixels to scroll down ; use -1 to scroll to the end of document<br>
 	
 	
 	</div>
@@ -1857,10 +1908,11 @@ smartJ$Browser.SubmitFormByAjax(); 	// advanced, will handle the XHR form reques
 It will focus the referenced browser window first.</div>
 	
 	
-</div><div class="doc-container" id="Method--WayPoint">
+</div>
+<div class="doc-container" id="Method--WayPoint">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>WayPoint</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elSelector` Parameter">elSelector</span></b></span>, 
-			<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`elSelector` Parameter">elSelector</span></b></span>, 
+	<i>{JS-Code}</i>&nbsp;<span class="doc-param-name"><b><span title="`evcode` Parameter">evcode</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1872,21 +1924,22 @@ It will focus the referenced browser window first.</div>
 	
 			@listens: the target element (1st param) to be scrolled in the visible area<br>
 	
-			@param: {String} elSelector The Element Selector ; example: '#elem-id' or '.elem-class' (interpretable by jQuery)<br>
-			@param: {JS-Code} evcode the JS Code to execute on complete<br>
+	@param: {String} elSelector The Element Selector ; example: '#elem-id' or '.elem-class' (interpretable by jQuery)<br>
+	@param: {JS-Code} evcode the JS Code to execute on complete<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Trigger a function when you scroll the page to a specific target element</div>
 	
 	
-</div><div class="doc-container" id="Method--VirtualFileDownload">
+</div>
+<div class="doc-container" id="Method--VirtualFileDownload">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>VirtualFileDownload</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`data` Parameter">data</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`fileName` Parameter">fileName</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`mimeType` Parameter">mimeType</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`charset` Parameter">charset</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`binary` Parameter">binary</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`data` Parameter">data</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`fileName` Parameter">fileName</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`mimeType` Parameter">mimeType</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`charset` Parameter">charset</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`binary` Parameter">binary</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1896,30 +1949,31 @@ It will focus the referenced browser window first.</div>
 			@fires: emulates a file download<br>
 	
 	
-			@param: {String} data The content of the file to be downloaded<br>
-			@param: {String} fileName The file name (ex: 'file.txt')<br>
-			@param: {String} mimeType The mime type (ex: 'text/plain')<br>
-			@param: {String} charset *Optional* ; Default is NULL, will use the value from param_Charset or if not set will use 'UTF-8' ; set it to FALSE if binary is set to TRUE ; The character set of the file content (ex: 'UTF-8' for text OR FALSE for binary)<br>
-			@param: {Boolean} binary *Optional* ; Default is FALSE ; if TRUE will use no character set, but binary ASCII<br>
+	@param: {String} data The content of the file to be downloaded<br>
+	@param: {String} fileName The file name (ex: 'file.txt')<br>
+	@param: {String} mimeType The mime type (ex: 'text/plain')<br>
+	@param: {String} charset *Optional* ; Default is NULL, will use the value from param_Charset or if not set will use 'UTF-8' ; set it to FALSE if binary is set to TRUE ; The character set of the file content (ex: 'UTF-8' for text OR FALSE for binary)<br>
+	@param: {Boolean} binary *Optional* ; Default is FALSE ; if TRUE will use no character set, but binary ASCII<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Create a virtual file download from Javascript</div>
 	
 	
-</div><div class="doc-container" id="Method--VirtualImageUploadHandler">
+</div>
+<div class="doc-container" id="Method--VirtualImageUploadHandler">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>VirtualImageUploadHandler</b></span>&nbsp;(
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`inputUpldFileId` Parameter">inputUpldFileId</span></b></span>, 
-			<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`previewPlaceholderId` Parameter">previewPlaceholderId</span></b></span>, 
-			<i>{Decimal}</i>&nbsp;<span class="doc-param-name"><b><span title="`imgQuality` Parameter">imgQuality</span></b></span>, 
-			<i>{Decimal}</i>&nbsp;<span class="doc-param-name"><b><span title="`imgMaxResizeMBSize` Parameter">imgMaxResizeMBSize</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`imgMaxResizeW` Parameter">imgMaxResizeW</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`imgMaxResizeH` Parameter">imgMaxResizeH</span></b></span>, 
-			<i>{CallBack}</i>&nbsp;<span class="doc-param-name"><b><span title="`fxDone` Parameter">fxDone</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`clearPreview` Parameter">clearPreview</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`widthPreview` Parameter">widthPreview</span></b></span>, 
-			<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`heightPreview` Parameter">heightPreview</span></b></span>, 
-			<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`preserveGifs` Parameter">preserveGifs</span></b></span>
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`inputUpldFileId` Parameter">inputUpldFileId</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`previewPlaceholderId` Parameter">previewPlaceholderId</span></b></span>, 
+	<i>{Decimal}</i>&nbsp;<span class="doc-param-name"><b><span title="`imgQuality` Parameter">imgQuality</span></b></span>, 
+	<i>{Decimal}</i>&nbsp;<span class="doc-param-name"><b><span title="`imgMaxResizeMBSize` Parameter">imgMaxResizeMBSize</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`imgMaxResizeW` Parameter">imgMaxResizeW</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`imgMaxResizeH` Parameter">imgMaxResizeH</span></b></span>, 
+	<i>{CallBack}</i>&nbsp;<span class="doc-param-name"><b><span title="`fxDone` Parameter">fxDone</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`clearPreview` Parameter">clearPreview</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`widthPreview` Parameter">widthPreview</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`heightPreview` Parameter">heightPreview</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`preserveGifs` Parameter">preserveGifs</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Void}
 	<div class="doc-method-ret-params">
@@ -1928,17 +1982,17 @@ It will focus the referenced browser window first.</div>
 	
 	
 	
-			@param: {String} inputUpldFileId The HTML-Id of the input type file (#1)<br>
-			@param: {String} previewPlaceholderId The HTML-Id of the preview container (#2)<br>
-			@param: {Decimal} imgQuality The image quality (0.1 ... 1)<br>
-			@param: {Decimal} imgMaxResizeMBSize The max resized image size in MB (0.01 ... 2) ; Default is 0.1<br>
-			@param: {Integer} imgMaxResizeW The max resize width of the image (if the image width is lower will be not resized)<br>
-			@param: {Integer} imgMaxResizeH The max resize height of the image (if the image height is lower will be not resized)<br>
-			@param: {CallBack} fxDone A callback function(imgDataURL, w, h, isSVG, type, size, name) { ... } for done<br>
-			@param: {Boolean} clearPreview If FALSE will not clear the preview container after done; Default is TRUE<br>
-			@param: {Integer} widthPreview The Preview Width to set if not clearing the preview ; if not defined, full resized image width will be used (imgMaxResizeW)<br>
-			@param: {Integer} heightPreview The Preview Height to set if not clearing the preview ; if not defined, full resized image height will be used (imgMaxResizeH)<br>
-			@param: {Boolean} preserveGifs If TRUE will not process GIFS (which will be converted to PNG if processed via canvas) ; it may be used to avoid break animated Gifs<br>
+	@param: {String} inputUpldFileId The HTML-Id of the input type file (#1)<br>
+	@param: {String} previewPlaceholderId The HTML-Id of the preview container (#2)<br>
+	@param: {Decimal} imgQuality The image quality (0.1 ... 1)<br>
+	@param: {Decimal} imgMaxResizeMBSize The max resized image size in MB (0.01 ... 2) ; Default is 0.1<br>
+	@param: {Integer} imgMaxResizeW The max resize width of the image (if the image width is lower will be not resized)<br>
+	@param: {Integer} imgMaxResizeH The max resize height of the image (if the image height is lower will be not resized)<br>
+	@param: {CallBack} fxDone A callback function(imgDataURL, w, h, isSVG, type, size, name) { ... } for done<br>
+	@param: {Boolean} clearPreview If FALSE will not clear the preview container after done; Default is TRUE<br>
+	@param: {Integer} widthPreview The Preview Width to set if not clearing the preview ; if not defined, full resized image width will be used (imgMaxResizeW)<br>
+	@param: {Integer} heightPreview The Preview Height to set if not clearing the preview ; if not defined, full resized image height will be used (imgMaxResizeH)<br>
+	@param: {Boolean} preserveGifs If TRUE will not process GIFS (which will be converted to PNG if processed via canvas) ; it may be used to avoid break animated Gifs<br>
 	
 	
 	</div>
@@ -1949,6 +2003,7 @@ Requires in HTML:<br>
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -1961,64 +2016,74 @@ Requires in HTML:<br>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_LanguageId</span></div>
 			<div class="doc-method-comments">Default Language ID (must be set as in PHP, see the SMART_FRAMEWORK_DEFAULT_LANG)</div>
 	
-</div><div class="doc-container" id="Property--param_Charset">
+</div>
+<div class="doc-container" id="Property--param_Charset">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_Charset</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'UTF-8'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.Charset</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_Charset</span></div>
 			<div class="doc-method-comments">Character Set (must be set as in PHP, see the SMART_FRAMEWORK_CHARSET)</div>
 	
-</div><div class="doc-container" id="Property--param_CookieLifeTime">
+</div>
+<div class="doc-container" id="Property--param_CookieLifeTime">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CookieLifeTime</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>0</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Integer}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.CookieLifeTime</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_CookieLifeTime</span></div>
 			<div class="doc-method-comments">Cookie Domain (must be set as in PHP, see the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_LIFETIME)</div>
 	
-</div><div class="doc-container" id="Property--param_CookieDomain">
+</div>
+<div class="doc-container" id="Property--param_CookieDomain">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CookieDomain</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.CookieDomain</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_CookieDomain</span></div>
 			<div class="doc-method-comments">Cookie Domain (must be set as in PHP, see the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_DOMAIN)</div>
 	
-</div><div class="doc-container" id="Property--param_CookieSameSitePolicy">
+</div>
+<div class="doc-container" id="Property--param_CookieSameSitePolicy">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CookieSameSitePolicy</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>''</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.CookieSameSitePolicy</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_CookieSameSitePolicy</span></div>
 			<div class="doc-method-comments">Cookie SameSite Policy (must be set as in PHP, see the SMART_FRAMEWORK_UNIQUE_ID_COOKIE_SAMESITE)</div>
 	
-</div><div class="doc-container" id="Property--param_Notifications">
+</div>
+<div class="doc-container" id="Property--param_Notifications">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_Notifications</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'growl'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.Notifications</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_Notifications</span></div>
 			<div class="doc-method-comments">Notification Mode<br>
 Allowed Values: 'growl' | 'dialog'</div>
 	
-</div><div class="doc-container" id="Property--param_NotificationDialogType">
+</div>
+<div class="doc-container" id="Property--param_NotificationDialogType">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_NotificationDialogType</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'auto'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.NotificationDialogType</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_NotificationDialogType</span></div>
 			<div class="doc-method-comments">Growl Notification Dialog Type<br>
-Allowed Values: 'auto' | 'native' | 'alertable' | 'dialog' | 'ui' ; auto=autoselect (reverse order, starting from ui to 'native' with fallback) ; native = browser:alert/prompt ; alertable = use jQuery.alertable ; dialog = use SmartSimpleDialog ; ui = use smartJ$UI</div>
+Allowed Values: 'auto' | 'alertable' | 'ui' | 'native' ; auto=autoselect (reverse order, starting from ui to 'native' with fallback) ; native = browser:alert/prompt ; alertable = use jQuery.alertable ; ui = use smartJ$UI</div>
 	
-</div><div class="doc-container" id="Property--param_NotificationGrowlType">
+</div>
+<div class="doc-container" id="Property--param_NotificationGrowlType">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_NotificationGrowlType</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'auto'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.NotificationGrowlType</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_NotificationGrowlType</span></div>
 			<div class="doc-method-comments">Growl Notification Growl Type<br>
-Allowed Values: 'auto' | 'gritter' | 'toastr' ; If Explicit set on 'gritter' and gritter is n/a will fallback to alert ; If Explicit set on 'toastr' and toastr is n/a will fallback to alert</div>
+Allowed Values: 'auto' | 'toastr' | 'ui' ; If Explicit set on 'ui' and UI is n/a will fallback to alert ; If Explicit set on 'toastr' ; ui = use smartJ$UI ; if any is n/a will fallback to browser:alert</div>
 	
-</div><div class="doc-container" id="Property--param_NotificationTimeOK">
+</div>
+<div class="doc-container" id="Property--param_NotificationTimeOK">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_NotificationTimeOK</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>1000</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Integer}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.NotificationTimeOK</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_NotificationTimeOK</span></div>
 			<div class="doc-method-comments">Growl Notification Time when OK (in microseconds)</div>
 	
-</div><div class="doc-container" id="Property--param_NotificationTimeERR">
+</div>
+<div class="doc-container" id="Property--param_NotificationTimeERR">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_NotificationTimeERR</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>3500</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Integer}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.NotificationTimeERR</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_NotificationTimeERR</span></div>
 			<div class="doc-method-comments">Growl Notification Time when ERR (in microseconds)</div>
 	
-</div><div class="doc-container" id="Property--param_NotifyLoadError">
+</div>
+<div class="doc-container" id="Property--param_NotifyLoadError">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_NotifyLoadError</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>false</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Boolean}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.NotifyLoadError</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_NotifyLoadError</span></div>
@@ -2026,7 +2091,8 @@ Allowed Values: 'auto' | 'gritter' | 'toastr' ; If Explicit set on 'gritter' and
 If set to FALSE will not raise notifications on errors but only will log them<br>
 Allowed Values: true | false</div>
 	
-</div><div class="doc-container" id="Property--param_ModalBoxActive">
+</div>
+<div class="doc-container" id="Property--param_ModalBoxActive">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_ModalBoxActive</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>1</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Boolean}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.ModalBoxActive</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_ModalBoxActive</span></div>
@@ -2034,7 +2100,8 @@ Allowed Values: true | false</div>
 If set to 0 will disable the modal iframe ; If set to 1 (as default) will use ModalBox except on mobiles ; If set to 2 will use ModalBox also on mobiles<br>
 Allowed Values: 2=true (includding mobile) | 1=true (except on mobile) | 0=false</div>
 	
-</div><div class="doc-container" id="Property--param_ModalBoxNoCascade">
+</div>
+<div class="doc-container" id="Property--param_ModalBoxNoCascade">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_ModalBoxNoCascade</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>true</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Boolean}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.ModalBoxNoCascade</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_ModalBoxNoCascade</span></div>
@@ -2042,7 +2109,8 @@ Allowed Values: 2=true (includding mobile) | 1=true (except on mobile) | 0=false
 If set to FALSE will enable the ModalBox (iframe) cascading (inefficient) ; otherwise will use PopUp every next level starting from the ModalBox iframe level, but inside PopUp can open another ModalBox ... and so on<br>
 Allowed Values: true | false</div>
 	
-</div><div class="doc-container" id="Property--param_ModalBoxProtected">
+</div>
+<div class="doc-container" id="Property--param_ModalBoxProtected">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_ModalBoxProtected</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>false</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Boolean}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.ModalBoxProtected</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_ModalBoxProtected</span></div>
@@ -2050,39 +2118,50 @@ Allowed Values: true | false</div>
 If set to TRUE will use the protected mode for the modal iFrame (can be closed just explicit by buttons, not clicking outside of it)<br>
 Allowed Values: true | false</div>
 	
-</div><div class="doc-container" id="Property--param_LoaderImg">
+</div>
+<div class="doc-container" id="Property--param_LoaderImg">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_LoaderImg</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'lib/js/framework/img/loading.svg'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.LoaderImg</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_LoaderImg</span></div>
 			<div class="doc-method-comments">Loader Image used to display in various contexts when loading ...</div>
 	
-</div><!-- Skip Internal-Priv Property: `param_LoaderBlank` --><div class="doc-container" id="Property--param_ImgOK">
+</div>
+<!-- Skip Internal-Priv Property: `param_LoaderBlank` -->
+<div class="doc-container" id="Property--param_ImgOK">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_ImgOK</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'lib/framework/img/sign-ok.svg'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.ImgOK</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_ImgOK</span></div>
 			<div class="doc-method-comments">OK sign image, used in various contexts</div>
 	
-</div><div class="doc-container" id="Property--param_ImgNotOK">
+</div>
+<div class="doc-container" id="Property--param_ImgNotOK">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_ImgNotOK</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'lib/framework/img/sign-warn.svg'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.ImgNotOK</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_ImgNotOK</span></div>
 			<div class="doc-method-comments">Not OK sign image, used in various contexts</div>
 	
-</div><!-- Skip Internal-Priv Property: `param_ImgCloneInsert` --><!-- Skip Internal-Priv Property: `param_ImgCloneRemove` --><!-- Skip Internal-Priv Property: `param_IconImgFullScreen` --><div class="doc-container" id="Property--param_CssOverlayBgColor">
+</div>
+<!-- Skip Internal-Priv Property: `param_ImgCloneInsert` -->
+<!-- Skip Internal-Priv Property: `param_ImgCloneRemove` -->
+<!-- Skip Internal-Priv Property: `param_IconImgFullScreen` -->
+<div class="doc-container" id="Property--param_CssOverlayBgColor">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CssOverlayBgColor</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'#FFFFFF'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{String}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.CssOverlayBgColor</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_CssOverlayBgColor</span></div>
 			<div class="doc-method-comments">Overlay Customization - Background Color<br>
 Allowed Values: hexa color between #000000 - #FFFFFF</div>
 	
-</div><div class="doc-container" id="Property--param_CssOverlayOpacity">
+</div>
+<div class="doc-container" id="Property--param_CssOverlayOpacity">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>var</i></span> <b>param_CssOverlayOpacity</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>0.85</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Property"><b>.</b></span>&nbsp;<i>{Decimal}</i>
 	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserUtils.CssOverlayOpacity</span></div>
 	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">smartJ$Browser.param_CssOverlayOpacity</span></div>
 			<div class="doc-method-comments">Overlay Customization - Opacity<br>
 Allowed Values: between 0.1 and 1</div>
 	
-</div><!-- Skip Internal-Priv Property: `param_TimeDelayCloseWnd` -->
+</div>
+<!-- Skip Internal-Priv Property: `param_TimeDelayCloseWnd` -->
+
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
@@ -2122,154 +2201,154 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--setFlag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;setFlag()</option>
+						<option value="Method--setFlag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;setFlag()</option>
 			
-									<option value="Method--getFlag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;getFlag()</option>
+						<option value="Method--getFlag"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;getFlag()</option>
 			
-									<option value="Method--getRefPopup"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;getRefPopup()</option>
+						<option value="Method--getRefPopup"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;getRefPopup()</option>
 			
-									<option value="Method--getCurrentIsoDateTime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;getCurrentIsoDateTime()</option>
+						<option value="Method--getCurrentIsoDateTime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;getCurrentIsoDateTime()</option>
 			
-									<option value="Method--blowfishEncrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;blowfishEncrypt()</option>
+						<option value="Method--blowfishEncrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;blowfishEncrypt()</option>
 			
-									<option value="Method--blowfishDecrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;blowfishDecrypt()</option>
+						<option value="Method--blowfishDecrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;blowfishDecrypt()</option>
 			
-									<option value="Method--stripTags"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stripTags()</option>
+						<option value="Method--stripTags"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;stripTags()</option>
 			
-									<option value="Method--parseCurrentUrlGetParams"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parseCurrentUrlGetParams()</option>
+						<option value="Method--parseCurrentUrlGetParams"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parseCurrentUrlGetParams()</option>
 			
-									<option value="Method--PrintPage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;PrintPage()</option>
+						<option value="Method--PrintPage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;PrintPage()</option>
 			
-									<option value="Method--CountDown"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CountDown()</option>
+						<option value="Method--CountDown"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CountDown()</option>
 			
-									<option value="Method--windowFocus"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;windowFocus()</option>
+						<option value="Method--windowFocus"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;windowFocus()</option>
 			
-									<option value="Method--WindowIsiFrame"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;WindowIsiFrame()</option>
+						<option value="Method--WindowIsiFrame"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;WindowIsiFrame()</option>
 			
-									<option value="Method--WindowIsPopup"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;WindowIsPopup()</option>
+						<option value="Method--WindowIsPopup"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;WindowIsPopup()</option>
 			
-									<option value="Method--PageAwayControl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageAwayControl()</option>
+						<option value="Method--PageAwayControl"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PageAwayControl()</option>
 			
-									<option value="Method--RedirectToURL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;RedirectToURL()</option>
+						<option value="Method--RedirectToURL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;RedirectToURL()</option>
 			
-									<option value="Method--RedirectDelayedToURL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RedirectDelayedToURL()</option>
+						<option value="Method--RedirectDelayedToURL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RedirectDelayedToURL()</option>
 			
-									<option value="Method--RedirectParent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RedirectParent()</option>
+						<option value="Method--RedirectParent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RedirectParent()</option>
 			
-									<option value="Method--RefreshParent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RefreshParent()</option>
+						<option value="Method--RefreshParent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RefreshParent()</option>
 			
-									<option value="Method--CloseModalPopUp"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CloseModalPopUp()</option>
+						<option value="Method--CloseModalPopUp"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CloseModalPopUp()</option>
 			
-									<option value="Method--CloseDelayedModalPopUp"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CloseDelayedModalPopUp()</option>
+						<option value="Method--CloseDelayedModalPopUp"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CloseDelayedModalPopUp()</option>
 			
-									<option value="Method--getCurrentPointerEventXY"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getCurrentPointerEventXY()</option>
+						<option value="Method--getCurrentPointerEventXY"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getCurrentPointerEventXY()</option>
 			
-									<option value="Method--getHighestZIndex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getHighestZIndex()</option>
+						<option value="Method--getHighestZIndex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getHighestZIndex()</option>
 			
-									<option value="Method--createMaxContainer"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;createMaxContainer()</option>
+						<option value="Method--createMaxContainer"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;createMaxContainer()</option>
 			
-									<option value="Method--OverlayShow"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;OverlayShow()</option>
+						<option value="Method--OverlayShow"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;OverlayShow()</option>
 			
-									<option value="Method--OverlayClear"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;OverlayClear()</option>
+						<option value="Method--OverlayClear"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;OverlayClear()</option>
 			
-									<option value="Method--OverlayHide"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;OverlayHide()</option>
+						<option value="Method--OverlayHide"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;OverlayHide()</option>
 			
-									<option value="Method--GrowlNotificationAdd"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;GrowlNotificationAdd()</option>
+						<option value="Method--GrowlNotificationAdd"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;GrowlNotificationAdd()</option>
 			
-									<option value="Method--GrowlNotificationRemove"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;GrowlNotificationRemove()</option>
+						<option value="Method--GrowlNotificationRemove"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;GrowlNotificationRemove()</option>
 			
-									<option value="Method--AlertDialog"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;AlertDialog()</option>
+						<option value="Method--AlertDialog"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;AlertDialog()</option>
 			
-									<option value="Method--ConfirmDialog"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ConfirmDialog()</option>
+						<option value="Method--ConfirmDialog"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;ConfirmDialog()</option>
 			
-									<option value="Method--MessageNotification"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;MessageNotification()</option>
+						<option value="Method--MessageNotification"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;MessageNotification()</option>
 			
-									<option value="Method--confirmSubmitForm"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;confirmSubmitForm()</option>
+						<option value="Method--confirmSubmitForm"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;confirmSubmitForm()</option>
 			
-									<option value="Method--PopUpSendForm"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PopUpSendForm()</option>
+						<option value="Method--PopUpSendForm"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PopUpSendForm()</option>
 			
-									<option value="Method--PopUpLink"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PopUpLink()</option>
+						<option value="Method--PopUpLink"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;PopUpLink()</option>
 			
-									<option value="Method--getCookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getCookie()</option>
+						<option value="Method--getCookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getCookie()</option>
 			
-									<option value="Method--setCookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setCookie()</option>
+						<option value="Method--setCookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;setCookie()</option>
 			
-									<option value="Method--deleteCookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;deleteCookie()</option>
+						<option value="Method--deleteCookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;deleteCookie()</option>
 			
-									<option value="Method--TextAreaAddLimit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;TextAreaAddLimit()</option>
+						<option value="Method--TextAreaAddLimit"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;TextAreaAddLimit()</option>
 			
-									<option value="Method--catchKeyENTER"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;catchKeyENTER()</option>
+						<option value="Method--catchKeyENTER"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;catchKeyENTER()</option>
 			
-									<option value="Method--catchKeyTAB"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;catchKeyTAB()</option>
+						<option value="Method--catchKeyTAB"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;catchKeyTAB()</option>
 			
-									<option value="Method--CheckAllCheckBoxes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CheckAllCheckBoxes()</option>
+						<option value="Method--CheckAllCheckBoxes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CheckAllCheckBoxes()</option>
 			
-									<option value="Method--CloneElement"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CloneElement()</option>
+						<option value="Method--CloneElement"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CloneElement()</option>
 			
-									<option value="Method--SubmitFormByAjax"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;SubmitFormByAjax()</option>
+						<option value="Method--SubmitFormByAjax"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;SubmitFormByAjax()</option>
 			
-									<option value="Method--AjaxRequestByForm"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;AjaxRequestByForm()</option>
+						<option value="Method--AjaxRequestByForm"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;AjaxRequestByForm()</option>
 			
-						
-									<option value="Method--AjaxRequestFromURL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;AjaxRequestFromURL()</option>
 			
-									<option value="Method--LoadElementContentByAjax"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;LoadElementContentByAjax()</option>
+						<option value="Method--AjaxRequestFromURL"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;AjaxRequestFromURL()</option>
 			
-									<option value="Method--windwScrollDown"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;windwScrollDown()</option>
+						<option value="Method--LoadElementContentByAjax"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;LoadElementContentByAjax()</option>
 			
-									<option value="Method--WayPoint"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;WayPoint()</option>
+						<option value="Method--windwScrollDown"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;windwScrollDown()</option>
 			
-									<option value="Method--VirtualFileDownload"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;VirtualFileDownload()</option>
+						<option value="Method--WayPoint"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;WayPoint()</option>
 			
-									<option value="Method--VirtualImageUploadHandler"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;VirtualImageUploadHandler()</option>
+						<option value="Method--VirtualFileDownload"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;VirtualFileDownload()</option>
+			
+						<option value="Method--VirtualImageUploadHandler"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;VirtualImageUploadHandler()</option>
 			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
-									<option value="Property--param_LanguageId"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_LanguageId</option>
+						<option value="Property--param_LanguageId"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_LanguageId</option>
 			
-									<option value="Property--param_Charset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_Charset</option>
+						<option value="Property--param_Charset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_Charset</option>
 			
-									<option value="Property--param_CookieLifeTime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CookieLifeTime</option>
+						<option value="Property--param_CookieLifeTime"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CookieLifeTime</option>
 			
-									<option value="Property--param_CookieDomain"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CookieDomain</option>
+						<option value="Property--param_CookieDomain"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CookieDomain</option>
 			
-									<option value="Property--param_CookieSameSitePolicy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CookieSameSitePolicy</option>
+						<option value="Property--param_CookieSameSitePolicy"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CookieSameSitePolicy</option>
 			
-									<option value="Property--param_Notifications"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_Notifications</option>
+						<option value="Property--param_Notifications"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_Notifications</option>
 			
-									<option value="Property--param_NotificationDialogType"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotificationDialogType</option>
+						<option value="Property--param_NotificationDialogType"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotificationDialogType</option>
 			
-									<option value="Property--param_NotificationGrowlType"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotificationGrowlType</option>
+						<option value="Property--param_NotificationGrowlType"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotificationGrowlType</option>
 			
-									<option value="Property--param_NotificationTimeOK"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotificationTimeOK</option>
+						<option value="Property--param_NotificationTimeOK"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotificationTimeOK</option>
 			
-									<option value="Property--param_NotificationTimeERR"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotificationTimeERR</option>
+						<option value="Property--param_NotificationTimeERR"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotificationTimeERR</option>
 			
-									<option value="Property--param_NotifyLoadError"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotifyLoadError</option>
+						<option value="Property--param_NotifyLoadError"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_NotifyLoadError</option>
 			
-									<option value="Property--param_ModalBoxActive"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_ModalBoxActive</option>
+						<option value="Property--param_ModalBoxActive"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_ModalBoxActive</option>
 			
-									<option value="Property--param_ModalBoxNoCascade"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_ModalBoxNoCascade</option>
+						<option value="Property--param_ModalBoxNoCascade"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_ModalBoxNoCascade</option>
 			
-									<option value="Property--param_ModalBoxProtected"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_ModalBoxProtected</option>
+						<option value="Property--param_ModalBoxProtected"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_ModalBoxProtected</option>
 			
-									<option value="Property--param_LoaderImg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_LoaderImg</option>
+						<option value="Property--param_LoaderImg"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_LoaderImg</option>
 			
-						
-									<option value="Property--param_ImgOK"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_ImgOK</option>
 			
-									<option value="Property--param_ImgNotOK"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_ImgNotOK</option>
+						<option value="Property--param_ImgOK"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_ImgOK</option>
 			
-						
-						
-						
-									<option value="Property--param_CssOverlayBgColor"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CssOverlayBgColor</option>
+						<option value="Property--param_ImgNotOK"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_ImgNotOK</option>
 			
-									<option value="Property--param_CssOverlayOpacity"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CssOverlayOpacity</option>
 			
-						
+			
+			
+						<option value="Property--param_CssOverlayBgColor"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CssOverlayBgColor</option>
+			
+						<option value="Property--param_CssOverlayOpacity"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; var&nbsp;param_CssOverlayOpacity</option>
+			
+			
 			
 		</optgroup>
 		<optgroup label="Class Constants">
@@ -2283,13 +2362,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:48 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:50:39 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

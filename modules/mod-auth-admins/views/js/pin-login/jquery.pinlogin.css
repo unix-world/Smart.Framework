@@ -4,7 +4,7 @@
  * Version 1.0.3
  *
  * (c) 2023 unix-world.org
- * v.20231008
+ * v.20231020
  * contains fixes by unixman:
  * 		- fixed some styles
  */
@@ -41,6 +41,11 @@
 .pinlogin .pinlogin-field.invalid {
 	border: 1px solid #FFCC00;
 	color: #FF3300;
+}
+
+.pinlogin .pinlogin-field:focus {
+	outline: 0;
+	border-color: #129FEA;
 }
 
 /* END */

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartAppInfo        final class \ SmartAppInfo   implements \SmartInterfaceAppInfo  {   } ::    Class: SmartAppInfo Provides some methods for integration">
-<meta name="keywords" content="smartappinfo, final, class, implements, smartinterfaceappinfo, provides, some, methods, for, integration, between, the, smart.framework, app modules, language, php, located, at, lib run app-bootstrap.php, package, application, namespace, name, version, v.20210526, depends, usage, static, object, class::method, this, only, inheritance, chart, →, ↳, interface, public, function, testiftemplateexists, y template name, reimplemented, over, test, if, a, specific, app, template, exists, return, true, or, false, testifmoduleexists, y module name, module, properties, constants, sample, code, example, some method of this class, end, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartAppInfo final class \ SmartAppInfo implements \SmartInterfaceAppInfo { } :: Class: SmartAppInfo Provides some methods for integration between the">
+<meta name="keywords" content="smartappinfo, final, class, implements, smartinterfaceappinfo, provides, some, methods, for, integration, between, the, smart framework, app modules, language, php, located, at, lib run app bootstrap php, package, application, namespace, name, version, v, depends, usage, static, object, class method, this, only, inheritance, chart, →, ↳, interface, public, function, testifmoduleexists, string, y module name, bool, reimplemented, over, test, if, a, specific, app, module, exists, return, true, or, false, testiftemplateexists, y template name, template, properties, constants, sample, code, example, some method of this class, end, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartAppInfo">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartAppInfo</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -707,7 +707,7 @@ Provides some methods for integration between the Smart.Framework App/Modules.</
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartAppInfo</span></li>
 		
-		<li><b>Version:</b> v.20210526</li>
+		<li><b>Version:</b> v.20231008</li>
 		<li><b>Depends:</b> -</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -715,7 +715,7 @@ Provides some methods for integration between the Smart.Framework App/Modules.</
 				<li><b>Inheritance Chart:</b>
 			<ul>
 				<span class="doc-name"><i>class</i>&nbsp;\SmartAppInfo</span>&nbsp;&rarr;
-								<li>&nbsp;&#8627;&nbsp;<span class="doc-type-interface"><i>interface</i>&nbsp;\SmartInterfaceAppInfo</span></li>
+				<li>&nbsp;&#8627;&nbsp;<span class="doc-type-interface"><i>interface</i>&nbsp;\SmartInterfaceAppInfo</span></li>
 				
 			</ul>
 		</li>
@@ -728,26 +728,12 @@ Provides some methods for integration between the Smart.Framework App/Modules.</
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<div class="doc-container" id="Method--TestIfTemplateExists">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>TestIfTemplateExists</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$y_template_name` Parameter is REQUIRED">$y_template_name</span></b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
-	<br><span class="doc-reimplemented"><i>reimplemented&nbsp;</i>&nbsp;over&nbsp;<b>\SmartInterfaceAppInfo</b></span>
-	
-	
-			<div class="doc-method-comments">Test if a specific App Template Exists<br>
-RETURN: true or false</div>
-	
-	
-	
-</div><div class="doc-container" id="Method--TestIfModuleExists">
+<div class="doc-container" id="Method--TestIfModuleExists">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>TestIfModuleExists</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$y_module_name` Parameter is REQUIRED">$y_module_name</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_module_name` Parameter is REQUIRED">$y_module_name</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	<br><span class="doc-reimplemented"><i>reimplemented&nbsp;</i>&nbsp;over&nbsp;<b>\SmartInterfaceAppInfo</b></span>
 	
 	
@@ -757,6 +743,22 @@ RETURN: true or false</div>
 	
 	
 </div>
+<div class="doc-container" id="Method--TestIfTemplateExists">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>TestIfTemplateExists</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_template_name` Parameter is REQUIRED">$y_template_name</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-reimplemented"><i>reimplemented&nbsp;</i>&nbsp;over&nbsp;<b>\SmartInterfaceAppInfo</b></span>
+	
+	
+			<div class="doc-method-comments">Test if a specific App Template Exists<br>
+RETURN: true or false</div>
+	
+	
+	
+</div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -812,10 +814,10 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--TestIfTemplateExists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;TestIfTemplateExists()</option>
+						<option value="Method--TestIfModuleExists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;TestIfModuleExists()</option>
 			
 			
-									<option value="Method--TestIfModuleExists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;TestIfModuleExists()</option>
+						<option value="Method--TestIfTemplateExists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;TestIfTemplateExists()</option>
 			
 			
 			
@@ -838,13 +840,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:41 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:37 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

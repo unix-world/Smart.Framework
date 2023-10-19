@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartPgsqlDb        final class \ SmartPgsqlDb    {   } ::    Class: SmartPgsqlDb - provides a Static PostgreSQL DB Server Client that can be used just">
-<meta name="keywords" content="smartpgsqldb, final, class, provides, a, static, postgresql, db, server, client, that, can, be, used, just, with, the, default, connection, from, configs, tested, and, stable, php, on, versions, 9.0.x, 9.1.x, 9.2.x, 9.3.x, 9.4.x, 9.5.x, 9.6.x, 10.x, 11.x, 12.x, 13.x, pgpool-ii, 3.0.x, 3.1.x, 3.2.x, 3.3.x, 3.4.x, 3.5.x, 3.6.x, 3.7.x, 4.0.x, 4.1.x, pgbouncer, all, this, an, easy, convenient, way, to, work, as, methods, are, it, which, must, set, in, etc config.php, configs  pgsql, connects, automatically, when, needed, is, lazy, made, avoid, permanent, connections, pgsql, slower, down, app, takes, busy, slots, notice, you, should, never, modify, optional, parameter, always, have, value, of, string">
+<meta name="description" content="\SmartPgsqlDb final class \ SmartPgsqlDb { } :: Class: SmartPgsqlDb - provides a Static PostgreSQL DB Server Client that can be used just with the DEFAULT">
+<meta name="keywords" content="smartpgsqldb, final, class, provides, a, static, postgresql, db, server, client, that, can, be, used, just, with, the, default, connection, from, configs, tested, and, stable, on, versions, x, pgpool ii, pgbouncer, all, this, an, easy, convenient, way, to, work, as, methods, are, it, which, must, set, in, etc config php, configs  pgsql, connects, automatically, when, needed, is, lazy, made, avoid, permanent, connections, pgsql, slower, down, app, takes, busy, slots, notice, you, should, never, modify, optional, parameter, always, have, value, of, string, for, actually, not, use, at, reserved, advanced, usage, implement, derived, classes, like, smartpgsqlextdb, language, php, located, lib framework plugins lib db pgsql php, package, plugins database postgresql, namespace, name">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartPgsqlDb">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartPgsqlDb</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -697,9 +697,8 @@ select#select-summary {
 </h1>
 <!-- Description -->
 <div class="doc-comments">Class: SmartPgsqlDb - provides a Static PostgreSQL DB Server Client that can be used just with the DEFAULT connection from configs.<br>
-Tested and Stable with PHP 7.3 / 7.4 / 8.0 / 8.1<br>
-Tested and Stable on PostgreSQL versions: 9.0.x / 9.1.x / 9.2.x / 9.3.x / 9.4.x / 9.5.x / 9.6.x / 10.x / 11.x / 12.x / 13.x<br>
-Tested and Stable with PgPool-II versions: 3.0.x / 3.1.x / 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x<br>
+Tested and Stable on PostgreSQL versions: 9.0.x / 9.1.x / 9.2.x / 9.3.x / 9.4.x / 9.5.x / 9.6.x / 10.x / 11.x / 12.x / 13.x / 14.x<br>
+Tested and Stable with PgPool-II versions: 3.0.x / 3.1.x / 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x / 4.2.x<br>
 Tested and Stable with PgBouncer: all versions<br>
 This class provides an easy and convenient way to work with the PostgreSQL DEFAULT connection, as all methods are static.<br>
 It can be used just with the DEFAULT connection which must be set in etc/config.php: $configs['pgsql'].<br>
@@ -710,13 +709,13 @@ Actually you should not use this parameter at all as it is optional ... This par
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_db_pgsql.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_db_pgsql.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:Database:PostgreSQL</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartPgsqlDb</span></li>
 		
-		<li><b>Version:</b> v.20220119</li>
-		<li><b>Depends:</b> extensions:  PHP PostgreSQL ; classes: Smart, SmartHashCrypto, SmartUnicode, SmartUtils, SmartComponents</li>
+		<li><b>Version:</b> v.20230915</li>
+		<li><b>Depends:</b> extensions:  PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartUnicode, SmartComponents (optional) : constants: SMART_FRAMEWORK_SQL_CHARSET</li>
 		<li><b>Hints:</b> This  class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -743,9 +742,11 @@ Anyway, if there is a need to create an explicit connection to the DEFAULT Postg
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `server_connect()` --><div class="doc-container" id="Method--quote_likes">
+</div>
+<!-- Skip Internal-Priv Method: `server_connect()` -->
+<div class="doc-container" id="Method--quote_likes">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>quote_likes</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -759,9 +760,10 @@ This function IS NOT INTENDED TO ESCAPE AGAINST SQL INJECTIONS ; USE IT ONLY WIT
 	
 	
 	
-</div><div class="doc-container" id="Method--quote_regex">
+</div>
+<div class="doc-container" id="Method--quote_regex">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>quote_regex</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -775,11 +777,12 @@ This function IS NOT INTENDED TO ESCAPE AGAINST SQL INJECTIONS ; USE IT ONLY WIT
 	
 	
 	
-</div><div class="doc-container" id="Method--escape_str">
+</div>
+<div class="doc-container" id="Method--escape_str">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_str</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -795,11 +798,12 @@ This function WILL NOT ADD the SINGLE QUOTES (') arround the string, but just wi
 	
 	
 	
-</div><div class="doc-container" id="Method--escape_literal">
+</div>
+<div class="doc-container" id="Method--escape_literal">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_literal</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_string` Parameter is REQUIRED">$y_string</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -816,10 +820,11 @@ This is the preferred way to escape variables inside PostgreSQL SQL Statements, 
 	
 	
 	
-</div><div class="doc-container" id="Method--escape_identifier">
+</div>
+<div class="doc-container" id="Method--escape_identifier">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>escape_identifier</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_identifier` Parameter is REQUIRED">$y_identifier</span></b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_identifier` Parameter is REQUIRED">$y_identifier</span></b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -834,9 +839,11 @@ This function WILL ADD the DOUBLE QUOTES (&quot;) arround the identifiers (field
 	
 	
 	
-</div><div class="doc-container" id="Method--json_encode">
+</div>
+<div class="doc-container" id="Method--json_encode">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>json_encode</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mixed_content` Parameter is REQUIRED">$y_mixed_content</span></b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mixed_content` Parameter is REQUIRED">$y_mixed_content</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_depth` Parameter is OPTIONAL, with the Default Value: 512">$y_depth</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>512</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -850,10 +857,11 @@ This should be used with PostgreSQL json / jsonb fields.</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--check_if_schema_exists">
+</div>
+<div class="doc-container" id="Method--check_if_schema_exists">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>check_if_schema_exists</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_schema` Parameter is REQUIRED">$y_schema</span></b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_schema` Parameter is REQUIRED">$y_schema</span></b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;0/1
@@ -867,11 +875,12 @@ This should be used with PostgreSQL json / jsonb fields.</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--check_if_table_exists">
+</div>
+<div class="doc-container" id="Method--check_if_table_exists">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>check_if_table_exists</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_table` Parameter is REQUIRED">$y_table</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_schema` Parameter is OPTIONAL, with the Default Value: &quot;public&quot;">$y_schema</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;public&quot;</b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_table` Parameter is REQUIRED">$y_table</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_schema` Parameter is OPTIONAL, with the Default Value: &quot;public&quot;">$y_schema</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;public&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;0/1
@@ -886,11 +895,12 @@ This should be used with PostgreSQL json / jsonb fields.</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--count_data">
+</div>
+<div class="doc-container" id="Method--count_data">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>count_data</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
@@ -906,11 +916,12 @@ This function is intended to be used for count type queries: SELECT COUNT().</di
 	
 	
 	
-</div><div class="doc-container" id="Method--read_data">
+</div>
+<div class="doc-container" id="Method--read_data">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_data</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -926,11 +937,12 @@ This function is intended to be used for read type queries: SELECT.</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--read_adata">
+</div>
+<div class="doc-container" id="Method--read_adata">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_adata</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -946,11 +958,12 @@ This function is intended to be used for read type queries: SELECT.</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--read_asdata">
+</div>
+<div class="doc-container" id="Method--read_asdata">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_asdata</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -970,11 +983,12 @@ This function is intended to be used for read type queries: SELECT.</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--write_data">
+</div>
+<div class="doc-container" id="Method--write_data">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>write_data</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -990,11 +1004,12 @@ This function is intended to be used for write type queries: BEGIN (TRANSACTION)
 	
 	
 	
-</div><div class="doc-container" id="Method--write_igdata">
+</div>
+<div class="doc-container" id="Method--write_igdata">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>write_igdata</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$queryval` Parameter is REQUIRED">$queryval</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$params_or_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$params_or_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -1019,11 +1034,12 @@ This function will remain in the future to offer backward compatibility with Pos
 	
 	
 	
-</div><div class="doc-container" id="Method--prepare_statement">
+</div>
+<div class="doc-container" id="Method--prepare_statement">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>prepare_statement</b></span>&nbsp;(
-				<i>ARRAY-associative</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrdata` Parameter is REQUIRED">$arrdata</span></b></span>, 
-			<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$mode` Parameter is REQUIRED">$mode</span></b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>ARRAY-associative</i>&nbsp;<span class="doc-param-name"><b><span title="`$arrdata` Parameter is REQUIRED">$arrdata</span></b></span>, 
+	<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$mode` Parameter is REQUIRED">$mode</span></b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -1040,11 +1056,12 @@ or can be used with read_data(), read_adata(), read_asdata(), count_data() to bu
 	
 	
 	
-</div><div class="doc-container" id="Method--prepare_param_query">
+</div>
+<div class="doc-container" id="Method--prepare_param_query">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>prepare_param_query</b></span>&nbsp;(
-				<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$replacements_arr` Parameter is REQUIRED">$replacements_arr</span></b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$query` Parameter is REQUIRED">$query</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$replacements_arr` Parameter is REQUIRED">$replacements_arr</span></b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -1061,13 +1078,14 @@ The statement must not contain any Single Quotes to prevent SQL injections which
 	
 	
 	
-</div><div class="doc-container" id="Method--new_safe_id">
+</div>
+<div class="doc-container" id="Method--new_safe_id">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>new_safe_id</b></span>&nbsp;(
-				<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mode` Parameter is REQUIRED">$y_mode</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$y_id_field` Parameter is REQUIRED">$y_id_field</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_table_name` Parameter is REQUIRED">$y_table_name</span></b></span>, 
-			<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_schema` Parameter is OPTIONAL, with the Default Value: &quot;public&quot;">$y_schema</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;public&quot;</b></span>, 
-			<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
+		<i>ENUM</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_mode` Parameter is REQUIRED">$y_mode</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$y_id_field` Parameter is REQUIRED">$y_id_field</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_table_name` Parameter is REQUIRED">$y_table_name</span></b></span>, 
+	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_schema` Parameter is OPTIONAL, with the Default Value: &quot;public&quot;">$y_schema</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;public&quot;</b></span>, 
+	<i>RESOURCE</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_connection` Parameter is OPTIONAL, with the Default Value: &quot;DEFAULT&quot;">$y_connection</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DEFAULT&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -1084,7 +1102,13 @@ The statement must not contain any Single Quotes to prevent SQL injections which
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `list_db_tables()` --><!-- Skip Internal-Priv Method: `check_server_version()` --><!-- Skip Internal-Priv Method: `runtime_info()` --><!-- Skip Internal-Priv Method: `conform_config_array()` --><!-- Skip Internal-Priv Method: `connection_hash()` -->
+</div>
+<!-- Skip Internal-Priv Method: `list_db_tables()` -->
+<!-- Skip Internal-Priv Method: `check_server_version()` -->
+<!-- Skip Internal-Priv Method: `runtime_info()` -->
+<!-- Skip Internal-Priv Method: `conform_config_array()` -->
+<!-- Skip Internal-Priv Method: `connection_hash()` -->
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -1140,71 +1164,71 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--default_connect"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;default_connect()</option>
+						<option value="Method--default_connect"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;default_connect()</option>
 			
 			
-						
-			
-									<option value="Method--quote_likes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;quote_likes()</option>
 			
 			
-									<option value="Method--quote_regex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;quote_regex()</option>
+						<option value="Method--quote_likes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;quote_likes()</option>
 			
 			
-									<option value="Method--escape_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_str()</option>
+						<option value="Method--quote_regex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;quote_regex()</option>
 			
 			
-									<option value="Method--escape_literal"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_literal()</option>
+						<option value="Method--escape_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_str()</option>
 			
 			
-									<option value="Method--escape_identifier"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_identifier()</option>
+						<option value="Method--escape_literal"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_literal()</option>
 			
 			
-									<option value="Method--json_encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;json_encode()</option>
+						<option value="Method--escape_identifier"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;escape_identifier()</option>
 			
 			
-									<option value="Method--check_if_schema_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;check_if_schema_exists()</option>
+						<option value="Method--json_encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;json_encode()</option>
 			
 			
-									<option value="Method--check_if_table_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;check_if_table_exists()</option>
+						<option value="Method--check_if_schema_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;check_if_schema_exists()</option>
 			
 			
-									<option value="Method--count_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;count_data()</option>
+						<option value="Method--check_if_table_exists"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;check_if_table_exists()</option>
 			
 			
-									<option value="Method--read_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_data()</option>
+						<option value="Method--count_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;count_data()</option>
 			
 			
-									<option value="Method--read_adata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_adata()</option>
+						<option value="Method--read_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_data()</option>
 			
 			
-									<option value="Method--read_asdata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_asdata()</option>
+						<option value="Method--read_adata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_adata()</option>
 			
 			
-									<option value="Method--write_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write_data()</option>
+						<option value="Method--read_asdata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;read_asdata()</option>
 			
 			
-									<option value="Method--write_igdata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write_igdata()</option>
+						<option value="Method--write_data"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write_data()</option>
 			
 			
-									<option value="Method--prepare_statement"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prepare_statement()</option>
+						<option value="Method--write_igdata"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;write_igdata()</option>
 			
 			
-									<option value="Method--prepare_param_query"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prepare_param_query()</option>
+						<option value="Method--prepare_statement"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prepare_statement()</option>
 			
 			
-									<option value="Method--new_safe_id"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;new_safe_id()</option>
+						<option value="Method--prepare_param_query"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;prepare_param_query()</option>
 			
 			
-						
+						<option value="Method--new_safe_id"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;new_safe_id()</option>
 			
-						
 			
-						
 			
-						
 			
-						
+			
+			
+			
+			
+			
+			
+			
 			
 			
 		</optgroup>
@@ -1226,13 +1250,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:43 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:32 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

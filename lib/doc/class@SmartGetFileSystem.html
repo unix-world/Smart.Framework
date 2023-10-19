@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartGetFileSystem        final class \ SmartGetFileSystem    {   } -&gt;    Class: SmartGetFileSystem - provides the File System Get/Scan functions. This">
-<meta name="keywords" content="smartgetfilesystem, final, class, provides, the, file, system, get scan, functions, this, requires, use, of, relative, paths, to, force, using, correct, path, access, in, a, web, environment, application, must, be, folder, as, some-folder, or, some-folder my-file.txt, absolute, are, denied, by, internal, checks, they, not, safe, from, security, point, view, also, backward, like, some-file-or-folder, is, above, exposed, reasons, files, and, folders, contain, only, characters, a-z, can, slashes, separators, no, spaces, allowed, language, php, located, at, lib framework lib filesys.php, package, core:filesystem, namespace, name, version, v.20210513, depends, classes, smart, hints, handle, thread, concurency, filesystem, way, lock ex, lock, exclusive, feature, on, each, written, appended, thus, making">
+<meta name="description" content="\SmartGetFileSystem final class \ SmartGetFileSystem { } -&gt; Class: SmartGetFileSystem - provides the File System Get/Scan functions. This class requires">
+<meta name="keywords" content="smartgetfilesystem, final, class, provides, the, file, system, get scan, functions, this, requires, use, of, relative, paths, to, force, using, correct, path, access, in, a, web, environment, application, must, be, folder, as, some folder, or, some folder my file txt, absolute, are, denied, by, internal, checks, they, not, safe, from, security, point, view, also, backward, like, some file or folder, is, above, exposed, reasons, files, and, folders, contain, only, characters, a z, can, slashes, separators, no, spaces, allowed, language, php, located, at, lib core lib filesys php, package, application filesystem, namespace, name, version, v, depends, classes, smart, hints, handle, thread, concurency, filesystem, way, lock ex, lock, exclusive, feature, on, each, written, appended, thus, making">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartGetFileSystem">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartGetFileSystem</title>
@@ -461,14 +461,14 @@ nav.ux-navbar li > a:only-child::after {
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 		<ul class="menu">
-		<li><a href="index.html#Package--CoreFileSystem-" title="return to Index">return to Index</a></li>
+		<li><a href="index.html#Package--ApplicationFileSystem-" title="return to Index">return to Index</a></li>
 	</ul>
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -706,12 +706,12 @@ Files and Folders must contain ONLY safe characters as: `[a-z] [A-Z] [0-9] _ - .
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/framework/lib_filesys.php</span></li>
-		<li><span class="doc-package"><b>Package:</b> @Core:FileSystem</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/core/lib_filesys.php</span></li>
+		<li><span class="doc-package"><b>Package:</b> Application:FileSystem</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartGetFileSystem</span></li>
 		
-		<li><b>Version:</b> v.20210513</li>
+		<li><b>Version:</b> v.20231006</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		<li><b>Hints:</b> This  class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be safe</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -727,7 +727,8 @@ Files and Folders must contain ONLY safe characters as: `[a-z] [A-Z] [0-9] _ - .
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$list_files_and_dirs` Parameter is OPTIONAL, with the Default Value: false">$list_files_and_dirs</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$list_files_and_dirs` Parameter is OPTIONAL, with the Default Value: false">$list_files_and_dirs</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_protected_paths` Parameter is OPTIONAL, with the Default Value: false">$allow_protected_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -737,30 +738,32 @@ Files and Folders must contain ONLY safe characters as: `[a-z] [A-Z] [0-9] _ - .
 	
 	
 	
-</div><div class="doc-container" id="Method--get_storage">
+</div>
+<div class="doc-container" id="Method--get_storage">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_storage</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$recurring` Parameter is OPTIONAL, with the Default Value: true">$recurring</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$include_dot_files` Parameter is OPTIONAL, with the Default Value: false">$include_dot_files</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$search_pattern` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$search_pattern</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$recurring` Parameter is OPTIONAL, with the Default Value: true">$recurring</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$include_dot_files` Parameter is OPTIONAL, with the Default Value: false">$include_dot_files</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$search_pattern` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$search_pattern</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
 	
 	
 	
-</div><div class="doc-container" id="Method--search_files">
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--search_files">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>search_files</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$recurring` Parameter is REQUIRED">$recurring</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$include_dot_files` Parameter is REQUIRED">$include_dot_files</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$search_pattern` Parameter is REQUIRED">$search_pattern</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$limit_search_files` Parameter is REQUIRED">$limit_search_files</span></b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$search_prevent_file` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$search_prevent_file</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-			<span class="doc-param-name"><b><span class="doc-param-optional" title="`$search_prevent_override` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$search_prevent_override</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$recurring` Parameter is REQUIRED">$recurring</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$include_dot_files` Parameter is REQUIRED">$include_dot_files</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$search_pattern` Parameter is REQUIRED">$search_pattern</span></b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span title="`$limit_search_files` Parameter is REQUIRED">$limit_search_files</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$search_prevent_file` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$search_prevent_file</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$search_prevent_override` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$search_prevent_override</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -771,6 +774,7 @@ Files and Folders must contain ONLY safe characters as: `[a-z] [A-Z] [0-9] _ - .
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -792,7 +796,7 @@ Files and Folders must contain ONLY safe characters as: `[a-z] [A-Z] [0-9] _ - .
 </div>
 <div class="doc-code">
 	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Get&nbsp;Storage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">$filesys&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartGetFileSystem</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$data&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$filesys</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get_storage</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'my_dir/my_subdir'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$data</span><span style="color: #FFCC00; font-weight: bold">);<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;Search&nbsp;for&nbsp;Files&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">$obj&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartGetFileSystem</span><span style="color: #FFCC00; font-weight: bold">();<br>&nbsp;</span><span style="color: #FFFFFF">$arr&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$obj</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">search_files</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'uploads/'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">false</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'.svg'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'100'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$arr</span><span style="color: #FFCC00; font-weight: bold">);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
+<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Get&nbsp;Storage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">$filesys&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartGetFileSystem</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$data&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$filesys</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get_storage</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'my_dir/my_subdir'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$data</span><span style="color: #FFCC00; font-weight: bold">);<br><br>&nbsp;</span><span style="color: #999999">//&nbsp;Search&nbsp;for&nbsp;Files&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">$obj&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartGetFileSystem</span><span style="color: #FFCC00; font-weight: bold">();<br>&nbsp;</span><span style="color: #FFFFFF">$arr&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$obj</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">search_files</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'uploads/'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">false</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'.svg'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">100</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$arr</span><span style="color: #FFCC00; font-weight: bold">);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
 </span>
 </code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
@@ -826,13 +830,13 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--get_storage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_storage()</option>
+						<option value="Method--get_storage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_storage()</option>
 			
 			
-									<option value="Method--search_files"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;search_files()</option>
+						<option value="Method--search_files"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;search_files()</option>
 			
 			
 			
@@ -855,13 +859,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:39 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:34 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartSession        final class \ SmartSession    {   } ::    Class: SmartSession - provides an Application Session Container. Depending on the">
-<meta name="keywords" content="smartsession, final, class, provides, an, application, session, container, depending, on, the, smart.framework, init, settings, it, can, use, files, based, or, user, custom, example, redis, language, php, located, at, lib core plugins lib session.php, package, application:session, namespace, name, version, v.20220207, depends, extensions, module, classes, smart, smartutils, usage, dynamic, object, new, class method, this, only, methods, public, static, function, active, check, if, is, returns, boolean, true, false, not, get, mixed, yvariable, null, return, session  yvariable, found, empty, string, param, variable, to, a, specific, all, data, set, yvalue, successful, unsets, unset, start, already, started, called, automatically, when, used, for, thus, mandatory, be, should, just, special, circumstances">
+<meta name="description" content="\SmartSession final class \ SmartSession { } :: Class: SmartSession - provides an Application Session Container. Depending on the Smart.Framework INIT">
+<meta name="keywords" content="smartsession, final, class, provides, an, application, session, container, depending, on, the, smart framework, init, settings, it, can, use, files, based, or, user, custom, example, redis, language, php, located, at, lib core plugins lib session php, package, application plugins session, namespace, name, version, v, depends, extensions, module, classes, smart, smartutils, usage, dynamic, object, new, class   - method, this, only, methods, public, static, function, active, check, if, is, returns, boolean, true, false, not, get, mixed, yvariable, null, return, session  yvariable, found, empty, string, param, variable, to, a, specific, all, data, set, yvalue, successful, unsets, unset, start, already, started, called, automatically, when, used, for, thus, mandatory, be, should, just, special, circumstances">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartSession">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartSession</title>
@@ -461,14 +461,14 @@ nav.ux-navbar li > a:only-child::after {
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 		<ul class="menu">
-		<li><a href="index.html#Package--ApplicationSession-" title="return to Index">return to Index</a></li>
+		<li><a href="index.html#Package--ApplicationPluginsSession-" title="return to Index">return to Index</a></li>
 	</ul>
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -703,11 +703,11 @@ Depending on the Smart.Framework INIT settings, it can use [files] based session
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
 		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_session.php</span></li>
-		<li><span class="doc-package"><b>Package:</b> Application:Session</span></li>
+		<li><span class="doc-package"><b>Package:</b> Application:Plugins:Session</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartSession</span></li>
 		
-		<li><b>Version:</b> v.20220207</li>
+		<li><b>Version:</b> v.20231007</li>
 		<li><b>Depends:</b> extensions:  PHP Session Module ; classes: Smart, SmartUtils</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -734,9 +734,10 @@ returns BOOLEAN TRUE if active, FALSE if not</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--get">
+</div>
+<div class="doc-container" id="Method--get">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get</b></span>&nbsp;(
-				<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$yvariable` Parameter is OPTIONAL, with the Default Value: null">$yvariable</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
+		<i>MIXED</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$yvariable` Parameter is OPTIONAL, with the Default Value: null">$yvariable</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;MIXED
@@ -749,10 +750,11 @@ returns BOOLEAN TRUE if active, FALSE if not</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--set">
+</div>
+<div class="doc-container" id="Method--set">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>set</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$yvariable` Parameter is REQUIRED">$yvariable</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$yvalue` Parameter is REQUIRED">$yvalue</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$yvariable` Parameter is REQUIRED">$yvariable</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$yvalue` Parameter is REQUIRED">$yvalue</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -765,9 +767,10 @@ returns BOOLEAN TRUE if active, FALSE if not</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--unsets">
+</div>
+<div class="doc-container" id="Method--unsets">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>unsets</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$yvariable` Parameter is REQUIRED">$yvariable</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$yvariable` Parameter is REQUIRED">$yvariable</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
@@ -780,7 +783,8 @@ returns BOOLEAN TRUE if active, FALSE if not</div>
 	
 	
 	
-</div><div class="doc-container" id="Method--start">
+</div>
+<div class="doc-container" id="Method--start">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>start</b></span>&nbsp;(
 		
 	
@@ -795,6 +799,7 @@ It should be called just on special circumstances (Ex: force start session witho
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -850,19 +855,19 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--active"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;active()</option>
+						<option value="Method--active"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;active()</option>
 			
 			
-									<option value="Method--get"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get()</option>
+						<option value="Method--get"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get()</option>
 			
 			
-									<option value="Method--set"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set()</option>
+						<option value="Method--set"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;set()</option>
 			
 			
-									<option value="Method--unsets"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unsets()</option>
+						<option value="Method--unsets"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;unsets()</option>
 			
 			
-									<option value="Method--start"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;start()</option>
+						<option value="Method--start"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;start()</option>
 			
 			
 			
@@ -885,13 +890,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:44 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:38 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

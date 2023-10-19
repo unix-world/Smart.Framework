@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20231018 -->
+<!-- AuthAdmins Login # v.20231020 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -75,7 +75,7 @@ const AuthAdminsCheck = () => {
 				<div class="ux-grid-col c12 ux-center">
 					<div id="auth-admins-area-login">
 						[%%%IF:ID-USER:!=;%%%]<h6 style="color:#444444; cursor:help;" title="Auth Method: `[###ID-AUTH-MET|html###]`">Auth UserName:&nbsp;`[###ID-USER|html###]` :: [[###ID-AUTH-TYP|html###]]</h6>[%%%ELSE:ID-USER%%%]<!-- Auth UserName/Method/Type: N/A -->[%%%/IF:ID-USER%%%]
-						[%%%IF:USE-2FA:==1;%%%]<div style="color:#667788; font-weight:bold; cursor:help;" title="Two-Factor Authentication is ENABLED">2FA Token</div><div id="fa2-input"></div>[%%%ELSE:USE-2FA%%%]<!-- no FA2 -->[%%%/IF:USE-2FA%%%]
+						[%%%IF:USE-2FA:==1;%%%]<div style="color:#667788; font-weight:bold; cursor:help;" title="Two-Factor Authentication is ENABLED">2FA Token</div><div id="fa2-input" title="Enter the Two-Factor Authentication Pin Code here using your TOTP Token"></div>[%%%ELSE:USE-2FA%%%]<!-- no FA2 -->[%%%/IF:USE-2FA%%%]
 						<a id="special" title="Click here to Login ..." href="javascript:void(0)" onClick="AuthAdminsCheck();"><span style="color:#7BC043; font-size:2rem;"><b>Login to :// [###LOGIN-AREA|html###] Area</b></span></a>
 					</div>
 				</div>
@@ -100,6 +100,9 @@ const AuthAdminsCheck = () => {
 <script>
 (() => {
 	jQuery('#fa2-input').pinlogin({
+		autofocus: false,
+		hideinput: true,
+		delay: 75,
 		fields: 8,
 		complete: (digits) => {
 			AuthFA2.digits = digits;

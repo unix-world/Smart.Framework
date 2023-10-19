@@ -974,6 +974,14 @@ final class AppCodeUnpack {
 				true
 			);
 			$priv_keys = '';
+			if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) { // need to be stored as encrypted, use \SmartAuth::encrypt_privkey('key', 'pass-hash')
+				if((string)\trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY) != '') {
+					$priv_keys = (string) \trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY);
+					if((string)$priv_keys != '') {
+						$priv_keys = (string) \SmartAuth::decrypt_privkey((string)$priv_keys, (string)$hash_of_pass);
+					} //end if
+				} //end if
+			} //end if
 			//--
 			$hash_of_pass = (string) SmartHashCrypto::password((string)$_SERVER['PHP_AUTH_PW'], (string)$_SERVER['PHP_AUTH_USER']);
 			//--

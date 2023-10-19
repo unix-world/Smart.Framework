@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartMailerMimeDecode        final class \ SmartMailerMimeDecode    {   } -&gt;    Class: SmartMailerMimeDecode - provides an eMail MIME decoder. This class">
-<meta name="keywords" content="smartmailermimedecode, final, class, provides, an, email, mime, decoder, this, is, for, very, advanced, use, it, just, implements, the, decoding, to, a, php, array, by, messages, easy, parse, and, display, them, on-the-fly, smartmailermimeparser, language, located, at, lib core plugins lib mail decode.php, package, plugins:mailer, namespace, name, version, v.20210823, depends, classes, smart, usage, dynamic, object, new, class method, only, methods, public, function, construct, encoding, constructor, get working charset, string, return, current, charset, get, local, ex, utf-8, reset, after, parsing, avoid, re-create, clean, get bodies, message, part id, parsed, bodies, attachments, as, texts, 0.n, of, text, separe email from name, y address, utility, separe, from, email address, get header, key, value, header, properties, constants, documentation, index">
+<meta name="description" content="\SmartMailerMimeDecode final class \ SmartMailerMimeDecode { } -&gt; Class: SmartMailerMimeDecode - provides an eMail MIME decoder. This class is for very">
+<meta name="keywords" content="smartmailermimedecode, final, class, provides, an, email, mime, decoder, this, is, for, very, advanced, use, it, just, implements, the, decoding, to, a, php, array, by, messages, easy, parse, and, display, them, on the fly, smart, mailer, parser, language, located, at, lib framework plugins lib mail decode php, package, plugins mailer, namespace, name, version, v, depends, classes, smartunicode, smartfilesysutils, smartdetectimages, usage, dynamic, object, new, class   - method, only, methods, public, function, construct, encoding, constructor, get working charset, string, return, current, charset, get, local, ex, utf, reset, after, parsing, avoid, re create, clean, get bodies, message, part id, parsed, bodies, attachments, as, texts, n, of, text, separe email from name, y address, utility, separe, from, email address, get header, key, value, header">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMailerMimeDecode">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartMailerMimeDecode</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -699,18 +699,18 @@ select#select-summary {
 <div class="doc-comments">Class: SmartMailerMimeDecode - provides an eMail MIME decoder.<br>
 This class is for very advanced use.<br>
 It just implements the mime decoding to a PHP array by decoding Mime Email Messages.<br>
-To easy parse mime messages and display them on-the-fly use the class: SmartMailerMimeParser.</div><br>
+To easy parse mime messages and display them on-the-fly use the class: Smart Mailer Mime Parser.</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_mail_decode.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_mail_decode.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:Mailer</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartMailerMimeDecode</span></li>
 		
-		<li><b>Version:</b> v.20210823</li>
-		<li><b>Depends:</b> classes:  Smart</li>
+		<li><b>Version:</b> v.20230101</li>
+		<li><b>Depends:</b> classes:  SmartUnicode, Smart, SmartFileSysUtils, SmartDetectImages</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -725,7 +725,7 @@ To easy parse mime messages and display them on-the-fly use the class: SmartMail
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span class="doc-param-optional" title="`$encoding` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$encoding</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$encoding` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$encoding</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -736,7 +736,8 @@ To easy parse mime messages and display them on-the-fly use the class: SmartMail
 	
 	
 	
-</div><div class="doc-container" id="Method--get_working_charset">
+</div>
+<div class="doc-container" id="Method--get_working_charset">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_working_charset</b></span>&nbsp;(
 		
 	
@@ -749,7 +750,8 @@ To easy parse mime messages and display them on-the-fly use the class: SmartMail
 	
 	
 	
-</div><div class="doc-container" id="Method--reset">
+</div>
+<div class="doc-container" id="Method--reset">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>reset</b></span>&nbsp;(
 		
 	
@@ -761,10 +763,11 @@ To easy parse mime messages and display them on-the-fly use the class: SmartMail
 	
 	
 	
-</div><div class="doc-container" id="Method--get_bodies">
+</div>
+<div class="doc-container" id="Method--get_bodies">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_bodies</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$message` Parameter is REQUIRED">$message</span></b></span>, 
-			<span class="doc-param-name"><b><span title="`$part_id` Parameter is REQUIRED">$part_id</span></b></span>
+		<span class="doc-param-name"><b><span title="`$message` Parameter is REQUIRED">$message</span></b></span>, 
+	<span class="doc-param-name"><b><span title="`$part_id` Parameter is REQUIRED">$part_id</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
@@ -776,9 +779,10 @@ To easy parse mime messages and display them on-the-fly use the class: SmartMail
 	
 	
 	
-</div><div class="doc-container" id="Method--separe_email_from_name">
+</div>
+<div class="doc-container" id="Method--separe_email_from_name">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>separe_email_from_name</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$y_address` Parameter is REQUIRED">$y_address</span></b></span>
+		<span class="doc-param-name"><b><span title="`$y_address` Parameter is REQUIRED">$y_address</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
@@ -790,9 +794,10 @@ To easy parse mime messages and display them on-the-fly use the class: SmartMail
 	
 	
 	
-</div><div class="doc-container" id="Method--get_header">
+</div>
+<div class="doc-container" id="Method--get_header">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_header</b></span>&nbsp;(
-				<span class="doc-param-name"><b><span title="`$message` Parameter is REQUIRED">$message</span></b></span>
+		<span class="doc-param-name"><b><span title="`$message` Parameter is REQUIRED">$message</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
@@ -805,13 +810,17 @@ To easy parse mime messages and display them on-the-fly use the class: SmartMail
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
 	<h2 class="doc-header">class Properties</h2>
 </div>
 <!-- properties r.20200121 -->
-<!-- Skip Internal-Priv Property: `$arr_heads` --><!-- Skip Internal-Priv Property: `$arr_parts` --><!-- Skip Internal-Priv Property: `$arr_atts` -->
+<!-- Skip Internal-Priv Property: `$arr_heads` -->
+<!-- Skip Internal-Priv Property: `$arr_parts` -->
+<!-- Skip Internal-Priv Property: `$arr_atts` -->
+
 <!-- Constants -->
 <br>
 <div class="doc-container" id="Constants--Summary-">
@@ -851,31 +860,31 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--get_working_charset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_working_charset()</option>
+						<option value="Method--get_working_charset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_working_charset()</option>
 			
 			
-									<option value="Method--reset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;reset()</option>
+						<option value="Method--reset"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;reset()</option>
 			
 			
-									<option value="Method--get_bodies"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_bodies()</option>
+						<option value="Method--get_bodies"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_bodies()</option>
 			
 			
-									<option value="Method--separe_email_from_name"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;separe_email_from_name()</option>
+						<option value="Method--separe_email_from_name"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;separe_email_from_name()</option>
 			
 			
-									<option value="Method--get_header"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_header()</option>
+						<option value="Method--get_header"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;get_header()</option>
 			
 			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
-						
-						
-						
+			
+			
+			
 			
 		</optgroup>
 		<optgroup label="Class Constants">
@@ -889,13 +898,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:42 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:31 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

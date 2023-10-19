@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartModExtLib\AuthAdmins\SimpleAuthAdminsHandler        final class \SmartModExtLib\AuthAdmins\ SimpleAuthAdminsHandler    {   } ::    Simple Auth">
-<meta name="keywords" content="smartmodextlib authadmins simpleauthadminshandler, final, class, smartmodextlib authadmins, simpleauthadminshandler, simple, auth, admins, handler, this, provide, a, very, authentication, for, admin, area, admin.php task.php, using, single, account, with, username password, set, in, config-admin.php, required, constants, app auth admin username, app auth admin password, and, optional, the, app auth admin encrypted privkey, they, must, be, app auth privileges, language, php, located, at, modules mod-auth-admins libs simpleauthadminshandler.php, package, development:modules:authadmins, namespace, name, version, v.20210610, methods, public, static, function, authenticate, bool, enforce https, false, properties, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartModExtLib\AuthAdmins\SimpleAuthAdminsHandler final class \SmartModExtLib\AuthAdmins\ SimpleAuthAdminsHandler { } :: Simple Auth Admins Handler This">
+<meta name="keywords" content="smartmodextlib authadmins simpleauthadminshandler, final, class, smartmodextlib authadmins, simpleauthadminshandler, simple, auth, admins, handler, this, provide, a, very, authentication, for, admin, area, admin php task php, using, single, account, with, username password, set, in, config admin php, supports, http, basic, bear, swt, optional, required, constants, app auth admin username, app auth admin password, and, the, app auth admin encrypted privkey, they, must, be, app auth privileges, language, php, located, at, modules mod auth admins libs simpleauthadminshandler php, package, development modules authadmins, namespace, name, version, v, methods, public, static, function, authenticate, bool, enforce https, false, disable tokens, properties, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartModExtLib\AuthAdmins\SimpleAuthAdminsHandler</title>
@@ -463,9 +463,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -588,12 +588,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -695,6 +695,7 @@ select#select-summary {
 <!-- Description -->
 <div class="doc-comments">Simple Auth Admins Handler<br>
 This class provide a very simple authentication for admin area (admin.php|task.php) using a single account with username/password set in config-admin.php<br>
+Supports: HTTP Basic Auth ; HTTP Bear Auth (SWT) *optional*<br>
 Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD and *optional* the APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY ; they must be set in set in config-admin.php<br>
 Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)</div><br>
 <!-- Metainfo -->
@@ -706,7 +707,7 @@ Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)</div><b
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\AuthAdmins\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SimpleAuthAdminsHandler</span></li>
 		
-		<li><b>Version:</b> v.20210610</li>
+		<li><b>Version:</b> v.20231020</li>
 		
 		
 		
@@ -722,7 +723,8 @@ Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)</div><b
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--Authenticate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>Authenticate</b></span>&nbsp;(
-				<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$enforce_https` Parameter is OPTIONAL, with the Default Value: false">$enforce_https</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$enforce_https` Parameter is OPTIONAL, with the Default Value: false">$enforce_https</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$disable_tokens` Parameter is OPTIONAL, with the Default Value: false">$disable_tokens</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
@@ -733,6 +735,7 @@ Optional constants: APP_AUTH_PRIVILEGES (set in set in config-admin.php)</div><b
 	
 	
 </div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -779,7 +782,7 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--Authenticate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Authenticate()</option>
+						<option value="Method--Authenticate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Authenticate()</option>
 			
 			
 			
@@ -799,13 +802,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:29:33 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:55:54 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

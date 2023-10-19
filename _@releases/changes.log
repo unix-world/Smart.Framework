@@ -2,6 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+October 20, 2023
+	* security enhancements: rework of some authentication areas
+	* implement separate auth logging to Smart Auth system ; the logging accounts SQLite DB is read-only except if edited by an admin ; all the logging information moved to external SQLite DBs in logs, with suffix YYYY-MM-DD thus not need rotation, will auto-rotate daily
+	* implement better algorithm for DDOS protection ; allow 5 failed login attempts in 5 minutes for the same IP ; after 15 tries from the same IP it is blocked with a captcha that need to be solved or wait until the end of that day ...
+
 October 18, 2023
 	* bug fix: TPL Debug (was broken)
 	* Fix SmartHashCrypto::checksum : add much more security using 128 bit SHA384 which is extremely more secure ; SHA384 has resistances to length extension attack but SHA512 doesn't have

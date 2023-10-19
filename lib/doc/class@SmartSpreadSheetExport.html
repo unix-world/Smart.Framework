@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartSpreadSheetExport        final class \ SmartSpreadSheetExport    {   } -&gt;    Class: SmartSpreadSheetExport - Exports (structured) Data to XML">
-<meta name="keywords" content="smartspreadsheetexport, final, class, exports, structured, data, to, xml, spreadsheet, excel, language, php, located, at, lib core plugins lib spreadsheet.php, package, plugins:exportandimport, namespace, name, version, v.20210512, depends, classes, smart, usage, dynamic, object, new, class method, this, provides, only, methods, public, function, construct, int, y cell width, y cell height, getmimetype, getdispositionheader, string, y filename, file.xml, getfilecontents, y sheet name, array, y arr fields, y arr data, properties, constants, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartSpreadSheetExport final class \ SmartSpreadSheetExport { } -&gt; Class: SmartSpreadSheetExport - Exports (structured) Data to XML Spreadsheet (Excel">
+<meta name="keywords" content="smartspreadsheetexport, final, class, exports, structured, data, to, xml, spreadsheet, excel, language, php, located, at, lib framework plugins lib spreadsheet php, package, plugins exportandimport, namespace, name, version, v, depends, classes, smart, usage, dynamic, object, new, class   - method, this, provides, only, methods, public, function, construct, int, y cell width, y cell height, getmimetype, getdispositionheader, string, y filename, file xml, getfilecontents, y sheet name, array, y arr fields, y arr data, properties, constants, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartSpreadSheetExport">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartSpreadSheetExport</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -701,7 +701,7 @@ select#select-summary {
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_spreadsheet.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_spreadsheet.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:ExportAndImport</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartSpreadSheetExport</span></li>
@@ -722,8 +722,8 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_cell_width` Parameter is OPTIONAL, with the Default Value: 0">$y_cell_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
-			<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_cell_height` Parameter is OPTIONAL, with the Default Value: 0">$y_cell_height</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
+		<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_cell_width` Parameter is OPTIONAL, with the Default Value: 0">$y_cell_width</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>, 
+	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_cell_height` Parameter is OPTIONAL, with the Default Value: 0">$y_cell_height</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -733,7 +733,8 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--getMimeType">
+</div>
+<div class="doc-container" id="Method--getMimeType">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getMimeType</b></span>&nbsp;(
 		
 	
@@ -744,23 +745,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--getDispositionHeader">
+</div>
+<div class="doc-container" id="Method--getDispositionHeader">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getDispositionHeader</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_filename` Parameter is OPTIONAL, with the Default Value: &quot;file.xml&quot;">$y_filename</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;file.xml&quot;</b></span>
-	
-	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
-	
-	
-	
-	
-	
-	
-</div><div class="doc-container" id="Method--getFileContents">
-	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getFileContents</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_sheet_name` Parameter is REQUIRED">$y_sheet_name</span></b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_fields` Parameter is REQUIRED">$y_arr_fields</span></b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_data` Parameter is REQUIRED">$y_arr_data</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_filename` Parameter is OPTIONAL, with the Default Value: &quot;file.xml&quot;">$y_filename</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;file.xml&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
@@ -771,6 +759,22 @@ select#select-summary {
 	
 	
 </div>
+<div class="doc-container" id="Method--getFileContents">
+	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getFileContents</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_sheet_name` Parameter is REQUIRED">$y_sheet_name</span></b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_fields` Parameter is REQUIRED">$y_arr_fields</span></b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_data` Parameter is REQUIRED">$y_arr_data</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	
+	
+	
+	
+	
+	
+</div>
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -817,16 +821,16 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--getMimeType"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getMimeType()</option>
+						<option value="Method--getMimeType"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getMimeType()</option>
 			
 			
-									<option value="Method--getDispositionHeader"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDispositionHeader()</option>
+						<option value="Method--getDispositionHeader"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getDispositionHeader()</option>
 			
 			
-									<option value="Method--getFileContents"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getFileContents()</option>
+						<option value="Method--getFileContents"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getFileContents()</option>
 			
 			
 			
@@ -846,13 +850,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:44 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:33 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>

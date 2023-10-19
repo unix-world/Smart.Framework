@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<!-- Template: Smart.Framework@Documentor v.20210612 -->
+<!-- Template: Smart.Framework@Documentor v.20231010 -->
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartMarkdownToHTML        final class \ SmartMarkdownToHTML    {   } -&gt;    Class: SmartMarkdownToHTML - Exports Markdown (v2, smart flavour) Code to">
-<meta name="keywords" content="smartmarkdowntohtml, final, class, exports, markdown, v2, smart, flavour, code, to, html, language, php, located, at, lib core plugins lib markdown.php, package, plugins:convertersandparsers, namespace, name, version, v.20220214, depends, smartunicode, smartutils, smartyamlconverter, usage, dynamic, object, new, class method, this, provides, only, methods, public, function, construct, bool, y sbreakenabled, true, y mediaextraenabled, y lazyloadimgdisabled, false, string, y renderoptions, null, y relative url prefix, y log render notices, array, y arr preserve extra syntax, y usecompatibilitymode, constructor, with, many, options, parse, text, return, param, the, be, processed, converts, properties, constants, sample, hello, would, default, div, class  mkdw-line  hello, b smartmarkdowntohtml  b, or, if, set, paragraphs, p hello, p, cannot, nested, like, divs, but, is, just, another, option, end, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartMarkdownToHTML final class \ SmartMarkdownToHTML { } -&gt; Class: SmartMarkdownToHTML - Exports Markdown (v2, smart flavour) Code to HTML Code.">
+<meta name="keywords" content="smartmarkdowntohtml, final, class, exports, markdown, v2, smart, flavour, code, to, html, language, php, located, at, lib framework plugins lib markdown php, package, plugins convertersandparsers, namespace, name, version, v, depends, classes, smartenvironment, smartunicode, smarthtmlparser, optional constants, smart markdown lazyload default img, usage, dynamic, object, new, class   - method, this, provides, only, methods, public, function, construct, bool, y sbreakenabled, true, y mediaextraenabled, y lazyloadimgdisabled, false, string, y renderoptions, null, y relative url prefix, y log render notices, array, y arr preserve extra syntax, y usecompatibilitymode, constructor, with, many, options, parse, text, return, param, the, be, processed, converts, properties, constants, const, escapings replacements, sample, hello, would, default, div, class  mkdw line  hello, b smartmarkdowntohtml  b, or, if, set, paragraphs, p hello, p, cannot, nested, like, divs, but, is, just, another, option, end, documentation, index, definition">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMarkdownToHTML">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartMarkdownToHTML</title>
@@ -466,9 +466,9 @@ nav.ux-navbar li > a:only-child::after {
 	
 </nav>
 <!-- skip logo -->
-<!-- class r.20210525 -->
+<!-- class r.20220331 -->
 <!-- Styles -->
-<!-- styles r.20210417 -->
+<!-- styles r.20220906 -->
 <style type="text/css">
 .doc-package {
 	color: #3F51B5;
@@ -591,12 +591,12 @@ ul.doc-list ul {
 }
 div.doc-summary {
 	position: fixed;
-	bottom: 25px;
-	right: 25px;
+	top: 75px;
+	right: 175px;
 	padding: 10px;
 	background: #343C61;
 	color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	border: 1px solid #3C4663;
 	width: 45vw;
 	min-width: 320px !important;
 }
@@ -701,13 +701,13 @@ select#select-summary {
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> PHP<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/core/plugins/lib_markdown.php</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/framework/plugins/lib_markdown.php</span></li>
 		<li><span class="doc-package"><b>Package:</b> Plugins:ConvertersAndParsers</span></li>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartMarkdownToHTML</span></li>
 		
-		<li><b>Version:</b> v.20220214</li>
-		<li><b>Depends:</b> Smart,  SmartUnicode, SmartUtils, SmartYamlConverter</li>
+		<li><b>Version:</b> v.20231018</li>
+		<li><b>Depends:</b> classes:  Smart, SmartEnvironment, SmartUnicode, SmartHtmlParser ; optional-constants: SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
 		
@@ -722,14 +722,14 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-				<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sBreakEnabled` Parameter is OPTIONAL, with the Default Value: true">$y_sBreakEnabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_mediaExtraEnabled` Parameter is OPTIONAL, with the Default Value: true">$y_mediaExtraEnabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_lazyLoadImgDisabled` Parameter is OPTIONAL, with the Default Value: false">$y_lazyLoadImgDisabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_renderOptions` Parameter is OPTIONAL, with the Default Value: null">$y_renderOptions</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
-			<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_relative_url_prefix` Parameter is OPTIONAL, with the Default Value: null">$y_relative_url_prefix</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_log_render_notices` Parameter is OPTIONAL, with the Default Value: false">$y_log_render_notices</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-			<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_preserve_extra_syntax` Parameter is OPTIONAL, with the Default Value: null">$y_arr_preserve_extra_syntax</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
-			<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_useCompatibilityMode` Parameter is OPTIONAL, with the Default Value: false">$y_useCompatibilityMode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_sBreakEnabled` Parameter is OPTIONAL, with the Default Value: true">$y_sBreakEnabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_mediaExtraEnabled` Parameter is OPTIONAL, with the Default Value: true">$y_mediaExtraEnabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_lazyLoadImgDisabled` Parameter is OPTIONAL, with the Default Value: false">$y_lazyLoadImgDisabled</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_renderOptions` Parameter is OPTIONAL, with the Default Value: null">$y_renderOptions</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_relative_url_prefix` Parameter is OPTIONAL, with the Default Value: null">$y_relative_url_prefix</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_log_render_notices` Parameter is OPTIONAL, with the Default Value: false">$y_log_render_notices</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_arr_preserve_extra_syntax` Parameter is OPTIONAL, with the Default Value: null">$y_arr_preserve_extra_syntax</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>null</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_useCompatibilityMode` Parameter is OPTIONAL, with the Default Value: false">$y_useCompatibilityMode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -740,9 +740,10 @@ select#select-summary {
 	
 	
 	
-</div><div class="doc-container" id="Method--parse">
+</div>
+<div class="doc-container" id="Method--parse">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>parse</b></span>&nbsp;(
-				<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$text` Parameter is REQUIRED">$text</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
@@ -755,7 +756,10 @@ select#select-summary {
 	
 	
 	
-</div><!-- Skip Internal-Priv Method: `notices()` --><!-- Skip Internal-Priv Method: `validator()` -->
+</div>
+<!-- Skip Internal-Priv Method: `notices()` -->
+<!-- Skip Internal-Priv Method: `validator()` -->
+
 <!-- Properties -->
 <br>
 <div class="doc-container" id="Properties--Summary-">
@@ -769,6 +773,10 @@ select#select-summary {
 	<h2 class="doc-header">class Constants</h2>
 </div>
 <!-- constants r.20200121 -->
+<div class="doc-container" id="Constant--ESCAPINGS_REPLACEMENTS">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>ESCAPINGS_REPLACEMENTS</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[&quot;\\\\&quot; =&gt; &quot;\\&quot;, &quot;\\_&quot; =&gt; &quot;_&quot;, &quot;\\*&quot; =&gt; &quot;*&quot;, &quot;\\-&quot; =&gt; &quot;-&quot;, &quot;\\+&quot; =&gt; &quot;+&quot;, &quot;\\=&quot; =&gt; &quot;=&quot;, &quot;\\`&quot; =&gt; &quot;`&quot;, &quot;\\~&quot; =&gt; &quot;~&quot;, &quot;\\!&quot; =&gt; &quot;!&quot;, &quot;\\?&quot; =&gt; &quot;?&quot;, &quot;\\#&quot; =&gt; &quot;#&quot;, &quot;\\$&quot; =&gt; &quot;$&quot;, &quot;\\@&quot; =&gt; &quot;@&quot;, &quot;\\%&quot; =&gt; &quot;%&quot;, &quot;\\^&quot; =&gt; &quot;^&quot;, &quot;\\(&quot; =&gt; &quot;(&quot;, &quot;\\)&quot; =&gt; &quot;)&quot;, &quot;\\[&quot; =&gt; &quot;[&quot;, &quot;\\]&quot; =&gt; &quot;]&quot;, &quot;\\{&quot; =&gt; &quot;{&quot;, &quot;\\}&quot; =&gt; &quot;}&quot;, &quot;\\.&quot; =&gt; &quot;.&quot;, &quot;\\,&quot; =&gt; &quot;,&quot;, &quot;\\:&quot; =&gt; &quot;:&quot;, &quot;\\;&quot; =&gt; &quot;;&quot;, &quot;\\&lt;\\&lt;\\&lt;&quot; =&gt; &quot;&lt;&lt;&lt;&quot;]</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
 
 <!-- Sample Code -->
 <br>
@@ -811,15 +819,15 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-									<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
+						<option value="Method--__construct"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;__construct()</option>
 			
 			
-									<option value="Method--parse"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parse()</option>
+						<option value="Method--parse"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parse()</option>
 			
 			
-						
 			
-						
+			
+			
 			
 			
 		</optgroup>
@@ -829,6 +837,8 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
+						<option value="Constant--ESCAPINGS_REPLACEMENTS">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;ESCAPINGS_REPLACEMENTS</option>
+			
 			
 		</optgroup>
 				<optgroup label="Class Sample usage">
@@ -841,13 +851,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2022-02-21 17:28:42 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:28 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2022 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
 </center></div>
 </body>
 </html>
