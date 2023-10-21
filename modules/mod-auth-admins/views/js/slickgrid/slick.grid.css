@@ -1,5 +1,5 @@
 /*
-SlickGrid Styles :: v1.4.3.1.smart.20220915
+SlickGrid Styles :: v1.4.3.2.smart.20231021
 IMPORTANT: In order to preserve the uniform grid appearance, all cell styles need to have padding, margin and border sizes. No built-in (selected, editable, highlight, flashing, invalid, loading, :focus) or user-specified CSS classes should alter those!
 */
 
@@ -10,6 +10,10 @@ IMPORTANT: In order to preserve the uniform grid appearance, all cell styles nee
 .slickgrid-row-selected {
 	background: #FFFFDD;
 	color: #000000;
+}
+.slick-cell-editor-field-textarea {
+	white-space: nowrap;
+	overflow: auto;
 }
 /* end custom */
 

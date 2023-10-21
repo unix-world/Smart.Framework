@@ -39,7 +39,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20231020
+ * @version 	v.20231021
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -310,10 +310,12 @@ final class SmartAuthAdminsHandler {
 		$login_or_logout_form = (string) \SmartComponents::http_message_401_unauthorized(
 			(string) 'Authorization Required'.$login_msg_2fa,
 			(string) \SmartComponents::operation_notice('LOGIN FAILED: Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.').
+						$css_toolkit_ux."\n".
+						'<div>'.$btn_return_login_screen.'</div><hr>'."\n".
 						'<img width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_LOADER).'">'.
 						'&nbsp;&nbsp;'.
-						'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">'.
-						'<script>setTimeout(() => { self.location = \''.\Smart::escape_js((string)\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3000);</script>'
+						'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">'."\n".
+						'<script>setTimeout(() => { self.location = \''.\Smart::escape_js((string)\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3500);</script>'."\n"
 		);
 		//--
 		if(isset($_REQUEST['logout']) AND ((string)$_REQUEST['logout'] != '')) { // do logout
@@ -347,7 +349,7 @@ final class SmartAuthAdminsHandler {
 				\Smart::log_warning(__METHOD__.' # '.'AUTH-LOG DB Failed: `'.$e->getMessage().'`'); // just log the message
 				// IMPORTANT: this is not a fatal error, should continue without the Auth Logs DB ; the DB file may be corrupt due huge number of log entries, DDOS conditions or something else ...
 			} //end try catch
-			//-- try to check the failed logins
+			//-- try to check the failed logins ; Brute Force / Login DDOS Protection
 			$check_fail = 0;
 			if($modelAuthLog !== null) {
 				$check_fail = (int) $modelAuthLog->checkFailLoginsByIp(
@@ -385,18 +387,19 @@ final class SmartAuthAdminsHandler {
 					//--
 					$html_429_js = '';
 					if($require_captcha === true) {
-						$html_429_js = (string) '<div class="operation_info">To UNLOCK the Login Requests for your IP Address earlier, SOLVE the CAPTCHA below and return using the below button ...</div>'.\SmartCaptcha::drawCaptchaForm((string)self::CAPTCHA_FORM_NAME, '', '', true, true);
+						$html_429_js = (string) '<div class="operation_info">To UNLOCK the Login Requests for your IP Address earlier, SOLVE the CAPTCHA below and click the `Go Back` button below ...</div>'.\SmartCaptcha::drawCaptchaForm((string)self::CAPTCHA_FORM_NAME, '', '', true, true);
 					} else {
 						$html_429_js = '<script>setTimeout(() => { self.location = self.location; }, 15000);</script>'; // refresh every 15 sec
 					} //end if
 					\SmartFrameworkRuntime::outputHttpSafeHeader('Retry-After: '.(int)$retry_seconds);
 					\SmartFrameworkRuntime::Raise429Error(
-						'HTTP Status 429: TOO MANY FAILED Login ATTEMPTS For This IP ADDRESS ['.\SmartUtils::get_ip_client().']'."\n".
-							'Lock TIMEOUT: up to '.((int)$retry_seconds - (int)\time()).' seconds ...'."\n",
-						$css_toolkit_ux."\n".
-							\SmartComponents::operation_result('Login ALLOWED DateTime: '.\date('Y-m-d H:i:s O', (int)$retry_seconds))."\n".
+						(string) 'TOO MANY FAILED Login ATTEMPTS For This IP ADDRESS ['.\SmartUtils::get_ip_client().']'."\n".
+							'IP Lock TIMEOUT: up to '.((int)$retry_seconds - (int)\time()).' seconds ...'."\n",
+						(string) \SmartComponents::operation_result('Retry After DateTime: '.\date('Y-m-d H:i:s O', (int)$retry_seconds))."\n".
 							\SmartComponents::operation_notice('Current Server DateTime: '.\Smart::escape_html((string)\date('Y-m-d H:i:s O')))."\n".
-							$html_429_js.'<div>'.$btn_return_login_screen.'</div><hr>'."\n".
+							$css_toolkit_ux."\n".
+							$html_429_js."\n".
+							'<div>'.$btn_return_login_screen.'</div><hr>'."\n".
 							'<img width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_LOADER).'">'.
 							'&nbsp;&nbsp;'.
 							'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">'
@@ -763,7 +766,8 @@ final class SmartAuthAdminsHandler {
 							'ID-AUTH-MET' 	=> (string) $auth_method,
 							'ID-AUTH-TYP' 	=> (string) ((!!$is_swt_token_auth) ? 'SWT' : ((!!$is_stk_token_auth) ? 'STK' : 'DEF')).$login_msg_2fa,
 						]
-					)
+					),
+					'SEMAPHORE' => (string) \Smart::array_to_list([ 'skip:js-ui', 'skip:js-media', 'skip:unveil-js' ]),
 				]
 			);
 			//--

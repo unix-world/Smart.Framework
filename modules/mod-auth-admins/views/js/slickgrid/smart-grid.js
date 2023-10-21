@@ -1,7 +1,7 @@
 
 // JS: Smart Grid Object (SlickGrid + NavPager)
-// (c) 2006-2022 unix-world.org - all rights reserved
-// v.20220915
+// (c) 2006-2023 unix-world.org - all rights reserved
+// v.20231021
 
 // DEPENDS: jQuery, smartJ$Utils, smartJ$Browser, Growl (jQuery Gritter / jQuery Toastr), jQuery SlickGrid, jQuery SimplePagination
 
@@ -313,9 +313,9 @@ const SmartGrid = class{constructor(gridID, infoListID, jsonURL, cookieStorePref
 	//--
 
 	//-- get current offset
-	const getOffset = function() {
+	const getOffset = () => {
 		//--
-		return _Utils$.format_number_int(parseInt(crrOffset)); // must parse from string with px (ex: 100px)
+		return _Utils$.format_number_int(parseInt(crrOffset, 10) || 0); // must parse from string with px (ex: 100px)
 		//--
 	}; //END
 	_C$.getOffset = getOffset; // export

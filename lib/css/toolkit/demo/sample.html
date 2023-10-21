@@ -1,38 +1,39 @@
 <!DOCTYPE html>
 <!-- Smart UX CSS Toolkit :: r.8.7 / smart.framework.v.8.7 -->
-<!-- extended by unixman, (c) 2015-2022 unix-world.org :: License: BSD :: based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc. ; based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com -->
+<!-- extended by unixman, (c) 2015-2023 unix-world.org :: License: BSD :: based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc. ; based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com -->
 <html>
 <head>
-	<!-- basepath -->
-	<meta charset="UTF-8">
-	<title>Smart :: UX CSS Toolkit / Test</title>
-	<link rel="stylesheet" type="text/css" href="../../../core/plugins/fonts/typo/sans/ibm-plex-sans.css">
-	<link rel="stylesheet" href="../sf-icons.css">
-	<link rel="stylesheet" href="../ux-toolkit.css">
-	<link rel="stylesheet" href="../ux-toolkit-responsive.css">
-	<style>
-	* {
-		font-family: 'IBM Plex Sans',arial,sans-serif;
-		font-smooth: always;
-	}
-	.ux-button-custom:hover,
-	.ux-button-custom:focus {
-		background-color: #555555;
-		color: #EEEEEE;
-	}
-	.ux-button-custom:active {
-		background-color: #222222;
-		color: #FFFFFF;
-		box-shadow: none;
-	}
-	</style>
+<!-- basepath -->
+<meta charset="UTF-8">
+<title>Smart :: UX CSS Toolkit / Test</title>
+<link rel="stylesheet" type="text/css" href="../../../core/plugins/fonts/typo/sans/ibm-plex-sans.css">
+<link rel="stylesheet" href="../../default.css">
+<link rel="stylesheet" href="../sf-icons.css">
+<link rel="stylesheet" href="../ux-toolkit.css">
+<link rel="stylesheet" href="../ux-toolkit-responsive.css">
+<style>
+* {
+	font-family: 'IBM Plex Sans',arial,sans-serif;
+	font-smooth: always;
+}
+.ux-button-custom:hover,
+.ux-button-custom:focus {
+	background-color: #555555;
+	color: #EEEEEE;
+}
+.ux-button-custom:active {
+	background-color: #222222;
+	color: #FFFFFF;
+	box-shadow: none;
+}
+</style>
 </head>
 <body>
-
+<br>
 <div style="width:100% !important; padding-left:10px; padding-top:2px; padding-right:10px; box-sizing: border-box !important; -moz-box-sizing: border-box !important; -webkit-box-sizing: border-box !important;">
 
 	<div class="ux-section">
-		<h1>UX Toolkit <span style="color:#CCCCCC!important; font-weight:normal!important; font-size:75%!important;">r.20221114</span> - Overview</h1>
+		<h1>UX Toolkit <span style="color:#CCCCCC!important; font-weight:normal!important; font-size:75%!important;">r.20231020</span> - Overview</h1>
 	</div>
 
 	<br>
@@ -706,6 +707,24 @@
 <!-- Forms -->
 
 	<div class="ux-subsection"><h2>Form Elements</h2></div>
+
+	<h3>Form Elements outside a form, centered</h3>
+
+	<div style="padding:8px;">
+		<div class="ux-flex-center">
+			<div class="ux-grid-row ux-flex-center-container">
+				<div class="ux-grid-col c12">
+					<div>
+						<select name="fooselect" class="ux-field ux-field-xl">
+							<option value="CA">CA</option>
+							<option value="NY">NY</option>
+						<select>
+						<button class="ux-button ux-button-super ux-button-details">Test Button</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<h3>Form Input normalization</h3>
 

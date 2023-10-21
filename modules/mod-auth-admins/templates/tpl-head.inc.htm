@@ -1,4 +1,4 @@
-<!-- TPL Head r.20231018 :: [###SEMAPHORE|smartlist|html###] -->
+<!-- TPL Head r.20231020 :: [###SEMAPHORE|smartlist|html###] -->
 <!-- Template Path: [###TEMPLATE-PATH|html###] -->
 <!-- Template File: [###TEMPLATE-FILE|html###] -->
 <!-- Timezone:      [###TIMEZONE|html###] -->
@@ -24,10 +24,10 @@
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/css-app.inc.htm!@@@]
 <!-- Scripts -->
 [@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-base.inc.htm!@@@]
-[@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@]
-[%%%IF:SEMAPHORE:&*<load:utils-js>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-utils.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- Utils: skip -->[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<skip:js-media>;%%%]<!-- MediaJS: skip -->[%%%ELSE:SEMAPHORE%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-media.inc.htm!@@@][%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<load:utils-js>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-utils.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- UtilsJS: skip -->[%%%/IF:SEMAPHORE%%%]
 [%%%IF:SEMAPHORE:&*<skip:js-ui>;%%%]<!-- LightJS: skip -->[%%%ELSE:SEMAPHORE%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-ui.inc.htm!@@@][%%%/IF:SEMAPHORE%%%]
-[%%%IF:SEMAPHORE:&*<load:js-uix>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- UIx: skip -->[%%%/IF:SEMAPHORE%%%]
+[%%%IF:SEMAPHORE:&*<load:js-uix>;%%%][@@@SUB-TEMPLATE:!modules/mod-auth-admins/templates/js-uix.inc.htm!@@@][%%%ELSE:SEMAPHORE%%%]<!-- UIxJS: skip -->[%%%/IF:SEMAPHORE%%%]
 <!-- CSS -->
 [%%%IF:HEAD-CSS:==;%%%]<!-- no head css -->[%%%ELSE:HEAD-CSS%%%][###HEAD-CSS###][%%%/IF:HEAD-CSS%%%]
 <!-- JS -->

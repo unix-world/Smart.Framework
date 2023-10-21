@@ -1,4 +1,4 @@
-<!-- AuthAdmins Login # v.20231020 -->
+<!-- AuthAdmins Login # v.20231021 -->
 <style>
 body {
 	background-color: #FFFFFF !important;
@@ -56,46 +56,48 @@ const AuthAdminsCheck = () => {
 	}
 };
 </script>
-<div style="text-align:center; padding:8px;">
+<div style="padding:8px;">
 	<div><center>
 		<div id="info-area">
 			<div class="ux-grid-row">
-				<div class="ux-grid-col m1 s12"><span style="cursor:not-allowed;" title="This is a PRIVATE AREA and requires LOGIN with a valid UserName and Password ... Auth Area ID: `[###AREA-ID|html###]`"><img src="lib/framework/img/sign-info.svg" style="opacity:0.7;"></span></div>
+				<div class="ux-grid-col m1 s12"><span style="cursor:not-allowed;" title="This is a PRIVATE COMPUTER AREA and requires LOGIN using a valid combination of UserName&nbsp;and&nbsp;Password&nbsp;/&nbsp;Token.`"><img src="lib/framework/img/sign-info.svg" style="opacity:0.7;"></span></div>
 				<div class="ux-grid-col m4 s12"><span class="info" style="color:#778899!important;">Private&nbsp;Area</span></div>
-				<div class="ux-grid-col m2 s12"><i class="sfi sfi-xxl sfi-lock" style="color:#EFEFEF;"></i></div>
+				<div class="ux-grid-col m2 s12"><i class="sfi sfi-xxl sfi-lock" style="color:#EFEFEF; cursor:context-menu;" title="Auth Area ID: `[###AREA-ID|html###]"></i></div>
 				<div class="ux-grid-col m4 s12"><span style="font-size:1rem; font-weight:bold; line-height:48px; color:#DDDDDD;" id="info-alt-text"></span></div>
-				<div class="ux-grid-col m1 s12"><span style="cursor:help;" title="UNAUTHORIZED OR IMPROPER USE OF THIS PRIVATE COMPUTER AREA may result in administrative disciplinary actions, civil charges/criminal penalties, and/or other sanctions by the law ! DO NOT TRY to login without having an account on this area. Any attempt to enforce this authentication system will be recorded and logged (actions and the IP address) for security reasons." onClick="smartJ$Browser.AlertDialog('<b>' + smartJ$Utils.escape_html($(this).attr('title')) + '</b>', null, 'WARNING', 575, 250);"><img src="lib/framework/img/sign-question.svg" style="opacity:0.7;"></span></div>
+				<div class="ux-grid-col m1 s12"><span style="cursor:help;" title="UNAUTHORIZED OR IMPROPER USE OF THIS PRIVATE COMPUTER AREA may result in administrative disciplinary actions, civil charges/criminal penalties, and/or other sanctions by the law ! DO NOT TRY to login without having an account on this area. Any attempt to enforce this authentication system will be recorded and logged (actions and the IP Address) for security reasons. This area is protected by Smart.Unicorn Authentication System against Bruteforce or DDOS attacks. If try you enforce this area your IP Address will be recorded as evidence and temporary blocked." onClick="smartJ$Browser.AlertDialog('<b>' + smartJ$Utils.escape_html(jQuery(this).attr('title')) + '</b>', null, 'WARNING', null, null, 'alertable');"><img src="lib/framework/img/sign-question.svg" style="opacity:0.7;"></span></div>
 			</div>
 		</div>
 	</center></div>
 	<hr>
-	<div><center>
-		<div>
-			<div class="ux-grid-row">
-				<div class="ux-grid-col c12 ux-center">
-					<div id="auth-admins-area-login">
-						[%%%IF:ID-USER:!=;%%%]<h6 style="color:#444444; cursor:help;" title="Auth Method: `[###ID-AUTH-MET|html###]`">Auth UserName:&nbsp;`[###ID-USER|html###]` :: [[###ID-AUTH-TYP|html###]]</h6>[%%%ELSE:ID-USER%%%]<!-- Auth UserName/Method/Type: N/A -->[%%%/IF:ID-USER%%%]
-						[%%%IF:USE-2FA:==1;%%%]<div style="color:#667788; font-weight:bold; cursor:help;" title="Two-Factor Authentication is ENABLED">2FA Token</div><div id="fa2-input" title="Enter the Two-Factor Authentication Pin Code here using your TOTP Token"></div>[%%%ELSE:USE-2FA%%%]<!-- no FA2 -->[%%%/IF:USE-2FA%%%]
-						<a id="special" title="Click here to Login ..." href="javascript:void(0)" onClick="AuthAdminsCheck();"><span style="color:#7BC043; font-size:2rem;"><b>Login to :// [###LOGIN-AREA|html###] Area</b></span></a>
-					</div>
-				</div>
-				<div class="ux-grid-col c12 ux-center">
-					<div style="cursor:help;">
-						<img border="0" width="128" height="128" src="lib/core/img/app/globe.svg" alt="" title="Auth.Admins :: Authentication Module for Smart.Framework">
-					</div>
-				</div>
-				<div class="ux-grid-col c12 ux-center">
-					<div title="Click here to Logout ...">
-						<a id="special" href="[###LOGOUT-URL|html###]"><span style="color:#5E6885; font-size:1.25rem;"><b>Logout from :// All NameSpaces</b></span></a>
+	<div>
+		<div class="ux-grid-row">
+			<div class="ux-grid-col c12 ux-flex-center">
+				<div id="auth-admins-area-login" class="ux-flex-center-container">
+					<div class="ux-center">
+					[%%%IF:ID-USER:!=;%%%]
+						<h6 style="color:#444444; cursor:help;" title="Auth Method: `[###ID-AUTH-MET|html###]`">Auth UserName:&nbsp;`[###ID-USER|html###]` :: [[###ID-AUTH-TYP|html###]]</h6>
+					[%%%ELSE:ID-USER%%%]<!-- Auth UserName/Method/Type: N/A -->
+						[%%%IF:USE-2FA:==1;%%%]<div style="color:#667788; font-weight:bold; cursor:help;" title="Two-Factor Authentication is ENABLED">2FA Token (TOTP)</div><div id="fa2-input" title="Enter the Two-Factor Authentication Code here (TOTP 2FA Token)"></div>[%%%ELSE:USE-2FA%%%]<!-- no FA2 -->[%%%/IF:USE-2FA%%%]
+					[%%%/IF:ID-USER%%%]
+					<a id="special" title="Click here to Login ..." href="javascript:void(0)" onClick="AuthAdminsCheck();"><span style="color:#7BC043; font-size:2rem;"><b>Login to :// [###LOGIN-AREA|html###] Area</b></span></a>
 					</div>
 				</div>
 			</div>
+			<div class="ux-grid-col c12 ux-center" style="cursor:help;">
+				<img border="0" width="128" height="128" src="lib/core/img/app/globe.svg" alt="" title="Auth.Admins :: Authentication Module for Smart.Framework, SECURED by Smart.Unicorn Authentication System">
+			</div>
+			<div class="ux-grid-col c12 ux-center" title="Click here to Logout ...">
+				<a id="special" href="[###LOGOUT-URL|html###]"><span style="color:#5E6885; font-size:1.25rem;"><b>Logout from :// All NameSpaces</b></span></a>
+			</div>
 		</div>
-	</center></div>
+	</div>
 	<br>
 	<div><center>[###POWERED-HTML###]</center></div>
-	<div><a data-smart="open.modal" href="http://www.unix-world.org" target="unix_world_org" id="copyright"><b>&copy;&nbsp;2006-[###CRR-YEAR|html###]&nbsp;unix-world.org</b></a></div>
+	<div class="ux-center"><a data-smart="open.modal" href="http://www.unix-world.org" target="unix_world_org" id="copyright"><b>&copy;&nbsp;2006-[###CRR-YEAR|html###]&nbsp;unix-world.org</b></a></div>
 </div>
+[%%%IF:ID-USER:!=;%%%]
+<!-- FA2 js: skip -->
+[%%%ELSE:ID-USER%%%]
 [%%%IF:USE-2FA:==1;%%%]
 <script>
 (() => {
@@ -111,8 +113,9 @@ const AuthAdminsCheck = () => {
 })();
 </script>
 [%%%ELSE:USE-2FA%%%]
-<!-- no FA2 js -->
+<!-- FA2 js: n/a -->
 [%%%/IF:USE-2FA%%%]
+[%%%/IF:ID-USER%%%]
 <script>
 (() => {
 	const privateAreaText = [ // [22 langs] :: EN + 21
@@ -150,7 +153,7 @@ const AuthAdminsCheck = () => {
 			} else {
 				relFontsize = 20;
 			}
-			$('#info-alt-text').empty().hide().css({'font-size':relFontsize+'px'}).text(text).fadeIn('slow');
+			jQuery('#info-alt-text').empty().hide().css({'font-size':relFontsize+'px'}).text(text).fadeIn('slow');
 		}
 		i++;
 	};
