@@ -36,8 +36,8 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO, SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20231018
+ * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
+ * @version 	v.20231128
  * @package 	Application:Utils
  *
  */
@@ -81,11 +81,12 @@ final class SmartUtils {
 	private const FAKE_IP_CLIENT = '0.0.0.0'; 			// must differ from FAKE_IP_SERVER ; must be 0.0.0.0 to show as undetected
 	private const FAKE_IP_SERVER = '256.256.256.256'; 	// must differ from FAKE_IP_CLIENT ; must be 256.256.256.256 that does not exists ... so there is no risk to be solved on something that exists ...
 
+
 	//================================================================
 	// get the App Release Hash based on Framework Version.Release.ModulesRelease
 	// Avoid run this function before Smart.Framework was loaded, it depends on it
 	// THIS FUNCTION IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
-	public static function get_app_release_hash() {
+	public static function get_app_release_hash() : string {
 		//--
 		if((string)self::$AppReleaseHash == '') {
 			$hash = (string) SmartHashCrypto::crc32b((string)(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') ? SMART_FRAMEWORK_RELEASE_TAGVERSION : '').(string)(defined('SMART_FRAMEWORK_RELEASE_VERSION') ? SMART_FRAMEWORK_RELEASE_VERSION : '').(string)(defined('SMART_APP_MODULES_RELEASE') ? SMART_APP_MODULES_RELEASE : ''), true); // get as b36
@@ -100,7 +101,7 @@ final class SmartUtils {
 
 	//================================================================
 	// return the size of all current used cookies for the current domain
-	public static function cookies_current_size_used_on_domain() {
+	public static function cookies_current_size_used_on_domain() : int {
 		//--
 		return (int) strlen((string)SmartFrameworkRegistry::getServerVar('HTTP_COOKIE'));
 		//--
@@ -110,7 +111,7 @@ final class SmartUtils {
 
 	//================================================================
 	// return the max size of all current used cookies for the current domain
-	public static function cookie_size_max() {
+	public static function cookie_size_max() : int {
 		//--
 		return (int) SMART_FRAMEWORK_MAX_BROWSER_COOKIE_SIZE; // the max cookie size is 4096 includding name, time, domain, ... and the rest of cookie data, thus use max safe is 3072 bytes per cookie, as the rest will be reserved for UID and Session Cookies
 		//--
@@ -120,7 +121,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to get the cookie default expiration
-	public static function cookie_default_expire() {
+	public static function cookie_default_expire() : int {
 		//--
 		$expire = 0;
 		if(defined('SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME')) {
@@ -138,7 +139,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to get the cookie domain
-	public static function cookie_default_domain() {
+	public static function cookie_default_domain() : string {
 		//--
 		$cookie_domain = '';
 		if((defined('SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN')) AND ((string)SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN != '')) {
@@ -156,21 +157,23 @@ final class SmartUtils {
 
 
 	//================================================================
-	// use this function to get the cookie samesite policy
-	public static function cookie_default_samesite_policy() {
+	// use this function to get the cookie samesite policy: None, Lax, Strict, Empty
+	public static function cookie_default_samesite_policy() : string {
 		//--
 		$cookie_samesite_policy = '';
 		if((defined('SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE')) AND ((string)SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE != '')) {
-			switch((string)SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE) {
-				case 'None':
-				case 'Lax':
-				case 'Strict':
-					$cookie_samesite_policy = (string) SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE;
-					break;
-				default:
-					$cookie_samesite_policy = ''; // invalid, fall back to empty string
-			} //end switch
+			$cookie_samesite_policy = (string) ucfirst((string)strtolower((string)trim((string)SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE)));
 		} //end if
+		//--
+		switch((string)ucfirst((string)strtolower((string)trim((string)SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE)))) {
+			case 'None':
+			case 'Lax':
+			case 'Strict':
+				break;
+			case 'Empty':
+			default:
+				$cookie_samesite_policy = ''; // empty or invalid: fallback to empty ...
+		} //end switch
 		//--
 		return (string) $cookie_samesite_policy;
 		//--
@@ -180,7 +183,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to get cookies as it takes care of safe filtering of cookie values
-	public static function get_cookie(?string $cookie_name) {
+	public static function get_cookie(?string $cookie_name) : ?string {
 		//--
 		return SmartFrameworkRegistry::getCookieVar((string)$cookie_name); // mixed: null / string
 		//--
@@ -190,7 +193,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to check if a cookie is set
-	public static function isset_cookie(?string $cookie_name) {
+	public static function isset_cookie(?string $cookie_name) : bool {
 		//--
 		return (bool) SmartFrameworkRegistry::issetCookieVar((string)$cookie_name);
 		//--
@@ -200,7 +203,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to set cookies as it takes care to set them according with the cookie domain if set or not per app ; use zero expire time for cookies that will expire with browser session
-	public static function set_cookie(?string $cookie_name, ?string $cookie_data, ?int $expire_seconds=0, ?string $cookie_path='/', ?string $cookie_domain='@', ?string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) {
+	public static function set_cookie(?string $cookie_name, ?string $cookie_data, ?int $expire_seconds=0, ?string $cookie_path='/', ?string $cookie_domain='@', ?string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) : bool {
 		//--
 		if(headers_sent()) {
 			return false;
@@ -245,6 +248,7 @@ final class SmartUtils {
 			case 'Lax':
 			case 'Strict':
 				break;
+			case 'Empty':
 			default:
 				$cookie_samesite = '';
 		} //end switch
@@ -277,7 +281,7 @@ final class SmartUtils {
 
 	//================================================================
 	// use this function to unset cookies as it takes care to set them according with the cookie domain if set or not per app
-	public static function unset_cookie(?string $cookie_name, ?string $cookie_path='/', ?string $cookie_domain='@', ?string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) {
+	public static function unset_cookie(?string $cookie_name, ?string $cookie_path='/', ?string $cookie_domain='@', ?string $cookie_samesite='@', bool $cookie_secure=false, bool $cookie_httponly=false) : bool {
 		//--
 		return (bool) self::set_cookie((string)$cookie_name, null, -1, (string)$cookie_path, (string)$cookie_domain, (string)$cookie_samesite, (bool)$cookie_secure, (bool)$cookie_httponly);
 		//--
@@ -287,7 +291,7 @@ final class SmartUtils {
 
 	//================================================================
 	// obfuscate an URL parameter using b64s encode
-	public static function url_obfs_encode(?string $y_val) {
+	public static function url_obfs_encode(?string $y_val) : string {
 		//--
 		return (string) Smart::b64s_enc((string)$y_val);
 		//--
@@ -297,7 +301,7 @@ final class SmartUtils {
 
 	//================================================================
 	// de-obfuscate an URL parameter using b64s decode + safe filter
-	public static function url_obfs_decode(?string $y_enc_val) {
+	public static function url_obfs_decode(?string $y_enc_val) : string {
 		//--
 		return (string) SmartFrameworkSecurity::FilterUnsafeString((string)Smart::b64s_dec((string)$y_enc_val));
 		//--
@@ -307,18 +311,18 @@ final class SmartUtils {
 
 	//================================================================
 	// will return the time interval in days between 2 dates (negative = past ; positive = future)
-	public static function date_interval_days(?string $y_date_now, ?string $y_date_past) {
+	public static function date_interval_days(?string $y_date_now, ?string $y_date_past) : int {
 		//--
-		$y_date_now = date('Y-m-d', @strtotime($y_date_now));
-		$y_date_past = date('Y-m-d', @strtotime($y_date_past));
+		$y_date_now  = (string) date('Y-m-d', @strtotime((string)$y_date_now));
+		$y_date_past = (string) date('Y-m-d', @strtotime((string)$y_date_past));
 		//--
-		$tmp_ux_start = date('U', @strtotime($y_date_now)); // get date now in seconds
-		$tmp_ux_end = date('U', @strtotime($y_date_past)); // get date past in seconds
+		$tmp_ux_start = (int) date('U', @strtotime((string)$y_date_now));  // get date now in seconds
+		$tmp_ux_end   = (int) date('U', @strtotime((string)$y_date_past)); // get date past in seconds
 		//--
-		$tmp_ux_diff = Smart::format_number_int($tmp_ux_start - $tmp_ux_end); // calc interval in seconds
-		$tmp_ux_diff = Smart::format_number_int(ceil($tmp_ux_diff / (60 * 60 * 24))); // calc interval in days
+		$tmp_ux_diff = (int) Smart::format_number_int((int)$tmp_ux_start - (int)$tmp_ux_end); // calc interval in seconds
+		$tmp_ux_diff = (int) Smart::format_number_int((int)ceil((int)$tmp_ux_diff / (int)(60 * 60 * 24))); // calc interval in days
 		//--
-		return $tmp_ux_diff;
+		return (int) $tmp_ux_diff;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -326,34 +330,32 @@ final class SmartUtils {
 
 	//================================================================ Calculate DateTime with FIXED TimeZoneOffset
 	// this will NOT count the DayLight Savings when calculating date and time from GMT with offset
-	public static function datetime_fixed_offset($y_timezone_offset, $ydate) {
+	public static function datetime_fixed_offset(?string $y_timezone_offset, ?string $ydate) : string {
 		//--
 		// y_timezone_offset 	:: +0300 :: date('O')
 		// ydate 				:: yyyy-mm-dd H:i:s
 		//--
-		$tmp_tz_offset_sign = substr($y_timezone_offset, 0, 1);
-		$tmp_tz_offset_hour = substr($y_timezone_offset, 1, 2);
-		$tmp_tz_offset_mins = substr($y_timezone_offset, 3, 2);
+		$tmp_tz_offset_sign = (string) substr((string)$y_timezone_offset, 0, 1);
+		$tmp_tz_offset_hour = (string) substr((string)$y_timezone_offset, 1, 2);
+		$tmp_tz_offset_mins = (string) substr((string)$y_timezone_offset, 3, 2);
 		//--
-		$out = date('Y-m-d H:i:s', @strtotime($ydate.' '.$tmp_tz_offset_sign.''.$tmp_tz_offset_hour.' hours '.$tmp_tz_offset_sign.''.$tmp_tz_offset_mins.' minutes'));
-		//--
-		return $out ;
+		return (string) date('Y-m-d H:i:s', @strtotime((string)$ydate.' '.$tmp_tz_offset_sign.''.$tmp_tz_offset_hour.' hours '.$tmp_tz_offset_sign.''.$tmp_tz_offset_mins.' minutes'));
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	// Archive data (string) to B64/Zlib-Raw/Hex (v2 only)
-	public static function data_archive(?string $y_str) {
+	// Archive data (string) to B64/Zlib-Raw/Hex (v3 only)
+	public static function data_archive(?string $y_str) : string {
 		//-- if empty data, return empty string
 		if((string)$y_str == '') {
 			return '';
 		} //end if
 		//-- checksum of original data
-		$chksum = (string) SmartHashCrypto::sha256((string)$y_str);
+		$chksum = (string) SmartHashCrypto::sh3a384((string)$y_str, true); // B64
 		//-- prepare data and add checksum
-		$y_str = (string) trim((string)bin2hex((string)$y_str)).'#CKSUM256#'.$chksum; // use lower hex for data and for checksum ; compression will be better using a more restricted charset and not upper letters combined with lower letters
+		$y_str = (string) trim((string)bin2hex((string)$y_str)).'#CKSUM384V3#'.$chksum; // use lower hex for data and for checksum ; compression will be better using a more restricted charset and not upper letters combined with lower letters
 		$out = @gzdeflate((string)$y_str, -1, ZLIB_ENCODING_RAW); // don't make it string, may return false ; -1 = default compression of the zlib library is used which is 6
 		//-- check for possible deflate errors
 		if(($out === false) OR ((string)$out == '')) {
@@ -378,10 +380,11 @@ final class SmartUtils {
 		//--
 		$y_str = ''; // free mem
 		//-- add signature
-		$out = (string) trim((string)base64_encode((string)$out))."\n".'SFZ.20210818/B64.ZLibRaw.hex';
+		$out = (string) trim((string)base64_encode((string)$out))."\n".'[SFZ.20231031/B64.ZLibRaw.hex]'; // v3
+		$out .= "\n".'('.self::data_cksgn_archive((string)$out).')'; // v3+ signature
 		//-- test unarchive
-		$unarch_checksum = (string) SmartHashCrypto::sha256((string)self::data_unarchive($out));
-		if((string)$chksum != (string)$unarch_checksum) { // check: if there is a serious bug with ZLib or PHP we can't tolerate, so test decompress here !!
+		$unarch_checksum = (string) SmartHashCrypto::sh3a384((string)self::data_unarchive($out), true); // B64
+		if((string)$chksum !== (string)$unarch_checksum) { // check: if there is a serious bug with ZLib or PHP we can't tolerate, so test decompress here !!
 			Smart::log_warning(__METHOD__.' # Data Encode Check Failed');
 			return '';
 		} //end if
@@ -393,8 +396,27 @@ final class SmartUtils {
 
 
 	//================================================================
+	private static function data_cksgn_archive(string $pak) : string {
+		//--
+		$len = (string) (int) strlen((string)$pak);
+		//--
+		$crc32b  = (string) SmartHashCrypto::crc32b((string)$pak, true); // b36
+		$sh3a512 = (string) SmartHashCrypto::sh3a512((string)$pak."\v".$len, true); // b64
+		$sh3a384 = (string) SmartHashCrypto::sh3a384((string)$sh3a512.chr(0).$pak, true); // b64
+		$sh3a256 = (string) SmartHashCrypto::sh3a256((string)$pak.chr(0).$sh3a384, true); // b64
+		$sh3a224 = (string) SmartHashCrypto::sh3a224((string)$sh3a512.chr(0).$pak.chr(0).$crc32b.chr(0).$sh3a256.chr(0).$sh3a384, true); // b64
+		//--
+		$hmacSh3a224 = (string) SmartHashCrypto::hmac('SHA3-224', (string)$len."\v".$pak, (string)$sh3a224); // hex
+		//--
+		return (string) Smart::base_from_hex_convert((string)$hmacSh3a224, 62); // b62
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	// Unarchive data (string) from B64/Zlib-Raw/Hex (v2 and v1)
-	public static function data_unarchive(?string $y_enc_data) {
+	public static function data_unarchive(?string $y_enc_data) : string {
 		//--
 		$y_enc_data = (string) trim((string)$y_enc_data);
 		//--
@@ -405,17 +427,20 @@ final class SmartUtils {
 		$out = ''; // initialize output
 		//-- pre-process
 		$arr = array();
-		$arr = (array) explode("\n", (string)$y_enc_data, 3); // let it be 3 not 2 ; if there is some garbage ona new line after signature just let it there ...
+		$arr = (array) explode("\n", (string)$y_enc_data, 4); // let it be 4 not 3 ; if there is some garbage on a new line after signature ; also v3 have an extra checksum ... just let it there ...
 		$y_enc_data = ''; // free mem
 		$arr[0] = (string) trim((string)($arr[0] ?? '')); // is the data packet
 		$arr[1] = (string) trim((string)($arr[1] ?? '')); // signature
+		$arr[2] = (string) trim((string)($arr[2] ?? '')); // package checksum (just on v3)
 		//-- check signature
 		if((string)$arr[1] == '') {
 			Smart::log_warning(__METHOD__.' # Empty Package Signature');
 			return '';
 		} //end if
 		$versionDetected = 0;
-		if((string)$arr[1] == 'SFZ.20210818/B64.ZLibRaw.hex') { // v2
+		if((string)$arr[1] == '[SFZ.20231031/B64.ZLibRaw.hex]') { // v3
+			$versionDetected = 3;
+		} elseif((string)$arr[1] == 'SFZ.20210818/B64.ZLibRaw.hex') { // v2
 			$versionDetected = 2;
 		} elseif((string)$arr[1] == 'PHP.SF.151129/B64.ZLibRaw.HEX') { // v1
 			$versionDetected = 1;
@@ -423,6 +448,27 @@ final class SmartUtils {
 		if((int)$versionDetected <= 0) { // signature is different, try to decode but log the error
 			Smart::log_warning(__METHOD__.' # Invalid Package Signature: `'.$arr[1].'`');
 			return '';
+		} //end if
+		//-- verify package checksum (v3+ only)
+		if((int)$versionDetected == 3) {
+			//--
+			if(
+				((string)$arr[2] == '')
+				OR
+				(strpos((string)$arr[2], '(') !== 0)
+				OR
+				(substr((string)$arr[2], -1, 1) !== ')')
+			) {
+				Smart::log_warning(__METHOD__.' # Empty or Malformed Package CheckSign');
+				return '';
+			} //end if
+			//--
+			$cksgn = (string) '('.self::data_cksgn_archive((string)$arr[0]."\n".$arr[1]).')';
+			if((string)$cksgn !== (string)$arr[2]) {
+				Smart::log_warning(__METHOD__.' # Invalid Package CheckSign, signature does not match, archived data is unsafe !');
+				return '';
+			} //end if
+			//--
 		} //end if
 		//-- decode it (at least try)
 		if((string)$arr[0] == '') {
@@ -434,14 +480,16 @@ final class SmartUtils {
 			Smart::log_warning(__METHOD__.' # Invalid B64 Data @ v.'.$versionDetected);
 			return '';
 		} //end if
-		$out = @gzinflate($out);
+		$out = @gzinflate((string)$out);
 		if(($out === false) OR ((string)trim((string)$out) == '')) {
 			Smart::log_warning(__METHOD__.' # Invalid Zlib GzInflate Data @ v.'.$versionDetected);
 			return '';
 		} //end if
 		//-- post-process
-		$versionCksumSeparator = '#CKSUM256#'; // v2
-		if((int)$versionDetected == 1) {
+		$versionCksumSeparator = '#CKSUM384V3#'; // v3
+		if((int)$versionDetected == 2) {
+			$versionCksumSeparator = '#CKSUM256#'; // v2
+		} elseif((int)$versionDetected == 1) {
 			$versionCksumSeparator = '#CHECKSUM-SHA1#'; // v1
 		} //end if
 		if(((string)trim((string)$versionCksumSeparator) == '') OR (strpos((string)$out, (string)$versionCksumSeparator) === false)) {
@@ -459,6 +507,11 @@ final class SmartUtils {
 			$arr[0] = (string) strtolower((string)$arr[0]); // on v1 must be done this conversion, the v1 was exporting upper letter hex
 		} //end if
 		//--
+		if((int)strlen((string)$arr[0]) !== (int)strspn((string)$arr[0], (string)Smart::CHARSET_BASE_16)) {
+			Smart::log_warning(__METHOD__.' # Invalid HEX Charset v.'.$versionDetected);
+			return '';
+		} //end if
+		//--
 		$arr[0] = @hex2bin((string)$arr[0]); // don't make it string, may return false ; it is the data packet
 		if(($arr[0] === false) OR ((string)$arr[0] == '')) { // no trim here ... (the real string may contain only some spaces)
 			Smart::log_warning(__METHOD__.' # Invalid HEX Data v.'.$versionDetected);
@@ -467,12 +520,16 @@ final class SmartUtils {
 		//--
 		$arr[1] = (string) trim((string)$arr[1]); // the checksum
 		$is_checksum_ok = false;
-		if((int)$versionDetected == 1) { // v1, sha1
+		if((int)$versionDetected == 1) { // v1, sha1, HEX
 			if((string)SmartHashCrypto::sha1((string)$arr[0]) == (string)$arr[1]) {
 				$is_checksum_ok = true;
 			} //end if
-		} else { // v2, sha256
+		} elseif((int)$versionDetected == 2) { // v2, sha256, HEX
 			if((string)SmartHashCrypto::sha256((string)$arr[0]) == (string)$arr[1]) {
+				$is_checksum_ok = true;
+			} //end if
+		} else { // v3, sha3-384, B64
+			if((string)SmartHashCrypto::sh3a384((string)$arr[0], true) == (string)$arr[1]) {
 				$is_checksum_ok = true;
 			} //end if
 		} //end if else
@@ -488,9 +545,14 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function pretty_print_var($y_var, ?int $indent=0) {
+	public static function pretty_print_var($y_var, ?int $indent=0, bool $jsstyle=false) : string {
 		//--
 		$out = '';
+		//--
+		$marker = '=>';
+		if($jsstyle === true) {
+			$marker = ':';
+		} //end if
 		//--
 		if(is_array($y_var)) {
 			//--
@@ -500,7 +562,7 @@ final class SmartUtils {
 			} //end for
 			$indent += 1;
 			//--
-			$out .= '['."\n";
+			$out .= $spaces.'['."\n";
 			//--
 			foreach($y_var as $key => $val) {
 				//--
@@ -508,7 +570,7 @@ final class SmartUtils {
 				//--
 				if(is_array($val)) {
 					//--
-					$out .= "\t".$key.' => '.self::pretty_print_var($val, $indent);
+					$out .= "\t".$key.' '.$marker.' '.self::pretty_print_var($val, $indent);
 					//--
 				} else {
 					//--
@@ -524,7 +586,7 @@ final class SmartUtils {
 						$val = '`'.$val.'`';
 					} //end if else
 					//--
-					$out .= "\t".$key.' => '.$val;
+					$out .= "\t".$key.' '.$marker.' '.$val;
 					//--
 				} //end if else
 				//--
@@ -561,7 +623,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function pretty_print_bytes($y_bytes, ?int $y_decimals=1, ?string $y_separator=' ', ?int $y_base=1000) {
+	public static function pretty_print_bytes(int $y_bytes, int $y_decimals=1, ?string $y_separator=' ', int $y_base=1000) : string {
 		//--
 		$y_decimals = (int) $y_decimals;
 		if($y_decimals < 0) {
@@ -603,38 +665,6 @@ final class SmartUtils {
 		$y_bytes = $y_bytes / $y_base;
 		//--
 		return (string) Smart::format_number_dec($y_bytes, $y_decimals, '.', '').$y_separator.'TB';
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	public static function pretty_print_numbers($y_number, $y_decimals=1) {
-		//--
-		$y_decimals = (int) $y_decimals;
-		if($y_decimals < 0) {
-			$y_decimals = 0;
-		} //end if
-		if($y_decimals > 4) {
-			$y_decimals = 4;
-		} //end if
-		//--
-		if(!is_int($y_number)) {
-			return (string) $y_number;
-		} //end if
-		//--
-		if($y_number < 1000) {
-			return (string) Smart::format_number_int($y_number);
-		} //end if
-		//--
-		$y_number = $y_number / 1000;
-		if($y_number < 1000) {
-			return (string) Smart::format_number_dec($y_number, $y_decimals, '.', '').'k';
-		} //end if
-		//--
-		$y_number = $y_number / 1000;
-		//--
-		return (string) Smart::format_number_dec($y_number, $y_decimals, '.', '').'m';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -813,7 +843,7 @@ final class SmartUtils {
 			return '';
 		} //end if
 		//--
-		$y_count = Smart::format_number_int($y_count, '+');
+		$y_count = (int) Smart::format_number_int($y_count, '+');
 		if($y_count < 2) {
 			$y_count = 2;
 		} //end if
@@ -821,9 +851,9 @@ final class SmartUtils {
 			$y_count = 4096;
 		} //end if
 		//--
-		$ytxt = str_replace(',', ' ', SmartUnicode::str_tolower($ytxt));
-		$arr = self::extract_words_from_text_html($ytxt); // will do strip tags + normalize spaces
-		if(is_array($arr)) {
+		$ytxt = (string) str_replace(',', ' ', (string)SmartUnicode::str_tolower((string)$ytxt));
+		$arr = (array) self::extract_words_from_text_html((string)$ytxt); // will do strip tags + normalize spaces
+		if((int)Smart::array_size($arr) > 0) {
 			$arr = (array) array_unique($arr);
 		} //end if
 		//--
@@ -832,8 +862,8 @@ final class SmartUtils {
 			//--
 			$tmp_word = (string) trim((string)str_replace(['`', '~', '!', '@', '#', '$', '%', '^', '*', '(', ')', '_', '+', '=', '[', ']', '{', '}', '|', '\\', '/', '?', '<', '>', ',', ';', '"', "'"], ' ', (string)$vv));
 			$tmp_word = (string) trim((string)$tmp_word, ':'); // fix: this must not be replaced, just trimmed if on margins
-			$tmp_word = (string) preg_replace("/(\.)\\1+/", '.', $tmp_word); // suppress multiple . dots and replace with single dot
-			$tmp_word = (string) preg_replace("/(\-)\\1+/", '-', $tmp_word); // suppress multiple - minus signs and replace with single minus sign
+			$tmp_word = (string) preg_replace("/(\.)\\1+/", '.', (string)$tmp_word); // suppress multiple . dots and replace with single dot
+			$tmp_word = (string) preg_replace("/(\-)\\1+/", '-', (string)$tmp_word); // suppress multiple - minus signs and replace with single minus sign
 			$tmp_word = (string) trim((string)$tmp_word, '.-'); // trim left or right dots and minus signs
 			//--
 			if($clear_numbers === true) {
@@ -849,13 +879,13 @@ final class SmartUtils {
 				$kw[(string)$tmp_word]++;
 			} //end if
 			//--
-			if(Smart::array_size($kw) >= (int)$y_count) {
+			if((int)Smart::array_size($kw) >= (int)$y_count) {
 				break;
 			} //end if
 			//--
 		} //end for
 		//--
-		return (string) trim((string)implode(', ', array_keys((array)$kw)));
+		return (string) trim((string)implode(', ', (array)array_keys((array)$kw)));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -875,7 +905,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function cleanup_extra_spaces_from_text($ytxt) {
+	public static function cleanup_extra_spaces_from_text(?string $ytxt) : string {
 		//--
 		return (string) trim((string)preg_replace('/\s+/', ' ', (string)$ytxt)); // remove extra spaces from a text and replace them with single space
 		//--
@@ -884,120 +914,9 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function cleanup_numbers_from_text($ytxt) {
+	public static function cleanup_numbers_from_text(?string $ytxt) : string {
 		//-- TODO: keep version: '/(v|r)[0-9\.]+(x|X|y|Y|z|Z)?/'
 		return (string) trim((string)preg_replace('/(\b|\#)[0-9\(\)\[\]\-\:\+\.]+(\b|\#)/', ' ', ' '.$ytxt.' ')); // remove numbers from a text
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	// The crypto provider will be selected from the init value: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO
-	public static function crypto_blowfish_algo() {
-		//--
-		return (string) SmartCipherCrypto::blowfish_algo();
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	// This always provides a compatible layer with the JS Blowfish CBC
-	// It must be used for safe exchanging data between PHP and Javascript
-	// Also it may be used for persistent data (ex: data storage) ; this will be always supported even if the openssl blowfish support will dissapear the built-in support will be available
-	// If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY
-	// The crypto provider will be selected from the init value: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO
-	public static function crypto_blowfish_encrypt(?string $y_data, ?string $y_key='') {
-		//--
-		$y_key = (string) trim((string)$y_key);
-		if((string)$y_key == '') {
-			$key = (string) trim((string)SMART_FRAMEWORK_SECURITY_KEY);
-		} else {
-			$key = (string) $y_key;
-		} //end if
-		//--
-		return (string) SmartCipherCrypto::blowfish_encrypt((string)$key, (string)$y_data, (string)self::crypto_blowfish_algo());
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	// This always provides a compatible layer with the JS Blowfish CBC
-	// It can be used for safe data exchanging between PHP and Javascript
-	// Also it may be used for persistent data (ex: data storage) ; this will be always supported even if the openssl blowfish support will dissapear the built-in support will be available
-	// If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY
-	// The crypto provider will be selected from the init value: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO
-	public static function crypto_blowfish_decrypt(?string $y_data, ?string $y_key='') {
-		//--
-		$y_key = (string) trim((string)$y_key);
-		if((string)$y_key == '') {
-			$key = (string) trim((string)SMART_FRAMEWORK_SECURITY_KEY);
-		} else {
-			$key = (string) $y_key;
-		} //end if
-		//--
-		return (string) SmartCipherCrypto::blowfish_decrypt((string)$key, (string)$y_data, (string)self::crypto_blowfish_algo());
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	public static function crypto_algo() {
-		//--
-		$cipher = 'hash/sha384'; // default: internal
-		//--
-		if(defined('SMART_FRAMEWORK_SECURITY_CRYPTO')) {
-			if((string)trim((string)SMART_FRAMEWORK_SECURITY_CRYPTO) != '') {
-				$cipher = (string) trim((string)SMART_FRAMEWORK_SECURITY_CRYPTO);
-			} //end if
-		} //end if
-		//--
-		return (string) $cipher;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	// This is intended for general use of symetric crypto api in Smart.Framework with dynamic data
-	// It can use any of the: hash or openssl algos: blowfish, aes, camellia
-	// Important: do not use this method for persistent data ! Algos in OpenSSL may chanve over time
-	public static function crypto_encrypt(?string $y_data, ?string $y_key='') {
-		//--
-		$y_key = (string) trim((string)$y_key);
-		if((string)$y_key == '') {
-			$key = (string) trim((string)SMART_FRAMEWORK_SECURITY_KEY);
-		} else {
-			$key = (string) $y_key;
-		} //end if
-		//--
-		$cipher = (string) self::crypto_algo();
-		//--
-		return (string) SmartCipherCrypto::encrypt((string)$cipher, (string)$key, (string)$y_data);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	// This is intended for general use of symetric crypto api in Smart.Framework
-	// It can use any of the: hash or openssl algos: blowfish, aes, camellia
-	// Important: do not use this method for persistent data ! Algos in OpenSSL may chanve over time
-	public static function crypto_decrypt(?string $y_data, ?string $y_key='') {
-		//--
-		$y_key = (string) trim((string)$y_key);
-		if((string)$y_key == '') {
-			$key = (string) trim((string)SMART_FRAMEWORK_SECURITY_KEY);
-		} else {
-			$key = (string) $y_key;
-		} //end if
-		//--
-		$cipher = (string) self::crypto_algo();
-		//--
-		return (string) SmartCipherCrypto::decrypt((string)$cipher, (string)$key, (string)$y_data);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1013,7 +932,7 @@ final class SmartUtils {
 	 * @param STRING	$allowed_extensions			:: The list of allowed file extensions ; Default is '' ; Example to restrict to several extensions: '<ext1>,<ext2>,...<ext100>,...' ; set to empty string to allow all extenstions supported via Smart.Framework INI: SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS / SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS
 	 * @return ARRAY								:: array [ status => 'OK' | 'WARN' | 'ERR', 'message' => '' | 'WARN Message' | 'ERR Message', 'msg-code' => 0..n, 'filename' => '' | 'filename.ext', 'filetype' => '' | 'ext', 'filesize' => Bytes, 'filecontent' => '' | 'the Contents of the file ...' ]
 	 */
-	public static function read_uploaded_file(?string $var_name, ?int $var_index=-1, ?int $max_size=0, ?string $allowed_extensions='') {
+	public static function read_uploaded_file(?string $var_name, ?int $var_index=-1, ?int $max_size=0, ?string $allowed_extensions='') : array {
 		//-- {{{SYNC-HANDLE-F-UPLOADS}}} v.20220509
 		$var_name 	= (string) trim((string)$var_name);
 		$var_index 	= (int)    $var_index; // can be negative or 0..n
@@ -1237,7 +1156,7 @@ final class SmartUtils {
 	 * @param BOOLEAN 	$enforce_lowercase 			:: Set to TRUE to enforce lowercase file name ; DEFAULT is FALSE
 	 * @return MIXED								:: '' (empty string) if all OK ; FALSE (boolean) if upload failed ; otherwise will return a non-empty string with the ERROR / WARNING message if the file was not successfuly stored in the destination directory
 	 */
-	public static function store_uploaded_file(?string $dest_dir, ?string $var_name, ?int $var_index=-1, bool $allow_rewrite=true, ?int $max_size=0, ?string $allowed_extensions='', ?string $new_name='', bool $enforce_lowercase=false) {
+	public static function store_uploaded_file(?string $dest_dir, ?string $var_name, ?int $var_index=-1, bool $allow_rewrite=true, ?int $max_size=0, ?string $allowed_extensions='', ?string $new_name='', bool $enforce_lowercase=false) { // : MIXED return !!
 		//-- {{{SYNC-HANDLE-F-UPLOADS}}} v.20220509
 		$dest_dir = (string) $dest_dir;
 		$var_name = (string) trim((string)$var_name);
@@ -1443,7 +1362,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function client_ident_private_key() {
+	public static function client_ident_private_key() : string {
 		//--
 		return (string) self::get_visitor_signature().' [#] '.SMART_SOFTWARE_NAMESPACE.'*'.SMART_FRAMEWORK_SECURITY_KEY.'.';
 		//--
@@ -1454,9 +1373,9 @@ final class SmartUtils {
 	//================================================================
 	// generate a PRIVATE unique, very secure hash of the current user by IP and Browser Signature
 	// This key should never be exposed to the public, it is used to check signed data (which may be paired with visitor unique track id)
-	public static function unique_client_private_key() {
+	public static function unique_client_private_key() : string {
 		//--
-		return SmartHashCrypto::sha512('*'.self::client_ident_private_key(), true);
+		return (string) SmartHashCrypto::sh3a512('*'.self::client_ident_private_key(), true);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1465,9 +1384,9 @@ final class SmartUtils {
 	//================================================================
 	// generate a PRIVATE unique, very secure hash of the current user by loginID, IP and Browser Signature
 	// This key should never be exposed to the public, it is used to check signed data (which may be paired with visitor unique track id)
-	public static function unique_auth_client_private_key() {
+	public static function unique_auth_client_private_key() : string {
 		//--
-		return SmartHashCrypto::sha512('*'.SmartAuth::get_auth_username().self::client_ident_private_key(), true);
+		return (string) SmartHashCrypto::sh3a512('*'.SmartAuth::get_auth_id().'@'.SmartAuth::get_auth_area().'::'.SmartAuth::get_auth_realm().'|'.self::client_ident_private_key(), true);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1479,16 +1398,16 @@ final class SmartUtils {
 	// this should be never be trusted, the signature is public
 	// it must contain also the Robot keyword as it fails to identify as self-browser, at least to be identified as robot
 	// this signature should be used just for the internal browsing operations
-	public static function get_selfrobot_useragent_name() {
+	public static function get_selfrobot_useragent_name() : string {
 		//--
-		return 'Smart.Framework :: PHP/Robot :: SelfBrowser ('.php_uname().') @ '.SmartHashCrypto::sha1('SelfBrowser/PHP/'.php_uname().'/'.SMART_SOFTWARE_NAMESPACE.'/'.SMART_FRAMEWORK_SECURITY_KEY);
+		return (string) 'Smart.Framework :: PHP/Robot :: SelfBrowser ('.php_uname().') @ '.SmartHashCrypto::sha224('SelfBrowser/PHP/'.php_uname().'/'.SMART_SOFTWARE_NAMESPACE.'/'.SMART_FRAMEWORK_SECURITY_KEY);
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	public static function get_visitor_useragent() {
+	public static function get_visitor_useragent() : string {
 		//--
 		return (string) SmartFrameworkRegistry::getServerVar((string)'HTTP_USER_AGENT');
 		//--
@@ -1497,7 +1416,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function get_visitor_signature() {
+	public static function get_visitor_signature() : string {
 		//--
 		return (string) 'Visitor // '.trim((string)self::get_ip_client()).' :: '.self::get_visitor_useragent(); // fix: do not use self::get_ip_proxyclient() here ... if using DNS load balancing + multiple load balancers with multiple backends switching the load balancer (aka reverse proxy) when browsing and changing between web pages will change this signature which will change the client_ident_private_key() and then may lead to user session expired ...
 		//--
@@ -1508,21 +1427,21 @@ final class SmartUtils {
 	//================================================================
 	// This is the visitor UID as SHA512/B62 (86 bytes) calculated using the visitor private key, visitor public key (cookie) and the internal secret
 	// This can be public exposed and used for tracking purposes other than SMART_APP_VISITOR_COOKIE as it is a derivation of it, where another UID related with SMART_APP_VISITOR_COOKIE is needed ; can be really trusted, but the SMART_APP_VISITOR_COOKIE does not
-	public static function get_visitor_tracking_uid() {
+	public static function get_visitor_tracking_uid() : string {
 		//--
 		$uuid = '#';
 		if(defined('SMART_APP_VISITOR_COOKIE') AND ((string)trim((string)SMART_APP_VISITOR_COOKIE) != '')) { // {{{SYNC-SMART-UNIQUE-VAL-COOKIE}}}
 			$uuid = (string) SMART_APP_VISITOR_COOKIE;
 		} //end if
 		//--
-		return (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha512('>'.SMART_SOFTWARE_NAMESPACE.'['.self::client_ident_private_key().']'.$uuid.'>'.SMART_FRAMEWORK_SECURITY_KEY), 62);
+		return (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sh3a512('>'.SMART_SOFTWARE_NAMESPACE.'['.self::client_ident_private_key().']'.$uuid.'>'.SMART_FRAMEWORK_SECURITY_KEY), 62);
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	public static function get_encoding_charset() {
+	public static function get_encoding_charset() : string {
 		//--
 		return (string) SMART_FRAMEWORK_CHARSET;
 		//--
@@ -1532,7 +1451,7 @@ final class SmartUtils {
 
 	//================================================================
 	// ex: XMLHttpRequest
-	public static function get_server_current_request_with() {
+	public static function get_server_current_request_with() : string {
 		//--
 		return (string) SmartFrameworkRegistry::getServerVar('HTTP_X_REQUESTED_WITH');
 		//--
@@ -1552,7 +1471,7 @@ final class SmartUtils {
 
 	//================================================================
 	// ex: GET / POST / HEAD ... ; must not return an empty value ; if not detected, fallback to default GET
-	public static function get_server_current_request_method() {
+	public static function get_server_current_request_method() : string {
 		//--
 		$method = (string) SmartFrameworkRegistry::getServerVar('REQUEST_METHOD');
 		//--
@@ -1568,7 +1487,7 @@ final class SmartUtils {
 
 	//================================================================
 	// Ex: http:// or https:// ; must not return an empty protocol if not set but fallback to default: http://
-	public static function get_server_current_protocol() {
+	public static function get_server_current_protocol() : string {
 		//--
 		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
 			return (string) self::$cache[(string)__FUNCTION__];
@@ -1666,7 +1585,7 @@ final class SmartUtils {
 
 	//================================================================
 	// Ex: 80 or 443 or ... ; must not return an empty port if not set but fallback to default: 80
-	public static function get_server_current_port() {
+	public static function get_server_current_port() : string {
 		//--
 		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
 			return (string) self::$cache[(string)__FUNCTION__];
@@ -1747,7 +1666,7 @@ final class SmartUtils {
 	// Ex: 127.0.0.1 ; must not return an empty value ; in case of failure must log and return a fake, inexistent IP
 	// IMPORTANT: if proxy mode enabled this can be override by setting: SMART_FRAMEWORK_SRVPROXY_SERVER_IP
 	// for IPv6 will return the compressed format
-	public static function get_server_current_ip() {
+	public static function get_server_current_ip() : string {
 		//--
 		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
 			return (string) self::$cache[(string)__FUNCTION__];
@@ -1796,7 +1715,7 @@ final class SmartUtils {
 	//================================================================
 	// get the current domain or IP (Ex: localhost or mydom.ext or IP address) ; must not return an empty value ; if no domain detected return the server's IP
 	// IMPORTANT: if proxy mode enabled this can be override by setting: SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN
-	public static function get_server_current_domain_name() {
+	public static function get_server_current_domain_name() : string {
 		//--
 		// for IPv6 will return ex: [2001:0:6dcd:8c74::] ; {{{SYNC-SMART-SERVER-DOMAIN-IPV6-BRACKETS}}} ; {{{SYNC-SMART-SERVER-DOMAIN-IPV6-SHORT-COMPRESS}}}
 		//--
@@ -1854,7 +1773,7 @@ final class SmartUtils {
 	//================================================================
 	// get base domain without sub-domain (Ex: mydom.ext or IP address)
 	// IMPORTANT: if proxy mode enabled this can be override by setting: SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN
-	public static function get_server_current_basedomain_name() {
+	public static function get_server_current_basedomain_name() : string {
 		//--
 		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
 			return (string) self::$cache[(string)__FUNCTION__];
@@ -1886,7 +1805,7 @@ final class SmartUtils {
 	//================================================================
 	// get sub-domain without base domain (Ex: www.) ; works with subdom.domain.ext or sub.dom.domain.ext ; If IP address or no-extension domain, will return empty string
 	// IMPORTANT: if proxy mode enabled this can be override by setting: SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN
-	public static function get_server_current_subdomain_name() {
+	public static function get_server_current_subdomain_name() : string {
 		//--
 		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
 			return (string) self::$cache[(string)__FUNCTION__];
@@ -1914,7 +1833,7 @@ final class SmartUtils {
 
 	//================================================================
 	// Ex: /sites/test/script.php/page.html|path/to/something-else ; the path is decoded ; can be empty
-	public static function get_server_current_request_path() {
+	public static function get_server_current_request_path() : string {
 		//--
 		return (string) SmartFrameworkRegistry::getServerVar('PATH_INFO');
 		//--
@@ -1924,7 +1843,7 @@ final class SmartUtils {
 
 	//================================================================
 	// Ex: /sites/test/script.php?param= | /page.html (rewrited to some-script.php?var=val&ofs=...) ; it includes the current path. but RAW (not decoded)
-	public static function get_server_current_request_uri() {
+	public static function get_server_current_request_uri() : string {
 		//--
 		return (string) SmartFrameworkRegistry::getServerVar('REQUEST_URI');
 		//--
@@ -1933,8 +1852,18 @@ final class SmartUtils {
 
 
 	//================================================================
+	// Ex: Empty or http(s)://some-url
+	public static function get_server_current_request_referer() : string {
+		//--
+		return (string) SmartFrameworkRegistry::getServerVar('HTTP_REFERER');
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	// Ex: /sites/test/script.php
-	public static function get_server_current_full_script() {
+	public static function get_server_current_full_script() : string {
 		//--
 		return (string) Smart::fix_path_separator((string)SmartFrameworkRegistry::getServerVar('SCRIPT_NAME'), true); // Fix: if PHP is running on a Windows server it can contain \ instead of / so FORCE it
 		//--
@@ -1944,7 +1873,7 @@ final class SmartUtils {
 
 	//================================================================
 	// Ex: script.php ; can return empty on failure
-	public static function get_server_current_script() {
+	public static function get_server_current_script() : string {
 		//--
 		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
 			return (string) self::$cache[(string)__FUNCTION__];
@@ -1968,7 +1897,7 @@ final class SmartUtils {
 
 	//================================================================
 	// Ex: ?param1=one&param2=two ; if empty can return just ? or empty string if 2nd param is set to true
-	public static function get_server_current_queryurl(bool $use_blank_if_empty=false) {
+	public static function get_server_current_queryurl(bool $use_blank_if_empty=false) : string {
 		//--
 		$url_query = (string) SmartFrameworkRegistry::getServerVar('QUERY_STRING'); // will get without the prefix '?' as: page=one&subpage=two
 		//--
@@ -1988,7 +1917,7 @@ final class SmartUtils {
 
 	//================================================================
 	// Ex: /sites/test/
-	public static function get_server_current_path() {
+	public static function get_server_current_path() : string {
 		//--
 		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
 			return (string) self::$cache[(string)__FUNCTION__];
@@ -2040,7 +1969,7 @@ final class SmartUtils {
 		} //end if
 		$used_port = ':'.$current_port;
 		//--
-		$current_domain = self::get_server_current_domain_name(); // this shoud not return an empty value, but just in case
+		$current_domain = (string) self::get_server_current_domain_name(); // this shoud not return an empty value, but just in case
 		if((string)$current_domain == '') {
 			Smart::log_warning(__METHOD__.' # Cannot Determine Current Server URL / Domain');
 			$current_domain = (string) self::FAKE_IP_SERVER; // use a fake IP, that does not exists {{{SYNC-SRV-DETECTION-FAKE-IP}}}
@@ -2070,7 +1999,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function get_webserver_version() {
+	public static function get_webserver_version() : array {
 		//--
 		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
 			return (array) self::$cache[(string)__FUNCTION__];
@@ -2097,7 +2026,7 @@ final class SmartUtils {
 
 
 	//================================================================
-	public static function get_server_os() {
+	public static function get_server_os() : string {
 		//--
 		if(!array_key_exists((string)__FUNCTION__, self::$cache)) {
 			self::$cache[(string)__FUNCTION__] = null; // fix for PHP8
@@ -2199,7 +2128,7 @@ final class SmartUtils {
 	 *
 	 * @return 	BOOLEAN						:: TRUE if trusted ; FALSE if not
 	 */
-	public static function is_ip_client_trusted() {
+	public static function is_ip_client_trusted() : bool {
 		//--
 		$ip = (string) self::get_ip_client(); // this will check the validity of SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP !
 		if((string)trim((string)$ip) == '') {
@@ -2224,7 +2153,7 @@ final class SmartUtils {
 	 *
 	 * @return 	STRING						:: IP Address ; if no address detected will RAISE a FATAL ERROR ...
 	 */
-	public static function get_ip_client() {
+	public static function get_ip_client() : string {
 		//--
 		// # if SMART_FRAMEWORK_SRVPROXY_ENABLED is set to TRUE, should be only for PRIVATE NETWORKS like local behind a trusted reverse proxy (ex: load balancers)
 		// if custom IP detection was set and the custom IP detection fails (ex: missing the specific header defined in SMART_FRAMEWORK_SRVPROXY_CLIENT_IP) than the SMART_FRAMEWORK_SRVPROXY_UNTRUSTED_CLIENT_IP will be set internally and some features of Smart.Framework that depend on a trusted client IP detection will not be available (ex: session)
@@ -2354,7 +2283,7 @@ final class SmartUtils {
 	 *
 	 * @return 	STRING						:: IP Address or a space (if no proxy address detected)
 	 */
-	public static function get_ip_proxyclient() {
+	public static function get_ip_proxyclient() : string {
 		//--
 		if(array_key_exists((string)__FUNCTION__, self::$cache)) {
 			return (string) self::$cache[(string)__FUNCTION__];
@@ -2491,7 +2420,7 @@ final class SmartUtils {
 	//================================================================
 	// GET OS, BROWSER, IP :: ACCESS LOG
 	// This will be used only once
-	public static function get_os_browser_ip(?string $y_mode='') {
+	public static function get_os_browser_ip(?string $y_mode='') { // : MIXED return, ARRAY/STRING
 		//--
 		if((!array_key_exists((string)__FUNCTION__, self::$cache)) OR (!is_array(self::$cache[(string)__FUNCTION__]))) {
 			self::$cache[(string)__FUNCTION__] = []; // fix for PHP8
@@ -2730,7 +2659,7 @@ final class SmartUtils {
 	 * @return ARRAY					:: [ stdout, stderr, exitcode ]
 	 *
 	 */
-	public static function run_proc_cmd(?string $cmd, ?array $inargs=null, ?string $cwd='tmp/cache/run-proc-cmd', ?array $env=null) {
+	public static function run_proc_cmd(?string $cmd, ?array $inargs=null, ?string $cwd='tmp/cache/run-proc-cmd', ?array $env=null) : array {
 
 		//-- initialize
 		$descriptorspec = [
@@ -2855,7 +2784,7 @@ final class SmartUtils {
 	// gets the first value from simple or composed headers
 	// Example: 'X-Forwarded-For: client'
 	// Example: 'X-Forwarded-For: client, proxy1, proxy2'
-	private static function _head_value_get_first_val(?string $str) {
+	private static function _head_value_get_first_val(?string $str) : string {
 		//--
 		$str = (string) trim((string)$str);
 		//--
@@ -2888,7 +2817,7 @@ final class SmartUtils {
 	// gets the first value from simple or composed headers
 	// Example: 'X-Forwarded-For: client'
 	// Example: 'X-Forwarded-For: client, proxy1, proxy2'
-	private static function _head_value_get_last_val(?string $str) {
+	private static function _head_value_get_last_val(?string $str) : string {
 		//--
 		$str = (string) trim((string)$str);
 		//--
@@ -2927,7 +2856,7 @@ final class SmartUtils {
 	 * @internal
 	 *
 	 */
-	public static function registerInternalCacheToDebugLog() {
+	public static function registerInternalCacheToDebugLog() : void {
 		//--
 		if(SmartEnvironment::ifInternalDebug()) {
 			if(SmartEnvironment::ifDebug()) {

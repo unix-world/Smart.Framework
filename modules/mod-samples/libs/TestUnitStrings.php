@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20231007
+ * @version 	v.20231207
  *
  */
 final class TestUnitStrings {
@@ -55,6 +55,7 @@ final class TestUnitStrings {
 		//--
 
 		//--
+		$lorem_iso_text = 'Lorem Ipsum dolor sit Amet';
 		$unicode_text = '"Unicode78źź:ăĂîÎâÂșȘțȚşŞţŢグッド';
 		$invalid_string = (string) $unicode_text.pack("H*" ,'c32e').'#';
 		//--
@@ -400,7 +401,17 @@ final class TestUnitStrings {
 			if(!\is_array($test_parr)) {
 				$test_parr = array();
 			} //end if
-			if((\Smart::array_size($test_parr['xml']) <= 0) OR (\Smart::array_size($test_parr['xml'][0]) <= 0) OR (\Smart::array_size($test_parr['xml'][0]['line2']) <= 0) OR ((string)$test_parr['xml'][0]['line2'][0] != (string)$test_arr['line2'])) {
+			if(
+				(!is_array(($test_parr['xml'] ?? null)))
+				OR
+				(\Smart::array_size(($test_parr['xml'] ?? null)) <= 0)
+				OR
+				(\Smart::array_size(($test_parr['xml'][0] ?? null)) <= 0)
+				OR
+				(\Smart::array_size(($test_parr['xml'][0]['line2'] ?? null)) <= 0)
+				OR
+				((string)($test_parr['xml'][0]['line2'][0] ?? null) != (string)$test_arr['line2'])
+			) {
 				$err = 'ERROR: '.$the_test.' EXTENDED FAILED ...'.'#XML Array (from XML String): '.\print_r($test_parr['xml'],1)."\n\n".'#XML String (from ORIGINAL Array): '."\n".$test_xml;
 			} //end if
 			if(\class_exists('\\DOMDocument')) {
@@ -414,13 +425,27 @@ final class TestUnitStrings {
 			} //end if
 		} //end if
 		//--
-		$the_random_unicode_text = (string) \sha1($unicode_text.\Smart::random_number(1000,9999)).'-'.$unicode_text." \r\n\t".'-'.\Smart::uuid_10_num().'-'.\Smart::uuid_10_str().'-'.\Smart::uuid_10_seq();
+		$the_random_unicode_text = (string) \SmartHashCrypto::sha1((string)$unicode_text.\Smart::random_number(1000,9999)).'-'.$unicode_text." \r\n\t".'-'.\Smart::uuid_10_num().'-'.\Smart::uuid_10_str().'-'.\Smart::uuid_10_seq();
+		$arch_text = (string) str_repeat($lorem_iso_text."\t".$unicode_text, 1150)."\n".$the_random_unicode_text; // ~ 65KB
 		//--
 		if((string)$err == '') {
-			$the_test = 'Data: Archive / Unarchive (v2)';
+			$the_test = 'Data: Archive / Unarchive (v3)';
 			$tests[] = $the_test;
-			if((string)\SmartUtils::data_unarchive((string)\SmartUtils::data_archive($the_random_unicode_text)) !== (string)$the_random_unicode_text) {
-				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.$the_random_unicode_text.']';
+			$testPhpArchDataV3 = 'HclNDoIwEEDhw3CBoZ3OwFbwJ2lqCBSVJVhKE4kCCxM5vYTdy/vwSZ4FKXICMGVgyXsTkqfdxPYoZdw8JkeKMcp0VRuZ4E1GbTvX5mVHdzcwuUkV37U/Hx76Mlx19wMQufkU4LMmNLYDtZTV/D72QzwGG07o8z8='."\n".'[SFZ.20231031/B64.ZLibRaw.hex]'."\n".'(5uWtdgv2ICZ71xLMEKSYXxPMEL8Yamlx3losdn)';
+			if((string)\SmartUtils::data_unarchive((string)$testPhpArchDataV3) !== (string)$lorem_iso_text) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
+			} //end if
+			if((string)\SmartUtils::data_unarchive((string)\SmartUtils::data_archive((string)$arch_text)) !== (string)$arch_text) {
+				$err = 'ERROR: '.$the_test.' FAILED ...'.' ['.$the_random_unicode_text.']'; // too long to include all, the rest is fixed text ; include just the random part
+			} //end if
+		} //end if
+		//--
+		if((string)$err == '') {
+			$the_test = 'Data: Unarchive (v2)';
+			$tests[] = $the_test;
+			$testPhpArchDataV2 = 'Hcm5DcNADETRYtTAmscMGSs0HBkqgHv1X4IEZR//2cCmwDGlWbJR+TYMG6/J85C0xz+YcNpxfv/XTxzH6qymQ8khMStZKxlhHrLQZ+MuM4rVzmRGN/FUdV+aO2T0Gw=='."\n".'SFZ.20210818/B64.ZLibRaw.hex';
+			if((string)\SmartUtils::data_unarchive((string)$testPhpArchDataV2) !== (string)$lorem_iso_text) {
+				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if
 		//--
@@ -428,7 +453,7 @@ final class TestUnitStrings {
 			$the_test = 'Data: Unarchive (v1)';
 			$tests[] = $the_test;
 			$testPhpArchDataV1 = 'HclBDkBAEETRw1hLplupZimDSMRKHMD06Psfgdj9/IfM1ZQ9Z00YLVlnfxNc+Zt+j6Phc+HM3tDkbcn7eR3tuU3SDKGhjwrCUaM4i6dbS7r9qRgEdIsq6i8='."\n".'PHP.SF.151129/B64.ZLibRaw.HEX';
-			if((string)\SmartUtils::data_unarchive((string)$testPhpArchDataV1) !== 'Lorem Ipsum dolor sit Amet') {
+			if((string)\SmartUtils::data_unarchive((string)$testPhpArchDataV1) !== (string)$lorem_iso_text) {
 				$err = 'ERROR: '.$the_test.' FAILED ...';
 			} //end if
 		} //end if

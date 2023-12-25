@@ -416,7 +416,7 @@ final class SmartEnvironment { //  This class have to be able to run before load
  *
  * @depends 	SmartUnicode
  *
- * @version 	v.20221215
+ * @version 	v.20231029
  * @package 	Application
  *
  */
@@ -553,7 +553,7 @@ final class SmartFrameworkSecurity {
 			return null; // fix for Illegal string offset
 		} //end if
 		//--
-		if(is_object($value) OR is_resource($value)) { // objects or resources are not allowed to com from GET/POST/REQUEST
+		if(is_object($value) OR is_resource($value)) { // {{{SYNC-CONDITION-REQUEST-VAR-TYPES}}} objects or resources are not allowed to com from GET/POST/REQUEST
 			//--
 			$value = null; // invalid !! it comes from request
 			//--

@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class PageBuilderBackend {
 
 	// ::
-	// v.20230129
+	// v.20231119
 
 
 	private static $db = null;
@@ -1329,7 +1329,7 @@ final class PageBuilderBackend {
 							} elseif((string)$v['type'] == 'segment') {
 								$v['id'] = (string) \trim((string)($v['id'] ?? ''));
 								if((\strlen((string)$v['id']) >= 2) AND (\strlen((string)$v['id']) <= 63)) {
-									$v['id'] = (string) \Smart::safe_validname($v['id'], ''); // allow: [a-z0-9] _ - . @
+									$v['id'] = (string) \Smart::safe_validname((string)$v['id']); // allow: [a-z0-9] _ - . @
 									if((string)$v['id'] != '') {
 										$v['id'] = (string) '#'.$v['id']; // ensure is segment
 										if((\strlen((string)$v['id']) >= 2) AND (\strlen((string)$v['id']) <= 63)) { // db id constraint
@@ -1393,7 +1393,7 @@ final class PageBuilderBackend {
 		//--
 		$arr_upd = [];
 		foreach($y_refs_arr as $key => $val) {
-			if((\strlen((string)$val) < 2) OR (\strlen((string)$val) > 63) OR (((string)$val != (string)\Smart::safe_validname((string)$val, '')) AND ((string)$val != (string)'#'.\Smart::safe_validname((string)$val, '')))) { // allow: [a-z0-9] _ - . @
+			if((\strlen((string)$val) < 2) OR (\strlen((string)$val) > 63) OR (((string)$val != (string)\Smart::safe_validname((string)$val)) AND ((string)$val != (string)'#'.\Smart::safe_validname((string)$val)))) { // allow: [a-z0-9] _ - . @
 				return -3;
 			} //end if
 			$arr_upd[] = (string) $val;

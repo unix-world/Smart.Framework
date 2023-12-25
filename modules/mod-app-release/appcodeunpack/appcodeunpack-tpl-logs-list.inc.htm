@@ -1,4 +1,4 @@
-<!-- logs list v.20220928 -->
+<!-- logs list v.20231114 -->
 [%%%IF:APP-ID:!=;%%%]
 <style>
 div.logsRow {
@@ -48,13 +48,13 @@ const submitSelectedList = (name) => {
 			() => {
 				const dTime = new Date();
 				const uuid = AppJs.sha1(dTime) + '-' + AppJs.md5(dTime);
-				const theList = AppJs.b64enc(AppJs.bfenc(JSON.stringify(arr), uuid));
+				const theList = AppJs.b64enc(AppJs.bfEnc(uuid, JSON.stringify(arr)));
 				const theData = {
 					frm: {
 						appid: '[###APP-ID|js###]',
 						uuid: uuid,
 						list: theList,
-						checksum: AppJs.sha512(theList + '#' + uuid),
+						checksum: AppJs.sh3a512(theList + '#' + uuid, true),
 					}
 				};
 				showLoader();

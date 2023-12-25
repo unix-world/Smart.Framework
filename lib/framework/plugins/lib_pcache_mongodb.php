@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartUnicode, SmartHashCrypto, SmartMongoDb
- * @version 	v.20221224
+ * @version 	v.20231031
  * @package 	Plugins:PersistentCache:MongoDB
  *
  */
@@ -53,14 +53,14 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 	private static $is_active 	= null;								// Cache Active State ; by default is null ; on 1st check must set to TRUE or FALSE
 
 
-	final public static function getVersionInfo() {
+	final public static function getVersionInfo() : string {
 		//--
 		return (string) 'MongoDB: NoSQL / BigData based, Persistent Cache';
 		//--
 	} //END FUNCTION
 
 
-	final public static function isActive() {
+	final public static function isActive() : bool {
 		//--
 		if(self::$mongo === false) {
 			return false; // if errors encountered, deactivate mongo for this session !! {{{SYNC-PCACHE-MONGO-FAILURE}}}
@@ -83,28 +83,28 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function isMemoryBased() {
+	final public static function isMemoryBased() : bool {
 		//--
 		return false; // MongoDB is not a memory based cache backend, so it is FALSE
 		//--
 	} //END FUNCTION
 
 
-	final public static function isFileSystemBased() {
+	final public static function isFileSystemBased() : bool {
 		//--
 		return false; // MongoDB is not a FileSystem based cache backend, so it is FALSE
 		//--
 	} //END FUNCTION
 
 
-	final public static function isDbBased() {
+	final public static function isDbBased() : bool {
 		//--
 		return true; // MongoDB is a Database based cache backend, so it is TRUE
 		//--
 	} //END FUNCTION
 
 
-	final public static function clearData() {
+	final public static function clearData() : bool {
 		//--
 		if(!self::isActive()) {
 			return false;
@@ -130,7 +130,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function keyExists($y_realm, $y_key) {
+	final public static function keyExists(?string $y_realm, ?string $y_key) : bool {
 		//--
 		if(!self::isActive()) {
 			return false;
@@ -200,7 +200,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function getTtl($y_realm, $y_key) {
+	final public static function getTtl(?string $y_realm, ?string $y_key) : int {
 		//--
 		if(!self::isActive()) {
 			return -3;
@@ -281,7 +281,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function getKey($y_realm, $y_key) {
+	final public static function getKey(?string $y_realm, ?string $y_key) { // : MIXED
 		//--
 		if(!self::isActive()) {
 			return null;
@@ -359,7 +359,9 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function setKey($y_realm, $y_key, $y_value, $y_expiration=0) {
+	final public static function setKey(?string $y_realm, ?string $y_key, $y_value, ?int $y_expiration=0) : bool {
+		//--
+		// $y_value is MIXED TYPE, DO NOT CAST
 		//--
 		if(!self::isActive()) {
 			return false;
@@ -443,7 +445,7 @@ class SmartMongoDbPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function unsetKey($y_realm, $y_key) {
+	final public static function unsetKey(?string $y_realm, ?string $y_key) : bool {
 		//--
 		if(!self::isActive()) {
 			return false;

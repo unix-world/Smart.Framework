@@ -1,4 +1,4 @@
-<!-- v.20231018 -->
+<!-- v.20231105 -->
 [@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
 <style>
 table#data-tbl-tokens,
@@ -104,7 +104,7 @@ const accID = '[###ID|js###]';
 jQuery(() => {
 
 	const _Utils$ = smartJ$Utils;
-	const _Ba$eConv = smartJ$BaseEncode;
+	const _Ba$eConv = smartJ$BaseConv;
 	const _Crypto$Hash = smartJ$CryptoHash;
 	const _BwUtils$ = smartJ$Browser;
 
@@ -125,7 +125,7 @@ jQuery(() => {
 	};
 
 	vwTk = (iD, eTk, hS) => {
-		_BwUtils$.AlertDialog('<h4>Token Auth Username (ID)</h4>' + '<h6 style="color:#DDDDDD;">' + _Utils$.escape_html(iD + '#token') + '</h6>' + '<h4>Token Pass (Key)</h4>' + '<h6 style="color:#DDDDDD;">' + _Utils$.escape_html(deTk(eTk)) + '</h6>' + '<br>' + '<div style="color:#778899; font-size:0.625rem; word-wrap:break-word;">' + '<b>UUID:</b>&nbsp;' + _Utils$.escape_html(hS) + '</div>', null, 'Token Login Info', null, null, 'alertable');
+		_BwUtils$.AlertDialog('<h4>Token Auth UserName (ID)</h4>' + '<h6 style="color:#DDDDDD;">' + _Utils$.escape_html(iD + '#token') + '</h6>' + '<h4>Token Pass (Key)</h4>' + '<h6 style="color:#DDDDDD;">' + _Utils$.escape_html(deTk(eTk)) + '</h6>' + '<br>' + '<div style="color:#778899; font-size:0.625rem; word-wrap:break-word;">' + '<b>UUID:</b>&nbsp;' + _Utils$.escape_html(hS) + '</div>', null, 'Token Login Info', null, null, 'alertable');
 	};
 
 	dDlg = (iD, hS, nM) => {
@@ -271,17 +271,17 @@ jQuery(() => {
 				if(type === 'type' || type === 'sort') {
 					return data;
 				} else if(type === 'filter') {
-					return data + '\n' + row['restr-priv-lst'];
+					return data + '\n' + row['restr-priv'];
 				} else {
 					let sData = data;
 					if(sData.length > 35) {
 						sData = sData.substring(0,35) + '...';
 					}
-					let theSPrivs = row['restr-priv-lst'];
+					let theSPrivs = row['restr-priv'];
 					if(theSPrivs.length > 50) {
 						theSPrivs = theSPrivs.substring(0,50) + '...';
 					}
-					return '<span title="' + _Utils$.escape_html(data) + '\n\n' + _Utils$.escape_html(row['restr-priv-lst']) + '" style="cursor:help;">' + '<b>' + _Utils$.escape_html(sData) + '</b>' + '<br>' + '<span style="font-size:0.6875rem!important;">' + _Utils$.escape_html(theSPrivs) + '</span>' + '</span>';
+					return '<span title="' + _Utils$.escape_html(data) + '\n\n' + _Utils$.escape_html(row['restr-priv']) + '" style="cursor:help;">' + '<b>' + _Utils$.escape_html(sData) + '</b>' + '<br>' + '<span style="font-size:0.6875rem!important;">' + _Utils$.escape_html(theSPrivs) + '</span>' + '</span>';
 				}
 			},
 		},

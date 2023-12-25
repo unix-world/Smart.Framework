@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20231021 # this should be loaded from app web root only
+// # r.20231117 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2023.10.21'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2023.11.17'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -205,10 +205,6 @@ if(((int)SMART_FRAMEWORK_NETSERVER_ID < 0) OR ((int)SMART_FRAMEWORK_NETSERVER_ID
 //--
 if(!defined('SMART_FRAMEWORK_MAX_BROWSER_COOKIE_SIZE')) {
 	define('SMART_FRAMEWORK_MAX_BROWSER_COOKIE_SIZE', 3072); // max cookie size is 4096 but includding the name, time, domain, path and the rest ...
-} //end if
-//--
-if(!defined('SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO')) {
-	define('SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO', false);
 } //end if
 //--
 if(!defined('SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS')) {

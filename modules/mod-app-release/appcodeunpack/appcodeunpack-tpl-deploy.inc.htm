@@ -1,4 +1,4 @@
-<!-- deploy form v.20220928 -->
+<!-- deploy form v.20231106 -->
 <form name="unpack-form" id="unpack-form" method="post" enctype="multipart/form-data" action="#" onsubmit="return false;">
 <div class="boxTable greyTable">
 	<table width="width:100%;">
@@ -26,7 +26,7 @@
 [%%%LOOP:APP-IDS-ARR%%%]
 <option value="[###APP-IDS-ARR._-VAL-_|html###]">[###APP-IDS-ARR._-VAL-_|html###]</option>
 [%%%/LOOP:APP-IDS-ARR%%%]
-</select> &nbsp; <input type="text" name="frm[appid-hash]" size="40" maxlength="40" class="ux-field ux-field-xl customInput" placeholder="AppID-Hash" title="Enter the AppID-Hash" autocomplete="off" required>
+</select> &nbsp; <input type="text" name="frm[appid-hash]" size="128" maxlength="128" class="ux-field ux-field-xl customInput" placeholder="AppID-Hash" title="Enter the AppID-Hash" autocomplete="off" required>
 <br>
 <input type="file" accept=".z-netarch" title="Browse a NetArchive (.z-netarch) AppPackCode Package" name="znetarch" id="file-znetarch" class="ux-field ux-field-xl customInput" autocomplete="off" required> &nbsp; <span style="color:#888888;">Max File Size support (php.ini): [###MAX-UPLD-SIZE|html###]</span>
 <br>

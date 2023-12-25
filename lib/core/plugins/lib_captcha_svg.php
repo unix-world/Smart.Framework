@@ -73,7 +73,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartMarkersTemplating, SmartSvgCaptchaPoint ; constants: SMART_FRAMEWORK_SECURITY_KEY
- * @version 	v.20231020
+ * @version 	v.20231203
  * @package 	development:Captcha
  */
 final class SmartSVGCaptcha {
@@ -458,7 +458,7 @@ final class SmartSVGCaptcha {
 			$ngf = (int) ($ngf >= Smart::array_size($glyphs) ? (Smart::array_size($glyphs) - 1) : $ngf);
 		} else {
 			// If no range is specified in $dsettings
-			$ngf = (int) Smart::random_number(0, Smart::array_size($glyphs) - 1);
+			$ngf = (int) Smart::random_number(0, (int)(Smart::array_size($glyphs) - 1));
 		} //end if else
 		//-- Choose a random range of glyph fragments.
 		$chosen_keys = $this->arr_rand_safe($glyphs, $ngf, true);
@@ -469,13 +469,13 @@ final class SmartSVGCaptcha {
 			$ukey = (string) uniqid($prefix = 'gf__');
 			//-- Choose maximally half of all shapes that constitute the glyph
 			$shape_keys = $this->arr_rand_safe(
-				$glyphs[$key]['glyph_data'], Smart::random_number(0, Smart::array_size($glyphs[$key]['glyph_data']) / $this->dsettings['glyph_fragments']['frag_factor'])
+				$glyphs[$key]['glyph_data'], Smart::random_number(0, floor(Smart::array_size($glyphs[$key]['glyph_data']) / $this->dsettings['glyph_fragments']['frag_factor']))
 			);
 			//-- Determine translation and rotation parameters. In which x direction should the fragment be moved (Based on the very first shape in the fragment)
 			if((!empty($shape_keys)) && (Smart::array_size($shape_keys) > 0)) {
 				$pos = (($rel = $glyphs[$key]['glyph_data'][$shape_keys[0]][0]->x) > $this->width / 2) ? false : true;
-				$x_translate = ($pos) ? Smart::random_number(abs($rel), $this->width) : - Smart::random_number(0, abs($rel));
-				$y_translate = (microtime() & 1) ? (-1 * Smart::random_number(0, $this->width / 5)) : Smart::random_number(0, $this->width / 5);
+				$x_translate = ($pos) ? Smart::random_number((int)abs($rel), (int)$this->width) : - Smart::random_number(0, (int)abs($rel));
+				$y_translate = (microtime() & 1) ? (-1 * Smart::random_number(0, floor($this->width / 5))) : Smart::random_number(0, floor($this->width / 5));
 				$a = $this->_ra(0.6);
 				foreach($shape_keys as $kk => $skey) {
 					$copy = $this->arr_copy($glyphs[$key]['glyph_data'][$skey]);
@@ -542,15 +542,15 @@ final class SmartSVGCaptcha {
 		$min = new SmartSvgCaptchaPoint(0, 0);
 		$max = new SmartSvgCaptchaPoint($this->width, $this->height);
 		//-- Get a start point
-		$previous = $startp = new SmartSvgCaptchaPoint(Smart::random_number($min->x, $max->x), Smart::random_number($min->y, $max->y));
+		$previous = $startp = new SmartSvgCaptchaPoint(Smart::random_number((int)$min->x, (int)$max->x), Smart::random_number((int)$min->y, (int)$max->y));
 		//-- Of how many random geometrical primitives should our random shape consist?
 		$ngp = Smart::random_number(min($this->dsettings['shapeify']['r_num_gp']), max($this->dsettings['shapeify']['r_num_gp']));
 		//--
 		foreach(range(0, $ngp) as $kk => $j) {
 			//-- Find a random endpoint for geometrical primitves. If there are only 4 remaining shapes to add, choose a random point that is closer to the endpoint!
-			$rp = new SmartSvgCaptchaPoint(Smart::random_number($min->x, $max->x), Smart::random_number($min->y, $max->y));
+			$rp = new SmartSvgCaptchaPoint(Smart::random_number((int)$min->x, (int)$max->x), Smart::random_number((int)$min->y, (int)$max->y));
 			if(($ngp - 4) <= $j) {
-				$rp = new SmartSvgCaptchaPoint(Smart::random_number($min->x, $max->x), Smart::random_number($min->y, $max->y));
+				$rp = new SmartSvgCaptchaPoint(Smart::random_number((int)$min->x, (int)$max->x), Smart::random_number((int)$min->y, (int)$max->y));
 				//-- Make the component closer to the startpoint that is currently wider away. This ensures that the component switches over the iterations (most likely).
 				$axis = abs($startp->x - $rp->x) > abs($startp->y - $rp->y) ? 'x' : 'y';
 				if($axis === 'x') {
@@ -591,9 +591,9 @@ final class SmartSVGCaptcha {
 	private function _maybe_change_curvature_degree($shapearray) {
 		//--
 		foreach($shapearray as $kk => &$shape) {
-			$p = $this->dsettings['change_degree']['p'];
-			$do_change = (bool) (Smart::random_number(0, $p) == $p);
-			if($do_change && (Smart::array_size($shape) == 3)) {
+			$p = (int) $this->dsettings['change_degree']['p'];
+			$do_change = (bool) ((int)Smart::random_number(0, (int)$p) == (int)$p);
+			if($do_change && ((int)Smart::array_size($shape) == 3)) {
 				 // We only deal with quadratic splines.
 				 // Their degree is elevated to a cubic curvature.
 				 // We pick '1/3rd start + 2/3rd control' and '2/3rd control + 1/3rd end', and now we have exactly the same curve as before, except represented as a cubic curve, rather than a quadratic curve.
@@ -625,13 +625,13 @@ final class SmartSVGCaptcha {
 		$newshapes = [];
 		//--
 		foreach($shapearray as $key => $shape) {
-			$p = $this->dsettings['split_curve']['p'];
-			$do_change = (bool) (Smart::random_number(0, $p) == $p);
-			if($do_change && (Smart::array_size($shape) >= 3)) {
+			$p = (int) $this->dsettings['split_curve']['p'];
+			$do_change = (bool) ((int)Smart::random_number(0, (int)$p) == (int)$p);
+			if($do_change && ((int)Smart::array_size($shape) >= 3)) {
 				$left = [];
 				$right = [];
 				$this->_split_curve($shape, $this->_rt(), $left, $right);
-				$right = array_reverse($right);
+				$right = (array) array_reverse($right);
 				//-- Now update the shapearray accordingly: Delete the old curve, append the two new ones :P
 				if(!empty($left) and !empty($right)) {
 					unset($shapearray[$key]);
@@ -661,15 +661,14 @@ final class SmartSVGCaptcha {
 		$merge = []; // Accumulating the new shapes
 		//--
 		foreach($shapearray as $key => $shape) {
-			$p = $this->dsettings['approx_shapes']['p'];
-			$do_change = (bool) (Smart::random_number(0, $p) == $p);
+			$p = (int) $this->dsettings['approx_shapes']['p'];
+			$do_change = (bool) ((int)Smart::random_number(0, (int)$p) == (int)$p);
 			if($do_change) {
 				if(((Smart::array_size($shape) == 3) || (Smart::array_size($shape) == 4))) {
 					$lines = $this->_approximate_bezier($shape);
 					$dk[] = $key;
-					$merge = array_merge($merge, $lines);
-				} elseif(Smart::array_size($shape) == 2) {
-					 // This is FUN: Approximate lines with curves! There are no limits for imagination
+					$merge = (array) array_merge($merge, $lines);
+				} elseif(Smart::array_size($shape) == 2) { // This is FUN: Approximate lines with curves! There are no limits for imagination
 					$shapearray[$key] = $this->_approximate_line($shape);
 				} //end if else
 			} //end if
@@ -761,11 +760,11 @@ final class SmartSVGCaptcha {
 		$overlapf_v = $this->dsettings['glyph_offsetting']['v']; // The maximal y-offset based on the current glyph height.
 		foreach($glyphs as $kk => &$glyph) {
 			//-- Get a random x-offset based on the width of the previous glyph divided by two.
-			$accumulated_hoffset += ($cnt == 0) ? ($glyph['width'] / 2) + 5 : Smart::random_number($lastxo, ($glyph['width'] > $lastxo) ? $glyph['width'] : $lastxo);
+			$accumulated_hoffset += ($cnt == 0) ? ($glyph['width'] / 2) + 5 : Smart::random_number((int)$lastxo, (int)(($glyph['width'] > $lastxo) ? $glyph['width'] : $lastxo));
 			//-- Get a random y-offst based on the height of the current glyph.
 			$h = round($glyph['height'] * $overlapf_v);
 			$svo = $this->height / $this->dsettings['glyph_offsetting']['mh'];
-			$yoffset = Smart::random_number(($svo > $h ? 0 : $svo), $h);
+			$yoffset = Smart::random_number((int)($svo > $h ? 0 : $svo), (int)$h);
 			// Translate all points by the calculated offset. Except the very firs glyph. It should start left aligned.
 			$this->on_points(
 				$glyph['glyph_data'], [$this, '_translate'], [$accumulated_hoffset, $yoffset]
@@ -778,7 +777,7 @@ final class SmartSVGCaptcha {
 		} //end foreach
 		//--
 		// Reevaluate the width of the image by the accumulated offset + the width of the last glyph + a random padding of maximally the last glpyh's half size.
-		//$this->width = $accumulated_hoffset + $glyph['width'] + Smart::random_number($glyph['width'] * $overlapf_h, $glyph['width']);
+		//$this->width = $accumulated_hoffset + $glyph['width'] + Smart::random_number(floor($glyph['width'] * $overlapf_h), (int)$glyph['width']);
 		//--
 		return (array) $glyphs;
 		//--
@@ -836,7 +835,7 @@ final class SmartSVGCaptcha {
 			return []; // fix by unixman
 		} //end if
 		//-- How many random transformations to delete?
-		$n = Smart::random_number(0, Smart::array_size($transformations) - 1);
+		$n = Smart::random_number(0, (int)((int)Smart::array_size($transformations) - 1));
 		//--
 		$this->_shuffle_assoc($transformations);
 		//-- Delete the (random) transformations we don't want
@@ -889,7 +888,7 @@ final class SmartSVGCaptcha {
 	 */
 	private function _ra($ub=null) {
 		//--
-		$n = Smart::random_number(0, $ub != null ? $ub : 4) / 10;
+		$n = (float) (Smart::random_number(0, (int)($ub != null ? $ub : 4)) / 10);
 		if(Smart::random_number(0, 1) == 1) {
 			$n *= -1;
 		} //end if
@@ -908,7 +907,7 @@ final class SmartSVGCaptcha {
 	 */
 	private function _rs() {
 		//--
-		return (float) Smart::random_number(8, 12) / 10;
+		return (float) (Smart::random_number(8, 12) / 10);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1067,9 +1066,9 @@ final class SmartSVGCaptcha {
 		//-- First choose the target curve
 		$make_cubic = (intval(time()) & 1) ? true : false; // Who cares? There's enough randomness already ...
 		//-- A closure that gets a point somewhere near the line :P Somewhere near depends heavily on the length of the size itself. How do we get line lengths? Yep, I actually DO remember something for once from my maths courses :/
-		$d = sqrt(pow(abs($line[0]->x - $line[1]->x), 2) + pow(abs($line[0]->y - $line[1]->y), 2));
+		$d = (float) sqrt(pow(abs($line[0]->x - $line[1]->x), 2) + pow(abs($line[0]->y - $line[1]->y), 2));
 		// The control points are allowed to be maximally a 10th of the line width apart from the line distance.
-		$md = $d / Smart::random_number(10, 50);
+		$md = (float) ($d / Smart::random_number(10, 50));
 		//--
 		$somewhere_near_the_line = function($line, $md) {
 			//-- Such a point must be within the bounding rectangle of the line.
@@ -1092,13 +1091,13 @@ final class SmartSVGCaptcha {
 			if($maxx < 0 || $minx < 0) { // Some strange cases oO
 				$ma = max(abs($maxx), abs($minx));
 				$mi = min(abs($maxx), abs($minx));
-				$x = - Smart::random_number($mi, $ma);
+				$x = -1 * Smart::random_number((int)$mi, (int)$ma);
 			} else {
-				$x = Smart::random_number($minx, $maxx);
+				$x = Smart::random_number((int)$minx, (int)$maxx);
 			} //end if else
 			$y = $m * $x + $d;
 			//-- And move it away by $md :P
-			return (object) new SmartSvgCaptchaPoint($x + ((Smart::random_number(0, 1) == 1) ? $md : -$md), $y + ((Smart::random_number(0, 1) == 1) ? $md : -$md));
+			return (object) new SmartSvgCaptchaPoint($x + ((Smart::random_number(0, 1) == 1) ? $md : -1*$md), $y + ((Smart::random_number(0, 1) == 1) ? $md : -1*$md));
 			//--
 		}; //end anonymous function
 		//--
@@ -1797,7 +1796,7 @@ final class SmartSVGCaptcha {
 		$chosen_keys = [];
 		if($allow_duplicates) {
 			for($i=0; $i<$num_el; $i++) {
-				$chosen_keys[] = $keys[Smart::random_number(0, Smart::array_size($input) - 1)];
+				$chosen_keys[] = $keys[Smart::random_number(0, (int)(Smart::array_size($input) - 1))];
 			} //end for
 		} else {
 			$already_used = [];
@@ -1824,7 +1823,7 @@ final class SmartSVGCaptcha {
 		//--
 		$remaining = array_values(array_diff($key_pool, $already_picked));
 		//--
-		return $remaining[Smart::random_number(0, Smart::array_size($remaining) - 1)]; // mixed
+		return $remaining[Smart::random_number(0, (int)(Smart::array_size($remaining) - 1))]; // mixed
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1849,7 +1848,7 @@ final class SmartSVGCaptcha {
  * @access 		private
  * @internal
  *
- * @version 	v.20231007
+ * @version 	v.20231203
  *
  */
 final class SmartSvgCaptchaPoint {
@@ -1858,20 +1857,33 @@ final class SmartSvgCaptchaPoint {
 	public $y;
 	//--
 	public function __construct($x, $y) {
+		//--
+		if(!Smart::is_nscalar($x)) {
+			$x = null;
+		} //end if
+		if(!Smart::is_nscalar($y)) {
+			$y = null;
+		} //end if
+		//--
 		$this->x = (float) $x;
 		$this->y = (float) $y;
+		//--
 	} //END FUNCTION
 	//--
-	public function __toString() {
+	public function __toString() : string {
+		//--
 		return (string) 'Point(x='.$this->x.',y='.$this->y.')';
+		//--
 	} //END FUNCTION
 	//--
-	public function is_equal($p) {
+	public function is_equal($p) : bool {
+		//--
 		if($p instanceof SmartSvgCaptchaPoint) {
 			return (bool) (($this->x == $p->x) && ($this->y == $p->y));
-		} else {
-			return false;
-		} //end if else
+		} //end if
+		//--
+		return false;
+		//--
 	} //END FUNCTION
 	//--
 } //END CLASS

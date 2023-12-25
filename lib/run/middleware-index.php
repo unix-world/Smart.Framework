@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20231020
+ * @version		20231029
  * @package 	Application
  *
  */
@@ -615,7 +615,7 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 			$res_time = (float) (microtime(true) - (float)SMART_FRAMEWORK_RUNTIME_READY);
 			//-- #END-SYNC
 			echo "\n".'<!-- Smart.Framework PHP/Javascript :: '.SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION.' @ '.SMART_FRAMEWORK_RELEASE_URL.' -->';
-			echo "\n".'<!-- WebPage Server-Side Metrics '.Smart::escape_html($the_midmark).': '.str_pad('Total Execution Time = '.Smart::format_number_dec($res_time, 13, '.', '').' seconds', 55, ' ', STR_PAD_BOTH).' | '.str_pad('Memory Peak Usage = '.SmartUtils::pretty_print_bytes($res_memory, 2), 37, ' ', STR_PAD_BOTH).' -->'."\n";
+			echo "\n".'<!-- WebPage Server-Side Metrics '.Smart::escape_html((string)$the_midmark).': '.str_pad('Total Execution Time = '.Smart::format_number_dec($res_time, 13, '.', '').' seconds', 55, ' ', STR_PAD_BOTH).' | '.str_pad('Memory Peak Usage = '.SmartUtils::pretty_print_bytes((int)$res_memory, 2), 37, ' ', STR_PAD_BOTH).' -->'."\n";
 		} //end if
 		//--
 		return true;

@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthLog {
 
 	// ->
-	// v.20231020
+	// v.20231025
 
 	private $db;
 	private $dbFile;
@@ -46,7 +46,18 @@ final class SqAuthLog {
 		} //end if
 		//--
 		$this->dbDate = (string) \date('Y-m-d');
-		$this->dbFile = 'tmp/logs/adm/smart-auth-log-'.$this->dbDate.'.sqlite';
+		//--
+		$areaPfx = \Smart::safe_username((string)(\SmartEnvironment::isAdminArea() === true) ? ((\SmartEnvironment::isTaskArea() === true) ? 'tsk' : 'adm') : 'idx');
+		if((string)\trim((string)$areaPfx) == '') {
+			throw new \Exception('AUTH-LOG DB SQLITE: Invalid Area Prefix `'.$areaPfx.'`');
+			return;
+		} //end if
+		//--
+		$this->dbFile = 'tmp/logs/'.$areaPfx.'/smart-auth-log-'.$this->dbDate.'.sqlite';
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$this->dbFile, true, false)) {
+			throw new \Exception('AUTH-LOG DB SQLITE File Path is Unsafe !');
+			return;
+		} //end if
 		//--
 		$this->db = new \SmartSQliteDb((string)$this->dbFile);
 		$this->db->open();
@@ -295,7 +306,7 @@ final class SqAuthLog {
 			$this->db->write_data('BEGIN');
 			$this->db->create_table( // {{{SYNC-TABLE-AUTH_TEMPLATE}}}
 				'authfail',
-				"-- #START: table schema: authfail @ 20231020
+				"-- #START: table schema: authfail @ 20231021
 	`id` character varying(15) PRIMARY KEY NOT NULL,
 	`auth_id` character varying(25) NOT NULL,
 	`ip_addr` character varying(39) NOT NULL,
@@ -329,7 +340,7 @@ final class SqAuthLog {
 $version = (string) $this->db->escape_str((string)\SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.\SMART_FRAMEWORK_RELEASE_VERSION);
 $dbtag = (string) $this->db->escape_str((string)$this->dbDate);
 $schema = <<<SQL
--- #START: tables schema: _smartframework_metadata / authlog @ 20231020
+-- #START: tables schema: _smartframework_metadata / authlog @ 20231021
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@auth-authlog', '{$version}');
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('tag@auth-authlog', '{$dbtag}');
 CREATE TABLE 'authlog' (

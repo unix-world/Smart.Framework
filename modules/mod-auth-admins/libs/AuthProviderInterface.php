@@ -25,7 +25,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20231020
+ * @version 	v.20231021
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -37,15 +37,17 @@ interface AuthProviderInterface {
 	public const AUTH_MODE_PREFIX_HTTP_BASIC 	= 'HTTP-BASIC:';
 	public const AUTH_MODE_PREFIX_HTTP_BEARER 	= 'HTTP-BEARER:';
 
-	public const AUTH_USER_NAME_TOKEN 			= '.TOKEN.'; // because it starts/ends with a dot and also have UPPER LETTERS it cannot be validated as a username
+	public const REGEX_VALID_USERNAME_OR_BEARER = '/[[:ascii:]]+/'; // valid username can't be outside ASCII characters ; normally some of these characters are not quite supported, but be very permissive here, it is just a simple provider, thus validate later more specific ...
+	// username it must be very permissive here, must allow also `#token` suffix ...
+	// passwords can contain anything, they are base64 encoded in the URL
 
 	public const AUTH_RESULT = [
-		'auth-safe'  => -1, // auth safety grade ; https basic auth: 100..102 ; http basic auth: 0..2
-		'auth-mode'  => null,
-		'auth-user'  => null,
-		'auth-pass'  => null, // plain pass, for STANDARD BASIC AUTH
-		'auth-hash'  => null, // encrypted pass hash (irreversible hash of pass), to use with Tokens
-		'auth-error' => '?',
+		'auth-error' 	=>   '?', // if non-empty, it means error ...
+		'auth-safe'  	=> -1000, // auth safety grade ; https basic auth: 100..102 ; http basic auth: 0..2
+		'auth-user'  	=>    '', // auth user name, for STANDARD BASIC AUTH
+		'auth-pass'  	=>    '', // auth (plain) pass, for STANDARD BASIC AUTH
+		'auth-bearer' 	=>    '', // the AUTH Bearer Token, if provided
+		'auth-mode'  	=>   '!', // auth mode signature
 	];
 
 	//=====
@@ -54,7 +56,7 @@ interface AuthProviderInterface {
 	 * THIS MUST BE EXTENDED TO HANDLE AN AUTHENTICATION METHOD
 	 * RETURN: ARRAY (instance of AUTH_RESULT)
 	 */
-	public static function GetCredentials(bool $is_https_required, bool $enable_tokens) : array;
+	public static function GetCredentials(bool $enable_bearer) : array;
 	//=====
 
 

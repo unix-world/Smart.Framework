@@ -1,7 +1,8 @@
-<!doctype html>
-
-<title>CodeMirror: User Manual</title>
-<meta charset="utf-8"/>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>CodeMirror 5 User Manual</title>
+<link rel=stylesheet href="docs.css">
+<script src="activebookmark.js"></script>
 
 <script src="../lib/codemirror.js"></script>
 <link rel="stylesheet" href="../lib/codemirror.css">
@@ -22,11 +23,11 @@
 </style>
 
 <div id=nav>
-  <a href="https://codemirror.net"><h1>CodeMirror</h1><img id=logo src="logo.svg"></a>
+  <a href="https://codemirror.net/5"><h1>CodeMirror</h1><img id=logo src="logo.png"></a>
   <ul>
     <li><a href="../index.html">Home</a></li>
     <li><a href="#overview" class=active data-default="true">Manual</a></li>
-    <li><a href="https://github.com/codemirror/codemirror">Code</a></li>
+    <li><a href="https://github.com/codemirror/codemirror5">Code</a></li>
   </ul>
   <ul>
     <li><a href="#usage">Basic Usage</a></li>
@@ -68,7 +69,7 @@
 <section class=first id=overview>
     <h2 style="position: relative">
       User manual and reference guide
-      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.61.1</span>
+      <span style="color: #888; font-size: 1rem; position: absolute; right: 0; bottom: 0">version 5.65.15</span>
     </h2>
 
     <p>CodeMirror is a code-editor component that can be embedded in
@@ -284,7 +285,7 @@
       should be replaced by a
       special <a href="#option_specialCharPlaceholder">placeholder</a>.
       Mostly useful for non-printing special characters. The default
-      is <code>/[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u2028\u2029\ufeff\ufff9-\ufffc]/</code>.</dd>
+      is <code>/[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b\u200e\u200f\u2028\u2029\u202d\u202e\u2066\u2067\u2069\ufeff\ufff9-\ufffc]/</code>.</dd>
       <dt id="option_specialCharPlaceholder"><code><strong>specialCharPlaceholder</strong>: function(char) → Element</code></dt>
       <dd>A function that, given a special character identified by
       the <a href="#option_specialChars"><code>specialChars</code></a>
@@ -1318,6 +1319,8 @@ editor.setOption("extraKeys", {
       and <code>end</code> line numbers are given, the range
       from <code>start</code> up to (not including) <code>end</code>,
       and call <code>f</code> for each line, passing the line handle.
+      <code>eachLine</code> stops iterating if <code>f</code> returns
+      truthy value.
       This is a faster way to visit a range of line handlers than
       calling <a href="#getLineHandle"><code>getLineHandle</code></a>
       for each of them. Note that line handles have
@@ -1824,7 +1827,7 @@ editor.setOption("extraKeys", {
       <dt id="addLineClass"><code><strong>doc.addLineClass</strong>(line: integer|LineHandle, where: string, class: string) → LineHandle</code></dt>
       <dd>Set a CSS class name for the given line. <code>line</code>
       can be a number or a line handle. <code>where</code> determines
-      to which element this class should be applied, can can be one
+      to which element this class should be applied, can be one
       of <code>"text"</code> (the text element, which lies in front of
       the selection), <code>"background"</code> (a background element
       that will be behind the selection), <code>"gutter"</code> (the
@@ -2404,7 +2407,7 @@ editor.setOption("extraKeys", {
       Accepts <code>linenumber</code>, <code>+/-linenumber</code>, <code>line:char</code>,
       <code>scroll%</code> and <code>:linenumber</code> formats.
       This will make use of <a href="#addon_dialog"><code>openDialog</code></a>
-      when available to make prompting for line number neater.</dd> Demo available <a href="https://codemirror.net/demo/search.html">here</a>.
+      when available to make prompting for line number neater.</dd> Demo available <a href="https://codemirror.net/5/demo/search.html">here</a>.
 
       <dt id="addon_matchesonscrollbar"><a href="../addon/search/matchesonscrollbar.js"><code>search/matchesonscrollbar.js</code></a></dt>
       <dd>Adds a <code>showMatchesOnScrollbar</code> method to editor
@@ -2948,6 +2951,7 @@ editor.setOption("extraKeys", {
       By default, the linter will run (debounced) whenever the document is changed.
       You can pass a <code>lintOnChange: false</code> option to disable that.
       You can pass a <code>selfContain: true</code> option to render the tooltip inside the editor instance.
+      And a <code>highlightLines</code> option to add a style to lines that contain problems.
       Depends on <code>addon/lint/lint.css</code>. A demo can be
       found <a href="../demo/lint.html">here</a>.</dd>
 
@@ -3103,7 +3107,7 @@ editor.setOption("extraKeys", {
       has a <code>clear</code> method that is used to remove the
       panel, and a <code>changed</code> method that can be used to
       notify the addon when the size of the panel's DOM node has
-      changed.<br/>
+      changed.<br>
       The method accepts the following options:
       <dl>
         <dt><code><strong>position</strong>: string</code></dt>

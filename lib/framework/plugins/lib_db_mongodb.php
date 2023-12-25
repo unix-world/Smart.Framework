@@ -54,7 +54,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartEnvironment, SmartComponents (optional)
- * @version 	v.20221231
+ * @version 	v.20231124
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -139,6 +139,17 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$y_configs_arr = (array) Smart::get_from_config('mongodb', 'array');
 		} //end if
 		//--
+		$type 		= '';
+		$db 		= '';
+		$host 		= '';
+		$port 		= '';
+		$timeout 	= '';
+		$username 	= '';
+		$password 	= '';
+		$authmet 	= '';
+		$timeslow 	= 0;
+	//	$transact 	= '';
+		//--
 		if(Smart::array_size($y_configs_arr) > 0) {
 			$type 		= (string) ($y_configs_arr['type']        ?? null);
 			$db 		= (string) ($y_configs_arr['dbname']      ?? null);
@@ -147,6 +158,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$timeout 	= (string) ($y_configs_arr['timeout']     ?? null);
 			$username 	= (string) ($y_configs_arr['username']    ?? null);
 			$password 	= (string) ($y_configs_arr['password']    ?? null);
+			$authmet 	= (string) ($y_configs_arr['authmet']     ?? null);
 			$timeslow 	= (float)  ($y_configs_arr['slowtime']    ?? null);
 		//	$transact 	= (string) ($y_configs_arr['transact']    ?? null); // reserved for future usage (only MongoDB v.4+ supports transactions ...)
 		} else {
@@ -267,7 +279,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		//--
 
 		//--
-		$this->connect((string)$type, (string)$username, (string)$password);
+		$this->connect((string)$type, (string)$username, (string)$password, (string)$authmet);
 		//--
 
 	} //END FUNCTION
@@ -280,7 +292,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 *
 	 * @return 	STRING						:: UUID (base36)
 	 */
-	public function assign_uuid() {
+	public function assign_uuid() : string {
 
 		//--
 		if((string)$this->connex_typ == 'mongo-cluster') { // {{{SYNC-MONGODB-CONN-CLUSTER}}}
@@ -302,7 +314,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 *
 	 * @return 	STRING						:: MongoDB extension version
 	 */
-	public function get_ext_version() {
+	public function get_ext_version() : string {
 
 		//--
 		return (string) $this->extver;
@@ -318,7 +330,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 *
 	 * @return 	STRING						:: MongoDB version
 	 */
-	public function get_server_version() {
+	public function get_server_version() : string {
 
 		//--
 		if((string)$this->srvver == '') {
@@ -326,7 +338,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$arr_build_info = $this->igcommand(['buildinfo' => true]); // fix: ignore command, not command, no need to try/catch here
 			//--
 			if(is_array($arr_build_info)) {
-				if(is_array($arr_build_info[0])) {
+				if(is_array(($arr_build_info[0] ?? null))) {
 					$this->srvver = (string) trim((string)($arr_build_info[0]['version'] ?? null));
 				} //end if
 			} //end if
@@ -384,7 +396,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 *
 	 * @return 	MIXED						:: return a MongoDB ObjectId as OBJECT or STRING if invalid Id
 	 */
-	public function getObjectId(string $id) {
+	public function getObjectId(string $id) { // : MIXED
 		//--
 		$id = (string) trim((string)$id);
 		if((string)$id == '') {
@@ -419,7 +431,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 *
 	 * @return 	STRING						:: dictionary name (ex: 'english' - if available or 'none' - if n/a)
 	 */
-	public function getFtsDictionaryByLang(string $lang) {
+	public function getFtsDictionaryByLang(string $lang) : string {
 		//--
 		$dictionary = '';
 		//--
@@ -489,7 +501,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 * @internal
 	 *
 	 */
-	public function isFtsSearchPhrase(?string $text) {
+	public function isFtsSearchPhrase(?string $text) : bool {
 		//--
 		$text = (string) trim((string)$text);
 		//--
@@ -507,7 +519,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 * @internal
 	 *
 	 */
-	public function prepareFtsSearchKeywords(?string $text) {
+	public function prepareFtsSearchKeywords(?string $text) : string {
 
 		//--
 		$is_phrase = (bool) $this->isFtsSearchPhrase((string)$text);
@@ -561,7 +573,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 *
 	 * @return 	STRING						:: FTS escaped
 	 */
-	public function escapeFtsText(?string $text) {
+	public function escapeFtsText(?string $text) : string {
 
 		//--
 		$text = (string) SmartUnicode::fix_charset((string)$text); // fix
@@ -581,7 +593,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 *
 	 * @return 	STRING						:: Regex escaped
 	 */
-	public function escapeRegexText(?string $text) {
+	public function escapeRegexText(?string $text) : string {
 
 		//--
 		$text = (string) SmartUnicode::fix_charset((string)$text); // fix
@@ -604,7 +616,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 *
 	 * @return BOOLEAN								:: TRUE / FALSE
 	 */
-	public function is_command_ok($result) {
+	public function is_command_ok($result) : bool {
 
 		//--
 		$is_ok = false;
@@ -1372,7 +1384,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 * @internal
 	 *
 	 */
-	private function connect(string $type, string $username, string $password) {
+	private function connect(string $type, string $username, string $password, string $authmet) : bool {
 
 		//--
 		$replica = false;
@@ -1412,7 +1424,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			$options['username'] = (string) $username;
 			if((string)$password != '') {
 				$options['password'] = (string) $password;
-				$options['authMechanism'] = 'MONGODB-CR';
+				$options['authMechanism'] = (string) $authmet; // default is 'MONGODB-CR'
 			} //end if
 		} //end if
 		//--
@@ -1505,7 +1517,7 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 * @internal
 	 *
 	 */
-	public function disconnect() {
+	public function disconnect() : void {
 		//--
 		SmartEnvironment::$Connections['mongodb'][(string)$this->connex_key] = null; // close connection
 		//--
@@ -1532,10 +1544,10 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	 * @param STRING $y_query :: The query
 	 * @param STRING $y_warning :: The Warning Title
 	 *
-	 * @return :: HALT EXECUTION WITH ERROR MESSAGE
+	 * @return :: void ; HALT THE EXECUTION WITH ERROR MESSAGE
 	 *
 	 */
-	private function error($y_conhash, $y_area, $y_info, $y_error_message, $y_query='', $y_warning='', $y_is_fatal=null) {
+	private function error($y_conhash, $y_area, $y_info, $y_error_message, $y_query='', $y_warning='', $y_is_fatal=null) : void {
 		//--
 		if(($y_is_fatal === true) OR ($y_is_fatal === false)) { // depends on how is set, conform
 			$y_is_fatal = (bool) $y_is_fatal;

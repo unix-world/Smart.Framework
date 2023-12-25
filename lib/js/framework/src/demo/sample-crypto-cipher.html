@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:,">
+<title>Twofish / Blowfish Test Page</title>
+<style>
+button {
+	font-size: 1rem;
+	padding: 2px;
+	margin: 5px;
+}
+</style>
+<script src="../core_utils.js"></script>
+<script src="../crypt_utils.js"></script>
+<script>
+const isoString = 'Lorem Ipsum dolor sit Amet';
+const unicodeString = 'Unicode String:		şŞţŢăĂîÎâÂșȘțȚ (05-09#';
+</script>
+<script>
+const tfKey = '4db45e622c0ae3157bdcb53e436c96c5'; // md5:isoString
+const tfIv = tfKey.substring(0, 16);
+const bfKey = 'e823083dac0dfd6c2282680352fbac89c2cb179a06ab0735f73e43fd'; // sha224:isoString
+const bfIv = bfKey.substring(0, 8);
+</script>
+<script>
+let tfEnc1 = '';
+let tfDec1 = '';
+let tfEnc2 = '';
+let tfDec2 = '';
+const testTwofishEncrypt = (key, str) => {
+	tfEnc1 = smartJ$CryptoCipherTwofish.encryptCBC(smartJ$Utils.b64Enc(str), key, tfIv);
+	tfEnc1 = smartJ$Utils.b64Enc(tfEnc1, true); // binary str
+	console.log('Twofish-Encrypt:', '\n', '`' + tfEnc1 + '`', '\n', 'String: `' + str + '`', 'Key: `' + key + '`', 'IV: `' + tfIv + '`');
+	tfEnc2 = smartJ$CipherCrypto.tfEnc(isoString, str);
+	console.log('Twofish-Encrypt:Smart', '\n', '`' + tfEnc2 + '`', '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+const testTwofishDecrypt = (key, str) => {
+	if((!tfEnc1) || (!tfEnc2)) {
+		console.warn('First, run Twofish-Encrypt !');
+		return;
+	}
+	tfDec1 = smartJ$Utils.b64Dec(tfEnc1, true); // binary str
+	tfDec1 = smartJ$CryptoCipherTwofish.decryptCBC(tfDec1, key, tfIv);
+	tfDec1 = smartJ$Utils.b64Dec(tfDec1);
+	console.log('Twofish-Decrypt', '\n', '`' + tfDec1 + '`');
+	tfDec2 = smartJ$CipherCrypto.tfDec(isoString, tfEnc2);
+	console.log('Twofish-Decrypt:Smart', '\n', '`' + tfDec2 + '`');
+};
+</script>
+<script>
+let bfEnc1 = '';
+let bfDec1 = '';
+let bfEnc2 = '';
+let bfDec2 = '';
+const testBlowfishEncrypt = (key, str) => {
+	bfEnc1 = smartJ$CryptoCipherBlowfish.encryptCBC(smartJ$Utils.b64Enc(str), key, bfIv);
+	bfEnc1 = smartJ$Utils.b64Enc(bfEnc1, true); // binary str
+	console.log('Blowfish-Encrypt', '\n', '`' + bfEnc1 + '`', '\n', 'String: `' + str + '`', 'Key: `' + key + '`', 'IV: `' + bfIv + '`');
+	bfEnc2 = smartJ$CipherCrypto.bfEnc(isoString, str);
+	console.log('Blowfish-Encrypt:Smart', '\n', '`' + bfEnc2 + '`', '\n', 'String: `' + str + '`', 'Key: `' + key + '`');
+};
+const testBlowfishDecrypt = (key, str) => {
+	if((!bfEnc1) || (!bfEnc2)) {
+		console.warn('First, run Blowfish-Encrypt !');
+		return;
+	}
+	bfDec1 = smartJ$Utils.b64Dec(bfEnc1, true); // binary str
+	bfDec1 = smartJ$CryptoCipherBlowfish.decryptCBC(bfDec1, key, bfIv);
+	bfDec1 = smartJ$Utils.b64Dec(bfDec1);
+	console.log('Blowfish-Decrypt', '\n', '`' + bfDec1 + '`');
+	bfDec2 = smartJ$CipherCrypto.bfDec(isoString, bfEnc2);
+	console.log('Blowfish-Decrypt:Smart', '\n', '`' + bfDec2 + '`');
+};
+</script>
+</head>
+<body>
+<h1>Twofish / Blowfish Test Page</h1>
+<ul>
+	<li>
+		<button type="button" onclick="testTwofishEncrypt(tfKey, unicodeString); return false;">Test Twofish Encrypt</button>
+		<button type="button" onclick="testTwofishDecrypt(tfKey, unicodeString); return false;">Test Twofish Decrypt</button>
+	</li>
+	<li>
+		<button type="button" onclick="testBlowfishEncrypt(bfKey, unicodeString); return false;">Test Blowfish Encrypt</button>
+		<button type="button" onclick="testBlowfishDecrypt(bfKey, unicodeString); return false;">Test Blowfish Decrypt</button>
+	</li>
+</ul>
+</body>
+</html>

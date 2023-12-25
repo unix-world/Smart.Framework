@@ -3,7 +3,7 @@
 // (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
-// Module Lib: \SmartModExtLib\Webdav\ControllerAdmCardDavFs
+// Class: \SmartModExtLib\Webdav\ControllerAdmCardDavFs
 // Type: Module Library
 
 namespace SmartModExtLib\Webdav;
@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @hint This abstract controller can be used to build a DAV Service / CardDAV over the Admin Middleware service
  *
- * @version		20231001
+ * @version		20231119
  * @package 	development:modules:Webdav
  *
  */
@@ -35,14 +35,14 @@ abstract class ControllerAdmCardDavFs extends \SmartAbstractAppController {
 
 	// ->
 
-	private $dav_author = 'unknown';
+	private $dav_author = '.unknown.';
 	private $dav_uri = '';
 	private $dav_url = '';
 	private $dav_method = '';
 	private $dav_request_path = '';
 	private $dav_request_back_path = '';
 	private $dav_vfs_path = '';
-	private $dav_vfs_root = 'none';
+	private $dav_vfs_root = '.none.';
 	private $dav_is_root_path = true;
 
 
@@ -92,7 +92,7 @@ abstract class ControllerAdmCardDavFs extends \SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$this->dav_author = (string) \SmartAuth::get_auth_username();
+		$this->dav_author = (string) \Smart::safe_validname((string)\SmartAuth::get_auth_id(), '', true); // allow also uppercase
 		//--
 
 		//--
@@ -162,14 +162,14 @@ abstract class ControllerAdmCardDavFs extends \SmartAbstractAppController {
 			echo \SmartComponents::http_message_500_internalerror('FATAL ERROR @ CardDAV: The constant SMART_WEBDAV_CARDDAV_ABOOK_PATH must NOT be defined outside DavRunServer !');
 			return;
 		} //end if
-		\define('SMART_WEBDAV_CARDDAV_ABOOK_PATH', $this->dav_vfs_root.'addressbooks/'.\Smart::safe_username($this->dav_author).'/');
+		\define('SMART_WEBDAV_CARDDAV_ABOOK_PATH', $this->dav_vfs_root.'addressbooks/'.$this->dav_author.'/');
 		//--
 		if(\defined('\\SMART_WEBDAV_CARDDAV_ABOOK_HOME')) {
 			\http_response_code(500);
 			echo \SmartComponents::http_message_500_internalerror('FATAL ERROR @ CardDAV: The constant SMART_WEBDAV_CARDDAV_ABOOK_HOME must NOT be defined outside DavRunServer !');
 			return;
 		} //end if
-		\define('SMART_WEBDAV_CARDDAV_ABOOK_HOME', (string)\SmartUtils::get_server_current_full_script().'/page/'.$this->ControllerGetParam('url-page').'/~/addressbooks/'.\Smart::safe_username($this->dav_author).'/');
+		\define('SMART_WEBDAV_CARDDAV_ABOOK_HOME', (string)\SmartUtils::get_server_current_full_script().'/page/'.$this->ControllerGetParam('url-page').'/~/addressbooks/'.$this->dav_author.'/');
 		//--
 		if(\defined('\\SMART_WEBDAV_CARDDAV_ABOOK_PPS')) {
 			\http_response_code(500);
@@ -183,7 +183,7 @@ abstract class ControllerAdmCardDavFs extends \SmartAbstractAppController {
 			echo \SmartComponents::http_message_500_internalerror('FATAL ERROR @ CardDAV: The constant SMART_WEBDAV_CARDDAV_ABOOK_ACC must NOT be defined outside DavRunServer !');
 			return;
 		} //end if
-		\define('SMART_WEBDAV_CARDDAV_ABOOK_ACC', (string)\SmartUtils::get_server_current_full_script().'/page/'.$this->ControllerGetParam('url-page').'/~/principals/'.\Smart::safe_username($this->dav_author).'/');
+		\define('SMART_WEBDAV_CARDDAV_ABOOK_ACC', (string)\SmartUtils::get_server_current_full_script().'/page/'.$this->ControllerGetParam('url-page').'/~/principals/'.$this->dav_author.'/');
 		//--
 
 		//--

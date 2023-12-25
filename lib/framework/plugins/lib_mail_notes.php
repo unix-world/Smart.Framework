@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @internal
  *
  * @depends 	classes: SmartUnicode, Smart, SmartHashCrypto, SmartCipherCrypto, SmartAuth
- * @version 	v.20231001
+ * @version 	v.20231119
  * @package 	Plugins:Mailer
  *
  */
@@ -62,10 +62,10 @@ final class SmartMailerNotes {
 			return '';
 		} //end if
 		//--
-		$auth_username = (string) SmartAuth::get_auth_username();
+		$auth_id = (string) SmartAuth::get_auth_id();
 		$auth_privkeys = (string) SmartAuth::get_user_privkey();
 		//--
-		if((string)trim((string)$auth_username) == '') {
+		if((string)trim((string)$auth_id) == '') {
 			return '[ERROR #1]: WARNING: Cannot Decrypt: Auth UserName is Empty';
 		} //end if
 		//--
@@ -82,10 +82,10 @@ final class SmartMailerNotes {
 			return '[ERROR #4]: Mime Message: Note is Empty after Base64 Decode';
 		} //end if
 		//--
-		$y_eml = (string) SmartCipherCrypto::blowfish_decrypt(
-			(string) self::bf_key((string)$auth_username, (string)$auth_privkeys), // key
+		$y_eml = (string) SmartCipherCrypto::tf_decrypt(
 			(string) $y_eml, // data
-			(string) SmartCipherCrypto::blowfish_algo() // algo
+			(string) self::crypto_key((string)$auth_id, (string)$auth_privkeys), // key
+			(bool)   true // fallback to BF dec, ... support backward compatible enc data
 		);
 		//--
 		if((string)$y_eml == '') { // do not trim here !
@@ -104,10 +104,10 @@ final class SmartMailerNotes {
 	//==================================================================
 	public static function encrypt_eml_message_as_apple_notes($y_uuid, $y_date, $y_from, $y_subj, $y_eml) {
 		//--
-		$auth_username = (string) SmartAuth::get_auth_username();
+		$auth_id = (string) SmartAuth::get_auth_id();
 		$auth_privkeys = (string) SmartAuth::get_user_privkey();
 		//--
-		if(((string)trim((string)$auth_username) == '') OR ((string)trim((string)$auth_privkeys) == '')) {
+		if(((string)trim((string)$auth_id) == '') OR ((string)trim((string)$auth_privkeys) == '')) {
 			Smart::log_warning(__METHOD__.' # ERROR: Failed to Encrypt Note # Auth UserName or Auth PrivateKey is Empty ...');
 			return '';
 		} //end if
@@ -115,11 +115,12 @@ final class SmartMailerNotes {
 		$y_eml = (string) trim((string)self::encrypted_eml_message_as_apple_notes_signature())."\r\n".trim((string)$y_eml); // add header signature
 		//--
 		$cksum = (string) sha1((string)$y_eml);
+		//--
 		$y_eml = (string) base64_encode(
-			(string) SmartCipherCrypto::blowfish_encrypt(
-				(string) self::bf_key((string)$auth_username, (string)$auth_privkeys), // key
+			(string) SmartCipherCrypto::tf_encrypt(
 				(string) $y_eml, // data
-				(string) SmartCipherCrypto::blowfish_algo() // algo
+				(string) self::crypto_key((string)$auth_id, (string)$auth_privkeys), // key
+				(bool)   true // BF pre-enc !
 			)
 		);
 		//--
@@ -127,14 +128,14 @@ final class SmartMailerNotes {
 		//--
 		$boundary = (string) '_=Smart.Framework=_Enc-MimePart_'.Smart::uuid_36().'=_';
 		//--
-		$msg .= 'X-SF-AppleNotes-Account: '.Smart::normalize_spaces(trim((string)$auth_username))."\r\n";
+		$msg .= 'X-SF-AppleNotes-Account: '.Smart::normalize_spaces((string)trim((string)$auth_id))."\r\n";
 		$msg .= 'X-SF-AppleNotes-Type: apple/notes'."\r\n";
-		$msg .= 'X-SF-AppleNotes-Date: '.Smart::normalize_spaces(trim((string)date('Y-m-d H:i:s O')))."\r\n";
-		$msg .= 'Date: '.Smart::normalize_spaces(trim((string)$y_date))."\r\n";
-		$msg .= 'From: <'.Smart::normalize_spaces(trim((string)$y_from)).'>'."\r\n";
-		$msg .= 'Subject: '.Smart::normalize_spaces(trim((string)$y_subj))."\r\n";
-		$msg .= 'X-Universally-Unique-Identifier: '.Smart::normalize_spaces(trim((string)$y_uuid))."\r\n";
-		$msg .= 'Mime-Version: 1.0 (Apple.Notes Smart.Framework '.Smart::normalize_spaces(trim((string)SMART_FRAMEWORK_RELEASE_TAGVERSION)).' '.Smart::normalize_spaces(trim((string)SMART_FRAMEWORK_RELEASE_VERSION)).')'."\r\n";
+		$msg .= 'X-SF-AppleNotes-Date: '.Smart::normalize_spaces((string)trim((string)date('Y-m-d H:i:s O')))."\r\n";
+		$msg .= 'Date: '.Smart::normalize_spaces((string)trim((string)$y_date))."\r\n";
+		$msg .= 'From: <'.Smart::normalize_spaces((string)trim((string)$y_from)).'>'."\r\n";
+		$msg .= 'Subject: '.Smart::normalize_spaces((string)trim((string)$y_subj))."\r\n";
+		$msg .= 'X-Universally-Unique-Identifier: '.Smart::normalize_spaces((string)trim((string)$y_uuid))."\r\n";
+		$msg .= 'Mime-Version: 1.0 (Apple.Notes Smart.Framework '.Smart::normalize_spaces((string)trim((string)SMART_FRAMEWORK_RELEASE_TAGVERSION)).' '.Smart::normalize_spaces((string)trim((string)SMART_FRAMEWORK_RELEASE_VERSION)).')'."\r\n";
 		$msg .= 'Content-Type: multipart/mixed; boundary="'.$boundary.'"'."\r\n";
 		$msg .= "\r\n";
 		$msg .= 'This is a Smart.Framework encrypted multi-part apple/note in MIME format.'."\r\n";
@@ -152,7 +153,7 @@ final class SmartMailerNotes {
 		$msg .= 'Content-Transfer-Encoding: BASE64'."\r\n";
 		$msg .= 'Content-Disposition: inline; filename="apple-note-encrypted-by-smart-framework.eml.bfenc.txt"'."\r\n";
 		$msg .= 'Content-Length: '.(int)strlen((string)$y_eml)."\r\n";
-		$msg .= 'Content-Decoded-Checksum-SHA1: '.Smart::normalize_spaces(trim((string)$cksum))."\r\n";
+		$msg .= 'Content-Decoded-Checksum-SHA1: '.Smart::normalize_spaces((string)trim((string)$cksum))."\r\n";
 		$msg .= "\r\n";
 		$msg .= (string) trim((string)chunk_split((string)$y_eml, 76, "\r\n"));
 		$msg .= "\r\n";
@@ -216,12 +217,12 @@ final class SmartMailerNotes {
 
 
 	//==================================================================
-	private static function bf_key(?string $y_auth_username, ?string $y_auth_privkeys) : string {
+	private static function crypto_key(?string $y_auth_id, ?string $y_auth_privkeys) : string {
 		//--
-		$y_auth_username = (string) trim((string)$y_auth_username);
+		$y_auth_id = (string) trim((string)$y_auth_id);
 		$y_auth_privkeys = (string) trim((string)$y_auth_privkeys);
 		//--
-		if((string)$y_auth_username == '') {
+		if((string)$y_auth_id == '') {
 			Smart::raise_error('ERROR: MAIL Notes // BfKey :: UserName is Empty');
 			return '';
 		} //end if
@@ -230,7 +231,7 @@ final class SmartMailerNotes {
 			return '';
 		} //end if
 		//--
-		return (string) SmartHashCrypto::sha512($y_auth_username.':'.$y_auth_privkeys);
+		return (string) SmartHashCrypto::sha512((string)$y_auth_id.':'.$y_auth_privkeys);
 		//--
 	} //END FUNCTION
 	//==================================================================

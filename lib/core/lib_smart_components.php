@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20231020
+ * @version 	v.20231225
  * @package 	Application:ViewComponents
  *
  */
@@ -153,14 +153,19 @@ final class SmartComponents {
 		//--
 		$msg_html = (string) Smart::nl_2_br((string)Smart::escape_html((string)$y_message));
 		//--
+		$tpl = 'lib/core/templates/http-message-status.htm';
 		switch((string)$y_opstyle) {
-			case '200':
-			case 'display':
-				$msg_html = (string) self::operation_display((string)$msg_html, '100%', true); // default, with icon
+			case 'proxy':
+				$tpl = 'lib/core/templates/http-message-proxy-status.htm';
+				$msg_html = (string) self::operation_display((string)$msg_html, '100%', false); // without icon
 				break;
 			case '3xx':
 			case 'displayx':
 				$msg_html = (string) self::operation_display((string)$msg_html, '100%', false); // without icon
+				break;
+			case '200':
+			case 'display':
+				$msg_html = (string) self::operation_display((string)$msg_html, '100%', true); // default, with icon
 				break;
 			case '208':
 			case 'hint':
@@ -177,7 +182,7 @@ final class SmartComponents {
 		} //end switch
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
-			'lib/core/templates/http-message-status.htm',
+			(string) $tpl,
 			[
 				'CHARSET' 			=> (string) SmartUtils::get_encoding_charset(),
 				'BASE-URL' 			=> (string) SmartUtils::get_server_current_url(),
@@ -185,8 +190,8 @@ final class SmartComponents {
 				'SIGNATURE-HTML' 	=> (string) '<b>Smart.Framework :: WebApp</b><br>'.Smart::escape_html((string)SmartUtils::get_server_current_url(false)),
 				'MESSAGE-HTML' 		=> (string) (((string)trim((string)$y_message) != '') ? $msg_html : ''),
 				'EXTMSG-HTML' 		=> (string) $y_html_message
-			],
-			'no'
+			]
+			// use caching, as default
 		);
 		//--
 	} //END FUNCTION
@@ -212,8 +217,8 @@ final class SmartComponents {
 				'SIGNATURE-HTML' 	=> '<b>Smart.Framework :: WebApp</b><br>'.Smart::escape_html(SmartUtils::get_server_current_request_method().' '.SmartUtils::get_server_current_protocol().SmartUtils::get_server_current_domain_name().':'.SmartUtils::get_server_current_port().SmartUtils::get_server_current_request_uri()),
 				'MESSAGE-HTML' 		=> self::operation_error(Smart::nl_2_br(Smart::escape_html((string)$y_message)), '100%'),
 				'EXTMSG-HTML' 		=> (string) $y_html_message
-			],
-			'no'
+			]
+			// use caching, as default
 		);
 		//--
 	} //END FUNCTION
@@ -637,7 +642,7 @@ final class SmartComponents {
 			'url' 	=> (string) ''
 		];
 		//-- web server
-		$tmp_arr_web_server = SmartUtils::get_webserver_version();
+		$tmp_arr_web_server = (array) SmartUtils::get_webserver_version();
 		$name_webserver = (string) $tmp_arr_web_server['name'].' Web Server';
 		if((string)$y_show_versions == 'yes') { // expose versions (not recommended in web area, except for auth admins)
 			$name_webserver .= ' :: '.$tmp_arr_web_server['version'];
@@ -649,7 +654,7 @@ final class SmartComponents {
 			$logo_webserver = 'lib/framework/img/nginx-logo.svg';
 			$url_webserver = 'https://www.nginx.com';
 		} else {
-			$logo_webserver = 'lib/framework/img/sign-info.svg';
+			$logo_webserver = 'lib/framework/img/haproxy-logo.svg';
 			$url_webserver = '';
 		} //end if else
 		$arr_powered_sside[] = [
@@ -784,6 +789,7 @@ final class SmartComponents {
 				'ARR-CSIDE' 	=> (array)  $arr_powered_cside,
 				'SHOW-CLOCK' 	=> (string) (($display_clock === false) ? 'no' : 'yes'),
 			]
+			// use caching, as default
 		);
 		//--
 	} //END FUNCTION
@@ -939,8 +945,8 @@ final class SmartComponents {
 		//-- add html performance profiling in TPL
 		if(defined('SMART_FRAMEWORK_PROFILING_HTML_PERF') AND (SMART_FRAMEWORK_PROFILING_HTML_PERF === true)) {
 			if((stripos((string)$tpl, '</head>') !== false) AND (stripos((string)$tpl, '</body>') !== false)) {
-				$tpl = (string) str_ireplace('</head>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-header.inc.htm', [ 'MODE' => (SmartEnvironment::ifDevMode() !== true) ? 'prod' : 'dev', 'VERSION' => (STRING) SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION ])."\n".'</head>', (string)$tpl);
-				$tpl = (string) str_ireplace('</body>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-footer.inc.htm', [ 'MODE' => (SmartEnvironment::ifDevMode() !== true) ? 'prod' : 'dev', 'VERSION' => (STRING) SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION ])."\n".'</body>', (string)$tpl);
+				$tpl = (string) str_ireplace('</head>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-header.inc.htm', [ 'MODE' => (SmartEnvironment::ifDevMode() !== true) ? 'prod' : 'dev', 'VERSION' => (STRING) SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION ])."\n".'</head>', (string)$tpl); // use caching, as default
+				$tpl = (string) str_ireplace('</body>', "\n".SmartMarkersTemplating::render_file_template('lib/core/templates/perf-html-profiler-footer.inc.htm', [ 'MODE' => (SmartEnvironment::ifDevMode() !== true) ? 'prod' : 'dev', 'VERSION' => (STRING) SMART_FRAMEWORK_RELEASE_TAGVERSION.'-'.SMART_FRAMEWORK_RELEASE_VERSION ])."\n".'</body>', (string)$tpl); // use caching, as default
 			} //end if
 		} //end if
 		//-- add debug support in TPL
@@ -955,12 +961,12 @@ final class SmartComponents {
 		//--
 
 		//-- render TPL
-		return (string) SmartMarkersTemplating::render_mixed_template(
+		return (string) SmartMarkersTemplating::render_main_template(
 			(string) $tpl,				// tpl string
 			(array)  $arr_data, 		// tpl vars
 			(string) $template_path, 	// tpl base path (for sub-templates, if any)
-			'no',						// ignore if empty
-			'no'						// don't use caching
+			'no'						// ignore if empty
+			// use caching, as default
 		);
 		//--
 

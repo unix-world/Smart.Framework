@@ -1,6 +1,6 @@
 /*
  * Toastr v.3.1.7.2
- * (c) 2021-2022 unix-world.org
+ * (c) 2021-2023 unix-world.org
  *
  * Based on Toastr v.2.1.1
  * Copyright 2012-2015
@@ -13,8 +13,8 @@
  */
 
 /*
-// (c) 2021-2022 unix-world.org
-// fixes by unixman r.20221016:
+// (c) 2021-2023 unix-world.org
+// fixes by unixman r.20231028:
 // 	* Added renders: darknote, notice
 //	* Change the color theme
 */
@@ -25,6 +25,7 @@
 }
 
 .toast-message {
+	margin-top: 8px;
 	word-wrap: break-word;
 }
 

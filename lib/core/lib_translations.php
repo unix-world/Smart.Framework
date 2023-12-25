@@ -35,7 +35,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartPersistentCache, SmartAdapterTextTranslations, SmartFrameworkRegistry
- * @version 	v.20230927
+ * @version 	v.20231030
  * @package 	Application:Translations
  *
  */
@@ -608,8 +608,8 @@ final class SmartTextTranslations {
 		} //end if
 		//-- inverse the sign
 		$y_number = (string) trim((string)$y_number);
-		if((string)substr($y_number, 0, 1) == '-') {
-			$y_number = (string) trim((string)substr($y_number, 1)); // remove the minus sign -
+		if((string)substr((string)$y_number, 0, 1) == '-') {
+			$y_number = (string) trim((string)substr((string)$y_number, 1)); // remove the minus sign -
 		} else {
 			$y_number = (string) '-'.$y_number; // add the minus sign -
 		} //end if
@@ -973,7 +973,7 @@ final class SmartTextTranslations {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartTextTranslations, SmartFrameworkRegistry
- * @version 	v.20221220
+ * @version 	v.20231030
  * @package 	Application:Translations
  *
  */
@@ -1085,7 +1085,7 @@ final class SmartTextTranslator {
  * @access 		private
  * @internal
  *
- * @version 	v.20221220
+ * @version 	v.20231030
  * @package 	development:Application
  *
  */

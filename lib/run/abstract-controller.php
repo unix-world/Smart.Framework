@@ -123,7 +123,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20230123
+ * @version 	v.20231120
  * @package 	development:Application
  *
  */
@@ -430,7 +430,7 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 				} //end if
 			} //end if
 		} //end if else
-		$output = '<h1>[DEBUG: '.$type.' ; OutputSize = '.SmartUtils::pretty_print_bytes($size).']</h1>'.'<br><pre>'.Smart::escape_html(SmartUtils::pretty_print_var($info)).'</pre><hr><pre>'.Smart::escape_html($part).'</pre>';
+		$output = '<h1>[DEBUG: '.$type.' ; OutputSize = '.SmartUtils::pretty_print_bytes((int)$size, 2).']</h1>'.'<br><pre>'.Smart::escape_html((string)SmartUtils::pretty_print_var($info)).'</pre><hr><pre>'.Smart::escape_html((string)$part).'</pre>';
 		//--
 		$this->pagesettings['download-packet'] = '';
 		$this->pageview['main'] = '';
@@ -716,6 +716,20 @@ abstract class SmartAbstractAppController { // {{{SYNC-ARRAY-MAKE-KEYS-LOWER}}}
 	final public function RequestVarGet(?string $key, $defval=null, $type='') { // {{{SYNC-REQUEST-DEF-PARAMS}}}
 		//--
 		return SmartFrameworkRegistry::getRequestVar((string)$key, $defval, $type); // mixed
+		//--
+	} //END FUNCTION
+	//=====
+
+
+	//=====
+	/**
+	 * Return TRUE if the Request was made via AJAX
+	 *
+	 * @return 	BOOLEAN					:: TRUE if HTTP_X_REQUESTED_WITH is xmlhttprequest, FALSE otherwise
+	 */
+	final public function IsAjaxRequest() : bool {
+		//--
+		return (bool) SmartUtils::is_ajax_request();
 		//--
 	} //END FUNCTION
 	//=====

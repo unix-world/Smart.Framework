@@ -309,17 +309,17 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$overall_entropy = (string) 'UUID10N:'.Smart::uuid_10_num()."\n".'UUID10R:'.Smart::uuid_10_str()."\n".'UUID10S:'.Smart::uuid_10_seq()."\n".'UUID12S:'.Smart::uuid_12_seq()."\n".'UUID13S:'.Smart::uuid_13_seq()."\n".'UUID15S:'.Smart::uuid_15_seq()."\n".'UUID32:'.Smart::uuid_32()."\n".'UUID34:'.Smart::uuid_34()."\n".'UUID35:'.Smart::uuid_35()."\n".'UUID37:'.Smart::uuid_37()."\n".'UUID36:'.Smart::uuid_36($unique_entropy)."\n".'UUID45:'.Smart::uuid_45($unique_cluster_entropy);
 				//--
-				$extra_main = '<div style="color:#999999;"><small><b>Unique Entropy Test Values:</b><br>'.Smart::nl_2_br(Smart::escape_html($overall_entropy)).'</small></div><br><br>';
+				$extra_main = '<div style="color:#DEDEDE;"><small><b>Unique Entropy Test Values:</b><br>'.Smart::nl_2_br(Smart::escape_html((string)$overall_entropy)).'</small></div><hr><br><br>';
 				$is_modal = $this->RequestVarGet('winmod', '', 'string');
 				$is_printable = $this->RequestVarGet('print', '', 'string');
 				if(((string)$is_modal == 'yes') OR ((string)$is_printable == 'yes')) {
 					$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				} //end if
 				//--
-				$main = \SmartModExtLib\Samples\TestUnitMain::mainScreen(
-					$this->RequestVarGet('tab'),
-					$this->RequestVarGet('frm'),
-					$this->RequestVarGet('testformdata')
+				$main = (string) \SmartModExtLib\Samples\TestUnitMain::mainScreen(
+					(int)   $this->RequestVarGet('tab'),
+					(array) $this->RequestVarGet('frm'),
+					(array) $this->RequestVarGet('testformdata')
 				);
 				//--
 				if(((string)$is_modal != 'yes') AND ((string)$is_printable != 'yes')) {
@@ -403,6 +403,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				break;
 			case 'test.http-post-preview':
+				//--
 				$this->PageViewSetCfg('rawpage', true);
 				$nofiles = $this->RequestVarGet('nofiles', '', 'string');
 				$main = 'Smart.Framework HTTP Post Test'."\n";
@@ -412,8 +413,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$nofiles != 'yes') {
 					$main .= 'FILES :: '.SmartUtils::pretty_print_var($_FILES)."\n";
 				} //end if
+				//--
 				break;
 			case 'test.http-post':
+				//--
 				$nofiles = $this->RequestVarGet('nofiles', '', 'string');
 				$browser = new SmartHttpClient('1.0');
 				$browser->postvars = [
@@ -451,9 +454,10 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$result = null; // free mem
 					return;
 				} else {
-					$main = (string) '<h1>Load URL: OK '.$result['code'].'</h1><pre style="background:#ECECEC">'.Smart::escape_html($result['content']).'</pre>';
+					$main = (string) '<h1>Load URL: OK '.$result['code'].'</h1><pre style="background:#ECECEC">'.Smart::escape_html((string)$result['content']).'</pre>';
 					$result = null; // free mem
 				} //end if else
+				//--
 				break;
 			case 'test.load-auth-url':
 				//--
@@ -483,7 +487,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$robot = null; // free mem
 					return;
 				} else {
-					$main = (string) '<h1>Load URL: OK '.$robot['code'].'</h1><pre style="background:#ECECEC">'.Smart::escape_html($robot['content']).'</pre>';
+					$main = (string) '<h1>Load URL: OK '.$robot['code'].'</h1><pre style="background:#ECECEC">'.Smart::escape_html((string)$robot['content']).'</pre>';
 					$robot = null; // free mem
 				} //end if else
 				//--
@@ -500,9 +504,22 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$robot = null; // free mem
 					return;
 				} else {
-					$main = (string) '<h1>Load Secure URL: OK '.$robot['code'].'</h1><pre style="background:#ECECEC">'.Smart::escape_html($robot['content']).'</pre>';
+					$main = (string) '<h1>Load Secure URL: OK '.$robot['code'].'</h1><pre style="background:#ECECEC">'.Smart::escape_html((string)$robot['content']).'</pre>';
 					$robot = null; // free mem
 				} //end if else
+				//--
+				break;
+			case 'test.http-redir':
+				//--
+				$browser = new SmartHttpClient('1.0');
+				$result = (array) $browser->browse_url('http://w3soft.org/', 'GET', '', '', '', 1); // should allow max one redirect, will be redirected from HTTP to HTTPS
+				$browser = null; // free mem
+				if(($result['result'] != 1) OR ($result['code'] != 200)) {
+					$main = (string) '<h1>Load URL: FAILED Fo Follow Redirect '.$result['code'].'</h1><pre style="background:#ED2839; color:#FFFFFF; padding:8px;">'.Smart::escape_html((string)$result['log']).'</pre>'.'<br>'.'<pre style="background:#E3E1D9;">'.Smart::escape_html((string)$result['headers']).'</pre>';
+				} else {
+					$main = (string) '<h1>Load URL: OK '.$result['code'].'</h1>'.'<pre style="background:#DDEEFF;">'.Smart::escape_html((string)$result['log']).'</pre>'.'<br>'.'<pre style="background:#E3E1D9;">'.Smart::escape_html((string)$result['headers']).'</pre>'.'<br>'.'<pre style="background:#ECECEC;">'.Smart::escape_html((string)$result['content']).'</pre>';
+				} //end if else
+				$result = null; // free mem
 				//--
 				break;
 			case 'test.spreadsheet-export':

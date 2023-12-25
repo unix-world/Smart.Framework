@@ -27,7 +27,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @hint This abstract controller can be used to build a DAV Service / CalDAV over the Admin Middleware service
  *
- * @version		20231001
+ * @version		20231119
  * @package 	development:modules:Webdav
  *
  */
@@ -35,14 +35,14 @@ abstract class ControllerAdmCalDavFs extends \SmartAbstractAppController {
 
 	// ->
 
-	private $dav_author = 'unknown';
+	private $dav_author = '.unknown.';
 	private $dav_uri = '';
 	private $dav_url = '';
 	private $dav_method = '';
 	private $dav_request_path = '';
 	private $dav_request_back_path = '';
 	private $dav_vfs_path = '';
-	private $dav_vfs_root = 'none';
+	private $dav_vfs_root = '.none.';
 	private $dav_is_root_path = true;
 
 
@@ -92,7 +92,7 @@ abstract class ControllerAdmCalDavFs extends \SmartAbstractAppController {
 			return;
 		} //end if
 		//--
-		$this->dav_author = (string) \SmartAuth::get_auth_username();
+		$this->dav_author = (string) \Smart::safe_validname((string)\SmartAuth::get_auth_id(), '', true); // allow also uppercase
 		//--
 
 		//--
@@ -162,14 +162,14 @@ abstract class ControllerAdmCalDavFs extends \SmartAbstractAppController {
 			echo \SmartComponents::http_message_500_internalerror('FATAL ERROR @ CalDAV: The constant SMART_WEBDAV_CALDAV_ICAL_PATH must NOT be defined outside DavRunServer !');
 			return;
 		} //end if
-		\define('SMART_WEBDAV_CALDAV_ICAL_PATH', $this->dav_vfs_root.'calendars/'.\Smart::safe_username($this->dav_author).'/'); // calendars path
+		\define('SMART_WEBDAV_CALDAV_ICAL_PATH', $this->dav_vfs_root.'calendars/'.$this->dav_author.'/'); // calendars path
 		//--
 		if(\defined('\\SMART_WEBDAV_CALDAV_ICAL_HOME')) {
 			\http_response_code(500);
 			echo \SmartComponents::http_message_500_internalerror('FATAL ERROR @ CalDAV: The constant SMART_WEBDAV_CALDAV_ICAL_HOME must NOT be defined outside DavRunServer !');
 			return;
 		} //end if
-		\define('SMART_WEBDAV_CALDAV_ICAL_HOME', (string)\SmartUtils::get_server_current_full_script().'/page/'.$this->ControllerGetParam('url-page').'/~/calendars/'.\Smart::safe_username($this->dav_author).'/');
+		\define('SMART_WEBDAV_CALDAV_ICAL_HOME', (string)\SmartUtils::get_server_current_full_script().'/page/'.$this->ControllerGetParam('url-page').'/~/calendars/'.$this->dav_author.'/');
 		//--
 		if(\defined('\\SMART_WEBDAV_CALDAV_ICAL_PPS')) {
 			\http_response_code(500);
@@ -183,7 +183,7 @@ abstract class ControllerAdmCalDavFs extends \SmartAbstractAppController {
 			echo \SmartComponents::http_message_500_internalerror('FATAL ERROR @ CalDAV: The constant SMART_WEBDAV_CALDAV_ICAL_ACC must NOT be defined outside DavRunServer !');
 			return;
 		} //end if
-		\define('SMART_WEBDAV_CALDAV_ICAL_ACC', (string)\SmartUtils::get_server_current_full_script().'/page/'.$this->ControllerGetParam('url-page').'/~/principals/'.\Smart::safe_username($this->dav_author).'/');
+		\define('SMART_WEBDAV_CALDAV_ICAL_ACC', (string)\SmartUtils::get_server_current_full_script().'/page/'.$this->ControllerGetParam('url-page').'/~/principals/'.$this->dav_author.'/');
 		//--
 
 		//--

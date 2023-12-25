@@ -17,12 +17,12 @@ define('SMART_APP_MODULE_AUTH', true);
 // [PHP8]
 
 /**
- * Admin Controller
+ * Abstract Admin Login Controller
  * @ignore
  */
-class SmartAppAdminController extends SmartAbstractAppController {
+abstract class AbstractAdminLoginsController extends SmartAbstractAppController {
 
-	// v.20231020
+	// v.20231119
 
 
 	public function Initialize() {
@@ -39,6 +39,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//-- {{{SYNC-AUTH-ADMINS-PRE-CHECKS}}}
 		if(SmartAuth::check_login() !== true) {
 			$this->PageViewSetCfg('error', 'Auth Admins Login Requires Authentication ! ...');
+			return 403;
+		} //end if
+		//--
+		if(!SmartEnvironment::isAdminArea()) { // allow: adm/tsk
+			$this->PageViewSetCfg('error', 'Auth Admins Login Manager is allowed to run under `Admin` or Task areas only ! ...');
 			return 403;
 		} //end if
 		//--
@@ -69,32 +74,16 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 			//------- LOGIN OPS
 
-			case 'redir': // display the login redirect ; outputs: HTML ; {{{SYNC-ADM-AUTH-REDIRECT-ON-LOGIN}}}
-				//--
-				$url = $this->RequestVarGet('url', '', 'string');
-				$redirect = (string) SmartUtils::crypto_blowfish_decrypt((string)$url);
-				//--
-				if((string)$redirect == '') {
-					$redirect = (string) $this->ControllerGetParam('url-script');
-				} //end if
-				//--
-				$this->PageViewSetVars([
-					'title' => 'Redirecting Back',
-					'main' 	=> (string) '<script>setTimeout(() => { self.location = \''.Smart::escape_js((string)$redirect).'\'; }, 750);</script>'
-				]);
-				//--
-				break;
-
-			case 'check': // checks for login ; outputs: JSON ; {{{SYNC-ADM-AUTH-REDIRECT-ON-LOGIN}}}
+			case 'check': // login check URL ; outputs: JSON ; {{{SYNC-ADM-AUTH-REDIRECT-ON-LOGIN}}}
 				//--
 				$this->PageViewSetCfg('rawpage', true);
 				//--
 				$url = $this->RequestVarGet('url', '', 'string');
-				$url = (string) SmartUtils::crypto_blowfish_decrypt((string)$url);
+				$url = (string) $this->decryptUrl((string)$url); // {{{SYNC-AUTH-LOGIN-URLS-ENC/DEC}}}
 				//--
 				$area = (string) strtolower((string)$this->ControllerGetParam('app-realm'));
 				//--
-				if((string)$url == '#!'.$area.'/DISPLAY-REALMS') {
+				if(strpos((string)$url, (string)'#!'.$area.'/DISPLAY-REALMS/') === 0) {
 					//--
 					$arr_login_namespaces = (array) \SmartModExtLib\AuthAdmins\AuthNameSpaces::GetNameSpaces();
 					//--
@@ -109,7 +98,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 							(string) SmartMarkersTemplating::render_file_template(
 								'modules/mod-auth-admins/libs/templates/auth-admins-handler/realms.inc.htm',
 								[
-									'AUTH-ID' 		=> (string) SmartAuth::get_auth_username(),
+									'AUTH-ID' 		=> (string) SmartAuth::get_auth_id(),
+									'AUTH-USERNAME' => (string) SmartAuth::get_auth_username(),
 									'LOGIN-AREA' 	=> (string) $this->ControllerGetParam('module-area'),
 									'AREA' 			=> (string) $area,
 									'LOGIN-NSPACES' => (array)  $arr_login_namespaces,
@@ -131,6 +121,25 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				break;
 
+			case 'redir': // if the ajax reply of above login URL fails, will redirect back to this URL ; outputs: HTML ; {{{SYNC-ADM-AUTH-REDIRECT-ON-LOGIN}}}
+				//--
+				$url = $this->RequestVarGet('url', '', 'string');
+				$redirect = (string) $this->decryptUrl((string)$url); // {{{SYNC-AUTH-LOGIN-URLS-ENC/DEC}}}
+				//--
+				if((string)$redirect == '') {
+					$redirect = (string) $this->ControllerGetParam('url-script');
+				} elseif(strpos((string)$redirect, '#') === 0) { // fix: if it is anchor, prefix with the current script !
+					$redirect = (string) $this->ControllerGetParam('url-script').$redirect;
+				} //end if
+				//--
+				$this->PageViewSetVars([
+					'title' => 'Redirecting Back',
+					'main' 	=> (string) '<br><center><img width="48" height="48" title="Redirecting..." alt="Redirecting..." src="data:image/svg+xml,'.Smart::escape_url((string)SmartFileSysUtils::readStaticFile('lib/framework/img/loading-cylon.svg')).'"></center>'."\n".
+										'<script>setTimeout(() => { self.location = \''.Smart::escape_js((string)$redirect).'\'; }, 1250);</script>'
+				]);
+				//--
+				break;
+
 			//------- DEFAULT
 
 			default: // other invalid actions
@@ -146,15 +155,28 @@ class SmartAppAdminController extends SmartAbstractAppController {
 	} //END FUNCTION
 
 
+	private function decryptUrl(string $url) : string {
+		//--
+		return (string) trim((string)SmartCipherCrypto::tf_decrypt((string)$url, '', true)); // TF / TF+BF / BF (fallback:true) ; default key
+		//--
+	} //END FUNCTION
+
+
 } //END CLASS
 
 
 /**
- * Task Controller
+ * Admin Login Controller
  * @ignore
  */
-class SmartAppTaskController extends SmartAppAdminController {
+final class SmartAppAdminController extends AbstractAdminLoginsController {
+} //END CLASS
 
+/**
+ * Task Admin Login Controller
+ * @ignore
+ */
+final class SmartAppTaskController extends AbstractAdminLoginsController {
 } //END CLASS
 
 

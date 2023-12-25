@@ -3,9 +3,9 @@
 
 /*
  * SmartQUnit 1.3.2 [ES6]
- * @version 20230109
+ * @version 20231118
  *
- * (c) 2018-2022 unix-world.org
+ * (c) 2018-2023 unix-world.org
  * Released under the BSD license
  */
 
@@ -29,46 +29,67 @@ const SmartQUnit = new class{constructor(){ // STATIC CLASS
 
 	const $ = jQuery; // jQuery referencing
 
-
-	const runAjaxTest = function(url, method, dataType, assert, testOK, fxDone, postData=null, httpHeaders=null, authUser=null, authPass=null, withCredentials=false) {
+	const runAjaxTest = function(url, method, dataType, assert, testOK, fxDone, postData=null, httpHeaders=null, authUser=null, authPass=null, withCredentials=false, crossDomain=false) {
+		//--
+		const _m$ = 'runAjaxTest';
 		//--
 		const QAsyncTestDone = assert.async(); // qunit async promise
 		const testHtmlDiv = elHtmlDynDiv;
 		//--
-		method = String(method).trim().toUpperCase();
+		switch(dataType) {
+			case 'jsonp':
+			case 'json':
+			case 'script':
+			case 'html':
+			case 'xml':
+			case 'text':
+				break;
+			default:
+				_p$.warn(_N$, _m$, 'ERR: Invalid DataType:', dataType);
+				dataType = 'text';
+		} //end switch
+		//--
+		method = String(method || '').trim().toUpperCase();
 		switch(method) {
 			case 'OPTIONS':
 			case 'DELETE':
 			case 'PATCH':
 			case 'PUT':
-			case 'HEAD':
 			case 'POST':
-				break;
+			case 'HEAD':
 			case 'GET':
+				break;
 			default:
 				method = 'GET';
 				postData = null;
 		} //end switch
 		//--
-		if(typeof(httpHeaders) != 'object') {
-			httpHeaders = {}; // default
-		} //end if
-		//--
 		let ajxOpts = {
 			async: true,
 			cache: false, // no cache at all for any ajax request !!!
-			timeout: parseInt(QUnit.config.testTimeout) * 1000, // ajax timeout in sec
+			timeout: Math.ceil(QUnit.config.testTimeout) * 1000, // ajax timeout in sec
 			url: String(url),
 			method: String(method),
 			dataType: String(dataType),
-			headers: httpHeaders,
 			data: postData,
 		};
+		//--
+		if(!!httpHeaders && (typeof(httpHeaders) == 'object')) {
+			ajxOpts.headers = httpHeaders; // set only if explicit set
+		} //end if
+		//--
+		authUser = String(authUser || '').trim(); // cast to string, trim
+		authPass = String(authPass || ''); // cast to string, do not trim
 		if(!!authUser && !!authPass) { // don't pass if empty, it works as sandboxed ! ; will fail to auto-send auth in admin/task environments ; set ONLY if explicit set
 			ajxOpts.username = String(authUser);
 			ajxOpts.password = String(authPass);
 		} //end if
-		if(withCredentials === true) {
+		//--
+		if(crossDomain === true) { // this option is for external domains only !!
+			withCredentials = false;
+			ajxOpts.crossDomain = true;
+		} //end if
+		if(withCredentials === true) { // this option is for sub-domains only !! not for external domains because will send also sensitive info: ex: cookies or Auth Data !
 			ajxOpts.xhrFields = {
 				withCredentials: true // allow send credentials (CORS): FALSE / TRUE ; Default is FALSE
 			};
@@ -97,7 +118,6 @@ const SmartQUnit = new class{constructor(){ // STATIC CLASS
 	}; //END
 	_C$.runAjaxTest = runAjaxTest; // export
 
-
 	const runiFrameTest = function(url, timeoutMs, assert, testOK, elID) {
 		//--
 		const QAsyncTestDone = assert.async(); // qunit async promise
@@ -106,7 +126,6 @@ const SmartQUnit = new class{constructor(){ // STATIC CLASS
 		//--
 	}; //END
 	_C$.runiFrameTest = runiFrameTest; // export
-
 
 	const elHtmlDynDiv = (assert, QAsyncTestDone, testOK, invalidValue, content, timeoutMs) => {
 		//--
@@ -120,10 +139,9 @@ const SmartQUnit = new class{constructor(){ // STATIC CLASS
 				testOK
 			);
 			QAsyncTestDone();
-		}, parseInt(timeoutMs));
+		}, Math.ceil(timeoutMs));
 		//--
 	}; //END
-
 
 	const elHtmlDynIFrame = function(url, timeoutMs, assert, QAsyncTestDone, testOK, elID) {
 		//--
@@ -131,7 +149,7 @@ const SmartQUnit = new class{constructor(){ // STATIC CLASS
 			elID = 'qunit-test-result';
 		} //end if
 		//--
-		const frame = $('<iframe id="qu-smart-ifrm-sandbox" src="' + htmlspecialchars(url) + '" style="position:fixed; bottom:1px; right:1px; width:1px; height:1px; visibility:hidden;"></iframe>').appendTo('body'); // create a temporary iframe, make it hidden, and attach to the DOM # iFrame display:none loading jquery will throw since jquery >= 3.4.0
+		const frame = $('<iframe id="qu-smart-ifrm-sandbox" src="' + htmlspecialchars(url) + '" style="position:fixed; top:-10px; left:-10px; width:5px; height:5px; display:none;"></iframe>').appendTo('body'); // create a temporary iframe, make it hidden, and attach to the DOM # iFrame display:none loading jquery will throw since jquery >= 3.4.0
 		$(frame).on('load', (evt) => { // proceed after the iframe has loaded content
 			let html = $(evt.currentTarget).contents();
 			// _p$.log('elHtmlDynIFrame', html);
@@ -144,11 +162,10 @@ const SmartQUnit = new class{constructor(){ // STATIC CLASS
 				);
 				$('#qu-smart-ifrm-sandbox').attr('src', '').remove(); // remove the temporary iframe
 				QAsyncTestDone();
-			}, parseInt(timeoutMs));
+			}, Math.ceil(timeoutMs));
 		});
 		//--
 	}; //END
-
 
 	const htmlspecialchars = function(text) { // it performs better, particularly on large blocks of text
 		if(text == undefined) {
@@ -162,7 +179,6 @@ const SmartQUnit = new class{constructor(){ // STATIC CLASS
 		};
 		return String(text || '').replace(/[&\<\>"]/g, (m) => map[m]);
 	}; //END
-
 
 }}; //END CLASS
 

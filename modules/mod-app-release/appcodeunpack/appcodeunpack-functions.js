@@ -1,10 +1,10 @@
 
 // AppJs Local Functions
-// (c) 2013-2022 unix-world.org
+// (c) 2013-2023 unix-world.org
 // License: BSD
-// v.20230109
+// v.20231118
 
-// DEPENDS: smartJ$Utils, smartJ$Date, smartJ$Base64, smartJ$CryptoHash, smartJ$CryptoBlowfish, jQuery
+// DEPENDS: smartJ$Utils, smartJ$Date, smartJ$CryptoHash, smartJ$CipherCrypto, jQuery
 
 //==================================================================
 //==================================================================
@@ -29,9 +29,8 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 
 	const _Utils$ = smartJ$Utils;
 	const _Date$ = smartJ$Date;
-	const _Base$64 = smartJ$Base64;
 	const _Crypto$Hash = smartJ$CryptoHash;
-	const _Crypto$Blowfish = smartJ$CryptoBlowfish;
+	const _Crypto$Cipher = smartJ$CipherCrypto;
 
 	const $ = jQuery;
 
@@ -155,8 +154,8 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 			case 'DELETE':
 			case 'PATCH':
 			case 'PUT':
-			case 'HEAD':
 			case 'POST':
+			case 'HEAD':
 			case 'GET':
 				break;
 			default:
@@ -165,8 +164,8 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 		}
 		y_data_type = _Utils$.stringPureVal(y_data_type, true);
 		switch(y_data_type) {
-			case 'json':
 			case 'jsonp':
+			case 'json':
 			case 'script':
 			case 'html':
 			case 'xml':
@@ -484,15 +483,27 @@ const AppJs = new class{constructor(){ // STATIC CLASS, ES6
 	_C$.url_add_suffix = _Utils$.url_add_suffix;
 	_C$.renderMarkersTpl = _Utils$.renderMarkersTpl;
 
-	_C$.b64enc = _Base$64.encode;
-	_C$.b64dec = _Base$64.decode;
+	_C$.b64enc = _Utils$.b64Enc;
+	_C$.b64dec = _Utils$.b64Dec;
 
-	_C$.md5 = _Crypto$Hash.md5;
-	_C$.sha1 = _Crypto$Hash.sha1;
-	_C$.sha512 = _Crypto$Hash.sha512;
+	_C$.crc32b 	= _Crypto$Hash.crc32b;
+	_C$.md5 	= _Crypto$Hash.md5;
+	_C$.sha1 	= _Crypto$Hash.sha1;
+	_C$.sha224 	= _Crypto$Hash.sha224;
+	_C$.sha256 	= _Crypto$Hash.sha256;
+	_C$.sha384 	= _Crypto$Hash.sha384;
+	_C$.sha512 	= _Crypto$Hash.sha512;
+	_C$.sh3a224 = _Crypto$Hash.sh3a224;
+	_C$.sh3a256 = _Crypto$Hash.sh3a256;
+	_C$.sh3a384 = _Crypto$Hash.sh3a384;
+	_C$.sh3a512 = _Crypto$Hash.sh3a512;
+	_C$.hmac 	= _Crypto$Hash.hmac;
+	_C$.pbkdf2 	= _Crypto$Hash.pbkdf2;
 
-	_C$.bfenc = _Crypto$Blowfish.encrypt;
-	_C$.bfdec = _Crypto$Blowfish.decrypt;
+	_C$.bfEnc = _Crypto$Cipher.bfEnc;
+	_C$.bfDec = _Crypto$Cipher.bfDec;
+	_C$.tfEnc = _Crypto$Cipher.tfEnc;
+	_C$.tfDec = _Crypto$Cipher.tfDec;
 
 
 }}; //END CLASS

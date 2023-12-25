@@ -30,13 +30,22 @@ if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
  */
 class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmDavFs {
 
-	// v.20220915
+	// v.20231112
 
 	public function Run() {
 
 		//--
 		if(SmartAuth::check_login() !== true) {
 			SmartFrameworkRuntime::Raise403Error('ERROR: PageBuilder.Files requires Authentication ...');
+			return;
+		} //end if
+		//--
+		if(
+			(\SmartAuth::test_login_privilege('admin') !== true)
+			AND
+			(\SmartAuth::test_login_privilege('pagebuilder:files') !== true)
+		) {
+			SmartFrameworkRuntime::Raise403Error('ERROR: PageBuilder.Files requires Privileged User ...');
 			return;
 		} //end if
 		//--

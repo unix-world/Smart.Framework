@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class CssOptimizer {
 
 	// ::
-	// v.20221219
+	// v.20231125
 
 
 	//====================================================
@@ -96,8 +96,8 @@ final class CssOptimizer {
 						$exitcode = -1;
 						$enc_errors = '';
 						//--
-						$parr = (array) SmartUtils::run_proc_cmd(
-							(string) escapeshellcmd((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN).' '.Smart::real_path((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_CSS).' '.escapeshellarg((string)$y_stylesheet_path),
+						$parr = (array) SmartUtils::run_proc_cmd( // {{{SYNC-NODEJS-MINIFY-OPTIONS}}}
+							(string) escapeshellcmd((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN).' --no-addons --no-deprecation --no-warnings --no-global-search-paths '.Smart::real_path((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_CSS).' '.escapeshellarg((string)$y_stylesheet_path),
 							null,
 							null,
 							null

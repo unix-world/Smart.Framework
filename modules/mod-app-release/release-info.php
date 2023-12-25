@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: AppRelease/ReleaseInfo
 // Route: ?/page/app-release.release-info (?page=app-release.release-info)
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20221219
+ * @version 	v.20231106
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -147,7 +147,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 		$last_package = '';
 		$packsize = 0;
-		$packsha512  = '';
+		$packsh3a512b64  = '';
 		if(SmartFileSystem::is_type_file((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'package-errors.log')) {
 			$archives = (array) (new SmartGetFileSystem(true))->get_storage((string)TASK_APP_RELEASE_CODEPACK_APP_DIR, false, false, '.z-netarch');
 			if(Smart::array_size($archives['list-files']) > 0) {
@@ -155,7 +155,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				if((string)$last_package != '') {
 					$tmp_content = (string) SmartFileSystem::read((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.$last_package);
 					$packsize = (int) strlen((string)$tmp_content);
-					$packsha512 = (string) SmartHashCrypto::sha512((string)$tmp_content);
+					$packsh3a512b64 = (string) SmartHashCrypto::sh3a512((string)$tmp_content, true);
 					$tmp_content = '';
 				} //end if
 			} //end if
@@ -185,9 +185,9 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 									((string)$appid == (string)$tmp_deploy['app-id']) AND
 									((int)$tmp_deploy['fsize'] > 0) AND
 									((int)$packsize == (int)$tmp_deploy['fsize']) AND
-									((int)strlen((string)$tmp_deploy['checksum']) === (int)128) AND // sha512
-									((string)$packsha512 == (string)$tmp_deploy['checksum']) AND
-									((int)strlen((string)$tmp_deploy['signature']) === (int)40) AND // sha1
+									((int)strlen((string)$tmp_deploy['checksum']) >= (int)88) AND // sh3a512 hex/b64
+									((string)$packsh3a512b64 == (string)$tmp_deploy['checksum']) AND
+									((int)strlen((string)$tmp_deploy['signature']) >= (int)40) AND // sh3a224 hex/b64
 									((string)$tmp_deploy['signature'] == (string)sha1((string)'#'.$appid.'#'.APP_DEPLOY_HASH.'#'.$last_package.'#'.$tmp_deploy['deploy-url'].'#')) // {{{SYNC-APP-DEPLOY-SIGNATURE}}}
 								) {
 									$deploys[(string)$tmp_deploy['deploy-url']] = (string) $tmp_deploy['date-time'];
@@ -212,7 +212,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		$notice[] = 'Release Package: '.($last_package ? $last_package : '-');
 		if((string)$last_package != '') {
 			$notice[] = 'Release Package Size (bytes): '.$packsize;
-			$notice[] = 'Release Package Checksum (sha512): '.$packsha512;
+			$notice[] = 'Release Package Checksum (sha3-512-b64): '.$packsh3a512b64;
 			if(SmartFileSystem::is_type_file((string)TASK_APP_RELEASE_CODEPACK_APP_DIR.'appcodeunpack.php')) {
 				$notice[] = 'Update Release Manager: Yes';
 			} //end if

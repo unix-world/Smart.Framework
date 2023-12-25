@@ -1,4 +1,4 @@
-<!-- v.20220928 -->
+<!-- v.20231028 -->
 [@@@SUB-TEMPLATE:partials/app-release-styles.inc.htm@@@]
 <script>
 const AppID = '[###APP-ID|js###]';
@@ -30,7 +30,7 @@ const runTask = () => {
 			self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + smartJ$Utils.escape_url(selTask), '&appid=' + smartJ$Utils.escape_url(AppID)) + urlSuffix;
 		} else if(selTask === 'code-netpack') {
 			smartJ$Browser.ConfirmDialog(
-				'<div class="operation_important">You are about to run this task: `' + smartJ$Utils.escape_html(selTxtTask) + '`</div><div class="operation_question">Enter a Package Release Info</div><input type="text" maxlength="255" id="prompt-alertable-field" placeholder="Package Comment" style="width:100%"><h5>Press OK to Create the Release Package ...</h5>',
+				'<div class="operation_important">You are about to run this task: `' + smartJ$Utils.escape_html(selTxtTask) + '`</div><div class="operation_question">Enter a Package Release Info</div><input type="text" maxlength="255" id="prompt-alertable-field" placeholder="Package Comment" class="ux-field" style="width:100%;"><h5>Press OK to Create the Release Package ...</h5>',
 				() => {
 					smartJ$Browser.OverlayShow(null, null, null, overlayID, true);
 					setTimeout(() => {
@@ -45,7 +45,9 @@ const runTask = () => {
 				},
 				'Confirm: Create Release Package &nbsp; <i class="sfi sfi-box-add sfi-xl"></i>',
 				700,
-				355
+				355,
+				'alertable',
+				true // title is HTML
 			);
 		} else {
 			smartJ$Browser.ConfirmDialog(
@@ -63,11 +65,21 @@ const runTask = () => {
 				},
 				'Confirm: Run Task &nbsp; <i class="sfi sfi-cogs sfi-xl"></i>',
 				700,
-				250
+				250,
+				'alertable',
+				true // title is HTML
 			);
 		}
 	} else {
-		smartJ$Browser.AlertDialog('<div class="operation_notice">No Task Selected ...</div>', null, 'Notice &nbsp; <i class="sfi sfi-wrench sfi-xl"></i>', null, 200);
+		smartJ$Browser.AlertDialog(
+			'<div class="operation_notice">No Task Selected ...</div>',
+			null,
+			'Notice &nbsp; <i class="sfi sfi-wrench sfi-xl"></i>',
+			null,
+			200,
+			'alertable',
+			true // title is HTML
+		);
 	}
 };
 const manageButtonSelTask = () => {
@@ -86,7 +98,15 @@ const selectApp = () => {
 		smartJ$Browser.OverlayShow(null, null, null, overlayID);
 		setTimeout(() => { self.location = smartJ$Utils.url_add_suffix('[###MOD-SELF-URL|js###]' + '[###CTRL-SELF-NAME|js###]', '&appid=' + smartJ$Utils.escape_url(selApp)); }, 250);
 	} else {
-		smartJ$Browser.AlertDialog('<div class="operation_info">No Application Selected ...</div>', null, 'Notice &nbsp; <i class="sfi sfi-wrench sfi-xl"></i>', null, 200);
+		smartJ$Browser.AlertDialog(
+			'<div class="operation_info">No Application Selected ...</div>',
+			null,
+			'Notice &nbsp; <i class="sfi sfi-wrench sfi-xl"></i>',
+			null,
+			200,
+			'alertable',
+			true // title is HTML
+		);
 	}
 };
 const manageButtonSelApp = () => {

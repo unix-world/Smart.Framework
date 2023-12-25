@@ -15,8 +15,12 @@
 			<button class="ux-button" id="btn_loader_test_pgsql"><i class="sfi sfi-database" style="color:#555555;"></i> &nbsp; Test: PostgreSQL Server</button>
 			<button class="ux-button" id="btn_loader_test_mysql"><i class="sfi sfi-books" style="color:#555555;"></i> &nbsp; Test: MariaDB/MySQL Server</button>
 			<script>
-			var the_url_test_unicode_str = '[###TEST-URL-UNICODE-STR|js###]';
+			let the_url_test_unicode_str = '[###TEST-URL-UNICODE-STR|js###]';
 			jQuery(function() {
+				//--
+				const msgAlert = (msg) => {
+					smartJ$Browser.GrowlNotificationAdd('Errors', smartJ$Utils.escape_html(msg), 'lib/framework/img/sign-warn.svg', 0, true, 'error');
+				};
 				//--
 				$('#btn_loader_test_qunit').click(function() {
 					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;"></span>');
@@ -24,10 +28,10 @@
 				});
 				//--
 				$('#btn_loader_test_strings').click(function() {
-					var the_type_page_test_str = 'html';
-					var the_param_page_test_str = 'testunit.strings-test';
-					var the_img_page_test_str = 'lib/framework/img/loading-spokes.svg';
-					var the_rand_chooser = Math.floor((Math.random() * 100) + 1);
+					let the_type_page_test_str = 'html';
+					let the_param_page_test_str = 'testunit.strings-test';
+					let the_img_page_test_str = 'lib/framework/img/loading-spokes.svg';
+					let the_rand_chooser = Math.floor((Math.random() * 100) + 1);
 					if(the_rand_chooser >= 50) {
 						the_type_page_test_str = 'json';
 						the_param_page_test_str = 'testunit.strings-test-json';
@@ -39,11 +43,12 @@
 				});
 				//--
 				jQuery('#btn_loader_test_crypto').click(function() {
+					smartJ$Browser.GrowlNotificationRemove();
 					$('#test_div_by_ajax').html('<span style="color: #003399; font-size: 27px; font-weight: bold;">Loading the Crypto Test Suite ...</span><br><img src="lib/framework/img/loading-bars.svg">');
 					smartJ$Browser.AjaxRequestFromURL('[###TESTUNIT_BASE_URL|js###]testunit.crypto-test&time=[###NO-CACHE-TIME###]', 'GET').done(function(msg) { // {{{JQUERY-AJAX}}}
 						$('#test_div_by_ajax').html(msg); // this will also evaluate the js scripts
 					}).fail(function(msg) {
-						alert('ERROR (Test-Unit): Invalid Server Response !', '' + msg.responseText);
+						msgAlert('ERROR (Test-Unit): Invalid Server Response ! StatusCode: ' + msg.status);
 					});
 				});
 				//--

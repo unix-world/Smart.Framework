@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: AppRelease/CodeCleanup
 // Route: ?/page/app-release.code-cleanup (?page=app-release.code-cleanup)
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20221219
+ * @version 	v.20231106
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -52,7 +52,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		if((string)$appid != '') {
 			if(defined('TASK_APP_RELEASE_CODEPACK_APP_DIR')) {
 				$str_ofs = (int) strlen('/'.$appid.'/'); // mixed
-				if((int)$str_ofs >= 7) { // min app id len is 5 + 2 slashes ; {{{SYNC-APPCODEPACK-ID-SIZE}}}
+				if((int)$str_ofs >= 6) { // min app id len is 4 + 2 slashes ; {{{SYNC-APPCODEPACK-ID-SIZE}}}
 					if((string)substr((string)TASK_APP_RELEASE_CODEPACK_APP_DIR, -1 * (int)$str_ofs, (int)$str_ofs) == (string)'/'.$appid.'/') { // must end in it
 						if(SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
 							$ok = true;

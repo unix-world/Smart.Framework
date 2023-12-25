@@ -109,6 +109,7 @@ $configs['mongodb']['server-port']	= 27017;								// mongodb port
 $configs['mongodb']['dbname']		= 'smart_framework';					// mongodb database name
 $configs['mongodb']['username'] 	= '';									// mongodb username
 $configs['mongodb']['password'] 	= '';									// mongodb Base64-Encoded password
+$configs['mongodb']['authmet'] 		= 'MONGODB-CR'; 						// mongodb auth mechanism ; see https://www.mongodb.com/docs/manual/reference/connection-string/#urioption.authMechanism
 $configs['mongodb']['timeout']		= 5;									// mongodb connect timeout in seconds
 $configs['mongodb']['slowtime']		= 0.0035;								// mongodb slow query time (for debugging) 0.0025 .. 0.0090
 */

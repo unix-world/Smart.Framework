@@ -3,7 +3,7 @@
 // bootstrap/autoload Smart.Framework base classes for Vendor/Composer
 // license: BSD
 // (c) 2022-2023 unix-world.org
-// r.20221227.1407
+// r.20231116.2328
 
 // ####### DO NOT MODIFY THIS FILE. IT WILL BE REWRITTEN ON ANY UPDATE OF vendor/unixman/smart-framework-base
 // how to install: `php composer.phar require unixman/smart-framework-base @dev`
@@ -164,14 +164,17 @@ function autoload__SmartFrameworkVendorBase($classname) {
 		case 'SmartPersistentCache': // *ONLY* if SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER === false, otherwise must load a derived persistent cache class such as 'redis' or 'mongodb', later, in configs
 			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_caching.php'); // smart cache (non-persistent + abstract persistent)
 			break;
+		case 'SmartHashPoly1305':
 		case 'SmartHashCrypto':
+		case 'SmartCsrf':
 			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_cryptohs.php'); // smart crypto (utils) hash
 			break;
-		case 'SmartCryptoCipherHash':
-		case 'SmartCryptoCipherBlowfishCBC':
-		case 'SmartCryptoOpenSSLCipher':
-		case 'SmartCipherCrypto':
 		case 'SmartDhKx':
+		case 'SmartCryptoCiphersTwofishCBC':
+		case 'SmartCryptoCiphersBlowfishCBC':
+		case 'SmartCryptoCiphersOpenSSL':
+		case 'SmartCryptoCiphersHashCryptOFB':
+		case 'SmartCipherCrypto':
 			require_once(SMART_FRAMEWORK_VENDOR_BASE_DIR.'lib/framework/lib_cryptoas.php'); // smart crypto (utils) symmetric and asymmetric
 			break;
 		case 'SmartMarkersTemplating':

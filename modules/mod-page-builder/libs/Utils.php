@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221220
+ * @version 	v.20231029
  * @package 	PageBuilder
  *
  */
@@ -177,7 +177,7 @@ final class Utils {
 									'img' 	=> (string) $y_media_dir.$files_n_dirs['list-files'][$i],
 									'file' 	=> (string) $files_n_dirs['list-files'][$i],
 									'type' 	=> (string) $tmp_ext,
-									'size' 	=> (string) \SmartUtils::pretty_print_bytes(\SmartFileSystem::get_file_size($y_media_dir.$files_n_dirs['list-files'][$i]), 1, '')
+									'size' 	=> (string) \SmartUtils::pretty_print_bytes((int)\SmartFileSystem::get_file_size((string)$y_media_dir.$files_n_dirs['list-files'][$i]), 1, '')
 								];
 								break;
 							default:

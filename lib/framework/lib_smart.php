@@ -77,7 +77,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20231017
+ * @version     v.20231220
  * @package     @Core
  *
  */
@@ -93,7 +93,9 @@ final class Smart {
 	public const REGEX_SAFE_VALID_NAME 	= '/^[_a-z0-9\-\.@]+$/';
 	public const REGEX_SAFE_USERNAME 	= '/^[a-z0-9\.]+$/';
 
-	public const REGEX_SAFE_HEX_STR 	= '/^[0-9a-f]+$/'; // TODO: match even number of characters only, not odd
+	public const REGEX_SAFE_HEX_STR 	= '/^[0-9a-f]+$/'; // if need case insensitive check just append the `i` flag
+	public const REGEX_SAFE_B64_STR 	= '/^[a-zA-Z0-9\+\/\=]+$/';
+	public const REGEX_SAFE_B64S_STR 	= '/^[a-zA-Z0-9\-_\.]+$/';
 
 	public const DECIMAL_NUM_PRECISION 	= '9999999999999.9'; // DECIMAL I[13].D[1] ; if I + D > 14 looses some decimal precision ; by example: 99999999999999.9900 becomes 99999999999999.98 with 2 decimals and 100000000000000.0 with one decimal on number format ! ; no higher decimal numbers than this are safe using a precision like 14, the max in PHP
 
@@ -102,9 +104,12 @@ final class Smart {
 	public const CHARSET_BASE_36 = '0123456789abcdefghijklmnopqrstuvwxyz';
 	public const CHARSET_BASE_58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'; // compatible with smartgo
 	public const CHARSET_BASE_62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	public const CHDIFF_BASE_64s = [ '+' => '-', '/' => '_', '=' => '.' ];
+	public const CHDIFF_BASE_64s = [ '+' => '-', '/' => '_', '=' => '.' ]; // with padding
+	public const CHDIFF_BASE_64u = [ '+' => '-', '/' => '_', '=' => '' ]; // with no padding
 	public const CHARSET_BASE_85 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#'; // https://rfc.zeromq.org/spec:32/Z85/
 	public const CHARSET_BASE_92 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#|;,_~`"'; // uxm, compatible with smartgo
+
+	public const UNDEF_VAR_NAME = 'Undef____V_a_r';
 
 	//--
 
@@ -223,7 +228,6 @@ final class Smart {
 	];
 
 	//--
-
 	private static $Cfgs = []; // registry of cached config data
 
 	private static $SemaphoreAreLogHandlersDisabled = false; // by default they are supposed to be not
@@ -241,6 +245,26 @@ final class Smart {
 	public static function is_nscalar($val) : bool {
 		//--
 		if(is_scalar($val) OR is_null($val)) {
+			return true;
+		} //end if
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Test if a variable value is Array or Scalar or Null
+	 *
+	 * @param 	MIXED 		$val 			:: The value to be tested
+	 *
+	 * @return 	BOOL						:: FALSE if object or resource ; TRUE for the rest
+	 */
+	public static function is_arr_or_nscalar($val) : bool {
+		//--
+		if(self::is_nscalar($val) OR is_array($val)) {
 			return true;
 		} //end if
 		//--
@@ -367,7 +391,7 @@ final class Smart {
 			$the_path = (string) $y_path;
 		} //end if
 		//--
-		return (string) self::fix_path_separator($the_path); // FIX: on Windows, is possible to return a backslash \ instead of slash /
+		return (string) self::fix_path_separator((string)$the_path); // FIX: on Windows, is possible to return a backslash \ instead of slash /
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -385,7 +409,7 @@ final class Smart {
 		//--
 		$dir_name = (string) dirname((string)$y_path);
 		//--
-		return (string) self::fix_path_separator($dir_name); // FIX: on Windows, is possible to return a backslash \ instead of slash /
+		return (string) self::fix_path_separator((string)$dir_name); // FIX: on Windows, is possible to return a backslash \ instead of slash /
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -500,6 +524,158 @@ final class Smart {
 
 
 	//================================================================
+	/**
+	 * Safe Parse URL 					:: a better replacement for parse_url()
+	 *
+	 * @param STRING 	$y_url			:: The URL to be parsed
+	 * @param BOOL 		$y_skiport 		:: If set to TRUE will skip the port if standard (empty: 80 or 443) ; Default is FALSE
+	 *
+	 * @return ARRAY 					:: The separed URL (associative array) as: protocol, server, port, path, scriptname
+	 */
+	public static function url_parse(?string $y_url, bool $y_skiport=false) : array {
+		//--
+		$y_url = (string) $y_url;
+		//--
+		$parts = array();
+		$parts = parse_url((string)$y_url); // do not cast
+		if(!is_array($parts)) {
+			$parts = [];
+		} //end if
+		//--
+		$scheme = '';
+		if(array_key_exists('scheme', $parts)) {
+			$scheme = (string) trim((string)$parts['scheme']);
+		} //end if
+		//--
+		$protocol = (string) $scheme;
+		if((string)$protocol != '') {
+			$protocol .= ':';
+		} //end if
+		$protocol .= '//';
+		//--
+		$server = '';
+		if(array_key_exists('host', $parts)) {
+			$server = (string) trim((string)$parts['host']);
+		} //end if
+		//--
+		$port = '';
+		if(array_key_exists('port', $parts)) {
+			$port = (string) trim((string)$parts['port']);
+		} //end if
+		if($y_skiport !== true) {
+			if((string)$port == '') {
+				if((string)$scheme == 'https') {
+					$port = '443';
+				} else {
+					$port = '80';
+				} //end if else
+			} //end if
+		} //end if
+		//--
+		$path = '';
+		if(array_key_exists('path', $parts)) {
+			$path = (string) trim((string)$parts['path']);
+		} //end if
+		//--
+		$query = '';
+		if(array_key_exists('query', $parts)) {
+			$query = (string) trim((string)$parts['query']);
+		} //end if
+		//--
+		$fragment = '';
+		if(array_key_exists('fragment', $parts)) {
+			$fragment = (string) trim((string)$parts['fragment']);
+		} //end if
+		//--
+		$suffix = (string) $path;
+		if((string)$query != '') {
+			$suffix .= '?'.$query;
+		} //end if
+		if((string)$fragment != '') {
+			$suffix .= '#'.$fragment;
+		} //end if
+		if((string)$suffix == '') {
+			$suffix = '/'; // FIX: this is required as default http path for HTTP Cli requests !!
+		} //end if
+		//--
+		return [ // must be compatible with: PHP's parse_url() but may have extra entries
+			'protocol' 	=> (string) $protocol,
+			'scheme' 	=> (string) $scheme,
+			'host' 		=> (string) $server,
+			'port' 		=> (string) $port,
+			'path' 		=> (string) $path,
+			'query' 	=> (string) $query,
+			'fragment' 	=> (string) $fragment,
+			'suffix' 	=> (string) $suffix,
+		];
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Safe Parse URL Query 			:: a better replacement for parse_str()
+	 *
+	 * @param STRING 	$y_query_url	:: The URL Query to be parsed ; Ex: first=value&arr[]=foo+bar&arr[]=baz
+	 *
+	 * @return ARRAY 					:: The array with all parsed values
+	 */
+	public static function url_parse_query(?string $y_query_url) : array {
+		//--
+		$y_query_url = (string) trim((string)$y_query_url);
+		$y_query_url = (string) ltrim((string)$y_query_url, '?');
+		$y_query_url = (string) ltrim((string)$y_query_url, '&');
+		$y_query_url = (string) ltrim((string)$y_query_url);
+		//--
+		if((string)$y_query_url == '') {
+			return [];
+		} //end if
+		//--
+		$arr = [];
+		parse_str((string)$y_query_url, $arr); // this method does not output
+		if(!is_array($arr)) {
+			$arr = [];
+		} //end if
+		//--
+		return (array) $arr;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Build an URL Query (Build a standard RFC3986 URL from an array of parameters) as: a=b&param1=value1&param2=value2&c[0]=a&c[1]=x&d[a]=15&d[b]=z
+	 *
+	 * @param 	ARRAY		$y_params 						:: Associative array as [param1 => value1, Param2 => Value2]
+	 * @param 	BOOLEAN 	$y_allow_late_binding_params	:: Allow late binding params ex: a={{{param}}}&b=true
+	 *
+	 * @return 	STRING										:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
+	 */
+	public static function url_build_query(?array $y_params, bool $y_allow_late_binding_params) : string {
+		//--
+		if(self::array_size($y_params) <= 0) {
+			return '';
+		} //end if
+		//--
+		$out = [];
+		if(is_array($y_params)) {
+			foreach($y_params as $key => $val) {
+				if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
+					$out[] = (string) self::url_encode_params((string)$key, $val, (bool)$y_allow_late_binding_params);
+				} //end if
+			} //end foreach
+		} //end if
+		//--
+		return (string) implode('&', (array)$out);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// [PRIVATE]
 	private static function url_encode_value(?string $value, bool $y_allow_late_binding_params) : string {
 		//--
 		if(
@@ -522,7 +698,7 @@ final class Smart {
 
 
 	//================================================================
-	// on init this function $suffix must be set to ''
+	// [PRIVATE] on init this function $suffix must be set to ''
 	private static function url_encode_params(?string $name, $value, bool $y_allow_late_binding_params, ?string $suffix='') : string {
 		//--
 		$ret = [];
@@ -560,29 +736,83 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Build an URL Query (Build a standard RFC3986 URL from an array of parameters) as: a=b&param1=value1&param2=value2&c[0]=a&c[1]=x&d[a]=15&d[b]=z
+	 * Remove URL Params (Build a standard RFC3986 URL from script and parameters) as: script.xyz?a=b&param1=value1&param2=value2&param3={{{late-binding}}}
+	 * It may allow or not late binding params in url (when re-parsing url query) such as 'param3={{{late-binding}}}'
 	 *
-	 * @param 	ARRAY		$y_params 						:: Associative array as [param1 => value1, Param2 => Value2]
-	 * @param 	BOOLEAN 	$y_allow_late_binding_params	:: Allow late binding params ex: a={{{param}}}&b=true
+	 * @param 	STRING 		$y_url							:: The base URL like: script.php or script.php?a=b or empty
+	 * @param 	ARRAY		$y_params 						:: Non-Associative array as [param1, Param2]
+	 * @param 	BOOLEAN 	$y_allow_late_binding_params	:: Allow late binding params in URL query (when re-parsing) ex: a={{{param}}}&b=true
 	 *
 	 * @return 	STRING										:: The prepared URL in the standard RFC3986 format (all values are escaped using rawurlencode() to be Unicode full compliant
 	 */
-	public static function url_build_query(?array $y_params, bool $y_allow_late_binding_params) : string {
+	public static function url_remove_params(?string $y_url, ?array $y_params, bool $y_allow_late_binding_params=true) : string {
 		//--
-		if(self::array_size($y_params) <= 0) {
-			return '';
+		$y_url = (string) trim((string)$y_url);
+		if((string)$y_url == '') {
+			return ''; // url is empty
 		} //end if
 		//--
-		$out = '';
-		if(is_array($y_params)) {
-			foreach($y_params as $key => $val) {
-				if(((string)trim((string)$key) != '') AND (SmartFrameworkSecurity::ValidateUrlVariableName((string)$key))) { // {{{SYNC-REQVARS-VALIDATION}}}
-					$out .= self::url_encode_params((string)$key, $val, (bool)$y_allow_late_binding_params);
+		if((int)self::array_size($y_params) <= 0) {
+			self::log_notice(__METHOD__.' # Input parameters array is empty');
+			return (string) $y_url; // err
+		} //end if
+		if((int)self::array_type_test($y_params) != 1) {
+			self::log_warning(__METHOD__.' # Input parameters array must be non-associative');
+			return (string) $y_url; // err
+		} //end if
+		//--
+		if(strpos((string)$y_url, '?') === false) {
+			return (string) $y_url; // no query URL, nothing to remove
+		} //end if
+		//--
+		$arr = (array) explode('?', (string)$y_url, 2);
+		$part_url = (string) trim((string)($arr[0] ?? null));
+		$part_query = (string) trim((string)($arr[1] ?? null));
+		$arr = null;
+		//--
+		if((string)$part_query == '') {
+			return (string) $y_url; // nothing after ?, nothing to remove
+		} //end if
+		//--
+		$part_hash = '';
+		if(strpos((string)$part_query, '#') !== false) {
+			$arr = (array) explode('#', (string)$part_query, 2);
+			$part_query = (string) trim((string)($arr[0] ?? null));
+			$part_hash = (string) trim((string)($arr[1] ?? null));
+		} //end if
+		//--
+		if((string)$part_query == '') {
+			return (string) $y_url; // nothing after ? before #, nothing to remove
+		} //end if
+		//--
+		$arr = (array) self::url_parse_query((string)$part_query);
+		if((int)self::array_size($arr) <= 0) {
+			return (string) $y_url; // malformed url, nothing to remove
+		} //end if
+		//--
+		for($i=0; $i<self::array_size($y_params); $i++) {
+			$key = '';
+			if(self::is_nscalar($y_params[$i])) {
+				$key = (string) trim((string)$y_params[$i]);
+				if((string)$key != '') {
+					if(array_key_exists((string)$key, (array)$arr)) {
+						unset($arr[(string)$key]);
+					} //end if
 				} //end if
-			} //end foreach
+			} else {
+				self::log_warning(__METHOD__.' # Input parameters array contains a non-scalar value at index: #'.(int)$i);
+			} //end if else
+		} //end for
+		$part_query = (string) trim((string)self::url_build_query((array)$arr, (bool)$y_allow_late_binding_params));
+		if((string)$part_query != '') {
+			$part_query = '?'.$part_query;
 		} //end if
 		//--
-		return (string) $out;
+		if((string)$part_hash != '') {
+			$part_hash = (string) '#'.$part_hash;
+		} //end if
+		//--
+		return (string) $part_url.$part_query.$part_hash;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -591,7 +821,7 @@ final class Smart {
 	//================================================================
 	/**
 	 * Add URL Params (Build a standard RFC3986 URL from script and parameters) as: script.xyz?a=b&param1=value1&param2=value2&param3={{{late-binding}}}
-	 * It allows late binding params such as 'param3' => '{{{late-binding}}}'
+	 * It may allow or not late binding params such as 'param3' => '{{{late-binding}}}'
 	 *
 	 * @param 	STRING 		$y_url							:: The base URL like: script.php or script.php?a=b or empty
 	 * @param 	ARRAY		$y_params 						:: Associative array as [param1 => value1, Param2 => Value2, param3 => {{{late-binding}}}]
@@ -765,7 +995,7 @@ final class Smart {
 		// * Using with unsafe strings (come from GET / POST / DB / Untrusted): <script>var my = \''.Smart::escape_js($str).'\';</script>
 		// * Using with safe strings (come from language files): <script>var my = \''.Smart::escape_js($str).'\';</script>
 		// WARNING: strings may contain HTML Tags ... which if apply Smart::escape_html() may break them.
-		// str_replace(array("\\", "\n", "\t", "\r", "\b", "\f", "'"), array('\\\\', '\\n', '\\t', '\\r', '', '', '\\\''), $str); // array('\\\\', '', ' ', '', '', '', '\\\'')
+		// str_replace(["\\", "\n", "\t", "\r", "\b", "\f", "'"], ['\\\\', '\\n', '\\t', '\\r', '', '', '\\\''], (string)$str); // ['\\\\', '', ' ', '', '', '', '\\\'']
 		//-- encode as json
 		$encoded = (string) @json_encode((string)$str, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_INVALID_UTF8_SUBSTITUTE, 512); // encode the string includding unicode chars, with all possible: < > ' " &
 		//-- the above will provide a json encoded string as: "mystring" ; we get just what's between double quotes as: mystring
@@ -783,10 +1013,17 @@ final class Smart {
 	 * @param 	BOOLEAN 	$prettyprint		:: *Optional* Default to FALSE ; If TRUE will format the json as pretty-print (takes much more space, but sometimes make sense ...)
 	 * @param 	BOOLEAN 	$unescaped_unicode 	:: *Optional* Default to TRUE ; If FALSE will escape unicode characters
 	 * @param 	BOOLEAN 	$htmlsafe 			:: *Optional* Default to TRUE ; If FALSE the JSON will not be HTML-Safe as it will not escape: < > ' " &
+	 * @param   INTEGER+ 	$depth 				:: *Optional* Default to 512 ; the maximum depth ; must be greater than zero and no more than 1024 (to keep memory footprint low) !
 	 *
 	 * @return 	STRING							:: The JSON encoded string
 	 */
-	public static function json_encode($data, bool $prettyprint=false, bool $unescaped_unicode=true, bool $htmlsafe=true) : string {
+	public static function json_encode($data, bool $prettyprint=false, bool $unescaped_unicode=true, bool $htmlsafe=true, int $depth=512) : string {
+		//-- {{{SYNC-JSON-DEFAULT-AND-MAX-DEPTH}}}
+		if((int)$depth <= 0) {
+			$depth = 512; // default
+		} elseif((int)$depth > 1024) {
+			$depth = 1024; // max
+		} //end if else
 		//--
 		$options = 0;
 		if(!$unescaped_unicode) {
@@ -819,7 +1056,7 @@ final class Smart {
 			} //end if else
 		} //end if else
 		//--
-		$json = (string) @json_encode($data, $options, 512); // Fix: must return a string ; mixed data ; depth was added since PHP 5.5
+		$json = (string) @json_encode($data, $options, (int)$depth); // Fix: must return a string ; mixed data ; depth was added since PHP 5.5
 		if((string)$json == '') { // fix if json encode returns FALSE
 			self::log_warning(__METHOD__.' # Invalid Encoded JSON for input: '.print_r($data,1));
 			$json = 'null';
@@ -835,14 +1072,21 @@ final class Smart {
 	/**
 	 * Decode JSON strings to PHP native variable(s)
 	 *
-	 * @param 	STRING 		$json			:: The JSON string
-	 * @param 	BOOLEAN		$return_array	:: *Optional* Default to FALSE ; When TRUE, returned objects will be converted into associative arrays (default to TRUE)
+	 * @param 	STRING 		$json				:: The JSON string
+	 * @param 	BOOLEAN		$return_array		:: *Optional* Default to FALSE ; When TRUE, returned objects will be converted into associative arrays (default to TRUE)
+	 * @param   INTEGER+ 	$depth 				:: *Optional* Default to 512 ; the maximum depth ; must be greater than zero and no more than 1024 (to keep memory footprint low) !
 	 *
-	 * @return 	MIXED						:: The PHP native Variable: NULL ; INT ; NUMERIC ; STRING ; ARRAY
+	 * @return 	MIXED							:: The PHP native Variable: NULL ; INT ; NUMERIC ; STRING ; ARRAY
 	 */
-	public static function json_decode(?string $json, bool $return_array=true) { // mixed
-		//--
-		return @json_decode((string)$json, (bool)$return_array, 512, JSON_BIGINT_AS_STRING); // as json decode depth is added just in PHP 5.5 use the default depth = 512 by now ...
+	public static function json_decode(?string $json, bool $return_array=true, int $depth=512) { // mixed
+		//-- {{{SYNC-JSON-DEFAULT-AND-MAX-DEPTH}}}
+		if((int)$depth <= 0) {
+			$depth = 512; // default
+		} elseif((int)$depth > 1024) {
+			$depth = 1024; // max
+		} //end if else
+		//-- fix: json decode to decode the exact as encoded using the same depth actually needs the encodingDepth + 1 !
+		return @json_decode((string)$json, (bool)$return_array, (int)((int)$depth+1), JSON_BIGINT_AS_STRING); // as json decode depth is added just in PHP 5.5 use the default depth = 512 by now ...
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1092,12 +1336,16 @@ final class Smart {
 	 * @param 	STRING				$y_sep_decimals 	:: The decimal separator symbol as: 	. or , (default is .)
 	 * @param 	STRING 				$y_sep_thousands	:: The thousand separator symbol as: 	, or . (default is [none])
 	 *
-	 * @return 	DECIMAL DECIMAL							:: A decimal number as string
+	 * @return 	DECIMAL 								:: A decimal number as string
 	 */
 	public static function format_number_dec($y_number, $y_decimals=2, ?string $y_sep_decimals='.', ?string $y_sep_thousands='') : string { // do not make strongtype on number or decimals, it may come as string
 		//--
 		// must be notice not warning ; in production environments cannot control values that come from request ...
 		//--
+		if(!self::is_nscalar($y_decimals)) {
+			self::log_notice(__METHOD__.' # The expected (decimals) input value is not nScalar ; fixed as ZERO [0] : '.print_r($y_decimals,1));
+			$y_decimals = 0;
+		} //end if
 		$y_decimals = (int) self::format_number_int($y_decimals, '+'); // fix decimals
 		if($y_decimals < 1) { // 9999999999999.9
 			$y_decimals = 1;
@@ -1106,6 +1354,7 @@ final class Smart {
 		} //end if
 		//-- fix float
 		if(!self::is_nscalar($y_number)) {
+			self::log_notice(__METHOD__.' # The expected (numeric) input value is not nScalar ; fixed as ZERO [0] : '.print_r($y_number,1));
 			$y_number = 0;
 		} //end if
 		if(self::check_dec_number_overflow($y_number) === true) {
@@ -1164,6 +1413,7 @@ final class Smart {
 		} //end if
 		//--
 		switch((string)strtolower((string)$y_mode)) {
+			//--
 			case 'natsort': // natural sort
 				@natsort($y_arr);
 				break;
@@ -1176,24 +1426,31 @@ final class Smart {
 			case 'rsort': // regular reverse sort
 				@rsort($y_arr);
 				break;
+			//--
 			case 'asort': // associative sort
 				@asort($y_arr);
 				break;
 			case 'arsort': // associative reverse sort
 				@arsort($y_arr);
 				break;
-			case 'ksort': // key sort
+			case 'ksort': // associative key sort
 				@ksort($y_arr);
 				break;
-			case 'krsort': // key reverse sort
+			case 'krsort': // associative key reverse sort
 				@krsort($y_arr);
 				break;
+			//--
 			default:
 				self::log_warning(__METHOD__.' # Invalid Sort Mode: `'.$y_mode.'`');
 				return (array) $y_arr;
+			//--
 		} //end switch
 		//--
-		return (array) array_values((array)$y_arr);
+		if((int)self::array_type_test((array)$y_arr) != 2) {
+			$y_arr = (array) array_values((array)$y_arr); // only for non-associative arrays ; for associative arrays this will lost the keys, don't apply !
+		} //end if
+		//--
+		return (array) $y_arr;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1371,7 +1628,7 @@ final class Smart {
 	 * @param ARRAY/MIXED 		$y_arr 					:: The input array
 	 * @param LIST/ARRAY 		$y_keys 				:: The array keys to initialize: will add these keys to the array assigned with a NULL value only if the key does not exists ; the existing keys will be preserved with their existing values ; must be a non-associative array, as: [ 'key1', 'key2', '', ...] ; a key can be also an empty string
 	 *
-	 * @return ARRAY 								:: The modified array
+	 * @return ARRAY 									:: The modified array
 	 */
 	public static function array_init_keys($y_arr, $y_keys) : array { // do not enforce parameters type, it have a wide usage and detects !
 		//--
@@ -1608,7 +1865,7 @@ final class Smart {
 			'#<img[^>]*?'.'>#si'									// img
 		];
 		$yhtmlcode = (string) preg_replace((array)$html_regex_h, ' ', (string)$yhtmlcode);
-		$yhtmlcode = str_replace(["\r\n", "\r", "\t", "\f"], ["\n", "\n", ' ', ' '], $yhtmlcode);
+		$yhtmlcode = (string) str_replace(["\r\n", "\r", "\t", "\f"], ["\n", "\n", ' ', ' '], (string)$yhtmlcode);
 		//-- replace new line tags
 		if($ynewline === true) {
 			$replchr = "\n"; // newline
@@ -1658,7 +1915,7 @@ final class Smart {
 	 *
 	 */
 	public static function safe_fix_invalid_filesys_names(?string $y_fsname) : string {
-		//-- v.190105
+		//-- v.20231022
 		$y_fsname = (string) trim((string)$y_fsname);
 		//-- {{{SYNC-SAFE-PATH-CHARS}}} {{{SYNC-CHK-SAFE-PATH}}}
 		if(
@@ -1699,14 +1956,14 @@ final class Smart {
 	 * @return STRING 						:: The safe path ; if invalid will return empty value
 	 */
 	public static function safe_pathname(?string $y_path, ?string $ysupresschar='') : string {
-		//-- v.170920
+		//-- v.20231119
 		$y_path = (string) trim((string)$y_path); // force string and trim
 		if((string)$y_path == '') {
 			return '';
 		} //end if
 		//--
 		if(preg_match((string)self::REGEX_SAFE_PATH_NAME, (string)$y_path)) { // {{{SYNC-CHK-SAFE-PATH}}}
-			return (string) self::safe_fix_invalid_filesys_names($y_path);
+			return (string) self::safe_fix_invalid_filesys_names((string)$y_path);
 		} //end if
 		//--
 		$ysupresschar = (string) $ysupresschar; // force string and be sure is lower
@@ -1719,17 +1976,17 @@ final class Smart {
 		} //end if
 		//--
 		$y_path = (string) preg_replace((string)self::lower_unsafe_characters(), '', (string)$y_path); // remove dangerous characters
-		$y_path = (string) SmartUnicode::utf8_to_iso($y_path); // bring STRING to ISO-8859-1
-		$y_path = (string) stripslashes($y_path); // remove any possible back-slashes
-		$y_path = (string) self::normalize_spaces($y_path); // normalize spaces to catch null seq.
+		$y_path = (string) SmartUnicode::utf8_to_iso((string)$y_path); // bring STRING to ISO-8859-1
+		$y_path = (string) stripslashes((string)$y_path); // remove any possible back-slashes
+		$y_path = (string) self::normalize_spaces((string)$y_path); // normalize spaces to catch null seq.
 		//$y_path = (string) str_replace('?', $ysupresschar, $y_path); // replace questionmark (that may come from utf8 decode) ; this is already done below
-		$y_path = (string) preg_replace('/[^_a-zA-Z0-9\-\.@\#\/]/', (string)$ysupresschar, $y_path); // {{{SYNC-SAFE-PATH-CHARS}}} suppress any other characters than these, no unicode modifier
-		$y_path = (string) preg_replace("/(\.)\\1+/", '.', $y_path); // suppress multiple . dots and replace with single dot
-		$y_path = (string) preg_replace("/(\/)\\1+/", '/', $y_path); // suppress multiple // slashes and replace with single slash
-		$y_path = (string) str_replace(array('../', './'), array('-', '-'), $y_path); // replace any unsafe path combinations (do not suppress but replace with a fixed character to avoid create security breaches)
-		$y_path = (string) trim($y_path); // finally trim it
+		$y_path = (string) preg_replace('/[^_a-zA-Z0-9\-\.@\#\/]/', (string)$ysupresschar, (string)$y_path); // {{{SYNC-SAFE-PATH-CHARS}}} suppress any other characters than these, no unicode modifier
+		$y_path = (string) preg_replace("/(\.)\\1+/", '.', (string)$y_path); // suppress multiple . dots and replace with single dot
+		$y_path = (string) preg_replace("/(\/)\\1+/", '/', (string)$y_path); // suppress multiple // slashes and replace with single slash
+		$y_path = (string) str_replace([ '../', './' ], [ '-', '-' ], (string)$y_path); // replace any unsafe path combinations (do not suppress but replace with a fixed character to avoid create security breaches)
+		$y_path = (string) trim((string)$y_path); // finally trim it
 		//--
-		return (string) self::safe_fix_invalid_filesys_names($y_path);
+		return (string) self::safe_fix_invalid_filesys_names((string)$y_path);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1749,14 +2006,14 @@ final class Smart {
 	 * @return STRING 						:: The safe file or dir name ; if invalid will return empty value
 	 */
 	public static function safe_filename(?string $y_fname, ?string $ysupresschar='') : string {
-		//-- v.170920
+		//-- v.20231119
 		$y_fname = (string) trim((string)$y_fname); // force string and trim
 		if((string)$y_fname == '') {
 			return '';
 		} //end if
 		//--
 		if(preg_match((string)self::REGEX_SAFE_FILE_NAME, (string)$y_fname)) { // {{{SYNC-CHK-SAFE-FILENAME}}}
-			return (string) self::safe_fix_invalid_filesys_names($y_fname);
+			return (string) self::safe_fix_invalid_filesys_names((string)$y_fname);
 		} //end if
 		//--
 		$ysupresschar = (string) $ysupresschar; // force string and be sure is lower
@@ -1768,48 +2025,11 @@ final class Smart {
 				$ysupresschar = '';
 		} //end if
 		//--
-		$y_fname = (string) self::safe_pathname($y_fname, $ysupresschar);
-		$y_fname = (string) str_replace('/', '-', $y_fname); // replace the path character with a fixed character (do not suppress to avoid create security breaches)
-		$y_fname = (string) trim($y_fname); // finally trim it
+		$y_fname = (string) self::safe_pathname((string)$y_fname, (string)$ysupresschar);
+		$y_fname = (string) str_replace('/', '-', (string)$y_fname); // replace the path character with a fixed character (do not suppress to avoid create security breaches)
+		$y_fname = (string) trim((string)$y_fname); // finally trim it
 		//--
-		return (string) self::safe_fix_invalid_filesys_names($y_fname);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Creates a Safe Valid Variable Name
-	 * NOTICE: this have a special usage and must allow also 0..9 as prefix because is can be used for other purposes not just for real safe variable names, thus if real safe valid variable name must be tested later (real safe variable names cannot start with numbers ...)
-	 * NOTICE: It may return an empty string if all characters in the given variable name are invalid or invalid path sequences detected, so if empty variable name must be tested later
-	 * ALLOWED CHARS: [a-zA-Z0-9] _
-	 *
-	 * @param STRING 		$y_name				:: Variable Name to be processed
-	 * @param BOOL 			$y_allow_upper 		:: Allow UpperCase ; *Optional* ; Default is TRUE
-	 *
-	 * @return STRING 							:: The safe variable name ; if invalid should return empty value
-	 */
-	public static function safe_varname(?string $y_name, bool $y_allow_upper=true) : string {
-		//-- v.20210302
-		$y_name = (string) trim((string)$y_name); // force string and trim
-		if((string)$y_name == '') {
-			return '';
-		} //end if
-		//--
-		if($y_allow_upper === false) {
-			$y_name = (string) strtolower((string)$y_name);
-		} //end if
-		//--
-		if(preg_match((string)self::REGEX_SAFE_VAR_NAME, (string)$y_name)) {
-			return (string) self::safe_fix_invalid_filesys_names($y_name);
-		} //end if
-		//--
-		$y_name = (string) self::safe_filename($y_name, '-');
-		$y_name = (string) str_replace(array('-', '.', '@', '#'), '', $y_name); // replace the invalid - . @ #
-		$y_name = (string) trim($y_name);
-		//--
-		return (string) self::safe_fix_invalid_filesys_names($y_name);
+		return (string) self::safe_fix_invalid_filesys_names((string)$y_fname);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1823,18 +2043,31 @@ final class Smart {
 	 *
 	 * @param STRING 		$y_name			:: Name to be processed
 	 * @param STRING 		$ysupresschar	:: The suppression character to replace weird characters ; optional ; default is ''
+	 * @param BOOL 			$y_allow_upper 	:: Allow UpperCase ; *Optional* ; Default is FALSE
 	 *
 	 * @return STRING 						:: The safe name ; if invalid should return empty value
 	 */
-	public static function safe_validname(?string $y_name, ?string $ysupresschar='') : string {
-		//-- v.170920
+	public static function safe_validname(?string $y_name, ?string $ysupresschar='', bool $y_allow_upper=false) : string {
+		//-- v.20231119
 		$y_name = (string) trim((string)$y_name); // force string and trim
 		if((string)$y_name == '') {
 			return '';
 		} //end if
 		//--
-		if(preg_match((string)self::REGEX_SAFE_VALID_NAME, (string)$y_name)) {
-			return (string) self::safe_fix_invalid_filesys_names($y_name);
+		if(
+			(
+				($y_allow_upper !== true)
+				AND
+				(preg_match((string)self::REGEX_SAFE_VALID_NAME, (string)$y_name))
+			)
+			OR
+			(
+				($y_allow_upper === true)
+				AND
+				(preg_match((string)self::REGEX_SAFE_VALID_NAME, (string)strtolower((string)$y_name)))
+			)
+		) {
+			return (string) self::safe_fix_invalid_filesys_names((string)$y_name);
 		} //end if
 		//--
 		$ysupresschar = (string) $ysupresschar; // force string and be sure is lower
@@ -1846,12 +2079,14 @@ final class Smart {
 				$ysupresschar = '';
 		} //end if
 		//--
-		$y_name = (string) self::safe_filename($y_name, $ysupresschar);
-		$y_name = (string) strtolower($y_name); // make all lower chars
-		$y_name = (string) str_replace('#', '', $y_name); // replace also diez
-		$y_name = (string) trim($y_name);
+		$y_name = (string) self::safe_filename((string)$y_name, (string)$ysupresschar);
+		if($y_allow_upper !== true) {
+			$y_name = (string) strtolower((string)$y_name); // make all lower chars
+		} //end if
+		$y_name = (string) str_replace('#', '', (string)$y_name); // replace also diez
+		$y_name = (string) trim((string)$y_name);
 		//--
-		return (string) self::safe_fix_invalid_filesys_names($y_name);
+		return (string) self::safe_fix_invalid_filesys_names((string)$y_name);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1868,21 +2103,62 @@ final class Smart {
 	 * @return STRING 						:: The safe name ; if invalid should return empty value
 	 */
 	public static function safe_username(?string $y_name) : string {
-		//-- v.170920
+		//-- v.20231119
 		$y_name = (string) trim((string)$y_name); // force string and trim
 		if((string)$y_name == '') {
 			return '';
 		} //end if
 		//--
 		if(preg_match((string)self::REGEX_SAFE_USERNAME, (string)$y_name)) {
-			return (string) self::safe_fix_invalid_filesys_names($y_name);
+			return (string) self::safe_fix_invalid_filesys_names((string)$y_name);
 		} //end if
 		//--
-		$y_name = (string) self::safe_validname($y_name, '.');
-		$y_name = (string) str_replace(array('@', '-', '_'), '', $y_name); // replace also @ - _
-		$y_name = (string) trim($y_name);
+		$y_name = (string) self::safe_validname((string)$y_name); // cannot use dot as a suppress character because is unsupported by validname
+		$y_name = (string) str_replace(['@', '-', '_'], '', (string)$y_name); // replace also @ - _
+		$y_name = (string) trim((string)$y_name);
 		//--
-		return (string) self::safe_fix_invalid_filesys_names($y_name);
+		return (string) self::safe_fix_invalid_filesys_names((string)$y_name);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Creates a Safe Valid Variable Name
+	 * NOTICE: this have a special usage and must allow also 0..9 as prefix because is can be used for other purposes not just for real safe variable names, thus if real safe valid variable name must be tested later (real safe variable names cannot start with numbers ...)
+	 * NOTICE: In case of empty string will return Undef____V_a_r
+	 * ALLOWED CHARS: [a-zA-Z0-9] _
+	 *
+	 * @param STRING 		$y_name				:: Variable Name to be processed
+	 * @param BOOL 			$y_allow_upper 		:: Allow UpperCase ; *Optional* ; Default is TRUE
+	 *
+	 * @return STRING 							:: The safe variable name ; if invalid instead of returning an empty value, will return an undef var name
+	 */
+	public static function safe_varname(?string $y_name, bool $y_allow_upper=true) : string {
+		//-- v.20231119
+		$y_name = (string) trim((string)$y_name); // force string and trim
+		if((string)$y_name == '') {
+			return (string) self::UNDEF_VAR_NAME;
+		} //end if
+		//--
+		if($y_allow_upper === false) {
+			$y_name = (string) strtolower((string)$y_name);
+		} //end if
+		//--
+		if(preg_match((string)self::REGEX_SAFE_VAR_NAME, (string)$y_name)) {
+			return (string) self::safe_fix_invalid_filesys_names((string)$y_name);
+		} //end if
+		//--
+		$y_name = (string) self::safe_filename((string)$y_name, '-');
+		$y_name = (string) str_replace([ '-', '.', '@', '#' ], '', (string)$y_name); // replace the invalid - . @ #
+		$y_name = (string) trim((string)$y_name);
+		$y_name = (string) self::safe_fix_invalid_filesys_names((string)$y_name);
+		if((string)$y_name == '') {
+			return (string) self::UNDEF_VAR_NAME;
+		} //end if
+		//--
+		return (string) $y_name; // this may not be empty, mandatory at least: UNDEF_VAR_NAME
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1956,7 +2232,7 @@ final class Smart {
 	//================================================================
 	/**
 	 * Normalize Spaces
-	 * This will replace: "\r", "\n", "\t", "\x0B", "\0", "\f" with normal space ' '
+	 * This will replace: "\r", "\n", "\t", "\v" = "\x0B", "\0" = "\x00", "\f" = \x0C, "\b", "\a" with normal space ' '
 	 *
 	 * @param STRING 		$y_txt			:: Text to be normalized
 	 *
@@ -1964,7 +2240,7 @@ final class Smart {
 	 */
 	public static function normalize_spaces(?string $y_txt) : string {
 		//-- {{{SYNC-NORMALIZE-SPACES}}}
-		return (string) str_replace(["\r\n", "\r", "\n", "\t", "\x0B", "\0", "\f"], ' ', (string)$y_txt);
+		return (string) str_replace(["\r\n", "\r", "\n", "\t", "\v", "\0", "\f", "\b", "\a"], ' ', (string)$y_txt);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1979,7 +2255,7 @@ final class Smart {
 	 *
 	 * @return INTEGER 						:: An integer random number
 	 */
-	public static function random_number($y_min=0, $y_max=-1, bool $y_seed=false) : int {
+	public static function random_number(?int $y_min=0, ?int $y_max=-1, bool $y_seed=false) : int {
 		//-- PHP 8.1 Fix to avoid deprecation notice float to int conversion
 		$y_min = (int) $y_min;
 		$y_max = (int) $y_max;
@@ -2002,6 +2278,52 @@ final class Smart {
 		} //end if
 		//--
 		return (int) mt_rand((int)$y_min, (int)$y_max);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Safe Decoded string from a HEX String
+	 * It will validate the string to have an EVEN length not ODD, as required by hex2bin ; if string length is ODD or invalid HEX, a notice will be logged
+	 *
+	 * Hint: to avoid warnings from hex2bin use this method instead, on invalid input will log just notices
+	 *
+	 * @param STRING 	$hexstr 			:: The Bin2Hex (HEX) encoded string
+	 * @param BOOL 		$ignore_case 		:: Default is TRUE (hex2bin default behaviour, accept both lower/upper case letters and numbers) ; if set to FALSE will accept just lowercase letters and numbers
+	 * @param BOOL 		$log_if_invalid 	:: Default is TRUE (hex2bin default behaviour, except that will log notice not warning) ; if set to FALSE will not log at all (useful for input that comes from untrusted sources, ex: URL)
+	 * @return STRING 						:: The decoded string or empty string on failure
+	 */
+	public static function safe_hex_2_bin(?string $hexstr, bool $ignore_case=true, bool $log_if_invalid=true) : string {
+		//--
+		$hexstr = (string) trim((string)$hexstr);
+		if((string)$hexstr == '') {
+			return '';
+		} //end if
+		//-- 1st check to be even length, not odd ; hex2bin requires this to be valid, otherwise will return empty string and exit with a warning (prevent warning)
+		$len = (int) strlen((string)$hexstr);
+		if((int)($len % 2) !== 0) {
+			if($log_if_invalid !== false) {
+				self::log_notice(__METHOD__.' # Invalid Input, IS ODD (Length=`'.(int)$len.'`), and must be EVEN: `'.$hexstr.'`');
+			} //end if
+			return '';
+		} //end if
+		//-- 2nd handle the case ignore option
+		if($ignore_case !== false) {
+			if(!\preg_match((string)self::REGEX_SAFE_HEX_STR, (string)$hexstr)) { // pre-check, case sensitive, to avoid make all lower if is already lower
+				$hexstr = (string) strtolower((string)$hexstr); // default behaviour of hex2bin is to ignore the case
+			} //end if
+		} //end if
+		//-- 3rd check if all characters matches B16 lower (ignore case option was handled above)
+		if((int)strlen((string)$hexstr) !== (int)strspn((string)$hexstr, (string)self::CHARSET_BASE_16)) { // check, case sensitive ; if ignore case was set to TRUE the hex str must be previous converted to all lower characters
+			if($log_if_invalid !== false) {
+				self::log_notice(__METHOD__.' # Invalid Input, NOT HEX: `'.$hexstr.'`');
+			} //end if
+			return '';
+		} //end if
+		//--
+		return (string) hex2bin((string)$hexstr);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2053,7 +2375,7 @@ final class Smart {
 		//--
 		$encoded = (string) trim((string)$encoded);
 		if((string)$encoded == '') {
-		//	self::log_notice(__METHOD__.' # Empty Input');
+			self::log_notice(__METHOD__.' # Empty Input');
 			return '';
 		} //end if
 		//--
@@ -2092,18 +2414,18 @@ final class Smart {
 		} //end if
 		//--
 		if((int)strlen((string)$encoded) !== (int)strspn((string)$encoded, (string)$baseCharset)) {
-			self::log_warning(__METHOD__.' # Invalid Input, NOT HEX: `'.$encoded.'`');
+			self::log_notice(__METHOD__.' # Invalid Input, NOT in Current Base ['.(int)$currentBase.']: `'.$encoded.'`');
 			return '';
 		} //end if
 		//--
 		$data = (array) str_split((string)$encoded, 1);
 		$encoded = null;
 		$data = (array) array_map(function($character) use($baseCharset) {
-			return strpos($baseCharset, $character);
+			return strpos($baseCharset, $character); // do not cast, may return FALSE instead of INT
 		}, $data);
 		//--
 		$leadingZeroes = 0;
-		while(!empty($data) && 0 === $data[0]) {
+		while(!empty($data) && (0 === ($data[0] ?? null))) {
 			$leadingZeroes++;
 			array_shift($data);
 		} //end while
@@ -2111,14 +2433,14 @@ final class Smart {
 		$converted = (array) self::base_asciihex_convert((array)$data, (int)$currentBase, 256);
 		$data = null;
 		//--
-		if(0 < $leadingZeroes) {
+		if(0 < (int)$leadingZeroes) {
 			$converted = (array) array_merge(
 				(array) array_fill(0, $leadingZeroes, 0),
 				(array) $converted
 			);
 		} //end if
 		//--
-		$converted = (string) implode('', array_map('chr', (array)$converted));
+		$converted = (string) implode('', (array)array_map('chr', (array)$converted));
 		//--
 		return (string) bin2hex((string)$converted);
 		//--
@@ -2141,7 +2463,7 @@ final class Smart {
 		//--
 		$hexstr = (string) trim((string)$hexstr); // req. hex to allow converting also integer values not only strings as bin2hex($string) ; passing an integer can be done using dechex($integer) will use a different compression, making a shorter converted string ; Ex: bin2hex('2') = 3132 / dec2hex(2) = c !!
 		if((string)$hexstr == '') {
-		//	self::log_notice(__METHOD__.' # Empty Input');
+			self::log_notice(__METHOD__.' # Empty Input');
 			return '';
 		} //end if
 		//--
@@ -2179,21 +2501,16 @@ final class Smart {
 			return '';
 		} //end if
 		//--
-		if((int)strlen((string)$hexstr) !== (int)strspn((string)$hexstr, (string)self::CHARSET_BASE_16)) {
-			self::log_warning(__METHOD__.' # Invalid Input, NOT HEX: `'.$hexstr.'`');
-			return '';
-		} //end if
-		//--
-		$source = (string) hex2bin((string)$hexstr);
+		$source = (string) self::safe_hex_2_bin((string)$hexstr, false, false); // do not ignore case ; ignore logging ; if invalid will log below !
 		if((string)$source == '') {
-			self::log_warning(__METHOD__.' # Invalid Input / Invalid HEX: `'.$hexstr.'`');
+			self::log_notice(__METHOD__.' # Invalid HEX Input: `'.$hexstr.'`');
 			return '';
 		} //end if
 		$hexstr = null; // free mem
 		$source = (array) array_map('ord', (array)str_split((string)$source, 1)); // map hex (16) to ascii (256)
 		//--
 		$leadingZeroes = 0;
-		while(!empty($source) && 0 === $source[0]) {
+		while(!empty($source) && (0 === $source[0])) {
 			$leadingZeroes++;
 			array_shift($source); // trim off leading zeroes
 		} //end while
@@ -2201,8 +2518,8 @@ final class Smart {
 		$result = (array) self::base_asciihex_convert((array)$source, 256, (int)$targetBase);
 		$source = null;
 		//--
-		if(0 < $leadingZeroes) {
-			$result = array_merge(
+		if(0 < (int)$leadingZeroes) {
+			$result = (array) array_merge(
 				(array) array_fill(0, (int)$leadingZeroes, 0),
 				(array) $result
 			);
@@ -2323,7 +2640,7 @@ final class Smart {
 		} //end if else
 		//--
 		if($base36 === true) {
-			$netserverid = strtoupper((string)sprintf('%02s', base_convert($netserverid, 10, 36))); // 00..ZZ
+			$netserverid = (string) strtoupper((string)sprintf('%02s', (string)base_convert((string)$netserverid, 10, 36))); // 00..ZZ
 		} //end if
 		//--
 		return (string) $netserverid; // return int as string
@@ -2382,11 +2699,11 @@ final class Smart {
 		//--
 		$uid = '';
 		for($i=0; $i<9; $i++) {
-			$rand = self::random_number(0,9);
-			$uid .= $rand;
+			$rand = (string) self::random_number(0,9);
+			$uid .= (string) $rand;
 		} //end for
-		$rand = self::random_number(1,9);
-		$uid .= $rand;
+		$rand = (string) self::random_number(1,9);
+		$uid .= (string) $rand;
 		//--
 		return (string) $uid;
 		//--
@@ -2411,11 +2728,11 @@ final class Smart {
 		$uid = '';
 		for($i=0; $i<10; $i++) {
 			if(($i % 2) == $toggle) {
-				$rand = self::random_number(0,9);
+				$rand = (string) self::random_number(0,9);
 			} else { // alternate nums with chars (this avoid to have ugly words)
-				$rand = self::random_number(10,35);
+				$rand = (string) self::random_number(10,35);
 			} //end if else
-			$uid .= (string) base_convert($rand, 10, 36);
+			$uid .= (string) base_convert((string)$rand, 10, 36);
 		} //end for
 		//--
 		return (string) strtoupper((string)$uid);
@@ -2453,20 +2770,20 @@ final class Smart {
 	 */
 	public static function uuid_10_seq() : string { // v7
 		//-- 00 .. RR
-		$b10_thousands_year = (int) substr(date('Y'), -3, 3); // get last 3 digits from year 000 .. 999
-		$b36_thousands_year = (string) sprintf('%02s', base_convert($b10_thousands_year, 10, 36));
+		$b10_thousands_year = (int) substr((string)date('Y'), -3, 3); // get last 3 digits from year 000 .. 999
+		$b36_thousands_year = (string) sprintf('%02s', (string)base_convert((string)$b10_thousands_year, 10, 36));
 		//-- 00000 .. ITRPU
 		$b10_day_of_year = (int) (date('z') + 1); // 1 .. 366
 		$b10_second_of_day = (int) ((((int)date('H')) * 60 * 60) + ((int)date('i') * 60) + ((int)date('s'))); // 0 .. 86399
 		$b10_second_of_year = (int) ($b10_day_of_year * $b10_second_of_day); // 0 .. 31622399
-		$b36_second_of_year = (string) sprintf('%05s', base_convert($b10_second_of_year, 10, 36));
+		$b36_second_of_year = (string) sprintf('%05s', (string)base_convert((string)$b10_second_of_year, 10, 36));
 		//-- 00 .. RR
 		$microtime = (array) explode('.', (string)microtime(true));
 		$b10_microseconds = (int) substr((string)trim((string)($microtime[1] ?? null)), 0, 3); // 0 .. 999
-		$b36_microseconds = (string) sprintf('%02s', base_convert($b10_microseconds, 10, 36));
+		$b36_microseconds = (string) sprintf('%02s', (string)base_convert((string)$b10_microseconds, 10, 36));
 		//-- 1 .. Z
-		$rand = self::random_number(1, 35); // trick: avoid 0000000000
-		$b36_randomizer = (string) sprintf('%01s', base_convert($rand, 10, 36));
+		$rand = (string) self::random_number(1, 35); // trick: avoid 0000000000
+		$b36_randomizer = (string) sprintf('%01s', (string)base_convert((string)$rand, 10, 36));
 		//--
 		$uid = (string) trim((string)$b36_thousands_year.$b36_second_of_year.$b36_microseconds.$b36_randomizer);
 		//--
@@ -2526,7 +2843,7 @@ final class Smart {
 	 */
 	public static function uuid_13_seq() : string { // v1
 		//-- YEAR: 0 .. 9999999 in base62 is 0000 .. FXsj
-		$b10_10milion_year = (int) substr(date('Y'), -7, 7); // get last 7 digits of year
+		$b10_10milion_year = (int) substr((string)date('Y'), -7, 7); // get last 7 digits of year
 		$b62_10milion_year = (string) sprintf('%04s', self::int10_to_base62_str($b10_10milion_year));
 		//-- SECOND OF YEAR: 0 .. 31622399 in base62 is 00000 .. 28GqH
 		$b10_day_of_year = (int) (date('z') + 1); // 1 .. 366
@@ -2646,13 +2963,13 @@ final class Smart {
 	 */
 	public static function uuid_36(string $prefix='') : string {
 		//--
-		$hash = (string) md5($prefix.self::unique_entropy('uid36', false)); // by default use no reference to net server id, which can be passed via prefix
+		$hash = (string) md5((string)$prefix.self::unique_entropy('uid36', false)); // by default use no reference to net server id, which can be passed via prefix
 		//--
-		$uuid  = substr($hash,0,8).'-';
-		$uuid .= substr($hash,8,4).'-';
-		$uuid .= substr($hash,12,4).'-';
-		$uuid .= substr($hash,16,4).'-';
-		$uuid .= substr($hash,20,12);
+		$uuid  = (string) substr($hash,0,8).'-';
+		$uuid .= (string) substr($hash,8,4).'-';
+		$uuid .= (string) substr($hash,12,4).'-';
+		$uuid .= (string) substr($hash,16,4).'-';
+		$uuid .= (string) substr($hash,20,12);
 		//--
 		return (string) strtolower((string)$uuid);
 		//--
@@ -2674,103 +2991,16 @@ final class Smart {
 	 */
 	public static function uuid_45(string $prefix='') : string {
 		//--
-		$hash = (string) sha1($prefix.self::unique_entropy('uid45', false)); // by default use no reference to net server id, which can be passed via prefix
+		$hash = (string) sha1((string)$prefix.self::unique_entropy('uid45', false)); // by default use no reference to net server id, which can be passed via prefix
 		//--
-		$uuid  = substr($hash,0,8).'-';
-		$uuid .= substr($hash,8,4).'-';
-		$uuid .= substr($hash,12,4).'-';
-		$uuid .= substr($hash,16,4).'-';
-		$uuid .= substr($hash,20,12);
-		$uuid .= '-'.substr($hash,32,8);
+		$uuid  = (string) substr($hash,0,8).'-';
+		$uuid .= (string) substr($hash,8,4).'-';
+		$uuid .= (string) substr($hash,12,4).'-';
+		$uuid .= (string) substr($hash,16,4).'-';
+		$uuid .= (string) substr($hash,20,12);
+		$uuid .= (string) '-'.substr($hash,32,8);
 		//--
 		return (string) strtolower((string)$uuid);
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
-	 * Safe Parse URL 					:: a better replacement for parse_url()
-	 *
-	 * @param STRING 	$y_url			:: The URL to be separed
-	 *
-	 * @return ARRAY 					:: The separed URL (associative array) as: protocol, server, port, path, scriptname
-	 */
-	public static function url_parse(?string $y_url) : array {
-		//--
-		$y_url = (string) $y_url;
-		//--
-		$parts = array();
-		$parts = parse_url((string)$y_url); // do not cast
-		if(!is_array($parts)) {
-			$parts = [];
-		} //end if
-		//--
-		$scheme = '';
-		if(array_key_exists('scheme', $parts)) {
-			$scheme = (string) trim((string)$parts['scheme']);
-		} //end if
-		//--
-		$protocol = (string) $scheme;
-		if((string)$protocol != '') {
-			$protocol .= ':';
-		} //end if
-		$protocol .= '//';
-		//--
-		$server = '';
-		if(array_key_exists('host', $parts)) {
-			$server = (string) trim((string)$parts['host']);
-		} //end if
-		//--
-		$port = '';
-		if(array_key_exists('port', $parts)) {
-			$port = (string) trim((string)$parts['port']);
-		} //end if
-		if((string)$port == '') {
-			if((string)$scheme == 'https') {
-				$port = '443';
-			} else {
-				$port = '80';
-			} //end if else
-		} //end if
-		//--
-		$path = '';
-		if(array_key_exists('path', $parts)) {
-			$path = (string) trim((string)$parts['path']);
-		} //end if
-		//--
-		$query = '';
-		if(array_key_exists('query', $parts)) {
-			$query = (string) trim((string)$parts['query']);
-		} //end if
-		//--
-		$fragment = '';
-		if(array_key_exists('fragment', $parts)) {
-			$fragment = (string) trim((string)$parts['fragment']);
-		} //end if
-		//--
-		$suffix = (string) $path;
-		if((string)$query != '') {
-			$suffix .= '?'.$query;
-		} //end if
-		if((string)$fragment != '') {
-			$suffix .= '#'.$fragment;
-		} //end if
-		if((string)$suffix == '') {
-			$suffix = '/'; // FIX: this is required as default http path for HTTP Cli requests !!
-		} //end if
-		//--
-		return [ // must be compatible with: PHP's parse_url() but may have extra entries
-			'protocol' 	=> (string) $protocol,
-			'scheme' 	=> (string) $scheme,
-			'host' 		=> (string) $server,
-			'port' 		=> (string) $port,
-			'path' 		=> (string) $path,
-			'query' 	=> (string) $query,
-			'fragment' 	=> (string) $fragment,
-			'suffix' 	=> (string) $suffix,
-		];
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2860,24 +3090,27 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Converts from Base64 to Base64s (Base64 Safe URL) by replacing characters as follows:
+	 * Converts from Base64 to Base64s / Base64u (Base64 Safe URL / Base64 URL) by replacing characters as follows:
 	 * '+' with '-',
 	 * '/' with '_',
-	 * '=' with '.'
-	 *
-	 * @access 		private
-	 * @internal
+	 * '=' with '.' (if padding) or '' (if no padding)
 	 *
 	 * @param STRING 	$str 				:: The Base64 string to be converted
-	 * @return STRING 						:: The Base64s string
+	 * @param BOOL 		$pad 				:: Use padding ; Default is TRUE ; if set to FALSE will not use padding (`=`:`` instead of `=`:`.`)
+	 * @return STRING 						:: The Base64s or Base64u (if no padding) encoded string
 	 */
-	public static function b64_to_b64s(?string $str) : string {
+	public static function b64_to_b64s(?string $str, bool $pad=true) : string {
 		//--
 		if((string)$str == '') {
 			return '';
 		} //end if
 		//--
-		return (string) strtr((string)$str, (array)self::CHDIFF_BASE_64s);
+		$repl = (array) self::CHDIFF_BASE_64s;
+		if($pad === false) {
+			$repl = (array) self::CHDIFF_BASE_64u;
+		} //end if
+		//--
+		return (string) strtr((string)$str, (array)$repl);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2885,15 +3118,12 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Converts from Base64s (Base64 Safe URL) to Base64 by replacing characters as follows:
+	 * Converts from Base64s / Base64u (Base64 Safe URL / Base64 URL) to Base64 by replacing characters as follows:
 	 * '-' with '+',
 	 * '_' with '/',
-	 * '.' with '='
+	 * '.' with '=' (optional, if padded, otherwise ignore)
 	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 * @param STRING 	$str 				:: The Base64s string to be converted
+	 * @param STRING 	$str 				:: The Base64s or Base64u (if no padding) string to be converted
 	 * @return STRING 						:: The Base64 string
 	 */
 	public static function b64s_to_b64(?string $str) : string {
@@ -2910,24 +3140,27 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Returns the Base64s (Base64 Safe URL) Modified Encoding from a string by replacing the standard base64 encoding as follows:
+	 * Returns the Base64s / Base64u (Base64 Safe URL / Base64 URL) Modified Encoding from a string by replacing the standard base64 encoding as follows:
 	 * '+' with '-',
 	 * '/' with '_',
-	 * '=' with '.'
-	 *
-	 * @access 		private
-	 * @internal
+	 * '=' with '.' (if padding) or '' (if no padding)
 	 *
 	 * @param STRING 	$str 				:: The string to be encoded
-	 * @return STRING 						:: The Base64s encoded string
+	 * @param BOOL 		$pad 				:: Use padding ; Default is TRUE ; if set to FALSE will not use padding (`=`:`` instead of `=`:`.`)
+	 * @return STRING 						:: The Base64s or Base64u (if no padding) encoded string
 	 */
-	public static function b64s_enc(?string $str) : string {
+	public static function b64s_enc(?string $str, bool $pad=true) : string {
 		//--
 		if((string)$str == '') {
 			return '';
 		} //end if
 		//--
-		return (string) strtr((string)base64_encode((string)$str), (array)self::CHDIFF_BASE_64s);
+		$repl = (array) self::CHDIFF_BASE_64s;
+		if($pad === false) {
+			$repl = (array) self::CHDIFF_BASE_64u;
+		} //end if
+		//--
+		return (string) strtr((string)base64_encode((string)$str), (array)$repl);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -2935,15 +3168,12 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Returns the Decoded string from the Base64s (Base64 Safe URL) Encoding by replacing back as follows before applying the standard base64 decoding:
+	 * Returns the Decoded string from Base64s / Base64u (Base64 Safe URL / Base64 URL) Encoding by replacing back as follows before applying the standard base64 decoding:
 	 * '-' with '+',
 	 * '_' with '/',
-	 * '.' with '='
+	 * '.' with '=' (optional, if padded, otherwise ignore)
 	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 * @param STRING 	$str 				:: The Base64s encoded string
+	 * @param STRING 	$str 				:: The Base64s or Base64u (if no padding) encoded string
 	 * @return STRING 						:: The decoded string
 	 */
 	public static function b64s_dec(?string $str) : string {
@@ -2982,9 +3212,6 @@ final class Smart {
 	 * Compress an IPv6 address to shortest form, lowercase ; they are also validated
 	 * The IPv4 will be returned as they are, they are only validated
 	 *
-	 * @access 		private
-	 * @internal
-	 *
 	 * @param STRING 	$ipv4orv6 			:: The IP address ; IPv4 (ex: 127.0.0.1) or IPv6 (ex: ::ffff:127.0.0.1)
 	 * @return STRING 						:: The validated (IPV6 also compressed) IP address ; will return an empty string if invalid IP
 	 */
@@ -3010,9 +3237,6 @@ final class Smart {
 	 * Compare 2 IP addresses if they are identical
 	 * Works for IPv4 / IPv6 (any form, will standardize it using compression)
 	 * Will compare them using numeric translation format IP to INTEGER
-	 *
-	 * @access 		private
-	 * @internal
 	 *
 	 * @param STRING 	$ip1 				:: The first  IP address to compare
 	 * @param STRING 	$ip2 				:: The second IP address to compare
@@ -3044,9 +3268,6 @@ final class Smart {
 	 * Check if an IPv4 or IPv6 is in range ; doesn't matter what form IPv6 is, will do numeric validation
 	 * Works for IPv4 / IPv6 (any form, will standardize it using compression)
 	 * Will compare the range and IP using numeric translation format IP to INTEGER
-	 *
-	 * @access 		private
-	 * @internal
 	 *
 	 * @param STRING 	$lower_range_ip_address 	:: The lower range IP
 	 * @param STRING 	$upper_range_ip_address 	:: The upper range IP
@@ -3307,10 +3528,50 @@ final class Smart {
 			return (string) $class;
 		} //end if
 		//--
-		return '_UNDEFINED_CLASS_';
+		return '_UNDEFINED____CLASS_';
 		//--
 	} //END FUNCTION
 	//================================================================
+
+
+	//==============================================================
+	/**
+	 * Perform the rot13 transform on a string
+	 * ! This is not encryption ; It is just simply obfuscate !
+	 * When combined with encryption, this can be very powerful ...
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param $str 				The string ; must be ISO-8859-1 character set only !
+	 * @return STRING 			The modified string
+	 */
+	public static function dataRot13(string $str) {
+		//--
+		return (string) str_rot13((string)$str);
+		//--
+	} //END FUNCTION
+	//==============================================================
+
+
+	//==============================================================
+	/**
+	 * Perform the rot13 + reverse transform on a string
+	 * ! This is not encryption ; It is just simply obfuscate !
+	 * When combined with encryption, this can be very powerful ...
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 * @param $str 				The string ; must be ISO-8859-1 character set only !
+	 * @return STRING 			The modified string
+	 */
+	public static function dataRRot13(string $str) {
+		//--
+		return (string) strrev((string)self::dataRot13((string)$str));
+		//--
+	} //END FUNCTION
+	//==============================================================
 
 
 	//##### DEBUG ONLY
@@ -3372,7 +3633,6 @@ final class Smart {
  * SmartFileSysUtils::some_method_of_this_class(...);
  *
  *  //-----------------------------------------------------------------------------------------------------
- *  //-----------------------------------------------------------------------------------------------------
  *  // SAFE REPLACEMENTS:
  *  // In order to supply a common framework for Unix / Linux but also on Windows,
  *  // because on Windows dir separator is \ instead of / the following functions must be used as replacements:
@@ -3383,6 +3643,7 @@ final class Smart {
  *  //-----------------------------------------------------------------------------------------------------
  *  // Also, when folders are get from external environments and are not certified if they have
  *  // been converted from \ to / on Windows, those paths have to be fixed using: Smart::fix_path_separator()
+ * 	// To check compliancy may use: checkIfSafeFileOrDirName or checkIfSafePath
  *  //-----------------------------------------------------------------------------------------------------
  *
  * </code>
@@ -3390,7 +3651,7 @@ final class Smart {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment
- * @version 	v.20231008
+ * @version 	v.20231121
  * @package 	@Core:FileSystem
  *
  */
@@ -3404,7 +3665,7 @@ final class SmartFileSysUtils {
 	//================================================================
 	/**
 	 * FAST CHECK IF A STATIC FILE EXISTS AND IS READABLE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).
-	 * It should be used just with static files which does not changes between executions
+	 * It should be used just with static files which does not changes between executions ; it does not use safe lock checks
 	 *
 	 * @param 	STRING 		$file_relative_path 				:: The relative path of file to be read (can be a symlink to a file)
 	 *
@@ -3427,7 +3688,11 @@ final class SmartFileSysUtils {
 		$staticRootPath = (string) self::getStaticFilesRootPath();
 		//--
 		$ok = true;
-		if(self::checkIfSafePath((string)$file_relative_path) != 1) {
+		if(
+			(self::checkIfSafePath((string)$file_relative_path) != 1)
+			OR
+			(self::checkIfSafePath((string)$staticRootPath.$file_relative_path) != 1)
+		) {
 			$ok = false;
 		} elseif(!is_file((string)$staticRootPath.$file_relative_path)) { // do not use clearstatcache(), this is intended for STATIC FILES ONLY
 			$ok = false;
@@ -3445,8 +3710,8 @@ final class SmartFileSysUtils {
 
 	//================================================================
 	/**
-	 * FAST READ A STATIC FILE CONTENTS. ALSO CHECKS IF THE FILE EXISTS AND IS READABLE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).
-	 * It should be used just with static files which does not changes between executions
+	 * FAST READ A STATIC FILE CONTENTS ONLY. ALSO CHECKS IF THE FILE EXISTS AND IS READABLE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).
+	 * It should be used just with static files which does not changes between executions ; it does not use safe lock checks
 	 *
 	 * @param 	STRING 		$file_relative_path 				:: The relative path of file to be read (can be a symlink to a file)
 	 * @param 	INTEGER+	$length 							:: :: DEFAULT is 0 (zero) ; If zero will read the entire file ; If > 0 (ex: 100) will read only the first 100 bytes fro the file or less if the file size is under 100 bytes
@@ -3456,7 +3721,7 @@ final class SmartFileSysUtils {
 	public static function readStaticFile(?string $file_relative_path, ?int $length=null) : string {
 		//--
 		if(self::staticFileExists((string)$file_relative_path) !== true) {
-			Smart::log_warning(__METHOD__.' # File Path is Invalid: Empty / Unsafe / Not Found / Not Readable');
+			Smart::log_warning(__METHOD__.' # File Path is Invalid: Empty / Unsafe / Not Found / Not Readable: `'.$file_relative_path.'`');
 			return '';
 		} //end if
 		//--
@@ -3465,11 +3730,12 @@ final class SmartFileSysUtils {
 			$length = null;
 		} //end if
 		//--
-		self::raiseErrorIfUnsafePath((string)$file_relative_path);
-		//--
 		// do not use clearstatcache(), this is intended for STATIC FILES ONLY
 		//--
 		$staticRootPath = (string) self::getStaticFilesRootPath();
+		//--
+		self::raiseErrorIfUnsafePath((string)$file_relative_path);
+		self::raiseErrorIfUnsafePath((string)$staticRootPath.$file_relative_path);
 		//--
 		$fcontent = null;
 		if((int)$length > 0) {
@@ -3721,7 +3987,7 @@ final class SmartFileSysUtils {
 		//--
 		$y_path = (string) $y_path;
 		//--
-		if((string)substr((string)trim($y_path), 0, 1) == '#') {
+		if((string)substr((string)trim((string)$y_path), 0, 1) == '#') {
 			return 0;
 		} //end if
 		//--
@@ -3748,21 +4014,21 @@ final class SmartFileSysUtils {
 		} //end if
 		//--
 		if(
-			((string)trim($y_path) == '') OR 							// empty path: error
-			((string)trim($y_path) == '.') OR 							// special: protected
-			((string)trim($y_path) == '..') OR 							// special: protected
-			((string)trim($y_path) == '/') OR 							// root dir: security
-			(strpos($y_path, ' ') !== false) OR 						// no space allowed ; Windows paths must be re-converted using / instead of \
-			(strpos($y_path, '\\') !== false) OR 						// no backslash allowed
-			(strpos($y_path, '://') !== false) OR 						// no protocol access allowed
-			(strpos($y_path, ':') !== false) OR 						// no dos/win disk access allowed
-			(strpos($y_path, '|') !== false) OR 						// no macos disk access allowed
-			((string)trim($y_path) == './') OR 							// this must not be used - dissalow FS operations to the app root path, enforce use relative paths such as path/to/something
-			((string)trim($y_path) == '../') OR 						// backward path access denied: security
-			((string)trim($y_path) == './.') OR 						// this is a risk that can lead to unpredictable results
-			(strpos($y_path, '...') !== false) OR 						// this is a risk that can lead to unpredictable results
-			((string)substr((string)trim($y_path), -2, 2) == '/.') OR 	// special: protected ; this may lead to rewrite/delete the special protected . in a directory if refered as a filename or dirname that may break the filesystem
-			((string)substr((string)trim($y_path), -3, 3) == '/..')  	// special: protected ; this may lead to rewrite/delete the special protected .. in a directory if refered as a filename or dirname that may break the filesystem
+			((string)trim((string)$y_path) == '') OR 							// empty path: error
+			((string)trim((string)$y_path) == '.') OR 							// special: protected
+			((string)trim((string)$y_path) == '..') OR 							// special: protected
+			((string)trim((string)$y_path) == '/') OR 							// root dir: security
+			(strpos((string)$y_path, ' ') !== false) OR 						// no space allowed ; Windows paths must be re-converted using / instead of \
+			(strpos((string)$y_path, '\\') !== false) OR 						// no backslash allowed
+			(strpos((string)$y_path, '://') !== false) OR 						// no protocol access allowed
+			(strpos((string)$y_path, ':') !== false) OR 						// no dos/win disk access allowed
+			(strpos((string)$y_path, '|') !== false) OR 						// no macos disk access allowed
+			((string)trim((string)$y_path) == './') OR 							// this must not be used - dissalow FS operations to the app root path, enforce use relative paths such as path/to/something
+			((string)trim((string)$y_path) == '../') OR 						// backward path access denied: security
+			((string)trim((string)$y_path) == './.') OR 						// this is a risk that can lead to unpredictable results
+			(strpos((string)$y_path, '...') !== false) OR 						// this is a risk that can lead to unpredictable results
+			((string)substr((string)trim((string)$y_path), -2, 2) == '/.') OR 	// special: protected ; this may lead to rewrite/delete the special protected . in a directory if refered as a filename or dirname that may break the filesystem
+			((string)substr((string)trim((string)$y_path), -3, 3) == '/..')  	// special: protected ; this may lead to rewrite/delete the special protected .. in a directory if refered as a filename or dirname that may break the filesystem
 		) {
 			return 0;
 		} //end if else
@@ -3782,10 +4048,10 @@ final class SmartFileSysUtils {
 		$y_path = (string) $y_path;
 		//--
 		if(
-			(strpos($y_path, '/../') !== false) OR
-			(strpos($y_path, '/./') !== false) OR
-			(strpos($y_path, '/..') !== false) OR
-			(strpos($y_path, '../') !== false)
+			(strpos((string)$y_path, '/../') !== false) OR
+			(strpos((string)$y_path, '/./') !== false) OR
+			(strpos((string)$y_path, '/..') !== false) OR
+			(strpos((string)$y_path, '../') !== false)
 		) {
 			return 0;
 		} //end if else
@@ -4017,7 +4283,7 @@ final class SmartFileSysUtils {
 	public static function fnameVersionCheck(?string $file, ?string $version) : int {
 		//--
 		$file = (string) trim((string)$file);
-		$version = (string) trim((string)strtolower((string)str_replace(array('.', '@'), array('', ''), Smart::safe_validname((string)$version))));
+		$version = (string) trim((string)strtolower((string)str_replace(['.', '@'], '', (string)Smart::safe_validname((string)$version))));
 		//--
 		if(stripos($file, '.@'.$version.'@.') !== false) {
 			return 1;

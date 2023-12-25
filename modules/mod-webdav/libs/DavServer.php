@@ -3,7 +3,7 @@
 // (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
-// Module Lib: \SmartModExtLib\Webdav\DavServer
+// Class: \SmartModExtLib\Webdav\DavServer
 // Type: Module Library
 
 namespace SmartModExtLib\Webdav;
@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20231007
+	// v.20231207
 
 	const DAV_RESOURCE_TYPE_COLLECTION 		= 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION 	= 'noncollection';
@@ -140,7 +140,7 @@ final class DavServer {
 		} else {
 				\http_response_code((int)$http_status);
 				\header('Content-type: text/xml; charset="utf-8"');
-				\header('Content-length: '.(int)\strlen($xml));
+				\header('Content-length: '.(int)\strlen((string)$xml));
 				echo((string)$xml);
 		} //end if else
 		//--
@@ -227,7 +227,7 @@ final class DavServer {
 		} else {
 				\http_response_code((int)$http_status);
 				\header('Content-type: text/xml; charset="utf-8"');
-				\header('Content-length: '.(int)\strlen($xml));
+				\header('Content-length: '.(int)\strlen((string)$xml));
 				echo((string)$xml);
 		} //end if else
 		//--

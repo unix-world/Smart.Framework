@@ -47,8 +47,8 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
- * @version 	v.20231018
+ * @depends 	classes: Smart, SmartHashCrypto, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
+ * @version 	v.20231209
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -56,7 +56,7 @@ final class SmartMarkersTemplating {
 
 	// ::
 
-	// syntax: r.20220331
+	// syntax: r.20231128
 
 	private static $MkTplAnalyzeLdDbg 		= false; 	// flag for template analysis
 	private static $MkTplAnalyzeLdRegDbg 	= []; 		// registry of template analysis
@@ -244,6 +244,7 @@ final class SmartMarkersTemplating {
 	//================================================================
 	/**
 	 * Render Marker Template (String Template ; no sub-templates are allowed as there is no possibility to set a relative path from where to get them)
+	 * See the escapings and transformation at: Render Marker File Template
 	 *
 	 * @param 	STRING 		$mtemplate 						:: The Marker-TPL string (partial text/html + markers) ; Ex: '<span>[###MARKER1###]<br>[###MARKER2###], ...</span>'
 	 * @param 	ARRAY 		$y_arr_vars 					:: The associative array with the template variables ; mapping the array keys to template markers is case insensitive ; Ex: [ 'MARKER1' => 'Value1', 'marker2' => 'Value2', ..., 'MarkerN' => 100 ]
@@ -295,7 +296,7 @@ final class SmartMarkersTemplating {
 	 *
 	 * <code>
 	 * // [###MARKER###]											:: marker with no escapes
-	 * // [###MARKER|{escapes}] 									:: marker with escapes (one or many of): |bool |int |dec[1-4]{1} |num |htmid |jsvar |slug |substr[0-9]{1,5} |subtxt[0-9]{1,5} |lower |upper |ucfirst |ucwords |trim |url |json |js |html |css |nl2br |syntaxhtml
+	 * // [###MARKER|{escapes}] 									:: marker with escapes (one or many of): |bool |int |dec[1-4]{1} |num |date |datetime |datetimez |htmid |jsvar |stdvar |nobackslash |rxpattern |emptye |emptyna |idtxt |slug |substr[0-9]{1,5} |subtxt[0-9]{1,5} |lower |upper |ucfirst |ucwords |trim |url |json |jsonpretty |js |html |css |nl2br |striptags |syntaxhtml |hex |hexi10 |b64 |b64s |b64tob64s |b64stob64 |b32 |b36 |b58 |b62 |b85 |b92 |crc32b |crc32b36 |md5 |md5b64 |sha1 |sha1b64 |sha224 |sha224b64 |sha256 |sha256b64 |sha384 |sha384b64 |sha512 |sha512b64 |sh3a224 |sh3a224b64 |sh3a256 |sh3a256b64 |sh3a384 |sh3a384b64 |sh3a512 |sh3a512b64
 	 * // [@@@SUB-TEMPLATE:path/to/tpl.htm@@@] 				:: sub-template with relative path to template
 	 * // [@@@SUB-TEMPLATE:?path/to/tpl.htm@@@] 				:: sub-template with relative path to template, optional, if exists
 	 * // [@@@SUB-TEMPLATE:!etc/path/to/tpl.htm!@@@] 		:: sub-template with relative path to framework, using exact this path
@@ -329,12 +330,12 @@ final class SmartMarkersTemplating {
 	 *
 	 * @param 	STRING 		$y_file_path 					:: The relative path to the file Marker-TPL (partial text/html + markers + *sub-templates*) ; if sub-templates are used, they will use the base path from this (main template) file ; Ex: views/my-template.inc.htm ; (partial text/html + markers) ; Ex (file content): '<span>[###MARKER1###]<br>[###MARKER2###], ...</span>'
 	 * @param 	ARRAY 		$y_arr_vars 					:: The associative array with the template variables ; mapping the array keys to template markers is case insensitive ; Ex: [ 'MARKER1' => 'Value1', 'marker2' => 'Value2', ..., 'MarkerN' => 100 ]
-	 * @param 	ENUM 		$y_use_caching 					:: 'yes' will cache the template (incl. sub-templates if any) into memory to avoid re-read them from file system (to be used if a template is used more than once per execution) ; 'no' means no caching is used (default)
+	 * @param 	ENUM 		$y_use_caching 					:: 'yes' will cache the template (incl. sub-templates if any) into memory to avoid re-read them from file system (to be used if a template is used more than once per execution) ; 'no' means no caching is used ; default is YES
 	 *
 	 * @return 	STRING										:: The parsed and rendered template
 	 *
 	 */
-	public static function render_file_template(string $y_file_path, array $y_arr_vars, string $y_use_caching='no') : string {
+	public static function render_file_template(string $y_file_path, array $y_arr_vars, string $y_use_caching='yes') : string {
 		//--
 		// it can *optional* use caching to avoid read a file template (or it's sub-templates) more than once per execution
 		// if using the cache the template and also sub-templates (if any) are cached internally to avoid re-read them from filesystem
@@ -413,10 +414,11 @@ final class SmartMarkersTemplating {
 
 	//================================================================
 	/**
-	 * Render Mixed Marker Template (String Template + Sub-Templates from Files if any)
-	 * If no-subtemplates are available is better to use render_template() instead of this one.
-	 * Does not support defining @SUB-TEMPLATES@ in the data array, like the render_file_template() does ...  will use only sub-templates from the specified base path which is a required parameter
-	 * !!! This is intended for very special usage ; Ex: render a (mixed) main template with sub-templates from memory or filesystem but if on file system the read should be done separately using read_template_file() !!!
+	 * Render Main Marker Template (String Template + Sub-Templates from Files if any)
+	 * See the escapings and transformation at: Render Marker File Template
+	 *
+	 * !!! This is intended for special usage ; Ex: render a main template !!!
+	 * The difference between this and render_file_template() is that this one does not support defining @SUB-TEMPLATES@ in the data array ... can use only sub-templates from the specified as syntax, using the base path method parameter
 	 *
 	 * @access 		private
 	 * @internal
@@ -425,12 +427,12 @@ final class SmartMarkersTemplating {
 	 * @param 	ARRAY 		$y_arr_vars 					:: The associative array with the template variables ; mapping the array keys to template markers is case insensitive ; Ex: [ 'MARKER1' => 'Value1', 'marker2' => 'Value2', ..., 'MarkerN' => 100 ]
 	 * @param 	STRING 		$y_sub_templates_base_path 		:: The (relative) base path of sub-templates files if they are used (required to be non-empty)
 	 * @param 	ENUM 		$y_ignore_if_empty 				:: 'yes' will ignore if Marker-TPL is empty ; 'no' will add a warning (default)
-	 * @param 	ENUM 		$y_use_caching 					:: 'yes' will cache the sub-templates if any into memory to avoid re-read them from file system (to be used if at least one sub-template is used more than once per execution) ; 'no' means no caching is used (default)
+	 * @param 	ENUM 		$y_use_caching 					:: 'yes' will cache the sub-templates if any into memory to avoid re-read them from file system (to be used if at least one sub-template is used more than once per execution) ; 'no' means no caching is used ; default is YES
 	 *
 	 * @return 	STRING										:: The parsed template
 	 *
 	 */
-	public static function render_mixed_template(string $mtemplate, array $y_arr_vars, string $y_sub_templates_base_path, string $y_ignore_if_empty='no', string $y_use_caching='no') : string {
+	public static function render_main_template(string $mtemplate, array $y_arr_vars, string $y_sub_templates_base_path, string $y_ignore_if_empty='no', string $y_use_caching='yes') : string {
 		//--
 		$y_ignore_if_empty = (string) $y_ignore_if_empty;
 		//-- do not trim partial template, to be consistent with render file template
@@ -488,18 +490,18 @@ final class SmartMarkersTemplating {
 	/**
 	 * Read a Marker File Template from FileSystem or from Memory Cache if exists, otherwise read from FileSystem or PCache (if enabled)
 	 * !!! This is intended for very special usage ... !!!
-	 * This is used automatically by the render_file_template() and used in combination with render_mixed_template() may produce the same results ... it make non-sense using it with render_template() as this should be used for internal (php) templates as all external templates should be loaded with render_file_template()
+	 * This is used automatically by the render_file_template() and used in combination with render_main_template() may produce the same results ... it make non-sense using it with render_template() as this should be used for internal (php) templates as all external templates should be loaded with render_file_template()
 	 *
 	 * @access 		private
 	 * @internal
 	 *
 	 * @param 	STRING 		$y_file_path 					:: The relative path to the file Marker-TPL
-	 * @param 	ENUM 		$y_use_caching 					:: 'yes' will cache the template (incl. sub-templates if any) into memory to avoid re-read them from file system (to be used if a template is used more than once per execution) ; 'no' means no caching is used (default)
+	 * @param 	ENUM 		$y_use_caching 					:: 'yes' will cache the template (incl. sub-templates if any) into memory to avoid re-read them from file system (to be used if a template is used more than once per execution) ; 'no' means no caching is used ; default is YES
 	 *
 	 * @return 	STRING										:: The template string
 	 *
 	 */
-	public static function read_template_file(string $y_file_path, string $y_use_caching='no') : string {
+	public static function read_template_file(string $y_file_path, string $y_use_caching='yes') : string {
 		//--
 		return (string) self::read_from_optimal_place_the_template_file((string)$y_file_path, (string)$y_use_caching);
 		//--
@@ -521,8 +523,8 @@ final class SmartMarkersTemplating {
 	 */
 	public static function prepare_nosyntax_content(string $val) : string {
 		//--
-		return (string) \strtr( // protect against replace reccurence
-			(string)$val,
+		return (string) strtr( // protect against replace reccurence
+			(string) $val,
 			[
 				'[:::' => '［:::',
 				':::]' => ':::］',
@@ -1360,7 +1362,7 @@ final class SmartMarkersTemplating {
 	// do replacements (and escapings) for one marker ; a marker can contain: A-Z 0-9 _ - (and the dot . which is reserved as array level separator)
 	/* {{{SYNC-MARKER-ALL-TEST-SEQUENCES}}}
 	<!-- INFO: The VALID Escaping and Transformers for a Marker are all below ; If other escaping sequences are used the Marker will not be detected and replaced ... -->
-	<!-- Valid Escapings and Transformers: |bool |int |dec[1-4]{1} |num |htmid |jsvar |slug |substr[0-9]{1,5} |subtxt[0-9]{1,5} |lower |upper |ucfirst |ucwords |trim |url |json |js |html |css |nl2br |smartlist |syntaxhtml -->
+	<!-- Valid Escapings and Transformers: for more, see the escapings and transformation at: Render Marker File Template -->
 	[###MARKER###]
 	[###MARKER|bool###]
 	[###MARKER|int###]
@@ -1526,9 +1528,64 @@ final class SmartMarkersTemplating {
 						} //end if
 						$val = (string) Smart::format_number_dec((string)$val, (int)$xnum, '.', '');
 						$xnum = null; // free mem
+					} elseif((string)substr((string)$escexpr, 0, 4) == '|dex') { // if not int, ensure this number of decimals
+						$xnum = Smart::format_number_int((int)substr((string)$escexpr, 4), '+');
+						if($xnum < 1) {
+							$xnum = 1;
+						} elseif($xnum > 4) {
+							$xnum = 4;
+						} //end if
+						$val = (string) (float) Smart::format_number_dec((string)$val, (int)$xnum, '.', '');
+						if(strpos($val, '.') !== false) { // if there are decimals, make sure there are at least xnum
+							$val = (string) Smart::format_number_dec((string)$val, (int)$xnum, '.', '');
+						} //end if
+						$xnum = null; // free mem
 					} elseif((string)$escexpr == '|num') { // Number (Float / Decimal / Integer)
 						$val = (string) (float) $val;
 					//--
+					} elseif((string)$escexpr == '|date') { // Expects Unix Epoch Time to format as YYYY-MM-DD
+						$val = (string) date('Y-m-d', (int)intval((string)trim((string)$val)));
+					} elseif((string)$escexpr == '|datetime') { // Expects Unix Epoch Time to format as YYYY-MM-DD HH:II:SS
+						$val = (string) date('Y-m-d H:i:s', (int)intval((string)trim((string)$val)));
+					} elseif((string)$escexpr == '|datetimez') { // Expects Unix Epoch Time to format as YYYY-MM-DD HH:II:SS +0000
+						$val = (string) date('Y-m-d H:i:s O', (int)intval((string)trim((string)$val)));
+					//--
+					} elseif((string)$escexpr == '|url') {
+						$val = (string) Smart::escape_url((string)$val); // escape URL
+					} elseif(((string)$escexpr == '|json') OR ((string)$escexpr == '|jsonpretty')) { // Json Data ; expects pure JSON !!!
+						$isPrettyJson = false;
+						if((string)$escexpr == '|jsonpretty') {
+							$isPrettyJson = true;
+						} //end if
+						$val = (string) Smart::json_encode(Smart::json_decode($val, true), (bool)$isPrettyJson, true, true); // it MUST be JSON with HTML-Safe Options.
+						$val = (string) trim((string)$val);
+						if((string)$val == '') {
+							$val = 'null'; // ensure a minimal json as empty string if no expr !
+						} //end if
+					} elseif((string)$escexpr == '|js') {
+						$val = (string) Smart::escape_js((string)$val); // Escape JS
+					} elseif((string)$escexpr == '|html') {
+						$val = (string) Smart::escape_html((string)$val); // Escape HTML
+					} elseif((string)$escexpr == '|css') {
+						$val = (string) Smart::escape_css((string)$val); // Escape CSS
+					} elseif((string)$escexpr == '|nl2br') {
+						$val = (string) Smart::nl_2_br((string)$val); // Apply Nl2Br
+					} elseif((string)$escexpr == '|nbsp') {
+						$val = (string) strtr((string)$val, [ // Transform Spaces and Tabs to nbsp;
+							' '  => '&nbsp;',
+							"\t" => '&nbsp;',
+						]);
+					} elseif((string)$escexpr == '|striptags') {
+						$val = (string) Smart::stripTags((string)$val); // Apply Strip Tags
+					//--
+					} elseif((string)$escexpr == '|emptye') { // if empty, display [EMPTY]
+						if((string)trim((string)$val) == '') {
+							$val = '[EMPTY]';
+						} //end if
+					} elseif((string)$escexpr == '|emptyna') { // if empty, display [N/A]
+						if((string)trim((string)$val) == '') {
+							$val = '[N/A]';
+						} //end if
 					} elseif((string)$escexpr == '|idtxt') { // id_txt: Id-Txt
 						$val = (string) str_replace('_', '-', (string)$val);
 						$val = (string) SmartUnicode::uc_words((string)$val);
@@ -1538,6 +1595,22 @@ final class SmartMarkersTemplating {
 						$val = (string) Smart::create_htmid((string)$val);
 					} elseif((string)$escexpr == '|jsvar') { // JS-Variable: a-zA-Z0-9_$
 						$val = (string) Smart::create_jsvar((string)$val);
+					} elseif((string)$escexpr == '|stdvar') { // Standard Variable: a-zA-Z0-9_
+						$val = (string) Smart::safe_varname((string)$val, true);
+					} elseif((string)$escexpr == '|nobackslash') { // remove backslashes from a string
+						$val = (string) strtr((string)$val, [ '\\' => '' ]);
+					} elseif((string)$escexpr == '|rxpattern') { // prepare a regex escaped pattern for a browser input
+						$val = (string) strtr((string)$val, [ // the following characters need tot to be escaped in a browser pattern sequence, but in PHP they are, in a regex pattern
+							'\\/' => '/',
+							'\\.' => '.',
+							'\\:' => ':',
+							'\\#' => '#',
+							'\\=' => '=',
+							'\\!' => '!',
+							'\\<' => '<',
+							'\\>' => '>',
+							// when using bacslashes in a regex string, it must be '\\\\' = \\ not '\\' = \ when string is evaluated !
+						]);
 					//--
 					} elseif(((string)substr((string)$escexpr, 0, 7) == '|substr') OR ((string)substr((string)$escexpr, 0, 7) == '|subtxt')) { // Sub(String|Text) (0,num)
 						$xnum = Smart::format_number_int((int)substr((string)$escexpr, 7), '+');
@@ -1565,26 +1638,9 @@ final class SmartMarkersTemplating {
 					} elseif((string)$escexpr == '|ucwords') { // apply uppercase on each word
 						$val = (string) SmartUnicode::uc_words((string)$val);
 					} elseif((string)$escexpr == '|trim') { // apply trim
-					//--
 						$val = (string) trim((string)$val);
-					} elseif((string)$escexpr == '|url') {
-						$val = (string) Smart::escape_url((string)$val); // escape URL
-					//--
-					} elseif((string)$escexpr == '|json') { // Json Data ; expects pure JSON !!!
-						$val = (string) Smart::json_encode(Smart::json_decode($val, true), false, true, true); // it MUST be JSON with HTML-Safe Options.
-						$val = (string) trim((string)$val);
-						if((string)$val == '') {
-							$val = 'null'; // ensure a minimal json as empty string if no expr !
-						} //end if
-					} elseif((string)$escexpr == '|js') {
-						$val = (string) Smart::escape_js((string)$val); // Escape JS
-					//--
-					} elseif((string)$escexpr == '|html') {
-						$val = (string) Smart::escape_html((string)$val); // Escape HTML
-					} elseif((string)$escexpr == '|css') {
-						$val = (string) Smart::escape_css((string)$val); // Escape CSS
-					} elseif((string)$escexpr == '|nl2br') {
-						$val = (string) Smart::nl_2_br((string)$val); // Apply Nl2Br
+					} elseif((string)$escexpr == '|rev') { // reverse string
+						$val = (string) strrev((string)$val);
 					//--
 					} elseif((string)$escexpr == '|smartlist') { // Apply SmartList Fix Replacements
 						$val = (string) str_replace(['<', '>'], ['‹', '›'], (string)$val); // {{{SYNC-SMARTLIST-BRACKET-REPLACEMENTS}}}
@@ -1593,12 +1649,87 @@ final class SmartMarkersTemplating {
 					//--
 					} elseif((string)$escexpr == '|hex') {
 						$val = (string) bin2hex((string)$val); // Apply Bin2Hex Encode
+					} elseif((string)$escexpr == '|hexi10') {
+						$val = (string) Smart::int10_to_hex((int)(string)$val); // Converts a 64-bit integer number to hex (string)
 					//--
-					} elseif((string)$escexpr == '|b64') { // !! this should not be exported to JS, it a bit heavyweight for a light templating engine like js ..., and if needed it can build the syntax using concatenation with a b64 encoded string that can be done in js, using smart crypt utils / b64
+					} elseif((string)$escexpr == '|b64') {
 						$val = (string) base64_encode((string)$val); // Apply Base64 Encode
+					} elseif((string)$escexpr == '|b64s') {
+						$val = (string) Smart::b64s_enc((string)$val); // Apply Base64 Safe URL Encode
+					} elseif((string)$escexpr == '|b64tob64s') {
+						$val = (string) Smart::b64_to_b64s((string)$val); // Convert from Base64 Encoding to Base64 Safe URL Encoding
+					} elseif((string)$escexpr == '|b64stob64') {
+						$val = (string) Smart::b64s_to_b64((string)$val); // Convert from Base64 Safe URL Encoding to Base64 Encoding
 					//--
-					} elseif((string)$escexpr == '|sha1') { // !! this should not be exported to JS, it a bit heavyweight for a light templating engine like js ..., and if needed it can build the syntax using concatenation with a sha1 hashed string that can be done in js, using smart crypt utils / sha1
-						$val = (string) sha1((string)$val); // Apply SHA1 Hashing
+					} elseif((string)$escexpr == '|b32') {
+						$val = (string) Smart::base_from_hex_convert((string)bin2hex((string)$val), 32); // Apply Base32 Encoding
+					} elseif((string)$escexpr == '|b36') {
+						$val = (string) Smart::base_from_hex_convert((string)bin2hex((string)$val), 36); // Apply Base36 Encoding
+					} elseif((string)$escexpr == '|b58') {
+						$val = (string) Smart::base_from_hex_convert((string)bin2hex((string)$val), 58); // Apply Base58 Encoding
+					} elseif((string)$escexpr == '|b62') {
+						$val = (string) Smart::base_from_hex_convert((string)bin2hex((string)$val), 62); // Apply Base62 Encoding
+					} elseif((string)$escexpr == '|b85') {
+						$val = (string) Smart::base_from_hex_convert((string)bin2hex((string)$val), 85); // Apply Base85 Encoding
+					} elseif((string)$escexpr == '|b92') {
+						$val = (string) Smart::base_from_hex_convert((string)bin2hex((string)$val), 92); // Apply Base92 Encoding
+					//--
+					} elseif((string)$escexpr == '|crc32b') {
+						$val = (string) SmartHashCrypto::crc32b((string)$val, false); // Apply crc32b/B16 (default) Hashing
+					} elseif((string)$escexpr == '|crc32b36') {
+						$val = (string) SmartHashCrypto::crc32b((string)$val, true); // Apply crc32b/B36 Hashing
+					//--
+					} elseif((string)$escexpr == '|md5') {
+						$val = (string) SmartHashCrypto::md5((string)$val, false); // Apply MD5 Hashing
+					} elseif((string)$escexpr == '|md5b64') {
+						$val = (string) SmartHashCrypto::md5((string)$val, true); // Apply MD5B64 Hashing
+					//--
+					} elseif((string)$escexpr == '|sha1') {
+						$val = (string) SmartHashCrypto::sha1((string)$val, false); // Apply SHA1 Hashing
+					} elseif((string)$escexpr == '|sha1b64') {
+						$val = (string) SmartHashCrypto::sha1((string)$val, true); // Apply SHA1B64 Hashing
+					//--
+					} elseif((string)$escexpr == '|sha224') {
+						$val = (string) SmartHashCrypto::sha224((string)$val, false); // Apply SHA224 Hashing
+					} elseif((string)$escexpr == '|sha224b64') {
+						$val = (string) SmartHashCrypto::sha224((string)$val, true); // Apply SHA224B64 Hashing
+					//--
+					} elseif((string)$escexpr == '|sha256') {
+						$val = (string) SmartHashCrypto::sha256((string)$val, false); // Apply SHA256 Hashing
+					} elseif((string)$escexpr == '|sha256b64') {
+						$val = (string) SmartHashCrypto::sha256((string)$val, true); // Apply SHA256B64 Hashing
+					//--
+					} elseif((string)$escexpr == '|sha384') { // not yet portable to JS ...
+						$val = (string) SmartHashCrypto::sha384((string)$val, false); // Apply SHA384 Hashing
+					} elseif((string)$escexpr == '|sha384b64') { // not yet portable to JS ...
+						$val = (string) SmartHashCrypto::sha384((string)$val, true); // Apply SHA384B64 Hashing
+					//--
+					} elseif((string)$escexpr == '|sha512') {
+						$val = (string) SmartHashCrypto::sha512((string)$val, false); // Apply SHA512 Hashing
+					} elseif((string)$escexpr == '|sha512b64') {
+						$val = (string) SmartHashCrypto::sha512((string)$val, true); // Apply SHA512B64 Hashing
+					//--
+					} elseif((string)$escexpr == '|sh3a224') {
+						$val = (string) SmartHashCrypto::sh3a224((string)$val, false); // Apply SHA3-224 Hashing
+					} elseif((string)$escexpr == '|sh3a224b64') {
+						$val = (string) SmartHashCrypto::sh3a224((string)$val, true); // Apply SHA3-224B64 Hashing
+					//--
+					} elseif((string)$escexpr == '|sh3a256') {
+						$val = (string) SmartHashCrypto::sh3a256((string)$val, false); // Apply SHA3-256 Hashing
+					} elseif((string)$escexpr == '|sh3a256b64') {
+						$val = (string) SmartHashCrypto::sh3a256((string)$val, true); // Apply SHA3-256B64 Hashing
+					//--
+					} elseif((string)$escexpr == '|sh3a384') { // not yet portable to JS ...
+						$val = (string) SmartHashCrypto::sh3a384((string)$val, false); // Apply SHA3-384 Hashing
+					} elseif((string)$escexpr == '|sh3a384b64') { // not yet portable to JS ...
+						$val = (string) SmartHashCrypto::sh3a384((string)$val, true); // Apply SHA3-384B64 Hashing
+					//--
+					} elseif((string)$escexpr == '|sh3a512') {
+						$val = (string) SmartHashCrypto::sh3a512((string)$val, false); // Apply SHA3-512 Hashing
+					} elseif((string)$escexpr == '|sh3a512b64') {
+						$val = (string) SmartHashCrypto::sh3a512((string)$val, true); // Apply SHA3-512B64 Hashing
+					//--
+					// prettybytes ; skip, depends on Lib Utils
 					//--
 					} else {
 						Smart::log_warning('Invalid or Undefined Marker-TPL Escaping: '.$escexpr.' - detected in Replacement Key: '.$crr_match[0].' -> [Val: '.$val.']');

@@ -2,6 +2,14 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+November 17, 2023
+	* SWT Tokens: expire time is mandatory: 1..3600*24 seconds (24 h max)
+	* Captcha security: refactoring and optimizations
+	* BugFix: Js Hmac SHA3
+	* Dhkx E/D refactoring
+	* JS Crypto Refactoring: implement smartJ$CipherCrypto (Twofish ; Blowfish) ; JS: remove: smartJ$CryptoBlowfish
+	* PHP Crypto Refactoring: implement Twofish, Twofish+Blowfish
+
 October 21, 2023
 	* JS SlickGrid + Slick Cell Editors refactoring to be full ES6 compliant
 	* CSS Styles fixes for Mod Auth Admins Login/Logout Pages, Auth Admins List Page :: full responsive

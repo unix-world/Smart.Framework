@@ -61,7 +61,7 @@ final class SmartFrameworkRegistry {
 	 * @internal
 	 *
 	 */
-	public static function setServerVar(?string $key, ?string $value) {
+	public static function setServerVar(?string $key, ?string $value) : bool {
 		//--
 		if(self::$ServerLock !== false) { // check if can run
 			trigger_error(__METHOD__.'() :: '.'Cannot Re-Register Server Vars, Registry is already locked !', E_USER_WARNING);
@@ -91,7 +91,7 @@ final class SmartFrameworkRegistry {
 	 *
 	 * @return 	BOOL						:: TRUE if the variable exists, FALSE otherwise
 	 */
-	public static function issetServerVar(?string $key) {
+	public static function issetServerVar(?string $key) : bool {
 		//--
 		$key = (string) strtoupper((string)trim((string)$key));
 		if((string)$key == '') {
@@ -100,9 +100,9 @@ final class SmartFrameworkRegistry {
 		//--
 		if(array_key_exists((string)$key, self::$ServerVars)) { // for server vars if key exists is considered TRUE
 			return true;
-		} else {
-			return false;
-		} //end if else
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -114,17 +114,16 @@ final class SmartFrameworkRegistry {
 	 * This will get a value from $_SERVER but but filtered with SmartFrameworkSecurity::FilterUnsafeString to be UTF-8 compliant and avoid dangerous characters ; $_SERVER is not filtered, is raw !
 	 * @return 	STRING/NULL						:: the safe filtered value of $_SERVER[$key]
 	 */
-	public static function getServerVar(?string $key) {
+	public static function getServerVar(?string $key) : ?string {
 		//--
 		$key = (string) strtoupper((string)trim((string)$key));
 		if((string)$key == '') {
 			return null;
 		} //end if
 		//--
+		$val = null; // init with the default value :: null
 		if(self::issetServerVar((string)$key) === true) {
 			$val = (string) self::$ServerVars[(string)$key]; // use the value from server vars :: string
-		} else {
-			$val = null; // init with the default value :: null
 		} //end if
 		//--
 		return $val; // mixed
@@ -139,7 +138,7 @@ final class SmartFrameworkRegistry {
 	 *
 	 * @return 	ARRAY			:: an associative array with all the server vars from $_SERVER but filtered with SmartFrameworkSecurity::FilterUnsafeString to be UTF-8 compliant and avoid dangerous characters ; $_SERVER is not filtered, is raw !
 	 */
-	public static function getServerVars() {
+	public static function getServerVars() : array {
 		//--
 		return (array) self::$ServerVars; // array
 		//--
@@ -160,7 +159,7 @@ final class SmartFrameworkRegistry {
 	 * @internal
 	 *
 	 */
-	public static function setRequestPath(?string $value) {
+	public static function setRequestPath(?string $value) : bool {
 		//--
 		if(self::$RequestLock !== false) { // check if can run
 			trigger_error(__METHOD__.'() :: '.'Cannot Re-Register Vars, Registry is already locked !', E_USER_WARNING);
@@ -201,7 +200,7 @@ final class SmartFrameworkRegistry {
 	 *
 	 * @return 	STRING										:: The request path
 	 */
-	public static function getRequestPath() {
+	public static function getRequestPath() : string {
 		//--
 		return (string) self::$RequestPath;
 		//--
@@ -218,7 +217,14 @@ final class SmartFrameworkRegistry {
 	 * @internal
 	 *
 	 */
-	public static function setRequestVar(?string $key, $value) { // $value is MIXED !
+	public static function setRequestVar(?string $key, $value) : bool {
+		//--
+		// input $value is MIXED: string|array ; but be flexible and allow all the scalar types and null
+		//--
+		if(is_object($value) OR is_resource($value)) { // {{{SYNC-CONDITION-REQUEST-VAR-TYPES}}}
+			trigger_error(__METHOD__.'() :: '.'Invalid Variable Type to Register: Object or Resource !', E_USER_WARNING);
+			return false; // see above what types are allowed
+		} //end if
 		//--
 		if(self::$RequestLock !== false) { // check if can run
 			trigger_error(__METHOD__.'() :: '.'Cannot Re-Register Vars, Registry is already locked !', E_USER_WARNING);
@@ -244,7 +250,7 @@ final class SmartFrameworkRegistry {
 	 *
 	 * @return 	BOOL						:: TRUE if the variable exists, FALSE otherwise
 	 */
-	public static function issetRequestVar(?string $key) {
+	public static function issetRequestVar(?string $key) : bool {
 		//--
 		$key = (string) trim((string)$key);
 		if((string)$key == '') {
@@ -253,9 +259,9 @@ final class SmartFrameworkRegistry {
 		//--
 		if((array_key_exists((string)$key, self::$RequestVars)) AND (isset(self::$RequestVars[(string)$key])) AND ((is_array(self::$RequestVars[(string)$key])) OR ((string)self::$RequestVars[(string)$key] != ''))) { // if is set and (array or non-empty string) ; numbers from request comes as string too
 			return true;
-		} else {
-			return false;
-		} //end if else
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -275,7 +281,9 @@ final class SmartFrameworkRegistry {
 	 *
 	 * @return 	MIXED					:: The value of the choosen Request (GET/POST) variable
 	 */
-	public static function getRequestVar(?string $key, $defval=null, $type='') { // $defval and $type are MIXED ! ; {{{SYNC-REQUEST-DEF-PARAMS}}}
+	public static function getRequestVar(?string $key, $defval=null, $type='') { // : MIXED ! ; {{{SYNC-REQUEST-DEF-PARAMS}}}
+		//--
+		// $defval and $type are MIXED ; output is MIXED
 		//--
 		$key = (string) trim((string)$key);
 		if((string)$key == '') {
@@ -390,7 +398,7 @@ final class SmartFrameworkRegistry {
 	 *
 	 *
 	 */
-	public static function getRequestVars() {
+	public static function getRequestVars() : array {
 		//--
 		return (array) self::$RequestVars; // array
 		//--
@@ -407,7 +415,7 @@ final class SmartFrameworkRegistry {
 	 * @internal
 	 *
 	 */
-	public static function setCookieVar(?string $key, ?string $value) {
+	public static function setCookieVar(?string $key, ?string $value) : bool {
 		//--
 		// do not check if request is locked ; cookies must be set if needed later into this registry by Smart.Framework internal methods only ...
 		//--
@@ -434,7 +442,7 @@ final class SmartFrameworkRegistry {
 	 * @internal
 	 *
 	 */
-	public static function issetCookieVar(?string $key) {
+	public static function issetCookieVar(?string $key) : bool {
 		//--
 		$key = (string) trim((string)$key);
 		if((string)$key == '') {
@@ -443,9 +451,9 @@ final class SmartFrameworkRegistry {
 		//--
 		if((array_key_exists((string)$key, self::$CookieVars)) AND (isset(self::$CookieVars[(string)$key]))) { // if is set and not null ; cookies are considered to be set if they exist and non-null
 			return true;
-		} else {
-			return false;
-		} //end if else
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -462,20 +470,19 @@ final class SmartFrameworkRegistry {
 	 * @internal
 	 *
 	 */
-	public static function getCookieVar(?string $key) {
+	public static function getCookieVar(?string $key) : ?string {
 		//--
 		$key = (string) trim((string)$key);
 		if((string)$key == '') {
 			return null;
 		} //end if
 		//--
+		$val = null; // init with the default value :: null
 		if(self::issetCookieVar((string)$key) === true) {
 			$val = (string) self::$CookieVars[(string)$key]; // use the value from cookies :: string
-		} else {
-			$val = null; // init with the default value :: null
 		} //end if
 		//--
-		return $val; // mixed
+		return $val; // mixed: string or null
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -494,7 +501,7 @@ final class SmartFrameworkRegistry {
 	 * @return 	ARRAY			:: an associative array with all the cookies ; this may differ from $_COOKIE as this is filtered to be UTF-8 compliant and avoid dangerous characters ; $_COOKIE is not filtered, is raw !
 	 *
 	 */
-	public static function getCookieVars() {
+	public static function getCookieVars() : array {
 		//--
 		return (array) self::$CookieVars; // array
 		//--
@@ -518,7 +525,7 @@ final class SmartFrameworkRegistry {
 	 * @return 	BOOLEAN					:: TRUE if SUCCESS, FALSE if FAIL
 	 *
 	 */
-	public static function registerFilteredServerVars(?array $arr) {
+	public static function registerFilteredServerVars(?array $arr) : bool {
 		//-- check if can run
 		if(self::$ServerLock !== false) {
 			trigger_error(__METHOD__.'() :: '.'Cannot Register Server Vars, Registry is already locked !', E_USER_WARNING);
@@ -566,7 +573,7 @@ final class SmartFrameworkRegistry {
 	 * @return 	BOOLEAN					:: TRUE if SUCCESS, FALSE if FAIL
 	 *
 	 */
-	public static function registerFilteredRequestVars(?array $arr, ?string $info) {
+	public static function registerFilteredRequestVars(?array $arr, ?string $info) : bool {
 		//-- check if can run
 		if(self::$RequestLock !== false) {
 			trigger_error(__METHOD__.'() :: '.'Cannot Register Request/'.$info.' Vars, Registry is already locked !', E_USER_WARNING);
@@ -622,7 +629,7 @@ final class SmartFrameworkRegistry {
 	 * @return 	BOOLEAN					:: TRUE if SUCCESS, FALSE if FAIL
 	 *
 	 */
-	public static function registerFilteredCookieVars(?array $arr) {
+	public static function registerFilteredCookieVars(?array $arr) : bool {
 		//-- check if can run
 		if(self::$RequestLock !== false) {
 			trigger_error(__METHOD__.'() :: '.'Cannot Register Cookie Vars, Registry is already locked !', E_USER_WARNING);
@@ -667,11 +674,11 @@ final class SmartFrameworkRegistry {
 	 * @return 	BOOLEAN					:: TRUE if SUCCESS, FALSE if FAIL
 	 *
 	 */
-	public static function lockServerRegistry() {
+	public static function lockServerRegistry() : ?bool {
 		//--
 		if(self::$ServerLock !== false) { // check if can run
 			trigger_error(__METHOD__.'() :: '.'Registry is already locked !', E_USER_WARNING);
-			return; // avoid run after registry was already locked
+			return null; // failed, already locked ; avoid run after registry was already locked
 		} //end if
 		//--
 		self::$ServerLock = true;
@@ -693,11 +700,11 @@ final class SmartFrameworkRegistry {
 	 * @return 	BOOLEAN					:: TRUE if SUCCESS, FALSE if FAIL
 	 *
 	 */
-	public static function lockRequestRegistry() {
+	public static function lockRequestRegistry() : ?bool {
 		//--
 		if(self::$RequestLock !== false) { // check if can run
 			trigger_error(__METHOD__.'() :: '.'Registry is already locked !', E_USER_WARNING);
-			return; // avoid run after registry was already locked
+			return null; // failed, already locked ; avoid run after registry was already locked
 		} //end if
 		//--
 		self::$RequestLock = true;
@@ -718,7 +725,7 @@ final class SmartFrameworkRegistry {
 	 * @access 		private
 	 * @internal
 	 */
-	public static function registerInternalCacheToDebugLog() {
+	public static function registerInternalCacheToDebugLog() : void {
 		//--
 		if(SmartEnvironment::ifInternalDebug()) {
 			if(SmartEnvironment::ifDebug()) {

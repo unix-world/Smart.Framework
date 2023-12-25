@@ -3,7 +3,7 @@
 // (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
-// Module Lib: \SmartModExtLib\Webdav\DavFileSystem
+// Class: \SmartModExtLib\Webdav\DavFileSystem
 // Type: Module Library
 
 namespace SmartModExtLib\Webdav;
@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFileSystem {
 
 	// ::
-	// v.20221219
+	// v.20231119
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
 	public static function methodOptions() { // 200
@@ -638,7 +638,7 @@ final class DavFileSystem {
 				$arr_f_files[] = [
 					'name'  => (string) $files_n_dirs['list-files'][$i],
 					'type'  => (string) self::mimeTypeFile((string)$files_n_dirs['list-files'][$i]),
-					'size'  => (string) \SmartUtils::pretty_print_bytes((int)\SmartFileSystem::get_file_size($fixed_vfs_dir.$files_n_dirs['list-files'][$i]), 2, ' '),
+					'size'  => (string) \SmartUtils::pretty_print_bytes((int)\SmartFileSystem::get_file_size($fixed_vfs_dir.$files_n_dirs['list-files'][$i]), 2),
 					'modif' => (string) \date('Y-m-d H:i:s O', (int)\SmartFileSystem::get_file_mtime($fixed_vfs_dir.$files_n_dirs['list-files'][$i])),
 					'link'  => (string) $fixed_dav_url.$files_n_dirs['list-files'][$i],
 					'icon'  => (string) \SmartModExtLib\Webdav\DavUtils::getFileIcon($files_n_dirs['list-files'][$i])

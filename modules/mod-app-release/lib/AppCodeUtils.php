@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // App Code Utils
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION [T]
@@ -31,7 +31,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class AppCodeUtils {
 
 	// ::
-	// v.20221221
+	// v.20231107
 
 	private const CODEPACK_INI = 'etc/appcodepack/appcodepack.ini';
 	private const CODEPACK_SETTINGS = 'etc/appcodepack/appcodepack.yaml';
@@ -291,7 +291,7 @@ final class AppCodeUtils {
 		if((!isset($arr['deploy-auth-pass'])) OR (!Smart::is_nscalar($arr['deploy-auth-pass'])) OR ((string)trim((string)$arr['deploy-auth-pass']) == '')) {
 			return 'APP-RELEASE/APPID/DEPLOY-AUTH-PASS YAML SETTINGS ERROR';
 		} //end if
-		$password = (string) SmartUtils::crypto_blowfish_decrypt((string)$arr['deploy-auth-pass'], (string)APP_DEPLOY_SECRET);
+		$password = (string) SmartCipherCrypto::bf_decrypt((string)$arr['deploy-auth-pass'], (string)APP_DEPLOY_SECRET);
 		if((string)trim((string)$password) == '') {
 			return 'APP-RELEASE/APPID/DEPLOY-AUTH-PASS YAML SETTINGS ERROR # decode failed';
 		} //end if

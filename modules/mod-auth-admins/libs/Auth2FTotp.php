@@ -14,18 +14,6 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 // [PHP8]
 
-//--
-if(!function_exists('hash_hmac_algos')) {
-	@http_response_code(500);
-	die('PHP Extension Hash is not available (HMAC)');
-} //end if
-//--
-if(!function_exists('random_bytes')) {
-	@http_response_code(500);
-	die('PHP 7 or later is required for random bytes method');
-} //end if
-//--
-
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
 //=====================================================================================
@@ -50,8 +38,8 @@ if(!function_exists('random_bytes')) {
  *
  * @ignore
  *
- * @depends     PHP hash_hmac_algos() / hash_hmac() ; classes: Smart
- * @version 	v.20231020
+ * @depends     PHP classes: Smart, SmartHashCrypto, SmartQR2DBarcode
+ * @version 	v.20231031
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -64,8 +52,6 @@ final class Auth2FTotp {
 	private const CHARSET_BASE_32 = 'abcdefghijklmnopqrstuvwxyz234567'; // RFC3548
 
 	private const URL_OTPAUTH = 'otpauth://totp/';
-
-	private static $cache = [];
 
 
 	//==============================================================
@@ -165,10 +151,6 @@ final class Auth2FTotp {
 				\Smart::log_warning(__METHOD__.' # ERROR: Invalid Algo Selected: '.\strtoupper((string)$algo).' Hash/HMAC/Algo');
 				return '';
 		} //end switch
-		if(!self::algo_check((string)$algo)) {
-			\Smart::log_warning(__METHOD__.' # ERROR: requires '.\strtoupper((string)$algo).' Hash/HMAC/Algo');
-			return '';
-		} //end if
 		//--
 		if((int)$length < 4) {
 			\Smart::log_warning(__METHOD__.' # ERROR: Min Length is 4');
@@ -205,7 +187,7 @@ final class Auth2FTotp {
 		//--
 		$scount = (string) self::packCounter((int)$count);
 		//--
-		$hash = (string) \hash_hmac((string)$algo, (string)$scount, (string)$key);
+		$hash = (string) \SmartHashCrypto::hmac((string)$algo, (string)$key, (string)$scount);
 		//--
 		$code = (string) self::genHTOPValue((string)$hash, (int)$length);
 		$code = (string) \str_pad((string)$code, (int)$length, '0', \STR_PAD_LEFT);
@@ -223,7 +205,7 @@ final class Auth2FTotp {
 		$arr = (array) \str_split((string)$hash, 2);
 		$hmac_result = []; // store calculate decimal
 		foreach($arr as $kk => $hex) {
-			$hmac_result[] = (int) \hexdec($hex);
+			$hmac_result[] = (int) \hexdec((string)$hex);
 		} //end foreach
 		//--
 		$offset = (int) ($hmac_result[(int)\Smart::array_size((array)$hmac_result)-1] & 0xf);
@@ -256,32 +238,6 @@ final class Auth2FTotp {
 		} //end if
 		//--
 		return (string) $bin_counter;
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	private static function algo_check(string $algo) : bool {
-		//--
-		if(\in_array((string)$algo, (array)self::algos())) {
-			return true;
-		} // end if
-		//--
-		return false;
-		//--
-	} //END FUNCTION
-	//==============================================================
-
-
-	//==============================================================
-	private static function algos() : array {
-		//--
-		if((!array_key_exists('algos', self::$cache)) OR (!is_array(self::$cache['algos']))) {
-			self::$cache['algos'] = (array) \hash_hmac_algos();
-		} //end if else
-		//--
-		return (array) self::$cache['algos'];
 		//--
 	} //END FUNCTION
 	//==============================================================

@@ -3,11 +3,12 @@
 * A simple jQuery pagination plugin.
 * http://flaviusmatis.github.com/simplePagination.js/ ; Copyright 2012, Flavius Matis. Released under the MIT license. http://flaviusmatis.github.com/license.html
 *
-* (c) 2016-2019 unix-world.org
-* contains fixes by unixman r.20190103
+* (c) 2016-2023 unix-world.org
+* contains fixes by unixman r.20231107
 * 	- fix emulate click event on ellipse
 * 	- added style class for ellipse: ellipseClass
 * 	- replaced text Prev/Next with < >
+* 	- fix dynamic ellipse selection, if current page is on the right
 */
 
 (function($){
@@ -349,6 +350,17 @@
 				if (!o.disable) {
 					var $this = $(this),
 						val = (parseInt($this.parent().prev().text(), 10) || 0) + 1;
+						var maxRealPage = Math.floor(o.pages || 0);
+						var crrRealPage = Math.floor(o.currentPage || 0) + 1;
+						//console.log('crrRealPage', crrRealPage, 'maxRealPage', maxRealPage);
+						if(val < crrRealPage) {
+							val = (parseInt($this.parent().next().text(), 10) || 0) - 1;
+						}
+						if(val < 0) {
+							val = 0;
+						} else if(val > maxRealPage) {
+							val = maxRealPage;
+						}
 					$this
 						.html('<input class="' + o.ellipseClass + '" type="number" min="1" max="' + o.pages + '" step="1" value="' + val + '">')
 						.find('input')

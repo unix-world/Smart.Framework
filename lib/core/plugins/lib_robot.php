@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: SmartUnicode, Smart, SmartDetectImages, SmartUtils, SmartEnvironment, SmartFrameworkSecurity, SmartFrameworkRegistry
- * @version 	v.20231018
+ * @version 	v.20231119
  * @package 	Application:Plugins:Network:HTTP
  *
  */
@@ -434,17 +434,15 @@ final class SmartRobot {
 						//--
 						$cookies = (array) SmartFrameworkRegistry::getCookieVars(); // safe (same protocol, host, port, path, script) ; these are needed for mail-decode/pdf and maybe others (because there is some extra cookie token in mail utils, but this may change anytime ...) ; it is unpredictable to know which cookies to be sent only, send them all
 						//--
-						$is_internal_auth_ok = false;
-						//--
-						$is_logged_in = (bool) SmartAuth::check_login(); // {{{SYNC-ROBOT-AUTH-SELF-BEARER}}}
-						if($is_logged_in === true) {
-							$is_internal_auth_ok = true;
-						} //end if
-						//--
 						if(
-							($is_internal_auth_ok === true) AND // {{{SYNC-ROBOT-AUTH-SELF-BEARER}}}
-							((string)$auth_name == '') AND
-							((string)$auth_pass == '') AND
+							(SmartEnvironment::isAdminArea() === true) // should be adm/task area only !
+							AND
+							(SmartAuth::check_login() === true) // is logged in
+							AND // {{{SYNC-ROBOT-AUTH-SELF-BEARER}}}
+							(strpos((string)SmartAuth::get_auth_method(), 'AUTH:HTTP-') === 0) // Auth Method Should start with `AUTH:HTTP-` that can be Basic or Auth Bearer
+							AND
+							(((string)$auth_name == '') AND ((string)$auth_pass == '')) // there is not provided specific username/pass
+							AND
 							(
 								((strpos((string)$tmp_current_script, '/admin.php') !== false) AND (strpos((string)$tmp_test_url_arr['path'], '/admin.php') !== false)) OR
 								((strpos((string)$tmp_current_script, '/task.php') !== false)  AND (strpos((string)$tmp_test_url_arr['path'], '/task.php') !== false))
@@ -452,20 +450,18 @@ final class SmartRobot {
 						) {
 							//--
 							if(SmartEnvironment::ifDebug()) {
-								$tmp_extra_log .= '[EXTRA]: HTTP-BASIC Auth method detected / Allowed to pass the Credentials - as the browsed URL belongs to this ADMIN or TASK Server as I run, the Auth credentials are set but passed as empty - everything seems to be safe I will send my credentials: USERNAME = \''.SmartAuth::get_auth_username().'\' ; PASS = *******'."\n";
+								$tmp_extra_log .= '[EXTRA]: HTTP-BASIC Auth method detected / Allowed to pass the Credentials - as the browsed URL belongs to this ADMIN or TASK Server as I run, the Auth credentials are set but passed as empty - everything seems to be safe I will send my credentials: USERNAME = \''.SmartAuth::get_auth_username().'\' ; PASS = *******'."\n"; // this should be the username not the ID ! on admin area the username is used for auth !
 							} //end if
 							//--
 							// use HTTP Bearer (SWT) ; the SmartAuth is no more storing plain password, but only hash, thus using the standard HTTP Auth with SmartFramework internal is no more possible, only SWT Tokens with Bearer Auth can be used ...
 							//-- {{{SYNC-AUTH-TOKEN-SWT}}}
-							$arr_user_privs = []; // not restrict to a specific list of allowed privileges, use account defaults ; USE THIS INSTEAD OF NEXT LINE, IT IS MUCH SAFER !
-						//	$arr_user_privs = (array) Smart::list_to_array((string)SmartAuth::get_user_privileges(), true); // use explicit current user privileges
 							$swt_token = (array) SmartAuth::swt_token_create(
 								'A', // bind to adm/tsk area only !
-								(string) SmartAuth::get_auth_username(), // auth user name
+								(string) SmartAuth::get_auth_username(), // auth user name ; this should be the username not the ID ; on admin area the username is used for auth !
 								(string) SmartAuth::get_auth_passhash(),  // password hash
 								(int)    ((int)$y_timeout + 1), // add one second to be sure is never zero
-								(array)  [ (string)SmartUtils::get_server_current_ip() ], // server's own IP Address List (currently just one)
-								(array)  $arr_user_privs // list of allowed privs
+								(array)  [ (string)SmartUtils::get_server_current_ip() ], // server's own IP Address only, in this List ; currently just one
+								(array)  Smart::list_to_array((string)SmartAuth::get_user_privileges(), true) // list of allowed privs ; include all that this user have ; must be explicit since version 1.3
 							);
 							//--
 							$auth_name = '';

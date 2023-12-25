@@ -28,12 +28,13 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20230324
+ * @version 	v.20231119
  *
  */
 final class TestUnitFileSystem {
 
 	// ::
+
 
 	//============================================================
 	public static function testFs() {
@@ -126,30 +127,31 @@ final class TestUnitFileSystem {
 				((string)\Smart::safe_filename('.') !== '') OR
 				((string)\Smart::safe_validname('.') !== '') OR
 				((string)\Smart::safe_username('.') !== '') OR
-				((string)\Smart::safe_varname('.') !== '') OR
+				((string)\Smart::safe_varname('.') !== (string)\Smart::UNDEF_VAR_NAME) OR
 				((string)\Smart::safe_pathname('..') !== '') OR
 				((string)\Smart::safe_filename('..') !== '') OR
 				((string)\Smart::safe_validname('..') !== '') OR
 				((string)\Smart::safe_username('..') !== '') OR
-				((string)\Smart::safe_varname('..') !== '') OR
+				((string)\Smart::safe_varname('..') !== (string)\Smart::UNDEF_VAR_NAME) OR
 				((string)\Smart::safe_pathname('/') !== '') OR
 				((string)\Smart::safe_filename('/') !== '') OR
 				((string)\Smart::safe_validname('/') !== '') OR
 				((string)\Smart::safe_username('/') !== '') OR
-				((string)\Smart::safe_varname('/') !== '') OR
+				((string)\Smart::safe_varname('/') !== (string)\Smart::UNDEF_VAR_NAME) OR
 				((string)\Smart::safe_pathname('/.') !== '') OR
 				((string)\Smart::safe_filename('/.') !== '') OR
 				((string)\Smart::safe_validname('/.') !== '') OR
 				((string)\Smart::safe_username('/.') !== '') OR
-				((string)\Smart::safe_varname('/.') !== '') OR
+				((string)\Smart::safe_varname('/.') !== (string)\Smart::UNDEF_VAR_NAME) OR
 				((string)\Smart::safe_pathname('/..') !== '') OR
 				((string)\Smart::safe_filename('/..') !== '') OR
 				((string)\Smart::safe_validname('/..') !== '') OR
 				((string)\Smart::safe_username('/..') !== '') OR
-				((string)\Smart::safe_varname('/..') !== '') OR
+				((string)\Smart::safe_varname('/..') !== (string)\Smart::UNDEF_VAR_NAME) OR
 				((string)\Smart::safe_pathname('_a-zA-Z0-9-.@#/') !== '_a-zA-Z0-9-.@#/') OR
 				((string)\Smart::safe_filename('_a-zA-Z0-9-.@#/') !== '_a-zA-Z0-9-.@#-') OR // slash is replaced by -
 				((string)\Smart::safe_validname('_a-zA-Z0-9-.@#/') !== '_a-za-z0-9-.@-') OR // slash is replaced by - (from above)
+				((string)\Smart::safe_validname('_a-zA-Z0-9-.@#/', '', true) !== '_a-zA-Z0-9-.@-') OR // slash is replaced by - (from above) ; allow uppercase
 				((string)\Smart::safe_username('_a-zA-Z0-9-.@#/') !== 'azaz09.') OR
 				((string)\Smart::safe_varname('_a-zA-Z0-9-.@#/') !== '_azAZ09') OR
 				((string)\Smart::safe_varname('_a-zA-Z0-9-.@#/', false) !== '_azaz09')

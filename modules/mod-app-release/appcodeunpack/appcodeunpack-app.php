@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20231018 s.20231017.2223
+// [AppCodeUnpack / APP] v.20231119 s.20231125.1248
 // (c) 2013-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -65,7 +65,7 @@ const APPCODEUNPACK_READY = true;
  * @internal
  *
  */
-function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
+function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) : void {
 	//--
 	// ISOLATE THE AFTER DEPLOYMENT UPGRADE SCRIPT
 	//--
@@ -94,27 +94,27 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) {
 final class AppCodeUnpack {
 
 	// ::
-	// v.20231018
+	// v.20231119
 
-	private const APPCODEUNPACK_VERSION = 's.20231017.2223';
+	private const APPCODEUNPACK_VERSION = 's.20231125.1248';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
 
-	public static function runApp() {
+	public static function runApp() : ?string {
 		//--
 		if(defined('APPCODEUNPACK_DONE')) { // prevent run this twice
 			self::raiseXXXError(500, ' # Run Unpack Already Completed');
 			die(__METHOD__.' # Run Unpack Already Completed');
-			return;
+			return null;
 		} //end if
 		define('APPCODEUNPACK_DONE', true);
 		//--
 		$initerr = (string) self::initUnpack();
-		if($initerr) {
+		if((string)$initerr != '') {
 			self::raiseXXXError(503, ' # Init Unpack ERR: '.$initerr);
 			die(__METHOD__.' # Init Unpack ERR: '.$initerr);
-			return;
+			return null;
 		} //end if
 		//--
 		self::prompt401Auth((string)APP_AUTH_ADMIN_USERNAME, (string)APP_AUTH_ADMIN_PLAIN_PASSWORD);
@@ -129,16 +129,22 @@ final class AppCodeUnpack {
 				//--
 				$appid = (string) trim((string)SmartFrameworkRegistry::getRequestVar('appid', '', 'string'));
 				//--
-				$logs = array();
-				$apps_arr = array();
+				$logs = [];
+				$apps_arr = [];
 				$the_app_log_dir = '';
 				$url_log_display = '#';
 				//--
 				if(
-					((string)trim((string)$appid) == '') OR
-					(strlen((string)$appid) > 25) OR
-					((string)AppNetUnPackager::unpack_valid_app_id((string)$appid) != '') OR
-					(strpos((string)APPCODEPACK_DEPLOY_APPLIST, '<'.(string)$appid.'>') === false) OR
+					((string)trim((string)$appid) == '')
+					OR
+					((int)strlen((string)$appid) < 4)
+					OR // {{{SYNC-APPCODEPACK-ID-SIZE}}}
+					((int)strlen((string)$appid) > 63)
+					OR
+					((string)AppNetUnPackager::unpack_valid_app_id((string)$appid) != '')
+					OR
+					(strpos((string)APPCODEPACK_DEPLOY_APPLIST, '<'.(string)$appid.'>') === false)
+					OR
 					(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$appid))
 				) {
 					$appid = ''; // reset !
@@ -148,11 +154,11 @@ final class AppCodeUnpack {
 					if(
 						SmartFileSysUtils::checkIfSafePath((string)$the_app_log_dir)
 						AND
-						SmartFileSystem::is_type_dir($the_app_log_dir)
+						SmartFileSystem::is_type_dir((string)$the_app_log_dir)
 					) {
 						$logs = (array) (new SmartGetFileSystem(true))->get_storage((string)$the_app_log_dir, false, false, '.log');
 						$tmp_logs = (array) $logs['list-files'];
-						$logs = array();
+						$logs = [];
 						for($i=0; $i<Smart::array_size($tmp_logs); $i++) {
 							if(
 								SmartFileSysUtils::checkIfSafeFileOrDirName((string)$tmp_logs[$i])
@@ -161,7 +167,7 @@ final class AppCodeUnpack {
 							) {
 								$logs[] = [
 									'id' 	=> (string) $tmp_logs[$i],
-									'size' 	=> (string) SmartUtils::pretty_print_bytes(SmartFileSystem::get_file_size((string)$the_app_log_dir.$tmp_logs[$i]), 2)
+									'size' 	=> (string) SmartUtils::pretty_print_bytes((int)SmartFileSystem::get_file_size((string)$the_app_log_dir.$tmp_logs[$i]), 2)
 								];
 							} //end if
 						} //end for
@@ -169,14 +175,14 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if else
 				//--
-				$title = 'RELEASE MANAGER: LOGS List on this App Server';
+				$title = 'List: ERROR LOGS on this App Server';
 				$main = (string) SmartMarkersTemplating::render_template(
 					(string) (defined('APPCODEUNPACK_HTML_LIST_LOGS_TPL') ? APPCODEUNPACK_HTML_LIST_LOGS_TPL : '{#EMPTY-APPCODEUNPACK-LIST-LOGS-TPL#}'),
 					[
 						'SCRIPT' 		=> (string) self::APPCODEUNPACK_SCRIPT,
 						'URL-LOG-VIEW' 	=> (string) $url_log_display,
 						'APP-ID' 		=> (string) $appid,
-						'LOGS-ARR' 		=> (array)  Smart::array_sort($logs, 'rsort'),
+						'LOGS-ARR' 		=> (array)  Smart::array_sort((array)$logs, 'rsort'),
 						'APP-IDS-ARR' 	=> (array)  $apps_arr,
 						'APP-LOG-DIR' 	=> (string) $the_app_log_dir,
 					]
@@ -195,15 +201,21 @@ final class AppCodeUnpack {
 				$logfile = (string) trim((string)SmartFrameworkRegistry::getRequestVar('log', '', 'string'));
 				//--
 				if(
-					((string)trim((string)$appid) == '') OR
-					(strlen((string)$appid) > 25) OR
-					((string)AppNetUnPackager::unpack_valid_app_id((string)$appid) != '') OR
-					(strpos((string)APPCODEPACK_DEPLOY_APPLIST, '<'.(string)$appid.'>') === false) OR
+					((string)trim((string)$appid) == '')
+					OR
+					((int)strlen((string)$appid) < 4)
+					OR // {{{SYNC-APPCODEPACK-ID-SIZE}}}
+					((int)strlen((string)$appid) > 63)
+					OR
+					((string)AppNetUnPackager::unpack_valid_app_id((string)$appid) != '')
+					OR
+					(strpos((string)APPCODEPACK_DEPLOY_APPLIST, '<'.(string)$appid.'>') === false)
+					OR
 					(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$appid))
 				) {
 					self::raiseXXXError(400, ' # Invalid AppID: '.$appid);
 					die(__METHOD__.' # Invalid AppID: '.$appid);
-					return;
+					return null;
 				} //end if
 				//--
 				if(
@@ -213,7 +225,7 @@ final class AppCodeUnpack {
 				) {
 					self::raiseXXXError(400, ' # Invalid Log File: '.$logfile);
 					die(__METHOD__.' # Invalid Log File: '.$logfile);
-					return;
+					return null;
 				} //end if
 				//--
 				$the_app_log_dir = (string) SmartFileSysUtils::addPathTrailingSlash((string)$appid).'tmp/logs/';
@@ -222,13 +234,13 @@ final class AppCodeUnpack {
 				if(
 					SmartFileSysUtils::checkIfSafePath((string)$the_app_log_dir)
 					AND
-					SmartFileSystem::is_type_dir($the_app_log_dir)
+					SmartFileSystem::is_type_dir((string)$the_app_log_dir)
 					AND
 					SmartFileSysUtils::checkIfSafePath((string)$the_app_log_file)
 					AND
-					SmartFileSystem::is_type_file($the_app_log_file)
+					SmartFileSystem::is_type_file((string)$the_app_log_file)
 					AND
-					SmartFileSystem::have_access_read($the_app_log_file)
+					SmartFileSystem::have_access_read((string)$the_app_log_file)
 				) {
 					$log_found = true;
 				} //end if else
@@ -242,11 +254,11 @@ final class AppCodeUnpack {
 					readfile((string)$the_app_log_file);
 					echo "\n".'####### [ #END: LogFile: `'.$the_app_log_file.'` ] #######'."\n";
 					die(''); // stop here !
-					return;
+					return null;
 				} else {
 					self::raiseXXXError(400, ' # Log File Not Found: `'.$the_app_log_file.'`');
 					die(__METHOD__.' # Log File Not Found: `'.$the_app_log_file.'`');
-					return;
+					return null;
 				} //end if else
 				//--
 				break;
@@ -264,10 +276,13 @@ final class AppCodeUnpack {
 				} //end if
 				if(!$err) {
 					if(
-						(!isset($frm['appid'])) OR (!Smart::is_nscalar($frm['appid'])) OR
-						(!isset($frm['uuid'])) OR (!Smart::is_nscalar($frm['uuid'])) OR
-						(!isset($frm['list'])) OR (!Smart::is_nscalar($frm['list'])) OR
-						(!isset($frm['checksum'])) OR (!Smart::is_nscalar($frm['checksum']))
+						(!isset($frm['appid'])) 	OR (!Smart::is_nscalar($frm['appid']))
+						OR
+						(!isset($frm['uuid'])) 		OR (!Smart::is_nscalar($frm['uuid']))
+						OR
+						(!isset($frm['list'])) 		OR (!Smart::is_nscalar($frm['list']))
+						OR
+						(!isset($frm['checksum'])) 	OR (!Smart::is_nscalar($frm['checksum']))
 					) {
 						$err = true;
 						$status = 'Invalid Post Data';
@@ -275,7 +290,13 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if
 				if(!$err) {
-					if(((string)trim((string)$frm['appid']) == '') OR (strlen((string)$frm['appid']) > 25)) {
+					if(
+						((string)trim((string)$frm['appid']) == '')
+						OR
+						((int)strlen((string)$frm['appid']) < 4)
+						OR // {{{SYNC-APPCODEPACK-ID-SIZE}}}
+						((int)strlen((string)$frm['appid']) > 63)
+					) {
 						$err = true;
 						$status = 'AppID is mandatory';
 						$msg = 'AppID is empty or invalid';
@@ -303,7 +324,7 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if
 				if(!$err) {
-					if((string)SmartHashCrypto::sha512((string)$frm['list'].'#'.$frm['uuid']) !== (string)$frm['checksum']) {
+					if((string)SmartHashCrypto::sh3a512((string)$frm['list'].'#'.$frm['uuid'], true) !== (string)$frm['checksum']) {
 						$err = true;
 						$status = 'Data Checksum Error';
 						$msg = 'Data checksum is wrong !';
@@ -320,7 +341,7 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if
 				if(!$err) {
-					$fdata = (string) trim((string)SmartUtils::crypto_blowfish_decrypt((string)$fdata, (string)$frm['uuid']));
+					$fdata = (string) trim((string)SmartCipherCrypto::bf_decrypt((string)$fdata, (string)$frm['uuid']));
 					if((string)$fdata == '') {
 						$err = true;
 						$status = 'Empty Data';
@@ -346,7 +367,7 @@ final class AppCodeUnpack {
 								if((string)$val != '') {
 									if(SmartFileSysUtils::checkIfSafeFileOrDirName((string)$val)) {
 										if(
-											((string)substr($val, -4, 4) == '.log')
+											((string)substr((string)$val, -4, 4) == '.log')
 											AND
 											(strpos((string)$the_app_log_dir, '/tmp/logs/') !== false)
 											AND
@@ -376,7 +397,7 @@ final class AppCodeUnpack {
 				//--
 			case 'deploys-list':
 				//--
-				$deploys = array();
+				$deploys = [];
 				//--
 				if(
 					SmartFileSysUtils::checkIfSafePath((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER)
@@ -393,12 +414,12 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if
 				//--
-				$title = 'RELEASE MANAGER: DEPLOYMENTS List on this App Server';
+				$title = 'List: DEPLOYMENTS on this App Server';
 				$main = (string) SmartMarkersTemplating::render_template(
 					(string) (defined('APPCODEUNPACK_HTML_LIST_DEPLOYS_TPL') ? APPCODEUNPACK_HTML_LIST_DEPLOYS_TPL : '{#EMPTY-APPCODEUNPACK-LIST-DEPLOYS-TPL#}'),
 					[
 						'SCRIPT' 		=> (string) self::APPCODEUNPACK_SCRIPT,
-						'DEPLOYS-ARR' 	=> (array)  Smart::array_sort($deploys, 'rsort'),
+						'DEPLOYS-ARR' 	=> (array)  Smart::array_sort((array)$deploys, 'rsort'),
 					]
 				);
 				//--
@@ -422,9 +443,11 @@ final class AppCodeUnpack {
 				} //end if
 				if(!$err) {
 					if(
-						(!isset($frm['uuid'])) OR (!Smart::is_nscalar($frm['uuid'])) OR
-						(!isset($frm['list'])) OR (!Smart::is_nscalar($frm['list'])) OR
-						(!isset($frm['checksum'])) OR (!Smart::is_nscalar($frm['checksum']))
+						(!isset($frm['uuid'])) 		OR (!Smart::is_nscalar($frm['uuid']))
+						OR
+						(!isset($frm['list'])) 		OR (!Smart::is_nscalar($frm['list']))
+						OR
+						(!isset($frm['checksum'])) 	OR (!Smart::is_nscalar($frm['checksum']))
 					) {
 						$err = true;
 						$status = 'Invalid Post Data';
@@ -432,7 +455,7 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if
 				if(!$err) {
-					if((string)SmartHashCrypto::sha512((string)$frm['list'].'#'.$frm['uuid']) !== (string)$frm['checksum']) {
+					if((string)SmartHashCrypto::sh3a512((string)$frm['list'].'#'.$frm['uuid'], true) !== (string)$frm['checksum']) {
 						$err = true;
 						$status = 'Data Checksum Error';
 						$msg = 'Data checksum is wrong !';
@@ -449,7 +472,7 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if
 				if(!$err) {
-					$fdata = (string) trim((string)SmartUtils::crypto_blowfish_decrypt((string)$fdata, (string)$frm['uuid']));
+					$fdata = (string) trim((string)SmartCipherCrypto::tf_decrypt((string)$fdata, (string)$frm['uuid']));
 					if((string)$fdata == '') {
 						$err = true;
 						$status = 'Empty Data';
@@ -532,7 +555,7 @@ final class AppCodeUnpack {
 				$znetarch_att_fcsize = 0;
 				$znetarch_att_fname = '';
 				$znetarch_att_content = '';
-				$znetarch_att_sha512 = '';
+				$znetarch_att_sh2a512b64 = '';
 				//--
 				if(defined('APPCODEPACK_APP_ID')) {
 					$err = true;
@@ -548,7 +571,17 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if
 				if(!$err) {
-					if((!isset($frm['appid'])) OR (!Smart::is_nscalar($frm['appid'])) OR ((string)trim((string)$frm['appid']) == '') OR (strlen((string)$frm['appid']) > 25)) {
+					if(
+						(!isset($frm['appid']))
+						OR
+						(!Smart::is_nscalar($frm['appid']))
+						OR
+						((string)trim((string)$frm['appid']) == '')
+						OR
+						((int)strlen((string)$frm['appid']) < 4)
+						OR // {{{SYNC-APPCODEPACK-ID-SIZE}}}
+						((int)strlen((string)$frm['appid']) > 63)
+					) {
 						$err = true;
 						$status = 'AppID is mandatory';
 						$msg = 'AppID is empty or invalid';
@@ -571,7 +604,13 @@ final class AppCodeUnpack {
 					} //end if
 				} //end if
 				if(!$err) {
-					if((!isset($frm['appid-hash'])) OR (!Smart::is_nscalar($frm['appid-hash'])) OR ((int)strlen((string)trim((string)$frm['appid-hash'])) != 40)) {
+					if(
+						(!isset($frm['appid-hash']))
+						OR
+						(!Smart::is_nscalar($frm['appid-hash']))
+						OR
+						((int)strlen((string)trim((string)$frm['appid-hash'])) < 64) // HMAC B62 SHA384
+					) {
 						$err = true;
 						$status = 'AppID-Hash is mandatory';
 						$msg = 'Empty or Invalid AppID-Hash';
@@ -597,17 +636,30 @@ final class AppCodeUnpack {
 						$znetarch_att_fsize = (int) $tmp_att['filesize']; // fsize reported from disk, not safe
 						$znetarch_att_fname = (string) trim((string)$tmp_att['filename']);
 						$znetarch_att_content = (string) trim((string)$tmp_att['filecontent']);
-						$znetarch_att_sha512 = (string) SmartHashCrypto::sha512((string)$tmp_att['filecontent']);
+						$znetarch_att_sh2a512b64 = (string) SmartHashCrypto::sh3a512((string)$tmp_att['filecontent'], true);
 						$znetarch_att_fcsize = (int) strlen((string)$tmp_att['filecontent']); // this is safe, does not depened on what OS reports !
 						//--
 						if(
-							isset($frm['packsha512']) AND Smart::is_nscalar($frm['packsha512']) AND ((string)trim((string)$frm['packsha512']) != '') AND ((int)strlen((string)$frm['packsha512']) == (int)128) AND
-							isset($frm['packsize']) AND Smart::is_nscalar($frm['packsize']) AND ((string)trim((string)$frm['packsize']) != '') AND ((int)$frm['packsize'] > 0)
+							isset($frm['packsh3a512b64'])
+							AND
+							Smart::is_nscalar($frm['packsh3a512b64'])
+							AND
+							((string)trim((string)$frm['packsh3a512b64']) != '')
+							AND
+							((int)strlen((string)$frm['packsh3a512b64']) >= (int)88) // SH3A512 hex/b64
+							AND
+							isset($frm['packsize'])
+							AND
+							Smart::is_nscalar($frm['packsize'])
+							AND
+							((string)trim((string)$frm['packsize']) != '')
+							AND
+							((int)$frm['packsize'] > 0)
 						) {
-							if((string)$frm['packsha512'] !== (string)$znetarch_att_sha512) {
+							if((string)$frm['packsh3a512b64'] !== (string)$znetarch_att_sh2a512b64) {
 								$err = true;
 								$status = 'Uploaded Package Safety Checksum does not match !';
-								$msg = 'The uploaded content checksum: '.(string)$znetarch_att_sha512.' # the safety checksum: '.(string)$frm['packsha512'];
+								$msg = 'The uploaded content checksum: '.(string)$znetarch_att_sh2a512b64.' # the safety checksum: '.(string)$frm['packsh3a512b64'];
 							} elseif((int)$frm['packsize'] != (int)$znetarch_att_fcsize) {
 								$err = true;
 								$status = 'Uploaded Package Safety Size does not match !';
@@ -701,10 +753,10 @@ final class AppCodeUnpack {
 				//--
 				$crr_url = (string) SmartUtils::get_server_current_url().SmartUtils::get_server_current_script();
 				//--
-				$msg .= "\n".'FileSize: '.SmartUtils::pretty_print_bytes((int)$znetarch_att_fsize, 2, ' ');
+				$msg .= "\n".'FileSize: '.SmartUtils::pretty_print_bytes((int)$znetarch_att_fsize, 2);
 				if(isset($frm['client']) AND ((string)$frm['client'] == 'appcodepack')) {
 					$msg .= "\n".'FileSize-Bytes: `'.(int)$znetarch_att_fcsize.'`'; // safe size
-					$msg .= "\n".'FileContent-Checksum: `'.$znetarch_att_sha512.'`';
+					$msg .= "\n".'FileContent-Checksum: `'.$znetarch_att_sh2a512b64.'`';
 				} //end if
 				$msg .= "\n".'FileName: `'.$znetarch_att_fname.'`';
 				$msg .= "\n".'AppID: `'.$frm['appid'].'`';
@@ -720,23 +772,31 @@ final class AppCodeUnpack {
 					$a_err = '';
 					//--
 					if(
-						isset($frm['appcodeunpack']['#']) AND Smart::is_nscalar($frm['appcodeunpack']['#']) AND ((string)trim((string)$frm['appcodeunpack']['#']) != '') AND
-						isset($frm['appcodeunpack']['=']) AND Smart::is_nscalar($frm['appcodeunpack']['=']) AND ((string)trim((string)$frm['appcodeunpack']['=']) != '') AND
-						isset($frm['appcodeunpack']['@']) AND Smart::is_nscalar($frm['appcodeunpack']['@']) AND ((string)trim((string)$frm['appcodeunpack']['@']) != '') AND
+						isset($frm['appcodeunpack']['#']) AND Smart::is_nscalar($frm['appcodeunpack']['#']) AND ((string)trim((string)$frm['appcodeunpack']['#']) != '')
+						AND
+						isset($frm['appcodeunpack']['=']) AND Smart::is_nscalar($frm['appcodeunpack']['=']) AND ((string)trim((string)$frm['appcodeunpack']['=']) != '')
+						AND
+						isset($frm['appcodeunpack']['@']) AND Smart::is_nscalar($frm['appcodeunpack']['@']) AND ((string)trim((string)$frm['appcodeunpack']['@']) != '')
+						AND
 						isset($frm['appcodeunpack']['!']) AND Smart::is_nscalar($frm['appcodeunpack']['!']) AND ((string)trim((string)$frm['appcodeunpack']['!']) != '')
 					) {
-						$tmp_upd_ctx = (string) SmartHashCrypto::sha512((string)APPCODEPACK_DEPLOY_SECRET.'#'.$frm['appcodeunpack']['#'].'#'.$frm['appcodeunpack']['@'].'#'.((defined('SMART_FRAMEWORK_SECURITY_KEY') && ((string)SMART_FRAMEWORK_SECURITY_KEY != '')) ? SMART_FRAMEWORK_SECURITY_KEY : Smart::uuid_34()));
+						$tmp_upd_ctx = (string) SmartHashCrypto::hmac(
+							'sha3-384',
+							(string) APPCODEPACK_DEPLOY_SECRET.'#'.((defined('SMART_FRAMEWORK_SECURITY_KEY') && ((string)SMART_FRAMEWORK_SECURITY_KEY != '')) ? SMART_FRAMEWORK_SECURITY_KEY : Smart::uuid_34()),
+							(string)$frm['appcodeunpack']['#'].chr(0).$frm['appcodeunpack']['@'],
+							true
+						);
 						if((string)$tmp_upd_ctx !== (string)$frm['appcodeunpack']['!']) {
 							$a_err = 'AppCodeUnpack Update: Invalid Checksum';
 						} else {
 							$tmp_upd_ctx = null;
-							if((string)$frm['appcodeunpack']['@'] !== (string)SmartHashCrypto::sha256((string)$frm['appcodeunpack']['='])) {
+							if((string)$frm['appcodeunpack']['@'] !== (string)SmartHashCrypto::sh3a384((string)$frm['appcodeunpack']['='], true)) {
 								$a_err = 'AppCodeUnpack Update: Invalid Data Checksum';
 							} else {
-								$tmp_upd_ctx = (string) SmartUtils::crypto_blowfish_decrypt((string)$frm['appcodeunpack']['='], (string)APPCODEPACK_DEPLOY_SECRET);
+								$tmp_upd_ctx = (string) SmartCipherCrypto::bf_decrypt((string)$frm['appcodeunpack']['='], (string)APPCODEPACK_DEPLOY_SECRET);
 								if(
 									((string)trim((string)$tmp_upd_ctx) != '') AND
-									((string)$frm['appcodeunpack']['#'] === (string)SmartHashCrypto::sha512((string)$tmp_upd_ctx))
+									((string)$frm['appcodeunpack']['#'] === (string)SmartHashCrypto::sh3a512((string)$tmp_upd_ctx, true))
 								) {
 									SmartFileSystem::write((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php', (string)$tmp_upd_ctx);
 									if((string)SmartFileSystem::read((string)AppNetUnPackager::APP_NET_UNPACKAGER_FOLDER.'appcodeunpack.php') === (string)$tmp_upd_ctx) {
@@ -777,7 +837,7 @@ final class AppCodeUnpack {
 			case '':
 				//--
 				$loader = false;
-				$title = 'RELEASE MANAGER: DEPLOY a new AppCodePack Archive on this App Server';
+				$title = 'DEPLOY: Upload a new AppCodePack Archive on this App Server';
 				$main = (string) SmartMarkersTemplating::render_template(
 					(string) (defined('APPCODEUNPACK_HTML_DEPLOY') ? APPCODEUNPACK_HTML_DEPLOY : '{#EMPTY-APPCODEUNPACK-DEPLOY-TPL#}'),
 					[
@@ -796,7 +856,7 @@ final class AppCodeUnpack {
 				//--
 				self::raiseXXXError(404, 'Action not implemented: `'.$action.'`');
 				//--
-				return;
+				return null;
 				//--
 		} //end if
 		//--
@@ -808,7 +868,7 @@ final class AppCodeUnpack {
 	//======= [PRIVATES]
 
 
-	private static function initUnpack() {
+	private static function initUnpack() : string {
 		//--
 		if(defined('APPCODEUNPACK_INIT_DONE')) { // prevent run this twice
 			self::raiseXXXError(500, ' # Init Unpack Already Completed');
@@ -938,7 +998,7 @@ final class AppCodeUnpack {
 			Smart::raise_error(__METHOD__.' # The constant `APP_AUTH_ADMIN_PLAIN_PASSWORD` was already defined and should not !');
 			die('ERR:'.__METHOD__.': APP_AUTH_ADMIN_PLAIN_PASSWORD already defined');
 		} //end if
-		define('APP_AUTH_ADMIN_PLAIN_PASSWORD', (string)SmartUtils::crypto_blowfish_decrypt((string)APP_AUTH_ADMIN_PASSWORD, (string)APPCODEPACK_DEPLOY_SECRET));
+		define('APP_AUTH_ADMIN_PLAIN_PASSWORD', (string)SmartCipherCrypto::bf_decrypt((string)APP_AUTH_ADMIN_PASSWORD, (string)APPCODEPACK_DEPLOY_SECRET));
 		if(SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
 			(string) \APP_AUTH_ADMIN_PLAIN_PASSWORD,
 			true // check for complexity
@@ -952,7 +1012,7 @@ final class AppCodeUnpack {
 	} //END FUNCTION
 
 
-	private static function prompt401Auth(?string $username, ?string $password) {
+	private static function prompt401Auth(?string $username, ?string $password) : void {
 		//--
 		$logout = (string) trim((string)SmartFrameworkRegistry::getRequestVar('logout', '', 'string'));
 		//--
@@ -962,15 +1022,31 @@ final class AppCodeUnpack {
 		// {{{SYNC-AUTH-TOKEN-SWT}}}
 		//--
 		if(
-			((string)$logout == '') AND
-			isset($_SERVER['PHP_AUTH_USER']) AND isset($_SERVER['PHP_AUTH_PW']) AND
-			((string)$username != '') AND ((string)$password != '') AND
-			((string)trim((string)$_SERVER['PHP_AUTH_USER']) != '') AND ((string)trim((string)$_SERVER['PHP_AUTH_PW']) != '') AND
+			((string)$logout == '')
+			AND
+			isset($_SERVER['PHP_AUTH_USER'])
+			AND
+			isset($_SERVER['PHP_AUTH_PW'])
+			AND
+			((string)$username != '') AND ((string)$password != '')
+			AND
+			((string)trim((string)$_SERVER['PHP_AUTH_USER']) != '') AND ((string)trim((string)$_SERVER['PHP_AUTH_PW']) != '')
+			AND
 			((string)$_SERVER['PHP_AUTH_USER'] === (string)$username) AND ((string)$_SERVER['PHP_AUTH_PW'] === (string)$password)
+			AND
+			(SmartAuth::validate_auth_username(
+				(string) $_SERVER['PHP_AUTH_USER'],
+				true // check for reasonable length, as min 5 chars
+			) === true)
+			AND
+			(SmartAuth::validate_auth_password(
+				(string) $_SERVER['PHP_AUTH_PW'],
+				true // check for complexity + length, as min 8 chars
+			) === true)
 		) {
 			//-- OK, logged in
 			$privileges = (array) Smart::list_to_array(
-				(string) '<superadmin>,<admin>',
+				(string) \SmartAuth::DEFAULT_PRIVILEGES, // {{{SYNC-SMART-DEFAULT-PRIVILEGES}}}
 				true
 			);
 			$priv_keys = '';
@@ -1036,7 +1112,7 @@ final class AppCodeUnpack {
 	} //END FUNCTION
 
 
-	private static function jsAjaxReplyToHtmlForm(?string $y_status, ?string $y_title, ?string $y_message) {
+	private static function jsAjaxReplyToHtmlForm(?string $y_status, ?string $y_title, ?string $y_message) : string {
 		//--
 		if((string)$y_status !== 'OK') {
 			$y_status = 'ERROR';
@@ -1064,9 +1140,9 @@ final class AppCodeUnpack {
 	} //END FUNCTION
 
 
-	private static function raiseXXXError(int $errcode, ?string $msg_txt, ?string $extmsg_txt='', ?string $ext_html='') {
+	private static function raiseXXXError(int $errcode, ?string $msg_txt, ?string $extmsg_txt='', ?string $ext_html='') : void {
 		//--
-		if(!in_array((int)$errcode, [400, 401, 403, 404, 429, 500, 502, 503, 504])) {
+		if(!in_array((int)$errcode, [ 400, 401, 403, 404, 429, 500, 502, 503, 504 ])) {
 			$errcode = 500;
 		} //end if
 		//--
@@ -1113,7 +1189,7 @@ final class AppCodeUnpack {
 	} //END FUNCTION
 
 
-	private static function renderErrorTPL(?string $title, ?string $msg_txt, ?string $extmsg_txt='', ?string $ext_html='') {
+	private static function renderErrorTPL(?string $title, ?string $msg_txt, ?string $extmsg_txt='', ?string $ext_html='') : string {
 		//--
 		return (string) SmartMarkersTemplating::render_template(
 			(string) (defined('APPCODEUNPACK_HTML_ERRTPL') ? APPCODEUNPACK_HTML_ERRTPL : '{#EMPTY-APPCODEUNPACK-ERRTPL#}'),
@@ -1134,7 +1210,7 @@ final class AppCodeUnpack {
 	} //END FUNCTION
 
 
-	private static function renderTPL(?string $title, ?string $main, bool $loader=false) {
+	private static function renderTPL(?string $title, ?string $main, bool $loader=false) : string {
 		//--
 		$name_prefix = 'AppRelease';
 		$name_suffix = 'CodeUnPack';
@@ -1145,7 +1221,7 @@ final class AppCodeUnpack {
 			[
 				'REALPATH-CRR' 			=> (string) rtrim((string)Smart::real_path('./'), '/').'/{%-APP-ID-%}/',
 				'SCRIPT' 				=> (string) self::APPCODEUNPACK_SCRIPT,
-				'AUTH-USER-ID' 			=> (string) SmartAuth::get_auth_username(),
+				'AUTH-USER-ID' 			=> (string) SmartAuth::get_auth_id(),
 				'AUTH-ENF-HTTPS' 		=> (string) (((!defined('APP_AUTH_ADMIN_ENFORCE_HTTPS')) OR (APP_AUTH_ADMIN_ENFORCE_HTTPS !== false)) ? 'yes' : 'no'),
 				'AUTH-IP-LIST' 			=> (string) (defined('SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS') ? SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS : ''),
 				'APP-IDS-LST' 			=> (string) (defined('APPCODEPACK_DEPLOY_APPLIST') ? APPCODEPACK_DEPLOY_APPLIST : ''),
@@ -1200,7 +1276,7 @@ final class AppCodeUnpack {
 	} //END FUNCTION
 
 
-	private static function outputSafeHttpHeader($value) {
+	private static function outputSafeHttpHeader(?string $value) : void {
 		//--
 		$original_value = (string) $value;
 		//--
@@ -1220,7 +1296,7 @@ final class AppCodeUnpack {
 	} //END FUNCTION
 
 
-	private static function runUpgradeScript(string $restoreroot, string $the_last_unpack_logfile) {
+	private static function runUpgradeScript(string $restoreroot, string $the_last_unpack_logfile) : string {
 		//--
 		// RUN THE AFTER DEPLOYMENT UPGRADE SCRIPT
 		//--
@@ -1276,7 +1352,7 @@ final class AppCodeUnpack {
 	} //END FUNCTION
 
 
-	public static function releaseMaintenanceFile() { // MUST BE PUBLIC AS THE APPCODE UPGRADE SCRIPT CAN CALL THIS
+	public static function releaseMaintenanceFile() : string { // MUST BE PUBLIC AS THE APPCODE UPGRADE SCRIPT CAN CALL THIS
 		//--
 		// RELEASE THE MAINTENANCE FILE AFTER UNPACK + UPGRADE
 		//--

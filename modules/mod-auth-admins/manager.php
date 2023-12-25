@@ -20,9 +20,9 @@ define('SMART_APP_MODULE_AUTH', true);
  * Admin Controller
  * @ignore
  */
-class SmartAppAdminController extends SmartAbstractAppController {
+final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20231020
+	// v.20231119
 
 	// TODO:
 	// 	* Edit: support to bind to a specific IP address list, for extra security
@@ -45,6 +45,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 		//-- {{{SYNC-AUTH-ADMINS-PRE-CHECKS}}}
 		if(SmartAuth::check_login() !== true) {
 			$this->PageViewSetCfg('error', 'Auth Admins Manager Requires Authentication ! ...');
+			return 403;
+		} //end if
+		//--
+		if(!SmartEnvironment::isAdminArea()) { // allow: adm/tsk ; but this controller does not extends in a task controller
+			$this->PageViewSetCfg('error', 'Auth Admins Manager is allowed to run under `Admin` area only ! ...');
 			return 403;
 		} //end if
 		//--
@@ -106,14 +111,14 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$message = 'No Operation ...';
 				//--
 				$frm 			= (array)  $this->RequestVarGet('frm', array(), 'array');
-				$frm['id'] 		= (string) SmartAuth::get_auth_username(); // hardcoded
+				$frm['id'] 		= (string) SmartAuth::get_auth_id(); // hardcoded
 				$frm['name']	= (string) trim((string)($frm['name'] ?? null));
 				$frm['priv'] 	= (string) trim((string)($frm['priv'] ?? null));
 				$frm['exp'] 	= (string) trim((string)($frm['exp'] ?? null));
 				//--
 				$message = '';
 				if(
-					((string)$frm['id'] != (string)SmartAuth::get_auth_username()) // not the current logged in user
+					((string)$frm['id'] != (string)SmartAuth::get_auth_id()) // not the current logged in user
 				) { // PRIVILEGES
 					$message = 'You are not authorized to create this new token';
 				} elseif((string)trim((string)$frm['name']) == '') {
@@ -162,7 +167,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						return 500;
 					} //end try catch
 					$wr = (int) $model->insertToken([
-						'id' 			=> (string) SmartAuth::get_auth_username(),
+						'id' 			=> (string) SmartAuth::get_auth_id(),
 						'active' 		=> (int)    1,
 						'expires' 		=> (int)    $expires,
 						'token_priv' 	=> (string) $frm['priv'],
@@ -222,7 +227,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$message = '';
 				if(
-					((string)$frm['id'] != (string)SmartAuth::get_auth_username()) // not the current logged in user
+					((string)$frm['id'] != (string)SmartAuth::get_auth_id()) // not the current logged in user
 				) { // PRIVILEGES
 					$message = 'You are not authorized to delete this token';
 				} elseif((string)trim((string)$frm['id']) == '') {
@@ -303,7 +308,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$message = '';
 				if(
-					((string)$frm['id'] != (string)SmartAuth::get_auth_username()) // not the current logged in user
+					((string)$frm['id'] != (string)SmartAuth::get_auth_id()) // not the current logged in user
 				) { // PRIVILEGES
 					$message = 'You are not authorized to change status for this token';
 				} elseif((string)trim((string)$frm['id']) == '') {
@@ -395,7 +400,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					//--
 				} //end if
 				//--
-				$have_access = (bool) ((string)$id == (string)SmartAuth::get_auth_username());
+				$have_access = (bool) ((string)$id == (string)SmartAuth::get_auth_id());
 				$theData = [];
 				$maxTokens = 0;
 				//--
@@ -413,11 +418,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					$tokens = (array) $model->getTokensListById((string)$id);
 					for($i=0; $i<Smart::array_size($tokens); $i++) {
 						$testgk = (array) $model->getTokenByIdAndHash(
-							(string) SmartAuth::get_auth_username(),
+							(string) SmartAuth::get_auth_id(),
 							(string) ($tokens[$i]['token_hash'] ?? null)
 						);
 						if(
-							((string)($testgk['id'] ?? null) === (string)SmartAuth::get_auth_username())
+							((string)($testgk['id'] ?? null) === (string)SmartAuth::get_auth_id())
 							AND
 							((string)($testgk['id'] ?? null) === (string)($tokens[$i]['id'] ?? null))
 						) {
@@ -428,23 +433,23 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								(string) ($tokens[$i]['token_data'] ?? null)
 							);
 							$theData[] = [
-								'#' 				=> (string) '',
-								'id' 				=> (string) ($tokens[$i]['id'] ?? null),
-								'active' 			=> (int) 	($tokens[$i]['active'] ?? null),
-								'expires' 			=> (string) (($tokens[$i]['expires'] ?? null) ? date('Y-m-d H:i:s O', (int)($tokens[$i]['expires'] ?? null)) : ''),
-								'token_hash' 		=> (string) ($tokens[$i]['token_hash'] ?? null),
-								'token_name' 		=> (string) ($tokens[$i]['token_name'] ?? null),
-								'created' 			=> (string) date('Y-m-d H:i:s O', (int)($tokens[$i]['created'] ?? null)),
-								'c-time' 			=> (string) ($tokens[$i]['created'] ?? null),
-								'is-invalid' 		=> (int)    ($arrValid['ernum'] ?? null),
-								'err-invalid' 		=> (string) ($arrValid['error'] ?? null),
-								'exp-time' 			=> (string) ($arrValid['expires'] ?? null),
-								'restr-priv-lst' 	=> (string) ($arrValid['restr-priv-lst'] ?? null),
-								'token-key' 		=> (string) Smart::base_from_hex_convert((string)bin2hex((string)($arrValid['key'] ?? null)), 92),
-								'token-seed' 		=> (string) Smart::base_from_hex_convert((string)bin2hex((string)($arrValid['seed'] ?? null)), 85),
+								'#' 			=> (string) '',
+								'id' 			=> (string) ($tokens[$i]['id'] ?? null),
+								'active' 		=> (int) 	($tokens[$i]['active'] ?? null),
+								'expires' 		=> (string) (($tokens[$i]['expires'] ?? null) ? date('Y-m-d H:i:s O', (int)($tokens[$i]['expires'] ?? null)) : ''),
+								'token_hash' 	=> (string) ($tokens[$i]['token_hash'] ?? null),
+								'token_name' 	=> (string) ($tokens[$i]['token_name'] ?? null),
+								'created' 		=> (string) date('Y-m-d H:i:s O', (int)($tokens[$i]['created'] ?? null)),
+								'c-time' 		=> (string) ($tokens[$i]['created'] ?? null),
+								'is-invalid' 	=> (int)    ($arrValid['ernum'] ?? null),
+								'err-invalid' 	=> (string) ($arrValid['error'] ?? null),
+								'exp-time' 		=> (string) ($arrValid['expires'] ?? null),
+								'restr-priv' 	=> (string) str_replace(' ', '', (string)Smart::array_to_list((array)($arrValid['restr-priv'] ?? null))),
+								'token-key' 	=> (string) Smart::base_from_hex_convert((string)bin2hex((string)($arrValid['key'] ?? null)), 92),
+								'token-seed' 	=> (string) Smart::base_from_hex_convert((string)bin2hex((string)($arrValid['seed'] ?? null)), 85),
 							];
 						} else {
-							Smart::log_warning(__METHOD__.' # Failed to get token by: ID=`'.SmartAuth::get_auth_username().'` ; Hash=`'.$tokens[$i]['token_hash'].'`');
+							Smart::log_warning(__METHOD__.' # Failed to get token by: ID=`'.SmartAuth::get_auth_id().'` ; Hash=`'.$tokens[$i]['token_hash'].'`');
 						} //end if
 					} //end for
 					//--
@@ -457,9 +462,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'main' => (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'acc-manage-tokens.mtpl.htm',
 						[
-							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=',
+							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=',
 							'HAVE-ACCESS' 		=> (string) (($have_access === true) ? 'yes' : 'no'),
-							'CRR-ID' 			=> (string) SmartAuth::get_auth_username(),
+							'CRR-ID' 			=> (string) SmartAuth::get_auth_id(),
 							'ID' 				=> (string) $id,
 							'THE-DATA' 			=> (string) Smart::json_encode((array)$theData),
 							'MAX-TOKENS' 		=> (int)    $maxTokens,
@@ -489,9 +494,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if
 				//--
 				if(
-					(SmartAuth::test_login_privilege('superadmin') !== true) // not superadmin
+					(SmartAuth::test_login_privilege('super-admin') !== true) // not superadmin
 					AND // and
-					((string)$id != (string)SmartAuth::get_auth_username()) // not the current logged in user
+					((string)$id != (string)SmartAuth::get_auth_id()) // not the current logged in user
 				) { // PRIVILEGES
 					//--
 					$this->PageViewSetVars([
@@ -525,8 +530,8 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'main' => (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'acc-change-pass.mtpl.htm',
 						[
-							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=',
-							'CRR-ID' 			=> (string) SmartAuth::get_auth_username(),
+							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=',
+							'CRR-ID' 			=> (string) SmartAuth::get_auth_id(),
 							'ID' 				=> (string) ($select_user['id'] ?? null),
 							'LEN-KEYS' 			=> (int)    strlen((string)($select_user['keys'] ?? null)),
 						]
@@ -549,9 +554,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$message = '';
 				if(
-					(SmartAuth::test_login_privilege('superadmin') !== true) // not superadmin
+					(SmartAuth::test_login_privilege('super-admin') !== true) // not superadmin
 					AND // and
-					((string)$frm['id'] != (string)SmartAuth::get_auth_username()) // not the current logged in user
+					((string)$frm['id'] != (string)SmartAuth::get_auth_id()) // not the current logged in user
 				) { // PRIVILEGES
 					$message = 'You are not authorized to use this area !';
 				} elseif((string)trim((string)$frm['id']) == '') {
@@ -591,13 +596,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if else
 				//--
 				if((string)$status == 'OK') {
-					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=close-modal'; // redirect URL (just on success)
+					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=close-modal'; // redirect URL (just on success)
 				} else {
 					$redirect = '';
 				} //end if else
 				//--
 				$jsevcode = '';
-				if((string)$frm['id'] == (string)SmartAuth::get_auth_username()) { // if change password for current account must handle different
+				if((string)$frm['id'] == (string)SmartAuth::get_auth_id()) { // if change password for current account must handle different
 					$redirect = '';
 					$jsevcode = 'setTimeout(() => { smartJ$Browser.RefreshParent(); smartJ$Browser.CloseDelayedModalPopUp(); }, 3750);';
 				} //end if
@@ -638,9 +643,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if
 				//--
 				if(
-					(SmartAuth::test_login_privilege('superadmin') !== true) // not superadmin
+					(SmartAuth::test_login_privilege('super-admin') !== true) // not superadmin
 					AND // and
-					((string)$id != (string)SmartAuth::get_auth_username()) // not the current logged in user
+					((string)$id != (string)SmartAuth::get_auth_id()) // not the current logged in user
 				) {
 					//--
 					$this->PageViewSetVars([
@@ -679,13 +684,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$user_num_tokens = 0;
 				$user_max_tokens = 0;
 				if(
-					(SmartAuth::test_login_privilege('superadmin') === true)
+					(SmartAuth::test_login_privilege('super-admin') === true)
 					OR
-					((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_username())
+					((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_id())
 				) { // do not try to decrypt priv keys of another user (except superadmin) because are supposed to only be decrypted by the user itself only
 					//--
 					$user_lkeys = (int) strlen(((string)($select_user['keys'] ?? null)));
-					if((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_username()) {
+					if((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_id()) {
 						$user_pkeys = (string) $model->decryptPrivKey((string)($select_user['keys'] ?? null)); // {{{SYNC-ADM-AUTH-KEYS}}}
 					} //end if
 					if(defined('SMART_AUTH_2FA_ENABLED') && (SMART_AUTH_2FA_ENABLED === true)) {
@@ -693,7 +698,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						$user_2faurl = (string) $model->get2FAUrl((string)$user_2fakey, (string)($select_user['id'] ?? null));
 						$user_2faqrcode = (string) $model->get2FASvgBarCode((string)$user_2fakey, (string)($select_user['id'] ?? null));
 						if(SmartEnvironment::ifDevMode()) {
-							$user_2fatktest = (string) $model->get2FAGetToken((string)$user_2fakey);
+							$user_2fatktest = (string) $model->get2FAPinToken((string)$user_2fakey);
 						} //end if
 					} //end if
 					if(defined('SMART_AUTH_TOKENS_ENABLED') && (SMART_AUTH_TOKENS_ENABLED === true)) {
@@ -705,7 +710,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$model = null; // close connection
 				//--
-				$all_privs = '<superadmin>,<admin>, '.APP_AUTH_PRIVILEGES;
+				$all_privs = (string) \SmartAuth::DEFAULT_PRIVILEGES.','.APP_AUTH_PRIVILEGES; // {{{SYNC-AUTH-DEFAULT-ADM-SUPER-PRIVS}}}
 				//--
 				if(SmartAuth::test_login_restriction('def-account', (string)($select_user['restrict'] ?? null)) === true) { // {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-AUTH-RESTRICTIONS}}}
 					$form_edit_priv = '<b>[Restricted / Default Account(s) can not modify privileges]</b><br>'.\SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi(
@@ -714,7 +719,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						'list',
 						(array) SmartAuth::safe_arr_privileges_or_restrictions((string)($select_user['priv'] ?? null)) // array with all values
 					);;
-				} elseif((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_username()) {
+				} elseif((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_id()) {
 					$form_edit_priv = '<b>[Your own privileges can not be changed]</b><br>'.\SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi(
 						'priv-list', // html element ID
 						(string) ($select_user['priv'] ?? null), // list of selected values
@@ -760,15 +765,15 @@ class SmartAppAdminController extends SmartAbstractAppController {
 						(string) $this->ControllerGetParam('module-view-path').'acc-form-view-edit.mtpl.htm',
 						[
 							'VIEW-ONLY' 		=> (string) (((string)$viewonly == 'yes') ? 'yes' : 'no'),
-							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=',
-							'CRR-ID' 			=> (string) SmartAuth::get_auth_username(),
+							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=',
+							'CRR-ID' 			=> (string) SmartAuth::get_auth_id(),
 							'ID' 				=> (string) ($select_user['id'] ?? null),
 							'EMAIL' 			=> (string) ($select_user['email'] ?? null),
 							'FIRST-NAME' 		=> (string) ($select_user['name_f'] ?? null),
 							'LAST-NAME' 		=> (string) ($select_user['name_l'] ?? null),
-							'IS-SUPER-ADM' 		=> (string) ((SmartAuth::test_login_privilege('superadmin') === true) ? 'yes' : 'no'),
-							'SELF-FA2' 			=> (string) (((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_username() || (SmartAuth::test_login_privilege('superadmin') === true)) ? 'yes' : 'no'),
-							'SELF-KEYS' 		=> (string) (((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_username()) ? 'yes' : 'no'),
+							'IS-SUPER-ADM' 		=> (string) ((SmartAuth::test_login_privilege('super-admin') === true) ? 'yes' : 'no'),
+							'SELF-FA2' 			=> (string) (((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_id() || (SmartAuth::test_login_privilege('super-admin') === true)) ? 'yes' : 'no'),
+							'SELF-KEYS' 		=> (string) (((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_id()) ? 'yes' : 'no'),
 							'LEN-KEYS' 			=> (int)    $user_lkeys,
 							'KEYS' 				=> (string) $user_pkeys, // {{{SYNC-ADM-AUTH-KEYS}}}
 							'MAX-TOKENS' 		=> (int)    $user_max_tokens,
@@ -806,9 +811,9 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$message = '';
 				if(
-					(SmartAuth::test_login_privilege('superadmin') === true) // is superadmin
+					(SmartAuth::test_login_privilege('super-admin') === true) // is superadmin
 					OR
-					((string)$frm['id'] == (string)SmartAuth::get_auth_username()) // or is the same logged in user
+					((string)$frm['id'] == (string)SmartAuth::get_auth_id()) // or is the same logged in user
 				) { // PRIVILEGES
 					//--
 					if((string)$frm['id'] == '') {
@@ -871,7 +876,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if else
 				//--
 				if($status == 'OK') {
-					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=close-modal'; // redirect URL (just on success)
+					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=close-modal'; // redirect URL (just on success)
 				} else {
 					$redirect = '';
 				} //end if else
@@ -902,7 +907,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$status = 'ERROR';
 				$message = '???';
 				//--
-				if(SmartAuth::test_login_privilege('superadmin') !== true) { // PRIVILEGES
+				if(SmartAuth::test_login_privilege('super-admin') !== true) { // PRIVILEGES
 					//--
 					$message = 'Only Super-Admins are authorized to use this feature !';
 					//--
@@ -924,7 +929,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 								//--
 								$message = 'This is a Restricted or Default account and cannot be modified';
 								//--
-							} elseif((string)$id == (string)SmartAuth::get_auth_username()) {
+							} elseif((string)$id == (string)SmartAuth::get_auth_id()) {
 								//--
 								$message = 'Current account cannot be modified';
 								//--
@@ -985,7 +990,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					//--
 				} //end if
 				//--
-				if(SmartAuth::test_login_privilege('superadmin') !== true) {
+				if(SmartAuth::test_login_privilege('super-admin') !== true) {
 					//--
 					$this->PageViewSetVars([
 						'title' => $title,
@@ -1019,7 +1024,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'main' => (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'acc-confirm-delete.mtpl.htm',
 						[
-							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=',
+							'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=',
 							'ID' 				=> (string) ($select_user['id'] ?? null)
 						]
 					)
@@ -1039,12 +1044,12 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$message = '';
 				if(
-					(SmartAuth::test_login_privilege('superadmin') !== true) // not superadmin
+					(SmartAuth::test_login_privilege('super-admin') !== true) // not superadmin
 				) { // PRIVILEGES
 					$message = 'You are not authorized to use this area !';
 				} elseif((string)trim((string)$frm['id']) == '') {
 					$message = 'INVALID ID (empty)';
-				} elseif((string)$frm['id'] == (string)SmartAuth::get_auth_username()) {
+				} elseif((string)$frm['id'] == (string)SmartAuth::get_auth_id()) {
 					$message = 'You can not delete your own account !';
 				} //end if else
 				//--
@@ -1083,13 +1088,13 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if else
 				//--
 				if((string)$status == 'OK') {
-					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=close-modal'; // redirect URL (just on success)
+					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=close-modal'; // redirect URL (just on success)
 				} else {
 					$redirect = '';
 				} //end if else
 				//--
 				$jsevcode = '';
-				if((string)$frm['id'] == (string)SmartAuth::get_auth_username()) { // if change password for current account must handle different
+				if((string)$frm['id'] == (string)SmartAuth::get_auth_id()) { // if change password for current account must handle different
 					$redirect = '';
 					$jsevcode = 'setTimeout(() => { smartJ$Browser.RefreshParent(); smartJ$Browser.CloseDelayedModalPopUp(); }, 3750);';
 				} //end if
@@ -1117,7 +1122,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$title = 'Auth.Admins Accounts - Add New Account';
 				//--
-				if(SmartAuth::test_login_privilege('superadmin') !== true) { // PRIVILEGES
+				if(SmartAuth::test_login_privilege('super-admin') !== true) { // PRIVILEGES
 					//--
 					$this->PageViewSetVars([
 						'title' => (string) $title,
@@ -1132,7 +1137,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					'main' => (string) SmartMarkersTemplating::render_file_template(
 						(string) $this->ControllerGetParam('module-view-path').'acc-form-add.mtpl.htm',
 						[
-							'ACTIONS-URL' => (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=new-add'
+							'ACTIONS-URL' => (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=new-add'
 						]
 					)
 				]);
@@ -1152,7 +1157,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$frm['email'] 	= (string) trim((string)($frm['email'] ?? null));
 				//--
 				$message = '';
-				if(SmartAuth::test_login_privilege('superadmin') !== true) { // PRIVILEGES
+				if(SmartAuth::test_login_privilege('super-admin') !== true) { // PRIVILEGES
 					$message = 'You are not authorized to use this area !';
 				} elseif(SmartAuth::validate_auth_username((string)$frm['id'], true) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
 					$message = 'Invalid Username ID: Too short or too long. Must use only this pattern: a-z 0-9 .';
@@ -1205,7 +1210,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				} //end if else
 				//--
 				if($status == 'OK') {
-					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=close-modal'; // redirect URL (just on success)
+					$redirect = (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=close-modal'; // redirect URL (just on success)
 				} else {
 					$redirect = '';
 				} //end if else
@@ -1237,11 +1242,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$strict_type = false;
 				if(
-					(SmartAuth::test_login_privilege('superadmin') !== true)
+					(SmartAuth::test_login_privilege('super-admin') !== true)
 					AND
 					(SmartAuth::test_login_privilege('admin') !== true)
 				) { // restrict list to it's own account only
-					$id = (string) SmartAuth::get_auth_username();
+					$id = (string) SmartAuth::get_auth_id();
 					$strict_type = true;
 				} //end if
 				//-- output var(s)
@@ -1287,11 +1292,11 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				$id = '';
 				$strict_type = false;
 				if(
-					(SmartAuth::test_login_privilege('superadmin') !== true)
+					(SmartAuth::test_login_privilege('super-admin') !== true)
 					AND
 					(SmartAuth::test_login_privilege('admin') !== true)
 				) { // restrict list to it's own account only
-					$id = (string) SmartAuth::get_auth_username();
+					$id = (string) SmartAuth::get_auth_id();
 					$strict_type = true;
 				} //end if
 				//--
@@ -1304,12 +1309,12 @@ class SmartAppAdminController extends SmartAbstractAppController {
 					[
 						'RESTRICTED-ID' 	=> (string) $id,
 						'IS-RESTRICTED' 	=> (string) (!!$strict_type ? 'yes' : false),
-						'IS-SUPERADM' 		=> (string) ((SmartAuth::test_login_privilege('superadmin') === true) ? 'yes' : 'no'),
+						'IS-SUPERADM' 		=> (string) ((SmartAuth::test_login_privilege('super-admin') === true) ? 'yes' : 'no'),
 						'CURRENT-SCRIPT' 	=> (string) $this->ControllerGetParam('url-script'),
-						'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.$this->ControllerGetParam('controller').'&action=',
+						'ACTIONS-URL' 		=> (string) $this->ControllerGetParam('url-script').'?page='.Smart::escape_url((string)$this->ControllerGetParam('controller')).'&action=',
 						'RELEASE-HASH' 		=> (string) $this->ControllerGetParam('release-hash'),
 						'AREAS' 			=> (array)  $areas,
-						'CRR-ID' 			=> (string) SmartAuth::get_auth_username(),
+						'CRR-ID' 			=> (string) SmartAuth::get_auth_id(),
 					]
 				);
 				//--
@@ -1327,7 +1332,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 			default: // other invalid actions
 				//--
-				$this->PageViewSetCfg('error', 'Auth Admins Manager Invalid Action `'.$action.'` ...');
+				$this->PageViewSetCfg('error', 'Auth Admins Manager :: Invalid Action `'.$action.'` ...');
 				//--
 				return 400;
 				//--

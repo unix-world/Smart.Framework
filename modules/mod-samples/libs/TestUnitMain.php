@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20231007
+ * @version 	v.20231114
  *
  */
 final class TestUnitMain {
@@ -37,7 +37,7 @@ final class TestUnitMain {
 
 
 	//============================================================
-	public static function mainScreen($tab, $frm, $frx) {
+	public static function mainScreen(?int $tab, ?array $frm, ?array $frx) {
 
 		//--
 		if(!\defined('\\SMART_FRAMEWORK_TESTUNIT_BASE_URL')) {
@@ -47,7 +47,7 @@ final class TestUnitMain {
 		//--
 
 		//--
-		$tab = (int) $tab;
+		$tab = (int)   $tab;
 		$frm = (array) $frm;
 		$frx = (array) $frx;
 		//--
@@ -55,7 +55,7 @@ final class TestUnitMain {
 		//--
 		if(\Smart::array_size($frx) > 0) { // test form data :: because is modal we have to close it in order to refresh the parent
 			//--
-			return '<table><tr><td><h1>Form Sent (Test) !</h1><hr><pre>'.\Smart::escape_html(\print_r($frx,1)).'</pre></td></tr></table><script>smartJ$Browser.RefreshParent();</script><br><br><input class="ux-button" id="myCloseButton" type="button" value="[Close Me]" onClick="smartJ$Browser.CloseModalPopUp(); return false;"><br><br><b>This page will auto-close in 9 seconds [Counting: <span id="mycounter">9</span>]</b><script>smartJ$Browser.CountDown(9, \'mycounter\', \'console.log(counter, elID); smartJ$Browser.CloseDelayedModalPopUp(500);\');</script><br><br><b><i>After closing this window, parent will refresh ...</i></b>';
+			return '<table><tr><td><h1>Form Sent (Test) !</h1><hr><pre>'.\Smart::escape_html((string)\print_r($frx,1)).'</pre></td></tr></table><script>smartJ$Browser.RefreshParent();</script><br><br><input class="ux-button" id="myCloseButton" type="button" value="[Close Me]" onClick="smartJ$Browser.CloseModalPopUp(); return false;"><br><br><b>This page will auto-close in 9 seconds [Counting: <span id="mycounter">9</span>]</b><script>smartJ$Browser.CountDown(9, \'mycounter\', \'console.log(counter, elID); smartJ$Browser.CloseDelayedModalPopUp(500);\');</script><br><br><b><i>After closing this window, parent will refresh ...</i></b>';
 			//--
 		} //end if
 		//--
@@ -73,11 +73,11 @@ final class TestUnitMain {
 		//-- end
 
 		//-- lists with one element
-		$one_single_select 				= \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('test-unit-s-list-one', '', 'form', array('one' => 'One'), 'frm[one_single]', '150', '', 'no', 'no', '', '#JS-UI#'); // returns HTML Code
-		$one_single_with_blank_select 	= \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi('test-unit-lst-m-1', '', 'form', array('one' => 'One'), 'frm[one_multi][]', 'list', 'no', '200', '', '#JS-UI-FILTER#'); // returns HTML Code
+		$one_single_select 				= (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('test-unit-s-list-one', '', 'form', array('one' => 'One'), 'frm[one_single]', '150', '', 'no', 'no', '', '#JS-UI#'); // returns HTML Code
+		$one_single_with_blank_select 	= (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi('test-unit-lst-m-1', '', 'form', array('one' => 'One'), 'frm[one_multi][]', 'list', 'no', '200', '', '#JS-UI-FILTER#'); // returns HTML Code
 		//--
-		$test_normal_list_s 			= \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('test_normal_s', '', 'form', [1 => 'Val 1', 2 => 'Val 2', 3 => 'Val 3', 4 => 'Val 4', 5 => 'Val 5']);
-		$test_normal_list_m 			= \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi('test_normal_m', '', 'form', [1 => 'Val 1', 2 => 'Val 2', 3 => 'Val 3', 4 => 'Val 4', 5 => 'Val 5'], '', 'list', 'no', '200/75', '', 'height:65px;');
+		$test_normal_list_s 			= (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('test_normal_s', '', 'form', [1 => 'Val 1', 2 => 'Val 2', 3 => 'Val 3', 4 => 'Val 4', 5 => 'Val 5']);
+		$test_normal_list_m 			= (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi('test_normal_m', '', 'form', [1 => 'Val 1', 2 => 'Val 2', 3 => 'Val 3', 4 => 'Val 4', 5 => 'Val 5'], '', 'list', 'no', '200/75', '', 'height:65px;');
 		//--
 
 		//-- misc purpose data array
@@ -95,18 +95,18 @@ final class TestUnitMain {
 
 		//-- single-select
 		$selected_value 	= 'id2';
-		$elem_single_select = \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('test-unit-s-list-two', $selected_value, 'form', $array_of_values, 'frm[list_single]', '150', 'onChange="alert(\''.\Smart::escape_js('Getting value from the "SingleList": ').'\' + $(\'#test-unit-s-list-two\').val());"', 'no', 'yes', '', '#JS-UI-FILTER#'); // returns HTML Code
+		$elem_single_select = (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_single('test-unit-s-list-two', $selected_value, 'form', $array_of_values, 'frm[list_single]', '150', 'onChange="alert(\''.\Smart::escape_js('Getting value from the "SingleList": ').'\' + $(\'#test-unit-s-list-two\').val());"', 'no', 'yes', '', '#JS-UI-FILTER#'); // returns HTML Code
 		//--
 
 		//-- draw a multi-select (classic)
 		$selected_values 	= [ 'id1', 'id3' ];
-		$elem_multi_select 	= \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi('test-unit-m-list-2', $selected_values, 'form', $array_of_values, 'frm[list_multi_one][]', 'list', 'no', '250', 'onBlur="alert(\''.\Smart::escape_js('Getting value from the:'."\n".' "MultiList": ').'\' + $(\'#test-unit-m-list-2\').val());"', '#JS-UI-FILTER#'); // returns HTML Code
+		$elem_multi_select 	= (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi('test-unit-m-list-2', $selected_values, 'form', $array_of_values, 'frm[list_multi_one][]', 'list', 'no', '250', 'onBlur="alert(\''.\Smart::escape_js('Getting value from the:'."\n".' "MultiList": ').'\' + $(\'#test-unit-m-list-2\').val());"', '#JS-UI-FILTER#'); // returns HTML Code
 		//--
 
 		//-- multi-select (checkboxes)
 		$array_of_values 	= array('id1' => 'Label 1', 'id2' => 'Label 2', 'id3' => 'Label 3');
 		$selected_values 	= array('id2', 'id3');
-		$elem_multi_boxes 	= \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi('test-unit-m-list-3', $selected_values, 'form', $array_of_values, 'frm[list_multi_two][]', 'checkboxes', 'yes'); // returns HTML Code
+		$elem_multi_boxes 	= (string) \SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::html_select_list_multi('test-unit-m-list-3', $selected_values, 'form', $array_of_values, 'frm[list_multi_two][]', 'checkboxes', 'yes'); // returns HTML Code
 		//--
 
 		//--
@@ -128,19 +128,19 @@ final class TestUnitMain {
 		$demo_mod_ext_toolkits = '';
 		$demo_mod_ext_components = '';
 		if(\SmartAppInfo::TestIfModuleExists('mod-ui-bootstrap')) {
-			$demo_mod_ext_toolkits .= \SmartFileSystem::read('modules/mod-ui-bootstrap/testunit/templates/tab-ui-components.inc.htm');
+			$demo_mod_ext_toolkits .= (string) \SmartFileSystem::read('modules/mod-ui-bootstrap/testunit/templates/tab-ui-components.inc.htm');
 		} //end if
 		if(\SmartAppInfo::TestIfModuleExists('mod-ui-jqueryui')) {
-			$demo_mod_ext_toolkits .= \SmartFileSystem::read('modules/mod-ui-jqueryui/testunit/templates/tab-ui-components.inc.htm');
+			$demo_mod_ext_toolkits .= (string) \SmartFileSystem::read('modules/mod-ui-jqueryui/testunit/templates/tab-ui-components.inc.htm');
 		} //end if
 		if(\SmartAppInfo::TestIfModuleExists('mod-js-components')) {
-			$demo_mod_ext_components .= \SmartFileSystem::read('modules/mod-js-components/testunit/templates/tab-ui-components.inc.htm');
+			$demo_mod_ext_components .= (string) \SmartFileSystem::read('modules/mod-js-components/testunit/templates/tab-ui-components.inc.htm');
 		} //end if
 		if(\SmartAppInfo::TestIfModuleExists('mod-wflow-components')) {
-			$demo_mod_ext_components .= \SmartFileSystem::read('modules/mod-wflow-components/testunit/templates/tab-ui-components.inc.htm');
+			$demo_mod_ext_components .= (string) \SmartFileSystem::read('modules/mod-wflow-components/testunit/templates/tab-ui-components.inc.htm');
 		} //end if
 		//--
-		$demo_mod_ui_components = \SmartMarkersTemplating::render_file_template(
+		$demo_mod_ui_components = (string) \SmartMarkersTemplating::render_file_template(
 			'modules/mod-samples/libs/templates/testunit/test-unit-tab-components.inc.htm',
 			[
 				'TESTUNIT_BASE_URL' 		=> (string) \SMART_FRAMEWORK_TESTUNIT_BASE_URL,
@@ -162,6 +162,11 @@ final class TestUnitMain {
 		$tpl_alt_typo3fluid = (bool) \SmartAppInfo::TestIfModuleExists('mod-tpl-typo3-fluid');
 		$tpl_alt_avail = (bool) ($tpl_alt_tpl && ($tpl_alt_twist || $tpl_alt_twig || $tpl_alt_typo3fluid));
 		//--
+		$dlgType = 'auto';
+		if(rand(0,10) > 5) {
+			$dlgType = 'alertable';
+		} //end if
+		//--
 		return \SmartMarkersTemplating::render_file_template( // rendering a complex template with hardcoded sub templates
 			'modules/mod-samples/libs/templates/testunit/test-unit.mtpl.htm',
 			[
@@ -172,6 +177,7 @@ final class TestUnitMain {
 					'%test-unit-tab-templating%'			=> '@/test-unit-tab-templating.inc.htm'									// variable, with full path, using self @/sub-dir/ instead of $tpl_path/test-unit-tab-misc.htm
 				],
 				'MOD-BARCODES-AVAILABLE' 					=> (string) (\SmartAppInfo::TestIfModuleExists('mod-barcodes') ? 'yes' : 'no'),
+				'TEST-DHKX-EXCHANGE-HTML' 					=> (string) \SmartModExtLib\Samples\DhkxTest::renderViewJsPhpExchange(),
 				'TEST-URL-UNICODE-STR' 						=> (string) \SmartModExtLib\Samples\TestUnitStrings::testStr(),
 				'TEST-UNIT-AREA' 							=> (string) $info_pfx,
 				'TESTUNIT-TPL-PATH' 						=> (string) \SmartFileSysUtils::addPathTrailingSlash((string)$tpl_path), 	// this MUST be with trailing slash
@@ -181,8 +187,8 @@ final class TestUnitMain {
 				'TEST-JS_SCRIPTS_Init-Tabs' 				=> '<script>'.\SmartModExtLib\AuthAdmins\SmartAdmViewHtmlHelpers::js_code_uitabs_init('tabs_draw', \Smart::format_number_int($tab,'+')).'</script>',
 				'Test-Buttons_AJAX-POST' 					=> (string) $btnop,
 				'TEST-VAR'  								=> '<div style="background-color: #ECECEC; padding: 10px;"><b>Smart.Framework</b> :: PHP/Javascript web framework :: Test and Demo Suite @ '.$info_adm.'</div>',
-				'TEST-ELEMENTS_DIALOG' 						=> '<a class="ux-button ux-button-primary" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h1>Do you like this framework ?</h1><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="Yes">Yes</option><option value="No">No</option></select></div>', 'smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(\'Well ... then you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\'))').' return false;">Test JS-UI Dialog &nbsp; <i class="sfi sfi-share"></i></a>',
-				'TEST-ELEMENTS_ALERT' 						=> '<a class="ux-button ux-button-info" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_alert_dialog('<h2>You can press now OK !</h2><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="One">One</option><option value="Two">Two</option></select></div>', 'smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(\'Good ... you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\'))').' return false;">Test JS-UI Alert  &nbsp; <i class="sfi sfi-share"></i></a>',
+				'TEST-ELEMENTS_DIALOG' 						=> '<a class="ux-button ux-button-primary" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_confirm_dialog('<h1>Do you like this framework ?</h1><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="Yes">Yes</option><option value="No">No</option></select></div>', 'smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(\'Well ... then you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\'))', '', '', '', (string)$dlgType).' return false;">Test JS-UI Dialog &nbsp; <i class="sfi sfi-share"></i></a>',
+				'TEST-ELEMENTS_ALERT' 						=> '<a class="ux-button ux-button-info" style="min-width:320px;" href="#" onClick="'.\SmartViewHtmlHelpers::js_code_ui_alert_dialog('<h2>You can press now OK !</h2><div>Option: <select id="test-dlg-select-el-sf" class="ux-field"><option value="One">One</option><option value="Two">Two</option></select></div>', 'smartJ$Browser.AlertDialog(smartJ$Utils.escape_html(\'Good ... you selected the value: [\' + $(\'#test-dlg-select-el-sf\').val() + \']\\n ... \\\' " <tag> !\'))', '', '', '', (string)$dlgType).' return false;">Test JS-UI Alert  &nbsp; <i class="sfi sfi-share"></i></a>',
 				'TEST-ELEMENTS_SEND-CONFIRM-MODAL' 			=> (string) $basic_form_start.$basic_form_send_modal.$basic_form_end,
 				'TEST-ELEMENTS_SEND-CONFIRM-POPUP' 			=> (string) $basic_form_start.$basic_form_send_popup.$basic_form_end,
 				'TEST-ELEMENTS-WND-INTERRACTIONS-MODAL' 	=> (string) \SmartModExtLib\Samples\TestUnitBrowserWinInterractions::bttnModalTestInit(),
@@ -255,7 +261,7 @@ final class TestUnitMain {
 				'TPL-ALT-AVAIL' 			=> (string) ($tpl_alt_avail ? 'yes' : 'no'),
 				'TPL-TWIST-AVAIL' 			=> (string) ($tpl_alt_twist ? 'yes' : 'no'),
 				'TPL-TWIG-AVAIL' 			=> (string) ($tpl_alt_twig ? 'yes' : 'no'),
-				'TPL-TYPO3FLUID-AVAIL' 		=> (string) ($tpl_alt_typo3fluid ? 'yes' : 'no')
+				'TPL-TYPO3FLUID-AVAIL' 		=> (string) ($tpl_alt_typo3fluid ? 'yes' : 'no'),
 			]
 		);
 		//--
@@ -331,7 +337,7 @@ final class TestUnitMain {
 			$desc = 'Please fill the <b>Date field</b> ...'.$tmp_data;
 			//--
 			if((string)$frm['text_area_1'] != '') {
-				$redir = \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.main&time='.\time().'&tab='.\Smart::escape_url($tab); // test redir if error ! must not work !
+				$redir = (string) \SMART_FRAMEWORK_TESTUNIT_BASE_URL.'testunit.main&time='.\time().'&tab='.\Smart::escape_url($tab); // test redir if error ! must not work !
 			} //end if
 			//--
 			$div_id = '';

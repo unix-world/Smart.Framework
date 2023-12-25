@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // App Net Packager
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION [T]
@@ -49,9 +49,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetPackager {
 
 	// ->
-	// v.20221222
+	// v.20231106
 
-	public const APP_NET_PACKAGER_VERSION = 'z.20221222'; // {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
+	public const APP_NET_PACKAGER_VERSION = 'z.20231106'; // {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
 
 	//--
 	private $error_log = '';
@@ -81,7 +81,7 @@ final class AppNetPackager {
 
 
 	//=====================================================================================
-	public function start(?string $appid, ?string $y_dir, ?string $y_archive_name, ?string $y_date_time_markup, ?string $comment='') {
+	public function start(?string $appid, ?string $y_dir, ?string $y_archive_name, ?string $y_date_time_markup, ?string $comment='') : void {
 		//--
 		$this->init_clear();
 		//--
@@ -154,7 +154,7 @@ final class AppNetPackager {
 
 
 	//=====================================================================================
-	public function get_archive_file_name() {
+	public function get_archive_file_name() : string {
 		//--
 		return (string) $this->archive_name;
 		//--
@@ -163,7 +163,7 @@ final class AppNetPackager {
 
 
 	//=====================================================================================
-	public function get_archive_file_path() {
+	public function get_archive_file_path() : string {
 		//--
 		return (string) $this->archive_file;
 		//--
@@ -172,7 +172,7 @@ final class AppNetPackager {
 
 
 	//=====================================================================================
-	public function pack_dir(?string $y_folder) {
+	public function pack_dir(?string $y_folder) : void {
 		//--
 		if((string)$this->error_log == '') {
 			$this->optimizations_dir = (string) $y_folder;
@@ -184,7 +184,7 @@ final class AppNetPackager {
 
 
 	//=====================================================================================
-	public function save() {
+	public function save() : string {
 		//--
 		if((string)$this->error_log != '') {
 			return 'AppCodePack.Packager / Save :: Packaging # '.$this->error_log;
@@ -223,7 +223,7 @@ final class AppNetPackager {
 		$data  = '';
 		//--
 		$data .= '#AppCodePack-NetArchive'."\n";
-		$data .= '#AppCodePack-MetaInfo: '.$this->conform_column((string)self::APP_NET_PACKAGER_VERSION.' * z:gzenc.8.gzip * e:base64 * c:sha512')."\n";
+		$data .= '#AppCodePack-MetaInfo: '.$this->conform_column((string)self::APP_NET_PACKAGER_VERSION.' * z:gzenc.8.gzip * e:base64 * c:sha3')."\n";
 		$data .= '#AppCodePack-License: '.$this->conform_column('(c) 2013-'.date('Y').' <unix-world.org> :: [License BSD] # {Smart.Framework}')."\n";
 		$data .= '#Comment: '.$this->conform_column((string)rawurlencode((string)$this->comment))."\n";
 		$data .= '#File: '.$this->conform_column((string)$this->archive_name)."\n";
@@ -233,8 +233,8 @@ final class AppNetPackager {
 		$data .= '#Package-Info-Items: '.$this->conform_column((string)($this->num_dirs + $this->num_files))."\n";
 		$data .= '#Package-Info-Dirs: '.$this->conform_column((string)$this->num_dirs)."\n";
 		$data .= '#Package-Info-Files: '.$this->conform_column((string)$this->num_files)."\n";
-		$data .= '#Package-Signature:'.$this->conform_column((string)SmartHashCrypto::sha512($packet))."\n";
-		$data .= '#Checksum-Signature:'.$this->conform_column((string)SmartHashCrypto::sha512($this->arch_content))."\n";
+		$data .= '#Package-Signature:'.$this->conform_column((string)SmartHashCrypto::sh3a384((string)$this->appid."\v".$packet, true))."\n"; // {{{SYNC-APP-PAK-CKSUM}}}
+		$data .= '#Checksum-Signature:'.$this->conform_column((string)SmartHashCrypto::sh3a512((string)$this->arch_content, true))."\n"; // {{{SYNC-APP-PAK-CONTENT-CKSUM}}}
 		$data .= (string) $this->conform_column((string)$packet)."\n";
 		$data .= '#PHP-Version: '.$this->conform_column((string)PHP_VERSION.' / ZLib: '.(string)$ver_zlib)."\n";
 		$data .= '#Client-IP: '.$this->conform_column((string)SmartUtils::get_ip_client())."\n";
@@ -278,7 +278,7 @@ final class AppNetPackager {
 
 	//=====================================================================================
 	// [PRIVATE]
-	private function init_clear() {
+	private function init_clear() : void {
 		//--
 		clearstatcache(true); // do a full clear stat cache at the begining
 		//--
@@ -294,8 +294,8 @@ final class AppNetPackager {
 		$this->num_dirs = 0;
 		$this->num_files = 0;
 		$this->date_time = '';
-		$this->arr_folders = array();
-		$this->arr_files = array();
+		$this->arr_folders = [];
+		$this->arr_files = [];
 		//--
 	} //END FUNCTION
 	//=====================================================================================
@@ -303,7 +303,7 @@ final class AppNetPackager {
 
 	//=====================================================================================
 	// [PRIVATE]
-	private function dir_pack(?string $tmp_path) {
+	private function dir_pack(?string $tmp_path) : string {
 		//--
 		$out = '';
 		//--
@@ -342,16 +342,16 @@ final class AppNetPackager {
 			//--
 			$this->num_dirs += 1;
 			//--
-			$cksum_name 	= (string) sha1($fixed_path);
+			$cksum_name 	= (string) SmartHashCrypto::sha224((string)$fixed_path, true); // {{{SYNC-APP-PAK-DIR-CKSUM}}}
 			$tmp_size 		= '0';
 			$file_content 	= '';
 			$cksum_file 	= '';
 			$cksum_arch 	= '';
-			//-- dirname[\t]DIR[\t]0[\t]sha1checksumname[\t][\t][\t][\n]
-			$out .= $this->conform_column($fixed_path)."\t";
+			//-- dirname[\t]DIR[\t]0[\t]sha224checksumName[\t][\t][\t][\n]
+			$out .= $this->conform_column((string)$fixed_path)."\t";
 			$out .= $this->conform_column('DIR')."\t";
 			$out .= $this->conform_column('0')."\t";
-			$out .= $this->conform_column($cksum_name)."\t";
+			$out .= $this->conform_column((string)$cksum_name)."\t";
 			$out .= "\t";
 			$out .= "\t";
 			$out .= "\n";
@@ -371,7 +371,7 @@ final class AppNetPackager {
 
 	//=====================================================================================
 	// [PRIVATE]
-	private function file_pack(?string $tmp_path) {
+	private function file_pack(?string $tmp_path) : string {
 		//--
 		$out = '';
 		//--
@@ -397,33 +397,33 @@ final class AppNetPackager {
 		echo (string) '[F]&nbsp;'.Smart::escape_html((string)$base_dir.'/'.$base_file).'<br>'."\n";
 		Smart::InstantFlush();
 		//--
-		$this->arr_files[] = $tmp_path;
+		$this->arr_files[] = (string) $tmp_path;
 		//--
-		if(SmartFileSystem::is_type_file($tmp_path)) { // file
+		if(SmartFileSystem::is_type_file((string)$tmp_path)) { // file
 			//--
 			$this->num_files += 1;
 			//--
-			$the_fsize = (int) filesize($tmp_path);
+			$the_fsize = (int) filesize((string)$tmp_path);
 			//--
-			$cksum_name 	= (string) sha1($fixed_path);
+			$cksum_name 	= (string) SmartHashCrypto::sh3a224((string)$fixed_path, true); // {{{SYNC-APP-PAK-FILEPATH-CKSUM}}}
 			$tmp_type 		= 'FILE';
 			$tmp_size 		= (string) $the_fsize;
 			$file_content 	= (string) SmartFileSystem::read($tmp_path); // this reads and return the file as it is
-			if((int)strlen((string)$file_content) !== $the_fsize) {
+			if((int)strlen((string)$file_content) !== (int)$the_fsize) {
 				$this->error_log = 'ERROR: Invalid FileSize ['.$the_fsize.'] to Pack !'.'<br>'.Smart::escape_html((string)$tmp_path);
 				return '';
 			} //end if
-			$cksum_file 	= (string) sha1($file_content);
-			$file_content 	= (string) bin2hex($file_content);
-			$cksum_arch 	= (string) sha1($file_content);
-			//-- filename[\t]filetype[\t]filesize[\t]sha1checksumname[\t]sha1checksumfile[\t]sha1checksumarch[\t]filecontent_gzencode-FORCE_GZIP_bin2hex[\n]
-			$out .= $this->conform_column($fixed_path)."\t";
-			$out .= $this->conform_column($tmp_type)."\t";
-			$out .= $this->conform_column($tmp_size)."\t";
-			$out .= $this->conform_column($cksum_name)."\t";
-			$out .= $this->conform_column($cksum_file)."\t";
-			$out .= $this->conform_column($cksum_arch)."\t";
-			$out .= $this->conform_column($file_content)."\n";
+			$cksum_file 	= (string) SmartHashCrypto::sha256((string)$file_content, true); // {{{SYNC-APP-PAK-FILECONTENT-CKSUM}}}
+			$file_content 	= (string) bin2hex((string)$file_content);
+			$cksum_arch 	= (string) SmartHashCrypto::sh3a256((string)$file_content, true); // {{{SYNC-APP-PAK-FILEARCH-CKSUM}}}
+			//-- filename[\t]filetype[\t]filesize[\t]sh3a224b64checksumName[\t]sha256b64checksumFileContent[\t]sh3a256b64checksumArch[\t]filecontent_gzencode-FORCE_GZIP_bin2hex[\n]
+			$out .= $this->conform_column((string)$fixed_path)."\t";
+			$out .= $this->conform_column((string)$tmp_type)."\t";
+			$out .= $this->conform_column((string)$tmp_size)."\t";
+			$out .= $this->conform_column((string)$cksum_name)."\t";
+			$out .= $this->conform_column((string)$cksum_file)."\t";
+			$out .= $this->conform_column((string)$cksum_arch)."\t";
+			$out .= $this->conform_column((string)$file_content)."\n";
 			//--
 		} else {
 			//--
@@ -440,7 +440,7 @@ final class AppNetPackager {
 
 	//=====================================================================================
 	// [PRIVATE]
-	private function path_take_out_opt_folder(?string $tmp_path) {
+	private function path_take_out_opt_folder(?string $tmp_path) : string {
 		//--
 		return (string) SmartFileSysUtils::addPathTrailingSlash((string)$this->appid).ltrim((string)substr((string)$tmp_path, (int)strlen((string)$this->optimizations_dir)), '/');
 		//--
@@ -451,7 +451,7 @@ final class AppNetPackager {
 	//=====================================================================================
 	// [PRIVATE]
 	// recursive function to copy a folder with all sub folders and files
-	private function dir_recursive_pack(?string $dirsource) {
+	private function dir_recursive_pack(?string $dirsource) : void {
 
 	//===================================
 	// WARNING: Should Not Copy Destination inside Source to avoid Infinite Loop (anyway there is a loop protection but it is not safe as we don't know if all files were copied) !!!
@@ -542,7 +542,7 @@ final class AppNetPackager {
 
 	//=====================================================================================
 	// [PRIVATE]
-	private function conform_column(?string $y_text) {
+	private function conform_column(?string $y_text) : string {
 		//--
 		$y_text = (string) Smart::normalize_spaces((string)$y_text);
 		$y_text = (string) str_replace(' ', '', (string)$y_text);

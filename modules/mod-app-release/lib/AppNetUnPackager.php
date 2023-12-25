@@ -1,7 +1,7 @@
 <?php
 // [@[#[!SF.DEV-ONLY!]#]@]
 // App Net UnPackager
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION [T]
@@ -46,9 +46,9 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
 final class AppNetUnPackager {
 
 	// ::
-	// v.20221222
+	// v.20231106
 
-	public const APP_NET_UNPACKAGER_VERSION = 'z.20221222';// {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
+	public const APP_NET_UNPACKAGER_VERSION = 'z.20231106';// {{{SYNC-SF-APPCODE-PACK-UNPACK-PACKAGE-VERSION}}}
 
 	public const APP_NET_UNPACKAGER_MIN_PACK_SIZE = 777; // min 777 bytes by the headers
 
@@ -77,26 +77,35 @@ Options -Indexes
 
 
 	//================================================================
-	public static function unpack_app_hash(?string $secret) {
+	public static function unpack_app_hash(?string $secret) : string {
 		//--
-		return (string) sha1((string)(defined('APPCODEPACK_APP_ID') ? APPCODEPACK_APP_ID : '!').'*AppCode(Un)Pack*'.(string)$secret.'#'.(defined('SMART_FRAMEWORK_SECURITY_KEY') ? SMART_FRAMEWORK_SECURITY_KEY : ''));
+		$hex = (string) SmartHashCrypto::hmac(
+			'sha384',
+			(string) $secret.'#'.(defined('SMART_FRAMEWORK_SECURITY_KEY') ? SMART_FRAMEWORK_SECURITY_KEY : ''),
+			(string) '*AppCode(Un)Pack*'.self::unpack_get_app_id()
+		);
+		//--
+		return (string) Smart::base_from_hex_convert((string)$hex, 62);
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	public static function unpack_valid_app_id(?string $appid) {
+	public static function unpack_valid_app_id(string $appid) : string {
 		//--
 		$appid = (string) $appid; // do not trim here !
 		//--
 		if(
-			((string)trim((string)$appid) == '') OR
-			((int)strlen((string)$appid) < 5) OR // {{{SYNC-APPCODEPACK-ID-SIZE}}}
-			((int)strlen((string)$appid) > 25) OR
+			((string)trim((string)$appid) == '')
+			OR
+			((int)strlen((string)$appid) < 4)
+			OR // {{{SYNC-APPCODEPACK-ID-SIZE}}}
+			((int)strlen((string)$appid) > 63)
+			OR
 			(!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$appid))
 		) {
-			return 'INVALID APP ID: '.$appid.' # must be between 5 and 25 characters';
+			return 'INVALID APP ID: '.$appid.' # must be between 4 and 63 characters';
 		} //end if
 		if(!preg_match('/^[_a-z0-9\-\.]+$/', (string)$appid)) { // regex namespace
 			return 'INVALID APP ID: '.$appid.' # contains invalid characters';
@@ -152,7 +161,7 @@ Options -Indexes
 
 
 	//================================================================
-	public static function unpack_valid_file_name(?string $file) {
+	public static function unpack_valid_file_name(string $file) : bool {
 		//--
 		$tfile = (string) trim((string)$file);
 		//--
@@ -182,7 +191,7 @@ Options -Indexes
 
 
 	//================================================================
-	public static function unpack_create_basefolder() {
+	public static function unpack_create_basefolder() : string {
 		//--
 		$unpack_basefolder = (string) self::APP_NET_UNPACKAGER_FOLDER;
 		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$unpack_basefolder);
@@ -213,7 +222,7 @@ Options -Indexes
 
 
 	//================================================================
-	public static function unpack_netarchive(?string $y_content, bool $testonly) {
+	public static function unpack_netarchive(string $y_content, bool $testonly) : string {
 		//--
 		if(!$testonly) {
 			self::$unpack_app_log_file = ''; // clear, reset, but not in test only mode to avoid reset last real unpack log path
@@ -236,7 +245,7 @@ Options -Indexes
 			} //end if
 		} //end if
 		//--
-		$tmp_ppfx = (string) self::APP_NET_UNPACKAGER_FOLDER.'#TMP-UNPACK-@'.Smart::safe_filename((string)APPCODEPACK_APP_ID);
+		$tmp_ppfx = (string) self::APP_NET_UNPACKAGER_FOLDER.'#TMP-UNPACK-@'.Smart::safe_filename((string)APPCODEPACK_APP_ID).'-'.Smart::uuid_35();
 		//--
 		$the_tmp_netarch_lock = (string) rtrim((string)$tmp_ppfx, '/').'.LOCK'; // the lock file ; {{{SYNC-NETARCH-DENIED-PATHS}}}
 		if(SmartFileSysUtils::checkIfSafePath((string)$the_tmp_netarch_lock) != 1) {
@@ -292,7 +301,7 @@ Options -Indexes
 
 
 	//================================================================
-	public static function unpack_get_last_log_file() {
+	public static function unpack_get_last_log_file() : string {
 		//--
 		return (string) self::$unpack_app_log_file; // this becomes available just after unpacking with unpack_netarchive() and is set by unpack_operate_netarchive()
 		//--
@@ -304,7 +313,7 @@ Options -Indexes
 
 
 	//================================================================
-	private static function unpack_test_dissalowed_ext(?string $fext) {
+	private static function unpack_test_dissalowed_ext(?string $fext) : bool {
 		//--
 		switch((string)strtolower((string)trim((string)$fext))) { // {{{SYNC-NETARCH-APPID-EXTS}}}
 			case '.':
@@ -345,6 +354,7 @@ Options -Indexes
 			case 'altroot':
 			case 'dev':
 			case 'mnt':
+			case 'mnt2':
 			case 'cfg':
 			case 'etc':
 			case 'bin':
@@ -375,11 +385,14 @@ Options -Indexes
 			case 'webdav':
 			case 'caldav':
 			case 'carddav':
+			case 'haproxy':
 			case 'nginx':
 			case 'apache':
 			case 'ping':
 			case 'tcp':
+			case 'tcp6':
 			case 'udp':
+			case 'udp6':
 			case 'smtp':
 			case 'pop3':
 			case 'imap4':
@@ -467,11 +480,16 @@ Options -Indexes
 			case 'yaml':
 			case 'go':
 			case 'py':
+			case 'pyc':
 			case 'pl':
 			case 'sh':
+			case 'ksh':
+			case 'ash':
+			case 'dash':
 			case 'bash':
 			case 'tgz':
 			case 'tbz':
+			case 'lz':
 			case 'xz':
 			case 'gz':
 			case 'bz2':
@@ -524,7 +542,7 @@ Options -Indexes
 
 
 	//================================================================
-	private static function unpack_operate_netarchive(?string $y_content, bool $testonly, ?string $the_tmp_netarch_folder) {
+	private static function unpack_operate_netarchive(string $y_content, bool $testonly, string $the_tmp_netarch_folder) : string {
 		//--
 		if(!$testonly) {
 			self::$unpack_app_log_file = ''; // clear, reset, but not in test only mode to avoid reset last real unpack log path
@@ -543,7 +561,7 @@ Options -Indexes
 		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$restoreroot);
 		//-- DEFINE @ TMP NETARCH FOLDERS
 		$unpack_versionsfolder = (string) self::APP_NET_UNPACKAGER_FOLDER.self::APP_NET_UNPACKAGER_DEPLOYS_FOLDER; // must have trailing slash
-		$the_tmp_netarch_data_hash = (string) SmartHashCrypto::sha512((string)$y_content);
+		$the_tmp_netarch_data_hash = (string) SmartHashCrypto::hmac('sha3-512', (string)APPCODEPACK_APP_ID, (string)$y_content, true);
 		//-- CHECK SAFE NAME @ TMP NETARCH FOLDER
 		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$the_tmp_netarch_folder);
 		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$unpack_versionsfolder);
@@ -609,7 +627,7 @@ Options -Indexes
 		$cksum_raw = '';
 		$data = '';
 		//--
-		$arr = array(); // init
+		$arr = []; // init
 		$arr = (array) explode("\n", (string)$y_content);
 		//$y_content = ''; // free mem !!! DO NOT CLEAR, MUST BE LOGGED !!!
 		//--
@@ -641,7 +659,7 @@ Options -Indexes
 		if((string)APPCODEPACK_APP_ID != (string)$the_pack_appid) {
 			return 'ERROR: Invalid Package AppID: Expected='.APPCODEPACK_APP_ID.' / Got='.$the_pack_appid;
 		} //end if
-		$arr = array(); // free mem
+		$arr = null; // free mem
 		if((string)$the_pack_name == '') {
 			return 'ERROR: Empty Package File Name !';
 		} //end if
@@ -673,7 +691,7 @@ Options -Indexes
 			return 'ERROR: Empty Data !';
 		} //end if
 		//--
-		if((string)$cksum_pak != (string)SmartHashCrypto::sha512($data)) {
+		if((string)$cksum_pak != (string)SmartHashCrypto::sh3a384((string)self::unpack_get_app_id()."\v".$data, true)) { // {{{SYNC-APP-PAK-CKSUM}}}
 			return 'ERROR: Package Checksum Failed !';
 		} //end if else
 		//--
@@ -686,7 +704,7 @@ Options -Indexes
 			return 'ERROR: Data inflate ERROR !';
 		} //end if
 		//--
-		if((string)$cksum_raw != (string)SmartHashCrypto::sha512($data)) {
+		if((string)$cksum_raw != (string)SmartHashCrypto::sh3a512((string)$data, true)) { // {{{SYNC-APP-PAK-CONTENT-CKSUM}}}
 			return 'ERROR: Data Checksum Failed !';
 		} //end if else
 		if(strpos((string)$data, '#[AppCodePack-Package//START]') === false) {
@@ -701,14 +719,17 @@ Options -Indexes
 		$files_pak = 0;
 		$files_num = 0;
 		//--
-		$arr = array(); // init
+		$arr = []; // init
 		$arr = (array) explode("\n", (string)$data);
 		$data = ''; // free mem, we do not need it anymore
 		$basefoldername = (string) $the_pack_appid;
 		$the_pack_files_n_dirs = [];
 		for($i=0; $i<count($arr); $i++) {
+			//--
 			$arr[$i] = (string) trim((string)$arr[$i]);
+			//--
 			if((string)$arr[$i] != '') {
+				//--
 				if((string)substr($arr[$i], 0, 1) == '#') {
 					//--
 					//echo $arr[$i]."\n";
@@ -722,15 +743,15 @@ Options -Indexes
 					//--
 					$cols = (array) explode("\t", (string)$arr[$i]);
 					//--
-					$tmp_fname 			= (string) trim((string)(isset($cols[0]) ? $cols[0] : null));
-					$tmp_ftype 			= (string) trim((string)(isset($cols[1]) ? $cols[1] : null));
-					$tmp_fsize 			= (int)    trim((string)(isset($cols[2]) ? $cols[2] : null));
-					$tmp_cksum_name 	= (string) trim((string)(isset($cols[3]) ? $cols[3] : null));
-					$tmp_cksum_cx_raw 	= (string) trim((string)(isset($cols[4]) ? $cols[4] : null));
-					$tmp_cksum_cx_pak 	= (string) trim((string)(isset($cols[5]) ? $cols[5] : null));
-					$tmp_fcontent 		= (string) trim((string)(isset($cols[6]) ? $cols[6] : null));
+					$tmp_fname 			= (string) trim((string)($cols[0] ?? null));
+					$tmp_ftype 			= (string) trim((string)($cols[1] ?? null));
+					$tmp_fsize 			= (int)    trim((string)($cols[2] ?? null));
+					$tmp_cksum_name 	= (string) trim((string)($cols[3] ?? null));
+					$tmp_cksum_cx_raw 	= (string) trim((string)($cols[4] ?? null));
+					$tmp_cksum_cx_pak 	= (string) trim((string)($cols[5] ?? null));
+					$tmp_fcontent 		= (string) trim((string)($cols[6] ?? null));
 					//--
-					$cols = array(); // free mem
+					$cols = null; // free mem
 					//--
 					if((string)$tmp_fname != '') {
 						if(strpos((string)$tmp_fname, (string)trim((string)$the_pack_appid, '/').'/') !== 0) { // all archived paths must start with appid/ folder
@@ -739,9 +760,9 @@ Options -Indexes
 					} //end if
 					if(((string)$tmp_ftype == 'DIR') AND ((string)$tmp_fname != '')) {
 						//--
-						// dirname[\t]DIR[\t]0[\t]sha1checksumname[\t][\t][\t][\n]
+						// dirname[\t]DIR[\t]0[\t]sha224checksumName[\t][\t][\t][\n]
 						//--
-						if((string)$tmp_cksum_name != (string)sha1($tmp_fname)) {
+						if((string)$tmp_cksum_name != (string)SmartHashCrypto::sha224((string)$tmp_fname, true)) { // {{{SYNC-APP-PAK-DIR-CKSUM}}}
 							return 'ERROR: DirName Checksum Failed on: '.$tmp_fname;
 						} //end if
 						//--
@@ -771,13 +792,13 @@ Options -Indexes
 						//--
 					} elseif(((string)$tmp_ftype == 'FILE') AND ((string)$tmp_fname != '')) {
 						//--
-						// filename[\t]filetype[\t]filesize[\t]sha1checksumname[\t]sha1checksumfile[\t]sha1checksumarch[\t]filecontent_gzencode-FORCE_GZIP_bin2hex[\n]
+						// filename[\t]filetype[\t]filesize[\t]sh3a224b64checksumName[\t]sha256b64checksumFileContent[\t]sh3a256b64checksumArch[\t]filecontent_gzencode-FORCE_GZIP_bin2hex[\n]
 						//--
-						if((string)$tmp_cksum_name != (string)sha1($tmp_fname)) {
+						if((string)$tmp_cksum_name != (string)SmartHashCrypto::sh3a224((string)$tmp_fname, true)) { // {{{SYNC-APP-PAK-FILEPATH-CKSUM}}}
 							return 'ERROR: FileName Checksum Failed on: '.$tmp_fname;
 						} //end if
 						//--
-						if((string)$tmp_cksum_cx_pak != (string)sha1($tmp_fcontent)) {
+						if((string)$tmp_cksum_cx_pak != (string)SmartHashCrypto::sh3a256((string)$tmp_fcontent, true)) { // {{{SYNC-APP-PAK-FILEARCH-CKSUM}}}
 							return 'ERROR: File Package Checksum Failed on: '.$tmp_fname;
 						} //end if
 						//--
@@ -786,7 +807,7 @@ Options -Indexes
 							return 'ERROR: File Content Failed to be restored on: '.$tmp_fname;
 						} //end if
 						$tmp_fcontent = (string) $tmp_fcontent;
-						if((string)$tmp_cksum_cx_raw != (string)sha1($tmp_fcontent)) {
+						if((string)$tmp_cksum_cx_raw != (string)SmartHashCrypto::sha256((string)$tmp_fcontent, true)) { // {{{SYNC-APP-PAK-FILECONTENT-CKSUM}}}
 							return 'ERROR: File Content Checksum Failed on: '.$tmp_fname;
 						} //end if
 						//--
@@ -825,7 +846,7 @@ Options -Indexes
 								if((string)$fop !== (string)$tmp_fcontent) {
 									return 'ERROR: Failed to restore a File from archive (content check): '.$tmp_fname;
 								} //end if
-								if((string)sha1((string)$fop) != (string)$tmp_cksum_cx_raw) {
+								if((string)SmartHashCrypto::sha256((string)$fop, true) != (string)$tmp_cksum_cx_raw) { // {{{SYNC-APP-PAK-FILECONTENT-CKSUM}}}
 									return 'ERROR: Failed to restore a File from archive (content checksum): '.$tmp_fname;
 								} //end if
 								$fop = ''; // free mem
@@ -848,9 +869,12 @@ Options -Indexes
 					} //end if else
 					//--
 				} //end if
+				//--
 			} //end if
+			//--
 		} //end for
-		$arr = array();
+		//--
+		$arr = null; // free mem
 		//--
 		if(($folders_pak <= 0) OR ($folders_pak != $folders_num)) {
 			return 'ERROR: Invalid Folders Number: '.SmartFileSysUtils::addPathTrailingSlash((string)$folders_pak).$folders_num;
@@ -953,7 +977,7 @@ Options -Indexes
 				$arr_dir_files = (array) $arr_dir_sorted_files;
 				$arr_dir_sorted_files = []; // free mem
 			} else {
-				$arr_dir_files = array();
+				$arr_dir_files = [];
 			} //end if else
 			if(Smart::array_size($arr_dir_files) > 0) {
 				$found_files_total = 0;
@@ -975,12 +999,12 @@ Options -Indexes
 										return 'ERROR: Invalid NetArchive Restore Path: '.$restoreroot.$file;
 									} //end if
 									if(SmartFileSystem::path_exists((string)$restoreroot.$file)) {
-										$move_xop = self::unpack_move_file_or_dir_netarchive((string)$restoreroot.$file, (string)$the_tmp_netarch_versions_folder.$file);
+										$move_xop = (int) self::unpack_move_file_or_dir_netarchive((string)$restoreroot.$file, (string)$the_tmp_netarch_versions_folder.$file);
 										if($move_xop != 1) {
 											return 'ERROR: Failed to move a File or Dir to the NetArchive Saved Versions EXTRACTION Folder ['.($move_xop === -7 ? '@link:-7' : $move_xop).']: '.$file; // $the_tmp_netarch_versions_folder.$file
 										} //end if
 									} //end if
-									$move_xop = self::unpack_move_file_or_dir_netarchive((string)$fpath, (string)$restoreroot.$file);
+									$move_xop = (int) self::unpack_move_file_or_dir_netarchive((string)$fpath, (string)$restoreroot.$file);
 									if($move_xop != 1) {
 										return 'ERROR: Failed to restore a File or Dir from the NetArchive EXTRACTION Folder ['.$move_xop.']: '.$fpath;
 									} //end if
@@ -1047,14 +1071,14 @@ Options -Indexes
 			//--
 		} //end if
 		//--
-		return '';
+		return ''; // OK
 		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
-	private static function unpack_move_file_or_dir_netarchive($path, $newpath) {
+	private static function unpack_move_file_or_dir_netarchive(string $path, string $newpath) : int {
 		//--
 		if((string)$path == '') {
 			return -1;
@@ -1080,12 +1104,21 @@ Options -Indexes
 		if(SmartFileSystem::is_type_link((string)$path)) { // link
 			return -7; // important: don't operate on symlinks (they must not be moved or replaced) !!
 		} elseif(SmartFileSystem::is_type_dir((string)$path)) { // dir
-			return SmartFileSystem::dir_rename((string)$path, (string)$newpath);
+			return (int) SmartFileSystem::dir_rename((string)$path, (string)$newpath);
 		} elseif(SmartFileSystem::is_type_file((string)$path)) { // file
-			return SmartFileSystem::rename((string)$path, (string)$newpath);
+			return (int) SmartFileSystem::rename((string)$path, (string)$newpath);
 		} //end if else
 		//--
 		return -8;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	private static function unpack_get_app_id() : string {
+		//--
+		return (string) (defined('APPCODEPACK_APP_ID') ? APPCODEPACK_APP_ID : '!');
 		//--
 	} //END FUNCTION
 	//================================================================

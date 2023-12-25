@@ -36,96 +36,47 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * Supports: HTTP Basic Auth ; HTTP Bear Auth (SWT) *optional* ; built-in HTTP Basic Token Auth (STK) *optional*
  *
- * Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
+ * Required (only init, after dissalowed) constants: APP_AUTH_ADMIN_INIT_IP_ADDRESS, APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD (must be set in set in config-admin.php only for init, thereafter must be unset)
+ * Required constants: APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
+ * Disallowed constaints: APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY, SMART_AUTH_TOKENS_ENABLED, SMART_AUTH_2FA_ENABLED
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20231021
+ * @version 	v.20231028
  * @package 	development:modules:AuthAdmins
  *
  */
-final class SmartAuthAdminsHandler {
+final class SmartAuthAdminsHandler
+	extends \SmartModExtLib\AuthAdmins\AbstractAuthHandler
+	implements \SmartModExtLib\AuthAdmins\AuthHandlerInterface {
 
 	// ::
 
 	private static $is_init_db = false;
 
-	private const TPL_PATH 		= 'modules/mod-auth-admins/templates/';
-	private const TPL_FILE 		= 'template.htm';
-	private const TPL_INC_PATH 	= 'modules/mod-auth-admins/libs/templates/auth-admins-handler/';
-	private const IMG_LOADER   	= 'lib/framework/img/loading-spokes.svg';
-	private const IMG_UNICORN  	= 'lib/framework/img/unicorn-auth-logo.svg';
-	private const TXT_UNICORN  	= 'Smart.Unicorn Secure Authentication';
-
-	private const AUTH_2FA_COOKIE_NAME = 'Sf_2FA';
-	private const AUTH_2FA_REGEX_TOKEN = '/^[0-9]{8}$/';
-
 	private const CAPTCHA_FORM_NAME = 'Smart-Unicorn-Auth';
+
 
 	//================================================================
 	public static function Authenticate(bool $enforce_https=false, bool $disable_tokens=false, bool $disable_2fa=false) : void {
 
+//$disable_2fa=true; // aaaaaaaaaaaaaaaaaaaaaa
+
 		//--
-		if(\headers_sent()) {
-			\SmartFrameworkRuntime::Raise500Error('Authentication Failed, Headers Already Sent ...');
-			die((string)self::getClassName().':headersSent');
+		$errPreCheck = (string) self::preCheckForbiddenConditions();
+		if((string)$errPreCheck != '') {
+			\SmartFrameworkRuntime::Raise403Error((string)$errPreCheck);
+			die((string)self::getClassName().'::'.__METHOD__.' # 403 # '.$errPreCheck);
 			return;
 		} //end if
 		//--
 
 		//--
-		if(\defined('\\SMART_AUTH_TOKENS_ENABLED')) {
-			\SmartFrameworkRuntime::Raise500Error('A required constant should not be already defined: SMART_AUTH_TOKENS_ENABLED !');
-			die((string)self::getClassName().':SMART_AUTH_TOKENS_ENABLED');
+		$errPreCheck = (string) self::preCheckInternalErrorConditions((bool)$disable_tokens, (bool)$disable_2fa);
+		if((string)$errPreCheck != '') {
+			\SmartFrameworkRuntime::Raise500Error((string)$errPreCheck);
+			die((string)self::getClassName().'::'.__METHOD__.' # 500 # '.$errPreCheck);
 			return;
 		} //end if
-		\define('SMART_AUTH_TOKENS_ENABLED', (bool)(!$disable_tokens)); // define has a global scope, no // prefix
-		//--
-		if(\defined('\\SMART_AUTH_2FA_ENABLED')) {
-			\SmartFrameworkRuntime::Raise500Error('A required constant should not be already defined: SMART_AUTH_2FA_ENABLED !');
-			die((string)self::getClassName().':SMART_AUTH_2FA_ENABLED');
-			return;
-		} //end if
-		\define('SMART_AUTH_2FA_ENABLED', (bool)(!$disable_2fa)); // define has a global scope, no // prefix
-		//--
-
-		//--
-		if(!\defined('\\SMART_FRAMEWORK_SECURITY_KEY')) {
-			\SmartFrameworkRuntime::Raise500Error('A required constant is missing: SMART_FRAMEWORK_SECURITY_KEY !');
-			die((string)self::getClassName().':SMART_FRAMEWORK_SECURITY_KEY:1');
-			return;
-		} //end if
-		if((string)\trim((string)\SMART_FRAMEWORK_SECURITY_KEY) == '') {
-			\SmartFrameworkRuntime::Raise500Error('A required constant is empty: SMART_FRAMEWORK_SECURITY_KEY !');
-			die((string)self::getClassName().':SMART_FRAMEWORK_SECURITY_KEY:2');
-			return;
-		} //end if
-		//--
-
-		//--
-		if(\defined('\\APP_AUTH_DB_SQLITE')) {
-			\SmartFrameworkRuntime::Raise500Error('AUTH STORAGE must not be defined outside AdminAuth !');
-			die((string)self::getClassName().':APP_AUTH_DB_SQLITE:1');
-			return;
-		} //end if
-		\define('APP_AUTH_DB_SQLITE', '#db/auth-admins-'.\SmartHashCrypto::sha1((string)\SMART_FRAMEWORK_SECURITY_KEY).'.sqlite'); // define inject constants direct in global scope, no need to prefix-slashes
-		if(!\defined('\\APP_AUTH_DB_SQLITE')) {
-			\SmartFrameworkRuntime::Raise500Error('AUTH STORAGE could not be defined inside AdminAuth !');
-			die((string)self::getClassName().':APP_AUTH_DB_SQLITE:2');
-			return;
-		} //end if
-		//--
-
-		//--
-		if(\SmartEnvironment::isAdminArea() !== true) {
-			\SmartFrameworkRuntime::Raise403Error('Authentication system is designed for admin/task areas only ...');
-			die((string)self::getClassName().':NotAdminArea');
-			return;
-		} //end if
-		//--
-
-		//--
-		$css_toolkit_ux = '<link rel="stylesheet" type="text/css" href="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url()).'lib/css/toolkit/ux-toolkit.css?'.\Smart::escape_html((string)\SmartUtils::get_app_release_hash()).'" media="all"><link rel="stylesheet" type="text/css" href="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url()).'lib/css/toolkit/ux-toolkit-responsive.css?'.\Smart::escape_html((string)\SmartUtils::get_app_release_hash()).'" media="all">';
-		$btn_return_login_screen = '<a class="ux-button ux-button-details" href="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'">Go&nbsp;Back</a>';
 		//--
 
 		//--
@@ -136,28 +87,31 @@ final class SmartAuthAdminsHandler {
 				$enforce_https = false;
 			} //end if else
 		} //end if
-		if($enforce_https === true) {
-			if((string)\SmartUtils::get_server_current_protocol() !== 'https://') {
-				\SmartFrameworkRuntime::Raise502Error('This Web Area require HTTPS'."\n".'Switch from http:// to https:// in order to use this Web Area');
-				die((string)self::getClassName().':NotHTTPS');
-				return;
-			} //end if
+		//--
+		$errPreCheck = (string) self::preCheckBadGatewayConditions((bool)$enforce_https);
+		if((string)$errPreCheck != '') {
+			\SmartFrameworkRuntime::Raise502Error((string)$errPreCheck);
+			die((string)self::getClassName().'::'.__METHOD__.' # 502 # '.$errPreCheck);
+			return;
 		} //end if
 		//--
 
 		//--
-		if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) {
-			\SmartFrameworkRuntime::Raise208Status(
-				'Unset from config: `APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY` !'."\n".'This is not supported by Smart Auth system ...',
-				'Unsupported Config Settings'
-			);
-			die((string)self::getClassName().':UNSUPPORTED-SETTINGS-OVERALL-ENC-PRIVKEY');
+		$errPreCheck = (string) self::preCheckServiceUnavailableConditions();
+		if((string)$errPreCheck != '') {
+			\SmartFrameworkRuntime::Raise503Error((string)$errPreCheck);
+			die((string)self::getClassName().'::'.__METHOD__.' # 503 # '.$errPreCheck);
 			return;
 		} //end if
 		//--
-		if(!\defined('\\APP_AUTH_PRIVILEGES')) { // this must be check always, not only on initDb
-			\SmartFrameworkRuntime::Raise503Error('Set in config the `APP_AUTH_PRIVILEGES` constant !'."\n".'The `APP_AUTH_PRIVILEGES` constant is required to run this Authentication plugin ...');
-			die((string)self::getClassName().':CHECK-PRIVS');
+
+		//-- Smart Auth Admins does not support a global Private Key
+		if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) {
+			\SmartFrameworkRuntime::Raise208Status(
+				'Unset from config: `APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY` !'."\n".'This is not supported by this Authentication Handler ...',
+				'Unsupported Config Settings'
+			);
+			die((string)self::getClassName().':UNSUPPORTED-SETTINGS-OVERALL-ENC-PRIVKEY');
 			return;
 		} //end if
 		//--
@@ -169,8 +123,31 @@ final class SmartAuthAdminsHandler {
 		$init_fa2_url = '';
 		$init_fa2_qrcode = '';
 		//--
-		if(!\SmartFileSystem::is_type_file((string)\APP_AUTH_DB_SQLITE)) {
-			$init_db = (array) self::initDb((bool)$disable_2fa);
+		$theDbFilePath = '';
+		try {
+			$theDbFilePath = (new \SmartModDataModel\AuthAdmins\SqAuthAdmins(false))->getDbPath(); // skip connect here, to prevent DB File creation if does not exists !
+		} catch(\Exception $e) {
+			\Smart::log_warning(__METHOD__.' # '.'AUTH STORAGE (Pre-Init / Skip Connect) Get Path Failed: `'.$e->getMessage().'`');
+			\SmartFrameworkRuntime::Raise500Error('AUTH STORAGE initialization FAILED !');
+			die((string)self::getClassName().':AUTH-STORAGE:INIT');
+			return;
+		} //end try catch
+		if((string)\trim((string)$theDbFilePath) == '') {
+			\Smart::log_warning(__METHOD__.' # '.'AUTH STORAGE (Pre-Init / Skip Connect) Get Path is Empty');
+			\SmartFrameworkRuntime::Raise500Error('AUTH STORAGE initialization FAILED !');
+			die((string)self::getClassName().':AUTH-STORAGE:STORAGE:INIT');
+			return;
+		} //end if
+		if(!\SmartFileSystem::is_type_file((string)$theDbFilePath)) {
+			$init_db = (array) self::initDb((bool)$disable_2fa, 'The1pas!'); // this need fix !
+			// aaaaaaaaaaaaaaaaaaaaaaaaaaaa
+			// IDEA: set an encrypted cookie from JS for the 1st time, yet there is no auth to get it ; will encrypt and check it against the pass hash
+			// aaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+
+	// TODO !!! Check over the code ; find all occurences ; the max length of pass changed from 2048 to 55 !!!
+
+
 		} //end if
 		//--
 		if(\is_array($init_db)) {
@@ -194,21 +171,14 @@ final class SmartAuthAdminsHandler {
 		//--
 
 		//-- do auth except of login page
-		$try_auth = 'yes';
-		if(isset($_SERVER['PATH_INFO']) AND (!empty($_SERVER['PATH_INFO']))) { // use raw value not from registry, it is safer in the auth context !
-			$try_auth = 'yes';
-		} elseif(!empty($_GET)) {
-			$try_auth = 'yes';
-		} elseif(!empty($_POST)) {
-			$try_auth = 'yes';
-		} elseif(!empty($_REQUEST)) {
-			$try_auth = 'yes';
-		} else {
-			$try_auth = 'no'; // if we have no GET/POST/REQUEST then this is the login page
-		} //end if
+		$try_auth = (bool) self::tryAuthGuard();
 		//--
 
 		//--
+		$use_2fa = (bool) ! $disable_2fa; // init
+		//--
+
+		//-- aaaaaaaaaaaaaaaaaaaaaa !! Review this comment
 		// NEW: when 2FA is not explicit disabled, only SWT Token may override the 2FA ; otherwise normal logins will require 2FA !
 		// HttpBasicAuth must be preserved to have compatibility with WebDAV login ; Ex: gvfs
 		// Thus, implementing Token Auth should be via: HttpBasicAuth + HttpHeaderBearer + Cookie to support all login sub-systems.
@@ -218,87 +188,231 @@ final class SmartAuthAdminsHandler {
 		// Need a system to generate tokens (and also store, for Smart.Unicorn)
 		// IDEA: optional disable normal HttpBasicAuth and allow just HttpBasicAuth use with tokens !?
 		//-- #END
-		$auth_data = (array) \SmartModExtLib\AuthAdmins\AuthProviderHttp::GetCredentials((bool)$enforce_https, (bool)(!$disable_tokens));
-		$auth_method = (string) $auth_data['auth-mode'];
-		$use_www_auth_prompt = true;
-		if(stripos((string)$auth_method, (string)\SmartModExtLib\AuthAdmins\AuthProviderHttp::AUTH_MODE_PREFIX_AUTHEN.\SmartModExtLib\AuthAdmins\AuthProviderHttp::AUTH_MODE_PREFIX_HTTP_BEARER) === 0) { // {{{SYNC-AUTH-PROVIDER-BEARER-SKIP-401-AUTH-PROMPT}}}
-			$use_www_auth_prompt = false; // hide the www-auth header for bearer
-		} //end if
-		$auth_safe = (int) $auth_data['auth-safe'];
-		$auth_error = (string) $auth_data['auth-error'];
-		//-- validate username
-		$auth_user_name = (string) \strtolower((string)$auth_data['auth-user']); // can contain only a-z 0-9 .
-		$auth_user_pass = (string) $auth_data['auth-pass']; // plain pass
-		$auth_user_hash = (string) $auth_data['auth-hash']; // hash pass ; irreversible hash of pass
-		$auth_user_priv = (array)  $auth_data['auth-priv']; // array of privs
+
+		//-- get Auth Credentials
+		$auth_data = (array) self::getAuthCredentials((bool)$enforce_https, (bool)$disable_tokens, (bool)$disable_2fa);
+//\Smart::log_notice(print_r($auth_data,1));
 		//--
-		$auth_stk_error = '';
-		$is_stk_token_auth = false;
-		if($disable_tokens === false) {
-			if((string)\trim((string)$auth_user_hash) == '') { // for normal login only, not for SWT !
-				if((string)trim((string)$auth_user_name) != '') {
-					if((string)\substr((string)$auth_user_name, -6, 6) == '#token') { // detect STK Tokens Auth as: user.name#token
-						$is_stk_token_auth = true;
-						$auth_user_name = (string) \substr((string)$auth_user_name, 0, -6);
-					} //end if
-				} //end if
-			} //end if
-		} //end if
+		$auth_mode = (string) $auth_data['auth-mode']; // v2
+		$use_www_auth_prompt = (bool) ($auth_data['use-www-401-auth-prompt'] === false) ? false : true; // v2
+		$use_2fa = (bool) ($auth_data['use-2fa-auth'] === false) ? false : true; // v2
 		//--
-		if(\SmartAuth::validate_auth_username(
-			(string) $auth_user_name,
-			true // check for reasonable length, as 5 chars
-		) !== true) { // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
-			$auth_user_name = ''; // unset invalid user name
-		} //end if
-		//--
-		$auth_data = null; // no more needed
-		//--
+
+		//-- auth data checks
+		$auth_valid 	= (bool)   $auth_data['auth-valid']; // v2
+		$auth_select 	= (string) $auth_data['auth-select']; // v2
+		$auth_error 	= (string) $auth_data['auth-ermsg']; // v2
+		$auth_warn 		= (string) $auth_data['auth-warn']; // v2
+		$auth_safe 		= (int)    $auth_data['auth-safe']; // v2
+		//-- inits
+		$auth_user_name = '';
+		$auth_user_pass_hash = '';
+		$auth_user_arr_ips = [];
+		$auth_user_arr_priv = [];
+		$is_normal_auth = false;
 		$is_swt_token_auth = false;
-		$hash_of_pass = ''; // {{{SYNC-AUTH-LOGIC-HASH-VS-PASS}}} ; {{{SYNC-AUTH-TOKEN-SWT}}}
-		$use_2fa = (bool) ! $disable_2fa;
-		if((string)trim((string)$auth_user_name) != '') {
+		$is_stk_token_auth = false;
+		//--
+
+		//-- step #1 checks
+		if(
+			($auth_valid === true)
+			AND
+			((string)$auth_error == '')
+			AND
+			((string)$auth_warn == '')
+			AND
+			((int)$auth_safe > 0)
+			AND
+			((string)$auth_select != '')
+			AND
+			\array_key_exists((string)$auth_select, (array)$auth_data) // array key exists
+			AND
+			\is_array($auth_data[(string)$auth_select]) // is array
+			AND
+			((int)\Smart::array_size($auth_data[(string)$auth_select]) > 0) // is non-empty
+			AND
+			((int)\Smart::array_type_test($auth_data[(string)$auth_select]) === 2) // is an associative array
+		) {
 			//--
-			if( // SWT Token Auth
-				($is_stk_token_auth !== true)
-				AND
-				((string)$auth_error == '')
-				AND
-				((string)trim((string)$auth_user_pass) == '')
-				AND
-				((string)\trim((string)$auth_user_hash) != '')
-				AND
-				((int)strlen((string)$auth_user_hash) == (int)\SmartHashCrypto::PASSWORD_HASH_LENGTH) // {{{SYNC-AUTH-HASHPASS-LENGTH}}}
-			) {
-				//-- SWT Token Login ; will provide only the pass hash, ireversible, for security
-				$is_swt_token_auth = true;
-				$hash_of_pass = (string) $auth_user_hash;
-				$use_2fa = false;
+			switch((string)$auth_select) {
 				//--
-			} elseif($is_stk_token_auth === true) {
-				//-- STK Token Auth
-				$use_2fa = false;
-				$hash_of_pass = (string) $auth_user_pass; // temporary store here, $auth_user_pass is reset below
-				//--
-			} else {
-				//-- Plain Pass (Standard Basic Auth)
-				if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
-					(string) $auth_user_pass,
-					(bool) ((\defined('\\APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (\APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false) // check for complexity just on login ! ... for the rest do not check because if this constant changes ... cannot re-update everything !
-				) === true) {
-					//-- Normal Login: user + password ; if 2FA is not disabled will require TOTP token via cookie
-					$hash_of_pass = (string) \SmartHashCrypto::password((string)$auth_user_pass, (string)$auth_user_name);
-					if(\SmartHashCrypto::checkpassword((string)$hash_of_pass, (string)$auth_user_pass, (string)$auth_user_name) !== true) {
-						$hash_of_pass = ''; // reset
+				case 'user-pass':
+					//--
+					if(
+						\array_key_exists('is-valid', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('error-msg', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('warn-msg', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('user-name', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('pass-hash', (array)$auth_data[(string)$auth_select])
+						AND
+						($auth_data[(string)$auth_select]['is-valid'] === true)
+						AND
+						((string)$auth_data[(string)$auth_select]['error-msg'] == '')
+						AND
+						((string)$auth_data[(string)$auth_select]['warn-msg'] == '')
+					) {
+						//--
+						if(
+							((string)\trim((string)$auth_data[(string)$auth_select]['user-name']) != '')
+							AND
+							((string)\trim((string)$auth_data[(string)$auth_select]['pass-hash']) != '')
+							AND
+							(\SmartAuth::validate_auth_username(
+								(string) $auth_data[(string)$auth_select]['user-name'],
+								true // check for reasonable length, as 5 chars
+							) === true)
+							AND
+							(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
+								(string) $auth_data[(string)$auth_select]['pass-hash'],
+								(bool) ((\defined('\\APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (\APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false) // check for complexity as set in configs
+							) === true)
+						) {
+							//--
+							$auth_user_name = (string) $auth_data[(string)$auth_select]['user-name'];
+							//--
+							$auth_user_pass_hash = (string) \SmartHashCrypto::password( // create it, based on the provided user plain password ...
+								(string) $auth_data[(string)$auth_select]['pass-hash'], // this is the plain pass, in this case, auth: user/pass
+								(string) $auth_user_name
+							);
+							if(
+								(\SmartHashCrypto::validatepasshashformat((string)$auth_user_pass_hash) !== true)
+								OR
+								(\SmartHashCrypto::checkpassword( // an extra security check, check if the hash is correct against trimmed username and password
+									(string) \trim((string)$auth_data[(string)$auth_select]['pass-hash']),
+									(string) $auth_user_pass_hash,
+									(string) \trim((string)$auth_user_name)
+								) !== true)
+							) {
+								$auth_user_pass_hash = ''; // reset, it does not match the trimmed variant of username / password !
+							} //end if
+							//-- final check
+							if((string)\trim((string)$auth_user_name) !== '') {
+								if((string)\trim((string)$auth_user_pass_hash) !== '') {
+									$is_normal_auth = true;
+
+// \Smart::log_notice(__METHOD__.' # [DEF] 2FA: '.(int)$use_2fa.' # WWW-Prompt: '.(int)$use_www_auth_prompt); // aaaaaaaaaaaaaaaaaaaa
+
+								} //end if
+							} //end if
+							//--
+						} //end if
+						//--
 					} //end if
 					//--
-				} //end if
+					break;
+					//--
 				//--
-			} //end if else
+				case 'swt-token':
+					//--
+					if(
+						\array_key_exists('is-valid', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('error-msg', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('warn-msg', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('user-name', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('pass-hash', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('token-key', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('token-data', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('restr-ip', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('restr-priv', (array)$auth_data[(string)$auth_select])
+						AND
+						($auth_data[(string)$auth_select]['is-valid'] === true)
+						AND
+						((string)$auth_data[(string)$auth_select]['error-msg'] == '')
+						AND
+						((string)$auth_data[(string)$auth_select]['warn-msg'] == '')
+					) {
+						//--
+						if(
+							((string)\trim((string)$auth_data[(string)$auth_select]['token-key']) != '')
+							AND
+							((int)\Smart::array_size($auth_data[(string)$auth_select]['token-data']) > 0)
+							AND
+							((int)\Smart::array_type_test($auth_data[(string)$auth_select]['token-data']) === 2) // expects an associative array
+							AND
+							((int)\Smart::array_size($auth_data[(string)$auth_select]['restr-ip']) > 0) // this is mandatory for a SWT Token
+							AND
+							((int)\Smart::array_type_test($auth_data[(string)$auth_select]['restr-ip']) === 1) // needs to be a non-associative array list with IP Addresses
+							AND
+							((int)\Smart::array_size($auth_data[(string)$auth_select]['restr-priv']) > 0) // this is mandatory for a SWT Token
+							AND
+							((int)\Smart::array_type_test($auth_data[(string)$auth_select]['restr-priv']) === 1) // needs to be a non-associative array list with Privileges Restrictions
+							AND
+							((string)\trim((string)$auth_data[(string)$auth_select]['user-name']) != '')
+							AND
+							((string)\trim((string)$auth_data[(string)$auth_select]['pass-hash']) != '')
+							AND
+							(\SmartAuth::validate_auth_username(
+								(string) $auth_data[(string)$auth_select]['user-name'],
+								true // check for reasonable length, as 5 chars
+							) === true)
+							AND
+							(\SmartHashCrypto::validatepasshashformat((string)$auth_data[(string)$auth_select]['pass-hash']) === true)
+						) {
+							//--
+							$auth_user_name = (string) $auth_data[(string)$auth_select]['user-name'];
+							//--
+							$auth_user_pass_hash = (string) $auth_data[(string)$auth_select]['pass-hash']; // a validated SWT Token provides a valid format (as expected) password hash, consider it safe, it was previous validated inside getAuthCredentials(), with no errors/warnings (as checked above)
+							//--
+							$auth_user_arr_ips = (array) $auth_data[(string)$auth_select]['restr-ip'];
+							//--
+							$auth_user_arr_priv = (array) $auth_data[(string)$auth_select]['restr-priv'];
+
+							// TODO: check: token-key, token-data
+							// aaaaaaaaaaaaaaaaaaaaaa
+
+							//--
+							if((string)\trim((string)$auth_user_name) !== '') {
+								if((string)\trim((string)$auth_user_pass_hash) !== '') {
+									if( // the `$auth_user_arr_ips` and `$auth_user_arr_priv` must be provided for step #2 checks
+										((int)\Smart::array_size($auth_user_arr_ips) > 0) // a SWT Token must have at least one IP Address Restriction ; if it does not, something went wrong
+										AND
+										((int)\Smart::array_type_test($auth_user_arr_ips) === 1) // non-associative
+										AND
+										((int)\Smart::array_size($auth_user_arr_priv) > 0) // a SWT Token must have at least one Privilege Restriction ; if it does not, something went wrong
+										AND
+										((int)\Smart::array_type_test($auth_user_arr_priv) === 1) // non-associative
+									) {
+										$is_swt_token_auth = true;
+
+// \Smart::log_notice(__METHOD__.' # [SWT] 2FA: '.(int)$use_2fa.' # WWW-Prompt: '.(int)$use_www_auth_prompt); // aaaaaaaaaaaaaaaaaaaa
+
+									} //end if
+								} //end if
+							} //end if
+							//--
+						} //end if
+						//--
+					} //end if
+					//--
+					break;
+					//--
+				default:
+					//-- invalid !!!!!!!!!
+					die('Auth Mode Not Yet Implemented, or Invalid');
+					//--
+			} //end switch
+			//--
 		} //end if
+
+
+
+
 		//--
-		$auth_user_pass = ''; // no more needed !
-		$auth_user_hash = ''; // no more needed !
+		$css_toolkit_ux = '<link rel="stylesheet" type="text/css" href="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url()).'lib/css/toolkit/ux-toolkit.css?'.\Smart::escape_html((string)\SmartUtils::get_app_release_hash()).'" media="all"><link rel="stylesheet" type="text/css" href="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url()).'lib/css/toolkit/ux-toolkit-responsive.css?'.\Smart::escape_html((string)\SmartUtils::get_app_release_hash()).'" media="all">';
+		$btn_return_login_screen = '<a class="ux-button ux-button-details" href="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'">Go&nbsp;Back</a>';
 		//--
 
 		//-- manage login or logout
@@ -306,40 +420,21 @@ final class SmartAuthAdminsHandler {
 		if($use_2fa === true) {
 			$login_msg_2fa = ' (2FA)';
 		} //end if
-		$logged_in = 'no'; // user is not logged in (unsuccessful username or password)
-		$login_or_logout_form = (string) \SmartComponents::http_message_401_unauthorized(
-			(string) 'Authorization Required'.$login_msg_2fa,
-			(string) \SmartComponents::operation_notice('LOGIN FAILED: Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.').
-						$css_toolkit_ux."\n".
-						'<div>'.$btn_return_login_screen.'</div><hr>'."\n".
-						'<img width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_LOADER).'">'.
-						'&nbsp;&nbsp;'.
-						'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">'."\n".
-						'<script>setTimeout(() => { self.location = \''.\Smart::escape_js((string)\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3500);</script>'."\n"
-		);
+		$logged_in = false; // user is not logged in (unsuccessful username or password)
 		//--
-		if(isset($_REQUEST['logout']) AND ((string)$_REQUEST['logout'] != '')) { // do logout
+
+		//-- this is storing the login/logout/401-prompt special page response content
+		$stopper_page = null; // initialize as null ! not empty string ... below checks for null
+		//--
+
+		//-- step #2 checks
+		if(self::isAuthLogout() === true) { // do logout
 			//--
 			\SmartUtils::unset_cookie((string)self::AUTH_2FA_COOKIE_NAME);
 			//--
-			$login_or_logout_form = (string) \SmartComponents::render_app_template(
-				(string) self::TPL_PATH,
-				(string) self::TPL_FILE,
-				[
-					'TITLE' => 'Logout from Admins Area',
-					'MAIN'  => (string) \SmartMarkersTemplating::render_file_template(
-						(string) self::TPL_INC_PATH.'logout.htm',
-						[
-							'RELEASE-HASH' 	=> (string) \SmartUtils::get_app_release_hash(),
-							'IMG-LOADER' 	=> (string) self::IMG_LOADER,
-							'URL-LOGOUT' 	=> (string) \SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script(),
-							'TIME-REDIR' 	=> 1500 // 1.5 sec.
-						]
-					)
-				]
-			);
+			$stopper_page = (string) self::renderAuthLogoutPage();
 			//--
-		} elseif((string)$try_auth != 'no') { // requires login ; check login
+		} elseif($try_auth !== false) { // requires login ; check login
 			//-- open connection to AuthLog DB
 			$modelAuthLog = null;
 			try {
@@ -387,13 +482,13 @@ final class SmartAuthAdminsHandler {
 					//--
 					$html_429_js = '';
 					if($require_captcha === true) {
-						$html_429_js = (string) '<div class="operation_info">To UNLOCK the Login Requests for your IP Address earlier, SOLVE the CAPTCHA below and click the `Go Back` button below ...</div>'.\SmartCaptcha::drawCaptchaForm((string)self::CAPTCHA_FORM_NAME, '', '', true, true);
+						$html_429_js = (string) '<div class="operation_info">To UNLOCK the Sign-In Requests for your IP Address earlier, SOLVE the CAPTCHA below and click the `Go Back` button below ...</div>'.\SmartCaptcha::drawCaptchaForm((string)self::CAPTCHA_FORM_NAME, '', '', true, true);
 					} else {
 						$html_429_js = '<script>setTimeout(() => { self.location = self.location; }, 15000);</script>'; // refresh every 15 sec
 					} //end if
 					\SmartFrameworkRuntime::outputHttpSafeHeader('Retry-After: '.(int)$retry_seconds);
 					\SmartFrameworkRuntime::Raise429Error(
-						(string) 'TOO MANY FAILED Login ATTEMPTS For This IP ADDRESS ['.\SmartUtils::get_ip_client().']'."\n".
+						(string) 'TOO MANY FAILED Sign-In ATTEMPTS For This IP ADDRESS ['.\SmartUtils::get_ip_client().']'."\n".
 							'IP Lock TIMEOUT: up to '.((int)$retry_seconds - (int)\time()).' seconds ...'."\n",
 						(string) \SmartComponents::operation_result('Retry After DateTime: '.\date('Y-m-d H:i:s O', (int)$retry_seconds))."\n".
 							\SmartComponents::operation_notice('Current Server DateTime: '.\Smart::escape_html((string)\date('Y-m-d H:i:s O')))."\n".
@@ -422,188 +517,55 @@ final class SmartAuthAdminsHandler {
 				die((string)self::getClassName().':AUTH-DB-FAILED');
 				return;
 			} //end try catch
-			//--
-			if((string)$auth_user_name != '') {
-				//-- # STK Token Login Manage
-				if($is_stk_token_auth === true) {
-					$token_key = (string) $hash_of_pass;
-					$hash_of_pass = ''; // security: reset here !
-					$check_token = (array) $modelAdmins->getLoginActiveTokenByIdAndKey(
-						(string) $auth_user_name,
-						(string) $token_key
-					);
-					if((int)\Smart::array_size($check_token) > 0) { // token found, needs validation
-						$valid_token = (array) \SmartModExtLib\AuthAdmins\AuthTokens::validateSTKEncData(
-							(string) ($check_token['id'] ?? null),
-							(string) ($check_token['token_hash'] ?? null),
-							(int)    (int)($check_token['expires'] ?? null),
-							(string) ($check_token['token_data'] ?? null)
-						);
-						if(
-							((string)$valid_token['error'] == '')
-							AND
-							((string)$valid_token['ernum'] == '0')
-							AND
-							((string)$valid_token['auth-id'] === (string)$auth_user_name)
-							AND
-							((string)$valid_token['key'] === (string)$token_key)
-							AND
-							((string)$token_key === (string)\SmartModExtLib\AuthAdmins\AuthTokens::createPublicPassKey((string)$auth_user_name, (string)$valid_token['seed']))
-						) { // token is valid
-							if( // {{{SYNC-STK-TOKEN-PRIVILEGES}}}
-								((string)\trim((string)$valid_token['restr-priv-lst']) != '') // cannot be empty ; must be * or <priv-a>,<priv-b>,...
-							) { // token URL is authorized
-								$check_token_user_data = (array) $modelAdmins->getById((string)$valid_token['auth-id']);
-								if(
-									((int)\Smart::array_size($check_token_user_data) > 0)
-									AND
-									isset($check_token_user_data['id'])
-									AND
-									((string)\trim((string)$check_token_user_data['id']) != '')
-									AND
-									((string)$check_token_user_data['id'] === (string)$auth_user_name)
-								) {
-									//-- !!! at this point all Token login, Token validation and URL validation checks have to be completed and 100% safe
-									$hash_of_pass = (string) ($check_token_user_data['pass'] ?? null); // re-init with the account pass hash !
-									$auth_user_priv = (array) $valid_token['restr-priv-arr']; // array of STK token privs ; above must be checked that $valid_token['restr-priv-lst'] is non-empty because empty array is accepted only if list of privs = *
-									if((int)\Smart::array_size($auth_user_priv) <= 0) { // {{{SYNC-AUTH-TOKENS-EMPTY-PRIVS-PROTECTION}}}
-										if((string)$valid_token['restr-priv-lst'] != '*') {
-											$auth_user_priv = [ 'invalid' ]; // protection
-										} //end if
-									} //end if
-									//-- !!! #
-								} //end if
-								$check_token_user_data = null;
-							} //end if
-						} else {
-							$auth_stk_error = '#'.(int)$valid_token['ernum'].' `'.$valid_token['error'].'`';
-						} //end if else
-						$valid_token = null;
-					} //end if
-					$check_token = null;
-					$token_key = null;
-				} //end if
-				//-- # end STK
-			} //end if
 			//-- try to get the user account from DB
-			if(((string)$auth_user_name == '') OR ((string)$hash_of_pass == '')) {
+			$account_data = []; // by default, consider it is an INVALID Sign-In, having Username and/or Password empty !
+			//--
+			if(
+				((string)\trim((string)$auth_user_name) != '')
+				AND
+				((string)\trim((string)$auth_user_pass_hash) != '')
+			) { // if the combination of userName/passHash is not empty, try to read login data just ; if does not match a valid/active account will return an empty array
 				//--
-				$admin_login = []; // Invalid Login, Username or Password is empty
-				//--
-			} else {
-				//--
-				$admin_login = (array) $modelAdmins->getLoginData(
+				$account_data = (array) $modelAdmins->getLoginData(
 					(string) $auth_user_name,
-					(string) $hash_of_pass
+					(string) $auth_user_pass_hash
 				); // try to login
+
+/* // test Data only ... ; aaaaaaaaaaaaaaaaaaaaaa
+$account_data['title'] = 'Mr.';
+$account_data['address'] = 'str. Coposu nr. 97';
+$account_data['zip'] = 400235;
+$account_data['city'] = 'Cluj-Napoca';
+$account_data['region'] = 'Cluj';
+$account_data['country'] = 'Romania';
+$account_data['phone'] = '0725939155';
+$account_data['settings'] = '{ "a":1, "b":2, "c":[0, 1, 2], "d":{"e":"f", "g":78} }';
+$account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
+*/
+
 				//--
 			} //end if else
+			//-- Valid Login breakpoint ; test if login is successful
+			$is_login_data_valid = (bool) self::isAuthLoginValid(
+				(string) $auth_user_name,
+				(string) $auth_user_pass_hash,
+				(array)  $account_data
+			);
 			//--
-
-			//-- test if login is successful
-			if(isset($admin_login['id']) AND ((string)$admin_login['id'] != '')) {
+			if($is_login_data_valid === true) {
 				//-- Valid IP break point ; if there is an IP restrictions list, test if current client login is allowed
-				$is_ip_valid = true;
-				//--
-				$admin_ip_restr_login = (string) \trim((string)($admin_login['ip_restr'] ?? null));
-				if((string)$admin_ip_restr_login != '') { // if we have a list of restrictions
-					//--
-					$admin_arr_allowed_ips = (array) self::parseAccountIpRestrictionsList((string)$admin_ip_restr_login);
-					//--
-					if((int)\Smart::array_size((array)$admin_arr_allowed_ips) > 0) {
-						//--
-						if(
-							(!\in_array((string)\SmartUtils::get_ip_client(), (array)$admin_arr_allowed_ips))
-							OR // double check: in array and in list
-							(\stripos((string)$admin_ip_restr_login, '<'.\SmartUtils::get_ip_client().'>') === false)
-						) { // {{{SYNC-IPV6-STORE-SHORTEST-POSSIBLE}}} ; IPV6 addresses may vary .. find a standard form, ex: shortest
-							$is_ip_valid = false; // Invalid Login, the Ip Address is not in the list
-						} //end if
-						//--
-					} else {
-						//--
-						$is_ip_valid = false; // Invalid Login, the Ip Address List exists but is Invalid (empty parsed array)
-						//--
-					} //end if else
-					//--
-					$admin_arr_allowed_ips = null; // free mem
-					//--
+				$is_ip_valid = (bool) self::isAuthIPAddressValid(
+					(string) \trim((string)($account_data['ip_restr'] ?? null))
+				);
+				if(\Smart::array_size($auth_user_arr_ips) > 0) { // double check, Client IP Validation
+					$is_ip_valid = (bool) \in_array((string)\SmartUtils::get_ip_client(), (array)$auth_user_arr_ips);
 				} //end if
-				$admin_ip_restr_login = null; // free mem
 				//-- 2FA break point
-				$is_2fa_valid = false;
-				if($use_2fa === true) {
-					//--
-					$cookie_2fa = (string) \trim((string)\SmartUtils::get_cookie((string)self::AUTH_2FA_COOKIE_NAME));
-					if(
-						((string)$cookie_2fa != '')
-						AND
-						((int)\strlen((string)$cookie_2fa) <= 128) // hardcoded max length supported to avoid overloads
-					) {
-						if(strpos((string)$cookie_2fa, '#') === 0) {
-							$cookie_2fa = (string) \trim((string)\trim((string)$cookie_2fa, '#'));
-							if((string)$cookie_2fa != '') {
-								$cookie_2fa = (string) \trim((string)\Smart::base_to_hex_convert((string)$cookie_2fa, 32));
-								$cookie_2fa = (string) \trim((string)\SmartUnicode::utf8_to_iso((string)$cookie_2fa)); // safety
-								if((string)$cookie_2fa != '') {
-									$cookie_2fa = (string) \trim((string)\hex2bin((string)$cookie_2fa));
-									if(strpos((string)$cookie_2fa, '#') === 0) {
-										$cookie_2fa = (string) \trim((string)\trim((string)$cookie_2fa, '#'));
-										if((string)$cookie_2fa != '') {
-											if(!preg_match((string)self::AUTH_2FA_REGEX_TOKEN, (string)$cookie_2fa)) { // 2FA token
-												$cookie_2fa = ''; // wrong value, expected having the numeric token
-											} //end if
-										} //end if
-									} //end if
-								} //end if
-							} //end if
-						} //end if
-					} //end if
-					//--
-					$is_2fa_valid = false;
-					//--
-					if((string)$cookie_2fa != '') {
-						//--
-						$user_hash_2fa = (string) \Smart::b64_to_b64s((string)\SmartHashCrypto::sha256((string)\SmartUtils::client_ident_private_key().'#'.$admin_login['id'].'#'.\date('Y-m-d').'#'.\SmartUtils::get_server_current_basedomain_name().'#'.\SMART_FRAMEWORK_SECURITY_KEY, true)); // the 2FA hash based on client unique signature + date yyyy-mm-dd, so is valid just in that day
-						//--
-						if(preg_match((string)self::AUTH_2FA_REGEX_TOKEN, (string)$cookie_2fa)) { // 2FA token
-							//--
-							$user_2fa = (string) \trim((string)$modelAdmins->get2FAGetToken((string)$modelAdmins->decrypt2FAKey((string)$admin_login['fa2'], (string)$admin_login['id'])));
-							//-- 2FA over HTTP (not HTTPS) will not work in new browsers, ex: Chromium because it does not support cookie None policy over plain HTTP but just over HTTPS
-							if((string)$cookie_2fa === (string)$user_2fa) { // check if 2FA token is valid
-								//--
-								\SmartUtils::unset_cookie((string)self::AUTH_2FA_COOKIE_NAME); // req. to be sure change policy to: None
-								//--
-								// IMPORTANT: this cookie is ploicy None / optional HTTPS only ;
-								// but is still safe since the value of this cookie is a safe hash based on current visitor IP and Signature
-								// so it does not make any importance if leaked on 3rd party websites
-								// the reasons of being set with cookie policy None is to work in protected iframes even with Firefox and other modern browsers
-								// altought the reason being optional HTTPS only with cookie policy none is because some modern browsers does not allow cookie policy None over plain HTTP but in that case if 2FA is used over plain HTTP only will not be safe in any case and makes no importance !
-								//--
-								\SmartUtils::set_cookie( // change the 2FA token (expiring) with the 2FA hash
-									(string) self::AUTH_2FA_COOKIE_NAME,
-									(string) $user_hash_2fa,
-									0, // session expire
-									'/', // path
-									'@', // domain
-									'None' // {{{SYNC-COOKIE-POLICY-NONE}}} ; same site policy: None # Safety: OK, the token cookie is bind to visitor ID, incl. IP address, thus is not important if revealed to 3rd party ... # this is a fix (required for iFrame srcdoc, will not send cookies if Lax or Strict on Firefox impl.)
-								);
-								//--
-								$is_2fa_valid = true;
-								//--
-							} //end if
-							//--
-						} else { // check if 2FA hash is valid
-							//--
-							if((string)$cookie_2fa === (string)$user_hash_2fa) {
-								$is_2fa_valid = true;
-							} //end if
-							//--
-						} //end if
-						//--
-					} //end if
-					//--
-				} //end if
+				$is_2fa_valid = (bool) self::isAuth2FAValid(
+					(string) ($account_data['id'] ?? null),
+					(bool)   $use_2fa,
+					(string) $modelAdmins->get2FAPinToken((string)$modelAdmins->decrypt2FAKey((string)($account_data['fa2'] ?? null), (string)($account_data['id'] ?? null)))
+				);
 				//-- #end# 2FA break point
 				if(
 					($is_ip_valid === true) // IP is valid
@@ -613,57 +575,70 @@ final class SmartAuthAdminsHandler {
 						OR
 						(($use_2fa === true) AND ($is_2fa_valid === true)) // 2FA is enabled and 2FA token/hash is valid
 					)
-				) {
+					AND
+					(
+						($is_normal_auth === true)
+						OR
+						($is_swt_token_auth === true)
+					//	OR
+					//	($is_stk_token_auth === true) // aaaaaaaaaaaaaaaaaaaaaa
+					)
+				) { // SUCCESSFUL login ; at this step, the login is secure enough (by checks) to be considered valid
 					//--
-					$logged_in = 'yes'; // user is logged in
+					$logged_in = true; // FLAG: user is logged in !
 					//-- restrictions fix: tokens have `modify` and `account` restriction on login, always
 					if(($is_swt_token_auth === true) OR ($is_stk_token_auth === true)) {
-						$admin_login['restrict'] = '<def-account>,<account>,<token>'; // {{{SYNC-AUTH-TOKEN-RESTRICTIONS}}} ; {{{SYNC-AUTH-RESTRICTIONS}}} ; {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-ACC-NO-EDIT-RESTRICTION}}}
-						if((int)\Smart::array_size($auth_user_priv) > 0) { // {{{SYNC-AUTH-TOKEN-PRIVS-INTERSECT}}}
-							$admin_login['priv'] = (string) \Smart::array_to_list((array)\array_values((array)\array_intersect((array)\Smart::list_to_array((string)$admin_login['priv'], true), (array)$auth_user_priv))); // {{{SYNC-SWT-IMPLEMENT-PRIVILEGES}}}
-						} //end if
-						//die(\Smart::escape_html($admin_login['priv']));
+						//--
+						$account_data['restrict'] = (string) self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST; // if logged in with a Token (SWT or STK) these are the restrictions which are enforced ; {{{SYNC-AUTH-TOKEN-RESTRICTIONS}}} ; {{{SYNC-AUTH-RESTRICTIONS}}} ; {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-ACC-NO-EDIT-RESTRICTION}}}
+						$account_data['priv'] = (string) \Smart::array_to_list((array)\array_values(
+							(array) \array_intersect( // {{{SYNC-AUTH-TOKEN-PRIVS-INTERSECT}}}
+								(array) \Smart::list_to_array((string)$account_data['priv'], true),
+								(array) $auth_user_arr_priv
+							)
+						)); // {{{SYNC-SWT-IMPLEMENT-PRIVILEGES}}}
+						//--
+						//die(\Smart::escape_html($account_data['priv'])); // aaaaaaaaaaaaaaaaaaaaaa
 					} //end if
 					//--
 					\SmartAuth::set_login_data( // v.20231018
 						'SMART-ADMINS-AREA', // auth realm
-						(string) $auth_method, // auth method
-						(string) $admin_login['pass'], // auth password hash (will be stored as encrypted, in-memory)
-						(string) $admin_login['id'], // auth ID (on backend must be set exact as the auth username)
-						(string) $admin_login['id'], // auth user name
-						(string) $admin_login['email'], // user email * Optional *
-						(string) \trim((string)\trim((string)$admin_login['name_f']).' '.\trim((string)$admin_login['name_l'])), // user full name (First Name + ' ' + Last name) * Optional *
-						(string) $admin_login['priv'], // user privileges * Optional *
-						(string) $admin_login['restrict'], // user restrictions * Optional *
-						(int)    \Smart::format_number_int($admin_login['quota'],'+'), // user quota in MB * Optional * ... zero, aka unlimited
+						(string) $auth_mode, // auth method
+						(string) $account_data['pass'], // auth password hash (will be stored as encrypted, in-memory)
+						(string) $account_data['id'], // auth ID (on backend must be set exact as the auth username)
+						(string) $account_data['id'], // auth user name
+						(string) $account_data['email'], // user email * Optional *
+						(string) \trim((string)\trim((string)$account_data['name_f']).' '.\trim((string)$account_data['name_l'])), // user full name (First Name + ' ' + Last name) * Optional *
+						(string) $account_data['priv'], // user privileges * Optional *
+						(string) $account_data['restrict'], // user restrictions * Optional *
+						(int)    \Smart::format_number_int($account_data['quota'],'+'), // user quota in MB * Optional * ... zero, aka unlimited
 						[ // user metadata (array) ; may vary
 							'auth-safe' => (int)    $auth_safe,
-							'title' 	=> (string) $admin_login['title'],
-							'name_f' 	=> (string) $admin_login['name_f'],
-							'name_l' 	=> (string) $admin_login['name_l'],
-							'address' 	=> (string) $admin_login['address'],
-							'city' 		=> (string) $admin_login['city'],
-							'region' 	=> (string) $admin_login['region'],
-							'country' 	=> (string) $admin_login['country'],
-							'zip' 		=> (string) $admin_login['zip'],
-							'phone' 	=> (string) $admin_login['phone'],
-							'settings' 	=> (string) $admin_login['settings'],
+							'title' 	=> (string) $account_data['title'],
+							'name_f' 	=> (string) $account_data['name_f'],
+							'name_l' 	=> (string) $account_data['name_l'],
+							'address' 	=> (string) $account_data['address'],
+							'zip' 		=> (string) $account_data['zip'],
+							'city' 		=> (string) $account_data['city'],
+							'region' 	=> (string) $account_data['region'],
+							'country' 	=> (string) $account_data['country'],
+							'phone' 	=> (string) $account_data['phone'],
+							'settings' 	=> (array)  \Smart::json_decode((string)$account_data['settings'], true, 7), // max 7 levels ; {{{SYNC-AUTH-METADATA-MAX-LEVELS}}}
 						],
-						(string) $modelAdmins->decryptPrivKey((string)$admin_login['keys'], (string)$admin_login['pass']), // user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
+						(string) $modelAdmins->decryptPrivKey((string)$account_data['keys'], (string)$account_data['pass']), // user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
 					);
-					//print_r(\SmartAuth::get_login_data()); die();
+					//die('<pre>'.\Smart::escape_html(\SmartUtils::pretty_print_var(\SmartAuth::get_login_data())).'</pre>'); // aaaaaaaaaaaaaaaaaaaaaa
 					//--
 					\SmartFrameworkRuntime::SingleUser_Mode_AuthBreakPoint();
 					//--
 					if($modelAuthLog !== null) {
 						$modelAuthLog->logAuthSuccess(
-							(string) $admin_login['id'], // successful auth account ID
+							(string) $account_data['id'], // successful auth account ID
 							(string) \SmartUtils::get_ip_client(), // client IP
-							(string) (($is_swt_token_auth === true) ? 'SWT Token: Success' : (($is_stk_token_auth === true) ? 'SWT Token: Success' : 'Username/Password: Success')).' ; '.$auth_method.' ; ['.$auth_safe.']' // message
+							(string) (($is_swt_token_auth === true) ? 'SWT Token: Success' : (($is_stk_token_auth === true) ? 'SWT Token: Success' : 'Username/Password: Success')).' ; '.$auth_mode.' ; ['.$auth_safe.']' // message
 						);
 					} //end if
 					//--
-				} else {
+				} else { // log unsuccessful login
 					//--
 					if(
 						($is_ip_valid !== true) // IP is not valid
@@ -684,9 +659,9 @@ final class SmartAuthAdminsHandler {
 								$failMsg = 'STK Token ERR: '.$auth_stk_error;
 							} //end if
 							$modelAuthLog->logAuthFail(
-								(string) $admin_login['id'], // successful auth account ID
+								(string) $account_data['id'], // successful auth account ID
 								(string) \SmartUtils::get_ip_client(), // client IP
-								'Login FAILED: 2FA or IP Check ; AuthUserName: `'.$auth_user_name.'` ; '.$failMsg.' ; '.$auth_method.' ; ['.$auth_safe.']' // message
+								'Sign-In FAILED: 2FA or IP Check ; AuthUserName: `'.$auth_user_name.'` ; '.$failMsg.' ; '.$auth_mode.' ; ['.$auth_safe.']' // message
 							);
 							$failMsg = null;
 						} //end if
@@ -709,7 +684,7 @@ final class SmartAuthAdminsHandler {
 					$modelAuthLog->logAuthFail(
 						(string) $auth_user_name, // successful auth account ID
 						(string) \SmartUtils::get_ip_client(), // client IP
-						(string) $failMsg.' ; '.$auth_method.' ; ['.$auth_safe.']' // message
+						(string) $failMsg.' ; '.$auth_mode.' ; ['.$auth_safe.']' // message
 					);
 					$failMsg = null;
 				} //end if
@@ -721,54 +696,11 @@ final class SmartAuthAdminsHandler {
 			//--
 		} else { // display login form
 			//--
-			$arr_bw = (array) \SmartComponents::get_imgdesc_by_bw_id((string)\SmartUtils::get_os_browser_ip('bw'));
-			//--
-			$login_or_logout_form = (string) \SmartComponents::render_app_template(
-				(string) self::TPL_PATH,
-				(string) self::TPL_FILE,
-				[
-					'TITLE' => 'Login to '.((\SmartEnvironment::isTaskArea() === true) ? 'Task' : 'Admin').' Area',
-					'MAIN'  => (string) \SmartMarkersTemplating::render_file_template(
-						(string) self::TPL_INC_PATH.'login.htm',
-						[
-							'RELEASE-HASH' 	=> (string) \SmartUtils::get_app_release_hash(),
-							'USE-2FA' 		=> (string) (($use_2fa === true) ? '1' : '0'),
-							'REGEX-2FA' 	=> (string) self::AUTH_2FA_REGEX_TOKEN,
-							'COOKIE-N-2FA' 	=> (string) self::AUTH_2FA_COOKIE_NAME,
-							'LOGIN-SCRIPT' 	=> (string) ((\SmartEnvironment::isTaskArea() === true) ? 'task.php' : 'admin.php'),
-							'LOGIN-URL' 	=> (string)  \SmartUtils::crypto_blowfish_encrypt((string)'#!'.((\SmartEnvironment::isTaskArea() === true) ? 'tsk' : 'adm').'/DISPLAY-REALMS'), // {{{SYNC-AUTH-ADMINS-LOGIN-SCRIPT}}}
-							'LOGIN-AREA' 	=> (string) ((\SmartEnvironment::isTaskArea() === true) ? 'Task' : 'Admin'),
-							'POWERED-HTML' 	=> (string) \SmartComponents::app_powered_info(
-								'no',
-								[
-									[],
-									[
-										'type' => 'sside',
-										'name' => (string) self::TXT_UNICORN,
-										'logo' => (string) \SmartUtils::get_server_current_url().self::IMG_UNICORN,
-										'url' => ''
-									],
-									[
-										'type' => 'cside',
-										'name' => (string) $arr_bw['desc'],
-										'logo' => (string) \SmartUtils::get_server_current_url().$arr_bw['img'],
-										'url' => ''
-									]
-								],
-								false, // show dbs
-								true, // watch
-								true // show logo
-							),
-							'AREA-ID' 		=> (string) (\defined('\\SMART_SOFTWARE_NAMESPACE') ? \SMART_SOFTWARE_NAMESPACE : 'N/A'),
-							'CRR-YEAR' 		=> (string) \date('Y'),
-							'LOGOUT-URL' 	=> (string) \SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script().'?logout=yes',
-							'ID-USER' 		=> (string) $auth_user_name,
-							'ID-AUTH-MET' 	=> (string) $auth_method,
-							'ID-AUTH-TYP' 	=> (string) ((!!$is_swt_token_auth) ? 'SWT' : ((!!$is_stk_token_auth) ? 'STK' : 'DEF')).$login_msg_2fa,
-						]
-					),
-					'SEMAPHORE' => (string) \Smart::array_to_list([ 'skip:js-ui', 'skip:js-media', 'skip:unveil-js' ]),
-				]
+			$stopper_page = (string) self::renderAuthLoginPage(
+				(bool)   $disable_2fa,
+				(string) $auth_user_name,
+				(string) $auth_mode,
+				(string) ((!!$is_swt_token_auth) ? 'SWT' : ((!!$is_stk_token_auth) ? 'STK' : 'DEF')).$login_msg_2fa
 			);
 			//--
 		} //end if else
@@ -788,7 +720,7 @@ final class SmartAuthAdminsHandler {
 				((string)\trim((string)$init_fa2_url) != '')
 			) {
 				$extra_html .= '<br><hr>';
-				$extra_html .= '<div style="color:#FF3300;"><b>Before refreshing this page save or scan the FA2 code to be able to login using Two Factor Authentication.</b></div>';
+				$extra_html .= '<div style="color:#FF3300;"><b>Before refreshing this page save or scan the FA2 code to be able to Sign-In using Two Factor Authentication.</b></div>';
 				$extra_html .= '<h5>2FA Setup QRCode to use with <i>FreeOTP App</i> or similar:</h5><div title="'.\Smart::escape_html((string)$init_fa2_url).'">'.$init_fa2_qrcode.'</div>'."\n";
 				$extra_html .= '<h6 style="color:#778899">2FA Setup Token (Algorithm=SHA384 ; Digits=8 ; Seconds=30):<br><span style="color:#ECECEC">`'.\Smart::escape_html((string)$init_fa2_key).'`</span></h6>'."\n";
 			} //end if
@@ -826,12 +758,25 @@ final class SmartAuthAdminsHandler {
 		//--
 
 		//--
-		if(((string)$logged_in != 'yes') OR (\SmartAuth::check_login() !== true)) { // IF NOT LOGGED IN
+		if(($logged_in !== true) OR (\SmartAuth::check_login() !== true)) { // IF NOT LOGGED IN
 			//--
-			if((string)$try_auth != 'no') { // this is optional because on this side will die() anyway ...
+			if($stopper_page === null) {
+				$stopper_page = (string) \SmartComponents::http_message_401_unauthorized(
+					(string) 'Authorization Required'.$login_msg_2fa,
+					(string) \SmartComponents::operation_notice('Sign-In FAILED: Either you supplied the wrong credentials or your browser doesn\'t understand how to supply the credentials required.').
+								$css_toolkit_ux."\n".
+								'<div>'.$btn_return_login_screen.'</div><hr>'."\n".
+								'<img width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_LOADER).'">'.
+								'&nbsp;&nbsp;'.
+								'<img title="'.\Smart::escape_html((string)self::TXT_UNICORN).'" width="48" height="48" src="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url().self::IMG_UNICORN).'">'."\n".
+								'<script>setTimeout(() => { self.location = \''.\Smart::escape_js((string)\SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script()).'\'; }, 3500);</script>'."\n"
+				);
+			} //end if
+			//--
+			if($try_auth !== false) { // this is optional because on this side will die() anyway ...
 				\SmartFrameworkRuntime::Raise401Prompt(
 					'Authorization Required'.$login_msg_2fa,
-					(string) $login_or_logout_form,
+					(string) $stopper_page,
 					'Private Area',
 					(bool) $use_www_auth_prompt
 				);
@@ -839,8 +784,12 @@ final class SmartAuthAdminsHandler {
 				return;
 			} //end if
 			//--
-			\SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // fix: needs no cache headers
-			die((string)$login_or_logout_form); // display login or logot form
+			if(!\headers_sent()) {
+				\SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // fix: needs no cache headers
+			} else {
+				\Smart::log_warning(__METHOD__.' # Headers Already Sent ...');
+			} //end if
+			die((string)$stopper_page); // display login or logout form
 			//--
 		} //end if
 		//--
@@ -850,34 +799,7 @@ final class SmartAuthAdminsHandler {
 
 
 	//================================================================
-	private static function parseAccountIpRestrictionsList(string $acc_restr_ips) : array {
-		//--
-		$acc_restr_ips = (string) \trim((string)$acc_restr_ips);
-		if((string)$acc_restr_ips == '') {
-			return [];
-		} //end if
-		//--
-		$arr_ips = [];
-		//--
-		$arr_tmp_ips = (array) \Smart::list_to_array((string)$acc_restr_ips);
-		foreach($arr_tmp_ips as $key => $val) {
-			if((string)\trim((string)\SmartValidator::validate_filter_ip_address((string)$val)) != '') { // if valid IP address
-				$val = (string) \trim((string)\Smart::ip_addr_compress((string)$val)); // {{{SYNC-IPV6-STORE-SHORTEST-POSSIBLE}}} ; IPV6 addresses may vary .. find a standard form, ex: shortest
-				if((string)$val != '') {
-					$arr_ips[] = (string) $val;
-				} //end if
-			} //end if
-		} //end foreach
-		$arr_tmp_ips = null;
-		//--
-		return (array) $arr_ips;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	private static function initDb(bool $disable_2fa) : array {
+	private static function initDb(bool $disable_2fa, string $real_plain_password) : array {
 		//--
 		self::$is_init_db = true;
 		//--
@@ -917,13 +839,13 @@ final class SmartAuthAdminsHandler {
 				'Set in config: `APP_AUTH_ADMIN_PASSWORD` !'."\n".'You must set the `APP_AUTH_ADMIN_PASSWORD` constant into config before installation. Manually REFRESH this page after by pressing F5 ...',
 			];
 		} //end if
-		$real_plain_password = (string) \SmartAuth::decrypt_privkey((string)\APP_AUTH_ADMIN_PASSWORD, (string)\APP_AUTH_ADMIN_USERNAME);
+	//	$real_plain_password = (string) \SmartAuth::decrypt_privkey((string)\APP_AUTH_ADMIN_PASSWORD, (string)\APP_AUTH_ADMIN_USERNAME);
 		if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
 			(string) $real_plain_password,
 			(bool) ((\defined('\\APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (\APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false) // check for complexity just on login ! ... for the rest do not check because if this constant changes ... cannot re-update everything !
 		) !== true) {
 			return [
-				'Invalid value set in config for: `APP_AUTH_ADMIN_PASSWORD` ... need to be changed !'."\n".'THE PASSWORD IS TOO SHORT OR DOES NOT MEET THE REQUIRED COMPLEXITY CRITERIA.'."\n".'Must be min 8 chars and max 30 chars.'."\n".'Must contain at least 1 character A-Z, 1 character a-z, one digit 0-9, one special character such as: ! @ # $ % ^ & * ( ) _ - + = [ { } ] / | . , ; ? ...'."\n".'Manually REFRESH this page after by pressing F5 ...',
+				'Invalid value set in config for: `APP_AUTH_ADMIN_PASSWORD` ... need to be changed !'."\n".'THE PASSWORD IS TOO SHORT OR DOES NOT MEET THE REQUIRED COMPLEXITY CRITERIA.'."\n".'Must be min 8 chars and max 72 chars.'."\n".'Must contain at least 1 character A-Z, 1 character a-z, one digit 0-9, one special character such as: ! @ # $ % ^ & * ( ) _ - + = [ { } ] / | . , ; ? ...'."\n".'Manually REFRESH this page after by pressing F5 ...',
 			];
 		} //end if
 		//--
@@ -941,11 +863,11 @@ final class SmartAuthAdminsHandler {
 		$init_username = (string) \APP_AUTH_ADMIN_USERNAME;
 		$init_password = (string) $real_plain_password;
 		//--
-		$init_privileges = (string) '<superadmin>,<admin>';
+		$init_privileges = (string) \SmartAuth::DEFAULT_PRIVILEGES; // {{{SYNC-AUTH-DEFAULT-ADM-SUPER-PRIVS}}}
 		$init_privileges = \Smart::list_to_array((string)$init_privileges, true);
 		$init_privileges = \Smart::array_to_list((array)$init_privileges);
 		//--
-		$wr = $idb->insertAccount(
+		$wr = (int) $idb->insertAccount(
 			[
 				'id' 	 	=> (string) $init_username,
 				'email'  	=> null,
@@ -991,15 +913,6 @@ final class SmartAuthAdminsHandler {
 			(string) $user_2faurl, 		// FA2 URL
 			(string) $user_2faqrcode, 	// FA2 Barcode (SVG)
 		];
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	private static function getClassName() : string {
-		//--
-		return (string) \Smart::getClassNameWithoutNamespacePrefix((string)__CLASS__);
 		//--
 	} //END FUNCTION
 	//================================================================

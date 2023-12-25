@@ -40,7 +40,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20231003
+ * @version 	v.20231119
  * @package 	Plugins:Mailer
  *
  */
@@ -409,7 +409,7 @@ final class SmartMailerSend {
 		} //end switch
 		//--
 		if((string)$this->msgid == '') { // ensure the same message ID on multiple sends
-			$this->msgid = (string) Smart::uuid_10_seq().'-'.Smart::uuid_10_str().'-'.Smart::uuid_10_num().'@'.Smart::safe_validname($tmp_domain);
+			$this->msgid = (string) Smart::uuid_10_seq().'-'.Smart::uuid_10_str().'-'.Smart::uuid_10_num().'@'.Smart::safe_validname((string)$tmp_domain);
 		} //end if
 		//--
 		$this->mime_message .= 'X-Mailer: '.'Smart.Framework Mailer ('.$this->safe_header_str((string)SMART_FRAMEWORK_VERSION).')'."\r\n";

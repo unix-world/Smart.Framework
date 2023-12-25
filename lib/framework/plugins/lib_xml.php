@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     extensions: PHP XML ; classes: Smart
- * @version     v.20221220
+ * @version     v.20231207
  * @package     Plugins:ConvertersAndParsers
  *
  */
@@ -51,12 +51,12 @@ final class SmartXmlParser {
 
 	//===============================
 	private $encoding = 'ISO-8859-1';
-	private $mode = 'simple'; // simple | extended | domxml (requires/prefer: DOMDocument)
+	private $mode = 'simple'; // simple | simple+attributes | extended | domxml (requires/prefer: DOMDocument)
 	//===============================
 
 
 	//===============================
-	public function __construct($mode='simple', $encoding='') {
+	public function __construct(?string $mode='simple', ?string $encoding='') {
 		//--
 		if((string)$encoding == '') {
 			if(defined('SMART_FRAMEWORK_CHARSET')) {
@@ -73,6 +73,8 @@ final class SmartXmlParser {
 			$this->mode = 'domxml';
 		} elseif((string)$mode === 'extended') {
 			$this->mode = 'extended';
+		} elseif((string)$mode === 'simple+attributes') {
+			$this->mode = 'simple+attributes';
 		} else { // simple
 			$this->mode = 'simple';
 		} //end if else
@@ -82,7 +84,7 @@ final class SmartXmlParser {
 
 
 	//=============================== Safe Validate and Format XML ; DomXML if used will also apply prettyPrint
-	public function format($xml_str, $preserve_whitespace=false, $log_parse_err_warns=false, $use_strict_validation=false, $remove_xml_header=false) {
+	public function format(?string $xml_str, bool $preserve_whitespace=false, bool $log_parse_err_warns=false, bool $use_strict_validation=false, bool $remove_xml_header=false) : string {
 
 		//--
 		$xml_str = (string) trim((string)$xml_str);
@@ -132,13 +134,13 @@ final class SmartXmlParser {
 			$dom->validateOnParse = false; 								// this must be explicit disabled as if set to true it may try to download the DTD and after to validate (insecure ...)
 			//--
 			@$dom->loadXML(
-				(string) $this->FixXmlHeader($xml_str), // need to fix just xml header
+				(string) $this->FixXmlHeader((string)$xml_str), // need to fix just xml header
 				LIBXML_ERR_WARNING | LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_NOCDATA // {{{SYNC-LIBXML-OPTIONS}}} ; Fix: LIBXML_NOCDATA converts all CDATA to String
 			);
 		} else { // simpleXML
 			//--
 			$sxml = new SimpleXMLElement(
-				(string) $this->FixXmlHeader($xml_str), // need to fix just xml header
+				(string) $this->FixXmlHeader((string)$xml_str), // need to fix just xml header
 				LIBXML_ERR_WARNING | LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_NOCDATA // {{{SYNC-LIBXML-OPTIONS}}} ; Fix: LIBXML_NOCDATA converts all CDATA to String
 			);
 			//--
@@ -177,7 +179,7 @@ final class SmartXmlParser {
 				$xml_str = ''; // document is not valid, return empty string
 			} //end if else
 			$dom = null; // free mem
-		} else {
+		} else { // simpleXML
 			if(is_object($sxml)) {
 				$xml_str = (string) @$sxml->asXML();
 				$xml_str = (string) trim((string)$xml_str);
@@ -198,7 +200,7 @@ final class SmartXmlParser {
 
 		//--
 		if($remove_xml_header === true) {
-			$xml_str = (string) $this->RemoveXmlHeader($xml_str);
+			$xml_str = (string) $this->RemoveXmlHeader((string)$xml_str);
 		} //end if
 		//--
 
@@ -211,7 +213,7 @@ final class SmartXmlParser {
 
 
 	//===============================
-	public function transform($xml_str, $log_parse_err_warns=false) {
+	public function transform(?string $xml_str, bool $log_parse_err_warns=false) : array {
 
 		//--
 		$xml_str = (string) trim((string)$xml_str);
@@ -230,7 +232,7 @@ final class SmartXmlParser {
 			//--
 			$arr = (array) $this->DomXML2Array((string)$xml_str);
 			//--
-		} else { // simple | extended
+		} else { // simple | simple+attributes | extended
 			//--
 			$arr = (array) $this->SimpleXML2Array((string)$xml_str);
 			//--
@@ -290,7 +292,7 @@ final class SmartXmlParser {
 
 
 	//===============================
-	private function SimpleXML2Array($xml_str) {
+	private function SimpleXML2Array(string $xml_str) : array {
 		//--
 		if(!function_exists('simplexml_load_string')) {
 			Smart::raise_error(
@@ -312,8 +314,8 @@ final class SmartXmlParser {
 
 
 	//===============================
-	private function SimpleXMLNode2Array($sxml) {
-		//--
+	private function SimpleXMLNode2Array($sxml) : array {
+		//-- $sxml is MIXED type !
 		if(!is_object($sxml)) {
 			return array();
 		} //end if
@@ -321,13 +323,30 @@ final class SmartXmlParser {
 			return array();
 		} //end if
 		//--
+		if(((string)$this->mode === 'simple') OR ((string)$this->mode === 'simple+attributes')) { // fix: ex: array 0,1,2 is parsed in a wrong way: 20231207
+			//--
+			$sxml = Smart::json_decode(Smart::json_encode($sxml, false, true, false)); // $sxml is MIXED type !
+			if(!is_array($sxml)) {
+				$sxml = [];
+			} //end if
+			//--
+			$sxml = (array) $this->FixEmptyArraysToEmptyString((array)$sxml);
+			//--
+			return (array) $sxml;
+			//--
+		} elseif($this->mode !== 'extended') {
+			//--
+			return array();
+			//--
+		} //end if #end fix
+		//--
 		$arr = array();
 		//--
 		foreach($sxml->children() as $r) {
 			//--
 			$t = (string) $r->getName();
 			//--
-			if($this->mode === 'extended') {
+			if($this->mode === 'extended') { // this is just for extended mode
 				//--
 				$tmp_atts = (array) $r->attributes();
 				if(array_key_exists('@attributes', $tmp_atts)) {
@@ -336,29 +355,10 @@ final class SmartXmlParser {
 					$arr[$t.'|@attributes'][] = array();
 				} //end if else
 				$tmp_atts = null;
-				if($r->count() <= 0) {
+				if((int)$r->count() <= 0) {
 					$arr[$t][] = (string) $r; // array ; force add as toString
 				} else {
-					$arr[$t][] = (array) $this->SimpleXMLNode2Array($r); // array ; force add as array
-				} //end if else
-				//--
-			} else { // simple (no attributes
-				//--
-				if($r->count() <= 0) { // no childs, with Fix: empty arrays will be empty strings
-					//--
-					if(array_key_exists($t, $arr)) {
-						$arr[$t] = (array) $this->AddElemToArr($arr[$t], (string)$r); // array ; force add as toString
-					} else {
-						$arr[$t] = (string) $r; // string ; force add as toString
-					} //end if else
-					//--
-				} else { // have childs
-					//--
-					if(!array_key_exists($t, $arr)) {
-						$arr[$t] = null;
-					} //end if
-					$arr[$t] = (array) $this->AddArrElemToArr((array)$arr[$t], (array)$this->SimpleXMLNode2Array($r)); // array ; force add as array
-					//--
+					$arr[$t][] = (array) $this->SimpleXMLNode2Array($r); // array ; force add as array ; $r is MIXED !
 				} //end if else
 				//--
 			} //end if else
@@ -371,53 +371,28 @@ final class SmartXmlParser {
 	//===============================
 
 
-	//===============================
-	private function AddElemToArr($arr, $val) {
+	//=============================== # fix: ex: array 0,1,2 is parsed in a wrong way: 20231207
+	private function FixEmptyArraysToEmptyString(array $arr) : array {
+		//-- only for: simple or simple+attributes ; it does convert empty sub-arrays as empty strings to easy operations ; for simple mode also removes the @attributes
+		foreach($arr as $key => $val) {
+			if(is_array($val)) {
+				if(((string)$this->mode === 'simple') AND ((string)$key == '@attributes')) {
+					unset($arr[$key]); // not for: 'simple+attributes' ; unset just for 'simple' mode ...
+				} else {
+					if(count($val) <= 0) {
+						$arr[$key] = '';
+					} else {
+						$arr[$key] = (array) $this->FixEmptyArraysToEmptyString((array)$arr[$key]);
+					} //end if else
+				} //end if else
+			} //end if
+		} //end foreach
 		//--
-		$tmp_arr = $arr; // mixed
-		$arr = array();
+		if(!is_array($arr)) {
+			$arr = [];
+		} //end if
 		//--
-		if(is_array($tmp_arr)) {
-			foreach($tmp_arr as $k => $v) {
-				$arr[] = $v; // force non-associative array, use no key $k
-			} //end foreach
-		} else {
-			$arr[] = (string) $tmp_arr;
-		} //end if else
-		//--
-		$arr[] = (string) $val;
-		$tmp_arr = null;
-		//--
-		return (array) $arr; // return array
-		//--
-	} //END FUNCTION
-	//===============================
-
-
-	//===============================
-	private function AddArrElemToArr($arr, $val) {
-		//--
-		if(Smart::array_size($arr) <= 0) {
-			//--
-			$arr = (array) $val;
-			//--
-		} elseif(Smart::array_size($arr) == 1) {
-			//--
-			$tmp_arr = (array) $arr;
-			//--
-			$arr = array();
-			$arr[] = (array) $tmp_arr;
-			$arr[] = (array) $val;
-			//--
-			$tmp_arr = array();
-			//--
-		} else {
-			//--
-			$arr[] = (array) $val;
-			//--
-		} //end if else
-		//--
-		return (array) $arr; // return array
+		return (array) $arr;
 		//--
 	} //END FUNCTION
 	//===============================
@@ -426,7 +401,7 @@ final class SmartXmlParser {
 	//===============================
 	// convert xml string to php array - useful to get a serializable value
 	// original author: Adrien aka Gaarf & contributors # http://gaarf.info/2009/08/13/xml-string-to-php-array/
-	private function DomXML2Array($xmlstr) {
+	private function DomXML2Array(string $xmlstr) : array {
 		//--
 		if(!class_exists('DOMDocument')) {
 			Smart::log_warning(__METHOD__.' # WARNING [XML-Process('.$this->mode.') / Encoding: '.$this->encoding.']:'."\n".'The PHP DOMDocument() class is missing ...'."\n".'#END'."\n");
@@ -443,7 +418,7 @@ final class SmartXmlParser {
 		$dom->validateOnParse = false; 		// this must be explicit disabled as if set to true it may try to download the DTD and after to validate (insecure ...)
 		//--
 		@$dom->loadXML(
-			(string) $this->FixXmlHeader($xmlstr), // need to fix just xml header
+			(string) $this->FixXmlHeader((string)$xmlstr), // need to fix just xml header
 			LIBXML_ERR_WARNING | LIBXML_NONET | LIBXML_PARSEHUGE | LIBXML_BIGLINES | LIBXML_NOCDATA // {{{SYNC-LIBXML-OPTIONS}}} ; Fix: LIBXML_NOCDATA converts all CDATA to String
 		);
 		//--
@@ -471,7 +446,7 @@ final class SmartXmlParser {
 
 
 	//===============================
-	private function RemoveXmlHeader($xml_str) {
+	private function RemoveXmlHeader(string $xml_str) : string {
 		//--
 		return (string) trim((string)preg_replace('#<\?xml (.*?)>#si', '', (string)$xml_str)); // remove the xml markup tag ; extra: str_replace(['<'.'?', '?'.'>'], ['<!-- ', ' -->'], $xml_str); // comment out any markup tags
 		//--
@@ -480,9 +455,9 @@ final class SmartXmlParser {
 
 
 	//===============================
-	private function AddXmlHeader($xml_str) {
+	private function AddXmlHeader(string $xml_str) : string {
 		//--
-		$xml_str = '<'.'?'.'xml version="1.0" encoding="'.Smart::escape_html(strtoupper($this->encoding)).'"'.'?'.'>'."\n".$xml_str;
+		$xml_str = '<'.'?'.'xml version="1.0" encoding="'.Smart::escape_html((string)strtoupper((string)$this->encoding)).'"'.'?'.'>'."\n".$xml_str;
 		//--
 		return (string) $xml_str;
 		//--
@@ -491,16 +466,16 @@ final class SmartXmlParser {
 
 
 	//===============================
-	private function FixXmlHeader($xml_str) {
+	private function FixXmlHeader(string $xml_str) : string {
 		//--
 		$xml_str = (string) trim((string)$xml_str);
 		if((string)$xml_str == '') {
 			return '';
 		} //end if
 		//--
-		$xml_str = (string) $this->RemoveXmlHeader($xml_str);
+		$xml_str = (string) $this->RemoveXmlHeader((string)$xml_str);
 		//--
-		if(!SmartValidator::validate_html_or_xml_code($xml_str)) { // fix parser bug if empty data passed
+		if(!SmartValidator::validate_html_or_xml_code((string)$xml_str)) { // fix parser bug if empty data passed
 			return ''; // invalid xml
 		} //end if
 		//--
@@ -511,11 +486,11 @@ final class SmartXmlParser {
 
 
 	//=============================== fix for simpleXML parser to array ; needs an external xml root to the supplied xml
-	private function FixSimpleXmlRoot($xml_str) {
+	private function FixSimpleXmlRoot(string $xml_str) : string {
 		//--
-		$xml_str = (string) $this->RemoveXmlHeader($xml_str);
+		$xml_str = (string) $this->RemoveXmlHeader((string)$xml_str);
 		//--
-		if(!SmartValidator::validate_html_or_xml_code($xml_str)) { // fix parser bug if empty data passed
+		if(!SmartValidator::validate_html_or_xml_code((string)$xml_str)) { // fix parser bug if empty data passed
 			Smart::log_notice(__METHOD__.' # GetXMLTree: Invalid XML Detected (555)'."\n".'Encoding: '.$this->encoding.' // Xml-String:'."\n".$xml_str."\n".'#END');
 			$xml_str = ''; // clear invalid xml
 		} //end if
@@ -621,7 +596,7 @@ final class SmartXmlParser {
  *
  * @access      PUBLIC
  * @depends     classes: Smart
- * @version     v.20221220
+ * @version     v.20231207
  * @package     Plugins:ConvertersAndParsers
  *
  */
@@ -635,7 +610,7 @@ final class SmartXmlComposer {
 
 
 	//===============================
-	public function __construct($encoding='') {
+	public function __construct(?string $encoding='') {
 		//--
 		if((string)$encoding == '') {
 			if(defined('SMART_FRAMEWORK_CHARSET')) {
@@ -652,18 +627,18 @@ final class SmartXmlComposer {
 
 
 	//===============================
-	public function transform(array $y_array, $xmlroot='xml') {
+	public function transform(array $y_array, ?string $xmlroot='xml') : string {
 		//--
 		$xmlroot = (string) trim((string)$xmlroot);
 		if((string)$xmlroot == '') {
 			$xml_tag_start = '';
 			$xml_tag_end = '';
 		} else {
-			$xml_tag_start = "\n".'<'.Smart::escape_html($xmlroot).'>';
-			$xml_tag_end = "\n".'</'.Smart::escape_html($xmlroot).'>';
+			$xml_tag_start = "\n".'<'.Smart::escape_html((string)$xmlroot).'>';
+			$xml_tag_end = "\n".'</'.Smart::escape_html((string)$xmlroot).'>';
 		} //end if
 		//--
-		return '<'.'?xml version="1.0" encoding="'.Smart::escape_html($this->encoding).'"?'.'>'.$xml_tag_start."\n".trim((string)$this->CreateFromArr($y_array)).$xml_tag_end;
+		return '<'.'?xml version="1.0" encoding="'.Smart::escape_html((string)$this->encoding).'"?'.'>'.$xml_tag_start."\n".trim((string)$this->CreateFromArr((array)$y_array)).$xml_tag_end;
 		//--
 	} //END FUNCTION
 	//===============================
@@ -673,7 +648,7 @@ final class SmartXmlComposer {
 
 
 	//===============================
-	private function CreateFromArr($y_array) {
+	private function CreateFromArr(array $y_array) : string {
 
 		//--
 		if(!is_array($y_array)) {
@@ -697,14 +672,18 @@ final class SmartXmlComposer {
 			//--
 			if(is_array($val)) {
 				if(is_numeric($key)) { // this can happen only if non-associative array as for associative arrays the numeric key is fixed above as _#
-					$out .= (string) $this->CreateFromArr($val);
+					$out .= (string) $this->CreateFromArr((array)$val);
 				} else {
-					$out .= '<'.Smart::escape_html($key).'>'."\n".$this->CreateFromArr($val).'</'.Smart::escape_html($key).'>'."\n";
+					$out .= '<'.Smart::escape_html((string)$key).'>'."\n".$this->CreateFromArr((array)$val).'</'.Smart::escape_html((string)$key).'>'."\n";
 				} //end if else
-			} elseif((string)trim((string)$val) != '') {
-				$out .= '<'.Smart::escape_html($key).'>'.Smart::escape_html($val).'</'.Smart::escape_html($key).'>'."\n";
-			} else {
-				$out .= '<'.Smart::escape_html($key).' />'."\n";
+			} elseif(Smart::is_nscalar($val)) {
+				if((string)trim((string)$val) != '') {
+					$out .= '<'.Smart::escape_html((string)$key).'>'.Smart::escape_html((string)$val).'</'.Smart::escape_html((string)$key).'>'."\n";
+				} else {
+					$out .= '<'.Smart::escape_html((string)$key).' />'."\n";
+				} //end if else
+			} else { // invalid
+				Smart::log_warning(__METHOD__.' # Non-Scalar Value detected in Array: '.print_r($val,1));
 			} //end if else
 			//--
 		} //end foreach
@@ -736,7 +715,7 @@ final class SmartXmlComposer {
  * @access 		private
  * @internal
  *
- * @version 	v.20221220
+ * @version 	v.20231207
  *
  */
 final class SmartDomUtils {

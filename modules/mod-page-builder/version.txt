@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: PageBuilder r.20231020 #
+# Smart.Framework.Modules: PageBuilder r.20231119 #
 
 // r.8.7 / smart.framework.v.8.7
 

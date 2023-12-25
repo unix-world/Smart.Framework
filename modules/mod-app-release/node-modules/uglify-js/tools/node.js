@@ -15,13 +15,13 @@ exports.FILES = [
     require.resolve("./exports.js"),
 ];
 
-new Function("exports", function() {
+new Function("domprops", "exports", function() {
     var code = exports.FILES.map(function(file) {
         return fs.readFileSync(file, "utf8");
     });
     code.push("exports.describe_ast = " + describe_ast.toString());
     return code.join("\n\n");
-}())(exports);
+}())(require("./domprops.json"), exports);
 
 function to_comment(value) {
     if (typeof value != "string") value = JSON.stringify(value, function(key, value) {
@@ -100,7 +100,7 @@ function infer_options(options) {
 exports.default_options = function() {
     var defs = infer_options({ 0: 0 });
     Object.keys(defs).forEach(function(component) {
-        var options = {};
+        var options = { module: false };
         options[component] = { 0: 0 };
         if (options = infer_options(options)) {
             defs[component] = options;

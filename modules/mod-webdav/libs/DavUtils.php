@@ -3,7 +3,7 @@
 // (c) 2006-2022 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
-// Module Lib: \SmartModExtLib\Webdav\DavUtils
+// Class: \SmartModExtLib\Webdav\DavUtils
 // Type: Module Library
 
 namespace SmartModExtLib\Webdav;
@@ -26,7 +26,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavUtils {
 
 	// ::
-	// v.20221219
+	// v.20231119
 
 
 	//============================================================

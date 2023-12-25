@@ -12,7 +12,11 @@ IMPORTANT: In order to preserve the uniform grid appearance, all cell styles nee
 	color: #000000;
 }
 .slick-cell-editor-field-textarea {
-	white-space: nowrap;
+	white-space: pre;
+	overflow: auto;
+}
+.slick-cell-editor-field-textarea:read-only {
+	white-space: pre-wrap;
 	overflow: auto;
 }
 /* end custom */

@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [Smart.Framework / INIT] v.20231008
+// [Smart.Framework / INIT] v.20231102
 // (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -30,8 +30,7 @@ const SMART_FRAMEWORK_TIMEZONE =  						'UTC'; 										// The timezone for PHP
 const SMART_FRAMEWORK_RUNTIME_TASK_ALLOWED_IPS = 		''; 										// APP Task service area allowed IPs ; ex: '<127.0.0.1>,<::1>' ; can not be empty ; Tasks area is like Admin area but with some unrestricted features ; it is intended to be used mostly for development tasks ... ; the task.php can be excluded from a release or simply set below: const SMART_SOFTWARE_TASK_DISABLED = true;
 //--------------------------------------- SECURITY
 const SMART_FRAMEWORK_SECURITY_KEY =  					'private-key#0987654321'; 					// *** YOU HAVE TO CHANGE IT *** ; Must be at least 16 characters ; This is the Security Key that will be used to generate secure hashes
-//const SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO =  	true; 										// *Optional: if defined and set to TRUE will use the OpenSSL cipher openssl/blowfish/CBC (faster) instead of internal one blowfish.cbc (more compatible across platforms)
-//const SMART_FRAMEWORK_SECURITY_CRYPTO = 	 			'openssl/aes256/CBC'; 						// *Optional: the crypto algo for general purpose encryption to be used ; default is hash/sha256 ; other modes: hash/sha512, hash/sha1, hash/md5, openssl/{algo}/{mode} where mode can be: CBC, CFB, OFB ; algo can be: blowfish, aes256, camellia256
+//const SMART_FRAMEWORK_SECURITY_CRYPTO = 	 			'openssl/aes256/CBC'; 						// *Optional: the crypto algo for general purpose encryption to be used ; default is hash/sha3-384 ; other modes: hash/sha3-512, hash/sha3-256, hash/sha3-224, hash/sha384, hash/sha224 ; openssl/{algo}/{mode} where mode can be: CBC, CFB, OFB ; algo can be: aes256, camellia256, idea ; can also be blowfish (CBC only)
 //---------------------------------------
 //============================================================ REVIEW AND CHANGE IF PRODUCTION MODE
 //--------------------------------------- APP NAMESPACE

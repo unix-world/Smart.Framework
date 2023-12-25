@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: AppRelease/CodeDeploy
 // Route: ?/page/app-release.code-deploy (?page=app-release.code-deploy)
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20221222
+ * @version 	v.20231107
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -288,14 +288,20 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		$signature_eappcodeunpack = '';
 		$arr_appcodeunpack = [];
 		if((string)$content_appcodeunpack != '') {
-			$signature_appcodeunpack = (string) SmartHashCrypto::sha512((string)$content_appcodeunpack);
-			$content_appcodeunpack = (string) SmartUtils::crypto_blowfish_encrypt((string)$content_appcodeunpack, (string)APP_DEPLOY_SECRET);
-			$signature_eappcodeunpack = (string) SmartHashCrypto::sha256((string)$content_appcodeunpack);
+			$signature_appcodeunpack = (string) SmartHashCrypto::sh3a512((string)$content_appcodeunpack, true);
+			$content_appcodeunpack = (string) SmartCipherCrypto::tf_encrypt((string)$content_appcodeunpack, (string)APP_DEPLOY_SECRET);
+			$signature_eappcodeunpack = (string) SmartHashCrypto::sh3a384((string)$content_appcodeunpack, true);
+			$signature_hmac = (string) SmartHashCrypto::hmac(
+				'sha3-384',
+				(string) APP_DEPLOY_SECRET.'#'.((defined('SMART_FRAMEWORK_SECURITY_KEY') && ((string)SMART_FRAMEWORK_SECURITY_KEY != '')) ? SMART_FRAMEWORK_SECURITY_KEY : Smart::uuid_34()),
+				(string) $signature_appcodeunpack.chr(0).$signature_eappcodeunpack,
+				true
+			);
 			$arr_appcodeunpack = [ // {{{SYNC-APPCODEUNPACK-SELF-UPDATE}}}
 				'#' => (string) $signature_appcodeunpack,
 				'=' => (string) $content_appcodeunpack,
-				'@'  => (string) $signature_eappcodeunpack,
-				'!' => (string) SmartHashCrypto::sha512((string)APP_DEPLOY_SECRET.'#'.$signature_appcodeunpack.'#'.$signature_eappcodeunpack.'#'.((defined('SMART_FRAMEWORK_SECURITY_KEY') && ((string)SMART_FRAMEWORK_SECURITY_KEY != '')) ? SMART_FRAMEWORK_SECURITY_KEY : Smart::uuid_34())), // ensure there is something if empty the security key
+				'@' => (string) $signature_eappcodeunpack,
+				'!' => (string) $signature_hmac,
 			];
 		} //end if
 		$signature_eappcodeunpack = '';
@@ -314,18 +320,18 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			]
 		];
 		$packsize = (int) strlen((string)$httpcli->postfiles['znetarch']['content']);
-		$packsha512 = (string) SmartHashCrypto::sha512((string)$httpcli->postfiles['znetarch']['content']);
+		$packsh3a512b64 = (string) SmartHashCrypto::sh3a512((string)$httpcli->postfiles['znetarch']['content'], true);
 		//--
 		$httpcli->postvars = [
 			'action' => 'deploy',
 			'frm' => [
-				'client' 		=> (string) 'appcodepack',
-				'appid' 		=> (string) $appid,
-				'appid-hash' 	=> (string) APP_DEPLOY_HASH,
-				'packsha512' 	=> (string) $packsha512,
-				'packsize' 		=> (int)    $packsize,
-				'appcodeunpack' => (array)  $arr_appcodeunpack,
-				'metainfo' 		=> [
+				'client' 			=> (string) 'appcodepack',
+				'appid' 			=> (string) $appid,
+				'appid-hash' 		=> (string) APP_DEPLOY_HASH,
+				'packsh3a512b64' 	=> (string) $packsh3a512b64,
+				'packsize' 			=> (int)    $packsize,
+				'appcodeunpack' 	=> (array)  $arr_appcodeunpack,
+				'metainfo' 			=> [
 					(string) SmartUtils::get_ip_client(), // ip
 					(string) date('Y-m-d H:i:s O'), // date time
 					(int)    time(), // timestamp
@@ -379,9 +385,12 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		} //end if
 		//--
 		if(
-			(!array_key_exists('completed', $json_arr)) OR (!Smart::is_nscalar($json_arr['completed'])) OR
-			(!array_key_exists('status', $json_arr))    OR (!Smart::is_nscalar($json_arr['status'])) OR
-			(!array_key_exists('title', $json_arr))     OR (!Smart::is_nscalar($json_arr['title'])) OR
+			(!array_key_exists('completed', $json_arr)) OR (!Smart::is_nscalar($json_arr['completed']))
+			OR
+			(!array_key_exists('status', $json_arr))    OR (!Smart::is_nscalar($json_arr['status']))
+			OR
+			(!array_key_exists('title', $json_arr))     OR (!Smart::is_nscalar($json_arr['title']))
+			OR
 			(!array_key_exists('message', $json_arr))   OR (!Smart::is_nscalar($json_arr['message']))
 		) {
 			$this->err = 'Package Deploy ERRORS: Content Body invalid JSON: `'.(string)$result['content'].'`';
@@ -414,7 +423,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 			$this->err = 'Package Deploy WARNING: Package FileSize-Bytes Mismatch: '.$display_msg;
 			return;
 		} //end if
-		if(strpos((string)$json_arr['message'], "\n".'FileContent-Checksum: `'.$packsha512.'`'."\n") === false) {
+		if(strpos((string)$json_arr['message'], "\n".'FileContent-Checksum: `'.$packsh3a512b64.'`'."\n") === false) {
 			$this->err = 'Package Deploy WARNING: Package FileContent-Checksum Mismatch: '.$display_msg;
 			return;
 		} //end if
@@ -448,7 +457,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 				'app-id-hash' 	=> (string) APP_DEPLOY_HASH,
 				'package' 		=> (string) $last_package,
 				'fsize' 		=> (string) $packsize,
-				'checksum' 		=> (string) $packsha512,
+				'checksum' 		=> (string) $packsh3a512b64,
 				'signature' 	=> (string) $signature,
 				'response' 		=> (array)  $json_arr,
 			])

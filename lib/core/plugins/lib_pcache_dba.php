@@ -49,7 +49,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, PHP DBA Extension, SmartDbaUtilDb, SmartDbaDb
- * @version 	v.20230324
+ * @version 	v.20231031
  * @package 	Application:Plugins:PersistentCache:Dba
  *
  */
@@ -66,14 +66,14 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 	private static $is_active 	= null;						// Cache Active State ; by default is null ; on 1st check must set to TRUE or FALSE
 
 
-	final public static function getVersionInfo() {
+	final public static function getVersionInfo() : string {
 		//--
 		return (string) 'DBA: DB File based Persistent Cache, using the handler: '.SmartDbaUtilDb::getDbaHandler();
 		//--
 	} //END FUNCTION
 
 
-	final public static function isActive() {
+	final public static function isActive() : bool {
 		//--
 		if(self::$is_active !== null) {
 			return (bool) self::$is_active;
@@ -92,28 +92,28 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function isMemoryBased() {
+	final public static function isMemoryBased() : bool {
 		//--
 		return false; // DBA is not a memory based cache backend (it is file based), so it is FALSE
 		//--
 	} //END FUNCTION
 
 
-	final public static function isFileSystemBased() {
+	final public static function isFileSystemBased() : bool {
 		//--
 		return true; // DBA is a hybrid FileSystem/Database based cache backend, so it is TRUE
 		//--
 	} //END FUNCTION
 
 
-	final public static function isDbBased() {
+	final public static function isDbBased() : bool {
 		//--
 		return true; // DBA is a hybrid FileSystem/Database based cache backend, so it is TRUE
 		//--
 	} //END FUNCTION
 
 
-	final public static function clearData() {
+	final public static function clearData() : bool {
 		//--
 		if(!self::isActive()) {
 			return false;
@@ -127,7 +127,7 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function keyExists($y_realm, $y_key) {
+	final public static function keyExists(?string $y_realm, ?string $y_key) : bool {
 		//--
 		if(!self::isActive()) {
 			return false;
@@ -153,7 +153,7 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function getTtl($y_realm, $y_key) {
+	final public static function getTtl(?string $y_realm, ?string $y_key) : int {
 		//--
 		if(!self::isActive()) {
 			return -3;
@@ -179,7 +179,7 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function getKey($y_realm, $y_key) {
+	final public static function getKey(?string $y_realm, ?string $y_key) { // : MIXED
 		//--
 		if(!self::isActive()) {
 			return null;
@@ -200,12 +200,14 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 			return null;
 		} //end if
 		//--
-		return $dba_obj->getKey((string)$y_key);
+		return $dba_obj->getKey((string)$y_key); // mixed
 		//--
 	} //END FUNCTION
 
 
-	final public static function setKey($y_realm, $y_key, $y_value, $y_expiration=0) {
+	final public static function setKey(?string $y_realm, ?string $y_key, $y_value, ?int $y_expiration=0) : bool {
+		//--
+		// $y_value is MIXED TYPE, DO NOT CAST
 		//--
 		if(!self::isActive()) {
 			return false;
@@ -242,7 +244,7 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 	} //END FUNCTION
 
 
-	final public static function unsetKey($y_realm, $y_key) {
+	final public static function unsetKey(?string $y_realm, ?string $y_key) : bool {
 		//--
 		if(!self::isActive()) {
 			return false;
@@ -277,6 +279,8 @@ class SmartDbaPersistentCache extends SmartAbstractPersistentCache {
 			return (bool) $dba_obj->unsetKey($y_key);
 			//--
 		} //end if else
+		//--
+		return true;
 		//--
 	} //END FUNCTION
 

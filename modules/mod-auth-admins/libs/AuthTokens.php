@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @ignore
  *
  * @depends     classes: Smart, SmartAuth
- * @version 	v.20231020
+ * @version 	v.20231031
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -155,14 +155,13 @@ final class AuthTokens {
 	public static function validateSTKData(string $id, int $expires, string $token) : array {
 		//--
 		$valid = [
-			'error' 			=> '?', 		// error or empty
-			'ernum' 			=> 99, 			// error num or zero
-			'auth-id' 			=> '',  		// auth id
-			'expires' 			=> '',  		// expire time or zero
-			'restr-priv-lst' 	=> '<none>', 	// restricted privileges list  ; be sure is non-empty (in case of premature exit), this will be checked later
-			'restr-priv-arr' 	=> [ 'none' ], 	// restricted privileges array ; be sure is non-empty (in case of premature exit), this will be checked later
-			'seed' 				=> '',  		// token seed
-			'key' 				=> '',  		// token key
+			'error' 		=> '?', 	// error or empty
+			'ernum' 		=> 99, 		// error num or zero
+			'auth-id' 		=> '',  	// auth id
+			'expires' 		=> '',  	// expire time or zero
+			'restr-priv' 	=> [], 		// restricted privileges array
+			'seed' 			=> '',  	// token seed
+			'key' 			=> '',  	// token key
 		];
 		//--
 		if(!\defined('\\SMART_SOFTWARE_NAMESPACE')) {
@@ -207,7 +206,7 @@ final class AuthTokens {
 			return (array) $valid;
 		} //end if
 		$len_suffix = (int) ((int)\strlen((string)self::STK_VERSION_SUFFIX) + 1);
-		if((string)\substr($token, -1 * $len_suffix, $len_suffix) !== ';'.self::STK_VERSION_SUFFIX) {
+		if((string)\substr($token, -1 * (int)$len_suffix, (int)$len_suffix) !== (string)';'.self::STK_VERSION_SUFFIX) {
 			$valid['error'] = 'Token Suffix is Invalid';
 			$valid['ernum'] = 65;
 			return (array) $valid;
@@ -321,24 +320,18 @@ final class AuthTokens {
 			$valid['ernum'] = 45;
 			return (array) $valid;
 		} //end if
-		if((string)$arr['^'] === '*') {
-			$valid['restr-priv-lst'] = '*';
-			$valid['restr-priv-arr'] = []; // reset ; this is mandatory as it has pre-defined as none in case of premature exit
-		} else {
-			//-- {{{SYNC-ARR-BUILD-PRIVS-LIST-TO-ARR}}}
-			$arr_privileges = (array) \SmartAuth::safe_arr_privileges_or_restrictions((string)$arr['^']);
-			$arr_privileges = (array) \array_keys((array)$arr_privileges);
-			$arr_privileges = (array) \Smart::array_sort((array)$arr_privileges, 'sort');
-			//-- #end sync
-			if((int)\Smart::array_size($arr_privileges) <= 0) {
-				$valid['error'] = 'JSON object have an Invalid Privileges list';
-				$valid['ernum'] = 44;
-				return (array) $valid;
-			} //end if
-			$valid['restr-priv-lst'] = (string) $arr['^'];
-			$valid['restr-priv-arr'] = (array)  $arr_privileges;
-			$arr_privileges = null;
+		//-- {{{SYNC-ARR-BUILD-PRIVS-LIST-TO-ARR}}}
+		$arr_privileges = (array) \SmartAuth::safe_arr_privileges_or_restrictions((string)$arr['^']);
+		$arr_privileges = (array) \array_keys((array)$arr_privileges);
+		$arr_privileges = (array) \Smart::array_sort((array)$arr_privileges, 'sort');
+		//-- #end sync
+		if((int)\Smart::array_size($arr_privileges) <= 0) {
+			$valid['error'] = 'JSON object have an Invalid Privileges list';
+			$valid['ernum'] = 44;
+			return (array) $valid;
 		} //end if
+		$valid['restr-priv'] = (array)  $arr_privileges;
+		$arr_privileges = null;
 		//--
 		if(
 			((string)$arr['$'] == '')
@@ -430,52 +423,53 @@ final class AuthTokens {
 			return (array) $stk;
 		} //end if else
 		//--
-		$privs_list = '*';
-		if((string)$token_priv != '*') {
-			//-- {{{SYNC-STK-TOKEN-COMPOSE-PRIVILEGES}}}
-			$privs_arr = (array) \array_keys((array)\SmartAuth::safe_arr_privileges_or_restrictions((array)\explode(',', (string)\str_replace([' ', "\t", "\r", "\n"], '', (string)\strtolower((string)$token_priv)))));
-			//--
-			$valid_privs = [];
-			if(\Smart::array_size($privs_arr) > 0) {
-				foreach($privs_arr as $key => $val) {
-					if(\Smart::is_nscalar($val)) {
-						$val = (string) \trim((string)$val);
-						if((string)$val != '') {
-							if(\SmartAuth::validate_privilege_or_restriction_key((string)$val) === true) { // if valid privilege key name
-								$valid_privs[] = (string) $val;
-							} else {
-								$stk['error'] = 'Privileges List is Invalid: Contains an Invalid Value: `'.$val.'`';
-								$stk['ernum'] = -21;
-								return (array) $stk;
-							} //end if else
+		//-- {{{SYNC-STK-TOKEN-COMPOSE-PRIVILEGES}}}
+		$privs_list = '';
+		//--
+		$privs_arr = (array) \array_keys((array)\SmartAuth::safe_arr_privileges_or_restrictions((array)\explode(',', (string)\str_replace([' ', "\t", "\r", "\n"], '', (string)\strtolower((string)$token_priv)))));
+		$valid_privs = [];
+		if(\Smart::array_size($privs_arr) > 0) {
+			foreach($privs_arr as $key => $val) {
+				if(\Smart::is_nscalar($val)) {
+					$val = (string) \trim((string)$val);
+					if((string)$val != '') {
+						if(\SmartAuth::validate_privilege_or_restriction_key((string)$val) === true) { // if valid privilege key name
+							$valid_privs[] = (string) $val;
 						} else {
-							$stk['error'] = 'Privileges List is Invalid: Contains an Empty Value';
-							$stk['ernum'] = -22;
+							$stk['error'] = 'Privileges List is Invalid: Contains an Invalid Value: `'.$val.'`';
+							$stk['ernum'] = -21;
 							return (array) $stk;
-						} //end if
+						} //end if else
 					} else {
-						$stk['error'] = 'Privileges List is Invalid: Contains a Non-Scalar Value';
-						$stk['ernum'] = -23;
+						$stk['error'] = 'Privileges List is Invalid: Contains an Empty Value';
+						$stk['ernum'] = -22;
 						return (array) $stk;
 					} //end if
-				} //end foreach
-			} else {
-				$stk['error'] = 'Privileges List is Invalid: Contain only Empty Values';
-				$stk['ernum'] = -24;
-				return (array) $stk;
-			} //end if else
-			//--
-			if(\Smart::array_size($valid_privs) > 0) {
-				$privs_list = (string) \str_replace(' ', '', (string)\Smart::array_to_list((array)$valid_privs));
-			} else {
-				$stk['error'] = 'Privileges List is Invalid: Contain only Non-Compliant Values';
-				$stk['ernum'] = -25;
-				return (array) $stk;
-			} //end if else
-			//--
-			$valid_privs = null; // clear
-			$privs_arr = null;
-			//--
+				} else {
+					$stk['error'] = 'Privileges List is Invalid: Contains a Non-Scalar Value';
+					$stk['ernum'] = -23;
+					return (array) $stk;
+				} //end if
+			} //end foreach
+		} else {
+			$stk['error'] = 'Privileges List is Invalid: Contain only Empty Values';
+			$stk['ernum'] = -24;
+			return (array) $stk;
+		} //end if else
+		//--
+		if(\Smart::array_size($valid_privs) > 0) {
+			$privs_list = (string) \str_replace(' ', '', (string)\Smart::array_to_list((array)$valid_privs));
+		} else {
+			$stk['error'] = 'Privileges List is Invalid: Contain only Non-Compliant Values';
+			$stk['ernum'] = -25;
+			return (array) $stk;
+		} //end if else
+		//--
+		$valid_privs = null; // clear
+		$privs_arr = null;
+		//--
+		if((string)\trim((string)$privs_list) == '') {
+			$privs_list = '<>'; // fix: if no valid Privs list, use a non-empty string ; no error here, just in validator to be able to test invalid Privs List !
 		} //end if
 		//--
 		if(
@@ -494,7 +488,7 @@ final class AuthTokens {
 			'#' => (string) self::STK_VERSION_SIGNATURE,
 			'@' => (string) $id, // auth id
 			'!' => (string) ((int)$expires), // expire max time, store as string in json to preserve large numbers as they are
-			'^' => (string) $privs_list, // privileges list as: <priv-a>,<priv-b> or * for all privs ; max 255 ; {{{SYNC-STK-TOKEN-PRIVILEGES}}}
+			'^' => (string) $privs_list, // privileges list as: <priv-a>,<priv-b> ; cannot be empty ; max 255 chars ; {{{SYNC-STK-TOKEN-PRIVILEGES}}}
 			'$' => (string) $seed, // token seed
 			'=' => (string) \SmartHashCrypto::checksum(
 				(string) self::STK_VERSION_SIGNATURE."\n".\SMART_SOFTWARE_NAMESPACE."\n".$id."\n".$expires."\n".$privs_list."\n".$seed,

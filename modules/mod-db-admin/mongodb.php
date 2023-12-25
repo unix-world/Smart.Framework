@@ -15,12 +15,12 @@ define('SMART_APP_MODULE_AUTH', true); // requires auth always
 
 /**
  * Admin Area Controller
- * @version 20220917
+ * @version 20231026
  * @ignore
  *
  * @requires define('SMART_FRAMEWORK_DB_ADMIN_ALLOW', true); // set in config-admin.php
  */
-class SmartAppAdminController extends SmartAbstractAppController {
+final class SmartAppAdminController extends SmartAbstractAppController {
 
 
 	public function Initialize() {
@@ -48,12 +48,22 @@ class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		if(SmartAuth::check_login() !== true) {
-			$this->PageViewSetCfg('error', 'MongoDB Admin Requires Authentication ! ...');
+			$this->PageViewSetCfg('error', 'MongoDB Admin Requires Authentication ...');
 			return 403;
 		} //end if
 		//--
-		if(SmartAuth::test_login_privilege('admin') !== true) { // PRIVILEGES
-			$this->PageViewSetCfg('error', 'MongoDB Admin requires the following privileges: ADMIN');
+		if(!SmartEnvironment::isAdminArea()) { // allow: adm/tsk ; but this controller does not extends in a task controller
+			$this->PageViewSetCfg('error', 'MongoDB Admin is allowed to run under `Admin` area only ...');
+			return 403;
+		} //end if
+		//--
+		if(SmartAuth::test_login_privilege('super-admin') !== true) { // PRIVILEGES
+			$this->PageViewSetCfg('error', 'MongoDB Admin requires the following privileges: `super-admin` ...');
+			return 403;
+		} //end if
+		//--
+		if(SmartAuth::test_login_privilege('db-admin:mongo') !== true) { // PRIVILEGES
+			$this->PageViewSetCfg('error', 'MongoDB Admin requires the following privileges: `db-admin-mongo` ...');
 			return 403;
 		} //end if
 		//--
@@ -234,7 +244,7 @@ class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$this->PageViewSetCfg('template-file', 'template-modal.htm');
 				//--
-				$title = 'Delete Record';
+				$title = 'View / Delete Record';
 				$this->PageViewSetVars([
 					'title' => (string) $title,
 					'main' => SmartMarkersTemplating::render_file_template(

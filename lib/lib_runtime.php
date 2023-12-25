@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartHashCrypto, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20231020
+ * @version		v.20231119
  * @package 	Application
  *
  */
@@ -41,9 +41,9 @@ final class SmartFrameworkRuntime {
 
 	private static $NoCacheHeadersSent 		= false;
 
-	private static $HttpStatusCodesOK  		= [200, 202, 203, 208, 304]; 							// list of framework available HTTP OK Status Codes (sync with middlewares)
-	private static $HttpStatusCodesRDR 		= [301, 302]; 											// list of framework available HTTP Redirect Status Codes (sync with middlewares)
-	private static $HttpStatusCodesERR 		= [400, 401, 403, 404, 410, 429, 500, 502, 503, 504]; 	// list of framework available HTTP Error Status Codes (sync with middlewares)
+	private static $HttpStatusCodesOK  		= [ 200, 202, 203, 208, 304 ]; 								// list of framework available HTTP OK Status Codes (sync with middlewares)
+	private static $HttpStatusCodesRDR 		= [ 301, 302 ]; 											// list of framework available HTTP Redirect Status Codes (sync with middlewares)
+	private static $HttpStatusCodesERR 		= [ 400, 401, 403, 404, 410, 429, 500, 502, 503, 504 ]; 	// list of framework available HTTP Error Status Codes (sync with middlewares)
 
 	private static $ServerProcessed 		= false; // after all server variables are processed this will be set to true to avoid re-process server variables which can be a security or performance issue if re-process is called by mistake !
 	private static $RequestProcessed 		= false; // after all request variables are processed this will be set to true to avoid re-process request variables which can be a security or performance issue if re-process is called by mistake !
@@ -625,10 +625,10 @@ final class SmartFrameworkRuntime {
 				$url_redirect = $the_current_url.'admin.php';
 			} //end if else
 		} elseif(($is_disabled_backend === true) AND ((string)$the_current_script == 'admin.php')) {
-			if($is_disabled_frontent === true) {
-				$url_redirect = $the_current_url.'task.php';
-			} else {
+			if($is_disabled_task === true) {
 				$url_redirect = $the_current_url.'index.php';
+			} else {
+				$url_redirect = $the_current_url.'task.php';
 			} //end if else
 		} elseif(($is_disabled_task === true) AND ((string)$the_current_script == 'task.php')) {
 			if($is_disabled_backend === true) {
@@ -639,10 +639,12 @@ final class SmartFrameworkRuntime {
 		} //end if else
 		//--
 
+		//--
 		$pathinfo = null;
 		if(SmartFrameworkRegistry::issetServerVar('PATH_INFO') === true) {
 			$pathinfo = (string) SmartFrameworkRegistry::getServerVar('PATH_INFO'); // is already trimmed
 		} //end if
+		//--
 
 		//--
 		if(((string)$url_redirect == '') AND ((string)$pathinfo != '')) {
@@ -653,7 +655,21 @@ final class SmartFrameworkRuntime {
 						return;
 					} //end if
 				} //end if
-				$url_redirect = (string) $the_current_url.$the_current_script.'?'.$fix_pathinfo;
+				$query_url = (string) ltrim((string)SmartUtils::get_server_current_queryurl(true), '?');
+				if((string)$query_url != '') {
+					$url_params = (array) Smart::url_parse_query((string)$query_url);
+					if(array_key_exists('page', (array)$url_params)) {
+						if(strpos((string)$fix_pathinfo, '/page/') !== false) {
+							unset($url_params['page']); // dissalow having 'page' in url query if path contains it to avoid infinite loop infinite !
+							$query_url = (string) Smart::url_build_query((array)$url_params, false);
+						} //end if
+					} //end if
+					$url_params = [];
+				} //end if
+				if((string)$query_url != '') {
+					$query_url = '&'.$query_url;
+				} //end if
+				$url_redirect = (string) $the_current_url.$the_current_script.'?'.$fix_pathinfo.$query_url;
 			} //end if
 		} //end if
 		//--
@@ -672,7 +688,7 @@ final class SmartFrameworkRuntime {
 	// Create a Download Link for the Download Handler
 	public static function Decode_Download_Link(?string $y_encrypted_link) {
 		//--
-		return (string) trim((string)SmartUtils::crypto_decrypt(
+		return (string) trim((string)SmartCipherCrypto::decrypt(
 			(string) $y_encrypted_link,
 			(string) 'Smart.Framework//DownloadLink'.SMART_FRAMEWORK_SECURITY_KEY // {{{SYNC-DOWNLOAD-LINK-CRYPT-KEY}}}
 		));
@@ -718,7 +734,7 @@ final class SmartFrameworkRuntime {
 		$access_key = (string) SmartHashCrypto::checksum('DownloadLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SMART_APP_VISITOR_COOKIE.':'.$y_file.'^'.$y_ctrl_key);
 		$unique_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$y_file.'+'.$y_ctrl_key);
 		//-- {{{SYNC-DOWNLOAD-ENCRYPT-ARR}}}
-		$safe_download_link = SmartUtils::crypto_encrypt(
+		$safe_download_link = (string) SmartCipherCrypto::encrypt(
 			(string) trim((string)$crrtime)."\n". 									// set the current time
 			(string) trim((string)$y_file)."\n". 									// the file path
 			(string) trim((string)$access_key)."\n". 								// access key based on UniqueID cookie
@@ -726,8 +742,8 @@ final class SmartFrameworkRuntime {
 			(string) '-'."\n",														// self robot browser UserAgentName/ID key (does not apply here)
 			(string) 'Smart.Framework//DownloadLink'.SMART_FRAMEWORK_SECURITY_KEY 	// {{{SYNC-DOWNLOAD-LINK-CRYPT-KEY}}}
 		);
-		//--
-		return (string) Smart::escape_url((string)trim((string)$safe_download_link));
+		//-- {{{SYNC-ENCRYPTED-URL-LINK}}}
+		return (string)trim((string)$safe_download_link); // DO NOT ESCAPE URL here ... it must be done in controllers ; if escaped here and passed directly, not via URL will encode also ; and ! ... will not work
 		//--
 	} //END FUNCTION
 	//======================================================================
@@ -1137,7 +1153,7 @@ final class SmartFrameworkRuntime {
 			defined('SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID')
 		) {
 			if((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID != '') {
-				if((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID !== (string)SmartAuth::get_auth_username()) {
+				if((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_ACCOUNT_ID !== (string)SmartAuth::get_auth_id()) {
 					self::Raise503Error(
 						(string) SMART_FRAMEWORK_SINGLEUSER_LOCK_MESSAGE,
 						(string) SmartComponents::operation_ok('Single User Lock File: '.Smart::escape_html((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE), '80%').SmartComponents::operation_notice((string)Smart::nl_2_br((string)Smart::escape_html((string)SmartFileSystem::read((string)SMART_FRAMEWORK_SINGLEUSER_LOCK_FILE))), '80%')

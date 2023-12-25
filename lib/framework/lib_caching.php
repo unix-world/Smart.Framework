@@ -45,7 +45,7 @@ if((!function_exists('gzencode')) OR (!function_exists('gzdecode'))) {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartEnvironment
- * @version 	v.20221220
+ * @version 	v.20231031
  * @package 	@Core
  *
  */
@@ -67,8 +67,8 @@ final class SmartCache {
 	public static function keyExists(?string $y_realm, ?string $y_key) : bool {
 		//--
 		if(is_array(self::$CachedData)) {
-			if((array_key_exists((string)$y_realm, self::$CachedData)) AND (is_array(self::$CachedData[(string)$y_realm]))) {
-				if(array_key_exists((string)$y_key, self::$CachedData[(string)$y_realm])) {
+			if((array_key_exists((string)$y_realm, (array)self::$CachedData)) AND (is_array(self::$CachedData[(string)$y_realm]))) {
+				if(array_key_exists((string)$y_key, (array)self::$CachedData[(string)$y_realm])) {
 					return true;
 				} //end if else
 			} //end if else
@@ -89,7 +89,7 @@ final class SmartCache {
 	 */
 	public static function getKey(?string $y_realm, ?string $y_key) {
 		//--
-		if(self::keyExists($y_realm, $y_key) === true) {
+		if(self::keyExists((string)$y_realm, (string)$y_key) === true) {
 			return self::$CachedData[(string)$y_realm][(string)$y_key];
 		} //end if
 		//--
@@ -112,7 +112,7 @@ final class SmartCache {
 		if(!is_array(self::$CachedData)) {
 			self::$CachedData = [];
 		} //end if
-		if((!array_key_exists((string)$y_realm, self::$CachedData)) OR (!is_array(self::$CachedData[(string)$y_realm]))) {
+		if((!array_key_exists((string)$y_realm, (array)self::$CachedData)) OR (!is_array(self::$CachedData[(string)$y_realm]))) {
 			self::$CachedData[(string)$y_realm] = [];
 		} //end if
 		//--
@@ -140,7 +140,7 @@ final class SmartCache {
 	 */
 	public static function unsetKey(?string $y_realm, ?string $y_key) : bool {
 		//--
-		if(self::keyExists($y_realm, $y_key) === true) {
+		if(self::keyExists((string)$y_realm, (string)$y_key) === true) {
 			//--
 			unset(self::$CachedData[(string)$y_realm][(string)$y_key]);
 			//--
@@ -174,7 +174,7 @@ final class SmartCache {
 	public static function getAll() : array {
 		//--
 		if(!is_array(self::$CachedData)) {
-			return array();
+			return [];
 		} //end if
 		//--
 		return (array) self::$CachedData;
@@ -195,7 +195,7 @@ final class SmartCache {
 	 */
 	public static function clearData() : bool {
 		//--
-		self::$CachedData = array();
+		self::$CachedData = [];
 		//--
 		return true;
 		//--
@@ -226,7 +226,7 @@ final class SmartCache {
  * @internal
  *
  * @depends 	classes: Smart
- * @version 	v.20221220
+ * @version 	v.20231031
  * @package 	development:Application
  *
  */
@@ -240,7 +240,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return STRING
 	 */
-	public static function getVersionInfo() {
+	public static function getVersionInfo() : string {
 		//--
 		return 'N/A';
 		//--
@@ -252,7 +252,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	TRUE if is Active or FALSE if not
 	 */
-	public static function isActive() {
+	public static function isActive() : bool {
 		//--
 		return false;
 		//--
@@ -266,7 +266,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	TRUE if is Memory Based (Ex: Redis / Memcached / ...) or FALSE if not
 	 */
-	public static function isMemoryBased() {
+	public static function isMemoryBased() : bool {
 		//--
 		return false;
 		//--
@@ -281,7 +281,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	TRUE if is FileSystem Based (Ex: SQLite / DBA / ...) or FALSE if not
 	 */
-	public static function isFileSystemBased() {
+	public static function isFileSystemBased() : bool {
 		//--
 		return false;
 		//--
@@ -297,7 +297,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	TRUE if is Database Based (Ex: PostgreSQL / MySQL / MongoDB / SQLite / DBA / ...) or FALSE if not
 	 */
-	public static function isDbBased() {
+	public static function isDbBased() : bool {
 		//--
 		return false;
 		//--
@@ -309,7 +309,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	TRUE if is success or FALSE if fail
 	 */
-	public static function clearData() {
+	public static function clearData() : bool {
 		//--
 		return false;
 		//--
@@ -324,7 +324,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	TRUE if Key Exists or FALSE if not
 	 */
-	public static function keyExists(?string $y_realm, ?string $y_key) {
+	public static function keyExists(?string $y_realm, ?string $y_key) : bool {
 		//--
 		return false;
 		//--
@@ -339,7 +339,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return INTEGER	number of seconds the key will expire ; -1 if the key does not expire (is persistent) ; -2 if the key does not exists ; -3 if N/A or ERR
 	 */
-	public static function getTtl(?string $y_realm, ?string $y_key) {
+	public static function getTtl(?string $y_realm, ?string $y_key) : int {
 		//--
 		return -3;
 		//--
@@ -354,7 +354,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return MIXED	The value of the stored key or NULL if key not found in cache
 	 */
-	public static function getKey(?string $y_realm, ?string $y_key) {
+	public static function getKey(?string $y_realm, ?string $y_key) { // : MIXED
 		//--
 		return null;
 		//--
@@ -371,7 +371,9 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	Returns True if the key was set or false if not
 	 */
-	public static function setKey(?string $y_realm, ?string $y_key, $y_value, ?int $y_expiration=0) {
+	public static function setKey(?string $y_realm, ?string $y_key, $y_value, ?int $y_expiration=0) : bool {
+		//--
+		// $y_value is MIXED TYPE, DO NOT CAST
 		//--
 		return false;
 		//--
@@ -386,7 +388,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	Returns True if the key(s) was/were unset or false if not
 	 */
-	public static function unsetKey(?string $y_realm, ?string $y_key) {
+	public static function unsetKey(?string $y_realm, ?string $y_key) : bool {
 		//--
 		return false;
 		//--
@@ -406,7 +408,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return STRING	The 2..4 letters cache path prefix (contains: 0..9 a..z) expanded to a path ; Ex: `x/y` or `x/y/9` or `x/y/9/z`
 	 */
-	final public static function cachePathPrefix(?int $y_len, ?string $y_realm, ?string $y_key='') {
+	final public static function cachePathPrefix(?int $y_len, ?string $y_realm, ?string $y_key='') : string {
 		//--
 		$y_len = (int) $y_len;
 		if((int)$y_len < 2) {
@@ -459,7 +461,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	Returns TRUE if the realm is valid or FALSE if not
 	 */
-	final public static function validateRealm(?string $y_realm) {
+	final public static function validateRealm(?string $y_realm) : bool {
 		//--
 		if((string)$y_realm == '') {
 			return true;
@@ -486,7 +488,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	Returns TRUE if the key is valid or FALSE if not
 	 */
-	final public static function validateKey(?string $y_key) {
+	final public static function validateKey(?string $y_key) : bool {
 		//--
 		if((string)$y_key == '') {
 			return false;
@@ -515,7 +517,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return BOOLEAN	Returns TRUE if the value is valid or FALSE if not
 	 */
-	final public static function validateValue(?string $y_value) {
+	final public static function validateValue(?string $y_value) : bool {
 		//--
 		$len = (int) strlen((string)$y_value);
 		//--
@@ -537,7 +539,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return STRING	Returns the safe prepared Key or Realm
 	 */
-	final public static function safeKey(?string $y_key_or_realm) {
+	final public static function safeKey(?string $y_key_or_realm) : string {
 		//--
 		$key_or_realm = (string) Smart::safe_pathname((string)$y_key_or_realm); // {{{SYNC-PCACHE-SAFE-KEY-OR-REALM}}}
 		if((string)$key_or_realm == '') {
@@ -561,7 +563,9 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return STRING	Returns the safe serialized variable content
 	 */
-	final public static function varEncode($y_var) {
+	final public static function varEncode($y_var) : string {
+		//--
+		// $y_var is MIXED TYPE, DO NOT CAST !!
 		//--
 		return (string) Smart::seryalize($y_var);
 		//--
@@ -579,7 +583,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return MIXED	Returns the original restored type and value of that variable
 	 */
-	final public static function varDecode(?string $y_encoded_var) {
+	final public static function varDecode(?string $y_encoded_var) { // : MIXED OUTPUT, DO NOT CAST
 		//--
 		return Smart::unseryalize((string)$y_encoded_var); // mixed
 		//--
@@ -597,13 +601,16 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return STRING	Returns the safe serialized + compressed variable content
 	 */
-	final public static function varCompress($y_var) {
+	final public static function varCompress($y_var) : string {
+		//--
+		// $y_var is MIXED TYPE, DO NOT CAST !!
 		//--
 		$raw_data = (string) Smart::seryalize($y_var);
 		$y_var = ''; // free mem
 		if((string)$raw_data == '') {
 			return '';
 		} //end if
+		$crc32b = (string) SmartHashCrypto::crc32b((string)$raw_data, true); // b36
 		//-- compress
 		$arch_data = @gzencode((string)$raw_data, -1, FORCE_GZIP); // don't make it string, may return false ; -1 = default compression of the zlib library is used which is 6
 		//-- check for possible zlib-pack errors
@@ -612,6 +619,7 @@ abstract class SmartAbstractPersistentCache {
 			return '';
 		} //end if
 		$len_data = (int) strlen((string)$raw_data);
+		$raw_data = null; // free mem
 		$len_arch = (int) strlen((string)$arch_data);
 		if(((int)$len_data > 0) AND ((int)$len_arch > 0)) {
 			$ratio = (float) ((int)$len_data / (int)$len_arch); // division by zero is checked above as $out not to be empty!
@@ -627,9 +635,7 @@ abstract class SmartAbstractPersistentCache {
 			return '';
 		} //end if
 		//--
-		$raw_data = ''; // free mem
-		//--
-		return (string) base64_encode((string)$arch_data);
+		return (string) base64_encode((string)$arch_data).'#'.$crc32b;
 		//--
 	} //END FUNCTION
 
@@ -644,7 +650,7 @@ abstract class SmartAbstractPersistentCache {
 	 *
 	 * @return MIXED	Returns the original restored type and value of that variable
 	 */
-	final public static function varUncompress(?string $y_cache_arch_var) {
+	final public static function varUncompress(?string $y_cache_arch_var) { // : MIXED OUTPUT, DO NOT CAST !
 		//--
 		$y_cache_arch_var = (string) trim((string)$y_cache_arch_var);
 		//--
@@ -652,19 +658,36 @@ abstract class SmartAbstractPersistentCache {
 			return null; // no data to unarchive, return empty string
 		} //end if
 		//--
-		$y_cache_arch_var = @base64_decode((string)$y_cache_arch_var, true); // STRICT ! don't make it string, may return false
-		if(($y_cache_arch_var === false) OR ((string)trim((string)$y_cache_arch_var) == '')) { // use trim, the deflated string can't contain only spaces
+		$arr = (array) explode('#', (string)$y_cache_arch_var, 2);
+		$y_cache_arch_var = null; // free mem
+		$arch_data = (string) trim((string)($arr[0] ?? null));
+		$crc32b = (string) trim((string)($arr[1] ?? null));
+		//--
+		if(
+			((string)$arch_data == '') // empty arch
+			OR
+			((string)$crc32b == '') // no crc32b
+		) {
+			return null; // no data to unarchive or no checksum
+		} //end if
+		//--
+		$arch_data = @base64_decode((string)$arch_data, true); // STRICT ! don't make it string, may return false
+		if(($arch_data === false) OR ((string)trim((string)$arch_data) == '')) { // use trim, the deflated string can't contain only spaces
 			Smart::log_warning('SmartPersistentCache / Cache Variable Decompress :: Empty Data after B64-Decode ! ...');
 			return null; // something went wrong after b64 decoding ...
 		} //end if
 		//--
-		$y_cache_arch_var = @gzdecode((string)$y_cache_arch_var); // don't make it string, may return false
-		if(($y_cache_arch_var === false) OR ((string)trim((string)$y_cache_arch_var) == '')) { // use trim, the string before unseryalize can't contain only spaces
+		$arch_data = @gzdecode((string)$arch_data); // don't make it string, may return false
+		if(($arch_data === false) OR ((string)trim((string)$arch_data) == '')) { // use trim, the string before unseryalize can't contain only spaces
 			Smart::log_warning('SmartPersistentCache / Cache Variable Decompress :: Empty Data after Zlib GZ-Decode ! ...');
 			return null;
 		} //end if
 		//--
-		return Smart::unseryalize((string)$y_cache_arch_var); // mixed
+		if((string)$crc32b !== (string)SmartHashCrypto::crc32b((string)$arch_data, true)) { // b36
+			return null; // crc32b does not match
+		} //end if
+		//--
+		return Smart::unseryalize((string)$arch_data); // mixed
 		//--
 	} //END FUNCTION
 
@@ -708,7 +731,7 @@ if(defined('SMART_FRAMEWORK_PERSISTENT_CACHE_HANDLER') AND (SMART_FRAMEWORK_PERS
  *
  * @access 		PUBLIC
  * @depends 	classes: SmartAbstractPersistentCache
- * @version 	v.20221224
+ * @version 	v.20231031
  * @package 	Application:Caching
  *
  */
@@ -718,7 +741,7 @@ final class SmartPersistentCache extends SmartAbstractPersistentCache {
 
 	// TODO: implement a filesystem caching instead of blackhole ...
 
-	public static function getVersionInfo() {
+	public static function getVersionInfo() : string {
 		//--
 		return (string) 'BLACKHOLE: FAKE, EMULATED Persistent Cache ; THIS HAVE NO STORAGE ATTACHED ; Provides just compatibility support for the Persistent Cache when not using a real adapter to ensure the code requiring the class `'.__CLASS__.'` is functional ...';
 		//--

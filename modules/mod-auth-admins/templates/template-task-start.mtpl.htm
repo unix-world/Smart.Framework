@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- TPL Task Start (AuthAdmins) v.20231018 -->
+<!-- TPL Task Start (AuthAdmins) v.20231028 -->
 <html>
 <head>
 [@@@SUB-TEMPLATE:tpl-head.inc.htm@@@]
@@ -55,7 +55,8 @@ pre.task-highlight * {
 [%%%ELSE:WORKSTOP%%%]
 	const workstop = '';
 [%%%/IF:WORKSTOP%%%]
-	smartJ$Browser.GrowlNotificationAdd('[###TITLE|html|js###]', 'Status: <b><span style="background:#FFFFDD; color:#333333;">&nbsp;working in progress ...&nbsp;</span></b>' + '<br>' + 'Started: <b>' + smartJ$Utils.escape_html(smartJ$Date.getIsoDate(new Date(), true)) + '</b>' + String(workstop), 'lib/framework/img/loading-cylon.svg', 0, true, 'dark');
+	smartJ$Browser.GrowlNotificationRemove();
+	smartJ$Browser.GrowlNotificationAdd('Running Task:' + '\n' + '`[###TITLE|js###]`' + '\n\n', 'Status: <b><span style="background:#FFFFDD; color:#333333;">&nbsp;working in progress ...&nbsp;</span></b>' + '<br>' + 'Started: <b>' + smartJ$Utils.escape_html(smartJ$Date.getIsoDate(new Date(), true)) + '</b>' + String(workstop), 'lib/framework/img/loading-cylon.svg', 0, true, 'dark');
 })();
 </script>
 [%%%/IF:WORKING%%%]

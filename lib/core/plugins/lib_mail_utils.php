@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20231007
+ * @version 	v.20231119
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -187,7 +187,7 @@ final class SmartMailerUtils {
 		$tmp_arr = array();
 		$tmp_arr = (array)  explode('@', (string)$email);
 		$domain  = (string) trim((string)($tmp_arr[1] ?? null));
-		$safedom = (string) Smart::safe_validname($domain);
+		$safedom = (string) Smart::safe_validname((string)$domain);
 		$tmp_arr = array();
 		//------------
 		if(((string)$domain == '') OR (strpos((string)$domain, '.') === false)) {
@@ -295,13 +295,22 @@ final class SmartMailerUtils {
 	 * @param ENUM			$charset			* charset :: default is UTF-8
 	 * @return TRUE/FALSE	OPERATION RESULT [1 = OK ; 0 = send error ; -1 = error, empty config ]
 	 */
-	public static function send_email($logsend_dir, $to, $cc, $bcc, $subj, $message, $is_html, array $attachments=[], $replytoaddr='', $inreplyto='', $priority='3', $charset='UTF-8') {
+	public static function send_email(?string $logsend_dir, $to, $cc, ?string $bcc, ?string $subj, ?string $message, bool $is_html, array $attachments=[], ?string $replytoaddr='', ?string $inreplyto='', ?int $priority=3, ?string $charset='UTF-8') : int {
 
 		//-- Get Default SMTP from configs
-		$def_mail_cfg = Smart::get_from_config('sendmail');
-		//--
+		$def_mail_cfg = Smart::get_from_config('sendmail'); // do not cast
 		if(Smart::array_size($def_mail_cfg) <= 0) {
 			return -1; // warning: the default config is empty
+		} //end if
+		//--
+
+		//--
+		if(Smart::is_arr_or_nscalar($to) !== true) {
+			$to = ''; // dissalow object or resource
+		} //end if
+		//--
+		if(Smart::is_arr_or_nscalar($cc) !== true) {
+			$cc = ''; // dissalow object or resource
 		} //end if
 		//--
 
@@ -321,7 +330,7 @@ final class SmartMailerUtils {
 					AND
 					((string)trim((string)$def_mail_cfg['auth-password']['data']) != '')
 				) {
-					$def_mail_cfg['auth-password'] = (string) SmartUtils::crypto_blowfish_decrypt((string)$def_mail_cfg['auth-password']['data']);
+					$def_mail_cfg['auth-password'] = (string) SmartCipherCrypto::tf_decrypt((string)$def_mail_cfg['auth-password']['data'], '', true); // use default key ; BF fallback ..
 				} else {
 					$def_mail_cfg['auth-password'] = ''; // INVALID
 					Smart::log_warning(__METHOD__.' # Invalid definition for config value: sendmail.auth-password !');
@@ -377,7 +386,17 @@ final class SmartMailerUtils {
 	 * @param ENUM			$charset			* charset :: default is UTF-8
 	 * @return ARRAY							[ 'result' => 'Operation RESULT', 'error' => 'ERROR Message if any', 'log' => 'Send LOG', 'message' => 'The Mime MESSAGE' ]
 	 */
-	public static function send_custom_email($mail_config, $logsend_dir, $to, $cc, $bcc, $subj, $message, $is_html, array $attachments=[], $replytoaddr='', $inreplyto='', $priority='3', $charset='UTF-8') {
+	public static function send_custom_email(?array $mail_config, ?string $logsend_dir, $to, $cc, ?string $bcc, ?string $subj, ?string $message, bool $is_html, array $attachments=[], ?string $replytoaddr='', ?string $inreplyto='', ?int $priority=3, ?string $charset='UTF-8') : array {
+
+		//--
+		if(Smart::is_arr_or_nscalar($to) !== true) {
+			$to = ''; // dissalow object or resource
+		} //end if
+		//--
+		if(Smart::is_arr_or_nscalar($cc) !== true) {
+			$cc = ''; // dissalow object or resource
+		} //end if
+		//--
 
 		//--
 		$mail_config = (array) Smart::array_init_keys(
@@ -474,7 +493,7 @@ final class SmartMailerUtils {
 					$mark_to = (string) $to;
 				} //end if else
 				//--
-				SmartFileSystem::write($logsend_dir.$stmp_y.$stmp_m.$stmp_d.'_'.$stmp_time.'__'.Smart::safe_validname($mark_to).'__'.sha1($to.$cc.$subj.$message).'.eml', (string)$arr_send_result['message']);
+				SmartFileSystem::write((string)$logsend_dir.$stmp_y.$stmp_m.$stmp_d.'_'.$stmp_time.'__'.Smart::safe_validname((string)$mark_to).'__'.SmartHashCrypto::md5((string)print_r($to,1)."\v".print_r($cc,1)."\t".$subj."\n\r".$message).'.eml', (string)$arr_send_result['message']);
 				//--
 			} //end if
 			//--
@@ -513,7 +532,17 @@ final class SmartMailerUtils {
 	 * @internal
 	 *
 	 */
-	public static function send_extended_email($y_server_settings, $y_mode, $to, $cc, $bcc, $subj, $message, $is_html, array $attachments=[], $replytoaddr='', $inreplyto='', $priority=3, $charset='UTF-8') {
+	public static function send_extended_email(?array $y_server_settings, ?string $y_mode, $to, $cc, ?string $bcc, ?string $subj, ?string $message, bool $is_html, array $attachments=[], ?string $replytoaddr='', ?string $inreplyto='', ?int $priority=3, ?string $charset='UTF-8') {
+
+		//--
+		if(Smart::is_arr_or_nscalar($to) !== true) {
+			$to = ''; // dissalow object or resource
+		} //end if
+		//--
+		if(Smart::is_arr_or_nscalar($cc) !== true) {
+			$cc = ''; // dissalow object or resource
+		} //end if
+		//--
 
 		//--
 		$y_server_settings = (array) Smart::array_init_keys(
@@ -627,34 +656,34 @@ final class SmartMailerUtils {
 
 		//--
 		if((string)$mail->charset != 'UTF-8') { // in this case (ISO-88591 / ISO-8859-2) we deaccent the things for maximum compatibility
-			$send_from_name = SmartUnicode::deaccent_str($send_from_name);
-			$subj = SmartUnicode::deaccent_str($subj);
-			$message = SmartUnicode::deaccent_str($message);
+			$send_from_name = (string) SmartUnicode::deaccent_str((string)$send_from_name);
+			$subj 			= (string) SmartUnicode::deaccent_str((string)$subj);
+			$message 		= (string) SmartUnicode::deaccent_str((string)$message);
 		} //end if
 		//--
 
 		//-- Extra Mail Headers
 		$mail->headers = '';
 		//-- Errors Reporting Header
-		$mail->headers .= 'Errors-To: '.$mail->safe_header_str($send_from_addr)."\r\n";
+		$mail->headers .= 'Errors-To: '.$mail->safe_header_str((string)$send_from_addr)."\r\n";
 		//-- In-Reply-To Header
 		if((string)$inreplyto != '') {
-			$mail->headers .= 'In-Reply-To: '.$mail->safe_header_str($inreplyto)."\r\n";
+			$mail->headers .= 'In-Reply-To: '.$mail->safe_header_str((string)$inreplyto)."\r\n";
 		} //end if else
 		//-- Reply-To Header
 		if((string)$replytoaddr != '') {
-			$mail->headers .= 'Reply-To: '.$mail->safe_header_str($replytoaddr)."\r\n";
+			$mail->headers .= 'Reply-To: '.$mail->safe_header_str((string)$replytoaddr)."\r\n";
 		} //end if
 		//--
 
 		//--
-		$mail->priority = Smart::format_number_int($priority, '+'); // high=1 | low=5 | normal=3
+		$mail->priority = (int) Smart::format_number_int($priority, '+'); // high=1 | low=5 | normal=3
 		//--
 
 		//-- from
-		$mail->from_return = $send_from_addr;
-		$mail->from = $send_from_addr;
-		$mail->namefrom = $send_from_name;
+		$mail->from_return 	= (string) $send_from_addr;
+		$mail->from 		= (string) $send_from_addr;
+		$mail->namefrom 	= (string) $send_from_name;
 		//--
 
 		//-- subject
@@ -668,10 +697,10 @@ final class SmartMailerUtils {
 			//-- embed all images
 			$htmlparser = new SmartHtmlParser((string)$message);
 			$htmlparser->get_clean_html(); // clean html before ; don't care of html comments
-			$arr_links = $htmlparser->get_tags('img'); // {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
+			$arr_links = (array) $htmlparser->get_tags('img'); // {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
 			$htmlparser = null;
 			//--
-			$chk_duplicates_arr = array();
+			$chk_duplicates_arr = [];
 			$uniq_id = 0;
 			//--
 			for($i=0; $i<Smart::array_size($arr_links); $i++) {
@@ -680,7 +709,7 @@ final class SmartMailerUtils {
 				//-- reverse the &amp; back to & (generated from JavaScript) ...
 				$tmp_imglink = (string) str_replace('&amp;', '&', (string)$tmp_original_img_link);
 				//--
-				$tmp_cid = 'img_'.sha1('Smart.Framework eMail-Utils // CID Embed // '.'@'.$tmp_imglink.'#'); // this should not vary by $i or others because if duplicate images are detected only the first is attached
+				$tmp_cid = 'img_'.SmartHashCrypto::sha256('Smart.Framework eMail-Utils // CID Embed // '.'@'.$tmp_imglink.'#'); // this should not vary by $i or others because if duplicate images are detected only the first is attached
 				//--
 				if((!isset($chk_duplicates_arr[(string)$tmp_cid])) OR (!$chk_duplicates_arr[(string)$tmp_cid])) { // avoid browse twice the same image
 					//--
@@ -880,7 +909,7 @@ final class SmartMailerUtils {
 	 * @internal
 	 *
 	 */
-	public static function get_imap_message_real_uid($uid) {
+	public static function get_imap_message_real_uid(?string $uid) : string {
 		//--
 		// on IMAP4 when using the IMAP client library the UID will be as 'IMAP4-UIV-@num@-UID-@uid@'
 		// this function will parse this and will return the real server-side UID as stored on IMAP server
@@ -933,7 +962,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20231008
+ * @version 	v.20231119
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -953,14 +982,14 @@ final class SmartMailerMimeParser {
 
 	//==================================================================
 	/**
-	 * Encode and Encrypts a Mime File URL using the crypto algo defined in SMART_FRAMEWORK_SECURITY_CRYPTO or 'hash/sha256' as a fallback
+	 * Encode and Encrypts a Mime File URL using the crypto algo defined in SMART_FRAMEWORK_SECURITY_CRYPTO or 'hash/sha3-384' as a fallback
 	 * It takes in account if the User is Authenticated or not
 	 * This make safe using Mail Message Parts URL links sent by URL for specific and private user access
 	 * @param STRING $y_msg_file The relative path to the .eml message file
 	 * @param STRING $y_ctrl_key The encryption private key
 	 * @return STRING the encoded and encrypted url segment
 	 */
-	public static function encode_mime_fileurl($y_msg_file, $y_ctrl_key) {
+	public static function encode_mime_fileurl(?string $y_msg_file, ?string $y_ctrl_key) : string {
 		//--
 		$y_msg_file = (string) trim((string)$y_msg_file);
 		if((string)$y_msg_file == '') {
@@ -1001,19 +1030,19 @@ final class SmartMailerMimeParser {
 		//-- {{{SYNC-MAIL-UTILS-ENC/DEC-KEYS}}}
 		$access_key     = (string) SmartHashCrypto::checksum('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_token.':'.$y_msg_file.'>'.$y_ctrl_key);
 		$unique_key     = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$y_msg_file.'>'.$y_ctrl_key);
-		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_auth_username().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SmartUtils::get_selfrobot_useragent_name().'$'.$access_key.':'.$y_msg_file.'>'.$y_ctrl_key);
+		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_auth_id().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.SmartUtils::get_selfrobot_useragent_name().'$'.$access_key.':'.$y_msg_file.'>'.$y_ctrl_key);
 		//-- {{{SYNC-MIME-ENCRYPT-ARR}}}
-		$safe_link = SmartUtils::crypto_encrypt(
-			(string) trim((string)$crrtime)."\n". 										// current time stamp
-			(string) trim((string)$y_msg_file)."\n". 									// file
-			(string) trim((string)$access_key)."\n". 									// access key based on UniqueID cookie
-			(string) trim((string)$unique_key)."\n". 									// unique key based on: AuthUserID, User-Agent and IP
-			(string) trim((string)$self_robot_key)."\n". 								// self robot browser UserAgentName/ID key
-			(string) sha1((string)trim((string)$access_token))."\n", 					// control: hash of current token
+		$safe_link = (string) SmartCipherCrypto::encrypt(
+			(string) trim((string)$crrtime)."\n". 											// current time stamp
+			(string) trim((string)$y_msg_file)."\n". 										// file
+			(string) trim((string)$access_key)."\n". 										// access key based on UniqueID cookie
+			(string) trim((string)$unique_key)."\n". 										// unique key based on: AuthUserID, User-Agent and IP
+			(string) trim((string)$self_robot_key)."\n". 									// self robot browser UserAgentName/ID key
+			(string) SmartHashCrypto::sh3a224((string)trim((string)$access_token))."\n", 	// control: hash of current token
 			(string) self::EMAIL_CRYPTO_PREFIX_KEY."\t".SMART_FRAMEWORK_SECURITY_KEY
 		);
-		//--
-		return (string) $safe_link;
+		//-- {{{SYNC-ENCRYPTED-URL-LINK}}}
+		return (string) trim((string)$safe_link); // DO NOT ESCAPE URL here ... it must be done in controllers ; if escaped here and passed directly, not via URL will encode also ; and ! ... will not work
 		//--
 	} //END FUNCTION
 	//==================================================================
@@ -1027,7 +1056,7 @@ final class SmartMailerMimeParser {
 	 * @param STRING $y_ctrl_key The decryption private key
 	 * @return ARRAY with the decoded and decrypted url segment containing all required information to validate the email message path
 	 */
-	public static function decode_mime_fileurl($y_enc_msg_file, $y_ctrl_key) : array {
+	public static function decode_mime_fileurl(?string $y_enc_msg_file, ?string $y_ctrl_key) : array {
 		//--
 		$arr = array(); // {{{SYNC-MIME-ENCRYPT-ARR}}}
 		$arr['error'] = ''; // by default, no error
@@ -1036,12 +1065,6 @@ final class SmartMailerMimeParser {
 		if((string)$y_enc_msg_file == '') {
 			$arr = array();
 			$arr['error'] = 'Empty Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection.';
-			return (array) $arr;
-		} //end if
-		if(!SmartFileSysUtils::checkIfSafePath((string)$y_enc_msg_file)) {
-			Smart::log_warning(__METHOD__.' # Invalid Message File Path: `'.$y_enc_msg_file.'`');
-			$arr = array();
-			$arr['error'] = 'Invalid Message File Path has been provided. This means the URL link will be unavaliable (empty) to assure security protection.';
 			return (array) $arr;
 		} //end if
 		//--
@@ -1058,9 +1081,9 @@ final class SmartMailerMimeParser {
 		} //end if
 		$y_ctrl_key = (string) SMART_ERROR_AREA.'/'.$y_ctrl_key; // {{{SYNC-ENCMIMEURL-CTRL-PREFIX}}}
 		//--
-		$the_sep_arr = (array) self::mime_separe_part_link($y_enc_msg_file);
-		$y_enc_msg_file = (string) $the_sep_arr['msg'];
-		$the_msg_part = (string) $the_sep_arr['part'];
+		$the_sep_arr = (array) self::mime_separe_part_link((string)$y_enc_msg_file);
+		$y_enc_msg_file = (string) trim((string)$the_sep_arr['msg']);
+		$the_msg_part 	= (string) trim((string)$the_sep_arr['part']);
 		$the_sep_arr = null;
 		//--
 		$access_token = (string) trim((string)SmartUtils::get_cookie((string)self::EMAIL_TOKEN_COOKIE_NAME));
@@ -1074,9 +1097,9 @@ final class SmartMailerMimeParser {
 			$the_msg_part = (string) strtolower((string)trim((string)SmartUtils::url_obfs_decode((string)$the_msg_part)));
 		} //end if
 		//--
-		$decoded_link = (string) trim((string)SmartUtils::crypto_decrypt(
+		$decoded_link = (string) trim((string)SmartCipherCrypto::decrypt(
 			(string)$y_enc_msg_file,
-			self::EMAIL_CRYPTO_PREFIX_KEY."\t".SMART_FRAMEWORK_SECURITY_KEY
+			(string) self::EMAIL_CRYPTO_PREFIX_KEY."\t".SMART_FRAMEWORK_SECURITY_KEY
 		));
 		if((string)$decoded_link == '') {
 			$arr = array();
@@ -1105,7 +1128,7 @@ final class SmartMailerMimeParser {
 			return (array) $arr;
 		} //end if
 		//--
-		if((string)$arr['hash-token'] != (string)sha1((string)$access_token)) {
+		if((string)$arr['hash-token'] != (string)SmartHashCrypto::sh3a224((string)$access_token)) {
 			$arr = array();
 			$arr['error'] = 'ERROR: Invalid Access Token (cookie) ; This issue can be if the SandBox iFrame is not receiving the cookies from parent window. With default browser settings regarding cookie policy it should be receiving the access token cookie ...';
 			return (array) $arr;
@@ -1117,7 +1140,7 @@ final class SmartMailerMimeParser {
 		//-- {{{SYNC-MAIL-UTILS-ENC/DEC-KEYS}}}
 		$access_key     = (string) SmartHashCrypto::checksum('MimeLink:'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_token.':'.$arr['message-file'].'>'.$y_ctrl_key);
 		$uniq_key       = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.$access_key.'-'.SmartUtils::unique_auth_client_private_key().':'.$arr['message-file'].'>'.$y_ctrl_key);
-		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_auth_username().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.trim((string)$browser_os_ip_identification['signature']).'$'.$access_key.':'.$arr['message-file'].'>'.$y_ctrl_key);
+		$self_robot_key = (string) SmartHashCrypto::checksum('Time='.$crrtime.'#'.SmartAuth::get_auth_id().'*'.SMART_SOFTWARE_NAMESPACE.'-'.SMART_FRAMEWORK_SECURITY_KEY.'-'.trim((string)$browser_os_ip_identification['signature']).'$'.$access_key.':'.$arr['message-file'].'>'.$y_ctrl_key);
 		//-- check access key
 		if((string)$arr['error'] == '') {
 			if((string)$access_key != (string)$arr['access-key']) {
@@ -1156,7 +1179,7 @@ final class SmartMailerMimeParser {
 	 * Get an Email Message (.eml) as HTML
 	 * @return STRING the HTML view of the message linked with all sub-parts in a safe way by making use of encode_mime_fileurl() and decode_mime_fileurl()
 	 */
-	public static function display_message($y_msg_type, $y_enc_msg_file, $y_ctrl_key, $y_link, $y_target='', $y_title='', $y_process_mode='', $y_show_headers='') {
+	public static function display_message(?string $y_msg_type, ?string $y_enc_msg_file, ?string $y_ctrl_key, ?string $y_link, ?string $y_target='', ?string $y_title='', ?string $y_process_mode='', ?string $y_show_headers='') : string {
 		//--
 		if((string)$y_process_mode != 'print') {
 			$y_process_mode = 'default';
@@ -1168,7 +1191,7 @@ final class SmartMailerMimeParser {
 			$y_target = '_blank';
 		} //end if
 		//--
-		return (string) self::read_mime_message($y_msg_type, $y_enc_msg_file, $y_ctrl_key, $y_process_mode, $y_show_headers, $y_title, $y_link, $y_target);
+		return (string) self::read_mime_message((string)$y_msg_type, (string)$y_enc_msg_file, (string)$y_ctrl_key, (string)$y_process_mode, (string)$y_show_headers, (string)$y_title, (string)$y_link, (string)$y_target);
 		//--
 	} //END FUNCTION
 	//==================================================================
@@ -1180,13 +1203,13 @@ final class SmartMailerMimeParser {
 	 * This can be used to re-compose a Mime Message for Reply or Forward
 	 * @return ARRAY with the full message structure as parts and all sub-parts in a safe way by making use of encode_mime_fileurl() and decode_mime_fileurl()
 	 */
-	public static function get_message_data_structure($y_msg_type, $y_enc_msg_file, $y_ctrl_key, $y_process_mode, $y_link='', $y_target='') {
+	public static function get_message_data_structure(?string $y_msg_type, ?string $y_enc_msg_file, ?string $y_ctrl_key, ?string $y_process_mode, ?string $y_link='', ?string $y_target='') : array {
 		//--
 		if((string)$y_process_mode != 'data-reply') {
 			$y_process_mode = 'data-full';
 		} //end if
 		//--
-		return (array) self::read_mime_message($y_msg_type, $y_enc_msg_file, $y_ctrl_key, $y_process_mode, '', '', $y_link, $y_target);
+		return (array) self::read_mime_message((string)$y_msg_type, (string)$y_enc_msg_file, (string)$y_ctrl_key, (string)$y_process_mode, '', '', (string)$y_link, (string)$y_target);
 		//--
 	} //END FUNCTION
 	//==================================================================
@@ -1196,7 +1219,7 @@ final class SmartMailerMimeParser {
 	// the link can be empty as '' just for 'reply' process mode when forwards
 	// for the rest of cases the link is something like: yourscript?page=your.action&your_url_param_message={{{MESSAGE}}}&your_url_param_rawmode={{{RAWMODE}}}&your_url_param_mime={{{MIME}}}&your_url_param_disp={{{DISP}}}&&your_url_param_mode={{{MODE}}}
 	// [PRIVATE]
-	private static function read_mime_message($y_msg_type, $y_enc_msg_file, $y_ctrl_key, $y_process_mode, $y_show_headers, $y_title, $y_link, $y_target) {
+	private static function read_mime_message(?string $y_msg_type, ?string $y_enc_msg_file, ?string $y_ctrl_key, ?string $y_process_mode, ?string $y_show_headers, ?string $y_title, ?string $y_link,  ?string $y_target) { // : mixed ( string | array )
 
 		// $y_msg_type     : 'message' | 'apple-note'
 		// $y_process_mode : 'default' | 'print' | 'data-full' | 'data-reply'
@@ -1353,7 +1376,7 @@ final class SmartMailerMimeParser {
 				$tmp_ittl = '';
 				//--
 				if((string)$skip_part_linking != 'yes') { // avoid display the print link when only a part is displayed ; print view is HTML so need no mimetype
-					$out .= '<a href="'.self::mime_link($y_ctrl_key, $the_message_eml, $the_part_id, $y_link, '', '', 'print').'" target="'.Smart::escape_html($y_target).'__mimepart" data-smart="open.popup">'.'<img align="right" src="lib/core/plugins/img/email/print-view.svg" title="Print View" alt="Print View">'.'</a>';
+					$out .= '<a href="'.self::mime_link((string)$y_ctrl_key, (string)$the_message_eml, (string)$the_part_id, (string)$y_link, '', '', 'print').'" target="'.Smart::escape_html($y_target).'__mimepart" data-smart="open.popup">'.'<img align="right" src="lib/core/plugins/img/email/print-view.svg" title="Print View" alt="Print View">'.'</a>';
 				} //end if
 				//--
 				switch((string)$y_show_headers) {
@@ -1437,7 +1460,7 @@ final class SmartMailerMimeParser {
 							$reg_atts_num += 1;
 							$reg_atts_list .= str_replace(array("\r", "\n", "\t"), array('', '', ''), (string)$tmp_arr['filename'])."\n";
 							//--
-							$atts .= '<div align="left"><table border="0" cellpadding="2" cellspacing="0" title="Attachment #'.$cnt.'"><tr><td>'.$tmp_att_img.'</td><td>&nbsp;</td><td><a href="'.self::mime_link($y_ctrl_key, $the_message_eml, $key, $y_link, $eval_arr[0], $eval_arr[1]).'" target="'.$y_target.'__mimepart" data-smart="open.popup"><span style="font-size:0.875rem;"><b>'.$tmp_att_name.'</b></span></a></td><td><span style="font-size:0.875rem;"> &nbsp;<b><i>'.$tmp_att_size.'</i></b></span></td></tr></table></div>';
+							$atts .= '<div align="left"><table border="0" cellpadding="2" cellspacing="0" title="Attachment #'.$cnt.'"><tr><td>'.$tmp_att_img.'</td><td>&nbsp;</td><td><a href="'.self::mime_link((string)$y_ctrl_key, (string)$the_message_eml, (string)$key, (string)$y_link, (string)$eval_arr[0], (string)$eval_arr[1]).'" target="'.$y_target.'__mimepart" data-smart="open.popup"><span style="font-size:0.875rem;"><b>'.$tmp_att_name.'</b></span></a></td><td><span style="font-size:0.875rem;"> &nbsp;<b><i>'.$tmp_att_size.'</i></b></span></td></tr></table></div>';
 							$xatts .= '<div align="left">'.$tmp_att_img.'&nbsp;&nbsp;<span style="font-size:0.875rem;">'.$tmp_att_name.'&nbsp;&nbsp;<i>'.$tmp_att_size.'</i></span></div>';
 							//--
 							$eval_arr = array();
@@ -1500,7 +1523,7 @@ final class SmartMailerMimeParser {
 							//--
 							if((SmartUnicode::str_contains($val['content'], '<'.'?')) OR (SmartUnicode::str_contains($val['content'], '?'.'>')) OR (SmartUnicode::str_contains($val['content'], '<'.'%')) OR (SmartUnicode::str_contains($val['content'], '%'.'>'))) {
 								//--
-								$val['content'] = (string) @highlight_string($val['content'], 1); // highlight the PHP* code & sanitize the parts
+								$val['content'] = (string) highlight_string((string)$val['content'], true); // highlight the PHP* code & sanitize the parts
 								//--
 							} else {
 								//-- sanitize this html part
@@ -1513,7 +1536,7 @@ final class SmartMailerMimeParser {
 									$val['content'] = (string) str_replace('data-title="WebMail :: Disabled UNSAFE Image" src="#smart-framework-webmail-unsafe-image"', 'title="Smart.Framework.WebMail :: Disabled UNSAFE Image @ '.date('Y-m-d H:i:s O').'" src="lib/core/plugins/img/email/unsafe-image.svg"', (string)$val['content']);
 								} //end if
 								//-- replace cid images
-								$val['content'] = (string) self::mime_fix_cids($the_message_eml, $val['content'], $y_ctrl_key, $y_link);
+								$val['content'] = (string) self::mime_fix_cids((string)$the_message_eml, (string)$val['content'], (string)$y_ctrl_key, (string)$y_link);
 								//--
 							} //end if else
 							//--
@@ -1591,7 +1614,7 @@ final class SmartMailerMimeParser {
 						//--
 						$eval_arr = (array) SmartFileSysUtils::getArrMimeType('part_'.$cnt.'.html', 'inline');
 						//--
-						$tmp_link_pre = '<span title="Mime Part #'.$cnt.' ( '.Smart::escape_html(strtolower($val['mode']).' : '.strtoupper($val['charset'])).' )"><a href="'.self::mime_link($y_ctrl_key, $the_message_eml, $key, $y_link, $eval_arr[0], $eval_arr[1], 'partial').'" target="'.$y_target.'__mimepart" data-smart="open.popup">';
+						$tmp_link_pre = '<span title="Mime Part #'.$cnt.' ( '.Smart::escape_html(strtolower($val['mode']).' : '.strtoupper($val['charset'])).' )"><a href="'.self::mime_link((string)$y_ctrl_key, (string)$the_message_eml, (string)$key, (string)$y_link, (string)$eval_arr[0], (string)$eval_arr[1], 'partial').'" target="'.$y_target.'__mimepart" data-smart="open.popup">';
 						//--
 						$eval_arr = array();
 						//--
@@ -1700,7 +1723,7 @@ final class SmartMailerMimeParser {
 
 	//==================================================================
 	// [PRIVATE]
-	private static function mime_fix_clean_html(?string $y_mime_part) {
+	private static function mime_fix_clean_html(?string $y_mime_part) : string {
 		//--
 		// 1. clean HTML and strip comments
 		// 2. extract all image tags to be checked and deactivate unsafe img links, since robot re-composes a message and only embed img tags {{{SYNC-CHECK-ROBOT-TRUST-IMG-LINKS}}}
@@ -1746,7 +1769,7 @@ final class SmartMailerMimeParser {
 
 	//==================================================================
 	// [PRIVATE]
-	private static function mime_fix_cids($y_msg_file, $y_mime_part, $y_ctrl_key, $y_link) {
+	private static function mime_fix_cids(?string $y_msg_file, ?string $y_mime_part, ?string $y_ctrl_key, ?string $y_link) : string {
 		//--
 		$matches = array(); // init
 		//--
@@ -1768,7 +1791,7 @@ final class SmartMailerMimeParser {
 			);
 			$tmp_replace_cid_link = (string) str_replace(
 				(string) ($matches[$i][1] ?? null).($matches[$i][2] ?? null),
-				(string) self::mime_link($y_ctrl_key, $y_msg_file, 'cid_'.($matches[$i][2] ?? null), $y_link, 'image', 'inline'), // for cids send a generic type as image and later before servibg try to detect the real mime type {{{SYNC-BETTER-CID-IMGS-DETECTION-OF-MIMETYPE}}} ; why need fixing ? SVGs don't function with mime type 'image', they need 'image/svg+xml'
+				(string) self::mime_link((string)$y_ctrl_key, (string)$y_msg_file, (string)'cid_'.($matches[$i][2] ?? null), (string)$y_link, 'image', 'inline'), // for cids send a generic type as image and later before servibg try to detect the real mime type {{{SYNC-BETTER-CID-IMGS-DETECTION-OF-MIMETYPE}}} ; why need fixing ? SVGs don't function with mime type 'image', they need 'image/svg+xml'
 				(string) $tmp_replace_cid_link
 			);
 			$y_mime_part = (string) str_replace(
@@ -1788,7 +1811,7 @@ final class SmartMailerMimeParser {
 
 	//==================================================================
 	// [PRIVATE]
-	private static function mime_separe_part_link($y_msg_file) {
+	private static function mime_separe_part_link(?string $y_msg_file) : array {
 		//--
 		$out = array('msg' => '', 'part' => '');
 		//--
@@ -1808,7 +1831,7 @@ final class SmartMailerMimeParser {
 
 	//==================================================================
 	// [PRIVATE]
-	private static function mime_link($y_ctrl_key, $y_msg_file, $y_part, $y_link, $y_rawmime, $y_rawdisp, $y_display='') {
+	private static function mime_link(?string $y_ctrl_key, ?string $y_msg_file, ?string $y_part, ?string $y_link, ?string $y_rawmime, ?string $y_rawdisp, ?string $y_display='') : string {
 		//--
 		$y_msg_file = (string) $y_msg_file;
 		$y_part = (string) $y_part;

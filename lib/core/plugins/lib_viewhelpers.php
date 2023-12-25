@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20230123
+ * @version 	v.20231028
  * @package 	Application:Plugins:ViewComponents
  *
  */
@@ -51,7 +51,7 @@ final class SmartViewHtmlHelpers {
 
 
 	//================================================================
-	public static function html_js_preview_iframe($yid, $y_contents, $y_width='720px', $y_height='300px', $y_maximized=false, $y_sandbox='allow-popups allow-same-origin') {
+	public static function html_js_preview_iframe(?string $yid, ?string $y_contents, ?string $y_width='720px', ?string $y_height='300px', bool $y_maximized=false, ?string $y_sandbox='allow-popups allow-same-origin') : string {
 		//--
 		return (string) SmartMarkersTemplating::render_file_template(
 			'lib/core/plugins/templates/preview-iframe-draw.inc.htm',
@@ -82,7 +82,7 @@ final class SmartViewHtmlHelpers {
 	 *
 	 * @return STRING							[HTML Code]
 	 */
-	public static function html_jsload_hilitecodesyntax($dom_selector, $theme='', $use_absolute_url=false) {
+	public static function html_jsload_hilitecodesyntax(?string $dom_selector, ?string $theme='', bool $use_absolute_url=false) : string {
 		//--
 		if($use_absolute_url !== true) {
 			$the_abs_url = '';
@@ -124,7 +124,7 @@ final class SmartViewHtmlHelpers {
 	 *
 	 * @return STRING							[HTML Code]
 	 */
-	public static function html_jsload_editarea(bool $y_use_absolute_url=false, ?array $custom_themes=[]) {
+	public static function html_jsload_editarea(bool $y_use_absolute_url=false, ?array $custom_themes=[]) : string {
 		//--
 		if($y_use_absolute_url !== true) {
 			$the_abs_url = '';
@@ -181,7 +181,7 @@ final class SmartViewHtmlHelpers {
 	 * @return STRING						[HTML Code]
 	 *
 	 */
-	public static function html_js_editarea(?string $yid, ?string $yvarname, ?string $yvalue='', ?string $y_mode='text', bool $y_editable=true, ?string $y_width='720px', ?string $y_height='300px', bool $y_line_numbers=true, ?string $custom_theme='') {
+	public static function html_js_editarea(?string $yid, ?string $yvarname, ?string $yvalue='', ?string $y_mode='text', bool $y_editable=true, ?string $y_width='720px', ?string $y_height='300px', bool $y_line_numbers=true, ?string $custom_theme='') : string {
 		//--
 		switch((string)$y_mode) { // {{{SYNC-SMART-CODEMIRROR-MODES}}}
 			case 'json-ld':
@@ -283,7 +283,7 @@ final class SmartViewHtmlHelpers {
 	 * @return STRING 		[HTML Code]
 	 *
 	 */
-	public static function html_navpager($link, $total, $limit, $current, $display_if_empty=false, $adjacents=3, array $options=[]) {
+	public static function html_navpager(?string $link, ?int $total, ?int $limit, ?int $current, bool $display_if_empty=false, ?int $adjacents=3, array $options=[]) : string {
 		//--
 		$styles = '';
 		//--
@@ -313,13 +313,15 @@ final class SmartViewHtmlHelpers {
 			//--
 		} //end if else
 		//--
+		return '<!-- NavPager N/A -->';
+		//--
 	} //END FUNCTION
 	//================================================================
 
 
 	//================================================================
 	// $link = 'some-script.php?ofs={{{offset}}}';
-	private static function html_navpager_type_arrows($tpl, $link, $total, $limit, $current, $display_if_empty=false, $adjacents=3, array $options=[]) {
+	private static function html_navpager_type_arrows(?string $tpl, ?string $link, ?int $total, ?int $limit, ?int $current, bool $display_if_empty=false, ?int $adjacents=3, array $options=[]) : string {
 		//--
 		$tpl = (string) $tpl;
 		$link = (string) $link;
@@ -531,7 +533,7 @@ final class SmartViewHtmlHelpers {
 
 	//================================================================
 	// $link = 'some-script.php?ofs={{{offset}}}';
-	private static function html_navpager_type_numeric($tpl, $link, $total, $limit, $current, $display_if_empty=false, $adjacents=3, array $options=[]) {
+	private static function html_navpager_type_numeric(?string $tpl, ?string $link, ?int $total, ?int $limit, ?int $current, bool $display_if_empty=false, ?int $adjacents=3, array $options=[]) : string {
 		//--
 		$tpl = (string) $tpl;
 		$link = (string) $link;
@@ -731,7 +733,7 @@ final class SmartViewHtmlHelpers {
 	 * Function: Draw Limited Text Area
 	 *
 	 */
-	public static function html_js_limited_text_area($y_field_id, $y_var_name, $y_var_value, $y_limit, $y_css_w='125px', $y_css_h='50px', $y_placeholder='', $y_wrap='physical', $y_rawval='no') {
+	public static function html_js_limited_text_area(?string $y_field_id, ?string $y_var_name, ?string $y_var_value, ?string $y_limit, ?string $y_css_w='125px', ?string $y_css_h='50px', ?string $y_placeholder='', ?string $y_wrap='physical', ?string $y_rawval='no') : string {
 		//--
 		$y_limit = (int) $y_limit; // max characters :: between 100 and 99999
 		//--
@@ -785,7 +787,7 @@ final class SmartViewHtmlHelpers {
 	 * @param STRING $y_val			:: '' | '0' | '1'
 	 * @return STRING				:: HTML Code
 	 */
-	public static function html_selector_true_false($y_var, $y_val) {
+	public static function html_selector_true_false(?string $y_var, ?string $y_val) : string {
 		//--
 		$y_var = (string) trim((string)$y_var);
 		$y_val = (string) strtolower(trim((string)$y_val));
@@ -837,7 +839,7 @@ final class SmartViewHtmlHelpers {
 	 * @param STRING $y_val			:: '' | 'y' | 'n'
 	 * @return STRING				:: HTML Code
 	 */
-	public static function html_selector_yes_no($y_var, $y_val) {
+	public static function html_selector_yes_no(?string $y_var, ?string $y_val) : string {
 		//--
 		$y_var = (string) trim((string)$y_var);
 		$y_val = (string) strtolower(trim((string)$y_val));
@@ -882,45 +884,13 @@ final class SmartViewHtmlHelpers {
 
 	//================================================================
 	/**
-	 * Function: HTML Form Vars
-	 *
-	 * @param MIXED $y_var			:: ARRAY or STRING :: PHP variable
-	 * @param STRING $y_html_var	:: HTML Variable Name
-	 * @return STRING				:: HTML Code
-	 */
-	public static function html_hidden_formvars($y_var, $y_html_var) {
-		//--
-		$out = '';
-		//--
-		$regex_var = '/^([_a-zA-Z0-9])+$/';
-		//--
-		if(((string)$y_html_var != '') AND (preg_match((string)$regex_var, (string)$y_html_var))) {
-			if(is_array($y_var)) { // SYNC VARS
-				foreach($y_var as $key => $val) {
-					if(((string)$key != '') AND (preg_match((string)$regex_var, (string)$key))) {
-						$out .= '<input type="hidden" name="'.Smart::escape_html((string)$y_html_var).'['.Smart::escape_html((string)$key).']" value="'.Smart::escape_html((string)$val).'">'."\n";
-					} //end if
-				} //end for
-			} elseif((string)$y_var != '') {
-				$out .= '<input type="hidden" name="'.Smart::escape_html((string)$y_html_var).'" value="'.Smart::escape_html((string)$y_var).'">'."\n";
-			} //end if else
-		} //end if
-		//--
-		return (string) $out;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
 	 * Redirect to URL
 	 *
 	 * @param STRING $y_redir_url	:: URL to redirect page to
 	 * @param INTEGER $delay		:: *optional* ; if > 0 will use Delayed Redirect, otherwise Instant Redirect
 	 * @return STRING				:: JS Code
 	 */
-	public static function js_code_wnd_redirect($y_redir_url, $delay=-1) {
+	public static function js_code_wnd_redirect(?string $y_redir_url, ?int $delay=-1) : bool {
 		//--
 		$y_redir_url = (string) $y_redir_url;
 		$delay = (int) $delay;
@@ -941,7 +911,7 @@ final class SmartViewHtmlHelpers {
 	 * @param STRING $y_redir_url	:: *optional* URL to redirect by refresh page to
 	 * @return STRING				:: JS Code
 	 */
-	public static function js_code_wnd_refresh_parent($y_redir_url='') {
+	public static function js_code_wnd_refresh_parent(?string $y_redir_url='') : string {
 		//--
 		$y_redir_url = (string) $y_redir_url;
 		//--
@@ -962,7 +932,7 @@ final class SmartViewHtmlHelpers {
 	 * @param INTEGER $y_delay		:: *optional* ; if > 0 will use Delayed Close, otherwise Instant Close
 	 * @return STRING				:: JS Code
 	 */
-	public static function js_code_wnd_close_modal_popup($y_delay=-1) {
+	public static function js_code_wnd_close_modal_popup(?int $y_delay=-1) : string {
 		//--
 		$y_delay = (int) $y_delay; // microseconds
 		if($y_delay > 0) {
@@ -977,50 +947,18 @@ final class SmartViewHtmlHelpers {
 
 	//================================================================
 	/**
-	 * Function: JS Escape Mixed JS Code
-	 *
-	 * @param STRING $y_jscode		:: The inline JS Code to be escaped
-	 * @return STRING				:: JS Code
-	 */
-	private static function escape_inline_js_mixed_type_code($y_jscode) {
-		//--
-		$y_jscode = (string) trim((string)$y_jscode);
-		//--
-		$iscode = false;
-		if((string)substr($y_jscode, 0, 11) == 'javascript:') {
-			$iscode = true;
-			$y_jscode = (string) trim((string)substr((string)$y_jscode, 11)); // javascript explicit prefixed executable code (ex: javascript: some code) ; need to remove out the javascript: part
-		} elseif(preg_match('/^\s?function\s?\(/i', (string)$y_jscode)) {
-			$iscode = true;
-			$y_jscode = (string) $y_jscode; // javascript variable function (ex: function(){ ...})
-		} //end if else
-		if(($iscode === false) OR ((string)$y_jscode == '')) {
-			$y_jscode = (string) "'".Smart::escape_js($y_jscode)."'"; // text or eval code
-		} //end if
-		//--
-		return (string) $y_jscode;
-		//--
-	} //END FUNCTION
-	//================================================================
-
-
-	//================================================================
-	/**
 	 * Returns the JS Code to add (raise) a Growl Notification (sticky or not)
 	 * Must be enclosed in a <script>...</script> html tag or can be used for a JS action (ex: onClick="...")
 	 *
-	 * @param STRING $y_title		:: The Growl Title
-	 * @param STRING $y_text		:: The Growl Text
+	 * @param STRING $y_title		:: The Growl Title (Plain Text)
+	 * @param STRING $y_text		:: The Growl Body (HTML code)
 	 * @param STRING $y_image		:: The Growl Image (can be empty)
 	 * @param INTEGER+ $y_time 		:: *optional* ; default is 5000 (5 seconds) ; The Display Time in microseconds
 	 * @param ENUM $y_sticky 		:: *optional* ; default is 'false' ; If set to 'false' will be not sticky ; if set to 'true' will be sticky
 	 * @param STRING $y_class 		:: *optional* the CSS class
 	 * @return STRING				:: JS Code
 	 */
-	public static function js_code_notification_add($y_title, $y_text, $y_image, $y_time=5000, $y_sticky='false', $y_class='') {
-		//--
-		$y_title 	= (string) self::escape_inline_js_mixed_type_code($y_title);
-		$y_text 	= (string) self::escape_inline_js_mixed_type_code($y_text);
+	public static function js_code_notification_add(?string $y_title, ?string $y_text, ?string $y_image, ?string $y_time='5000', ?string $y_sticky='false', ?string $y_class='') : string {
 		//--
 		if((string)$y_sticky != 'true') {
 			$y_sticky = 'false';
@@ -1031,7 +969,7 @@ final class SmartViewHtmlHelpers {
 			$y_time = 1; // miliseconds
 		} //end if
 		//--
-		return 'smartJ$Browser.GrowlNotificationAdd('.$y_title.', '.$y_text.', \''.Smart::escape_js($y_image).'\', '.(int)$y_time.', '.(string)$y_sticky.', \''.Smart::escape_js((string)$y_class).'\');';
+		return 'smartJ$Browser.GrowlNotificationAdd('.Smart::escape_js(Smart::escape_html($y_title)).', '.Smart::escape_js($y_text).', \''.Smart::escape_js($y_image).'\', '.(int)$y_time.', '.(string)$y_sticky.', \''.Smart::escape_js((string)$y_class).'\');';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1045,7 +983,7 @@ final class SmartViewHtmlHelpers {
 	 * @param STRING $y_id 			:: *optional* the Growl ID ; default is '' ; if non empty will remove just the Growl that match the ID ; otherwise will remove ALL Growl instances
 	 * @return STRING				:: JS Code
 	 */
-	public static function js_code_notification_remove($y_id='') {
+	public static function js_code_notification_remove(?string $y_id='') : string {
 		//-- here we take it as raw as this is the name of a JS variable ...
 		$y_id = trim((string)$y_id); // (no prepare js string)
 		if(!preg_match('/^[a-zA-Z0-9_]+$/', (string)$y_id)) {
@@ -1067,9 +1005,18 @@ final class SmartViewHtmlHelpers {
 	 * @internal
 	 *
 	 */
-	public static function js_code_ui_confirm_dialog($y_question_html, $y_ok_jscript_function='', $y_width='', $y_height='', $y_title='?') {
+	public static function js_code_ui_confirm_dialog(?string $y_question_html, ?string $y_ok_jscript_function='', ?string $y_width='', ?string $y_height='', ?string $y_title='', ?string $y_type='auto') : string {
 		//--
-		return 'smartJ$Browser.ConfirmDialog(\''.Smart::escape_js($y_question_html).'\', \''.Smart::escape_js($y_ok_jscript_function).'\', \''.Smart::escape_js($y_title).'\', '.(int)$y_width.', '.(int)$y_height.');';
+		$y_title = (string) trim((string)$y_title);
+		if((string)$y_title == '') {
+			$y_title = '?';
+		} //end if
+		//--
+		if((string)$y_type != 'alertable') {
+			$y_type = 'auto';
+		} //end if
+		//--
+		return 'smartJ$Browser.ConfirmDialog(\''.Smart::escape_js($y_question_html).'\', \''.Smart::escape_js($y_ok_jscript_function).'\', \''.Smart::escape_js(Smart::escape_html($y_title)).'\', '.(int)$y_width.', '.(int)$y_height.', \''.Smart::escape_js($y_type).'\');';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1084,9 +1031,18 @@ final class SmartViewHtmlHelpers {
 	 * @internal
 	 *
 	 */
-	public static function js_code_ui_alert_dialog($y_message, $y_ok_jscript_function='', $y_width='', $y_height='', $y_title='!') {
+	public static function js_code_ui_alert_dialog(?string $y_message, ?string $y_ok_jscript_function='', ?string $y_width='', ?string $y_height='', ?string $y_title='', ?string $y_type='auto') : string {
 		//--
-		return 'smartJ$Browser.AlertDialog(\''.Smart::escape_js($y_message).'\', \''.Smart::escape_js($y_ok_jscript_function).'\', \''.Smart::escape_js($y_title).'\', '.(int)$y_width.', '.(int)$y_height.');';
+		$y_title = (string) trim((string)$y_title);
+		if((string)$y_title == '') {
+			$y_title = '!';
+		} //end if
+		//--
+		if((string)$y_type != 'alertable') {
+			$y_type = 'auto';
+		} //end if
+		//--
+		return 'smartJ$Browser.AlertDialog(\''.Smart::escape_js($y_message).'\', \''.Smart::escape_js($y_ok_jscript_function).'\', \''.Smart::escape_js(Smart::escape_html($y_title)).'\', '.(int)$y_width.', '.(int)$y_height.', \''.Smart::escape_js($y_type).'\');';
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1108,7 +1064,7 @@ final class SmartViewHtmlHelpers {
 	 *
 	 * @return STRING				[javascript code]
 	 */
-	public static function js_ajax_submit_html_form($y_form_id, $y_script_url, $y_confirm_question='', $y_js_evcode='', $y_js_everrcode='', $y_js_evfailcode='', $y_failalertable=false) {
+	public static function js_ajax_submit_html_form(?string $y_form_id, ?string $y_script_url, ?string $y_confirm_question='', ?string $y_js_evcode='', ?string $y_js_everrcode='', ?string $y_js_evfailcode='', bool $y_failalertable=false) : string {
 		//--
 		$y_js_evcode = (string) trim((string)$y_js_evcode);
 		//--
@@ -1149,7 +1105,7 @@ final class SmartViewHtmlHelpers {
 	 * @return STRING				[JSON data string]
 	 *
 	 */
-	public static function js_ajax_replyto_html_form($y_status, $y_title, $y_message, $y_redirect_url='', $y_replace_div='', $y_replace_html='', $y_js_evcode='', $y_hide_form_on_success=false) {
+	public static function js_ajax_replyto_html_form(?string $y_status, ?string $y_title, ?string $y_message, ?string $y_redirect_url='', ?string $y_replace_div='', ?string $y_replace_html='', ?string $y_js_evcode='', bool $y_hide_form_on_success=false) : string {
 		//--
 		$translator_core_messages = SmartTextTranslations::getTranslator('@core', 'messages'); // OK.rev2
 		//--
@@ -1187,7 +1143,7 @@ final class SmartViewHtmlHelpers {
 	 * @internal
 	 *
 	 */
-	public static function js_code_confirm_form_submit($y_question, $y_popuptarget='', $y_width='', $y_height='', $y_force_popup='', $y_force_dims='') {
+	public static function js_code_confirm_form_submit(?string $y_question, ?string $y_popuptarget='', ?string $y_width='', ?string $y_height='', ?string $y_force_popup='', ?string $y_force_dims='') : string {
 		//--
 		if((string)$y_width != '') {
 			$y_width = Smart::format_number_int($y_width, '+');
@@ -1217,7 +1173,7 @@ final class SmartViewHtmlHelpers {
 	 * @internal
 	 *
 	 */
-	public static function js_code_init_away_page($y_question='') {
+	public static function js_code_init_away_page(?string $y_question='') : string {
 		//--
 		$translator_core_js_messages = SmartTextTranslations::getTranslator('@core', 'js_messages'); // OK.rev2
 		//--
@@ -1243,7 +1199,7 @@ final class SmartViewHtmlHelpers {
 	 * @internal
 	 *
 	 */
-	public static function js_code_disable_away_page() {
+	public static function js_code_disable_away_page() : string {
 		//--
 		return 'smartJ$Browser.setFlag(\'PageAway\', true);';
 		//--

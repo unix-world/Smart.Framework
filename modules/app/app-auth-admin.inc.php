@@ -38,7 +38,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 // 		password = The1pas! (APP_AUTH_ADMIN_PASSWORD 	as constant, set in config-admin.php) # stored as encrypted
 // This is the best way to integrate with framework's authentication system by using SmartAuth:: object.
 //-------------------------------------------
-//
+/*
 if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\SmartModExtLib\\AuthAdmins\\SimpleAuthAdminsHandler'))) {
 	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` # SimpleAuth ...');
 	die('AppAuthAdmin:ModuleMissing:AuthAdmins');
@@ -48,7 +48,7 @@ if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\S
 	false // set this to TRUE to DISABLE Tokens
 	// does not support 2FA ...
 );
-//
+*/
 //-------------------------------------------
 
 //-------------------------------------------
@@ -61,7 +61,7 @@ if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\S
 // 	* fail login timeouts, IP based (DDOS protection after 10 fail logins ...)
 // INFO: see the modules/mod-auth-admins/doc/README.md on how to setup this in configs ...
 //-------------------------------------------
-/*
+// TEMPORARY DEV MODE, THIS SHOUDL BE DEFAULT ...
 if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\SmartModExtLib\\AuthAdmins\\SmartAuthAdminsHandler'))) {
 	SmartFrameworkRuntime::Raise500Error('A required module is missing: `mod-auth-admins` # Smart.Unicorn Authentication ...');
 	die('AppAuthAdmin:ModuleMissing:AuthAdmins');
@@ -71,7 +71,7 @@ if((!SmartAppInfo::TestIfModuleExists('mod-auth-admins')) OR (!class_exists('\\S
 	false, // set this to TRUE to DISABLE Tokens
 	false  // set this to TRUE to DISABLE 2FA
 );
-*/
+//
 //-------------------------------------------
 
 // end of php code

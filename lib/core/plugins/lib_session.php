@@ -67,7 +67,7 @@ if(!function_exists('session_start')) {
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP Session Module ; classes: Smart, SmartUtils
- * @version 	v.20231007
+ * @version 	v.20231103
  * @package 	Application:Plugins:Session
  *
  */
@@ -284,9 +284,9 @@ final class SmartSession {
 		// (2) an almost unique client public key hash based on it's IP and Browser (1) and Session Name
 		// (3) a unique session id composed from (1) and (2)
 		//-- thus the correlation between the above makes almost impossible to forge it as it locks to IP+Browser, using a public entropy cookie all encrypted with a secret key and derived and related, finally composed.
-		$the_sess_hash_priv_key = (string) SmartHashCrypto::sha512($the_sess_client_uuid.'^'.SMART_APP_VISITOR_COOKIE.'^'.SMART_FRAMEWORK_SECURITY_KEY);
-		$the_sess_hash_pub_key = (string) SmartHashCrypto::sha512('^'.SMART_FRAMEWORK_SESSION_NAME.'&'.$the_sess_client_uuid.'&'.$the_sess_hash_priv_key.'&'.SMART_FRAMEWORK_SECURITY_KEY.'$');
-		$the_sess_id = (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha512($the_sess_hash_pub_key.'^'.$the_sess_client_uuid.'&'.$the_sess_hash_priv_key), 62); // session ID combines the secret client key based on it's IP / Browser and the Client Entropy Cookie ; 64..86 characters long
+		$the_sess_hash_priv_key = (string) SmartHashCrypto::sh3a512($the_sess_client_uuid.'^'.SMART_APP_VISITOR_COOKIE.'^'.SMART_FRAMEWORK_SECURITY_KEY);
+		$the_sess_hash_pub_key = (string) SmartHashCrypto::sh3a512('^'.SMART_FRAMEWORK_SESSION_NAME.'&'.$the_sess_client_uuid.'&'.$the_sess_hash_priv_key.'&'.SMART_FRAMEWORK_SECURITY_KEY.'$');
+		$the_sess_id = (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sh3a512($the_sess_hash_pub_key.'^'.$the_sess_client_uuid.'&'.$the_sess_hash_priv_key), 62); // session ID combines the secret client key based on it's IP / Browser and the Client Entropy Cookie ; 64..86 characters long
 		//--
 		$sf_sess_area = (string) Smart::safe_filename((string)SMART_FRAMEWORK_SESSION_PREFIX);
 		if(((string)$sf_sess_area == '') OR (!SmartFileSysUtils::checkIfSafeFileOrDirName((string)$sf_sess_area))) {
@@ -514,7 +514,7 @@ final class SmartSession {
  * Abstract Class Smart Custom Session
  * This is the abstract for extending the class SmartCustomSession
  *
- * @version 	v.20231007
+ * @version 	v.20231103
  * @package 	development:Application
  */
 abstract class SmartAbstractCustomSession {

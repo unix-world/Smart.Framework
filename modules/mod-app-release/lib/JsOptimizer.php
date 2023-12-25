@@ -38,7 +38,7 @@ if((!defined('SMART_FRAMEWORK_RUNTIME_MODE')) OR ((string)SMART_FRAMEWORK_RUNTIM
 final class JsOptimizer {
 
 	// ::
-	// v.20221219
+	// v.20231125
 
 
 	//====================================================
@@ -101,8 +101,8 @@ final class JsOptimizer {
 						$exitcode = -1;
 						$enc_errors = '';
 						//--
-						$parr = (array) SmartUtils::run_proc_cmd(
-							(string) escapeshellcmd((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN).' '.Smart::real_path((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS).$strategy_options.' --beautify beautify=false,ascii_only=true -- '.escapeshellarg((string)$y_script_path),
+						$parr = (array) SmartUtils::run_proc_cmd( // {{{SYNC-NODEJS-MINIFY-OPTIONS}}} ; for ulifyjs: the --validate option is a bit slow, but may be considered in the future ; at the moment, validation is made via post-minify using node or spidermonkey ...
+							(string) escapeshellcmd((string)TASK_APP_RELEASE_CODEPACK_NODEJS_BIN).' --no-addons --no-deprecation --no-warnings --no-global-search-paths '.Smart::real_path((string)TASK_APP_RELEASE_CODEPACK_NODE_MODULE_MINIFY_JS).$strategy_options.' --beautify beautify=false,braces=true,semicolons=true,ascii_only=true -- '.escapeshellarg((string)$y_script_path),
 							null,
 							null,
 							null

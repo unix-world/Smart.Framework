@@ -1,4 +1,4 @@
-<!-- Partial Template: Plugins.CaptchaForm r.20231020 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
+<!-- Partial Template: Plugins.CaptchaForm r.20231117 ; Form: [###CAPTCHA-FORM|html###] ; Seed: [###CAPTCHA-RAND|html###] -->
 [%%%IF:ALL-REQUIREMENTS:==yes;%%%]
 <!-- Sf.Icons --><link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/css/toolkit/sf-icons.css?[###RELEASE-HASH|url|html###]">
 <!-- jQuery --><script src="[###BASE-URL|html###]lib/js/jquery/jquery.js?[###RELEASE-HASH|url|html###]"></script><script>jQuery.ajaxSetup({ timeout: 0, cache: false });</script><script src="[###BASE-URL|html###]lib/js/jquery/jquery.smart.compat.js?[###RELEASE-HASH|url|html###]"></script>
@@ -27,6 +27,7 @@ window.smartJ$Options = smartJ$Options; // g-exp.
 [%%%ELSE:ALL-REQUIREMENTS%%%]
 <!-- standalone deps: skip -->
 [%%%/IF:ALL-REQUIREMENTS%%%]
+<script>const smartCaptchaType = 'smart'; window.smartCaptchaType = smartCaptchaType;</script>
 <link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/core/plugins/templates/captcha.css?[###RELEASE-HASH|html###]">
 <link rel="stylesheet" type="text/css" href="[###BASE-URL|html###]lib/js/jscaptcha/jquery.iconsCaptcha.css?[###RELEASE-HASH|html###]">
 <script src="[###BASE-URL|html###]lib/js/jscaptcha/jquery.iconsCaptcha.js?[###RELEASE-HASH|html###]"></script>
@@ -51,9 +52,11 @@ jQuery(() => {
 	}
 
 	[###CAPTCHA-JS-EXPORTS###]
-	const Mutation$Observer = (t, k) => c$d(e$.decode(t), k);
-	const Pointer$Observer = window.smartCaptchaInputHandler.pointerObserver;
-	const Covariance$Observer = window.smartCaptchaInputHandler.covarianceObserver;
+	const mutation$Observer = (t, k) => c$d(k, u$.b64Dec(t));
+	const event$Observer = window.smartCaptchaInputHandler.eventObserver;
+	const pointer$Observer = window.smartCaptchaInputHandler.pointerObserver;
+	const get$DhKx = window.smartCaptchaInputHandler.getDhKx;
+	const dhkx$KE = window.smartCaptchaInputHandler.dhkxKE;
 
 	const Smart$Captcha$Options = {
 		uuid: '[###RELEASE-UUID|htmid|js###]',
@@ -82,23 +85,27 @@ jQuery(() => {
 		imUrl: '[###CAPTCHA-IM-URL|js###]',
 		iqURL: '[###CAPTCHA-IQ-URL|js###]',
 		baseURL: '[###BASE-URL|js###]',
+		msgSec: 'Invalid Object Definition',
 	};
 	Object.freeze(Smart$Captcha$Options);
+
 	window.smartCaptchaFormHandler.handleForm(
 		'[###CAPTCHA-FORM|js###]',
 		Smart$Captcha$Options,
 		u$,
 		d$,
-		e$,
 		z$,
 		h$,
-		c$,
-		x$,
+		c$e,
+		c$d,
 		b$,
-		subtle$CryptoDigest,
-		Mutation$Observer,
-		Covariance$Observer,
-		Pointer$Observer,
+		s$,
+		dhkx$KE,
+		get$DhKx,
+		data$Handler,
+		mutation$Observer,
+		event$Observer,
+		pointer$Observer,
 		'[###CAPTCHA-CHKSUM|js###]'
 	);
 

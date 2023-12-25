@@ -25,41 +25,47 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class SqAuthAdmins {
 
 	// ->
-	// v.20231020
+	// v.20231119
 
 	private $db;
+	private $dbFile;
 
-	public const MAX_ADMIN_ACCOUNTS = 16384; // actually the 16384 is the max supported by the current auth tokens B36 ID system (stored on disk) which supports no more than max number of sub-dirs per dir ; many operating systems still have a limit as of 32k ; storing on a case-sensitive FS as `i/id/`, on B36 limit is 36 * 36 = 1296 ; on case-insensitive limit is 62 * 62 = 3844 ; thus having a 16384 limit is fair than reasonable for admin accounts
+	public const MAX_ADMIN_START_LETTER_ACCOUNTS = 32768; // limit as max 32768 per starting letter
+	public const MAX_ADMIN_ACCOUNTS = 851968; // can clusterize ..., this is only a limit per cluster, as 32768 * 26 = 851968 (there are 26 letters a-z as prefix, ex: `a/admin`) ; this is the max safe supported by one server storage system,  if stored on disk, which supports no more than 32k sub-dirs per dir ; many operating systems still have this limit ...
 	public const MAX_TOKENS_PER_ACCOUNT = 50;
 
 	private const ERR_NO_CONNECTION = 'Invalid AUTH DB Connection !';
 
 
-	public function __construct() { // THIS SHOULD BE THE ONLY METHOD IN THIS CLASS THAT THROW EXCEPTIONS !!!
+	public function __construct(bool $connect=true) { // THIS SHOULD BE THE ONLY METHOD IN THIS CLASS THAT THROW EXCEPTIONS !!!
 		//--
-		if(!\defined('\\APP_AUTH_DB_SQLITE')) {
-			throw new \Exception('AUTH DB SQLITE is NOT Defined !');
-			return;
-		} //end if
 		if(!\SmartEnvironment::isAdminArea()) {
 			throw new \Exception('AUTH DB can operate under admin/task area only !');
 			return;
 		} //end if
 		//--
-		$this->db = new \SmartSQliteDb((string)\APP_AUTH_DB_SQLITE);
-		$this->db->open();
-		//--
-		if(!\SmartFileSystem::is_type_file((string)\APP_AUTH_DB_SQLITE)) {
-			if($this->db instanceof \SmartSQliteDb) {
-				$this->db->close();
-			} //end if
-			throw new \Exception('AUTH DB SQLITE File does NOT Exists !');
+		if(!\defined('\\SMART_FRAMEWORK_SECURITY_KEY')) {
+			throw new \Exception('AUTH DB SQLITE: Secret is Undefined');
+			return;
+		} //end if
+		if((string)\trim((string)\SMART_FRAMEWORK_SECURITY_KEY) == '') {
+			throw new \Exception('AUTH DB SQLITE: Secret is Empty');
 			return;
 		} //end if
 		//--
-		$init_schema = $this->initDBSchema(); // null or string
-		if($init_schema !== null) { // create default schema if not exists (and a default account)
-			throw new \Exception('AUTH DB Init Schema Failed with Message: '.$init_schema);
+		$dbPath =  (string) '#db/auth-admins-'.\SmartHashCrypto::sha1((string)\SMART_FRAMEWORK_SECURITY_KEY).'.sqlite';
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$dbPath, true, true)) { // {{{SYNC-AUTHDB-CHECK-DB-SAFE-PATH}}}
+			throw new \Exception('AUTH DB SQLITE File Path is Unsafe !');
+			return;
+		} //end if
+		$this->dbFile = (string) $dbPath;
+		//--
+		if($connect !== false) {
+			$err = (string) $this->dbConnect();
+			if((string)$err != '') {
+				throw new \Exception((string)$err);
+				return;
+			} //end if
 		} //end if
 		//--
 	} //END FUNCTION
@@ -76,7 +82,52 @@ final class SqAuthAdmins {
 	} //END FUNCTION
 
 
+	public function getDbPath() : string {
+		//--
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$this->dbFile, true, true)) { // {{{SYNC-AUTHDB-CHECK-DB-SAFE-PATH}}}
+			return '';
+		} //end if
+		//--
+		return (string) $this->dbFile;
+		//--
+	} //END FUNCTION
+
+
+	public function dbConnect() : string {
+		//--
+		if(!!$this->db instanceof \SmartSQliteDb) {
+			\Smart::log_warning(__METHOD__.' # Connect called more than once');
+			return '';
+		} //end if
+		//--
+		if(!\SmartFileSysUtils::checkIfSafePath((string)$this->dbFile, true, true)) { // {{{SYNC-AUTHDB-CHECK-DB-SAFE-PATH}}}
+			\Smart::log_warning(__METHOD__.' # DB Path is Empty or Unsafe: `'.$this->dbFile.'`');
+			return '';
+		} //end if
+		//--
+		$this->db = new \SmartSQliteDb((string)$this->dbFile);
+		$this->db->open();
+		//--
+		if(!\SmartFileSystem::is_type_file((string)$this->dbFile)) {
+			if($this->db instanceof \SmartSQliteDb) {
+				$this->db->close();
+			} //end if
+			return 'AUTH DB SQLITE File does NOT Exists !';
+		} //end if
+		//--
+		$init_schema = $this->initDBSchema(); // null or string
+		if($init_schema !== null) { // create default schema if not exists (and a default account)
+			return 'AUTH DB Init Schema Failed with Message: '.$init_schema;
+		} //end if
+		//--
+		return '';
+		//--
+	} //END FUNCTION
+
+
 	public function getLoginData(string $auth_user_name, string $auth_pass_hash) : array {
+		//--
+		// the combination of UserName/PassHash must match an account which is marked also as ACTIVE
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # '.self::ERR_NO_CONNECTION);
@@ -189,15 +240,11 @@ final class SqAuthAdmins {
 		//--
 		$where = '';
 		$params = [];
-		//--
 		$id = (string) \trim((string)$id);
-		$id = (string) \trim((string)$id, '%');
-		$id = (string) \trim((string)$id);
-		//--
 		if((bool)$strict === false) {
 			if((string)$id != '') {
 				$where = ' WHERE (`id` LIKE ?)';
-				$params = [ (string)$id.'%' ];
+				$params = [ (string)$this->db->quote_likes((string)$id).'%' ];
 			} //end if
 		} else {
 			$where = ' WHERE (`id` = ?)';
@@ -241,15 +288,11 @@ final class SqAuthAdmins {
 		$limit = ' LIMIT '.\Smart::format_number_int($limit,'+').' OFFSET '.\Smart::format_number_int($ofs,'+');
 		$where = '';
 		$params = [];
-		//--
 		$id = (string) \trim((string)$id);
-		$id = (string) \trim((string)$id, '%');
-		$id = (string) \trim((string)$id);
-		//--
 		if((bool)$strict === false) {
 			if((string)$id != '') {
 				$where = ' WHERE (`id` LIKE ?)';
-				$params = [ (string)$id.'%' ];
+				$params = [ (string)$this->db->quote_likes((string)$id).'%' ];
 			} //end if
 		} else {
 			$where = ' WHERE (`id` = ?)';
@@ -331,6 +374,15 @@ final class SqAuthAdmins {
 		//--
 		$cnt = (int) $this->db->count_data('SELECT COUNT(1) FROM `admins`');
 		if((int)$cnt >= (int)self::MAX_ADMIN_ACCOUNTS) { // hardcoded admin accounts limit
+			return (int) $out;
+		} //end if
+		//--
+		$firstLetter = (string) substr((string)$data['id'], 0, 1);
+		$cntPerLetter = (int) $this->db->count_data(
+			'SELECT COUNT(1) FROM `admins` WHERE (`id` LIKE ?)',
+			[ (string)$this->db->quote_likes((string)$firstLetter).'%' ]
+		);
+		if((int)$cntPerLetter >= (int)self::MAX_ADMIN_START_LETTER_ACCOUNTS) { // hardcoded admin accounts limit that may start with one letter
 			return (int) $out;
 		} //end if
 		//--
@@ -480,7 +532,7 @@ final class SqAuthAdmins {
 					'name_l' 	=> (string) $data['name_l'],
 					'email' 	=>          $data['email'] // mixed: false (NULL) or string
 				];
-				if((string)$id == (string)\SmartAuth::get_auth_username()) { // current account only ; do not update keys except for current logged in user only
+				if((string)$id == (string)\SmartAuth::get_auth_id()) { // current account only ; do not update keys except for current logged in user only
 					if((string)$data['upd-keys'] == 'yes') {
 						$arr['keys'] = (string) $this->encryptPrivKey((string)$data['keys']); // avoid update keys for other user since the password of other users is completely unknown, it is stored in an ireversible hash format
 					} //end if
@@ -662,7 +714,7 @@ final class SqAuthAdmins {
 	//-------- 2FA
 
 
-	public function get2FAGetToken(?string $key) : string {
+	public function get2FAPinToken(?string $key) : string {
 		//--
 		$key = (string) \trim((string)$key);
 		if((string)$key == '') {
@@ -1102,7 +1154,7 @@ final class SqAuthAdmins {
 			$this->db->write_data('BEGIN');
 			$this->db->create_table( // {{{SYNC-TABLE-AUTH_TEMPLATE}}}
 				'authtokens',
-				"-- #START: table schema: authtokens @ 20231020
+				"-- #START: table schema: authtokens @ 20231021
 				`id` character varying(25) NOT NULL,
 				`active` smallint DEFAULT 0 NOT NULL,
 				`expires` bigint DEFAULT 0 NOT NULL,
@@ -1142,8 +1194,9 @@ final class SqAuthAdmins {
 $version = (string) $this->db->escape_str((string)\SMART_FRAMEWORK_RELEASE_TAGVERSION.' '.\SMART_FRAMEWORK_RELEASE_VERSION);
 $ipadr = (string) $this->db->escape_str((string)\SmartUtils::get_ip_client());
 $passlen = (int) \SmartHashCrypto::PASSWORD_HASH_LENGTH;
+//-- {{{SYNC-ADMINS-ACCOUNT-DATA-STRUCTURE}}}
 $schema = <<<SQL
--- #START: tables schema: _smartframework_metadata / admins @ 20231020
+-- #START: tables schema: _smartframework_metadata / admins @ 20231021
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('version@auth-admins', '{$version}');
 INSERT INTO `_smartframework_metadata` (`id`, `description`) VALUES ('init-ip@auth-admins', '{$ipadr}');
 CREATE TABLE 'admins' (

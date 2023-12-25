@@ -24,7 +24,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
- * @version 	v.20231020
+ * @version 	v.20231031
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -158,9 +158,9 @@ final class SmartAdmViewHtmlHelpers {
 				if((string)$y_extrastyle != '') {
 					$y_extrastyle = (string) \trim((string)$y_extrastyle);
 					if(\stripos($y_extrastyle, 'class:') === 0) {
-						$y_extrastyle = (string) \trim((string)\substr($y_extrastyle, \strlen('class:')));
+						$y_extrastyle = (string) \trim((string)\substr((string)$y_extrastyle, (int)\strlen('class:')));
 						if((string)$y_extrastyle != '') {
-							$css_class .= ' '.\Smart::escape_html($y_extrastyle);
+							$css_class .= ' '.\Smart::escape_html((string)$y_extrastyle);
 						} //end if
 						$y_extrastyle = '';
 					} //end if
@@ -184,7 +184,7 @@ final class SmartAdmViewHtmlHelpers {
 			} //end if
 			$y_extrastyle = (string) \trim((string)$y_extrastyle);
 			if((string)$y_extrastyle != '') {
-				$style[] = (string) \Smart::escape_html($y_extrastyle);
+				$style[] = (string) \Smart::escape_html((string)$y_extrastyle);
 			} //end if
 			//--
 			if(\Smart::array_size($style) > 0) {
@@ -198,7 +198,7 @@ final class SmartAdmViewHtmlHelpers {
 			$out .= '>'."\n";
 			//--
 			if((string)$y_allowblank == 'yes') {
-				$out .= '<option value="">'.($y_blank_name ? \Smart::escape_html($y_blank_name) : '&nbsp;').'</option>'."\n"; // we need a blank value to avoid wrong display of selected value
+				$out .= '<option value="">'.($y_blank_name ? \Smart::escape_html((string)$y_blank_name) : '&nbsp;').'</option>'."\n"; // we need a blank value to avoid wrong display of selected value
 			} //end if
 			//--
 		} //end if
@@ -221,13 +221,13 @@ final class SmartAdmViewHtmlHelpers {
 				if((string)$y_raw == 'yes') {
 					$tmp_desc_val = (string) $_yarr_data[$i_val];
 				} else {
-					$tmp_desc_val = (string) \SmartMarkersTemplating::prepare_nosyntax_html_template((string)\Smart::escape_html($_yarr_data[$i_val]));
+					$tmp_desc_val = (string) \SmartMarkersTemplating::prepare_nosyntax_html_template((string)\Smart::escape_html((string)$_yarr_data[$i_val]));
 				} //end if else
 				//--
 				if(\strpos((string)$_yarr_data[$i_key], '#OPTGROUP#') === 0) {
 					$out .= '<optgroup label="'.$tmp_desc_val.'">'."\n"; // the optgroup
 				} else {
-					$out .= '<option value="'.\SmartMarkersTemplating::prepare_nosyntax_html_template((string)\Smart::escape_html($_yarr_data[$i_key])).'"'.$tmp_sel.'>'.$tmp_desc_val.'</option>'."\n";
+					$out .= '<option value="'.\SmartMarkersTemplating::prepare_nosyntax_html_template((string)\Smart::escape_html((string)$_yarr_data[$i_key])).'"'.$tmp_sel.'>'.$tmp_desc_val.'</option>'."\n";
 				} //end if else
 				//--
 			} else {
@@ -237,7 +237,7 @@ final class SmartAdmViewHtmlHelpers {
 					if((string)$y_raw == 'yes') {
 						$out .= (string) $_yarr_data[$i_val]."\n";
 					} else {
-						$out .= (string) \SmartMarkersTemplating::prepare_nosyntax_html_template((string)\Smart::escape_html($_yarr_data[$i_val]))."\n";
+						$out .= (string) \SmartMarkersTemplating::prepare_nosyntax_html_template((string)\Smart::escape_html((string)$_yarr_data[$i_val]))."\n";
 					} //end if else
 					//--
 					$found += 1;
@@ -425,9 +425,9 @@ final class SmartAdmViewHtmlHelpers {
 				if((string)$y_extrastyle != '') {
 					$y_extrastyle = (string) \trim((string)$y_extrastyle);
 					if(\stripos($y_extrastyle, 'class:') === 0) {
-						$y_extrastyle = (string) \trim((string)\substr($y_extrastyle, \strlen('class:')));
+						$y_extrastyle = (string) \trim((string)\substr($y_extrastyle, (int)\strlen('class:')));
 						if((string)$y_extrastyle != '') {
-							$css_class .= ' '.\Smart::escape_html($y_extrastyle);
+							$css_class .= ' '.\Smart::escape_html((string)$y_extrastyle);
 						} //end if
 						$y_extrastyle = '';
 					} //end if
@@ -457,7 +457,7 @@ final class SmartAdmViewHtmlHelpers {
 				} //end if
 				$y_extrastyle = (string) \trim((string)$y_extrastyle);
 				if((string)$y_extrastyle != '') {
-					$style[] = (string) \Smart::escape_html($y_extrastyle);
+					$style[] = (string) \Smart::escape_html((string)$y_extrastyle);
 				} //end if
 				//--
 				if(\Smart::array_size($style) > 0) {

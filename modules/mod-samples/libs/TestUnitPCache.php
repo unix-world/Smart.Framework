@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221230
+ * @version 	v.20231029
  *
  */
 final class TestUnitPCache {
@@ -109,7 +109,7 @@ final class TestUnitPCache {
 		$tests = array();
 		$tests[] = '***** Persistent Cache Backend: ['.$thePcacheVersionInfo.'] *****';
 		$tests[] = '*** Persistent Cache Storage: '.$pcache_mode.' # '.$test_scale.' SCALE Test ('.(int)$num_keys.') keys ***';
-		$tests[] = '===== Persistent Cache / TESTS with a huge size Variable (String/Json) Key-Size of 2x'.\SmartUtils::pretty_print_bytes(\strlen($pcache_test_arch_content), 2).' : =====';
+		$tests[] = '===== Persistent Cache / TESTS with a huge size Variable (String/Json) Key-Size of 2x'.\SmartUtils::pretty_print_bytes((int)\strlen($pcache_test_arch_content), 2).' : =====';
 		//--
 		if(stripos((string)$thePcacheVersionInfo, 'redis:') === 0) {
 			$tests[] = '=== Redis Re-Use the connection Test (see the debug log ... it must have reuse it !) ===';

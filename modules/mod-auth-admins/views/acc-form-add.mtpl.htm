@@ -1,4 +1,4 @@
-<!-- v.20231018 -->
+<!-- v.20231119 -->
 [@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
 <center><div><table><tr><td>
 <form id="add_form" name="add_form" class="ux-form ux-form-aligned" onSubmit="return false;">
@@ -7,7 +7,7 @@
 	<legend><h1>Add New Account</h1></legend>
 	<br>
 	<div class="ux-control-group">
-		<label><i class="sfi sfi-user"></i>&nbsp;Username</label>
+		<label><i class="sfi sfi-user"></i>&nbsp;UserName&nbsp;/&nbsp;ID</label>
 		<input type="text" autocomplete="off" name="frm[id]" placeholder="user.name" class="ux-input-1-2" required>
 	</div>
 	<div class="ux-control-group">
@@ -22,13 +22,13 @@
 		<label>Retype Password</label>
 		<input type="password" autocomplete="off" name="frm[repass]" placeholder="Password Retype" class="ux-input-1-2" title="Retype the password" required>
 	</div>
-	<div class="ux-control-group">
+	<div class="ux-control-group" title="Given Name">
 		<label>First Name</label>
-		<input type="text" autocomplete="off" name="frm[name_f]" placeholder="First Name" class="ux-input-1-2" required>
+		<input type="text" autocomplete="off" name="frm[name_f]" placeholder="Given Name" class="ux-input-1-2" required>
 	</div>
-	<div class="ux-control-group">
+	<div class="ux-control-group" title="Family Name">
 		<label>Last Name</label>
-		<input type="text" autocomplete="off" name="frm[name_l]" placeholder="Last Name" class="ux-input-1-2" required>
+		<input type="text" autocomplete="off" name="frm[name_l]" placeholder="Family Name" class="ux-input-1-2" required>
 	</div>
 	<legend>&nbsp;</legend>
 	<div class="ux-controls">

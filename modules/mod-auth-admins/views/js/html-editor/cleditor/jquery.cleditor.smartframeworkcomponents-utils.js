@@ -1,6 +1,6 @@
 
 // CL Editor - Smart.Framework Utils
-// v.20191214
+// v.20231125
 // (c) unixman, iradu@unix-world.org
 
 // returns the area
@@ -63,7 +63,6 @@ function Smart_CLEditor_Remove_HTML_AREA(area_id) {
 	area_id.$area.removeData("cleditor");
 	area_id.$main.remove();
 	area_id = '';
-	delete(area_id);
 	//--
 	return String(tmp_text);
 	//--

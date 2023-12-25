@@ -68,7 +68,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartUnicode, SmartComponents (optional) : constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20230915
+ * @version 	v.20231021
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -509,11 +509,11 @@ final class SmartPgsqlDb {
 	 *
 	 */
 	public static function json_encode($y_mixed_content, int $y_depth=512) : string {
-		//--
+		//-- {{{SYNC-JSON-DEFAULT-AND-MAX-DEPTH}}}
 		if((int)$y_depth <= 0) {
 			$y_depth = 512; // default
-		} elseif((int)$y_depth > 512) {
-			$y_depth = 512; // max
+		} elseif((int)$y_depth > 1024) {
+			$y_depth = 1024; // max
 		} //end if
 		//--
 		$json = (string) @json_encode($y_mixed_content, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE, (int)$y_depth); // Fix: must return a string ; depth was added in PHP 5.5 only !
@@ -2595,7 +2595,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20230915
+ * @version 	v.20231021
  * @package 	Plugins:Database:PostgreSQL
  *
  */

@@ -2,7 +2,7 @@
 // [@[#[!SF.DEV-ONLY!]#]@]
 // Controller: AppRelease/CodeNetpack
 // Route: ?/page/app-release.code-netpack (?page=app-release.code-netpack)
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2023 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -25,7 +25,7 @@ define('SMART_APP_MODULE_AUTOLOAD', true);
  * @access 		private
  * @internal
  *
- * @version 	v.20221219
+ * @version 	v.20231106
  *
  */
 final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTaskController {
@@ -120,7 +120,7 @@ final class SmartAppTaskController extends \SmartModExtLib\AppRelease\AbstractTa
 		//--
 		$ok = false;
 		$str_ofs = (int) strlen('/'.$appid.'/'); // mixed
-		$min_len_id = 5 + 2; // {{{SYNC-APPCODEPACK-ID-SIZE}}} ; min app id len is 5 + 2 slashes
+		$min_len_id = 4 + 2; // {{{SYNC-APPCODEPACK-ID-SIZE}}} ; min app id len is 4 + 2 slashes
 		if((int)$str_ofs > (int)$min_len_id) {
 			if((string)substr((string)TASK_APP_RELEASE_CODEPACK_APP_DIR, -1 * (int)$str_ofs, (int)$str_ofs) == (string)'/'.$appid.'/') { // must end in it
 				if(SmartFileSysUtils::checkIfSafePath((string)TASK_APP_RELEASE_CODEPACK_APP_DIR)) {
