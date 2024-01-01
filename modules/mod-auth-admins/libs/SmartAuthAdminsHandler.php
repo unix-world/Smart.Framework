@@ -41,7 +41,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Disallowed constaints: APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY, SMART_AUTH_TOKENS_ENABLED, SMART_AUTH_2FA_ENABLED
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20231028
+ * @version 	v.20231228
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -553,12 +553,21 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 			);
 			//--
 			if($is_login_data_valid === true) {
+				//-- init
+				$is_ip_valid = false;
 				//-- Valid IP break point ; if there is an IP restrictions list, test if current client login is allowed
 				$is_ip_valid = (bool) self::isAuthIPAddressValid(
 					(string) \trim((string)($account_data['ip_restr'] ?? null))
 				);
-				if(\Smart::array_size($auth_user_arr_ips) > 0) { // double check, Client IP Validation
-					$is_ip_valid = (bool) \in_array((string)\SmartUtils::get_ip_client(), (array)$auth_user_arr_ips);
+				if($is_ip_valid) {
+					if(\Smart::array_size($auth_user_arr_ips) > 0) { // double check, Client IP Validation
+						$is_ip_valid = (bool) \in_array('*', (array)$auth_user_arr_ips); // first try
+						if(!$is_ip_valid) {
+							$is_ip_valid = (bool) \in_array((string)\SmartUtils::get_ip_client(), (array)$auth_user_arr_ips);
+						} //end if
+				//	} else { // do not set as invalid !
+						// this case is used for common basic auth ...
+					} //end if
 				} //end if
 				//-- 2FA break point
 				$is_2fa_valid = (bool) self::isAuth2FAValid(

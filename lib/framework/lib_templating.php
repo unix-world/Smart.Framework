@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)
- * @version 	v.20231209
+ * @version 	v.20231228
  * @package 	@Core:TemplatingEngine
  *
  */
@@ -56,7 +56,7 @@ final class SmartMarkersTemplating {
 
 	// ::
 
-	// syntax: r.20231128
+	// syntax: r.20231228
 
 	private static $MkTplAnalyzeLdDbg 		= false; 	// flag for template analysis
 	private static $MkTplAnalyzeLdRegDbg 	= []; 		// registry of template analysis
@@ -296,12 +296,12 @@ final class SmartMarkersTemplating {
 	 *
 	 * <code>
 	 * // [###MARKER###]											:: marker with no escapes
-	 * // [###MARKER|{escapes}] 									:: marker with escapes (one or many of): |bool |int |dec[1-4]{1} |num |date |datetime |datetimez |htmid |jsvar |stdvar |nobackslash |rxpattern |emptye |emptyna |idtxt |slug |substr[0-9]{1,5} |subtxt[0-9]{1,5} |lower |upper |ucfirst |ucwords |trim |url |json |jsonpretty |js |html |css |nl2br |striptags |syntaxhtml |hex |hexi10 |b64 |b64s |b64tob64s |b64stob64 |b32 |b36 |b58 |b62 |b85 |b92 |crc32b |crc32b36 |md5 |md5b64 |sha1 |sha1b64 |sha224 |sha224b64 |sha256 |sha256b64 |sha384 |sha384b64 |sha512 |sha512b64 |sh3a224 |sh3a224b64 |sh3a256 |sh3a256b64 |sh3a384 |sh3a384b64 |sh3a512 |sh3a512b64
+	 * // [###MARKER|{escapes}] 									:: marker with escapes (one or many of): |bool |int |dec[1-4]{1} |num |date |datetime |datetimez |htmid |jsvar |stdvar |nobackslash |rxpattern |emptye |emptyna |idtxt |slug |substr[0-9]{1,5} |subtxt[0-9]{1,5} |lower |upper |ucfirst |ucwords |trim |url |json |jsonpretty |js |html |xml |css |nl2br |striptags |syntaxhtml |hex |hexi10 |b64 |b64s |b64tob64s |b64stob64 |b32 |b36 |b58 |b62 |b85 |b92 |crc32b |crc32b36 |md5 |md5b64 |sha1 |sha1b64 |sha224 |sha224b64 |sha256 |sha256b64 |sha384 |sha384b64 |sha512 |sha512b64 |sh3a224 |sh3a224b64 |sh3a256 |sh3a256b64 |sh3a384 |sh3a384b64 |sh3a512 |sh3a512b64
 	 * // [@@@SUB-TEMPLATE:path/to/tpl.htm@@@] 				:: sub-template with relative path to template
 	 * // [@@@SUB-TEMPLATE:?path/to/tpl.htm@@@] 				:: sub-template with relative path to template, optional, if exists
 	 * // [@@@SUB-TEMPLATE:!etc/path/to/tpl.htm!@@@] 		:: sub-template with relative path to framework, using exact this path
 	 * // [@@@SUB-TEMPLATE:?!if-exists/path/to/tpl.htm!@@@] 	:: sub-template with relative path to framework, using exact this path, optional, if exists
-	 * // [@@@SUB-TEMPLATE:{tpl}|{escape}@@@] 				:: sub-template (using any kind of path from above), apply escape (any of): |syntax |syntaxhtml |html |js |js-tpl-encode |tpl-uri-encode |tpl-b64-encode
+	 * // [@@@SUB-TEMPLATE:{tpl}|{escape}@@@] 				:: sub-template (using any kind of path from above), apply escape (any of): |syntax |syntaxhtml |html |xml |js |js-tpl-encode |tpl-uri-encode |tpl-b64-encode
 	 * // [@@@SUB-TEMPLATE:%variable%@@@] 					:: variable sub-template ; must be defined in $y_arr_vars['@SUB-TEMPLATES@'] array as key (variable) => value (path)
 	 * // [%%%IF:TEST-VARIABLE:@==|@!=|@<=|@<|@>=|@>|==|!=|<=|<|>=|>|!%|%|!?|?|^~|^*|&~|&*|$~|$*{string/number/a|list|with|elements/###MARKER###};%%%] conditional IF part, display when condition is matched [%%%ELSE:TEST-VARIABLE%%%] conditional ELSE part, display otherwise (optional) [%%%/IF:TEST-VARIABLE%%%]
 	 * // [%%%LOOP:ARR-VARIABLE%%%] [###ARR-VARIABLE.ID|int###]. [###ARR-VARIABLE.NAME|html###] [%%%/LOOP:ARR-VARIABLE%%%]
@@ -1378,6 +1378,7 @@ final class SmartMarkersTemplating {
 	[###MARKER|js###]
 	[###MARKER|js|js###]
 	[###MARKER|js|html###]
+	[###MARKER|js|xml###]
 	[###MARKER|html|js###]
 	[###MARKER|json###]
 		[###MARKER|json|url###]
@@ -1566,6 +1567,8 @@ final class SmartMarkersTemplating {
 						$val = (string) Smart::escape_js((string)$val); // Escape JS
 					} elseif((string)$escexpr == '|html') {
 						$val = (string) Smart::escape_html((string)$val); // Escape HTML
+					} elseif((string)$escexpr == '|xml') {
+						$val = (string) Smart::escape_xml((string)$val); // Escape XML
 					} elseif((string)$escexpr == '|css') {
 						$val = (string) Smart::escape_css((string)$val); // Escape CSS
 					} elseif((string)$escexpr == '|nl2br') {

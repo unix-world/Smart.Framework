@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFrameworkSecurity, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20231220
+ * @version 	v.20231228
  * @package 	@Core:Network
  *
  */
@@ -225,7 +225,7 @@ final class SmartHttpClient {
 	//-- log
 	private $log;											// Operations Log (debug only)
 	//-- set
-	private $protocol = '1.0';								// HTTP Protocol :: 1.0 (default) or 1.1
+	private $protocol = '1.0';								// HTTP Protocol :: 1.0 (default) or 1.1 ; 1.0 is faster because 1.1 is chunked and needs dechunk !
 	private $cafile = '';									// Certificate Authority File (instead of using the global SMART_FRAMEWORK_SSL_CA_FILE can use a private cafile
 	private const PUTBODY_METHODS = [ 						// The PUT BODY Methods
 		'PUT',
@@ -514,6 +514,10 @@ final class SmartHttpClient {
 		//--
 
 		//--
+		$errPrematureReadEnd = false;
+		//--
+
+		//--
 		$this->method = (string) strtoupper((string)trim((string)$method));
 		//--
 
@@ -549,9 +553,7 @@ final class SmartHttpClient {
 
 		//-- check if url supplied
 		if((string)$url == '') {
-			if($this->debug) {
-				$this->log .= '[ERR] URL to browse is missing !'."\n";
-			} //end if
+			$this->log .= '[ERR] URL to browse is missing !'."\n";
 			Smart::log_warning(__METHOD__.' # GetAnswer // URL to browse is empty ...');
 			return 0;
 		} //end if
@@ -561,8 +563,8 @@ final class SmartHttpClient {
 		$success = (int) $this->send_request((string)$url, (string)$user, (string)$pwd, (string)$method, (string)$ssl_version);
 		//--
 		if(!$success) {
+			$this->log .= '[ERR] HTTP(S) Client Browser Failed !'."\n";
 			if($this->debug) {
-				$this->log .= '[ERR] HTTP(S) Client Browser Failed !'."\n";
 				Smart::log_notice(__METHOD__.' # GetAnswer // HTTP(S) Client Browser Failed ... '.$url);
 			} //end if
 			$this->close_connection();
@@ -573,8 +575,8 @@ final class SmartHttpClient {
 		//-- check
 		if(!$this->socket) {
 			//--
+			$this->log .= '[ERR] Premature connection end (2.1)'."\n";
 			if($this->debug) {
-				$this->log .= '[ERR] Premature connection end (2.1)'."\n";
 				Smart::log_notice(__METHOD__.' # GetAnswer // Premature connection end (2.1) ...'.$url);
 			} //end if
 			$this->close_connection();
@@ -584,7 +586,18 @@ final class SmartHttpClient {
 		//--
 
 		//-- Get response header
+		if(!$this->debug) {
+			Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+		} //end if
 		$this->header = (string) @fgets($this->socket, 4096);
+		if(!$this->debug) {
+			Smart::restoreErrLog(); // restore the original log handlers
+		} //end if
+		if((!$this->socket) OR ((string)trim((string)$this->header) == '')) {
+			$this->log .= '[ERR] Preliminary Handshake Failed'."\n";
+			$this->close_connection();
+			return 0;
+		} //end if
 		$this->status = (string) trim((string)substr((string)trim((string)$this->header), 9, 3));
 		//--
 		$is_unauth = false;
@@ -592,34 +605,45 @@ final class SmartHttpClient {
 			//--
 			$is_unauth = true;
 			//--
-			if($this->debug) {
-				if((string)$user != '') {
-					$this->log .= '[ERR] HTTP Authentication Failed for URL: [User='.$user.']: '.$url."\n";
+			if((string)$user != '') {
+				$this->log .= '[ERR] HTTP Authentication Failed for URL: [User='.$user.']: '.$url."\n";
+				if($this->debug) {
 					Smart::log_notice(__METHOD__.' # GetAnswer // HTTP Authentication Failed for URL: [User='.$user.']: '.$url);
-				} else {
-					$this->log .= '[ERR] HTTP Authentication is Required for URL: '.$url."\n";
+				} //end if
+			} else {
+				$this->log .= '[ERR] HTTP Authentication is Required for URL: '.$url."\n";
+				if($this->debug) {
 					Smart::log_notice(__METHOD__.' # GetAnswer // HTTP Authentication is Required for URL: '.$url);
 				} //end if
 			} //end if
 			//--
 		} //end if
 		//--
+		if(!$this->debug) {
+			Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+		} //end if
+		$errPrematureReadEnd = false;
 		while(($this->socket) && ((string)trim((string)($line = @fgets($this->socket, 4096))) != '') && (!feof($this->socket))) {
 			//--
 			$this->header .= (string) $line;
 			//--
 			if(!$this->socket) {
-				//--
-				if($this->debug) {
-					$this->log .= '[ERR] Premature connection end (2.2)'."\n";
-					Smart::log_notice(__METHOD__.' # GetAnswer // Premature connection end (2.2) ... '.$url);
-				} //end if
-				$this->close_connection();
-				return 0;
-				//--
+				$errPrematureReadEnd = true;
+				break;
 			} //end if
 			//--
 		} //end while
+		if(!$this->debug) {
+			Smart::restoreErrLog(); // restore the original log handlers
+		} //end if
+		if($errPrematureReadEnd !== false) {
+			$this->log .= '[ERR] Premature connection end (2.2)'."\n";
+			if($this->debug) {
+				Smart::log_notice(__METHOD__.' # GetAnswer // Premature connection end (2.2) ... '.$url);
+			} //end if
+			$this->close_connection();
+			return 0;
+		} //end if
 		//--
 		if(($is_unauth === true) AND ($this->skipcontentif401 !== false)) { // in this case (by settings) skip the response body and stop here
 			$this->close_connection();
@@ -630,8 +654,8 @@ final class SmartHttpClient {
 		//-- check
 		if(!$this->socket) {
 			//--
+			$this->log .= '[ERR] Premature connection end (2.3)'."\n";
 			if($this->debug) {
-				$this->log .= '[ERR] Premature connection end (2.3)'."\n";
 				Smart::log_notice(__METHOD__.' # GetAnswer // Premature connection end (2.3) ... '.$url);
 			} //end if
 			$this->close_connection();
@@ -647,22 +671,31 @@ final class SmartHttpClient {
 			//--
 		} else {
 			//--
+			if(!$this->debug) {
+				Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+			} //end if
+			$errPrematureReadEnd = false;
 			while(($this->socket) && (!feof($this->socket))) {
 				//--
 				$this->body .= (string) @fgets($this->socket, 4096);
 				//--
 				if(!$this->socket) {
-					//--
-					if($this->debug) {
-						$this->log .= '[ERR] Premature connection end (2.4)'."\n";
-						Smart::log_notice(__METHOD__.' # GetAnswer // Premature connection end (2.4) ... '.$url);
-					} //end if
-					$this->close_connection();
-					return 0;
-					//--
+					$errPrematureReadEnd = true;
+					break;
 				} //end if
 				//--
 			} //end while
+			if(!$this->debug) {
+				Smart::restoreErrLog(); // restore the original log handlers
+			} //end if
+			if($errPrematureReadEnd !== false) {
+				$this->log .= '[ERR] Premature connection end (2.4)'."\n";
+				if($this->debug) {
+					Smart::log_notice(__METHOD__.' # GetAnswer // Premature connection end (2.4) ... '.$url);
+				} //end if
+				$this->close_connection();
+				return 0;
+			} //end if
 			//-- if HTTP 1.1 Transfer Chunked, try to parse the chunked body
 			if((string)$this->protocol == '1.1') {
 				if((string)trim((string)$this->header) != '') {
@@ -729,6 +762,10 @@ final class SmartHttpClient {
 	//==============================================
 	// [PRIVATE] :: request from url and return content, headers, ...
 	private function send_request(string $url, string $user='', string $pwd='', string $method='GET', string $ssl_version='') : int {
+
+		//--
+		$errPrematureReadEnd = false;
+		//--
 
 		//--
 		$this->connect_timeout = (int) $this->connect_timeout;
@@ -882,7 +919,7 @@ final class SmartHttpClient {
 		if(!$this->debug) {
 			Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
 		} //end if
-		$this->socket = @stream_socket_client($browser_protocol.$host.':'.$port, $errno, $errstr, $this->connect_timeout, STREAM_CLIENT_CONNECT, $stream_context);
+		$this->socket = @stream_socket_client((string)$browser_protocol.$host.':'.$port, $errno, $errstr, $this->connect_timeout, STREAM_CLIENT_CONNECT, $stream_context);
 		if(!$this->debug) {
 			Smart::restoreErrLog(); // restore the original log handlers
 		} //end if
@@ -908,7 +945,7 @@ final class SmartHttpClient {
 		//-- avoid connect normally if SSL/TLS was explicit required
 		$chk_crypto = (array) @stream_get_meta_data($this->socket);
 		if((string)$browser_protocol != '') {
-			if(stripos($chk_crypto['stream_type'], '/ssl') === false) { // will return something like: tcp_socket/ssl
+			if(stripos((string)$chk_crypto['stream_type'], '/ssl') === false) { // will return something like: tcp_socket/ssl
 				if($this->debug) {
 					$this->log .= '[ERR] Connection CRYPTO CHECK Failed ...'."\n";
 					Smart::log_notice(__METHOD__.' # RequestFromURL ('.$browser_protocol.$host.':'.$port.$path.') // Connection CRYPTO CHECK Failed ...');
@@ -993,6 +1030,7 @@ final class SmartHttpClient {
 					if(Smart::is_nscalar($value)) {
 						$post_string .= (string) SmartHttpUtils::encode_var_post((string)$key, (string)$value); // {{{SYNC-URL-REQ-LAST-AMPERSTAND}}}
 					} else {
+						$this->log .= '[ERR] Failed to encode a POST variable non-scalar value'."\n";
 						Smart::log_warning(__METHOD__.' # Failed to encode a POST variable non-scalar value, key: `'.$key.'`');
 					} //end if else
 				} //end foreach
@@ -1036,6 +1074,7 @@ final class SmartHttpClient {
 							$this->log .= '[INF] '.$this->method.' resource file: '.(string)$this->putbodyres.' @ Length: '.$this->put_body_len."\n";
 						} //end if
 					} else {
+						$this->log .= '[ERR] Invalid PUT Resource File (1)'."\n";
 						Smart::log_warning(__METHOD__.' # RequestFromURL // Invalid PUT Resource File (1): '.(string)$this->putbodyres.' for URL: '.$url);
 						return 0;
 					} //end if else
@@ -1058,8 +1097,8 @@ final class SmartHttpClient {
 		//-- check
 		if(!$this->socket) {
 			//--
+			$this->log .= '[ERR] Premature connection end (1.0)'."\n";
 			if($this->debug) {
-				$this->log .= '[ERR] Premature connection end (1.0)'."\n";
 				Smart::log_notice(__METHOD__.' # RequestFromURL // Premature connection end (1.0) ... '.$url);
 			} //end if
 			return 0;
@@ -1070,17 +1109,24 @@ final class SmartHttpClient {
 		//--
 		if((string)$request == '') {
 			//--
+			$this->log .= '[ERR] Request is Empty (1.1)'."\n";
 			if($this->debug) {
-				$this->log .= '[ERR] Request is Empty (1.1)'."\n";
 				Smart::log_notice(__METHOD__.' # RequestFromURL // Request is Empty (1.1) ... '.$url);
 			} //end if
 			return 0;
 			//--
 		} //end if
 		//--
-		if(@fwrite($this->socket, (string)$request) === false) {
+		if(!$this->debug) {
+			Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+		} //end if
+		$wrSuccess = @fwrite($this->socket, (string)$request);
+		if(!$this->debug) {
+			Smart::restoreErrLog(); // restore the original log handlers
+		} //end if
+		if($wrSuccess === false) {
+			$this->log .= '[ERR] Error writing Request type to socket'."\n";
 			if($this->debug) {
-				$this->log .= '[ERR] Error writing Request type to socket'."\n";
 				Smart::log_notice(__METHOD__.' # RequestFromURL ('.$browser_protocol.$host.':'.$port.$path.') // Error writing Request type to socket ...');
 			} //end if
 			return 0;
@@ -1113,8 +1159,8 @@ final class SmartHttpClient {
 		//-- raw headers
 		if(!$this->socket) {
 			//--
+			$this->log .= '[ERR] Premature connection end (1.2)'."\n";
 			if($this->debug) {
-				$this->log .= '[ERR] Premature connection end (1.2)'."\n";
 				Smart::log_notice(__METHOD__.' # RequestFromURL // Premature connection end (1.2) ... '.$url);
 			} //end if
 			return 0;
@@ -1122,37 +1168,51 @@ final class SmartHttpClient {
 		} //end if
 		//--
 		if(!is_array($this->raw_headers)) {
-			if($this->debug) {
-				$this->log .= '[ERR] Error writing Raw-Headers to socket'."\n";
-			} //end if
+			$this->log .= '[ERR] Raw-Headers must be array'."\n";
 			Smart::log_warning(__METHOD__.' # RequestFromURL ('.$browser_protocol.$host.':'.$port.$path.') // Raw-Headers is not array ...');
 		} //end if
 		//--
+		if(!$this->debug) {
+			Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+		} //end if
+		$errPrematureReadEnd = false;
 		foreach($this->raw_headers as $key => $value) {
 			if(@fwrite($this->socket, (string)trim((string)$key).': '.$value."\r\n") === false) {
-				if($this->debug) {
-					$this->log .= '[ERR] Error writing Raw-Headers to socket'."\n";
-					Smart::log_notice(__METHOD__.' # RequestFromURL ('.$browser_protocol.$host.':'.$port.$path.') // Error writing Raw-Headers to socket ...');
-				} //end if
-				return 0;
+				$errPrematureReadEnd = true;
+				break;
 			} //end if
 		} //end foreach
-		//--
-
+		if(!$this->debug) {
+			Smart::restoreErrLog(); // restore the original log handlers
+		} //end if
+		if($errPrematureReadEnd !== false) {
+			$this->log .= '[ERR] Error writing Raw-Headers to socket'."\n";
+			if($this->debug) {
+				Smart::log_notice(__METHOD__.' # RequestFromURL ('.$browser_protocol.$host.':'.$port.$path.') // Error writing Raw-Headers to socket ...');
+			} //end if
+			return 0;
+		} //end if
 		//-- end-line or blank line before post / cookies
 		if(!$this->socket) {
 			//--
+			$this->log .= '[ERR] Premature connection end (1.3)'."\n";
 			if($this->debug) {
-				$this->log .= '[ERR] Premature connection end (1.3)'."\n";
 				Smart::log_notice(__METHOD__.' # RequestFromURL // Premature connection end (1.3) ... '.$url);
 			} //end if
 			return 0;
 			//--
 		} //end if
 		//--
-		if(@fwrite($this->socket, "\r\n") === false) {
+		if(!$this->debug) {
+			Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+		} //end if
+		$wrSuccess = @fwrite($this->socket, "\r\n");
+		if(!$this->debug) {
+			Smart::restoreErrLog(); // restore the original log handlers
+		} //end if
+		if($wrSuccess === false) {
+			$this->log .= '[ERR] Error writing End-Of-Line to socket'."\n";
 			if($this->debug) {
-				$this->log .= '[ERR] Error writing End-Of-Line to socket'."\n";
 				Smart::log_notice(__METHOD__.' # RequestFromURL ('.$browser_protocol.$host.':'.$port.$path.') // Error writing End-Of-Line to socket ...');
 			} //end if
 			return 0;
@@ -1164,17 +1224,24 @@ final class SmartHttpClient {
 			//--
 			if(!$this->socket) {
 				//--
+				$this->log .= '[ERR] Premature connection end (1.6)'."\n";
 				if($this->debug) {
-					$this->log .= '[ERR] Premature connection end (1.6)'."\n";
 					Smart::log_notice(__METHOD__.' # RequestFromURL // Premature connection end (1.6) ... '.$url);
 				} //end if
 				return 0;
 				//--
 			} //end if
 			//--
-			if(@fwrite($this->socket, (string)$post_string."\r\n") === false) {
+			if(!$this->debug) {
+				Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+			} //end if
+			$wrSuccess = @fwrite($this->socket, (string)$post_string."\r\n");
+			if(!$this->debug) {
+				Smart::restoreErrLog(); // restore the original log handlers
+			} //end if
+			if($wrSuccess === false) {
+				$this->log .= '[ERR] Error writing POST data to socket'."\n";
 				if($this->debug) {
-					$this->log .= '[ERR] Error writing POST data to socket'."\n";
 					Smart::log_notice(__METHOD__.' # RequestFromURL ('.$browser_protocol.$host.':'.$port.$path.') // Error writing POST data to socket ...');
 				} //end if
 				return 0;
@@ -1184,8 +1251,8 @@ final class SmartHttpClient {
 			//--
 			if(!$this->socket) {
 				//--
+				$this->log .= '[ERR] Premature connection end (1.7)'."\n";
 				if($this->debug) {
-					$this->log .= '[ERR] Premature connection end (1.7)'."\n";
 					Smart::log_notice(__METHOD__.' # RequestFromURL // Premature connection end (1.7) ... '.$url);
 				} //end if
 				return 0;
@@ -1195,23 +1262,40 @@ final class SmartHttpClient {
 			//Smart::log_notice('Path: '.$path."\n".'Method: '.$this->method);
 			if((string)$this->protocol == '1.1') { // on HTTP 1.1 will get an earlier header as: HTTP/1.1 100 Continue
 				if((int)$this->put_body_len > 0) { // this comes ONLY if file or string to put is non-empty !!!
+					if(!$this->debug) {
+						Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+					} //end if
 					$this->pre_header = (string) @fgets($this->socket, 4096);
+					if(!$this->debug) {
+						Smart::restoreErrLog(); // restore the original log handlers
+					} //end if
 					$this->pre_status = (string) trim((string)substr((string)trim((string)$this->pre_header), 9, 3));
 					//Smart::log_notice('Status: '.$this->pre_status.' @ Header: '."\n".$this->pre_header);
 					if(((string)$this->pre_status == '100') AND ((string)$this->pre_header != '')) {
+						if(!$this->debug) {
+							Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+						} //end if
+						$errPrematureReadEnd = false;
 						while(($this->socket) && ((string)trim((string)($line = @fgets($this->socket, 4096))) != '') && (!feof($this->socket))) {
 							$this->pre_header .= (string) $line; // this is required after 100-continue !!!
 							if(!$this->socket) {
-								if($this->debug) {
-									$this->log .= '[ERR] Premature connection end (1.8)'."\n";
-									Smart::log_notice(__METHOD__.' # RequestFromURL // Premature connection end (1.8) ... '.$url);
-								} //end if
-								return 0;
+								$errPrematureReadEnd = true;
+								break;
 							} //end if
 						} //end while
+						if(!$this->debug) {
+							Smart::restoreErrLog(); // restore the original log handlers
+						} //end if
+						if($errPrematureReadEnd !== false) {
+							$this->log .= '[ERR] Premature connection end (1.8)'."\n";
+							if($this->debug) {
+								Smart::log_notice(__METHOD__.' # RequestFromURL // Premature connection end (1.8) ... '.$url);
+							} //end if
+							return 0;
+						} //end if
 					} else {
+						$this->log .= '[NOTICE] No 100-Continue Received from Server as Expected on HTTP 1.1 PUT Method ...'."\n";
 						if($this->debug) {
-							$this->log .= '[NOTICE] No 100-Continue Received from Server as Expected on HTTP 1.1 PUT Method ...'."\n";
 							Smart::log_notice(__METHOD__.' # PutToURL 1.1 ('.$browser_protocol.$host.':'.$port.$path.') // Invalid Expect Code 100 but get back: '.$this->pre_status);
 						} //end if
 						return 0;
@@ -1224,21 +1308,33 @@ final class SmartHttpClient {
 				if((SmartFileSysUtils::checkIfSafePath((string)$this->putbodyres) == '1') AND (SmartFileSysUtils::staticFileExists((string)$this->putbodyres) == true)) {
 					//--
 					$fp = @fopen((string)$this->putbodyres, 'rb');
-					//--
-					while(!@feof($fp)) {
-						//--
-						if(@fwrite($this->socket, @fread($fp, 1024*8)) === false) {
-							@fclose($fp);
+					if($fp) {
+						if(!$this->debug) {
+							Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+						} //end if
+						$errPrematureReadEnd = false;
+						while(!@feof($fp)) {
+							if(@fwrite($this->socket, @fread($fp, 1024*8)) === false) {
+								$errPrematureReadEnd = true;
+								break;
+							} //end if
+						} //end while
+						if(!$this->debug) {
+							Smart::restoreErrLog(); // restore the original log handlers
+						} //end if
+						@fclose($fp);
+						if($errPrematureReadEnd !== false) {
+							$this->log .= '[ERR] Error writing PUT data file to socket'."\n";
 							if($this->debug) {
-								$this->log .= '[ERR] Error writing PUT data file to socket'."\n";
 								Smart::log_notice(__METHOD__.' # PutToURL ('.$browser_protocol.$host.':'.$port.$path.') // Error writing PUT data file to socket ...');
 							} //end if
 							return 0;
 						} //end if
-						//--
-					} //end while
-					//--
-					@fclose($fp);
+					} else {
+						$this->log .= '[ERR] Failed to open PUT file'."\n";
+						Smart::log_warning(__METHOD__.' # PutToURL ('.$browser_protocol.$host.':'.$port.$path.') // Error opening PUT data file ...');
+					} //end if else
+					$fp = null; // safety reset
 					//--
 				} else {
 					//--
@@ -1264,9 +1360,16 @@ final class SmartHttpClient {
 						break; // no more chars to write ...
 					} //end if
 					//--
-					if(@fwrite($this->socket, (string)substr((string)$this->putbodyres, (int)$buf_start, (int)$buf_length)) === false) {
+					if(!$this->debug) {
+						Smart::disableErrLog(); // skip log, except debug, HTTP connection errors
+					} //end if
+					$wrSuccess = @fwrite($this->socket, (string)substr((string)$this->putbodyres, (int)$buf_start, (int)$buf_length));
+					if(!$this->debug) {
+						Smart::restoreErrLog(); // restore the original log handlers
+					} //end if
+					if($wrSuccess === false) {
+						$this->log .= '[ERR] Error writing PUT data string to socket'."\n";
 						if($this->debug) {
-							$this->log .= '[ERR] Error writing PUT data string to socket'."\n";
 							Smart::log_notice(__METHOD__.' # PutToURL ('.$browser_protocol.$host.':'.$port.$path.') // Error writing PUT data string to socket ...');
 						} //end if
 						return 0;
@@ -1315,7 +1418,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20231120
+ * @version 	v.20231228
  * @package 	@Core:Network
  *
  */
@@ -1353,7 +1456,7 @@ final class SmartHttpUtils {
 		//--
 		$name = (string) trim((string)$name);
 		//--
-		$out = (string) Smart::url_build_query([ (string)$name => $value ], false); // {{{SYNC-URL-REQ-LAST-AMPERSTAND}}}
+		$out = (string) Smart::url_build_query([ (string)$name => (string)$value ], false); // {{{SYNC-URL-REQ-LAST-AMPERSTAND}}}
 		//--
 		if((string)$out != '') {
 			$out .= '&'; // {{{SYNC-URL-REQ-LAST-AMPERSTAND}}}
@@ -1404,8 +1507,9 @@ final class SmartHttpUtils {
 			if(is_array($content)) {
 				//--
 				$flatten_arr = (array) self::flatten_form_arr((string)$name, (array)$content);
-				if((int)Smart::array_size($flatten_arr) > 0) {
-					for($i=0; $i<Smart::array_size($flatten_arr); $i++) {
+				$max = (int) Smart::array_size($flatten_arr);
+				if((int)$max > 0) {
+					for($i=0; $i<$max; $i++) {
 						if(is_array($flatten_arr[$i])) {
 							if((array_key_exists('name', (array)$flatten_arr[$i])) AND (array_key_exists('content', (array)$flatten_arr[$i]))) {
 								$data .= '--'.$delimiter."\r\n";
@@ -1435,14 +1539,14 @@ final class SmartHttpUtils {
 			//--
 			if((int)Smart::array_size($arr_file) > 0) {
 				//--
-				$filename = (string) $arr_file['filename'];
-				$content  = (string) $arr_file['content'];
+				$filename = (string) trim((string)$arr_file['filename']);
+				$content  = (string) $arr_file['content']; // do not trim !
 				//--
-				if($filename AND $content) {
+				if(((string)$filename !== '') AND ((string)$content != '')) {
 					//--
 					$data .= '--'.$delimiter."\r\n";
 					//--
-					$data .= 'Content-Disposition: form-data; name="'.Smart::safe_varname((string)$var_name).'"; filename="'.Smart::safe_filename($filename).'"'."\r\n";
+					$data .= 'Content-Disposition: form-data; name="'.Smart::safe_varname((string)$var_name).'"; filename="'.Smart::safe_filename((string)$filename).'"'."\r\n";
 					$data .= 'Content-Transfer-Encoding: binary'."\r\n";
 					$data .= 'Content-Length: '.(int)strlen((string)$content)."\r\n";
 					$data .= "\r\n".$content."\r\n";
@@ -1485,7 +1589,7 @@ final class SmartHttpUtils {
 		} //end if
 		//--
 		$dechunk = '';
-		while(($pos < $len) && ($chunkLenHex = (string)substr((string)$chunk, (int)$pos, ((int)$newlineAt - (int)$pos)))) {
+		while(($pos < $len) && ($newlineAt !== false) && ($chunkLenHex = (string)substr((string)$chunk, (int)$pos, ((int)$newlineAt - (int)$pos)))) {
 			//--
 			if($newlineAt === false) {
 				return (string) $chunk; // failed, chunked content is broken
@@ -1545,12 +1649,17 @@ final class SmartHttpUtils {
 		//--
 		$hex = (string) strtolower((string)trim((string)ltrim((string)$hex, '0')));
 		if(empty($hex)) {
-			$hex = 0;
+			$hex = 0; // fix
 		} //end if
 		//--
+		/*
 		$dec = (int) hexdec($hex);
-		//--
 		return (bool) ((string)$hex == (string)dechex((int)$dec));
+		*/
+		if((int)strlen((string)$hex) === (int)strspn((string)$hex, (string)Smart::CHARSET_BASE_16)) { // check, case sensitive ; if ignore case was set to TRUE the hex str must be previous converted to all lower characters
+			return true;
+		} //end if
+		return false;
 		//--
 	} //END FUNCTION
 	//==============================================

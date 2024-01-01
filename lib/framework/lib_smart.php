@@ -77,7 +77,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20231220
+ * @version     v.20231228
  * @package     @Core
  *
  */
@@ -943,14 +943,14 @@ final class Smart {
 	//================================================================
 	/**
 	 * Safe escape strings to be injected in HTML code
-	 * This is a shortcut to the htmlspecialchars() to avoid use long options each time and provide a standard into Smart.Framework
+	 * This is a shortcut to the htmlspecialchars() for HTML mode, to avoid use long options each time and provide a standard into Smart.Framework
 	 *
 	 * @param 	STRING 		$y_string			:: The string to be escaped
 	 *
-	 * @return 	STRING							:: The escaped string using htmlspecialchars() standards with Unicode-Safe control
+	 * @return 	STRING							:: The escaped string using htmlspecialchars() HTML standards with Unicode-Safe control
 	 */
 	public static function escape_html(?string $y_string) : string {
-		//-- v.181203
+		//-- v.20181203
 		// Default is: ENT_HTML401 | ENT_COMPAT
 		// keep the ENT_HTML401 instead of ENT_HTML5 to avoid troubles with misc. HTML Parsers (robots, htmldoc, ...)
 		// keep the ENT_COMPAT (replace only < > ") and not replace '
@@ -958,6 +958,23 @@ final class Smart {
 		// enforce 4th param as TRUE as default (double encode)
 		//--
 		return (string) htmlspecialchars((string)$y_string, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true); // use charset from INIT (to prevent XSS attacks) ; the 4th parameter double_encode is set to TRUE as default
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Safe escape strings to be injected in XML code
+	 * This is a shortcut to the htmlspecialchars() for XML mode, to avoid use long options each time and provide a standard into Smart.Framework
+	 *
+	 * @param 	STRING 		$y_string			:: The string to be escaped
+	 *
+	 * @return 	STRING							:: The escaped string using htmlspecialchars() XML standards with Unicode-Safe control
+	 */
+	public static function escape_xml(?string $y_string) : string {
+		//-- v.20231228
+		return (string) htmlspecialchars((string)$y_string, ENT_XML1 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true); // use charset from INIT (to prevent XSS attacks) ; the 4th parameter double_encode is set to TRUE as default
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -1807,6 +1824,22 @@ final class Smart {
 		} //end if
 		//--
 		return (string) nl2br((string)$y_code, false); // 2nd param is false for not xhtml tags, since PHP 5.3 !!
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Decode XML Entities
+	 *
+	 * @param STRING 		$str			:: The code to be processed
+	 *
+	 * @return STRING 						:: The processed Code
+	 */
+	public static function decode_xml_entities(?string $str) : string {
+		//--
+		return (string) html_entity_decode((string)$str, ENT_XML1 | ENT_QUOTES, (string)SMART_FRAMEWORK_CHARSET);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -3386,9 +3419,12 @@ final class Smart {
 	 */
 	public static function disableErrLog() : void {
 		//--
-		// TO AVOID call this method twice without calling restoreErrLog(), a semaphore below is used
-		if(self::$SemaphoreAreLogHandlersDisabled !== false) {
+		if(SmartEnvironment::ifDebug()) {
 			return;
+		} //end if
+		//--
+		if(self::$SemaphoreAreLogHandlersDisabled !== false) {
+			return; // AVOID call this method twice without calling restoreErrLog(), a semaphore is used
 		} //end if
 		//--
 		set_exception_handler(function(){return true;});
@@ -3409,10 +3445,12 @@ final class Smart {
 	 */
 	public static function restoreErrLog() : void {
 		//--
-		// TO AVOID call this method twice without calling disableErrLog(), a semaphore below is used
+		if(SmartEnvironment::ifDebug()) {
+			return;
+		} //end if
 		//--
 		if(self::$SemaphoreAreLogHandlersDisabled !== true) {
-			return;
+			return; // AVOID call this method twice without calling disableErrLog(), a semaphore is used
 		} //end if
 		//--
 		restore_error_handler();

@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartEnvironment, SmartCipherCrypto
- * @version 	v.20231119
+ * @version 	v.20231228
  * @package 	@Core:Authentication
  *
  */
@@ -1099,7 +1099,7 @@ final class SmartAuth {
 			$arr['n'] = (string) SmartUnicode::utf8_to_iso((string)$arr['n']); // safety
 		} //end if
 		if((string)$arr['n'] !== (string)SMART_SOFTWARE_NAMESPACE) {
-			$valid['error'] = 'JSON object have an Invalid Realm';
+			$valid['error'] = 'JSON object have an Invalid NameSpace';
 			return (array) $valid;
 		} //end if
 		//--
@@ -1237,31 +1237,39 @@ final class SmartAuth {
 		if((string)$arr['i'] != '') {
 			$arr['i'] = (string) SmartUnicode::utf8_to_iso((string)$arr['i']); // safety
 		} //end if
-		$arr_ips = [];
-		$arr_tmp_ips = (array) Smart::list_to_array((string)$arr['i']);
-		foreach($arr_tmp_ips as $key => $val) {
-			if((string)trim((string)SmartValidator::validate_filter_ip_address((string)$val)) != '') { // if valid IP address
-				$val = (string) trim((string)Smart::ip_addr_compress((string)$val)); // {{{SYNC-IPV6-STORE-SHORTEST-POSSIBLE}}} ; IPV6 addresses may vary .. find a standard form, ex: shortest
-				if((string)$val != '') {
-					$arr_ips[] = (string) $val;
+		if((string)$arr['i'] === '*') {
+			//--
+			$valid['restr-ip'][] = '*'; // if wildcard is present in the array it means allow any IP ! much better than dealing with mix array/string
+			//--
+		} else {
+			//--
+			$arr_ips = [];
+			$arr_tmp_ips = (array) Smart::list_to_array((string)$arr['i']);
+			foreach($arr_tmp_ips as $key => $val) {
+				if((string)trim((string)SmartValidator::validate_filter_ip_address((string)$val)) != '') { // if valid IP address
+					$val = (string) trim((string)Smart::ip_addr_compress((string)$val)); // {{{SYNC-IPV6-STORE-SHORTEST-POSSIBLE}}} ; IPV6 addresses may vary .. find a standard form, ex: shortest
+					if((string)$val != '') {
+						$arr_ips[] = (string) $val;
+					} //end if
 				} //end if
+			} //end foreach
+			$arr_tmp_ips = null;
+			if((int)Smart::array_size($arr_ips) <= 0) {
+				$valid['error'] = 'JSON object have an Invalid IP List: `'.$arr['i'].'`'; // empty or invalid IPs list is not supported !
+				return (array) $valid;
 			} //end if
-		} //end foreach
-		$arr_tmp_ips = null;
-		if((int)Smart::array_size($arr_ips) <= 0) {
-			$valid['error'] = 'JSON object have an Invalid IP List: `'.$arr['i'].'`'; // empty or invalid IPs list is not supported !
-			return (array) $valid;
+			if(
+				(!in_array((string)$client_ip, (array)$arr_ips))
+				OR // double check: in array and in list
+				(stripos((string)$arr['i'], '<'.$client_ip.'>') === false)
+			) { // {{{SYNC-IPV6-STORE-SHORTEST-POSSIBLE}}} ; IPV6 addresses may vary .. find a standard form, ex: shortest
+				$valid['error'] = 'JSON object IP List does not contain the Client IP ['.$client_ip.']: `'.$arr['i'].'`';
+				return (array) $valid;
+			} //end if
+			$valid['restr-ip'] = (array) $arr_ips;
+			$arr_ips = null;
+			//--
 		} //end if
-		if(
-			(!in_array((string)$client_ip, (array)$arr_ips))
-			OR // double check: in array and in list
-			(stripos((string)$arr['i'], '<'.$client_ip.'>') === false)
-		) { // {{{SYNC-IPV6-STORE-SHORTEST-POSSIBLE}}} ; IPV6 addresses may vary .. find a standard form, ex: shortest
-			$valid['error'] = 'JSON object IP List does not contain the Client IP ['.$client_ip.']: `'.$arr['i'].'`';
-			return (array) $valid;
-		} //end if
-		$valid['restr-ip'] = (array) $arr_ips;
-		$arr_ips = null;
 		//--
 		$hash = (string) SmartHashCrypto::checksum(
 			(string) self::SWT_VERSION_SIGNATURE."\n".SMART_SOFTWARE_NAMESPACE."\n".$arr['r']."\n".$arr['d']."\n".$username."\n".$hashpass."\n".$arr['p']."\n".$arr['i'],
@@ -1299,7 +1307,7 @@ final class SmartAuth {
 	 * @param 	STRING 	$auth_user_name 		:: The auth user name
 	 * @param 	STRING 	$auth_hash_pass 		:: The irreversible (one-way) password hash ; NEVER try to provide here a Plain Text Password (unsupported) !! ; for the 'A' (adm/tsk) area supports a hash pass created with SmartHashCrypto::password() ; for the 'I' (FE, idx) area supports a hash created with SmartAuth::password_hash_create() ; it does not support any other type of hashes to avoid embed plain passwords by mistake in a SWT Token ! This is a mandatory security check ... because these 2 types of hashes are validated 100% as length, format, etc...
 	 * @param 	INT		$expire 				:: The expiration time in seconds from now ; must be >= 1 and <= 3600*24 (24h)
-	 * @param 	ARRAY 	$ip_addr_arr 			:: IP Addresses List [ip1, ip2, ...] (cannot be empty ! must have at least one entry to be validated) ; SWT Tokens IP address bind is mandatory for security reasons ! The Visitor IP Address must match an entry in this list
+	 * @param 	ARRAY 	$ip_addr_arr 			:: IP Addresses List [ip1, ip2, ...] ; if empty, will allow from any IP as wildcard `*` ; if non empty the Visitor IP Address must match an entry in this list
 	 * @param 	ARRAY 	$privs_arr 				:: Privileges List [ priv1, priv2, ... ] (cannot be empty ! must have at least one entry to be validated) ; SWT Tokens Privileges restrictions bind is mandatory for security reasons ! these should be intersected with existing privileges for the target account and will result a list of privileges that are appearing in both: user's privileges and SWT token only, thus the privileges cannot be overriden !
 	 *
 	 * @return 	ARRAY							:: array of strings as: [ 'error' => 'error if any or empty', 'json' => '{...}', 'token' => '...' ]
@@ -1403,7 +1411,8 @@ final class SmartAuth {
 			$ip_addr_list = (string) str_replace(' ', '', (string)Smart::array_to_list((array)$valid_ips));
 		} //end if
 		if((string)trim((string)$ip_addr_list) == '') {
-			$ip_addr_list = '<>'; // fix: if no valid IPs list, use a non-empty string ; no error here, just in validator to be able to test invalid IPs List !
+		//	$ip_addr_list = '<>'; // previous behaviour: dissalow empty IP list
+			$ip_addr_list = '*'; // new behaviour: re-enable empty IP list, allow from any IP, if no specific ; the time restrictions are more important !
 		} //end if
 		$valid_ips = null;
 		//--
