@@ -3689,7 +3689,7 @@ final class Smart {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment
- * @version 	v.20231121
+ * @version 	v.20240106
  * @package 	@Core:FileSystem
  *
  */
@@ -4875,6 +4875,10 @@ final class SmartFileSysUtils {
 				break;
 			case 'webp':
 				$type = 'image/webp';
+				$disp = 'inline';
+				break;
+			case 'ico':
+				$type = 'image/vnd.microsoft.icon';
 				$disp = 'inline';
 				break;
 			//-------------- other images

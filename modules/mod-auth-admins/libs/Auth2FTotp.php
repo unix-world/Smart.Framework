@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\AuthAdmins\Auth2FTotp
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\AuthAdmins;
@@ -39,7 +39,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @ignore
  *
  * @depends     PHP classes: Smart, SmartHashCrypto, SmartQR2DBarcode
- * @version 	v.20231031
+ * @version 	v.20240102
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -142,6 +142,7 @@ final class Auth2FTotp {
 		switch((string)$algo) {
 			case 'md5':
 			case 'sha1':
+			case 'sha224':
 			case 'sha256':
 			case 'sha384':
 			case 'sha512':
@@ -173,7 +174,7 @@ final class Auth2FTotp {
 		$now   = (int) ((int)$time + (int)$adjsec); // adjust with seconds, the clock
 		$count = (int) \floor((int)$now / (int)$tint);
 		//-- generate a normal HOTP token
-		return (string) self::genHTOPToken((string)$key, (string)$algo, (int)$count, (int)$length);
+		return (string) self::genHmac((string)$key, (string)$algo, (int)$count, (int)$length);
 		//--
 	} //END FUNCTION
 	//==============================================================
@@ -183,13 +184,13 @@ final class Auth2FTotp {
 
 
 	//==============================================================
-	private static function genHTOPToken(string $key, string $algo, int $count, int $length) : string {
+	private static function genHmac(string $key, string $algo, int $count, int $length) : string {
 		//--
 		$scount = (string) self::packCounter((int)$count);
 		//--
 		$hash = (string) \SmartHashCrypto::hmac((string)$algo, (string)$key, (string)$scount);
 		//--
-		$code = (string) self::genHTOPValue((string)$hash, (int)$length);
+		$code = (string) self::genValue((string)$hash, (int)$length);
 		$code = (string) \str_pad((string)$code, (int)$length, '0', \STR_PAD_LEFT);
 		$code = (string) \substr((string)$code, (int)(-1 * (int)$length));
 		//--
@@ -200,7 +201,7 @@ final class Auth2FTotp {
 
 
 	//==============================================================
-	private static function genHTOPValue(string $hash, int $length) : string {
+	private static function genValue(string $hash, int $length) : string {
 		//-- convert to decimal
 		$arr = (array) \str_split((string)$hash, 2);
 		$hmac_result = []; // store calculate decimal

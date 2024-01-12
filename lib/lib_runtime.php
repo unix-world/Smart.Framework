@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Lib Runtime]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -30,7 +30,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY !!!
  *
  * @depends 	classes: SmartFrameworkSecurity, SmartFrameworkRegistry, SmartUnicode, Smart, SmartHashCrypto, SmartFileSysUtils, SmartFileSystem, SmartUtils, SmartComponents ; constants: SMART_FRAMEWORK_NETSERVER_MAXLOAD, SMART_SOFTWARE_URL_ALLOW_PATHINFO, SMART_FRAMEWORK_SEMANTIC_URL_DISABLE, SMART_FRAMEWORK_VERSION, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_UUID_COOKIE_NAME, SMART_FRAMEWORK_UUID_COOKIE_SKIP, SMART_FRAMEWORK_INFO_DIR_LOG
- * @version		v.20231119
+ * @version		v.20240105
  * @package 	Application
  *
  */
@@ -1414,8 +1414,8 @@ final class SmartFrameworkRuntime {
 			} //end if
 			//--
 			$cookie = (string) trim((string)SmartFrameworkRegistry::getCookieVar((string)SMART_FRAMEWORK_UUID_COOKIE_NAME));
-			if(((string)$cookie == '') OR ((int)strlen((string)$cookie) < 64) OR (!preg_match('/^[A-Za-z0-9]+$/', (string)$cookie))) { // if sha512 is all zero will be just 64 ; expects 64..86 bytes
-				$entropy = (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sha512((string)Smart::unique_entropy('uuid-cookie')), 62); // generate a random unique key ; cookie was not yet set or is invalid ; use B62 to avoid re-encode as url encode which will raise the size as encoding %xy non-letter or non-numeric chars ...
+			if(((string)$cookie == '') OR ((int)strlen((string)$cookie) < 34) OR ((int)strlen((string)$cookie) > 52) OR (!preg_match('/^[A-Za-z0-9]+$/', (string)$cookie))) { // if sh3a224 (b62) is mostly ~ 38 characters ; be flexible as +/- 4 characters (34..52 bytes)
+				$entropy = (string) Smart::base_from_hex_convert((string)SmartHashCrypto::sh3a224((string)Smart::unique_entropy('uuid-cookie')), 62); // generate a random unique key ; cookie was not yet set or is invalid ; use B62 to avoid re-encode as url encode which will raise the size as encoding %xy non-letter or non-numeric chars ...
 				SmartUtils::set_cookie((string)SMART_FRAMEWORK_UUID_COOKIE_NAME, (string)$entropy, (int)$expire);
 				$cookie = (string) $entropy;
 				$wasset = true;
