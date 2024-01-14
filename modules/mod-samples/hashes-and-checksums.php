@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AREA', 'SHARED');
  */
 abstract class SmartAppAbstractController extends SmartAbstractAppController {
 
-	// v.20231114
+	// v.20240114
 
 	final public function Initialize() {
 
@@ -142,6 +142,21 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 		$tSfDecUnicode = (string) SmartCipherCrypto::tf_decrypt((string)$tSfEncUnicode, (string)$isoString);
 		$tSfTimeUnicode = microtime(true) - $tSfTimeUnicode;
 		//--
+		$tbSfTimeEmpty = microtime(true);
+		$tbSfEncEmpty = (string) SmartCipherCrypto::tf_encrypt((string)$emptyString, (string)$isoString, true);
+		$tbSfDecEmpty = (string) SmartCipherCrypto::tf_decrypt((string)$tbSfEncEmpty, (string)$isoString);
+		$tbSfTimeEmpty = microtime(true) - $tbSfTimeEmpty;
+		//--
+		$tbSfTimeIso = microtime(true);
+		$tbSfEncIso = (string) SmartCipherCrypto::tf_encrypt((string)$isoString, (string)$isoString, true);
+		$tbSfDecIso = (string) SmartCipherCrypto::tf_decrypt((string)$tbSfEncIso, (string)$isoString);
+		$tbSfTimeIso = microtime(true) - $tbSfTimeIso;
+		//--
+		$tbSfTimeUnicode = microtime(true);
+		$tbSfEncUnicode = (string) SmartCipherCrypto::tf_encrypt((string)$unicodeString, (string)$isoString, true);
+		$tbSfDecUnicode = (string) SmartCipherCrypto::tf_decrypt((string)$tbSfEncUnicode, (string)$isoString);
+		$tbSfTimeUnicode = microtime(true) - $tbSfTimeUnicode;
+		//--
 
 		//--
 		$t3fKey = (string) SmartHashCrypto::sh3a512((string)$isoString);
@@ -177,6 +192,21 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 		$t3SfEncUnicode = (string) SmartCipherCrypto::t3f_encrypt((string)$unicodeString, (string)$isoString);
 		$t3SfDecUnicode = (string) SmartCipherCrypto::t3f_decrypt((string)$t3SfEncUnicode, (string)$isoString);
 		$t3SfTimeUnicode = microtime(true) - $t3SfTimeUnicode;
+		//--
+		$t3t2bSfTimeEmpty = microtime(true);
+		$t3t2bSfEncEmpty = (string) SmartCipherCrypto::t3f_encrypt((string)$emptyString, (string)$isoString, true);
+		$t3t2bSfDecEmpty = (string) SmartCipherCrypto::t3f_decrypt((string)$t3t2bSfEncEmpty, (string)$isoString);
+		$t3t2bSfTimeEmpty = microtime(true) - $t3t2bSfTimeEmpty;
+		//--
+		$t3t2bSfTimeIso = microtime(true);
+		$t3t2bSfEncIso = (string) SmartCipherCrypto::t3f_encrypt((string)$isoString, (string)$isoString, true);
+		$t3t2bSfDecIso = (string) SmartCipherCrypto::t3f_decrypt((string)$t3t2bSfEncIso, (string)$isoString);
+		$t3t2bSfTimeIso = microtime(true) - $t3t2bSfTimeIso;
+		//--
+		$t3t2bSfTimeUnicode = microtime(true);
+		$t3t2bSfEncUnicode = (string) SmartCipherCrypto::t3f_encrypt((string)$unicodeString, (string)$isoString, true);
+		$t3t2bSfDecUnicode = (string) SmartCipherCrypto::t3f_decrypt((string)$t3t2bSfEncUnicode, (string)$isoString);
+		$t3t2bSfTimeUnicode = microtime(true) - $t3t2bSfTimeUnicode;
 		//--
 
 		//--
@@ -221,19 +251,19 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 					'str' => (string) $emptyString,
 					'enc' => (string) base64_encode((string)$bfEncEmpty),
 					'dec' => (string) $bfDecEmpty,
-					'tms' => (string) $bfTimeEmpty.' ms',
+					'tms' => (string) $bfTimeEmpty.' s',
 				],
 				'[ISO]' => [
 					'str' => (string) $isoString,
 					'enc' => (string) base64_encode((string)$bfEncIso),
 					'dec' => (string) $bfDecIso,
-					'tms' => (string) $bfTimeIso.' ms',
+					'tms' => (string) $bfTimeIso.' s',
 				],
 				'[UNICODE]' => [
 					'str' => (string) $unicodeString,
 					'enc' => (string) base64_encode((string)$bfEncUnicode),
 					'dec' => (string) $bfDecUnicode,
-					'tms' => (string) $bfTimeUnicode.' ms',
+					'tms' => (string) $bfTimeUnicode.' s',
 				],
 			],
 			'CRYPTO:BLOWFISH:448:Smart' => [
@@ -241,19 +271,19 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 					'str' => (string) $emptyString,
 					'enc' => (string) $bSfEncEmpty,
 					'dec' => (string) $bSfDecEmpty,
-					'tms' => (string) $bSfTimeEmpty.' ms',
+					'tms' => (string) $bSfTimeEmpty.' s',
 				],
 				'[ISO]' => [
 					'str' => (string) $isoString,
 					'enc' => (string) $bSfEncIso,
 					'dec' => (string) $bSfDecIso,
-					'tms' => (string) $bSfTimeIso.' ms',
+					'tms' => (string) $bSfTimeIso.' s',
 				],
 				'[UNICODE]' => [
 					'str' => (string) $unicodeString,
 					'enc' => (string) $bSfEncUnicode,
 					'dec' => (string) $bSfDecUnicode,
-					'tms' => (string) $bSfTimeUnicode.' ms',
+					'tms' => (string) $bSfTimeUnicode.' s',
 				],
 			],
 			'CRYPTO:TWOFISH:256' => [
@@ -261,19 +291,19 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 					'str' => (string) $emptyString,
 					'enc' => (string) base64_encode((string)$tfEncEmpty),
 					'dec' => (string) $tfDecEmpty,
-					'tms' => (string) $tfTimeEmpty.' ms',
+					'tms' => (string) $tfTimeEmpty.' s',
 				],
 				'[ISO]' => [
 					'str' => (string) $isoString,
 					'enc' => (string) base64_encode((string)$tfEncIso),
 					'dec' => (string) $tfDecIso,
-					'tms' => (string) $tfTimeIso.' ms',
+					'tms' => (string) $tfTimeIso.' s',
 				],
 				'[UNICODE]' => [
 					'str' => (string) $unicodeString,
 					'enc' => (string) base64_encode((string)$tfEncUnicode),
 					'dec' => (string) $tfDecUnicode,
-					'tms' => (string) $tfTimeUnicode.' ms',
+					'tms' => (string) $tfTimeUnicode.' s',
 				],
 			],
 			'CRYPTO:TWOFISH:256:Smart' => [
@@ -281,19 +311,39 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 					'str' => (string) $emptyString,
 					'enc' => (string) $tSfEncEmpty,
 					'dec' => (string) $tSfDecEmpty,
-					'tms' => (string) $tSfTimeEmpty.' ms',
+					'tms' => (string) $tSfTimeEmpty.' s',
 				],
 				'[ISO]' => [
 					'str' => (string) $isoString,
 					'enc' => (string) $tSfEncIso,
 					'dec' => (string) $tSfDecIso,
-					'tms' => (string) $tSfTimeIso.' ms',
+					'tms' => (string) $tSfTimeIso.' s',
 				],
 				'[UNICODE]' => [
 					'str' => (string) $unicodeString,
 					'enc' => (string) $tSfEncUnicode,
 					'dec' => (string) $tSfDecUnicode,
-					'tms' => (string) $tSfTimeUnicode.' ms',
+					'tms' => (string) $tSfTimeUnicode.' s',
+				],
+			],
+			'CRYPTO:TWOFISH:256+BLOWFISH:448:Smart' => [
+				'[EMPTY-STRING]' => [
+					'str' => (string) $emptyString,
+					'enc' => (string) $tbSfEncEmpty,
+					'dec' => (string) $tbSfDecEmpty,
+					'tms' => (string) $tbSfTimeEmpty.' s',
+				],
+				'[ISO]' => [
+					'str' => (string) $isoString,
+					'enc' => (string) $tbSfEncIso,
+					'dec' => (string) $tbSfDecIso,
+					'tms' => (string) $tbSfTimeIso.' s',
+				],
+				'[UNICODE]' => [
+					'str' => (string) $unicodeString,
+					'enc' => (string) $tbSfEncUnicode,
+					'dec' => (string) $tbSfDecUnicode,
+					'tms' => (string) $tbSfTimeUnicode.' s',
 				],
 			],
 			'CRYPTO:THREEFISH:1024' => [
@@ -301,19 +351,19 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 					'str' => (string) $emptyString,
 					'enc' => (string) base64_encode((string)$t3fEncEmpty),
 					'dec' => (string) $t3fDecEmpty,
-					'tms' => (string) $t3fTimeEmpty.' ms',
+					'tms' => (string) $t3fTimeEmpty.' s',
 				],
 				'[ISO]' => [
 					'str' => (string) $isoString,
 					'enc' => (string) base64_encode((string)$t3fEncIso),
 					'dec' => (string) $t3fDecIso,
-					'tms' => (string) $t3fTimeIso.' ms',
+					'tms' => (string) $t3fTimeIso.' s',
 				],
 				'[UNICODE]' => [
 					'str' => (string) $unicodeString,
 					'enc' => (string) base64_encode((string)$t3fEncUnicode),
 					'dec' => (string) $t3fDecUnicode,
-					'tms' => (string) $t3fTimeUnicode.' ms',
+					'tms' => (string) $t3fTimeUnicode.' s',
 				],
 			],
 			'CRYPTO:THREEFISH:1024:Smart' => [
@@ -321,19 +371,39 @@ abstract class SmartAppAbstractController extends SmartAbstractAppController {
 					'str' => (string) $emptyString,
 					'enc' => (string) $t3SfEncEmpty,
 					'dec' => (string) $t3SfDecEmpty,
-					'tms' => (string) $t3SfTimeEmpty.' ms',
+					'tms' => (string) $t3SfTimeEmpty.' s',
 				],
 				'[ISO]' => [
 					'str' => (string) $isoString,
 					'enc' => (string) $t3SfEncIso,
 					'dec' => (string) $t3SfDecIso,
-					'tms' => (string) $t3SfTimeIso.' ms',
+					'tms' => (string) $t3SfTimeIso.' s',
 				],
 				'[UNICODE]' => [
 					'str' => (string) $unicodeString,
 					'enc' => (string) $t3SfEncUnicode,
 					'dec' => (string) $t3SfDecUnicode,
-					'tms' => (string) $t3SfTimeUnicode.' ms',
+					'tms' => (string) $t3SfTimeUnicode.' s',
+				],
+			],
+			'CRYPTO:THREEFISH:1024+TWOFISH:256+BLOWFISH:448:Smart' => [
+				'[EMPTY-STRING]' => [
+					'str' => (string) $emptyString,
+					'enc' => (string) $t3t2bSfEncEmpty,
+					'dec' => (string) $t3t2bSfDecEmpty,
+					'tms' => (string) $t3t2bSfTimeEmpty.' s',
+				],
+				'[ISO]' => [
+					'str' => (string) $isoString,
+					'enc' => (string) $t3t2bSfEncIso,
+					'dec' => (string) $t3t2bSfDecIso,
+					'tms' => (string) $t3t2bSfTimeIso.' s',
+				],
+				'[UNICODE]' => [
+					'str' => (string) $unicodeString,
+					'enc' => (string) $t3t2bSfEncUnicode,
+					'dec' => (string) $t3t2bSfDecUnicode,
+					'tms' => (string) $t3t2bSfTimeUnicode.' s',
 				],
 			],
 			'DERIVATIONS' => [
