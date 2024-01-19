@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / SQLite 3 Database Client]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -14,9 +14,11 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //======================================================
 // Smart-Framework - SQLite 3 Database Client
 // DEPENDS:
+// 	* SmartEnvironment::
 //	* Smart::
-//	* SmartUnicode::
 //	* SmartFileSysUtils::
+//	* SmartUnicode::
+// 	* SmartHashCrypto::
 //	* SmartFileSystem::
 //	* SmartComponents::
 // DEPENDS-EXT: PHP SQLite3 Extension
@@ -66,7 +68,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage 		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSystem, SmartComponents
- * @version 	v.20231021
+ * @version 	v.20240119
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -497,8 +499,8 @@ final class SmartSQliteDb {
  *
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
- * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, SmartFileSystem, SmartComponents, SmartUtils
- * @version 	v.20231021
+ * @depends 	extensions: PHP SQLite (3) ; classes: Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils, SmartFileSysUtils, SmartFileSystem, SmartComponents
+ * @version 	v.20240119
  * @package 	Application:Plugins:Database:SQLite
  *
  */
@@ -553,7 +555,7 @@ final class SmartSQliteUtilDb {
 		//--
 		$dir_of_db = (string) Smart::dir_name((string)$file_name);
 		//--
-		$err = (string) SmartUtils::create_protected_dir((string)$dir_of_db); // {{{SYNC-APP-DB-FOLDER}}} ; this checks also if safe path of dir
+		$err = (string) SmartFileSystem::create_protected_dir((string)$dir_of_db); // {{{SYNC-APP-DB-FOLDER}}} ; this checks also if safe path of dir
 		if((string)$err != '') {
 			self::error((string)$file_name, 'OPEN', 'ERROR: DB path creation failed # '.$err, '', '');
 			return;
@@ -1778,18 +1780,21 @@ final class SmartSQliteUtilDb {
 			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
 		} //end if else
 		//--
-		$out = (string) SmartComponents::app_error_message(
-			'SQLite Client',
-			'SQLite',
-			'Embedded',
-			'SQL/DB',
-			'lib/core/img/db/sqlite-logo.svg',
-			(int)    $width, // width
-			(string) $the_area, // area
-			(string) $the_error_message, // err msg
-			(string) $the_params, // title or params
-			(string) $the_query_info // sql statement
-		);
+		$out = '';
+		if(class_exists('SmartComponents')) {
+			$out = (string) SmartComponents::app_error_message(
+				'SQLite Client',
+				'SQLite',
+				'Embedded',
+				'SQL/DB',
+				'lib/core/img/db/sqlite-logo.svg',
+				(int)    $width, // width
+				(string) $the_area, // area
+				(string) $the_error_message, // err msg
+				(string) $the_params, // title or params
+				(string) $the_query_info // sql statement
+			);
+		} //end if
 		//--
 		Smart::raise_error(
 			'#SQLITE-DB@'.$the_conn.' :: Q# // SQLite Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Params / Title:'."\n".print_r($y_params_or_title,1)."\n".'*** Query:'."\n".$y_query,
@@ -1827,7 +1832,7 @@ final class SmartSQliteUtilDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode
- * @version 	v.20231021
+ * @version 	v.20240119
  * @package 	Application:Plugins:Database:SQLite
  *
  */

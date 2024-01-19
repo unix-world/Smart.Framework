@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / FileSystem]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -43,6 +43,19 @@ if(
 	die('Invalid INIT constant value for SMART_FRAMEWORK_CHMOD_FILES: '.SMART_FRAMEWORK_CHMOD_FILES.' (decimal) / '.str_pad((string)decoct(SMART_FRAMEWORK_CHMOD_FILES), 4, '0', STR_PAD_LEFT).' (octal)');
 } //end if
 //--
+if(!defined('SMART_FRAMEWORK_HTACCESS_NOEXECUTION')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_HTACCESS_NOEXECUTION');
+} //end if
+if(!defined('SMART_FRAMEWORK_HTACCESS_FORBIDDEN')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_HTACCESS_FORBIDDEN');
+} //end if
+if(!defined('SMART_FRAMEWORK_HTACCESS_NOINDEXING')) {
+	@http_response_code(500);
+	die('A required INIT constant has not been defined: SMART_FRAMEWORK_HTACCESS_NOINDEXING');
+} //end if
+//--
 
 
 //=====================================================================================
@@ -69,7 +82,7 @@ if(
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed
  *
  * @depends 	classes: Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES
- * @version 	v.20231006
+ * @version 	v.20240119
  * @package 	Application:FileSystem
  *
  */
@@ -87,7 +100,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	BOOLEAN								:: TRUE if success, FALSE if not
 	 */
-	public static function fix_dir_chmod($dir_name) {
+	public static function fix_dir_chmod(?string $dir_name) : bool {
 		//--
 		if(!defined('SMART_FRAMEWORK_CHMOD_DIRS')) {
 			Smart::log_warning(__METHOD__.' # Skip: A required constant (SMART_FRAMEWORK_CHMOD_DIRS) has not been defined ...');
@@ -131,7 +144,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	BOOLEAN								:: TRUE if success, FALSE if not
 	 */
-	public static function fix_file_chmod($file_name) {
+	public static function fix_file_chmod(?string $file_name) : bool {
 		//--
 		if(!defined('SMART_FRAMEWORK_CHMOD_FILES')) {
 			Smart::log_warning(__METHOD__.' # Skip: A required constant (SMART_FRAMEWORK_CHMOD_FILES) has not been defined ...');
@@ -175,7 +188,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	INTEGER								:: 0 (zero) if file does not exists or invalid file type ; the file size in bytes for the rest of cases
 	 */
-	public static function get_file_size($file_name) {
+	public static function get_file_size(?string $file_name) : int {
 		//--
 		$file_name = (string) $file_name;
 		//--
@@ -202,7 +215,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	INTEGER								:: 0 (zero) if file does not exists or invalid file type ; the file creation timestamp for the rest of cases
 	 */
-	public static function get_file_ctime($file_name) {
+	public static function get_file_ctime(?string $file_name) : int {
 		//--
 		$file_name = (string) $file_name;
 		//--
@@ -229,7 +242,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	INTEGER								:: 0 (zero) if file does not exists or invalid file type ; the file modification timestamp for the rest of cases
 	 */
-	public static function get_file_mtime($file_name) {
+	public static function get_file_mtime(?string $file_name) : int {
 		//--
 		$file_name = (string) $file_name;
 		//--
@@ -256,7 +269,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	STRING								:: empty string if file does not exists or invalid file type ; the file md5 checksum for the rest of cases
 	 */
-	public static function get_file_md5_checksum($file_name) {
+	public static function get_file_md5_checksum(?string $file_name) : string {
 		//--
 		$file_name = (string) $file_name;
 		//--
@@ -283,7 +296,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	BOOLEAN								:: TRUE if directory (folder), FALSE if not
 	 */
-	public static function is_type_dir($path) {
+	public static function is_type_dir(?string $path) : bool {
 		//--
 		$path = (string) $path;
 		//--
@@ -309,7 +322,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	BOOLEAN								:: TRUE if file, FALSE if not
 	 */
-	public static function is_type_file($path) {
+	public static function is_type_file(?string $path) : bool {
 		//--
 		$path = (string) $path;
 		//--
@@ -335,7 +348,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	BOOLEAN								:: TRUE if symlink, FALSE if not
 	 */
-	public static function is_type_link($path) {
+	public static function is_type_link(?string $path) : bool {
 		//--
 		$path = (string) $path;
 		//--
@@ -361,7 +374,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	BOOLEAN								:: TRUE if readable, FALSE if not
 	 */
-	public static function have_access_read($path) {
+	public static function have_access_read(?string $path) : bool {
 		//--
 		$path = (string) $path;
 		//--
@@ -387,7 +400,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	BOOLEAN								:: TRUE if writable, FALSE if not
 	 */
-	public static function have_access_write($path) {
+	public static function have_access_write(?string $path) : bool {
 		//--
 		$path = (string) $path;
 		//--
@@ -413,7 +426,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	BOOLEAN								:: TRUE if file, FALSE if not
 	 */
-	public static function have_access_executable($path) {
+	public static function have_access_executable(?string $path) : bool {
 		//--
 		$path = (string) $path;
 		//--
@@ -439,7 +452,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	BOOLEAN								:: TRUE if exists, FALSE if not
 	 */
-	public static function path_exists($path) {
+	public static function path_exists(?string $path) : bool {
 		//--
 		$path = (string) $path;
 		//--
@@ -452,9 +465,9 @@ final class SmartFileSystem {
 		//--
 		if((file_exists((string)$path)) OR (is_link((string)$path))) { // {{{SYNC-SF-PATH-EXISTS}}}
 			return true;
-		} else {
-			return false;
-		} //end if else
+		} //end if
+		//--
+		return false;
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -472,7 +485,7 @@ final class SmartFileSystem {
 	 * @return 	BOOLEAN								:: TRUE if exists, FALSE if not
 	 */
 	// will return TRUE if file or dir exists ; if a symlink will return TRUE just if the symlink is not broken (it's target exists)
-	public static function path_real_exists($path) {
+	public static function path_real_exists(?string $path) : bool {
 		//--
 		$path = (string) $path;
 		//--
@@ -1013,7 +1026,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	STRING								:: The file contents ; if the file does not exists or it is not an uploaded file will return an empty string
 	 */
-	public static function read_uploaded($file_name) {
+	public static function read_uploaded(?string $file_name) : string {
 		//--
 		$file_name = (string) $file_name;
 		//--
@@ -1077,7 +1090,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	INTEGER								:: 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)
 	 */
-	public static function move_uploaded($file_name, $newlocation, $check_moved_contents=true) {
+	public static function move_uploaded(?string $file_name, ?string $newlocation, bool $check_moved_contents=true) : int {
 		//--
 		$file_name = (string) $file_name;
 		$newlocation = (string) $newlocation;
@@ -1326,7 +1339,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	INTEGER								:: 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)
 	 */
-	public static function link_create($origin, $destination) {
+	public static function link_create(?string $origin, ?string $destination) : int {
 		//--
 		$origin = (string) $origin;
 		$destination = (string) $destination;
@@ -1397,7 +1410,7 @@ final class SmartFileSystem {
 	 *
 	 * @return 	INTEGER								:: 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)
 	 */
-	public static function dir_create($dir_name, $recursive=false, $allow_protected_paths=false) {
+	public static function dir_create(?string $dir_name, bool $recursive=false, bool $allow_protected_paths=false) : int {
 		//-- override (this is actually done automatically in raiseErrorIfUnsafePath() and checkIfSafePath() but reflect also here this as there are logs below ...
 		if(SmartEnvironment::isAdminArea() === true) {
 			if(SmartEnvironment::isTaskArea() === true) {
@@ -1993,6 +2006,85 @@ final class SmartFileSystem {
 	//================================================================
 
 
+	//##### NON-PUBLICS
+
+
+	/**
+	 * @access 		private
+	 * @internal
+	 */
+	public const APP_DB_FOLDER = '#db/'; // {{{SYNC-APP-DB-FOLDER}}}
+
+
+	//================================================================
+	/**
+	 * Create a Protected Directory (Folder)
+	 *
+	 * @access 		private
+	 * @internal
+	 *
+	 */
+	public static function create_protected_dir(?string $protected_dir_path) : string {
+		//--
+		if((string)trim((string)$protected_dir_path) == '') {
+			return 'ERR: Protected Folder not defined !';
+		} //end if
+		//--
+		if(SmartFileSysUtils::checkIfSafePath((string)$protected_dir_path, true, true) != 1) { // deny absolute paths, allow protected paths
+			return 'ERR: Protected Folder path is unsafe (1) !';
+		} //end if
+		//--
+		$protected_dir_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)$protected_dir_path);
+		if(SmartFileSysUtils::checkIfSafePath((string)$protected_dir_path, true, true) != 1) { // deny absolute paths, allow protected paths
+			return 'ERR: Protected Folder path is unsafe (2) !';
+		} //end if
+		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$protected_dir_path, true, true); // deny absolute path access ; allow protected path access (starting with #)
+		//--
+		if(!self::is_type_dir((string)$protected_dir_path)) {
+			self::dir_create((string)$protected_dir_path, true, true); // allow protected paths
+		} //end if
+		if(!self::is_type_dir((string)$protected_dir_path)) {
+			return 'ERR: Protected Folder does not exists !';
+		} //end if
+		if(!self::have_access_write((string)$protected_dir_path)) {
+			return 'ERR: Protected Folder is not writable !';
+		} //end if
+		//--
+		$write_check_compare = 'yes';
+		if((string)$protected_dir_path != (string)self::APP_DB_FOLDER) { // {{{SYNC-APP-DB-FOLDER}}}
+			$write_check_compare = 'no'; // if different folder than APP_DB_FOLDER do not overwrite the htaccess file, it may be different
+		} //end if
+		if((int)self::write_if_not_exists(
+			(string)$protected_dir_path.'.htaccess', // file name
+			(string)'### Smart.Framework // '.__FUNCTION__.' @ HtAccess Protected Folder :: `'.$protected_dir_path.'` ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', // file content
+			(string) $write_check_compare, // check compare will be yes just on APP_DB_FOLDER
+			true // allow protected paths
+		) != 1) {
+			return 'ERR: Protected Folder access-protection write failed !';
+		} //end if
+		if(!self::is_type_file((string)$protected_dir_path.'.htaccess')) {
+			return 'ERR: Protected Folder access-protection not found !';
+		} //end if
+		if((int)self::get_file_size((string)$protected_dir_path.'.htaccess') <= 0) {
+			return 'ERR: Protected Folder access-protection size is zero !';
+		} //end if
+		//--
+		if(!self::is_type_file((string)$protected_dir_path.'index.html')) {
+			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$protected_dir_path.'index.html', true, true); // deny absolute path access ; allow protected path access (starting with #)
+			if(self::write((string)$protected_dir_path.'index.html', '', 'w', true) != 1) { // allow protected paths
+				return 'ERR: Protected Folder index-protection write failed !';
+			} //end if
+			if(!self::is_type_file((string)$protected_dir_path.'index.html')) {
+				return 'ERR: Protected Folder index-protection not found !';
+			} //end if
+		} //end if
+		//--
+		return '';
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
 } //END CLASS
 
 
@@ -2033,7 +2125,7 @@ final class SmartFileSystem {
  * @hints 		This class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be safe
  *
  * @depends 	classes: Smart
- * @version 	v.20231006
+ * @version 	v.20240119
  * @package 	Application:FileSystem
  *
  */
@@ -2153,7 +2245,7 @@ final class SmartGetFileSystem {
 
 
 	//================================================================
-	public function search_files(bool $recurring, ?string $dir_name, bool $include_dot_files, ?string $search_pattern, ?int $limit_search_files, ?string $search_prevent_file='', ?string $search_prevent_override='') {
+	public function search_files(bool $recurring, ?string $dir_name, bool $include_dot_files, ?string $search_pattern, ?int $limit_search_files, ?string $search_prevent_file='', ?string $search_prevent_override='') : array {
 		//--
 		$dir_name = (string) $dir_name;
 		$search_pattern = (string) $search_pattern;

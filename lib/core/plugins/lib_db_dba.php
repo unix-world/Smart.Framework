@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / DBA Database Client]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -14,7 +14,11 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //======================================================
 // Smart-Framework - DBA Database Client
 // DEPENDS:
+// 	* SmartEnvironment::
 //	* Smart::
+//	* SmartFileSysUtils::
+// 	* SmartHashCrypto::
+//	* SmartFileSystem::
 //	* SmartComponents::
 // DEPENDS-EXT: PHP DBA Extension
 //======================================================
@@ -44,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartComponents, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20231008
+ * @version 	v.20240119
  * @package 	Application:Plugins:Database:Dba
  *
  */
@@ -1087,7 +1091,7 @@ final class SmartDbaDb {
 			return false;
 		} //end if
 		//--
-		$err = (string) SmartUtils::create_protected_dir((string)$dir_of_db); // {{{SYNC-APP-DB-FOLDER}}} ; this checks also if safe path of dir
+		$err = (string) SmartFileSystem::create_protected_dir((string)$dir_of_db); // {{{SYNC-APP-DB-FOLDER}}} ; this checks also if safe path of dir
 		if((string)$err != '') {
 			$this->error('OPEN', 'ERROR: DB path creation failed # '.$err);
 			return;
@@ -1240,18 +1244,21 @@ final class SmartDbaDb {
 			$the_query_info = ''; // do not display query if not in debug mode ... this a security issue if displayed to public ;)
 		} //end if else
 		//--
-		$out = (string) SmartComponents::app_error_message(
-			'Dba Client',
-			'Dba',
-			'Embedded',
-			'DataStore/DB',
-			'lib/core/img/db/dba-logo.svg',
-			(int)    $width, // width
-			(string) $the_area, // area
-			(string) $the_error_message, // err msg
-			(string) $the_params, // title or params
-			(string) $the_query_info // key
-		);
+		$out = '';
+		if(class_exists('SmartComponents')) {
+			$out = (string) SmartComponents::app_error_message(
+				'Dba Client',
+				'Dba',
+				'Embedded',
+				'DataStore/DB',
+				'lib/core/img/db/dba-logo.svg',
+				(int)    $width, // width
+				(string) $the_area, // area
+				(string) $the_error_message, // err msg
+				(string) $the_params, // title or params
+				(string) $the_query_info // key
+			);
+		} //end if
 		//--
 		Smart::raise_error(
 			'#DBA@'.$this->file.'# (`'.$this->description.'`) :: Q# // DBA Client :: ERROR :: '.$y_area."\n".'*** Error-Message: '.$y_error_message."\n".'*** Key:'."\n".$y_key,
@@ -1283,7 +1290,7 @@ final class SmartDbaDb {
  * @usage 		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP DBA Extension ; classes: Smart
- * @version 	v.20231008
+ * @version 	v.20240119
  * @package 	Application:Plugins:Database:Dba
  *
  */

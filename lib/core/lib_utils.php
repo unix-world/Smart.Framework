@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Utils]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -37,15 +37,13 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20231128
+ * @version 	v.20240119
  * @package 	Application:Utils
  *
  */
 final class SmartUtils {
 
 	// ::
-
-	public const APP_DB_FOLDER = '#db/'; // {{{SYNC-APP-DB-FOLDER}}}
 
 	public const GENERIC_VALUE_OS_BROWSER_IP = '[?]';
 
@@ -2572,75 +2570,6 @@ final class SmartUtils {
 
 
 	//##### NON-PUBLICS
-
-
-	//================================================================
-	/**
-	 * Create a Protected Directory (Folder)
-	 *
-	 * @access 		private
-	 * @internal
-	 *
-	 */
-	public static function create_protected_dir(?string $protected_dir_path) : string {
-		//--
-		if((string)trim((string)$protected_dir_path) == '') {
-			return 'ERR: Protected Folder not defined !';
-		} //end if
-		//--
-		if(SmartFileSysUtils::checkIfSafePath((string)$protected_dir_path, true, true) != 1) { // deny absolute paths, allow protected paths
-			return 'ERR: Protected Folder path is unsafe (1) !';
-		} //end if
-		//--
-		$protected_dir_path = (string) SmartFileSysUtils::addPathTrailingSlash((string)$protected_dir_path);
-		if(SmartFileSysUtils::checkIfSafePath((string)$protected_dir_path, true, true) != 1) { // deny absolute paths, allow protected paths
-			return 'ERR: Protected Folder path is unsafe (2) !';
-		} //end if
-		SmartFileSysUtils::raiseErrorIfUnsafePath((string)$protected_dir_path, true, true); // deny absolute path access ; allow protected path access (starting with #)
-		//--
-		if(!SmartFileSystem::is_type_dir((string)$protected_dir_path)) {
-			SmartFileSystem::dir_create((string)$protected_dir_path, true, true); // allow protected paths
-		} //end if
-		if(!SmartFileSystem::is_type_dir((string)$protected_dir_path)) {
-			return 'ERR: Protected Folder does not exists !';
-		} //end if
-		if(!SmartFileSystem::have_access_write((string)$protected_dir_path)) {
-			return 'ERR: Protected Folder is not writable !';
-		} //end if
-		//--
-		$write_check_compare = 'yes';
-		if((string)$protected_dir_path != (string)self::APP_DB_FOLDER) { // {{{SYNC-APP-DB-FOLDER}}}
-			$write_check_compare = 'no'; // if different folder than APP_DB_FOLDER do not overwrite the htaccess file, it may be different
-		} //end if
-		if((int)SmartFileSystem::write_if_not_exists(
-			(string)$protected_dir_path.'.htaccess', // file name
-			(string)'### Smart.Framework // '.__FUNCTION__.' @ HtAccess Protected Folder :: `'.$protected_dir_path.'` ###'."\n".SMART_FRAMEWORK_HTACCESS_NOINDEXING.SMART_FRAMEWORK_HTACCESS_FORBIDDEN."\n".'### END ###', // file content
-			(string) $write_check_compare, // check compare will be yes just on APP_DB_FOLDER
-			true // allow protected paths
-		) != 1) {
-			return 'ERR: Protected Folder access-protection write failed !';
-		} //end if
-		if(!SmartFileSystem::is_type_file((string)$protected_dir_path.'.htaccess')) {
-			return 'ERR: Protected Folder access-protection not found !';
-		} //end if
-		if((int)SmartFileSystem::get_file_size((string)$protected_dir_path.'.htaccess') <= 0) {
-			return 'ERR: Protected Folder access-protection size is zero !';
-		} //end if
-		//--
-		if(!SmartFileSystem::is_type_file((string)$protected_dir_path.'index.html')) {
-			SmartFileSysUtils::raiseErrorIfUnsafePath((string)$protected_dir_path.'index.html', true, true); // deny absolute path access ; allow protected path access (starting with #)
-			if(SmartFileSystem::write((string)$protected_dir_path.'index.html', '', 'w', true) != 1) { // allow protected paths
-				return 'ERR: Protected Folder index-protection write failed !';
-			} //end if
-			if(!SmartFileSystem::is_type_file((string)$protected_dir_path.'index.html')) {
-				return 'ERR: Protected Folder index-protection not found !';
-			} //end if
-		} //end if
-		//--
-		return '';
-		//--
-	} //END FUNCTION
-	//================================================================
 
 
 	//================================================================

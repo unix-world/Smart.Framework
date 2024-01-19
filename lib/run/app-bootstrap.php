@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //-----------------------------------------------------
 
 //======================================================
-// Smart-Framework - App Bootstrap :: r.20240118
+// Smart-Framework - App Bootstrap :: r.20240119
 // DEPENDS: SmartFramework, SmartFrameworkRuntime
 //======================================================
 // This file can be customized per App ...
@@ -48,7 +48,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20240118
+ * @version 	v.20240119
  * @package 	Application
  *
  */
@@ -420,8 +420,8 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 			} //end if
 		} //end if
 		//--
-		$dir = (string) SmartUtils::APP_DB_FOLDER; // {{{SYNC-APP-DB-FOLDER}}}
-		$err = (string) SmartUtils::create_protected_dir((string)$dir);
+		$dir = (string) SmartFileSystem::APP_DB_FOLDER; // {{{SYNC-APP-DB-FOLDER}}}
+		$err = (string) SmartFileSystem::create_protected_dir((string)$dir);
 		if((string)$err != '') {
 			Smart::raise_error(
 				__METHOD__."\n".'General ERROR :: `'.$dir.'` create: '.$err,
@@ -603,7 +603,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20240118
+ * @version 	v.20240119
  * @package 	Application
  *
  */
