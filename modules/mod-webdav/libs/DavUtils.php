@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Webdav / Library Utils]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModExtLib\Webdav\DavUtils
@@ -26,11 +26,11 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavUtils {
 
 	// ::
-	// v.20231119
+	// v.20240116
 
 
 	//============================================================
-	public static function getFolderIcon($path) {
+	public static function getFolderIcon(?string $path) : string {
 		//--
 		$icon = 'folder.svg';
 		//--
@@ -41,7 +41,7 @@ final class DavUtils {
 
 
 	//============================================================
-	public static function getFileIcon($path) {
+	public static function getFileIcon(?string $path) : string {
 		//--
 		$icon = 'file'.self::getFileTypeSuffixIcon($path).'.svg';
 		//--
@@ -52,7 +52,7 @@ final class DavUtils {
 
 
 	//============================================================
-	public static function getFileTypeSuffixIcon($path) {
+	public static function getFileTypeSuffixIcon(?string $path) : string {
 		//--
 		$suffix = (string) self::getFileTypeIcon($path);
 		if((string)$suffix != '') {
@@ -66,7 +66,7 @@ final class DavUtils {
 
 
 	//============================================================
-	public static function getFileTypeIcon($path) {
+	public static function getFileTypeIcon(?string $path) : string {
 		//--
 		$file = (string) \SmartFileSysUtils::extractPathFileName((string)$path);
 		//--

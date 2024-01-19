@@ -1,6 +1,6 @@
 <?php
 // [APP - Bootstrap / Smart.Framework]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -16,7 +16,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 //-----------------------------------------------------
 
 //======================================================
-// Smart-Framework - App Bootstrap :: r.20231008
+// Smart-Framework - App Bootstrap :: r.20240118
 // DEPENDS: SmartFramework, SmartFrameworkRuntime
 //======================================================
 // This file can be customized per App ...
@@ -48,7 +48,7 @@ define('SMART_SOFTWARE_APP_NAME', 'smart.framework.app'); // REQUIRED BY SMART R
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version 	v.20231008
+ * @version 	v.20240118
  * @package 	Application
  *
  */
@@ -66,7 +66,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 
 	//======================================================================
-	public static function Initialize() {
+	public static function Initialize() : void {
 		//--
 		global $configs;
 		//--
@@ -94,9 +94,9 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 
 	//======================================================================
-	public static function Run() {
+	public static function Run() : void {
 		//--
-		global $configs; // expose to app-custom-bootstrap.inc.php
+		global $configs; // expose to app-bootstrap.inc.php
 		//--
 		if(self::$isRunning !== false) {
 			http_response_code(500);
@@ -105,14 +105,14 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 		} //end if
 		self::$isRunning = true;
 		//--
-		require('modules/app/app-custom-bootstrap.inc.php'); // custom boostrap code (this can permanently start session or connect to a DB server or ...)
+		require('modules/app/app-bootstrap.inc.php'); // custom boostrap code (this can permanently start session or connect to a DB server or ...)
 		//--
 	} //END FUNCTION
 	//======================================================================
 
 
 	//======================================================================
-	public static function Authenticate($area) { // THIS SHOULD BE RUN IN MIDDLEWARE IDX/ADM|TSK ONLY
+	public static function Authenticate(string $area) : void { // THIS SHOULD BE RUN IN MIDDLEWARE IDX/ADM|TSK ONLY
 		//--
 		global $configs; // expose to app-auth-*.inc.php
 		//--
@@ -124,11 +124,11 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 		self::$authCompleted = true;
 		//--
 		switch((string)$area) {
-			case 'index':
-				require('modules/app/app-auth-index.inc.php');
+			case 'index': // idx
+				require('modules/app/app-auth-idx.inc.php');
 				break;
-			case 'admin':
-				require('modules/app/app-auth-admin.inc.php');
+			case 'admin': // adm + tsk
+				require('modules/app/app-auth-adm-tsk.inc.php');
 				break;
 			default:
 				$msg = 'Invalid Authentication Realm: '.$area;
@@ -151,14 +151,14 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 	// if used this will set the app language by sub-domain
 	// this will work only if more than one languages are defined in configs, otherwise will raise an error
 	// NOTICE: by default the language can be set only by URL Parameter or Cookie
-	// if this is used can set language by subdomain ; it must be called in modules/app/app-custom-bootstrap.inc.php
+	// if this is used can set language by subdomain ; it must be called in modules/app/app-bootstrap.inc.php
 	// it can be set by checking if admin area is set to true to handle only one of the index or admin areas ; or if no condition will handle both
 	// 1st param: 'www' will be used for the default language ; must not contain dots
 	// 2nd param: if TRUE will redirect the 'en' subdomain (because matches the default language as set in SMART_FRAMEWORK_DEFAULT_LANG) to the subdomain to 'www' (1st parameter)
 	// 3rd param: if TRUE will redirect all other subdomains (except 'www' and the 'en' subdomains), to 'www' (1st parameter)
 	// 4th param: if TRUE and 3rd param is FALSE will show 404 for all other subdomains (except 'www' and the 'en' subdomains)
 	// 5th param: ARRAY of sub-domains to be excepted (valid languages must not be includded here, they are managed separately) or empty array if none ; ex: [ 'sdom1', 'sdom2' ]
-	public static function AppSetLanguageBySubdomain(string $default_subdomain='www', bool $redirect_default_language_to_default_subdomain=true, bool $redirect_other_subdomains=false, bool $notfound_other_subdomains=false, array $except_subdomains=[]) {
+	public static function AppSetLanguageBySubdomain(string $default_subdomain='www', bool $redirect_default_language_to_default_subdomain=true, bool $redirect_other_subdomains=false, bool $notfound_other_subdomains=false, array $except_subdomains=[]) : void {
 		//--
 		if(self::$isSetLanguageBySubdomain !== false) {
 			return; // avoid run after it was used by runtime
@@ -226,7 +226,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 
 	//======================================================================
-	private static function createRequiredDirs() {
+	private static function createRequiredDirs() : void {
 		//--
 		clearstatcache(true); // do a full clear stat cache at the begining
 		//-- tmp dir
@@ -435,7 +435,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 
 	//======================================================================
-	private static function setPersistentCacheAdapter() { // Set Persistent-Cache Adapter (or use none/blackhole)
+	private static function setPersistentCacheAdapter() : void { // Set Persistent-Cache Adapter (or use none/blackhole)
 		//--
 		global $configs;
 		//--
@@ -493,7 +493,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 
 	//======================================================================
-	private static function setTextTranslationsAdapter() { // Set Text-Translations Adapter (depends on Persistent-Cache)
+	private static function setTextTranslationsAdapter() : void { // Set Text-Translations Adapter (depends on Persistent-Cache)
 		//--
 		global $configs;
 		//--
@@ -520,7 +520,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
 
 
 	//======================================================================
-	private static function setCustomSessionHandlerAdapter() { // Set Custom Session Handler Adapter if any (or fallback to files)
+	private static function setCustomSessionHandlerAdapter() : void { // Set Custom Session Handler Adapter if any (or fallback to files)
 		//--
 		global $configs;
 		//--
@@ -603,7 +603,7 @@ final class SmartAppBootstrap implements SmartInterfaceAppBootstrap {
  *
  * @access 		PUBLIC
  * @depends 	-
- * @version 	v.20231008
+ * @version 	v.20240118
  * @package 	Application
  *
  */

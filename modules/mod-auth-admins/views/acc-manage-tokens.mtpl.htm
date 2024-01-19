@@ -1,4 +1,4 @@
-<!-- v.20231105 -->
+<!-- v.20240118 -->
 [@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
 <style>
 table#data-tbl-tokens,
@@ -74,7 +74,7 @@ const cDlg = () => {
 	const _BwUtils$ = smartJ$Browser;
 	const fUUID = _Utils$.uuid();
 	const fID = 'form_new_token__' + _Crypto$Hash.md5(fUUID);
-	_BwUtils$.ConfirmDialog('<form name="' + _Utils$.escape_html(fID) + '" id="' + _Utils$.escape_html(fID) + '" class="ux-form" onSubmit="return false;">' + '<h6>Token Name</h6><input type="text" name="frm[name]" value="" minlength="10" maxlength="50" autocomplete="off" placeholder="max 50 chars ; min 10 chars" style="width:100%">' + '<h6>Token Privileges</h6><input type="text" name="frm[priv]" value="" minlength="1" maxlength="255" autocomplete="off" placeholder="max 255 chars ; min 1 char ; ex: `priv-a, priv-b` or `*`" title="valid privilege key length: min 3 / max 28 chars ; accepted chars: `a-z` and `-` ; privileges have to be separed by a comma `,`" style="width:100%">' + '<h6>Token Expiration</h6><input type="text" name="frm[exp]" value="" maxlength="10" autocomplete="off" placeholder="Empty (no expiration) or YYYY-MM-DD" style="width:100%">' + '</form>', () => { _BwUtils$.SubmitFormByAjax(fID, '[###ACTIONS-URL|js###]&action=tokens-create', 'auto', null, null, () => { setTimeout(() => { self.location = self.location; }, 250); }, true); }, 'Create NEW Token', null, null, 'alertable');
+	_BwUtils$.ConfirmDialog('<form name="' + _Utils$.escape_html(fID) + '" id="' + _Utils$.escape_html(fID) + '" class="ux-form" onSubmit="return false;">' + '<h6>Token Name</h6><input type="text" name="frm[name]" value="" minlength="5" maxlength="50" autocomplete="off" placeholder="max 50 chars ; min 5 chars" style="width:100%">' + '<h6>Token Privileges</h6><input type="text" name="frm[priv]" value="" minlength="1" maxlength="255" autocomplete="off" placeholder="max 255 chars ; min 1 char ; ex: `priv-a1, priv-b2` or `*`" title="valid privilege key length: min 2 / max 22 chars ; accepted chars: `a-z`, `0-9`, `:` and `-` ; privileges have to be separed by a comma `,`" style="width:100%">' + '<h6>Token Expiration</h6><input type="text" name="frm[exp]" value="" maxlength="10" autocomplete="off" placeholder="Empty (no expiration) or YYYY-MM-DD" style="width:100%">' + '</form>', () => { _BwUtils$.SubmitFormByAjax(fID, '[###ACTIONS-URL|js###]&action=tokens-create', 'auto', null, null, () => { setTimeout(() => { self.location = self.location; }, 250); }, true); }, 'Create NEW Token', null, null, 'alertable');
 };
 </script>
 <center><div><table><tr><td>
@@ -309,12 +309,12 @@ jQuery(() => {
 		data : theData,
 		columns : theColumns,
 		responsive: true,
-		insensitive: false, // use case sensitive search
+		insensitive: false, // case sensitive search
 		filter: true,
 		sort: true,
 		paginate: true,
 		pagesize: 10,
-		pagesizes: [ 10, 25, 50 ],
+		pagesizes: [ 10, 25 ],
 		colorder: [
 			[ 7, 'desc' ], // created
 			[ 3, 'asc' ], // expires

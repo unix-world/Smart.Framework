@@ -1,9 +1,9 @@
 <?php
-// Class: \SmartModExtLib\AuthAdmins\AuthHandlerInterface
+// Class: \SmartModDataModel\AuthAdmins\AbstractAuthLog
 // (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
-namespace SmartModExtLib\AuthAdmins;
+namespace SmartModDataModel\AuthAdmins;
 
 //----------------------------------------------------- PREVENT DIRECT EXECUTION (Namespace)
 if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application
@@ -12,7 +12,6 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 } //end if
 //-----------------------------------------------------
 
-// [PHP8]
 
 //=====================================================================================
 //===================================================================================== CLASS START [OK: NAMESPACE]
@@ -20,34 +19,31 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 
 /**
- * Auth Handler Interface
- *
- * @access 		private
- * @internal
- *
- * @version 	v.20240118
- * @package 	development:modules:AuthAdmins
- *
+ * Abstract Model for ModAuthAdmins Logging
+ * @ignore
  */
-interface AuthHandlerInterface {
+abstract class AbstractAuthLog {
 
-	// :: INTERFACE
-
-	//=====
-	/**
-	 * Auth Handler Authenticate
-	 * THIS MUST BE EXTENDED TO HANDLE AN AUTHENTICATION METHOD
-	 * RETURN: VOID ; On FAILED Logins this method should STOP EXECUTION and provide the proper HTTP Status Message: ex: 401, 403, 429, ...
-	 */
-	public static function Authenticate(bool $enforce_https=false) : void;
-	//=====
+	// ->
+	// v.20240118
 
 
-} //END INTERFACE
+	abstract public function __construct(); // THIS SHOULD BE THE ONLY METHOD IN THIS CLASS THAT THROW EXCEPTIONS !!!
+	abstract public function __destruct();
+
+	abstract public function logAuthSuccess(?string $auth_id, ?string $ip, ?string $msg) : bool;
+	abstract public function logAuthFail(?string $auth_id, ?string $ip, ?string $msg) : bool;
+	abstract public function checkFailLoginsByIp(string $ip) : int;
+	abstract public function resetFailedLogins(string $ip) : bool;
+
+
+} //END CLASS
 
 
 //=====================================================================================
 //===================================================================================== CLASS END
 //=====================================================================================
 
+
 // end of php code
+

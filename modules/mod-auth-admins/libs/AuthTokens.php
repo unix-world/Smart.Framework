@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\AuthAdmins\AuthTokens
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\AuthAdmins;
@@ -22,15 +22,15 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 /**
  * Auth Tokens
- * This class provides Authentication Tokens support
+ * This class provides Authentication support for (Opaque) Tokens
  *
- * (c) 2023 unix-world.org
+ * (c) 2023-2024 unix-world.org
  * License: BSD
  *
  * @ignore
  *
  * @depends     classes: Smart, SmartAuth
- * @version 	v.20231031
+ * @version 	v.20240118
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -39,8 +39,8 @@ final class AuthTokens {
 	// ::
 
 	public const STK_VERSION_PREFIX 		= 'STK'; // {{{SYNC-AUTH-TOKEN-STK}}}
-	public const STK_VERSION_SUFFIX 		= 'v1.1';
-	public const STK_VERSION_SIGNATURE 		= 'stk:1.1';
+	public const STK_VERSION_SUFFIX 		= 'v1.2';
+	public const STK_VERSION_SIGNATURE 		= 'stk:1.2';
 
 	private const REGEX_VALID_TOKEN_SEED 	= '/^[0-9]{10}\-[0-9A-Za-z]{13}\-[0-9A-Z]{10}$/';
 
@@ -54,8 +54,6 @@ final class AuthTokens {
 		);
 		//--
 	} //END FUNCTION
-
-
 
 
 	public static function generatePrivateSeed() : string { // {{{SYNC-AUTH-ADMINS-TOKEN-SEED}}}
@@ -109,7 +107,7 @@ final class AuthTokens {
 			return '';
 		} //end if
 		//--
-		$key = (string) \trim((string)\Smart::base_from_hex_convert((string)\SmartHashCrypto::sha256((string)$seed.'^'.$id.'@'.$namespace.'#'.$secret), 58));
+		$key = (string) \trim((string)\Smart::base_from_hex_convert((string)\SmartHashCrypto::sh3a256((string)$seed.'^'.$id.'@'.$namespace.'#'.$secret), 58));
 		if((int)\strlen((string)$key) < 42) {
 			\Smart::log_warning(__METHOD__.' # Token length is undersized');
 			return '';
@@ -125,7 +123,7 @@ final class AuthTokens {
 
 	public static function createHexHash(string $id, string $token_key) : string {
 		//--
-		return (string) \SmartHashCrypto::sha512((string)$token_key.\chr(0).\Smart::b64s_enc((string)$id)); // 128 hex {{{SYNC-STK-128BIT-HEXHASH}}}
+		return (string) \SmartHashCrypto::sh3a512((string)$token_key.\chr(0).\Smart::b64s_enc((string)$id)); // 128 hex {{{SYNC-STK-128BIT-HEXHASH}}}
 		//--
 	} //END FUNCTION
 
@@ -330,7 +328,7 @@ final class AuthTokens {
 			$valid['ernum'] = 44;
 			return (array) $valid;
 		} //end if
-		$valid['restr-priv'] = (array)  $arr_privileges;
+		$valid['restr-priv'] = (array) $arr_privileges;
 		$arr_privileges = null;
 		//--
 		if(
@@ -549,7 +547,11 @@ final class AuthTokens {
 			return '';
 		} //end if
 		//--
-		$hashpass = (string) \SmartHashCrypto::password((string)$ek, (string)$id);
+		$hashpass = (string) \SmartHashCrypto::hmac('sha3-512', (string)$id, (string)$ek, false); // hex
+		if((string)\trim((string)$hashpass) == '') {
+			return '';
+		} //end if
+		$hashpass = (string) \Smart::base_from_hex_convert((string)$hashpass, 92);
 		if((string)\trim((string)$hashpass) == '') {
 			return '';
 		} //end if
@@ -601,7 +603,11 @@ final class AuthTokens {
 			return '';
 		} //end if
 		//--
-		$hashpass = (string) \SmartHashCrypto::password((string)$ek, (string)$id);
+		$hashpass = (string) \SmartHashCrypto::hmac('sha3-512', (string)$id, (string)$ek, false); // hex
+		if((string)\trim((string)$hashpass) == '') {
+			return '';
+		} //end if
+		$hashpass = (string) \Smart::base_from_hex_convert((string)$hashpass, 92);
 		if((string)\trim((string)$hashpass) == '') {
 			return '';
 		} //end if

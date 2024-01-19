@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / HTTP(S) Client]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -84,7 +84,7 @@ array_map(function($const){ if(!defined((string)$const)) { @http_response_code(5
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	extensions: PHP OpenSSL (optional, just for HTTPS) ; classes: Smart, SmartFrameworkSecurity, SmartFileSysUtils, SmartHttpUtils ; constants: SMART_FRAMEWORK_SSL_MODE, SMART_FRAMEWORK_SSL_CIPHERS, SMART_FRAMEWORK_SSL_VFY_HOST, SMART_FRAMEWORK_SSL_VFY_PEER, SMART_FRAMEWORK_SSL_VFY_PEER_NAME, SMART_FRAMEWORK_SSL_ALLOW_SELF_SIGNED, SMART_FRAMEWORK_SSL_DISABLE_COMPRESS ; optional-constant: SMART_FRAMEWORK_SSL_CA_FILE
- * @version 	v.20231228
+ * @version 	v.20240115
  * @package 	@Core:Network
  *
  */
@@ -473,6 +473,17 @@ final class SmartHttpClient {
 			} //end if
 		} //end if
 		//--
+		$ctype = '';
+		$arrHeaders = (array) SmartHttpUtils::parse_http_headers((string)$this->header);
+		if(isset($arrHeaders['content-type'])) {
+			if(is_array($arrHeaders['content-type'])) {
+				$ctype = (string) ($arrHeaders['content-type'][0] ?? null);
+			} else {
+				$ctype = (string) ($arrHeaders['content-type'] ?? null);
+			} //end if
+		} //end if
+		$ctype = (string) strtolower((string)trim((string)$ctype));
+		//--
 		return [ // {{{SYNC-GET-URL-OR-FILE-RETURN}}}
 			'client' 			=> (string) __CLASS__,
 			'date-time' 		=> (string) date('Y-m-d H:i:s O'),
@@ -495,6 +506,7 @@ final class SmartHttpClient {
 			'pre-code' 			=> (string) $this->pre_status, // if 100-continue, this is the HTTP 1.1 Pre-Status
 			'pre-headers' 		=> (string) $this->pre_header, // if 100-continue, this is the HTTP 1.1 Pre-Header
 			'redirect-url' 		=> (string) $redirect_url,
+			'c-type' 			=> (string) $ctype, // optional key/value, Content-Type
 			'code' 				=> (string) $this->status, // return as string, the init value is empty string
 			'headers' 			=> (string) $this->header,
 			'content' 			=> (string) $this->body,
@@ -1418,7 +1430,7 @@ final class SmartHttpClient {
  *
  * @access 		PUBLIC
  * @depends 	classes: Smart, SmartHashCrypto, SmartFrameworkSecurity
- * @version 	v.20231228
+ * @version 	v.20240118
  * @package 	@Core:Network
  *
  */
@@ -1426,8 +1438,51 @@ final class SmartHttpUtils {
 
 	// ::
 
-
 	public const AUTH_USER_BEARER = ':BEARER';
+
+	public const MAX_HEADER_SIZE = 16384; // apache/haproxy:8k ; nginx:4k ; iis:16k ; tomcat:48k ; go:1m
+
+
+	public static function parse_http_headers(?string $raw_headers) : array {
+		//--
+		$raw_headers = (string) trim((string)$raw_headers);
+		if((string)$raw_headers == '') {
+			return [];
+		} //end if
+		//--
+		if((int)strlen($raw_headers) > (int)self::MAX_HEADER_SIZE) {
+			$raw_headers = (string) substr((string)$raw_headers, 0, (int)self::MAX_HEADER_SIZE);
+		} //end if
+		//--
+		$headers = [];
+		$arr = (array) explode("\n", (string)$raw_headers);
+		foreach($arr as $k => $v) {
+			$v = (string) trim((string)$v);
+			if(((string)$v != '') AND (strpos((string)$v, ':') !== false)) {
+				$h = (array) explode(':', (string)$v, 2);
+				$h[0] = (string) strtolower((string)trim((string)$h[0]));
+				if((string)$h[0] != '') {
+					$h[1] = (string) trim((string)($h[1] ?? null));
+					if(strpos((string)$h[1], ';') === false) {
+						$headers[(string)$h[0]] = (string) $h[1];
+					} else {
+						$hh = (array) explode(';', (string)$h[1]);
+						$h[1] = [];
+						foreach($hh as $kk => $vv) {
+							$vv = (string) trim((string)$vv);
+							if((string)$vv != '') {
+								$h[1][] = (string) $vv;
+							} //end if
+						} //end foreach
+						$headers[(string)$h[0]] = (array) $h[1];
+					} //end if else
+				} //end if
+			} //end if
+		} //end foreach
+		//--
+		return (array) $headers;
+		//--
+	} //END FUNCTION
 
 
 	//==============================================

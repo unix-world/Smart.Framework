@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'SHARED');
+define('SMART_APP_MODULE_AREA', 'SHARED'); // ADMIN or TASK
 define('SMART_APP_MODULE_AUTH', true);
 
 // [PHP8]
@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 abstract class AbstractAdminLoginsController extends SmartAbstractAppController {
 
-	// v.20231119
+	// v.20240115
 
 
 	public function Initialize() {

@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\AuthAdmins\AbstractAuthHandler
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\AuthAdmins;
@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * DEPENDS classes: 	Smart, SmartAuth, SmartEnvironment, SmartUtils, \SmartModExtLib\AuthAdmins\AuthProviderHttp
  * DEPENDS constants: 	SMART_FRAMEWORK_SECURITY_KEY
  *
- * @version 	v.20231107
+ * @version 	v.20240118
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -56,7 +56,6 @@ abstract class AbstractAuthHandler {
 	private const  AUTH_CREDENTIALS = [ // init
 		'auth-select' 				=> '',
 		'auth-valid' 				=> false,
-		'auth-warn' 				=> false,
 		'auth-ermsg' 				=> '',
 		'auth-safe' 				=> -500,
 		'auth-mode' 				=> '',
@@ -65,35 +64,32 @@ abstract class AbstractAuthHandler {
 		'user-pass' => [ // Standard (Default), via HTTP Basic Auth
 			'is-valid' 		=> false,
 			'error-msg' 	=> 'User/Pass NOT Yet Validated ...',
-			'warn-msg' 		=> null, // NULL, is not available for this type
 			'user-name' 	=> '',
 			'pass-hash' 	=> '', // may provide a plain password or just a one-way encrypted pass hash only
 			'token-key' 	=> null, // NULL, is not available for this type
 			'token-data' 	=> null, // NULL, is not available for this type
-			'restr-ip' 		=> null, // NULL, is not available for this type
 			'restr-priv' 	=> null, // NULL, is not available for this type
+			'restr-ip' 		=> null, // NULL, is not available for this type
 		],
 		'swt-token' => [ // SWT, via Auth Bearer token ; this is N/A using username and/or pass, just via Bearer header, HTTP
 			'is-valid' 		=> false,
 			'error-msg' 	=> 'SWT Token NOT Yet Validated ...',
-			'warn-msg' 		=> null, // NULL, is not available for this type
 			'user-name' 	=> '',
 			'pass-hash' 	=> '', // provides the one-way encrypted pass hash only
 			'token-key' 	=> '', // should store the SWT Token string, from Auth Bearer
 			'token-data' 	=> [], // ARRAY, should store the Token Data that comes from the SWT Token Validation
-			'restr-ip' 		=> [], // ARRAY, should store the Token Data that comes from the SWT Token Validation
 			'restr-priv' 	=> [], // ARRAY, should be non-empty ; should contain the list of privileges restrictions
+			'restr-ip' 		=> [], // ARRAY, should store the Token Data that comes from the SWT Token Validation
 		],
-		'stk-token' => [ // STK, via Auth Bearer token ; Ex: username=admin#token ; pass=...stk-token-goes-here...
+		'stk-token' => [ // STK, via HTTP Basic Auth token ; Ex: username=admin#token ; pass=...stk-token-goes-here...
 			'is-valid' 		=> false,
-			'error-msg' 	=> 'STK Token NOT Yet Validated ...',
-			'warn-msg' 		=> 'STK Token needs 2 Steps Validation',
+			'error-msg' 	=> 'STK Token NOT Yet Pre-Validated ...',
 			'user-name' 	=> '', // should be get from the username as prefix before `#token`
 			'pass-hash' 	=> null, // NULL ! ; pass hash needs to be get later ... N/A with this token type
 			'token-key' 	=> '', // should store the STK Token Key string from Auth Pass
-			'token-data' 	=> [ 'warning' => 'Unknown Partial Validation Result ...' ], // ARRAY, should store the Token Data that comes from the STK Token Validation
-			'restr-ip' 		=> [], // ARRAY, should store the Token Data that comes from the STK Token Validation ; by default should be a local IP, but not 127.0.0.1 !!!
-			'restr-priv' 	=> [], // ARRAY, should be non-empty ; should contain the list of privileges restrictions ; by default use a non-empty array, with 'none'
+			'token-data' 	=> [ 'validated' => false, 'warning' => 'Opaque Tokens are only pre-validated on 1st step. They must be validated on 2nd step' ],
+			'restr-priv' 	=> null, // NULL, is not available for this type
+			'restr-ip' 		=> null, // NULL, is not available for this type
 		],
 	];
 
@@ -178,27 +174,30 @@ abstract class AbstractAuthHandler {
 		//--
 
 		//--
-		if(\defined('\\SMART_AUTH_TOKENS_ENABLED')) {
-			return 'A required constant should not be already defined: SMART_AUTH_TOKENS_ENABLED !';
+		if(!\defined('\\SMART_SOFTWARE_NAMESPACE')) {
+			return 'A required constant is missing: SMART_SOFTWARE_NAMESPACE !';
 		} //end if
-		//--
-		\define('SMART_AUTH_TOKENS_ENABLED', (bool)(!$disable_tokens)); // define has a global scope, no // prefix
-		//--
-
-		//--
-		if(\defined('\\SMART_AUTH_2FA_ENABLED')) {
-			return 'A required constant should not be already defined: SMART_AUTH_2FA_ENABLED !';
+		if((string)\trim((string)\SMART_SOFTWARE_NAMESPACE) == '') {
+			return 'A required constant is empty: SMART_SOFTWARE_NAMESPACE !';
 		} //end if
-		//--
-		\define('SMART_AUTH_2FA_ENABLED', (bool)(!$disable_2fa)); // define has a global scope, no // prefix
-		//--
-
 		//--
 		if(!\defined('\\SMART_FRAMEWORK_SECURITY_KEY')) {
 			return 'A required constant is missing: SMART_FRAMEWORK_SECURITY_KEY !';
 		} //end if
 		if((string)\trim((string)\SMART_FRAMEWORK_SECURITY_KEY) == '') {
 			return 'A required constant is empty: SMART_FRAMEWORK_SECURITY_KEY !';
+		} //end if
+		//--
+
+		//--
+		if(\SmartEnvironment::isATKEnabled() !== (bool)(!$disable_tokens)) {
+			return 'Conflict in ATK (Auth Tokens) Settings !';
+		} //end if
+		//--
+
+		//--
+		if(\SmartEnvironment::is2FAEnabled() !== (bool)(!$disable_2fa)) {
+			return 'Conflict in 2FA (Two Factor Authentication) Settings !';
 		} //end if
 		//--
 
@@ -328,12 +327,6 @@ abstract class AbstractAuthHandler {
 		$authTemplateData = null;
 		//--
 
-// STK :: aaaaaaaaaaaaaaaaaaaa
-/*
-$authData['auth-user'] .= '#token';
-$authData['auth-pass'] = 'BCEFGHJKLMNPQRSTUVWXYZabcdefghij56789ADrstuvwx';
-*/
-
 		//--
 		if((string)$authData['auth-error'] == '') { // IF NO ERRORS
 			//--
@@ -374,14 +367,9 @@ $authData['auth-pass'] = 'BCEFGHJKLMNPQRSTUVWXYZabcdefghij56789ADrstuvwx';
 						//--
 						$auth_swt_data['token-key'] 	= (string) $token_swt;
 						$auth_swt_data['token-data'] 	= (array)  $swt_validate;
-						$auth_swt_data['error-msg'] 	= (string) $swt_validate['error'];
+						$auth_swt_data['error-msg'] 	= (string) 'SWT: Not Yet Validated ...'; // init as non-empty
 						//--
-						if((string)$swt_validate['error'] != '') {
-							//--
-							$auth_swt_data['is-valid'] 		= false;
-							$auth_swt_data['error-msg'] 	= (string) $swt_validate['error'];
-							//--
-						} else { // OK
+						if($swt_validate['error'] === '') { // OK
 							//--
 							$auth_swt_data['is-valid'] 		= true;
 							$auth_swt_data['error-msg'] 	= ''; // clear
@@ -408,6 +396,11 @@ $authData['auth-pass'] = 'BCEFGHJKLMNPQRSTUVWXYZabcdefghij56789ADrstuvwx';
 							$authCredentials['use-2fa-auth'] 			= false;
 							$authCredentials['use-www-401-auth-prompt'] = false; // This should be disabled for successful Auth Bearer only, the case here ; the logic is to be able to hide the www-auth prompt when Auth Bearer is used
 							//--
+						} else {
+							//--
+							$auth_swt_data['is-valid'] 		= false;
+							$auth_swt_data['error-msg'] 	= (string) 'SWT.ERR: '.$swt_validate['error']; // make sure is non-empty
+							//--
 						} //end if else
 						//--
 						$authCredentials['swt-token'] = (array) $auth_swt_data; // save back
@@ -427,7 +420,7 @@ $authData['auth-pass'] = 'BCEFGHJKLMNPQRSTUVWXYZabcdefghij56789ADrstuvwx';
 					//--
 				} //end if else
 				//--
-			} else { // it is not Bearer Token Auth, then it can be either: User/Pass or STK Token Auth
+			} else { // if it is not Bearer Token Auth, then it can be either: User/Pass or STK Token Auth
 				//--
 				// the difference between User/Pass and STK Token Auth is:
 				// 	* STK Token Auth uses (example): username=admin#token ; pass=theSTKTokenKey ; theSTKTokenKey is just a virtual key mapped to a tokens per user storage and does not contain any embedded info inside ; later binding must read and validate the STK token and return the (one-way) pass-hash that together with the username will be used to decide later if match a valid user account or not
@@ -441,7 +434,7 @@ $authData['auth-pass'] = 'BCEFGHJKLMNPQRSTUVWXYZabcdefghij56789ADrstuvwx';
 					//--
 					$auth_userpass_data = (array) $authCredentials['user-pass']; // create a copy
 					//--
-					if(\SmartAuth::validate_auth_username( // {{{SYNC-AUTH-VALIDATE-USERNAME}}}
+					if(\SmartAuth::validate_auth_username( // user/pass ; {{{SYNC-AUTH-VALIDATE-USERNAME}}}
 						(string) $authData['auth-user'],
 						false // do not check for reasonable length here, use minimal ; will later decide
 					) === true) { // OK
@@ -475,7 +468,7 @@ $authData['auth-pass'] = 'BCEFGHJKLMNPQRSTUVWXYZabcdefghij56789ADrstuvwx';
 							false // do not check for reasonable length here, use minimal ; will later decide
 						) === true) { // OK
 							//--
-							if( // validate Token Key ; See: \SmartModExtLib\AuthAdmins\AuthTokens::createPublicPassKey()
+							if( // {{{SYNC-VALIDATE-STK-TOKEN-LENGTH}}} ; to validate Token Key, see: \SmartModExtLib\AuthAdmins\AuthTokens::createPublicPassKey()
 								((int)\strlen((string)$authData['auth-pass']) >= 42)
 								AND // token key should be between 42 and 46 characters ; sha256.B58
 								((int)\strlen((string)$authData['auth-pass']) <= 46)
@@ -490,10 +483,6 @@ $authData['auth-pass'] = 'BCEFGHJKLMNPQRSTUVWXYZabcdefghij56789ADrstuvwx';
 								$auth_stk_data['pass-hash'] 	= ''; // reset, this is not actually a valid Pass, but a Token Key, registered below !
 								//--
 								$auth_stk_data['token-key'] 	= (string) $authData['auth-pass']; // provided via Auth Pass ...
-								$auth_stk_data['warn-msg'] 		= 'The SWT Validation is OK for Step#1 but is still INCOMPLETE (NOT Fully Validated !) ... see the DATA WARNING Message for more details ...';
-								$auth_stk_data['token-data'] 	= [
-									'warning' => 'Only The format was validated ... Needs Step#2, later, to validate also: Token-Data, IPAddress-Restrictions, Restricted-Privileges', // the validation here is not complete, must leave an error message !
-								]; // reset ; this needs to be registered later, after validation
 								//--
 								$authCredentials['use-2fa-auth'] = false;
 								// the 'use-www-401-auth-prompt' should be ENABLED for this case ; STK Tokens are not using Auth Bearer !
@@ -558,8 +547,6 @@ $authData['auth-pass'] = 'BCEFGHJKLMNPQRSTUVWXYZabcdefghij56789ADrstuvwx';
 						\array_key_exists('is-valid', (array)$val)
 						AND
 						\array_key_exists('error-msg', (array)$val)
-						AND
-						\array_key_exists('warn-msg', (array)$val)
 					) {
 						if(
 							($val['is-valid'] === true)
@@ -568,13 +555,6 @@ $authData['auth-pass'] = 'BCEFGHJKLMNPQRSTUVWXYZabcdefghij56789ADrstuvwx';
 						) {
 							$authCredentials['auth-valid'] = true; // found at least one auth entry which is valid
 							$authCredentials['auth-select'] = (string) $key;
-						} //end if
-						if(
-							($val['is-valid'] === true)
-							AND // only if is valid and have a warning message on it
-							((string)$val['warn-msg'] != '')
-						) {
-							$authCredentials['auth-warn'] = true; // found at least one auth entry which is warning
 						} //end if
 					} //end if
 				} //end if
@@ -614,6 +594,8 @@ $authData['auth-pass'] = 'BCEFGHJKLMNPQRSTUVWXYZabcdefghij56789ADrstuvwx';
 					((string)\strtoupper((string)\trim((string)$_SERVER['REQUEST_METHOD'])) == 'GET')
 					OR
 					((string)\strtoupper((string)\trim((string)$_SERVER['REQUEST_METHOD'])) == 'HEAD')
+				//	OR
+				//	((string)\strtoupper((string)\trim((string)$_SERVER['REQUEST_METHOD'])) == 'OPTIONS')
 				) {
 					if(isset($_SERVER['SCRIPT_NAME']) AND isset($_SERVER['REQUEST_URI'])) {
 						if(

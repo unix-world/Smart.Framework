@@ -1,6 +1,6 @@
 <?php
 // [Smart.Framework / Smart ERROR Handler]
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20231117 # this should be loaded from app web root only
+// # r.20240118 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2023.11.17'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2024.01.18'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--

@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Authentication Support]
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartEnvironment, SmartCipherCrypto
- * @version 	v.20231228
+ * @version 	v.20240118
  * @package 	@Core:Authentication
  *
  */
@@ -61,7 +61,7 @@ final class SmartAuth {
 	// ::
 
 	public const DEFAULT_PRIVILEGES 	= '<super-admin>,<admin>'; // {{{SYNC-AUTH-DEFAULT-ADM-SUPER-PRIVS}}}
-	public const REGEX_VALID_PRIV_KEY 	= '/^([a-z]{1}[a-z0-9\-\:]{0,20}[a-z0-9]{1})$/'; // valid name for one privilege key from list of privileges ; a valid privilege key can have 2..22 characters and can contain only: a-z 0-9 - ; must start with a-z only
+	public const REGEX_VALID_PRIV_KEY 	= '/^([a-z]{1}[a-z0-9\-\:]{0,20}[a-z0-9]{1})$/'; // valid name for one privilege key from list of privileges ; a valid privilege key can have 2..22 characters and can contain only: `a-z`, `0-9`, `:` and `-` ; must start with `a-z` only ; must not end with `:` or `-`
 
 	public const PASSWORD_BHASH_LENGTH 	= 60; 		// the length of PASSWORD_BCRYPT / cost=8 ; {{{SYNC-PASS-HASH-AUTH-LEN}}}
 	public const PASSWORD_BHASH_PREFIX 	= '$2y$08$'; // the prefix of PASSWORD_BCRYPT / cost=8 ; {{{SYNC-PASS-HASH-AUTH-PFX}}} ; PHP 5.3.7 and above uses $2y$
@@ -461,11 +461,11 @@ final class SmartAuth {
 		$logged_in = false;
 		//--
 		if(array_key_exists('AUTH-ID', self::$AuthData)) {
-			if((string)self::$AuthData['AUTH-ID'] != '') {
+			if((string)trim((string)self::$AuthData['AUTH-ID']) != '') {
 				if(array_key_exists('AUTH-USERNAME', self::$AuthData)) {
-					if((string)self::$AuthData['AUTH-USERNAME'] != '') {
+					if((string)trim((string)self::$AuthData['AUTH-USERNAME']) != '') {
 						if(array_key_exists('AUTH-PASSHASH', self::$AuthData)) {
-							if((string)self::$AuthData['AUTH-PASSHASH'] != '') {
+							if((string)trim((string)self::$AuthData['AUTH-PASSHASH']) != '') {
 								$logged_in = true;
 							} //end if
 						} //end if
@@ -571,7 +571,7 @@ final class SmartAuth {
 	 */
 	public static function get_auth_id() : string {
 		//--
-		return (string) (self::$AuthData['AUTH-ID'] ?? null);
+		return (string) trim((string)(self::$AuthData['AUTH-ID'] ?? null));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -585,7 +585,7 @@ final class SmartAuth {
 	 */
 	public static function get_auth_username() : string {
 		//--
-		return (string) (self::$AuthData['AUTH-USERNAME'] ?? null);
+		return (string) trim((string)(self::$AuthData['AUTH-USERNAME'] ?? null));
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -794,7 +794,7 @@ final class SmartAuth {
 		if((string)trim((string)$y_key_to_validate) == '') {
 			return false; // empty
 		} //end if
-		//-- a valid privilege key can have 2..22 characters and can contain only: a-z 0-9 - : ; must start with a-z only ; must end with a-z 0-9
+		//-- a valid privilege key can have 2..22 characters and can contain only: `a-z`, `0-9`, `:` and `-` ; must start with `a-z` only ; not end with `:` or `-`
 		if(
 			((int)strlen((string)$y_key_to_validate) < 2)
 			OR
@@ -881,7 +881,7 @@ final class SmartAuth {
 
 	//================================================================
 	/**
-	 * Decrypt a private key using a password, using Blowfish CBC
+	 * Decrypt a private key using a password, using Twofish+Blowfish CBC
 	 * The provided password have to be the same as the login password for the user is being used to avoid decryption of the key by other users
 	 * This is completely safe as long as the users login passwords are supposed to be stored as ireversible hashes (by default they are ... but with custom login implementations they can be or not, depending the developer's choice)
 	 *
@@ -901,7 +901,7 @@ final class SmartAuth {
 			return '';
 		} //end if
 		//--
-		return (string) SmartCipherCrypto::tf_decrypt((string)$y_pkey, (string)$y_secret); // {{{SYNC-ADM-AUTH-KEYS}}} ; no fallback !
+		return (string) SmartCipherCrypto::tf_decrypt((string)$y_pkey, (string)$y_secret, false); // {{{SYNC-ADM-AUTH-KEYS}}} ; no fallback (explicit) !
 		//--
 	} //END FUNCTION
 	//================================================================

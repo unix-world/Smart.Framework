@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / MySQLi (MariaDB) Database Client]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -9,8 +9,6 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 	die('Invalid Framework Version in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
 //-----------------------------------------------------
-
-// To enable autoloading of this class with Smart.Framework, add this line into the Smart.Framework (modules/app/app-custom-bootstrap.php): require_once('modules/smart-extra-libs/autoload.php');
 
 // NOTES ABOUT REUSING CONNECTIONS:
 //		* BY DEFAULT the PHP MySQLi driver reuses connections if the same host:port@dbname#username are used

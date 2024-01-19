@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Security]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -36,7 +36,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access      PUBLIC
  * @depends     optional-constants: SMART_FRAMEWORK_DEBUG_MODE, SMART_FRAMEWORK_INTERNAL_DEBUG, SMART_FRAMEWORK_ENV, SMART_FRAMEWORK_ADMIN_AREA, SMART_FRAMEWORK_RUNTIME_MODE
- * @version     v.20221224
+ * @version     v.20240118
  * @package     @Core
  *
  */
@@ -67,6 +67,100 @@ final class SmartEnvironment { //  This class have to be able to run before load
 	];
 
 
+	//================================================================
+	/**
+	 * Returns TRUE if ATK (Auth Tokens) are Enabled
+	 * Will test for the current area only
+	 *
+	 * @return 	BOOL						:: TRUE if enabled ; FALSE if not
+	 */
+	public static function isATKEnabled() : bool {
+		//--
+		$is_atk_enabled = 0;
+		if(defined('SMART_SOFTWARE_AUTH_TOKENS')) {
+			$is_atk_enabled = (int) intval(SMART_SOFTWARE_AUTH_TOKENS);
+		} //end if
+		//--
+		if((int)$is_atk_enabled < 0) {
+			$is_atk_enabled = 0;
+		} elseif((int)$is_atk_enabled > 3) {
+			$is_atk_enabled = 3;
+		} //end if
+		//--
+		if((int)$is_atk_enabled == 0) { // 0: no area
+			return false;
+		} //end if
+		//--
+		if((int)$is_atk_enabled == 2) { // 2: all areas
+			return true;
+		} //end if
+		//--
+		if((self::isAdminArea() === true) || (self::isTaskArea() === true)) {
+			return (bool) ((int)$is_atk_enabled == 1); // 1: only for adm/tsk area
+		} else {
+			return (bool) ((int)$is_atk_enabled == 3); // 3: only for idx area
+		} //end if else
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns TRUE if 2FA is Enabled
+	 * Will test for the current area only
+	 *
+	 * @return 	BOOL						:: TRUE if enabled ; FALSE if not
+	 */
+	public static function is2FAEnabled() : bool {
+		//--
+		$is_2fa_enabled = 0;
+		if(defined('SMART_SOFTWARE_AUTH_2FA')) {
+			$is_2fa_enabled = (int) intval(SMART_SOFTWARE_AUTH_2FA);
+		} //end if
+		//--
+		if((int)$is_2fa_enabled < 0) {
+			$is_2fa_enabled = 0;
+		} elseif((int)$is_2fa_enabled > 3) {
+			$is_2fa_enabled = 3;
+		} //end if
+		//--
+		if((int)$is_2fa_enabled == 0) { // 0: no area
+			return false;
+		} //end if
+		//--
+		if((int)$is_2fa_enabled == 2) { // 2: all areas
+			return true;
+		} //end if
+		//--
+		if((self::isAdminArea() === true) || (self::isTaskArea() === true)) {
+			return (bool) ((int)$is_2fa_enabled == 1); // 1: only for adm/tsk area
+		} else {
+			return (bool) ((int)$is_2fa_enabled == 3); // 3: only for idx area
+		} //end if else
+		//--
+		return false;
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	/**
+	 * Returns the Environment Area
+	 *
+	 * @return 	STRING						:: 'idx' for Index Area ; 'adm' for Admin Area ; 'tsk' for Task Area
+	 */
+	public static function getArea() : string {
+		//--
+		return (string) (self::isAdminArea() === true) ? ((self::isTaskArea() === true) ? 'tsk' : 'adm') : 'idx';
+		//--
+	} //end function
+	//================================================================
+
+
 	//======================================================================
 	/**
 	 * Test if Admin (service) Area
@@ -74,7 +168,7 @@ final class SmartEnvironment { //  This class have to be able to run before load
 	 *
 	 * @return 	BOOLEAN			:: if is ADMIN area will return TRUE else will return FALSE
 	 */
-	public static function isAdminArea() {
+	public static function isAdminArea() : bool {
 		//--
 		if(self::$isAdminArea !== null) {
 			return (bool) self::$isAdminArea;
@@ -101,7 +195,7 @@ final class SmartEnvironment { //  This class have to be able to run before load
 	 *
 	 * @return 	BOOLEAN			:: if is TASK area will return TRUE else will return FALSE
 	 */
-	public static function isTaskArea() {
+	public static function isTaskArea() : bool {
 		//--
 		if(self::isAdminArea() !== true) {
 			return false; // task area is a special area derived from admin area ONLY, would be unsafe to use it from index area ...
@@ -416,7 +510,7 @@ final class SmartEnvironment { //  This class have to be able to run before load
  *
  * @depends 	SmartUnicode
  *
- * @version 	v.20231029
+ * @version 	v.20240118
  * @package 	Application
  *
  */
@@ -434,7 +528,7 @@ final class SmartFrameworkSecurity {
 	 *
 	 * @return 	0/1							:: 1 if Valid, 0 if Invalid
 	 */
-	public static function ValidateUrlVariableName(?string $var_name) {
+	public static function ValidateUrlVariableName(?string $var_name) : int {
 
 		// VALIDATE INPUT (REQUEST / GET / POST / COOKIE) VARIABLE NAMES
 
@@ -477,7 +571,7 @@ final class SmartFrameworkSecurity {
 	 *
 	 * @return 	0/1										:: 1 if Valid, 0 if Invalid
 	 */
-	public static function ValidateVariableName(?string $y_varname, bool $y_allow_upper_letters=true) {
+	public static function ValidateVariableName(?string $y_varname, bool $y_allow_upper_letters=true) : int {
 
 		// VALIDATE PHP VARIABLE NAMES v.20210413
 
@@ -528,7 +622,7 @@ final class SmartFrameworkSecurity {
 	 * @param MIXED 						$str_val	the input variable value
 	 * @return STRING/NULL								the filtered value (if ARRAY or OBJECT or RESOURCE will return null)
 	 */
-	public static function FilterUnsafeString($str_val) { // $str_val is MIXED !
+	public static function FilterUnsafeString($str_val) : ?string { // $str_val is MIXED !
 		//--
 		return SmartUnicode::filter_unsafe_string($str_val); // mixed: NULL or STRING
 		//--
@@ -593,7 +687,7 @@ final class SmartFrameworkSecurity {
 	 * @param STRING/NULL 						$str_val	the input variable value
 	 * @return STRING/NULL									the filtered value (if ARRAY or OBJECT or RESOURCE will return null)
 	 */
-	public static function FilterCookieVar(?string $str_val) {
+	public static function FilterCookieVar(?string $str_val) : ?string {
 		//--
 		if($str_val === null) {
 			return null;
@@ -613,7 +707,7 @@ final class SmartFrameworkSecurity {
 	 * @param MIXED 						$value		the input variable value
 	 * @return STRING/NULL								the filtered value (if ARRAY or OBJECT or RESOURCE will return null)
 	 */
-	public static function FilterRequestPath($value) { // $value is MIXED !
+	public static function FilterRequestPath($value) : ?string { // $value is MIXED !
 		//--
 		if(!isset($value)) {
 			return null; // fix for Illegal string offset
@@ -635,7 +729,7 @@ final class SmartFrameworkSecurity {
 	 * @param BOOLEAN 				$filter 					*Optional* Default to TRUE ; if FALSE will only decode but not filter variable ; DO NOT DISABLE FILTERING EXCEPT WHEN YOU CALL IT LATER EXPLICIT !!!
 	 * @return STRING											the decoded +/- filtered value
 	 */
-	public static function DecodeAndFilterUrlVarString(?string $url_encoded_str_val, bool $filter=true) {
+	public static function DecodeAndFilterUrlVarString(?string $url_encoded_str_val, bool $filter=true) : string {
 		//--
 		$url_encoded_str_val = (string) urldecode((string)$url_encoded_str_val); // use urldecode() which decodes all % but also the + ; instead of rawurldecode() which does not decodes + !
 		//--
@@ -658,7 +752,7 @@ final class SmartFrameworkSecurity {
 	 * @param STRING 				$value						the input value
 	 * @return STRING											the prepared value
 	 */
-	public static function PrepareSafeHeaderValue(?string $value) {
+	public static function PrepareSafeHeaderValue(?string $value) : string {
 		//--
 		$value = (string) trim((string)$value);
 		if((string)$value == '') {

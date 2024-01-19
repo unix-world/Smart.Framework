@@ -2,6 +2,14 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+January 18, 2024
+	* HTTP Cli fixes
+	* Implement OAuth2 Mailer Password (retrieve token via HTTP/S)
+	* Refactoring Auth Admins Models to allow use custom models other than default SQLite
+	* drop support for Auth Admins Simple ; now Auth Admins Smart is STABLE, use this one !
+	* stable support for opaque login tokens (STK)
+	* PHP Crypto: Threefish, Threefish+Twofish+Blowfish
+
 November 17, 2023
 	* SWT Tokens: expire time is mandatory: 1..3600*24 seconds (24 h max)
 	* Captcha security: refactoring and optimizations

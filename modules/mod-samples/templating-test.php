@@ -124,7 +124,7 @@ class SmartAppIndexController extends SmartAbstractAppController {
 		//--
 		$res_time = (float) microtime(true);
 		//--
-		if(class_exists('SmartTemplating') AND (Smart::random_number(0,1))) { // must enable require_once('modules/smart-extra-libs/autoload.php'); in modules/app/app-custom-bootstrap.inc.php
+		if(class_exists('SmartTemplating') AND (Smart::random_number(0,1))) { // must enable require_once('modules/smart-extra-libs/autoload.php'); in modules/app/app-bootstrap.inc.php
 			$this->PageViewSetVars([
 				'title' => $title.' (autodetect file extension)',
 				'main' => SmartMarkersTemplating::render_file_template(

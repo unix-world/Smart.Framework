@@ -28,10 +28,10 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFileSystem {
 
 	// ::
-	// v.20231119
+	// v.20240116
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodOptions() { // 200
+	public static function methodOptions() : int { // 200
 		//--
 		\http_response_code(200);
 		//--
@@ -49,7 +49,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodHead($dav_vfs_path) { // 200 | 404 | 415
+	public static function methodHead(?string $dav_vfs_path) : int { // 200 | 404 | 415
 		//--
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
@@ -107,7 +107,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodLock($dav_request_path, $dav_author) {
+	public static function methodLock(?string $dav_request_path, ?string $dav_author) : int {
 		//--
 		// No need for Real LOCK (the file PUT is safe by using a unique Temp.UUID) ; just Emulate the LOCK - to handle compatibility with MacOS
 		//--
@@ -131,7 +131,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodUnlock($dav_request_path, $dav_author) {
+	public static function methodUnlock(?string $dav_request_path, ?string $dav_author) : int {
 		//--
 		// Because the LOCK is just Emulate, no need for Real UNLOCK
 		//--
@@ -141,11 +141,13 @@ final class DavFileSystem {
 		\header('Content-length: 0');
 		\http_response_code(204); // no content
 		//--
+		return 204;
+		//--
 	} //END FUNCTION
 
 
 	//-- SECURITY CHECK: OK, no dot dirs allowed ; safe against .ht* names
-	public static function methodPostMkd($dav_url, $dav_vfs_path, $dir_name) { // browser support to make new dir(s)
+	public static function methodPostMkd(?string $dav_url, ?string $dav_vfs_path, ?string $dir_name) : int { // browser support to make new dir(s)
 		//--
 		$dav_vfs_path = (string) \trim((string)$dav_vfs_path);
 		$dir_name = (string) \trim((string)$dir_name);
@@ -190,7 +192,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodMkcol($dav_vfs_path) { // 201 | 207 | 405 | 409 | 415
+	public static function methodMkcol(?string $dav_vfs_path) : int { // 201 | 207 | 405 | 409 | 415
 		//--
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
@@ -238,7 +240,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodPropfind($dav_uri, $dav_request_path, $dav_vfs_path, $dav_is_root_path, $dav_vfs_root) {
+	public static function methodPropfind(?string $dav_uri, ?string $dav_request_path, ?string $dav_vfs_path, bool $dav_is_root_path, ?string $dav_vfs_root) : int {
 		//--
 		$dav_method = 'PROPFIND';
 		//--
@@ -300,7 +302,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK, no dot files allowed ; safe against .ht* names
-	public static function methodPostUpf($dav_url, $dav_vfs_path) { // browser support to make new dir(s)
+	public static function methodPostUpf(?string $dav_url, ?string $dav_vfs_path) : int { // browser support to make new dir(s)
 		//--
 		// \print_r($_FILES);
 		//--
@@ -329,7 +331,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodPut($dav_vfs_path) { // 201 | 400 | 405 | 406 | 409 | 411 | 415 | 423 | 500
+	public static function methodPut(?string $dav_vfs_path) : int { // 201 | 400 | 405 | 406 | 409 | 411 | 415 | 423 | 500
 		//--
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
@@ -537,7 +539,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodDelete($dav_vfs_path) { // 204 | 405 | 415 | 423
+	public static function methodDelete(?string $dav_vfs_path) : int { // 204 | 405 | 415 | 423
 		//--
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
@@ -570,7 +572,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodGet($dav_method, $dav_author, $dav_url, $dav_request_path, $dav_vfs_path, $dav_is_root_path, $dav_vfs_root, $dav_request_back_path, $nfo_title, $nfo_signature, $nfo_prefix_crrpath, $nfo_lnk_welcome, $nfo_txt_welcome, $nfo_svg_logo) { // 200 | 400 | 404 | 405 | 415 | 423
+	public static function methodGet(?string $dav_method, ?string $dav_author, ?string $dav_url, ?string $dav_request_path, ?string $dav_vfs_path, bool $dav_is_root_path, ?string $dav_vfs_root, ?string $dav_request_back_path, ?string $nfo_title, ?string $nfo_signature, ?string $nfo_prefix_crrpath, ?string $nfo_lnk_welcome, ?string $nfo_txt_welcome, ?string $nfo_svg_logo) : int { // 200 | 400 | 404 | 405 | 415 | 423
 		//--
 		$heads = (array) \SmartModExtLib\Webdav\DavServer::getRequestHeaders();
 		//--
@@ -717,17 +719,17 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodCopy($dav_request_path, $dav_vfs_path, $dav_vfs_root) { // 201 | 204 | 400 | 403 | 412 | 502 | 507
+	public static function methodCopy(?string $dav_request_path, ?string $dav_vfs_path, ?string $dav_vfs_root) : int { // 201 | 204 | 400 | 403 | 412 | 502 | 507
 		//--
-		return self::methodCopyOrMove('COPY', $dav_request_path, $dav_vfs_path, $dav_vfs_root); // safe on .ht* names
+		return (int) self::methodCopyOrMove('COPY', $dav_request_path, $dav_vfs_path, $dav_vfs_root); // safe on .ht* names
 		//--
 	} //END FUNCTION
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodMove($dav_request_path, $dav_vfs_path, $dav_vfs_root) { // 201 | 204 | 400 | 403 | 412 | 502
+	public static function methodMove(?string $dav_request_path, ?string $dav_vfs_path, ?string $dav_vfs_root) : int { // 201 | 204 | 400 | 403 | 412 | 502
 		//--
-		return self::methodCopyOrMove('MOVE', $dav_request_path, $dav_vfs_path, $dav_vfs_root); // safe on .ht* names
+		return (int) self::methodCopyOrMove('MOVE', $dav_request_path, $dav_vfs_path, $dav_vfs_root); // safe on .ht* names
 		//--
 	} //END FUNCTION
 
@@ -736,7 +738,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function answerPostErr400($message, $dav_url) {
+	private static function answerPostErr400(?string $message, ?string $dav_url) : string {
 		//--
 		return (string) \SmartComponents::http_message_400_badrequest('ERROR: '.$message);
 		//--
@@ -744,7 +746,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function answerPostErr404($message, $dav_url) {
+	private static function answerPostErr404(?string $message, ?string $dav_url) : string {
 		//--
 		return (string) \SmartComponents::http_message_404_notfound((string)$message);
 		//--
@@ -752,7 +754,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function methodCopyOrMove($dav_method, $dav_request_path, $dav_vfs_path, $dav_vfs_root) {
+	private static function methodCopyOrMove(?string $dav_method, ?string $dav_request_path, ?string $dav_vfs_path, ?string $dav_vfs_root) : int {
 		//--
 		$heads = (array) \SmartModExtLib\Webdav\DavServer::getRequestHeaders();
 		//$body = (string) \SmartModExtLib\Webdav\DavServer::getRequestBody(); // not used
@@ -876,7 +878,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function getQuotaAndUsageInfo($dav_vfs_root) {
+	private static function getQuotaAndUsageInfo(?string $dav_vfs_root) : array {
 		//--
 		if(!\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_root)) {
 			return array();
@@ -914,7 +916,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function getItem($dav_request_path, $dav_vfs_path, $etags=false) {
+	private static function getItem(?string $dav_request_path, ?string $dav_vfs_path, bool $etags=false) : array {
 		//--
 		$dav_request_path = (string) \trim((string)$dav_request_path);
 		$dav_vfs_path = (string) \trim((string)$dav_vfs_path); // safe on .ht* names
@@ -946,7 +948,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function mimeTypeDir($dav_vfs_path) {
+	private static function mimeTypeDir(?string $dav_vfs_path) : string {
 		//--
 	//	$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
@@ -956,7 +958,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function mimeTypeFile($dav_vfs_path) {
+	private static function mimeTypeFile(?string $dav_vfs_path) : string {
 		//--
 		return (string) \SmartFileSysUtils::getMimeType((string)$dav_vfs_path); // safe on .ht* names
 		//--
@@ -964,7 +966,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function addSubItem($dav_request_path, $dav_vfs_path, $arr, $subitems, $type, $etags=false) {
+	private static function addSubItem(?string $dav_request_path, ?string $dav_vfs_path, array $arr, array $subitems, ?string $type, bool $etags=false) : array {
 		//--
 		$arr = (array) $arr;
 		$subitems = (array) $subitems;
@@ -1005,7 +1007,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function getItemTypeNonCollection($dav_request_path, $dav_vfs_path, $etags=false) {
+	private static function getItemTypeNonCollection(?string $dav_request_path, ?string $dav_vfs_path, bool $etags=false) : array {
 		//--
 		$dav_request_path = (string) \trim((string)$dav_request_path);
 		$dav_vfs_path = (string) \trim((string)$dav_vfs_path); // safe on .ht* names
@@ -1057,7 +1059,7 @@ final class DavFileSystem {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function getItemTypeCollection($dav_request_path, $dav_vfs_path) {
+	private static function getItemTypeCollection(?string $dav_request_path, ?string $dav_vfs_path) : array {
 		//--
 		$dav_request_path = (string) \trim((string)$dav_request_path);
 		$dav_vfs_path = (string) \trim((string)$dav_vfs_path); // safe on .ht*

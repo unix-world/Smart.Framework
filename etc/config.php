@@ -1,7 +1,7 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
 // [Smart.Framework / CFG - SETTINGS]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -51,10 +51,14 @@ $configs['sendmail']['server-ssl']				= 'tls';					// `` | SSL Mode: starttls | 
 $configs['sendmail']['auth-user']				= 'user@yourdomain.tld';	// `` | smtp auth user (SMTP auth)
 $configs['sendmail']['auth-password']			= '';						// `` | smtp auth password (SMTP auth)
 //$configs['sendmail']['auth-password'] 		= [ 						// `` | smtp auth password (SMTP auth) :: alternative, stored as encrypted ...
-//	'encrypted' => 'bf:enc',
-//	'data' 		=> '...encrypted password goes here ...', // store this as blowfish v2 encrypted using the init security key as set
+//	'encrypted' => 'bf:enc', // or: 'tf:enc'
+//	'data' 		=> '...encrypted password goes here ...', // store this as blowfish or twofish v2 encrypted using the init security key as set
 //];
-$configs['sendmail']['auth-mode']				= '';						// `` | smtp auth mode (SMTP auth) ; '', 'login', 'auth:plain', 'auth:cram-md5'
+//$configs['sendmail']['auth-password'] 		= [ 						// `` | smtp auth password (SMTP auth) :: alternative, stored as encrypted ...
+//	'callable' 	=> [ 'SmartMailerOauth2', 'getTokenPass' ],
+//	'params' 	=> [ 'url:post:arr' => [ 'id' => 'oauth2:app:id', 'format' => 'json' ], 'url' => 'admin.php?page=oauth2.get-token', 'auth' => 'swt', 'user' => 'service', 'pass' => 'B64:pass-hash' ], // passhash is: swt:b64 ; token/basic:enc(bf/tf)
+//];
+$configs['sendmail']['auth-mode']				= '';						// `` | smtp auth mode (SMTP auth) ; '', 'login', 'auth:plain', 'auth:cram-md5', 'auth:xoauth2'
 $configs['sendmail']['from-address']			= 'user@yourdomain.tld';	// the email address From:
 $configs['sendmail']['from-name'] 				= 'Your Name';				// the from name to be set in From:
 $configs['sendmail']['log-messages']			= 'no';						// `no` | `yes` :: // Log Send Messages
@@ -75,7 +79,7 @@ $configs['sendmail']['log-messages']			= 'no';						// `no` | `yes` :: // Log Se
 // 			* SQLite (embedded sql ; requires the PHP SQLite3 extension)
 //
 //		Other DB Connectors are available via Smart.Framework.Modules as:
-// 			* SoLR (includded separately in Smart.Framework.Modules/smart-extra-libs ; uncomment this line into modules/app/app-custom-bootstrap.inc.php # require_once('modules/smart-extra-libs/autoload.php') ; requires the PHP Solr extensions available in PECL)
+// 			* SoLR (includded separately in Smart.Framework.Modules/smart-extra-libs ; uncomment this line into modules/app/app-bootstrap.inc.php # require_once('modules/smart-extra-libs/autoload.php') ; requires the PHP Solr extensions available in PECL)
 //			* RedBean-ORM (an easy to use ORM for MySQL / PostgreSQL / SQLite / CUBRID / Firebird/Interbase ; includded separately in Smart.Framework.Modules/mod-db-orm-redbean)
 //
 //=====

@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavFsCardDav {
 
 	// ::
-	// v.20231119
+	// v.20240116
 
 	private static $carddav_ns = 'xmlns:card="urn:ietf:params:xml:ns:carddav"';
 	private static $carddav_urn = 'urn:ietf:params:xml:ns:carddav';
@@ -37,7 +37,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodOptions() { // 200 @ https://tools.ietf.org/html/rfc6352
+	public static function methodOptions() : int { // 200 @ https://tools.ietf.org/html/rfc6352
 		//--
 		\http_response_code(200);
 		//--
@@ -55,7 +55,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodHead($dav_vfs_path) { // 200 | 404 | 415
+	public static function methodHead(?string $dav_vfs_path) : int { // 200 | 404 | 415
 		//--
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
@@ -90,7 +90,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodPropfind($dav_uri, $dav_request_path, $dav_vfs_path, $dav_is_root_path, $dav_vfs_root) {
+	public static function methodPropfind(?string $dav_uri, ?string $dav_request_path, ?string $dav_vfs_path, bool $dav_is_root_path, ?string $dav_vfs_root) : int {
 		//--
 		$dav_method = 'PROPFIND';
 		//--
@@ -140,7 +140,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodPut($dav_vfs_path) { // 201 | 400 | 405 | 406 | 409 | 411 | 415 | 423 | 500
+	public static function methodPut(?string $dav_vfs_path) : int { // 201 | 400 | 405 | 406 | 409 | 411 | 415 | 423 | 500
 		//--
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
@@ -321,7 +321,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodDelete($dav_vfs_path) { // 204 | 405 | 415 | 423
+	public static function methodDelete(?string $dav_vfs_path) : int { // 204 | 405 | 415 | 423
 		//--
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
@@ -354,7 +354,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodGet($dav_method, $dav_author, $dav_url, $dav_request_path, $dav_vfs_path, $dav_is_root_path, $dav_vfs_root, $dav_request_back_path, $nfo_title, $nfo_signature, $nfo_prefix_crrpath, $nfo_lnk_welcome, $nfo_txt_welcome, $nfo_svg_logo) { // 200 | 404 | 405 | 415 | 423
+	public static function methodGet(?string $dav_method, ?string $dav_author, ?string $dav_url, ?string $dav_request_path, ?string $dav_vfs_path, bool $dav_is_root_path, ?string $dav_vfs_root, ?string $dav_request_back_path, ?string $nfo_title, ?string $nfo_signature, ?string $nfo_prefix_crrpath, ?string $nfo_lnk_welcome, ?string $nfo_txt_welcome, ?string $nfo_svg_logo) : int { // 200 | 404 | 405 | 415 | 423
 		//--
 		$heads = (array) \SmartModExtLib\Webdav\DavServer::getRequestHeaders();
 		//--
@@ -501,7 +501,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	public static function methodReport($dav_uri, $dav_request_path, $dav_vfs_path, $dav_is_root_path, $dav_vfs_root) {
+	public static function methodReport(?string $dav_uri, ?string $dav_request_path, ?string $dav_vfs_path, bool $dav_is_root_path, ?string $dav_vfs_root) : int {
 		//--
 		$dav_method = 'REPORT';
 		//--
@@ -608,7 +608,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function answerPostErr404($message, $dav_url) {
+	private static function answerPostErr404(?string $message, ?string $dav_url) : string {
 		//--
 		return (string) \SmartComponents::http_message_404_notfound((string)$message);
 		//--
@@ -616,7 +616,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function getQuotaAndUsageInfo($dav_vfs_root) {
+	private static function getQuotaAndUsageInfo(?string $dav_vfs_root) : array {
 		//--
 		if(!\SmartFileSysUtils::checkIfSafePath((string)$dav_vfs_root)) {
 			return array();
@@ -654,7 +654,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function getItem($dav_request_path, $dav_vfs_path) {
+	private static function getItem(?string $dav_request_path, ?string $dav_vfs_path) : array {
 		//--
 		$dav_request_path = (string) \trim((string)$dav_request_path);
 		$dav_vfs_path = (string) \trim((string)$dav_vfs_path); // safe on .ht* names
@@ -686,7 +686,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function testIsAddressbookCollection($dav_vfs_path) {
+	private static function testIsAddressbookCollection(?string $dav_vfs_path) : int {
 		//--
 		if(\defined('\\SMART_WEBDAV_CARDDAV_ABOOK_PATH')) {
 			if(\strpos((string)$dav_vfs_path, (string)\SMART_WEBDAV_CARDDAV_ABOOK_PATH) === 0) {
@@ -706,7 +706,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function mimeTypeDir($dav_vfs_path) {
+	private static function mimeTypeDir(?string $dav_vfs_path) : string {
 		//--
 		$dav_vfs_path = (string) $dav_vfs_path; // safe on .ht* names
 		//--
@@ -727,7 +727,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function mimeTypeFile($dav_vfs_path) {
+	private static function mimeTypeFile(?string $dav_vfs_path) : string {
 		//--
 		return (string) \SmartFileSysUtils::getMimeType((string)$dav_vfs_path); // safe on .ht* names
 		//--
@@ -735,7 +735,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function addSubItem($dav_request_path, $dav_vfs_path, $arr, $subitems, $type, $add_data_fcontent=false) {
+	private static function addSubItem(?string $dav_request_path, ?string $dav_vfs_path, array $arr, array $subitems, ?string $type, bool $add_data_fcontent=false) : array {
 		//--
 		$arr = (array) $arr;
 		$subitems = (array) $subitems;
@@ -780,7 +780,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function getItemTypeNonCollection($dav_request_path, $dav_vfs_path) {
+	private static function getItemTypeNonCollection(?string $dav_request_path, ?string $dav_vfs_path) : array {
 		//--
 		$dav_request_path = (string) \trim((string)$dav_request_path);
 		$dav_vfs_path = (string) \trim((string)$dav_vfs_path); // safe on .ht* names
@@ -810,7 +810,7 @@ final class DavFsCardDav {
 
 
 	//-- SECURITY CHECK: OK @ safe against .ht* names
-	private static function getItemTypeCollection($dav_request_path, $dav_vfs_path) {
+	private static function getItemTypeCollection(?string $dav_request_path, ?string $dav_vfs_path) : array {
 		//--
 		$dav_request_path = (string) \trim((string)$dav_request_path);
 		$dav_vfs_path = (string) \trim((string)$dav_vfs_path); // safe on .ht* names

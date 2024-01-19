@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\AuthAdmins;
@@ -21,7 +21,8 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 //	* SmartMarkersTemplating
 //	* SmartComponents
 //	* SmartFrameworkSecurity
-//	* \SmartModDataModel\AuthAdmins\SqAuthAdmins
+//	* SmartModelAuthAdmins
+// 	* \SmartModExtLib\AuthAdmins\AuthTokens
 
 // [PHP8]
 
@@ -38,10 +39,9 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  *
  * Required (only init, after dissalowed) constants: APP_AUTH_ADMIN_INIT_IP_ADDRESS, APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD (must be set in set in config-admin.php only for init, thereafter must be unset)
  * Required constants: APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
- * Disallowed constaints: APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY, SMART_AUTH_TOKENS_ENABLED, SMART_AUTH_2FA_ENABLED
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20231228
+ * @version 	v.20240118
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -57,9 +57,34 @@ final class SmartAuthAdminsHandler
 
 
 	//================================================================
-	public static function Authenticate(bool $enforce_https=false, bool $disable_tokens=false, bool $disable_2fa=false) : void {
+	public static function Authenticate(bool $enforce_https=false) : void {
 
-//$disable_2fa=true; // aaaaaaaaaaaaaaaaaaaaaa
+		//-- {{{SYNC-CHECK-AUTH-ADMINS-MODEL}}}
+		if((!\class_exists('\\SmartModelAuthAdmins')) || (!\is_subclass_of('\\SmartModelAuthAdmins', '\\SmartModDataModel\\AuthAdmins\\AbstractAuthAdmins'))) {
+			\SmartFrameworkRuntime::Raise208Status(
+				'Authentication Model Not Available or Invalid',
+				'Authentication is N/A'
+			);
+			die((string)self::getClassName().':AUTH-ADMINS-MODEL-MISSING-OR-INVALID');
+			return;
+		} //end if
+		//--
+
+		//--
+		if((!\class_exists('\\SmartModelAuthLogAdmins')) || (!\is_subclass_of('\\SmartModelAuthLogAdmins', '\\SmartModDataModel\\AuthAdmins\\AbstractAuthLog'))) {
+			\SmartFrameworkRuntime::Raise208Status(
+				'Authentication Logging Model Not Available or Invalid',
+				'Authentication Logging is N/A'
+			);
+			die((string)self::getClassName().':AUTH-ADMINS-LOG-MODEL-MISSING-OR-INVALID');
+			return;
+		} //end if
+		//--
+
+		//--
+		$disable_tokens = (bool) ! \SmartEnvironment::isATKEnabled();
+		$disable_2fa    = (bool) ! \SmartEnvironment::is2FAEnabled();
+		//--
 
 		//--
 		$errPreCheck = (string) self::preCheckForbiddenConditions();
@@ -105,17 +130,6 @@ final class SmartAuthAdminsHandler
 		} //end if
 		//--
 
-		//-- Smart Auth Admins does not support a global Private Key
-		if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) {
-			\SmartFrameworkRuntime::Raise208Status(
-				'Unset from config: `APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY` !'."\n".'This is not supported by this Authentication Handler ...',
-				'Unsupported Config Settings'
-			);
-			die((string)self::getClassName().':UNSUPPORTED-SETTINGS-OVERALL-ENC-PRIVKEY');
-			return;
-		} //end if
-		//--
-
 		//--
 		$init_1st_time_db = false;
 		$init_db = null;
@@ -123,31 +137,17 @@ final class SmartAuthAdminsHandler
 		$init_fa2_url = '';
 		$init_fa2_qrcode = '';
 		//--
-		$theDbFilePath = '';
+		$theDbExists = true; // assume it exists to avoid accidental re-init !
 		try {
-			$theDbFilePath = (new \SmartModDataModel\AuthAdmins\SqAuthAdmins(false))->getDbPath(); // skip connect here, to prevent DB File creation if does not exists !
+			$theDbExists = (bool) (new \SmartModelAuthAdmins(false))->dbExists(); // skip init here, to prevent DB initialization if does not exists !
 		} catch(\Exception $e) {
 			\Smart::log_warning(__METHOD__.' # '.'AUTH STORAGE (Pre-Init / Skip Connect) Get Path Failed: `'.$e->getMessage().'`');
 			\SmartFrameworkRuntime::Raise500Error('AUTH STORAGE initialization FAILED !');
 			die((string)self::getClassName().':AUTH-STORAGE:INIT');
 			return;
 		} //end try catch
-		if((string)\trim((string)$theDbFilePath) == '') {
-			\Smart::log_warning(__METHOD__.' # '.'AUTH STORAGE (Pre-Init / Skip Connect) Get Path is Empty');
-			\SmartFrameworkRuntime::Raise500Error('AUTH STORAGE initialization FAILED !');
-			die((string)self::getClassName().':AUTH-STORAGE:STORAGE:INIT');
-			return;
-		} //end if
-		if(!\SmartFileSystem::is_type_file((string)$theDbFilePath)) {
-			$init_db = (array) self::initDb((bool)$disable_2fa, 'The1pas!'); // this need fix !
-			// aaaaaaaaaaaaaaaaaaaaaaaaaaaa
-			// IDEA: set an encrypted cookie from JS for the 1st time, yet there is no auth to get it ; will encrypt and check it against the pass hash
-			// aaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
-
-	// TODO !!! Check over the code ; find all occurences ; the max length of pass changed from 2048 to 55 !!!
-
-
+		if($theDbExists !== true) {
+			$init_db = (array) self::initDb((bool)$disable_2fa);
 		} //end if
 		//--
 		if(\is_array($init_db)) {
@@ -170,7 +170,7 @@ final class SmartAuthAdminsHandler
 		$init_db = null;
 		//--
 
-		//-- do auth except of login page
+		//-- do auth except of display the login page
 		$try_auth = (bool) self::tryAuthGuard();
 		//--
 
@@ -178,20 +178,9 @@ final class SmartAuthAdminsHandler
 		$use_2fa = (bool) ! $disable_2fa; // init
 		//--
 
-		//-- aaaaaaaaaaaaaaaaaaaaaa !! Review this comment
-		// NEW: when 2FA is not explicit disabled, only SWT Token may override the 2FA ; otherwise normal logins will require 2FA !
-		// HttpBasicAuth must be preserved to have compatibility with WebDAV login ; Ex: gvfs
-		// Thus, implementing Token Auth should be via: HttpBasicAuth + HttpHeaderBearer + Cookie to support all login sub-systems.
-		// In order to do this, the trick to combine Token with HttpBasicAuth (for case of gvfs) is to set an user `.token..swt.` (other user accounts cannot start with a dot, checked by validate auth username).
-		// If the username is like above, the pass is actually the SWT token which have to be parsed/checked/validated and converted to real user/pass.
-		// An idea is to allow HttpBasicAuth just with Tokens and for the rest to have set 2FA (OTP) auth !?
-		// Need a system to generate tokens (and also store, for Smart.Unicorn)
-		// IDEA: optional disable normal HttpBasicAuth and allow just HttpBasicAuth use with tokens !?
-		//-- #END
-
 		//-- get Auth Credentials
 		$auth_data = (array) self::getAuthCredentials((bool)$enforce_https, (bool)$disable_tokens, (bool)$disable_2fa);
-//\Smart::log_notice(print_r($auth_data,1));
+		//\Smart::log_notice(print_r($auth_data,1));
 		//--
 		$auth_mode = (string) $auth_data['auth-mode']; // v2
 		$use_www_auth_prompt = (bool) ($auth_data['use-www-401-auth-prompt'] === false) ? false : true; // v2
@@ -202,7 +191,6 @@ final class SmartAuthAdminsHandler
 		$auth_valid 	= (bool)   $auth_data['auth-valid']; // v2
 		$auth_select 	= (string) $auth_data['auth-select']; // v2
 		$auth_error 	= (string) $auth_data['auth-ermsg']; // v2
-		$auth_warn 		= (string) $auth_data['auth-warn']; // v2
 		$auth_safe 		= (int)    $auth_data['auth-safe']; // v2
 		//-- inits
 		$auth_user_name = '';
@@ -220,8 +208,6 @@ final class SmartAuthAdminsHandler
 			AND
 			((string)$auth_error == '')
 			AND
-			((string)$auth_warn == '')
-			AND
 			((int)$auth_safe > 0)
 			AND
 			((string)$auth_select != '')
@@ -237,14 +223,65 @@ final class SmartAuthAdminsHandler
 			//--
 			switch((string)$auth_select) {
 				//--
-				case 'user-pass':
+				case 'stk-token':
 					//--
 					if(
 						\array_key_exists('is-valid', (array)$auth_data[(string)$auth_select])
 						AND
 						\array_key_exists('error-msg', (array)$auth_data[(string)$auth_select])
 						AND
-						\array_key_exists('warn-msg', (array)$auth_data[(string)$auth_select])
+						\array_key_exists('user-name', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('pass-hash', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('token-key', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('token-data', (array)$auth_data[(string)$auth_select])
+						AND
+						($auth_data[(string)$auth_select]['is-valid'] === true)
+						AND
+						((string)$auth_data[(string)$auth_select]['error-msg'] == '')
+					) {
+						//--
+						if(
+							((string)\trim((string)$auth_data[(string)$auth_select]['user-name']) != '')
+							AND
+							((string)$auth_data[(string)$auth_select]['pass-hash'] == '')
+							AND
+							((string)\trim((string)$auth_data[(string)$auth_select]['token-key']) != '')
+							AND
+							(\SmartAuth::validate_auth_username(
+								(string) $auth_data[(string)$auth_select]['user-name'],
+								true // check for reasonable length, as 5 chars
+							) === true)
+							AND
+							( // {{{SYNC-VALIDATE-STK-TOKEN-LENGTH}}} ; to validate Token Key, see: \SmartModExtLib\AuthAdmins\AuthTokens::createPublicPassKey()
+								((int)\strlen((string)$auth_data[(string)$auth_select]['token-key']) >= 42)
+								AND // token key should be between 42 and 46 characters ; sha256.B58
+								((int)\strlen((string)$auth_data[(string)$auth_select]['token-key']) <= 46)
+								AND
+								((int)\strlen((string)$auth_data[(string)$auth_select]['token-key']) === (int)\strspn((string)$auth_data[(string)$auth_select]['token-key'], (string)\Smart::CHARSET_BASE_58)) // B58 valid chars only
+							)
+						) {
+							//--
+							$auth_user_name = (string) $auth_data[(string)$auth_select]['user-name'];
+							//--
+							$auth_user_pass_hash = (string) $auth_data[(string)$auth_select]['token-key']; // ! this must be replaced later with the real pass hash, after having a DB connection to real validate this STK Token !
+							//--
+							$is_stk_token_auth = true;
+							//--
+						} //end if
+						//--
+					} //end if
+					//--
+					break;
+					//--
+				case 'user-pass':
+					//--
+					if(
+						\array_key_exists('is-valid', (array)$auth_data[(string)$auth_select])
+						AND
+						\array_key_exists('error-msg', (array)$auth_data[(string)$auth_select])
 						AND
 						\array_key_exists('user-name', (array)$auth_data[(string)$auth_select])
 						AND
@@ -253,8 +290,6 @@ final class SmartAuthAdminsHandler
 						($auth_data[(string)$auth_select]['is-valid'] === true)
 						AND
 						((string)$auth_data[(string)$auth_select]['error-msg'] == '')
-						AND
-						((string)$auth_data[(string)$auth_select]['warn-msg'] == '')
 					) {
 						//--
 						if(
@@ -294,9 +329,6 @@ final class SmartAuthAdminsHandler
 							if((string)\trim((string)$auth_user_name) !== '') {
 								if((string)\trim((string)$auth_user_pass_hash) !== '') {
 									$is_normal_auth = true;
-
-// \Smart::log_notice(__METHOD__.' # [DEF] 2FA: '.(int)$use_2fa.' # WWW-Prompt: '.(int)$use_www_auth_prompt); // aaaaaaaaaaaaaaaaaaaa
-
 								} //end if
 							} //end if
 							//--
@@ -314,8 +346,6 @@ final class SmartAuthAdminsHandler
 						AND
 						\array_key_exists('error-msg', (array)$auth_data[(string)$auth_select])
 						AND
-						\array_key_exists('warn-msg', (array)$auth_data[(string)$auth_select])
-						AND
 						\array_key_exists('user-name', (array)$auth_data[(string)$auth_select])
 						AND
 						\array_key_exists('pass-hash', (array)$auth_data[(string)$auth_select])
@@ -331,8 +361,6 @@ final class SmartAuthAdminsHandler
 						($auth_data[(string)$auth_select]['is-valid'] === true)
 						AND
 						((string)$auth_data[(string)$auth_select]['error-msg'] == '')
-						AND
-						((string)$auth_data[(string)$auth_select]['warn-msg'] == '')
 					) {
 						//--
 						if(
@@ -341,6 +369,40 @@ final class SmartAuthAdminsHandler
 							((int)\Smart::array_size($auth_data[(string)$auth_select]['token-data']) > 0)
 							AND
 							((int)\Smart::array_type_test($auth_data[(string)$auth_select]['token-data']) === 2) // expects an associative array
+							AND
+							\array_key_exists('error', (array)$auth_data[(string)$auth_select]['token-data'])
+							AND
+							($auth_data[(string)$auth_select]['token-data']['error'] === '')
+							AND
+							\array_key_exists('json-arr', (array)$auth_data[(string)$auth_select]['token-data'])
+							AND
+							((int)\Smart::array_size($auth_data[(string)$auth_select]['token-data']['json-arr']) > 0)
+							AND
+							((int)\Smart::array_type_test($auth_data[(string)$auth_select]['token-data']['json-arr']) === 2) // expects an associative array
+							AND
+							\array_key_exists('#', (array)$auth_data[(string)$auth_select]['token-data']['json-arr'])
+							AND
+							($auth_data[(string)$auth_select]['token-data']['json-arr']['#'] === \SmartAuth::SWT_VERSION_SIGNATURE) // validate version, just in case ...
+							AND
+							\array_key_exists('r', (array)$auth_data[(string)$auth_select]['token-data']['json-arr'])
+							AND
+							($auth_data[(string)$auth_select]['token-data']['json-arr']['r'] === 'A') // validate realm, just in case ...
+							AND
+							\array_key_exists('n', (array)$auth_data[(string)$auth_select]['token-data']['json-arr'])
+							AND
+							($auth_data[(string)$auth_select]['token-data']['json-arr']['n'] === \SMART_SOFTWARE_NAMESPACE) // validate namespace, just in case ...
+							AND
+							\array_key_exists('user-name', (array)$auth_data[(string)$auth_select]['token-data'])
+							AND
+							((string)$auth_data[(string)$auth_select]['token-data']['user-name'] != '')
+							AND
+							((string)$auth_data[(string)$auth_select]['token-data']['user-name'] == (string)$auth_data[(string)$auth_select]['user-name'])
+							AND
+							\array_key_exists('pass-hash', (array)$auth_data[(string)$auth_select]['token-data'])
+							AND
+							((int)\strlen((string)$auth_data[(string)$auth_select]['token-data']['pass-hash']) == (int)\SmartHashCrypto::PASSWORD_HASH_LENGTH)
+							AND
+							((string)$auth_data[(string)$auth_select]['token-data']['pass-hash'] == (string)$auth_data[(string)$auth_select]['pass-hash'])
 							AND
 							((int)\Smart::array_size($auth_data[(string)$auth_select]['restr-ip']) > 0) // this is mandatory for a SWT Token
 							AND
@@ -362,35 +424,37 @@ final class SmartAuthAdminsHandler
 							(\SmartHashCrypto::validatepasshashformat((string)$auth_data[(string)$auth_select]['pass-hash']) === true)
 						) {
 							//--
-							$auth_user_name = (string) $auth_data[(string)$auth_select]['user-name'];
+							$swt_validate = (array) \SmartAuth::swt_token_validate( // 2nd round validation, for safety ; this was already done in pre-validation, but for security standards, double validation of non-opaque tokens in the code is wellcome because if code changes and have a bug at any of step 1 or two will at least block logins instead having a security breach !
+								(string) $auth_data[(string)$auth_select]['token-key'], // swt token via Auth Bearer
+								(string) \SmartUtils::get_ip_client(), // client's current IP Address
+							);
 							//--
-							$auth_user_pass_hash = (string) $auth_data[(string)$auth_select]['pass-hash']; // a validated SWT Token provides a valid format (as expected) password hash, consider it safe, it was previous validated inside getAuthCredentials(), with no errors/warnings (as checked above)
-							//--
-							$auth_user_arr_ips = (array) $auth_data[(string)$auth_select]['restr-ip'];
-							//--
-							$auth_user_arr_priv = (array) $auth_data[(string)$auth_select]['restr-priv'];
-
-							// TODO: check: token-key, token-data
-							// aaaaaaaaaaaaaaaaaaaaaa
-
-							//--
-							if((string)\trim((string)$auth_user_name) !== '') {
-								if((string)\trim((string)$auth_user_pass_hash) !== '') {
-									if( // the `$auth_user_arr_ips` and `$auth_user_arr_priv` must be provided for step #2 checks
-										((int)\Smart::array_size($auth_user_arr_ips) > 0) // a SWT Token must have at least one IP Address Restriction ; if it does not, something went wrong
-										AND
-										((int)\Smart::array_type_test($auth_user_arr_ips) === 1) // non-associative
-										AND
-										((int)\Smart::array_size($auth_user_arr_priv) > 0) // a SWT Token must have at least one Privilege Restriction ; if it does not, something went wrong
-										AND
-										((int)\Smart::array_type_test($auth_user_arr_priv) === 1) // non-associative
-									) {
-										$is_swt_token_auth = true;
-
-// \Smart::log_notice(__METHOD__.' # [SWT] 2FA: '.(int)$use_2fa.' # WWW-Prompt: '.(int)$use_www_auth_prompt); // aaaaaaaaaaaaaaaaaaaa
-
+							if($swt_validate['error'] === '') {
+								//--
+								$auth_user_name = (string) $auth_data[(string)$auth_select]['user-name'];
+								//--
+								$auth_user_pass_hash = (string) $auth_data[(string)$auth_select]['pass-hash']; // a validated SWT Token provides a valid format (as expected) password hash, consider it safe, it was previous validated inside getAuthCredentials(), with no errors/warnings (as checked above)
+								//--
+								$auth_user_arr_ips = (array) $auth_data[(string)$auth_select]['restr-ip'];
+								//--
+								$auth_user_arr_priv = (array) $auth_data[(string)$auth_select]['restr-priv'];
+								//--
+								if((string)\trim((string)$auth_user_name) !== '') {
+									if((string)\trim((string)$auth_user_pass_hash) !== '') {
+										if( // the `$auth_user_arr_ips` and `$auth_user_arr_priv` must be provided for step #2 checks
+											((int)\Smart::array_size($auth_user_arr_ips) > 0) // a SWT Token must have at least one IP Address Restriction ; if it does not, something went wrong
+											AND
+											((int)\Smart::array_type_test($auth_user_arr_ips) === 1) // non-associative
+											AND
+											((int)\Smart::array_size($auth_user_arr_priv) > 0) // a SWT Token must have at least one Privilege Restriction ; if it does not, something went wrong
+											AND
+											((int)\Smart::array_type_test($auth_user_arr_priv) === 1) // non-associative
+										) {
+											$is_swt_token_auth = true;
+										} //end if
 									} //end if
 								} //end if
+								//--
 							} //end if
 							//--
 						} //end if
@@ -399,16 +463,14 @@ final class SmartAuthAdminsHandler
 					//--
 					break;
 					//--
-				default:
-					//-- invalid !!!!!!!!!
+				default: // invalid !
+					//--
 					die('Auth Mode Not Yet Implemented, or Invalid');
 					//--
 			} //end switch
 			//--
 		} //end if
-
-
-
+		//--
 
 		//--
 		$css_toolkit_ux = '<link rel="stylesheet" type="text/css" href="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url()).'lib/css/toolkit/ux-toolkit.css?'.\Smart::escape_html((string)\SmartUtils::get_app_release_hash()).'" media="all"><link rel="stylesheet" type="text/css" href="'.\Smart::escape_html((string)\SmartUtils::get_server_current_url()).'lib/css/toolkit/ux-toolkit-responsive.css?'.\Smart::escape_html((string)\SmartUtils::get_app_release_hash()).'" media="all">';
@@ -438,7 +500,7 @@ final class SmartAuthAdminsHandler
 			//-- open connection to AuthLog DB
 			$modelAuthLog = null;
 			try {
-				$modelAuthLog = new \SmartModDataModel\AuthAdmins\SqAuthLog(); // will create + initialize DB if not found
+				$modelAuthLog = new \SmartModelAuthLogAdmins(); // will create + initialize DB if not found
 			} catch(\Exception $e) {
 				$modelAuthLog = null;
 				\Smart::log_warning(__METHOD__.' # '.'AUTH-LOG DB Failed: `'.$e->getMessage().'`'); // just log the message
@@ -509,7 +571,7 @@ final class SmartAuthAdminsHandler
 			//-- open connection to Admins DB
 			$modelAdmins = null;
 			try {
-				$modelAdmins = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // will create + initialize DB if not found
+				$modelAdmins = new \SmartModelAuthAdmins(); // will create + initialize DB if not found
 			} catch(\Exception $e) {
 				$modelAdmins = null;
 				\Smart::log_warning(__METHOD__.' # '.'AUTH DB Failed: `'.$e->getMessage().'`');
@@ -517,8 +579,80 @@ final class SmartAuthAdminsHandler
 				die((string)self::getClassName().':AUTH-DB-FAILED');
 				return;
 			} //end try catch
+			//-- manage STK Token Validation ; if valid, get the real password hash
+			$the_stk_token_is_really_valid = false;
+			if(
+				((string)\trim((string)$auth_user_name) != '')
+				AND
+				((string)\trim((string)$auth_user_pass_hash) != '')
+			) {
+				if($is_stk_token_auth === true) {
+					//--
+					$check_stk_token = (array) $modelAdmins->getLoginActiveTokenByIdAndKey(
+						(string) $auth_user_name,
+						(string) $auth_user_pass_hash
+					);
+					//--
+					if((int)\Smart::array_size($check_stk_token) > 0) { // token found, needs validation
+						//--
+						$validate_stk_token = (array) \SmartModExtLib\AuthAdmins\AuthTokens::validateSTKEncData(
+							(string) ($check_stk_token['id'] ?? null),
+							(string) ($check_stk_token['token_hash'] ?? null),
+							(int)    (int)($check_stk_token['expires'] ?? null),
+							(string) ($check_stk_token['token_data'] ?? null)
+						);
+						//--
+						if(
+							($validate_stk_token['error'] === '')
+							AND
+							($validate_stk_token['ernum'] === 0)
+							AND
+							((string)\trim((string)$validate_stk_token['auth-id']) != '')
+							AND
+							((string)$validate_stk_token['auth-id'] === (string)$auth_user_name)
+							AND
+							((string)\trim((string)$validate_stk_token['key']) != '')
+							AND
+							((string)$validate_stk_token['key'] === (string)$auth_user_pass_hash)
+							AND
+							((string)\trim((string)$validate_stk_token['seed']) != '')
+							AND
+							((string)$auth_user_pass_hash === (string)\SmartModExtLib\AuthAdmins\AuthTokens::createPublicPassKey((string)$auth_user_name, (string)$validate_stk_token['seed']))
+							AND
+							((int)\Smart::array_size($validate_stk_token['restr-priv']) > 0) // must have at least one privilege to have a valid login
+						) { // token is valid
+							//--
+							$data_stk_user = (array) $modelAdmins->getById((string)$validate_stk_token['auth-id']);
+							//--
+							if((int)\Smart::array_size($data_stk_user) > 0) {
+								if((string)($data_stk_user['id'] ?? null) === (string)$auth_user_name) { // validate again the username, be sure the retrieved account data match
+									//-- STK: ALL OK ...
+									$the_stk_token_is_really_valid = true;
+									$auth_user_pass_hash = (string) ($data_stk_user['pass'] ?? null); // everything is ok, assign the real pass hash to the already verified user for the already verified opaque token STK
+									$auth_user_arr_priv = (array) $validate_stk_token['restr-priv']; // pass the restricted privileges as they are bind to this STK Token
+									//--
+								} //end if else
+							} //end if else
+							//--
+							$data_stk_user = null; // reset
+							//--
+						} //end if
+						//--
+						$validate_stk_token = null; // reset
+						//--
+					} //end if
+					//--
+					$check_stk_token = null; // reset
+					//--
+					if($the_stk_token_is_really_valid !== true) {
+						$auth_error = 'STK Token Validation Failed';
+						$auth_user_pass_hash = ''; // reset ; token is invalid ; if this is empty will skip lookup in accounts ...
+					} //end if
+					//--
+				} //end if
+			} //end if
 			//-- try to get the user account from DB
-			$account_data = []; // by default, consider it is an INVALID Sign-In, having Username and/or Password empty !
+			$account_data = null; // by default, consider it is an INVALID Sign-In, having Username and/or Password empty !
 			//--
 			if(
 				((string)\trim((string)$auth_user_name) != '')
@@ -530,19 +664,10 @@ final class SmartAuthAdminsHandler
 					(string) $auth_user_name,
 					(string) $auth_user_pass_hash
 				); // try to login
-
-/* // test Data only ... ; aaaaaaaaaaaaaaaaaaaaaa
-$account_data['title'] = 'Mr.';
-$account_data['address'] = 'str. Coposu nr. 97';
-$account_data['zip'] = 400235;
-$account_data['city'] = 'Cluj-Napoca';
-$account_data['region'] = 'Cluj';
-$account_data['country'] = 'Romania';
-$account_data['phone'] = '0725939155';
-$account_data['settings'] = '{ "a":1, "b":2, "c":[0, 1, 2], "d":{"e":"f", "g":78} }';
-$account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
-*/
-
+				//--
+			} else { // username or pass is empty, SKIP
+				//--
+				$account_data = [];
 				//--
 			} //end if else
 			//-- Valid Login breakpoint ; test if login is successful
@@ -565,7 +690,7 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 						if(!$is_ip_valid) {
 							$is_ip_valid = (bool) \in_array((string)\SmartUtils::get_ip_client(), (array)$auth_user_arr_ips);
 						} //end if
-				//	} else { // do not set as invalid !
+					} else { // do not set as invalid !
 						// this case is used for common basic auth ...
 					} //end if
 				} //end if
@@ -589,8 +714,8 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 						($is_normal_auth === true)
 						OR
 						($is_swt_token_auth === true)
-					//	OR
-					//	($is_stk_token_auth === true) // aaaaaaaaaaaaaaaaaaaaaa
+						OR
+						(($is_stk_token_auth === true) && ($the_stk_token_is_really_valid === true))
 					)
 				) { // SUCCESSFUL login ; at this step, the login is secure enough (by checks) to be considered valid
 					//--
@@ -606,7 +731,7 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 							)
 						)); // {{{SYNC-SWT-IMPLEMENT-PRIVILEGES}}}
 						//--
-						//die(\Smart::escape_html($account_data['priv'])); // aaaaaaaaaaaaaaaaaaaaaa
+						//die(\Smart::escape_html($account_data['priv']));
 					} //end if
 					//--
 					\SmartAuth::set_login_data( // v.20231018
@@ -635,7 +760,7 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 						],
 						(string) $modelAdmins->decryptPrivKey((string)$account_data['keys'], (string)$account_data['pass']), // user private key (will be stored as encrypted, in-memory) {{{SYNC-ADM-AUTH-KEYS}}}
 					);
-					//die('<pre>'.\Smart::escape_html(\SmartUtils::pretty_print_var(\SmartAuth::get_login_data())).'</pre>'); // aaaaaaaaaaaaaaaaaaaaaa
+					//die('<pre>'.\Smart::escape_html(\SmartUtils::pretty_print_var(\SmartAuth::get_login_data())).'</pre>');
 					//--
 					\SmartFrameworkRuntime::SingleUser_Mode_AuthBreakPoint();
 					//--
@@ -665,7 +790,7 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 							if($is_swt_token_auth === true) {
 								$failMsg = 'SWT Token ERR: '.$auth_error;
 							} elseif($is_stk_token_auth === true) {
-								$failMsg = 'STK Token ERR: '.$auth_stk_error;
+								$failMsg = 'STK Token ERR: '.$auth_error;
 							} //end if
 							$modelAuthLog->logAuthFail(
 								(string) $account_data['id'], // successful auth account ID
@@ -688,7 +813,7 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 					if($is_swt_token_auth === true) {
 						$failMsg = 'Invalid SWT Token ; ERR: '.$auth_error;
 					} elseif($is_stk_token_auth === true) {
-						$failMsg = 'Invalid or Expired STK Token ; ERR: '.$auth_stk_error;
+						$failMsg = 'Invalid or Expired STK Token ; ERR: '.$auth_error;
 					} //end if
 					$modelAuthLog->logAuthFail(
 						(string) $auth_user_name, // successful auth account ID
@@ -808,7 +933,7 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 
 
 	//================================================================
-	private static function initDb(bool $disable_2fa, string $real_plain_password) : array {
+	private static function initDb(bool $disable_2fa) : array {
 		//--
 		self::$is_init_db = true;
 		//--
@@ -848,9 +973,8 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 				'Set in config: `APP_AUTH_ADMIN_PASSWORD` !'."\n".'You must set the `APP_AUTH_ADMIN_PASSWORD` constant into config before installation. Manually REFRESH this page after by pressing F5 ...',
 			];
 		} //end if
-	//	$real_plain_password = (string) \SmartAuth::decrypt_privkey((string)\APP_AUTH_ADMIN_PASSWORD, (string)\APP_AUTH_ADMIN_USERNAME);
 		if(\SmartAuth::validate_auth_password( // {{{SYNC-AUTH-VALIDATE-PASSWORD}}}
-			(string) $real_plain_password,
+			(string) \APP_AUTH_ADMIN_PASSWORD,
 			(bool) ((\defined('\\APP_AUTH_ADMIN_COMPLEX_PASSWORDS') && (\APP_AUTH_ADMIN_COMPLEX_PASSWORDS === true)) ? true : false) // check for complexity just on login ! ... for the rest do not check because if this constant changes ... cannot re-update everything !
 		) !== true) {
 			return [
@@ -861,7 +985,7 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 		$idb = null;
 		//--
 		try {
-			$idb = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // will create + initialize DB if not found
+			$idb = new \SmartModelAuthAdmins(); // will create + initialize DB if not found
 		} catch(\Exception $e) {
 			$idb = null;
 			return [
@@ -870,7 +994,7 @@ $account_data['restrict'] = self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST;
 		} //end try catch
 		//--
 		$init_username = (string) \APP_AUTH_ADMIN_USERNAME;
-		$init_password = (string) $real_plain_password;
+		$init_password = (string) \APP_AUTH_ADMIN_PASSWORD;
 		//--
 		$init_privileges = (string) \SmartAuth::DEFAULT_PRIVILEGES; // {{{SYNC-AUTH-DEFAULT-ADM-SUPER-PRIVS}}}
 		$init_privileges = \Smart::list_to_array((string)$init_privileges, true);

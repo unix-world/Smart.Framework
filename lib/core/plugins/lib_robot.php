@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / (HTTP) Robot]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -32,7 +32,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: SmartUnicode, Smart, SmartDetectImages, SmartUtils, SmartEnvironment, SmartFrameworkSecurity, SmartFrameworkRegistry
- * @version 	v.20231119
+ * @version 	v.20240118
  * @package 	Application:Plugins:Network:HTTP
  *
  */
@@ -466,7 +466,7 @@ final class SmartRobot {
 							//--
 							$auth_name = '';
 							$auth_pass = '';
-							if((string)$swt_token['error'] == '') {
+							if($swt_token['error'] === '') {
 								$auth_name = (string) SmartHttpUtils::AUTH_USER_BEARER; // {{{SYNC-ROBOT-AUTH-SELF-BEARER}}}
 								$auth_pass = (string) $swt_token['token'];
 							} else {

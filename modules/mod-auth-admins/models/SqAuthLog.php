@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModDataModel\AuthAdmins\SqAuthLog
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModDataModel\AuthAdmins;
@@ -19,13 +19,13 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 
 
 /**
- * SQLite Model for ModAuthAdmins Logging
+ * SQLite Model for ModAuthAdmins Logging (Abstract)
  * @ignore
  */
-final class SqAuthLog {
+abstract class SqAuthLog extends \SmartModDataModel\AuthAdmins\AbstractAuthLog {
 
 	// ->
-	// v.20231025
+	// v.20240118
 
 	private $db;
 	private $dbFile;
@@ -38,7 +38,7 @@ final class SqAuthLog {
 	private const ERR_NO_CONNECTION = 'Invalid AUTH-LOG DB Connection !';
 
 
-	public function __construct() { // THIS SHOULD BE THE ONLY METHOD IN THIS CLASS THAT THROW EXCEPTIONS !!!
+	final public function __construct() { // THIS SHOULD BE THE ONLY METHOD IN THIS CLASS THAT THROW EXCEPTIONS !!!
 		//--
 		if(!\SmartEnvironment::isAdminArea()) {
 			throw new \Exception('AUTH-LOG DB can operate under admin/task area only !');
@@ -78,7 +78,7 @@ final class SqAuthLog {
 	} //END FUNCTION
 
 
-	public function __destruct() {
+	final public function __destruct() {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			return;
@@ -89,21 +89,21 @@ final class SqAuthLog {
 	} //END FUNCTION
 
 
-	public function logAuthSuccess(?string $auth_id, ?string $ip, ?string $msg) : bool {
+	final public function logAuthSuccess(?string $auth_id, ?string $ip, ?string $msg) : bool {
 		//--
 		return (bool) $this->logAuthData(true, (string)$auth_id, (string)$ip, (string)$msg); // true = success
 		//--
 	} //END FUNCTION
 
 
-	public function logAuthFail(?string $auth_id, ?string $ip, ?string $msg) : bool {
+	final public function logAuthFail(?string $auth_id, ?string $ip, ?string $msg) : bool {
 		//--
 		return (bool) $this->logAuthData(false, (string)$auth_id, (string)$ip, (string)$msg); // false = fail
 		//--
 	} //END FUNCTION
 
 
-	public function checkFailLoginsByIp(string $ip) : int {
+	final public function checkFailLoginsByIp(string $ip) : int {
 		//--
 		// ALGO DESCRIPTION:
 		// Example:
@@ -204,7 +204,7 @@ final class SqAuthLog {
 	} //END FUNCTION
 
 
-	public function resetFailedLogins(string $ip) : bool {
+	final public function resetFailedLogins(string $ip) : bool {
 		//--
 		if(!$this->db instanceof \SmartSQliteDb) {
 			\Smart::log_warning(__METHOD__.' # '.self::ERR_NO_CONNECTION);

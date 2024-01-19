@@ -1,6 +1,6 @@
 <?php
 // [Smart.Framework / App - Authenticate / Index]
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -8,10 +8,10 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 	@http_response_code(500);
 	die('Invalid Runtime Status in PHP Script: '.@basename(__FILE__).' ...');
 } //end if
-//----------------------------------------------------- v.20231010
+//----------------------------------------------------- v.20240118
 
 //======================================================
-// App Authenticate Middleware / Index Area Overall Authentication (index.php)
+// App Authenticate Middleware :: Index Area Overall Authentication (index.php)
 // This file must NOT USE Namespaces.
 // The functionality of this Middleware is to:
 //	* ask for overall authentication for Index Area and set if successful

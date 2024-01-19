@@ -256,7 +256,7 @@ SmartFrameworkRuntime::Redirection_Monitor(); // controller redirection monitor:
 SmartFrameworkRuntime::SetVisitorEntropyIDCookie(); // will define the constant SMART_APP_VISITOR_COOKIE ; cookie will be set only if SMART_FRAMEWORK_UUID_COOKIE_NAME is non empty
 SmartCache::setKey('smart-app-runtime', 'visitor-cookie', (string)SMART_APP_VISITOR_COOKIE);
 //========================= APP.BOOTSTRAP: RUN
-SmartAppBootstrap::Run(); // MUST load the modules/app/app-custom-bootstrap.inc.php
+SmartAppBootstrap::Run(); // MUST load the modules/app/app-bootstrap.inc.php
 //=========================
 //--
 

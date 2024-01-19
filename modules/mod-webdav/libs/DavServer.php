@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
 final class DavServer {
 
 	// ::
-	// v.20231207
+	// v.20240116
 
 	const DAV_RESOURCE_TYPE_COLLECTION 		= 'collection';
 	const DAV_RESOURCE_TYPE_NONCOLLECTION 	= 'noncollection';
@@ -40,21 +40,21 @@ final class DavServer {
 	private static $tpl_path = 'modules/mod-webdav/libs/templates/'; // trailing slash req.
 
 
-	public static function getSupportedBrowserClasses() {
+	public static function getSupportedBrowserClasses() : array {
 		//--
 		return [ 'gk', 'bk', 'wk' ]; // 'fox', 'smk' ; 'crm', 'iee', 'opr', 'knq' ; 'sfr', 'eph', 'wkt'
 		//--
 	} //END FUNCTION;
 
 
-	public static function getTplPath() {
+	public static function getTplPath() : string {
 		//--
 		return (string) self::$tpl_path;
 		//--
 	} //END FUNCTION
 
 
-	public static function safeCheckPathAgainstHtFiles($path) {
+	public static function safeCheckPathAgainstHtFiles(?string $path) : bool {
 		//--
 		if(\stripos(\SmartFileSysUtils::extractPathFileName((string)$path), '.ht') === 0) { // dissalow ^\.ht files as in apache config to prevent access to .htaccess / .htpassword
 			return false;
@@ -65,7 +65,7 @@ final class DavServer {
 	} //END FUNCTION
 
 
-	public static function safePathName($path) { // on WebDAV there is an issue with #
+	public static function safePathName(?string $path) : string { // on WebDAV there is an issue with #
 		//--
 		$path = (string) \str_replace('#', '-', (string)$path); // {{{SYNC-WEBDAV-#-ISSUE}}}
 		$path = (string) \Smart::safe_pathname((string)$path, '-'); // FIX: allow only safe paths :: {{{SYNC-SAFE-FNAME-REPLACEMENT}}}
@@ -75,7 +75,7 @@ final class DavServer {
 	} //END FUNCTION
 
 
-	public static function safeFileName($path) { // on WebDAV there is an issue with #
+	public static function safeFileName(?string $path) : string { // on WebDAV there is an issue with #
 		//--
 		$path = (string) \str_replace('#', '-', (string)$path); // {{{SYNC-WEBDAV-#-ISSUE}}}
 		$path = (string) \Smart::safe_filename((string)$path, '-'); // FIX: allow only safe paths :: {{{SYNC-SAFE-FNAME-REPLACEMENT}}}
@@ -86,7 +86,7 @@ final class DavServer {
 
 
 	// used to extract path from headers like MOVE ...
-	public static function extractPathFromCurrentURL($url, $urldecode=false) { // sync with SmartFrameworkRuntime::Parse_Semantic_URL()
+	public static function extractPathFromCurrentURL(?string $url, bool $urldecode=false) : string { // sync with SmartFrameworkRuntime::Parse_Semantic_URL()
 		//--
 		$base_url = (string) \SmartUtils::get_server_current_url().\SmartUtils::get_server_current_script();
 		//--
@@ -112,7 +112,7 @@ final class DavServer {
 	} //END FUNCTION
 
 
-	public static function answerLocked($dav_prefix, $dav_req_path, $dav_author, $http_status, $lock_depth, $lock_time, $lock_uuid) {
+	public static function answerLocked(?string $dav_prefix, ?string $dav_req_path, ?string $dav_author, int $http_status, ?string $lock_depth, int $lock_time, ?string $lock_uuid) : void {
 		//--
 		$dav_prefix = (string) \trim((string)$dav_prefix);
 		if((string)$dav_prefix != '') {
@@ -147,7 +147,7 @@ final class DavServer {
 	} //END FUNCTION
 
 
-	public static function answerMultiStatus($dav_prefix, $dav_method, $dav_req_path, $is_root_path, $http_status, $dav_req_uri, $arr_items=[], $arr_quota=[]) {
+	public static function answerMultiStatus(?string $dav_prefix, ?string $dav_method, ?string $dav_req_path, bool $is_root_path, int $http_status, ?string $dav_req_uri, array $arr_items=[], array $arr_quota=[]) : void {
 		//--
 		$dav_prefix = (string) \trim((string)$dav_prefix);
 		if((string)$dav_prefix != '') {
@@ -241,7 +241,7 @@ final class DavServer {
 	 *
 	 * @return array / string
 	 */
-	public static function getRequestHeaders($name='') {
+	public static function getRequestHeaders(?string $name='') { // MIXED: string | array
 		//--
 		$name = (string) \trim((string)$name);
 		//--
@@ -284,7 +284,7 @@ final class DavServer {
 	 *
 	 * @return string / resource
 	 */
-	public static function getRequestBody($get_as_stream=false) {
+	public static function getRequestBody(bool $get_as_stream=false) { // MIXED: string | resource
 		//--
 		if(self::$httpRequestBody === null) {
 			if($get_as_stream === true) {
@@ -299,7 +299,7 @@ final class DavServer {
 	} //END FUNCTION
 
 
-	public static function parseXMLBody($xml, $xns='', $xkey='') {
+	public static function parseXMLBody(?string $xml, ?string $xns='', ?string $xkey='') : array {
 		//--
 		if(!\function_exists('\\simplexml_load_string')) {
 			//--

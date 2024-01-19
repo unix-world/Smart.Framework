@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / Mail Utils]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -42,7 +42,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerSend
- * @version 	v.20231119
+ * @version 	v.20240118
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -51,9 +51,8 @@ final class SmartMailerUtils {
 	// ::
 
 	//==================================================================
-	// Validate e-mail address (SMTP)
 	/**
-	 * Check eMail Address
+	 * Check (Validate) eMail Address ; Can use SMTP or just validate format
 	 * [PUBLIC]
 	 *
 	 * @param STRING $email					:: eMail Address
@@ -322,7 +321,11 @@ final class SmartMailerUtils {
 					AND
 					is_string($def_mail_cfg['auth-password']['encrypted'])
 					AND
-					((string)$def_mail_cfg['auth-password']['encrypted'] == 'bf:enc')
+					(
+						((string)$def_mail_cfg['auth-password']['encrypted'] == 'bf:enc')
+						OR
+						((string)$def_mail_cfg['auth-password']['encrypted'] == 'tf:enc')
+					)
 					AND
 					isset($def_mail_cfg['auth-password']['data'])
 					AND
@@ -330,10 +333,30 @@ final class SmartMailerUtils {
 					AND
 					((string)trim((string)$def_mail_cfg['auth-password']['data']) != '')
 				) {
-					$def_mail_cfg['auth-password'] = (string) SmartCipherCrypto::tf_decrypt((string)$def_mail_cfg['auth-password']['data'], '', true); // use default key ; BF fallback ..
+					$def_mail_cfg['auth-password'] = (string) SmartCipherCrypto::tf_decrypt((string)$def_mail_cfg['auth-password']['data'], '', true); // use default key ; BF fallback ...
+				} elseif(
+					isset($def_mail_cfg['auth-password']['callable'])
+					AND
+					is_array($def_mail_cfg['auth-password']['callable'])
+					AND
+					((int)Smart::array_size($def_mail_cfg['auth-password']['callable']) == 2)
+					AND
+					(Smart::array_type_test($def_mail_cfg['auth-password']['callable']) == 1) // non-associative
+					AND
+					is_callable((array)$def_mail_cfg['auth-password']['callable'])
+					AND
+					isset($def_mail_cfg['auth-password']['params'])
+					AND
+					is_array($def_mail_cfg['auth-password']['params'])
+				) {
+					$def_mail_cfg['auth-password'] = (string) call_user_func_array((array)$def_mail_cfg['auth-password']['callable'], (array)[ 'params' => $def_mail_cfg['auth-password']['params'] ]);
+					if((string)trim((string)$def_mail_cfg['auth-password']) == '') {
+						return -2; // could not get password
+					} //end if
 				} else {
 					$def_mail_cfg['auth-password'] = ''; // INVALID
 					Smart::log_warning(__METHOD__.' # Invalid definition for config value: sendmail.auth-password !');
+					return -1;
 				} //end if
 			} //end if
 		} //end if
@@ -962,7 +985,7 @@ final class SmartMailerUtils {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes
- * @version 	v.20231119
+ * @version 	v.20240118
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -1230,13 +1253,6 @@ final class SmartMailerMimeParser {
 		//--
 		if((string)$msg_decode_arr['error'] != '') {
 			return (string) SmartComponents::operation_error('MIME Parser // ERROR: '.$msg_decode_arr['error']);
-			/*
-			Smart::raise_error(
-				(string) __METHOD__.' # DECODE ERROR: '.$msg_decode_arr['error'],
-				(string) self::ERR_MSG_TEXT_DECODE
-			);
-			return '';
-			*/
 		} //end if
 		//--
 
@@ -1895,6 +1911,175 @@ final class SmartMailerMimeParser {
 
 
 } //END CLASS
+
+//=====================================================================================
+//===================================================================================== CLASS END
+//=====================================================================================
+
+
+//=====================================================================================
+//===================================================================================== CLASS START
+//=====================================================================================
+
+
+/**
+ * Class: SmartMailerOauth2 - provides OAuth2 Mailer password provider
+ *
+ * @usage  		static object: Class::method() - This class provides only STATIC methods
+ *
+ * @depends 	classes: Smart, SmartHashCrypto, SmartCipherCrypto, SmartHttpUtils, SmartHttpClient, SmartAuth, SmartUtils
+ * @version 	v.20240118
+ * @package 	Application:Plugins:Mailer
+ *
+ */
+final class SmartMailerOauth2 {
+
+	// ::
+
+	private static $cache = []; // use cache if there are more calls under the same request ...
+
+
+	//==================================================================
+	/**
+	 * Get Mailer Token Pass from a HTTP Based OAuth2 Service
+	 * @param ARRAY $params
+	 * @return STRING the password (OAuth2 Token)
+	 */
+	public static function getTokenPass(array $params) : string {
+		//--
+		$req = [
+			'url',
+			'url:post:arr',
+			'auth',
+			'user',
+			'pass',
+		];
+		//--
+		$params = (array) Smart::array_init_keys((array)$params, (array)$req);
+		//--
+		for($i=0; $i<Smart::array_size($req); $i++) {
+			$key = (string) $req[$i];
+			if((string)$key == 'url:post:arr') { // post arr can be empty
+				if(!is_array($params[(string)$key])) {
+					return '';
+				} //end if
+			} else {
+				if(!isset($params[(string)$key])) {
+					return '';
+				} //end if
+				if(!is_string($params[(string)$key])) {
+					return '';
+				} //end if
+				$params[(string)$key] = (string) trim((string)$params[(string)$key]);
+				if((string)$params[(string)$key] == '') {
+					return '';
+				} //end if
+			} //end if
+		} //end for
+		//--
+		if(!is_array(self::$cache)) {
+			self::$cache = [];
+		} //end if
+		$hash = (string) SmartHashCrypto::sh3a512((string)trim((string)Smart::json_encode((array)$params)));
+		if(isset(self::$cache[(string)$hash])) {
+			return (string) self::$cache[(string)$hash];
+		} //end if
+		//--
+		$bw = new SmartHttpClient();
+		$bw->connect_timeout = 10;
+		$method = 'GET';
+		if((int)Smart::array_size($params['url:post:arr']) > 0) {
+			$method = 'POST';
+			$bw->postvars = (array) $params['url:post:arr'];
+		} //end if
+		$authUser = '';
+		$authPass = '';
+		$response = [];
+		switch((string)strtolower((string)$params['auth'])) { // TODO: allow also Token !
+			case 'swt': // pass: passhash,b64
+				$url = (string) $params['url'];
+				if(strpos((string)$url, 'admin.php?') === 0) {
+					$url = (string) SmartUtils::get_server_current_url().$url;
+				} elseif((strpos((string)$url, 'https://') !== 0) OR (strpos((string)$url, '/admin.php?') === false)) { // security ! allow only https on S.F. !
+					return '';
+				} //end if
+				$params['pass'] = (string) trim((string)base64_decode((string)$params['pass'])); // it is only a pass hash, it is ok to store as B64 only
+				if((string)$params['pass'] == '') {
+					return '';
+				} //end if
+				$swt_token = (array) SmartAuth::swt_token_create(
+					'A', // bind to adm/tsk area only !
+					(string) $params['user'], // auth user name ; this should be the username not the ID ; on admin area the username is used for auth !
+					(string) $params['pass'],  // password hash
+					(int)    30, // 30 sec ; connect time is 10 sec ; token refresh timeout is 15 ; total is 25 + extra 5 sec
+					(array)  [ (string)SmartUtils::get_server_current_ip() ], // server's own IP Address only, in this List ; currently just one
+					(array)  [ 'oauth2' ] // only oauth2 privilege
+				);
+				if($swt_token['error'] !== '') {
+					return '';
+				} //end if
+				$authUser = (string) SmartHttpUtils::AUTH_USER_BEARER;
+				$authPass = (string) $swt_token['token'];
+				break;
+			case 'token':
+				if(strpos((string)$url, 'https://') !== 0) { // allow just on HTTPS ; tokens cannot be exposed on http, it is unsafe
+					return '';
+				} //end if
+				if((string)strtolower((string)$params['user']) != 'bearer') {
+					return '';
+				} //end if
+				$authUser = (string) SmartHttpUtils::AUTH_USER_BEARER;
+				$authPass = (string) trim((string)SmartCipherCrypto::tf_decrypt((string)$params['pass'], '', true)); // TF or BF with fallback ; it is tokem can be trimmed
+				if((string)$authPass == '') {
+					return '';
+				} //end if
+			case 'basic':
+				if(strpos((string)$url, 'https://') !== 0) { // allow just on HTTPS ; tokens cannot be exposed on http, it is unsafe
+					return '';
+				} //end if
+				$authUser = (string) $params['user'];
+				$authPass = (string) SmartCipherCrypto::tf_decrypt((string)$params['pass'], '', true); // TF or BF with fallback ; do not trim
+				if((string)trim((string)$authPass) == '') {
+					return '';
+				} //end if
+			default:
+				return '';
+		} //end switch
+		$response = (array) $bw->browse_url((string)$url, (string)$method, '', (string)$authUser, (string)$authPass, 0); // no redirects
+		//--
+		if(Smart::array_size($response) <= 0) {
+			return '';
+		} //end if
+		if($response['code'] != 200) {
+			return '';
+		} //end
+		$response['content'] = (string) trim((string)$response['content']);
+		if((string)$response['content'] == '') {
+			return '';
+		} //end if
+		if((string)trim((string)$response['c-type']) == 'text/plain') {
+			self::$cache[(string)$hash] = $response['content'];
+			return (string) self::$cache[(string)$hash];
+		} elseif(((string)trim((string)$response['c-type']) == 'application/json') || ((string)trim((string)$response['c-type']) == 'text/json')) {
+			$jsonArr = Smart::json_decode((string)$response['content']); // do not cast, test array below !
+			if(Smart::array_size($jsonArr) < 1) {
+				return '';
+			} //end if
+			if((!isset($jsonArr['access_token'])) OR (!is_string($jsonArr['access_token']))) {
+				return '';
+			} //end if
+			self::$cache[(string)$hash] = trim((string)$jsonArr['access_token']);
+			return (string) self::$cache[(string)$hash];
+		} //end if
+		//--
+		return '';
+		//--
+	} //END FUNCTION
+	//==================================================================
+
+
+} //END CLASS
+
 
 //=====================================================================================
 //===================================================================================== CLASS END

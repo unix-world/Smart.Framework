@@ -1,7 +1,7 @@
 <?php
 // Controller: AuthAdmins/Manager
 // Route: admin.php?page=auth-admins.manager.stml
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION
@@ -11,7 +11,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-define('SMART_APP_MODULE_AREA', 'SHARED');
+define('SMART_APP_MODULE_AREA', 'ADMIN');
 define('SMART_APP_MODULE_AUTH', true);
 
 // [PHP8]
@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20231119
+	// v.20240118
 
 	// TODO:
 	// 	* Edit: support to bind to a specific IP address list, for extra security
@@ -41,6 +41,13 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 
 	public function Run() { // (OUTPUTS: HTML/JSON)
+
+		//-- {{{SYNC-CHECK-AUTH-ADMINS-MODEL}}}
+		if((!class_exists('SmartModelAuthAdmins')) || (!is_subclass_of('SmartModelAuthAdmins', '\\SmartModDataModel\\AuthAdmins\\AbstractAuthAdmins'))) {
+			$this->PageViewSetCfg('error', 'Authentication Model Not Available or Invalid');
+			return 500;
+		} //end if
+		//--
 
 		//-- {{{SYNC-AUTH-ADMINS-PRE-CHECKS}}}
 		if(SmartAuth::check_login() !== true) {
@@ -66,7 +73,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 		//--
 		if(SmartAuth::test_login_restriction('account') === true) { // {{{SYNC-AUTH-RESTRICTIONS}}} ; {{{SYNC-ACC-NO-EDIT-RESTRICTION}}}
-			$this->PageViewSetCfg('error', 'This Area is Restricted by your Account Restrictions !');
+			$this->PageViewSetCfg('error', 'This Area is Restricted by your current Login Restrictions !');
 			return 403;
 		} //end if
 		//--
@@ -100,7 +107,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 			case 'tokens-create': // Tokens Create (New)
 				//--
-				if(!defined('SMART_AUTH_TOKENS_ENABLED') || (SMART_AUTH_TOKENS_ENABLED !== true)) {
+				if(SmartEnvironment::isATKEnabled() !== true) {
 					$this->PageViewSetCfg('error', 'SmartAuth Tokens are DISABLED');
 					return 503;
 				} //end if
@@ -123,7 +130,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					$message = 'You are not authorized to create this new token';
 				} elseif((string)trim((string)$frm['name']) == '') {
 					$message = 'Name is Empty';
-				} elseif((int)strlen((string)$frm['name']) < 10) {
+				} elseif((int)strlen((string)$frm['name']) < 5) {
 					$message = 'Name is too short (min: 10)';
 				} elseif((int)strlen((string)$frm['name']) > 50) {
 					$message = 'Name is too long (max: 50)';
@@ -161,7 +168,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$message == '') {
 					$model = null;
 					try {
-						$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+						$model = new SmartModelAuthAdmins(); // open connection
 					} catch(Exception $e) {
 						$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 						return 500;
@@ -211,7 +218,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 			case 'tokens-delete': // Tokens Delete
 				//--
-				if(!defined('SMART_AUTH_TOKENS_ENABLED') || (SMART_AUTH_TOKENS_ENABLED !== true)) {
+				if(SmartEnvironment::isATKEnabled() !== true) {
 					$this->PageViewSetCfg('error', 'SmartAuth Tokens are DISABLED');
 					return 503;
 				} //end if
@@ -244,7 +251,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$message == '') {
 					$model = null;
 					try {
-						$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+						$model = new SmartModelAuthAdmins(); // open connection
 					} catch(Exception $e) {
 						$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 						return 500;
@@ -291,7 +298,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 			case 'tokens-status-change': // Tokens Activate/Deactivate
 				//--
-				if(!defined('SMART_AUTH_TOKENS_ENABLED') || (SMART_AUTH_TOKENS_ENABLED !== true)) {
+				if(SmartEnvironment::isATKEnabled() !== true) {
 					$this->PageViewSetCfg('error', 'SmartAuth Tokens are DISABLED');
 					return 503;
 				} //end if
@@ -327,7 +334,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$message == '') {
 					$model = null;
 					try {
-						$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+						$model = new SmartModelAuthAdmins(); // open connection
 					} catch(Exception $e) {
 						$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 						return 500;
@@ -380,7 +387,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 
 			case 'tokens-list': // Tokens Manage
 				//--
-				if(!defined('SMART_AUTH_TOKENS_ENABLED') || (SMART_AUTH_TOKENS_ENABLED !== true)) {
+				if(SmartEnvironment::isATKEnabled() !== true) {
 					$this->PageViewSetCfg('error', 'SmartAuth Tokens are DISABLED');
 					return 503;
 				} //end if
@@ -408,7 +415,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					//--
 					$model = null;
 					try {
-						$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+						$model = new SmartModelAuthAdmins(); // open connection
 					} catch(Exception $e) {
 						$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 						return 500;
@@ -509,7 +516,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$model = null;
 				try {
-					$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+					$model = new SmartModelAuthAdmins(); // open connection
 				} catch(Exception $e) {
 					$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 					return 500;
@@ -573,7 +580,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$message == '') {
 					$model = null;
 					try {
-						$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+						$model = new SmartModelAuthAdmins(); // open connection
 					} catch(Exception $e) {
 						$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 						return 500;
@@ -658,7 +665,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$model = null;
 				try {
-					$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+					$model = new SmartModelAuthAdmins(); // open connection
 				} catch(Exception $e) {
 					$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 					return 500;
@@ -693,7 +700,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					if((string)($select_user['id'] ?? null) == (string)SmartAuth::get_auth_id()) {
 						$user_pkeys = (string) $model->decryptPrivKey((string)($select_user['keys'] ?? null)); // {{{SYNC-ADM-AUTH-KEYS}}}
 					} //end if
-					if(defined('SMART_AUTH_2FA_ENABLED') && (SMART_AUTH_2FA_ENABLED === true)) {
+					if(SmartEnvironment::is2FAEnabled() === true) {
 						$user_2fakey = (string) $model->decrypt2FAKey((string)($select_user['fa2'] ?? null), (string)($select_user['id'] ?? null)); // {{{SYNC-ADM-AUTH-2FA-MANAGEMENT}}}
 						$user_2faurl = (string) $model->get2FAUrl((string)$user_2fakey, (string)($select_user['id'] ?? null));
 						$user_2faqrcode = (string) $model->get2FASvgBarCode((string)$user_2fakey, (string)($select_user['id'] ?? null));
@@ -701,7 +708,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							$user_2fatktest = (string) $model->get2FAPinToken((string)$user_2fakey);
 						} //end if
 					} //end if
-					if(defined('SMART_AUTH_TOKENS_ENABLED') && (SMART_AUTH_TOKENS_ENABLED === true)) {
+					if(SmartEnvironment::isATKEnabled() === true) {
 						$user_num_tokens = (int) $model->countTokensById((string)($select_user['id'] ?? null));
 						$user_max_tokens = (int) $model::MAX_TOKENS_PER_ACCOUNT;
 					} //end if
@@ -778,8 +785,8 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							'KEYS' 				=> (string) $user_pkeys, // {{{SYNC-ADM-AUTH-KEYS}}}
 							'MAX-TOKENS' 		=> (int)    $user_max_tokens,
 							'NUM-TOKENS' 		=> (int)    $user_num_tokens,
-							'ENABLED-TOKENS' 	=> (int)    (defined('SMART_AUTH_TOKENS_ENABLED') && (SMART_AUTH_TOKENS_ENABLED === true)),
-							'ENABLED-2FA' 		=> (int)    (defined('SMART_AUTH_2FA_ENABLED') && (SMART_AUTH_2FA_ENABLED === true)),
+							'ENABLED-TOKENS' 	=> (int)    (bool) SmartEnvironment::isATKEnabled(),
+							'ENABLED-2FA' 		=> (int)    (bool) SmartEnvironment::is2FAEnabled(),
 							'2FA-KEY' 			=> (string) $user_2fakey, // {{{SYNC-ADM-AUTH-2FAKEY}}}
 							'2FA-TEST-TK' 		=> (string) $user_2fatktest,
 							'2FA-TEST-DATE' 	=> (string) date('Y-m-d H:i:s O'),
@@ -846,7 +853,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$message == '') {
 					$model = null;
 					try {
-						$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+						$model = new SmartModelAuthAdmins(); // open connection
 					} catch(Exception $e) {
 						$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 						return 500;
@@ -918,7 +925,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 							//--
 							$model = null;
 							try {
-								$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+								$model = new SmartModelAuthAdmins(); // open connection
 							} catch(Exception $e) {
 								$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 								return 500;
@@ -1002,7 +1009,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$model = null;
 				try {
-					$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+					$model = new SmartModelAuthAdmins(); // open connection
 				} catch(Exception $e) {
 					$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 					return 500;
@@ -1059,7 +1066,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$message == '') {
 					$model = null;
 					try {
-						$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+						$model = new SmartModelAuthAdmins(); // open connection
 					} catch(Exception $e) {
 						$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 						return 500;
@@ -1067,7 +1074,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 					$select_user = (array) $model->getById((string)$frm['id']); // check if exist id in admins table
 					if((int)Smart::array_size($select_user) > 0) {
 						if((string)($select_user['active'] ?? null) === '0') {
-							$wr = (int) $model->deleteById((string)$frm['id']);
+							$wr = (int) $model->deleteAccount((string)$frm['id']);
 						} else {
 							$message = 'Selected Account cannot be Deleted, it is still Active. Deactivate first ...';
 						} //end if else
@@ -1183,7 +1190,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				if((string)$message == '') {
 					$model = null;
 					try {
-						$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+						$model = new SmartModelAuthAdmins(); // open connection
 					} catch(Exception $e) {
 						$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 						return 500;
@@ -1263,7 +1270,7 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				//--
 				$model = null;
 				try {
-					$model = new \SmartModDataModel\AuthAdmins\SqAuthAdmins(); // open connection
+					$model = new SmartModelAuthAdmins(); // open connection
 				} catch(Exception $e) {
 					$this->PageViewSetCfg('error', 'DB Exception: '.$e->getMessage());
 					return 500;

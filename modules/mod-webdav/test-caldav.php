@@ -29,7 +29,7 @@ if(!SmartAppInfo::TestIfModuleExists('mod-webdav')) {
  */
 class SmartAppAdminController extends \SmartModExtLib\Webdav\ControllerAdmCalDavFs {
 
-	// v.20210526
+	// v.20240116
 
 	public function Run() {
 
