@@ -41,7 +41,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * Required constants: APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)
  * Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' => 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)
  *
- * @version 	v.20240118
+ * @version 	v.20240119
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -437,7 +437,12 @@ final class SmartAuthAdminsHandler
 								//--
 								$auth_user_arr_ips = (array) $auth_data[(string)$auth_select]['restr-ip'];
 								//--
-								$auth_user_arr_priv = (array) $auth_data[(string)$auth_select]['restr-priv'];
+								$auth_user_arr_priv = [];
+								if(\in_array('*', (array) $auth_data[(string)$auth_select]['restr-priv'])) { // {{{SYNC-TOKEN-AUTH-WILDCARD-PRIVS}}}
+									$auth_user_arr_priv = ['*'];
+								} else {
+									$auth_user_arr_priv = (array) \SmartAuth::safe_arr_privileges_or_restrictions((array)$auth_data[(string)$auth_select]['restr-priv'], true);
+								} //end if else
 								//--
 								if((string)\trim((string)$auth_user_name) !== '') {
 									if((string)\trim((string)$auth_user_pass_hash) !== '') {
@@ -629,7 +634,11 @@ final class SmartAuthAdminsHandler
 									//-- STK: ALL OK ...
 									$the_stk_token_is_really_valid = true;
 									$auth_user_pass_hash = (string) ($data_stk_user['pass'] ?? null); // everything is ok, assign the real pass hash to the already verified user for the already verified opaque token STK
-									$auth_user_arr_priv = (array) $validate_stk_token['restr-priv']; // pass the restricted privileges as they are bind to this STK Token
+									if(\in_array('*', (array)$validate_stk_token['restr-priv'])) { // {{{SYNC-TOKEN-AUTH-WILDCARD-PRIVS}}}
+										$auth_user_arr_priv = ['*'];
+									} else {
+										$auth_user_arr_priv = (array) \SmartAuth::safe_arr_privileges_or_restrictions((array)$validate_stk_token['restr-priv'], true); // pass the restricted privileges as they are bind to this STK Token
+									} //end if else
 									//--
 								} //end if else
 							} //end if else
@@ -724,12 +733,14 @@ final class SmartAuthAdminsHandler
 					if(($is_swt_token_auth === true) OR ($is_stk_token_auth === true)) {
 						//--
 						$account_data['restrict'] = (string) self::AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST; // if logged in with a Token (SWT or STK) these are the restrictions which are enforced ; {{{SYNC-AUTH-TOKEN-RESTRICTIONS}}} ; {{{SYNC-AUTH-RESTRICTIONS}}} ; {{{SYNC-DEF-ACC-EDIT-RESTRICTION}}} ; {{{SYNC-ACC-NO-EDIT-RESTRICTION}}}
-						$account_data['priv'] = (string) \Smart::array_to_list((array)\array_values(
-							(array) \array_intersect( // {{{SYNC-AUTH-TOKEN-PRIVS-INTERSECT}}}
-								(array) \Smart::list_to_array((string)$account_data['priv'], true),
-								(array) $auth_user_arr_priv
-							)
-						)); // {{{SYNC-SWT-IMPLEMENT-PRIVILEGES}}}
+						if($auth_user_arr_priv !== ['*']) { // if not wildcard privileges in the token, use only the valid ones from the token
+							$account_data['priv'] = (string) \Smart::array_to_list((array)\array_values(
+								(array) \array_intersect( // {{{SYNC-AUTH-TOKEN-PRIVS-INTERSECT}}}
+									(array) \Smart::list_to_array((string)$account_data['priv'], true),
+									(array) $auth_user_arr_priv
+								)
+							)); // {{{SYNC-SWT-IMPLEMENT-PRIVILEGES}}}
+						} //end if
 						//--
 						//die(\Smart::escape_html($account_data['priv']));
 					} //end if

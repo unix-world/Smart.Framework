@@ -41,7 +41,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart
- * @version 	v.20231028
+ * @version 	v.20240119
  * @package 	Application:Plugins:ViewComponents
  *
  */
@@ -890,7 +890,7 @@ final class SmartViewHtmlHelpers {
 	 * @param INTEGER $delay		:: *optional* ; if > 0 will use Delayed Redirect, otherwise Instant Redirect
 	 * @return STRING				:: JS Code
 	 */
-	public static function js_code_wnd_redirect(?string $y_redir_url, ?int $delay=-1) : bool {
+	public static function js_code_wnd_redirect(?string $y_redir_url, ?int $delay=-1) : string {
 		//--
 		$y_redir_url = (string) $y_redir_url;
 		$delay = (int) $delay;

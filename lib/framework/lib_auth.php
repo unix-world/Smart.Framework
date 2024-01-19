@@ -52,7 +52,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	Smart, SmartEnvironment, SmartCipherCrypto
- * @version 	v.20240118
+ * @version 	v.20240119
  * @package 	@Core:Authentication
  *
  */
@@ -374,18 +374,11 @@ final class SmartAuth {
 		//--
 		$y_user_email = (string) trim((string)$y_user_email);
 		$y_user_fullname = (string) trim((string)$y_user_fullname);
-		//-- {{{SYNC-ARR-BUILD-PRIVS-LIST-TO-ARR}}}
-		$arr_privileges = (array) self::safe_arr_privileges_or_restrictions($y_user_privileges_list); // DO NOT CAST ; $y_user_privileges_list can be mixed value (array or string)
-		$y_user_privileges_list = (array) array_keys((array)$arr_privileges);
-		$arr_privileges = null;
-		$y_user_privileges_list = (array) Smart::array_sort((array)$y_user_privileges_list, 'sort');
-		//-- #end sync
+		//--
+		$y_user_privileges_list = (array) self::safe_arr_privileges_or_restrictions($y_user_privileges_list, true); // DO NOT CAST ; $y_user_privileges_list can be mixed value (array or string)
 		$y_user_privileges_list = (string) Smart::array_to_list((array)$y_user_privileges_list);
-		//-- ##
-		$arr_restrictions = (array) self::safe_arr_privileges_or_restrictions($y_user_restrictions_list); // DO NOT CAST ; $y_user_restrictions_list can be mixed value (array or string)
-		$y_user_restrictions_list = (array) array_keys((array)$arr_restrictions);
-		$arr_restrictions = null;
-		$y_user_restrictions_list = (array) Smart::array_sort((array)$y_user_restrictions_list, 'sort');
+		//--
+		$y_user_restrictions_list = (array) self::safe_arr_privileges_or_restrictions($y_user_restrictions_list, true); // DO NOT CAST ; $y_user_restrictions_list can be mixed value (array or string)
 		$y_user_restrictions_list = (string) Smart::array_to_list((array)$y_user_restrictions_list);
 		//--
 		$y_user_quota = Smart::format_number_int($y_user_quota); // can be also negative
@@ -911,14 +904,21 @@ final class SmartAuth {
 	/**
 	 * Build the associative Array of Auth Privileges or Restrictions
 	 *
-	 * @param 	MIXED 	$y_list 				:: List of Privileges or Restrictions as ARRAY [ 'key-a', 'key-b', ..., 'key-n' ] or STRING '<key-a>, <key-b>, ..., <key-n>'
+	 * @param 	STRING/ARRAY 	$y_list 		:: List of Privileges or Restrictions as ARRAY [ 'key-a', 'key-b', ..., 'key-n' ] or STRING '<key-a>, <key-b>, ..., <key-n>'
+	 * @param 	BOOL 			$nonassociative :: Default is FALSE ; if TRUE will return non-associative (simple) ; if FALSE (default) will return associative
 	 *
-	 * @return 	ARRAY							:: returns the associative array of auth Privileges or Restrictions as [ 'key-a' => 'Key A', 'key-b' => 'Key B', ..., 'key-n' => 'Key N' ]
+	 * @return 	ARRAY							:: returns the associative/non-associative array of auth Privileges or Restrictions as [ 'key-a' => 'Key A', 'key-b' => 'Key B', ..., 'key-n' => 'Key N' ] or [ 'key-a', 'key-b', ..., 'key-n' ]
 	 */
-	public static function safe_arr_privileges_or_restrictions($y_list) : array {
+	public static function safe_arr_privileges_or_restrictions($y_list, bool $nonassociative=false) : array {
 		//--
 		if(!is_array($y_list)) {
 			$y_list = (array) Smart::list_to_array((string)$y_list);
+		} //end if
+		if((int)Smart::array_size($y_list) <= 0) {
+			return [];
+		} //end if
+		if((int)Smart::array_type_test($y_list) !== 1) { // expects non-associative array
+			return [];
 		} //end if
 		//--
 		$y_list = (array) $y_list;
@@ -937,6 +937,12 @@ final class SmartAuth {
 			} //end if
 			//--
 		} //end for
+		//--
+		if($nonassociative === true) {
+			$tmp_arr = (array) array_keys((array)$out_arr);
+			$out_arr = (array) Smart::array_sort((array)$tmp_arr, 'sort');
+			$tmp_arr = null;
+		} //end if
 		//--
 		return (array) $out_arr;
 		//--
@@ -1179,7 +1185,7 @@ final class SmartAuth {
 			$hashpass = (string) SmartUnicode::utf8_to_iso((string)$hashpass); // safety
 		} //end if
 		//-- pass hash security ; {{{SYNC-SWT-PASS-HASH-SECURITY-CHECK}}} ; to avoid to include by mistake a plain password in the SWT Token, it only allows 2 type of Password Hash: SmartHashCrypto::password() for admin/task area ; SmartAuth::password_hash_create() for index area
-		if((string)\trim((string)$hashpass) == '') {
+		if((string)trim((string)$hashpass) == '') {
 			$valid['error'] = 'Password Hash is Empty';
 			return (array) $valid;
 		} //end if else
@@ -1218,11 +1224,13 @@ final class SmartAuth {
 		if((string)$arr['p'] != '') {
 			$arr['p'] = (string) SmartUnicode::utf8_to_iso((string)$arr['p']); // safety
 		} //end if
-		//-- {{{SYNC-ARR-BUILD-PRIVS-LIST-TO-ARR}}} ; {{{SYNC-SWT-IMPLEMENT-PRIVILEGES}}}
-		$arr_privileges = (array) self::safe_arr_privileges_or_restrictions((string)$arr['p']);
-		$arr_privileges = (array) array_keys((array)$arr_privileges);
-		$arr_privileges = (array) Smart::array_sort((array)$arr_privileges, 'sort');
-		//-- #end sync
+		//--
+		if((string)$arr['p'] == '*') {
+			$arr_privileges = ['*'];
+		} else {
+			$arr_privileges = (array) self::safe_arr_privileges_or_restrictions((string)$arr['p'], true);
+		} //end if
+		//--
 		if((int)Smart::array_size($arr_privileges) <= 0) {
 			$valid['error'] = 'JSON object have an Invalid Privileges List: `'.$arr['p'].'`';
 			return (array) $valid;
@@ -1352,7 +1360,7 @@ final class SmartAuth {
 			return (array) $swt;
 		} //end if
 		//-- pass hash security ; {{{SYNC-SWT-PASS-HASH-SECURITY-CHECK}}} ; to avoid to include by mistake a plain password in the SWT Token, it only allows 2 type of Password Hash: SmartHashCrypto::password() for admin/task area ; SmartAuth::password_hash_create() for index area
-		if((string)\trim((string)$auth_hash_pass) == '') {
+		if((string)trim((string)$auth_hash_pass) == '') {
 			$valid['error'] = 'Password Hash is Empty';
 			return (array) $valid;
 		} //end if else
@@ -1443,7 +1451,8 @@ final class SmartAuth {
 			$privs_list = (string) str_replace(' ', '', (string)Smart::array_to_list((array)$valid_privs));
 		} //end if
 		if((string)trim((string)$privs_list) == '') {
-			$privs_list = '<>'; // fix: if no valid Privs list, use a non-empty string ; no error here, just in validator to be able to test invalid Privs List !
+		//	$privs_list = '<>'; // fix: if no valid Privs list, use a non-empty string ; no error here, just in validator to be able to test invalid Privs List !
+			$privs_list = '*';
 		} //end if
 		$valid_privs = null;
 		//--

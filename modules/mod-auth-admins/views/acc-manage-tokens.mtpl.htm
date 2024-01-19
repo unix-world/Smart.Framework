@@ -1,4 +1,4 @@
-<!-- v.20240118 -->
+<!-- v.20240119 -->
 [@@@SUB-TEMPLATE:acc-styles-form.mtpl.inc.htm@@@]
 <style>
 table#data-tbl-tokens,
@@ -67,6 +67,7 @@ table#data-tbl-tokens .dtTbl_ColCTime {
 	font-weight: bold;
 }
 </style>
+<script src="lib/js/jsqrsvg/qrcode.js"></script>
 <script>
 const cDlg = () => {
 	const _Utils$ = smartJ$Utils;
@@ -74,7 +75,7 @@ const cDlg = () => {
 	const _BwUtils$ = smartJ$Browser;
 	const fUUID = _Utils$.uuid();
 	const fID = 'form_new_token__' + _Crypto$Hash.md5(fUUID);
-	_BwUtils$.ConfirmDialog('<form name="' + _Utils$.escape_html(fID) + '" id="' + _Utils$.escape_html(fID) + '" class="ux-form" onSubmit="return false;">' + '<h6>Token Name</h6><input type="text" name="frm[name]" value="" minlength="5" maxlength="50" autocomplete="off" placeholder="max 50 chars ; min 5 chars" style="width:100%">' + '<h6>Token Privileges</h6><input type="text" name="frm[priv]" value="" minlength="1" maxlength="255" autocomplete="off" placeholder="max 255 chars ; min 1 char ; ex: `priv-a1, priv-b2` or `*`" title="valid privilege key length: min 2 / max 22 chars ; accepted chars: `a-z`, `0-9`, `:` and `-` ; privileges have to be separed by a comma `,`" style="width:100%">' + '<h6>Token Expiration</h6><input type="text" name="frm[exp]" value="" maxlength="10" autocomplete="off" placeholder="Empty (no expiration) or YYYY-MM-DD" style="width:100%">' + '</form>', () => { _BwUtils$.SubmitFormByAjax(fID, '[###ACTIONS-URL|js###]&action=tokens-create', 'auto', null, null, () => { setTimeout(() => { self.location = self.location; }, 250); }, true); }, 'Create NEW Token', null, null, 'alertable');
+	_BwUtils$.ConfirmDialog('<form name="' + _Utils$.escape_html(fID) + '" id="' + _Utils$.escape_html(fID) + '" class="ux-form" onSubmit="return false;">' + '<h6>Token Name</h6><input type="text" name="frm[name]" value="" minlength="5" maxlength="25" autocomplete="off" placeholder="max 25 chars ; min 5 chars" style="width:100%">' + '<h6>Token Privileges</h6><input type="text" name="frm[priv]" value="" minlength="1" maxlength="255" autocomplete="off" placeholder="max 255 chars ; min 1 char ; ex: `priv-a1, priv-b2` or `*`" title="valid privilege key length: min 2 / max 22 chars ; accepted chars: `a-z`, `0-9`, `:` and `-` ; privileges have to be separed by a comma `,`" style="width:100%">' + '<h6>Token Expiration</h6><input type="text" name="frm[exp]" value="" maxlength="10" autocomplete="off" placeholder="Empty (no expiration) or YYYY-MM-DD" style="width:100%">' + '</form>', () => { _BwUtils$.SubmitFormByAjax(fID, '[###ACTIONS-URL|js###]&action=tokens-create', 'auto', null, null, () => { setTimeout(() => { self.location = self.location; }, 250); }, true); }, 'Create NEW Token', null, null, 'alertable');
 };
 </script>
 <center><div><table><tr><td>
@@ -124,8 +125,10 @@ jQuery(() => {
 		return _Utils$.hex2bin(_Ba$eConv.base_to_hex_convert(eSeed, (16+1)*5));
 	};
 
-	vwTk = (iD, eTk, hS) => {
-		_BwUtils$.AlertDialog('<h4>Token Auth UserName (ID)</h4>' + '<h6 style="color:#DDDDDD;">' + _Utils$.escape_html(iD + '#token') + '</h6>' + '<h4>Token Pass (Key)</h4>' + '<h6 style="color:#DDDDDD;">' + _Utils$.escape_html(deTk(eTk)) + '</h6>' + '<br>' + '<div style="color:#778899; font-size:0.625rem; word-wrap:break-word;">' + '<b>UUID:</b>&nbsp;' + _Utils$.escape_html(hS) + '</div>', null, 'Token Login Info', null, null, 'alertable');
+	vwTk = (iD, eTk, hS, name) => {
+		const dTK = deTk(eTk);
+		const qrDTK = smartQRCode.getAsSvg(dTK, { pal: ["#8899AA", "#FFFFFF"] });
+		_BwUtils$.AlertDialog('<img align="right" src="data:image/svg+xml,' + _Utils$.escape_html(_Utils$.escape_url(String(qrDTK))) + '">' + '<h4>Token Auth UserName (ID)</h4>' + '<h6 style="color:#DDDDDD;">' + _Utils$.escape_html(iD + '#token') + '</h6>' + '<h4>Token Pass (Key)</h4>' + '<h6 style="color:#DDDDDD;">' + _Utils$.escape_html(dTK) + '</h6>' + '<br>' + '<div style="color:#778899; font-size:0.625rem; word-wrap:break-word;">' + '<b>UUID:</b>&nbsp;' + _Utils$.escape_html(hS) + '</div>', null, 'Token Name: `' + name + '`', 640, 300, 'alertable');
 	};
 
 	dDlg = (iD, hS, nM) => {
@@ -258,7 +261,7 @@ jQuery(() => {
 				} else if(type === 'filter') {
 					return tk;
 				} else {
-					return '<span title="' + _Utils$.escape_html(data) + '\n\n' + tk + '\n\n' + _Utils$.escape_html(deSeed(row['token-seed'])) + '" class="' + ((!!(row['is-invalid'] === 0)) ? 'dtTbl_ColHash' : 'dtTbl_ColXHash') + '" style="cursor:cell;" data-id="' + _Utils$.escape_html(row['id']) + '" data-tk="' + _Utils$.escape_html(row['token-key']) + '" data-hs="' + _Utils$.escape_html(data) + '" onclick="vwTk(jQuery(this).attr(\'data-id\'), jQuery(this).attr(\'data-tk\'), jQuery(this).attr(\'data-hs\')); return false;">' + _Utils$.escape_html(data.substring(0,28)+'...') + '</span>';
+					return '<span title="' + _Utils$.escape_html(data) + '\n\n' + tk + '\n\n' + _Utils$.escape_html(deSeed(row['token-seed'])) + '" class="' + ((!!(row['is-invalid'] === 0)) ? 'dtTbl_ColHash' : 'dtTbl_ColXHash') + '" style="cursor:cell;" data-id="' + _Utils$.escape_html(row['id']) + '" data-tk="' + _Utils$.escape_html(row['token-key']) + '" data-hs="' + _Utils$.escape_html(data) + '" data-name="' + _Utils$.escape_html(row['token_name']) + '" onclick="vwTk(jQuery(this).attr(\'data-id\'), jQuery(this).attr(\'data-tk\'), jQuery(this).attr(\'data-hs\'), jQuery(this).attr(\'data-name\')); return false;">' + _Utils$.escape_html(data.substring(0,28)+'...') + '</span>';
 				}
 			},
 		},

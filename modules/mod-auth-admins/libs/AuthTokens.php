@@ -30,7 +30,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @ignore
  *
  * @depends     classes: Smart, SmartAuth
- * @version 	v.20240118
+ * @version 	v.20240119
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -318,18 +318,22 @@ final class AuthTokens {
 			$valid['ernum'] = 45;
 			return (array) $valid;
 		} //end if
-		//-- {{{SYNC-ARR-BUILD-PRIVS-LIST-TO-ARR}}}
-		$arr_privileges = (array) \SmartAuth::safe_arr_privileges_or_restrictions((string)$arr['^']);
-		$arr_privileges = (array) \array_keys((array)$arr_privileges);
-		$arr_privileges = (array) \Smart::array_sort((array)$arr_privileges, 'sort');
-		//-- #end sync
-		if((int)\Smart::array_size($arr_privileges) <= 0) {
-			$valid['error'] = 'JSON object have an Invalid Privileges list';
-			$valid['ernum'] = 44;
-			return (array) $valid;
-		} //end if
-		$valid['restr-priv'] = (array) $arr_privileges;
-		$arr_privileges = null;
+		if((string)$arr['^'] == '<*>') {
+			//--
+			$valid['restr-priv'] = ['*']; // explicit
+			//--
+		} else {
+			//--
+			$arr_privileges = (array) \SmartAuth::safe_arr_privileges_or_restrictions((string)$arr['^'], true);
+			//--
+			if((int)\Smart::array_size($arr_privileges) <= 0) {
+				$valid['error'] = 'JSON object have an Invalid Privileges list';
+				$valid['ernum'] = 44;
+				return (array) $valid;
+			} //end if
+			$valid['restr-priv'] = (array) $arr_privileges;
+			$arr_privileges = null;
+		} //end if else
 		//--
 		if(
 			((string)$arr['$'] == '')
@@ -424,50 +428,62 @@ final class AuthTokens {
 		//-- {{{SYNC-STK-TOKEN-COMPOSE-PRIVILEGES}}}
 		$privs_list = '';
 		//--
-		$privs_arr = (array) \array_keys((array)\SmartAuth::safe_arr_privileges_or_restrictions((array)\explode(',', (string)\str_replace([' ', "\t", "\r", "\n"], '', (string)\strtolower((string)$token_priv)))));
-		$valid_privs = [];
-		if(\Smart::array_size($privs_arr) > 0) {
-			foreach($privs_arr as $key => $val) {
-				if(\Smart::is_nscalar($val)) {
-					$val = (string) \trim((string)$val);
-					if((string)$val != '') {
-						if(\SmartAuth::validate_privilege_or_restriction_key((string)$val) === true) { // if valid privilege key name
-							$valid_privs[] = (string) $val;
+		if((string)$token_priv == '*') {
+			//--
+			$privs_list = '<*>';
+			//--
+		} else {
+			//--
+			$privs_arr = (array) \SmartAuth::safe_arr_privileges_or_restrictions((array)\explode(',', (string)\str_replace([' ', "\t", "\r", "\n"], '', (string)\strtolower((string)$token_priv))), true);
+			//--
+			$valid_privs = [];
+			//--
+			if(\Smart::array_size($privs_arr) > 0) {
+				foreach($privs_arr as $key => $val) {
+					if(\Smart::is_nscalar($val)) {
+						$val = (string) \trim((string)$val);
+						if((string)$val != '') {
+							if(\SmartAuth::validate_privilege_or_restriction_key((string)$val) === true) { // if valid privilege key name
+								$valid_privs[] = (string) $val;
+							} else {
+								$stk['error'] = 'Privileges List is Invalid: Contains an Invalid Value: `'.$val.'`';
+								$stk['ernum'] = -21;
+								return (array) $stk;
+							} //end if else
 						} else {
-							$stk['error'] = 'Privileges List is Invalid: Contains an Invalid Value: `'.$val.'`';
-							$stk['ernum'] = -21;
+							$stk['error'] = 'Privileges List is Invalid: Contains an Empty Value';
+							$stk['ernum'] = -22;
 							return (array) $stk;
-						} //end if else
+						} //end if
 					} else {
-						$stk['error'] = 'Privileges List is Invalid: Contains an Empty Value';
-						$stk['ernum'] = -22;
+						$stk['error'] = 'Privileges List is Invalid: Contains a Non-Scalar Value';
+						$stk['ernum'] = -23;
 						return (array) $stk;
 					} //end if
-				} else {
-					$stk['error'] = 'Privileges List is Invalid: Contains a Non-Scalar Value';
-					$stk['ernum'] = -23;
-					return (array) $stk;
-				} //end if
-			} //end foreach
-		} else {
-			$stk['error'] = 'Privileges List is Invalid: Contain only Empty Values';
-			$stk['ernum'] = -24;
-			return (array) $stk;
+				} //end foreach
+			} else {
+				$stk['error'] = 'Privileges List is Invalid: Contain only Empty Values';
+				$stk['ernum'] = -24;
+				return (array) $stk;
+			} //end if else
+			//--
+			if(\Smart::array_size($valid_privs) > 0) {
+				$privs_list = (string) \str_replace(' ', '', (string)\Smart::array_to_list((array)$valid_privs));
+			} else {
+				$stk['error'] = 'Privileges List is Invalid: Contain only Non-Compliant Values';
+				$stk['ernum'] = -25;
+				return (array) $stk;
+			} //end if else
+			//--
+			$valid_privs = null; // clear
+			$privs_arr = null;
+			//--
 		} //end if else
-		//--
-		if(\Smart::array_size($valid_privs) > 0) {
-			$privs_list = (string) \str_replace(' ', '', (string)\Smart::array_to_list((array)$valid_privs));
-		} else {
-			$stk['error'] = 'Privileges List is Invalid: Contain only Non-Compliant Values';
-			$stk['ernum'] = -25;
-			return (array) $stk;
-		} //end if else
-		//--
-		$valid_privs = null; // clear
-		$privs_arr = null;
 		//--
 		if((string)\trim((string)$privs_list) == '') {
-			$privs_list = '<>'; // fix: if no valid Privs list, use a non-empty string ; no error here, just in validator to be able to test invalid Privs List !
+			$stk['error'] = 'Privileges List is Empty';
+			$stk['ernum'] = -26;
+			return (array) $stk;
 		} //end if
 		//--
 		if(

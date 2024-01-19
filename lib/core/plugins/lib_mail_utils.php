@@ -1928,7 +1928,7 @@ final class SmartMailerMimeParser {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartHashCrypto, SmartCipherCrypto, SmartHttpUtils, SmartHttpClient, SmartAuth, SmartUtils
- * @version 	v.20240118
+ * @version 	v.20240119
  * @package 	Application:Plugins:Mailer
  *
  */
@@ -2011,8 +2011,8 @@ final class SmartMailerOauth2 {
 					'A', // bind to adm/tsk area only !
 					(string) $params['user'], // auth user name ; this should be the username not the ID ; on admin area the username is used for auth !
 					(string) $params['pass'],  // password hash
-					(int)    30, // 30 sec ; connect time is 10 sec ; token refresh timeout is 15 ; total is 25 + extra 5 sec
-					(array)  [ (string)SmartUtils::get_server_current_ip() ], // server's own IP Address only, in this List ; currently just one
+					(int)    60, // ~30 sec but the clock may be unsync a bit ... let it be 60 sec ; connect time is 10 sec ; token refresh timeout is 15 ; total is 25 + extra 5 sec
+					(array)  [], // better use wildcard, this can be cross-servers, make sure it works // [ (string)SmartUtils::get_server_current_ip() ], // server's own IP Address only, in this List ; currently just one
 					(array)  [ 'oauth2' ] // only oauth2 privilege
 				);
 				if($swt_token['error'] !== '') {

@@ -22,7 +22,7 @@ define('SMART_APP_MODULE_AUTH', true);
  */
 final class SmartAppAdminController extends SmartAbstractAppController {
 
-	// v.20240118
+	// v.20240119
 
 	// TODO:
 	// 	* Edit: support to bind to a specific IP address list, for extra security
@@ -131,9 +131,9 @@ final class SmartAppAdminController extends SmartAbstractAppController {
 				} elseif((string)trim((string)$frm['name']) == '') {
 					$message = 'Name is Empty';
 				} elseif((int)strlen((string)$frm['name']) < 5) {
-					$message = 'Name is too short (min: 10)';
-				} elseif((int)strlen((string)$frm['name']) > 50) {
-					$message = 'Name is too long (max: 50)';
+					$message = 'Name is too short (min: 5)';
+				} elseif((int)strlen((string)$frm['name']) > 25) {
+					$message = 'Name is too long (max: 25)';
 				} elseif((string)trim((string)$frm['priv']) == '') {
 					$message = 'Privileges list is Empty';
 				} elseif((int)strlen((string)$frm['priv']) > 255) {
