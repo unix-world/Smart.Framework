@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / INIT] v.20221006 s.20240118.1605
+// [AppCodeUnpack / INIT] v.20240216 s.20240216.1345
 // (c) 2013-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
@@ -22,7 +22,7 @@ if(!defined('APP_CUSTOM_LOG_PATH')) { // for standalone apps this must be define
 //--------------------------------------- APPCODEUNPACK AUTH VALUES
 const APP_AUTH_ADMIN_ENFORCE_HTTPS = false;
 const APP_AUTH_ADMIN_USERNAME = 'super.admin';
-const APP_AUTH_ADMIN_PASSWORD = 'bf448.v2!99uQpE-PXzRCtXTMpC0mJrIn5rKd80VvyAVnzB5vqq_JC_kW-6u9c-hK_iTVwcuXkn43_Zub_hn4te0dhx_4CMH1wfbvsX-Y'; // should be the same as set in appcodepack.yaml ; the app unpack auth password ; default is: `The1pass!` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
+const APP_AUTH_ADMIN_PASSWORD = 'bf448.v3!Iywa5MYV9c08U3zoHH3QkyjpW6515s8cTqjEj4;..tJkRbKDtyNZgGdZyLun4sokJjfK_PVZsHJcI4fZ6TVOr6Cj7LsofLdRwubwcqspf1ThuRtjOC7rTDylpT0r8_ywIJ5xzthHrxpauwIPDd1WEGyebfGwynpi7wC_lKQozxWz0PcZGKgPEmKC-RcDh99'; // should be the same as set in appcodepack.yaml ; the app unpack auth password ; default is: `The1pass!` ; use AppCode Deploy Password Encryption Utility to generate this pass ; If the deploy-secret changes, this pass have to be regenerated ...
 const APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY = ''; // To generate an encrypted private key for this config, use \SmartAuth::encrypt_privkey($plainTextKey, \SmartHashCrypto::password($plainTextPassword, $userName))
 //--------------------------------------- APPCODEUNPACK DEPLOY SETTINGS
 const APPCODEPACK_DEPLOY_SECRET = 'Set-here-1-private-key-that-must-not-be-disclosed!'; // should be the same as set in appcodepack.yaml
@@ -99,6 +99,38 @@ const SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS =  		''; 										// The List of D
 //===== WARNING: =====
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //====================
+
+//---------------------------------------- SPECIAL .htaccess FILES CONTENT :: These are set for Apache web server. If you are using another web server you may adjust them.
+//-- .htaccess DENY EXECUTION OF SCRIPTS
+const SMART_FRAMEWORK_HTACCESS_NOEXECUTION = '
+# Prevent Scripts or Executables
+Options -ExecCGI
+<FilesMatch "\.(html|htm|js|sass|scss|css|shtml|phtml|php|php*|sql|inc|tpl|mtpl|twig|latte|t3fluid|pl|py|pyc|pyo|rb|go|asp|jsp|sh|bash|bat|cmd|cgi|fcgi|fastcgi|scgi|wsgi|exe|dll|dylib|bin|so)$">
+	SetHandler none
+	ForceType text/plain
+</FilesMatch>
+'; // php_flag engine off
+//-- .htaccess ACCESS FORBIDDEN
+const SMART_FRAMEWORK_HTACCESS_FORBIDDEN = '
+# Deny Access: Apache 2.2
+<IfModule !mod_authz_core.c>
+	Order allow,deny
+	Deny from all
+</IfModule>
+# Deny Access: Apache 2.4
+<IfModule mod_authz_core.c>
+	Require all denied
+</IfModule>
+'; // {{{SYNC-SMART-APP-INI-HTACCESS}}}
+//-- .htaccess IGNORE INDEXING
+const SMART_FRAMEWORK_HTACCESS_NOINDEXING = '
+# Disable Indexing
+<IfModule mod_autoindex.c>
+	IndexIgnore *
+</IfModule>
+Options -Indexes
+'; // {{{SYNC-SMART-APP-INI-HTACCESS}}}
+//--
 
 //============================================================
 //----------------------------------------

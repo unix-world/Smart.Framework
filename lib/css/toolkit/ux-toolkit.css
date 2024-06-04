@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20231020), (c) 2015-2023 unix-world.org
+	extended by unixman, (stable.20240123), (c) 2015-2024 unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -489,21 +489,15 @@ a.ux-link:hover {
 	border: 0 !important;
 }
 
-.ux-button-super {
-	padding: 7px 12px 7px 12px !important;
-	margin-bottom: 10px !important; /* sync with .ux-field-xl */
-}
-.ux-button-super, .ux-button-super * {
-	font-size: 1.25rem !important; /* 20px */
-	line-height: 1.25rem !important; /* 20px */
-}
-
 .ux-button-xsmall {
 	padding: 5px 8px 5px 8px !important;
 }
 .ux-button-xsmall, .ux-button-xsmall * {
 	font-size: 0.75rem !important; /* 11px */
 	line-height: 0.75rem !important; /* 11px */
+}
+.ux-button-xsmall .sfi {
+	font-size: 0.875rem !important; /* 13px */
 }
 
 .ux-button-small {
@@ -513,6 +507,21 @@ a.ux-link:hover {
 	font-size: 0.875rem !important; /* 14px */
 	line-height: 0.875rem !important; /* 14px */
 }
+.ux-button-small .sfi {
+	font-size: 1rem !important; /* 16px */
+}
+
+.ux-button-super {
+	padding: 7px 12px 7px 12px !important;
+	margin-bottom: 10px !important; /* sync with .ux-field-xl */
+}
+.ux-button-super, .ux-button-super * {
+	font-size: 1.25rem !important; /* 20px */
+	line-height: 1.25rem !important; /* 20px */
+}
+.ux-button-super .sfi {
+	font-size: 1.375rem !important; /* 22px */
+}
 
 .ux-button-large {
 	padding: 11px 17px 11px 17px !important;
@@ -521,6 +530,9 @@ a.ux-link:hover {
 	font-size: 1.25rem !important; /* 20px */
 	line-height: 1.25rem !important; /* 20px */
 }
+.ux-button-large .sfi {
+	font-size: 1.5rem !important; /* 24px */
+}
 
 .ux-button-xlarge {
 	padding: 13px 21px 13px 21px !important;
@@ -528,6 +540,9 @@ a.ux-link:hover {
 .ux-button-xlarge, .ux-button-xlarge * {
 	font-size: 1.5rem !important; /* 24px */
 	line-height: 1.5rem !important; /* 24px */
+}
+.ux-button-xlarge .sfi {
+	font-size: 1.75rem !important; /* 28px */
 }
 
 .ux-button-responsive {
@@ -877,6 +892,7 @@ since IE8 won't execute CSS that contains a CSS3 selector.
 	border: 1px solid #CCCCCC;
 	background-color: #FFFFFF;
 }
+.ux-form select.ux-field-xs,
 .ux-form select[multiple] {
 	height: auto;
 }

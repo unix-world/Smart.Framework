@@ -1,7 +1,7 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20231119 s.20240118.1605
-// (c) 2013-2023 unix-world.org - all rights reserved
+// [AppCodeUnpack / APP] v.20240216 s.20240216.1345
+// (c) 2013-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) : voi
 final class AppCodeUnpack {
 
 	// ::
-	// v.20231119
+	// v.20240216
 
-	private const APPCODEUNPACK_VERSION = 's.20231125.1248';
+	private const APPCODEUNPACK_VERSION = 's.20240216.1345';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -955,7 +955,7 @@ final class AppCodeUnpack {
 				'APPCODEUNPACK_LOGO_SF_SVG', 'APPCODEUNPACK_LOADING_SVG',
 				'APPCODEUNPACK_CSS_LOCAL_FX', 'APPCODEUNPACK_JS_LOCAL_FX',
 				'APPCODEUNPACK_HTML_DEPLOY',
-				'APP_AUTH_ADMIN_USERNAME', 'APP_AUTH_ADMIN_PASSWORD', 'APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY',
+				'APP_AUTH_ADMIN_USERNAME', 'APP_AUTH_ADMIN_PASSWORD', // 'APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY',
 				'APPCODEPACK_DEPLOY_SECRET', 'APPCODEPACK_DEPLOY_APPLIST',
 				'SMART_FRAMEWORK_SRVPROXY_ENABLED',
 			]
@@ -1050,10 +1050,12 @@ final class AppCodeUnpack {
 				true
 			);
 			$priv_keys = '';
-			if((string)\trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY) != '') {
-				$priv_keys = (string) \trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY);
-				if((string)$priv_keys != '') {
-					$priv_keys = (string) \SmartAuth::decrypt_privkey((string)$priv_keys, (string)$hash_of_pass);
+			if(\defined('\\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY')) {
+				if((string)\trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY) != '') {
+					$priv_keys = (string) \trim((string)\APP_AUTH_ADMIN_ENCRYPTED_PRIVKEY);
+					if((string)$priv_keys != '') {
+						$priv_keys = (string) \SmartAuth::decrypt_privkey((string)$priv_keys, (string)$hash_of_pass);
+					} //end if
 				} //end if
 			} //end if
 			//--

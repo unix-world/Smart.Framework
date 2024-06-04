@@ -2927,10 +2927,10 @@ final class SmartMarkersTemplating {
 		//--
 		if(!SmartEnvironment::ifDevMode()) {
 			$maxlen = 255;
-			$txt = 'If the TPL is longer switch to Dev Mode to increase the size logged or even turn on Debugging to have the full size logged ...';
+			$txt = 'If the TPL is longer, switch to Dev Mode to increase the size logged or even turn on Debugging to have the full size logged ...';
 		} else { // dev mode
 			$maxlen = 65535;
-			$txt = 'If the TPL is longer turn on Debugging to have the full size logged ...';
+			$txt = 'If the TPL is longer, turn on Debugging to have the full size logged ...';
 		} //end if
 		//--
 		return (string) SmartUnicode::sub_str($mtemplate, 0, (int)$maxlen)."\n".'***** Max TPL log size is: '.(int)$maxlen.' bytes. '.$txt.' *****';

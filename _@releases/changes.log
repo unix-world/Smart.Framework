@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+February 16, 2024
+	* BugFix ?page[%24eq]=1
+
 January 19, 2024
 	* BugFix Release: fixing several minor bugs
 

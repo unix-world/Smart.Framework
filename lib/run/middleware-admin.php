@@ -1,6 +1,6 @@
 <?php
 // Smart.Framework / Middleware / Admin | Task
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2006-2024 unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[A][T]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20231029
+ * @version		20240216
  * @package 	Application
  *
  */
@@ -122,7 +122,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 		//--
 		$smartframeworkservice = ''; // special operation
 		if(SmartFrameworkRegistry::issetRequestVar('smartframeworkservice') === true) {
-			$smartframeworkservice = (string) strtolower((string)SmartUnicode::utf8_to_iso((string)SmartFrameworkRegistry::getRequestVar('smartframeworkservice')));
+			$smartframeworkservice = (string) strtolower((string)SmartUnicode::utf8_to_iso((string)SmartFrameworkRegistry::getRequestVar('smartframeworkservice', '', 'string')));
 			switch((string)$smartframeworkservice) {
 				case 'status':
 					break;
@@ -183,7 +183,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 			//--
 			if(SmartEnvironment::ifDebug()) {
 				SmartFrameworkRuntime::outputHttpHeadersCacheControl(); // headers: cache control, force no-cache
-				echo SmartDebugProfiler::display_marker_tpl_debug((string)SmartFrameworkRegistry::getRequestVar('tpl'));
+				echo SmartDebugProfiler::display_marker_tpl_debug((string)SmartFrameworkRegistry::getRequestVar('tpl', '', 'string'));
 			} else {
 				http_response_code(404);
 				echo SmartComponents::http_message_404_notfound('NO TPL-DEBUG Service has been activated on this server ...');
@@ -203,7 +203,7 @@ final class SmartAppAdminMiddleware extends SmartAbstractAppMiddleware { // retu
 		$err404 = '';
 		$arr = array();
 		//--
-		$page = (string) SmartUnicode::utf8_to_iso((string)SmartFrameworkRegistry::getRequestVar('page'));
+		$page = (string) SmartUnicode::utf8_to_iso((string)SmartFrameworkRegistry::getRequestVar('page', '', 'string'));
 		$page = (string) trim((string)str_replace(array('/', '\\', ':', '?', '&', '=', '%'), array('', '', '', '', '', '', ''), $page)); // fix for get as it automatically replaces . with _ (so, reverse), but also fix some invalid characters ...
 		if((string)$page == '') {
 			$page = (string) trim((string)Smart::get_from_config('app.'.$the_area.'-home', 'string'));
