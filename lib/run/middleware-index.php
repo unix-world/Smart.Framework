@@ -41,7 +41,7 @@ define('SMART_FRAMEWORK_RELEASE_MIDDLEWARE', '[I]@v.8.7');
  * @internal
  * @ignore		THIS CLASS IS FOR INTERNAL USE ONLY BY SMART-FRAMEWORK.RUNTIME !!!
  *
- * @version		20240216
+ * @version		20240928
  * @package 	Application
  *
  */
@@ -388,6 +388,10 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 				SmartFrameworkRuntime::Raise502Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
+			case 501:
+				SmartFrameworkRuntime::Raise501Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
 			case 500:
 				SmartFrameworkRuntime::Raise500Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
@@ -397,8 +401,16 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 				SmartFrameworkRuntime::Raise429Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
+			case 422:
+				SmartFrameworkRuntime::Raise422Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
 			case 410:
 				SmartFrameworkRuntime::Raise410Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
+				return;
+				break;
+			case 405:
+				SmartFrameworkRuntime::Raise405Error((string)$appSettings['error'], (string)$appSettings['errhtml']);
 				return;
 				break;
 			case 404:
@@ -457,6 +469,11 @@ final class SmartAppIndexMiddleware extends SmartAbstractAppMiddleware {
 				} else {
 					Smart::log_warning('Headers Already Sent in controller ['.$page.'] before HTTP-STATUS='.(int)$appStatusCode);
 				} //end if else
+				break;
+			//-- No Content 204 status, for APIs
+			case 204:
+				SmartFrameworkRuntime::Raise204NoContentStatus(); // here should be no output !
+				return;
 				break;
 			//-- DEFAULT: OK
 			case 200:

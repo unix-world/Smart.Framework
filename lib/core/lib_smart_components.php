@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20231225
+ * @version 	v.20240928
  * @package 	Application:ViewComponents
  *
  */
@@ -148,6 +148,8 @@ final class SmartComponents {
 	 *
 	 */
 	public static function http_status_message(?string $y_title, ?string $y_message='', ?string $y_html_message='', ?string $y_opstyle='') : string {
+		//--
+		// IMPORTANT: 204 code is not managed, this is: `No Content` used by APIs
 		//--
 		$y_opstyle = (string) strtolower((string)trim((string)$y_opstyle));
 		//--
@@ -310,6 +312,27 @@ final class SmartComponents {
 
 
 	//================================================================
+	// 405 Method Not Allowed :: The requested method is not allowed on this url.
+	public static function http_message_405_methodnotallowed(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'405.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'405.php');
+				if(function_exists('custom_http_message_405_methodnotallowed')) {
+					return (string) custom_http_message_405_methodnotallowed((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('405 Method Not Allowed', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
 	// 410 Gone :: A 410 is more permanent than a 404; it means that the page is gone. To be used for limited-time / promotional services.
 	public static function http_message_410_gone(?string $y_message, ?string $y_html_message='') : string {
 		//--
@@ -325,6 +348,27 @@ final class SmartComponents {
 		} //end if
 		//--
 		return (string) self::http_error_message('410 Gone', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// 422 Unprocessable Entity :: The user has sent a payload that is not valid.
+	public static function http_message_422_unprocessablecontent(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'422.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'422.php');
+				if(function_exists('custom_http_message_422_unprocessablecontent')) {
+					return (string) custom_http_message_422_unprocessablecontent((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('422 Unprocessable Entity', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================
@@ -367,6 +411,27 @@ final class SmartComponents {
 		} //end if
 		//--
 		return (string) self::http_error_message('500 Internal Server Error', (string)$y_message, (string)$y_html_message);
+		//--
+	} //END FUNCTION
+	//================================================================
+
+
+	//================================================================
+	// 501 Not Implemented :: A generic error message, given when the HTTP Method is not implemented.
+	public static function http_message_501_notimplemented(?string $y_message, ?string $y_html_message='') : string {
+		//--
+		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
+			//--
+			if(SmartFileSystem::is_type_file(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'501.php')) {
+				require_once(SMART_FRAMEWORK_CUSTOM_ERR_PAGES.'501.php');
+				if(function_exists('custom_http_message_501_notimplemented')) {
+					return (string) custom_http_message_501_notimplemented((string)$y_message, (string)$y_html_message);
+				} //end if
+			} //end if
+			//--
+		} //end if
+		//--
+		return (string) self::http_error_message('501 Not Implemented', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================

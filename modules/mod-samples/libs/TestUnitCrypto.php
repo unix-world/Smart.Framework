@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20231203
+ * @version 	v.20240924
  *
  */
 final class TestUnitCrypto {
@@ -259,7 +259,7 @@ final class TestUnitCrypto {
 		//--
 
 		//-- hash passwords tests, try to see if there are variations, inconsistencies, see if validations work
-		$plainPass = 'Smart スマート // Cloud Application Platform :: The max '.rand(100,999); // 55 chars, unicode
+		$plainPass = \SmartUnicode::sub_str('Smart スマート // Cloud Application Platform :: The max', 0, 48).' '.rand(1000,9999); // 55 chars, unicode
 		$testAPassw1 = (string) \SmartAuth::password_hash_create((string)$plainPass);
 		$testAPassw2 = (string) \SmartAuth::password_hash_create((string)strrev((string)$plainPass));
 		//--
