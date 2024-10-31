@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20240928
+ * @version 	v.20241031
  * @package 	Application:ViewComponents
  *
  */
@@ -1091,10 +1091,6 @@ final class SmartComponents {
 			case 'iee':
 				$desc = 'Microsoft Edge';
 				$pict = 'browser/iee';
-				break;
-			case 'iex':
-				$desc = 'Microsoft Internet Explorer';
-				$pict = 'browser/iex';
 				break;
 			case 'opr':
 				$desc = 'Opera';

@@ -37,7 +37,7 @@ if((!function_exists('gzdeflate')) OR (!function_exists('gzinflate'))) {
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	classes: Smart, SmartUnicode, SmartValidator, SmartHashCrypto, SmartAuth, SmartFileSysUtils, SmartFileSystem, SmartFrameworkSecurity, SmartFrameworkRegistry, SmartValidator, SmartParser ; optional-constants: SMART_FRAMEWORK_SECURITY_CRYPTO, SMART_FRAMEWORK_COOKIES_DEFAULT_LIFETIME, SMART_FRAMEWORK_COOKIES_DEFAULT_DOMAIN, SMART_FRAMEWORK_COOKIES_DEFAULT_SAMESITE, SMART_FRAMEWORK_SRVPROXY_ENABLED, SMART_FRAMEWORK_SRVPROXY_CLIENT_IP, SMART_FRAMEWORK_SRVPROXY_CLIENT_PROXY_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_PROTO, SMART_FRAMEWORK_SRVPROXY_SERVER_IP, SMART_FRAMEWORK_SRVPROXY_SERVER_DOMAIN, SMART_FRAMEWORK_SRVPROXY_SERVER_PORT, SMART_FRAMEWORK_ALLOW_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_DENY_UPLOAD_EXTENSIONS, SMART_FRAMEWORK_IDENT_ROBOTS
- * @version 	v.20240119
+ * @version 	v.20241031
  * @package 	Application:Utils
  *
  */
@@ -2419,7 +2419,7 @@ final class SmartUtils {
 	// GET OS, BROWSER, IP :: ACCESS LOG
 	// This will be used only once
 	public static function get_os_browser_ip(?string $y_mode='') { // : MIXED return, ARRAY/STRING
-		//--
+		//-- r.20241031
 		if((!array_key_exists((string)__FUNCTION__, self::$cache)) OR (!is_array(self::$cache[(string)__FUNCTION__]))) {
 			self::$cache[(string)__FUNCTION__] = []; // fix for PHP8
 		} //end if
@@ -2448,16 +2448,13 @@ final class SmartUtils {
 				$wp_browser = 'smk'; // mozilla seamonkey
 				$wp_class = 'gk'; // gecko class
 			} elseif((strpos($the_lower_signature, ' edg/') !== false) OR (strpos($the_lower_signature, ' edge/') !== false)) {
-				$wp_browser = 'iee'; // microsoft edge (must be before ie)
+				$wp_browser = 'iee'; // microsoft edge
 				$wp_class = 'bk'; // blink class
-			} elseif((strpos($the_lower_signature, ' msie ') !== false) OR (strpos($the_lower_signature, ' trident/') !== false)) {
-				$wp_browser = 'iex'; // internet explorer (must be before any stealth browsers as ex.: opera)
-				$wp_class = 'ie'; // trident class
 			} elseif((strpos($the_lower_signature, 'opera') !== false) OR (strpos($the_lower_signature, ' opr/') !== false) OR (strpos($the_lower_signature, ' oupeng/') !== false) OR (strpos($the_lower_signature, ' opios/') !== false)) {
 				$wp_browser = 'opr'; // opera
 				$wp_class = 'bk'; // blink class
-			} elseif((strpos($the_lower_signature, 'chrome') !== false) OR (strpos($the_lower_signature, 'chromium') !== false) OR (strpos($the_lower_signature, 'iridium') !== false) OR (strpos($the_lower_signature, ' crios/') !== false)) {
-				$wp_browser = 'crm'; // chrome
+			} elseif((strpos($the_lower_signature, 'iridium') !== false) OR (strpos($the_lower_signature, 'chromium') !== false) OR (strpos($the_lower_signature, 'chrome') !== false) OR (strpos($the_lower_signature, ' crios/') !== false)) {
+				$wp_browser = 'crm'; // chromium
 				$wp_class = 'bk'; // blink class
 			} elseif(strpos($the_lower_signature, 'konqueror') !== false) { // must be detected before safari because includes safari signature
 				$wp_browser = 'knq'; // konqueror (kde)
@@ -2469,15 +2466,15 @@ final class SmartUtils {
 				$wp_browser = 'sfr'; // safari
 				$wp_class = 'wk'; // webkit class
 			} elseif(strpos($the_lower_signature, 'webkit') !== false) { // general webkit signature, untrusted
-				$wp_browser = 'wkt'; // webkit
+				$wp_browser = 'wkt'; // webkit (component)
 				$wp_class = 'wk'; // webkit class
 			} elseif((strpos($the_lower_signature, 'mozilla') !== false) OR (strpos($the_lower_signature, 'gecko') !== false)) { // general mozilla signature, untrusted
-				$wp_browser = 'moz'; // mozilla derivates, but not firefox which is detected above
+				$wp_browser = 'moz'; // mozilla derivates, but not firefox or seamonkey which are detected above
 				$wp_class = 'xy'; // various class
-			} elseif(strpos($the_lower_signature, 'netsurf/') !== false) { // it have just a simple signature
+			} elseif(strpos($the_lower_signature, 'netsurf/') !== false) { // netsurf have just a simple signature, but avoid detect robots which are faking this signature ...
 				$wp_browser = 'nsf'; // netsurf
 				$wp_class = 'xy'; // various class
-			} elseif((strpos($the_lower_signature, 'lynx') !== false) OR (strpos($the_lower_signature, 'links') !== false)) {
+			} elseif((strpos($the_lower_signature, 'lynx') !== false) OR (strpos($the_lower_signature, 'links') !== false)) { // console text browsers and derivates
 				$wp_browser = 'lyx'; // lynx / links (text browser)
 				$wp_class = 'tx'; // text class
 			} //end if else
@@ -2486,7 +2483,7 @@ final class SmartUtils {
 			//-- identify os
 			if((strpos($the_lower_signature, 'windows') !== false) OR (strpos($the_lower_signature, 'winnt') !== false)) {
 				$wp_os = 'win'; // ms windows
-			} elseif((strpos($the_lower_signature, 'macos') !== false) OR (strpos($the_lower_signature, 'macosx') !== false) OR (strpos($the_lower_signature, ' mac ') !== false) OR (strpos($the_lower_signature, 'os x') !== false) OR (strpos($the_lower_signature, 'osx') !== false) OR (strpos($the_lower_signature, 'darwin') !== false)) {
+			} elseif((strpos($the_lower_signature, 'macos') !== false) OR (strpos($the_lower_signature, ' mac ') !== false) OR (strpos($the_lower_signature, 'os x') !== false) OR (strpos($the_lower_signature, 'osx') !== false) OR (strpos($the_lower_signature, 'darwin') !== false) OR (strpos($the_lower_signature, 'macintosh') !== false)) {
 				$wp_os = 'mac'; // apple mac / osx / darwin
 			} elseif(strpos($the_lower_signature, 'linux') !== false) {
 				$wp_os = 'lnx'; // *linux
@@ -2496,17 +2493,16 @@ final class SmartUtils {
 				$wp_os = 'sun'; // sun solaris incl clones
 			} //end if
 			//-- identify mobile os
-			if((strpos($the_lower_signature, 'iphone') !== false) OR (strpos($the_lower_signature, 'ipad') !== false) OR (strpos($the_lower_signature, 'ipod') !== false) OR (strpos($the_lower_signature, ' opios/') !== false) OR (strpos($the_lower_signature, ' crios/') !== false)) {
-				$wp_os = 'ios'; // apple mobile ios: iphone / ipad / ipod
+			if((strpos($the_lower_signature, 'iphone') !== false) OR (strpos($the_lower_signature, 'ipad') !== false) OR (strpos($the_lower_signature, 'ipod') !== false) OR (strpos($the_lower_signature, 'iwatch') !== false) OR (strpos($the_lower_signature, ' opios/') !== false) OR (strpos($the_lower_signature, ' crios/') !== false)) {
+				$wp_os = 'ios'; // apple mobile ios: iphone / ipad / ipod / iwatch (and derivatives)
 				$wp_mb = 'yes';
 			} elseif((strpos($the_lower_signature, 'android') !== false) OR (strpos($the_lower_signature, 'saphi') !== false) OR (strpos($the_lower_signature, ' opr/') !== false) OR (strpos($the_lower_signature, ' oupeng/') !== false)) {
-				$wp_os = 'and'; // google android
+				$wp_os = 'and'; // google android (and derivatives)
 				$wp_mb = 'yes';
 			} elseif((strpos($the_lower_signature, 'windows ce') !== false) OR (strpos($the_lower_signature, 'windows phone') !== false) OR (strpos($the_lower_signature, 'windows mobile') !== false) OR (strpos($the_lower_signature, 'windows rt') !== false)) {
 				$wp_os = 'wmo'; // ms windows mobile
 				$wp_mb = 'yes';
-			} elseif(
-				((strpos($the_lower_signature, 'mobile') !== false) AND ((strpos($the_lower_signature, 'linux') !== false) OR (strpos($the_lower_signature, 'ubuntu') !== false))) OR (strpos($the_lower_signature, 'tizen') !== false) OR (strpos($the_lower_signature, 'webos') !== false) OR (strpos($the_lower_signature, 'raspberry') !== false) OR (strpos($the_lower_signature, 'blackberry') !== false)) {
+			} elseif(((strpos($the_lower_signature, 'mobile') !== false) AND ((strpos($the_lower_signature, 'linux') !== false) OR (strpos($the_lower_signature, 'ubuntu') !== false))) OR (strpos($the_lower_signature, 'tizen') !== false) OR (strpos($the_lower_signature, 'webos') !== false) OR (strpos($the_lower_signature, 'raspberry') !== false) OR (strpos($the_lower_signature, 'blackberry') !== false)) {
 				$wp_os = 'lxm'; // linux mobile
 				$wp_mb = 'yes';
 			} //end if
@@ -2528,7 +2524,7 @@ final class SmartUtils {
 					$imax = (int) Smart::array_size($robots);
 					for($i=0; $i<$imax; $i++) {
 						if(stripos((string)$the_lower_signature, (string)$robots[$i]) !== false) {
-							$wp_browser = 'bot'; // Robot
+							$wp_browser = 'bot'; // robot
 							$wp_class = 'rb'; // bot class
 							break;
 						} //end if
@@ -2537,7 +2533,7 @@ final class SmartUtils {
 			} //end if else
 			//-- this is just for self-robot which name is always unique and impossible to guess ; this must override the rest of detections just in the case that someone adds it to the ident robots in init ...
 			if((string)trim((string)$the_lower_signature) == (string)strtolower((string)self::get_selfrobot_useragent_name())) {
-				$wp_browser = '@s#';
+				$wp_browser = '@s#'; // self-robot
 				$wp_class = 'rb'; // bot class
 			} //end if
 			//-- identify ip addr

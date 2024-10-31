@@ -10,6 +10,7 @@ modules/mod-db-orm-redbean
 modules/mod-dbal-laminas
 modules/mod-documentor
 modules/mod-ecomm-cart
+modules/mod-einvoice
 modules/mod-geoip
 modules/mod-highlight-syntax
 modules/mod-html2markdown
