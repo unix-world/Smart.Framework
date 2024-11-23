@@ -77,7 +77,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20231228
+ * @version     v.20241123
  * @package     @Core
  *
  */
@@ -286,6 +286,12 @@ final class Smart {
 	public static function get_from_config(?string $param, ?string $type='') { // mixed
 		//--
 		global $configs;
+		//--
+		$param = (string) trim((string)$param);
+		if((string)$param == '') {
+			self::log_warning(__METHOD__.' # Empty Parameter ; Type ['.$type.']');
+			return null;
+		} //end if
 		//--
 		if(array_key_exists((string)$param, self::$Cfgs)) {
 			return self::$Cfgs[(string)$param]; // mixed
@@ -957,6 +963,10 @@ final class Smart {
 		// add ENT_SUBSTITUTE to avoid discard the entire invalid string (with UTF-8 charset) but substitute dissalowed characters with ?
 		// enforce 4th param as TRUE as default (double encode)
 		//--
+		if((string)$y_string == '') {
+			return '';
+		} //end if
+		//--
 		return (string) htmlspecialchars((string)$y_string, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true); // use charset from INIT (to prevent XSS attacks) ; the 4th parameter double_encode is set to TRUE as default
 		//--
 	} //END FUNCTION
@@ -974,6 +984,10 @@ final class Smart {
 	 */
 	public static function escape_xml(?string $y_string) : string {
 		//-- v.20231228
+		if((string)$y_string == '') {
+			return '';
+		} //end if
+		//--
 		return (string) htmlspecialchars((string)$y_string, ENT_XML1 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true); // use charset from INIT (to prevent XSS attacks) ; the 4th parameter double_encode is set to TRUE as default
 		//--
 	} //END FUNCTION
@@ -990,6 +1004,10 @@ final class Smart {
 	 */
 	public static function escape_css(?string $y_string) : string {
 		//-- http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q6
+		if((string)$y_string == '') {
+			return '';
+		} //end if
+		//--
 		return (string) addcslashes((string)$y_string, "\x00..\x1F!\"#$%&'()*+,./:;<=>?@[\\]^`{|}~"); // inspired from Latte Templating
 		//--
 	} //END FUNCTION
@@ -1013,6 +1031,10 @@ final class Smart {
 		// * Using with safe strings (come from language files): <script>var my = \''.Smart::escape_js($str).'\';</script>
 		// WARNING: strings may contain HTML Tags ... which if apply Smart::escape_html() may break them.
 		// str_replace(["\\", "\n", "\t", "\r", "\b", "\f", "'"], ['\\\\', '\\n', '\\t', '\\r', '', '', '\\\''], (string)$str); // ['\\\\', '', ' ', '', '', '', '\\\'']
+		//--
+		if((string)$str == '') {
+			return '';
+		} //end if
 		//-- encode as json
 		$encoded = (string) @json_encode((string)$str, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_INVALID_UTF8_SUBSTITUTE, 512); // encode the string includding unicode chars, with all possible: < > ' " &
 		//-- the above will provide a json encoded string as: "mystring" ; we get just what's between double quotes as: mystring
@@ -3384,6 +3406,8 @@ final class Smart {
 	//================================================================
 	/**
 	 * A quick replacement for trigger_error() / E_USER_ERROR.
+	 * Since PHP 8.4 E_USER_ERROR has dissapeared
+	 * Fix: E_USER_ERROR was replaced by E_USER_WARNING + a message that must start with: '#SMART-FRAMEWORK.ERROR#' in order to preserve the past behaviour ...
 	 * This is intended to log APP Level Errors.
 	 * This will log the message as ERROR into the App Error Log and stop the execution (also in the Smart Error Handler will raise a HTTP 500 Code).
 	 *
@@ -3398,12 +3422,19 @@ final class Smart {
 		global $smart_____framework_____is_html_last__error;
 		//--
 		if((string)trim((string)$message_to_display) == '') {
-			$message_to_display = 'See Error Log for More Details'; // avoid empty message to display
-			$is_html_message_to_display = false;
+			if((string)SMART_ERROR_HANDLER == 'prod') { // if prod mode
+				$message_to_display = 'See Error Log for More Details'; // avoid empty message to display
+				$is_html_message_to_display = false;
+			} else {
+				if((string)trim((string)$message_to_display) == '') {
+					$message_to_display = (string) $message_to_log;
+					$is_html_message_to_display = false;
+				} //end if
+			} //end if
 		} //end if
 		$smart_____framework_____last__error = (string) $message_to_display;
 		$smart_____framework_____is_html_last__error = (bool) $is_html_message_to_display;
-		trigger_error('#SMART-FRAMEWORK.ERROR# '.$message_to_log, E_USER_ERROR);
+		trigger_error('#SMART-FRAMEWORK.ERROR# '.$message_to_log, E_USER_WARNING); // {{{SF-PHP-EMULATE-E_USER_ERROR}}} ; to emulate the old behaviour of E_USER_ERROR the message must start mandatory with '#SMART-FRAMEWORK.ERROR#'
 		die('App Level Raise ERROR. Execution Halted. '.$message_to_display); // normally this line will never be executed because the E_USER_ERROR via Smart Error Handler will die() before ... but this is just in case, as this is a fatal error and the execution should be halted here !
 		//--
 	} //END FUNCTION

@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartHtmlParser ; optional-constants: SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG
- * @version 	v.20231018
+ * @version 	v.20241120
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -52,7 +52,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20231018';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20241120';
 
 	//===================================
 
@@ -1076,7 +1076,7 @@ final class SmartMarkdownToHTML {
 		//--
 		$arr = array();
 		//--
-		$attributes = preg_split('/[ ]+/', $attributeString, -1, PREG_SPLIT_NO_EMPTY);
+		$attributes = preg_split('/[ ]+/', (string)$attributeString, -1, PREG_SPLIT_NO_EMPTY);
 		//--
 		$classes = [];
 		if(is_array($attributes)) {

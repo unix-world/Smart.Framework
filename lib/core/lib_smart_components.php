@@ -39,7 +39,7 @@ if((!is_string(SMART_TPL_COMPONENTS_APP_ERROR_MSG)) || ((string)trim((string)SMA
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	css: notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating
- * @version 	v.20241031
+ * @version 	v.20241123
  * @package 	Application:ViewComponents
  *
  */
@@ -354,7 +354,7 @@ final class SmartComponents {
 
 
 	//================================================================
-	// 422 Unprocessable Entity :: The user has sent a payload that is not valid.
+	// 422 Unprocessable Content (Unprocessable Entity) :: The user has sent a payload that is not valid.
 	public static function http_message_422_unprocessablecontent(?string $y_message, ?string $y_html_message='') : string {
 		//--
 		if(defined('SMART_FRAMEWORK_CUSTOM_ERR_PAGES')) {
@@ -368,7 +368,7 @@ final class SmartComponents {
 			//--
 		} //end if
 		//--
-		return (string) self::http_error_message('422 Unprocessable Entity', (string)$y_message, (string)$y_html_message);
+		return (string) self::http_error_message('422 Unprocessable Content', (string)$y_message, (string)$y_html_message);
 		//--
 	} //END FUNCTION
 	//================================================================

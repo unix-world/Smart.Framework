@@ -60,7 +60,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	constants: SMART_FRAMEWORK_SECURITY_KEY ; classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js
- * @version 	v.20231128
+ * @version 	v.20241115
  * @package 	Application:Plugins:Captcha
  *
  */
@@ -251,7 +251,7 @@ final class SmartCaptcha {
 				$captcha_code = (string) $captcha_obj->get_code();
 				$captcha_obj = null; // free mem
 			} else { // TODO: implement difficulty level also in ASCII Captcha
-				$captcha_arr = (array) SmartAsciiCaptcha::getCaptchaImageAndCode(5, 0.33, true); // sync size 0.33 with css size and line height !!!
+				$captcha_arr = (array) SmartAsciiCaptcha::getCaptchaImageAndCode(true, 0.344, 5); // sync size to display best in smart captcha
 				$captcha_url = (string) $captcha_arr['html'];
 				$captcha_code = (string) $captcha_arr['code'];
 				$captcha_arr = null; // free mem

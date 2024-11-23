@@ -2,6 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+November 23, 2024
+	* Fixes and optimizations
+	* PHP 8.4 compatibility fixes
+	* removed E_STRICT and E_USER_ERROR since they are no more supported in PHP 8.4 and later versions
+
 February 16, 2024
 	* BugFix ?page[%24eq]=1
 

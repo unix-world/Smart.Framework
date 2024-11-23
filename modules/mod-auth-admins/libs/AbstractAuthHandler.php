@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * DEPENDS classes: 	Smart, SmartAuth, SmartEnvironment, SmartUtils, \SmartModExtLib\AuthAdmins\AuthProviderHttp
  * DEPENDS constants: 	SMART_FRAMEWORK_SECURITY_KEY
  *
- * @version 	v.20240118
+ * @version 	v.20241108
  * @package 	development:modules:AuthAdmins
  *
  */
@@ -957,7 +957,12 @@ abstract class AbstractAuthHandler {
 			//--
 			if((string)$cookie2FA != '') {
 				//--
-				$visitorUuidHash = (string) \Smart::b64_to_b64s((string)\SmartHashCrypto::sha256((string)\SmartUtils::client_ident_private_key().'#'.$auth_user_name.'#'.\date('Y-m-d').'#'.\SmartUtils::get_server_current_basedomain_name().'#'.\SMART_FRAMEWORK_SECURITY_KEY, true)); // the 2FA hash based on client unique signature + date yyyy-mm-dd, so is valid just in that day
+				$uuidCookieVal = '';
+				if(defined('\\SMART_APP_VISITOR_COOKIE') AND ((string)trim((string)\SMART_APP_VISITOR_COOKIE) != '')) { // {{{SYNC-SMART-UNIQUE-VAL-COOKIE}}}
+					$uuidCookieVal = (string) \SMART_APP_VISITOR_COOKIE;
+				} //end if
+				//--
+				$visitorUuidHash = (string) \Smart::b64_to_b64s((string)\SmartHashCrypto::sh3a256((string)\SmartUtils::client_ident_private_key().'#'.$auth_user_name.'#'.\date('Y-m-d').'#'.\SmartUtils::get_server_current_basedomain_name().'#'.$uuidCookieVal.'#'.\SMART_FRAMEWORK_SECURITY_KEY, true)); // the 2FA hash based on client unique signature + date yyyy-mm-dd, so is valid just in that day
 				//--
 				if(\preg_match((string)self::AUTH_2FA_REGEX_TOKEN, (string)$cookie2FA)) { // 2FA token
 					//--

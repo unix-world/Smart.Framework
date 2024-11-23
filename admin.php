@@ -7,10 +7,10 @@
 // Changing the code below is on your own risk and may lead to severe disrupts in the execution of this software !
 //####################
 
-//== v.20231004
+//== v.20241123
 //--
 ini_set('display_errors', '1'); 											// temporary enable this to display bootstrap errors if any ; will be managed later by Smart Error Handler
-error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 			// on bootstrap show real-time errors (sync with Smart Error Handler)
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED); 						// on bootstrap show real-time errors (sync with Smart Error Handler)
 //--
 if((is_file('.sf-unpack')) OR (is_file('maintenance.html'))) { // {{{SYNC-HTTP-NOCACHE-HEADERS}}}
 	@http_response_code(503); // 503 maintenance mode

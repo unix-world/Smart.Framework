@@ -270,10 +270,10 @@ const SMART_FRAMEWORK_INITS = 'SET'; // avoid reload inits again (if accidentaly
 
 //======= [standalone app]
 
-//== v.20210812
+//== v.20241123
 //--
 ini_set('display_errors', '1'); 											// temporary enable this to display bootstrap errors if any ; will be managed later by Smart Error Handler
-error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); 			// on bootstrap show real-time errors (sync with Smart Error Handler)
+error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED); 						// on bootstrap show real-time errors (sync with Smart Error Handler)
 //--
 const SMART_FRAMEWORK_LIB_PATH =  			false; 							// smart framework lib path
 const SMART_FRAMEWORK_RUNTIME_MODE =  		'web.task'; 					// runtime mode: 'web.task'

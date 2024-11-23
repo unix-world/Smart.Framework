@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20240216 # this should be loaded from app web root only
+// # r.20241123 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -43,9 +43,9 @@ if((string)trim((string)ini_get('default_mimetype')) != 'text/html') {
 //--
 
 //-- PHP version, 64-bit support and various checks
-if(version_compare((string)phpversion(), '7.4.0') < 0) { // check for PHP 7.4 or later
+if(version_compare((string)phpversion(), '7.4.33') < 0) { // check for PHP 7.4 (latest) or later 8.x
 	@http_response_code(500);
-	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 7.4 / 8.0 / 8.1 / 8.2 / 8.3 or later');
+	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 7.4 / 8.0 / 8.1 / 8.2 / 8.3 / 8.4 or later');
 } //end if
 //--
 if(((int)PHP_INT_SIZE < 8) OR ((string)(int)PHP_INT_MAX < '9223372036854775807')) {
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2024.02.16'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2024.11.23'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -353,11 +353,11 @@ if(((string)SMART_ERROR_HANDLER == 'log') AND (SMART_FRAMEWORK_DEBUG_MODE !== tr
 	ini_set('display_errors', '1');
 } //end if else
 ini_set('track_errors', '0');
-//==
+//== E_STRICT has been deprecated and removed since PHP 8.4
 if((string)SMART_ERROR_HANDLER == 'log') {
-	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED); // error reporting for display only, production
+	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED); // error reporting for display only, production
 } else {
-	error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT); // error reporting for display only, development (show deprecated)
+	error_reporting(E_ALL & ~E_NOTICE); // error reporting for display only, development (show deprecated)
 } //end if else
 //==
 $smart_____framework_____last__exception_html = ''; // initialize, empty
@@ -377,7 +377,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 		$smart_____framework_____is_html_last__error = false;
 	} else {
 		if($smart_____framework_____is_html_last__error !== true) {
-			$smart_____framework_____last__error = (string) htmlspecialchars((string)$smart_____framework_____last__error, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true);
+			$smart_____framework_____last__error = (string) '<div style="font-size:1.5rem; color:#222222; font-weight:bold;"><i>Error&nbsp;Message</i>: <span style="color:#444444;">'.htmlspecialchars((string)$smart_____framework_____last__error, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</span></div>';
 		} //end if
 	} //end if
 	//-- The following error types cannot be handled with a user defined function: E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, and most of E_STRICT raised in the file where set_error_handler() is called : http://php.net/manual/en/function.set-error-handler.php
@@ -399,12 +399,6 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 				$is_supressed = true;
 			} //end if
 			break;
-		case E_USER_NOTICE:
-			$ferr = 'APP-NOTICE';
-			if((string)SMART_ERROR_HANDLER == 'log') {
-				$is_supressed = true;
-			} //end if
-			break;
 		case E_WARNING:
 			$ferr = 'WARNING';
 		//	if(0 == error_reporting()) { // fix: don't log E_WARNING from @functions
@@ -412,18 +406,34 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 				$is_supressed = true;
 			} //end if
 			break;
-		case E_USER_WARNING:
-			$ferr = 'APP-WARNING';
+		case E_USER_NOTICE:
+			$ferr = 'APP-NOTICE';
+			if((string)SMART_ERROR_HANDLER == 'log') {
+				$is_supressed = true;
+			} //end if
 			break;
+		case E_USER_WARNING: // this must handle both: E_USER_WARNING and the emulation of E_USER_ERROR
+			if(
+				(strpos((string)$errstr, '#SMART-FRAMEWORK.ERROR#') === 0) // handler for raise_error() ; {{{SF-PHP-EMULATE-E_USER_ERROR}}}
+				OR
+				(strpos((string)$errstr, '***** EXCEPTION ***** [#') === 0) // handler for Exception() ; {{{SF-PHP-EMULATE-EXCEPTION-E_USER_ERROR}}}
+			) { // emulate E_USER_ERROR
+				$is_fatal = true;
+				$app_halted = ' :: Execution HALTED !';
+				$ferr = 'APP-ERROR';
+			} else { // E_USER_WARNING
+				$ferr = 'APP-WARNING';
+			} //end if else
+			break;
+	//	case E_USER_ERROR: // this is N/A since PHP 8.4
+	//		$is_fatal = true;
+	//		$app_halted = ' :: Execution HALTED !';
+	//		$ferr = 'APP-ERROR';
+	//		break;
 		case E_RECOVERABLE_ERROR:
 			$is_fatal = true;
 			$app_halted = ' :: Execution FAILED !';
 			$ferr = 'ERROR';
-			break;
-		case E_USER_ERROR:
-			$is_fatal = true;
-			$app_halted = ' :: Execution HALTED !';
-			$ferr = 'APP-ERROR';
 			break;
 		default:
 			$ferr = 'OTHER';
@@ -497,7 +507,10 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 		} //end if
 	} //end if
 	//--
-	if(($errno === E_RECOVERABLE_ERROR) OR ($errno === E_USER_ERROR)) { // this is necessary for: E_RECOVERABLE_ERROR and E_USER_ERROR (which is used just for Exceptions) and all other PHP errors which are FATAL and will stop the execution ; For WARNING / NOTICE type errors we just want to log them, not to stop the execution !
+//	if(($errno === E_RECOVERABLE_ERROR) OR ($errno === E_USER_ERROR)) {
+	if(($errno === E_RECOVERABLE_ERROR) OR (($errno === E_USER_WARNING) AND ($is_fatal === true))) {
+		//--
+		// this is necessary for: E_RECOVERABLE_ERROR and E_USER_ERROR (which is used just for Exceptions) and all other PHP errors which are FATAL and will stop the execution ; For WARNING / NOTICE type errors we just want to log them, not to stop the execution !
 		//--
 		$script = '';
 		$appenv = null;
@@ -522,7 +535,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 		if(!headers_sent()) {
 			@http_response_code(500); // try, if not headers send
 		} //end if
-		die('<!DOCTYPE html>'."\n".'<!-- Smart.Framework @ Smart Error Reporting / Smart Error Handler :: '.date('Y-m-d H:i:s O').' -->'."\n".'<html>'."\n".'<head><meta charset="'.SMART_FRAMEWORK_CHARSET.'"><title>! ERROR !</title><link rel="icon" href="data:,"><style>* { font-family: \'IBM Plex Mono\',mono; font-smooth: always; } hr { border: none 0; border-top: 1px solid #EEEEEE; height: 1px; }</style></head>'."\n".'<body>'."\n".'<br><div><center><div style="min-width:300px; max-width:'.(SMART_FRAMEWORK_ENV === 'dev' ? '75vw' : '57vw').'; border: 1px solid #EEEEEE; margin-top:10px; margin-bottom:10px; color:#333333;"><table cellpadding="4" style="max-width:70vw;"><tr valign="top"><td width="32">'.$errlogo.'</td><td>&nbsp;</td><td><b><span style="font-size:1.75rem;">HTTP 500 Internal Server Error</span><br><span style="font-size:1.25rem">'.'App Critical Error'.($appenv ? ' ('.$appenv.')' : '').' @ '.SMART_ERROR_AREA.' [#'.$errno.']:</span><br>'.'</b><i>'.nl2br((string)htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true), false).($script ? '<br><span style="color:#778899;">'.htmlspecialchars((string)$script, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</span>' : '').'</i></td></tr></table></div><br>'.(($smart_____framework_____last__error || $smart_____framework_____last__exception_html) ? "\n".'<!-- START: Last ERR Message --><div style="max-width:70vw; padding:5px; border: 1px solid #F0F0F0; border-radius:3px;"><span style="color:#222222; font-style:italic; font-weight:bold; font-size:3rem;"><span style="color:#4e5a92;">PHP '.PHP_VERSION.'</span> Last ERROR:</span><br><br>'.$err_prepend.$smart_____framework_____last__error.$smart_____framework_____last__exception_html.$err_append.'<br></div><br><br><hr size="1">'."\n".'<!-- #END: Last ERR Message -->'."\n" : '').'</center></div>'."\n".'</body>'."\n".'</html>'."\n");
+		die('<!DOCTYPE html>'."\n".'<!-- Smart.Framework @ Smart Error Reporting / Smart Error Handler :: '.date('Y-m-d H:i:s O').' -->'."\n".'<html>'."\n".'<head><meta charset="'.SMART_FRAMEWORK_CHARSET.'"><title>! ERROR !</title><link rel="icon" href="data:,"><style>* { font-family: \'IBM Plex Mono\',mono; font-smooth: always; } hr { border: none 0; border-top: 1px solid #EEEEEE; height: 1px; }</style></head>'."\n".'<body>'."\n".'<br><div><center><div style="min-width:300px; max-width:'.(SMART_FRAMEWORK_ENV === 'dev' ? '75vw' : '57vw').'; border: 1px solid #EEEEEE; margin-top:10px; margin-bottom:10px; color:#333333;"><table cellpadding="4" style="max-width:70vw;"><tr valign="top"><td width="32">'.$errlogo.'</td><td>&nbsp;</td><td><b><span style="font-size:1.75rem;">HTTP 500 Internal Server Error</span><br><span style="font-size:1.25rem">'.'App Critical Error'.($appenv ? ' ('.$appenv.')' : '').' @ '.SMART_ERROR_AREA.' [#'.$errno.']:</span><br>'.'</b><i>'.nl2br((string)htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true), false).($script ? '<br><span style="color:#778899;">'.htmlspecialchars((string)$script, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</span>' : '').'</i></td></tr></table></div><br>'.(($smart_____framework_____last__error || $smart_____framework_____last__exception_html) ? "\n".'<!-- START: Last ERR Message --><div style="max-width:70vw; padding:5px; border: 1px solid #F0F0F0; border-radius:3px;"><span style="color:#222222; font-style:italic; font-weight:bold; font-size:3rem;"><span style="color:#4e5a92;">PHP&nbsp;'.PHP_VERSION.'</span> ERROR</span><br><br>'.$err_prepend.$smart_____framework_____last__error.$smart_____framework_____last__exception_html.$err_append.'<br></div><br><br><hr size="1">'."\n".'<!-- #END: Last ERR Message -->'."\n" : '').'</center></div>'."\n".'</body>'."\n".'</html>'."\n");
 		//--
 	} //end if else
 	//--
@@ -546,7 +559,7 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 			$hide_last_err = true;
 		} //end if
 		if($hide_last_err !== false) {
-			$smart_____framework_____last__exception_html = (string) "\n".'<!-- Exception -->'.'<b><span style="color:#C2203F;"><i>Exception Throw [#'.$code.'] / '.$exid.'</i></span><br><br><div style="font-size:1.5rem; color:#222222;"><span style="color:#444444;">Exception&nbsp;Message:</span> '.htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</div></b><div style="color:#555555; padding:5px; margin:5px;">'.htmlspecialchars((string)$details, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</div>'.'<!-- # Exception -->'."\n"; // fix for PHP 7+
+			$smart_____framework_____last__exception_html = (string) "\n".'<!-- Exception -->'.'<b><span style="color:#C2203F;"><i>Exception Throw [#'.$code.'] / '.$exid.'</i></span><br><br><div style="font-size:1.5rem; color:#222222; font-weight:bold;"><i>Exception&nbsp;Message</i>: <span style="color:#444444;">'.htmlspecialchars((string)$message, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</span></div></b><div style="color:#555555; padding:5px; margin:5px;">'.htmlspecialchars((string)$details, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</div>'.'<!-- # Exception -->'."\n"; // fix for PHP 7+
 		} //end if
 		//--
 		if(SMART_FRAMEWORK_DEBUG_MODE === true) { // if debug
@@ -564,7 +577,8 @@ set_exception_handler(function($exception) { // no type for EXCEPTION to be PHP 
 		//--
 	} //end if
 	//--
-	trigger_error('***** EXCEPTION ***** [#'.$exid.']:'."\n".'Error-Message: '.$message."\n".$details, E_USER_ERROR); // log the exception as ERROR
+//	trigger_error('***** EXCEPTION ***** [#'.$exid.']:'."\n".'Error-Message: '.$message."\n".$details, E_USER_ERROR); // log the exception as ERROR
+	trigger_error('***** EXCEPTION ***** [#'.$exid.']:'."\n".'Error-Message: '.$message."\n".$details, E_USER_WARNING); // log the exception as ERROR ; {{{SF-PHP-EMULATE-EXCEPTION-E_USER_ERROR}}}
 	//-- below code would be executed only if E_USER_ERROR fails to stop the execution
 	if(!headers_sent()) {
 		@http_response_code(500); // try, if not headers send
