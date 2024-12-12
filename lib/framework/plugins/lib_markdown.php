@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartHtmlParser ; optional-constants: SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG
- * @version 	v.20241120
+ * @version 	v.20241210
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -52,7 +52,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20241120';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20241210';
 
 	//===================================
 
@@ -105,6 +105,7 @@ final class SmartMarkdownToHTML {
 	private $documentParsed = false;
 	//--
 
+	// regex for attributes like { attr="some value" }: '[a-z0-9\-@%]+\=(")(.+?)(")'
 	//-- extra, by unixman: attributes can optional start with a type prefix to know which attributes to assign to nested elements (ex: media in a link, or link in a table cell, or media in a link in a table cell)
 	private const regexHeadingAttribute 	= '[\t ]*\{(H\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Header 					- optional, starts with {H:
 	private const regexMediaAttribute 		= '[\t ]*\{(I\:[\t ]*)((?:[\#\.@%][_a-zA-Z0-9,%\-\=\$\:;\!\/]+[\t ]*)+)\}'; 	// Media 					- optional, starts with {I:
@@ -126,14 +127,12 @@ final class SmartMarkdownToHTML {
 	//--
 
 	//--
-//	private const PATTERN_BLOCK_CODE 	= '/\n[`]{3}[\t a-z0-9\-]{0,255}\n([^\n]*\n)*[`]{3}\n/sU'; 				// Fenced Code Blocks
 	private const PATTERN_BLOCK_CODE 	= '/\n[`]{3}[\t a-z0-9\-]{0,255}\n([^\n]*?\n)*?[`]{3}\n/s'; 			// Fenced Code Blocks
 	//--
-//	private const PATTERN_INLINE_CODE 	= '/[`]{3}.*[`]{3}/sU'; 												// Inline Code
 	private const PATTERN_INLINE_CODE 	= '/[`]{3}.*?[`]{3}/s'; 												// Inline Code
 	//--
-//	private const PATTERN_BLOCK_PRE 	= '/\n[~]{3,4}\n([^\n]*\n)*[~]{3,4}\n/sU'; 								// Fenced Preformat Blocks
-	private const PATTERN_BLOCK_PRE 	= '/\n[~]{3,4}\n([^\n]*?\n)*?[~]{3,4}\n/s'; 							// Fenced Preformat Blocks
+	private const PATTERN_BLOCK_PRE 	= '/\n[~]{3}\n([^\n]*?\n)*?[~]{3}\n/s'; 								// Fenced Preformat Blocks
+	private const PATTERN_BLOCK_MPRE 	= '/\n[~]{4}\n([^\n]*?\n)*?[~]{4}\n/s'; 								// Fenced Preformat Blocks, Mono
 	//--
 	private const PATTERN_LIST_UL 		= '/^([\t ]*)[\*\-\+]{1}[\t ]+/'; 										// UL list
 	private const PATTERN_LIST_OL 		= '/^([\t ]*)[0-9]+[\.\)]{1}[\t ]+/'; 									// OL List
@@ -178,6 +177,11 @@ final class SmartMarkdownToHTML {
 	//-- {{{SYNC-SPECIAL-CHARACTER-MKDW-CONVERTER}}}
 	private const SPECIAL_CHAR_CONV_REPL 	= '&#8273;'; // the special char used by converter converted to entity ; (unicode) ⁑ ; "\u{2051}" : '&#8273;'
 	//-- #end {{{SYNC-SPECIAL-CHARACTER-MKDW-CONVERTER}}}
+
+	//-- {{{SYNC-SPECIAL-CHARACTER-MKDW-TABLE-SEP}}}
+	private const SPECIAL_CHAR_TBL_SEP_MARK = '┆'; 			// special character used for tables
+	private const SPECIAL_CHAR_TBL_SEP_REPL = '&#9478;'; 	// restore as html entity "&#9478;"
+	//-- #end {{{SYNC-SPECIAL-CHARACTER-MKDW-TABLE-SEP}}}
 
 	//-- supported html entities (the most usual)
 	private const HTML_ENTITIES_REPLACEMENTS = [
@@ -265,6 +269,8 @@ final class SmartMarkdownToHTML {
 		self::SPECIAL_CHAR_CONV_REPL => self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/convmkdwsf/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // the special mark used by Html2Markdown convertor: ⁑
 		//-- {{{SYNC-SPECIAL-CHARACTER-MKDW-PARSER}}}
 		self::SPECIAL_CHAR_ENTRY_REPL => self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/specmkdwsf/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // the special mark itself: ⁂
+		//-- {{{SYNC-SPECIAL-CHARACTER-MKDW-TABLE-SEP}}}
+		self::SPECIAL_CHAR_TBL_SEP_REPL => self::SPECIAL_CHAR_ENTRY_MARK.'/%/special/tblsepmkdwsf/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%', // the special table separator mark ┆
 		//--
 	];
 	//--
@@ -273,7 +279,6 @@ final class SmartMarkdownToHTML {
 	//==
 	//-- {{{SYNC-MKDW-EXTERNAL-CONVERT-ESCAPINGS}}}
 	public const ESCAPINGS_REPLACEMENTS = [
-		'\\\\' 	=> '\\',
 		'\\_' 	=> '_',
 		'\\*' 	=> '*',
 		'\\-' 	=> '-',
@@ -300,6 +305,7 @@ final class SmartMarkdownToHTML {
 		'\\;' 	=> ';',
 		'\\<\\<\\<' => '<<<', // do not replace just single < or > ; they may collide with html tags
 	//	'\\|' 	=> '|', // {{{SYNC-FIX-ESCAPED-|-}}} ; this is done above by using a circular replacement (before vs after rendering ...)
+		'\\\\' 	=> '\\', // needs to be last, fix discovered from golang ; in PHP the strtr plays smarter and perhaps it push the order by some logic
 	];
 	//--
 	//==
@@ -380,7 +386,8 @@ final class SmartMarkdownToHTML {
 		//-- substitute special reserved character as html entity ; this character is reserved (completely dissalowed), will be used for processing purposes only
 	//	$text = (string) str_replace((string)self::SPECIAL_CHAR_ENTRY_MARK, (string)self::SPECIAL_CHAR_ENTRY_REPL, $text);
 		$text = (string) strtr($text, [
-			(string) self::SPECIAL_CHAR_ENTRY_MARK => (string) self::SPECIAL_CHAR_ENTRY_REPL,
+			(string) self::SPECIAL_CHAR_ENTRY_MARK 		=> (string) self::SPECIAL_CHAR_ENTRY_REPL,
+			(string) self::SPECIAL_CHAR_TBL_SEP_MARK 	=> (string) self::SPECIAL_CHAR_TBL_SEP_REPL,
 		]);
 		//-- standardize line breaks
 		$text = (string) str_replace(["\r\n", "\r"], "\n", $text);
@@ -663,41 +670,23 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function getTextAsLinesArr(?string $txt) : array {
+	private function getDataBlockMPreformats(?string $text) : array { // Fenced Preformat Blocks, Mono
 		//--
-		return (array) explode("\n", (string)trim((string)$txt)); // {{{SYNC-MKDW-TRIM-ELEMENT-PROC}}}
+		$matches = array();
+		$pcre = preg_match_all((string)self::PATTERN_BLOCK_MPRE, (string)$text, $matches, PREG_PATTERN_ORDER, 0);
+		if($pcre === false) {
+			Smart::log_warning(__METHOD__.'() # ERROR: '.SMART_FRAMEWORK_ERR_PCRE_SETTINGS);
+			return [];
+		} //end if
+		//--
+		return (array) ((isset($matches[0]) && is_array($matches[0])) ? $matches[0] : []);
 		//--
 	} //END FUNCTION
 
 
-	private function getTextAsLinesProcArr(?string $element, ?array $arr) : array {
+	private function getTextAsLinesArr(?string $txt) : array {
 		//--
-		switch((string)$element) {
-			// not for 'inline-code' !
-			case 'code':
-			case 'pre':
-				// ok
-				break;
-			default:
-				Smart::log_warning(__METHOD__.' # Invalid element: `'.$element.'`');
-				return array();
-		} //end switch
-		//--
-		if((int)Smart::array_size($arr) <= 0) {
-			return array();
-		} //end if
-		//--
-		for($i=0; $i<Smart::array_size($arr); $i++) {
-			$arr[$i] = (array) $this->getTextAsLinesArr((string)$arr[$i]);
-			$ncount = (int) Smart::array_size($arr[$i]);
-			if((int)$ncount >= 4) { // {{{SYNC-MKDW-TRIM-ELEMENT-PROC}}}
-				$arr[$i][0] = (string) self::SPECIAL_CHAR_ENTRY_MARK.'/%/'.$element.'/start/'.$i.'/'.$arr[$i][1].'/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%';
-				$arr[$i][(int)$ncount - 1] = (string) self::SPECIAL_CHAR_ENTRY_MARK.'/%/'.$element.'/end/'.$i.'/'.$arr[$i][(int)$ncount - 1].'/'.self::SPECIAL_CHAR_ENTRY_MARK.'%.%';
-			} //end if
-			$arr[$i] = (string) implode("\n", (array)$arr[$i]);
-		} //end for
-		//--
-		return (array) $arr;
+		return (array) explode("\n", (string)trim((string)$txt)); // {{{SYNC-MKDW-TRIM-ELEMENT-PROC}}}
 		//--
 	} //END FUNCTION
 
@@ -717,6 +706,7 @@ final class SmartMarkdownToHTML {
 				break;
 			//-- {{{SYNC-MKDW-SPECIAL-BLOCK-TYPES}}}
 			case 'code':
+			case 'mpre':
 			case 'pre':
 			case 'blockquote':
 			//-- #end sync
@@ -838,7 +828,7 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function fixRenderCode(?string $text) {
+	private function fixRenderCode(?string $text) : string {
 		//--
 		return (string) str_replace( // {{{SYNC-MKDW-CODE-FIX-SPECIALS}}}
 			[
@@ -855,7 +845,7 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function createHtmlInline(?string $text, ?string $type, bool $headings_parsed=false) {
+	private function createHtmlInline(?string $text, ?string $type, bool $headings_parsed=false) : string {
 		//--
 		// Smart.Markdown inline syntax support:
 		// 		IMPORTANT:
@@ -911,7 +901,6 @@ final class SmartMarkdownToHTML {
 				$attributes = null;
 				$tag_start = '<'.self::escapeValidHtmlTagName($type).$this->buildAttributeData((array)$atts).'>';
 				$tag_end = '</'.self::escapeValidHtmlTagName($type).'>'."\n";
-				$attributes = null;
 				break;
 			case 'span': // h7
 				$headings_parsed = true; // avoid re-parse headers in the same line if already there is one
@@ -921,7 +910,6 @@ final class SmartMarkdownToHTML {
 				$attributes = null;
 				$tag_start = '<span'.$this->buildAttributeData((array)$atts).'>';
 				$tag_end = '</span>'; // no extra new line
-				$attributes = null;
 				break;
 			case 'dfn': // h8
 				$headings_parsed = true; // avoid re-parse headers in the same line if already there is one
@@ -931,7 +919,6 @@ final class SmartMarkdownToHTML {
 				$attributes = null;
 				$tag_start = '<dfn'.$this->buildAttributeData((array)$atts).'>';
 				$tag_end = '</dfn>'; // no extra new line
-				$attributes = null;
 				break;
 			case 'li':
 			case 'td':
@@ -981,6 +968,7 @@ final class SmartMarkdownToHTML {
 			case 'inline-code':
 			//-- {{{SYNC-MKDW-SPECIAL-BLOCK-TYPES}}}
 			case 'code':
+			case 'mpre':
 			case 'pre':
 			case 'blockquote':
 			//-- #end sync
@@ -1025,7 +1013,7 @@ final class SmartMarkdownToHTML {
 								if((int)$i <= 0) { // first
 									$arr[$i] = '<<<'."\n".$arr[$i];
 								} //end if
-								if(!array_key_exists((int)((int)$i+1), $arr)) { // last
+								if((int)$i === ((int)$max - 1)) { // last
 									$arr[$i] .= '<<<'."\n";
 								} //end if
 							} elseif((string)$element == 'code') { // pre+code
@@ -1035,7 +1023,7 @@ final class SmartMarkdownToHTML {
 										$syntax = 'plaintext';
 									} //end if
 									$arr[$i] = '<pre><code class="mkdw-code syntax" data-syntax="'.Smart::escape_html((string)$syntax).'">'; // data syntax must not be parsed inline
-								} elseif((int)$i === ((int)$max - 1)) {
+								} elseif((int)$i === ((int)$max - 1)) { // last
 									$arr[$i] = '</code></pre>'."\n";
 								} else {
 									$arr[$i] = (string) $this->fixRenderCode((string)$arr[$i]); // {{{SYNC-MKDW-CODE-FIX-SPECIALS}}}
@@ -1043,11 +1031,15 @@ final class SmartMarkdownToHTML {
 								} //end if else
 							} else { // pre
 								if((int)$i === 0) {
-									$arr[$i] = '<pre>';
-								} elseif((int)$i === ((int)$max - 1)) {
+									if($element == 'mpre') {
+										$arr[$i] = '<pre class="mkdw-mono">';
+									} else {
+										$arr[$i] = '<pre>';
+									} //end if else
+								} elseif((int)$i === ((int)$max - 1)) { // last
 									$arr[$i] = '</pre>'."\n";
 								} else {
-									$arr[$i] = (string) Smart::escape_html((string)$arr[$i], 'pre')."\n"; // this should not be parsed inline ! (ex: html comments are tranformed in del tag)
+									$arr[$i] = (string) Smart::escape_html((string)$arr[$i])."\n"; // this should not be parsed inline ! (ex: html comments are tranformed in del tag)
 								} //end if else
 							} //end if else
 						} //end for
@@ -1115,12 +1107,10 @@ final class SmartMarkdownToHTML {
 							$arr['lazyload'] = (string) substr((string)$attribute, 10);
 						} elseif(strpos((string)$attribute, '%alternate=') === 0) {
 							$tmp_attr = (array) explode('$', (string)$attribute);
-							$tmp_alternate = (string) substr((string)$tmp_attr[0], 11);
+							$tmp_alternate = (string) substr((string)($tmp_attr[0] ?? null), 11);
 							if(
-								(strpos((string)$attribute, '%alternate=') === 0) AND
 								(strpos((string)$attribute, '$') !== false) AND
-								is_array($tmp_attr) AND
-								(count($tmp_attr) === 2) AND
+								(Smart::array_size($tmp_attr) === 2) AND
 								((string)trim((string)$tmp_attr[0]) != '') AND
 								((string)trim((string)$tmp_attr[1]) != '') AND
 								((string)trim((string)$tmp_alternate) != '')
@@ -1267,7 +1257,7 @@ final class SmartMarkdownToHTML {
 			$attributeRawString = (string) ($matches[0] ?? '');
 			$attributeString = (string) ($matches[2] ?? '');
 			if((string)$attributeString != '') {
-				$atts = (array) $this->parseAttributeData((string)$type, (string)($matches[2] ?? ''));
+				$atts = (array) $this->parseAttributeData((string)$type, (string)$attributeString);
 			} //end if
 			if((string)$attributeRawString != '') {
 				$text = (string) Smart::str_replace_first((string)$attributeRawString, '', (string)$text); // {{{SYNC-MKDW-REPL-ATTS-DEF}}}
@@ -1282,7 +1272,7 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function parseTableAttributes(?string $firstTableHeaderCell) {
+	private function parseTableAttributes(?string $firstTableHeaderCell) : array {
 		//--
 		$table_defs = [];
 		$defs_matches = array();
@@ -1339,7 +1329,7 @@ final class SmartMarkdownToHTML {
 	} //END FUNCTION
 
 
-	private function formatListNodeEntry(?string $value) {
+	private function formatListNodeEntry(?string $value) : string {
 		//--
 		$value = (string) trim((string)$value);
 		if((string)$value != '') {
@@ -1628,6 +1618,10 @@ final class SmartMarkdownToHTML {
 				$html_video_source .= '<source type="video'.Smart::escape_html((string)$videotype).'" src="'.Smart::escape_html((string)$videosrc).'">';
 			} //end for
 			//--
+			if((string)$html_video_source == '') {
+				return null; // invalid video
+			} //end if
+			//--
 			if(!isset($atts['preload'])) {
 				$atts['preload'] = 'auto';
 			} //end if
@@ -1637,10 +1631,6 @@ final class SmartMarkdownToHTML {
 			} //end if
 			if(((string)$atts['controls'] == 'no') OR ((string)$atts['controls'] == 'none') OR ((string)$atts['controls'] == 'false')) {
 				unset($atts['controls']);
-			} //end if
-			//--
-			if((string)$html_video_source == '') {
-				return null; // invalid video
 			} //end if
 			//--
 			return '<video'.($media_id ? ' id="'.Smart::escape_html((string)$media_id).'"' : '').($media_title ? ' title="'.self::renderAltOrTitle((string)$media_title).'"' : '').$this->buildAttributeData((array)$atts).'>'.$html_video_source.'</video>';
@@ -1682,6 +1672,10 @@ final class SmartMarkdownToHTML {
 				$html_audio_source .= '<source type="audio'.Smart::escape_html((string)$audiotype).'" src="'.Smart::escape_html((string)$audiosrc).'">';
 			} //end for
 			//--
+			if((string)$html_audio_source == '') {
+				return null; // invalid audio
+			} //end if
+			//--
 			if(!isset($atts['preload'])) {
 				$atts['preload'] = 'auto';
 			} //end if
@@ -1691,10 +1685,6 @@ final class SmartMarkdownToHTML {
 			} //end if
 			if(((string)$atts['controls'] == 'no') OR ((string)$atts['controls'] == 'none') OR ((string)$atts['controls'] == 'false')) {
 				unset($atts['controls']);
-			} //end if
-			//--
-			if((string)$html_audio_source == '') {
-				return null; // invalid audio
 			} //end if
 			//--
 			return '<audio'.($media_id ? ' id="'.Smart::escape_html((string)$media_id).'"' : '').($media_title ? ' title="'.self::renderAltOrTitle((string)$media_title).'"' : '').$this->buildAttributeData((array)$atts).'>'.$html_audio_source.'</audio>';
@@ -1736,12 +1726,21 @@ final class SmartMarkdownToHTML {
 				unset($atts['lazyload']); // do not set a lazyload="" attribute on img
 			} //end if
 		} //end if
+		//-- loading
+		if(isset($atts['loading'])) {
+			$atts['loading'] = (string) strtolower((string)trim((string)$atts['loading']));
+			if((string)$atts['loading'] == 'lazy') {
+				$use_lazyload = false; // avoid mixing lazyload with loading lazy
+			} else {
+				unset($atts['loading']); // do not set a loading="" attribute on img
+			} //end if else
+		} //end if
 		//--
 		if($use_lazyload) {
 			if(!isset($atts['class'])) {
 				$atts['class'] = (string) $lazyload_class;
 			} else {
-				$atts['class'] = (string) $lazyload_class.' '.trim((string)$atts['class']);
+				$atts['class'] = (string) trim((string)$lazyload_class.' '.trim((string)$atts['class']));
 			} //end if
 		} //end if
 		//--
@@ -2074,6 +2073,8 @@ final class SmartMarkdownToHTML {
 		$this->DefinitionData['extracted']['inline-code'] = (array) $this->getDataInlineCodes((string)$text);
 		$text = (string) $this->getTextWithPlaceholders((string)$text, 'inline-code', (array)$this->DefinitionData['extracted']['inline-code']);
 		//-- 5th extract pre blocks to be preserved and replace them with placeholders
+		$this->DefinitionData['extracted']['mpre'] = (array) $this->getDataBlockMPreformats((string)$text);
+		$text = (string) $this->getTextWithPlaceholders((string)$text, 'mpre', (array)$this->DefinitionData['extracted']['mpre']);
 		$this->DefinitionData['extracted']['pre'] = (array) $this->getDataBlockPreformats((string)$text);
 		$text = (string) $this->getTextWithPlaceholders((string)$text, 'pre', (array)$this->DefinitionData['extracted']['pre']);
 		//-- 6th process line by line
@@ -2318,11 +2319,9 @@ final class SmartMarkdownToHTML {
 			//======= Table
 				} elseif(strpos((string)$arr[$i], '|') === 0) { // table ; {{{SYNC-MKWD-CONDITION-TABLE-LINE}}}
 					//--
-					$arr[$i] = (string) str_replace('\\|', '┆', (string)$arr[$i]); // {{{SYNC-MKDW-TABLE-CELL-VBAR-FIX}}} ; fix: if a cell have to contain a vertical bar, make a special replacement
+					$arr[$i] = (string) str_replace('\\|', self::SPECIAL_CHAR_TBL_SEP_MARK, (string)$arr[$i]); // {{{SYNC-MKDW-TABLE-CELL-VBAR-FIX}}} ; fix: if a cell have to contain a vertical bar, make a special replacement
 					//--
 					$cells = (array) explode('|', (string)$arr[$i]);
-					$ncells = 0;
-					$mcells = 0;
 					$paligns = [];
 					$aligns = [];
 					$mcells = (int) ((int)Smart::array_size($cells) - 2); // is is 1st line, use real
@@ -2387,7 +2386,7 @@ final class SmartMarkdownToHTML {
 						$tbl_head_use_td = false;
 						$harr = [];
 						for($c=1; $c<Smart::array_size($cells)-1; $c++) {
-							$cells[$c] = (string) str_replace('┆', '|', (string)$cells[$c]); // {{{SYNC-MKDW-TABLE-CELL-VBAR-FIX}}} ; fix back
+							$cells[$c] = (string) str_replace(self::SPECIAL_CHAR_TBL_SEP_MARK, '|', (string)$cells[$c]); // {{{SYNC-MKDW-TABLE-CELL-VBAR-FIX}}} ; fix back
 							if($def_table === null) {
 								if((int)$c == 1) {
 									$is_tbl_init = true;
@@ -2496,7 +2495,6 @@ final class SmartMarkdownToHTML {
 					} //end if else
 					//--
 					$cells = null;
-					$ncells = 0;
 					$mcells = 0;
 					$paligns = null;
 					$aligns = null;
@@ -2526,7 +2524,7 @@ final class SmartMarkdownToHTML {
 							$max_def_lists = (int) Smart::array_size($def_lists);
 							if((int)$max_def_lists > 0) {
 								$max_def_lists -= 1;
-								if(!\is_array($def_lists[(int)$max_def_lists]['extra'])) {
+								if(!is_array($def_lists[(int)$max_def_lists]['extra'])) {
 									$def_lists[(int)$max_def_lists]['extra'] = [];
 								} //end if
 								$def_lists[(int)$max_def_lists]['extra'][] = (string) $arr[$i];
@@ -2578,6 +2576,7 @@ final class SmartMarkdownToHTML {
 		//-- 7th fix escapings, before render blocks !
 		$text = (string) $this->fixEscapings((string)$text);
 		//-- 8th render back blocks
+		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'mpre');
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'pre');
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'inline-code'); 				// {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-MEDIA-ORDER}}}
 		$text = (string) $this->setBackTextWithPlaceholders((string)$text, 'inline-links-and-media'); 	// {{{SYNC-MKDW-INLINE-CODE-VS-LINKS-MEDIA-ORDER}}}

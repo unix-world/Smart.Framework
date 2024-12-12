@@ -1,7 +1,7 @@
 
 /* -- CSS Start :: Smart.Framework / Plugins / Markdown :: r.8.7 / smart.framework.v.8.7 -- */
 
-/* Smart.Markdown.parser # v.2.2.8-r.20221228 */
+/* Smart.Markdown.parser # v.2.2.8-r.20241210 */
 
 /* ----------------------------- */
 
@@ -27,7 +27,7 @@
 /* Helpers */
 .markdown hr {
 	border: none 0;
-	border-top: 1px solid #EEEEEE;
+	border-top: 1px solid #F2F2F2;
 	height: 1px;
 }
 
@@ -170,13 +170,20 @@
 /* Pre, Code */
 .markdown pre {
 	font-size: inherit;
-	border: 1px solid #EEEEEE;
-	background: #fafafa;
+	border: 1px solid #F7F7F7;
+	background: #FBFBFB;
 	color: #111111;
 	padding: 3px;
 /*	white-space: pre; */
 	white-space: pre-wrap;
 	overflow: auto;
+}
+.markdown pre.mkdw-mono,
+.markdown pre.mkdw-mono * {
+	font-family: 'IBM Plex Mono', mono;
+	font-smooth: always;
+	border: 1px solid #F8F8F8;
+	background: #FCFCFC;
 }
 /*
 .markdown li pre {

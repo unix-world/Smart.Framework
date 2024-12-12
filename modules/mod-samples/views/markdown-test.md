@@ -1,7 +1,7 @@
 # [%%%IF:TITLE:==;%%%]... ==Title is empty== ...[%%%ELSE:TITLE%%%][###TITLE|html###][%%%/IF:TITLE%%%]
 
-&copy;&nbsp;&nbsp;2015-2022&nbsp;unix-world.org
-Extended Markdown v.II (smart flavour) // Test :: r.20221228
+&copy;&nbsp;&nbsp;2015-2024&nbsp;unix-world.org
+Extended Markdown v.II (smart flavour + markers + compatibility) // Test :: r.20241210
 
 # (H1) Markdown v2 (smart flavour) comes with many new features and optimizations ; however few old "bad" features have been dropped, and others supported ==only in compatibility mode== ...
 
@@ -87,7 +87,7 @@ PHP code (PHP Start-Tag and PHP End-Tag must be removed ...)
 // php sample code
 function test() {
 	$escape = 'htmlspecialchars'; // !! this is a comment !!
-	echo $$escape('this is <a> "test" &copy; ...');
+	echo $escape('this is $$ <a> $$ "test\\," &copy; ...'."\n");
 }
 
 test();
@@ -373,7 +373,7 @@ Colons can be used to align columns.
 
 | Stripped Tables {T: @class=stripped$bordered} | Centered {T: @class=stripped$bordered} | Right aligned {T: @class=stripped$bordered} |
 | --------------------------------- |:--------------------------:| -------------------------------:|
-| Zebra ăĂîÎâÂşŞţŢșȘțȚ {T: @class=stripped}           | c1.2 {T: @class=stripped}     | $1600 {T: @class=stripped}         |
+| Zebra ┆ ăĂîÎâÂşŞţŢșȘțȚ {T: @class=stripped}           | c1.2 {T: @class=stripped}     | $1600 {T: @class=stripped}         |
 | Stripes {T: @class=stripped}         | c2.2 {T: @class=stripped}     |   $12 {T: @class=stripped}         |
 | zebra stripes {T: @class=stripped$bordered}   | c2.3 {T: @class=stripped$bordered}     |    $1 {T: @class=stripped$bordered}         |
 

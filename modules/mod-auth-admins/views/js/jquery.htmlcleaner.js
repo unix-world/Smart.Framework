@@ -1,6 +1,6 @@
 
 // jQuery HTML Cleaner and Formatter (this file is part from the Smart.Framework project)
-// v.20220906
+// v.20241202
 // unixman (iradu@unix-world.org)
 // 		* 2015-02-17: many fixes to support HTML5 ; removed XHTML support
 //		* 2015-07-29: several fixes for tags and attributes better handling reliability
@@ -591,7 +591,7 @@
 	var tagAttributes = [
 			["id", "class", "style", "role", "itemscope", "itemtype", "itemprop", "title"], // default, for all tags not mentioned
 			//--
-			"a", 		["id", "class", "style", "role", "itemscope", "itemtype", "itemprop", "href", "target", "title", "rel", "name", "type", "data-smart", "onclick", "ondblclick", "ontouchstart", "ontouchend"],
+			"a", 		["id", "class", "style", "role", "itemscope", "itemtype", "itemprop", "href", "loading", "target", "title", "rel", "name", "type", "data-smart", "crossorigin", "referrerpolicy", "onclick", "ondblclick", "ontouchstart", "ontouchend"],
 			//--
 			"img", 		["id", "class", "style", "role", "itemscope", "itemtype", "itemprop", "src", "data-src", "align", "rel", "alt", "title", "border", "usemap", "onclick", "ondblclick", "ontouchstart", "ontouchend", "onmouseover", "onmouseout"], // "width", "height" are available by option (by default it make all images responsive: max-width:100%)
 			"picture" 	["id", "class", "style", "role", "itemscope", "itemtype", "itemprop", "width", "height"],
