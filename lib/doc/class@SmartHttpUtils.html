@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartHttpUtils final class \ SmartHttpUtils { } :: Class: Smart HTTP Utils - provides utils function to work with HTTP protocol. Language: PHP Located">
-<meta name="keywords" content="smarthttputils, final, class, smart, http, utils, provides, function, to, work, with, protocol, language, php, located, at, lib framework lib http cli php, package, core network, namespace, name, version, v, depends, classes, smarthashcrypto, smartframeworksecurity, hints, it, is, recommended, use, the, methods, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, and, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class method, only, public, encode var cookie, value, encode var post, http multipart form delimiter, http multipart form build, delimiter, fields, files, chunked part decode, string, chunk, return, decoded, message, param, encoded, dechunk, a, transfer encoding, chunked, part, ex, body, was, not, properly, returned, unmodified, properties">
+<meta name="keywords" content="smarthttputils, final, class, smart, http, utils, provides, function, to, work, with, protocol, language, php, located, at, lib framework lib http cli php, package, core network, namespace, name, version, v, depends, classes, smarthashcrypto, smartframeworksecurity, hints, it, is, recommended, use, the, methods, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, and, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class method, only, public, parse http headers, string, raw headers, array, encode var cookie, value, encode var post, http multipart form delimiter, http multipart form build, delimiter, fields, files, chunked part decode, chunk, return, decoded, message, param, encoded, dechunk, a, transfer encoding, chunked, part, ex, body, was, not, properly">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartHttpUtils">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartHttpUtils</title>
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartHttpUtils</span></li>
 		
-		<li><b>Version:</b> v.20231003</li>
+		<li><b>Version:</b> v.20240118</li>
 		<li><b>Depends:</b> classes:  Smart, SmartHashCrypto, SmartFrameworkSecurity</li>
 		<li><b>Hints:</b> It  is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -720,13 +720,26 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
+<div class="doc-container" id="Method--parse_http_headers">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>parse_http_headers</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$raw_headers` Parameter is REQUIRED">$raw_headers</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	
+	
+	
+	
+	
+	
+</div>
 <div class="doc-container" id="Method--encode_var_cookie">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encode_var_cookie</b></span>&nbsp;(
-		<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
-	<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
@@ -736,11 +749,11 @@ select#select-summary {
 </div>
 <div class="doc-container" id="Method--encode_var_post">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encode_var_post</b></span>&nbsp;(
-		<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
-	<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$name` Parameter is REQUIRED">$name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$value` Parameter is REQUIRED">$value</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
@@ -752,7 +765,7 @@ select#select-summary {
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_multipart_form_delimiter</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
@@ -762,12 +775,12 @@ select#select-summary {
 </div>
 <div class="doc-container" id="Method--http_multipart_form_build">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_multipart_form_build</b></span>&nbsp;(
-		<span class="doc-param-name"><b><span title="`$delimiter` Parameter is REQUIRED">$delimiter</span></b></span>, 
-	<span class="doc-param-name"><b><span title="`$fields` Parameter is REQUIRED">$fields</span></b></span>, 
-	<span class="doc-param-name"><b><span title="`$files` Parameter is REQUIRED">$files</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$delimiter` Parameter is REQUIRED">$delimiter</span></b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$fields` Parameter is REQUIRED">$fields</span></b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$files` Parameter is REQUIRED">$files</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 	
@@ -810,6 +823,10 @@ If The Chunked Part was not encoded properly it will be returned it unmodified.<
 	<span class="doc-modifiers">public</span> <i>const</i> <b>AUTH_USER_BEARER</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;:BEARER&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
 	
 </div>
+<div class="doc-container" id="Constant--MAX_HEADER_SIZE">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>MAX_HEADER_SIZE</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>16384</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
 
 <!-- Sample Code -->
 <br>
@@ -817,10 +834,13 @@ If The Chunked Part was not encoded properly it will be returned it unmodified.<
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// Usage example:
+ </span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);
+
+</span><span style="color: #999999">// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -852,6 +872,9 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--parse_http_headers"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;parse_http_headers()</option>
+			
+			
 						<option value="Method--encode_var_cookie"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;encode_var_cookie()</option>
 			
 			
@@ -877,6 +900,8 @@ function smartHandleDocSelector(obj) {
 			<option value="Constants--Summary-">Constants list</option>
 						<option value="Constant--AUTH_USER_BEARER">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;AUTH_USER_BEARER</option>
 			
+						<option value="Constant--MAX_HEADER_SIZE">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;MAX_HEADER_SIZE</option>
+			
 			
 		</optgroup>
 				<optgroup label="Class Sample usage">
@@ -889,13 +914,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:28 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

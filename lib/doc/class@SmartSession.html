@@ -707,7 +707,7 @@ Depending on the Smart.Framework INIT settings, it can use [files] based session
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartSession</span></li>
 		
-		<li><b>Version:</b> v.20231007</li>
+		<li><b>Version:</b> v.20231103</li>
 		<li><b>Depends:</b> extensions:  PHP Session Module ; classes: Smart, SmartUtils</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -820,10 +820,19 @@ It should be called just on special circumstances (Ex: force start session witho
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;##&nbsp;DO&nbsp;NOT&nbsp;USE&nbsp;directly&nbsp;the&nbsp;$_SESSION&nbsp;because&nbsp;session&nbsp;may&nbsp;not&nbsp;be&nbsp;started&nbsp;automatically&nbsp;!!!&nbsp;It&nbsp;starts&nbsp;on&nbsp;first&nbsp;use&nbsp;only&nbsp;...&nbsp;##<br>&nbsp;//&nbsp;#&nbsp;SAMPLE&nbsp;USAGE&nbsp;#<br>&nbsp;//--<br>&nbsp;</span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'MyVariable'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'test'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;register&nbsp;a&nbsp;variable&nbsp;to&nbsp;session<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">echo&nbsp;</span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'MyVariable'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;will&nbsp;get&nbsp;and&nbsp;echo&nbsp;just&nbsp;the&nbsp;$_SESSION['MyVariable']<br>&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">());&nbsp;</span><span style="color: #999999">//&nbsp;will&nbsp;get&nbsp;and&nbsp;prin_r&nbsp;all&nbsp;$_SESSION<br>&nbsp;</span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'MyVariable'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">null</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;unregister&nbsp;(unset)&nbsp;a&nbsp;variable&nbsp;from&nbsp;session<br>&nbsp;//--<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// ## DO NOT USE directly the $_SESSION because session may not be started automatically !!! It starts on first use only ... ##
+ // # SAMPLE USAGE #
+ //--
+ </span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'MyVariable'</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #5F9CCE">'test'</span><span style="color: #FFCC00; font-weight: bold">); </span><span style="color: #999999">// register a variable to session
+ </span><span style="color: #FFCC00; font-weight: bold">echo </span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'MyVariable'</span><span style="color: #FFCC00; font-weight: bold">); </span><span style="color: #999999">// will get and echo just the $_SESSION['MyVariable']
+ </span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">()); </span><span style="color: #999999">// will get and prin_r all $_SESSION
+ </span><span style="color: #FFFFFF">SmartSession</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'MyVariable'</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #FFFFFF">null</span><span style="color: #FFCC00; font-weight: bold">); </span><span style="color: #999999">// unregister (unset) a variable from session
+ //--
+
+// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -890,13 +899,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:38 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:46 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

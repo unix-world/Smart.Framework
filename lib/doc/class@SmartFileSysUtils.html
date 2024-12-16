@@ -713,7 +713,7 @@ To handle this in an easy and safe manner, use the function SmartFileSysUtils::a
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartFileSysUtils</span></li>
 		
-		<li><b>Version:</b> v.20231008</li>
+		<li><b>Version:</b> v.20240106</li>
 		<li><b>Depends:</b> classes:  Smart, SmartEnvironment</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -739,7 +739,7 @@ To handle this in an easy and safe manner, use the function SmartFileSysUtils::a
 @param: {STRING} $file_relative_path: The relative path of file to be read (can be a symlink to a file)</div>
 	
 			<div class="doc-method-comments">FAST CHECK IF A STATIC FILE EXISTS AND IS READABLE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).<br>
-It should be used just with static files which does not changes between executions</div>
+It should be used just with static files which does not changes between executions ; it does not use safe lock checks</div>
 	
 	
 	
@@ -757,8 +757,8 @@ It should be used just with static files which does not changes between executio
 @param: {STRING} $file_relative_path: The relative path of file to be read (can be a symlink to a file)<br>
 @param: {INTEGER+} $length: DEFAULT is 0 (zero) ; If zero will read the entire file ; If &gt; 0 (ex: 100) will read only the first 100 bytes fro the file or less if the file size is under 100 bytes</div>
 	
-			<div class="doc-method-comments">FAST READ A STATIC FILE CONTENTS. ALSO CHECKS IF THE FILE EXISTS AND IS READABLE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).<br>
-It should be used just with static files which does not changes between executions</div>
+			<div class="doc-method-comments">FAST READ A STATIC FILE CONTENTS ONLY. ALSO CHECKS IF THE FILE EXISTS AND IS READABLE. WORKS ONLY WITH RELATIVE PATHS (Ex: path/to/a/file.ext).<br>
+It should be used just with static files which does not changes between executions ; it does not use safe lock checks</div>
 	
 	
 	
@@ -1029,10 +1029,27 @@ If a longer length than 40 chars or an invalid ID is provided will reset the ID 
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">SmartFileSysUtils</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br>&nbsp;&nbsp;</span><span style="color: #999999">//-----------------------------------------------------------------------------------------------------<br>&nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>&nbsp;&nbsp;//&nbsp;SAFE&nbsp;REPLACEMENTS:<br>&nbsp;&nbsp;//&nbsp;In&nbsp;order&nbsp;to&nbsp;supply&nbsp;a&nbsp;common&nbsp;framework&nbsp;for&nbsp;Unix&nbsp;/&nbsp;Linux&nbsp;but&nbsp;also&nbsp;on&nbsp;Windows,<br>&nbsp;&nbsp;//&nbsp;because&nbsp;on&nbsp;Windows&nbsp;dir&nbsp;separator&nbsp;is&nbsp;\&nbsp;instead&nbsp;of&nbsp;/&nbsp;the&nbsp;following&nbsp;functions&nbsp;must&nbsp;be&nbsp;used&nbsp;as&nbsp;replacements:<br>&nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>&nbsp;&nbsp;//&nbsp;Smart::real_path()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instead&nbsp;of:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;realpath()<br>&nbsp;&nbsp;//&nbsp;Smart::dir_name()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instead&nbsp;of:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dirname()<br>&nbsp;&nbsp;//&nbsp;Smart::path_info()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instead&nbsp;of:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pathinfo()<br>&nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br>&nbsp;&nbsp;//&nbsp;Also,&nbsp;when&nbsp;folders&nbsp;are&nbsp;get&nbsp;from&nbsp;external&nbsp;environments&nbsp;and&nbsp;are&nbsp;not&nbsp;certified&nbsp;if&nbsp;they&nbsp;have<br>&nbsp;&nbsp;//&nbsp;been&nbsp;converted&nbsp;from&nbsp;\&nbsp;to&nbsp;/&nbsp;on&nbsp;Windows,&nbsp;those&nbsp;paths&nbsp;have&nbsp;to&nbsp;be&nbsp;fixed&nbsp;using:&nbsp;Smart::fix_path_separator()<br>&nbsp;&nbsp;//-----------------------------------------------------------------------------------------------------<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// Usage example:
+ </span><span style="color: #FFFFFF">SmartFileSysUtils</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);
+
+  </span><span style="color: #999999">//-----------------------------------------------------------------------------------------------------
+  // SAFE REPLACEMENTS:
+  // In order to supply a common framework for Unix / Linux but also on Windows,
+  // because on Windows dir separator is \ instead of / the following functions must be used as replacements:
+  //-----------------------------------------------------------------------------------------------------
+  // Smart::real_path()        instead of:        realpath()
+  // Smart::dir_name()         instead of:        dirname()
+  // Smart::path_info()        instead of:        pathinfo()
+  //-----------------------------------------------------------------------------------------------------
+  // Also, when folders are get from external environments and are not certified if they have
+  // been converted from \ to / on Windows, those paths have to be fixed using: Smart::fix_path_separator()
+     // To check compliancy may use: checkIfSafeFileOrDirName or checkIfSafePath
+  //-----------------------------------------------------------------------------------------------------
+
+// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1143,13 +1160,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:25 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:44 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

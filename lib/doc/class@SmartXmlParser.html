@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartXmlParser final class \ SmartXmlParser { } -&gt; Class: SmartXmlParser - Create a PHP Array from simple XML structures. XML tag attributes are">
-<meta name="keywords" content="smartxmlparser, final, class, create, a, php, array, from, simple, xml, structures, tag, attributes, are, supported, but, not, parsed, language, located, at, lib framework plugins lib xml php, package, plugins convertersandparsers, namespace, name, version, v, depends, extensions, classes, smart, hints, the, parser, may, handle, utf, default, and, iso, encodings, usage, dynamic, object, new, class   - method, this, provides, only, methods, public, function, construct, mode, encoding, format, xml str, preserve whitespace, false, log parse err warns, use strict validation, remove xml header, transform, properties, constants, sample, code, arr, xml  data    data   xml, ok, print r, end, documentation, index, definition, list, generated, on">
+<meta name="keywords" content="smartxmlparser, final, class, create, a, php, array, from, simple, xml, structures, tag, attributes, are, supported, but, not, parsed, language, located, at, lib framework plugins lib xml php, package, plugins convertersandparsers, namespace, name, version, v, depends, extensions, classes, smart, hints, the, parser, may, handle, utf, default, and, iso, encodings, usage, dynamic, object, new, class   - method, this, provides, only, methods, public, function, construct, string, mode, encoding, format, xml str, bool, preserve whitespace, false, log parse err warns, use strict validation, remove xml header, transform, properties, constants, sample, code, arr, xml  data    data   xml, ok, print r, end, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartXmlParser">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartXmlParser</title>
@@ -707,7 +707,7 @@ XML tag attributes are supported but not parsed.</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartXmlParser</span></li>
 		
-		<li><b>Version:</b> v.20221220</li>
+		<li><b>Version:</b> v.20231207</li>
 		<li><b>Depends:</b> extensions:  PHP XML ; classes: Smart</li>
 		<li><b>Hints:</b> The  XML Parser may handle UTF-8 (default) and ISO-8859-1 encodings</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -723,8 +723,8 @@ XML tag attributes are supported but not parsed.</div><br>
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: &quot;simple&quot;">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;simple&quot;</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$encoding` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$encoding</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$mode` Parameter is OPTIONAL, with the Default Value: &quot;simple&quot;">$mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;simple&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$encoding` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$encoding</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -737,14 +737,14 @@ XML tag attributes are supported but not parsed.</div><br>
 </div>
 <div class="doc-container" id="Method--format">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>format</b></span>&nbsp;(
-		<span class="doc-param-name"><b><span title="`$xml_str` Parameter is REQUIRED">$xml_str</span></b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$preserve_whitespace` Parameter is OPTIONAL, with the Default Value: false">$preserve_whitespace</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$log_parse_err_warns` Parameter is OPTIONAL, with the Default Value: false">$log_parse_err_warns</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$use_strict_validation` Parameter is OPTIONAL, with the Default Value: false">$use_strict_validation</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$remove_xml_header` Parameter is OPTIONAL, with the Default Value: false">$remove_xml_header</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$xml_str` Parameter is REQUIRED">$xml_str</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$preserve_whitespace` Parameter is OPTIONAL, with the Default Value: false">$preserve_whitespace</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$log_parse_err_warns` Parameter is OPTIONAL, with the Default Value: false">$log_parse_err_warns</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$use_strict_validation` Parameter is OPTIONAL, with the Default Value: false">$use_strict_validation</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$remove_xml_header` Parameter is OPTIONAL, with the Default Value: false">$remove_xml_header</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
 	
 	
 	
@@ -754,11 +754,11 @@ XML tag attributes are supported but not parsed.</div><br>
 </div>
 <div class="doc-container" id="Method--transform">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>transform</b></span>&nbsp;(
-		<span class="doc-param-name"><b><span title="`$xml_str` Parameter is REQUIRED">$xml_str</span></b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$log_parse_err_warns` Parameter is OPTIONAL, with the Default Value: false">$log_parse_err_warns</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$xml_str` Parameter is REQUIRED">$xml_str</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$log_parse_err_warns` Parameter is OPTIONAL, with the Default Value: false">$log_parse_err_warns</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;ARRAY
 	
 	
 	
@@ -787,10 +787,15 @@ XML tag attributes are supported but not parsed.</div><br>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//--&nbsp;Sample&nbsp;usage:<br>&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$arr&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartXmlParser</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">transform</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'&lt;xml&gt;&lt;data&gt;1&lt;/data&gt;&lt;/xml&gt;'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;[OK]<br>&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$arr</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//--<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">//-- Sample usage:
+   </span><span style="color: #FFFFFF">$arr </span><span style="color: #FFCC00; font-weight: bold">= (new </span><span style="color: #FFFFFF">SmartXmlParser</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">transform</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'&lt;xml&gt;&lt;data&gt;1&lt;/data&gt;&lt;/xml&gt;'</span><span style="color: #FFCC00; font-weight: bold">); </span><span style="color: #999999">// [OK]
+   </span><span style="color: #FFFFFF">print_r</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$arr</span><span style="color: #FFCC00; font-weight: bold">);
+   </span><span style="color: #999999">//--
+
+// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -851,13 +856,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:28 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

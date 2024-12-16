@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartModExtLib\Webdav\ControllerAdmCardDavFs abstract class \SmartModExtLib\Webdav\ ControllerAdmCardDavFs extends \SmartAbstractAppController { } @-&gt;">
-<meta name="keywords" content="smartmodextlib webdav controlleradmcarddavfs, abstract, class, smartmodextlib webdav, controlleradmcarddavfs, extends, smartabstractappcontroller, dav, carddav, filesystem, admin, controller, it, supports, only, the, area, admin php, so, can, be, used, to, implement, smartappadmincontroller, does, a, direct, output, needs, set, in, smart app module direct output, true, language, php, located, at, modules mod webdav libs controlleradmcarddavfs php, package, development modules webdav, namespace, name, version, inheritance, chart, →, ↳, methods, final, public, function, davfsrunserver, dav fs root path, show usage quota, false, nfo title, dav webaddressbook, nfo signature, smart framework carddav, nfo prefix crrpath, nfo lnk welcome, nfo txt welcome, home, nfo svg logo, modules mod webdav libs img abook svg, construct, string, y module path, y controller, y url page, y hardcoded area, inherited, from, param, relative, path, followed, by, trailing, slash, current, module, containing, served, middleware, service, ex, modules mod mytest, serve, action, for, mytest some controller, referring, file, modules mod mytest some controller php, as">
+<meta name="keywords" content="smartmodextlib webdav controlleradmcarddavfs, abstract, class, smartmodextlib webdav, controlleradmcarddavfs, extends, smartabstractappcontroller, dav, carddav, filesystem, admin, controller, it, supports, only, the, area, admin php, so, can, be, used, to, implement, smartappadmincontroller, does, a, direct, output, needs, set, in, smart app module direct output, true, language, php, located, at, modules mod webdav libs controlleradmcarddavfs php, package, development modules webdav, namespace, name, version, inheritance, chart, →, ↳, methods, final, public, function, davfsrunserver, string, dav fs root path, bool, show usage quota, false, nfo title, dav webaddressbook, nfo signature, smart framework carddav, nfo prefix crrpath, nfo lnk welcome, nfo txt welcome, home, nfo svg logo, modules mod webdav libs img abook svg, void, construct, y module path, y controller, y url page, y hardcoded area, inherited, from, param, relative, path, followed, by, trailing, slash, current, module, containing, served, middleware, service, ex, modules mod mytest, serve, action, for, mytest some controller, referring, file">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartModExtLib\Webdav\ControllerAdmCardDavFs</title>
@@ -705,7 +705,7 @@ It does a direct output so it needs to set in controller: SMART_APP_MODULE_DIREC
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\Webdav\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> ControllerAdmCardDavFs</span></li>
 		
-		<li><b>Version:</b> 20231001</li>
+		<li><b>Version:</b> 20240116</li>
 		
 		
 		
@@ -728,17 +728,17 @@ It does a direct output so it needs to set in controller: SMART_APP_MODULE_DIREC
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--DavFsRunServer">
 	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>DavFsRunServer</b></span>&nbsp;(
-		<span class="doc-param-name"><b><span title="`$dav_fs_root_path` Parameter is REQUIRED">$dav_fs_root_path</span></b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$show_usage_quota` Parameter is OPTIONAL, with the Default Value: false">$show_usage_quota</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_title` Parameter is OPTIONAL, with the Default Value: &quot;DAV@webAddressBook&quot;">$nfo_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DAV@webAddressBook&quot;</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_signature` Parameter is OPTIONAL, with the Default Value: &quot;Smart.Framework::CardDAV&quot;">$nfo_signature</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;Smart.Framework::CardDAV&quot;</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_prefix_crrpath` Parameter is OPTIONAL, with the Default Value: &quot;DAV:&quot;">$nfo_prefix_crrpath</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DAV:&quot;</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_lnk_welcome` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$nfo_lnk_welcome</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_txt_welcome` Parameter is OPTIONAL, with the Default Value: &quot;CardDAV :: Home&quot;">$nfo_txt_welcome</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;CardDAV :: Home&quot;</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_svg_logo` Parameter is OPTIONAL, with the Default Value: &quot;modules/mod-webdav/libs/img/abook.svg&quot;">$nfo_svg_logo</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;modules/mod-webdav/libs/img/abook.svg&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dav_fs_root_path` Parameter is REQUIRED">$dav_fs_root_path</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$show_usage_quota` Parameter is OPTIONAL, with the Default Value: false">$show_usage_quota</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_title` Parameter is OPTIONAL, with the Default Value: &quot;DAV@webAddressBook&quot;">$nfo_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DAV@webAddressBook&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_signature` Parameter is OPTIONAL, with the Default Value: &quot;Smart.Framework::CardDAV&quot;">$nfo_signature</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;Smart.Framework::CardDAV&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_prefix_crrpath` Parameter is OPTIONAL, with the Default Value: &quot;DAV:&quot;">$nfo_prefix_crrpath</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;DAV:&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_lnk_welcome` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$nfo_lnk_welcome</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_txt_welcome` Parameter is OPTIONAL, with the Default Value: &quot;CardDAV :: Home&quot;">$nfo_txt_welcome</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;CardDAV :: Home&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$nfo_svg_logo` Parameter is OPTIONAL, with the Default Value: &quot;modules/mod-webdav/libs/img/abook.svg&quot;">$nfo_svg_logo</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;modules/mod-webdav/libs/img/abook.svg&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;VOID
 	
 	
 	
@@ -990,6 +990,20 @@ timezone 					:: 		ex: UTC</div>
 @param: {ENUM} $type: The type of the variable ; Default is '' (no enforcing). This can be used to enforce a type for the variable as: ['enum', 'list', 'of', 'allowed', 'values'], 'array', 'string', 'boolean', 'integer', 'integer+', 'integer-', 'decimal1', 'decimal2', 'decimal3', 'decimal4', 'numeric'.</div>
 	
 			<div class="doc-method-comments">Get a Request Variable (GET/POST) in a controller</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--IsAjaxRequest">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>IsAjaxRequest</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if HTTP_X_REQUESTED_WITH is xmlhttprequest, FALSE otherwise</div>
+	
+			<div class="doc-method-comments">Return TRUE if the Request was made via AJAX</div>
 	
 	
 	
@@ -1610,7 +1624,7 @@ Because of the PHP Bug #31570, the __destruct() can't operate on relative paths 
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
 	
-			<div class="doc-method-ret-params">@return: {MIXED} *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 202/203/208 (OK with notice/warning/error messages - used only for REST/APIs), 301 (Permanent Redirect), 302 (Temporary Redirect), 404 (Not Found), 403 (Forbidden), 401 (Authentication Required), 400 (Bad Request), 410 (Gone), 429 (Too many Requests), 500 (Internal Error), 502 (Bad Gateway), 503 (Service Unavailable), 504 (Gateway Timeout) ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this-&gt;PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code) ; It also can return VOID or TRUE as HTTP Status 200 or return FALSE as HTTP Status 500</div>
+			<div class="doc-method-ret-params">@return: {MIXED} *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 202/203/204/208 (OK with notice/warning/error messages - used only for REST/APIs), 301 (Permanent Redirect), 302 (Temporary Redirect), 400 (Bad Request), 401 (Authentication Required), 403 (Forbidden), 404 (Not Found), 405 (Method Not Allowed), 410 (Gone), 422 (Unprocessable Content) / (Unprocessable Entity), 429 (Too many Requests), 500 (Internal Error), 501 (Not Implemented), 502 (Bad Gateway), 503 (Service Unavailable), 504 (Gateway Timeout) ; 204 (No Content) and 304 (Not Modified) are reserved ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this-&gt;PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code) ; It also can return VOID or TRUE as HTTP Status 200 or return FALSE as HTTP Status 500</div>
 	
 			<div class="doc-method-comments">The Controller Runtime - This function is required to be re-defined in all controllers</div>
 	
@@ -1704,6 +1718,9 @@ function smartHandleDocSelector(obj) {
 			
 			
 						<option value="Method--RequestVarGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestVarGet()</option>
+			
+			
+						<option value="Method--IsAjaxRequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IsAjaxRequest()</option>
 			
 			
 						<option value="Method--CookieVarGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarGet()</option>
@@ -1833,13 +1850,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:55:56 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 17:02:30 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

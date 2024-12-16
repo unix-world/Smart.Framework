@@ -48,7 +48,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP DBA Extension ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartComponents, SmartFileSysUtils, SmartFileSystem
- * @version 	v.20240119
+ * @version 	v.20241216
  * @package 	Application:Plugins:Database:Dba
  *
  */
@@ -57,6 +57,7 @@ final class SmartDbaDb {
 	// ->
 
 	private $file 		= null;
+	private $dbres 		= '';
 	private $dba 		= null;
 
 	private $handler;
@@ -177,10 +178,12 @@ final class SmartDbaDb {
 			return;
 		} //end if
 		//--
+		$this->dbres = (string) SmartHashCrypto::crc32b($this->file.'#'.$this->description.'@'.time()); // fix: since PHP 8.4 the DBA resource is a class than cannot be casted to string, so building an approximate similar resource for info purposes is handled here
+		//--
 		if(SmartEnvironment::ifDebug()) {
 			SmartEnvironment::setDebugMsg('db', 'dba|log', [
 				'type' => 'open-close',
-				'data' => 'DBA :: Connected to: '.$this->file.' :: '.$this->description.' @ Resource: '.$this->dba
+				'data' => 'DBA :: Connected to: '.$this->file.' :: '.$this->description.' @ Resource: '.$this->dbres,
 			]);
 		} //end if
 		//--
@@ -314,7 +317,7 @@ final class SmartDbaDb {
 				'command' => 'Key='.$key.' ; RawLength='.(int)$rlen,
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 				'rows' => (int) $ttl,
-				'connection' => (string) $this->dba
+				'connection' => (string) $this->dbres,
 			]);
 			//--
 		} //end if
@@ -397,7 +400,7 @@ final class SmartDbaDb {
 				'command' => 'Key='.$key.' ; Status='.(($value === null) ? 'N/A' : ( ($value === false) ? 'Expired' : 'Found' )).' ; PackSize='.(int)$rlen.' ; Value='.Smart::text_cut_by_limit((string)$value, 1024, true, '[...data-longer-than-1024-bytes-is-not-logged-all-here...]'),
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 				'rows' => ($value === null) ? 0 : ( ($value === false) ? (-1 * (int)$rlen) : strlen((string)$value) ),
-				'connection' => (string) $this->dba
+				'connection' => (string) $this->dbres,
 			]);
 			//--
 		} //end if
@@ -477,7 +480,7 @@ final class SmartDbaDb {
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 				'rows' => ($op === true) ? strlen((string)$value) : 0,
 				'wsize' => true,
-				'connection' => (string) $this->dba
+				'connection' => (string) $this->dbres,
 			]);
 			//--
 		} //end if
@@ -550,7 +553,7 @@ final class SmartDbaDb {
 				'command' => 'Key='.$key,
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 				'rows' => ($op === true) ? 1 : 0,
-				'connection' => (string) $this->dba
+				'connection' => (string) $this->dbres,
 			]);
 			//--
 		} //end if
@@ -615,7 +618,7 @@ final class SmartDbaDb {
 				'command' => 'Key='.$key,
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 				'rows' => ($op === true) ? 1 : 0,
-				'connection' => (string) $this->dba
+				'connection' => (string) $this->dbres,
 			]);
 			//--
 		} //end if
@@ -675,7 +678,7 @@ final class SmartDbaDb {
 				'command' => 'Optimize DB',
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 				'rows' => ($op === true) ? 1 : 0,
-				'connection' => (string) $this->dba
+				'connection' => (string) $this->dbres,
 			]);
 			//--
 		} //end if
@@ -728,7 +731,7 @@ final class SmartDbaDb {
 				'command' => 'Get All Keys From DB',
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 				'rows' => (int) Smart::array_size($xarr),
-				'connection' => (string) $this->dba
+				'connection' => (string) $this->dbres,
 			]);
 			//--
 		} //end if
@@ -782,7 +785,7 @@ final class SmartDbaDb {
 				'command' => 'Clear Expired Keys from DB',
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 				'rows' => (int) Smart::array_size($xarr),
-				'connection' => (string) $this->dba
+				'connection' => (string) $this->dbres,
 			]);
 			//--
 		} //end if
@@ -818,7 +821,6 @@ final class SmartDbaDb {
 			$time_start = microtime(true);
 		} //end if
 		//--
-		$res = (string) $this->dba;
 		$this->close(false); // do not halt driver, must reconnect
 		//--
 		if(SmartEnvironment::ifDebug()) {
@@ -835,7 +837,7 @@ final class SmartDbaDb {
 				'command' => 'Clear all Data (will re-init the connection if any): '.$this->file,
 				'time' => Smart::format_number_dec($time_end, 9, '.', ''),
 				'rows' => (!$this->dba) ? 1 : 0,
-				'connection' => (string) $res
+				'connection' => (string) $this->dbres,
 			]);
 			//--
 		} //end if
@@ -1129,7 +1131,7 @@ final class SmartDbaDb {
 				if($halt !== false) {
 					SmartEnvironment::setDebugMsg('db', 'dba|log', [
 						'type' => 'open-close',
-						'data' => 'DBA :: Close Connection to: '.$this->file.' :: '.$this->description.' @ Resource: '.$this->dba
+						'data' => 'DBA :: Close Connection to: '.$this->file.' :: '.$this->description.' @ Resource: '.$this->dbres,
 					]);
 				} //end if
 			} //end if

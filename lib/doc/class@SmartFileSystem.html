@@ -712,7 +712,7 @@ All operations in this class are safe against TOC/TOU (time-of-check to time-of-
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartFileSystem</span></li>
 		
-		<li><b>Version:</b> v.20231006</li>
+		<li><b>Version:</b> v.20240119</li>
 		<li><b>Depends:</b> classes:  Smart, SmartEnvironment ; constants: SMART_FRAMEWORK_CHMOD_DIRS, SMART_FRAMEWORK_CHMOD_FILES</li>
 		<li><b>Hints:</b> This  class can handle thread concurency to the filesystem in a safe way by using the LOCK_EX (lock exclusive) feature on each file written / appended thus making also reads to be mostly safe ; Reads can also use optional shared locking if needed</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -728,10 +728,10 @@ All operations in this class are safe against TOC/TOU (time-of-check to time-of-
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--fix_dir_chmod">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>fix_dir_chmod</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if success, FALSE if not<br>
@@ -745,10 +745,10 @@ This provides a safe way to fix chmod on directories (symlinks or files will be 
 </div>
 <div class="doc-container" id="Method--fix_file_chmod">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>fix_file_chmod</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if success, FALSE if not<br>
@@ -762,10 +762,10 @@ This provides a safe way to fix chmod on files (symlinks or dirs will be skipped
 </div>
 <div class="doc-container" id="Method--get_file_size">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_file_size</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
 	
 	
 			<div class="doc-method-ret-params">@return: {INTEGER} 0 (zero) if file does not exists or invalid file type ; the file size in bytes for the rest of cases<br>
@@ -779,10 +779,10 @@ This provides a safe way to get the file size (works also with symlinks) ...</di
 </div>
 <div class="doc-container" id="Method--get_file_ctime">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_file_ctime</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
 	
 	
 			<div class="doc-method-ret-params">@return: {INTEGER} 0 (zero) if file does not exists or invalid file type ; the file creation timestamp for the rest of cases<br>
@@ -796,10 +796,10 @@ This provides a safe way to get the file creation timestamp (works also with sym
 </div>
 <div class="doc-container" id="Method--get_file_mtime">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_file_mtime</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
 	
 	
 			<div class="doc-method-ret-params">@return: {INTEGER} 0 (zero) if file does not exists or invalid file type ; the file modification timestamp for the rest of cases<br>
@@ -813,7 +813,7 @@ This provides a safe way to get the file modification timestamp (works also with
 </div>
 <div class="doc-container" id="Method--get_file_md5_checksum">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_file_md5_checksum</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -830,10 +830,10 @@ This provides a safe way to get the md5_file checksum (works also with symlinks)
 </div>
 <div class="doc-container" id="Method--is_type_dir">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_type_dir</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if directory (folder), FALSE if not<br>
@@ -847,10 +847,10 @@ This provides a safe way to check if a path is directory (folder) (works also wi
 </div>
 <div class="doc-container" id="Method--is_type_file">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_type_file</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if file, FALSE if not<br>
@@ -864,10 +864,10 @@ This provides a safe way to check if a path is file (works also with symlinks) .
 </div>
 <div class="doc-container" id="Method--is_type_link">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is_type_link</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if symlink, FALSE if not<br>
@@ -881,10 +881,10 @@ This provides a safe way to check if a path is symlink (may be broken or not) ..
 </div>
 <div class="doc-container" id="Method--have_access_read">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>have_access_read</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if readable, FALSE if not<br>
@@ -898,10 +898,10 @@ This provides a safe way to check if a path is readable ...</div>
 </div>
 <div class="doc-container" id="Method--have_access_write">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>have_access_write</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if writable, FALSE if not<br>
@@ -915,10 +915,10 @@ This provides a safe way to check if a path is writable ...</div>
 </div>
 <div class="doc-container" id="Method--have_access_executable">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>have_access_executable</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if file, FALSE if not<br>
@@ -932,10 +932,10 @@ This provides a safe way to check if a file path is executable (works also with 
 </div>
 <div class="doc-container" id="Method--path_exists">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>path_exists</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if exists, FALSE if not<br>
@@ -949,10 +949,10 @@ This provides a safe way to check if a path exists because using only PHP file_e
 </div>
 <div class="doc-container" id="Method--path_real_exists">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>path_real_exists</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$path` Parameter is REQUIRED">$path</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if exists, FALSE if not<br>
@@ -1096,7 +1096,7 @@ After rename or move the destination will be chmod standardized, as set in SMART
 </div>
 <div class="doc-container" id="Method--read_uploaded">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>read_uploaded</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -1116,12 +1116,12 @@ IT SHOULD BE USED TO ACCESS ONLY TEMPORARY UPLOAD FILES. To read other files use
 </div>
 <div class="doc-container" id="Method--move_uploaded">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>move_uploaded</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>, 
-	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$newlocation` Parameter is REQUIRED">$newlocation</span></b></span>, 
-	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$check_moved_contents` Parameter is OPTIONAL, with the Default Value: true">$check_moved_contents</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$file_name` Parameter is REQUIRED">$file_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$newlocation` Parameter is REQUIRED">$newlocation</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$check_moved_contents` Parameter is OPTIONAL, with the Default Value: true">$check_moved_contents</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>true</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
 	
 	
 			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
@@ -1162,12 +1162,12 @@ It will delete a file (or a symlink) if exists</div>
 <!-- Skip Internal-Priv Method: `link_create()` -->
 <div class="doc-container" id="Method--dir_create">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>dir_create</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>, 
-	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$recursive` Parameter is OPTIONAL, with the Default Value: false">$recursive</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-	<i>BOOLEAN</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_protected_paths` Parameter is OPTIONAL, with the Default Value: false">$allow_protected_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$dir_name` Parameter is REQUIRED">$dir_name</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$recursive` Parameter is OPTIONAL, with the Default Value: false">$recursive</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$allow_protected_paths` Parameter is OPTIONAL, with the Default Value: false">$allow_protected_paths</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
 	
 	
 			<div class="doc-method-ret-params">@return: {INTEGER} 1 if SUCCESS ; 0 on FAIL (this is integer instead of boolean for future extending with status codes)<br>
@@ -1251,6 +1251,7 @@ It will FAIL in non-recursive mode if the directory (folder) is not empty.</div>
 	
 	
 </div>
+<!-- Skip Internal-Priv Method: `create_protected_dir()` -->
 
 <!-- Properties -->
 <br>
@@ -1265,6 +1266,10 @@ It will FAIL in non-recursive mode if the directory (folder) is not empty.</div>
 	<h2 class="doc-header">class Constants</h2>
 </div>
 <!-- constants r.20200121 -->
+<div class="doc-container" id="Constant--APP_DB_FOLDER">
+	<span class="doc-modifiers">public</span> <i>const</i> <b>APP_DB_FOLDER</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;#db/&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
 
 <!-- Sample Code -->
 <br>
@@ -1272,10 +1277,13 @@ It will FAIL in non-recursive mode if the directory (folder) is not empty.</div>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">SmartFileSystem</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// Usage example:
+ </span><span style="color: #FFFFFF">SmartFileSystem</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);
+
+</span><span style="color: #999999">// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1392,6 +1400,8 @@ function smartHandleDocSelector(obj) {
 			
 			
 			
+			
+			
 		</optgroup>
 		<optgroup label="Class Properties">
 			<option value="Properties--Summary-">Properties list</option>
@@ -1399,6 +1409,8 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
+						<option value="Constant--APP_DB_FOLDER">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;APP_DB_FOLDER</option>
+			
 			
 		</optgroup>
 				<optgroup label="Class Sample usage">
@@ -1411,13 +1423,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:34 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

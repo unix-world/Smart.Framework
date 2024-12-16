@@ -5,11 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="smartJ$TestBrowser static class smartJ$TestBrowser { } . CLASS :: Smart BrowserTest (ES6) The class provide a Browser Compliance Check for JavaScript">
-<meta name="keywords" content="smartj testbrowser, static, class, smart, browsertest, es6, the, provide, a, browser, compliance, check, for, javascript, language, located, at, lib js framework smart framework pak js, browser check js, package, sf javascript browser, name, frozen, yes, version, usage, smartj testbrowser method, methods, public, function, checkismobiledevice, boolean, skipfallbackonscreensize, hint, it, is, very, basic, but, effective, and, quick, detection, return, will, true, if, seems, to, be, mobile, devices, false, not, param, optional, default, set, skip, fallback, on, screensize, which, may, innacurate, detect, device, checkcookies, show, that, does, supports, cookies, situation, like, user, disabled, in, or, really, unusual, old, are, enabled, support, have, even, sample, code, smartj testbrowser checkcookies, alert, notice, your, properties, constants, const, param ismobile">
-<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$TestBrowser">
+<meta name="description" content="smartJ$CipherCrypto static class smartJ$CipherCrypto { } . CLASS :: Smart Cipher Crypto (ES6, Strict Mode) Smart Twofish / Blowfish (CBC) for JavaScript:">
+<meta name="keywords" content="smartj ciphercrypto, static, class, smart, cipher, crypto, es6, strict, mode, twofish, blowfish, cbc, for, javascript, encrypt, decrypt, language, located, at, lib js framework smart framework pak js, crypt utils js, package, sf javascript crypto, name, frozen, yes, version, usage, smartj ciphercrypto method, depends, smartj utils, smartj baseconv, smartj cryptohash, smartj dhkx, smartj cryptociphertwofish, smartj cryptocipherblowfish, methods, public, function, tfenc, string, key, str, return, the, smart twofish, encrypted, param, encryption, bytes, bit, iv, is, auto managed, plain, encrypts, a, using, derived, and, pbkdf2, based, tfdec, decrypted, decrypts, bfenc, smart blowfish, safe, bfdec, properties, constants, documentation, index, definition, list, generated, on">
+<meta name="summary" content="Smart.Framework : Javascript Documentation: smartJ$CipherCrypto">
 <link rel="icon" href="data:,">
-<title>JS Documentation for: smartJ$TestBrowser</title>
+<title>JS Documentation for: smartJ$CipherCrypto</title>
 <!-- CSS and Fonts -->
 <!-- skip fonts -->
 <style type="text/css">
@@ -461,7 +461,7 @@ nav.ux-navbar li > a:only-child::after {
 	<label for="drop-0" class="toggle">&#9776;</label>
 	<input type="checkbox" id="drop-0">
 		<ul class="menu">
-		<li><a href="index.html#Package--SfJavascriptBrowser-" title="return to Index">return to Index</a></li>
+		<li><a href="index.html#Package--SfJavascriptCrypto-" title="return to Index">return to Index</a></li>
 	</ul>
 	
 </nav>
@@ -687,28 +687,28 @@ select#select-summary {
 
 </style>
 <!-- Headings -->
-<h1 title="PHP class: `smartJ$TestBrowser` @ JavaScript" id="Class--Summary-">
-	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">smartJ$TestBrowser</span><br>
+<h1 title="PHP class: `smartJ$CipherCrypto` @ JavaScript" id="Class--Summary-">
+	<span class="doc-modifiers">static</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-name">smartJ$CipherCrypto</span><br>
 	{
 	}&nbsp;.
 </h1>
 <!-- Description -->
-<div class="doc-comments">CLASS :: Smart BrowserTest (ES6)<br>
-The class provide a Browser Compliance Check for JavaScript</div><br>
+<div class="doc-comments">CLASS :: Smart Cipher Crypto (ES6, Strict Mode)<br>
+Smart Twofish / Blowfish (CBC) for JavaScript: Encrypt / Decrypt</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
 		<li><span class="doc-language"><b>Language:</b> Javascript<span></li>
-		<li><span class="doc-located"><b>Located at:</b> lib/js/framework/smart-framework.pak.js; browser_check.js</span></li>
-		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Browser</span></li>
-		<li><span class="doc-name"><b>Class Name:</b> smartJ$TestBrowser</span></li>
+		<li><span class="doc-located"><b>Located at:</b> lib/js/framework/smart-framework.pak.js; crypt_utils.js</span></li>
+		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Crypto</span></li>
+		<li><span class="doc-name"><b>Class Name:</b> smartJ$CipherCrypto</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20220730</span></li>
-		<li><b>Usage:</b> smartJ$TestBrowser.method();</li>
+		<li><span class="doc-version"><b>Version:</b> 20241216</span></li>
+		<li><b>Usage:</b> smartJ$CipherCrypto.method();</li>
 		
 		
 		
-		
+		<li><b>Depends:</b> smartJ$Utils, smartJ$BaseConv, smartJ$CryptoHash, smartJ$DhKx, smartJ$CryptoCipherTwofish, smartJ$CryptoCipherBlowfish</li>
 		
 	</ul>
 </div>
@@ -718,47 +718,92 @@ The class provide a Browser Compliance Check for JavaScript</div><br>
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20210414 -->
-<div class="doc-container" id="Method--checkIsMobileDevice">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>checkIsMobileDevice</b></span>&nbsp;(
-	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`skipFallbackOnscreenSize` Parameter">skipFallbackOnscreenSize</span></b></span>
+<div class="doc-container" id="Method--tfEnc">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tfEnc</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`key` Parameter">key</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: It is a very basic but effective and quick detection<br>
 	
 	
-			@return: {Boolean} will return TRUE if Browser seems to be a Mobile Devices, FALSE if not<br>
+			@return: {String} The Smart.Twofish encrypted string<br>
 	
 	
 	
-	@param: {Boolean} skipFallbackOnscreenSize *Optional* Default is FALSE ; If set to TRUE will skip the fallback on screensize which may be innacurate<br>
+	@param: {String} key The encryption key ; 32 bytes (256 bit) ; iV is auto-managed, 16 bytes (128 bit)<br>
+	@param: {String} str The plain string<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Detect if the Browser is on a mobile device.</div>
+			<div class="doc-method-comments">Smart.Twofish encrypts (CBC) a string using a smart derived encryption key and iv (PBKDF2 based)</div>
 	
 	
 </div>
-<div class="doc-container" id="Method--checkCookies">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>checkCookies</b></span>&nbsp;=&nbsp;(
+<div class="doc-container" id="Method--tfDec">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tfDec</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`key` Parameter">key</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
-	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Boolean}
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
-			@hint: If a browser show that does not supports Cookies may be a situation like user disabled cookies in the browser or is a really unusual or old browser<br>
 	
 	
-			@return: {Boolean} will return TRUE if Browser supports Cookies and cookies are enabled, FALSE if not or cookies are disabled<br>
+			@return: {String} The Smart.Twofish decrypted string<br>
 	
 	
 	
+	@param: {String} key The encryption key ; 32 bytes (256 bit) ; iV is auto-managed, 16 bytes (128 bit)<br>
+	@param: {String} str The Smart.Twofish encrypted string<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Detect if a Browser support Cookies or does not have the Cookies disabled or even may not support cookies.</div>
+			<div class="doc-method-comments">Smart.Twofish decrypts (CBC) a string using a smart derived encryption key and iv (PBKDF2 based)</div>
 	
-			<pre><b>Sample code: JavaScript</b><br><code class="hljs syntax javascript"> <span class="hljs-keyword">if</span>(!smartJ$TestBrowser.checkCookies()) {
- 		alert(<span class="hljs-string">'NOTICE: Your browser does not support Cookies !'</span>);
- }</code></pre>
+	
+</div>
+<div class="doc-container" id="Method--bfEnc">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>bfEnc</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`key` Parameter">key</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The Smart.Blowfish encrypted string<br>
+	
+	
+	
+	@param: {String} key The encryption key ; 32 bytes (256 bit) ; iV is auto-managed, 16 bytes (128 bit)<br>
+	@param: {String} str The plain string<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Smart.Blowfish encrypts (CBC) a string using a smart derived encryption key and iv (SAFE based)</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--bfDec">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>bfDec</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`key` Parameter">key</span></b></span>, 
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {String} The Smart.Blowfish decrypted string<br>
+	
+	
+	
+	@param: {String} key The encryption key ; 32 bytes (256 bit) ; iV is auto-managed, 16 bytes (128 bit)<br>
+	@param: {String} str The Smart.Blowfish encrypted string<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Smart.Blowfish decrypts (CBC) a string using a smart derived encryption key and iv (SAFE based)</div>
+	
 	
 </div>
 
@@ -775,14 +820,6 @@ The class provide a Browser Compliance Check for JavaScript</div><br>
 	<h2 class="doc-header">class Constants</h2>
 </div>
 <!-- constants r.20210417 -->
-<div class="doc-container" id="Constant--param_isMobile">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>const</i></span> <b>param_isMobile</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>'auto'</b></span>&nbsp;;&nbsp;&nbsp;<span title="Static Constant"><b>.</b></span>&nbsp;<i>{String}</i>
-	<div class="doc-param-set"><i>set</i>&nbsp;<span class="doc-param-set-comment">[before] smartJ$Options .BrowserTest.isMobile</span></div>
-	<div class="doc-param-get"><i>get</i>&nbsp;<span class="doc-param-get-comment">N/A</span></div>
-			<div class="doc-method-comments">If set to 'yes' or 'no' will disable the javascript detection for checkIsMobileDevice() which will return always TRUE if set to 'yes' and always FALSE if set to 'no'<br>
-This can be used to detect mobile devices by the backend (PHP) and skip the detection from javascript side</div>
-	
-</div>
 
 <!-- Sample Code -->
 
@@ -810,15 +847,19 @@ function smartHandleDocSelector(obj) {
 </script>
 <div class="doc-summary">
 	<select id="select-summary" onChange="smartHandleDocSelector(this); return false;">
-		<option value="" selected>* Javascript Class smartJ$TestBrowser # Documentation Index *</option>
-		<optgroup label="Class smartJ$TestBrowser">
+		<option value="" selected>* Javascript Class smartJ$CipherCrypto # Documentation Index *</option>
+		<optgroup label="Class smartJ$CipherCrypto">
 			<option value="Class--Summary-">Class definition</option>
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
-						<option value="Method--checkIsMobileDevice"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;checkIsMobileDevice()</option>
+						<option value="Method--tfEnc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tfEnc()</option>
 			
-						<option value="Method--checkCookies"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;checkCookies()</option>
+						<option value="Method--tfDec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tfDec()</option>
+			
+						<option value="Method--bfEnc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bfEnc()</option>
+			
+						<option value="Method--bfDec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bfDec()</option>
 			
 			
 		</optgroup>
@@ -828,8 +869,6 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
-						<option value="Constant--param_isMobile">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;param_isMobile</option>
-			
 			
 		</optgroup>
 		
@@ -839,13 +878,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:50:39 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 17:00:46 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

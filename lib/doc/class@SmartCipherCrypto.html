@@ -5,8 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartCipherCrypto final class \ SmartCipherCrypto { } :: Class: SmartCipherCrypto Provides a built-in based feature to handle the Blowfish (CBC)">
-<meta name="keywords" content="smartciphercrypto, final, class, provides, a, built in, based, feature, to, handle, the, blowfish, cbc, encryption, decryption, this, an, advanced, crypto, handler, for, algorithm, language, php, located, at, lib framework lib cryptoas php, package, core crypto, namespace, name, version, v, depends, classes, smart, smartenvironment, smartcryptocipherblowfishcbc, smartcryptoopensslcipher, smartcryptocipherhash, optional constant, smart framework security opensslbfcrypto, hints, is, bit, bytes, block, cipher, max, key, up, chars, length, bits, mode, requires, initialization, vector, iv, usage, static, object, class method, only, methods, public, function, encrypt, string, data, return, encrypted, as, b64s, or, empty, on, error, param, enum, selected, hash  mode, blowfish cbc, openssl cipher mode, must, be, between, and, plain, encrypts, using, algo, decrypt, decrypted, decrypts, properties, constants">
+<meta name="description" content="\SmartCipherCrypto final class \ SmartCipherCrypto { } :: Class: Smart Cipher Crypto Provides a built-in based feature to handle various encryption /">
+<meta name="keywords" content="smartciphercrypto, final, class, smart, cipher, crypto, provides, a, built in, based, feature, to, handle, various, encryption, decryption, language, php, located, at, lib framework lib cryptoas php, package, core crypto, namespace, name, version, v, depends, classes, smartenvironment, smartcryptocipherstwofishcbc, smartcryptociphersblowfishcbc, smartcryptociphersopenssl, smartcryptociphershashcryptofb, smartdhkx, usage, static, object, class method, this, only, methods, public, function, t3f encrypt, string, data, key, bool, b2fpreenc, false, return, the, encrypted, as, b64s, or, empty, on, error, param, plain, be, secret, must, between, and, bytes, if, no, is, provided, will, use, internal, from, init, smart framework security key, default, set, true, pre encrypt, using, bf, enc, v2, encrypts, threefish, cbc, 1024bit, v3, intended, used, for, high sensitive, persistent, ex">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartCipherCrypto">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartCipherCrypto</title>
@@ -696,9 +696,8 @@ select#select-summary {
 	}&nbsp;::
 </h1>
 <!-- Description -->
-<div class="doc-comments">Class: SmartCipherCrypto<br>
-Provides a built-in based feature to handle the Blowfish (CBC) encryption / decryption.<br>
-This provides an advanced crypto handler for Blowfish CBC algorithm.</div><br>
+<div class="doc-comments">Class: Smart Cipher Crypto<br>
+Provides a built-in based feature to handle various encryption / decryption.</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
 	<ul class="doc-list">
@@ -708,9 +707,9 @@ This provides an advanced crypto handler for Blowfish CBC algorithm.</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartCipherCrypto</span></li>
 		
-		<li><b>Version:</b> v.20231018</li>
-		<li><b>Depends:</b> classes:  Smart, SmartEnvironment, SmartCryptoCipherBlowfishCBC, SmartCryptoOpenSSLCipher, SmartCryptoCipherHash ; optional-constant: SMART_FRAMEWORK_SECURITY_OPENSSLBFCRYPTO</li>
-		<li><b>Hints:</b> Blowfish  is a 64-bit (8 bytes) block cipher. Max Key is up to 56 chars length (56 bytes = 448 bits). The CBC mode requires a initialization vector (iv).</li>
+		<li><b>Version:</b> v.20231203</li>
+		<li><b>Depends:</b> classes:  Smart, SmartEnvironment, SmartCryptoCiphersTwofishCBC, SmartCryptoCiphersBlowfishCBC, SmartCryptoCiphersOpenSSL, SmartCryptoCiphersHashCryptOFB, SmartDhKx</li>
+		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
 		
@@ -722,49 +721,182 @@ This provides an advanced crypto handler for Blowfish CBC algorithm.</div><br>
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
-<div class="doc-container" id="Method--encrypt">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encrypt</b></span>&nbsp;(
-		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cipher` Parameter is REQUIRED">$cipher</span></b></span>, 
-	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
+<!-- Skip Internal-Priv Method: `t3f_algo()` -->
+<div class="doc-container" id="Method--t3f_encrypt">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>t3f_encrypt</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$b2fpreenc` Parameter is OPTIONAL, with the Default Value: false">$b2fpreenc</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 			<div class="doc-method-ret-params">@return: {STRING} The encrypted data as B64S or empty string on error<br>
-@param: {ENUM} $cipher: Selected cipher: hash/{mode}, blowfish.cbc, openssl/cipher/mode<br>
-@param: {STRING} $key: The encryption key (must be between 7 and 4096 bytes)<br>
-@param: {STRING} $data: The plain data to be encrypted</div>
+@param: {STRING} $data: The plain data to be encrypted<br>
+@param: {STRING} $key: The encryption key (secret) ; must be between 7 and 4096 bytes ; If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY<br>
+@param: {BOOL} $b2fpreenc: Default is FALSE ; If set to TRUE will pre-encrypt data using BF enc (v2)</div>
 	
-			<div class="doc-method-comments">Encrypts a string using the selected Cipher Algo.</div>
+			<div class="doc-method-comments">Encrypts a string using the Threefish CBC 1024bit (v3 only)<br>
+This is intended to be used for high-sensitive persistent data (ex: data storage)<br>
+Ciphers: threefish.cbc (internal)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--t3f_decrypt">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>t3f_decrypt</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$fallback2fb` Parameter is OPTIONAL, with the Default Value: false">$fallback2fb</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The encrypted data as B64S or empty string on error<br>
+@param: {STRING} $data: The plain data to be encrypted<br>
+@param: {STRING} $key: The encryption key (secret) ; must be between 7 and 4096 bytes ; If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY<br>
+@param: {BOOL} $fallback2fb: Default is FALSE ; If TRUE will try to fallback on TF / TF+BF / BF decrypt if signature is not recognized</div>
+	
+			<div class="doc-method-comments">Decrypts a string using the  Threefish CBC 1024bit (v3 only)<br>
+This is intended to be used for high-sensitive persistent data (ex: data storage)<br>
+Ciphers: threefish.cbc (internal)</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `tf_algo()` -->
+<div class="doc-container" id="Method--tf_encrypt">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tf_encrypt</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$bfpreenc` Parameter is OPTIONAL, with the Default Value: false">$bfpreenc</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The encrypted data as B64S or empty string on error<br>
+@param: {STRING} $data: The plain data to be encrypted<br>
+@param: {STRING} $key: The encryption key (secret) ; must be between 7 and 4096 bytes ; If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY<br>
+@param: {BOOL} $bfpreenc: Default is FALSE ; If set to TRUE will pre-encrypt data using BF enc (v3)</div>
+	
+			<div class="doc-method-comments">Encrypts a string using the Twofish CBC 256bit (v3 only)<br>
+This is intended to be used for high-sensitive persistent data (ex: data storage)<br>
+Ciphers: twofish.cbc (internal)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--tf_decrypt">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tf_decrypt</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$fallbackbf` Parameter is OPTIONAL, with the Default Value: false">$fallbackbf</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The encrypted data as B64S or empty string on error<br>
+@param: {STRING} $data: The plain data to be encrypted<br>
+@param: {STRING} $key: The encryption key (secret) ; must be between 7 and 4096 bytes ; If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY<br>
+@param: {BOOL} $fallbackbf: Default is FALSE ; If TRUE will try to fallback on BF decrypt if signature is not recognized</div>
+	
+			<div class="doc-method-comments">Decrypts a string using the  Twofish CBC 256bit (v3 only)<br>
+This is intended to be used for high-sensitive persistent data (ex: data storage)<br>
+Ciphers: twofish.cbc (internal)</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `bf_algo()` -->
+<div class="doc-container" id="Method--bf_encrypt">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>bf_encrypt</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The encrypted data as B64S or empty string on error<br>
+@param: {STRING} $data: The plain data to be encrypted<br>
+@param: {STRING} $key: The encryption key (secret) ; must be between 7 and 4096 bytes ; If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY</div>
+	
+			<div class="doc-method-comments">Encrypts a string using the Blowfish CBC 448bit (v3 only)<br>
+This is intended to be used for persistent data (ex: data storage)<br>
+Ciphers: blowfish.cbc (internal)</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--bf_decrypt">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>bf_decrypt</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The encrypted data as B64S or empty string on error<br>
+@param: {STRING} $data: The plain data to be encrypted<br>
+@param: {STRING} $key: The encryption key (secret) ; must be between 7 and 4096 bytes ; If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY</div>
+	
+			<div class="doc-method-comments">Decrypts a string using the Blowfish CBC 448bit (v3 or v2 / v1 backward compatible)<br>
+This is intended to be used for persistent data (ex: data storage)<br>
+Ciphers: blowfish.cbc (internal)</div>
+	
+	
+	
+</div>
+<!-- Skip Internal-Priv Method: `algo()` -->
+<div class="doc-container" id="Method--encrypt">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encrypt</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cipher` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$cipher</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} The encrypted data as B64S or empty string on error<br>
+@param: {STRING} $data: The plain data to be encrypted<br>
+@param: {STRING} $key: The encryption key (secret) ; must be between 7 and 4096 bytes ; If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY<br>
+@param: {ENUM} $cipher: Selected cipher: hash/{mode}, blowfish.cbc, openssl/{cipher}/{mode} ; If no cipher is provided will use the default cipher</div>
+	
+			<div class="doc-method-comments">Encrypts data on-the-fly using various Ciphers<br>
+This is intended to be used for non-persistent data ; these ciphers may change or dissapear over time</div>
 	
 	
 	
 </div>
 <div class="doc-container" id="Method--decrypt">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decrypt</b></span>&nbsp;(
-		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$cipher` Parameter is REQUIRED">$cipher</span></b></span>, 
-	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$key` Parameter is REQUIRED">$key</span></b></span>, 
-	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$data` Parameter is REQUIRED">$data</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$key` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$key</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$cipher` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$cipher</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
 	
 	
 			<div class="doc-method-ret-params">@return: {STRING} The plain (decrypted) data or empty string on error<br>
-@param: {ENUM} $cipher: Selected cipher: hash/{mode}, blowfish.cbc, openssl/cipher/mode<br>
-@param: {STRING} $key: The encryption key (must be between 7 and 4096 bytes)<br>
-@param: {STRING} $data: The encrypted data</div>
+@param: {STRING} $data: The encrypted data<br>
+@param: {STRING} $key: The encryption key (secret) ; must be between 7 and 4096 bytes ; If no key is provided will use the internal key from init: SMART_FRAMEWORK_SECURITY_KEY<br>
+@param: {ENUM} $cipher: Selected cipher: hash/{mode}, blowfish.cbc, openssl/cipher/mode ; ; If no cipher is provided will use the default cipher</div>
 	
-			<div class="doc-method-comments">Decrypts a string using the selected Cipher Algo.</div>
+			<div class="doc-method-comments">Decrypts data on-the-fly using various Ciphers<br>
+This is intended to be used for non-persistent data ; these ciphers may change or dissapear over time</div>
 	
 	
 	
 </div>
-<!-- Skip Internal-Priv Method: `blowfish_encrypt()` -->
-<!-- Skip Internal-Priv Method: `blowfish_decrypt()` -->
-<!-- Skip Internal-Priv Method: `blowfish_algo()` -->
+<!-- Skip Internal-Priv Method: `dhkx_enc()` -->
+<!-- Skip Internal-Priv Method: `dhkx_dec()` -->
 
 <!-- Properties -->
 <br>
@@ -786,10 +918,13 @@ This provides an advanced crypto handler for Blowfish CBC algorithm.</div><br>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">SmartCipherCrypto</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// Usage example:
+ </span><span style="color: #FFFFFF">SmartCipherCrypto</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);
+
+</span><span style="color: #999999">// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -821,12 +956,36 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
+			
+			
+						<option value="Method--t3f_encrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;t3f_encrypt()</option>
+			
+			
+						<option value="Method--t3f_decrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;t3f_decrypt()</option>
+			
+			
+			
+			
+						<option value="Method--tf_encrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tf_encrypt()</option>
+			
+			
+						<option value="Method--tf_decrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tf_decrypt()</option>
+			
+			
+			
+			
+						<option value="Method--bf_encrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bf_encrypt()</option>
+			
+			
+						<option value="Method--bf_decrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bf_decrypt()</option>
+			
+			
+			
+			
 						<option value="Method--encrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;encrypt()</option>
 			
 			
 						<option value="Method--decrypt"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;decrypt()</option>
-			
-			
 			
 			
 			
@@ -853,13 +1012,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:26 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:44 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

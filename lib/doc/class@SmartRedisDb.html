@@ -1234,10 +1234,19 @@ NOTICE: Not all Redis methods were ported to this driver but the most essential 
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Redis&nbsp;Client&nbsp;usage&nbsp;example,&nbsp;with&nbsp;custom&nbsp;connection&nbsp;parameters:<br>&nbsp;</span><span style="color: #FFFFFF">$redis&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartRedisDb</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SampleInstance'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">false</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'localhost'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'6379'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">3</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;connects&nbsp;at&nbsp;the&nbsp;database&nbsp;no.&nbsp;3&nbsp;;&nbsp;for&nbsp;debug&nbsp;and&nbsp;log&nbsp;will&nbsp;identify&nbsp;by&nbsp;'SampleInstance'&nbsp;(1st&nbsp;param)&nbsp;;&nbsp;2nd&nbsp;param&nbsp;set&nbsp;the&nbsp;fatal&nbsp;errors&nbsp;to&nbsp;false&nbsp;and&nbsp;just&nbsp;log&nbsp;errors&nbsp;not&nbsp;raise&nbsp;fatal&nbsp;errors&nbsp;...&nbsp;(this&nbsp;is&nbsp;default&nbsp;behaviour)<br>&nbsp;</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'key1'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'value1'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'list1:key1'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'value2'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #FFFFFF">$value1&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'key1'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;if(</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">exists</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'key1'</span><span style="color: #FFCC00; font-weight: bold">))&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$value2&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'list5:key7'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;}&nbsp;</span><span style="color: #999999">//end&nbsp;if<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// Redis Client usage example, with custom connection parameters:
+ </span><span style="color: #FFFFFF">$redis </span><span style="color: #FFCC00; font-weight: bold">= new </span><span style="color: #FFFFFF">SmartRedisDb</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'SampleInstance'</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #FFFFFF">false</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #5F9CCE">'localhost'</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #5F9CCE">'6379'</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #FFFFFF">3</span><span style="color: #FFCC00; font-weight: bold">); </span><span style="color: #999999">// connects at the database no. 3 ; for debug and log will identify by 'SampleInstance' (1st param) ; 2nd param set the fatal errors to false and just log errors not raise fatal errors ... (this is default behaviour)
+ </span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'key1'</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #5F9CCE">'value1'</span><span style="color: #FFCC00; font-weight: bold">);
+ </span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">set</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'list1:key1'</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #5F9CCE">'value2'</span><span style="color: #FFCC00; font-weight: bold">);
+ </span><span style="color: #FFFFFF">$value1 </span><span style="color: #FFCC00; font-weight: bold">= </span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'key1'</span><span style="color: #FFCC00; font-weight: bold">);
+ if(</span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">exists</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'key1'</span><span style="color: #FFCC00; font-weight: bold">)) {
+     </span><span style="color: #FFFFFF">$value2 </span><span style="color: #FFCC00; font-weight: bold">= </span><span style="color: #FFFFFF">$redis</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">get</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'list5:key7'</span><span style="color: #FFCC00; font-weight: bold">);
+ } </span><span style="color: #999999">//end if
+
+// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -1328,13 +1337,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:32 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

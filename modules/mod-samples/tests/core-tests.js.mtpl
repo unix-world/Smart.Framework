@@ -1,7 +1,7 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%/COMMENT%%%]
-//===== QUnit Tests.Core: START :: r.20210526
+//===== QUnit Tests.Core: START :: r.20241216
 
 (() => {
 
@@ -87,7 +87,7 @@
 				'GET',
 				'html', // data type
 				assert,
-				'Test OK: PHP / Javascript Unicode Crypto.',
+				'Test OK: PHP / Javascript Cryptography.',
 				(QAsyncTestDone, testOK, msg, testHtmlDiv) => {
 					const value = 'INVALID TEST CONTENT: ' + String(JSON.stringify(msg).substr(0,100) + '...');
 					if(typeof(msg) == 'string') {

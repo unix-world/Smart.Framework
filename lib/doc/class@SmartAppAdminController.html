@@ -749,7 +749,7 @@ This function will be called before Run()</div>
 	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;MIXED
 	<br><span class="doc-reimplemented"><i>reimplemented&nbsp;</i>&nbsp;over&nbsp;<b>\SmartAbstractAppController</b></span>
 	
-			<div class="doc-method-ret-params">@return: {MIXED} *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 202/203/208 (OK with notice/warning/error messages - used only for REST/APIs), 301 (Permanent Redirect), 302 (Temporary Redirect), 404 (Not Found), 403 (Forbidden), 401 (Authentication Required), 400 (Bad Request), 410 (Gone), 429 (Too many Requests), 500 (Internal Error), 502 (Bad Gateway), 503 (Service Unavailable), 504 (Gateway Timeout) ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this-&gt;PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code) ; It also can return VOID or TRUE as HTTP Status 200 or return FALSE as HTTP Status 500</div>
+			<div class="doc-method-ret-params">@return: {MIXED} *OPTIONAL* The HTTP Status Code: by default it does not return or it must returns 200 which is optional ; other supported HTTP Status Codes are: 202/203/204/208 (OK with notice/warning/error messages - used only for REST/APIs), 301 (Permanent Redirect), 302 (Temporary Redirect), 400 (Bad Request), 401 (Authentication Required), 403 (Forbidden), 404 (Not Found), 405 (Method Not Allowed), 410 (Gone), 422 (Unprocessable Content) / (Unprocessable Entity), 429 (Too many Requests), 500 (Internal Error), 501 (Not Implemented), 502 (Bad Gateway), 503 (Service Unavailable), 504 (Gateway Timeout) ; 204 (No Content) and 304 (Not Modified) are reserved ; if the HTTP status code is in the range of 4xx - 5xx, an extra notification message can be set as: ##EXAMPLE: $this-&gt;PageViewSetCfg('error', 'Access to this page is restricted'); return 403; ## - to have also a detailed error message to be shown near the HTTP status code) ; It also can return VOID or TRUE as HTTP Status 200 or return FALSE as HTTP Status 500</div>
 	
 			<div class="doc-method-comments">The Controller Runtime - This function is required to be re-defined in all controllers</div>
 	
@@ -1025,6 +1025,20 @@ timezone 					:: 		ex: UTC</div>
 @param: {ENUM} $type: The type of the variable ; Default is '' (no enforcing). This can be used to enforce a type for the variable as: ['enum', 'list', 'of', 'allowed', 'values'], 'array', 'string', 'boolean', 'integer', 'integer+', 'integer-', 'decimal1', 'decimal2', 'decimal3', 'decimal4', 'numeric'.</div>
 	
 			<div class="doc-method-comments">Get a Request Variable (GET/POST) in a controller</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--IsAjaxRequest">
+	<span class="doc-modifiers">final public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>IsAjaxRequest</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartAbstractAppController</b></span>
+	
+			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if HTTP_X_REQUESTED_WITH is xmlhttprequest, FALSE otherwise</div>
+	
+			<div class="doc-method-comments">Return TRUE if the Request was made via AJAX</div>
 	
 	
 	
@@ -1693,6 +1707,9 @@ function smartHandleDocSelector(obj) {
 						<option value="Method--RequestVarGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;RequestVarGet()</option>
 			
 			
+						<option value="Method--IsAjaxRequest"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;IsAjaxRequest()</option>
+			
+			
 						<option value="Method--CookieVarGet"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;CookieVarGet()</option>
 			
 			
@@ -1811,13 +1828,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:36 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartCaptcha final class \ SmartCaptcha { } :: Class: SmartCaptcha - Manages, Render and Check the Captcha Form. Language: PHP Located at:">
-<meta name="keywords" content="smartcaptcha, final, class, manages, render, and, check, the, captcha, form, language, php, located, at, lib core plugins lib captcha form php, package, application plugins captcha, namespace, name, version, v, depends, classes, smart, smartutils, smarttexttranslations, smartsvgcaptcha, smartqr2dbarcode, javascript, jquery js, smart framework pak js, hints, to, smartcaptcha drawcaptchaform, a, plugin, is, required, verify, use, smartcaptcha verifycaptcha, smartcaptcha clearcaptcha, optional, be, call, after, depending, how, called, usage, static, object, class method, this, provides, only, methods, public, function, initcaptchaplugin, string, y form name, y captcha word, y mode, cookie, bool, return, boolean, true, on, success, or, false, failure, inits, captha, by, setting, values, in, session, depend, mode, set, should, used, with, external, plugins, ex, image, custom, url, must, not, if, drawcaptchaform">
+<meta name="keywords" content="smartcaptcha, final, class, manages, render, and, check, the, captcha, form, language, php, located, at, lib core plugins lib captcha form php, package, application plugins captcha, namespace, name, version, v, depends, constants, smart framework security key, classes, smart, smartutils, smarttexttranslations, smartsvgcaptcha, smartqr2dbarcode, javascript, jquery js, smart framework pak js, hints, to, smartcaptcha drawcaptchaform, a, plugin, is, required, verify, use, smartcaptcha verifycaptcha, smartcaptcha clearcaptcha, optional, be, call, after, depending, how, called, usage, static, object, class method, this, provides, only, methods, public, function, initcaptchaplugin, string, y form name, y captcha word, y mode, cookie, bool, return, boolean, true, on, success, or, false, failure, inits, captha, by, setting, values, in, session, depend, mode, set, should, used, with, external, plugins, ex, image, custom, url, must, not">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartCaptcha">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartCaptcha</title>
@@ -706,8 +706,8 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartCaptcha</span></li>
 		
-		<li><b>Version:</b> v.20231020</li>
-		<li><b>Depends:</b> classes:  Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js</li>
+		<li><b>Version:</b> v.20241115</li>
+		<li><b>Depends:</b> constants:  SMART_FRAMEWORK_SECURITY_KEY ; classes: Smart, SmartUtils, SmartTextTranslations, SmartSVGCaptcha, SmartQR2DBarcode ; javascript: jquery.js, smart-framework.pak.js</li>
 		<li><b>Hints:</b> To  render captcha, SmartCaptcha::drawCaptchaForm() and a captcha plugin is required. To verify, use SmartCaptcha::verifyCaptcha() ; SmartCaptcha::clearCaptcha() is optional to be call after verify, depending how SmartCaptcha::verifyCaptcha() is called</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -755,7 +755,7 @@ This must not be used if the drawCaptchaForm() is using internal captcha mode wi
 	
 			<div class="doc-method-comments">Draw the Captcha Form partial HTML<br>
 By default if no external URL is specified will use the internal interractive captcha<br>
-IMPORTANT: When using the interractive internal captcha the method initCaptchaPlugin() is automatically called and must not be called prior to this method !<br>
+IMPORTANT: When using the interractive internal captcha must not call initCaptchaPlugin() because the underlaying method initCaptcha() is automatically called !<br>
 Difficulty levels for the internal interractive captcha:<br>
 #very-easy<br>
 #easy<br>
@@ -822,10 +822,26 @@ On Verify Success the Captcha clears automatically all stored values</div>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//==<br>&nbsp;//--&nbsp;captch&nbsp;form&nbsp;needs&nbsp;a&nbsp;captcha&nbsp;plugin&nbsp;to&nbsp;work&nbsp;with&nbsp;(ex:&nbsp;image)<br>&nbsp;//&nbsp;See:&nbsp;\SmartModExtLib\Samples\TestUnitMain::captchaImg()<br>&nbsp;//&nbsp;Also&nbsp;See:&nbsp;modules/mod-samples/testunit.php&nbsp;#&nbsp;case&nbsp;'testunit.captcha'<br>&nbsp;//&nbsp;The&nbsp;method&nbsp;SmartCaptcha::initCaptchaPlugin()&nbsp;must&nbsp;be&nbsp;used&nbsp;to&nbsp;init&nbsp;a&nbsp;captcha&nbsp;plugin&nbsp;(ex:&nbsp;image)<br>&nbsp;//--&nbsp;captcha&nbsp;form&nbsp;(draw)<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">echo&nbsp;</span><span style="color: #FFFFFF">SmartCaptcha</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">drawCaptchaForm</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'form_name'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'?page=samples.testunit&amp;op=testunit.captcha'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;this&nbsp;controller&nbsp;should&nbsp;output&nbsp;HTML&nbsp;code&nbsp;to&nbsp;render&nbsp;the&nbsp;form<br>&nbsp;//--&nbsp;captcha&nbsp;check&nbsp;(verify)<br>&nbsp;</span><span style="color: #FFCC00; font-weight: bold">echo&nbsp;</span><span style="color: #FFFFFF">$check&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">SmartCaptcha</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">verifyCaptcha</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'form_name'</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'cookie'</span><span style="color: #FFCC00; font-weight: bold">);&nbsp;</span><span style="color: #999999">//&nbsp;and&nbsp;this&nbsp;is&nbsp;the&nbsp;way&nbsp;you&nbsp;verify&nbsp;the&nbsp;captcha&nbsp;(1&nbsp;=&nbsp;ok&nbsp;;&nbsp;0&nbsp;=&nbsp;not&nbsp;ok)<br>&nbsp;//--&nbsp;some&nbsp;more&nbsp;info&nbsp;on&nbsp;verify()<br>&nbsp;//&nbsp;captcha&nbsp;will&nbsp;reset&nbsp;(clear)&nbsp;by&nbsp;default&nbsp;upon&nbsp;each&nbsp;SmartCaptcha::verifyCaptcha()<br>&nbsp;//&nbsp;to&nbsp;avoid&nbsp;this&nbsp;(default)&nbsp;behaviour,&nbsp;you&nbsp;can&nbsp;set&nbsp;the&nbsp;3rd&nbsp;parameters&nbsp;of&nbsp;verify()&nbsp;to&nbsp;FALSE<br>&nbsp;//&nbsp;but&nbsp;if&nbsp;you&nbsp;do&nbsp;so,&nbsp;don't&nbsp;forget&nbsp;to&nbsp;manually&nbsp;clear&nbsp;captcha&nbsp;by&nbsp;calling&nbsp;SmartCaptcha::clearCaptcha()&nbsp;at&nbsp;the&nbsp;end&nbsp;!!!<br>&nbsp;//--<br>&nbsp;//==<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">//==
+ //-- captch form needs a captcha plugin to work with (ex: image)
+ // See: \SmartModExtLib\Samples\TestUnitMain::captchaImg()
+ // Also See: modules/mod-samples/testunit.php # case 'testunit.captcha'
+ // The method SmartCaptcha::initCaptchaPlugin() must be used only to init an external captcha plugin (ex: image)
+ //-- captcha form (draw)
+ </span><span style="color: #FFCC00; font-weight: bold">echo </span><span style="color: #FFFFFF">SmartCaptcha</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">drawCaptchaForm</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'form_name'</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #5F9CCE">'?page=samples.testunit&amp;op=testunit.captcha'</span><span style="color: #FFCC00; font-weight: bold">); </span><span style="color: #999999">// this controller should output HTML code to render the form
+ //-- captcha check (verify)
+ </span><span style="color: #FFCC00; font-weight: bold">echo </span><span style="color: #FFFFFF">$check </span><span style="color: #FFCC00; font-weight: bold">= </span><span style="color: #FFFFFF">SmartCaptcha</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">verifyCaptcha</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'form_name'</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #FFFFFF">true</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #5F9CCE">'cookie'</span><span style="color: #FFCC00; font-weight: bold">); </span><span style="color: #999999">// and this is the way you verify the captcha (1 = ok ; 0 = not ok)
+ //-- some more info on verify()
+ // captcha will reset (clear) by default upon each SmartCaptcha::verifyCaptcha()
+ // to avoid this (default) behaviour, you can set the 3rd parameters of verify() to FALSE
+ // but if you do so, don't forget to manually clear captcha by calling SmartCaptcha::clearCaptcha() at the end !!!
+ //--
+ //==
+
+// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -889,13 +905,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:38 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:46 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

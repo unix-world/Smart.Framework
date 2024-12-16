@@ -2320,6 +2320,9 @@ final class SmartCipherCrypto {
  * Supports dual operation mode (Int64 or BigInt ; for using BigInt requires the PHP GMP extension)
  * It implements a slightly modified version of the DH algo to provide much more secure shared data ...
  *
+ * @access 		private
+ * @internal
+ *
  * @usage       dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends     PHP GMP extension (optional, only if uses BigInt) ; classes: Smart, SmartHashCrypto, SmartCipherCrypto, SmartCryptoCiphersBlowfishCBC

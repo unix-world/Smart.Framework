@@ -5,8 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
-<meta name="description" content="\SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler final class \SmartModExtLib\AuthAdmins\ SmartAuthAdminsHandler { } :: Smart.Unicorn (Multi-Account) Auth">
-<meta name="keywords" content="smartmodextlib authadmins smartauthadminshandler, final, class, smartmodextlib authadmins, smartauthadminshandler, smart unicorn, multi account, auth, admins, handler, this, provide, a, complex, authentication, for, admin, area, admin php task php, using, multi accounts, system, with, sqlite, db, supports, http, basic, bear, swt, optional, built in, token, stk, required, constants, app auth admin username, app auth admin password, app auth privileges, must, be, set, in, config admin php, configuration, configs  app auth    adm namespaces, manager, admin php page auth admins manager stml, language, php, located, at, modules mod auth admins libs smartauthadminshandler php, package, development modules authadmins, namespace, name, version, v, methods, public, static, function, authenticate, bool, enforce https, false, disable tokens, disable 2fa, void, properties, documentation, index, definition, list, generated, on">
+<meta name="description" content="\SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler final class \SmartModExtLib\AuthAdmins\ SmartAuthAdminsHandler extends">
+<meta name="keywords" content="smartmodextlib, uthadmins smartauthadminshandler, final, class, uthadmins, smartauthadminshandler, extends, bstractauthhandler, implements, uthhandlerinterface, smart unicorn, multi account, auth, admins, handler, this, provide, a, complex, authentication, for, admin, area, admin php task php, using, multi accounts, system, with, sqlite, db, supports, http, basic, bear, swt, optional, built in, token, stk, required, only, init, after, dissalowed, constants, app auth admin init ip address, app auth admin username, app auth admin password, must, be, set, in, config admin php, thereafter, unset, app auth privileges, configuration, configs  app auth    adm namespaces, manager, admin php page auth admins manager stml, language, php, located, at, modules mod auth admins libs smartauthadminshandler php, package, development modules authadmins, namespace, name, version, v, inheritance, chart, →, ↳, interface, methods, public, static, function, authenticate, bool, enforce https, false, void, reimplemented, over, extended, to, handle, an, method, return, on, failed, logins, should">
 <meta name="summary" content="Smart.Framework.Modules : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler</title>
@@ -686,8 +686,8 @@ select#select-summary {
 <!-- Headings -->
 <h1 title="PHP class: `\SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler` @ PHP Namespace: `\SmartModExtLib\AuthAdmins\`" id="Class--Summary-">
 	<span class="doc-modifiers">final</span> <span class="doc-keyword"><i>class</i></span> <span class="doc-ns">\SmartModExtLib\AuthAdmins\</span><span class="doc-name">SmartAuthAdminsHandler</span><br>
-	
-	
+	<span title="extends (abstract) Class" class="doc-extends"><i>extends</i> \SmartModExtLib\AuthAdmins\AbstractAuthHandler</span><br>
+	<span title="implements Interface(s)" class="doc-implements"><i>implements</i> \SmartModExtLib\AuthAdmins\AuthHandlerInterface</span><br>
 	{
 	
 	}&nbsp;::
@@ -696,7 +696,8 @@ select#select-summary {
 <div class="doc-comments">Smart.Unicorn (Multi-Account) Auth Admins Handler<br>
 This class provide a complex authentication for admin area (admin.php|task.php) using multi-accounts system with SQLite DB<br>
 Supports: HTTP Basic Auth ; HTTP Bear Auth (SWT) *optional* ; built-in HTTP Basic Token Auth (STK) *optional*<br>
-Required constants: APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD, APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)<br>
+Required (only init, after dissalowed) constants: APP_AUTH_ADMIN_INIT_IP_ADDRESS, APP_AUTH_ADMIN_USERNAME, APP_AUTH_ADMIN_PASSWORD (must be set in set in config-admin.php only for init, thereafter must be unset)<br>
+Required constants: APP_AUTH_PRIVILEGES (must be set in set in config-admin.php)<br>
 Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager' =&gt; 'admin.php?page=auth-admins.manager.stml', ... ] (must be set in set in config-admin.php)</div><br>
 <!-- Metainfo -->
 <div class="doc-container">
@@ -707,11 +708,19 @@ Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager'
 		<li><span class="doc-ns"><b>Namespace:</b> \SmartModExtLib\AuthAdmins\</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartAuthAdminsHandler</span></li>
 		
-		<li><b>Version:</b> v.20231020</li>
+		<li><b>Version:</b> v.20240119</li>
 		
 		
 		
 		
+				<li><b>Inheritance Chart:</b>
+			<ul>
+				<span class="doc-name"><i>class</i>&nbsp;\SmartModExtLib\AuthAdmins\SmartAuthAdminsHandler</span>&nbsp;&rarr;
+				<li>&nbsp;&#8627;&nbsp;<span class="doc-type-class"><i>class</i>&nbsp;\SmartModExtLib\AuthAdmins\AbstractAuthHandler</span>&nbsp;&rarr;</li>
+				<li>&nbsp;&#8627;&nbsp;<span class="doc-type-interface"><i>interface</i>&nbsp;\SmartModExtLib\AuthAdmins\AuthHandlerInterface</span></li>
+				
+			</ul>
+		</li>
 		
 	</ul>
 </div>
@@ -723,15 +732,241 @@ Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager'
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--Authenticate">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>Authenticate</b></span>&nbsp;(
-		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$enforce_https` Parameter is OPTIONAL, with the Default Value: false">$enforce_https</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$disable_tokens` Parameter is OPTIONAL, with the Default Value: false">$disable_tokens</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
-	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$disable_2fa` Parameter is OPTIONAL, with the Default Value: false">$disable_2fa</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$enforce_https` Parameter is OPTIONAL, with the Default Value: false">$enforce_https</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;VOID
+	<br><span class="doc-reimplemented"><i>reimplemented&nbsp;</i>&nbsp;over&nbsp;<b>\SmartModExtLib\AuthAdmins\AuthHandlerInterface</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Handler Authenticate<br>
+THIS MUST BE EXTENDED TO HANDLE AN AUTHENTICATION METHOD<br>
+RETURN: VOID ; On FAILED Logins this method should STOP EXECUTION and provide the proper HTTP Status Message: ex: 401, 403, 429, ...</div>
 	
 	
 	
+</div>
+<div class="doc-container" id="Method--getClassName">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getClassName</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">RETURN: STRING ; The current called class name that has been extended from this one, without namespace prefix</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--preCheckForbiddenConditions">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>preCheckForbiddenConditions</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Pre-Check FORBIDDEN Conditions : Status 403<br>
+This method should not be called more than once !<br>
+IMPORTANT: All messages from this method may be display to public via HTTP Status Pages<br>
+DO NOT INCLUDE SENSITIVE INFORMATION IN THIS MESSAGES !<br>
+RETURN: STRING ; 'ERR-Message' or ''</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--preCheckInternalErrorConditions">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>preCheckInternalErrorConditions</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$disable_tokens` Parameter is OPTIONAL, with the Default Value: false">$disable_tokens</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$disable_2fa` Parameter is OPTIONAL, with the Default Value: false">$disable_2fa</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>false</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Pre-Check INTERNAL ERROR Conditions : Status 500<br>
+This method should not be called more than once !<br>
+IMPORTANT: All messages from this method may be display to public via HTTP Status Pages<br>
+DO NOT INCLUDE SENSITIVE INFORMATION IN THIS MESSAGES !<br>
+RETURN: STRING ; 'ERR-Message' or ''</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--preCheckBadGatewayConditions">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>preCheckBadGatewayConditions</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$enforce_https` Parameter is REQUIRED">$enforce_https</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Pre-Check BAD GATEWAY Conditions : Status 502<br>
+This method should not be called more than once !<br>
+IMPORTANT: All messages from this method may be display to public via HTTP Status Pages<br>
+DO NOT INCLUDE SENSITIVE INFORMATION IN THIS MESSAGES !<br>
+RETURN: STRING ; 'ERR-Message' or ''</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--preCheckServiceUnavailableConditions">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>preCheckServiceUnavailableConditions</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Pre-Check SERVICE UNAVAILABLE Conditions : Status 503<br>
+This method should not be called more than once !<br>
+IMPORTANT: All messages from this method may be display to public via HTTP Status Pages<br>
+DO NOT INCLUDE SENSITIVE INFORMATION IN THIS MESSAGES !<br>
+RETURN: STRING ; 'ERR-Message' or ''</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getAuthCredentials">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getAuthCredentials</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$enforce_https` Parameter is REQUIRED">$enforce_https</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$disable_tokens` Parameter is REQUIRED">$disable_tokens</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$disable_2fa` Parameter is REQUIRED">$disable_2fa</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Auth Get Credentials<br>
+It will retry the Auth Credentials from the HTTP Headers (Basic Auth or Bearer Auth)<br>
+This method should not be called more than once !<br>
+RETURN: ARRAY ; see the AUTH_CREDENTIALS array definition in this class ...</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--tryAuthGuard">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>tryAuthGuard</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Try Authentication Guard<br>
+This will detect the single following situation, that will skip Try Auth (this is the entry page):<br>
+- current script ends in `.php`<br>
+- current REQUEST_METHOD is GET or HEAD<br>
+- there are no input variables from REQUEST_URI, QUERY_STRING, PATH_INFO, REQUEST, GET, POST, FILES<br>
+For all the rest of situations will return TRUE (ask Try Auth)<br>
+There is no need to check for COOKIES, this is an HTTP Auth Handler, not managing Auth by Cookies ...<br>
+REQUEST_URI != SCRIPT_NAME (it means have query variables)<br>
+RETURN: BOOL ; if TRUE, Auth is required, otherwise if FALSE should not</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--isAuthLogout">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAuthLogout</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Detect Logout Request<br>
+This will detect the single following situation, that will display the Logout page:<br>
+- current script ends in `.php`<br>
+- current REQUEST_METHOD is GET or HEAD<br>
+- the $_REQUEST['logout'] variable is set and not empty<br>
+RETURN: BOOL ; if TRUE, Auth will display the Logout Page</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--renderAuthLogoutPage">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>renderAuthLogoutPage</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Render the Logout Page<br>
+RETURN: STRING ; HTML MAIN TPL</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--renderAuthLoginPage">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>renderAuthLoginPage</b></span>&nbsp;(
+		<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$disable_2fa` Parameter is REQUIRED">$disable_2fa</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_user_name` Parameter is REQUIRED">$auth_user_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_mode` Parameter is REQUIRED">$auth_mode</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_desc_mode` Parameter is REQUIRED">$auth_desc_mode</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$html_inc_code_poweredby_area` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$html_inc_code_poweredby_area</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Render the Login Page<br>
+RETURN: STRING ; HTML MAIN TPL</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--isAuthLoginValid">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAuthLoginValid</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_user_name` Parameter is REQUIRED">$auth_user_name</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$hash_of_pass` Parameter is REQUIRED">$hash_of_pass</span></b></span>, 
+	<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$account_data` Parameter is REQUIRED">$account_data</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Validate the Account Data against Auth UserName / PassHash ;<br>
+RETURN: BOOL ; if TRUE, the Login is SUCCESS ; Otherwise Login is FAIL</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--isAuth2FAValid">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAuth2FAValid</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$auth_user_name` Parameter is REQUIRED">$auth_user_name</span></b></span>, 
+	<i>bool</i>&nbsp;<span class="doc-param-name"><b><span title="`$use_2fa` Parameter is REQUIRED">$use_2fa</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$valid_2fa_pin_token` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$valid_2fa_pin_token</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Validate the 2FA login Value from Cookies compared with 2FA Token Pin or Visitor UUID Hash<br>
+IMPORTANT: the value of cookie will be compared with the provided $valid_2fa_pin_token which have to be a valid TOTP Pin Token<br>
+RETURN: BOOL ; if TRUE, the 2FA is VALID ; otherwise is INVALID</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--isAuthIPAddressValid">
+	<span class="doc-modifiers">final protected static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAuthIPAddressValid</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$restricted_ip_list` Parameter is REQUIRED">$restricted_ip_list</span></b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	<br><span class="doc-inherited"><i>inherited</i>&nbsp;from&nbsp;<b>\SmartModExtLib\AuthAdmins\AbstractAuthHandler</b></span>
+	
+	
+			<div class="doc-method-comments">Validate the IP Restrictions login Value using the User IPAddress List Restrictions ; ex: &lt;ip1&gt;,&lt;ip2&gt;,...<br>
+RETURN: BOOL ; if TRUE, the Current Visitor IP is VALID ; otherwise is INVALID</div>
 	
 	
 	
@@ -750,6 +985,62 @@ Required configuration: $configs['app-auth']['adm-namespaces'][ 'Admins Manager'
 	<h2 class="doc-header">class Constants</h2>
 </div>
 <!-- constants r.20200121 -->
+<div class="doc-container" id="Constant--AUTH_2FA_COOKIE_NAME">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>AUTH_2FA_COOKIE_NAME</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;Sf_2FA&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--AUTH_2FA_REGEX_TOKEN">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>AUTH_2FA_REGEX_TOKEN</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;/^[0-9]{8}$/&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TPL_PATH">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TPL_PATH</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;modules/mod-auth-admins/templates/&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TPL_FILE">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TPL_FILE</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;template.htm&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TPL_INC_PATH">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TPL_INC_PATH</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;modules/mod-auth-admins/libs/templates/auth-admins-handler/&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--IMG_LOADER">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>IMG_LOADER</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;lib/framework/img/loading-spokes.svg&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--IMG_UNICORN">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>IMG_UNICORN</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;lib/framework/img/unicorn-auth-logo.svg&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TXT_UNICORN">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TXT_UNICORN</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;Smart.Unicorn Secure Authentication&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TPL_LOGIN">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TPL_LOGIN</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;login.htm&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TXT_LOGIN">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TXT_LOGIN</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;Sign-In Authenticated Area&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TPL_LOGOUT">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TPL_LOGOUT</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;logout.htm&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--TXT_LOGOUT">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>TXT_LOGOUT</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;Sign-Out Authenticated Area&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--STK_TOKEN_AUTH_USERNAME_SUFFIX">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>STK_TOKEN_AUTH_USERNAME_SUFFIX</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;#token&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
+<div class="doc-container" id="Constant--AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST">
+	<span class="doc-modifiers">protected</span> <i>const</i> <b>AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>&quot;&lt;def-account&gt;,&lt;account&gt;,&lt;token&gt;&quot;</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	
+</div>
 
 <!-- Sample Code -->
 
@@ -786,6 +1077,45 @@ function smartHandleDocSelector(obj) {
 						<option value="Method--Authenticate"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;Authenticate()</option>
 			
 			
+						<option value="Method--getClassName"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getClassName()</option>
+			
+			
+						<option value="Method--preCheckForbiddenConditions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;preCheckForbiddenConditions()</option>
+			
+			
+						<option value="Method--preCheckInternalErrorConditions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;preCheckInternalErrorConditions()</option>
+			
+			
+						<option value="Method--preCheckBadGatewayConditions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;preCheckBadGatewayConditions()</option>
+			
+			
+						<option value="Method--preCheckServiceUnavailableConditions"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;preCheckServiceUnavailableConditions()</option>
+			
+			
+						<option value="Method--getAuthCredentials"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getAuthCredentials()</option>
+			
+			
+						<option value="Method--tryAuthGuard"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;tryAuthGuard()</option>
+			
+			
+						<option value="Method--isAuthLogout"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAuthLogout()</option>
+			
+			
+						<option value="Method--renderAuthLogoutPage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderAuthLogoutPage()</option>
+			
+			
+						<option value="Method--renderAuthLoginPage"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;renderAuthLoginPage()</option>
+			
+			
+						<option value="Method--isAuthLoginValid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAuthLoginValid()</option>
+			
+			
+						<option value="Method--isAuth2FAValid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAuth2FAValid()</option>
+			
+			
+						<option value="Method--isAuthIPAddressValid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAuthIPAddressValid()</option>
+			
+			
 			
 		</optgroup>
 		<optgroup label="Class Properties">
@@ -794,6 +1124,34 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Constants">
 			<option value="Constants--Summary-">Constants list</option>
+						<option value="Constant--AUTH_2FA_COOKIE_NAME">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;AUTH_2FA_COOKIE_NAME</option>
+			
+						<option value="Constant--AUTH_2FA_REGEX_TOKEN">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;AUTH_2FA_REGEX_TOKEN</option>
+			
+						<option value="Constant--TPL_PATH">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TPL_PATH</option>
+			
+						<option value="Constant--TPL_FILE">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TPL_FILE</option>
+			
+						<option value="Constant--TPL_INC_PATH">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TPL_INC_PATH</option>
+			
+						<option value="Constant--IMG_LOADER">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;IMG_LOADER</option>
+			
+						<option value="Constant--IMG_UNICORN">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;IMG_UNICORN</option>
+			
+						<option value="Constant--TXT_UNICORN">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TXT_UNICORN</option>
+			
+						<option value="Constant--TPL_LOGIN">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TPL_LOGIN</option>
+			
+						<option value="Constant--TXT_LOGIN">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TXT_LOGIN</option>
+			
+						<option value="Constant--TPL_LOGOUT">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TPL_LOGOUT</option>
+			
+						<option value="Constant--TXT_LOGOUT">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;TXT_LOGOUT</option>
+			
+						<option value="Constant--STK_TOKEN_AUTH_USERNAME_SUFFIX">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;STK_TOKEN_AUTH_USERNAME_SUFFIX</option>
+			
+						<option value="Constant--AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST">&nbsp;&nbsp;&middot;&nbsp;&nbsp; const&nbsp;AUTH_VIA_TOKEN_ENFORCED_RESTRICTIONS_LIST</option>
+			
 			
 		</optgroup>
 		
@@ -803,13 +1161,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:55:54 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 17:02:30 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

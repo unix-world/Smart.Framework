@@ -703,7 +703,7 @@ The class provides the core methods for JavaScript API of Smart.Framework</div><
 		<li><span class="doc-package"><b>Package:</b> Sf.Javascript:Core</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> smartJ$Utils</span></li>
 		<li><span class="doc-frozen"><b>Frozen:</b> Yes</span></li>
-		<li><span class="doc-version"><b>Version:</b> 20231010</span></li>
+		<li><span class="doc-version"><b>Version:</b> 20240122</span></li>
 		<li><b>Usage:</b> smartJ$Utils.method();</li>
 		
 		
@@ -782,7 +782,7 @@ If fails, will log errors to the console and optional if set so it can display a
 	
 	
 	</div>
-			<div class="doc-method-comments">Return a pure string value from an input<br>
+			<div class="doc-method-comments">Return a string pure value from an input of any kind<br>
 RULES:<br>
 - Undefined, Null or False will be casted to empty string as ''<br>
 - True will be casted to '1' as in PHP not to 'true' as in Javascript<br>
@@ -1265,8 +1265,8 @@ RULES:<br>
 </div>
 <div class="doc-container" id="Method--format_number_int">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_int</b></span>&nbsp;=&nbsp;(
-	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_number` Parameter">y_number</span></b></span>, 
-	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_allow_negatives` Parameter">y_allow_negatives</span></b></span>
+	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`allow_negatives` Parameter">allow_negatives</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
 	<div class="doc-method-ret-params">
@@ -1276,8 +1276,8 @@ RULES:<br>
 	
 	
 	
-	@param: {Numeric} y_number A numeric value<br>
-	@param: {Boolean} y_allow_negatives If TRUE will allow negative values else will return just positive (unsigned) values<br>
+	@param: {Numeric} num A numeric value<br>
+	@param: {Boolean} allow_negatives If TRUE will allow negative values else will return just positive (unsigned) values<br>
 	
 	
 	</div>
@@ -1287,10 +1287,11 @@ RULES:<br>
 </div>
 <div class="doc-container" id="Method--format_number_dec">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>format_number_dec</b></span>&nbsp;=&nbsp;(
-	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_number` Parameter">y_number</span></b></span>, 
-	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_decimals` Parameter">y_decimals</span></b></span>, 
-	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_allow_negatives` Parameter">y_allow_negatives</span></b></span>, 
-	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`y_discard_trailing_zeroes` Parameter">y_discard_trailing_zeroes</span></b></span>
+	<i>{Numeric}</i>&nbsp;<span class="doc-param-name"><b><span title="`num` Parameter">num</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`decimals` Parameter">decimals</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`allow_negatives` Parameter">allow_negatives</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`discard_trailing_zeroes` Parameter">discard_trailing_zeroes</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`decimals_separator` Parameter">decimals_separator</span></b></span>
 	
 	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1300,14 +1301,37 @@ RULES:<br>
 	
 	
 	
-	@param: {Numeric} y_number A numeric value as Number or String<br>
-	@param: {Integer} y_decimals *Optional* Default is 2 ; The number of decimal to use (between 1 and 13)<br>
-	@param: {Boolean} y_allow_negatives *Optional* Default is TRUE ; If FALSE will disallow negative (will return just positive / unsigned values)<br>
-	@param: {Boolean} y_discard_trailing_zeroes *Optional* Default is FALSE ; If set to TRUE will discard trailing zeroes<br>
+	@param: {Numeric} num A numeric value as Number or String ; decimal separator is `.` (dot)<br>
+	@param: {Integer} decimals *Optional* Default is 2 ; The number of decimal to use (between 1 and 13)<br>
+	@param: {Boolean} allow_negatives *Optional* Default is TRUE ; If FALSE will disallow negative (will return just positive / unsigned values)<br>
+	@param: {Boolean} discard_trailing_zeroes *Optional* Default is FALSE ; If set to TRUE will discard trailing zeroes<br>
+	@param: {Boolean} decimals_separator *Optional* Default is FALSE ; If set to TRUE will add thousands separator `,` (comma)<br>
 	
 	
 	</div>
 			<div class="doc-method-comments">Format a number as DECIMAL</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--randNum">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i></i></span> <span class="doc-method-name"><b>randNum</b></span>&nbsp;=&nbsp;(
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`min` Parameter">min</span></b></span>, 
+	<i>{Integer}</i>&nbsp;<span class="doc-param-name"><b><span title="`max` Parameter">max</span></b></span>
+	
+	)&nbsp;=&gt;&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{Integer}
+	<div class="doc-method-ret-params">
+	
+	
+			@return: {Integer} The random value<br>
+	
+	
+	
+	@param: {Integer} min The min value<br>
+	@param: {Integer} max The max value<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Get a Random (Integer) Number between Min and Max</div>
 	
 	
 </div>
@@ -1462,8 +1486,8 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 </div>
-<div class="doc-container" id="Method--utf8_encode">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8_encode</b></span>&nbsp;(
+<div class="doc-container" id="Method--utf8Enc">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8Enc</b></span>&nbsp;(
 	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
@@ -1482,8 +1506,8 @@ These values will be converted to safe HTML entities: &lt; &gt; &amp; &quot;</di
 	
 	
 </div>
-<div class="doc-container" id="Method--utf8_decode">
-	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8_decode</b></span>&nbsp;(
+<div class="doc-container" id="Method--utf8Dec">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>utf8Dec</b></span>&nbsp;(
 	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`utftext` Parameter">utftext</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
@@ -1527,7 +1551,7 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 <div class="doc-container" id="Method--bin2hex">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>bin2hex</b></span>&nbsp;(
 	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`s` Parameter">s</span></b></span>, 
-	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`bin` Parameter">bin</span></b></span>
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isBinary` Parameter">isBinary</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1539,18 +1563,18 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	@param: {String} s The string to be processed<br>
-	@param: {Boolean} bin Set to TRUE if the string is binary to avoid re-encode to UTF-8<br>
+	@param: {Boolean} isBinary Encoding character set mode ; default is FALSE ; set to TRUE if the string is binary ASCII to avoid normalize as UTF-8 ; for normal, UTF-8 content this must be set to FALSE<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Convert binary data into hexadecimal representation.</div>
+			<div class="doc-method-comments">Convert data into hexadecimal representation.</div>
 	
 	
 </div>
 <div class="doc-container" id="Method--hex2bin">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>hex2bin</b></span>&nbsp;(
 	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`hex` Parameter">hex</span></b></span>, 
-	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`bin` Parameter">bin</span></b></span>
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isBinary` Parameter">isBinary</span></b></span>
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
 	<div class="doc-method-ret-params">
@@ -1562,11 +1586,59 @@ Will convert all accented characters in UTF-8 / ISO-8859-* with their unnaccente
 	
 	
 	@param: {String} hex The string to be processed<br>
-	@param: {Boolean} bin Set to TRUE if the string is binary to avoid re-decode as UTF-8<br>
+	@param: {Boolean} isBinary Decoding character set mode ; default is FALSE ; set to TRUE if the string is binary ASCII to avoid normalize as UTF-8 ; for normal, UTF-8 content this must be set to FALSE<br>
 	
 	
 	</div>
-			<div class="doc-method-comments">Decodes a hexadecimally encoded binary string.</div>
+			<div class="doc-method-comments">Decodes a hexadecimally encoded string.</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--b64Enc">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>b64Enc</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isBinary` Parameter">isBinary</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+			@throws: console.error<br>
+	
+			@return: {String} the Base64 encoded string or empty string if errors<br>
+	
+	
+	
+	@param: {String} str The plain string (to be encoded)<br>
+	@param: {Boolean} isBinary Encoding character set mode ; default is FALSE ; set to TRUE if the string is binary ASCII to avoid normalize as UTF-8 ; for normal, UTF-8 content this must be set to FALSE<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Encode a string to Base64, using browser native implementation: btoa()<br>
+Supports also UTF-8</div>
+	
+	
+</div>
+<div class="doc-container" id="Method--b64Dec">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>b64Dec</b></span>&nbsp;(
+	<i>{String}</i>&nbsp;<span class="doc-param-name"><b><span title="`str` Parameter">str</span></b></span>, 
+	<i>{Boolean}</i>&nbsp;<span class="doc-param-name"><b><span title="`isBinary` Parameter">isBinary</span></b></span>
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>.</b></span>&nbsp;{String}
+	<div class="doc-method-ret-params">
+	
+			@throws: console.error<br>
+	
+			@return: {String} the plain (B64 decoded) string or empty string if errors<br>
+	
+	
+	
+	@param: {String} str The B64 encoded string<br>
+	@param: {Boolean} isBinary Decoding character set mode ; default is FALSE ; set to TRUE if the string is binary ASCII to avoid normalize as UTF-8 ; for normal, UTF-8 content this must be set to FALSE<br>
+	
+	
+	</div>
+			<div class="doc-method-comments">Decode a string from Base64<br>
+Supports also UTF-8</div>
 	
 	
 </div>
@@ -1865,6 +1937,8 @@ function smartHandleDocSelector(obj) {
 			
 						<option value="Method--format_number_dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;format_number_dec()</option>
 			
+						<option value="Method--randNum"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;randNum()</option>
+			
 						<option value="Method--stripslashes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;stripslashes()</option>
 			
 						<option value="Method--addcslashes"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;addcslashes()</option>
@@ -1879,15 +1953,19 @@ function smartHandleDocSelector(obj) {
 			
 						<option value="Method--nl2br"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; =&gt;&nbsp;nl2br()</option>
 			
-						<option value="Method--utf8_encode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8_encode()</option>
+						<option value="Method--utf8Enc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8Enc()</option>
 			
-						<option value="Method--utf8_decode"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8_decode()</option>
+						<option value="Method--utf8Dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;utf8Dec()</option>
 			
 						<option value="Method--deaccent_str"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;deaccent_str()</option>
 			
 						<option value="Method--bin2hex"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;bin2hex()</option>
 			
 						<option value="Method--hex2bin"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;hex2bin()</option>
+			
+						<option value="Method--b64Enc"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;b64Enc()</option>
+			
+						<option value="Method--b64Dec"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;b64Dec()</option>
 			
 						<option value="Method--uuid"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;uuid()</option>
 			
@@ -1922,13 +2000,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:50:38 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 17:00:46 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

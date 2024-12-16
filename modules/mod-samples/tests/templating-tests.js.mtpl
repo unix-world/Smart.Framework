@@ -1,7 +1,7 @@
 [%%%COMMENT%%%]
 // IMPORTANT: use only JavaScript code here, no HTML !
 [%%%/COMMENT%%%]
-//===== QUnit Tests.Templating: START :: r.20210526
+//===== QUnit Tests.Templating: START :: r.20241216
 
 (() => {
 

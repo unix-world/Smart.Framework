@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartComponents final class \ SmartComponents { } :: Class: SmartComponents - provides various components for Smart.Framework Language: PHP Located at:">
-<meta name="keywords" content="smartcomponents, final, class, provides, various, components, for, smart framework, language, php, located, at, lib core lib smart components php, package, application viewcomponents, namespace, name, version, v, depends, css, notifications css, classes, smart, smartutils, smartfilesystem, smarttexttranslations, smartmarkerstemplating, usage, static, object, class method, this, only, methods, public, function, http message   badrequest, string, y message, y html message, http message   unauthorized, http message   forbidden, http message   notfound, http message   gone, http message   toomanyrequests, http message   internalerror, http message   badgateway, http message   serviceunavailable, http message   gatewaytimeout, operation question, y html, y width, operation notice, operation ok, operation warn, operation error, operation success, operation important, operation result, operation display, bool, y use icon, true, operation hint, set app template conform metavars, array, arr data, render app template, template path, template file, properties, constants, const, default page vars, semaphore, struct schema, canonical url, title, meta description, meta keywords, head meta, head css, head js, header, nav, main, aside, footer, documentation, index, definition, list, generated, on">
+<meta name="keywords" content="smartcomponents, final, class, provides, various, components, for, smart framework, language, php, located, at, lib core lib smart components php, package, application viewcomponents, namespace, name, version, v, depends, css, notifications css, classes, smart, smartutils, smartfilesystem, smarttexttranslations, smartmarkerstemplating, usage, static, object, class method, this, only, methods, public, function, http message   badrequest, string, y message, y html message, http message   unauthorized, http message   forbidden, http message   notfound, http message   methodnotallowed, http message   gone, http message   unprocessablecontent, http message   toomanyrequests, http message   internalerror, http message   notimplemented, http message   badgateway, http message   serviceunavailable, http message   gatewaytimeout, operation question, y html, y width, operation notice, operation ok, operation warn, operation error, operation success, operation important, operation result, operation display, bool, y use icon, true, operation hint, set app template conform metavars, array, arr data, render app template, template path, template file, properties, constants, const, default page vars, semaphore, struct schema, canonical url, title, meta description, meta keywords, head meta, head css, head js, header, nav, main, aside, footer, documentation, index, definition, list, generated">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartComponents">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartComponents</title>
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartComponents</span></li>
 		
-		<li><b>Version:</b> v.20231020</li>
+		<li><b>Version:</b> v.20241123</li>
 		<li><b>Depends:</b> css:  notifications.css ; classes: Smart, SmartUtils, SmartFileSystem, SmartTextTranslations, SmartMarkersTemplating</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -780,8 +780,36 @@ select#select-summary {
 	
 	
 </div>
+<div class="doc-container" id="Method--http_message_405_methodnotallowed">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_405_methodnotallowed</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
 <div class="doc-container" id="Method--http_message_410_gone">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_410_gone</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_422_unprocessablecontent">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_422_unprocessablecontent</b></span>&nbsp;(
 		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
 	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
@@ -810,6 +838,20 @@ select#select-summary {
 </div>
 <div class="doc-container" id="Method--http_message_500_internalerror">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_500_internalerror</b></span>&nbsp;(
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+	
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+	
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--http_message_501_notimplemented">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>http_message_501_notimplemented</b></span>&nbsp;(
 		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_message` Parameter is REQUIRED">$y_message</span></b></span>, 
 	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_html_message` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_html_message</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
@@ -1107,13 +1149,22 @@ function smartHandleDocSelector(obj) {
 						<option value="Method--http_message_404_notfound"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_404_notfound()</option>
 			
 			
+						<option value="Method--http_message_405_methodnotallowed"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_405_methodnotallowed()</option>
+			
+			
 						<option value="Method--http_message_410_gone"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_410_gone()</option>
+			
+			
+						<option value="Method--http_message_422_unprocessablecontent"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_422_unprocessablecontent()</option>
 			
 			
 						<option value="Method--http_message_429_toomanyrequests"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_429_toomanyrequests()</option>
 			
 			
 						<option value="Method--http_message_500_internalerror"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_500_internalerror()</option>
+			
+			
+						<option value="Method--http_message_501_notimplemented"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_501_notimplemented()</option>
 			
 			
 						<option value="Method--http_message_502_badgateway"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;http_message_502_badgateway()</option>
@@ -1186,13 +1237,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:35 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

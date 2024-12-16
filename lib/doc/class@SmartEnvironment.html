@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartEnvironment final class \ SmartEnvironment { } :: Class: Smart Environment - provides the methods for the Smart.Framework environment. Language: PHP">
-<meta name="keywords" content="smartenvironment, final, class, smart, environment, provides, the, methods, for, smart framework, language, php, located, at, lib framework lib security php, package, core, namespace, name, version, v, depends, optional constants, smart framework debug mode, smart framework internal debug, smart framework env, smart framework admin area, smart framework runtime mode, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, and, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class method, only, public, function, isadminarea, boolean, return, admin, area, true, else, false, test, service, services, running, admin php, task php, index php, istaskarea, task, implies, also, as, well, an, with, some, unrestricted, features, must, restricted">
+<meta name="keywords" content="smartenvironment, final, class, smart, environment, provides, the, methods, for, smart framework, language, php, located, at, lib framework lib security php, package, core, namespace, name, version, v, depends, optional constants, smart framework debug mode, smart framework internal debug, smart framework env, smart framework admin area, smart framework runtime mode, hints, it, is, recommended, to, use, in, this, instead, of, native, whenever, possible, because, will, offer, long, term, support, and, be, supported, even, if, behind, can, change, over, time, so, code, would, easier, maintain, usage, static, object, class method, only, public, function, isatkenabled, bool, return, true, enabled, false, not, returns, atk, auth, tokens, are, test, current, area, is2faenabled, 2fa, getarea, string, idx, index, adm, admin, tsk, task, isadminarea, boolean, else">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartEnvironment">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartEnvironment</title>
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartEnvironment</span></li>
 		
-		<li><b>Version:</b> v.20221224</li>
+		<li><b>Version:</b> v.20240118</li>
 		<li><b>Depends:</b> optional-constants:  SMART_FRAMEWORK_DEBUG_MODE, SMART_FRAMEWORK_INTERNAL_DEBUG, SMART_FRAMEWORK_ENV, SMART_FRAMEWORK_ADMIN_AREA, SMART_FRAMEWORK_RUNTIME_MODE</li>
 		<li><b>Hints:</b> It  is recommended to use the methods in this class instead of PHP native methods whenever is possible because this class will offer Long Term Support and the methods will be supported even if the behind PHP methods can change over time, so the code would be easier to maintain.</li>
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -720,11 +720,55 @@ select#select-summary {
 	<h2 class="doc-header">class Methods</h2>
 </div>
 <!-- methods r.20200121 -->
+<div class="doc-container" id="Method--isATKEnabled">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isATKEnabled</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if enabled ; FALSE if not</div>
+	
+			<div class="doc-method-comments">Returns TRUE if ATK (Auth Tokens) are Enabled<br>
+Will test for the current area only</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--is2FAEnabled">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>is2FAEnabled</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
+	
+	
+			<div class="doc-method-ret-params">@return: {BOOL} TRUE if enabled ; FALSE if not</div>
+	
+			<div class="doc-method-comments">Returns TRUE if 2FA is Enabled<br>
+Will test for the current area only</div>
+	
+	
+	
+</div>
+<div class="doc-container" id="Method--getArea">
+	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>getArea</b></span>&nbsp;(
+		
+	
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
+	
+	
+			<div class="doc-method-ret-params">@return: {STRING} 'idx' for Index Area ; 'adm' for Admin Area ; 'tsk' for Task Area</div>
+	
+			<div class="doc-method-comments">Returns the Environment Area</div>
+	
+	
+	
+</div>
 <div class="doc-container" id="Method--isAdminArea">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isAdminArea</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} if is ADMIN area will return TRUE else will return FALSE</div>
@@ -739,7 +783,7 @@ For services running over admin.php / task.php will return TRUE ; for services r
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isTaskArea</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} if is TASK area will return TRUE else will return FALSE</div>
@@ -810,10 +854,13 @@ Ex: if(myIPIsDetected()) { define('SMART_FRAMEWORK_DEBUG_MODE', true); } // in i
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//&nbsp;Usage&nbsp;example:<br>&nbsp;</span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);<br><br></span><span style="color: #999999">//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">// Usage example:
+ </span><span style="color: #FFFFFF">Smart</span><span style="color: #FFCC00; font-weight: bold">::</span><span style="color: #FFFFFF">some_method_of_this_class</span><span style="color: #FFCC00; font-weight: bold">(...);
+
+</span><span style="color: #999999">// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -845,6 +892,15 @@ function smartHandleDocSelector(obj) {
 		</optgroup>
 		<optgroup label="Class Methods">
 			<option value="Methods--Summary-">Methods list</option>
+						<option value="Method--isATKEnabled"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isATKEnabled()</option>
+			
+			
+						<option value="Method--is2FAEnabled"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;is2FAEnabled()</option>
+			
+			
+						<option value="Method--getArea"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;getArea()</option>
+			
+			
 						<option value="Method--isAdminArea"> &nbsp;&nbsp;&middot;&nbsp;&nbsp; function&nbsp;isAdminArea()</option>
 			
 			
@@ -886,13 +942,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:24 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:44 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

@@ -26,7 +26,6 @@ APP-RELEASE:
 			- modules/mod-auth-admins
 			- modules/mod-webdav
 			- modules/mod-samples
-			- modules/mod-dbal-laminas
 			- modules/mod-tpl
 			- modules/mod-tpl-twist
 			- modules/mod-tpl-twig

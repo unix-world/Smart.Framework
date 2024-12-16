@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartMailerMimeParser final class \ SmartMailerMimeParser { } :: Class: SmartMailerMimeParser - provides an easy to use eMail MIME Parser. Language: PHP">
-<meta name="keywords" content="smartmailermimeparser, final, class, provides, an, easy, to, use, email, mime, parser, language, php, located, at, lib core plugins lib mail utils php, package, application plugins mailer, namespace, name, version, v, depends, classes, smart, smarthashcrypto, smartutils, smartfilesysutils, smartfilesystem, smartmailermimedecode, smartmailernotes, usage, static, object, class method, this, only, methods, public, function, encode mime fileurl, string, y msg file, y ctrl key, return, the, encoded, and, encrypted, url, segment, param, relative, path, eml, message, file, encryption, private, key, encode, encrypts, a, using, crypto, algo, defined, in, smart framework security crypto, or, hash sha256, as, fallback, it, takes, account, if, user, is, authenticated, not, make, safe, mail, parts, links, sent, by, for, specific, access, decode mime fileurl, y enc msg file, array, with, decoded, decrypted">
+<meta name="keywords" content="smartmailermimeparser, final, class, provides, an, easy, to, use, email, mime, parser, language, php, located, at, lib core plugins lib mail utils php, package, application plugins mailer, namespace, name, version, v, depends, classes, smart, smarthashcrypto, smartutils, smartfilesysutils, smartfilesystem, smartmailermimedecode, smartmailernotes, usage, static, object, class method, this, only, methods, public, function, encode mime fileurl, string, y msg file, y ctrl key, return, the, encoded, and, encrypted, url, segment, param, relative, path, eml, message, file, encryption, private, key, encode, encrypts, a, using, crypto, algo, defined, in, smart framework security crypto, or, hash sha3, as, fallback, it, takes, account, if, user, is, authenticated, not, make, safe, mail, parts, links, sent, by, for, specific, access, decode mime fileurl, y enc msg file, array, with, decoded, decrypted">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMailerMimeParser">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartMailerMimeParser</title>
@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartMailerMimeParser</span></li>
 		
-		<li><b>Version:</b> v.20231008</li>
+		<li><b>Version:</b> v.20240118</li>
 		<li><b>Depends:</b> classes:  Smart, SmartHashCrypto, SmartUtils, SmartFileSysUtils, SmartFileSystem, SmartMailerMimeDecode, SmartMailerNotes</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
@@ -722,8 +722,8 @@ select#select-summary {
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--encode_mime_fileurl">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>encode_mime_fileurl</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_msg_file` Parameter is REQUIRED">$y_msg_file</span></b></span>, 
-	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl_key` Parameter is REQUIRED">$y_ctrl_key</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_msg_file` Parameter is REQUIRED">$y_msg_file</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl_key` Parameter is REQUIRED">$y_ctrl_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -733,7 +733,7 @@ select#select-summary {
 @param: {STRING} $y_msg_file: The relative path to the .eml message file<br>
 @param: {STRING} $y_ctrl_key: The encryption private key</div>
 	
-			<div class="doc-method-comments">Encode and Encrypts a Mime File URL using the crypto algo defined in SMART_FRAMEWORK_SECURITY_CRYPTO or 'hash/sha256' as a fallback<br>
+			<div class="doc-method-comments">Encode and Encrypts a Mime File URL using the crypto algo defined in SMART_FRAMEWORK_SECURITY_CRYPTO or 'hash/sha3-384' as a fallback<br>
 It takes in account if the User is Authenticated or not<br>
 This make safe using Mail Message Parts URL links sent by URL for specific and private user access</div>
 	
@@ -742,8 +742,8 @@ This make safe using Mail Message Parts URL links sent by URL for specific and p
 </div>
 <div class="doc-container" id="Method--decode_mime_fileurl">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>decode_mime_fileurl</b></span>&nbsp;(
-		<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_enc_msg_file` Parameter is REQUIRED">$y_enc_msg_file</span></b></span>, 
-	<i>STRING</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl_key` Parameter is REQUIRED">$y_ctrl_key</span></b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_enc_msg_file` Parameter is REQUIRED">$y_enc_msg_file</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl_key` Parameter is REQUIRED">$y_ctrl_key</span></b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -761,14 +761,14 @@ It takes in account if the User is Authenticated or not</div>
 </div>
 <div class="doc-container" id="Method--display_message">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>display_message</b></span>&nbsp;(
-		<span class="doc-param-name"><b><span title="`$y_msg_type` Parameter is REQUIRED">$y_msg_type</span></b></span>, 
-	<span class="doc-param-name"><b><span title="`$y_enc_msg_file` Parameter is REQUIRED">$y_enc_msg_file</span></b></span>, 
-	<span class="doc-param-name"><b><span title="`$y_ctrl_key` Parameter is REQUIRED">$y_ctrl_key</span></b></span>, 
-	<span class="doc-param-name"><b><span title="`$y_link` Parameter is REQUIRED">$y_link</span></b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_target` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_target</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_process_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_process_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_show_headers` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_show_headers</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_msg_type` Parameter is REQUIRED">$y_msg_type</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_enc_msg_file` Parameter is REQUIRED">$y_enc_msg_file</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl_key` Parameter is REQUIRED">$y_ctrl_key</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_link` Parameter is REQUIRED">$y_link</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_target` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_target</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_title` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_title</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_process_mode` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_process_mode</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_show_headers` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_show_headers</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -783,12 +783,12 @@ It takes in account if the User is Authenticated or not</div>
 </div>
 <div class="doc-container" id="Method--get_message_data_structure">
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>get_message_data_structure</b></span>&nbsp;(
-		<span class="doc-param-name"><b><span title="`$y_msg_type` Parameter is REQUIRED">$y_msg_type</span></b></span>, 
-	<span class="doc-param-name"><b><span title="`$y_enc_msg_file` Parameter is REQUIRED">$y_enc_msg_file</span></b></span>, 
-	<span class="doc-param-name"><b><span title="`$y_ctrl_key` Parameter is REQUIRED">$y_ctrl_key</span></b></span>, 
-	<span class="doc-param-name"><b><span title="`$y_process_mode` Parameter is REQUIRED">$y_process_mode</span></b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_link` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_link</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_target` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_target</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_msg_type` Parameter is REQUIRED">$y_msg_type</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_enc_msg_file` Parameter is REQUIRED">$y_enc_msg_file</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_ctrl_key` Parameter is REQUIRED">$y_ctrl_key</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_process_mode` Parameter is REQUIRED">$y_process_mode</span></b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_link` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_link</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>, 
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_target` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$y_target</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;ARRAY
@@ -878,13 +878,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:37 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

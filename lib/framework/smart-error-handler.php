@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20241210 # this should be loaded from app web root only
+// # r.20241216 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2024.12.10'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2024.12.16'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--
@@ -375,10 +375,6 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 	if(((string)SMART_ERROR_HANDLER == 'log') AND (SMART_FRAMEWORK_DEBUG_MODE !== true)) { // if long and debug not enabled :: hide errors and just log them
 		$smart_____framework_____last__error = ''; // hide errors if explicit set so (make sense in production environments)
 		$smart_____framework_____is_html_last__error = false;
-	} else {
-		if($smart_____framework_____is_html_last__error !== true) {
-			$smart_____framework_____last__error = (string) '<div style="font-size:1.5rem; color:#222222; font-weight:bold;"><i>Error&nbsp;Message</i>: <span style="color:#444444;">'.htmlspecialchars((string)$smart_____framework_____last__error, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</span></div>';
-		} //end if
 	} //end if
 	//-- The following error types cannot be handled with a user defined function: E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, and most of E_STRICT raised in the file where set_error_handler() is called : http://php.net/manual/en/function.set-error-handler.php
 	$app_halted = '';
@@ -523,6 +519,7 @@ set_error_handler(function($errno, $errstr, $errfile, $errline) {
 			$script = (string) SMART_ERROR_LOGDIR.SMART_ERROR_LOGFILE;
 			$appenv = (string) SMART_FRAMEWORK_ENV;
 			if($smart_____framework_____is_html_last__error !== true) {
+				$smart_____framework_____last__error = (string) '<div style="font-size:1.5rem; color:#222222; font-weight:bold;"><i>Error&nbsp;Message</i>: <span style="color:#444444;">'.htmlspecialchars((string)$smart_____framework_____last__error, ENT_HTML401 | ENT_COMPAT | ENT_SUBSTITUTE, (string)SMART_FRAMEWORK_CHARSET, true).'</span></div>';
 				$err_prepend = '<div style="text-align:left!important;"> &nbsp; <span style="font-size:3rem; color:#ED2839;"><img width="64" height="64" src="'.smart__framework__err__handler__get__safe_img_url('php-logo.svg').'" alt="[php]" title="[php]"> <b>Code Execution FAILED</b></span> <img align="right" width="48" height="48" src="'.smart__framework__err__handler__get__safe_img_url('sign-error.svg').'" alt="[ERR]" title="[ERR]"><div><hr size="1"><pre style="white-space:pre-wrap;overflow-x:auto;">';
 				$err_append = '</pre></div><br><div style="color:#888888; text-align:right;"><small>'.date('Y-m-d H:i:s O').'</small><hr size="1"></div><div title="Powered by Smart.Framework" style="cursor:help;"><center><img width="64" height="64" src="'.smart__framework__err__handler__get__safe_img_url('sf-logo.svg').'" alt="[S.F]" title="[S.F]"></center></div></div>';
 			} //end if

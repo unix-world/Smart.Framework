@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartXmlComposer final class \ SmartXmlComposer { } -&gt; Class: SmartXmlComposer - Create simple XML structure from a PHP Array. XML tag attributes are not">
-<meta name="keywords" content="smartxmlcomposer, final, class, create, simple, xml, structure, from, a, php, array, tag, attributes, are, not, supported, language, located, at, lib framework plugins lib xml php, package, plugins convertersandparsers, namespace, name, version, v, depends, classes, smart, hints, usage, dynamic, object, new, class   - method, this, provides, only, methods, public, function, construct, encoding, transform, y array, xmlroot, properties, constants, sample, code, use, id, test, data, key1, key2, key3, abcdef, date, myxml, echo, will, have, something, like, end, documentation, index, definition, list, generated, on">
+<meta name="keywords" content="smartxmlcomposer, final, class, create, simple, xml, structure, from, a, php, array, tag, attributes, are, not, supported, language, located, at, lib framework plugins lib xml php, package, plugins convertersandparsers, namespace, name, version, v, depends, classes, smart, hints, usage, dynamic, object, new, class   - method, this, provides, only, methods, public, function, construct, string, encoding, transform, y array, xmlroot, properties, constants, sample, code, use, id, test, data, key1, key2, key3, abcdef, date, myxml, echo, will, have, something, like, end, documentation, index, definition, list, generated, on">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartXmlComposer">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartXmlComposer</title>
@@ -707,7 +707,7 @@ XML tag attributes are not supported.</div><br>
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartXmlComposer</span></li>
 		
-		<li><b>Version:</b> v.20221220</li>
+		<li><b>Version:</b> v.20231207</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		<li><b>Hints:</b> -</li>
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -723,7 +723,7 @@ XML tag attributes are not supported.</div><br>
 <!-- methods r.20200121 -->
 <div class="doc-container" id="Method--__construct">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-special-name"><b>__construct</b></span>&nbsp;(
-		<span class="doc-param-name"><b><span class="doc-param-optional" title="`$encoding` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$encoding</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
+		<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$encoding` Parameter is OPTIONAL, with the Default Value: &quot;&quot;">$encoding</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="* Special* Method"><b>@</b></span>&nbsp;
@@ -737,10 +737,10 @@ XML tag attributes are not supported.</div><br>
 <div class="doc-container" id="Method--transform">
 	<span class="doc-modifiers">public</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>transform</b></span>&nbsp;(
 		<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_array` Parameter is REQUIRED">$y_array</span></b></span>, 
-	<span class="doc-param-name"><b><span class="doc-param-optional" title="`$xmlroot` Parameter is OPTIONAL, with the Default Value: &quot;xml&quot;">$xmlroot</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;xml&quot;</b></span>
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$xmlroot` Parameter is OPTIONAL, with the Default Value: &quot;xml&quot;">$xmlroot</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;xml&quot;</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;
+	)&nbsp;{}&nbsp;<span title="Object Method"><b>-&gt;</b></span>&nbsp;STRING
 	
 	
 	
@@ -769,10 +769,36 @@ XML tag attributes are not supported.</div><br>
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br></span><span style="color: #999999">//--&nbsp;Sample&nbsp;use:<br>&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$array&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;array(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'id'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'15'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'name'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'Test'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'data'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;array(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'key1'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'12345'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'key2'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'67890'</span><span style="color: #FFCC00; font-weight: bold">,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'key3'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'ABCDEF'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">),<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color: #5F9CCE">'date'&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&gt;&nbsp;</span><span style="color: #5F9CCE">'2016-02-05&nbsp;09:30:05'<br>&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;&nbsp;&nbsp;</span><span style="color: #FFFFFF">$xml&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;(new&nbsp;</span><span style="color: #FFFFFF">SmartXmlComposer</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">transform</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$array</span><span style="color: #FFCC00; font-weight: bold">,&nbsp;</span><span style="color: #5F9CCE">'myxml'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;&nbsp;&nbsp;echo&nbsp;</span><span style="color: #FFFFFF">$xml</span><span style="color: #FFCC00; font-weight: bold">;<br>&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//--&nbsp;will&nbsp;have&nbsp;something&nbsp;like:<br>&nbsp;&nbsp;&nbsp;</span><span style="color: #FFCC00; font-weight: bold">&lt;</span><span style="color: #FFFFFF">myxml</span><span style="color: #FFCC00; font-weight: bold">&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color: #FFFFFF">id</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">15</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">id</span><span style="color: #FFCC00; font-weight: bold">&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color: #FFFFFF">name</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">Test</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">name</span><span style="color: #FFCC00; font-weight: bold">&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color: #FFFFFF">data</span><span style="color: #FFCC00; font-weight: bold">&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color: #FFFFFF">key1</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">12345</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">key1</span><span style="color: #FFCC00; font-weight: bold">&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color: #FFFFFF">key2</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">67890</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">key2</span><span style="color: #FFCC00; font-weight: bold">&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color: #FFFFFF">key3</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">ABCDEF</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">key3</span><span style="color: #FFCC00; font-weight: bold">&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span style="color: #FFFFFF">data</span><span style="color: #FFCC00; font-weight: bold">&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color: #FFFFFF">date</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">2016</span><span style="color: #FFCC00; font-weight: bold">-</span><span style="color: #FFFFFF">02</span><span style="color: #FFCC00; font-weight: bold">-</span><span style="color: #FFFFFF">05&nbsp;09</span><span style="color: #FFCC00; font-weight: bold">:</span><span style="color: #FFFFFF">30</span><span style="color: #FFCC00; font-weight: bold">:</span><span style="color: #FFFFFF">05</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">date</span><span style="color: #FFCC00; font-weight: bold">&gt;<br>&nbsp;&nbsp;&nbsp;&lt;/</span><span style="color: #FFFFFF">myxml</span><span style="color: #FFCC00; font-weight: bold">&gt;<br>&nbsp;&nbsp;&nbsp;</span><span style="color: #999999">//--<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+</span><span style="color: #999999">//-- Sample use:
+   </span><span style="color: #FFFFFF">$array </span><span style="color: #FFCC00; font-weight: bold">= array(
+       </span><span style="color: #5F9CCE">'id' </span><span style="color: #FFCC00; font-weight: bold">=&gt; </span><span style="color: #5F9CCE">'15'</span><span style="color: #FFCC00; font-weight: bold">,
+       </span><span style="color: #5F9CCE">'name' </span><span style="color: #FFCC00; font-weight: bold">=&gt; </span><span style="color: #5F9CCE">'Test'</span><span style="color: #FFCC00; font-weight: bold">,
+       </span><span style="color: #5F9CCE">'data' </span><span style="color: #FFCC00; font-weight: bold">=&gt; array(
+           </span><span style="color: #5F9CCE">'key1' </span><span style="color: #FFCC00; font-weight: bold">=&gt; </span><span style="color: #5F9CCE">'12345'</span><span style="color: #FFCC00; font-weight: bold">,
+           </span><span style="color: #5F9CCE">'key2' </span><span style="color: #FFCC00; font-weight: bold">=&gt; </span><span style="color: #5F9CCE">'67890'</span><span style="color: #FFCC00; font-weight: bold">,
+           </span><span style="color: #5F9CCE">'key3' </span><span style="color: #FFCC00; font-weight: bold">=&gt; </span><span style="color: #5F9CCE">'ABCDEF'
+       </span><span style="color: #FFCC00; font-weight: bold">),
+       </span><span style="color: #5F9CCE">'date' </span><span style="color: #FFCC00; font-weight: bold">=&gt; </span><span style="color: #5F9CCE">'2016-02-05 09:30:05'
+   </span><span style="color: #FFCC00; font-weight: bold">);
+   </span><span style="color: #FFFFFF">$xml </span><span style="color: #FFCC00; font-weight: bold">= (new </span><span style="color: #FFFFFF">SmartXmlComposer</span><span style="color: #FFCC00; font-weight: bold">())-&gt;</span><span style="color: #FFFFFF">transform</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #FFFFFF">$array</span><span style="color: #FFCC00; font-weight: bold">, </span><span style="color: #5F9CCE">'myxml'</span><span style="color: #FFCC00; font-weight: bold">);
+   echo </span><span style="color: #FFFFFF">$xml</span><span style="color: #FFCC00; font-weight: bold">;
+   </span><span style="color: #999999">//-- will have something like:
+   </span><span style="color: #FFCC00; font-weight: bold">&lt;</span><span style="color: #FFFFFF">myxml</span><span style="color: #FFCC00; font-weight: bold">&gt;
+     &lt;</span><span style="color: #FFFFFF">id</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">15</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">id</span><span style="color: #FFCC00; font-weight: bold">&gt;
+     &lt;</span><span style="color: #FFFFFF">name</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">Test</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">name</span><span style="color: #FFCC00; font-weight: bold">&gt;
+     &lt;</span><span style="color: #FFFFFF">data</span><span style="color: #FFCC00; font-weight: bold">&gt;
+       &lt;</span><span style="color: #FFFFFF">key1</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">12345</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">key1</span><span style="color: #FFCC00; font-weight: bold">&gt;
+       &lt;</span><span style="color: #FFFFFF">key2</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">67890</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">key2</span><span style="color: #FFCC00; font-weight: bold">&gt;
+       &lt;</span><span style="color: #FFFFFF">key3</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">ABCDEF</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">key3</span><span style="color: #FFCC00; font-weight: bold">&gt;
+     &lt;/</span><span style="color: #FFFFFF">data</span><span style="color: #FFCC00; font-weight: bold">&gt;
+     &lt;</span><span style="color: #FFFFFF">date</span><span style="color: #FFCC00; font-weight: bold">&gt;</span><span style="color: #FFFFFF">2016</span><span style="color: #FFCC00; font-weight: bold">-</span><span style="color: #FFFFFF">02</span><span style="color: #FFCC00; font-weight: bold">-</span><span style="color: #FFFFFF">05 09</span><span style="color: #FFCC00; font-weight: bold">:</span><span style="color: #FFFFFF">30</span><span style="color: #FFCC00; font-weight: bold">:</span><span style="color: #FFFFFF">05</span><span style="color: #FFCC00; font-weight: bold">&lt;/</span><span style="color: #FFFFFF">date</span><span style="color: #FFCC00; font-weight: bold">&gt;
+   &lt;/</span><span style="color: #FFFFFF">myxml</span><span style="color: #FFCC00; font-weight: bold">&gt;
+   </span><span style="color: #999999">//--
+
+// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -830,13 +856,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:28 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

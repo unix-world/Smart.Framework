@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartMarkersTemplating final class \ SmartMarkersTemplating { } :: Class: SmartMarkersTemplating - provides a very fast and low footprint templating">
-<meta name="keywords" content="smartmarkerstemplating, final, class, provides, a, very, fast, and, low, footprint, templating, system, marker tpl, language, php, located, at, lib framework lib templating php, package, core templatingengine, namespace, name, version, v, depends, classes, smart, smartenvironment, smartunicode, smartfilesysutils, constants, smart framework err pcre settings, smart software mktpl debug len, optional, usage, static, object, class method, this, only, methods, public, function, analyze debug template, string, mtemplate, return, the, analyze, info, html js, param, marker, template, no, sub templates, are, loaded, is, intended, for, development, debug, never, use, in, production, environments, render placeholder tpl, ptemplate, array, y arr vars, y ignore if empty, parsed, placeholder tpl, partial, text html, placeholders, ex, span, placeholder, associative, with, variables, mapping, keys, to, case, insensitive, placeholder1, value1, placeholder2, value2, placeholdern, enum, yes, will">
+<meta name="keywords" content="smartmarkerstemplating, final, class, provides, a, very, fast, and, low, footprint, templating, system, marker tpl, language, php, located, at, lib framework lib templating php, package, core templatingengine, namespace, name, version, v, depends, classes, smart, smarthashcrypto, smartenvironment, smartunicode, smartfilesysutils, constants, smart framework err pcre settings, smart software mktpl debug len, optional, usage, static, object, class method, this, only, methods, public, function, analyze debug template, string, mtemplate, return, the, analyze, info, html js, param, marker, template, no, sub templates, are, loaded, is, intended, for, development, debug, never, use, in, production, environments, render placeholder tpl, ptemplate, array, y arr vars, y ignore if empty, parsed, placeholder tpl, partial, text html, placeholders, ex, span, placeholder, associative, with, variables, mapping, keys, to, case, insensitive, placeholder1, value1, placeholder2, value2, placeholdern, enum, yes">
 <meta name="summary" content="Smart.Framework : PHP Documentation: \SmartMarkersTemplating">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartMarkersTemplating</title>
@@ -706,8 +706,8 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartMarkersTemplating</span></li>
 		
-		<li><b>Version:</b> v.20231018</li>
-		<li><b>Depends:</b> classes:  Smart, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)</li>
+		<li><b>Version:</b> v.20231228</li>
+		<li><b>Depends:</b> classes:  Smart, SmartHashCrypto, SmartEnvironment, SmartUnicode, SmartFileSysUtils ; constants: SMART_FRAMEWORK_ERR_PCRE_SETTINGS, SMART_SOFTWARE_MKTPL_DEBUG_LEN (optional)</li>
 		
 		<li><b>Usage:</b> static  object: Class::method() - This class provides only STATIC methods</li>
 		
@@ -775,7 +775,8 @@ This method adds a new feature to the Marker-TPL Templating system to allow add 
 @param: {ARRAY} $y_arr_vars: The associative array with the template variables ; mapping the array keys to template markers is case insensitive ; Ex: [ 'MARKER1' =&gt; 'Value1', 'marker2' =&gt; 'Value2', ..., 'MarkerN' =&gt; 100 ]<br>
 @param: {ENUM} $y_ignore_if_empty: 'yes' will ignore if Marker-TPL is empty ; 'no' will add a warning (default)</div>
 	
-			<div class="doc-method-comments">Render Marker Template (String Template ; no sub-templates are allowed as there is no possibility to set a relative path from where to get them)</div>
+			<div class="doc-method-comments">Render Marker Template (String Template ; no sub-templates are allowed as there is no possibility to set a relative path from where to get them)<br>
+See the escapings and transformation at: Render Marker File Template</div>
 	
 	
 	
@@ -784,7 +785,7 @@ This method adds a new feature to the Marker-TPL Templating system to allow add 
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>render_file_template</b></span>&nbsp;(
 		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_file_path` Parameter is REQUIRED">$y_file_path</span></b></span>, 
 	<i>array</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_arr_vars` Parameter is REQUIRED">$y_arr_vars</span></b></span>, 
-	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_use_caching` Parameter is OPTIONAL, with the Default Value: &quot;no&quot;">$y_use_caching</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;no&quot;</b></span>
+	<i>string</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_use_caching` Parameter is OPTIONAL, with the Default Value: &quot;yes&quot;">$y_use_caching</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>&quot;yes&quot;</b></span>
 	
 	
 	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;STRING
@@ -793,19 +794,19 @@ This method adds a new feature to the Marker-TPL Templating system to allow add 
 			<div class="doc-method-ret-params">@return: {STRING} The parsed and rendered template<br>
 @param: {STRING} $y_file_path: The relative path to the file Marker-TPL (partial text/html + markers + *sub-templates*) ; if sub-templates are used, they will use the base path from this (main template) file ; Ex: views/my-template.inc.htm ; (partial text/html + markers) ; Ex (file content): '&lt;span&gt;<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;&num;&num;&num;</span>MARKER1<span class="sf__tpl__highlight__marker" title="TPL Marker: End">&num;&num;&num;&rbrack;</span>&lt;br&gt;<span class="sf__tpl__highlight__marker" title="TPL Marker: Start">&lbrack;&num;&num;&num;</span>MARKER2<span class="sf__tpl__highlight__marker" title="TPL Marker: End">&num;&num;&num;&rbrack;</span>, ...&lt;/span&gt;'<br>
 @param: {ARRAY} $y_arr_vars: The associative array with the template variables ; mapping the array keys to template markers is case insensitive ; Ex: [ 'MARKER1' =&gt; 'Value1', 'marker2' =&gt; 'Value2', ..., 'MarkerN' =&gt; 100 ]<br>
-@param: {ENUM} $y_use_caching: 'yes' will cache the template (incl. sub-templates if any) into memory to avoid re-read them from file system (to be used if a template is used more than once per execution) ; 'no' means no caching is used (default)</div>
+@param: {ENUM} $y_use_caching: 'yes' will cache the template (incl. sub-templates if any) into memory to avoid re-read them from file system (to be used if a template is used more than once per execution) ; 'no' means no caching is used ; default is YES</div>
 	
 			<div class="doc-method-comments">Render Marker File Template (incl. Sub-Templates from Files if any)</div>
 	
 			<pre><b>Sample code: PHP</b><br><code class="hljs syntax php"><span class="hljs-meta">&lt;?php</span>
 
  <span class="hljs-comment">// &lbrack;&num;&num;&num;MARKER&num;&num;&num;&rbrack;											:: marker with no escapes</span>
- <span class="hljs-comment">// &lbrack;&num;&num;&num;MARKER|{escapes}] 									:: marker with escapes (one or many of): |bool |int |dec[1-4]{1} |num |htmid |jsvar |slug |substr[0-9]{1,5} |subtxt[0-9]{1,5} |lower |upper |ucfirst |ucwords |trim |url |json |js |html |css |nl2br |syntaxhtml</span>
+ <span class="hljs-comment">// &lbrack;&num;&num;&num;MARKER|{escapes}] 									:: marker with escapes (one or many of): |bool |int |dec[1-4]{1} |num |date |datetime |datetimez |htmid |jsvar |stdvar |nobackslash |rxpattern |emptye |emptyna |idtxt |slug |substr[0-9]{1,5} |subtxt[0-9]{1,5} |lower |upper |ucfirst |ucwords |trim |url |json |jsonpretty |js |html |xml |css |nl2br |striptags |syntaxhtml |hex |hexi10 |b64 |b64s |b64tob64s |b64stob64 |b32 |b36 |b58 |b62 |b85 |b92 |crc32b |crc32b36 |md5 |md5b64 |sha1 |sha1b64 |sha224 |sha224b64 |sha256 |sha256b64 |sha384 |sha384b64 |sha512 |sha512b64 |sh3a224 |sh3a224b64 |sh3a256 |sh3a256b64 |sh3a384 |sh3a384b64 |sh3a512 |sh3a512b64</span>
  <span class="hljs-comment">// &lbrack;&commat;&commat;&commat;SUB-TEMPLATE:path/to/tpl.htm&commat;&commat;&commat;&rbrack; 				:: sub-template with relative path to template</span>
  <span class="hljs-comment">// &lbrack;&commat;&commat;&commat;SUB-TEMPLATE:?path/to/tpl.htm&commat;&commat;&commat;&rbrack; 				:: sub-template with relative path to template, optional, if exists</span>
  <span class="hljs-comment">// &lbrack;&commat;&commat;&commat;SUB-TEMPLATE:!etc/path/to/tpl.htm!&commat;&commat;&commat;&rbrack; 		:: sub-template with relative path to framework, using exact this path</span>
  <span class="hljs-comment">// &lbrack;&commat;&commat;&commat;SUB-TEMPLATE:?!if-exists/path/to/tpl.htm!&commat;&commat;&commat;&rbrack; 	:: sub-template with relative path to framework, using exact this path, optional, if exists</span>
- <span class="hljs-comment">// &lbrack;&commat;&commat;&commat;SUB-TEMPLATE:{tpl}|{escape}&commat;&commat;&commat;&rbrack; 				:: sub-template (using any kind of path from above), apply escape (any of): |syntax |syntaxhtml |html |js |js-tpl-encode |tpl-uri-encode |tpl-b64-encode</span>
+ <span class="hljs-comment">// &lbrack;&commat;&commat;&commat;SUB-TEMPLATE:{tpl}|{escape}&commat;&commat;&commat;&rbrack; 				:: sub-template (using any kind of path from above), apply escape (any of): |syntax |syntaxhtml |html |xml |js |js-tpl-encode |tpl-uri-encode |tpl-b64-encode</span>
  <span class="hljs-comment">// &lbrack;&commat;&commat;&commat;SUB-TEMPLATE:%variable%&commat;&commat;&commat;&rbrack; 					:: variable sub-template ; must be defined in $y_arr_vars['@SUB-TEMPLATES@'] array as key (variable) =&gt; value (path)</span>
  <span class="hljs-comment">// &lbrack;&percnt;&percnt;&percnt;IF:TEST-VARIABLE:@==|@!=|@&lt;=|@&lt;|@&gt;=|@&gt;|==|!=|&lt;=|&lt;|&gt;=|&gt;|!%|%|!?|?|^~|^*|&amp;~|&amp;*|$~|$*{string/number/a|list|with|elements/###MARKER###};&percnt;&percnt;&percnt;&rbrack; conditional IF part, display when condition is matched &lbrack;&percnt;&percnt;&percnt;ELSE:TEST-VARIABLE&percnt;&percnt;&percnt;&rbrack; conditional ELSE part, display otherwise (optional) &lbrack;&percnt;&percnt;&percnt;/IF:TEST-VARIABLE&percnt;&percnt;&percnt;&rbrack;</span>
  <span class="hljs-comment">// &lbrack;&percnt;&percnt;&percnt;LOOP:ARR-VARIABLE&percnt;&percnt;&percnt;&rbrack; &lbrack;&num;&num;&num;ARR-VARIABLE.ID|int&num;&num;&num;&rbrack;. &lbrack;&num;&num;&num;ARR-VARIABLE.NAME|html&num;&num;&num;&rbrack; &lbrack;&percnt;&percnt;&percnt;/LOOP:ARR-VARIABLE&percnt;&percnt;&percnt;&rbrack;</span>
@@ -835,7 +836,7 @@ This method adds a new feature to the Marker-TPL Templating system to allow add 
 	
 	
 </div>
-<!-- Skip Internal-Priv Method: `render_mixed_template()` -->
+<!-- Skip Internal-Priv Method: `render_main_template()` -->
 <!-- Skip Internal-Priv Method: `read_template_file()` -->
 <!-- Skip Internal-Priv Method: `prepare_nosyntax_content()` -->
 <!-- Skip Internal-Priv Method: `prepare_nosyntax_html_template()` -->
@@ -936,13 +937,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:27 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

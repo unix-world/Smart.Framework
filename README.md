@@ -2,7 +2,7 @@
 ## Dual-licensed: under BSD license or GPLv3 license (at your choice)
 ### This software project is open source.
 #### You must choose which license to use depending on your use case: BSD license or GPLv3 license
-**(c) 2009 - 2022 unix-world.org** / support&#064;unix-world.org
+**(c) 2009 - present unix-world.org** / support&#064;unix-world.org
 
 | &nbsp; | &nbsp; |
 | ------------- | ------------- |
@@ -33,8 +33,8 @@ Following this philosophy Smart.Framework provides an optimal balance between ac
 
 It is a **lightweight but feature reach** PHP / JavaScript web framework, **mature and stable**, it is being **proactively used and tested** in several high-end web projects **that can really serve many millions of page views per month with a single physical server** !
 The original software architecture of this web framework allows it to deliver a paradox:
-* it have more default built-in features in the code base than the well-known frameworks compared with Symfony, Laravel or Zend Framework
-* it delivers much more performance being between 3x to 4x faster (as HTTP Requests / second) compared with Symfony, Laravel or Zend Framework
+* it have more default built-in features in the code base than the well-known frameworks compared with CodeIgniter, Symfony or Laravel
+* it delivers much more performance being between 1.5x to 4x faster (as HTTP Requests / second) compared with CodeIgniter, Symfony or Laravel
 * when used with Persistent Cache based on In-Memory DB like Redis or Memcache it beats Varnish in many aspects:
 	- delivers ~ the same speed as Varnish but allows granulary level caching policy of zones in controllers
 	- works also with HTTPS (by example, Varnish does not)
@@ -42,7 +42,7 @@ The original software architecture of this web framework allows it to deliver a 
 
 
 #### This software framework is compatible, stable and actively tested with PHP 7.4 / 8.0 / 8.1 / 8.2 / 8.3 / 8.4 versions.
-**Prefered PHP version** is: **8.0** (LTS).
+**Prefered PHP version** is: **8.2** (LTS).
 
 &nbsp;
 ### Benchmark Scenario:
@@ -56,11 +56,11 @@ The benchmark was running using **Apache Benchmark** suite with the following co
 + **HDD 2 x 1TB** SSD/NVME
 
 **Software**:
-+ OS: **Debian 11 Linux 64-bit**, up-to-date 2022-07-30
-+ Apps: **Apache 2.4.54**, **PHP 8.0.21 with Opcache enabled**
++ OS: **Debian 12 Linux 64-bit**, up-to-date
++ Apps: **Apache 2.4.62**, **PHP 8.2.26 with Opcache enabled**
 
 #### Benchmark Results of tested PHP Frameworks:
-+ **Smart.Framework v.8.7 head@2022.07.30** with MarkersTPL Templating: ~ **8.887K** (8887) requests per second
-+ **CodeIgniter v.4.1** with PHP Templating: ~ **5.38K** (5381) requests per second ( **1.3x slower than Smart.Framework** )
-+ **Laravel 8.5** with Blade Templating ~ **1.85K** (1852) requests per second ( **5x slower than Smart.Framework** )
-+ **Symfony 5.2** with Twig Templating: ~ **1.74K** (1741) requests per second ( **5x slower than Smart.Framework** )
++ **Smart.Framework v.8.7 head@2024.12.16** with MarkersTPL Templating: ~ **8.878K** (8878) requests per second
++ **CodeIgniter v.4.5** with PHP Templating: ~ **5.864K** (5864) requests per second ( **1.5x slower than Smart.Framework** )
++ **Symfony 7.2** with Twig Templating: ~ **2.763K** (2763) requests per second ( **3x slower than Smart.Framework** )
++ **Laravel 11.4** with Blade Templating: ~ **2.214K** (2214) requests per second ( **4x slower than Smart.Framework** )

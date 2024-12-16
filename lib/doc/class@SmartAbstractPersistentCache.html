@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="author" content="unix-world.org">
 <meta name="description" content="\SmartAbstractPersistentCache abstract class \ SmartAbstractPersistentCache { } @:: Class: Smart.Framework Abstract Persistent Cache. The backends used">
-<meta name="keywords" content="smartabstractpersistentcache, abstract, class, smart framework, persistent, cache, the, backends, used, for, must, be, very, fast, support, large, keys, and, supply, key, expiration, by, time, if, is, not, supported, natively, then, a, custom, function, created, to, delete, expired, it, contain, only, public, functions, avoid, late, state, binding, self, vs, static, language, php, located, at, lib framework lib caching php, package, development application, namespace, name, version, v, depends, classes, smart, internal private, yes, methods, getversioninfo, string, return, get, info, about, isactive, boolean, true, active, or, false, check, ismemorybased, memory, based, ex, redis, memcached, this, always, in, conjunction, with, as, will, just, backend, one, backed, should, some">
+<meta name="keywords" content="smartabstractpersistentcache, abstract, class, smart framework, persistent, cache, the, backends, used, for, must, be, very, fast, support, large, keys, and, supply, key, expiration, by, time, if, is, not, supported, natively, then, a, custom, function, created, to, delete, expired, it, contain, only, public, functions, avoid, late, state, binding, self, vs, static, language, php, located, at, lib framework lib caching php, package, development application, namespace, name, version, v, depends, classes, smart, internal private, yes, methods, getversioninfo, string, return, get, info, about, isactive, bool, boolean, true, active, or, false, check, ismemorybased, memory, based, ex, redis, memcached, this, always, in, conjunction, with, as, will, just, backend, one, backed, should">
 <meta name="summary" content="Smart.Framework : PHP Documentation:">
 <link rel="icon" href="data:,">
 <title>PHP Documentation for: \SmartAbstractPersistentCache</title>
@@ -709,7 +709,7 @@ It must contain ONLY public functions to avoid late state binding (self:: vs sta
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartAbstractPersistentCache</span></li>
 		
-		<li><b>Version:</b> v.20221220</li>
+		<li><b>Version:</b> v.20231031</li>
 		<li><b>Depends:</b> classes:  Smart</li>
 		
 		
@@ -741,7 +741,7 @@ It must contain ONLY public functions to avoid late state binding (self:: vs sta
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isActive</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if is Active or FALSE if not</div>
@@ -755,7 +755,7 @@ It must contain ONLY public functions to avoid late state binding (self:: vs sta
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isMemoryBased</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if is Memory Based (Ex: Redis / Memcached / ...) or FALSE if not</div>
@@ -771,7 +771,7 @@ This function should be used in some caching scenarios to check if make sense to
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isFileSystemBased</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if is FileSystem Based (Ex: SQLite / DBA / ...) or FALSE if not</div>
@@ -788,7 +788,7 @@ This function should be used in some caching scenarios to check if make sense to
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>isDbBased</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if is Database Based (Ex: PostgreSQL / MySQL / MongoDB / SQLite / DBA / ...) or FALSE if not</div>
@@ -806,7 +806,7 @@ This function should be used in some caching scenarios to check if make sense to
 	<span class="doc-modifiers">public static</span> <span class="doc-keyword"><i>function</i></span> <span class="doc-method-name"><b>clearData</b></span>&nbsp;(
 		
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if is success or FALSE if fail</div>
@@ -822,7 +822,7 @@ This function should be used in some caching scenarios to check if make sense to
 	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} TRUE if Key Exists or FALSE if not<br>
@@ -840,7 +840,7 @@ This function should be used in some caching scenarios to check if make sense to
 	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INTEGER
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;INT
 	
 	
 			<div class="doc-method-ret-params">@return: {INTEGER} number of seconds the key will expire ; -1 if the key does not expire (is persistent) ; -2 if the key does not exists ; -3 if N/A or ERR<br>
@@ -878,7 +878,7 @@ This function should be used in some caching scenarios to check if make sense to
 	<i>int</i>&nbsp;<span class="doc-param-name"><b><span class="doc-param-optional" title="`$y_expiration` Parameter is OPTIONAL, with the Default Value: 0">$y_expiration</span></b></span>&nbsp;=&nbsp;<span class="doc-param-optional"><b>0</b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} Returns True if the key was set or false if not<br>
@@ -898,7 +898,7 @@ This function should be used in some caching scenarios to check if make sense to
 	<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} Returns True if the key(s) was/were unset or false if not<br>
@@ -936,7 +936,7 @@ This is mainly designed to be used by the FileSystem based persistent cache impl
 		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_realm` Parameter is REQUIRED">$y_realm</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} Returns TRUE if the realm is valid or FALSE if not<br>
@@ -954,7 +954,7 @@ Must be between 0 (min) and 255 (max) characters long</div>
 		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_key` Parameter is REQUIRED">$y_key</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@return: {BOOLEAN} Returns TRUE if the key is valid or FALSE if not<br>
@@ -971,7 +971,7 @@ Cannot be empty and must comply with self::safeKey() restricted charset: _ a-z A
 		<i>string</i>&nbsp;<span class="doc-param-name"><b><span title="`$y_value` Parameter is REQUIRED">$y_value</span></b></span>
 	
 	
-	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOLEAN
+	)&nbsp;{}&nbsp;<span title="Static Method"><b>::</b></span>&nbsp;BOOL
 	
 	
 			<div class="doc-method-ret-params">@hints: If  the value is oversized try to archive it before SET using SmartPersistentCache::varCompress() and after GET use SmartPersistentCache::varUncompress()<br>
@@ -1201,13 +1201,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:25 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:44 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>

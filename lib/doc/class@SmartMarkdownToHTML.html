@@ -706,7 +706,7 @@ select#select-summary {
 		<li><span class="doc-ns"><b>Namespace:</b> \</span></li>
 		<li><span class="doc-name"><b>Class Name:</b> SmartMarkdownToHTML</span></li>
 		
-		<li><b>Version:</b> v.20231018</li>
+		<li><b>Version:</b> v.20241210</li>
 		<li><b>Depends:</b> classes:  Smart, SmartEnvironment, SmartUnicode, SmartHtmlParser ; optional-constants: SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG</li>
 		
 		<li><b>Usage:</b> dynamic  object: (new Class())-&gt;method() - This class provides only DYNAMIC methods</li>
@@ -774,7 +774,7 @@ select#select-summary {
 </div>
 <!-- constants r.20200121 -->
 <div class="doc-container" id="Constant--ESCAPINGS_REPLACEMENTS">
-	<span class="doc-modifiers">public</span> <i>const</i> <b>ESCAPINGS_REPLACEMENTS</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[&quot;\\\\&quot; =&gt; &quot;\\&quot;, &quot;\\_&quot; =&gt; &quot;_&quot;, &quot;\\*&quot; =&gt; &quot;*&quot;, &quot;\\-&quot; =&gt; &quot;-&quot;, &quot;\\+&quot; =&gt; &quot;+&quot;, &quot;\\=&quot; =&gt; &quot;=&quot;, &quot;\\`&quot; =&gt; &quot;`&quot;, &quot;\\~&quot; =&gt; &quot;~&quot;, &quot;\\!&quot; =&gt; &quot;!&quot;, &quot;\\?&quot; =&gt; &quot;?&quot;, &quot;\\#&quot; =&gt; &quot;#&quot;, &quot;\\$&quot; =&gt; &quot;$&quot;, &quot;\\@&quot; =&gt; &quot;@&quot;, &quot;\\%&quot; =&gt; &quot;%&quot;, &quot;\\^&quot; =&gt; &quot;^&quot;, &quot;\\(&quot; =&gt; &quot;(&quot;, &quot;\\)&quot; =&gt; &quot;)&quot;, &quot;\\[&quot; =&gt; &quot;[&quot;, &quot;\\]&quot; =&gt; &quot;]&quot;, &quot;\\{&quot; =&gt; &quot;{&quot;, &quot;\\}&quot; =&gt; &quot;}&quot;, &quot;\\.&quot; =&gt; &quot;.&quot;, &quot;\\,&quot; =&gt; &quot;,&quot;, &quot;\\:&quot; =&gt; &quot;:&quot;, &quot;\\;&quot; =&gt; &quot;;&quot;, &quot;\\&lt;\\&lt;\\&lt;&quot; =&gt; &quot;&lt;&lt;&lt;&quot;]</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
+	<span class="doc-modifiers">public</span> <i>const</i> <b>ESCAPINGS_REPLACEMENTS</b>&nbsp;=&nbsp;<span class="doc-param-value"><b>[&quot;\\_&quot; =&gt; &quot;_&quot;, &quot;\\*&quot; =&gt; &quot;*&quot;, &quot;\\-&quot; =&gt; &quot;-&quot;, &quot;\\+&quot; =&gt; &quot;+&quot;, &quot;\\=&quot; =&gt; &quot;=&quot;, &quot;\\`&quot; =&gt; &quot;`&quot;, &quot;\\~&quot; =&gt; &quot;~&quot;, &quot;\\!&quot; =&gt; &quot;!&quot;, &quot;\\?&quot; =&gt; &quot;?&quot;, &quot;\\#&quot; =&gt; &quot;#&quot;, &quot;\\$&quot; =&gt; &quot;$&quot;, &quot;\\@&quot; =&gt; &quot;@&quot;, &quot;\\%&quot; =&gt; &quot;%&quot;, &quot;\\^&quot; =&gt; &quot;^&quot;, &quot;\\(&quot; =&gt; &quot;(&quot;, &quot;\\)&quot; =&gt; &quot;)&quot;, &quot;\\[&quot; =&gt; &quot;[&quot;, &quot;\\]&quot; =&gt; &quot;]&quot;, &quot;\\{&quot; =&gt; &quot;{&quot;, &quot;\\}&quot; =&gt; &quot;}&quot;, &quot;\\.&quot; =&gt; &quot;.&quot;, &quot;\\,&quot; =&gt; &quot;,&quot;, &quot;\\:&quot; =&gt; &quot;:&quot;, &quot;\\;&quot; =&gt; &quot;;&quot;, &quot;\\&lt;\\&lt;\\&lt;&quot; =&gt; &quot;&lt;&lt;&lt;&quot;, &quot;\\\\&quot; =&gt; &quot;\\&quot;]</b></span>&nbsp;;&nbsp;&nbsp;<b>::</b>
 	
 </div>
 
@@ -784,10 +784,15 @@ select#select-summary {
 	<h2 class="doc-header">Sample code: PHP</h2>
 </div>
 <div class="doc-code">
-	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><code><span style="color: #57A64A">
-<span style="color: #FFFFFF">&lt;?php<br><br>$markdown&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;new&nbsp;</span><span style="color: #FFFFFF">SmartMarkdownToHTML</span><span style="color: #FFCC00; font-weight: bold">();<br>&nbsp;</span><span style="color: #FFFFFF">$html&nbsp;</span><span style="color: #FFCC00; font-weight: bold">=&nbsp;</span><span style="color: #FFFFFF">$markdown</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">parse</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Hello&nbsp;**SmartMarkdownToHTML**&nbsp;!'</span><span style="color: #FFCC00; font-weight: bold">);<br>&nbsp;</span><span style="color: #999999">//&nbsp;$html&nbsp;would&nbsp;be&nbsp;(default):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'&lt;div&nbsp;class="mkdw-line"&gt;Hello&nbsp;&lt;b&gt;SmartMarkdownToHTML&lt;/b&gt;&nbsp;!&lt;/div&gt;'<br>&nbsp;//&nbsp;or&nbsp;if&nbsp;set&nbsp;with&nbsp;paragraphs&nbsp;$html&nbsp;would&nbsp;be:&nbsp;'&lt;p&gt;Hello&nbsp;&lt;b&gt;SmartMarkdownToHTML&lt;/b&gt;&nbsp;!&lt;/p&gt;'&nbsp;&lt;!--&nbsp;paragraphs&nbsp;cannot&nbsp;be&nbsp;nested&nbsp;like&nbsp;divs,&nbsp;but&nbsp;is&nbsp;just&nbsp;another&nbsp;option&nbsp;...&nbsp;--&gt;<br><br>//&nbsp;#end&nbsp;php&nbsp;code<br></span>
-</span>
-</code><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
+	<!-- pre (already preformatted) --><code><!-- Smart/HTML.Cleaner [D] --><pre><code style="color: #57A64A"><span style="color: #FFFFFF">&lt;?php
+
+$markdown </span><span style="color: #FFCC00; font-weight: bold">= new </span><span style="color: #FFFFFF">SmartMarkdownToHTML</span><span style="color: #FFCC00; font-weight: bold">();
+ </span><span style="color: #FFFFFF">$html </span><span style="color: #FFCC00; font-weight: bold">= </span><span style="color: #FFFFFF">$markdown</span><span style="color: #FFCC00; font-weight: bold">-&gt;</span><span style="color: #FFFFFF">parse</span><span style="color: #FFCC00; font-weight: bold">(</span><span style="color: #5F9CCE">'Hello **SmartMarkdownToHTML** !'</span><span style="color: #FFCC00; font-weight: bold">);
+ </span><span style="color: #999999">// $html would be (default):                 '&lt;div class="mkdw-line"&gt;Hello &lt;b&gt;SmartMarkdownToHTML&lt;/b&gt; !&lt;/div&gt;'
+ // or if set with paragraphs $html would be: '&lt;p&gt;Hello &lt;b&gt;SmartMarkdownToHTML&lt;/b&gt; !&lt;/p&gt;' &lt;!-- paragraphs cannot be nested like divs, but is just another option ... --&gt;
+
+// #end php code
+</span></code></pre><!-- [/D] Smart/HTML.Cleaner --></code><!-- /pre -->
 </div>
 <!-- Summary List -->
 <br>
@@ -851,13 +856,13 @@ function smartHandleDocSelector(obj) {
 
 
 <hr>
-<small style="color:#BBBBBB;">documentation generated on: 2023-10-19 22:46:28 +0000</small>
+<small style="color:#BBBBBB;">documentation generated on: 2024-12-16 16:53:45 +0000</small>
 <hr>
 <br>
 <!-- # -->
 <div><center>
 	<br>
-	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2023 unix-world.org</small>
+	<small style="color:#DCDCDC;">Smart.Framework &copy; 2009-2024 unix-world.org</small>
 </center></div>
 </body>
 </html>
