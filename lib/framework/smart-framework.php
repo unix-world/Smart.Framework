@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework :: Loader]
-// (c) 2006-2024 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -17,9 +17,12 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
 
 
 //======================================================
-// Smart-Framework v.8.7 # r.20241216
+// Smart-Framework v.8.7 # r.20241218
 //======================================================
-// Requires PHP 7.4 / 8.0 / 8.1 / 8.2 / 8.3 / 8.4 or later
+// Preferred:     PHP 8.2.x / PHP 8.3.x
+// Stable with:   PHP 7.4.33 (min) up to PHP 8.4.x (max)
+// Unstable with: PHP 8.5 and later versions
+// Broken with:   PHP 7.4.32 and earlier versions
 //======================================================
 // this library should be loaded from app web root only
 //======================================================

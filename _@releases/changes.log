@@ -2,6 +2,10 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+December 18, 2024
+	* optimization for PHP 8.1+ : use array_is_list() in Smart::array_type_test()
+	* stable, release to support PHP 7.4 ... PHP 8.4
+
 December 16, 2024
 	* PHP 8.4 compatibility fixes ; it is now PHP 8.4 stable
 	* Docs updated

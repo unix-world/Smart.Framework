@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / Redis Database Client]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -33,7 +33,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * Class: SmartRedisDb - provides a Client for Redis MemDB Server.
  * By default this class will just log the errors.
  *
- * Tested and Stable on Redis versions: 2.6.x / 2.8.x / 3.0.x / 3.2.x / 4.x / 5.x
+ * Tested and Stable on Redis versions: 3.x / 4.x / 5.x / 6.x / 7.x
  *
  * <code>
  *
@@ -53,7 +53,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP Sockets ; classes: Smart, SmartEnvironment, SmartComponents (optional)
- * @version 	v.20231003
+ * @version 	v.20241218
  * @package 	Plugins:Database:Redis
  *
  */

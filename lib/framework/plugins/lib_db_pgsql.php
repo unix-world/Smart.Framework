@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / PostgreSQL Database Client]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -36,8 +36,9 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
 /**
  * Class: SmartPgsqlDb - provides a Static PostgreSQL DB Server Client that can be used just with the DEFAULT connection from configs.
  *
- * Tested and Stable on PostgreSQL versions: 9.0.x / 9.1.x / 9.2.x / 9.3.x / 9.4.x / 9.5.x / 9.6.x / 10.x / 11.x / 12.x / 13.x / 14.x
- * Tested and Stable with PgPool-II versions: 3.0.x / 3.1.x / 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x / 4.2.x
+ * Minimum supported version of PostgreSQL is: 11.3
+ * Tested and Stable on PostgreSQL versions:  11.x / 12.x / 13.x / 14.x / 15.x / 16.x / 17.x
+ * Tested and Stable with PgPool-II versions: 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x / 4.2.x
  * Tested and Stable with PgBouncer: all versions
  *
  * This class provides an easy and convenient way to work with the PostgreSQL DEFAULT connection, as all methods are static.
@@ -68,7 +69,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartUnicode, SmartComponents (optional) : constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20231021
+ * @version 	v.20241218
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -1384,7 +1385,7 @@ final class SmartPgsqlDb {
 	 * This is the best approach to handle safe UPSERT or INSERT IGNORE / UPDATE IGNORE / DELETE IGNORE like queries in high load envionments or to avoid fatal errors when a INSERT / UPDATE / DELETE violates a unique key or a foreign key with PostgreSQL.
 	 * This function can be used inside transactions blocks but never use this function to execute statements as: BEGIN, START TRANSACTION, COMMIT, ROLLBACK or SET statements, as the context is incompatible.
 	 * HINTS:
-	 * On PostgreSQL 9.5/later there is an alternative which can be used directly with write_data() without the need of this function as the following statement: INSERT ... ON CONFLICT DO NOTHING/UPDATE ... (as the equivalent of INSERT IGNORE / UPSERT), but the following statements are still missing (not implemented): UPDATE ... ON CONFLICT DO NOTHING / DELETE ... ON CONFLICT DO NOTHING .
+	 * On PostgreSQL 9.5 and later there is an alternative (just on INSERT) which can be used directly with write_data() without the need of this function as the following statement: INSERT ... ON CONFLICT DO NOTHING/UPDATE ... (as the equivalent of INSERT IGNORE / UPSERT), but the following statements are still missing (not implemented): UPDATE ... ON CONFLICT DO NOTHING / DELETE ... ON CONFLICT DO NOTHING .
 	 * This function will remain in the future to offer backward compatibility with PostgreSQL 8.4 ... 9.5 even if PostgreSQL at some moment will have ON CONFLICT DO implemented for all 3 INSERT / UPDATE / DELETE.
 	 *
 	 * @param STRING $queryval						:: the query
@@ -1447,7 +1448,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		/* At the moment, in PgSQL 9.5 only works ON CONFLICT DO NOTHING for INSERT (for UPDATE statements fails ...)
+		/* At the moment, in PgSQL 9.5 and later only works ON CONFLICT DO NOTHING for INSERT (for UPDATE statements fails ...)
 		if(version_compare((string)self::check_server_version($y_connection), '9.6') >= 0) {
 			//--
 			$xmode = 'affected';
@@ -2095,7 +2096,7 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		$minimum_pgsql_version_for_smartframework = '9.0.x'; // PostgreSQL minimum version required [9.0.x] or later (DO NOT RUN THIS SOFTWARE ON OLDER PostgreSQL Versions !!!
+		$minimum_pgsql_version_for_smartframework = '11.3.x'; // PostgreSQL minimum version required [11.3.x] or later (DO NOT RUN THIS SOFTWARE ON OLDER PostgreSQL Versions !!!
 		//--
 
 		//--
@@ -2567,8 +2568,9 @@ SQL;
 /**
  * Class: SmartPgsqlExtDb - provides a Dynamic (Extended) PostgreSQL DB Server Client that can be used with custom made connections.
  *
- * Tested and Stable on PostgreSQL versions: 9.0.x / 9.1.x / 9.2.x / 9.3.x / 9.4.x / 9.5.x / 9.6.x / 10.x / 11.x / 12.x / 13.x
- * Tested and Stable with PgPool-II versions: 3.0.x / 3.1.x / 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x
+ * Minimum supported version of PostgreSQL is: 11.3
+ * Tested and Stable on PostgreSQL versions:  11.x / 12.x / 13.x / 14.x / 15.x / 16.x / 17.x
+ * Tested and Stable with PgPool-II versions: 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x / 4.2.x
  * Tested and Stable with PgBouncer: all versions
  *
  * This class is made to be used with custom made PostgreSQL connections (other servers than default).
@@ -2595,7 +2597,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20231021
+ * @version 	v.20241218
  * @package 	Plugins:Database:PostgreSQL
  *
  */

@@ -1,7 +1,7 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
 // AppCodePack Upgrade Script
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2008-present unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('APPCODEUNPACK_READY')) { // this must be defined in the first line of the application

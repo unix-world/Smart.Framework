@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Base]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -37,6 +37,9 @@ if((!defined('SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH')) OR (!is_string(SMART_FRAM
 	@http_response_code(500);
 	die('The SMART_FRAMEWORK_FILESYSUTILS_ROOTPATH was not set or is invalid (must be string) ...');
 } //end if
+//================================================================
+// TODO: remove this after dropping off PHP compatibility lower than PHP 8.1
+define('SMART_FRAMEWORK_PHP_HAVE_ARRAY_LIST', (bool)((version_compare((string)phpversion(), '8.1.0') >= 0) && function_exists('array_is_list')));
 //================================================================
 
 
@@ -77,7 +80,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20241123
+ * @version     v.20241218
  * @package     @Core
  *
  */
@@ -1700,30 +1703,29 @@ final class Smart {
 
 	//================================================================
 	/**
-	 * Test if the Array Type for being associative or non-associative sequential (0..n)
+	 * Test if the Array Type for a given variable
 	 *
-	 * @param ARRAY 		$y_arr			:: The array to test
+	 * @param ARRAY 		$y_arr			:: The variable to test
 	 *
-	 * @return INT/ENUM 					:: The array type as: 0 = not an array ; 1 = non-associative (sequential) array or empty array ; 2 = associative array or non-sequential, must be non-empty
+	 * @return INT/ENUM 					:: Will return the type: 0 = not an array ; 1 = non-associative array (list, sequential array or empty array) ; 2 = associative array (map, non-sequential key/val)
 	 */
-	public static function array_type_test($y_arr) : int { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER AS IT HAVE TO TEST ALSO NON-ARRAY VARS !!!
+	public static function array_type_test($y_arr) : int { // !!! DO NOT FORCE ARRAY TYPE ON METHOD PARAMETER $y_arr AS IT HAVE TO TEST ALSO NON-ARRAY VARS !!!
 		//--
 		if(!is_array($y_arr)) {
 			return 0; // not an array
 		} //end if
 		//--
-	//	$c = (int) count($y_arr);
-	//	if(((int)$c <= 0) OR ((array)array_keys($y_arr) === (array)range(0, ((int)$c - 1)))) { // elegant, but ~ 10x slower
-		//--
-	//	$a = (array) array_keys((array)$y_arr);
-	//	if((array)$a === (array)array_keys((array)$a)) { // memory-optimized (prev OK) ; ~ 7x slower
-		//--
-		// for PHP >= 8.1.0 there is: array_is_list() ; to be tested and compared as speed
-		//--
-		if((array)array_values((array)$y_arr) === (array)$y_arr) { // speed-optimized, 10x faster with non-associative large arrays, tested in all scenarios with large or small arrays
-			return 1; // non-associative
+		$is_list = false; // by default consider is non-list (associative array, aka: map)
+		if(SMART_FRAMEWORK_PHP_HAVE_ARRAY_LIST === true) { // requires PHP >= 8.1.0
+			$is_list = (bool) array_is_list((array)$y_arr);
 		} else {
-			return 2; // associative
+			$is_list = (bool) ((array)array_values((array)$y_arr) === (array)$y_arr); // speed-optimized, the fastest with PHP < 8.1 with non-associative large arrays, tested in all scenarios with large or small arrays
+		} //end if
+		//--
+		if($is_list === true) {
+			return 1; // non-associative array (list, sequential numeric index, 0..n)
+		} else {
+			return 2; // associative (map, aka: key/val, non-sequential)
 		} //end if else
 		//--
 	} //END FUNCTION

@@ -2,7 +2,7 @@
 // Class: \SmartModDataModel\DbAdmin\MongoDbAdmin
 // Type: Module Data Model: DbAdmin / MongoDB Admin
 // Info: this class integrates with the default Smart.Framework modules autoloader so does not need anything else to be setup
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2008-present unix-world.org - all rights reserved
 
 namespace SmartModDataModel\DbAdmin;
 

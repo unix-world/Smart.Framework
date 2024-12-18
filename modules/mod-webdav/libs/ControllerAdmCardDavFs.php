@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Webdav / AbstractController Admin CardDav:Fs]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2008-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModExtLib\Webdav\ControllerAdmCardDavFs

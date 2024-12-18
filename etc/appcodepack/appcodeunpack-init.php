@@ -1,7 +1,7 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
 // [AppCodeUnpack / INIT] v.20240216 s.20240216.1345
-// (c) 2013-2024 unix-world.org - all rights reserved
+// (c) 2013-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 // {{{SYNC-SMART-APP-INI-SETTINGS}}}
 

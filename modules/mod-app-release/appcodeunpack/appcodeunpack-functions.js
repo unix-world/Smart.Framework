@@ -1,6 +1,6 @@
 
 // AppJs Local Functions
-// (c) 2013-2023 unix-world.org
+// (c) 2008-present unix-world.org
 // License: BSD
 // v.20231118
 

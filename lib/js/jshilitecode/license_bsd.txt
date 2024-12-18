@@ -2,7 +2,7 @@
 
 (New) BSD License
 
-(c) 2021-2022 unix-world.org
+(c) 2021-present unix-world.org
 
 Redistribution and use of this software in source and binary forms, with or
 without modification, are permitted provided that the following conditions are

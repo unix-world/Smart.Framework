@@ -2,7 +2,7 @@
 ## Dual-licensed: under BSD license or GPLv3 license (at your choice)
 ### This software project is open source.
 #### You must choose which license to use depending on your use case: BSD license or GPLv3 license
-**(c) 2009 - present unix-world.org** / support&#064;unix-world.org
+**(c) 2008 - present unix-world.org** / support&#064;unix-world.org
 
 | &nbsp; | &nbsp; |
 | ------------- | ------------- |

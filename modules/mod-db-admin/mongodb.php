@@ -1,7 +1,7 @@
 <?php
 // Controller: DnAdmin.Mongodb
 // Route: admin.php?/page/db-admin.mongodb (admin.php?page=db-admin.mongodb)
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2008-present unix-world.org - all rights reserved
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
 if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the first line of the application

@@ -1,6 +1,6 @@
 <?php
 // Class: \SmartModExtLib\PageBuilder\AbstractFrontendController
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2008-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 namespace SmartModExtLib\PageBuilder;

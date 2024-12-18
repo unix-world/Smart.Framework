@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / MySQLi (MariaDB) Database Client]
-// (c) 2006-2024 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -46,8 +46,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * This class can be used just with the DEFAULT connection which must be set in etc/config.php: $configs['mysqli'].
  * It connects automatically, when needed (the connection is lazy, and is made just when is needed to avoid permanent connections to MySQL which slower down the app and takes busy the slots).
  *
- * Tested and Stable with MariaDB versions: 5.5.x / 10.x
- * Tested and Stable on MySQL versions: 5.5.x / 5.6.x / 5.7.x / 6.x / 7.x / 8.x
+ * Minimum supported version of MySQL/MariaDB is: 5.5.41
+ * Tested and Stable with MariaDB versions: 5.5.x / 10.x / 11.x
+ * Tested and Stable on MySQL versions: 5.5.x / 5.6.x / 5.7.x / 6.x / 7.x / 8.x / 9.x
  *
  * <code>
  *
@@ -70,7 +71,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20221223
+ * @version 	v.20241218
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -1507,7 +1508,7 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		$minimum_mysql_version_for_smartframework = '5.0.0'; // MySQL minimum version required [5.0.0] or later (DO NOT RUN THIS SOFTWARE ON OLDER MySQL Versions !!!
+		$minimum_mysql_version_for_smartframework = '5.5.41'; // MySQL minimum version required [5.5.41] or later (DO NOT RUN THIS SOFTWARE ON OLDER MySQL Versions !!!
 		//--
 
 		//--
@@ -1873,8 +1874,9 @@ final class SmartMysqliDb {
  * Class: SmartMysqliExtDb - provides a Dynamic (Extended) Client for MariaDB Server / MySQL that can be used with custom made connections.
  * This class is made to be used with custom made MySQLi connections (other servers than default).
  *
- * Tested and Stable with MariaDB versions: 5.5.x / 10.x
- * Tested and Stable on MySQL versions: 5.5.x / 5.6.x / 5.7.x / 6.x / 7.x / 8.x
+ * Minimum supported version of MySQL/MariaDB is: 5.5.41
+ * Tested and Stable with MariaDB versions: 5.5.x / 10.x / 11.x
+ * Tested and Stable on MySQL versions: 5.5.x / 5.6.x / 5.7.x / 6.x / 7.x / 8.x / 9.x
  *
  * <code>
  * // Sample config array for this class constructor:
@@ -1898,7 +1900,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20221223
+ * @version 	v.20241218
  * @package 	Plugins:Database:MySQL
  *
  */

@@ -1,6 +1,6 @@
 <?php
 // [Smart.Framework / Smart ERROR Handler]
-// (c) 2006-2024 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT EXECUTION BEFORE RUNTIME READY
@@ -10,7 +10,7 @@ if(!defined('SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in the f
 } //end if
 //-----------------------------------------------------
 
-// # r.20241216 # this should be loaded from app web root only
+// # r.20241218 # this should be loaded from app web root only
 
 // ===== IMPORTANT =====
 //	* NO VARIABLES SHOULD BE DEFINED IN THIS FILE BECAUSE IS LOADED BEFORE REGISTERING ANY OF GET/POST VARIABLES (CAN CAUSE SECURITY ISSUES)
@@ -45,15 +45,15 @@ if((string)trim((string)ini_get('default_mimetype')) != 'text/html') {
 //-- PHP version, 64-bit support and various checks
 if(version_compare((string)phpversion(), '7.4.33') < 0) { // check for PHP 7.4 (latest) or later 8.x
 	@http_response_code(500);
-	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 7.4 / 8.0 / 8.1 / 8.2 / 8.3 / 8.4 or later');
+	die('PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run this software are: 7.4 / 8.0 / 8.1 / 8.2 / 8.3 / 8.4 / 8.5 / 8.6 or later');
 } //end if
 //--
-if(((int)PHP_INT_SIZE < 8) OR ((string)(int)PHP_INT_MAX < '9223372036854775807')) {
+if(((int)PHP_INT_SIZE < 8) OR ((string)(int)PHP_INT_MAX < '9223372036854775807')) { // check for 64-bit integer
 	@http_response_code(500);
 	die('PHP Runtime not supported: this version of PHP does not support 64-bit Integers (PHP_INT_SIZE should be 8 and is: '.PHP_INT_SIZE.' ; PHP_INT_MAX should be at least 9223372036854775807 and is: '.PHP_INT_MAX.') ...');
 } //end if
 //--
-if((string)(int)strtotime('2038-03-16 07:55:08 UTC') != '2152338908') { // test year2038 bug with an integer value longer than 32-bit max int which is: 2147483647
+if((string)(int)strtotime('2038-03-16 07:55:08 UTC') != '2152338908') { // test year.2038 bug with an integer value longer than 32-bit max int which is: 2147483647
 	@http_response_code(500);
 	die('PHP OS not supported: this version of OS ('.PHP_OS.') does not support 64-bit time or date detection is broken ...');
 } //end if
@@ -91,7 +91,7 @@ if(defined('SMART_FRAMEWORK_RELEASE_TAGVERSION') || defined('SMART_FRAMEWORK_REL
 } //end if
 //-- {{{SYNC-SF-SIGNATURES-AND-VERSIONS}}}
 define('SMART_FRAMEWORK_RELEASE_TAGVERSION', 'v.8.7'); // tag version
-define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2024.12.16'); // tag release-date
+define('SMART_FRAMEWORK_RELEASE_VERSION', 'r.2024.12.18'); // tag release-date
 define('SMART_FRAMEWORK_RELEASE_URL', 'http://demo.unix-world.org/smart-framework/');
 define('SMART_FRAMEWORK_RELEASE_NAME', 'Smart.Framework, a PHP / JavaScript Framework for Web featuring Middlewares + MVC, (c) unix-world.org');
 //--

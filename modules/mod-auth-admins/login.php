@@ -1,7 +1,7 @@
 <?php
 // Controller: AuthAdmins/Login
 // Route: task|admin.php?page=auth-admins.login.stml
-// (c) 2006-2023 unix-world.org - all rights reserved
+// (c) 2008-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT S EXECUTION

@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Plugins / Markdown to HTML Parser]
-// (c) 2006-2022 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 //----------------------------------------------------- PREVENT SEPARATE EXECUTION WITH VERSION CHECK
@@ -37,7 +37,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		dynamic object: (new Class())->method() - This class provides only DYNAMIC methods
  *
  * @depends 	classes: Smart, SmartEnvironment, SmartUnicode, SmartHtmlParser ; optional-constants: SMART_MARKDOWN_LAZYLOAD_DEFAULT_IMG
- * @version 	v.20241210
+ * @version 	v.20241218
  * @package 	Plugins:ConvertersAndParsers
  *
  * <code>
@@ -52,7 +52,7 @@ final class SmartMarkdownToHTML {
 
 	//===================================
 
-	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20241210';
+	private const MKDW_VERSION = 'smart.markdown:parser@v.2.2.8-r.20241212';
 
 	//===================================
 

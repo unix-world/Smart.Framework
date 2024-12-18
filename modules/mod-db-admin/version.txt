@@ -1,5 +1,5 @@
 
-# Smart.Framework.Modules: DB-Admin r.20231027 #
+# Smart.Framework.Modules: DB-Admin r.20241218 #
 
 // r.8.7 / smart.framework.v.8.7
 
