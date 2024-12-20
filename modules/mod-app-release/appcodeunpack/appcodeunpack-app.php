@@ -1,6 +1,6 @@
 <?php
 // [@[#[!NO-STRIP!]#]@]
-// [AppCodeUnpack / APP] v.20240216 s.20240216.1345
+// [AppCodeUnpack / APP] v.20241220 s.20241220.0958
 // (c) 2008-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
@@ -94,9 +94,9 @@ function AppCodeUnpackIncludeUpgradeScript(string $path_to_upgrade_script) : voi
 final class AppCodeUnpack {
 
 	// ::
-	// v.20240216
+	// v.20241220
 
-	private const APPCODEUNPACK_VERSION = 's.20240216.1345';
+	private const APPCODEUNPACK_VERSION = 's.20241220.0958';
 	private const APPCODEUNPACK_SCRIPT = 'appcodeunpack.php';
 	private const APPCODEUNPACK_TITLE = 'AppCodeUnpack';
 
@@ -793,7 +793,7 @@ final class AppCodeUnpack {
 							if((string)$frm['appcodeunpack']['@'] !== (string)SmartHashCrypto::sh3a384((string)$frm['appcodeunpack']['='], true)) {
 								$a_err = 'AppCodeUnpack Update: Invalid Data Checksum';
 							} else {
-								$tmp_upd_ctx = (string) SmartCipherCrypto::bf_decrypt((string)$frm['appcodeunpack']['='], (string)APPCODEPACK_DEPLOY_SECRET);
+								$tmp_upd_ctx = (string) SmartCipherCrypto::tf_decrypt((string)$frm['appcodeunpack']['='], (string)APPCODEPACK_DEPLOY_SECRET);
 								if(
 									((string)trim((string)$tmp_upd_ctx) != '') AND
 									((string)$frm['appcodeunpack']['#'] === (string)SmartHashCrypto::sh3a512((string)$tmp_upd_ctx, true))
