@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Samples / Test MariaDB Server / MySQL]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModExtLib\Samples\TestUnitMySQLi
@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221230
+ * @version 	v.20241220
  *
  */
 final class TestUnitMySQLi {
@@ -64,6 +64,23 @@ final class TestUnitMySQLi {
 			//--
 		} //end if
 		//--
+		$cfg_mysqli['type'] = (string) \strtolower((string)\trim((string)($cfg_mysqli['type'] ?? null)));
+		//--
+
+		//--
+		$connUnicode   = 'UTF8.MB4';
+		$connCharset   = 'utf8mb4';
+		$connCollation = 'utf8mb4_bin';
+		switch((string)$cfg_mysqli['type']) {
+			case 'mysql': // support for older servers
+				$connUnicode   = 'UTF8';
+				$connCharset   = 'utf8';
+				$connCollation = 'utf8_bin';
+				break;
+			case 'mariadb': // support for modern servers
+			default:
+				$cfg_mysqli['type'] = 'mariadb';
+		} //end switch
 
 		//--
 		$time = \microtime(true);
@@ -71,12 +88,15 @@ final class TestUnitMySQLi {
 
 		//--
 		$value = \date('Y-m-d H:i:s');
-		$comments = '"Unicode78źź:ăĂîÎâÂșȘțȚşŞţŢグッド'.'-'.\Smart::random_number(1000,9999)."'".'🚕🚓🚗🚑🚒🚒🚛🚜🚘🚔🚔🚖🚎🏍🛵🚲';
+		$comments = '"Unicode78źź:ăĂîÎâÂșȘțȚşŞţŢグッド'.'-'.\Smart::random_number(1000,9999)."'";
+		if((string)$cfg_mysqli['type'] == 'mariadb') {
+			$comments .= '🚕🚓🚗🚑🚒🚒🚛🚜🚘🚔🚔🚖🚎🏍🛵🚲'; // UTF8.MB4 icons
+		} //end if
 		//--
 
 		//--
 		$tests = array();
-		$tests[] = '===== MariaDB Server / MySQL / TESTS: =====';
+		$tests[] = '===== '.ucfirst((string)$cfg_mysqli['type']).' Server ['.$connUnicode.'] / TESTS: =====';
 		//--
 		$err = '';
 		//--
@@ -99,7 +119,7 @@ final class TestUnitMySQLi {
 		if(\SmartMysqliDb::check_if_table_exists('_test_unit_db_server_tests') == 1) {
 			\SmartMysqliDb::write_data('DROP TABLE `_test_unit_db_server_tests`');
 		} //end if
-		\SmartMysqliDb::write_data('CREATE TABLE `_test_unit_db_server_tests` ( `id` int AUTO_INCREMENT, `variable` varchar(100) COLLATE utf8mb4_bin NOT NULL, `value` text CHARACTER SET utf8mb4 DEFAULT NULL, `comments` mediumtext CHARACTER SET utf8mb4 NOT NULL DEFAULT \'\', `a_null_column` text NULL, PRIMARY KEY (`id`), UNIQUE (`variable`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;');
+		\SmartMysqliDb::write_data('CREATE TABLE `_test_unit_db_server_tests` ( `id` int AUTO_INCREMENT, `variable` varchar(100) COLLATE '.$connCollation.' NOT NULL, `value` text CHARACTER SET '.$connCharset.' DEFAULT NULL, `comments` mediumtext CHARACTER SET '.$connCharset.' NOT NULL DEFAULT \'\', `a_null_column` text NULL, PRIMARY KEY (`id`), UNIQUE (`variable`) ) ENGINE=InnoDB DEFAULT CHARSET='.$connCharset.' COLLATE='.$connCollation.';');
 		//--
 
 		//--

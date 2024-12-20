@@ -36,8 +36,8 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
 /**
  * Class: SmartPgsqlDb - provides a Static PostgreSQL DB Server Client that can be used just with the DEFAULT connection from configs.
  *
- * Minimum supported version of PostgreSQL is: 11.3
- * Tested and Stable on PostgreSQL versions:  11.x / 12.x / 13.x / 14.x / 15.x / 16.x / 17.x
+ * Minimum supported version of PostgreSQL is: 9.6
+ * Tested and Stable on PostgreSQL versions:  9.6.x / 10.x / 11.x / 12.x / 13.x / 14.x / 15.x / 16.x / 17.x
  * Tested and Stable with PgPool-II versions: 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x / 4.2.x
  * Tested and Stable with PgBouncer: all versions
  *
@@ -69,7 +69,7 @@ ini_set('pgsql.ignore_notice', '0'); // this is REQUIRED to be set to 0 in order
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartHashCrypto, SmartUnicode, SmartComponents (optional) : constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20241218
+ * @version 	v.20241220
  * @package 	Plugins:Database:PostgreSQL
  *
  */
@@ -81,6 +81,8 @@ final class SmartPgsqlDb {
 	private static $server_version = [];
 
 	private static $default_connection = null;
+
+	private const minVersionServer = '9.6.x'; // PostgreSQL minimum version required [11.3.x] or later (DO NOT RUN THIS SOFTWARE ON OLDER PostgreSQL Versions !!!
 
 
 	//======================================================
@@ -2096,10 +2098,6 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		$minimum_pgsql_version_for_smartframework = '11.3.x'; // PostgreSQL minimum version required [11.3.x] or later (DO NOT RUN THIS SOFTWARE ON OLDER PostgreSQL Versions !!!
-		//--
-
-		//--
 		$queryval = 'SHOW SERVER_VERSION';
 		$result = @pg_query($y_connection, $queryval);
 		//--
@@ -2145,8 +2143,8 @@ final class SmartPgsqlDb {
 		//--
 
 		//--
-		if(((string)$pgsql_txt_version != 'POSTGRESQL') OR (version_compare((string)self::major_version($minimum_pgsql_version_for_smartframework), (string)self::major_version($pgsql_num_version)) > 0)) {
-			self::error($y_connection, 'Server-Version', 'PgSQL Server Version not supported', $pgsql_txt_version.' '.$pgsql_num_version, 'PgSQL.version='.self::major_version($minimum_pgsql_version_for_smartframework).' or later is required to run this software !');
+		if(((string)$pgsql_txt_version != 'POSTGRESQL') OR (version_compare((string)self::major_version(self::minVersionServer), (string)self::major_version($pgsql_num_version)) > 0)) {
+			self::error($y_connection, 'Server-Version', 'PgSQL Server Version not supported', $pgsql_txt_version.' '.$pgsql_num_version, 'PgSQL.version='.self::major_version(self::minVersionServer).' or later is required to run this software !');
 			return '';
 		} //end if
 		//--
@@ -2568,8 +2566,8 @@ SQL;
 /**
  * Class: SmartPgsqlExtDb - provides a Dynamic (Extended) PostgreSQL DB Server Client that can be used with custom made connections.
  *
- * Minimum supported version of PostgreSQL is: 11.3
- * Tested and Stable on PostgreSQL versions:  11.x / 12.x / 13.x / 14.x / 15.x / 16.x / 17.x
+ * Minimum supported version of PostgreSQL is: 9.6
+ * Tested and Stable on PostgreSQL versions:  9.6.x / 10.x / 11.x / 12.x / 13.x / 14.x / 15.x / 16.x / 17.x
  * Tested and Stable with PgPool-II versions: 3.2.x / 3.3.x / 3.4.x / 3.5.x / 3.6.x / 3.7.x / 4.0.x / 4.1.x / 4.2.x
  * Tested and Stable with PgBouncer: all versions
  *
@@ -2597,7 +2595,7 @@ SQL;
  * @hints		This class have no catcheable exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP PostgreSQL ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20241218
+ * @version 	v.20241220
  * @package 	Plugins:Database:PostgreSQL
  *
  */

@@ -46,9 +46,9 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * This class can be used just with the DEFAULT connection which must be set in etc/config.php: $configs['mysqli'].
  * It connects automatically, when needed (the connection is lazy, and is made just when is needed to avoid permanent connections to MySQL which slower down the app and takes busy the slots).
  *
- * Minimum supported version of MySQL/MariaDB is: 5.5.41
+ * Minimum supported version of MySQL/MariaDB is: 5.0.0
  * Tested and Stable with MariaDB versions: 5.5.x / 10.x / 11.x
- * Tested and Stable on MySQL versions: 5.5.x / 5.6.x / 5.7.x / 6.x / 7.x / 8.x / 9.x
+ * Tested and Stable on MySQL versions: 5.x / 6.x / 7.x / 8.x / 9.x
  *
  * <code>
  *
@@ -71,7 +71,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  * @usage  		static object: Class::method() - This class provides only STATIC methods
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20241218
+ * @version 	v.20241220
  * @package 	Plugins:Database:MySQL
  *
  */
@@ -83,6 +83,8 @@ final class SmartMysqliDb {
 	private static $server_version = [];
 
 	private static $default_connection = null;
+
+	private const minVersionServer = '5.0.0'; // MariaDB / MySQL minimum server version required [5.0.0] or later (DO NOT RUN THIS SOFTWARE ON OLDER MySQL Versions !!!
 
 
 	//======================================================
@@ -113,7 +115,7 @@ final class SmartMysqliDb {
 	 * @param INTEGER $ytimeout 					:: connection timeout
 	 * @param ENUM $y_transact_mode					:: transactional mode ('READ COMMITTED' | 'REPEATABLE READ' | 'SERIALIZABLE' | '' to leave it as default)
 	 * @param FLOAT $y_debug_sql_slowtime			:: debug query slow time
-	 * @param ENUM $y_type							:: server type: mysql / mariadb / percona
+	 * @param ENUM $y_type							:: server type: mariadb (UTF8.MB4) / mysql (UTF8)
 	 *
 	 * @return RESOURCE								:: the mysql connection object
 	 *
@@ -121,7 +123,7 @@ final class SmartMysqliDb {
 	 * @internal
 	 *
 	 */
-	public static function server_connect($yhost, $yport, $ydb, $yuser, $ypass, $ytimeout, $y_transact_mode='', $y_debug_sql_slowtime=0, $y_type='mysql') {
+	public static function server_connect($yhost, $yport, $ydb, $yuser, $ypass, $ytimeout, $y_transact_mode='', $y_debug_sql_slowtime=0, $y_type='mariadb') {
 
 		//--
 		if(defined('SMART_FRAMEWORK_SQL_CHARSET')) {
@@ -140,6 +142,23 @@ final class SmartMysqliDb {
 			self::error('[PRE-CONNECT]', 'PHP-MySQLi', 'Check MySQLi PHP Extension', 'PHP Extension is required to run this software !', 'Cannot find MySQLi PHP Extension');
 			return;
 		} //end if
+		//--
+
+		//--
+		$connUnicode   = 'UTF8.MB4';
+		$connCharset   = 'utf8mb4';
+		$connCollation = 'utf8mb4_bin';
+		$y_type = (string) strtolower((string)trim((string)$y_type));
+		switch((string)$y_type) {
+			case 'mysql': // support for older servers
+				$connUnicode   = 'UTF8';
+				$connCharset   = 'utf8';
+				$connCollation = 'utf8_bin';
+				break;
+			case 'mariadb': // support for modern servers
+			default:
+				$y_type = 'mariadb';
+		} //end switch
 		//--
 
 		//-- connection timeout
@@ -236,29 +255,29 @@ final class SmartMysqliDb {
 		//--
 		if((string)SMART_FRAMEWORK_SQL_CHARSET == 'UTF8') {
 			//--
-			@mysqli_query($connection, "SET CHARACTER SET 'utf8mb4'", MYSQLI_STORE_RESULT);
+			@mysqli_query($connection, "SET CHARACTER SET '{$connCharset}'", MYSQLI_STORE_RESULT);
 			if(@mysqli_errno($connection) !== 0) {
-				self::error(self::get_connection_id($connection), 'Encoding-Charset', 'Failed to set Encoding on Server', 'Error='.@mysqli_error($connection), 'Set=utf8mb4');
+				self::error(self::get_connection_id($connection), 'Encoding-Charset', 'Failed to set Encoding on Server', 'Error='.@mysqli_error($connection), 'Set='.$connCharset);
 				return;
 			} //end if else
 			if(SmartEnvironment::ifDebug()) {
 				SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'set',
-					'data' => 'SET Character Set to: utf8mb4',
+					'data' => 'SET Character Set to: '.$connCharset,
 					'connection' => (string) self::get_connection_id($connection),
 					'skip-count' => 'yes'
 				]);
 			} //end if
 			//--
-			@mysqli_query($connection, "SET COLLATION_CONNECTION = 'utf8mb4_bin'", MYSQLI_STORE_RESULT);
+			@mysqli_query($connection, "SET COLLATION_CONNECTION = '{$connCollation}'", MYSQLI_STORE_RESULT);
 			if(@mysqli_errno($connection) !== 0) {
-				self::error(self::get_connection_id($connection), 'Encoding-Collation', 'Failed to set Collation on Server', 'Error='.@mysqli_error($connection), 'Set=utf8mb4_bin');
+				self::error(self::get_connection_id($connection), 'Encoding-Collation', 'Failed to set Collation on Server', 'Error='.@mysqli_error($connection), 'Set='.$connCollation);
 				return;
 			} //end if else
 			if(SmartEnvironment::ifDebug()) {
 				SmartEnvironment::setDebugMsg('db', 'mysqli|log', [
 					'type' => 'set',
-					'data' => 'SET Connection Collation to: utf8mb4_bin',
+					'data' => 'SET Connection Collation to: '.$connCollation,
 					'connection' => (string) self::get_connection_id($connection),
 					'skip-count' => 'yes'
 				]);
@@ -266,7 +285,7 @@ final class SmartMysqliDb {
 			//--
 		} else {
 			//--
-			self::error(self::get_connection_id($connection), 'Encoding-Charset', 'Wrong Client Encoding for Server', 'Server=UTF8.MB4', 'Client='.SMART_FRAMEWORK_SQL_CHARSET);
+			self::error(self::get_connection_id($connection), 'Encoding-Charset', 'Wrong Client Encoding for Server', 'Server='.$connUnicode, 'Client='.SMART_FRAMEWORK_SQL_CHARSET);
 			return;
 			//--
 		} //end if
@@ -1508,10 +1527,6 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		$minimum_mysql_version_for_smartframework = '5.5.41'; // MySQL minimum version required [5.5.41] or later (DO NOT RUN THIS SOFTWARE ON OLDER MySQL Versions !!!
-		//--
-
-		//--
 		$queryval = 'SELECT VERSION()';
 		$result = @mysqli_query($y_connection, $queryval, MYSQLI_STORE_RESULT);
 		$chk = @mysqli_errno($y_connection);
@@ -1558,8 +1573,8 @@ final class SmartMysqliDb {
 		//--
 
 		//--
-		if(version_compare((string)self::major_version($minimum_mysql_version_for_smartframework), (string)self::major_version($mysql_num_version)) > 0) {
-			self::error($y_connection, 'Server-Version', 'Server Version not supported', $mysql_num_version, 'version='.self::major_version($minimum_mysql_version_for_smartframework).' or later is required to run this software !');
+		if(version_compare((string)self::major_version(self::minVersionServer), (string)self::major_version($mysql_num_version)) > 0) {
+			self::error($y_connection, 'Server-Version', 'Server Version not supported', $mysql_num_version, 'version='.self::major_version(self::minVersionServer).' or later is required to run this software !');
 			return '';
 		} //end if
 		//--
@@ -1874,14 +1889,14 @@ final class SmartMysqliDb {
  * Class: SmartMysqliExtDb - provides a Dynamic (Extended) Client for MariaDB Server / MySQL that can be used with custom made connections.
  * This class is made to be used with custom made MySQLi connections (other servers than default).
  *
- * Minimum supported version of MySQL/MariaDB is: 5.5.41
+ * Minimum supported version of MySQL/MariaDB is: 5.0.0
  * Tested and Stable with MariaDB versions: 5.5.x / 10.x / 11.x
- * Tested and Stable on MySQL versions: 5.5.x / 5.6.x / 5.7.x / 6.x / 7.x / 8.x / 9.x
+ * Tested and Stable on MySQL versions: 5.x / 6.x / 7.x / 8.x / 9.x
  *
  * <code>
  * // Sample config array for this class constructor:
  * $custom_mysql = array();
- * $custom_mysql['type']         = 'mysql';                 // mysql / mariadb / percona
+ * $custom_mysql['type']         = 'mariadb';               // mariadb (UTF8.MB4) / mysql (UTF8)
  * $custom_mysql['server-host']  = '127.0.0.1';             // database host (default is 127.0.0.1)
  * $custom_mysql['server-port']  = '3306';                  // database port (default is 3306)
  * $custom_mysql['dbname']       = 'smart_framework';       // database name
@@ -1900,7 +1915,7 @@ final class SmartMysqliDb {
  * @hints		This class have no catcheable Exception because the ONLY errors will raise are when the server returns an ERROR regarding a malformed SQL Statement, which is not acceptable to be just Exception, so will raise a fatal error !
  *
  * @depends 	extensions: PHP MySQLi ; classes: Smart, SmartEnvironment, SmartUnicode, SmartComponents (optional) ; constants: SMART_FRAMEWORK_SQL_CHARSET
- * @version 	v.20241218
+ * @version 	v.20241220
  * @package 	Plugins:Database:MySQL
  *
  */

@@ -1,6 +1,6 @@
 <?php
 // [LIB - Smart.Framework / Samples / Test PostgreSQL Server]
-// (c) 2006-2021 unix-world.org - all rights reserved
+// (c) 2006-present unix-world.org - all rights reserved
 // r.8.7 / smart.framework.v.8.7
 
 // Class: \SmartModExtLib\Samples\TestUnitPgSQL
@@ -28,7 +28,7 @@ if(!\defined('\\SMART_FRAMEWORK_RUNTIME_READY')) { // this must be defined in th
  * @access 		private
  * @internal
  *
- * @version 	v.20221230
+ * @version 	v.20241220
  *
  */
 final class TestUnitPgSQL {
@@ -76,7 +76,7 @@ final class TestUnitPgSQL {
 
 		//--
 		$tests = array();
-		$tests[] = '===== PostgreSQL / TESTS: =====';
+		$tests[] = '===== PostgreSQL [UTF8] / TESTS: =====';
 		//--
 		$err = '';
 		//--

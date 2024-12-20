@@ -2,6 +2,9 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+December 20, 2024
+	* implement explicit mode for MariaDB mode as UTF8.MB4 and revert old compatibility MySQL mode to UTF8 to support both: older and newer server versions
+
 December 18, 2024
 	* optimization for PHP 8.1+ : use array_is_list() in Smart::array_type_test()
 	* stable, release to support PHP 7.4 ... PHP 8.4

@@ -54,7 +54,7 @@ if((!defined('SMART_FRAMEWORK_VERSION')) || ((string)SMART_FRAMEWORK_VERSION != 
  *
  * @access 		PUBLIC
  * @depends 	extensions: PHP MongoDB ; classes: Smart, SmartEnvironment, SmartComponents (optional)
- * @version 	v.20241218
+ * @version 	v.20241220
  * @package 	Plugins:Database:MongoDB
  *
  * @throws 		Exception : Depending how this class it is constructed it may throw Exception or Raise Fatal Error
@@ -100,11 +100,8 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 	/** @var boolean */
 	private $connected = false;
 
-	/** @var string */
-	private $min_ver_srv = '4.4.23'; // min mongodb server version supported ; prev supported version was 3.4.22 (that supports `upsert` and `facet aggregation with fts`) but was too old
-
-	/** @var string */
-	private $min_ver_ext = '1.5.5'; // prev supported version was 1.3.0 that supports `facet aggregation with fts` is 1.3
+	private const minVersionServer    = '4.4.16'; // min mongodb server version supported ; prev supported version was 3.4.22 (that supports `upsert` and `facet aggregation with fts`) but was too old
+	private const minVersionExtension = '1.5.5';  // prev supported version was 1.3.0 that supports `facet aggregation with fts` is 1.3
 
 
 	//======================================================
@@ -126,8 +123,8 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 		//--
 		$this->extver = (string) phpversion('mongodb');
 		//--
-		if(version_compare((string)$this->extver, (string)$this->min_ver_ext) < 0) {
-			$this->error('[INIT]', 'PHP MongoDB Extension', 'CHECK PHP MongoDB Version', 'This version of MongoDB Client Library needs MongoDB PHP Extension v.'.$this->min_ver_ext.' or later. The current version is: '.$this->extver);
+		if(version_compare((string)$this->extver, (string)self::minVersionExtension) < 0) {
+			$this->error('[INIT]', 'PHP MongoDB Extension', 'CHECK PHP MongoDB Version', 'This version of MongoDB Client Library needs MongoDB PHP Extension v.'.self::minVersionExtension.' or later. The current version is: '.$this->extver);
 			return;
 		} //end if
 		//--
@@ -1464,9 +1461,9 @@ final class SmartMongoDb { // !!! Use no paranthesis after magic methods doc to 
 			//--
 			$this->get_server_version(); // this will register the $this->srvver if req.
 			//--
-			if(((string)$this->srvver == '') OR (version_compare((string)$this->min_ver_srv, (string)$this->srvver) > 0)) {
+			if(((string)$this->srvver == '') OR (version_compare((string)self::minVersionServer, (string)$this->srvver) > 0)) {
 				$this->mongodbclient = null;
-				$this->error((string)$this->connex_key, 'MongoDB Manager', 'Invalid MongoDB Server Version on '.$this->server, 'ERROR: Minimum MongoDB supported Server version is: '.$this->min_ver_srv.' but this Server version is: '.$this->srvver);
+				$this->error((string)$this->connex_key, 'MongoDB Manager', 'Invalid MongoDB Server Version on '.$this->server, 'ERROR: Minimum MongoDB supported Server version is: '.self::minVersionServer.' but this Server version is: '.$this->srvver);
 				return false;
 			} //end if
 			//--

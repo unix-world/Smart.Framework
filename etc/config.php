@@ -135,7 +135,7 @@ $configs['pgsql']['transact']		= 'READ COMMITTED';						// postgresql session De
 
 //--------------------------------------- MariaDB/MySQL (Default) DB Server configuration (standalone or cluster)
 /*
-$configs['mysqli']['type'] 			= 'mariadb'; 							// mysql / mariadb
+$configs['mysqli']['type'] 			= 'mariadb'; 							// mariadb (UTF8.MB4) / mysql (UTF8)
 $configs['mysqli']['server-host'] 	= '127.0.0.1';							// server host (default is 127.0.0.1)
 $configs['mysqli']['server-port']	= 3306;									// server port (default is 3306)
 $configs['mysqli']['dbname']		= 'smart_framework';					// database name ; Encoding=utf8mb4
