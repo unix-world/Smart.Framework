@@ -2,7 +2,8 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
-December 20, 2024
+December 21, 2024
+	* minor fixes, stable release
 	* implement explicit mode for MariaDB mode as UTF8.MB4 and revert old compatibility MySQL mode to UTF8 to support both: older and newer server versions
 
 December 18, 2024

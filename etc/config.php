@@ -121,7 +121,7 @@ $configs['mongodb']['slowtime']		= 0.0035;								// mongodb slow query time (fo
 
 //--------------------------------------- PostgreSQL (Default) DB Server configuration (standalone or cluster)
 /*
-$configs['pgsql']['type'] 			= 'postgresql'; 						// postgresql / pgpool2
+$configs['pgsql']['type'] 			= 'postgresql'; 						// postgresql / pgpool2 (UTF8)
 $configs['pgsql']['server-host'] 	= '127.0.0.1';							// postgresql host (default is 127.0.0.1)
 $configs['pgsql']['server-port']	= 5432;									// postgresql port (default is 5432)
 $configs['pgsql']['dbname']			= 'smart_framework';					// postgresql database name ; Encoding=UTF8 ; Collation=C ; CharacterType=C
@@ -138,7 +138,7 @@ $configs['pgsql']['transact']		= 'READ COMMITTED';						// postgresql session De
 $configs['mysqli']['type'] 			= 'mariadb'; 							// mariadb (UTF8.MB4) / mysql (UTF8)
 $configs['mysqli']['server-host'] 	= '127.0.0.1';							// server host (default is 127.0.0.1)
 $configs['mysqli']['server-port']	= 3306;									// server port (default is 3306)
-$configs['mysqli']['dbname']		= 'smart_framework';					// database name ; Encoding=utf8mb4
+$configs['mysqli']['dbname']		= 'smart_framework';					// database name
 $configs['mysqli']['username']		= 'root';								// server username
 $configs['mysqli']['password']		= base64_encode('root');				// server Base64-Encoded password for that user name B64
 $configs['mysqli']['timeout']		= 10;									// server connection timeout (how many seconds to wait for a valid MySQL Connection)

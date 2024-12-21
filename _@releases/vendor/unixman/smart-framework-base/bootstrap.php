@@ -2,8 +2,8 @@
 
 // bootstrap/autoload Smart.Framework base classes for Vendor/Composer
 // license: BSD
-// (c) 2022-2023 unix-world.org
-// r.20231116.2328
+// (c) 2022-present unix-world.org
+// r.20241221.2328
 
 // ####### DO NOT MODIFY THIS FILE. IT WILL BE REWRITTEN ON ANY UPDATE OF vendor/unixman/smart-framework-base
 // how to install: `php composer.phar require unixman/smart-framework-base @dev`
@@ -41,7 +41,7 @@ $configs['mongodb']['slowtime']		= 0.0035;								// mongodb slow query time (fo
 
 // pgsql
 $configs['pgsql'] = [];
-$configs['pgsql']['type'] 			= 'postgresql'; 						// postgresql / pgpool2
+$configs['pgsql']['type'] 			= 'postgresql'; 						// postgresql / pgpool2 (UTF8)
 $configs['pgsql']['server-host'] 	= '127.0.0.1';							// postgresql host (default is 127.0.0.1)
 $configs['pgsql']['server-port']	= 5432;									// postgresql port (default is 5432)
 $configs['pgsql']['dbname']			= 'smart_framework';					// postgresql database name ; Encoding=UTF8 ; Collation=C ; CharacterType=C
@@ -53,10 +53,10 @@ $configs['pgsql']['transact']		= 'READ COMMITTED';						// postgresql session De
 
 // mysql
 $configs['mysqli'] = [];
-$configs['mysqli']['type'] 			= 'mariadb'; 							// mysql / mariadb
+$configs['mysqli']['type'] 			= 'mariadb'; 							// mariadb (UTF8.MB4) / mysql (UTF8)
 $configs['mysqli']['server-host'] 	= '127.0.0.1';							// server host (default is 127.0.0.1)
 $configs['mysqli']['server-port']	= 3306;									// server port (default is 3306)
-$configs['mysqli']['dbname']		= 'smart_framework';					// database name ; Encoding=utf8mb4
+$configs['mysqli']['dbname']		= 'smart_framework';					// database name
 $configs['mysqli']['username']		= 'root';								// server username
 $configs['mysqli']['password']		= base64_encode('root');				// server Base64-Encoded password for that user name B64
 $configs['mysqli']['timeout']		= 10;									// server connection timeout (how many seconds to wait for a valid MySQL Connection)
@@ -73,9 +73,9 @@ $configs['sqlite']['slowtime'] 		= 0.0025;								// slow query time (for debugg
 
 */
 
-if(version_compare((string)phpversion(), '7.4.0') < 0) { // check for PHP 7.4 or later
+if(version_compare((string)phpversion(), '7.4.33') < 0) { // check for PHP 7.4 or later
 	@http_response_code(500);
-	die('Smart.Framework: PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run Smart.Framework libs are: 7.4 / 8.0 / 8.1 / 8.2 or later');
+	die('Smart.Framework: PHP Runtime not supported: '.phpversion().' !'.'<br>PHP versions to run Smart.Framework libs are: 7.4 / 8.0 / 8.1 / 8.2 / 8.3 / 8.4 / 8.5 / 8.6 or later');
 } //end if
 
 setlocale(LC_ALL, 'C'); // DON'T CHANGE THIS !!! THIS IS COMPATIBLE WILL ALL UTF-8 UNICODE CONTEXTS !!!
