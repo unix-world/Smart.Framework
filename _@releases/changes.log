@@ -2,6 +2,11 @@
 # CHANGELOG / MIGRATION NOTES :: SMART.FRAMEWORK #
 ## This apply only for for Milestone Releases
 
+December 23, 2024
+	* JS Framework Extend, Core: stringCharTrim()
+	* JS Framework Extend, Browser Utils: DateSmartField(), DateSmartsFields()
+	* CSS UX Toolkit extend with: ux-date-field and ux-date-field-xs as visual support for: Browser Utils: DateSmartField(), DateSmartsFields()
+
 December 21, 2024
 	* minor fixes, stable release
 	* implement explicit mode for MariaDB mode as UTF8.MB4 and revert old compatibility MySQL mode to UTF8 to support both: older and newer server versions

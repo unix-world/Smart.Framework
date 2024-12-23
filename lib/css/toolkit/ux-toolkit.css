@@ -2,7 +2,7 @@
 
 /*
 License: BSD
-	extended by unixman, (stable.20240123), (c) 2015-2024 unix-world.org
+	extended by unixman, (stable.20241223), (c) 2015-present unix-world.org
 	based on Pure.css v.1.0 :: https://github.com/pure-css/pure # (c) 2013 Yahoo! Inc.
 	based on w3.css :: https://www.w3schools.com/w3css/4/w3.css # (c) 2021 w3schools.com
 */
@@ -720,6 +720,32 @@ so we can ignore the csslint warning.
 	display: inline-block;
 }
 
+/*
+Date Input
+*/
+
+input[type=text].ux-date-field {
+	text-align: left !important;
+	padding-left: 30px !important;
+	padding-right: 5px !important;
+	width: 140px !important;
+	background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20%20version%3D%221.1%22%20width%3D%2214px%22%20height%3D%2216px%22%20viewBox%3D%220%200%2014%2016%22%3E%3Cg%20id%3D%22g1%22%20stroke%3D%22none%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20id%3D%22g2%22%20fill%3D%22%23778888%22%3E%3Cpath%20d%3D%22M13%2C2%20L12%2C2%20L12%2C3.5%20C12%2C3.78%2011.78%2C4%2011.5%2C4%20L9.5%2C4%20C9.22%2C4%209%2C3.78%209%2C3.5%20L9%2C2%20L6%2C2%20L6%2C3.5%20C6%2C3.78%205.78%2C4%205.5%2C4%20L3.5%2C4%20C3.22%2C4%203%2C3.78%203%2C3.5%20L3%2C2%20L2%2C2%20C1.45%2C2%201%2C2.45%201%2C3%20L1%2C14%20C1%2C14.55%201.45%2C15%202%2C15%20L13%2C15%20C13.55%2C15%2014%2C14.55%2014%2C14%20L14%2C3%20C14%2C2.45%2013.55%2C2%2013%2C2%20L13%2C2%20Z%20M13%2C14%20L2%2C14%20L2%2C5%20L13%2C5%20L13%2C14%20L13%2C14%20Z%20M5%2C3%20L4%2C3%20L4%2C1%20L5%2C1%20L5%2C3%20L5%2C3%20Z%20M11%2C3%20L10%2C3%20L10%2C1%20L11%2C1%20L11%2C3%20L11%2C3%20Z%20M6%2C7%20L5%2C7%20L5%2C6%20L6%2C6%20L6%2C7%20L6%2C7%20Z%20M8%2C7%20L7%2C7%20L7%2C6%20L8%2C6%20L8%2C7%20L8%2C7%20Z%20M10%2C7%20L9%2C7%20L9%2C6%20L10%2C6%20L10%2C7%20L10%2C7%20Z%20M12%2C7%20L11%2C7%20L11%2C6%20L12%2C6%20L12%2C7%20L12%2C7%20Z%20M4%2C9%20L3%2C9%20L3%2C8%20L4%2C8%20L4%2C9%20L4%2C9%20Z%20M6%2C9%20L5%2C9%20L5%2C8%20L6%2C8%20L6%2C9%20L6%2C9%20Z%20M8%2C9%20L7%2C9%20L7%2C8%20L8%2C8%20L8%2C9%20L8%2C9%20Z%20M10%2C9%20L9%2C9%20L9%2C8%20L10%2C8%20L10%2C9%20L10%2C9%20Z%20M12%2C9%20L11%2C9%20L11%2C8%20L12%2C8%20L12%2C9%20L12%2C9%20Z%20M4%2C11%20L3%2C11%20L3%2C10%20L4%2C10%20L4%2C11%20L4%2C11%20Z%20M6%2C11%20L5%2C11%20L5%2C10%20L6%2C10%20L6%2C11%20L6%2C11%20Z%20M8%2C11%20L7%2C11%20L7%2C10%20L8%2C10%20L8%2C11%20L8%2C11%20Z%20M10%2C11%20L9%2C11%20L9%2C10%20L10%2C10%20L10%2C11%20L10%2C11%20Z%20M12%2C11%20L11%2C11%20L11%2C10%20L12%2C10%20L12%2C11%20L12%2C11%20Z%20M4%2C13%20L3%2C13%20L3%2C12%20L4%2C12%20L4%2C13%20L4%2C13%20Z%20M6%2C13%20L5%2C13%20L5%2C12%20L6%2C12%20L6%2C13%20L6%2C13%20Z%20M8%2C13%20L7%2C13%20L7%2C12%20L8%2C12%20L8%2C13%20L8%2C13%20Z%20M10%2C13%20L9%2C13%20L9%2C12%20L10%2C12%20L10%2C13%20L10%2C13%20Z%22%20id%3D%22Shape%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E") !important;
+	background-repeat: no-repeat !important;
+	background-position: 5px 50% !important;
+}
+input[type=text].ux-date-field,
+input[type=date].ux-date-field {
+	font-size: 1rem !important;
+	width: 140px !important;
+	height: 29px !important;
+}
+input[type=text].ux-date-field.ux-date-field-xs,
+input[type=text].ux-date-field.ux-date-field-xs {
+	font-size: 0.875rem !important;
+	width: 125px !important;
+	height: 25.5px !important;
+}
+
 .ux-form input[type="text"],
 .ux-form input[type="password"],
 .ux-form input[type="email"],
@@ -782,13 +808,11 @@ since IE8 won't execute CSS that contains a CSS3 selector.
 	-webkit-box-sizing: border-box;
 }
 
-
 /* Chrome (as of v.32/34 on OS X) needs additional room for color to display. */
 /* May be able to remove this tweak as color inputs become more standardized across browsers. */
 .ux-form input[type="color"] {
 	padding: 0.2rem 0.5rem;
 }
-
 
 .ux-form input[type="text"]:focus,
 .ux-form input[type="password"]:focus,
