@@ -80,7 +80,7 @@ if((string)$var == 'some-string') {
  *
  * @access      PUBLIC
  * @depends     extensions: PHP JSON ; classes: SmartUnicode, SmartFrameworkSecurity, SmartEnvironment ; constants: SMART_FRAMEWORK_CHARSET ; optional-constants: SMART_FRAMEWORK_SECURITY_KEY, SMART_SOFTWARE_NAMESPACE, SMART_FRAMEWORK_NETSERVER_ID, SMART_FRAMEWORK_INFO_LOG
- * @version     v.20241218
+ * @version     v.20241223
  * @package     @Core
  *
  */
@@ -1003,15 +1003,37 @@ final class Smart {
 	 *
 	 * @param 	STRING 		$y_string			:: The string to be escaped
 	 *
-	 * @return 	STRING							:: The escaped string using the WD-CSS21-20060411 standard
+	 * @return 	STRING							:: The escaped string compatible with Twig standard
 	 */
 	public static function escape_css(?string $y_string) : string {
-		//-- http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q6
+		//--
 		if((string)$y_string == '') {
 			return '';
 		} //end if
+		//-- http://www.w3.org/TR/2006/WD-CSS21-20060411/syndata.html#q6
+	//	return (string) addcslashes((string)$y_string, "\x00..\x1F!\"#$%&'()*+,./:;<=>?@[\\]^`{|}~"); // inspired from Latte Templating ; escaped string using the WD-CSS21-20060411 standard
 		//--
-		return (string) addcslashes((string)$y_string, "\x00..\x1F!\"#$%&'()*+,./:;<=>?@[\\]^`{|}~"); // inspired from Latte Templating
+		// The following characters have a special meaning in CSS, in sensitive contexts they have to be escaped:
+		// !, ", #, $, %, &, ', (, ), *, +, ,, -, ., /, :, ;, <, =, >, ?, @, [, \, ], ^, `, {, |, }, ~
+		// Compatible with javascript: MDN: CSS.escape(str)
+		//--
+		if((string)$y_string == '') {
+			return '';
+		} //end if
+		//-- provides a Twig-compatible CSS escaper
+		$out = '';
+		//--
+		for($i=0; $i<SmartUnicode::str_len((string)$y_string); $i++) {
+			$c = (string) SmartUnicode::sub_str((string)$y_string, $i, 1);
+			$code = (int) ord($c);
+			if((((int)$code >= 65) && ((int)$code <= 90)) || (((int)$code >= 97) && ((int)$code <= 122)) || (((int)$code >= 48) && ((int)$code <= 57))) {
+				$out .= (string) $c; // a-zA-Z0-9
+			} else {
+				$out .= (string) sprintf("\\%04X", (int)$code); // UTF-8
+			} //end if else
+		} //end for
+		//--
+		return (string) $out;
 		//--
 	} //END FUNCTION
 	//================================================================

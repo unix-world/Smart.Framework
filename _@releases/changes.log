@@ -3,6 +3,7 @@
 ## This apply only for for Milestone Releases
 
 December 23, 2024
+	* Make Escape CSS (PHP / Js) to be compatible with Twig and SmartGo
 	* JS Framework Extend, Core: stringCharTrim()
 	* JS Framework Extend, Browser Utils: DateSmartField(), DateSmartsFields()
 	* CSS UX Toolkit extend with: ux-date-field and ux-date-field-xs as visual support for: Browser Utils: DateSmartField(), DateSmartsFields()
